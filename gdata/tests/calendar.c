@@ -595,9 +595,9 @@ test_acls_insert_rule (void)
 	g_assert (categories != NULL);
 	g_assert_cmpuint (g_list_length (categories), ==, 1);
 	category = categories->data;
-	g_assert_cmpstr (category->term, ==, "http://schemas.google.com/acl/2007#accessRule");
-	g_assert_cmpstr (category->scheme, ==, "http://schemas.google.com/g/2005#kind");
-	g_assert (category->label == NULL);
+	g_assert_cmpstr (gdata_category_get_term (category), ==, "http://schemas.google.com/acl/2007#accessRule");
+	g_assert_cmpstr (gdata_category_get_scheme (category), ==, "http://schemas.google.com/g/2005#kind");
+	g_assert (gdata_category_get_label (category) == NULL);
 
 	/* TODO: Check more properties? */
 

@@ -85,6 +85,7 @@ AC_OUTPUT([
 Makefile
 libgdata.pc
 gdata/Makefile
+gdata/atom/Makefile
 gdata/services/Makefile
 gdata/services/calendar/Makefile
 gdata/services/contacts/Makefile

@@ -1039,10 +1039,10 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 	if (query != NULL && feed != NULL) {
 		link = gdata_feed_look_up_link (feed, "next");
 		if (link != NULL)
-			_gdata_query_set_next_uri (query, link->href);
+			_gdata_query_set_next_uri (query, gdata_link_get_uri (link));
 		link = gdata_feed_look_up_link (feed, "previous");
 		if (link != NULL)
-			_gdata_query_set_previous_uri (query, link->href);
+			_gdata_query_set_previous_uri (query, gdata_link_get_uri (link));
 	}
 
 	return feed;
@@ -1379,7 +1379,7 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	/* Get the edit URI */
 	link = gdata_entry_look_up_link (entry, "edit");
 	g_assert (link != NULL);
-	message = soup_message_new (SOUP_METHOD_PUT, link->href);
+	message = soup_message_new (SOUP_METHOD_PUT, gdata_link_get_uri (link));
 
 	/* Make sure subclasses set their headers */
 	klass = GDATA_SERVICE_GET_CLASS (self);
@@ -1546,7 +1546,7 @@ gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	/* Get the edit URI */
 	link = gdata_entry_look_up_link (entry, "edit");
 	g_assert (link != NULL);
-	message = soup_message_new (SOUP_METHOD_DELETE, link->href);
+	message = soup_message_new (SOUP_METHOD_DELETE, gdata_link_get_uri (link));
 
 	/* Make sure subclasses set their headers */
 	klass = GDATA_SERVICE_GET_CLASS (self);

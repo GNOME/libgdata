@@ -40,6 +40,7 @@
 #include "gdata-service.h"
 #include "gdata-private.h"
 #include "gdata-parser.h"
+#include "atom/gdata-link.h"
 
 /* Standards reference here: http://code.google.com/apis/youtube/2.0/reference.html */
 
@@ -543,7 +544,7 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
 	}
 
 	/* Execute the query */
-	return gdata_service_query (GDATA_SERVICE (self), related_link->href, query,
+	return gdata_service_query (GDATA_SERVICE (self), gdata_link_get_uri (related_link), query,
 				    GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
 }
 
@@ -583,7 +584,7 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
 		return;
 	}
 
-	gdata_service_query_async (GDATA_SERVICE (self), related_link->href, query,
+	gdata_service_query_async (GDATA_SERVICE (self), gdata_link_get_uri (related_link), query,
 				   GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
 

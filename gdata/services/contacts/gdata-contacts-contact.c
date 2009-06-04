@@ -49,9 +49,9 @@
 
 static void gdata_contacts_contact_finalize (GObject *object);
 static void gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static void get_xml (GDataEntry *entry, GString *xml_string);
+static void get_xml (GDataParsable *parsable, GString *xml_string);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-static void get_namespaces (GDataEntry *entry, GHashTable *namespaces);
+static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataContactsContactPrivate {
 	GTimeVal edited;
@@ -80,7 +80,6 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataContactsContactPrivate));
 
@@ -88,9 +87,8 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	gobject_class->finalize = gdata_contacts_contact_finalize;
 
 	parsable_class->parse_xml = parse_xml;
-
-	entry_class->get_xml = get_xml;
-	entry_class->get_namespaces = get_namespaces;
+	parsable_class->get_xml = get_xml;
+	parsable_class->get_namespaces = get_namespaces;
 
 	/**
 	 * GDataContactsContact:edited:
@@ -544,13 +542,13 @@ get_group_xml_cb (const gchar *href, gpointer deleted, GString *xml_string)
 }
 
 static void
-get_xml (GDataEntry *entry, GString *xml_string)
+get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (entry)->priv;
+	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (parsable)->priv;
 	GList *i;
 
 	/* Chain up to the parent class */
-	GDATA_ENTRY_CLASS (gdata_contacts_contact_parent_class)->get_xml (entry, xml_string);
+	GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->get_xml (parsable, xml_string);
 
 	/* E-mail addresses */
 	for (i = priv->email_addresses; i != NULL; i = i->next) {
@@ -678,10 +676,10 @@ get_xml (GDataEntry *entry, GString *xml_string)
 }
 
 static void
-get_namespaces (GDataEntry *entry, GHashTable *namespaces)
+get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 {
 	/* Chain up to the parent class */
-	GDATA_ENTRY_CLASS (gdata_contacts_contact_parent_class)->get_namespaces (entry, namespaces);
+	GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->get_namespaces (parsable, namespaces);
 
 	g_hash_table_insert (namespaces, (gchar*) "gd", (gchar*) "http://schemas.google.com/g/2005");
 	g_hash_table_insert (namespaces, (gchar*) "gContact", (gchar*) "http://schemas.google.com/contact/2008");
@@ -1307,7 +1305,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	/* Get the photo URI */
 	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
 	g_assert (link != NULL);
-	message = soup_message_new (SOUP_METHOD_GET, link->href);
+	message = soup_message_new (SOUP_METHOD_GET, gdata_link_get_uri (link));
 
 	/* Make sure the headers are set */
 	klass = GDATA_SERVICE_GET_CLASS (service);
@@ -1395,9 +1393,9 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
 	g_assert (link != NULL);
 	if (deleting_photo == TRUE)
-		message = soup_message_new (SOUP_METHOD_DELETE, link->href);
+		message = soup_message_new (SOUP_METHOD_DELETE, gdata_link_get_uri (link));
 	else
-		message = soup_message_new (SOUP_METHOD_PUT, link->href);
+		message = soup_message_new (SOUP_METHOD_PUT, gdata_link_get_uri (link));
 
 	/* Make sure the headers are set */
 	klass = GDATA_SERVICE_GET_CLASS (service);

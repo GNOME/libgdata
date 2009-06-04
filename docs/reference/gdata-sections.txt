@@ -161,27 +161,6 @@ GDataEntryPrivate
 </SECTION>
 
 <SECTION>
-<FILE>gdata-atom</FILE>
-<TITLE>Atom API</TITLE>
-GDataAuthor
-gdata_author_new
-gdata_author_compare
-gdata_author_free
-GDataCategory
-gdata_category_new
-gdata_category_compare
-gdata_category_free
-GDataLink
-gdata_link_new
-gdata_link_compare
-gdata_link_free
-GDataGenerator
-gdata_generator_new
-gdata_generator_compare
-gdata_generator_free
-</SECTION>
-
-<SECTION>
 <FILE>gdata-gdata</FILE>
 <TITLE>GData API</TITLE>
 GDataGDEmailAddress
@@ -723,4 +702,106 @@ GDATA_IS_CALENDAR_FEED_CLASS
 GDATA_TYPE_CALENDAR_FEED
 <SUBSECTION Private>
 GDataCalendarFeedPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-category</FILE>
+<TITLE>GDataCategory</TITLE>
+GDataCategory
+GDataCategoryClass
+gdata_category_new
+gdata_category_compare
+gdata_category_get_term
+gdata_category_set_term
+gdata_category_get_scheme
+gdata_category_set_scheme
+gdata_category_get_label
+gdata_category_set_label
+<SUBSECTION Standard>
+gdata_category_get_type
+GDATA_CATEGORY
+GDATA_CATEGORY_CLASS
+GDATA_CATEGORY_GET_CLASS
+GDATA_IS_CATEGORY
+GDATA_IS_CATEGORY_CLASS
+GDATA_TYPE_CATEGORY
+<SUBSECTION Private>
+GDataCategoryPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-link</FILE>
+<TITLE>GDataLink</TITLE>
+GDataLink
+GDataLinkClass
+gdata_link_new
+gdata_link_compare
+gdata_link_get_uri
+gdata_link_set_uri
+gdata_link_get_relation_type
+gdata_link_set_relation_type
+gdata_link_get_content_type
+gdata_link_set_content_type
+gdata_link_get_language
+gdata_link_set_language
+gdata_link_get_title
+gdata_link_set_title
+gdata_link_get_length
+gdata_link_set_length
+<SUBSECTION Standard>
+gdata_link_get_type
+GDATA_IS_LINK
+GDATA_IS_LINK_CLASS
+GDATA_LINK
+GDATA_LINK_CLASS
+GDATA_LINK_GET_CLASS
+GDATA_TYPE_LINK
+<SUBSECTION Private>
+GDataLinkPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-author</FILE>
+<TITLE>GDataAuthor</TITLE>
+GDataAuthor
+GDataAuthorClass
+gdata_author_new
+gdata_author_compare
+gdata_author_get_name
+gdata_author_set_name
+gdata_author_get_uri
+gdata_author_set_uri
+gdata_author_get_email_address
+gdata_author_set_email_address
+<SUBSECTION Standard>
+gdata_author_get_type
+GDATA_AUTHOR
+GDATA_AUTHOR_CLASS
+GDATA_AUTHOR_GET_CLASS
+GDATA_IS_AUTHOR
+GDATA_IS_AUTHOR_CLASS
+GDATA_TYPE_AUTHOR
+<SUBSECTION Private>
+GDataAuthorPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-generator</FILE>
+<TITLE>GDataGenerator</TITLE>
+GDataGenerator
+GDataGeneratorClass
+gdata_generator_compare
+gdata_generator_get_name
+gdata_generator_get_uri
+gdata_generator_get_version
+<SUBSECTION Standard>
+gdata_generator_get_type
+GDATA_GENERATOR
+GDATA_GENERATOR_CLASS
+GDATA_GENERATOR_GET_CLASS
+GDATA_IS_GENERATOR
+GDATA_IS_GENERATOR_CLASS
+GDATA_TYPE_GENERATOR
+<SUBSECTION Private>
+GDataGeneratorPrivate
 </SECTION>

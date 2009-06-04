@@ -52,11 +52,16 @@ test_entry_get_xml (void)
 	gdata_entry_add_category (entry, category);
 
 	/* Links */
-	link = gdata_link_new ("http://test.com/", "self", "application/atom+xml", NULL, NULL, -1);
+	link = gdata_link_new ("http://test.com/", "self");
+	gdata_link_set_content_type (link, "application/atom+xml");
 	gdata_entry_add_link (entry, link);
-	link = gdata_link_new ("http://example.com/", NULL, NULL, NULL, NULL, -1);
+	link = gdata_link_new ("http://example.com/", NULL);
 	gdata_entry_add_link (entry, link);
-	link = gdata_link_new ("http://test.mn/", "related", "text/html", "mn", "A treatise on Mongolian test websites & other stuff.", 5010);
+	link = gdata_link_new ("http://test.mn/", "related");
+	gdata_link_set_content_type (link, "text/html");
+	gdata_link_set_language (link, "mn");
+	gdata_link_set_title (link, "A treatise on Mongolian test websites & other stuff.");
+	gdata_link_set_length (link, 5010);
 	gdata_entry_add_link (entry, link);
 
 	/* Authors */

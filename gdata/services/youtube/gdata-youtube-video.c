@@ -46,9 +46,9 @@
 static void gdata_youtube_video_finalize (GObject *object);
 static void gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_youtube_video_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static void get_xml (GDataEntry *entry, GString *xml_string);
+static void get_xml (GDataParsable *parsable, GString *xml_string);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-static void get_namespaces (GDataEntry *entry, GHashTable *namespaces);
+static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataYouTubeVideoPrivate {
 	guint view_count;
@@ -114,7 +114,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataYouTubeVideoPrivate));
 
@@ -123,9 +122,8 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	gobject_class->finalize = gdata_youtube_video_finalize;
 
 	parsable_class->parse_xml = parse_xml;
-
-	entry_class->get_xml = get_xml;
-	entry_class->get_namespaces = get_namespaces;
+	parsable_class->get_xml = get_xml;
+	parsable_class->get_namespaces = get_namespaces;
 
 	/**
 	 * GDataYouTubeVideo:view-count:
@@ -1034,13 +1032,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 }
 
 static void
-get_xml (GDataEntry *entry, GString *xml_string)
+get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (entry)->priv;
+	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (parsable)->priv;
 	gchar *category;
 
 	/* Chain up to the parent class */
-	GDATA_ENTRY_CLASS (gdata_youtube_video_parent_class)->get_xml (entry, xml_string);
+	GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->get_xml (parsable, xml_string);
 
 	/* Add all the YouTube-specific XML */
 	g_string_append (xml_string, "<media:group><media:category");
@@ -1099,10 +1097,10 @@ get_xml (GDataEntry *entry, GString *xml_string)
 }
 
 static void
-get_namespaces (GDataEntry *entry, GHashTable *namespaces)
+get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 {
 	/* Chain up to the parent class */
-	GDATA_ENTRY_CLASS (gdata_youtube_video_parent_class)->get_namespaces (entry, namespaces);
+	GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->get_namespaces (parsable, namespaces);
 
 	g_hash_table_insert (namespaces, (gchar*) "media", (gchar*) "http://search.yahoo.com/mrss/");
 	g_hash_table_insert (namespaces, (gchar*) "yt", (gchar*) "http://gdata.youtube.com/schemas/2007");

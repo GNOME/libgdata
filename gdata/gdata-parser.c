@@ -24,15 +24,8 @@
 #include <time.h>
 #include <libxml/parser.h>
 
-#include "gdata-service.h"
 #include "gdata-parser.h"
-#include "gdata-private.h"
-
-GQuark
-gdata_parser_error_quark (void)
-{
-	return g_quark_from_static_string ("gdata-parser-error-quark");
-}
+#include "gdata-service.h"
 
 static gchar *
 print_element (xmlNode *node)

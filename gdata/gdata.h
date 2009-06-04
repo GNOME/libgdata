@@ -33,7 +33,14 @@
 #include <gdata/gdata-parsable.h>
 
 /* Namespaces */
-#include <gdata/gdata-atom.h>
+
+/* Atom */
+#include <gdata/atom/gdata-author.h>
+#include <gdata/atom/gdata-category.h>
+#include <gdata/atom/gdata-generator.h>
+#include <gdata/atom/gdata-link.h>
+
+/* Others */
 #include <gdata/gdata-gdata.h>
 #include <gdata/gdata-media-rss.h>
 

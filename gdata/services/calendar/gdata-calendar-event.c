@@ -45,9 +45,9 @@
 static void gdata_calendar_event_finalize (GObject *object);
 static void gdata_calendar_event_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_calendar_event_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static void get_xml (GDataEntry *entry, GString *xml_string);
+static void get_xml (GDataParsable *parsable, GString *xml_string);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-static void get_namespaces (GDataEntry *entry, GHashTable *namespaces);
+static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataCalendarEventPrivate {
 	GTimeVal edited;
@@ -93,7 +93,6 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataCalendarEventPrivate));
 
@@ -102,9 +101,8 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	gobject_class->finalize = gdata_calendar_event_finalize;
 
 	parsable_class->parse_xml = parse_xml;
-
-	entry_class->get_xml = get_xml;
-	entry_class->get_namespaces = get_namespaces;
+	parsable_class->get_xml = get_xml;
+	parsable_class->get_namespaces = get_namespaces;
 
 	/**
 	 * GDataCalendarEvent:edited:
@@ -658,13 +656,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 }
 
 static void
-get_xml (GDataEntry *entry, GString *xml_string)
+get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	GDataCalendarEventPrivate *priv = GDATA_CALENDAR_EVENT (entry)->priv;
+	GDataCalendarEventPrivate *priv = GDATA_CALENDAR_EVENT (parsable)->priv;
 	GList *i;
 
 	/* Chain up to the parent class */
-	GDATA_ENTRY_CLASS (gdata_calendar_event_parent_class)->get_xml (entry, xml_string);
+	GDATA_PARSABLE_CLASS (gdata_calendar_event_parent_class)->get_xml (parsable, xml_string);
 
 	/* Add all the Calendar-specific XML */
 
@@ -780,10 +778,10 @@ get_xml (GDataEntry *entry, GString *xml_string)
 }
 
 static void
-get_namespaces (GDataEntry *entry, GHashTable *namespaces)
+get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 {
 	/* Chain up to the parent class */
-	GDATA_ENTRY_CLASS (gdata_calendar_event_parent_class)->get_namespaces (entry, namespaces);
+	GDATA_PARSABLE_CLASS (gdata_calendar_event_parent_class)->get_namespaces (parsable, namespaces);
 
 	g_hash_table_insert (namespaces, (gchar*) "gd", (gchar*) "http://schemas.google.com/g/2005");
 	g_hash_table_insert (namespaces, (gchar*) "gCal", (gchar*) "http://schemas.google.com/gCal/2005");
