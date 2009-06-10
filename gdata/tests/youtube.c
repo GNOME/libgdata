@@ -284,6 +284,7 @@ test_upload_simple (void)
 	gdata_youtube_video_set_description (video, "I gave a bad toast at my friend's wedding.");
 	category = gdata_media_category_new ("People", NULL, "http://gdata.youtube.com/schemas/2007/categories.cat");
 	gdata_youtube_video_set_category (video, category);
+	g_object_unref (category);
 	gdata_youtube_video_set_keywords (video, "toast, wedding");
 
 	/* Check the XML */
@@ -448,7 +449,7 @@ test_parsing_yt_recorded (void)
 	g_object_unref (video);
 }
 
-static void
+/*static void
 test_parsing_comments_feed_link (void)
 {
 	GDataYouTubeVideo *video;
@@ -485,7 +486,7 @@ test_parsing_comments_feed_link (void)
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_clear_error (&error);
 
-	/* Test the feed link */
+	* Test the feed link *
 	feed_link = gdata_youtube_video_get_comments_feed_link (video);
 	g_assert (feed_link != NULL);
 	g_assert (feed_link->rel == NULL);
@@ -493,10 +494,10 @@ test_parsing_comments_feed_link (void)
 	g_assert_cmpuint (feed_link->count_hint, ==, 13021);
 	g_assert (feed_link->read_only == FALSE);
 
-	/* TODO: more tests on entry properties */
+	* TODO: more tests on entry properties *
 
 	g_object_unref (video);
-}
+}*/
 
 static void
 test_query_uri (void)
@@ -599,7 +600,7 @@ main (int argc, char *argv[])
 	if (g_test_slow () == TRUE)
 		g_test_add_func ("/youtube/upload/simple", test_upload_simple);
 	g_test_add_func ("/youtube/parsing/app:control", test_parsing_app_control);
-	g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);
+	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
 	g_test_add_func ("/youtube/parsing/yt:recorded", test_parsing_yt_recorded);
 	g_test_add_func ("/youtube/query/uri", test_query_uri);
 

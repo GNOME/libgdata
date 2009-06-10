@@ -35,7 +35,6 @@
 #include <string.h>
 
 #include "gdata-access-rule.h"
-#include "gdata-gdata.h"
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "gdata-private.h"

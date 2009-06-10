@@ -222,6 +222,7 @@ _gdata_parsable_get_xml (GDataParsable *self, const gchar *first_element, gboole
 {
 	GDataParsableClass *klass;
 	GString *xml_string;
+	guint length;
 	GHashTable *namespaces = NULL; /* shut up, gcc */
 
 	klass = GDATA_PARSABLE_GET_CLASS (self);
@@ -251,17 +252,10 @@ _gdata_parsable_get_xml (GDataParsable *self, const gchar *first_element, gboole
 	/* Add anything the class thinks is suitable */
 	if (klass->pre_get_xml != NULL)
 		klass->pre_get_xml (self, xml_string);
-
-	/* We can self-close in certain circumstances */
-	if (klass->get_xml == NULL &&
-	    (self->priv->extra_xml == NULL || self->priv->extra_xml->str == NULL || *(self->priv->extra_xml->str) == '\0')) {
-		/* Self-closing */
-		g_string_append (xml_string, "/>");
-		goto finish;
-	}
-
-	/* We have some content */
 	g_string_append_c (xml_string, '>');
+
+	/* Store the length before we close the opening tag, so we can determine whether to self-close later on */
+	length = xml_string->len;
 
 	/* Add the rest of the XML */
 	if (klass->get_xml != NULL)
@@ -271,8 +265,11 @@ _gdata_parsable_get_xml (GDataParsable *self, const gchar *first_element, gboole
 	if (self->priv->extra_xml != NULL && self->priv->extra_xml->str != NULL)
 		g_string_append (xml_string, self->priv->extra_xml->str);
 
-	g_string_append_printf (xml_string, "</%s>", first_element);
+	/* Close the element; either by self-closing the opening tag, or by writing out a closing tag */
+	if (xml_string->len == length)
+		g_string_overwrite (xml_string, length - 1, "/>");
+	else
+		g_string_append_printf (xml_string, "</%s>", first_element);
 
-finish:
 	return g_string_free (xml_string, FALSE);
 }

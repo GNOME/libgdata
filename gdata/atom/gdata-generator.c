@@ -21,7 +21,7 @@
  * SECTION:gdata-generator
  * @short_description: Atom generator element
  * @stability: Unstable
- * @include: gdata/gdata-generator.h
+ * @include: gdata/atom/gdata-generator.h
  *
  * #GDataGenerator represents a "generator" element from the
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.

@@ -21,7 +21,7 @@
  * SECTION:gdata-author
  * @short_description: Atom author element
  * @stability: Unstable
- * @include: gdata/gdata-author.h
+ * @include: gdata/atom/gdata-author.h
  *
  * #GDataAuthor represents a "author" element from the
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.

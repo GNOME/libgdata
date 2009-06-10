@@ -86,6 +86,7 @@ Makefile
 libgdata.pc
 gdata/Makefile
 gdata/atom/Makefile
+gdata/gd/Makefile
 gdata/services/Makefile
 gdata/services/calendar/Makefile
 gdata/services/contacts/Makefile

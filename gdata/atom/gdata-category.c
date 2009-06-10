@@ -21,7 +21,7 @@
  * SECTION:gdata-category
  * @short_description: Atom category element
  * @stability: Unstable
- * @include: gdata/gdata-category.h
+ * @include: gdata/atom/gdata-category.h
  *
  * #GDataCategory represents a "category" element from the
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.

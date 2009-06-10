@@ -38,7 +38,6 @@
 #include "gdata-youtube-video.h"
 #include "gdata-private.h"
 #include "gdata-service.h"
-#include "gdata-gdata.h"
 #include "gdata-parser.h"
 #include "gdata-media-rss.h"
 #include "gdata-types.h"
@@ -55,7 +54,14 @@ struct _GDataYouTubeVideoPrivate {
 	guint favorite_count;
 	gchar *location;
 	gboolean no_embed;
-	GDataGDRating *rating;
+
+	/* gd:rating attributes */
+	struct {
+		guint min;
+		guint max;
+		guint count;
+		gdouble average;
+	} rating;
 
 	/* media:group properties */
 	gchar *keywords;
@@ -78,7 +84,6 @@ struct _GDataYouTubeVideoPrivate {
 	/* Other properties */
 	gboolean is_draft;
 	GDataYouTubeState *state;
-	GDataGDFeedLink *comments_feed_link;
 	GTimeVal recorded;
 };
 
@@ -87,7 +92,10 @@ enum {
 	PROP_FAVORITE_COUNT,
 	PROP_LOCATION,
 	PROP_NO_EMBED,
-	PROP_RATING,
+	PROP_MIN_RATING,
+	PROP_MAX_RATING,
+	PROP_RATING_COUNT,
+	PROP_AVERAGE_RATING,
 	PROP_KEYWORDS,
 	PROP_PLAYER_URI,
 	PROP_MEDIA_RATING,
@@ -102,7 +110,6 @@ enum {
 	PROP_VIDEO_ID,
 	PROP_IS_DRAFT,
 	PROP_STATE,
-	PROP_COMMENTS_FEED_LINK,
 	PROP_RECORDED
 };
 
@@ -182,18 +189,59 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataYouTubeVideo:rating:
+	 * GDataYouTubeVideo:min-rating:
 	 *
-	 * Specifies the current average rating of the video based on aggregated YouTube user ratings.
-	 *
-	 * It is a pointer to a #GDataGDRating.
+	 * The minimum allowed rating for the video.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_gd:rating">online documentation</ulink>.
+	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
 	 **/
-	g_object_class_install_property (gobject_class, PROP_RATING,
-				g_param_spec_pointer ("rating",
-					"Rating", "Specifies the current average rating of the video based on aggregated YouTube user ratings.",
+	g_object_class_install_property (gobject_class, PROP_MIN_RATING,
+				g_param_spec_uint ("min-rating",
+					"Minimum rating", "The minimum allowed rating for the video.",
+					0, G_MAXUINT, 1, /* defaults to 1 */
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataYouTubeVideo:max-rating:
+	 *
+	 * The maximum allowed rating for the video.
+	 *
+	 * For more information, see the <ulink type="http"
+	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
+	 **/
+	g_object_class_install_property (gobject_class, PROP_MAX_RATING,
+				g_param_spec_uint ("max-rating",
+					"Maximum rating", "The maximum allowed rating for the video.",
+					0, G_MAXUINT, 5, /* defaults to 5 */
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataYouTubeVideo:rating-count:
+	 *
+	 * The number of times the video has been rated.
+	 *
+	 * For more information, see the <ulink type="http"
+	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
+	 **/
+	g_object_class_install_property (gobject_class, PROP_RATING_COUNT,
+				g_param_spec_uint ("rating-count",
+					"Rating count", "The number of times the video has been rated.",
+					0, G_MAXUINT, 0,
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataYouTubeVideo:average-rating:
+	 *
+	 * The average rating of the video, over all the ratings it's received.
+	 *
+	 * For more information, see the <ulink type="http"
+	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
+	 **/
+	g_object_class_install_property (gobject_class, PROP_AVERAGE_RATING,
+				g_param_spec_double ("average-rating",
+					"Average rating", "The average rating of the video, over all the ratings it's received.",
+					0.0, G_MAXDOUBLE, 0.0,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -395,21 +443,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataYouTubeVideo:comments-feed-link:
-	 *
-	 * A link to the video's comments feed. It points to a #GDataGDFeedLink.
-	 *
-	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_gd:feedLink">online documentation</ulink>.
-	 *
-	 * Since: 0.3.0
-	 **/
-	g_object_class_install_property (gobject_class, PROP_COMMENTS_FEED_LINK,
-				g_param_spec_pointer ("comments-feed-link",
-					"Comments feed link", "A link to the video's comments feed.",
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
 	 * GDataYouTubeVideo:recorded:
 	 *
 	 * Specifies the time the video was originally recorded.
@@ -438,8 +471,6 @@ gdata_youtube_video_finalize (GObject *object)
 	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO_GET_PRIVATE (object);
 
 	g_free (priv->location);
-	gdata_gd_rating_free (priv->rating);
-
 	g_free (priv->keywords);
 	g_free (priv->player_uri);
 	gdata_media_rating_free (priv->media_rating);
@@ -455,7 +486,6 @@ gdata_youtube_video_finalize (GObject *object)
 
 	g_free (priv->video_id);
 	gdata_youtube_state_free (priv->state);
-	gdata_gd_feed_link_free (priv->comments_feed_link);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_video_parent_class)->finalize (object);
@@ -479,8 +509,17 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_NO_EMBED:
 			g_value_set_boolean (value, priv->no_embed);
 			break;
-		case PROP_RATING:
-			g_value_set_pointer (value, priv->rating);
+		case PROP_MIN_RATING:
+			g_value_set_uint (value, priv->rating.min);
+			break;
+		case PROP_MAX_RATING:
+			g_value_set_uint (value, priv->rating.max);
+			break;
+		case PROP_RATING_COUNT:
+			g_value_set_uint (value, priv->rating.count);
+			break;
+		case PROP_AVERAGE_RATING:
+			g_value_set_double (value, priv->rating.average);
 			break;
 		case PROP_KEYWORDS:
 			g_value_set_string (value, priv->keywords);
@@ -523,9 +562,6 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 			break;
 		case PROP_STATE:
 			g_value_set_pointer (value, priv->state);
-			break;
-		case PROP_COMMENTS_FEED_LINK:
-			g_value_set_pointer (value, priv->comments_feed_link);
 			break;
 		case PROP_RECORDED:
 			g_value_set_boxed (value, &(priv->recorded));
@@ -909,11 +945,17 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			average_double = g_ascii_strtod ((gchar*) average, NULL);
 		xmlFree (average);
 
-		gdata_gd_rating_free (self->priv->rating);
-		self->priv->rating = gdata_gd_rating_new (strtoul ((gchar*) min, NULL, 10),
-							  strtoul ((gchar*) max, NULL, 10),
-							  num_raters_uint, average_double);
-		g_object_notify (G_OBJECT (self), "rating");
+		self->priv->rating.min = strtoul ((gchar*) min, NULL, 10);
+		self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
+		self->priv->rating.count = num_raters_uint;
+		self->priv->rating.average = average_double;
+
+		g_object_freeze_notify (G_OBJECT (self));
+		g_object_notify (G_OBJECT (self), "min-rating");
+		g_object_notify (G_OBJECT (self), "max-rating");
+		g_object_notify (G_OBJECT (self), "rating-count");
+		g_object_notify (G_OBJECT (self), "average-rating");
+		g_object_thaw_notify (G_OBJECT (self));
 	} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
 		/* gd:comments */
 		xmlChar *rel, *href, *count_hint, *read_only;
@@ -934,10 +976,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		rel = xmlGetProp (child_node, (xmlChar*) "rel");
 		href = xmlGetProp (child_node, (xmlChar*) "href");
 
-		gdata_gd_feed_link_free (self->priv->comments_feed_link);
+		/* TODO */
+		/*gdata_gd_feed_link_free (self->priv->comments_feed_link);
 		self->priv->comments_feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint,
 									 ((xmlStrcmp (read_only, (xmlChar*) "true") == 0) ? TRUE : FALSE));
-		g_object_notify (G_OBJECT (self), "comments-feed-link");
+		g_object_notify (G_OBJECT (self), "comments-feed-link");*/
 
 		xmlFree (rel);
 		xmlFree (href);
@@ -1203,16 +1246,25 @@ gdata_youtube_video_set_no_embed (GDataYouTubeVideo *self, gboolean no_embed)
 /**
  * gdata_youtube_video_get_rating:
  * @self: a #GDataYouTubeVideo
+ * @min: return location for the minimum rating value, or %NULL
+ * @max: return location for the maximum rating value, or %NULL
+ * @count: return location for the number of ratings, or %NULL
+ * @average: return location for the average rating value, or %NULL
  *
- * Gets the #GDataYouTubeVideo:rating property.
- *
- * Return value: a #GDataGDRating describing the popularity of the video, or %NULL
+ * Gets various properties of the ratings on the video.
  **/
-GDataGDRating *
-gdata_youtube_video_get_rating (GDataYouTubeVideo *self)
+void
+gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max, guint *count, gdouble *average)
 {
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return self->priv->rating;
+	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
+	if (min != NULL)
+		*min = self->priv->rating.min;
+	if (max != NULL)
+		*max = self->priv->rating.max;
+	if (count != NULL)
+		*count = self->priv->rating.count;
+	if (average != NULL)
+		*average = self->priv->rating.average;
 }
 
 /**
@@ -1583,26 +1635,6 @@ gdata_youtube_video_get_state (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
 	return self->priv->state;
-}
-
-/**
- * gdata_youtube_video_get_comments_feed_link:
- * @self: a #GDataYouTubeVideo
- *
- * Gets the #GDataYouTubeVideo:comments-feed-link property.
- *
- * For more information, see the <ulink type="http"
- * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_gd:feedLink">online documentation</ulink>.
- *
- * Return value: a #GDataGDFeedLink to the video's comments feed, or %NULL
- *
- * Since: 0.3.0
- **/
-GDataGDFeedLink *
-gdata_youtube_video_get_comments_feed_link (GDataYouTubeVideo *self)
-{
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return self->priv->comments_feed_link;
 }
 
 /**

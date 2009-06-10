@@ -36,7 +36,6 @@
 #include <string.h>
 
 #include "gdata-contacts-contact.h"
-#include "gdata-gdata.h"
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "gdata-private.h"
@@ -47,6 +46,7 @@
  * and gdata_contacts_contact_set_extended_property(). */
 #define MAX_N_EXTENDED_PROPERTIES 10
 
+static void gdata_contacts_contact_dispose (GObject *object);
 static void gdata_contacts_contact_finalize (GObject *object);
 static void gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
@@ -84,6 +84,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	g_type_class_add_private (klass, sizeof (GDataContactsContactPrivate));
 
 	gobject_class->get_property = gdata_contacts_contact_get_property;
+	gobject_class->dispose = gdata_contacts_contact_dispose;
 	gobject_class->finalize = gdata_contacts_contact_finalize;
 
 	parsable_class->parse_xml = parse_xml;
@@ -142,20 +143,49 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 }
 
 static void
+gdata_contacts_contact_dispose (GObject *object)
+{
+	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (object)->priv;
+
+	if (priv->organizations != NULL) {
+		g_list_foreach (priv->organizations, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->organizations);
+	}
+	priv->organizations = NULL;
+
+	if (priv->email_addresses != NULL) {
+		g_list_foreach (priv->email_addresses, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->email_addresses);
+	}
+	priv->email_addresses = NULL;
+
+	if (priv->im_addresses != NULL) {
+		g_list_foreach (priv->im_addresses, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->im_addresses);
+	}
+	priv->im_addresses = NULL;
+
+	if (priv->postal_addresses != NULL) {
+		g_list_foreach (priv->postal_addresses, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->postal_addresses);
+	}
+	priv->postal_addresses = NULL;
+
+	if (priv->phone_numbers != NULL) {
+		g_list_foreach (priv->phone_numbers, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->phone_numbers);
+	}
+	priv->phone_numbers = NULL;
+
+	/* Chain up to the parent class */
+	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->dispose (object);
+}
+
+static void
 gdata_contacts_contact_finalize (GObject *object)
 {
-	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT_GET_PRIVATE (object);
+	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (object)->priv;
 
-	g_list_foreach (priv->email_addresses, (GFunc) gdata_gd_email_address_free, NULL);
-	g_list_free (priv->email_addresses);
-	g_list_foreach (priv->im_addresses, (GFunc) gdata_gd_im_address_free, NULL);
-	g_list_free (priv->im_addresses);
-	g_list_foreach (priv->phone_numbers, (GFunc) gdata_gd_phone_number_free, NULL);
-	g_list_free (priv->phone_numbers);
-	g_list_foreach (priv->postal_addresses, (GFunc) gdata_gd_postal_address_free, NULL);
-	g_list_free (priv->postal_addresses);
-	g_list_foreach (priv->organizations, (GFunc) gdata_gd_organization_free, NULL);
-	g_list_free (priv->organizations);
 	g_hash_table_destroy (priv->extended_properties);
 	g_hash_table_destroy (priv->groups);
 	g_free (priv->photo_etag);
@@ -247,210 +277,41 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (edited);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
 		/* gd:email */
-		xmlChar *address, *rel, *label, *primary;
-		gboolean primary_bool;
-		GDataGDEmailAddress *email_address;
-
-		address = xmlGetProp (node, (xmlChar*) "address");
-		if (address == NULL)
-			return gdata_parser_error_required_property_missing (node, "address", error);
-
-		rel = xmlGetProp (node, (xmlChar*) "rel");
-		label = xmlGetProp (node, (xmlChar*) "label");
-		if (rel != NULL && label != NULL) {
-			/* TODO: error (can't have both) */
-		}
-
-		/* Is it the primary e-mail address? */
-		primary = xmlGetProp (node, (xmlChar*) "primary");
-		if (primary == NULL || xmlStrcmp (primary, (xmlChar*) "false") == 0)
-			primary_bool = FALSE;
-		else if (xmlStrcmp (primary, (xmlChar*) "true") == 0)
-			primary_bool = TRUE;
-		else {
-			gdata_parser_error_unknown_property_value (node, "primary", (gchar*) primary, error);
-			xmlFree (primary);
+		GDataGDEmailAddress *email = GDATA_GD_EMAIL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_EMAIL_ADDRESS, "email", doc,
+													node, NULL, error));
+		if (email == NULL)
 			return FALSE;
-		}
-		xmlFree (primary);
 
-		/* Build the e-mail address */
-		email_address = gdata_gd_email_address_new ((gchar*) address, (gchar*) rel, (gchar*) label, primary_bool);
-		xmlFree (address);
-		xmlFree (rel);
-		xmlFree (label);
-
-		gdata_contacts_contact_add_email_address (self, email_address);
+		gdata_contacts_contact_add_email_address (self, email);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "im") == 0) {
 		/* gd:im */
-		xmlChar *address, *rel, *label, *protocol, *primary;
-		gboolean primary_bool;
-		GDataGDIMAddress *im_address;
-
-		address = xmlGetProp (node, (xmlChar*) "address");
-		if (address == NULL)
-			return gdata_parser_error_required_property_missing (node, "address", error);
-
-		rel = xmlGetProp (node, (xmlChar*) "rel");
-		label = xmlGetProp (node, (xmlChar*) "label");
-		if (rel != NULL && label != NULL) {
-			/* TODO: error (can't have both) */
-		}
-		protocol = xmlGetProp (node, (xmlChar*) "protocol");
-
-		/* Is it the primary IM address? */
-		primary = xmlGetProp (node, (xmlChar*) "primary");
-		if (primary == NULL || xmlStrcmp (primary, (xmlChar*) "false") == 0)
-			primary_bool = FALSE;
-		else if (xmlStrcmp (primary, (xmlChar*) "true") == 0)
-			primary_bool = TRUE;
-		else {
-			gdata_parser_error_unknown_property_value (node, "primary", (gchar*) primary, error);
-			xmlFree (primary);
+		GDataGDIMAddress *im = GDATA_GD_IM_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_IM_ADDRESS, "im", doc, node, NULL, error));
+		if (im == NULL)
 			return FALSE;
-		}
-		xmlFree (primary);
 
-		/* Build the IM address */
-		im_address = gdata_gd_im_address_new ((gchar*) address, (gchar*) protocol, (gchar*) rel, (gchar*) label, primary_bool);
-		xmlFree (address);
-		xmlFree (rel);
-		xmlFree (label);
-		xmlFree (protocol);
-
-		gdata_contacts_contact_add_im_address (self, im_address);
+		gdata_contacts_contact_add_im_address (self, im);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "phoneNumber") == 0) {
 		/* gd:phoneNumber */
-		xmlChar *number, *rel, *label, *uri, *primary;
-		gboolean primary_bool;
-		GDataGDPhoneNumber *phone_number;
-
-		number = xmlNodeListGetString (doc, node->children, TRUE);
+		GDataGDPhoneNumber *number = GDATA_GD_PHONE_NUMBER (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_PHONE_NUMBER, "phoneNumber", doc,
+												       node, NULL, error));
 		if (number == NULL)
-			return gdata_parser_error_required_content_missing (node, error);
-
-		rel = xmlGetProp (node, (xmlChar*) "rel");
-		label = xmlGetProp (node, (xmlChar*) "label");
-		if (rel != NULL && label != NULL) {
-			/* TODO: error (can't have both) */
-		}
-		uri = xmlGetProp (node, (xmlChar*) "uri");
-
-		/* Is it the primary phone number? */
-		primary = xmlGetProp (node, (xmlChar*) "primary");
-		if (primary == NULL || xmlStrcmp (primary, (xmlChar*) "false") == 0)
-			primary_bool = FALSE;
-		else if (xmlStrcmp (primary, (xmlChar*) "true") == 0)
-			primary_bool = TRUE;
-		else {
-			gdata_parser_error_unknown_property_value (node, "primary", (gchar*) primary, error);
-			xmlFree (primary);
 			return FALSE;
-		}
-		xmlFree (primary);
 
-		/* Build the phone number */
-		phone_number = gdata_gd_phone_number_new ((gchar*) number, (gchar*) rel, (gchar*) label, (gchar*) uri, primary_bool);
-		xmlFree (number);
-		xmlFree (rel);
-		xmlFree (label);
-		xmlFree (uri);
-
-		gdata_contacts_contact_add_phone_number (self, phone_number);
+		gdata_contacts_contact_add_phone_number (self, number);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "postalAddress") == 0) {
 		/* gd:postalAddress */
-		xmlChar *address, *rel, *label, *primary;
-		gboolean primary_bool;
-		GDataGDPostalAddress *postal_address;
-
-		address = xmlNodeListGetString (doc, node->children, TRUE);
+		GDataGDPostalAddress *address = GDATA_GD_POSTAL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_POSTAL_ADDRESS,
+													    "postalAddress", doc, node, NULL, error));
 		if (address == NULL)
-			return gdata_parser_error_required_content_missing (node, error);
-
-		rel = xmlGetProp (node, (xmlChar*) "rel");
-		label = xmlGetProp (node, (xmlChar*) "label");
-		if (rel != NULL && label != NULL) {
-			/* TODO: error (can't have both) */
-		}
-
-		/* Is it the primary postal address? */
-		primary = xmlGetProp (node, (xmlChar*) "primary");
-		if (primary == NULL || xmlStrcmp (primary, (xmlChar*) "false") == 0)
-			primary_bool = FALSE;
-		else if (xmlStrcmp (primary, (xmlChar*) "true") == 0)
-			primary_bool = TRUE;
-		else {
-			gdata_parser_error_unknown_property_value (node, "primary", (gchar*) primary, error);
-			xmlFree (primary);
 			return FALSE;
-		}
-		xmlFree (primary);
 
-		/* Build the postal address */
-		postal_address = gdata_gd_postal_address_new ((gchar*) address, (gchar*) rel, (gchar*) label, primary_bool);
-		xmlFree (address);
-		xmlFree (rel);
-		xmlFree (label);
-
-		gdata_contacts_contact_add_postal_address (self, postal_address);
+		gdata_contacts_contact_add_postal_address (self, address);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "organization") == 0) {
 		/* gd:organization */
-		xmlChar *name = NULL, *title = NULL, *rel, *label, *primary;
-		gboolean primary_bool;
-		GDataGDOrganization *organization;
-		xmlNode *child_node;
-
-		for (child_node = node->children; child_node != NULL; child_node = child_node->next) {
-			if (xmlStrcmp (child_node->name, (xmlChar*) "orgName") == 0) {
-				/* gd:orgName */
-				if (name != NULL) {
-					xmlFree (name);
-					xmlFree (title);
-					return gdata_parser_error_duplicate_element (child_node, error);
-				}
-				name = xmlNodeListGetString (doc, child_node->children, TRUE);
-			} else if (xmlStrcmp (child_node->name, (xmlChar*) "orgTitle") == 0) {
-				/* gd:orgTitle */
-				if (title != NULL) {
-					xmlFree (name);
-					xmlFree (title);
-					return gdata_parser_error_duplicate_element (child_node, error);
-				}
-				title = xmlNodeListGetString (doc, child_node->children, TRUE);
-			} else {
-				/* Error */
-				gdata_parser_error_unhandled_element (child_node, error);
-				xmlFree (name);
-				xmlFree (title);
-				return FALSE;
-			}
-		}
-
-		rel = xmlGetProp (node, (xmlChar*) "rel");
-		label = xmlGetProp (node, (xmlChar*) "label");
-		if (rel != NULL && label != NULL) {
-			/* TODO: error (can't have both) */
-		}
-
-		/* Is it the primary organisation? */
-		primary = xmlGetProp (node, (xmlChar*) "primary");
-		if (primary == NULL || xmlStrcmp (primary, (xmlChar*) "false") == 0)
-			primary_bool = FALSE;
-		else if (xmlStrcmp (primary, (xmlChar*) "true") == 0)
-			primary_bool = TRUE;
-		else {
-			gdata_parser_error_unknown_property_value (node, "primary", (gchar*) primary, error);
-			xmlFree (primary);
+		GDataGDOrganization *organization = GDATA_GD_ORGANIZATION (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_ORGANIZATION,
+													      "organization", doc, node, NULL, error));
+		if (organization == NULL)
 			return FALSE;
-		}
-		xmlFree (primary);
-
-		/* Build the organisation */
-		organization = gdata_gd_organization_new ((gchar*) name, (gchar*) title, (gchar*) rel, (gchar*) label, primary_bool);
-		xmlFree (name);
-		xmlFree (title);
-		xmlFree (rel);
-		xmlFree (label);
 
 		gdata_contacts_contact_add_organization (self, organization);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "extendedProperty") == 0) {
@@ -551,115 +412,24 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->get_xml (parsable, xml_string);
 
 	/* E-mail addresses */
-	for (i = priv->email_addresses; i != NULL; i = i->next) {
-		GDataGDEmailAddress *email_address = (GDataGDEmailAddress*) i->data;
-
-		/* rel and label are mutually exclusive */
-		if (email_address->rel != NULL)
-			g_string_append_printf (xml_string, "<gd:email address='%s' rel='%s'", email_address->address, email_address->rel);
-		else if (email_address->label != NULL)
-			g_string_append_printf (xml_string, "<gd:email address='%s' label='%s'", email_address->address, email_address->label);
-
-		if (email_address->primary == TRUE)
-			g_string_append (xml_string, " primary='true'/>");
-		else
-			g_string_append (xml_string, " primary='false'/>");
-	}
+	for (i = priv->email_addresses; i != NULL; i = i->next)
+		g_string_append (xml_string, _gdata_parsable_get_xml (GDATA_PARSABLE (i->data), "gd:email", FALSE));
 
 	/* IM addresses */
-	for (i = priv->im_addresses; i != NULL; i = i->next) {
-		GDataGDIMAddress *im_address = (GDataGDIMAddress*) i->data;
-
-		if (im_address->protocol != NULL)
-			g_string_append_printf (xml_string, "<gd:im address='%s' protocol='%s'", im_address->address, im_address->protocol);
-		else
-			g_string_append_printf (xml_string, "<gd:im address='%s'", im_address->address);
-
-		/* rel and label are mutually exclusive */
-		if (im_address->rel != NULL)
-			g_string_append_printf (xml_string, " rel='%s'", im_address->rel);
-		else if (im_address->label != NULL)
-			g_string_append_printf (xml_string, " label='%s'", im_address->label);
-
-		if (im_address->primary == TRUE)
-			g_string_append (xml_string, " primary='true'/>");
-		else
-			g_string_append (xml_string, " primary='false'/>");
-	}
+	for (i = priv->im_addresses; i != NULL; i = i->next)
+		g_string_append (xml_string, _gdata_parsable_get_xml (GDATA_PARSABLE (i->data), "gd:im", FALSE));
 
 	/* Phone numbers */
-	for (i = priv->phone_numbers; i != NULL; i = i->next) {
-		GDataGDPhoneNumber *phone_number = (GDataGDPhoneNumber*) i->data;
-
-		if (phone_number->uri != NULL)
-			g_string_append_printf (xml_string, "<gd:phoneNumber uri='%s'", phone_number->uri);
-		else
-			g_string_append (xml_string, "<gd:phoneNumber");
-
-		/* rel and label are mutually exclusive */
-		if (phone_number->rel != NULL)
-			g_string_append_printf (xml_string, " rel='%s'", phone_number->rel);
-		else if (phone_number->label != NULL)
-			g_string_append_printf (xml_string, " label='%s'", phone_number->label);
-
-		if (phone_number->primary == TRUE)
-			g_string_append (xml_string, " primary='true'>");
-		else
-			g_string_append (xml_string, " primary='false'>");
-
-		/* Append the phone number itself */
-		g_string_append_printf (xml_string, "%s</gd:phoneNumber>", phone_number->number);
-	}
+	for (i = priv->phone_numbers; i != NULL; i = i->next)
+		g_string_append (xml_string, _gdata_parsable_get_xml (GDATA_PARSABLE (i->data), "gd:phoneNumber", FALSE));
 
 	/* Postal addresses */
-	for (i = priv->postal_addresses; i != NULL; i = i->next) {
-		GDataGDPostalAddress *postal_address = (GDataGDPostalAddress*) i->data;
-
-		g_string_append (xml_string, "<gd:postalAddress");
-
-		/* rel and label are mutually exclusive */
-		if (postal_address->rel != NULL)
-			g_string_append_printf (xml_string, " rel='%s'", postal_address->rel);
-		else if (postal_address->label != NULL)
-			g_string_append_printf (xml_string, " label='%s'", postal_address->label);
-
-		if (postal_address->primary == TRUE)
-			g_string_append (xml_string, " primary='true'>");
-		else
-			g_string_append (xml_string, " primary='false'>");
-
-		/* Append the address itself */
-		g_string_append_printf (xml_string, "%s</gd:postalAddress>", postal_address->address);
-	}
+	for (i = priv->postal_addresses; i != NULL; i = i->next)
+		g_string_append (xml_string, _gdata_parsable_get_xml (GDATA_PARSABLE (i->data), "gd:postalAddress", FALSE));
 
 	/* Organisations */
-	for (i = priv->organizations; i != NULL; i = i->next) {
-		GDataGDOrganization *organisation = (GDataGDOrganization*) i->data;
-
-		g_string_append (xml_string, "<gd:organization");
-
-		/* rel and label are mutually exclusive */
-		if (organisation->rel != NULL)
-			g_string_append_printf (xml_string, " rel='%s'", organisation->rel);
-		else if (organisation->label != NULL)
-			g_string_append_printf (xml_string, " label='%s'", organisation->label);
-
-		if (organisation->primary == TRUE)
-			g_string_append (xml_string, " primary='true'");
-		else
-			g_string_append (xml_string, " primary='false'");
-
-		/* Organisation details */
-		if (organisation->name == NULL && organisation->title == NULL) {
-			g_string_append (xml_string, "/>");
-		} else {
-			g_string_append_c (xml_string, '>');
-			if (organisation->name != NULL)
-				g_string_append_printf (xml_string, "<gd:orgName>%s</gd:orgName>", organisation->name);
-			if (organisation->title != NULL)
-				g_string_append_printf (xml_string, "<gd:orgTitle>%s</gd:orgTitle>", organisation->title);
-		}
-	}
+	for (i = priv->organizations; i != NULL; i = i->next)
+		g_string_append (xml_string, _gdata_parsable_get_xml (GDATA_PARSABLE (i->data), "gd:organization", FALSE));
 
 	/* Extended properties */
 	g_hash_table_foreach (priv->extended_properties, (GHFunc) get_extended_property_xml_cb, xml_string);
@@ -709,8 +479,7 @@ gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *edited)
  * @self: a #GDataContactsContact
  * @email_address: a #GDataGDEmailAddress to add
  *
- * Adds an e-mail address to the contact's list of e-mail addresses. The #GDataContactsContact takes
- * ownership of @email_address, so it must not be freed after being added.
+ * Adds an e-mail address to the contact's list of e-mail addresses and increments its reference count.
  *
  * Note that only one e-mail address per contact may be marked as "primary". Insertion and update operations
  * (with gdata_contacts_service_insert_contact()) will return an error if more than one e-mail address
@@ -724,12 +493,10 @@ void
 gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEmailAddress *email_address)
 {
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
-	g_return_if_fail (email_address != NULL);
+	g_return_if_fail (GDATA_IS_GD_EMAIL_ADDRESS (email_address));
 
 	if (g_list_find_custom (self->priv->email_addresses, email_address, (GCompareFunc) gdata_gd_email_address_compare) == NULL)
-		self->priv->email_addresses = g_list_append (self->priv->email_addresses, email_address);
-	else
-		gdata_gd_email_address_free (email_address);
+		self->priv->email_addresses = g_list_append (self->priv->email_addresses, g_object_ref (email_address));
 }
 
 /**
@@ -767,8 +534,8 @@ gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self)
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 
 	for (i = self->priv->email_addresses; i != NULL; i = i->next) {
-		if (((GDataGDEmailAddress*) i->data)->primary == TRUE)
-			return (GDataGDEmailAddress*) i->data;
+		if (gdata_gd_email_address_is_primary (GDATA_GD_EMAIL_ADDRESS (i->data)) == TRUE)
+			return GDATA_GD_EMAIL_ADDRESS (i->data);
 	}
 
 	return NULL;
@@ -779,8 +546,7 @@ gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self)
  * @self: a #GDataContactsContact
  * @im_address: a #GDataGDIMAddress to add
  *
- * Adds an IM (instant messaging) address to the contact's list of IM addresses. The #GDataContactsContact takes
- * ownership of @im_address, so it must not be freed after being added.
+ * Adds an IM (instant messaging) address to the contact's list of IM addresses and increments its reference count.
  *
  * Note that only one IM address per contact may be marked as "primary". Insertion and update operations
  * (with gdata_contacts_service_insert_contact()) will return an error if more than one IM address
@@ -794,12 +560,10 @@ void
 gdata_contacts_contact_add_im_address (GDataContactsContact *self, GDataGDIMAddress *im_address)
 {
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
-	g_return_if_fail (im_address != NULL);
+	g_return_if_fail (GDATA_IS_GD_IM_ADDRESS (im_address));
 
 	if (g_list_find_custom (self->priv->im_addresses, im_address, (GCompareFunc) gdata_gd_im_address_compare) == NULL)
-		self->priv->im_addresses = g_list_append (self->priv->im_addresses, im_address);
-	else
-		gdata_gd_im_address_free (im_address);
+		self->priv->im_addresses = g_list_append (self->priv->im_addresses, g_object_ref (im_address));
 }
 
 /**
@@ -837,8 +601,8 @@ gdata_contacts_contact_get_primary_im_address (GDataContactsContact *self)
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 
 	for (i = self->priv->im_addresses; i != NULL; i = i->next) {
-		if (((GDataGDIMAddress*) i->data)->primary == TRUE)
-			return (GDataGDIMAddress*) i->data;
+		if (gdata_gd_im_address_is_primary (GDATA_GD_IM_ADDRESS (i->data)) == TRUE)
+			return GDATA_GD_IM_ADDRESS (i->data);
 	}
 
 	return NULL;
@@ -849,8 +613,7 @@ gdata_contacts_contact_get_primary_im_address (GDataContactsContact *self)
  * @self: a #GDataContactsContact
  * @phone_number: a #GDataGDPhoneNumber to add
  *
- * Adds a phone number to the contact's list of phone numbers. The #GDataContactsContact takes
- * ownership of @phone_number, so it must not be freed after being added.
+ * Adds a phone number to the contact's list of phone numbers and increments its reference count
  *
  * Note that only one phone number per contact may be marked as "primary". Insertion and update operations
  * (with gdata_contacts_service_insert_contact()) will return an error if more than one phone number
@@ -864,12 +627,10 @@ void
 gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhoneNumber *phone_number)
 {
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
-	g_return_if_fail (phone_number != NULL);
+	g_return_if_fail (GDATA_IS_GD_PHONE_NUMBER (phone_number));
 
 	if (g_list_find_custom (self->priv->phone_numbers, phone_number, (GCompareFunc) gdata_gd_phone_number_compare) == NULL)
-		self->priv->phone_numbers = g_list_append (self->priv->phone_numbers, phone_number);
-	else
-		gdata_gd_phone_number_free (phone_number);
+		self->priv->phone_numbers = g_list_append (self->priv->phone_numbers, g_object_ref (phone_number));
 }
 
 /**
@@ -907,8 +668,8 @@ gdata_contacts_contact_get_primary_phone_number (GDataContactsContact *self)
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 
 	for (i = self->priv->phone_numbers; i != NULL; i = i->next) {
-		if (((GDataGDPhoneNumber*) i->data)->primary == TRUE)
-			return (GDataGDPhoneNumber*) i->data;
+		if (gdata_gd_phone_number_is_primary (GDATA_GD_PHONE_NUMBER (i->data)) == TRUE)
+			return GDATA_GD_PHONE_NUMBER (i->data);
 	}
 
 	return NULL;
@@ -919,8 +680,7 @@ gdata_contacts_contact_get_primary_phone_number (GDataContactsContact *self)
  * @self: a #GDataContactsContact
  * @postal_address: a #GDataGDPostalAddress to add
  *
- * Adds a postal address to the contact's list of postal addresses. The #GDataContactsContact takes
- * ownership of @postal_address, so it must not be freed after being added.
+ * Adds a postal address to the contact's list of postal addresses and increments its reference count.
  *
  * Note that only one postal address per contact may be marked as "primary". Insertion and update operations
  * (with gdata_contacts_service_insert_contact()) will return an error if more than one postal address
@@ -934,12 +694,10 @@ void
 gdata_contacts_contact_add_postal_address (GDataContactsContact *self, GDataGDPostalAddress *postal_address)
 {
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
-	g_return_if_fail (postal_address != NULL);
+	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (postal_address));
 
 	if (g_list_find_custom (self->priv->postal_addresses, postal_address, (GCompareFunc) gdata_gd_postal_address_compare) == NULL)
-		self->priv->postal_addresses = g_list_append (self->priv->postal_addresses, postal_address);
-	else
-		gdata_gd_postal_address_free (postal_address);
+		self->priv->postal_addresses = g_list_append (self->priv->postal_addresses, g_object_ref (postal_address));
 }
 
 /**
@@ -977,8 +735,8 @@ gdata_contacts_contact_get_primary_postal_address (GDataContactsContact *self)
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 
 	for (i = self->priv->postal_addresses; i != NULL; i = i->next) {
-		if (((GDataGDPostalAddress*) i->data)->primary == TRUE)
-			return (GDataGDPostalAddress*) i->data;
+		if (gdata_gd_postal_address_is_primary (GDATA_GD_POSTAL_ADDRESS (i->data)) == TRUE)
+			return GDATA_GD_POSTAL_ADDRESS (i->data);
 	}
 
 	return NULL;
@@ -989,8 +747,7 @@ gdata_contacts_contact_get_primary_postal_address (GDataContactsContact *self)
  * @self: a #GDataContactsContact
  * @organization: a #GDataGDOrganization to add
  *
- * Adds an organization to the contact's list of organizations (e.g. employers).
- * The #GDataContactsContact takes ownership of @organization, so it must not be freed after being added.
+ * Adds an organization to the contact's list of organizations (e.g. employers) and increments its reference count.
  *
  * Note that only one organization per contact may be marked as "primary". Insertion and update operations
  * (with gdata_contacts_service_insert_contact()) will return an error if more than one organization
@@ -1007,9 +764,7 @@ gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrga
 	g_return_if_fail (organization != NULL);
 
 	if (g_list_find_custom (self->priv->organizations, organization, (GCompareFunc) gdata_gd_organization_compare) == NULL)
-		self->priv->organizations = g_list_append (self->priv->organizations, organization);
-	else
-		gdata_gd_organization_free (organization);
+		self->priv->organizations = g_list_append (self->priv->organizations, g_object_ref (organization));
 }
 
 /**
@@ -1047,8 +802,8 @@ gdata_contacts_contact_get_primary_organization (GDataContactsContact *self)
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 
 	for (i = self->priv->organizations; i != NULL; i = i->next) {
-		if (((GDataGDOrganization*) i->data)->primary == TRUE)
-			return (GDataGDOrganization*) i->data;
+		if (gdata_gd_organization_is_primary (GDATA_GD_ORGANIZATION (i->data)) == TRUE)
+			return GDATA_GD_ORGANIZATION (i->data);
 	}
 
 	return NULL;

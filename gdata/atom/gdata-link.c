@@ -21,7 +21,7 @@
  * SECTION:gdata-link
  * @short_description: Atom link element
  * @stability: Unstable
- * @include: gdata/gdata-link.h
+ * @include: gdata/atom/gdata-link.h
  *
  * #GDataLink represents a "link" element from the
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.

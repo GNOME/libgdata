@@ -38,7 +38,6 @@
 #include "gdata-calendar-calendar.h"
 #include "gdata-private.h"
 #include "gdata-service.h"
-#include "gdata-gdata.h"
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "gdata-access-handler.h"
@@ -396,9 +395,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* Add all the Calendar-specific XML */
 	if (priv->timezone != NULL) {
-		gchar *timezone = g_markup_escape_text (priv->timezone, -1);
-		g_string_append_printf (xml_string, "<gCal:timezone value='%s'/>", timezone);
-		g_free (timezone);
+		gchar *_timezone = g_markup_escape_text (priv->timezone, -1);
+		g_string_append_printf (xml_string, "<gCal:timezone value='%s'/>", _timezone);
+		g_free (_timezone);
 	}
 
 	if (priv->is_hidden == TRUE)

@@ -24,7 +24,6 @@
 #include <glib-object.h>
 
 #include <gdata/gdata-entry.h>
-#include <gdata/gdata-gdata.h>
 #include <gdata/gdata-media-rss.h>
 #include <gdata/services/youtube/gdata-youtube.h>
 
@@ -70,7 +69,7 @@ const gchar *gdata_youtube_video_get_location (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_location (GDataYouTubeVideo *self, const gchar *location);
 gboolean gdata_youtube_video_get_no_embed (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_no_embed (GDataYouTubeVideo *self, gboolean no_embed);
-GDataGDRating *gdata_youtube_video_get_rating (GDataYouTubeVideo *self);
+void gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max, guint *count, gdouble *average);
 const gchar *gdata_youtube_video_get_keywords (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar *keywords);
 const gchar *gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self);
@@ -93,7 +92,6 @@ const gchar *gdata_youtube_video_get_video_id (GDataYouTubeVideo *self);
 gboolean gdata_youtube_video_is_draft (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft);
 GDataYouTubeState *gdata_youtube_video_get_state (GDataYouTubeVideo *self);
-GDataGDFeedLink *gdata_youtube_video_get_comments_feed_link (GDataYouTubeVideo *self);
 void gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
 void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
 

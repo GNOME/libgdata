@@ -25,7 +25,6 @@
 #include <gdata/gdata-feed.h>
 #include <gdata/gdata-service.h>
 #include <gdata/gdata-types.h>
-#include <gdata/gdata-parser.h>
 #include <gdata/gdata-query.h>
 #include <gdata/gdata-enums.h>
 #include <gdata/gdata-access-handler.h>
@@ -40,8 +39,18 @@
 #include <gdata/atom/gdata-generator.h>
 #include <gdata/atom/gdata-link.h>
 
+/* GData */
+#include <gdata/gd/gdata-gd-email-address.h>
+#include <gdata/gd/gdata-gd-im-address.h>
+#include <gdata/gd/gdata-gd-organization.h>
+#include <gdata/gd/gdata-gd-phone-number.h>
+#include <gdata/gd/gdata-gd-postal-address.h>
+#include <gdata/gd/gdata-gd-reminder.h>
+#include <gdata/gd/gdata-gd-when.h>
+#include <gdata/gd/gdata-gd-where.h>
+#include <gdata/gd/gdata-gd-who.h>
+
 /* Others */
-#include <gdata/gdata-gdata.h>
 #include <gdata/gdata-media-rss.h>
 
 /* Services */

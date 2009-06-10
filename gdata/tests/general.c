@@ -46,31 +46,40 @@ test_entry_get_xml (void)
 	/* Categories */
 	category = gdata_category_new ("test", NULL, NULL);
 	gdata_entry_add_category (entry, category);
+	g_object_unref (category);
 	category = gdata_category_new ("example", NULL, "Example stuff");
 	gdata_entry_add_category (entry, category);
+	g_object_unref (category);
 	category = gdata_category_new ("Film", "http://gdata.youtube.com/schemas/2007/categories.cat", "Film & Animation");
 	gdata_entry_add_category (entry, category);
+	g_object_unref (category);
 
 	/* Links */
 	link = gdata_link_new ("http://test.com/", "self");
 	gdata_link_set_content_type (link, "application/atom+xml");
 	gdata_entry_add_link (entry, link);
+	g_object_unref (link);
 	link = gdata_link_new ("http://example.com/", NULL);
 	gdata_entry_add_link (entry, link);
+	g_object_unref (link);
 	link = gdata_link_new ("http://test.mn/", "related");
 	gdata_link_set_content_type (link, "text/html");
 	gdata_link_set_language (link, "mn");
 	gdata_link_set_title (link, "A treatise on Mongolian test websites & other stuff.");
 	gdata_link_set_length (link, 5010);
 	gdata_entry_add_link (entry, link);
+	g_object_unref (link);
 
 	/* Authors */
 	author = gdata_author_new ("Joe Bloggs", "http://example.com/", "joe@example.com");
 	gdata_entry_add_author (entry, author);
+	g_object_unref (author);
 	author = gdata_author_new ("John Smith", NULL, "smith.john@example.com");
 	gdata_entry_add_author (entry, author);
+	g_object_unref (author);
 	author = gdata_author_new ("F. Barr؟", NULL, NULL);
 	gdata_entry_add_author (entry, author);
+	g_object_unref (author);
 
 	/* Check the generated XML's OK */
 	xml = gdata_entry_get_xml (entry);
