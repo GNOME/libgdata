@@ -75,11 +75,7 @@
 			<title>YouTube API</title>
 			<xi:include href="xml/gdata-youtube-content.xml"/>
 			<xi:include href="xml/gdata-youtube-credit.xml"/>
-		</chapter>
-
-		<chapter>
-			<title>Other API</title>
-			<xi:include href="xml/gdata-youtube.xml"/>
+			<xi:include href="xml/gdata-youtube-state.xml"/>
 		</chapter>
 	</part>
 

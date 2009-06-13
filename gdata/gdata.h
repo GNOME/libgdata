@@ -63,9 +63,9 @@
 #include <gdata/services/youtube/gdata-youtube-service.h>
 #include <gdata/services/youtube/gdata-youtube-query.h>
 #include <gdata/services/youtube/gdata-youtube-video.h>
-#include <gdata/services/youtube/gdata-youtube.h>
 #include <gdata/services/youtube/gdata-youtube-content.h>
 #include <gdata/services/youtube/gdata-youtube-credit.h>
+#include <gdata/services/youtube/gdata-youtube-state.h>
 #include <gdata/services/youtube/gdata-youtube-enums.h>
 
 /* Google Calendar */

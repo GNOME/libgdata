@@ -27,7 +27,7 @@
 #include <gdata/media/gdata-media-category.h>
 #include <gdata/services/youtube/gdata-youtube-content.h>
 #include <gdata/services/youtube/gdata-youtube-credit.h>
-#include <gdata/services/youtube/gdata-youtube.h>
+#include <gdata/services/youtube/gdata-youtube-state.h>
 
 G_BEGIN_DECLS
 

@@ -245,14 +245,6 @@ GDataYouTubeVideoPrivate
 </SECTION>
 
 <SECTION>
-<FILE>gdata-youtube</FILE>
-<TITLE>YouTube API</TITLE>
-GDataYouTubeState
-gdata_youtube_state_new
-gdata_youtube_state_free
-</SECTION>
-
-<SECTION>
 <FILE>gdata-contacts-service</FILE>
 <TITLE>GDataContactsService</TITLE>
 GDataContactsService
@@ -1101,4 +1093,25 @@ GDATA_IS_MEDIA_THUMBNAIL_CLASS
 GDATA_TYPE_MEDIA_THUMBNAIL
 <SUBSECTION Private>
 GDataMediaThumbnailPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-youtube-state</FILE>
+<TITLE>GDataYouTubeState</TITLE>
+GDataYouTubeState
+GDataYouTubeStateClass
+gdata_youtube_state_get_name
+gdata_youtube_state_get_reason_code
+gdata_youtube_state_get_help_uri
+gdata_youtube_state_get_message
+<SUBSECTION Standard>
+gdata_youtube_state_get_type
+GDATA_YOUTUBE_STATE
+GDATA_YOUTUBE_STATE_CLASS
+GDATA_YOUTUBE_STATE_GET_CLASS
+GDATA_IS_YOUTUBE_STATE
+GDATA_IS_YOUTUBE_STATE_CLASS
+GDATA_TYPE_YOUTUBE_STATE
+<SUBSECTION Private>
+GDataYouTubeStatePrivate
 </SECTION>

@@ -85,21 +85,6 @@ gdata_parser_error_not_iso8601_format (xmlNode *element, const gchar *actual_val
 }
 
 gboolean
-gdata_parser_error_unhandled_element (xmlNode *element, GError **error)
-{
-	gchar *element_string = print_element (element);
-
-	/* Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
-	 *
-	 * For example:
-	 *  Unhandled <entry/yt:aspectRatio> element. */
-	g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_UNHANDLED_XML_ELEMENT, _("Unhandled %s element."), element_string);
-	g_free (element_string);
-
-	return FALSE;
-}
-
-gboolean
 gdata_parser_error_unknown_property_value (xmlNode *element, const gchar *property_name, const gchar *actual_value, GError **error)
 {
 	gchar *property_string, *element_string;

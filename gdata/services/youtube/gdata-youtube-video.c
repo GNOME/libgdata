@@ -43,13 +43,15 @@
 #include "media/gdata-media-thumbnail.h"
 #include "gdata-youtube-group.h"
 #include "gdata-types.h"
+#include "gdata-youtube-control.h"
 
 static void gdata_youtube_video_dispose (GObject *object);
 static void gdata_youtube_video_finalize (GObject *object);
 static void gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_youtube_video_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static void get_xml (GDataParsable *parsable, GString *xml_string);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
+static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataYouTubeVideoPrivate {
@@ -70,8 +72,7 @@ struct _GDataYouTubeVideoPrivate {
 	GDataMediaGroup *media_group; /* is actually a GDataYouTubeGroup */
 
 	/* Other properties */
-	gboolean is_draft;
-	GDataYouTubeState *state;
+	GDataYouTubeControl *youtube_control;
 	GTimeVal recorded;
 };
 
@@ -116,6 +117,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	gobject_class->finalize = gdata_youtube_video_finalize;
 
 	parsable_class->parse_xml = parse_xml;
+	parsable_class->post_parse_xml = post_parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
 
@@ -396,8 +398,9 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_STATE,
-				g_param_spec_pointer ("state",
+				g_param_spec_object ("state",
 					"State", "Information describing the state of the video.",
+					GDATA_TYPE_YOUTUBE_STATE,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -432,6 +435,10 @@ gdata_youtube_video_dispose (GObject *object)
 		g_object_unref (priv->media_group);
 	priv->media_group = NULL;
 
+	if (priv->youtube_control != NULL)
+		g_object_unref (priv->youtube_control);
+	priv->youtube_control = NULL;
+
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_video_parent_class)->dispose (object);
 }
@@ -442,7 +449,6 @@ gdata_youtube_video_finalize (GObject *object)
 	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (object)->priv;
 
 	g_free (priv->location);
-	gdata_youtube_state_free (priv->state);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_video_parent_class)->finalize (object);
@@ -511,10 +517,10 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 			g_value_set_string (value, gdata_youtube_group_get_video_id (GDATA_YOUTUBE_GROUP (priv->media_group)));
 			break;
 		case PROP_IS_DRAFT:
-			g_value_set_boolean (value, priv->is_draft);
+			g_value_set_boolean (value, gdata_youtube_control_is_draft (priv->youtube_control));
 			break;
 		case PROP_STATE:
-			g_value_set_pointer (value, priv->state);
+			g_value_set_object (value, gdata_youtube_control_get_state (priv->youtube_control));
 			break;
 		case PROP_RECORDED:
 			g_value_set_boxed (value, &(priv->recorded));
@@ -578,8 +584,9 @@ GDataYouTubeVideo *
 gdata_youtube_video_new (const gchar *id)
 {
 	GDataYouTubeVideo *video = g_object_new (GDATA_TYPE_YOUTUBE_VIDEO, "id", id, NULL);
-	/* We can't create this in init, or it would collide with the group created when parsing the XML */
+	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
 	video->priv->media_group = g_object_new (GDATA_TYPE_YOUTUBE_GROUP, NULL);
+	video->priv->youtube_control = g_object_new (GDATA_TYPE_YOUTUBE_CONTROL, NULL);
 	return video;
 }
 
@@ -735,44 +742,36 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		gdata_youtube_video_set_recorded (self, &recorded_timeval);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "control") == 0) {
 		/* app:control */
-		xmlNode *child_node;
+		GDataYouTubeControl *control = GDATA_YOUTUBE_CONTROL (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CONTROL, "control", doc,
+													 node, NULL, error));
+		if (control == NULL)
+			return FALSE;
 
-		child_node = node->children;
-		while (child_node != NULL) {
-			if (xmlStrcmp (child_node->name, (xmlChar*) "draft") == 0) {
-				/* app:draft */
-				gdata_youtube_video_set_is_draft (self, TRUE);
-			} else if (xmlStrcmp (child_node->name, (xmlChar*) "state") == 0) {
-				/* yt:state */
-				xmlChar *name, *message, *reason_code, *help_uri;
-
-				name = xmlGetProp (child_node, (xmlChar*) "name");
-				if (name == NULL)
-					return gdata_parser_error_required_property_missing (child_node, "name", error);
-
-				message = xmlNodeListGetString (doc, child_node->children, TRUE);
-				reason_code = xmlGetProp (child_node, (xmlChar*) "reasonCode");
-				help_uri = xmlGetProp (child_node, (xmlChar*) "helpUrl");
-
-				gdata_youtube_state_free (self->priv->state);
-				self->priv->state = gdata_youtube_state_new ((gchar*) name, (gchar*) message, (gchar*) reason_code, (gchar*) help_uri);
-				g_object_notify (G_OBJECT (self), "state");
-
-				xmlFree (name);
-				xmlFree (message);
-				xmlFree (reason_code);
-				xmlFree (help_uri);
-			} else {
-				/* Unhandled element */
-				return gdata_parser_error_unhandled_element (child_node, error);
-			}
-
-			child_node = child_node->next;
+		if (self->priv->youtube_control != NULL) {
+			g_object_unref (control);
+			return gdata_parser_error_duplicate_element (node, error);
 		}
+
+		self->priv->youtube_control = control;
 	} else if (GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
 	}
+
+	return TRUE;
+}
+
+static gboolean
+post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (parsable)->priv;
+
+	/* Chain up to the parent class */
+	GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->post_parse_xml (parsable, user_data, error);
+
+	/* This must always exist, so is_draft can be set on it */
+	if (priv->youtube_control == NULL)
+		priv->youtube_control = g_object_new (GDATA_TYPE_YOUTUBE_CONTROL, NULL);
 
 	return TRUE;
 }
@@ -803,6 +802,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->no_embed == TRUE)
 		g_string_append (xml_string, "<yt:noembed/>");
 
+	/* app:control */
+	g_string_append (xml_string, _gdata_parsable_get_xml (GDATA_PARSABLE (priv->youtube_control), "app:control", FALSE));
+
 	/* TODO:
 	 * - georss:where
 	 * - Check things are escaped (or not) as appropriate
@@ -819,8 +821,9 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 	g_hash_table_insert (namespaces, (gchar*) "yt", (gchar*) "http://gdata.youtube.com/schemas/2007");
 
-	/* Add the media:group namespaces */
+	/* Add the media:group and app:control namespaces */
 	GDATA_PARSABLE_GET_CLASS (priv->media_group)->get_namespaces (GDATA_PARSABLE (priv->media_group), namespaces);
+	GDATA_PARSABLE_GET_CLASS (priv->youtube_control)->get_namespaces (GDATA_PARSABLE (priv->youtube_control), namespaces);
 }
 
 /**
@@ -1247,7 +1250,7 @@ gboolean
 gdata_youtube_video_is_draft (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
-	return self->priv->is_draft;
+	return gdata_youtube_control_is_draft (self->priv->youtube_control);
 }
 
 /**
@@ -1261,7 +1264,7 @@ void
 gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	self->priv->is_draft = is_draft;
+	gdata_youtube_control_set_is_draft (self->priv->youtube_control, is_draft);
 	g_object_notify (G_OBJECT (self), "is-draft");
 }
 
@@ -1280,7 +1283,7 @@ GDataYouTubeState *
 gdata_youtube_video_get_state (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return self->priv->state;
+	return gdata_youtube_control_get_state (self->priv->youtube_control);
 }
 
 /**

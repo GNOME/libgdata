@@ -60,7 +60,9 @@ IGNORE_HFILES = \
 	gdata-media-group.c	\
 	gdata-media-group.h	\
 	gdata-youtube-group.c	\
-	gdata-youtube-group.h
+	gdata-youtube-group.h	\
+	gdata-youtube-control.c	\
+	gdata-youtube-control.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png

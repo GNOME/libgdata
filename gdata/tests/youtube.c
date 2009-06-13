@@ -362,10 +362,10 @@ test_parsing_app_control (void)
 	g_assert (gdata_youtube_video_is_draft (video) == TRUE);
 
 	state = gdata_youtube_video_get_state (video);
-	g_assert_cmpstr (state->name, ==, "blacklisted");
-	g_assert_cmpstr (state->message, ==, "This video is not available in your country");
-	g_assert (state->reason_code == NULL);
-	g_assert (state->help_uri == NULL);
+	g_assert_cmpstr (gdata_youtube_state_get_name (state), ==, "blacklisted");
+	g_assert_cmpstr (gdata_youtube_state_get_message (state), ==, "This video is not available in your country");
+	g_assert (gdata_youtube_state_get_reason_code (state) == NULL);
+	g_assert (gdata_youtube_state_get_help_uri (state) == NULL);
 
 	/* TODO: more tests on entry properties */
 
@@ -424,6 +424,7 @@ test_parsing_yt_recorded (void)
 				"xmlns:media='http://video.search.yahoo.com/mrss' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
 				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+				"xmlns:app='http://www.w3.org/2007/app' "
 				"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
 				"<title type='text'>Judas Priest - Painkiller</title>"
 				"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
@@ -441,6 +442,9 @@ test_parsing_yt_recorded (void)
 					"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
 				"</media:group>"
 				"<yt:recorded>2005-10-02</yt:recorded>"
+				"<app:control>"
+					"<app:draft>no</app:draft>"
+				"</app:control>"
 			 "</entry>");
 	g_free (xml);
 
