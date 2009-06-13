@@ -161,32 +161,6 @@ GDataEntryPrivate
 </SECTION>
 
 <SECTION>
-<FILE>gdata-media</FILE>
-<TITLE>Media RSS API</TITLE>
-GDataMediaCategory
-gdata_media_category_new
-gdata_media_category_free
-GDataMediaExpression
-GDataMediaContent
-gdata_media_content_new
-gdata_media_content_free
-GDataMediaCredit
-gdata_media_credit_new
-gdata_media_credit_free
-GDataMediaRating
-gdata_media_rating_new
-gdata_media_rating_free
-GDataMediaRestriction
-gdata_media_restriction_new
-gdata_media_restriction_free
-GDataMediaThumbnail
-gdata_media_thumbnail_new
-gdata_media_thumbnail_free
-gdata_media_thumbnail_parse_time
-gdata_media_thumbnail_build_time
-</SECTION>
-
-<SECTION>
 <FILE>gdata-youtube-service</FILE>
 <TITLE>GDataYouTubeService</TITLE>
 GDataYouTubeService
@@ -242,7 +216,7 @@ gdata_youtube_video_get_location
 gdata_youtube_video_set_location
 gdata_youtube_video_get_view_count
 gdata_youtube_video_get_favorite_count
-gdata_youtube_video_get_media_rating
+gdata_youtube_video_is_restricted_in_country
 gdata_youtube_video_get_no_embed
 gdata_youtube_video_set_no_embed
 gdata_youtube_video_get_player_uri
@@ -252,7 +226,6 @@ gdata_youtube_video_is_draft
 gdata_youtube_video_set_is_draft
 gdata_youtube_video_get_state
 gdata_youtube_video_get_rating
-gdata_youtube_video_get_restriction
 gdata_youtube_video_get_title
 gdata_youtube_video_set_title
 gdata_youtube_video_get_uploaded
@@ -999,4 +972,133 @@ GDATA_IS_GD_REMINDER_CLASS
 GDATA_TYPE_GD_REMINDER
 <SUBSECTION Private>
 GDataGDReminderPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-media-category</FILE>
+<TITLE>GDataMediaCategory</TITLE>
+GDataMediaCategory
+GDataMediaCategoryClass
+gdata_media_category_new
+gdata_media_category_get_category
+gdata_media_category_set_category
+gdata_media_category_get_scheme
+gdata_media_category_set_scheme
+gdata_media_category_get_label
+gdata_media_category_set_label
+<SUBSECTION Standard>
+gdata_media_category_get_type
+GDATA_MEDIA_CATEGORY
+GDATA_MEDIA_CATEGORY_CLASS
+GDATA_MEDIA_CATEGORY_GET_CLASS
+GDATA_IS_MEDIA_CATEGORY
+GDATA_IS_MEDIA_CATEGORY_CLASS
+GDATA_TYPE_MEDIA_CATEGORY
+<SUBSECTION Private>
+GDataMediaCategoryPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-media-credit</FILE>
+<TITLE>GDataMediaCredit</TITLE>
+GDataMediaCredit
+GDataMediaCreditClass
+gdata_media_credit_get_credit
+gdata_media_credit_get_scheme
+gdata_media_credit_get_role
+<SUBSECTION Standard>
+gdata_media_credit_get_type
+GDATA_MEDIA_CREDIT
+GDATA_MEDIA_CREDIT_CLASS
+GDATA_MEDIA_CREDIT_GET_CLASS
+GDATA_IS_MEDIA_CREDIT
+GDATA_IS_MEDIA_CREDIT_CLASS
+GDATA_TYPE_MEDIA_CREDIT
+<SUBSECTION Private>
+GDataMediaCreditPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-youtube-credit</FILE>
+<TITLE>GDataYouTubeCredit</TITLE>
+GDataYouTubeCredit
+GDataYouTubeCreditClass
+gdata_youtube_credit_get_entity_type
+<SUBSECTION Standard>
+gdata_youtube_credit_get_type
+GDATA_YOUTUBE_CREDIT
+GDATA_YOUTUBE_CREDIT_CLASS
+GDATA_YOUTUBE_CREDIT_GET_CLASS
+GDATA_IS_YOUTUBE_CREDIT
+GDATA_IS_YOUTUBE_CREDIT_CLASS
+GDATA_TYPE_YOUTUBE_CREDIT
+<SUBSECTION Private>
+GDataYouTubeCreditPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-media-content</FILE>
+<TITLE>GDataMediaContent</TITLE>
+GDataMediaContent
+GDataMediaContentClass
+GDataMediaMedium
+GDataMediaExpression
+gdata_media_content_get_uri
+gdata_media_content_get_filesize
+gdata_media_content_get_content_type
+gdata_media_content_get_medium
+gdata_media_content_is_default
+gdata_media_content_get_expression
+gdata_media_content_get_duration
+gdata_media_content_get_height
+gdata_media_content_get_width
+<SUBSECTION Standard>
+gdata_media_content_get_type
+GDATA_MEDIA_CONTENT
+GDATA_MEDIA_CONTENT_CLASS
+GDATA_MEDIA_CONTENT_GET_CLASS
+GDATA_IS_MEDIA_CONTENT
+GDATA_IS_MEDIA_CONTENT_CLASS
+GDATA_TYPE_MEDIA_CONTENT
+<SUBSECTION Private>
+GDataMediaContentPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-youtube-content</FILE>
+<TITLE>GDataYouTubeContent</TITLE>
+GDataYouTubeContent
+GDataYouTubeContentClass
+gdata_youtube_content_get_format
+<SUBSECTION Standard>
+gdata_youtube_content_get_type
+GDATA_YOUTUBE_CONTENT
+GDATA_YOUTUBE_CONTENT_CLASS
+GDATA_YOUTUBE_CONTENT_GET_CLASS
+GDATA_IS_YOUTUBE_CONTENT
+GDATA_IS_YOUTUBE_CONTENT_CLASS
+GDATA_TYPE_YOUTUBE_CONTENT
+<SUBSECTION Private>
+GDataYouTubeContentPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-media-thumbnail</FILE>
+<TITLE>GDataMediaThumbnail</TITLE>
+GDataMediaThumbnail
+GDataMediaThumbnailClass
+gdata_media_thumbnail_get_uri
+gdata_media_thumbnail_get_height
+gdata_media_thumbnail_get_width
+gdata_media_thumbnail_get_time
+<SUBSECTION Standard>
+gdata_media_thumbnail_get_type
+GDATA_MEDIA_THUMBNAIL
+GDATA_MEDIA_THUMBNAIL_CLASS
+GDATA_MEDIA_THUMBNAIL_GET_CLASS
+GDATA_IS_MEDIA_THUMBNAIL
+GDATA_IS_MEDIA_THUMBNAIL_CLASS
+GDATA_TYPE_MEDIA_THUMBNAIL
+<SUBSECTION Private>
+GDataMediaThumbnailPrivate
 </SECTION>

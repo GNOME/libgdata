@@ -1,5 +1,5 @@
-SUBDIRS = atom gd services . tests
-DIST_SUBDIRS = atom gd services tests
+SUBDIRS = atom gd media services . tests
+DIST_SUBDIRS = atom gd media services tests
 
 # Marshalling
 GDATA_MARSHAL_FILES = \
@@ -47,7 +47,6 @@ gdata_headers = \
 	gdata-feed.h		\
 	gdata-service.h		\
 	gdata-query.h		\
-	gdata-media-rss.h	\
 	gdata-access-handler.h	\
 	gdata-access-rule.h	\
 	gdata-parsable.h
@@ -66,7 +65,6 @@ libgdata_la_SOURCES = \
 	gdata-service.c		\
 	gdata-types.c		\
 	gdata-query.c		\
-	gdata-media-rss.c	\
 	gdata-parser.c		\
 	gdata-access-handler.c	\
 	gdata-access-rule.c	\
@@ -92,6 +90,7 @@ libgdata_la_LIBADD = \
 	$(GNOME_LIBS)				\
 	atom/libgdataatom.la			\
 	gd/libgdatagd.la			\
+	media/libgdatamedia.la			\
 	services/youtube/libgdatayoutube.la	\
 	services/calendar/libgdatacalendar.la	\
 	services/contacts/libgdatacontacts.la

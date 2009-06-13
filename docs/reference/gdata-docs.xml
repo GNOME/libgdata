@@ -64,8 +64,21 @@
 		</chapter>
 
 		<chapter>
+			<title>Media RSS API</title>
+			<xi:include href="xml/gdata-media-category.xml"/>
+			<xi:include href="xml/gdata-media-content.xml"/>
+			<xi:include href="xml/gdata-media-credit.xml"/>
+			<xi:include href="xml/gdata-media-thumbnail.xml"/>
+		</chapter>
+
+		<chapter>
+			<title>YouTube API</title>
+			<xi:include href="xml/gdata-youtube-content.xml"/>
+			<xi:include href="xml/gdata-youtube-credit.xml"/>
+		</chapter>
+
+		<chapter>
 			<title>Other API</title>
-			<xi:include href="xml/gdata-media.xml"/>
 			<xi:include href="xml/gdata-youtube.xml"/>
 		</chapter>
 	</part>

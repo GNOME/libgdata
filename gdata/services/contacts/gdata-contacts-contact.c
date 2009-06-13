@@ -1126,7 +1126,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  * Since: 0.4.0
  **/
 gboolean
-gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, gchar *data, gsize length,
+gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const gchar *data, gsize length,
 				  GCancellable *cancellable, GError **error)
 {
 	GDataServiceClass *klass;

@@ -382,7 +382,7 @@ test_parsing_yt_recorded (void)
 
 	video = gdata_youtube_video_new_from_xml (
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
-			"xmlns:media='http://search.yahoo.com/mrss/' "
+			"xmlns:media='http://video.search.yahoo.com/mrss' "
 			"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
 			"xmlns:gd='http://schemas.google.com/g/2005' "
 			"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
@@ -421,7 +421,7 @@ test_parsing_yt_recorded (void)
 	xml = gdata_entry_get_xml (GDATA_ENTRY (video));
 	g_assert_cmpstr (xml, ==,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:media='http://search.yahoo.com/mrss/' "
+				"xmlns:media='http://video.search.yahoo.com/mrss' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
 				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
 				"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
@@ -437,7 +437,7 @@ test_parsing_yt_recorded (void)
 					"<uri>http://gdata.youtube.com/feeds/api/users/eluves</uri>"
 				"</author>"
 				"<media:group>"
-					"<media:category label='Music' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Music</media:category>"
+					"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
 					"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
 				"</media:group>"
 				"<yt:recorded>2005-10-02</yt:recorded>"

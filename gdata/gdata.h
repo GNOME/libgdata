@@ -50,8 +50,12 @@
 #include <gdata/gd/gdata-gd-where.h>
 #include <gdata/gd/gdata-gd-who.h>
 
-/* Others */
-#include <gdata/gdata-media-rss.h>
+/* Media RSS */
+#include <gdata/media/gdata-media-category.h>
+#include <gdata/media/gdata-media-content.h>
+#include <gdata/media/gdata-media-credit.h>
+#include <gdata/media/gdata-media-enums.h>
+#include <gdata/media/gdata-media-thumbnail.h>
 
 /* Services */
 
@@ -60,6 +64,8 @@
 #include <gdata/services/youtube/gdata-youtube-query.h>
 #include <gdata/services/youtube/gdata-youtube-video.h>
 #include <gdata/services/youtube/gdata-youtube.h>
+#include <gdata/services/youtube/gdata-youtube-content.h>
+#include <gdata/services/youtube/gdata-youtube-credit.h>
 #include <gdata/services/youtube/gdata-youtube-enums.h>
 
 /* Google Calendar */

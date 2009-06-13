@@ -24,7 +24,9 @@
 #include <glib-object.h>
 
 #include <gdata/gdata-entry.h>
-#include <gdata/gdata-media-rss.h>
+#include <gdata/media/gdata-media-category.h>
+#include <gdata/services/youtube/gdata-youtube-content.h>
+#include <gdata/services/youtube/gdata-youtube-credit.h>
 #include <gdata/services/youtube/gdata-youtube.h>
 
 G_BEGIN_DECLS
@@ -73,16 +75,15 @@ void gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint 
 const gchar *gdata_youtube_video_get_keywords (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar *keywords);
 const gchar *gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self);
-GDataMediaRating *gdata_youtube_video_get_media_rating (GDataYouTubeVideo *self);
-GDataMediaRestriction *gdata_youtube_video_get_restriction (GDataYouTubeVideo *self);
+gboolean gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gchar *country);
 const gchar *gdata_youtube_video_get_title (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_title (GDataYouTubeVideo *self, const gchar *title);
 GDataMediaCategory *gdata_youtube_video_get_category (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *category);
-GDataMediaCredit *gdata_youtube_video_get_credit (GDataYouTubeVideo *self);
+GDataYouTubeCredit *gdata_youtube_video_get_credit (GDataYouTubeVideo *self);
 const gchar *gdata_youtube_video_get_description (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_description (GDataYouTubeVideo *self, const gchar *description);
-GDataMediaContent *gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type);
+GDataYouTubeContent *gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type);
 GList *gdata_youtube_video_get_thumbnails (GDataYouTubeVideo *self);
 guint gdata_youtube_video_get_duration (GDataYouTubeVideo *self);
 gboolean gdata_youtube_video_is_private (GDataYouTubeVideo *self);
