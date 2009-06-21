@@ -182,7 +182,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 *
 	 * Since: 0.4.0
 	 **/
-	g_object_class_install_property (gobject_class, PROP_EXPRESSION,
+	g_object_class_install_property (gobject_class, PROP_DURATION,
 				g_param_spec_int64 ("duration",
 					"Duration", "The number of seconds for which the media object plays.",
 					0, G_MAXINT64, 0,
@@ -304,10 +304,10 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* Parse expression */
 	expression = xmlGetProp (root_node, (xmlChar*) "expression");
-	if (xmlStrcmp (expression, (xmlChar*) "sample") == 0)
-		expression_enum = GDATA_MEDIA_EXPRESSION_SAMPLE;
-	else if (xmlStrcmp (expression, (xmlChar*) "full") == 0)
+	if (expression == NULL || xmlStrcmp (expression, (xmlChar*) "full") == 0)
 		expression_enum = GDATA_MEDIA_EXPRESSION_FULL;
+	else if (xmlStrcmp (expression, (xmlChar*) "sample") == 0)
+		expression_enum = GDATA_MEDIA_EXPRESSION_SAMPLE;
 	else if (xmlStrcmp (expression, (xmlChar*) "nonstop") == 0)
 		expression_enum = GDATA_MEDIA_EXPRESSION_NONSTOP;
 	else {
@@ -319,7 +319,9 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* Parse medium */
 	medium = xmlGetProp (root_node, (xmlChar*) "medium");
-	if (xmlStrcmp (medium, (xmlChar*) "image") == 0)
+	if (medium == NULL)
+		medium_enum = GDATA_MEDIA_UNKNOWN;
+	else if (xmlStrcmp (medium, (xmlChar*) "image") == 0)
 		medium_enum = GDATA_MEDIA_IMAGE;
 	else if (xmlStrcmp (medium, (xmlChar*) "audio") == 0)
 		medium_enum = GDATA_MEDIA_AUDIO;

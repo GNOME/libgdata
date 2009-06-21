@@ -72,6 +72,7 @@ void gdata_media_group_set_keywords (GDataMediaGroup *self, const gchar *keyword
 GDataMediaCategory *gdata_media_group_get_category (GDataMediaGroup *self);
 void gdata_media_group_set_category (GDataMediaGroup *self, GDataMediaCategory *category);
 GDataMediaContent *gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type);
+GList *gdata_media_group_get_contents (GDataMediaGroup *self);
 void _gdata_media_group_add_content (GDataMediaGroup *self, GDataMediaContent *content);
 GDataMediaCredit *gdata_media_group_get_credit (GDataMediaGroup *self);
 void _gdata_media_group_set_credit (GDataMediaGroup *self, GDataMediaCredit *credit);

@@ -263,7 +263,11 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataMediaGroupPrivate *priv = GDATA_MEDIA_GROUP (parsable)->priv;
 
 	/* Media category */
-	g_string_append (xml_string, _gdata_parsable_get_xml (GDATA_PARSABLE (priv->category), "media:category", FALSE));
+	if (priv->category != NULL) {
+		gchar *xml = _gdata_parsable_get_xml (GDATA_PARSABLE (priv->category), "media:category", FALSE);
+		g_string_append (xml_string, xml);
+		g_free (xml);
+	}
 
 	if (priv->title != NULL) {
 		gchar *title = g_markup_escape_text (priv->title, -1);
@@ -460,6 +464,21 @@ gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type)
 	if (element == NULL)
 		return NULL;
 	return GDATA_MEDIA_CONTENT (element->data);
+}
+
+/**
+ * gdata_media_group_get_contents:
+ * @self: a #GDataMediaGroup
+ *
+ * Returns a list of #GDataMediaContent<!-- -->s, giving the content enclosed by the group.
+ *
+ * Return value: a #GList of #GDataMediaContent<!-- -->s,  or %NULL
+ **/
+GList *
+gdata_media_group_get_contents (GDataMediaGroup *self)
+{
+	g_return_val_if_fail (GDATA_IS_MEDIA_GROUP (self), NULL);
+	return self->priv->contents;
 }
 
 void

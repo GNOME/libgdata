@@ -88,7 +88,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 				g_param_spec_string ("role",
 					"Role", "The role of the person concerned by this ACL.",
 					NULL,
-					G_PARAM_READWRITE ));
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataAccessRule:scope-type:
@@ -101,7 +101,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 				g_param_spec_string ("scope-type",
 					"Scope type", "Specifies to whom this access rule applies.",
 					NULL,
-					G_PARAM_READWRITE ));
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataAccessRule:scope-value:
@@ -115,7 +115,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 				g_param_spec_string ("scope-value",
 					"Scope value", "The scope value for this access rule.",
 					NULL,
-					G_PARAM_READWRITE ));
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 /**

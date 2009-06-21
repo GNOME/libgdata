@@ -55,6 +55,7 @@ static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataEntryPrivate {
 	gchar *title;
+	gchar *summary;
 	gchar *id;
 	gchar *etag;
 	GTimeVal updated;
@@ -67,6 +68,7 @@ struct _GDataEntryPrivate {
 
 enum {
 	PROP_TITLE = 1,
+	PROP_SUMMARY,
 	PROP_ETAG,
 	PROP_ID,
 	PROP_UPDATED,
@@ -86,8 +88,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataEntryPrivate));
 
-	gobject_class->set_property = gdata_entry_set_property;
 	gobject_class->get_property = gdata_entry_get_property;
+	gobject_class->set_property = gdata_entry_set_property;
 	gobject_class->dispose = gdata_entry_dispose;
 	gobject_class->finalize = gdata_entry_finalize;
 
@@ -103,6 +105,23 @@ gdata_entry_class_init (GDataEntryClass *klass)
 					"Title", "The title for this entry.",
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataEntry:summary:
+	 *
+	 * A short summary, abstract, or excerpt of the entry.
+	 *
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.summary">
+	 * Atom specification</ulink>.
+	 *
+	 * Since: 0.4.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_SUMMARY,
+				g_param_spec_string ("summary",
+					"Summary", "A short summary, abstract, or excerpt of the entry.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 	g_object_class_install_property (gobject_class, PROP_ID,
 				g_param_spec_string ("id",
 					"ID", "The ID for this entry.",
@@ -175,6 +194,7 @@ gdata_entry_finalize (GObject *object)
 	GDataEntryPrivate *priv = GDATA_ENTRY_GET_PRIVATE (object);
 
 	g_free (priv->title);
+	g_free (priv->summary);
 	xmlFree (priv->id);
 	xmlFree (priv->etag);
 	g_free (priv->content);
@@ -191,6 +211,9 @@ gdata_entry_get_property (GObject *object, guint property_id, GValue *value, GPa
 	switch (property_id) {
 		case PROP_TITLE:
 			g_value_set_string (value, priv->title);
+			break;
+		case PROP_SUMMARY:
+			g_value_set_string (value, priv->summary);
 			break;
 		case PROP_ID:
 			g_value_set_string (value, priv->id);
@@ -233,6 +256,9 @@ gdata_entry_set_property (GObject *object, guint property_id, const GValue *valu
 			break;
 		case PROP_TITLE:
 			gdata_entry_set_title (self, g_value_get_string (value));
+			break;
+		case PROP_SUMMARY:
+			gdata_entry_set_summary (self, g_value_get_string (value));
 			break;
 		case PROP_CONTENT:
 			gdata_entry_set_content (self, g_value_get_string (value));
@@ -334,6 +360,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 
 		self->priv->authors = g_list_prepend (self->priv->authors, author);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "summary") == 0) {
+		/* atom:summary */
+		xmlChar *summary = xmlNodeListGetString (doc, node->children, TRUE);
+		gdata_entry_set_summary (self, (gchar*) summary);
+		xmlFree (summary);
 	} else if (GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -407,6 +438,12 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		gchar *published = g_time_val_to_iso8601 (&(priv->published));
 		g_string_append_printf (xml_string, "<published>%s</published>", published);
 		g_free (published);
+	}
+
+	if (priv->summary != NULL) {
+		gchar *summary = g_markup_escape_text (priv->summary, -1);
+		g_string_append_printf (xml_string, "<summary type='text'>%s</summary>", summary);
+		g_free (summary);
 	}
 
 	if (priv->content != NULL) {
@@ -494,6 +531,41 @@ gdata_entry_set_title (GDataEntry *self, const gchar *title)
 	g_free (self->priv->title);
 	self->priv->title = g_strdup (title);
 	g_object_notify (G_OBJECT (self), "title");
+}
+
+/**
+ * gdata_entry_get_summary:
+ * @self: a #GDataEntry
+ *
+ * Returns the summary of the entry.
+ *
+ * Return value: the entry's summary, or %NULL
+ *
+ * Since: 0.4.0
+ **/
+const gchar *
+gdata_entry_get_summary (GDataEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
+	return self->priv->summary;
+}
+
+/**
+ * gdata_entry_set_summary:
+ * @self: a #GDataEntry
+ * @summary: the new entry summary, or %NULL
+ *
+ * Sets the summary of the entry.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_entry_set_summary (GDataEntry *self, const gchar *summary)
+{
+	g_return_if_fail (GDATA_IS_ENTRY (self));
+	g_free (self->priv->summary);
+	self->priv->summary = g_strdup (summary);
+	g_object_notify (G_OBJECT (self), "summary");
 }
 
 /**

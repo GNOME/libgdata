@@ -432,8 +432,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return gdata_parser_error_duplicate_element (node, error);
 
 		self->priv->subtitle = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
+	} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0 && xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) {
 		/* atom:id */
+		/* The namespace check is necessary because there's an "id" element in the gphoto namespace (PicasaWeb service) */
 		if (self->priv->id != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
 

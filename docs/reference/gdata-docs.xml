@@ -103,6 +103,14 @@
 			<xi:include href="xml/gdata-contacts-query.xml"/>
 			<xi:include href="xml/gdata-contacts-contact.xml"/>
 		</chapter>
+
+		<chapter>
+			<title>Google PicasaWeb API</title>
+			<xi:include href="xml/gdata-picasaweb-service.xml"/>
+			<xi:include href="xml/gdata-picasaweb-query.xml"/>
+			<xi:include href="xml/gdata-picasaweb-album.xml"/>
+			<xi:include href="xml/gdata-picasaweb-file.xml"/>
+		</chapter>
 	</part>
 
 	<part>

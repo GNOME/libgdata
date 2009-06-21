@@ -106,6 +106,23 @@ gdata_parser_error_unknown_property_value (xmlNode *element, const gchar *proper
 }
 
 gboolean
+gdata_parser_error_unknown_content (xmlNode *element, const gchar *actual_content, GError **error)
+{
+	gchar *element_string = print_element (element);
+
+	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+		     /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+		      * and the second parameter is the unknown content of that element.
+		      *
+		      * For example:
+		      *  The content of a <gphoto:access> element ("protected") was unknown. */
+		     _("The content of a %s element (\"%s\") was unknown."), element_string, actual_content);
+	g_free (element_string);
+
+	return FALSE;
+}
+
+gboolean
 gdata_parser_error_required_property_missing (xmlNode *element, const gchar *property_name, GError **error)
 {
 	gchar *property_string, *element_string;

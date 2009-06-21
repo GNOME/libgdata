@@ -188,8 +188,10 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	priv->role = g_strdup ((gchar*) role);
 
 	/* Convert the role to lower case */
-	for (i = 0; priv->role[i] != '\0'; i++)
-		priv->role[i] = g_ascii_tolower (priv->role[i]);
+	if (priv->role != NULL) {
+		for (i = 0; priv->role[i] != '\0'; i++)
+			priv->role[i] = g_ascii_tolower (priv->role[i]);
+	}
 
 	xmlFree (credit);
 	xmlFree (scheme);

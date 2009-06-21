@@ -896,6 +896,7 @@ gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	g_return_if_fail (feed_uri != NULL);
 	g_return_if_fail (entry_type != G_TYPE_INVALID);
+	g_return_if_fail (callback != NULL);
 
 	data = g_slice_new (QueryAsyncData);
 	data->feed_uri = g_strdup (feed_uri);
