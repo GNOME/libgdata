@@ -188,7 +188,7 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 		klass->append_query_headers (service, message);
 
 	/* Append the data */
-	upload_data = gdata_entry_get_xml (GDATA_ENTRY (rule));
+	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
 
 	/* Send the message */
@@ -217,8 +217,8 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 	g_assert (message->response_body->data != NULL);
 
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
-	updated_rule = GDATA_ACCESS_RULE (_gdata_entry_new_from_xml (G_OBJECT_TYPE (rule), message->response_body->data,
-					  message->response_body->length, error));
+	updated_rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (G_OBJECT_TYPE (rule), message->response_body->data,
+								       message->response_body->length, error));
 	g_object_unref (message);
 
 	return updated_rule;
@@ -302,7 +302,7 @@ gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *servic
 	/* Looks like ACLs don't support ETags */
 
 	/* Append the data */
-	upload_data = gdata_entry_get_xml (GDATA_ENTRY (rule));
+	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
 
 	/* Send the message */
@@ -331,8 +331,8 @@ gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *servic
 	g_assert (message->response_body->data != NULL);
 
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
-	updated_rule = GDATA_ACCESS_RULE (_gdata_entry_new_from_xml (G_OBJECT_TYPE (rule), message->response_body->data,
-								     message->response_body->length, error));
+	updated_rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (G_OBJECT_TYPE (rule), message->response_body->data,
+								       message->response_body->length, error));
 	g_object_unref (message);
 
 	return updated_rule;

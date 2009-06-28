@@ -82,7 +82,7 @@ test_entry_get_xml (void)
 	g_object_unref (author);
 
 	/* Check the generated XML's OK */
-	xml = gdata_entry_get_xml (entry);
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	g_assert_cmpstr (xml, ==,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
 				 "<title type='text'>Testing title &amp; escaping</title>"
@@ -101,7 +101,7 @@ test_entry_get_xml (void)
 			 "</entry>");
 
 	/* Check again by re-parsing the XML to a GDataEntry */
-	entry2 = gdata_entry_new_from_xml (xml, -1, &error);
+	entry2 = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY, xml, -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ENTRY (entry2));
 	g_clear_error (&error);
@@ -135,7 +135,7 @@ test_entry_parse_xml (void)
 	GError *error = NULL;
 
 	/* Create an entry from XML with unhandled elements */
-	entry = gdata_entry_new_from_xml (
+	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY,
 		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:ns='http://example.com/'>"
 			"<title type='text'>Testing unhandled XML</title>"
 			"<updated>2009-01-25T14:07:37.880860Z</updated>"
@@ -144,13 +144,13 @@ test_entry_parse_xml (void)
 			"<foobar>Test!</foobar>"
 			"<barfoo shizzle='zing'/>"
 			"<ns:barfoo shizzle='zing' fo='shizzle'>How about some characters‽</ns:barfoo>"
-		 "</entry>", -1, &error);
+		 "</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ENTRY (entry));
 	g_clear_error (&error);
 
 	/* Now check the outputted XML from the entry still has the unhandled elements */
-	xml = gdata_entry_get_xml (entry);
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	g_assert_cmpstr (xml, ==,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' xmlns:ns='http://example.com/'>"
 				"<title type='text'>Testing unhandled XML</title>"

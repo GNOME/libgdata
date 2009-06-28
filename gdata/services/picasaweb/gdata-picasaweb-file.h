@@ -65,7 +65,6 @@ typedef struct {
 GType gdata_picasaweb_file_get_type (void) G_GNUC_CONST;
 
 GDataPicasaWebFile *gdata_picasaweb_file_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
-GDataPicasaWebFile *gdata_picasaweb_file_new_from_xml (const gchar *xml, gint length, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 
 void gdata_picasaweb_file_get_edited (GDataPicasaWebFile *self, GTimeVal *edited);
 const gchar *gdata_picasaweb_file_get_version (GDataPicasaWebFile *self);

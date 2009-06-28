@@ -99,6 +99,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->post_parse_xml = post_parse_xml;
+	parsable_class->element_name = "feed";
 
 	/**
 	 * GDataFeed:title:
@@ -397,7 +398,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
 		/* atom:entry */
-		GDataEntry *entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (data->entry_type, "entry", doc, node, NULL, error));
+		GDataEntry *entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (data->entry_type, doc, node, NULL, error));
 		if (entry == NULL)
 			return FALSE;
 
@@ -458,7 +459,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (updated_string);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
 		/* atom:category */
-		GDataCategory *category = GDATA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_CATEGORY, "category", doc, node, NULL, error));
+		GDataCategory *category = GDATA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_CATEGORY, doc, node, NULL, error));
 		if (category == NULL)
 			return FALSE;
 
@@ -471,14 +472,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		self->priv->logo = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
 		/* atom:link */
-		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, "link", doc, node, NULL, error));
+		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
 		if (link == NULL)
 			return FALSE;
 
 		self->priv->links = g_list_prepend (self->priv->links, link);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "author") == 0) {
 		/* atom:author */
-		GDataAuthor *author = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, "author", doc, node, NULL, error));
+		GDataAuthor *author = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
 		if (author == NULL)
 			return FALSE;
 
@@ -491,7 +492,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (self->priv->generator != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
 
-		generator = GDATA_GENERATOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GENERATOR, "generator", doc, node, NULL, error));
+		generator = GDATA_GENERATOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GENERATOR, doc, node, NULL, error));
 		if (generator == NULL)
 			return FALSE;
 
@@ -588,7 +589,7 @@ _gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType 
 	data->progress_user_data = progress_user_data;
 	data->entry_i = 0;
 
-	feed = GDATA_FEED (_gdata_parsable_new_from_xml (feed_type, "feed", xml, length, data, error));
+	feed = GDATA_FEED (_gdata_parsable_new_from_xml (feed_type, xml, length, data, error));
 
 	g_slice_free (ParseData, data);
 

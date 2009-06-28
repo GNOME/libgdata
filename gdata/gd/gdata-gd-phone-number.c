@@ -79,6 +79,8 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	parsable_class->pre_get_xml = pre_get_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "phoneNumber";
+	parsable_class->element_namespace = "gd";
 
 	/**
 	 * GDataGDPhoneNumber:number:

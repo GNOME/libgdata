@@ -67,6 +67,7 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->parse_xml = parse_xml;
+	parsable_class->element_name = "generator";
 
 	/**
 	 * GDataGenerator:name:

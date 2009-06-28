@@ -85,6 +85,8 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	parsable_class->pre_get_xml = pre_get_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "when";
+	parsable_class->element_namespace = "gd";
 
 	/**
 	 * GDataGDWhen:start-time:
@@ -295,8 +297,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (xmlStrcmp (node->name, (xmlChar*) "reminder") == 0) {
 		/* gd:reminder */
-		GDataGDReminder *reminder = GDATA_GD_REMINDER (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_REMINDER, "reminder", doc, node,
-												  NULL, error));
+		GDataGDReminder *reminder = GDATA_GD_REMINDER (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_REMINDER, doc, node, NULL, error));
 		if (reminder == NULL)
 			return FALSE;
 
@@ -356,8 +357,11 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GList *reminders;
 	GDataGDWhenPrivate *priv = GDATA_GD_WHEN (parsable)->priv;
 
-	for (reminders = priv->reminders; reminders != NULL; reminders = reminders->next)
-		g_string_append (xml_string, _gdata_parsable_get_xml (GDATA_PARSABLE (reminders->data), "gd:reminder", FALSE));
+	for (reminders = priv->reminders; reminders != NULL; reminders = reminders->next) {
+		gchar *xml = _gdata_parsable_get_xml (GDATA_PARSABLE (reminders->data), FALSE);
+		g_string_append (xml_string, xml);
+		g_free (xml);
+	}
 }
 
 static void

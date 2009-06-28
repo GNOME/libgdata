@@ -71,6 +71,7 @@ gdata_author_class_init (GDataAuthorClass *klass)
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->post_parse_xml = post_parse_xml;
 	parsable_class->get_xml = get_xml;
+	parsable_class->element_name = "author";
 
 	/**
 	 * GDataAuthor:name:

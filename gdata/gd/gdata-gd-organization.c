@@ -79,6 +79,8 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	parsable_class->pre_get_xml = pre_get_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "organization";
+	parsable_class->element_namespace = "gd";
 
 	/**
 	 * GDataGDOrganization:name:

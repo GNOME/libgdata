@@ -70,6 +70,8 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "thumbnail";
+	parsable_class->element_namespace = "media";
 
 	/**
 	 * GDataMediaThumbnail:uri:

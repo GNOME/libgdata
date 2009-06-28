@@ -76,6 +76,8 @@ gdata_media_category_class_init (GDataMediaCategoryClass *klass)
 	parsable_class->pre_get_xml = pre_get_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "category";
+	parsable_class->element_namespace = "media";
 
 	/**
 	 * GDataMediaCategory:category:

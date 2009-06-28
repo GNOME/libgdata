@@ -73,6 +73,8 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->pre_get_xml = pre_get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "email";
+	parsable_class->element_namespace = "gd";
 
 	/**
 	 * GDataGDEmailAddress:address:

@@ -113,15 +113,41 @@ real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer us
 	return TRUE;
 }
 
+/**
+ * gdata_parsable_new_from_xml:
+ * @parsable_type: the type of the class represented by the XML
+ * @xml: the XML for just the parsable object, with full namespace declarations
+ * @length: the length of @xml, or -1
+ * @error: a #GError, or %NULL
+ *
+ * Creates a new #GDataParsable subclass (of the given @parsable_type) from the given @xml.
+ *
+ * An object of the given @parsable_type is created, and its <function>pre_parse_xml</function>, <function>parse_xml</function> and
+ * <function>post_parse_xml</function> class functions called on the XML tree obtained from @xml. <function>pre_parse_xml</function> and
+ * <function>post_parse_xml</function> are called once each on the root node of the tree, while <function>parse_xml</function> is called for each of the
+ * child nodes of the root node.
+ *
+ * If @length is -1, @xml will be assumed to be null-terminated.
+ *
+ * If an error occurs during parsing, a suitable error from #GDataParserError will be returned.
+ *
+ * Return value: a new #GDataParsable, or %NULL; unref with g_object_unref()
+ **/
 GDataParsable *
-_gdata_parsable_new_from_xml (GType parsable_type, const gchar *first_element, const gchar *xml, gint length, gpointer user_data, GError **error)
+gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, GError **error)
+{
+	return _gdata_parsable_new_from_xml (parsable_type, xml, length, NULL, error);
+}
+
+GDataParsable *
+_gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, gpointer user_data, GError **error)
 {
 	xmlDoc *doc;
 	xmlNode *node;
 
 	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE) == TRUE, FALSE);
-	g_return_val_if_fail (first_element != NULL, NULL);
 	g_return_val_if_fail (xml != NULL, NULL);
+	g_return_val_if_fail (length >= -1, NULL);
 
 	if (length == -1)
 		length = strlen (xml);
@@ -149,18 +175,11 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *first_element, c
 		return NULL;
 	}
 
-	if (xmlStrcmp (node->name, (xmlChar*) first_element) != 0) {
-		/* No <entry> element (required) */
-		xmlFreeDoc (doc);
-		gdata_parser_error_required_element_missing (first_element, "root", error);
-		return NULL;
-	}
-
-	return _gdata_parsable_new_from_xml_node (parsable_type, first_element, doc, node, user_data, error);
+	return _gdata_parsable_new_from_xml_node (parsable_type, doc, node, user_data, error);
 }
 
 GDataParsable *
-_gdata_parsable_new_from_xml_node (GType parsable_type, const gchar *first_element, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+_gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
 	GDataParsable *parsable;
 	GDataParsableClass *klass;
@@ -168,13 +187,21 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, const gchar *first_eleme
 	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE) == TRUE, FALSE);
 	g_return_val_if_fail (doc != NULL, FALSE);
 	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (xmlStrcmp (node->name, (xmlChar*) first_element) == 0, FALSE);
 
 	parsable = g_object_new (parsable_type, NULL);
 
 	klass = GDATA_PARSABLE_GET_CLASS (parsable);
 	if (klass->parse_xml == NULL)
 		return FALSE;
+
+	g_assert (klass->element_name != NULL);
+	if (xmlStrcmp (node->name, (xmlChar*) klass->element_name) != 0 ||
+	    (node->ns != NULL && xmlStrcmp (node->ns->prefix, (xmlChar*) klass->element_namespace) != 0)) {
+		/* No <entry> element (required) */
+		xmlFreeDoc (doc);
+		gdata_parser_error_required_element_missing (klass->element_name, "root", error);
+		return NULL;
+	}
 
 	/* Call the pre-parse function first */
 	if (klass->pre_parse_xml != NULL &&
@@ -217,8 +244,34 @@ filter_namespaces_cb (gchar *prefix, gchar *href, GHashTable *canonical_namespac
 	return FALSE;
 }
 
+/**
+ * gdata_parsable_get_xml:
+ * @self: a #GDataParsable
+ *
+ * Builds an XML representation of the #GDataParsable in its current state, such that it could be inserted on the server. The XML is guaranteed to have
+ * all its namespaces declared properly in a self-contained fashion, and is valid for stand-alone use.
+ *
+ * Return value: the object's XML; free with g_free()
+ **/
 gchar *
-_gdata_parsable_get_xml (GDataParsable *self, const gchar *first_element, gboolean at_top_level)
+gdata_parsable_get_xml (GDataParsable *self)
+{
+	return _gdata_parsable_get_xml (self, TRUE);
+}
+
+/*
+ * _gdata_parsable_get_xml:
+ * @self: a #GDataParsable
+ * @declare_namespaces: %TRUE if all the namespaces used in the outputted XML should be declared in the opening tag of the root element, %FALSE otherwise
+ *
+ * Builds an XML representation of the #GDataParsable in its current state, such that it could be inserted on the server. If @declare_namespaces is
+ * %TRUE, the XML is guaranteed to have all its namespaces declared properly in a self-contained fashion, and is valid for stand-alone use. If
+ * @declare_namespaces is %FALSE, none of the used namespaces are declared, and the XML is suitable for insertion into a larger XML tree.
+ *
+ * Return value: the object's XML; free with g_free()
+ */
+gchar *
+_gdata_parsable_get_xml (GDataParsable *self, gboolean declare_namespaces)
 {
 	GDataParsableClass *klass;
 	GString *xml_string;
@@ -226,9 +279,10 @@ _gdata_parsable_get_xml (GDataParsable *self, const gchar *first_element, gboole
 	GHashTable *namespaces = NULL; /* shut up, gcc */
 
 	klass = GDATA_PARSABLE_GET_CLASS (self);
+	g_assert (klass->element_name != NULL);
 
 	/* Get the namespaces the class uses */
-	if (at_top_level == TRUE && klass->get_namespaces != NULL) {
+	if (declare_namespaces == TRUE && klass->get_namespaces != NULL) {
 		namespaces = g_hash_table_new (g_str_hash, g_str_equal);
 		klass->get_namespaces (self, namespaces);
 
@@ -238,10 +292,13 @@ _gdata_parsable_get_xml (GDataParsable *self, const gchar *first_element, gboole
 
 	/* Build up the namespace list */
 	xml_string = g_string_sized_new (100);
-	g_string_append_printf (xml_string, "<%s", first_element);
+	if (klass->element_namespace != NULL)
+		g_string_append_printf (xml_string, "<%s:%s", klass->element_namespace, klass->element_name);
+	else
+		g_string_append_printf (xml_string, "<%s", klass->element_name);
 
 	/* We only include the normal namespaces if we're not at the top level of XML building */
-	if (at_top_level == TRUE) {
+	if (declare_namespaces == TRUE) {
 		g_string_append (xml_string, " xmlns='http://www.w3.org/2005/Atom'");
 		g_hash_table_foreach (namespaces, (GHFunc) build_namespaces_cb, xml_string);
 		g_hash_table_destroy (namespaces);
@@ -268,8 +325,10 @@ _gdata_parsable_get_xml (GDataParsable *self, const gchar *first_element, gboole
 	/* Close the element; either by self-closing the opening tag, or by writing out a closing tag */
 	if (xml_string->len == length)
 		g_string_overwrite (xml_string, length - 1, "/>");
+	else if (klass->element_namespace != NULL)
+		g_string_append_printf (xml_string, "</%s:%s>", klass->element_namespace, klass->element_name);
 	else
-		g_string_append_printf (xml_string, "</%s>", first_element);
+		g_string_append_printf (xml_string, "</%s>", klass->element_name);
 
 	return g_string_free (xml_string, FALSE);
 }

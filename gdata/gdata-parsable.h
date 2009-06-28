@@ -30,14 +30,12 @@ G_BEGIN_DECLS
  * GDataParserError:
  * @GDATA_PARSER_ERROR_PARSING_STRING: Error parsing the XML syntax itself
  * @GDATA_PARSER_ERROR_EMPTY_DOCUMENT: Empty document
- * @GDATA_PARSER_ERROR_UNHANDLED_XML_ELEMENT: Unknown or unhandled XML element (fatal error)
  *
  * Error codes for XML parsing operations.
  **/
 typedef enum {
 	GDATA_PARSER_ERROR_PARSING_STRING = 1,
-	GDATA_PARSER_ERROR_EMPTY_DOCUMENT,
-	GDATA_PARSER_ERROR_UNHANDLED_XML_ELEMENT
+	GDATA_PARSER_ERROR_EMPTY_DOCUMENT
 } GDataParserError;
 
 #define GDATA_PARSER_ERROR gdata_parser_error_quark ()
@@ -75,6 +73,8 @@ typedef struct {
  * XML node to be added to @xml_string
  * @get_xml: a function to build an XML representation of the #GDataParsable in its current state, appending it to the provided #GString
  * @get_namespaces: a function to return a string containing the namespace declarations used by the @parsable when represented in XML form
+ * @element_name: the name of the XML element which represents this parsable
+ * @element_namespace: the prefix of the XML namespace used for the parsable
  *
  * The class structure for the #GDataParsable class.
  *
@@ -90,9 +90,15 @@ typedef struct {
 	void (*pre_get_xml) (GDataParsable *parsable, GString *xml_string);
 	void (*get_xml) (GDataParsable *parsable, GString *xml_string);
 	void (*get_namespaces) (GDataParsable *parsable, GHashTable *namespaces);
+
+	const gchar *element_name;
+	const gchar *element_namespace;
 } GDataParsableClass;
 
 GType gdata_parsable_get_type (void) G_GNUC_CONST;
+
+GDataParsable *gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+gchar *gdata_parsable_get_xml (GDataParsable *self) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

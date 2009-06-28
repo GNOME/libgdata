@@ -70,6 +70,8 @@ gdata_youtube_control_class_init (GDataYouTubeControlClass *klass)
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "control";
+	parsable_class->element_namespace = "app";
 }
 
 static void
@@ -106,8 +108,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (draft);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "state") == 0) {
 		/* yt:state */
-		GDataYouTubeState *state = GDATA_YOUTUBE_STATE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_STATE, "state", doc,
-												   node, NULL, error));
+		GDataYouTubeState *state = GDATA_YOUTUBE_STATE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_STATE, doc, node, NULL, error));
 		if (state == NULL)
 			return FALSE;
 

@@ -71,6 +71,8 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "state";
+	parsable_class->element_namespace = "yt";
 
 	/**
 	 * GDataYouTubeState:name:

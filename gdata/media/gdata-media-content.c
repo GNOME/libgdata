@@ -81,6 +81,8 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "content";
+	parsable_class->element_namespace = "media";
 
 	/**
 	 * GDataMediaContent:uri:

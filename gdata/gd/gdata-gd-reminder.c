@@ -73,6 +73,8 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->pre_get_xml = pre_get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "reminder";
+	parsable_class->element_namespace = "gd";
 
 	/**
 	 * GDataGDReminder:method:

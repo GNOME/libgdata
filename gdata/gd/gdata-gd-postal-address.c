@@ -77,6 +77,8 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	parsable_class->pre_get_xml = pre_get_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "postalAddress";
+	parsable_class->element_namespace = "gd";
 
 	/**
 	 * GDataGDPostalAddress:address:

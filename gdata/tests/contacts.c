@@ -169,7 +169,7 @@ test_insert_simple (void)
 	g_object_unref (postal_address);
 
 	/* Check the XML */
-	xml = gdata_entry_get_xml (GDATA_ENTRY (contact));
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
 	g_assert_cmpstr (xml, ==,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 	"xmlns:gd='http://schemas.google.com/g/2005' "
@@ -249,7 +249,7 @@ test_parser_minimal (void)
 
 	g_test_bug ("580330");
 
-	contact = gdata_contacts_contact_new_from_xml (
+	contact = GDATA_CONTACTS_CONTACT (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT,
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
 			"xmlns:gd='http://schemas.google.com/g/2005' "
 			"gd:etag='&quot;QngzcDVSLyp7ImA9WxJTFkoITgU.&quot;'>"
@@ -262,7 +262,7 @@ test_parser_minimal (void)
 			"<link rel='self' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
 			"<link rel='edit' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
 			"<gd:email rel='http://schemas.google.com/g/2005#other' address='bob@example.com'/>"
-		"</entry>", -1, &error);
+		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ENTRY (contact));
 	g_clear_error (&error);
@@ -284,7 +284,7 @@ test_photo_has_photo (void)
 	gchar *content_type = NULL;
 	GError *error = NULL;
 
-	contact = gdata_contacts_contact_new_from_xml (
+	contact = GDATA_CONTACTS_CONTACT (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT,
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
 			"xmlns:gd='http://schemas.google.com/g/2005'>"
 			"<id>http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/base/1b46cdd20bfbee3b</id>"
@@ -293,7 +293,7 @@ test_photo_has_photo (void)
 			"<title></title>" /* Here's where it all went wrong */
 			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
 				"href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
-		"</entry>", -1, &error);
+		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ENTRY (contact));
 	g_clear_error (&error);
@@ -310,7 +310,7 @@ test_photo_has_photo (void)
 	g_object_unref (contact);
 
 	/* Try again with a photo */
-	contact = gdata_contacts_contact_new_from_xml (
+	contact = GDATA_CONTACTS_CONTACT (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT,
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
 			"xmlns:gd='http://schemas.google.com/g/2005'>"
 			"<id>http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/base/1b46cdd20bfbee3b</id>"
@@ -320,7 +320,7 @@ test_photo_has_photo (void)
 			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
 				"href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b' "
 				"gd:etag='&quot;QngzcDVSLyp7ImA9WxJTFkoITgU.&quot;'/>"
-		"</entry>", -1, &error);
+		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ENTRY (contact));
 	g_clear_error (&error);

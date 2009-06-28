@@ -75,6 +75,8 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	parsable_class->pre_get_xml = pre_get_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->element_name = "who";
+	parsable_class->element_namespace = "gd";
 
 	/**
 	 * GDataGDWho:relation-type:

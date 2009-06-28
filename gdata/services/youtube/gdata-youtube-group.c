@@ -93,7 +93,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
 		/* media:content */
-		GDataYouTubeContent *content = GDATA_YOUTUBE_CONTENT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CONTENT, "content", doc,
+		GDataYouTubeContent *content = GDATA_YOUTUBE_CONTENT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CONTENT, doc,
 													 node, NULL, error));
 		if (content == NULL)
 			return FALSE;
@@ -101,7 +101,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		_gdata_media_group_add_content (GDATA_MEDIA_GROUP (self), GDATA_MEDIA_CONTENT (content));
 	} else if (xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
 		/* media:credit */
-		GDataYouTubeCredit *credit = GDATA_YOUTUBE_CREDIT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CREDIT, "credit", doc,
+		GDataYouTubeCredit *credit = GDATA_YOUTUBE_CREDIT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CREDIT, doc,
 												      node, NULL, error));
 		if (credit == NULL)
 			return FALSE;
