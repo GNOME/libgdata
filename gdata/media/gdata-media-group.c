@@ -235,7 +235,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (countries);
 
 		/* Add "all" to the table, since it's an exception table */
-		g_hash_table_insert (self->priv->restricted_countries, (gchar*) "all", GUINT_TO_POINTER (!relationship_bool));
+		g_hash_table_insert (self->priv->restricted_countries, g_strdup ("all"), GUINT_TO_POINTER (!relationship_bool));
 
 		/* Add all the listed countries to the restricted countries table */
 		for (country = country_list; *country != NULL; country++)
