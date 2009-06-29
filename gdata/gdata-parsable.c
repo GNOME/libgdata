@@ -101,6 +101,9 @@ real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer us
 
 	/* Get the namespaces */
 	namespaces = xmlGetNsList (doc, node);
+	if (namespaces == NULL)
+		return TRUE;
+
 	for (namespace = namespaces; *namespace != NULL; namespace++) {
 		if ((*namespace)->prefix != NULL) {
 			g_hash_table_insert (parsable->priv->extra_namespaces,
@@ -300,8 +303,10 @@ _gdata_parsable_get_xml (GDataParsable *self, gboolean declare_namespaces)
 	/* We only include the normal namespaces if we're not at the top level of XML building */
 	if (declare_namespaces == TRUE) {
 		g_string_append (xml_string, " xmlns='http://www.w3.org/2005/Atom'");
-		g_hash_table_foreach (namespaces, (GHFunc) build_namespaces_cb, xml_string);
-		g_hash_table_destroy (namespaces);
+		if (namespaces != NULL) {
+			g_hash_table_foreach (namespaces, (GHFunc) build_namespaces_cb, xml_string);
+			g_hash_table_destroy (namespaces);
+		}
 	}
 
 	g_hash_table_foreach (self->priv->extra_namespaces, (GHFunc) build_namespaces_cb, xml_string);

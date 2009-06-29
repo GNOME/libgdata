@@ -29,6 +29,7 @@
 
 #include <glib.h>
 #include <libxml/parser.h>
+#include <string.h>
 
 #include "gdata-link.h"
 #include "gdata-parsable.h"
@@ -275,26 +276,29 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* rel */
 	relation_type = xmlGetProp (root_node, (xmlChar*) "rel");
-	if (relation_type != NULL && *relation_type == '\0')
+	if (relation_type != NULL && *relation_type == '\0') {
+		xmlFree (relation_type);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
+	}
 
-	if (relation_type == NULL)
-		self->priv->relation_type = g_strdup ("alternate");
-	else
-		self->priv->relation_type = g_strdup ((gchar*) relation_type);
+	gdata_link_set_relation_type (self, (const gchar*) relation_type);
 	xmlFree (relation_type);
 
 	/* type */
 	content_type = xmlGetProp (root_node, (xmlChar*) "type");
-	if (content_type != NULL && *content_type == '\0')
+	if (content_type != NULL && *content_type == '\0') {
+		xmlFree (content_type);
 		return gdata_parser_error_required_property_missing (root_node, "type", error);
+	}
 	self->priv->content_type = g_strdup ((gchar*) content_type);
 	xmlFree (content_type);
 
 	/* hreflang */
 	language = xmlGetProp (root_node, (xmlChar*) "hreflang");
-	if (language != NULL && *language == '\0')
+	if (language != NULL && *language == '\0') {
+		xmlFree (language);
 		return gdata_parser_error_required_property_missing (root_node, "hreflang", error);
+	}
 	self->priv->language = g_strdup ((gchar*) language);
 	xmlFree (language);
 
@@ -386,7 +390,12 @@ gdata_link_compare (const GDataLink *a, const GDataLink *b)
  * gdata_link_get_uri:
  * @self: a #GDataLink
  *
- * Gets the #GDataLink:uri property.
+ * Gets the #GDataLink:uri property. The return value is guaranteed to be a valid IRI, as
+ * specified by the Atom protocol. Common relationship values such as <literal>alternate</literal>
+ * are returned as <literal>http://www.iana.org/assignments/relation/alternate</literal>.
+ *
+ * For more information, see the <ulink type="http" uri="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#rel_attribute">
+ * Atom specification</ulink>.
  *
  * Return value: the link's URI
  *
@@ -453,12 +462,18 @@ gdata_link_set_relation_type (GDataLink *self, const gchar *relation_type)
 	g_return_if_fail (GDATA_IS_LINK (self));
 	g_return_if_fail (relation_type == NULL || *relation_type != '\0');
 
-	/* "If the "rel" attribute is not present, the link element MUST be interpreted as if the link relation type is "alternate"." */
-	if (relation_type == NULL)
-		relation_type = "alternate";
-
+	/* If the relation type is unset, use the default "alternate" relation type. If it's set, and isn't an IRI, turn it into an IRI
+	 * by appending it to "http://www.iana.org/assignments/relation/". If it's set and is an IRI, just use the IRI.
+	 * See: http://www.atomenabled.org/developers/syndication/atom-format-spec.php#rel_attribute
+	 */
 	g_free (self->priv->relation_type);
-	self->priv->relation_type = g_strdup (relation_type);
+	if (relation_type == NULL)
+		self->priv->relation_type = g_strdup ("http://www.iana.org/assignments/relation/alternate");
+	else if (strchr ((char*) relation_type, ':') == NULL)
+		self->priv->relation_type = g_strconcat ("http://www.iana.org/assignments/relation/", (const gchar*) relation_type, NULL);
+	else
+		self->priv->relation_type = g_strdup ((gchar*) relation_type);
+
 	g_object_notify (G_OBJECT (self), "relation-type");
 }
 

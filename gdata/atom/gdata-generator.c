@@ -162,8 +162,16 @@ gdata_generator_get_property (GObject *object, guint property_id, GValue *value,
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
+	xmlChar *name;
 	GDataGeneratorPrivate *priv = GDATA_GENERATOR (parsable)->priv;
 
+	name = xmlNodeListGetString (doc, root_node->children, TRUE);
+	if (name != NULL && *name == '\0') {
+		xmlFree (name);
+		return gdata_parser_error_required_content_missing (root_node, error);
+	}
+
+	priv->name = (gchar*) name;
 	priv->uri = (gchar*) xmlGetProp (root_node, (xmlChar*) "uri");
 	priv->version = (gchar*) xmlGetProp (root_node, (xmlChar*) "version");
 
@@ -173,13 +181,14 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
-	xmlChar *name = xmlNodeListGetString (doc, node->children, TRUE);
-	if (name != NULL && *name == '\0') {
-		xmlFree (name);
-		return gdata_parser_error_required_content_missing (node, error);
-	}
+	/* Textual content's handled in pre_parse_xml */
+	if (node->type != XML_ELEMENT_NODE)
+		return TRUE;
 
-	GDATA_GENERATOR (parsable)->priv->name = (gchar*) name;
+	if (GDATA_PARSABLE_CLASS (gdata_generator_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
+		/* Error! */
+		return FALSE;
+	}
 
 	return TRUE;
 }
