@@ -298,8 +298,11 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->relation_type != NULL)
 		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
-	if (priv->label != NULL)
-		g_string_append_printf (xml_string, " label='%s'", priv->label);
+	if (priv->label != NULL) {
+		gchar *label = g_markup_escape_text (priv->label, -1);
+		g_string_append_printf (xml_string, " label='%s'", label);
+		g_free (label);
+	}
 
 	if (priv->is_primary == TRUE)
 		g_string_append (xml_string, " primary='true'");
@@ -333,7 +336,7 @@ gdata_gd_im_address_new (const gchar *address, const gchar *protocol, const gcha
 {
 	g_return_val_if_fail (address != NULL && *address != '\0', NULL);
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
-	return g_object_new (GDATA_TYPE_GD_IM_ADDRESS, "address", address, "relation-type", relation_type,
+	return g_object_new (GDATA_TYPE_GD_IM_ADDRESS, "address", address, "protocol", protocol, "relation-type", relation_type,
 			     "label", label, "is-primary", is_primary, NULL);
 }
 
@@ -354,8 +357,6 @@ gdata_gd_im_address_new (const gchar *address, const gchar *protocol, const gcha
 gint
 gdata_gd_im_address_compare (const GDataGDIMAddress *a, const GDataGDIMAddress *b)
 {
-	gint address_cmp;
-
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (b == NULL)
@@ -364,10 +365,9 @@ gdata_gd_im_address_compare (const GDataGDIMAddress *a, const GDataGDIMAddress *
 	if (a == b)
 		return 0;
 
-	address_cmp = g_strcmp0 (a->priv->address, b->priv->address);
-	if (address_cmp == 0 && g_strcmp0 (a->priv->protocol, b->priv->protocol) == 0)
+	if (g_strcmp0 (a->priv->address, b->priv->address) == 0 && g_strcmp0 (a->priv->protocol, b->priv->protocol) == 0)
 		return 0;
-	return address_cmp;
+	return 1;
 }
 
 /**

@@ -320,8 +320,11 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->relation_type != NULL)
 		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
-	if (priv->label != NULL)
-		g_string_append_printf (xml_string, " label='%s'", priv->label);
+	if (priv->label != NULL) {
+		gchar *label = g_markup_escape_text (priv->label, -1);
+		g_string_append_printf (xml_string, " label='%s'", label);
+		g_free (label);
+	}
 
 	if (priv->is_primary == TRUE)
 		g_string_append (xml_string, " primary='true'");
@@ -334,10 +337,17 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (parsable)->priv;
 
-	if (priv->name != NULL)
-		g_string_append_printf (xml_string, "<gd:orgName>%s</gd:orgName>", priv->name);
-	if (priv->title != NULL)
-		g_string_append_printf (xml_string, "<gd:orgTitle>%s</gd:orgTitle>", priv->title);
+	if (priv->name != NULL) {
+		gchar *name = g_markup_escape_text (priv->name, -1);
+		g_string_append_printf (xml_string, "<gd:orgName>%s</gd:orgName>", name);
+		g_free (name);
+	}
+
+	if (priv->title != NULL) {
+		gchar *title = g_markup_escape_text (priv->title, -1);
+		g_string_append_printf (xml_string, "<gd:orgTitle>%s</gd:orgTitle>", title);
+		g_free (title);
+	}
 }
 
 static void
@@ -393,7 +403,9 @@ gdata_gd_organization_compare (const GDataGDOrganization *a, const GDataGDOrgani
 
 	if (a == b)
 		return 0;
-	return g_strcmp0 (a->priv->name, b->priv->name);
+	if (g_strcmp0 (a->priv->name, b->priv->name) == 0 && g_strcmp0 (a->priv->title, b->priv->title) == 0)
+		return 0;
+	return 1;
 }
 
 /**

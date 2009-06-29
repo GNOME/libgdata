@@ -278,7 +278,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		end_time_timeval.tv_sec = end_time_timeval.tv_usec = 0;
 	}
 
-	value_string = xmlGetProp (root_node, (xmlChar*) "value");
+	value_string = xmlGetProp (root_node, (xmlChar*) "valueString");
 
 	priv->start_time = start_time_timeval;
 	priv->end_time = end_time_timeval;
@@ -348,7 +348,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	}
 
 	if (priv->value_string != NULL)
-		g_string_append_printf (xml_string, " value='%s'", priv->value_string);
+		g_string_append_printf (xml_string, " valueString='%s'", priv->value_string);
 }
 
 static void

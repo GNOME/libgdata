@@ -29,6 +29,7 @@
 
 #include <glib.h>
 #include <libxml/parser.h>
+#include <string.h>
 
 #include "gdata-gd-postal-address.h"
 #include "gdata-parsable.h"
@@ -222,8 +223,10 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	GDataGDPostalAddressPrivate *priv = GDATA_GD_POSTAL_ADDRESS (parsable)->priv;
 
 	address = xmlNodeListGetString (doc, root_node->children, TRUE);
-	if (address == NULL || *address == '\0')
+	if (address == NULL || *address == '\0') {
+		xmlFree (address);
 		return gdata_parser_error_required_content_missing (root_node, error);
+	}
 
 	rel = xmlGetProp (root_node, (xmlChar*) "rel");
 	if (rel != NULL && *rel == '\0') {
@@ -249,7 +252,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	/* Other properties */
 	label = xmlGetProp (root_node, (xmlChar*) "label");
 
-	priv->address = g_strdup ((gchar*) address);
+	gdata_gd_postal_address_set_address (GDATA_GD_POSTAL_ADDRESS (parsable), (const gchar*) address);
 	priv->relation_type = g_strdup ((gchar*) rel);
 	priv->label = g_strdup ((gchar*) label);
 	priv->is_primary = primary_bool;
@@ -283,8 +286,11 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->relation_type != NULL)
 		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
-	if (priv->label != NULL)
-		g_string_append_printf (xml_string, " label='%s'", priv->label);
+	if (priv->label != NULL) {
+		gchar *label = g_markup_escape_text (priv->label, -1);
+		g_string_append_printf (xml_string, " label='%s'", label);
+		g_free (label);
+	}
 
 	if (priv->is_primary == TRUE)
 		g_string_append (xml_string, " primary='true'");
@@ -385,11 +391,23 @@ gdata_gd_postal_address_get_address (GDataGDPostalAddress *self)
 void
 gdata_gd_postal_address_set_address (GDataGDPostalAddress *self, const gchar *address)
 {
+	gint len;
+
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
 	g_return_if_fail (address != NULL && *address != '\0');
 
 	g_free (self->priv->address);
-	self->priv->address = g_strdup (address);
+
+	/* Trim leading and trailing whitespace from the address.
+	 * See here: http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPostalAddress */
+	while (*address != '\0' && g_ascii_isspace (*address))
+		address++;
+
+	len = strlen (address);
+	while (len > 0 && g_ascii_isspace (address[len - 1]))
+		len--;
+
+	self->priv->address = g_strndup (address, len);
 	g_object_notify (G_OBJECT (self), "address");
 }
 
