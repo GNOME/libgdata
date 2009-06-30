@@ -107,7 +107,7 @@ gdata_link_class_init (GDataLinkClass *klass)
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 				g_param_spec_string ("relation-type",
 					"Relation type", "The link relation type.",
-					"alternate",
+					"http://www.iana.org/assignments/relation/alternate",
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -181,7 +181,7 @@ gdata_link_init (GDataLink *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_LINK, GDataLinkPrivate);
 	self->priv->length = -1;
-	self->priv->relation_type = g_strdup ("alternate");
+	self->priv->relation_type = g_strdup ("http://www.iana.org/assignments/relation/alternate");
 }
 
 static void
@@ -450,7 +450,8 @@ gdata_link_get_relation_type (GDataLink *self)
  * @self: a #GDataLink
  * @relation_type: the new relation type for the link, or %NULL
  *
- * Sets the #GDataLink:relation-type property to @relation_type.
+ * Sets the #GDataLink:relation-type property to @relation_type. If @relation_type is one of the standard Atom relation types,
+ * use one of the defined relation type values, instead of a static string. e.g. %GDATA_LINK_EDIT or %GDATA_LINK_SELF.
  *
  * Set @relation_type to %NULL to unset the property in the link.
  *

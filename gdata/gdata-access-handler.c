@@ -234,7 +234,7 @@ get_soup_message (GDataAccessHandler *access_handler, GDataAccessRule *rule, con
 	const gchar *scope_type, *scope_value;
 
 	/* Get the edit URI */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (rule), "edit");
+	link = gdata_entry_look_up_link (GDATA_ENTRY (rule), GDATA_LINK_EDIT);
 	if (link != NULL)
 		return soup_message_new (method, gdata_link_get_uri (link));
 

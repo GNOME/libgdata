@@ -55,14 +55,14 @@ test_entry_get_xml (void)
 	g_object_unref (category);
 
 	/* Links */
-	link = gdata_link_new ("http://test.com/", "self");
+	link = gdata_link_new ("http://test.com/", GDATA_LINK_SELF);
 	gdata_link_set_content_type (link, "application/atom+xml");
 	gdata_entry_add_link (entry, link);
 	g_object_unref (link);
 	link = gdata_link_new ("http://example.com/", NULL);
 	gdata_entry_add_link (entry, link);
 	g_object_unref (link);
-	link = gdata_link_new ("http://test.mn/", "related");
+	link = gdata_link_new ("http://test.mn/", GDATA_LINK_RELATED);
 	gdata_link_set_content_type (link, "text/html");
 	gdata_link_set_language (link, "mn");
 	gdata_link_set_title (link, "A treatise on Mongolian test websites & other stuff.");
@@ -1121,6 +1121,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/when", test_gd_when);
 	g_test_add_func ("/gd/where", test_gd_where);
 	g_test_add_func ("/gd/who", test_gd_who);
+
 	/*g_test_add_data_func ("/media/thumbnail/parse_time", "", test_media_thumbnail_parse_time);
 	g_test_add_data_func ("/media/thumbnail/parse_time", "de_DE", test_media_thumbnail_parse_time);*/
 

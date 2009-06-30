@@ -711,7 +711,8 @@ link_compare_cb (const GDataLink *link, const gchar *rel)
  * @self: a #GDataEntry
  * @rel: the value of the <structfield>rel</structfield> attribute of the desired link
  *
- * Looks up a link by <structfield>rel</structfield> value from the list of links in the entry.
+ * Looks up a link by relation type from the list of links in the entry. If the link has one of the standard Atom relation types,
+ * use one of the defined @rel values, instead of a static string. e.g. %GDATA_LINK_EDIT or %GDATA_LINK_SELF.
  *
  * Return value: a #GDataLink, or %NULL if one was not found
  *
