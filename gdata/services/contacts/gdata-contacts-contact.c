@@ -851,7 +851,7 @@ gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 
-	if (value == NULL) {
+	if (value == NULL || *value == '\0') {
 		/* Removing a property */
 		g_hash_table_remove (extended_properties, name);
 		return TRUE;

@@ -168,6 +168,11 @@ test_insert_simple (void)
 	gdata_contacts_contact_add_postal_address (contact, postal_address);
 	g_object_unref (postal_address);
 
+	/* Add some extended properties */
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "TITLE", NULL) == TRUE);
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "ROLE", "") == TRUE);
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "CALURI", "http://example.com/") == TRUE);
+
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
 	g_assert_cmpstr (xml, ==,
@@ -187,6 +192,7 @@ test_insert_simple (void)
 				"<gd:postalAddress rel='http://schemas.google.com/g/2005#work' primary='true'>"
 					"1600 Amphitheatre Pkwy Mountain View"
 				"</gd:postalAddress>"
+				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
 			 "</entry>");
 	g_free (xml);
 
