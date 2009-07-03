@@ -374,11 +374,8 @@ get_child_xml (GList *list, GString *xml_string)
 {
 	GList *i;
 
-	for (i = list; i != NULL; i = i->next) {
-		gchar *xml = _gdata_parsable_get_xml (GDATA_PARSABLE (i->data), FALSE);
-		g_string_append (xml_string, xml);
-		g_free (xml);
-	}
+	for (i = list; i != NULL; i = i->next)
+		_gdata_parsable_get_xml (GDATA_PARSABLE (i->data), xml_string, FALSE);
 }
 
 static void

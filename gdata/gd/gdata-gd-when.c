@@ -357,11 +357,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GList *reminders;
 	GDataGDWhenPrivate *priv = GDATA_GD_WHEN (parsable)->priv;
 
-	for (reminders = priv->reminders; reminders != NULL; reminders = reminders->next) {
-		gchar *xml = _gdata_parsable_get_xml (GDATA_PARSABLE (reminders->data), FALSE);
-		g_string_append (xml_string, xml);
-		g_free (xml);
-	}
+	for (reminders = priv->reminders; reminders != NULL; reminders = reminders->next)
+		_gdata_parsable_get_xml (GDATA_PARSABLE (reminders->data), xml_string, FALSE);
 }
 
 static void

@@ -686,7 +686,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	gchar *xml;
 	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (parsable)->priv;
 
 	/* Chain up to the parent class */
@@ -728,9 +727,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append_printf (xml_string, "<gphoto:rotation>%u</gphoto:rotation>", priv->rotation);
 
 	/* media:group */
-	xml = _gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), FALSE);
-	g_string_append (xml_string, xml);
-	g_free (xml);
+	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), xml_string, FALSE);
 
 	/* TODO:
 	 * - Finish supporting all tags

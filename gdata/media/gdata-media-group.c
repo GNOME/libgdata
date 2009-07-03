@@ -263,11 +263,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataMediaGroupPrivate *priv = GDATA_MEDIA_GROUP (parsable)->priv;
 
 	/* Media category */
-	if (priv->category != NULL) {
-		gchar *xml = _gdata_parsable_get_xml (GDATA_PARSABLE (priv->category), FALSE);
-		g_string_append (xml_string, xml);
-		g_free (xml);
-	}
+	if (priv->category != NULL)
+		_gdata_parsable_get_xml (GDATA_PARSABLE (priv->category), xml_string, FALSE);
 
 	if (priv->title != NULL) {
 		gchar *title = g_markup_escape_text (priv->title, -1);

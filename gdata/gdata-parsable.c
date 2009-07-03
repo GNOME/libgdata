@@ -259,7 +259,9 @@ filter_namespaces_cb (gchar *prefix, gchar *href, GHashTable *canonical_namespac
 gchar *
 gdata_parsable_get_xml (GDataParsable *self)
 {
-	return _gdata_parsable_get_xml (self, TRUE);
+	GString *xml_string = g_string_sized_new (100);
+	_gdata_parsable_get_xml (self, xml_string, TRUE);
+	return g_string_free (xml_string, FALSE);
 }
 
 /*
@@ -273,11 +275,10 @@ gdata_parsable_get_xml (GDataParsable *self)
  *
  * Return value: the object's XML; free with g_free()
  */
-gchar *
-_gdata_parsable_get_xml (GDataParsable *self, gboolean declare_namespaces)
+void
+_gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean declare_namespaces)
 {
 	GDataParsableClass *klass;
-	GString *xml_string;
 	guint length;
 	GHashTable *namespaces = NULL; /* shut up, gcc */
 
@@ -294,7 +295,6 @@ _gdata_parsable_get_xml (GDataParsable *self, gboolean declare_namespaces)
 	}
 
 	/* Build up the namespace list */
-	xml_string = g_string_sized_new (100);
 	if (klass->element_namespace != NULL)
 		g_string_append_printf (xml_string, "<%s:%s", klass->element_namespace, klass->element_name);
 	else
@@ -334,6 +334,4 @@ _gdata_parsable_get_xml (GDataParsable *self, gboolean declare_namespaces)
 		g_string_append_printf (xml_string, "</%s:%s>", klass->element_namespace, klass->element_name);
 	else
 		g_string_append_printf (xml_string, "</%s>", klass->element_name);
-
-	return g_string_free (xml_string, FALSE);
 }

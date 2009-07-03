@@ -601,7 +601,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	gchar *xml;
 	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM (parsable)->priv;
 
 	/* Chain up to the parent class */
@@ -634,9 +633,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append (xml_string, "<gphoto:commentingEnabled>true</gphoto:commentingEnabled>");
 
 	/* media:group */
-	xml = _gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), FALSE);
-	g_string_append (xml_string, xml);
-	g_free (xml);
+	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), xml_string, FALSE);
 
 	/* TODO: add GML support */
 	/* TODO:

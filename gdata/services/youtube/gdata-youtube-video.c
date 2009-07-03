@@ -759,16 +759,13 @@ post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
 static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	gchar *xml;
 	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (parsable)->priv;
 
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->get_xml (parsable, xml_string);
 
 	/* media:group */
-	xml = _gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), FALSE);
-	g_string_append (xml_string, xml);
-	g_free (xml);
+	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), xml_string, FALSE);
 
 	if (priv->location != NULL) {
 		gchar *location = g_markup_escape_text (priv->location, -1);
@@ -786,9 +783,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append (xml_string, "<yt:noembed/>");
 
 	/* app:control */
-	xml = _gdata_parsable_get_xml (GDATA_PARSABLE (priv->youtube_control), FALSE);
-	g_string_append (xml_string, xml);
-	g_free (xml);
+	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->youtube_control), xml_string, FALSE);
 
 	/* TODO:
 	 * - georss:where

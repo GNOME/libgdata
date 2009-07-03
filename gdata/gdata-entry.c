@@ -444,23 +444,14 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_free (content);
 	}
 
-	for (categories = priv->categories; categories != NULL; categories = categories->next) {
-		gchar *xml = _gdata_parsable_get_xml (GDATA_PARSABLE (categories->data), FALSE);
-		g_string_append (xml_string, xml);
-		g_free (xml);
-	}
+	for (categories = priv->categories; categories != NULL; categories = categories->next)
+		_gdata_parsable_get_xml (GDATA_PARSABLE (categories->data), xml_string, FALSE);
 
-	for (links = priv->links; links != NULL; links = links->next) {
-		gchar *xml = _gdata_parsable_get_xml (GDATA_PARSABLE (links->data), FALSE);
-		g_string_append (xml_string, xml);
-		g_free (xml);
-	}
+	for (links = priv->links; links != NULL; links = links->next)
+		_gdata_parsable_get_xml (GDATA_PARSABLE (links->data), xml_string, FALSE);
 
-	for (authors = priv->authors; authors != NULL; authors = authors->next) {
-		gchar *xml = _gdata_parsable_get_xml (GDATA_PARSABLE (authors->data), FALSE);
-		g_string_append (xml_string, xml);
-		g_free (xml);
-	}
+	for (authors = priv->authors; authors != NULL; authors = authors->next)
+		_gdata_parsable_get_xml (GDATA_PARSABLE (authors->data), xml_string, FALSE);
 }
 
 static void
