@@ -305,7 +305,7 @@ test_upload_simple (void)
 	g_free (xml);
 
 	/* TODO: fix the path */
-	video_file = g_file_new_for_path ("/home/philip/Development/libgdata/gdata/tests/sample.ogg");
+	video_file = g_file_new_for_path (TEST_FILE_DIR "sample.ogg");
 
 	/* Upload the video */
 	new_video = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), video, video_file, NULL, &error);

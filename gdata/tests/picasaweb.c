@@ -137,7 +137,7 @@ test_upload_simple (void)
 	g_free(xml);
 
 	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
-	photo_file = g_file_new_for_path ("photo.jpg"); // TODO make sure file is loaded from tests/ directory
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
 
 	/* Upload the photo */
 	/* TODO right now, it will just go to the default album, we want an uploading one :| */
@@ -205,8 +205,8 @@ test_photo (void)
 	g_assert_cmpuint (gdata_picasaweb_file_get_width (photo), ==, 2576);
 	g_assert_cmpuint (gdata_picasaweb_file_get_height (photo), ==, 1932);
 	g_assert_cmpuint (gdata_picasaweb_file_get_size (photo), ==, 1124730);
-	// TODO: file wasn't uploaded with client assigned; g_assert_cmpstr (gdata_picasaweb_file_get_client (photo), ==, ??);
-	// TODO: file wasn't uploaded with checksum assigned; g_assert_cmpstr (gdata_picasaweb_file_get_checksum (photo), ==, ??);
+	/* TODO: file wasn't uploaded with client assigned; g_assert_cmpstr (gdata_picasaweb_file_get_client (photo), ==, ??); */
+	/* TODO: file wasn't uploaded with checksum assigned; g_assert_cmpstr (gdata_picasaweb_file_get_checksum (photo), ==, ??); */
 
 	gdata_picasaweb_file_get_timestamp (photo, &_time);
 	str = g_time_val_to_iso8601 (&_time);
@@ -421,7 +421,7 @@ test_album_feed_entry (void)
 	g_assert_cmpstr (str, ==, "2009-04-26T07:00:00Z");
 	g_free (str);
 
-	// g_assert_cmpstr (gdata_entry_get_content (entry), !=, NULL);
+	/* g_assert_cmpstr (gdata_entry_get_content (entry), !=, NULL); */
 	/* TODO */
 	printf("** WARNING:%s:%d: gdata_entry_get_content(entry) returns null; valid?\n", __FILE__, __LINE__);
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
@@ -446,7 +446,7 @@ test_album_feed (void)
 	/* tests */
 
 	g_assert_cmpstr (gdata_feed_get_title (album_feed), ==, "libgdata.picasaweb");
-	// TODO find out why subtitle == null when returned: no subtitle for feed? // printf("feed subtitle: %s\n", gdata_feed_get_subtitle(feed));
+	/* TODO find out why subtitle == null when returned: no subtitle for feed? printf("feed subtitle: %s\n", gdata_feed_get_subtitle(feed)); */
 	g_assert_cmpstr (gdata_feed_get_id (album_feed), ==, "http://picasaweb.google.com/data/feed/user/libgdata.picasaweb");
 	g_assert_cmpstr (gdata_feed_get_etag (album_feed), !=, NULL); /* this varies as albums change, like when a new image is uploaded in our test! */
 	g_assert_cmpuint (gdata_feed_get_items_per_page (album_feed), ==, 1000);
@@ -483,8 +483,8 @@ test_query_all_albums (void)
 	g_assert (GDATA_IS_FEED (photo_feed));
 	g_clear_error (&error);
 
-	//g_object_unref(photo_feed);
-	//g_object_unref(album_feed);
+	/*g_object_unref(photo_feed);
+	g_object_unref(album_feed);*/
 
 	g_list_free(albums);
 }
