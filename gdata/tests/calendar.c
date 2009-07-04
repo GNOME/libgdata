@@ -24,12 +24,8 @@
 #include "gdata.h"
 #include "common.h"
 
-/* TODO: probably a better way to do this; some kind of data associated with the test suite? */
-static GDataService *service = NULL;
-static GMainLoop *main_loop = NULL;
-
 static GDataCalendarCalendar *
-get_calendar (GError **error)
+get_calendar (GDataService *service, GError **error)
 {
 	GDataFeed *calendar_feed;
 	GDataCalendarCalendar *calendar;
@@ -56,6 +52,7 @@ static void
 test_authentication (void)
 {
 	gboolean retval;
+	GDataService *service;
 	GError *error = NULL;
 
 	/* Create a service */
@@ -78,7 +75,7 @@ test_authentication (void)
 }
 
 static void
-test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	gboolean retval;
 	GError *error = NULL;
@@ -99,26 +96,28 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 static void
 test_authentication_async (void)
 {
+	GDataService *service;
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
+
 	/* Create a service */
 	service = GDATA_SERVICE (gdata_calendar_service_new (CLIENT_ID));
 
 	g_assert (service != NULL);
 	g_assert (GDATA_IS_SERVICE (service));
 
-	gdata_service_authenticate_async (service, USERNAME, PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, NULL);
+	gdata_service_authenticate_async (service, USERNAME, PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+
+	g_object_unref (service);
 }
 
 static void
-test_query_all_calendars (void)
+test_query_all_calendars (GDataService *service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	feed = gdata_calendar_service_query_all_calendars (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -131,7 +130,7 @@ test_query_all_calendars (void)
 }
 
 static void
-test_query_all_calendars_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_query_all_calendars_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -148,25 +147,22 @@ test_query_all_calendars_async_cb (GDataService *service, GAsyncResult *async_re
 }
 
 static void
-test_query_all_calendars_async (void)
+test_query_all_calendars_async (GDataService *service)
 {
-	g_assert (service != NULL);
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_calendar_service_query_all_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL,
-							  NULL, (GAsyncReadyCallback) test_query_all_calendars_async_cb, NULL);
+							  NULL, (GAsyncReadyCallback) test_query_all_calendars_async_cb, main_loop);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 }
 
 static void
-test_query_own_calendars (void)
+test_query_own_calendars (GDataService *service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	feed = gdata_calendar_service_query_own_calendars (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -179,7 +175,7 @@ test_query_own_calendars (void)
 }
 
 static void
-test_query_own_calendars_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_query_own_calendars_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -196,28 +192,25 @@ test_query_own_calendars_async_cb (GDataService *service, GAsyncResult *async_re
 }
 
 static void
-test_query_own_calendars_async (void)
+test_query_own_calendars_async (GDataService *service)
 {
-	g_assert (service != NULL);
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_calendar_service_query_own_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL,
-							  NULL, (GAsyncReadyCallback) test_query_own_calendars_async_cb, NULL);
+							  NULL, (GAsyncReadyCallback) test_query_own_calendars_async_cb, main_loop);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 }
 
 static void
-test_query_events (void)
+test_query_events (GDataService *service)
 {
 	GDataFeed *feed;
 	GDataCalendarCalendar *calendar;
 	GError *error = NULL;
 
-	g_assert (service != NULL);
-
-	calendar = get_calendar (&error);
+	calendar = get_calendar (service, &error);
 
 	/* Get the entry feed */
 	feed = gdata_calendar_service_query_events (GDATA_CALENDAR_SERVICE (service), calendar, NULL, NULL, NULL, NULL, &error);
@@ -232,7 +225,7 @@ test_query_events (void)
 }
 
 static void
-test_insert_simple (void)
+test_insert_simple (GDataService *service)
 {
 	GDataCalendarEvent *event, *new_event;
 	GDataCategory *category;
@@ -242,8 +235,6 @@ test_insert_simple (void)
 	GTimeVal start_time, end_time;
 	gchar *xml;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	event = gdata_calendar_event_new (NULL);
 
@@ -303,7 +294,7 @@ test_insert_simple (void)
 }
 
 static void
-test_xml_dates (void)
+test_xml_dates (GDataService *service)
 {
 	GDataCalendarEvent *event;
 	GList *times, *i;
@@ -396,7 +387,7 @@ test_xml_dates (void)
 }
 
 static void
-test_xml_recurrence (void)
+test_xml_recurrence (GDataService *service)
 {
 	GDataCalendarEvent *event;
 	GError *error = NULL;
@@ -458,7 +449,7 @@ test_xml_recurrence (void)
 }
 
 static void
-test_query_uri (void)
+test_query_uri (GDataService *service)
 {
 	GTimeVal time_val, time_val2;
 	gchar *query_uri;
@@ -529,15 +520,13 @@ test_query_uri (void)
 }
 
 static void
-test_acls_get_rules (void)
+test_acls_get_rules (GDataService *service)
 {
 	GDataFeed *feed;
 	GDataCalendarCalendar *calendar;
 	GError *error = NULL;
 
-	g_assert (service != NULL);
-
-	calendar = get_calendar (&error);
+	calendar = get_calendar (service, &error);
 
 	/* Get the rules */
 	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), service, NULL, NULL, NULL, &error);
@@ -552,7 +541,7 @@ test_acls_get_rules (void)
 }
 
 static void
-test_acls_insert_rule (void)
+test_acls_insert_rule (GDataService *service)
 {
 	GDataCalendarCalendar *calendar;
 	GDataAccessRule *rule, *new_rule;
@@ -562,9 +551,7 @@ test_acls_insert_rule (void)
 	gchar *xml;
 	GError *error = NULL;
 
-	g_assert (service != NULL);
-
-	calendar = get_calendar (&error);
+	calendar = get_calendar (service, &error);
 
 	rule = gdata_access_rule_new (NULL);
 
@@ -617,7 +604,7 @@ test_acls_insert_rule (void)
 }
 
 static void
-test_acls_update_rule (void)
+test_acls_update_rule (GDataService *service)
 {
 	GDataFeed *feed;
 	GDataCalendarCalendar *calendar;
@@ -626,9 +613,7 @@ test_acls_update_rule (void)
 	GList *rules;
 	GError *error = NULL;
 
-	g_assert (service != NULL);
-
-	calendar = get_calendar (&error);
+	calendar = get_calendar (service, &error);
 
 	/* Get a rule */
 	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), service, NULL, NULL, NULL, &error);
@@ -671,7 +656,7 @@ test_acls_update_rule (void)
 }
 
 static void
-test_acls_delete_rule (void)
+test_acls_delete_rule (GDataService *service)
 {
 	GDataFeed *feed;
 	GDataCalendarCalendar *calendar;
@@ -680,9 +665,7 @@ test_acls_delete_rule (void)
 	gboolean success;
 	GError *error = NULL;
 
-	g_assert (service != NULL);
-
-	calendar = get_calendar (&error);
+	calendar = get_calendar (service, &error);
 
 	/* Get a rule */
 	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), service, NULL, NULL, NULL, &error);
@@ -718,37 +701,40 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
+	GDataService *service;
 
 	g_type_init ();
 	g_thread_init (NULL);
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
 
+	service = GDATA_SERVICE (gdata_calendar_service_new (CLIENT_ID));
+	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
+
 	g_test_add_func ("/calendar/authentication", test_authentication);
 	if (g_test_thorough () == TRUE)
 		g_test_add_func ("/calendar/authentication_async", test_authentication_async);
-	g_test_add_func ("/calendar/query/all_calendars", test_query_all_calendars);
+	g_test_add_data_func ("/calendar/query/all_calendars", service, test_query_all_calendars);
 	if (g_test_thorough () == TRUE)
-		g_test_add_func ("/calendar/query/all_calendars_async", test_query_all_calendars_async);
-	g_test_add_func ("/calendar/query/own_calendars", test_query_own_calendars);
+		g_test_add_data_func ("/calendar/query/all_calendars_async", service, test_query_all_calendars_async);
+	g_test_add_data_func ("/calendar/query/own_calendars", service, test_query_own_calendars);
 	if (g_test_thorough () == TRUE)
-		g_test_add_func ("/calendar/query/own_calendars_async", test_query_own_calendars_async);
-	g_test_add_func ("/calendar/query/events", test_query_events);
+		g_test_add_data_func ("/calendar/query/own_calendars_async", service, test_query_own_calendars_async);
+	g_test_add_data_func ("/calendar/query/events", service, test_query_events);
 	if (g_test_slow () == TRUE)
-		g_test_add_func ("/calendar/insert/simple", test_insert_simple);
-	g_test_add_func ("/calendar/xml/dates", test_xml_dates);
-	g_test_add_func ("/calendar/xml/recurrence", test_xml_recurrence);
-	g_test_add_func ("/calendar/query/uri", test_query_uri);
-	g_test_add_func ("/calendar/acls/get_rules", test_acls_get_rules);
+		g_test_add_data_func ("/calendar/insert/simple", service, test_insert_simple);
+	g_test_add_data_func ("/calendar/xml/dates", service, test_xml_dates);
+	g_test_add_data_func ("/calendar/xml/recurrence", service, test_xml_recurrence);
+	g_test_add_data_func ("/calendar/query/uri", service, test_query_uri);
+	g_test_add_data_func ("/calendar/acls/get_rules", service, test_acls_get_rules);
 	if (g_test_slow () == TRUE) {
-		g_test_add_func ("/calendar/acls/insert_rule", test_acls_insert_rule);
-		g_test_add_func ("/calendar/acls/update_rule", test_acls_update_rule);
-		g_test_add_func ("/calendar/acls/delete_rule", test_acls_delete_rule);
+		g_test_add_data_func ("/calendar/acls/insert_rule", service, test_acls_insert_rule);
+		g_test_add_data_func ("/calendar/acls/update_rule", service, test_acls_update_rule);
+		g_test_add_data_func ("/calendar/acls/delete_rule", service, test_acls_delete_rule);
 	}
 
 	retval = g_test_run ();
-	if (service != NULL)
-		g_object_unref (service);
+	g_object_unref (service);
 
 	return retval;
 }

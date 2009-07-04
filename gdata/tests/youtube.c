@@ -27,14 +27,11 @@
 #define YT_USERNAME "GDataTest"
 #define YT_PASSWORD "gdata"
 
-/* TODO: probably a better way to do this; some kind of data associated with the test suite? */
-static GDataService *service = NULL;
-static GMainLoop *main_loop = NULL;
-
 static void
 test_authentication (void)
 {
 	gboolean retval;
+	GDataService *service;
 	GError *error = NULL;
 
 	/* Create a service */
@@ -56,10 +53,12 @@ test_authentication (void)
 	g_assert_cmpstr (gdata_service_get_username (service), ==, YT_USERNAME "@gmail.com");
 	g_assert_cmpstr (gdata_service_get_password (service), ==, YT_PASSWORD);
 	g_assert_cmpstr (gdata_youtube_service_get_youtube_user (GDATA_YOUTUBE_SERVICE (service)), ==, YT_USERNAME);
+
+	g_object_unref (service);
 }
 
 static void
-test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	gboolean retval;
 	GError *error = NULL;
@@ -81,26 +80,28 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 static void
 test_authentication_async (void)
 {
+	GMainLoop *main_loop;
+	GDataService *service;
+
 	/* Create a service */
 	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
 
 	g_assert (service != NULL);
 	g_assert (GDATA_IS_SERVICE (service));
 
-	gdata_service_authenticate_async (service, YT_USERNAME, YT_PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, NULL);
-
 	main_loop = g_main_loop_new (NULL, TRUE);
+	gdata_service_authenticate_async (service, YT_USERNAME, YT_PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+	g_object_unref (service);
 }
 
 static void
-test_query_standard_feed (void)
+test_query_standard_feed (GDataService *service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -113,7 +114,7 @@ test_query_standard_feed (void)
 }
 
 static void
-test_query_standard_feed_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_query_standard_feed_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -130,14 +131,13 @@ test_query_standard_feed_async_cb (GDataService *service, GAsyncResult *async_re
 }
 
 static void
-test_query_standard_feed_async (void)
+test_query_standard_feed_async (GDataService *service)
 {
-	g_assert (service != NULL);
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_youtube_service_query_standard_feed_async (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL,
-							 NULL, NULL, NULL, (GAsyncReadyCallback) test_query_standard_feed_async_cb, NULL);
+							 NULL, NULL, NULL, (GAsyncReadyCallback) test_query_standard_feed_async_cb, main_loop);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 }
@@ -212,13 +212,11 @@ get_video_for_related (void)
 }
 
 static void
-test_query_related (void)
+test_query_related (GDataService *service)
 {
 	GDataFeed *feed;
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	video = get_video_for_related ();
 	feed = gdata_youtube_service_query_related (GDATA_YOUTUBE_SERVICE (service), video, NULL, NULL, NULL, NULL, &error);
@@ -233,7 +231,7 @@ test_query_related (void)
 }
 
 static void
-test_query_related_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_query_related_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -250,32 +248,28 @@ test_query_related_async_cb (GDataService *service, GAsyncResult *async_result, 
 }
 
 static void
-test_query_related_async (void)
+test_query_related_async (GDataService *service)
 {
 	GDataYouTubeVideo *video;
-
-	g_assert (service != NULL);
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	video = get_video_for_related ();
 	gdata_youtube_service_query_related_async (GDATA_YOUTUBE_SERVICE (service), video, NULL, NULL, NULL,
-						   NULL, (GAsyncReadyCallback) test_query_related_async_cb, NULL);
+						   NULL, (GAsyncReadyCallback) test_query_related_async_cb, main_loop);
 	g_object_unref (video);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 }
 
 static void
-test_upload_simple (void)
+test_upload_simple (GDataService *service)
 {
 	GDataYouTubeVideo *video, *new_video;
 	GDataMediaCategory *category;
 	GFile *video_file;
 	gchar *xml;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	video = gdata_youtube_video_new (NULL);
 
@@ -321,7 +315,7 @@ test_upload_simple (void)
 }
 
 static void
-test_parsing_app_control (void)
+test_parsing_app_control (GDataService *service)
 {
 	GDataYouTubeVideo *video;
 	GDataYouTubeState *state;
@@ -373,7 +367,7 @@ test_parsing_app_control (void)
 }
 
 static void
-test_parsing_yt_recorded (void)
+test_parsing_yt_recorded (GDataService *service)
 {
 	GDataYouTubeVideo *video;
 	GTimeVal recorded;
@@ -504,7 +498,7 @@ test_parsing_comments_feed_link (void)
 }*/
 
 static void
-test_query_uri (void)
+test_query_uri (GDataService *service)
 {
 	gdouble latitude, longitude, radius;
 	gboolean has_location;
@@ -586,31 +580,35 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
+	GDataService *service;
 
 	g_type_init ();
 	g_thread_init (NULL);
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
 
+	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
+	gdata_service_authenticate (service, YT_USERNAME, YT_PASSWORD, NULL, NULL);
+
 	g_test_add_func ("/youtube/authentication", test_authentication);
 	if (g_test_thorough () == TRUE)
 		g_test_add_func ("/youtube/authentication_async", test_authentication_async);
-	g_test_add_func ("/youtube/query/standard_feed", test_query_standard_feed);
+	g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
 	if (g_test_thorough () == TRUE)
-		g_test_add_func ("/youtube/query/standard_feed_async", test_query_standard_feed_async);
-	g_test_add_func ("/youtube/query/related", test_query_related);
+		g_test_add_data_func ("/youtube/query/standard_feed_async", service, test_query_standard_feed_async);
+	g_test_add_data_func ("/youtube/query/related", service, test_query_related);
 	if (g_test_thorough () == TRUE)
-		g_test_add_func ("/youtube/query/related_async", test_query_related_async);
+		g_test_add_data_func ("/youtube/query/related_async", service, test_query_related_async);
 	if (g_test_slow () == TRUE)
-		g_test_add_func ("/youtube/upload/simple", test_upload_simple);
-	g_test_add_func ("/youtube/parsing/app:control", test_parsing_app_control);
+		g_test_add_data_func ("/youtube/upload/simple", service, test_upload_simple);
+	g_test_add_data_func ("/youtube/parsing/app:control", service, test_parsing_app_control);
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
-	g_test_add_func ("/youtube/parsing/yt:recorded", test_parsing_yt_recorded);
-	g_test_add_func ("/youtube/query/uri", test_query_uri);
+	g_test_add_data_func ("/youtube/parsing/yt:recorded", service, test_parsing_yt_recorded);
+	g_test_add_data_func ("/youtube/query/uri", service, test_query_uri);
+	g_test_add_data_func ("/youtube/query/uri", service, test_query_uri);
 
 	retval = g_test_run ();
-	if (service != NULL)
-		g_object_unref (service);
+	g_object_unref (service);
 
 	return retval;
 }

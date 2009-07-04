@@ -30,14 +30,11 @@
 #define NUM_ALBUMS 3
 #define TEST_ALBUM_INDEX 2
 
-/* TODO: probably a better way to do this; some kind of data associated with the test suite? */
-static GDataService *service = NULL;
-static GMainLoop *main_loop = NULL;
-
 static void
 test_authentication (void)
 {
 	gboolean retval;
+	GDataService *service;
 	GError *error = NULL;
 
 	/* Create a service */
@@ -57,10 +54,12 @@ test_authentication (void)
 	g_assert (gdata_service_is_authenticated (service) == TRUE);
 	g_assert_cmpstr (gdata_service_get_username (service), ==, PW_USERNAME);
 	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+
+	g_object_unref (service);
 }
 
 static void
-test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	gboolean retval;
 	GError *error = NULL;
@@ -82,21 +81,25 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 static void
 test_authentication_async (void)
 {
+	GDataService *service;
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
+
 	/* Create a service */
 	service = GDATA_SERVICE (gdata_picasaweb_service_new (CLIENT_ID));
 
 	g_assert (service != NULL);
 	g_assert (GDATA_IS_SERVICE (service));
 
-	gdata_service_authenticate_async (service, PW_USERNAME, PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, NULL);
+	gdata_service_authenticate_async (service, PW_USERNAME, PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+
+	g_object_unref (service);
 }
 
 static void
-test_upload_simple (void)
+test_upload_simple (GDataService *service)
 {
 	GDataCategory *category;
 	GDataPicasaWebFile *photo;
@@ -104,8 +107,6 @@ test_upload_simple (void)
 	GFile *photo_file;
 	gchar *xml;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	photo = gdata_picasaweb_file_new (NULL);
 
@@ -155,7 +156,7 @@ test_upload_simple (void)
 
 
 static void
-test_photo (void)
+test_photo (GDataService *service)
 {
 	GError *error = NULL;
 	GDataFeed *album_feed;
@@ -248,7 +249,7 @@ test_photo (void)
 }
 
 static void
-test_photo_feed_entry (void)
+test_photo_feed_entry (GDataService *service)
 {
 	GDataFeed *album_feed;
 	GDataFeed *photo_feed;
@@ -304,7 +305,7 @@ test_photo_feed_entry (void)
 }
 
 static void
-test_photo_feed (void)
+test_photo_feed (GDataService *service)
 {
 	GError *error = NULL;
 	GDataFeed *album_feed;
@@ -340,7 +341,7 @@ test_photo_feed (void)
 }
 
 static void
-test_album (void)
+test_album (GDataService *service)
 {
 	GDataFeed *album_feed;
 	GError *error = NULL;
@@ -383,7 +384,7 @@ test_album (void)
 }
 
 static void
-test_album_feed_entry (void)
+test_album_feed_entry (GDataService *service)
 {
 	GDataFeed *album_feed;
 	GError *error = NULL;
@@ -433,7 +434,7 @@ test_album_feed_entry (void)
 }
 
 static void
-test_album_feed (void)
+test_album_feed (GDataService *service)
 {
 	GDataFeed *album_feed;
 	GError *error = NULL;
@@ -455,7 +456,7 @@ test_album_feed (void)
 }
 
 static void
-test_query_all_albums (void)
+test_query_all_albums (GDataService *service)
 {
 	GDataFeed *album_feed;
 	GDataFeed *photo_feed;
@@ -463,8 +464,6 @@ test_query_all_albums (void)
 	GList *albums;
 	GDataEntry *entry;
 	GDataPicasaWebAlbum *album;
-
-	g_assert (service != NULL);
 
 	/* TODO: find out whether I need to free this; probably */
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
@@ -490,7 +489,7 @@ test_query_all_albums (void)
 }
 
 static void
-test_query_all_albums_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_query_all_albums_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	GDataFeed *feed;
 	GError *error;
@@ -507,14 +506,13 @@ test_query_all_albums_async_cb (GDataService *service, GAsyncResult *async_resul
 }
 
 static void
-test_query_all_albums_async (void)
+test_query_all_albums_async (GDataService *service)
 {
-	g_assert (service != NULL);
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_picasaweb_service_query_all_albums_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL,
-							NULL, (GAsyncReadyCallback) test_query_all_albums_async_cb, NULL);
+							NULL, (GAsyncReadyCallback) test_query_all_albums_async_cb, main_loop);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 }
@@ -524,6 +522,7 @@ test_query_all_albums_async (void)
 int
 main (int argc, char *argv[])
 {
+	GDataService *service;
 	gint retval;
 
 	g_type_init ();
@@ -531,23 +530,25 @@ main (int argc, char *argv[])
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
 
+	service = GDATA_SERVICE (gdata_picasaweb_service_new (CLIENT_ID));
+	gdata_service_authenticate (service, PW_USERNAME, PASSWORD, NULL, NULL);
+
 	g_test_add_func ("/picasaweb/authentication", test_authentication);
 	if (g_test_thorough () == TRUE)
 		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);
-	g_test_add_func ("/picasaweb/query/all_albums", test_query_all_albums);
+	g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
 	if (g_test_thorough () == TRUE)
-		g_test_add_func ("/picasaweb/query/all_albums_async", test_query_all_albums_async);
-	g_test_add_func ("/picasaweb/query/album_feed", test_album_feed);
-	g_test_add_func ("/picasaweb/query/album_feed_entry", test_album_feed_entry);
-	g_test_add_func ("/picasaweb/query/album", test_album);
-	g_test_add_func ("/picasaweb/query/photo_feed", test_photo_feed);
-	g_test_add_func ("/picasaweb/query/photo_feed_entry", test_photo_feed_entry);
-	g_test_add_func ("/picasaweb/query/photo", test_photo);
-	g_test_add_func ("/picasaweb/upload/photo", test_upload_simple);
+		g_test_add_data_func ("/picasaweb/query/all_albums_async", service, test_query_all_albums_async);
+	g_test_add_data_func ("/picasaweb/query/album_feed", service, test_album_feed);
+	g_test_add_data_func ("/picasaweb/query/album_feed_entry", service, test_album_feed_entry);
+	g_test_add_data_func ("/picasaweb/query/album", service, test_album);
+	g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
+	g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
+	g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
+	g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
 
 	retval = g_test_run ();
-	if (service != NULL)
-		g_object_unref (service);
+	g_object_unref (service);
 
 	return retval;
 }

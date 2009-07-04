@@ -23,19 +23,13 @@
 #include "gdata.h"
 #include "common.h"
 
-/* TODO: probably a better way to do this; some kind of data associated with the test suite? */
-static GDataService *service = NULL;
-static GMainLoop *main_loop = NULL;
-
 static GDataContactsContact *
-get_contact (void)
+get_contact (GDataService *service)
 {
 	GDataFeed *feed;
 	GDataEntry *entry;
 	GList *entries;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -57,6 +51,7 @@ static void
 test_authentication (void)
 {
 	gboolean retval;
+	GDataService *service;
 	GError *error = NULL;
 
 	/* Create a service */
@@ -76,15 +71,15 @@ test_authentication (void)
 	g_assert (gdata_service_is_authenticated (service) == TRUE);
 	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
 	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+
+	g_object_unref (service);
 }
 
 static void
-test_query_all_contacts (void)
+test_query_all_contacts (GDataService *service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -97,7 +92,7 @@ test_query_all_contacts (void)
 }
 
 static void
-test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_result, gpointer user_data)
+test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -114,20 +109,19 @@ test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_res
 }
 
 static void
-test_query_all_contacts_async (void)
+test_query_all_contacts_async (GDataService *service)
 {
-	g_assert (service != NULL);
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL,
-						     NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, NULL);
+						     NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, main_loop);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 }
 
 static void
-test_insert_simple (void)
+test_insert_simple (GDataService *service)
 {
 	GDataContactsContact *contact, *new_contact;
 	GDataCategory *category;
@@ -137,8 +131,6 @@ test_insert_simple (void)
 	GDataGDPostalAddress *postal_address;
 	gchar *xml;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	contact = gdata_contacts_contact_new (NULL);
 
@@ -209,7 +201,7 @@ test_insert_simple (void)
 }
 
 static void
-test_query_uri (void)
+test_query_uri (GDataService *service)
 {
 	gchar *query_uri;
 	GDataContactsQuery *query = gdata_contacts_query_new ("q");
@@ -248,7 +240,7 @@ test_query_uri (void)
 }
 
 static void
-test_parser_minimal (void)
+test_parser_minimal (GDataService *service)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
@@ -283,7 +275,7 @@ test_parser_minimal (void)
 }
 
 static void
-test_photo_has_photo (void)
+test_photo_has_photo (GDataService *service)
 {
 	GDataContactsContact *contact;
 	gsize length = 0;
@@ -336,7 +328,7 @@ test_photo_has_photo (void)
 }
 
 static void
-test_photo_add (void)
+test_photo_add (GDataService *service)
 {
 	GDataContactsContact *contact;
 	gchar *data;
@@ -345,11 +337,10 @@ test_photo_add (void)
 	GError *error = NULL;
 
 	/* Get the photo */
-	/* TODO: Fix the path */
-	g_assert (g_file_get_contents ("/home/philip/Development/libgdata/gdata/tests/photo.jpg", &data, &length, NULL) == TRUE);
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", &data, &length, NULL) == TRUE);
 
 	/* Add it to the contact */
-	contact = get_contact ();
+	contact = get_contact (service);
 	retval = gdata_contacts_contact_set_photo (contact, service, data, length, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
@@ -360,14 +351,14 @@ test_photo_add (void)
 }
 
 static void
-test_photo_get (void)
+test_photo_get (GDataService *service)
 {
 	GDataContactsContact *contact;
 	gchar *data, *content_type = NULL;
 	gsize length = 0;
 	GError *error = NULL;
 
-	contact = get_contact ();
+	contact = get_contact (service);
 	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
 
 	/* Get the photo from the network */
@@ -386,12 +377,12 @@ test_photo_get (void)
 }
 
 static void
-test_photo_delete (void)
+test_photo_delete (GDataService *service)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
 
-	contact = get_contact ();
+	contact = get_contact (service);
 	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
 
 	/* Remove the contact's photo */
@@ -407,6 +398,7 @@ test_photo_delete (void)
 int
 main (int argc, char *argv[])
 {
+	GDataService *service;
 	gint retval;
 
 	g_type_init ();
@@ -414,24 +406,26 @@ main (int argc, char *argv[])
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
 
-	g_test_add_func ("/contacts/authentication", test_authentication);
-	g_test_add_func ("/contacts/query/all_contacts", test_query_all_contacts);
+	service = GDATA_SERVICE (gdata_contacts_service_new (CLIENT_ID));
+	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
+
+	g_test_add_data_func ("/contacts/authentication", service, test_authentication);
+	g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
 	if (g_test_thorough () == TRUE)
-		g_test_add_func ("/contacts/query/all_contacts_async", test_query_all_contacts_async);
+		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
 	if (g_test_slow () == TRUE)
-		g_test_add_func ("/contacts/insert/simple", test_insert_simple);
-	g_test_add_func ("/contacts/query/uri", test_query_uri);
-	g_test_add_func ("/contacts/parser/minimal", test_parser_minimal);
-	g_test_add_func ("/contacts/photo/has_photo", test_photo_has_photo);
+		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
+	g_test_add_data_func ("/contacts/query/uri", service, test_query_uri);
+	g_test_add_data_func ("/contacts/parser/minimal", service, test_parser_minimal);
+	g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
 	if (g_test_slow () == TRUE) {
-		g_test_add_func ("/contacts/photo/add", test_photo_add);
-		g_test_add_func ("/contacts/photo/get", test_photo_get);
-		g_test_add_func ("/contacts/photo/delete", test_photo_delete);
+		g_test_add_data_func ("/contacts/photo/add", service, test_photo_add);
+		g_test_add_data_func ("/contacts/photo/get", service, test_photo_get);
+		g_test_add_data_func ("/contacts/photo/delete", service, test_photo_delete);
 	}
 
 	retval = g_test_run ();
-	if (service != NULL)
-		g_object_unref (service);
+	g_object_unref (service);
 
 	return retval;
 }
