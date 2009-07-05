@@ -625,6 +625,19 @@ test_query_single_async (GDataService *service)
 	g_main_loop_unref (main_loop);
 }
 
+static void
+test_parsing_video_id_from_uri (void)
+{
+	gchar *video_id;
+
+	video_id = gdata_youtube_video_get_video_id_from_uri ("http://www.youtube.com/watch?v=BH_vwsyCrTc&feature=featured");
+	g_assert_cmpstr (video_id, ==, "BH_vwsyCrTc");
+	g_free (video_id);
+
+	video_id = gdata_youtube_video_get_video_id_from_uri ("http://foobar.com/not/real");
+	g_assert (video_id == NULL);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -658,6 +671,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 	if (g_test_slow () == TRUE)
 		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);
+	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
 
 	retval = g_test_run ();
 	g_object_unref (service);

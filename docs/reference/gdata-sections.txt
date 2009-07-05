@@ -234,6 +234,7 @@ gdata_youtube_video_get_uploaded
 gdata_youtube_video_get_recorded
 gdata_youtube_video_set_recorded
 gdata_youtube_video_get_video_id
+gdata_youtube_video_get_video_id_from_uri
 <SUBSECTION Standard>
 GDATA_IS_YOUTUBE_VIDEO
 GDATA_IS_YOUTUBE_VIDEO_CLASS

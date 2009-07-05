@@ -1305,3 +1305,46 @@ gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
 		self->priv->recorded = *recorded;
 	}
 }
+
+/**
+ * gdata_youtube_video_get_video_id_from_uri:
+ * @video_uri: a YouTube video player URI
+ *
+ * Extracts a video ID from a YouTube video player URI. The video ID is in the same form as returned by
+ * gdata_youtube_video_get_video_id(), and the @video_uri should be in the same form as returned by
+ * gdata_youtube_video_get_player_uri().
+ *
+ * For example:
+ * <informalexample><programlisting>
+ * video_id = gdata_youtube_video_get_video_id_from_uri ("http://www.youtube.com/watch?v=BH_vwsyCrTc&feature=featured");
+ * g_message ("Video ID: %s", video_id); /\* Should print: BH_vwsyCrTc *\/
+ * g_free (video_id);
+ * </programlisting></informalexample>
+ *
+ * Since: 0.4.0
+ **/
+gchar *
+gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)
+{
+	GHashTable *params;
+	gchar *video_id;
+	SoupURI *uri;
+
+	g_return_val_if_fail (video_uri != NULL && *video_uri != '\0', NULL);
+
+	/* Extract the query string from the URI */
+	uri = soup_uri_new (video_uri);
+	if (uri == NULL)
+		return NULL;
+	else if (uri->query == NULL) {
+		soup_uri_free (uri);
+		return NULL;
+	}
+
+	params = soup_form_decode (uri->query);
+	soup_uri_free (uri);
+	video_id = g_strdup (g_hash_table_lookup (params, "v"));
+	g_hash_table_destroy (params);
+
+	return video_id;
+}

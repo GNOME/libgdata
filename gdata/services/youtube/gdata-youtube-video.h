@@ -95,6 +95,8 @@ GDataYouTubeState *gdata_youtube_video_get_state (GDataYouTubeVideo *self);
 void gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
 void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
 
+gchar *gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri);
+
 G_END_DECLS
 
 #endif /* !GDATA_YOUTUBE_VIDEO_H */
