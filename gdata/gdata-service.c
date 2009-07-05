@@ -942,53 +942,18 @@ gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GErr
 	g_assert_not_reached ();
 }
 
-/**
- * gdata_service_query:
- * @self: a #GDataService
- * @feed_uri: the feed URI to query, including the host name and protocol
- * @query: a #GDataQuery with the query parameters, or %NULL
- * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
- * @error: a #GError, or %NULL
- *
- * Queries the service's @feed_uri feed to build a #GDataFeed.
- *
- * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
- * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
- *
- * A %GDATA_SERVICE_ERROR_WITH_QUERY will be returned if the server indicates there is a problem with the query, but subclasses may override
- * this and return their own errors. See their documentation for more details.
- *
- * For each entry in the response feed, @progress_callback will be called in the main thread. If there was an error parsing the XML response,
- * a #GDataParserError will be returned.
- *
- * If the query is successful and the feed supports pagination, @query will be updated with the pagination URIs, and the next or previous page
- * can then be loaded by calling gdata_query_next_page() or gdata_query_previous_page() before running the query again.
- *
- * If the #GDataQuery's ETag is set and it finds a match on the server, %FALSE will be returned, but @error will remain unset. Otherwise,
- * @query's ETag will be updated with the ETag from the returned feed, if available.
- *
- * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
- **/
-GDataFeed *
-gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type,
-		     GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+/* Does the bulk of the work of gdata_service_query. Split out because certain queries (such as that done by
+ * gdata_youtube_service_query_single_video()) only return a single entry, and thus need special parsing code. */
+SoupMessage *
+_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
+		      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataServiceClass *klass;
-	GDataFeed *feed;
 	SoupMessage *message;
-	gchar *query_uri;
 	guint status;
-	GDataLink *link;
-
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
-	g_return_val_if_fail (feed_uri != NULL, NULL);
-	g_return_val_if_fail (entry_type != G_TYPE_INVALID, NULL);
 
 	if (query != NULL) {
-		query_uri = gdata_query_get_query_uri (query, feed_uri);
+		gchar *query_uri = gdata_query_get_query_uri (query, feed_uri);
 		message = soup_message_new (SOUP_METHOD_GET, query_uri);
 		g_free (query_uri);
 	} else {
@@ -1026,11 +991,61 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 		return NULL;
 	}
 
+	return message;
+}
+
+/**
+ * gdata_service_query:
+ * @self: a #GDataService
+ * @feed_uri: the feed URI to query, including the host name and protocol
+ * @query: a #GDataQuery with the query parameters, or %NULL
+ * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_user_data: data to pass to the @progress_callback function
+ * @error: a #GError, or %NULL
+ *
+ * Queries the service's @feed_uri feed to build a #GDataFeed.
+ *
+ * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
+ * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
+ *
+ * A %GDATA_SERVICE_ERROR_WITH_QUERY will be returned if the server indicates there is a problem with the query, but subclasses may override
+ * this and return their own errors. See their documentation for more details.
+ *
+ * For each entry in the response feed, @progress_callback will be called in the main thread. If there was an error parsing the XML response,
+ * a #GDataParserError will be returned.
+ *
+ * If the query is successful and the feed supports pagination, @query will be updated with the pagination URIs, and the next or previous page
+ * can then be loaded by calling gdata_query_next_page() or gdata_query_previous_page() before running the query again.
+ *
+ * If the #GDataQuery's ETag is set and it finds a match on the server, %FALSE will be returned, but @error will remain unset. Otherwise,
+ * @query's ETag will be updated with the ETag from the returned feed, if available.
+ *
+ * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
+ **/
+GDataFeed *
+gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type,
+		     GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+{
+	GDataServiceClass *klass;
+	GDataFeed *feed;
+	SoupMessage *message;
+
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (feed_uri != NULL, NULL);
+	g_return_val_if_fail (entry_type != G_TYPE_INVALID, NULL);
+
+	message = _gdata_service_query (self, feed_uri, query, cancellable, progress_callback, progress_user_data, error);
 	g_assert (message->response_body->data != NULL);
 
+	klass = GDATA_SERVICE_GET_CLASS (self);
 	feed = _gdata_feed_new_from_xml (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
 					 progress_callback, progress_user_data, error);
 	g_object_unref (message);
+
+	if (feed == NULL)
+		return NULL;
 
 	/* Update the query with the feed's ETag */
 	if (query != NULL && feed != NULL && gdata_feed_get_etag (feed) != NULL)
@@ -1038,6 +1053,8 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 
 	/* Update the query with the next and previous URIs from the feed */
 	if (query != NULL && feed != NULL) {
+		GDataLink *link;
+
 		link = gdata_feed_look_up_link (feed, "next");
 		if (link != NULL)
 			_gdata_query_set_next_uri (query, gdata_link_get_uri (link));

@@ -576,6 +576,55 @@ test_query_uri (GDataService *service)
 	g_object_unref (query);
 }
 
+static void
+test_query_single (GDataService *service)
+{
+	GDataYouTubeVideo *video;
+	GError *error = NULL;
+
+	video = gdata_youtube_service_query_single_video (GDATA_YOUTUBE_SERVICE (service), NULL, "_LeQuMpwbW4", NULL, &error);
+
+	g_assert_no_error (error);
+	g_assert (video != NULL);
+	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
+	g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
+	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
+	g_clear_error (&error);
+
+	g_object_unref (video);
+}
+
+static void
+test_query_single_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GDataYouTubeVideo *video;
+	GError *error = NULL;
+
+	video = gdata_youtube_service_query_single_video_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
+
+	g_assert_no_error (error);
+	g_assert (video != NULL);
+	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
+	g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
+	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+	g_object_unref (video);
+}
+
+static void
+test_query_single_async (GDataService *service)
+{
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_youtube_service_query_single_video_async (GDATA_YOUTUBE_SERVICE (service), NULL, "_LeQuMpwbW4", NULL,
+							(GAsyncReadyCallback) test_query_single_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -606,6 +655,9 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/youtube/parsing/yt:recorded", service, test_parsing_yt_recorded);
 	g_test_add_data_func ("/youtube/query/uri", service, test_query_uri);
 	g_test_add_data_func ("/youtube/query/uri", service, test_query_uri);
+	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
+	if (g_test_slow () == TRUE)
+		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);
 
 	retval = g_test_run ();
 	g_object_unref (service);

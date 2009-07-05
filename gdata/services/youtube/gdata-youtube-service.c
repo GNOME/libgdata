@@ -508,6 +508,164 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
 }
 
 /**
+ * gdata_youtube_service_query_single_video:
+ * @self: a #GDataYouTubeService
+ * @query: a #GDataQuery with the query parameters, or %NULL
+ * @video_id: the video ID of the desired video
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Retrieves information about the single video with the given @video_id. @video_id should be as returned by
+ * gdata_youtube_video_get_video_id() or as extracted from a YouTube URI.
+ *
+ * Parameters and errors are as for gdata_service_query().
+ *
+ * Return value: a #GDataYouTubeVideo, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.4.0
+ **/
+GDataYouTubeVideo *
+gdata_youtube_service_query_single_video (GDataYouTubeService *self, GDataQuery *query, const gchar *video_id,
+					  GCancellable *cancellable, GError **error)
+{
+	gchar *feed_uri;
+	GDataParsable *video;
+	SoupMessage *message;
+
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (video_id != NULL, NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+
+	/* Query for just the specified video ID */
+	feed_uri = g_strconcat ("http://gdata.youtube.com/feeds/api/videos/", video_id, NULL);
+	message = _gdata_service_query (GDATA_SERVICE (self), feed_uri, query, cancellable, NULL, NULL, error);
+	g_free (feed_uri);
+
+	if (message == NULL)
+		return NULL;
+
+	g_assert (message->response_body->data != NULL);
+	video = gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO, message->response_body->data, message->response_body->length, error);
+	g_object_unref (message);
+
+	return GDATA_YOUTUBE_VIDEO (video);
+}
+
+typedef struct {
+	GDataQuery *query;
+	gchar *video_id;
+} QuerySingleVideoAsyncData;
+
+static void
+query_single_video_async_data_free (QuerySingleVideoAsyncData *data)
+{
+	g_free (data->video_id);
+	g_object_unref (data->query);
+	g_slice_free (QuerySingleVideoAsyncData, data);
+}
+
+static void
+query_single_video_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
+{
+	GDataYouTubeVideo *video;
+	GError *error = NULL;
+	QuerySingleVideoAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+
+	/* Check to see if it's been cancelled already */
+	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+		return;
+	}
+
+	/* Execute the query and return */
+	video = gdata_youtube_service_query_single_video (GDATA_YOUTUBE_SERVICE (service), data->query, data->video_id,
+							  cancellable, &error);
+	if (video == NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+	}
+
+	g_simple_async_result_set_op_res_gpointer (result, video, (GDestroyNotify) g_object_unref);
+}
+
+/**
+ * gdata_youtube_service_query_single_video_async:
+ * @self: a #GDataService
+ * @query: a #GDataQuery with the query parameters, or %NULL
+ * @video_id: the video ID of the desired video
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when authentication is finished
+ * @user_data: data to pass to the @callback function
+ *
+ * Retrieves information about the single video with the given @video_id. @video_id should be as returned by
+ * gdata_youtube_video_get_video_id() or as extracted from a YouTube URI. @self, @query and @video_id are reffed/copied when this
+ * function is called, so can safely be freed after this function returns.
+ *
+ * For more details, see gdata_youtube_service_query_single_video(), which is the synchronous version of this function.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_youtube_service_query_single_video_finish()
+ * to get the results of the operation.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_youtube_service_query_single_video_async (GDataYouTubeService *self, GDataQuery *query, const gchar *video_id,
+						GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+	QuerySingleVideoAsyncData *data;
+
+	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (video_id != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	data = g_slice_new (QuerySingleVideoAsyncData);
+	data->query = (query != NULL) ? g_object_ref (query) : NULL;
+	data->video_id = g_strdup (video_id);
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_youtube_service_query_single_video_async);
+	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) query_single_video_async_data_free);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) query_single_video_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_youtube_service_query_single_video_finish:
+ * @self: a #GDataYouTubeService
+ * @async_result: a #GAsyncResult
+ * @error: a #GError, or %NULL
+ *
+ * Finishes an asynchronous query operation for a single video, as started with gdata_youtube_service_query_single_video_async().
+ *
+ * Return value: a #GDataYouTubeVideo, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.4.0
+ **/
+GDataYouTubeVideo *
+gdata_youtube_service_query_single_video_finish (GDataYouTubeService *self, GAsyncResult *async_result, GError **error)
+{
+	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	GDataYouTubeVideo *video;
+
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+
+	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_youtube_service_query_single_video_async);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE)
+		return NULL;
+
+	video = g_simple_async_result_get_op_res_gpointer (result);
+	if (video != NULL)
+		return g_object_ref (video);
+
+	g_assert_not_reached ();
+}
+
+/**
  * gdata_youtube_service_query_related:
  * @self: a #GDataYouTubeService
  * @video: a #GDataYouTubeVideo for which to find related videos

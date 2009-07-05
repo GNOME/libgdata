@@ -31,6 +31,11 @@ G_BEGIN_DECLS
 #include "gdata-service.h"
 void _gdata_service_set_authenticated (GDataService *self, gboolean authenticated);
 guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GError **error);
+SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
+				   GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error);
+void _gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type, GCancellable *cancellable,
+				 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+				 GAsyncReadyCallback callback, gpointer user_data, GSimpleAsyncThreadFunc query_thread);
 
 #include "gdata-query.h"
 void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
