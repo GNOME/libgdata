@@ -634,6 +634,13 @@ test_parsing_video_id_from_uri (void)
 	g_assert_cmpstr (video_id, ==, "BH_vwsyCrTc");
 	g_free (video_id);
 
+	video_id = gdata_youtube_video_get_video_id_from_uri ("http://www.youtube.es/watch?v=foo");
+	g_assert_cmpstr (video_id, ==, "foo");
+	g_free (video_id);
+
+	video_id = gdata_youtube_video_get_video_id_from_uri ("http://foobar.com/watch?v=foo");
+	g_assert (video_id == NULL);
+
 	video_id = gdata_youtube_video_get_video_id_from_uri ("http://foobar.com/not/real");
 	g_assert (video_id == NULL);
 }

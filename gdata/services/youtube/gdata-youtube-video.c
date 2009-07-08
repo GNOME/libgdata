@@ -1314,6 +1314,9 @@ gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
  * gdata_youtube_video_get_video_id(), and the @video_uri should be in the same form as returned by
  * gdata_youtube_video_get_player_uri().
  *
+ * The function will validate whether the URI actually points to a hostname containing <literal>youtube</literal>
+ * (e.g. <literal>youtube.com</literal>), and will return %NULL if it doesn't.
+ *
  * For example:
  * <informalexample><programlisting>
  * video_id = gdata_youtube_video_get_video_id_from_uri ("http://www.youtube.com/watch?v=BH_vwsyCrTc&feature=featured");
@@ -1336,7 +1339,7 @@ gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)
 	uri = soup_uri_new (video_uri);
 	if (uri == NULL)
 		return NULL;
-	else if (uri->query == NULL) {
+	else if (uri->query == NULL || uri->host == NULL || strstr (uri->host, "youtube") == NULL) {
 		soup_uri_free (uri);
 		return NULL;
 	}
