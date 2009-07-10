@@ -674,7 +674,6 @@ main (int argc, char *argv[])
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
 	g_test_add_data_func ("/youtube/parsing/yt:recorded", service, test_parsing_yt_recorded);
 	g_test_add_data_func ("/youtube/query/uri", service, test_query_uri);
-	g_test_add_data_func ("/youtube/query/uri", service, test_query_uri);
 	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 	if (g_test_slow () == TRUE)
 		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);

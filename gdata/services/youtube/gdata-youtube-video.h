@@ -31,6 +31,22 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDataYouTubeAspectRatio:
+ * @GDATA_YOUTUBE_ASPECT_RATIO_UNKNOWN: unknown aspect ratio
+ * @GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN: widescreen (16:9) video
+ *
+ * The aspect ratio of a video. See the
+ * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:aspectratio">online documentation</ulink>
+ * for more information.
+ *
+ * Since: 0.4.0
+ **/
+typedef enum {
+	GDATA_YOUTUBE_ASPECT_RATIO_UNKNOWN = 0,
+	GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN
+} GDataYouTubeAspectRatio;
+
 #define GDATA_TYPE_YOUTUBE_VIDEO		(gdata_youtube_video_get_type ())
 #define GDATA_YOUTUBE_VIDEO(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideo))
 #define GDATA_YOUTUBE_VIDEO_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoClass))
@@ -94,6 +110,8 @@ void gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draf
 GDataYouTubeState *gdata_youtube_video_get_state (GDataYouTubeVideo *self);
 void gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
 void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
+GDataYouTubeAspectRatio gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self);
+void gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, GDataYouTubeAspectRatio aspect_ratio);
 
 gchar *gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri);
 

@@ -44,6 +44,7 @@
 #include "gdata-youtube-group.h"
 #include "gdata-types.h"
 #include "gdata-youtube-control.h"
+#include "gdata-youtube-enums.h"
 
 static void gdata_youtube_video_dispose (GObject *object);
 static void gdata_youtube_video_finalize (GObject *object);
@@ -97,7 +98,8 @@ enum {
 	PROP_VIDEO_ID,
 	PROP_IS_DRAFT,
 	PROP_STATE,
-	PROP_RECORDED
+	PROP_RECORDED,
+	PROP_ASPECT_RATIO
 };
 
 G_DEFINE_TYPE (GDataYouTubeVideo, gdata_youtube_video, GDATA_TYPE_ENTRY)
@@ -418,6 +420,23 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 					"Recorded", "Specifies the time the video was originally recorded.",
 					GDATA_TYPE_G_TIME_VAL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataYouTubeVideo:aspect-ratio:
+	 *
+	 * The aspect ratio of the video.
+	 *
+	 * For more information see the <ulink type="http"
+	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:aspectratio">online documentation</ulink>.
+	 *
+	 * Since: 0.4.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_ASPECT_RATIO,
+				g_param_spec_enum ("aspect-ratio",
+					"Aspect Ratio", "The aspect ratio of the video.",
+					GDATA_TYPE_YOUTUBE_ASPECT_RATIO,
+					GDATA_YOUTUBE_ASPECT_RATIO_UNKNOWN,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -525,6 +544,9 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_RECORDED:
 			g_value_set_boxed (value, &(priv->recorded));
 			break;
+		case PROP_ASPECT_RATIO:
+			g_value_set_enum (value, gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (priv->media_group)));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -564,6 +586,9 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 			break;
 		case PROP_RECORDED:
 			gdata_youtube_video_set_recorded (self, g_value_get_boxed (value));
+			break;
+		case PROP_ASPECT_RATIO:
+			gdata_youtube_video_set_aspect_ratio (self, g_value_get_enum (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -1350,4 +1375,38 @@ gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)
 	g_hash_table_destroy (params);
 
 	return video_id;
+}
+
+/**
+ * gdata_youtube_video_get_aspect_ratio:
+ * @self: a #GDataYouTubeVideo
+ *
+ * Gets the #GDataYouTubeVideo:aspect-ratio property.
+ *
+ * Return value: the aspect ratio property
+ *
+ * Since: 0.4.0
+ **/
+GDataYouTubeAspectRatio
+gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self)
+{
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
+	return gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (self->priv->media_group));
+}
+
+/**
+ * gdata_youtube_video_set_aspect_ratio:
+ * @self: a #GDataYouTubeVideo
+ * @aspect_ratio: the aspect ratio property
+ *
+ * Sets the #GDataYouTubeVideo:aspect-ratio property to specify the video's aspect ratio.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, GDataYouTubeAspectRatio aspect_ratio)
+{
+	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
+	gdata_youtube_group_set_aspect_ratio (GDATA_YOUTUBE_GROUP (self->priv->media_group), aspect_ratio);
+	g_object_notify (G_OBJECT (self), "aspect-ratio");
 }

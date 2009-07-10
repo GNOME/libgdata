@@ -49,6 +49,7 @@ struct _GDataYouTubeGroupPrivate {
 	gboolean is_private;
 	GTimeVal uploaded;
 	gchar *video_id;
+	GDataYouTubeAspectRatio aspect_ratio;
 };
 
 G_DEFINE_TYPE (GDataYouTubeGroup, gdata_youtube_group, GDATA_TYPE_MEDIA_GROUP)
@@ -146,6 +147,17 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return gdata_parser_error_duplicate_element (node, error);
 		}
 		self->priv->video_id = (gchar*) video_id;
+	} else if (xmlStrcmp (node->name, (xmlChar*) "aspectRatio") == 0) {
+		/* yt:aspectRatio */
+		xmlChar *aspect_ratio = xmlNodeGetContent (node);
+		if (xmlStrcmp (aspect_ratio, (xmlChar*) "widescreen") == 0) {
+			gdata_youtube_group_set_aspect_ratio (self, GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN);
+		} else {
+			gdata_parser_error_unknown_content (node, (const gchar*) aspect_ratio, error);
+			xmlFree (aspect_ratio);
+			return FALSE;
+		}
+		xmlFree (aspect_ratio);
 	} else if (GDATA_PARSABLE_CLASS (gdata_youtube_group_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -247,4 +259,37 @@ gdata_youtube_group_get_video_id (GDataYouTubeGroup *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_GROUP (self), NULL);
 	return self->priv->video_id;
+}
+
+/**
+ * gdata_youtube_group_get_aspect_ratio:
+ * @self: a #GDataYouTubeGroup
+ *
+ * Gets the #GDataYouTubeGroup:aspect-ratio property.
+ *
+ * Return value: the aspect ratio property
+ *
+ * Since: 0.4.0
+ **/
+GDataYouTubeAspectRatio
+gdata_youtube_group_get_aspect_ratio (GDataYouTubeGroup *self)
+{
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_GROUP (self), GDATA_YOUTUBE_ASPECT_RATIO_UNKNOWN);
+	return self->priv->aspect_ratio;
+}
+
+/**
+ * gdata_youtube_group_set_aspect_ratio:
+ * @self: a #GDataYouTubeGroup
+ * @aspect_ratio: the aspect ratio property
+ *
+ * Sets the #GDataYouTubeGroup:aspect-ratio property to decide the video aspect ratio.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_youtube_group_set_aspect_ratio (GDataYouTubeGroup *self, GDataYouTubeAspectRatio aspect_ratio)
+{
+	g_return_if_fail (GDATA_IS_YOUTUBE_GROUP (self));
+	self->priv->aspect_ratio = aspect_ratio;
 }
