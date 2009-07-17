@@ -91,8 +91,9 @@ gdata/media/Makefile
 gdata/services/Makefile
 gdata/services/calendar/Makefile
 gdata/services/contacts/Makefile
-gdata/services/youtube/Makefile
+gdata/services/documents/Makefile
 gdata/services/picasaweb/Makefile
+gdata/services/youtube/Makefile
 gdata/tests/Makefile
 po/Makefile.in
 docs/Makefile

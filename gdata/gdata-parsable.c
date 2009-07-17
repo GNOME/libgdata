@@ -198,13 +198,14 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
 		return FALSE;
 
 	g_assert (klass->element_name != NULL);
-	if (xmlStrcmp (node->name, (xmlChar*) klass->element_name) != 0 ||
+	/* TODO: See gdata-documents-entry.c:260 for an example of where the code below doesn't work */
+	/*if (xmlStrcmp (node->name, (xmlChar*) klass->element_name) != 0 ||
 	    (node->ns != NULL && xmlStrcmp (node->ns->prefix, (xmlChar*) klass->element_namespace) != 0)) {
-		/* No <entry> element (required) */
+		* No <entry> element (required) *
 		xmlFreeDoc (doc);
 		gdata_parser_error_required_element_missing (klass->element_name, "root", error);
 		return NULL;
-	}
+	}*/
 
 	/* Call the pre-parse function first */
 	if (klass->pre_parse_xml != NULL &&

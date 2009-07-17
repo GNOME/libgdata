@@ -147,6 +147,7 @@ gdata_entry_add_category
 gdata_entry_get_categories
 gdata_entry_add_link
 gdata_entry_look_up_link
+gdata_entry_look_up_links
 gdata_entry_is_inserted
 <SUBSECTION Standard>
 gdata_entry_get_type
@@ -256,6 +257,7 @@ gdata_contacts_service_new
 gdata_contacts_service_query_contacts
 gdata_contacts_service_query_contacts_async
 gdata_contacts_service_insert_contact
+gdata_contacts_service_update_contact
 <SUBSECTION Standard>
 gdata_contacts_service_get_type
 GDATA_CONTACTS_SERVICE
@@ -1259,4 +1261,190 @@ GDATA_PICASAWEB_FILE_GET_CLASS
 GDATA_TYPE_PICASAWEB_FILE
 <SUBSECTION Private>
 GDataPicasaWebFilePrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-entry</FILE>
+<TITLE>GDataDocumentsEntry</TITLE>
+GDataDocumentsEntry
+GDataDocumentsEntryClass
+gdata_documents_entry_get_path
+gdata_documents_entry_get_document_id
+gdata_documents_entry_get_edited
+gdata_documents_entry_get_last_modified_by
+gdata_documents_entry_get_last_viewed
+gdata_documents_entry_writers_can_invite
+gdata_documents_entry_set_writers_can_invite
+<SUBSECTION Standard>
+gdata_documents_entry_get_type
+GDATA_DOCUMENTS_ENTRY
+GDATA_DOCUMENTS_ENTRY_CLASS
+GDATA_DOCUMENTS_ENTRY_GET_CLASS
+GDATA_IS_DOCUMENTS_ENTRY
+GDATA_IS_DOCUMENTS_ENTRY_CLASS
+GDATA_TYPE_DOCUMENTS_ENTRY
+<SUBSECTION Private>
+GDataDocumentsEntryPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-feed</FILE>
+<TITLE>GDataDocumentsFeed</TITLE>
+GDataDocumentsFeed
+GDataDocumentsFeedClass
+<SUBSECTION Standard>
+gdata_documents_feed_get_type
+GDATA_DOCUMENTS_FEED
+GDATA_DOCUMENTS_FEED_CLASS
+GDATA_DOCUMENTS_FEED_GET_CLASS
+GDATA_IS_DOCUMENTS_FEED
+GDATA_IS_DOCUMENTS_FEED_CLASS
+GDATA_TYPE_DOCUMENTS_FEED
+<SUBSECTION Private>
+GDataDocumentsFeedPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-folder</FILE>
+<TITLE>GDataDocumentsFolder</TITLE>
+GDataDocumentsFolder
+GDataDocumentsFolderClass
+gdata_documents_folder_new
+<SUBSECTION Standard>
+gdata_documents_folder_get_type
+GDATA_DOCUMENTS_FOLDER
+GDATA_DOCUMENTS_FOLDER_CLASS
+GDATA_DOCUMENTS_FOLDER_GET_CLASS
+GDATA_IS_DOCUMENTS_FOLDER
+GDATA_IS_DOCUMENTS_FOLDER_CLASS
+GDATA_TYPE_DOCUMENTS_FOLDER
+<SUBSECTION Private>
+GDataDocumentsFolderPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-presentation</FILE>
+<TITLE>GDataDocumentsPresentation</TITLE>
+GDataDocumentsPresentation
+GDataDocumentsPresentationClass
+GDataDocumentsPresentationFormat
+gdata_documents_presentation_new
+gdata_documents_presentation_download_document
+<SUBSECTION Standard>
+gdata_documents_presentation_get_type
+GDATA_DOCUMENTS_PRESENTATION
+GDATA_DOCUMENTS_PRESENTATION_CLASS
+GDATA_DOCUMENTS_PRESENTATION_GET_CLASS
+GDATA_IS_DOCUMENTS_PRESENTATION
+GDATA_IS_DOCUMENTS_PRESENTATION_CLASS
+GDATA_TYPE_DATA_DOCUMENTS_PRESENTATION_FORMAT
+GDATA_TYPE_DOCUMENTS_PRESENTATION
+gdata_documents_presentation_format_get_type
+<SUBSECTION Private>
+GDataDocumentsPresentationPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-query</FILE>
+<TITLE>GDataDocumentsQuery</TITLE>
+GDataDocumentsQuery
+GDataDocumentsQueryClass
+gdata_documents_query_new
+gdata_documents_query_new_with_limits
+gdata_documents_query_show_deleted
+gdata_documents_query_set_show_deleted
+gdata_documents_query_show_folders
+gdata_documents_query_set_show_folders
+gdata_documents_query_get_folder_id
+gdata_documents_query_set_folder_id
+gdata_documents_query_get_title
+gdata_documents_query_get_exact_title
+gdata_documents_query_set_title
+gdata_documents_query_get_collaborator_addresses
+gdata_documents_query_add_collaborator
+gdata_documents_query_get_reader_addresses
+gdata_documents_query_add_reader
+<SUBSECTION Standard>
+gdata_documents_query_get_type
+GDATA_DOCUMENTS_QUERY
+GDATA_DOCUMENTS_QUERY_CLASS
+GDATA_DOCUMENTS_QUERY_GET_CLASS
+GDATA_IS_DOCUMENTS_QUERY
+GDATA_IS_DOCUMENTS_QUERY_CLASS
+GDATA_TYPE_DOCUMENTS_QUERY
+<SUBSECTION Private>
+GDataDocumentsQueryPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-spreadsheet</FILE>
+<TITLE>GDataDocumentsSpreadsheet</TITLE>
+GDataDocumentsSpreadsheet
+GDataDocumentsSpreadsheetClass
+GDataDocumentsSpreadsheetFormat
+gdata_documents_spreadsheet_new
+gdata_documents_spreadsheet_download_document
+<SUBSECTION Standard>
+gdata_documents_spreadsheet_get_type
+GDATA_DOCUMENTS_SPREADSHEET
+GDATA_DOCUMENTS_SPREADSHEET_CLASS
+GDATA_DOCUMENTS_SPREADSHEET_GET_CLASS
+GDATA_IS_DOCUMENTS_SPREADSHEET
+GDATA_IS_DOCUMENTS_SPREADSHEET_CLASS
+GDATA_TYPE_DATA_DOCUMENTS_SPREADSHEET_FORMAT
+GDATA_TYPE_DOCUMENTS_SPREADSHEET
+gdata_documents_spreadsheet_format_get_type
+<SUBSECTION Private>
+GDataDocumentsSpreadsheetPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-text</FILE>
+<TITLE>GDataDocumentsText</TITLE>
+GDataDocumentsText
+GDataDocumentsTextClass
+GDataDocumentsTextFormat
+gdata_documents_text_new
+gdata_documents_text_download_document
+<SUBSECTION Standard>
+gdata_documents_text_get_type
+GDATA_DOCUMENTS_TEXT
+GDATA_DOCUMENTS_TEXT_CLASS
+GDATA_DOCUMENTS_TEXT_GET_CLASS
+GDATA_IS_DOCUMENTS_TEXT
+GDATA_IS_DOCUMENTS_TEXT_CLASS
+GDATA_TYPE_DATA_DOCUMENTS_TEXT_FORMAT
+GDATA_TYPE_DOCUMENTS_TEXT
+gdata_documents_text_format_get_type
+<SUBSECTION Private>
+GDataDocumentsTextPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-service</FILE>
+<TITLE>GDataDocumentsService</TITLE>
+GDataDocumentsService
+GDataDocumentsServiceClass
+GDataDocumentsServiceError
+gdata_documents_service_new
+gdata_documents_service_query_documents
+gdata_documents_service_query_documents_async
+gdata_documents_service_upload_document
+gdata_documents_service_update_document
+gdata_documents_service_move_document_to_folder
+gdata_documents_service_remove_document_from_folder
+<SUBSECTION Standard>
+gdata_documents_service_get_type
+GDATA_DOCUMENTS_SERVICE
+GDATA_DOCUMENTS_SERVICE_CLASS
+GDATA_DOCUMENTS_SERVICE_ERROR
+GDATA_DOCUMENTS_SERVICE_GET_CLASS
+GDATA_IS_DOCUMENTS_SERVICE
+GDATA_IS_DOCUMENTS_SERVICE_CLASS
+GDATA_TYPE_DATA_DOCUMENTS_SERVICE_ERROR
+GDATA_TYPE_DOCUMENTS_SERVICE
+gdata_documents_service_error_get_type
+gdata_documents_service_error_quark
+<SUBSECTION Private>
+GDataDocumentsServicePrivate
 </SECTION>

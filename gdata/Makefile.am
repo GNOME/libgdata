@@ -94,6 +94,7 @@ libgdata_la_LIBADD = \
 	services/youtube/libgdatayoutube.la	\
 	services/calendar/libgdatacalendar.la	\
 	services/picasaweb/libgdatapicasaweb.la	\
+	services/documents/libgdatadocuments.la \
 	services/contacts/libgdatacontacts.la
 
 libgdata_la_LDFLAGS = \

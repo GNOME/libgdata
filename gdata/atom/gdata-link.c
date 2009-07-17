@@ -322,7 +322,11 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataLinkPrivate *priv = GDATA_LINK (parsable)->priv;
 
-	g_string_append_printf (xml_string, " href='%s'", priv->uri);
+	{
+		gchar *href = g_markup_escape_text (priv->uri, -1);
+		g_string_append_printf (xml_string, " href='%s'", href);
+		g_free (href);
+	}
 
 	if (priv->title != NULL) {
 		gchar *link_title = g_markup_escape_text (priv->title, -1);

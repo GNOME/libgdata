@@ -1,0 +1,633 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/*
+ * GData Client
+ * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
+ *
+ * GData Client is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * GData Client is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * SECTION:gdata-documents-entry
+ * @short_description: GData document object abstract class
+ * @stability: Unstable
+ * @include: gdata/services/documents/gdata-documents-entry.h
+ *
+ * #GDataDocumentsEntry is a subclass of #GDataEntry to represent a Google Documents entry, which is then further subclassed
+ * to give specific document types.
+ *
+ * For more details of Google Documents' GData API, see the <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">
+ * online documentation</ulink>.
+ *
+ * Since: 0.4.0
+ **/
+
+#include <config.h>
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+#include <libxml/parser.h>
+#include <string.h>
+
+#include "gdata-documents-entry.h"
+#include "gdata-parser.h"
+#include "gdata-types.h"
+#include "gdata-private.h"
+#include "gdata-access-handler.h"
+
+static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface);
+static void gdata_documents_entry_finalize (GObject *object);
+static void gdata_entry_dispose (GObject *object);
+static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+static void get_xml (GDataParsable *parsable, GString *xml_string);
+static void gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
+static void gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
+static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+
+struct _GDataDocumentsEntryPrivate {
+	GTimeVal edited;
+	GTimeVal last_viewed;
+	gchar *path;
+	gchar *document_id;
+	gboolean writers_can_invite;
+	GDataAuthor *last_modified_by;
+};
+
+enum {
+	PROP_EDITED = 1,
+	PROP_LAST_VIEWED,
+	PROP_PATH,
+	PROP_DOCUMENT_ID,
+	PROP_LAST_MODIFIED_BY,
+	PROP_WRITERS_CAN_INVITE
+};
+
+G_DEFINE_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
+			 G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_documents_entry_access_handler_init))
+#define GDATA_DOCUMENTS_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate))
+
+static void
+gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
+{
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (GDataDocumentsEntryPrivate));
+
+	gobject_class->get_property = gdata_documents_entry_get_property;
+	gobject_class->set_property = gdata_documents_entry_set_property;
+	gobject_class->finalize = gdata_documents_entry_finalize;
+	gobject_class->dispose = gdata_entry_dispose;
+
+	parsable_class->parse_xml = parse_xml;
+	parsable_class->get_xml = get_xml;
+	parsable_class->get_namespaces = get_namespaces;
+
+	/**
+	 * GDataDocumentsEntry:edited
+	 *
+	 * The last time the document was edited. If the document has not been edited yet, the content indicates the time it was created.
+	 *
+	 * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/protocol/#appEdited">
+	 * Atom Publishing Protocol specification</ulink>.
+	 *
+	 * Since: 0.4.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_EDITED,
+				g_param_spec_boxed ("edited",
+					"Edited", "The last time the document was edited.",
+					GDATA_TYPE_G_TIME_VAL,
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:last-viewed
+	 *
+	 * The last time the document was viewed.
+	 *
+	 * Since: 0.4.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LAST_VIEWED,
+				g_param_spec_boxed ("last-viewed",
+					"Last viewed", "The last time the document was viewed.",
+					GDATA_TYPE_G_TIME_VAL,
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:writers-can-invite:
+	 *
+	 * Indicates whether the document entry writers can invite others to edit the document.
+	 *
+	 * Since: 0.4.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_WRITERS_CAN_INVITE,
+				g_param_spec_boolean ("writers-can-invite",
+					"Writers can invite?", "Indicates whether writers can invite others to edit.",
+					FALSE,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:path
+	 *
+	 * Indicates the folder hierarchy path containing the document.
+	 *
+	 * Since: 0.4.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_PATH,
+				g_param_spec_string ("path",
+					"Path", "Indicates the folder hierarchy path containing the document.",
+					NULL,
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:document-id
+	 *
+	 * The document ID of the document, which is different from its entry ID (GDataEntry:id).
+	 *
+	 * Since: 0.4.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_DOCUMENT_ID,
+				g_param_spec_string ("document-id",
+					"Document ID", "The document ID of the document.",
+					NULL,
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:last-modified-by
+	 *
+	 * Indicates the author of the last modification.
+	 *
+	 * Since: 0.4.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LAST_MODIFIED_BY,
+				g_param_spec_object ("last-modified-by",
+					"Last modified by", "Indicates the author of the last modification.",
+					GDATA_TYPE_AUTHOR,
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+}
+
+static void
+gdata_documents_entry_init (GDataDocumentsEntry *self)
+{
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate);
+}
+
+static gboolean
+is_owner_rule (GDataAccessRule *rule)
+{
+	return (strcmp (gdata_access_rule_get_role (rule), "owner") == 0) ? TRUE : FALSE;
+}
+
+static void
+gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface)
+{
+	iface->is_owner_rule = is_owner_rule;
+}
+
+static gboolean
+parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+{
+	GDataDocumentsEntry *self;
+
+	self = GDATA_DOCUMENTS_ENTRY (parsable);
+
+	if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
+		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
+		if (g_time_val_from_iso8601 ((gchar*) edited, &(self->priv->edited)) == FALSE) {
+			gdata_parser_error_not_iso8601_format (node, (gchar*) edited, error);
+			xmlFree (edited);
+			return FALSE;
+		}
+		xmlFree (edited);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "lastViewed") == 0) {
+		xmlChar *last_viewed = xmlNodeListGetString (doc, node->children, TRUE);
+		if (g_time_val_from_iso8601 ((gchar*) last_viewed, &(self->priv->last_viewed)) == FALSE) {
+			gdata_parser_error_not_iso8601_format (node, (gchar*) last_viewed, error);
+			xmlFree (last_viewed);
+			return FALSE;
+		}
+		xmlFree (last_viewed);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
+		xmlChar *writers_can_invite = xmlGetProp (node, (xmlChar*) "value");
+		if (xmlStrcmp (writers_can_invite, (xmlChar*) "true") == 0) {
+			self->priv->writers_can_invite = TRUE;
+		} else if (xmlStrcmp (writers_can_invite, (xmlChar*) "false") == 0) {
+			self->priv->writers_can_invite = FALSE;
+		} else {
+			gdata_parser_error_unknown_property_value (node, "value", (gchar*) writers_can_invite, error);
+			xmlFree (writers_can_invite);
+			return FALSE;
+		}
+		xmlFree (writers_can_invite);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
+		gchar **document_id_parts;
+		xmlChar *resource_id;
+
+		if (self->priv->document_id != NULL)
+			return gdata_parser_error_duplicate_element (node, error);
+
+		resource_id = xmlNodeListGetString (doc, node->children, TRUE);
+		if (resource_id == NULL || *resource_id == '\0') {
+			xmlFree (resource_id);
+			return gdata_parser_error_required_content_missing (node, error);
+		}
+
+		document_id_parts = g_strsplit ((gchar*) resource_id, ":", 2);
+		if (document_id_parts == NULL) {
+			gdata_parser_error_unknown_content (node, (gchar*) resource_id, error);
+			xmlFree (resource_id);
+			return FALSE;
+		}
+		xmlFree (resource_id);
+
+		self->priv->document_id = g_strdup (document_id_parts[1]);
+		g_strfreev (document_id_parts);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "feedLink") ==  0) {
+		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
+		if (link == NULL)
+			return FALSE;
+		gdata_entry_add_link (GDATA_ENTRY (self), link);
+		g_object_unref (link);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "lastModifiedBy") ==  0) {
+		GDataAuthor *last_modified_by = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
+		if (last_modified_by == NULL)
+			return FALSE;
+		self->priv->last_modified_by = last_modified_by;
+	} else if (GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
+		/* Error! */
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static void
+gdata_documents_entry_finalize (GObject *object)
+{
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY_GET_PRIVATE (object);
+
+	g_free (priv->path);
+	g_free (priv->document_id);
+
+	/* Chain up to the parent class */
+	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->finalize (object);
+}
+
+static void
+gdata_entry_dispose (GObject *object)
+{
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY_GET_PRIVATE (object);
+
+	if (priv->last_modified_by != NULL)
+		g_object_unref (priv->last_modified_by);
+	priv->last_modified_by = NULL;
+
+	/* Chain up to the parent class */
+	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->dispose (object);
+}
+
+static void
+gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+{
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY_GET_PRIVATE (object);
+
+	switch (property_id) {
+		case PROP_PATH:
+			g_value_set_string (value, priv->path);
+			break;
+		case PROP_DOCUMENT_ID:
+			g_value_set_string (value, priv->document_id);
+			break;
+		case PROP_WRITERS_CAN_INVITE:
+			g_value_set_boolean (value, priv->writers_can_invite);
+			break;
+		case PROP_EDITED:
+			g_value_set_boxed (value, &(priv->edited));
+			break;
+		case PROP_LAST_VIEWED:
+			g_value_set_boxed (value, &(priv->last_viewed));
+			break;
+		case PROP_LAST_MODIFIED_BY:
+			g_value_set_object (value, priv->last_modified_by);
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
+}
+
+static void
+gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+{
+	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (object);
+
+	switch (property_id) {
+		case PROP_WRITERS_CAN_INVITE:
+			gdata_documents_entry_set_writers_can_invite (self, g_value_get_boolean (value));
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
+}
+
+static void
+get_xml (GDataParsable *parsable, GString *xml_string)
+{
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (parsable)->priv;
+
+	/* Chain up to the parent class */
+	GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->get_xml (parsable, xml_string);
+
+	/* TODO: Only output "kind" categories? */
+
+	if (priv->writers_can_invite == TRUE)
+		g_string_append (xml_string, "<docs:writersCanInvite value='true'/>");
+	else
+		g_string_append (xml_string, "<docs:writersCanInvite value='false'/>");
+}
+
+
+static void
+get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
+{
+	/* Chain up to the parent class */
+	GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->get_namespaces (parsable, namespaces);
+
+	g_hash_table_insert (namespaces, (gchar*) "docs", (gchar*) "http://schemas.google.com/docs/2007");
+}
+
+/**
+ * gdata_documents_entry_get_edited:
+ * @self: a #GDataDocumentsEntry
+ * @edited: a #GTimeVal
+ *
+ * Gets the #GDataDocumentsEntry:edited property and puts it in @edited. If the property is unset,
+ * both fields in the #GTimeVal will be set to %0.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_documents_entry_get_edited (GDataDocumentsEntry *self, GTimeVal *edited)
+{
+	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
+	g_return_if_fail (edited != NULL);
+	edited = &(self->priv->edited);
+}
+
+/**
+ * gdata_documents_entry_get_last_viewed:
+ * @self: a #GDataDocumentsEntry
+ * @last_viewed: a #GTimeVal
+ *
+ * Gets the #GDataDocumentsEntry:last-viewed property and puts it in @last_viewed. If the property is unset,
+ * both fields in the #GTimeVal will be set to %0.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self, GTimeVal *last_viewed)
+{
+	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
+	g_return_if_fail (last_viewed != NULL);
+	*last_viewed = self->priv->last_viewed;
+}
+
+/**
+ * gdata_documents_entry_get_path:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:path property.
+ *
+ * Return value: the folder hierarchy path containing the entry
+ *
+ * Since: 0.4.0
+ **/
+const gchar *
+gdata_documents_entry_get_path (GDataDocumentsEntry *self)
+{
+	GList *element, *parent_folders;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
+
+	if (self->priv->path != NULL)
+		return self->priv->path;
+
+	parent_folders = gdata_entry_look_up_links (GDATA_ENTRY (self), "http://schemas.google.com/docs/2007#parent");
+	for (element = parent_folders; element != NULL; element = element->next) {
+		if (self->priv->path == NULL)
+			self->priv->path = g_strdup (gdata_link_get_title (((GDataLink*) element->data)));
+		else
+			self->priv->path = g_strconcat (self->priv->path, gdata_link_get_title (((GDataLink*) element->data)), NULL);
+	}
+
+	return self->priv->path;
+}
+
+/**
+ * gdata_documents_entry_get_document_id:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:document-id property.
+ *
+ * Return value: the document's document ID
+ *
+ * Since: 0.4.0
+ **/
+const gchar *
+gdata_documents_entry_get_document_id (GDataDocumentsEntry *self )
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
+	return self->priv->document_id;
+}
+
+/**
+ * gdata_documents_entry_set_writers_can_invite:
+ * @self: a #GDataDocumentsEntry
+ * @writers_can_invite: %TRUE if writers can invite other people to edit the document, %FALSE otherwise
+ *
+ * Sets the #GDataDocumentsEntry:writers-can-invite property to @writers_can_invite.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_documents_entry_set_writers_can_invite (GDataDocumentsEntry *self, gboolean writers_can_invite)
+{
+	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
+	self->priv->writers_can_invite = writers_can_invite;
+	g_object_notify (G_OBJECT (self), "writers-can-invite");
+}
+
+/**
+ * gdata_documents_entry_writers_can_invite:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:writers-can-invite property.
+ *
+ * Return value: %TRUE if writers can invite other people to edit the document, %FALSE otherwise
+ *
+ * Since: 0.4.0
+ **/
+gboolean
+gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self ), FALSE);
+	return self->priv->writers_can_invite;
+}
+
+/**
+ * gdata_documents_entry_get_last_modified_by:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:last-modified-by property.
+ *
+ * Return value: the author who last modified the document
+ *
+ * Since: 0.4.0
+ **/
+GDataAuthor *
+gdata_documents_entry_get_last_modified_by (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
+	return self->priv->last_modified_by;
+}
+
+static void
+got_chunk_cb (SoupMessage *message, SoupBuffer *chunk, GOutputStream *output_stream)
+{
+	g_output_stream_write (output_stream, (void*) chunk->data, chunk->length, NULL, NULL);
+}
+
+/*
+ * _gdata_documents_entry_download_document:
+ * @self: a #GDataDocumentsEntry
+ * @service: an authenticated #GDataDocumentsService
+ * @content_type: return location for the document's content type, or %NULL; free with g_free()
+ * @download_uri: the URI to download the document
+ * @destination_directory: the directory into which the file should be downloaded
+ * @file_extension: the extension with which to save the downloaded file
+ * @replace_file_if_exists: %TRUE if you want to replace the file if it exists, %FALSE otherwise
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Downloads and returns the actual file which comprises the document here. If the document doesn't exist,
+ * the downloaded document will be an HTML file containing the error explanation.
+ * TODO: Is that still true?
+ *
+ * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
+ * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
+ *
+ * If @replace_file_if_exists is set to %FALSE and the destination file already exists, a %G_IO_ERROR_EXISTS will be returned.
+ *
+ * If @service isn't authenticated, a %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED is returned.
+ *
+ * If there is an error downloading the document, a %GDATA_SERVICE_ERROR_WITH_QUERY error will be returned.
+ *
+ * Return value: a #GFile pointing to the downloaded document, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.4.0
+ */
+GFile *
+_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, gchar *download_uri,
+					  GFile *destination_directory, const gchar *file_extension, gboolean replace_file_if_exists,
+					  GCancellable *cancellable, GError **error)
+{
+	GDataServiceClass *klass;
+	GFileOutputStream *file_stream;
+	GFile *destination_file;
+	SoupMessage *message;
+	guint status;
+	const gchar *document_title;
+	gchar *filename;
+
+	/* TODO: async version */
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
+	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (download_uri != NULL, NULL);
+	g_return_val_if_fail (G_IS_FILE (destination_directory), NULL);
+	g_return_val_if_fail (file_extension != NULL, NULL);
+
+	/* Ensure we're authenticated first */
+	if (gdata_service_is_authenticated (GDATA_SERVICE (service)) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+				     _("You must be authenticated to download documents."));
+		return NULL;
+	}
+
+	/* Prepare the GFile */
+	document_title = gdata_entry_get_title (GDATA_ENTRY (self));
+	filename = g_strdup_printf ("%s.%s", document_title, file_extension);
+	destination_file = g_file_get_child (destination_directory, filename);
+	g_free (filename);
+
+	/* Check if the file exists */
+	if (g_file_query_exists (destination_file, cancellable) == TRUE) {
+		/* Replace a pre-existing file */
+		if (replace_file_if_exists == TRUE) {
+			file_stream = g_file_replace (destination_file, NULL, TRUE, G_FILE_CREATE_REPLACE_DESTINATION,
+						      cancellable, error);
+		} else {
+			g_set_error (error, G_IO_ERROR_EXISTS, 1, NULL);
+			return NULL;
+		}
+	} else {
+		/* Create a new file */
+		file_stream = g_file_create (destination_file, G_FILE_CREATE_NONE, cancellable, error);
+	}
+
+	/* Get the document URI */
+	message = soup_message_new (SOUP_METHOD_GET, download_uri);
+
+	/* We copy the data to disk as it comes through the network pipe */
+	soup_message_body_set_accumulate (message->response_body, FALSE);
+	g_signal_connect (message, "got-chunk", (GCallback) got_chunk_cb, file_stream);
+
+	/* Make sure the headers are set */
+	klass = GDATA_SERVICE_GET_CLASS (service);
+	if (klass->append_query_headers != NULL)
+		klass->append_query_headers (GDATA_SERVICE (service), message);
+
+	/* Send the message */
+	status = _gdata_service_send_message (GDATA_SERVICE (service), message, error);
+	g_object_unref (file_stream);
+	if (status == SOUP_STATUS_NONE) {
+		g_object_unref (message);
+		g_object_unref (destination_file);
+		return NULL;
+	}
+
+	/* Check for cancellation */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
+		g_object_unref (message);
+		g_object_unref (destination_file);
+		return NULL;
+	}
+
+	if (status != 200) {
+		/* Error */
+		g_assert (klass->parse_error_response != NULL);
+		klass->parse_error_response (GDATA_SERVICE (service), GDATA_SERVICE_ERROR_WITH_QUERY, status, message->reason_phrase,
+					     message->response_body->data, message->response_body->length, error);
+		g_object_unref (message);
+		g_object_unref (destination_file);
+		return NULL;
+	}
+
+	/* Sort out the return values */
+	if (content_type != NULL)
+		*content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
+
+	g_object_unref (message);
+
+	return destination_file;
+}

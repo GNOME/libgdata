@@ -705,6 +705,8 @@ link_compare_cb (const GDataLink *link, const gchar *rel)
  * Looks up a link by relation type from the list of links in the entry. If the link has one of the standard Atom relation types,
  * use one of the defined @rel values, instead of a static string. e.g. %GDATA_LINK_EDIT or %GDATA_LINK_SELF.
  *
+ * In the rare event of requiring a list of links with the same @rel value, use gdata_entry_look_up_links().
+ *
  * Return value: a #GDataLink, or %NULL if one was not found
  *
  * Since: 0.1.1
@@ -721,6 +723,39 @@ gdata_entry_look_up_link (GDataEntry *self, const gchar *rel)
 	if (element == NULL)
 		return NULL;
 	return GDATA_LINK (element->data);
+}
+
+/**
+ * gdata_entry_look_up_links:
+ * @self: a #GDataEntry
+ * @rel: the value of the <structfield>rel</structfield> attribute of the desired links
+ *
+ * Looks up a list of links by relation type from the list of links in the entry. If the links have one of the standard Atom
+ * relation types, use one of the defined @rel values, instead of a static string. e.g. %GDATA_LINK_EDIT or %GDATA_LINK_SELF.
+ *
+ * If you will only use the first link found, consider calling gdata_entry_look_up_link() instead.
+ *
+ * Return value: a #GList of #GDataLink<!-- -->s, or %NULL if none were found
+ *
+ * Since: 0.4.0
+ **/
+GList *
+gdata_entry_look_up_links (GDataEntry *self, const gchar *rel)
+{
+	GList *element = self->priv->links, *results = NULL;
+
+	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
+	g_return_val_if_fail (rel != NULL, NULL);
+
+	do {
+		element = g_list_find_custom (element, rel, (GCompareFunc) link_compare_cb);
+		if (element == NULL)
+			return results;
+		results = g_list_prepend (results, element);
+		element = element->next;
+	} while (element != NULL);
+
+	return g_list_reverse (results);
 }
 
 /**

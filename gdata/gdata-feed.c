@@ -376,15 +376,6 @@ typedef struct {
 } ProgressCallbackData;
 
 static gboolean
-progress_callback_idle (ProgressCallbackData *data)
-{
-	data->progress_callback (data->entry, data->entry_i, data->total_results, data->progress_user_data);
-	g_object_unref (data->entry);
-	g_slice_free (ProgressCallbackData, data);
-	return FALSE;
-}
-
-static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
 	GDataFeed *self;
@@ -401,26 +392,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		GDataEntry *entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (data->entry_type, doc, node, NULL, error));
 		if (entry == NULL)
 			return FALSE;
-
-		/* Call the progress callback in the main thread */
-		if (data->progress_callback != NULL) {
-			ProgressCallbackData *progress_data;
-
-			/* Build the data for the callback */
-			progress_data = g_slice_new (ProgressCallbackData);
-			progress_data->progress_callback = data->progress_callback;
-			progress_data->progress_user_data = data->progress_user_data;
-			progress_data->entry = g_object_ref (entry);
-			progress_data->entry_i = data->entry_i;
-			progress_data->total_results = MIN (self->priv->items_per_page, self->priv->total_results);
-
-			/* Send the callback; use G_PRIORITY_DEFAULT rather than G_PRIORITY_DEFAULT_IDLE
-			 * to contend with the priorities used by the callback functions in GAsyncResult */
-			g_idle_add_full (G_PRIORITY_DEFAULT, (GSourceFunc) progress_callback_idle, progress_data, NULL);
-		}
-
-		data->entry_i++;
-		self->priv->entries = g_list_prepend (self->priv->entries, entry);
+		/*calls the callbacks in the main thread*/
+		_gdata_feed_call_progress_callback (self, data, entry);
+		_gdata_feed_add_entry (self, entry);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
 		/* atom:title */
 		if (self->priv->title != NULL)
@@ -583,15 +557,11 @@ _gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType 
 	g_return_val_if_fail (xml != NULL, NULL);
 	g_return_val_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY) == TRUE, FALSE);
 
-	data = g_slice_new (ParseData);
-	data->entry_type = entry_type;
-	data->progress_callback = progress_callback;
-	data->progress_user_data = progress_user_data;
-	data->entry_i = 0;
+	data = _gdata_feed_parse_data_new (entry_type, progress_callback, progress_user_data);
 
 	feed = GDATA_FEED (_gdata_parsable_new_from_xml (feed_type, xml, length, data, error));
 
-	g_slice_free (ParseData, data);
+	_gdata_feed_parse_data_free(data);
 
 	return feed;
 }
@@ -870,3 +840,63 @@ gdata_feed_get_total_results (GDataFeed *self)
 	g_return_val_if_fail (GDATA_IS_FEED (self), 0);
 	return self->priv->total_results;
 }
+
+void
+_gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry)
+{
+	g_return_if_fail (GDATA_IS_FEED (self));
+	g_return_if_fail (GDATA_IS_ENTRY (entry));
+	self->priv->entries = g_list_prepend (self->priv->entries, entry);
+}
+
+gpointer
+_gdata_feed_parse_data_new (GType entry_type, GDataQueryProgressCallback progress_callback, gpointer progress_user_data)
+{
+	ParseData *data;
+	data = g_slice_new (ParseData);
+	data->entry_type = entry_type;
+	data->progress_callback = progress_callback;
+	data->progress_user_data = progress_user_data;
+	data->entry_i = 0;
+	return data;
+}
+
+void
+_gdata_feed_parse_data_free (gpointer data)
+{
+	g_slice_free (ParseData, data);
+}
+
+
+static gboolean
+progress_callback_idle (ProgressCallbackData *data)
+{
+	data->progress_callback (data->entry, data->entry_i, data->total_results, data->progress_user_data);
+	g_object_unref (data->entry);
+	g_slice_free (ProgressCallbackData, data);
+	return FALSE;
+}
+
+void
+_gdata_feed_call_progress_callback (GDataFeed *self, gpointer user_data, GDataEntry *entry)
+{
+	ParseData *data = user_data;
+
+	if (data->progress_callback != NULL) {
+		ProgressCallbackData *progress_data;
+
+		/* Build the data for the callback */
+		progress_data = g_slice_new (ProgressCallbackData);
+		progress_data->progress_callback = data->progress_callback;
+		progress_data->progress_user_data = data->progress_user_data;
+		progress_data->entry = g_object_ref (entry);
+		progress_data->entry_i = data->entry_i;
+		progress_data->total_results = MIN (self->priv->items_per_page, self->priv->total_results);
+
+		/* Send the callback; use G_PRIORITY_DEFAULT rather than G_PRIORITY_DEFAULT_IDLE
+		* to contend with the priorities used by the callback functions in GAsyncResult */
+		g_idle_add_full (G_PRIORITY_DEFAULT, (GSourceFunc) progress_callback_idle, progress_data, NULL);
+	}
+	data->entry_i++;
+}
+

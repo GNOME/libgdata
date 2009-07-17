@@ -1350,6 +1350,8 @@ gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
  * </programlisting></informalexample>
  *
  * Since: 0.4.0
+ *
+ * Return value: the video ID, or %NULL; free with g_free()
  **/
 gchar *
 gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)

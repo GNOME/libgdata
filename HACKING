@@ -139,6 +139,8 @@ The short explanation of a commit should always be prefixed by a tag to describe
 
  - [contacts] — for the Google Contacts code in gdata/services/contacts.
 
+ - [documents] — for the Google Documents code in gdata/services/documents.
+
  - [picasaweb] — for the PicasaWeb code in gdata/services/picasaweb.
 
  - [youtube] — for the YouTube code in gdata/services/youtube.
