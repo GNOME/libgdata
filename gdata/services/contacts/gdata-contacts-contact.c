@@ -145,37 +145,13 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 static void
 gdata_contacts_contact_dispose (GObject *object)
 {
-	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (object)->priv;
+	GDataContactsContact *self = GDATA_CONTACTS_CONTACT (object);
 
-	if (priv->organizations != NULL) {
-		g_list_foreach (priv->organizations, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->organizations);
-	}
-	priv->organizations = NULL;
-
-	if (priv->email_addresses != NULL) {
-		g_list_foreach (priv->email_addresses, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->email_addresses);
-	}
-	priv->email_addresses = NULL;
-
-	if (priv->im_addresses != NULL) {
-		g_list_foreach (priv->im_addresses, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->im_addresses);
-	}
-	priv->im_addresses = NULL;
-
-	if (priv->postal_addresses != NULL) {
-		g_list_foreach (priv->postal_addresses, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->postal_addresses);
-	}
-	priv->postal_addresses = NULL;
-
-	if (priv->phone_numbers != NULL) {
-		g_list_foreach (priv->phone_numbers, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->phone_numbers);
-	}
-	priv->phone_numbers = NULL;
+	gdata_contacts_contact_remove_all_organizations (self);
+	gdata_contacts_contact_remove_all_email_addresses (self);
+	gdata_contacts_contact_remove_all_im_addresses (self);
+	gdata_contacts_contact_remove_all_postal_addresses (self);
+	gdata_contacts_contact_remove_all_phone_numbers (self);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->dispose (object);
@@ -516,6 +492,28 @@ gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self)
 }
 
 /**
+ * gdata_contacts_contact_remove_all_email_addresses:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all e-mail addresses from the contact.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_contacts_contact_remove_all_email_addresses (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->email_addresses != NULL) {
+		g_list_foreach (priv->email_addresses, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->email_addresses);
+	}
+	priv->email_addresses = NULL;
+}
+
+/**
  * gdata_contacts_contact_add_im_address:
  * @self: a #GDataContactsContact
  * @im_address: a #GDataGDIMAddress to add
@@ -580,6 +578,28 @@ gdata_contacts_contact_get_primary_im_address (GDataContactsContact *self)
 	}
 
 	return NULL;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_im_addresses:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all IM addresses from the contact.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_contacts_contact_remove_all_im_addresses (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->im_addresses != NULL) {
+		g_list_foreach (priv->im_addresses, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->im_addresses);
+	}
+	priv->im_addresses = NULL;
 }
 
 /**
@@ -650,6 +670,28 @@ gdata_contacts_contact_get_primary_phone_number (GDataContactsContact *self)
 }
 
 /**
+ * gdata_contacts_contact_remove_all_phone_numbers:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all phone numbers from the contact.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_contacts_contact_remove_all_phone_numbers (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->phone_numbers != NULL) {
+		g_list_foreach (priv->phone_numbers, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->phone_numbers);
+	}
+	priv->phone_numbers = NULL;
+}
+
+/**
  * gdata_contacts_contact_add_postal_address:
  * @self: a #GDataContactsContact
  * @postal_address: a #GDataGDPostalAddress to add
@@ -717,6 +759,28 @@ gdata_contacts_contact_get_primary_postal_address (GDataContactsContact *self)
 }
 
 /**
+ * gdata_contacts_contact_remove_all_postal_addresses:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all postal addresses from the contact.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_contacts_contact_remove_all_postal_addresses (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->postal_addresses != NULL) {
+		g_list_foreach (priv->postal_addresses, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->postal_addresses);
+	}
+	priv->postal_addresses = NULL;
+}
+
+/**
  * gdata_contacts_contact_add_organization:
  * @self: a #GDataContactsContact
  * @organization: a #GDataGDOrganization to add
@@ -781,6 +845,28 @@ gdata_contacts_contact_get_primary_organization (GDataContactsContact *self)
 	}
 
 	return NULL;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_organizations:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all organizations from the contact.
+ *
+ * Since: 0.4.0
+ **/
+void
+gdata_contacts_contact_remove_all_organizations (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->organizations != NULL) {
+		g_list_foreach (priv->organizations, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->organizations);
+	}
+	priv->organizations = NULL;
 }
 
 /**

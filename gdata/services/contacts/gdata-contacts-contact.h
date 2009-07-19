@@ -71,22 +71,27 @@ gboolean gdata_contacts_contact_is_deleted (GDataContactsContact *self);
 void gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEmailAddress *email_address);
 GList *gdata_contacts_contact_get_email_addresses (GDataContactsContact *self);
 GDataGDEmailAddress *gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_email_addresses (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_im_address (GDataContactsContact *self, GDataGDIMAddress *im_address);
 GList *gdata_contacts_contact_get_im_addresses (GDataContactsContact *self);
 GDataGDIMAddress *gdata_contacts_contact_get_primary_im_address (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_im_addresses (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhoneNumber *phone_number);
 GList *gdata_contacts_contact_get_phone_numbers (GDataContactsContact *self);
 GDataGDPhoneNumber *gdata_contacts_contact_get_primary_phone_number (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_phone_numbers (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_postal_address (GDataContactsContact *self, GDataGDPostalAddress *postal_address);
 GList *gdata_contacts_contact_get_postal_addresses (GDataContactsContact *self);
 GDataGDPostalAddress *gdata_contacts_contact_get_primary_postal_address (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_postal_addresses (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrganization *organization);
 GList *gdata_contacts_contact_get_organizations (GDataContactsContact *self);
 GDataGDOrganization *gdata_contacts_contact_get_primary_organization (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_organizations (GDataContactsContact *self);
 
 const gchar *gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const gchar *name);
 GHashTable *gdata_contacts_contact_get_extended_properties (GDataContactsContact *self);
