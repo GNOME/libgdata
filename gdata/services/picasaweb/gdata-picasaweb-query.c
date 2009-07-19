@@ -275,10 +275,14 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	}
 
 	if (priv->bounding_box.north != priv->bounding_box.south && priv->bounding_box.east != priv->bounding_box.west) {
+		gchar west[G_ASCII_DTOSTR_BUF_SIZE], south[G_ASCII_DTOSTR_BUF_SIZE], east[G_ASCII_DTOSTR_BUF_SIZE], north[G_ASCII_DTOSTR_BUF_SIZE];
+
 		APPEND_SEP
-		g_string_append_printf (query_uri, "bbox=%f,%f,%f,%f",
-					priv->bounding_box.west, priv->bounding_box.south,
-					priv->bounding_box.east, priv->bounding_box.north);
+		g_string_append_printf (query_uri, "bbox=%s,%s,%s,%s",
+					g_ascii_dtostr (west, sizeof (west), priv->bounding_box.west),
+					g_ascii_dtostr (south, sizeof (south), priv->bounding_box.south),
+					g_ascii_dtostr (east, sizeof (east), priv->bounding_box.east),
+					g_ascii_dtostr (north, sizeof (north), priv->bounding_box.north));
 	}
 
 	if (priv->location != NULL) {

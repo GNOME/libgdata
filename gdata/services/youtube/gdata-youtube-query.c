@@ -468,11 +468,16 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	if (priv->latitude >= -90.0 && priv->latitude <= 90.0 &&
 	    priv->longitude >= -180.0 && priv->longitude <= 180.0) {
-		g_string_append_printf (query_uri, (priv->has_location == TRUE) ? "&location=%f,%f!" : "&location=%f,%f",
-					priv->latitude, priv->longitude);
+		gchar latitude[G_ASCII_DTOSTR_BUF_SIZE], longitude[G_ASCII_DTOSTR_BUF_SIZE];
 
-		if (priv->location_radius >= 0.0)
-			g_string_append_printf (query_uri, "&location-radius=%fm", priv->location_radius);
+		g_string_append_printf (query_uri, (priv->has_location == TRUE) ? "&location=%s,%s!" : "&location=%s,%s",
+					g_ascii_dtostr (latitude, sizeof (latitude), priv->latitude),
+					g_ascii_dtostr (longitude, sizeof (longitude), priv->longitude));
+
+		if (priv->location_radius >= 0.0) {
+			gchar radius[G_ASCII_DTOSTR_BUF_SIZE];
+			g_string_append_printf (query_uri, "&location-radius=%sm", g_ascii_dtostr (radius, sizeof (radius), priv->location_radius));
+		}
 	} else if (priv->has_location == TRUE) {
 		g_string_append (query_uri, "&location=!");
 	}

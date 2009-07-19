@@ -687,6 +687,7 @@ static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (parsable)->priv;
+	gchar ascii_double_str[G_ASCII_DTOSTR_BUF_SIZE];
 
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_picasaweb_file_parent_class)->get_xml (parsable, xml_string);
@@ -695,7 +696,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->version != NULL)
 		g_string_append_printf (xml_string, "<gphoto:version>%s</gphoto:version>", priv->version);
 
-	g_string_append_printf (xml_string, "<gphoto:position>%f</gphoto:position>", priv->position);
+	g_string_append_printf (xml_string, "<gphoto:position>%s</gphoto:position>",
+				g_ascii_dtostr (ascii_double_str, sizeof (ascii_double_str), priv->position));
 
 	if (priv->album_id != NULL)
 		g_string_append_printf (xml_string, "<gphoto:albumid>%s</gphoto:albumid>", priv->album_id);

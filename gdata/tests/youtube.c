@@ -518,7 +518,7 @@ test_query_uri (GDataService *service)
 	g_assert (has_location == TRUE);
 
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=all_time&safeSearch=none&format=1&location=45.013640,-97.123560!&location-radius=112.500000m");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=all_time&safeSearch=none&format=1&location=45.013640000000002,-97.123559999999998!&location-radius=112.5m");
 	g_free (query_uri);
 
 	gdata_youtube_query_set_location (query, G_MAXDOUBLE, 0.6672, 52.8, TRUE);
