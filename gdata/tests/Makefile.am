@@ -38,4 +38,15 @@ documents_SOURCES		 = documents.c $(TEST_SRCS)
 TEST_PROGS			+= memory
 memory_SOURCES			 = memory.c $(TEST_SRCS)
 
+EXTRA_DIST = \
+	photo.jpg		\
+	sample.ogg		\
+	test.doc		\
+	test.ods		\
+	test.odt		\
+	test.ppt		\
+	test.xls		\
+	test_updated.odt	\
+	test_updated_file.ppt
+
 -include $(top_srcdir)/git.mk
