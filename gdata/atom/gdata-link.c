@@ -387,7 +387,9 @@ gdata_link_compare (const GDataLink *a, const GDataLink *b)
 
 	if (a == b)
 		return 0;
-	return g_strcmp0 (a->priv->uri, b->priv->uri);
+	if (g_strcmp0 (a->priv->uri, b->priv->uri) == 0 && g_strcmp0 (a->priv->relation_type, b->priv->relation_type) == 0)
+		return 0;
+	return 1;
 }
 
 /**

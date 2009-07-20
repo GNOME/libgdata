@@ -31,6 +31,7 @@ test_entry_get_xml (void)
 	GDataLink *link;
 	GDataAuthor *author;
 	gchar *xml;
+	GList *links;
 	GError *error = NULL;
 
 	entry = gdata_entry_new (NULL);
@@ -69,6 +70,12 @@ test_entry_get_xml (void)
 	gdata_link_set_length (link, 5010);
 	gdata_entry_add_link (entry, link);
 	g_object_unref (link);
+	link = gdata_link_new ("http://example.com/", "http://foobar.link");
+	gdata_entry_add_link (entry, link);
+	g_object_unref (link);
+	link = gdata_link_new ("http://example2.com/", "http://foobar.link");
+	gdata_entry_add_link (entry, link);
+	g_object_unref (link);
 
 	/* Authors */
 	author = gdata_author_new ("Joe Bloggs", "http://example.com/", "joe@example.com");
@@ -92,6 +99,8 @@ test_entry_get_xml (void)
 				 "<category term='Film' scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Film &amp; Animation'/>"
 				 "<category term='example' label='Example stuff'/>"
 				 "<category term='test'/>"
+				 "<link href='http://example2.com/' rel='http://foobar.link'/>"
+				 "<link href='http://example.com/' rel='http://foobar.link'/>"
 				 "<link href='http://test.mn/' title='A treatise on Mongolian test websites &amp; other stuff.' rel='http://www.iana.org/assignments/relation/related' type='text/html' hreflang='mn' length='5010'/>"
 				 "<link href='http://example.com/' rel='http://www.iana.org/assignments/relation/alternate'/>"
 				 "<link href='http://test.com/' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
@@ -121,8 +130,30 @@ test_entry_get_xml (void)
 	g_assert_cmpuint (published.tv_sec, ==, published2.tv_sec);
 	g_assert_cmpuint (published.tv_usec, ==, published2.tv_usec);*/
 
-	/* TODO: Check categories, links and authors */
+	/* Check links */
+	link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
+	g_assert (link != NULL);
+	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://test.com/");
+	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, GDATA_LINK_SELF);
+	g_assert_cmpstr (gdata_link_get_content_type (link), ==, "application/atom+xml");
 
+	links = gdata_entry_look_up_links (entry, "http://foobar.link");
+	g_assert (links != NULL);
+	g_assert_cmpint (g_list_length (links), ==, 2);
+
+	link = GDATA_LINK (links->data);
+	g_assert (link != NULL);
+	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://example2.com/");
+	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, "http://foobar.link");
+
+	link = GDATA_LINK (links->next->data);
+	g_assert (link != NULL);
+	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://example.com/");
+	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, "http://foobar.link");
+
+	/* TODO: Check categories and authors */
+
+	g_list_free (links);
 	g_object_unref (entry);
 	g_object_unref (entry2);
 }

@@ -735,25 +735,23 @@ gdata_entry_look_up_link (GDataEntry *self, const gchar *rel)
  *
  * If you will only use the first link found, consider calling gdata_entry_look_up_link() instead.
  *
- * Return value: a #GList of #GDataLink<!-- -->s, or %NULL if none were found
+ * Return value: a #GList of #GDataLink<!-- -->s, or %NULL if none were found; free the list with g_list_free()
  *
  * Since: 0.4.0
  **/
 GList *
 gdata_entry_look_up_links (GDataEntry *self, const gchar *rel)
 {
-	GList *element = self->priv->links, *results = NULL;
+	GList *i, *results = NULL;
 
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
 	g_return_val_if_fail (rel != NULL, NULL);
 
-	do {
-		element = g_list_find_custom (element, rel, (GCompareFunc) link_compare_cb);
-		if (element == NULL)
-			return results;
-		results = g_list_prepend (results, element);
-		element = element->next;
-	} while (element != NULL);
+	for (i = self->priv->links; i != NULL; i = i->next) {
+		const gchar *relation_type = gdata_link_get_relation_type (((GDataLink*) i->data));
+		if (strcmp (relation_type, rel) == 0)
+			results = g_list_prepend (results, i->data);
+	}
 
 	return g_list_reverse (results);
 }

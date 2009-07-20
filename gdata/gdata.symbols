@@ -17,6 +17,7 @@ gdata_entry_get_content
 gdata_entry_set_content
 gdata_entry_add_link
 gdata_entry_look_up_link
+gdata_entry_look_up_links
 gdata_entry_add_author
 gdata_entry_is_inserted
 gdata_feed_get_type

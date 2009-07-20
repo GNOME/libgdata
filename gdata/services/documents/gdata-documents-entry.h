@@ -64,7 +64,7 @@ typedef struct {
 
 GType gdata_documents_entry_get_type (void) G_GNUC_CONST;
 
-const gchar *gdata_documents_entry_get_path (GDataDocumentsEntry *self);
+gchar *gdata_documents_entry_get_path (GDataDocumentsEntry *self);
 
 const gchar *gdata_documents_entry_get_document_id (GDataDocumentsEntry *self);
 

@@ -56,7 +56,6 @@ static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, 
 struct _GDataDocumentsEntryPrivate {
 	GTimeVal edited;
 	GTimeVal last_viewed;
-	gchar *path;
 	gchar *document_id;
 	gboolean writers_can_invite;
 	GDataAuthor *last_modified_by;
@@ -65,7 +64,6 @@ struct _GDataDocumentsEntryPrivate {
 enum {
 	PROP_EDITED = 1,
 	PROP_LAST_VIEWED,
-	PROP_PATH,
 	PROP_DOCUMENT_ID,
 	PROP_LAST_MODIFIED_BY,
 	PROP_WRITERS_CAN_INVITE
@@ -133,19 +131,6 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 					"Writers can invite?", "Indicates whether writers can invite others to edit.",
 					FALSE,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataDocumentsEntry:path
-	 *
-	 * Indicates the folder hierarchy path containing the document.
-	 *
-	 * Since: 0.4.0
-	 **/
-	g_object_class_install_property (gobject_class, PROP_PATH,
-				g_param_spec_string ("path",
-					"Path", "Indicates the folder hierarchy path containing the document.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsEntry:document-id
@@ -274,7 +259,6 @@ gdata_documents_entry_finalize (GObject *object)
 {
 	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY_GET_PRIVATE (object);
 
-	g_free (priv->path);
 	g_free (priv->document_id);
 
 	/* Chain up to the parent class */
@@ -300,9 +284,6 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY_GET_PRIVATE (object);
 
 	switch (property_id) {
-		case PROP_PATH:
-			g_value_set_string (value, priv->path);
-			break;
 		case PROP_DOCUMENT_ID:
 			g_value_set_string (value, priv->document_id);
 			break;
@@ -409,29 +390,57 @@ gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self, GTimeVal *last
  *
  * Gets the #GDataDocumentsEntry:path property.
  *
- * Return value: the folder hierarchy path containing the entry
+ * Note: the path is based on the entry ID, and not the entry human readable name (#GDataEntry::title).
+ *
+ * Return value: the folder hierarchy path containing the entry, or %NULL; free with g_free()
  *
  * Since: 0.4.0
  **/
-const gchar *
+gchar *
 gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 {
-	GList *element, *parent_folders;
+	GList *element, *parent_folders_list = NULL;
+	GString *path;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 
-	if (self->priv->path != NULL)
-		return self->priv->path;
+	path = g_string_new ("/");
+	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (self), "http://schemas.google.com/docs/2007#parent");
 
-	parent_folders = gdata_entry_look_up_links (GDATA_ENTRY (self), "http://schemas.google.com/docs/2007#parent");
-	for (element = parent_folders; element != NULL; element = element->next) {
-		if (self->priv->path == NULL)
-			self->priv->path = g_strdup (gdata_link_get_title (((GDataLink*) element->data)));
-		else
-			self->priv->path = g_strconcat (self->priv->path, gdata_link_get_title (((GDataLink*) element->data)), NULL);
+	/* We check all the folders contained that are parents of the GDataDocumentsEntry */
+	for (element = parent_folders_list; element != NULL; element = element->next) {
+		guint i;
+		gchar *folder_id = NULL;
+		gchar **link_href_cut = g_strsplit (gdata_link_get_uri (GDATA_LINK (element->data)), "/", 0);
+
+		for (i = 0;; i++) {
+			gchar **path_cut = NULL;
+
+			if (link_href_cut[i] == NULL)
+				break;
+
+			path_cut = g_strsplit (link_href_cut[i], "%3A", 2);
+			if (*path_cut != NULL) {
+				if (strcmp (path_cut[0], "folder") == 0){
+					folder_id = g_strdup (path_cut[1]);
+					g_strfreev (path_cut);
+					break;
+				}
+			}
+			g_strfreev (path_cut);
+		}
+		g_strfreev (link_href_cut);
+		g_assert (folder_id != NULL);
+
+		g_string_append (path, folder_id);
+		g_string_append_c (path, '/');
+		g_free (folder_id);
 	}
 
-	return self->priv->path;
+	/* Append the document ID */
+	g_string_append (path, self->priv->document_id);
+
+	return g_string_free (path, FALSE);
 }
 
 /**
