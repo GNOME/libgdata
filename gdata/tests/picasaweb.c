@@ -128,7 +128,7 @@ test_upload_simple (GDataService *service)
 				"<title type='text'>Photo Entry Title</title>"
 				"<summary type='text'>Photo Summary</summary>"
 				"<category term='http://schemas.google.com/photos/2007#photo' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gphoto:position>0.000000</gphoto:position>"
+				"<gphoto:position>0</gphoto:position>"
 				"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
 				"<media:group>"
 					"<media:title type='plain'>Photo Entry Title</media:title>"
@@ -194,7 +194,7 @@ test_photo (GDataService *service)
 
 	gdata_picasaweb_file_get_edited (photo, &_time);
 	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-04-26T06:57:03.474000Z");
+	g_assert_cmpstr (str, ==, "2009-07-13T09:48:58.912000Z");
 	g_free (str);
 
 	/* tests */
@@ -290,7 +290,7 @@ test_photo_feed_entry (GDataService *service)
 
 	gdata_entry_get_updated (photo_entry, &_time);
 	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-04-26T06:57:03.474000Z");
+	g_assert_cmpstr (str, ==, "2009-07-13T09:48:58.912000Z");
 	g_free (str);
 
 	gdata_entry_get_published (photo_entry, &_time);
