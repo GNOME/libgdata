@@ -1,12 +1,11 @@
 include $(top_srcdir)/Makefile.decl
 
-pwd=`pwd`
 INCLUDES = \
-	-I$(top_srcdir)/			\
-	-I$(top_srcdir)/gdata			\
-	-DTEST_FILE_DIR=\""$(pwd)/"\"		\
-	$(DISABLE_DEPRECATED)			\
-	$(WARN_CFLAGS)				\
+	-I$(top_srcdir)/				\
+	-I$(top_srcdir)/gdata				\
+	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\""\
+	$(DISABLE_DEPRECATED)				\
+	$(WARN_CFLAGS)					\
 	$(GDATA_CFLAGS)
 
 LIBS = \

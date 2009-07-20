@@ -182,7 +182,7 @@ test_upload_metadata_file (GDataService *service)
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path ("test.odt");
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
 	category = gdata_category_new ("http://schemas.google.com/docs/2007#document", "http://schemas.google.com/g/2005#kind", "document");
@@ -210,7 +210,7 @@ test_upload_file (GDataService *service)
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path ("test.ppt");
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
 
 	category = gdata_category_new ("http://schemas.google.com/docs/2007#presentation", "http://schemas.google.com/g/2005#kind", "presentation");
 
@@ -240,7 +240,7 @@ test_add_remove_file_from_folder (GDataService *service)
 	gdata_entry_set_title (GDATA_ENTRY (folder), "add_remove_from_folder_folder");
 	gdata_entry_add_category (GDATA_ENTRY (folder), folder_category);
 
-	document_file = g_file_new_for_path ("test.ppt");
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_presentation_new (NULL));
 	document_category = gdata_category_new ("http://schemas.google.com/docs/2007#presentation", "http://schemas.google.com/g/2005#kind", "presentation");
 	gdata_entry_set_title (GDATA_ENTRY (document), "add_remove_from_folder_presentation");
@@ -281,7 +281,7 @@ test_add_file_folder_and_move (GDataService *service)
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path ("test.odt");
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
 
 	folder = gdata_documents_folder_new (NULL);
 	folder_category = gdata_category_new ("http://schemas.google.com/docs/2007#folder", "http://schemas.google.com/g/2005#kind", "folder");
@@ -327,7 +327,7 @@ test_upload_file_metadata_in_new_folder (GDataService *service)
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path ("test.odt");
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
 
 	folder = gdata_documents_folder_new (NULL);
 	folder_category = gdata_category_new ("http://schemas.google.com/docs/2007#folder", "http://schemas.google.com/g/2005#kind", "folder");
@@ -401,8 +401,8 @@ test_update_metadata_file (GDataService *service)
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path ("test.odt");
-	updated_document_file = g_file_new_for_path ("test_updated.odt");
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
+	updated_document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated.odt");
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
 	category = gdata_category_new ("http://schemas.google.com/docs/2007#document", "http://schemas.google.com/g/2005#kind", "document");
@@ -438,8 +438,8 @@ test_update_file (GDataService *service)
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path ("test.ppt");
-	updated_document_file = g_file_new_for_path ("test_updated_file.ppt");
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
+	updated_document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated_file.ppt");
 
 	/* Insert the document */
 	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, document_file, NULL, NULL, &error);

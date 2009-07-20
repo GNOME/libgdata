@@ -1,3 +1,63 @@
+Overview of changes from libgdata 0.3.0 to libgdata 0.4.0
+=========================================================
+
+Major changes:
+* Added comparison functions for all small XML elements (such as GDataLink and friends)
+* Added GDataContactsContact photo support
+* Translatable strings are now even clearer, and all have translator comments
+* Fixed a number of locale-dependent bugs
+* Converted small XML element structs to full GObjects
+* Added a PicasaWeb service by Richard Schwarting <aquarichy@gmail.com>
+* Fixed more licencing issues (libgdata is licenced under LGPLv2.1+)
+* Required link relation types to be full URIs
+* Added a Google Documents service by Thibault Saunier <saunierthibault@gmail.com>
+
+API changes:
+* Added gdata_contacts_contact_get_extended_properties
+* Added *_compare
+* Added GDataContactsContact:has-photo, gdata_contacts_contact_has_photo, gdata_contacts_contact_get_photo, gdata_contacts_contact_set_photo
+* Converted GDataAuthor, GDataCategory, GDataLink, GDataGenerator to GObjects (removed *_free functions and added mandatory field accessors)
+* Converted GDataGDEmailAddress, GDataGDFeedLink, GDataGDIMAddress, GDataGDOrganization, GDataGDPhoneNumber, GDataGDPostalAddress, GDataGDRating,
+  GDataGDWhen, GDataGDReminder, GDataGDWhere, GDataGDWho to GObjects (removed *_free functions and added mandatory field accessors)
+* Converted GDataMediaCategory, GDataMediaContent, GDataMediaCredit, GDataMediaRating, GDataMediaRestriction, GDataMediaThumbnail to GObjects
+  (removed *_free functions and added mandatory field accessors)
+* Removed gdata_media_thumbnail_parse_time, gdata_media_thumbnail_build_time
+* Converted GDataYouTubeState to GObject (removed gdata_youtube_state_free and added mandatory field accessors)
+* Added GDataYouTubeControl
+* Added PicasaWeb service API
+* Removed gdata_entry_new_from_xml, other *_new_from_xml functions, gdata_entry_get_xml
+* Added gdata_parsable_new_from_xml, gdata_parsable_get_xml
+* Removed GDATA_PARSER_ERROR_UNHANDLED_XML_ELEMENT parser error
+* Added GDataParsableClass->element_name, GDataParsableClass->element_namespace
+* Added GDATA_LINK_ALTERNATE, GDATA_LINK_EDIT, GDATA_LINK_EDIT_MEDIA, GDATA_LINK_ENCLOSURE, GDATA_LINK_RELATED, GDATA_LINK_SELF, GDATA_LINK_VIA
+  for use with gdata_entry_look_up_link
+* Added gdata_contacts_service_update_contact
+* Added gdata_youtube_service_query_single_video, gdata_youtube_service_query_single_video_async, gdata_youtube_service_query_single_video_finish
+* Added gdata_youtube_video_get_video_id_from_uri
+* Added GDataYouTubeAspectRatio, gdata_youtube_video_get_aspect_ratio, gdata_youtube_video_set_aspect_ratio
+* Added Google Documents service API
+* Added gdata_contacts_contact_remove_all_email_addresses, gdata_contacts_contact_remove_all_im_addresses,
+  gdata_contacts_contact_remove_all_postal_addresses, gdata_contacts_contact_remove_all_phone_numbers, gdata_contacts_contact_remove_all_organizations
+
+Bugs fixed:
+* Bug 584417 – Strings are not properly formed for localisation
+* Bug 584737 – String parsing is locale-sensitive
+* Bug 579170 – Eliminate gdata_parser_error_unhandled_element
+* Bug 587277 – Some files are GPLv3 but license is LGPLv2.1?
+* Bug 588052 – Parse the yt:aspectratio tag
+* Bug 587073 – Add Google Documents service
+* Bug 588995 – float radix character depends on LC_NUMERIC, but Google wants "."
+
+Updated translations:
+* ca (Joan Duran)
+* de (Mario Blättermann)
+* en_GB (Philip Withnall)
+* es (Jorge González)
+* nb (Kjartan Maraas)
+* pa (A S Alam)
+* sv (Daniel Nylander)
+* uk (Maxim Dziumanenko)
+
 Overview of changes from libgdata 0.2.0 to libgdata 0.3.0
 =========================================================
 
