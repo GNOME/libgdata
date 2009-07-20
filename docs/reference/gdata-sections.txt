@@ -204,6 +204,7 @@ GDataYouTubeServicePrivate
 <TITLE>GDataYouTubeVideo</TITLE>
 GDataYouTubeVideo
 GDataYouTubeVideoClass
+GDataYouTubeAspectRatio
 gdata_youtube_video_new
 gdata_youtube_video_look_up_content
 gdata_youtube_video_get_thumbnails
@@ -236,6 +237,8 @@ gdata_youtube_video_get_recorded
 gdata_youtube_video_set_recorded
 gdata_youtube_video_get_video_id
 gdata_youtube_video_get_video_id_from_uri
+gdata_youtube_video_get_aspect_ratio
+gdata_youtube_video_set_aspect_ratio
 <SUBSECTION Standard>
 GDATA_IS_YOUTUBE_VIDEO
 GDATA_IS_YOUTUBE_VIDEO_CLASS
@@ -244,6 +247,8 @@ GDATA_YOUTUBE_VIDEO
 GDATA_YOUTUBE_VIDEO_CLASS
 GDATA_YOUTUBE_VIDEO_GET_CLASS
 gdata_youtube_video_get_type
+GDATA_TYPE_YOUTUBE_ASPECT_RATIO
+gdata_youtube_aspect_ratio_get_type
 <SUBSECTION Private>
 GDataYouTubeVideoPrivate
 </SECTION>
