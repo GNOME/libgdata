@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: libgdata.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&component=general\n"
-"POT-Creation-Date: 2009-06-21 20:14+0000\n"
-"PO-Revision-Date: 2009-06-27 15:01+0200\n"
+"POT-Creation-Date: 2009-07-20 19:44+0000\n"
+"PO-Revision-Date: 2009-07-21 19:33+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,13 +25,13 @@ msgid "The owner's rule may not be deleted."
 msgstr "La regla del propietario no se debe borrar."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:135 ../gdata/gdata-parsable.c:146
+#: ../gdata/gdata-parsable.c:164 ../gdata/gdata-parsable.c:175
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Error al analizar el XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:148
+#: ../gdata/gdata-parsable.c:177
 msgid "Empty document."
 msgstr "Documento vacío."
 
@@ -71,7 +71,6 @@ msgstr "Se desconoce el valor de la propiedad %s de un elemento %s («%s»)."
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
 #: ../gdata/gdata-parser.c:119
 #, c-format
-#| msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Se desconocía el contenido del elemento %s («%s»)."
 
@@ -207,9 +206,9 @@ msgstr "El servicio no está disponible por el momento. (%s)"
 msgid "Invalid redirect URI: %s"
 msgstr "URI de redirección no válida: %s"
 
-#: ../gdata/gdata-service.c:1207
+#: ../gdata/gdata-service.c:1224
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:277
-#: ../gdata/services/youtube/gdata-youtube-service.c:626
+#: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "The entry has already been inserted."
 msgstr "La entrada ya se ha introducido."
 
@@ -218,7 +217,7 @@ msgstr "La entrada ya se ha introducido."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:349
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:330
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
@@ -244,21 +243,54 @@ msgstr "El calendario no tenía una fuente de contenido."
 msgid "You must be authenticated to query contacts."
 msgstr "Debe estar autenticado para consultar sus contactos."
 
+#: ../gdata/services/documents/gdata-documents-entry.c:572
+#| msgid "You must be authenticated to do this."
+msgid "You must be authenticated to download documents."
+msgstr "Debe estar autenticado para descargar documentos."
+
+#: ../gdata/services/documents/gdata-documents-service.c:188
+#: ../gdata/services/documents/gdata-documents-service.c:223
+#| msgid "You must be authenticated to query contacts."
+msgid "You must be authenticated to query documents."
+msgstr "Debe estar autenticado para consultar sus documentos."
+
+#: ../gdata/services/documents/gdata-documents-service.c:338
+msgid "The supplied document had an invalid content type."
+msgstr "El tipo de contenido del documento proporcionado no era válido."
+
+#: ../gdata/services/documents/gdata-documents-service.c:481
+#| msgid "You must be authenticated to upload a video."
+msgid "You must be authenticated to upload documents."
+msgstr "Debe estar autenticado para subir documentos."
+
+#: ../gdata/services/documents/gdata-documents-service.c:487
+#| msgid "The entry has already been inserted."
+msgid "The document has already been uploaded."
+msgstr "El documento ya se ha subido."
+
+#: ../gdata/services/documents/gdata-documents-service.c:543
+#| msgid "You must be authenticated to query contacts."
+msgid "You must be authenticated to update documents."
+msgstr "Debe estar autenticado para actualizar documentos."
+
+#: ../gdata/services/documents/gdata-documents-service.c:597
+#: ../gdata/services/documents/gdata-documents-service.c:694
+#| msgid "You must be authenticated to do this."
+msgid "You must be authenticated to move documents."
+msgstr "Debe estar autenticado para mover documentos."
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
-#| msgid "You must be authenticated to query all calendars."
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Debe especificar un nombre de usuario o estar autenticado para consultar "
 "todos los álbumes."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:220
-#| msgid "The video did not have a related videos <link>."
 msgid "The album did not have a feed link."
 msgstr "El álbum no tenía ningún enlace para proveedor."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:283
-#| msgid "You must be authenticated to upload a video."
 msgid "You must be authenticated to upload a file."
 msgstr "Debe estar autenticado para cargar un archivo."
 
@@ -301,12 +333,12 @@ msgstr ""
 "Código de error «%s» desconocido en el dominio «%s», recibido con la ubicación "
 "«%s»."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:539
-#: ../gdata/services/youtube/gdata-youtube-service.c:580
+#: ../gdata/services/youtube/gdata-youtube-service.c:697
+#: ../gdata/services/youtube/gdata-youtube-service.c:738
 msgid "The video did not have a related videos <link>."
 msgstr "El vídeo no tenía ningún vídeo relacionado <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:632
+#: ../gdata/services/youtube/gdata-youtube-service.c:790
 msgid "You must be authenticated to upload a video."
 msgstr "Debe estar autenticado para cargar un vídeo."
 
