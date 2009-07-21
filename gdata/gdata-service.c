@@ -1037,8 +1037,10 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 	g_return_val_if_fail (entry_type != G_TYPE_INVALID, NULL);
 
 	message = _gdata_service_query (self, feed_uri, query, cancellable, progress_callback, progress_user_data, error);
-	g_assert (message->response_body->data != NULL);
+	if (message == NULL)
+		return NULL;
 
+	g_assert (message->response_body->data != NULL);
 	klass = GDATA_SERVICE_GET_CLASS (self);
 	feed = _gdata_feed_new_from_xml (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
 					 progress_callback, progress_user_data, error);
