@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-22 21:57+0200\n"
-"PO-Revision-Date: 2009-06-22 21:59+0100\n"
+"POT-Creation-Date: 2009-07-24 17:26+0200\n"
+"PO-Revision-Date: 2009-07-24 17:30+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,13 +24,13 @@ msgid "The owner's rule may not be deleted."
 msgstr "Die Eigentümer-Regel darf nicht gelöscht werden."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:135 ../gdata/gdata-parsable.c:146
+#: ../gdata/gdata-parsable.c:164 ../gdata/gdata-parsable.c:175
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Fehler beim XML-Parsen: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:148
+#: ../gdata/gdata-parsable.c:177
 msgid "Empty document."
 msgstr "Leeres Dokument."
 
@@ -90,7 +90,7 @@ msgstr "Eine benötigte Eigenschaft %s eines %s-Elements war nicht vorhanden."
 #: ../gdata/gdata-parser.c:156
 #, c-format
 msgid "A required element (%s) was not present."
-msgstr "Ein benötigtes Element (%s>) war nicht vorhanden."
+msgstr "Ein benötigtes Element (%s) war nicht vorhanden."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -206,9 +206,9 @@ msgstr "Dieser Dienst ist derzeit nicht verfügbar. (%s)"
 msgid "Invalid redirect URI: %s"
 msgstr "Ungültige Weiterleitungsadresse: %s"
 
-#: ../gdata/gdata-service.c:1207
+#: ../gdata/gdata-service.c:1226
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:277
-#: ../gdata/services/youtube/gdata-youtube-service.c:626
+#: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "The entry has already been inserted."
 msgstr "Dieser Eintrag wurde bereits eingefügt."
 
@@ -217,7 +217,7 @@ msgstr "Dieser Eintrag wurde bereits eingefügt."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:349
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:330
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
@@ -242,6 +242,36 @@ msgstr "Der Kalender hat keine Inhaltsquelle."
 #: ../gdata/services/contacts/gdata-contacts-service.c:139
 msgid "You must be authenticated to query contacts."
 msgstr "Sie müssen legitimiert sein, um alle Kontakte abzufragen."
+
+#: ../gdata/services/documents/gdata-documents-entry.c:572
+msgid "You must be authenticated to download documents."
+msgstr "Sie müssen legitimiert sein, um Dokumente herunterzuladen."
+
+#: ../gdata/services/documents/gdata-documents-service.c:188
+#: ../gdata/services/documents/gdata-documents-service.c:223
+msgid "You must be authenticated to query documents."
+msgstr "Sie müssen legitimiert sein, um Dokumente abzufragen."
+
+#: ../gdata/services/documents/gdata-documents-service.c:338
+msgid "The supplied document had an invalid content type."
+msgstr "Der Inhaltstyp des gelieferten Dokuments war ungültig."
+
+#: ../gdata/services/documents/gdata-documents-service.c:481
+msgid "You must be authenticated to upload documents."
+msgstr "Sie müssen legitimiert sein, um Dokumente hochzuladen."
+
+#: ../gdata/services/documents/gdata-documents-service.c:487
+msgid "The document has already been uploaded."
+msgstr "Das Dokument wurde bereits hochgeladen."
+
+#: ../gdata/services/documents/gdata-documents-service.c:543
+msgid "You must be authenticated to update documents."
+msgstr "Sie müssen legitimiert sein, um Dokumente zu aktualisieren."
+
+#: ../gdata/services/documents/gdata-documents-service.c:597
+#: ../gdata/services/documents/gdata-documents-service.c:694
+msgid "You must be authenticated to move documents."
+msgstr "Sie müssen legitimiert sein, um Dokumente zu verschieben."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
@@ -295,12 +325,12 @@ msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Unbekannter Fehlercode »%s« in Domain »%s«, empfangen mit »%s«."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:539
-#: ../gdata/services/youtube/gdata-youtube-service.c:580
+#: ../gdata/services/youtube/gdata-youtube-service.c:697
+#: ../gdata/services/youtube/gdata-youtube-service.c:738
 msgid "The video did not have a related videos <link>."
 msgstr "Für dieses Video gibt es keine ähnlichen Videos <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:632
+#: ../gdata/services/youtube/gdata-youtube-service.c:790
 msgid "You must be authenticated to upload a video."
 msgstr "Sie müssen legitimiert sein, um ein Video hochzuladen."
 
