@@ -337,23 +337,23 @@ real_parse_error_response (GDataService *self, GDataServiceError error_type, gui
 		case 400:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
 				     /* Translators: the parameter is an error message returned by the server. */
-				     _("Invalid request URI or header, or unsupported nonstandard parameter: %s"), reason_phrase);
+				     _("Invalid request URI or header, or unsupported nonstandard parameter: %s"), response_body);
 			return;
 		case 401:
 		case 403:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 				     /* Translators: the parameter is an error message returned by the server. */
-				     _("Authentication required: %s"), reason_phrase);
+				     _("Authentication required: %s"), response_body);
 			return;
 		case 404:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND,
 				     /* Translators: the parameter is an error message returned by the server. */
-				     _("The requested resource was not found: %s"), reason_phrase);
+				     _("The requested resource was not found: %s"), response_body);
 			return;
 		case 409:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT,
 				     /* Translators: the parameter is an error message returned by the server. */
-				     _("The entry has been modified since it was downloaded: %s"), reason_phrase);
+				     _("The entry has been modified since it was downloaded: %s"), response_body);
 			return;
 		case 500:
 		default:
@@ -366,22 +366,22 @@ real_parse_error_response (GDataService *self, GDataServiceError error_type, gui
 		case GDATA_SERVICE_ERROR_WITH_INSERTION:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_INSERTION,
 				     /* Translators: the first parameter is a HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when inserting an entry: %s"), status, reason_phrase);
+				     _("Error code %u when inserting an entry: %s"), status, response_body);
 			break;
 		case GDATA_SERVICE_ERROR_WITH_UPDATE:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_UPDATE,
 				     /* Translators: the first parameter is a HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when updating an entry: %s"), status, reason_phrase);
+				     _("Error code %u when updating an entry: %s"), status, response_body);
 			break;
 		case GDATA_SERVICE_ERROR_WITH_DELETION:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_DELETION,
 				     /* Translators: the first parameter is a HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when deleting an entry: %s"), status, reason_phrase);
+				     _("Error code %u when deleting an entry: %s"), status, response_body);
 			break;
 		case GDATA_SERVICE_ERROR_WITH_QUERY:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_QUERY,
 				     /* Translators: the first parameter is a HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when querying: %s"), status, reason_phrase);
+				     _("Error code %u when querying: %s"), status, response_body);
 			break;
 		default:
 			/* We should not be called with anything other than the above four generic error types */
