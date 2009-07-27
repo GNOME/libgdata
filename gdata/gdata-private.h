@@ -57,7 +57,7 @@ void _gdata_feed_parse_data_free (gpointer data);
 void _gdata_feed_call_progress_callback (GDataFeed *self, gpointer user_data, GDataEntry *entry);
 
 #include "gdata/services/documents/gdata-documents-entry.h"
-GFile *_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, gchar *download_uri,
+GFile *_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *download_uri,
 						 GFile *destination_directory, const gchar *file_extension, gboolean replace_file_if_exists,
 						 GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 

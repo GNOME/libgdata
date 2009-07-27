@@ -523,7 +523,7 @@ got_chunk_cb (SoupMessage *message, SoupBuffer *chunk, GOutputStream *output_str
  * @service: an authenticated #GDataDocumentsService
  * @content_type: return location for the document's content type, or %NULL; free with g_free()
  * @download_uri: the URI to download the document
- * @destination_directory: the directory into which the file should be downloaded
+ * @destination_file: the #GFile into which the document file should be saved
  * @file_extension: the extension with which to save the downloaded file
  * @replace_file_if_exists: %TRUE if you want to replace the file if it exists, %FALSE otherwise
  * @cancellable: optional #GCancellable object, or %NULL
@@ -542,29 +542,30 @@ got_chunk_cb (SoupMessage *message, SoupBuffer *chunk, GOutputStream *output_str
  *
  * If there is an error downloading the document, a %GDATA_SERVICE_ERROR_WITH_QUERY error will be returned.
  *
+ * If @destination_file is a directory, the file will be downloaded to this directory with the #GDataEntry:title and 
+ * the appropriate extension as its filename.
+ *
  * Return value: a #GFile pointing to the downloaded document, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  */
 GFile *
-_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, gchar *download_uri,
-					  GFile *destination_directory, const gchar *file_extension, gboolean replace_file_if_exists,
+_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *download_uri,
+					  GFile *destination_file, const gchar *file_extension, gboolean replace_file_if_exists,
 					  GCancellable *cancellable, GError **error)
 {
 	GDataServiceClass *klass;
 	GFileOutputStream *file_stream;
-	GFile *destination_file;
 	SoupMessage *message;
 	guint status;
-	const gchar *document_title;
-	gchar *filename;
 
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (download_uri != NULL, NULL);
-	g_return_val_if_fail (G_IS_FILE (destination_directory), NULL);
+	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (file_extension != NULL, NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (service)) == FALSE) {
@@ -573,25 +574,33 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 		return NULL;
 	}
 
-	/* Prepare the GFile */
-	document_title = gdata_entry_get_title (GDATA_ENTRY (self));
-	filename = g_strdup_printf ("%s.%s", document_title, file_extension);
-	destination_file = g_file_get_child (destination_directory, filename);
-	g_free (filename);
-
-	/* Check if the file exists */
-	if (g_file_query_exists (destination_file, cancellable) == TRUE) {
+	/* Create a new file */
+	file_stream = g_file_create (destination_file, G_FILE_CREATE_NONE, cancellable, error);
+	if (g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
 		/* Replace a pre-existing file */
 		if (replace_file_if_exists == TRUE) {
-			file_stream = g_file_replace (destination_file, NULL, TRUE, G_FILE_CREATE_REPLACE_DESTINATION,
-						      cancellable, error);
-		} else {
-			g_set_error (error, G_IO_ERROR_EXISTS, 1, NULL);
-			return NULL;
+			g_clear_error (error);
+			file_stream = g_file_replace (destination_file, NULL, TRUE, G_FILE_CREATE_REPLACE_DESTINATION, cancellable, error);
 		}
-	} else {
-		/* Create a new file */
-		file_stream = g_file_create (destination_file, G_FILE_CREATE_NONE, cancellable, error);
+
+		if (g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_IS_DIRECTORY)) {
+			GFile *new_destination_file = NULL;
+			const gchar *document_title;
+			gchar *filename;
+
+			g_clear_error (error);
+
+			/* Prepare the GFile */
+			document_title = gdata_entry_get_title (GDATA_ENTRY (self));
+			filename = g_strdup_printf ("%s.%s", document_title, file_extension);
+			new_destination_file = g_file_get_child (destination_file, filename);
+			g_free (filename);
+
+			return _gdata_documents_entry_download_document (self, service, content_type, download_uri, new_destination_file, 
+									 file_extension, replace_file_if_exists, cancellable, error);
+		}
+
+		return NULL;
 	}
 
 	/* Get the document URI */
@@ -611,14 +620,12 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 	g_object_unref (file_stream);
 	if (status == SOUP_STATUS_NONE) {
 		g_object_unref (message);
-		g_object_unref (destination_file);
 		return NULL;
 	}
 
 	/* Check for cancellation */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
 		g_object_unref (message);
-		g_object_unref (destination_file);
 		return NULL;
 	}
 
@@ -628,7 +635,6 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 		klass->parse_error_response (GDATA_SERVICE (service), GDATA_SERVICE_ERROR_WITH_QUERY, status, message->reason_phrase,
 					     message->response_body->data, message->response_body->length, error);
 		g_object_unref (message);
-		g_object_unref (destination_file);
 		return NULL;
 	}
 
@@ -638,5 +644,5 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 
 	g_object_unref (message);
 
-	return destination_file;
+	return g_object_ref (destination_file);
 }

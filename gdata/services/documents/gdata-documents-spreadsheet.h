@@ -90,7 +90,7 @@ GDataDocumentsSpreadsheet *gdata_documents_spreadsheet_new (const gchar *id) G_G
 #include <gdata/services/documents/gdata-documents-service.h>
 
 GFile *gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, GDataDocumentsService *service, gchar **content_type,
-						      GDataDocumentsSpreadsheetFormat export_format, gint gid, GFile *destination_directory,
+						      GDataDocumentsSpreadsheetFormat export_format, gint gid, GFile *destination_file,
 						      gboolean replace_file_if_exists, GCancellable *cancellable,
 						      GError **error) G_GNUC_WARN_UNUSED_RESULT;
 

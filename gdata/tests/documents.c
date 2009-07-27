@@ -464,37 +464,71 @@ test_download_all_documents (GDataService *service)
 	GDataDocumentsFeed *feed;
 	GError *error = NULL;
 	gchar *content_type = NULL;
-	GFile *destination_directory;
+	GFile *destination_file;
+	gchar *destination_file_name;
+	GString *destination_display_name;
 	GList *i;
+	gint ppt_nb = 0, ods_nb = 0, odt_nb = 0;
 
-	destination_directory = g_file_new_for_path ("/tmp");
 	feed = gdata_documents_service_query_documents (GDATA_DOCUMENTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (feed));
 
 	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
-		GFile *destination_file = NULL;
-
 		if (GDATA_IS_DOCUMENTS_PRESENTATION (i->data)) {
+			destination_file = g_file_new_for_path ("/tmp");
 			destination_file = gdata_documents_presentation_download_document (GDATA_DOCUMENTS_PRESENTATION (i->data), GDATA_DOCUMENTS_SERVICE (service),
-											   &content_type, GDATA_DOCUMENTS_PRESENTATION_PPT, destination_directory,
+											   &content_type, GDATA_DOCUMENTS_PRESENTATION_PPT, destination_file,
 											   TRUE, NULL, &error);
+
 		} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (i->data)) {
+			GFile *destination_file;
+
+			destination_file_name = g_strdup_printf ("/tmp/%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (i->data)), "ods");
+			destination_file = g_file_new_for_path (destination_file_name);
+			g_free (destination_file_name);
 			destination_file = gdata_documents_spreadsheet_download_document (i->data, GDATA_DOCUMENTS_SERVICE (service),
-											  &content_type, GDATA_DOCUMENTS_SPREADSHEET_ODS, -1, destination_directory,
+											  &content_type, GDATA_DOCUMENTS_SPREADSHEET_ODS, -1, destination_file,
 											  TRUE, NULL, &error);
+			g_assert_no_error (error);
+
+			destination_display_name = g_string_new (gdata_entry_get_title (GDATA_ENTRY(i->data)));
+			g_string_append (destination_display_name, ".ods");
+			g_file_set_display_name (destination_file, destination_display_name->str, NULL, &error);
+			while (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+				g_clear_error (&error);
+				error = NULL;
+				g_string_printf (destination_display_name,"%s%d.%s", gdata_entry_get_title (GDATA_ENTRY(i->data)), ods_nb, "ods");
+				g_file_set_display_name (destination_file, destination_display_name->str, NULL, &error);
+				ods_nb++;
+			}
+			g_string_free (destination_display_name, TRUE);
 		} else if (GDATA_IS_DOCUMENTS_TEXT (i->data)) {
+			GFile *destination_file;
+
+			destination_file_name = g_strdup_printf ("/tmp/%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (i->data)), "odt");
+			destination_file = g_file_new_for_path (destination_file_name);
+			g_free (destination_file_name);
 			destination_file = gdata_documents_text_download_document (i->data, GDATA_DOCUMENTS_SERVICE (service), &content_type, GDATA_DOCUMENTS_TEXT_ODT,
-										   destination_directory, TRUE, NULL, &error);
+										   destination_file, TRUE, NULL, &error);
+			g_assert_no_error (error);
+
+			destination_display_name = g_string_new (gdata_entry_get_title (GDATA_ENTRY(i->data)));
+			g_string_append (destination_display_name, ".odt");
+			g_file_set_display_name (destination_file, destination_display_name->str, NULL, &error);
+			while (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+				g_clear_error (&error);
+				g_string_printf (destination_display_name,"%s%d.%s", gdata_entry_get_title (GDATA_ENTRY(i->data)), odt_nb, "odt");
+				g_file_set_display_name (destination_file, destination_display_name->str, NULL, &error);
+				odt_nb++;
+			}
+			g_string_free (destination_display_name, TRUE);
 		}
 
 		g_assert_no_error (error);
-		if (destination_file != NULL)
-			g_object_unref (destination_file);
 		g_free (content_type);
 	}
 
-	g_object_unref (destination_directory);
 	g_object_unref (feed);
 	g_clear_error (&error);
 }
@@ -560,9 +594,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/documents/upload/metadata_file", service, test_upload_metadata_file);
 	g_test_add_data_func ("/documents/upload/only_metadata", service, test_upload_metadata);
 	g_test_add_data_func ("/documents/upload/metadata_file_in_new_folder", service, test_upload_file_metadata_in_new_folder);
-
 	g_test_add_data_func ("/documents/download/download_all_documents", service, test_download_all_documents);
-
 	g_test_add_data_func ("/documents/update/only_metadata", service, test_update_metadata);
 	g_test_add_data_func ("/documents/update/only_file", service, test_update_file);
 	g_test_add_data_func ("/documents/update/metadata_file", service, test_update_metadata_file);
@@ -580,6 +612,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/documents/move/remove_from_folder", service, test_add_remove_file_from_folder);
 
 	g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);
+
 	retval = g_test_run ();
 
 	g_object_unref (service);

@@ -94,7 +94,7 @@ gdata_documents_presentation_new (const gchar *id)
  * @service: a #GDataDocumentsService
  * @content_type: return location for the document's content type, or %NULL; free with g_free()
  * @export_format: the format in which the presentation should be exported
- * @destination_directory: the directory into which the presentation file should be saved
+ * @destination_file: the #GFile into which the presentation file should be saved
  * @replace_file_if_exists: %TRUE if the file should be replaced if it already exists, %FALSE otherwise
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
@@ -107,16 +107,18 @@ gdata_documents_presentation_new (const gchar *id)
  *
  * If there is an error getting the document, a %GDATA_SERVICE_ERROR_WITH_QUERY error will be returned.
  *
+ * If @destination_file is a directory, then the file will be downloaded in this directory with the #GDataEntry:title with 
+ * the apropriate extension as name.
+ *
  * Return value: the document's data, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
 GFile *
 gdata_documents_presentation_download_document (GDataDocumentsPresentation *self, GDataDocumentsService *service, gchar **content_type,
-						GDataDocumentsPresentationFormat export_format, GFile *destination_directory,
+						GDataDocumentsPresentationFormat export_format, GFile *destination_file,
 						gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
-	GFile *destination_file;
 	const gchar *document_id;
 	gchar *link_href;
 
@@ -131,7 +133,7 @@ gdata_documents_presentation_download_document (GDataDocumentsPresentation *self
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_PRESENTATION (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (service), NULL);
-	g_return_val_if_fail (G_IS_FILE (destination_directory), NULL);
+	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (export_format >= 0 && export_format < G_N_ELEMENTS (export_formats), NULL);
 
@@ -143,8 +145,7 @@ gdata_documents_presentation_download_document (GDataDocumentsPresentation *self
 
 	/* Call the common download method on the parent class */
 	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), GDATA_SERVICE (service), content_type,
-								     link_href, destination_directory, export_formats[export_format],
-								     replace_file_if_exists, cancellable, error);
+								     link_href, destination_file, export_formats[export_format], replace_file_if_exists, cancellable, error);
 	g_free (link_href);
 
 	return destination_file;
