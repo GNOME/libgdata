@@ -258,6 +258,7 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 				     GCancellable *cancellable, GError **error)
 {
 	/* TODO: Async variant */
+	/* TODO: consider setting Client and Checksum by default? */
 	#define BOUNDARY_STRING "0xdeadbeef6e0808d5e6ed8bc168390bcc"
 
 	GDataServiceClass *klass;

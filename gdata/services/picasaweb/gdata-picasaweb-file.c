@@ -42,6 +42,7 @@
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "media/gdata-media-group.h"
+#include "exif/gdata-exif-tags.h"
 
 static void gdata_picasaweb_file_dispose (GObject *object);
 static void gdata_picasaweb_file_finalize (GObject *object);
@@ -69,6 +70,8 @@ struct _GDataPicasaWebFilePrivate {
 
 	/* media:group */
 	GDataMediaGroup *media_group;
+	/* exif:tags */
+	GDataExifTags *exif_tags;
 
 	/* georss:where properties */
 	/* TODO these specify a location, like the following example.
@@ -82,21 +85,6 @@ struct _GDataPicasaWebFilePrivate {
 		<gml:pos>45.4341173 12.1289062</gml:pos>
 	</gml:Point>
 </georss:where>
-	*/
-
-	/* exif:tags */
-	/* TODO yay, we want these :)
-<exif:tags>
-	<exif:fstop>2.8</exif:fstop>
-	<exif:make>EASTMAN KODAK COMPANY</exif:make>
-	<exif:model>KODAK Z740 ZOOM DIGITAL CAMERA</exif:model>
-	<exif:exposure>0.016666668</exif:exposure>
-	<exif:flash>true</exif:flash>
-	<exif:focallength>6.3</exif:focallength>
-	<exif:iso>80</exif:iso>
-	<exif:time>1228588330000</exif:time>
-	<exif:imageUniqueID>1c179e0ac4f6741c8c1cdda3516e69e5</exif:imageUniqueID>
-</exif:tags>
 	*/
 };
 
@@ -117,7 +105,16 @@ enum {
 	PROP_VIDEO_STATUS,
 	PROP_CREDIT,
 	PROP_CAPTION,
-	PROP_TAGS
+	PROP_TAGS,
+	PROP_DISTANCE,
+	PROP_EXPOSURE,
+	PROP_FLASH,
+	PROP_FOCAL_LENGTH,
+	PROP_FSTOP,
+	PROP_IMAGE_UNIQUE_ID,
+	PROP_ISO,
+	PROP_MAKE,
+	PROP_MODEL
 };
 
 G_DEFINE_TYPE (GDataPicasaWebFile, gdata_picasaweb_file, GDATA_TYPE_ENTRY)
@@ -306,7 +303,6 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 *
 	 * Since: 0.4.0
 	 **/
-	/* TODO: This should be the same as exif:timestamp. */
 	g_object_class_install_property (gobject_class, PROP_TIMESTAMP,
 					 g_param_spec_boxed ("timestamp",
 							     "Timestamp", "The time the file was purportedly taken.",
@@ -400,6 +396,150 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 							      "Tags", "A comma-separated list of tags associated with the file.",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:distance:
+	 *
+	 * The distance to the subject reported in the image's EXIF.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_DISTANCE,
+					 g_param_spec_double ("distance",
+							      "Distance", "The distance to the subject.",
+							      -1.0, G_MAXDOUBLE, -1.0,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:exposure:
+	 *
+	 * The exposure time.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_EXPOSURE,
+					 g_param_spec_double ("exposure",
+							      "Exposure", "The exposure time.",
+							      0.0, G_MAXDOUBLE, 0.0,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:flash:
+	 *
+	 * Indicates whether the flash was used.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_FLASH,
+					 g_param_spec_boolean ("flash",
+							       "Flash", "Indicates whether the flash was used.",
+							       FALSE,
+							       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:focal-length:
+	 *
+	 * The focal length for the shot.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_FOCAL_LENGTH,
+					 g_param_spec_double ("focal-length",
+							      "Focal Length", "The focal length used in the shot.",
+							      -1.0, G_MAXDOUBLE, -1.0,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:fstop:
+	 *
+	 * The F-stop value.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_FSTOP,
+					 g_param_spec_double ("fstop",
+							      "F-stop", "The F-stop used.",
+							      0.0, G_MAXDOUBLE, 0.0,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:image-unique-id:
+	 *
+	 * An unique ID for the image found in the EXIF.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_IMAGE_UNIQUE_ID,
+					 g_param_spec_string ("image-unique-id",
+							      "Image Unique ID", "An unique ID for the image.",
+							      NULL,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:iso:
+	 *
+	 * The ISO speed.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink> and ISO 5800:1987.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_ISO,
+					 g_param_spec_long ("iso",
+							    "ISO", "The ISO speed.",
+							    -1, G_MAXLONG, -1,
+							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:make:
+	 *
+	 * The name of the manufacturer of the camera.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_MAKE,
+					 g_param_spec_string ("make",
+							      "Make", "The name of the manufacturer.",
+							      NULL,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:model:
+	 *
+	 * The model of the camera.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#exif_reference">
+	 * EXIF element reference</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_MODEL,
+					 g_param_spec_string ("model",
+							      "Model", "The model of the camera.",
+							      NULL,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -423,6 +563,7 @@ gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_FILE, GDataPicasaWebFilePrivate);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
+	self->priv->exif_tags = g_object_new (GDATA_TYPE_EXIF_TAGS, NULL);
 	self->priv->is_commenting_enabled = TRUE;
 
 	/* We need to keep atom:title (the canonical title for the file) in sync with media:group/media:title */
@@ -439,6 +580,10 @@ gdata_picasaweb_file_dispose (GObject *object)
 	if (priv->media_group != NULL)
 		g_object_unref (priv->media_group);
 	priv->media_group = NULL;
+
+	if (priv->exif_tags != NULL)
+		g_object_unref (priv->exif_tags);
+	priv->exif_tags = NULL;
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_picasaweb_file_parent_class)->dispose (object);
@@ -517,6 +662,33 @@ gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *v
 		case PROP_TAGS:
 			g_value_set_string (value, gdata_media_group_get_keywords (priv->media_group));
 			break;
+		case PROP_DISTANCE:
+			g_value_set_double (value, gdata_exif_tags_get_distance (priv->exif_tags));
+			break;
+		case PROP_EXPOSURE:
+			g_value_set_double (value, gdata_exif_tags_get_exposure (priv->exif_tags));
+			break;
+		case PROP_FLASH:
+			g_value_set_boolean (value, gdata_exif_tags_get_flash (priv->exif_tags));
+			break;
+		case PROP_FOCAL_LENGTH:
+			g_value_set_double (value, gdata_exif_tags_get_focal_length (priv->exif_tags));
+			break;
+		case PROP_FSTOP:
+			g_value_set_double (value, gdata_exif_tags_get_fstop (priv->exif_tags));
+			break;
+		case PROP_IMAGE_UNIQUE_ID:
+			g_value_set_string (value, gdata_exif_tags_get_image_unique_id (priv->exif_tags));
+			break;
+		case PROP_ISO:
+			g_value_set_long (value, gdata_exif_tags_get_iso (priv->exif_tags));
+			break;
+		case PROP_MAKE:
+			g_value_set_string (value, gdata_exif_tags_get_make (priv->exif_tags));
+			break;
+		case PROP_MODEL:
+			g_value_set_string (value, gdata_exif_tags_get_model (priv->exif_tags));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -587,6 +759,16 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			g_object_unref (self->priv->media_group);
 
 		self->priv->media_group = group;
+	} else if (xmlStrcmp (node->name, (xmlChar*) "tags") == 0) {
+		/* exif:tags */
+		GDataExifTags *tags = GDATA_EXIF_TAGS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_EXIF_TAGS, doc, node, NULL, error));
+		if (tags == NULL)
+			return FALSE;
+
+		if (self->priv->exif_tags != NULL)
+			g_object_unref (self->priv->exif_tags);
+
+		self->priv->exif_tags = tags;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
 		/* app:edited */
 		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
@@ -655,7 +837,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (xmlStrcmp (node->name, (xmlChar*) "commentingEnabled") == 0) {
 		/* gphoto:commentingEnabled */
 		xmlChar *is_commenting_enabled = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->is_commenting_enabled = (strncasecmp ("true", (gchar*) is_commenting_enabled, 5) == 0 ? TRUE : FALSE);
+		if (is_commenting_enabled == NULL)
+			return gdata_parser_error_required_content_missing (node, error);
+		self->priv->is_commenting_enabled = (xmlStrcmp (is_commenting_enabled, (xmlChar*) "true") == 0 ? TRUE : FALSE);
 		xmlFree (is_commenting_enabled);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "commentCount") == 0) {
 		/* gphoto:commentCount */
@@ -718,6 +902,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		/* timestamp is in milliseconds */
 		g_string_append_printf (xml_string, "<gphoto:timestamp>%lu</gphoto:timestamp>",
 					priv->timestamp.tv_sec * 1000 + priv->timestamp.tv_usec);
+		/* RHSTODO: test that different timestamps are being set in this XML correctly and are
+		   in fact just being ignored by Google */
 	}
 
 	if (priv->is_commenting_enabled == TRUE)
@@ -753,6 +939,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 	/* Add the media:group namespaces */
 	GDATA_PARSABLE_GET_CLASS (priv->media_group)->get_namespaces (GDATA_PARSABLE (priv->media_group), namespaces);
+	/* Add the exif:tags namespaces */
+	GDATA_PARSABLE_GET_CLASS (priv->exif_tags)->get_namespaces (GDATA_PARSABLE (priv->exif_tags), namespaces);
 }
 
 /**
@@ -1035,6 +1223,11 @@ gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self, GTimeVal *timestam
 void
 gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, GTimeVal *timestamp)
 {
+	/* RHSTODO: I think the timestamp value is just being
+	   over-ridden by the file's actual EXIF time value; unless
+	   we're setting this incorrectly here or in get_xml(); test that */
+	/* RHSTODO: improve testing of setters in tests/picasa.c */
+
 	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
 	if (timestamp == NULL)
 		self->priv->timestamp.tv_sec = self->priv->timestamp.tv_usec = 0;
@@ -1277,4 +1470,157 @@ gdata_picasaweb_file_get_thumbnails (GDataPicasaWebFile *self)
 {
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
 	return gdata_media_group_get_thumbnails (self->priv->media_group);
+}
+
+/**
+ * gdata_picasaweb_file_get_distance:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:distance property.
+ *
+ * Return value: the distance recorded in the photo's EXIF, or %-1 if unknown 
+ *
+ * Since: 0.5.0
+ **/
+gdouble
+gdata_picasaweb_file_get_distance (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), -1);
+	return gdata_exif_tags_get_distance (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_exposure:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:exposure property.
+ *
+ * Return value: the exposure value, or %0 if unknown
+ *
+ * Since: 0.5.0
+ **/
+gdouble
+gdata_picasaweb_file_get_exposure (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), 0);
+	return gdata_exif_tags_get_exposure (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_flash:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:flash property.
+ *
+ * Return value: %TRUE if flash was used, %FALSE otherwise
+ *
+ * Since: 0.5.0
+ **/
+gboolean
+gdata_picasaweb_file_get_flash (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), FALSE);
+	return gdata_exif_tags_get_flash (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_focal_length:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:focal-length property.
+ *
+ * Return value: the focal-length value, or %-1 if unknown
+ *
+ * Since: 0.5.0
+ **/
+gdouble
+gdata_picasaweb_file_get_focal_length (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), -1);
+	return gdata_exif_tags_get_focal_length (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_fstop:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:fstop property.
+ *
+ * Return value: the F-stop value, or %0 if unknown
+ *
+ * Since: 0.5.0
+ **/
+gdouble
+gdata_picasaweb_file_get_fstop (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), 0);
+	return gdata_exif_tags_get_fstop (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_image_unique_id:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:image-unique-id property.
+ *
+ * Return value: the photo's unique EXIF identifier, or %NULL
+ *
+ * Since: 0.5.0
+ **/
+const gchar *
+gdata_picasaweb_file_get_image_unique_id (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
+	return gdata_exif_tags_get_image_unique_id (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_iso:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:iso property.
+ *
+ * Return value: the ISO speed, or %-1 if unknown
+ *
+ * Since: 0.5.0
+ **/
+gint
+gdata_picasaweb_file_get_iso (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), -1);
+	return gdata_exif_tags_get_iso (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_make:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:make property.
+ *
+ * Return value: the name of the manufacturer of the camera, or %NULL if unknown
+ *
+ * Since: 0.5.0
+ **/
+const gchar *
+gdata_picasaweb_file_get_make (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
+	return gdata_exif_tags_get_make (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_model:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:model property.
+ *
+ * Return value: the model name of the camera, or %NULL if unknown
+ *
+ * Since: 0.5.0
+ **/
+const gchar *
+gdata_picasaweb_file_get_model (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
+	return gdata_exif_tags_get_model (self->priv->exif_tags);
 }

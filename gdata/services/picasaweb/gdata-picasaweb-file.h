@@ -94,14 +94,18 @@ const gchar *gdata_picasaweb_file_get_caption (GDataPicasaWebFile *self);
 void gdata_picasaweb_file_set_caption (GDataPicasaWebFile *self, const gchar *caption);
 GList *gdata_picasaweb_file_get_contents (GDataPicasaWebFile *self);
 GList *gdata_picasaweb_file_get_thumbnails (GDataPicasaWebFile *self);
+gdouble gdata_picasaweb_file_get_distance (GDataPicasaWebFile *self);
+gdouble gdata_picasaweb_file_get_exposure (GDataPicasaWebFile *self);
+gboolean gdata_picasaweb_file_get_flash (GDataPicasaWebFile *self);
+gdouble gdata_picasaweb_file_get_focal_length (GDataPicasaWebFile *self);
+gdouble gdata_picasaweb_file_get_fstop (GDataPicasaWebFile *self);
+const gchar *gdata_picasaweb_file_get_image_unique_id (GDataPicasaWebFile *self);
+gint gdata_picasaweb_file_get_iso (GDataPicasaWebFile *self);
+const gchar *gdata_picasaweb_file_get_make (GDataPicasaWebFile *self);
+const gchar *gdata_picasaweb_file_get_model (GDataPicasaWebFile *self);
 
-/* TODO implement get exif */
-/* TODO implement get thumbnail (from media?) */
-/* TODO implement get link */
 /* TODO implement is video */
-/* TODO implement get content; in what form? */
-/* TODO implement get tags */
-/* TODO implement get comments, get num comments */
+/* TODO implement get comments */
 /* TODO implement get location */
 
 G_END_DECLS
