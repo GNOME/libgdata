@@ -151,11 +151,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (xmlStrcmp (node->name, (xmlChar*) "time") == 0) {
 		/* exif:time */
 		xmlChar *time_str;
-		long long int milliseconds;
-		GTimeVal _time;
+		guint64 milliseconds;
 
 		time_str = xmlNodeListGetString (doc, node->children, TRUE);
-		milliseconds = strtoull ((gchar*) time_str, NULL, 10);
+		milliseconds = g_ascii_strtoull ((gchar*) time_str, NULL, 10);
 		xmlFree (time_str);
 
 		self->priv->_time.tv_sec = (glong) (milliseconds / 1000);

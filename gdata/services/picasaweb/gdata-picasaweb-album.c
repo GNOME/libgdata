@@ -546,15 +546,16 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
 		/* gphoto:timestamp */
 		xmlChar *timestamp_str;
-		gulong milliseconds;
+		guint64 milliseconds;
 		GTimeVal timestamp;
 
 		timestamp_str = xmlNodeListGetString (doc, node->children, TRUE);
-		milliseconds = strtoull ((char*) timestamp_str, NULL, 10);
+		milliseconds = g_ascii_strtoull ((gchar*) timestamp_str, NULL, 10);
 		xmlFree (timestamp_str);
 
 		timestamp.tv_sec = (glong) (milliseconds / 1000);
 		timestamp.tv_usec = (glong) ((milliseconds % 1000) * 1000);
+
 		gdata_picasaweb_album_set_timestamp (self, &timestamp);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "numphotos") == 0) {
 		/* gphoto:numphotos */
@@ -623,7 +624,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->timestamp.tv_sec != 0 || priv->timestamp.tv_usec != 0) {
 		/* in milliseconds */
-		g_string_append_printf (xml_string, "<gphoto:timestamp>%lu</gphoto:timestamp>",
+		g_string_append_printf (xml_string, "<gphoto:timestamp>%" G_GUINT64_FORMAT "</gphoto:timestamp>",
 					priv->timestamp.tv_sec * 1000 + priv->timestamp.tv_usec);
 	}
 

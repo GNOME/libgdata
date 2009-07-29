@@ -388,9 +388,7 @@ test_album (GDataService *service)
 
 	gdata_picasaweb_album_get_timestamp (album, &_time);
 	str = g_time_val_to_iso8601 (&_time);
-	g_message("TODO: Google album timestamps broken? want %s but getting %s",
-		  "2009-04-26T07:00:00Z", str);
-	//g_assert_cmpstr (str, ==, "2009-04-26T07:00:00Z");
+	g_assert_cmpstr (str, ==, "2009-04-26T07:00:00Z");
 	g_free (str);
 
 	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos (album), ==, 1);
