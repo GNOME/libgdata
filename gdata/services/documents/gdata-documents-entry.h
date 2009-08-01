@@ -76,6 +76,8 @@ gboolean gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self);
 
 GDataAuthor *gdata_documents_entry_get_last_modified_by (GDataDocumentsEntry *self);
 
+gboolean gdata_documents_entry_is_deleted (GDataDocumentsEntry *self);
+
 G_END_DECLS
 
 #endif /* !GDATA_DOCUMENTS_ENTRY_H */

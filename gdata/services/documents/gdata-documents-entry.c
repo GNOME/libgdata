@@ -58,6 +58,7 @@ struct _GDataDocumentsEntryPrivate {
 	GTimeVal last_viewed;
 	gchar *document_id;
 	gboolean writers_can_invite;
+	gboolean is_deleted;
 	GDataAuthor *last_modified_by;
 };
 
@@ -66,6 +67,7 @@ enum {
 	PROP_LAST_VIEWED,
 	PROP_DOCUMENT_ID,
 	PROP_LAST_MODIFIED_BY,
+	PROP_IS_DELETED,
 	PROP_WRITERS_CAN_INVITE
 };
 
@@ -133,6 +135,20 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
+	 * GDataDocumentsEntry:is-deleted:
+	 *
+	 * Indicates whether the document entry has been deleted (moved to the trash). Deleted documents will only
+	 * appear in query results if the #GDataDocumentsQuery:show-deleted property is %TRUE.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_IS_DELETED,
+				g_param_spec_boolean ("is-deleted",
+					"Deleted?", "Indicates whether the document entry has been deleted.",
+					FALSE,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * GDataDocumentsEntry:document-id
 	 *
 	 * The document ID of the document, which is different from its entry ID (GDataEntry:id).
@@ -157,6 +173,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 					"Last modified by", "Indicates the author of the last modification.",
 					GDATA_TYPE_AUTHOR,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 }
 
 static void
@@ -180,9 +197,7 @@ gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
-	GDataDocumentsEntry *self;
-
-	self = GDATA_DOCUMENTS_ENTRY (parsable);
+	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
 
 	if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
 		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
@@ -212,6 +227,18 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (writers_can_invite);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
+		xmlChar *deleted = xmlGetProp (node, (xmlChar*) "value");
+		if (xmlStrcmp (deleted, (xmlChar*) "true") == 0) {
+			self->priv->is_deleted = TRUE;
+		} else if (xmlStrcmp (deleted, (xmlChar*) "false") == 0) {
+			self->priv->is_deleted = FALSE;
+		} else {
+			gdata_parser_error_unknown_property_value (node, "value", (gchar*) deleted, error);
+			xmlFree (deleted);
+			return FALSE;
+		}
+		xmlFree (deleted);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
 		gchar **document_id_parts;
 		xmlChar *resource_id;
@@ -290,6 +317,9 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 		case PROP_WRITERS_CAN_INVITE:
 			g_value_set_boolean (value, priv->writers_can_invite);
 			break;
+		case PROP_IS_DELETED:
+			g_value_set_boolean (value, priv->is_deleted);
+			break;
 		case PROP_EDITED:
 			g_value_set_boxed (value, &(priv->edited));
 			break;
@@ -337,7 +367,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	else
 		g_string_append (xml_string, "<docs:writersCanInvite value='false'/>");
 }
-
 
 static void
 get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
@@ -509,6 +538,23 @@ gdata_documents_entry_get_last_modified_by (GDataDocumentsEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 	return self->priv->last_modified_by;
+}
+
+/**
+ * gdata_documents_entry_is_deleted:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:is-deleted property.
+ *
+ * Return value: %TRUE if the document has been deleted, %FALSE otherwise
+ *
+ * Since: 0.5.0
+ **/
+gboolean
+gdata_documents_entry_is_deleted (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), FALSE);
+	return self->priv->is_deleted;
 }
 
 static void
