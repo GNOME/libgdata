@@ -79,6 +79,8 @@ void gdata_entry_add_link (GDataEntry *self, GDataLink *link);
 GDataLink *gdata_entry_look_up_link (GDataEntry *self, const gchar *rel);
 GList *gdata_entry_look_up_links (GDataEntry *self, const gchar *rel);
 void gdata_entry_add_author (GDataEntry *self, GDataAuthor *author);
+const gchar *gdata_entry_get_rights (GDataEntry *self);
+void gdata_entry_set_rights (GDataEntry *self, const gchar *rights);
 
 gboolean gdata_entry_is_inserted (GDataEntry *self);
 

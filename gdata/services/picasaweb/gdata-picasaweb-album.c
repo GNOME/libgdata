@@ -200,7 +200,6 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 *
 	 * Since: 0.4.0
 	 **/
-	/* TODO: atom:rights duplicates this? */
 	g_object_class_install_property (gobject_class, PROP_VISIBILITY,
 					 g_param_spec_enum ("visibility",
 							    "Visibility", "The visibility (or access rights) of the album.",
@@ -346,6 +345,48 @@ notify_title_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_dat
 		gdata_media_group_set_title (self->priv->media_group, gdata_entry_get_title (GDATA_ENTRY (self)));
 }
 
+static void notify_visibility_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_data);
+
+static void
+notify_rights_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_data)
+{
+	const gchar *rights = gdata_entry_get_rights (GDATA_ENTRY (self));
+
+	/* Update our gphoto:visibility */
+	g_signal_handlers_block_by_func (self, notify_visibility_cb, NULL);
+
+	if (rights == NULL || strcmp (rights, "public") == 0) {
+		gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PUBLIC);
+	} else if (strcmp (rights, "private") == 0) {
+		gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PRIVATE);
+	} else {
+		/* Print out a warning and leave the visibility as it is */
+		g_warning ("Unknown <rights> or <gd:access> value: %s", rights);
+	}
+
+	g_signal_handlers_unblock_by_func (self, notify_visibility_cb, NULL);
+}
+
+static void
+notify_visibility_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_data)
+{
+	/* Update our GDataEntry's atom:rights */
+	g_signal_handlers_block_by_func (self, notify_rights_cb, NULL);
+
+	switch (self->priv->visibility) {
+		case GDATA_PICASAWEB_PUBLIC:
+			gdata_entry_set_rights (GDATA_ENTRY (self), "public");
+			break;
+		case GDATA_PICASAWEB_PRIVATE:
+			gdata_entry_set_rights (GDATA_ENTRY (self), "private");
+			break;
+		default:
+			g_assert_not_reached ();
+	}
+
+	g_signal_handlers_unblock_by_func (self, notify_rights_cb, NULL);
+}
+
 static void
 gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 {
@@ -354,6 +395,10 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 
 	/* Connect to the notify::title signal from GDataEntry so our media:group title can be kept in sync */
 	g_signal_connect (GDATA_ENTRY (self), "notify::title", G_CALLBACK (notify_title_cb), NULL);
+	/* Connect to the notify::rights signal from GDataEntry so our gphoto:visibility can be kept in sync */
+	g_signal_connect (GDATA_ENTRY (self), "notify::rights", G_CALLBACK (notify_rights_cb), NULL);
+	/* Connect to the notify::visibility signal so our rights can be kept in sync */
+	g_signal_connect (self, "notify::visibility", G_CALLBACK (notify_visibility_cb), NULL);
 }
 
 static void
@@ -615,12 +660,16 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_free (location);
 	}
 
-	if (priv->visibility == GDATA_PICASAWEB_PUBLIC)
-		g_string_append (xml_string, "<gphoto:access>public</gphoto:access>");
-	else if (priv->visibility == GDATA_PICASAWEB_PRIVATE)
-		g_string_append (xml_string, "<gphoto:access>private</gphoto:access>");
-	else
-		g_assert_not_reached ();
+	switch (priv->visibility) {
+		case GDATA_PICASAWEB_PUBLIC:
+			g_string_append (xml_string, "<gphoto:access>public</gphoto:access>");
+			break;
+		case GDATA_PICASAWEB_PRIVATE:
+			g_string_append (xml_string, "<gphoto:access>private</gphoto:access>");
+			break;
+		default:
+			g_assert_not_reached ();
+	}
 
 	if (priv->timestamp.tv_sec != 0 || priv->timestamp.tv_usec != 0) {
 		/* in milliseconds */

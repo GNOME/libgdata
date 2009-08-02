@@ -20,6 +20,8 @@ gdata_entry_look_up_link
 gdata_entry_look_up_links
 gdata_entry_add_author
 gdata_entry_is_inserted
+gdata_entry_get_rights
+gdata_entry_set_rights
 gdata_feed_get_type
 gdata_feed_get_entries
 gdata_feed_look_up_entry

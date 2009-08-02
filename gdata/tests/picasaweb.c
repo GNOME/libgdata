@@ -362,6 +362,7 @@ test_album (GDataService *service)
 	GList *albums;
 	GTimeVal _time;
 	gchar *str;
+	gchar *original_rights;
 
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -394,6 +395,30 @@ test_album (GDataService *service)
 	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos (album), ==, 1);
 	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos_remaining (album), ==, 499);
 	g_assert_cmpuint (gdata_picasaweb_album_get_bytes_used (album), ==, 1124730);
+
+	/* Test visibility and its synchronisation with its GDataEntry's rights */
+	original_rights = g_strdup (gdata_entry_get_rights (GDATA_ENTRY (album)));
+
+	gdata_entry_set_rights (GDATA_ENTRY (album), "private");
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "private");
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PRIVATE);
+
+	gdata_entry_set_rights (GDATA_ENTRY (album), "public");
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "public");
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
+	
+	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PRIVATE);   
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "private");
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PRIVATE);
+
+	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PUBLIC);    
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "public");
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
+
+	gdata_entry_set_rights (GDATA_ENTRY (album), original_rights);
+	g_free (original_rights);
+
+	g_object_unref (album_feed);
 }
 
 static void
@@ -424,6 +449,7 @@ test_album_feed_entry (GDataService *service)
 	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "Test Album 1 - Venice - Public");
 	g_assert_cmpstr (gdata_entry_get_id (entry), ==, "5328889949261497249");
 	g_assert_cmpstr (gdata_entry_get_etag (entry), !=, NULL);
+	g_assert_cmpstr (gdata_entry_get_rights (entry), ==, "public");
 
 	gdata_entry_get_updated (entry, &_time);
 	str = g_time_val_to_iso8601 (&_time);
@@ -531,6 +557,7 @@ test_query_all_albums_async (GDataService *service)
 }
 
 /* TODO: test private, public albums, test uploading */
+/* TODO: add queries to update albums, files on the server; test those */
 
 int
 main (int argc, char *argv[])

@@ -64,6 +64,7 @@ struct _GDataEntryPrivate {
 	gchar *content;
 	GList *links; /* GDataLink */
 	GList *authors; /* GDataAuthor */
+	gchar *rights;
 };
 
 enum {
@@ -74,7 +75,8 @@ enum {
 	PROP_UPDATED,
 	PROP_PUBLISHED,
 	PROP_CONTENT,
-	PROP_IS_INSERTED
+	PROP_IS_INSERTED,
+	PROP_RIGHTS
 };
 
 G_DEFINE_TYPE (GDataEntry, gdata_entry, GDATA_TYPE_PARSABLE)
@@ -154,6 +156,21 @@ gdata_entry_class_init (GDataEntryClass *klass)
 					"Inserted?", "Whether the entry has been inserted on the server.",
 					FALSE,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	/**
+	 * GDataEntry:rights:
+	 *
+	 * The ownership rights pertaining to this entry. 
+	 *
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.rights">
+	 * Atom specification</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_RIGHTS,
+					 g_param_spec_string ("rights",
+							      "Rights", "Rights pertaining to the entry.",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -198,6 +215,7 @@ gdata_entry_finalize (GObject *object)
 	g_free (priv->summary);
 	xmlFree (priv->id);
 	xmlFree (priv->etag);
+	g_free (priv->rights);
 	g_free (priv->content);
 
 	/* Chain up to the parent class */
@@ -234,6 +252,9 @@ gdata_entry_get_property (GObject *object, guint property_id, GValue *value, GPa
 		case PROP_IS_INSERTED:
 			g_value_set_boolean (value, gdata_entry_is_inserted (GDATA_ENTRY (object)));
 			break;
+	        case PROP_RIGHTS:
+			g_value_set_string (value, priv->rights);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -263,6 +284,9 @@ gdata_entry_set_property (GObject *object, guint property_id, const GValue *valu
 			break;
 		case PROP_CONTENT:
 			gdata_entry_set_content (self, g_value_get_string (value));
+			break;
+		case PROP_RIGHTS:
+			gdata_entry_set_rights (self, g_value_get_string (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -366,6 +390,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *summary = xmlNodeListGetString (doc, node->children, TRUE);
 		gdata_entry_set_summary (self, (gchar*) summary);
 		xmlFree (summary);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "rights") == 0) {
+		/* atom:rights */
+		xmlChar *rights = xmlNodeListGetString (doc, node->children, TRUE);
+		gdata_entry_set_rights (self, (gchar*) rights);
+		xmlFree (rights);
 	} else if (GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -436,6 +465,12 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		gchar *summary = g_markup_escape_text (priv->summary, -1);
 		g_string_append_printf (xml_string, "<summary type='text'>%s</summary>", summary);
 		g_free (summary);
+	}
+
+	if (priv->rights != NULL) {
+		gchar *rights = g_markup_escape_text (priv->rights, -1);
+		g_string_append_printf (xml_string, "<rights>%s</rights>", rights);
+		g_free (rights);
 	}
 
 	if (priv->content != NULL) {
@@ -794,4 +829,39 @@ gdata_entry_is_inserted (GDataEntry *self)
 	    (self->priv->updated.tv_sec != 0 || self->priv->updated.tv_usec != 0))
 		return TRUE;
 	return FALSE;
+}
+
+/**
+ * gdata_entry_get_rights:
+ * @self: a #GDataEntry
+ *
+ * Returns the rights pertaining to the entry, or %NULL if not set.
+ *
+ * Return value: the entry's rights information
+ *
+ * Since: 0.5.0
+ **/
+const gchar *
+gdata_entry_get_rights (GDataEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
+	return self->priv->rights;
+}
+
+/**
+ * gdata_entry_set_rights:
+ * @self: a #GDataEntry
+ * @rights: the new rights, or %NULL
+ *
+ * Sets the rights for this entry.
+ *
+ * Since: 0.5.0
+ **/
+void
+gdata_entry_set_rights (GDataEntry *self, const gchar *rights)
+{
+	g_return_if_fail (GDATA_IS_ENTRY (self));
+	g_free (self->priv->rights);
+	self->priv->rights = g_strdup (rights);
+	g_object_notify (G_OBJECT (self), "rights");
 }

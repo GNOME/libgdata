@@ -149,6 +149,8 @@ gdata_entry_add_link
 gdata_entry_look_up_link
 gdata_entry_look_up_links
 gdata_entry_is_inserted
+gdata_entry_get_rights
+gdata_entry_set_rights
 <SUBSECTION Standard>
 gdata_entry_get_type
 GDATA_ENTRY
