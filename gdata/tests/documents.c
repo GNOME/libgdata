@@ -203,11 +203,9 @@ test_upload_metadata_file (GDataService *service)
 static void
 test_upload_file_get_entry (GDataService *service)
 {
-	GDataDocumentsEntry *new_document;
-	GDataDocumentsPresentation *newly_created_presentation;
+	GDataDocumentsEntry *new_document, *newly_created_presentation;
 	GFile *document_file;
 	GDataCategory *category;
-	GDataDocumentsQuery *query;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -224,11 +222,11 @@ test_upload_file_get_entry (GDataService *service)
 	newly_created_presentation = gdata_documents_service_query_single_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_TYPE_DOCUMENTS_PRESENTATION,
 										    gdata_documents_entry_get_document_id (new_document), NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
-
+	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (newly_created_presentation));
 
 	g_clear_error (&error);
 	g_object_unref (new_document);
+	g_object_unref (newly_created_presentation);
 	g_object_unref (document_file);
 }
 
@@ -476,7 +474,7 @@ test_download_all_documents (GDataService *service)
 	gchar *destination_file_name;
 	GString *destination_display_name;
 	GList *i;
-	gint ppt_nb = 0, ods_nb = 0, odt_nb = 0;
+	gint ods_nb = 0, odt_nb = 0;
 
 	feed = gdata_documents_service_query_documents (GDATA_DOCUMENTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -490,8 +488,6 @@ test_download_all_documents (GDataService *service)
 											   TRUE, NULL, &error);
 
 		} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (i->data)) {
-			GFile *destination_file;
-
 			destination_file_name = g_strdup_printf ("/tmp/%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (i->data)), "ods");
 			destination_file = g_file_new_for_path (destination_file_name);
 			g_free (destination_file_name);
@@ -512,8 +508,6 @@ test_download_all_documents (GDataService *service)
 			}
 			g_string_free (destination_display_name, TRUE);
 		} else if (GDATA_IS_DOCUMENTS_TEXT (i->data)) {
-			GFile *destination_file;
-
 			destination_file_name = g_strdup_printf ("/tmp/%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (i->data)), "odt");
 			destination_file = g_file_new_for_path (destination_file_name);
 			g_free (destination_file_name);

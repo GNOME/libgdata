@@ -224,6 +224,9 @@ gdata_documents_service_query_single_document (GDataDocumentsService *self, GTyp
 	gchar *resource_id;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (document_id != NULL, NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (document_type == GDATA_TYPE_DOCUMENTS_FOLDER)
 		resource_id = g_strconcat ("folder:", document_id, NULL);
@@ -529,7 +532,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 {
 	GDataDocumentsEntry *new_document;
 	SoupMessage *message;
-	gchar *upload_uri, *tmp_str = NULL;
+	gchar *upload_uri;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (document == NULL || GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
@@ -554,13 +557,13 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 	if (folder != NULL) {
 		const gchar *folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
 		g_assert (folder_id != NULL);
-		upload_uri = tmp_str = g_strconcat ("http://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
+		upload_uri = g_strconcat ("http://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
 	} else {
-		upload_uri = "http://docs.google.com/feeds/documents/private/full";
+		upload_uri = g_strdup ("http://docs.google.com/feeds/documents/private/full");
 	}
 
 	message = soup_message_new (SOUP_METHOD_POST, upload_uri);
-	g_free (tmp_str);
+	g_free (upload_uri);
 
 	new_document = upload_update_document (self, document, document_file, message, 201, cancellable, error);
 	g_object_unref (message);
