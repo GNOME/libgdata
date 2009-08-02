@@ -228,17 +228,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 		xmlFree (writers_can_invite);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
-		xmlChar *deleted = xmlGetProp (node, (xmlChar*) "value");
-		if (xmlStrcmp (deleted, (xmlChar*) "true") == 0) {
-			self->priv->is_deleted = TRUE;
-		} else if (xmlStrcmp (deleted, (xmlChar*) "false") == 0) {
-			self->priv->is_deleted = FALSE;
-		} else {
-			gdata_parser_error_unknown_property_value (node, "value", (gchar*) deleted, error);
-			xmlFree (deleted);
-			return FALSE;
-		}
-		xmlFree (deleted);
+		/* <gd:deleted> */
+		/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */
+		self->priv->is_deleted = TRUE;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
 		gchar **document_id_parts;
 		xmlChar *resource_id;
