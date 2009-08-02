@@ -124,8 +124,10 @@ test_upload_simple (GDataService *service)
 				"xmlns:gphoto='http://schemas.google.com/photos/2007' "
 				"xmlns:media='http://video.search.yahoo.com/mrss' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
-			        "xmlns:exif='http://schemas.google.com/photos/exif/2007' "
-				"xmlns:app='http://www.w3.org/2007/app'>"
+				"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
+				"xmlns:app='http://www.w3.org/2007/app' "
+				"xmlns:georss='http://www.georss.org/georss' "
+				"xmlns:gml='http://www.opengis.net/gml'>"
 				"<title type='text'>Photo Entry Title</title>"
 				"<summary type='text'>Photo Summary</summary>"
 				"<category term='http://schemas.google.com/photos/2007#photo' scheme='http://schemas.google.com/g/2005#kind'/>"
@@ -137,6 +139,8 @@ test_upload_simple (GDataService *service)
 				"</media:group>"
 			 "</entry>");
 	g_free(xml);
+
+	gdata_picasaweb_file_set_coordinates (photo, 17.127, -110.35);
 
 	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
 	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
@@ -173,6 +177,10 @@ test_photo (GDataService *service)
 	GTimeVal _time;
 	gchar *str;
 	gchar *timestamp;
+	gdouble latitude;
+	gdouble longitude;
+	gdouble original_latitude;
+	gdouble original_longitude;
 
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -257,7 +265,27 @@ test_photo (GDataService *service)
 	g_assert_cmpint (gdata_picasaweb_file_get_iso (photo), ==, 80);
 	g_assert_cmpstr (gdata_picasaweb_file_get_make (photo), ==, "EASTMAN KODAK COMPANY");
 	g_assert_cmpstr (gdata_picasaweb_file_get_model (photo), ==, "KODAK Z740 ZOOM DIGITAL CAMERA");
-	
+
+	/* Check GeoRSS coordinates */
+	gdata_picasaweb_file_get_coordinates (photo, &original_latitude, &original_longitude);
+	g_assert_cmpfloat (original_latitude, ==, 45.4341173);
+	g_assert_cmpfloat (original_longitude, ==, 12.1289062);
+
+	gdata_picasaweb_file_get_coordinates (photo, NULL, &longitude);
+	g_assert_cmpfloat (longitude, ==, 12.1289062);
+	gdata_picasaweb_file_get_coordinates (photo, &latitude, NULL);
+	g_assert_cmpfloat (latitude, ==, 45.4341173);
+	gdata_picasaweb_file_get_coordinates (photo, NULL, NULL);
+
+	gdata_picasaweb_file_set_coordinates (photo, original_longitude, original_latitude);
+	gdata_picasaweb_file_get_coordinates (photo, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, original_longitude);
+	g_assert_cmpfloat (longitude, ==, original_latitude);
+	gdata_picasaweb_file_set_coordinates (photo, original_latitude, original_longitude);
+	gdata_picasaweb_file_get_coordinates (photo, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, 45.4341173);
+	g_assert_cmpfloat (longitude, ==, 12.1289062);
+
 	g_free (timestamp);
 }
 
@@ -362,6 +390,10 @@ test_album (GDataService *service)
 	GList *albums;
 	GTimeVal _time;
 	gchar *str;
+	gdouble latitude;
+	gdouble longitude;
+	gdouble original_latitude;
+	gdouble original_longitude;
 	gchar *original_rights;
 
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
@@ -383,7 +415,7 @@ test_album (GDataService *service)
 
 	g_assert_cmpstr (gdata_picasaweb_album_get_description (album), ==, "This is the test description.  This album should be in Venice.");
 	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
-	/* Google doesn't seem to be returning this one any more */
+	/* TODO: Google doesn't seem to be returning this one any more; investigate */
 	/*g_assert_cmpstr (gdata_picasaweb_album_get_name (album), ==, "TestAlbum1VenicePublic");*/
 	g_assert_cmpstr (gdata_picasaweb_album_get_location (album), ==, "Venice");
 
@@ -396,6 +428,27 @@ test_album (GDataService *service)
 	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos_remaining (album), ==, 499);
 	g_assert_cmpuint (gdata_picasaweb_album_get_bytes_used (album), ==, 1124730);
 
+	gdata_picasaweb_album_get_coordinates (album, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, 45.434336);
+	gdata_picasaweb_album_get_coordinates (album, &original_latitude, &original_longitude);
+	g_assert_cmpfloat (original_latitude, ==, 45.434336);
+	g_assert_cmpfloat (original_longitude, ==, 12.338784);
+
+	gdata_picasaweb_album_get_coordinates (album, NULL, &longitude);
+	g_assert_cmpfloat (longitude, ==, 12.338784);
+	gdata_picasaweb_album_get_coordinates (album, &latitude, NULL);
+	g_assert_cmpfloat (latitude, ==, 45.434336);
+	gdata_picasaweb_album_get_coordinates (album, NULL, NULL);
+
+	gdata_picasaweb_album_set_coordinates (album, original_longitude, original_latitude);
+	gdata_picasaweb_album_get_coordinates (album, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, original_longitude);
+	g_assert_cmpfloat (longitude, ==, original_latitude);
+	gdata_picasaweb_album_set_coordinates (album, original_latitude, original_longitude);
+	gdata_picasaweb_album_get_coordinates (album, &original_latitude, &original_longitude);
+	g_assert_cmpfloat (original_latitude, ==, 45.434336);
+	g_assert_cmpfloat (original_longitude, ==, 12.338784);
+
 	/* Test visibility and its synchronisation with its GDataEntry's rights */
 	original_rights = g_strdup (gdata_entry_get_rights (GDATA_ENTRY (album)));
 
@@ -406,12 +459,12 @@ test_album (GDataService *service)
 	gdata_entry_set_rights (GDATA_ENTRY (album), "public");
 	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "public");
 	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
-	
-	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PRIVATE);   
+
+	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PRIVATE);
 	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "private");
 	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PRIVATE);
 
-	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PUBLIC);    
+	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PUBLIC);
 	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "public");
 	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
 
@@ -461,9 +514,6 @@ test_album_feed_entry (GDataService *service)
 	g_assert_cmpstr (str, ==, "2009-04-26T07:00:00Z");
 	g_free (str);
 
-	/* g_assert_cmpstr (gdata_entry_get_content (entry), !=, NULL); */
-	/* TODO */
-	printf("** WARNING:%s:%d: gdata_entry_get_content(entry) returns null; valid?\n", __FILE__, __LINE__);
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	g_assert_cmpstr (xml, !=, NULL);
 	g_assert_cmpuint (strlen (xml), >, 0);

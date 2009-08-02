@@ -43,6 +43,7 @@
 #include "gdata-types.h"
 #include "media/gdata-media-group.h"
 #include "exif/gdata-exif-tags.h"
+#include "georss/gdata-georss-where.h"
 
 static void gdata_picasaweb_file_dispose (GObject *object);
 static void gdata_picasaweb_file_finalize (GObject *object);
@@ -72,20 +73,8 @@ struct _GDataPicasaWebFilePrivate {
 	GDataMediaGroup *media_group;
 	/* exif:tags */
 	GDataExifTags *exif_tags;
-
-	/* georss:where properties */
-	/* TODO these specify a location, like the following example.
-	 * Perhaps investigate whether we can do anything with geoclue/libchamplain
-<georss:where>
-	<gml:Envelope>
-		<gml:lowerCorner>45.2404179 11.7382049</gml:lowerCorner>
-		<gml:upperCorner>45.6278166 12.5196074</gml:upperCorner>
-	</gml:Envelope>
-	<gml:Point>
-		<gml:pos>45.4341173 12.1289062</gml:pos>
-	</gml:Point>
-</georss:where>
-	*/
+	/* georss:where */
+	GDataGeoRSSWhere *georss_where;
 };
 
 enum {
@@ -114,7 +103,9 @@ enum {
 	PROP_IMAGE_UNIQUE_ID,
 	PROP_ISO,
 	PROP_MAKE,
-	PROP_MODEL
+	PROP_MODEL,
+	PROP_LATITUDE,
+	PROP_LONGITUDE
 };
 
 G_DEFINE_TYPE (GDataPicasaWebFile, gdata_picasaweb_file, GDATA_TYPE_ENTRY)
@@ -540,6 +531,38 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 							      "Model", "The model of the camera.",
 							      NULL,
 							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:latitude:
+	 *
+	 * The location as a latitude coordinate associated with this file. Valid latitudes range from %-90.0 to %90.0 inclusive.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#georss_where">
+	 * GeoRSS specification</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LATITUDE,
+					 g_param_spec_double ("latitude",
+							      "Latitude", "The location as a latitude coordinate associated with this file.",
+							      -90.0, 90.0, 0.0,
+							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebFile:longitude:
+	 *
+	 * The location as a longitude coordinate associated with this file. Valid longitudes range from %-180.0 to %180.0 inclusive.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#georss_where">
+	 * GeoRSS specification</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
+					 g_param_spec_double ("longitude",
+							      "Longitude", "The location as a longitude coordinate associated with this file.",
+							      -180.0, 180.0, 0.0,
+							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -564,6 +587,7 @@ gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_FILE, GDataPicasaWebFilePrivate);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
 	self->priv->exif_tags = g_object_new (GDATA_TYPE_EXIF_TAGS, NULL);
+	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 	self->priv->is_commenting_enabled = TRUE;
 
 	/* We need to keep atom:title (the canonical title for the file) in sync with media:group/media:title */
@@ -584,6 +608,10 @@ gdata_picasaweb_file_dispose (GObject *object)
 	if (priv->exif_tags != NULL)
 		g_object_unref (priv->exif_tags);
 	priv->exif_tags = NULL;
+
+	if (priv->georss_where != NULL)
+		g_object_unref (priv->georss_where);
+	priv->georss_where = NULL;
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_picasaweb_file_parent_class)->dispose (object);
@@ -689,6 +717,12 @@ gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *v
 		case PROP_MODEL:
 			g_value_set_string (value, gdata_exif_tags_get_model (priv->exif_tags));
 			break;
+		case PROP_LATITUDE:
+			g_value_set_double (value, gdata_georss_where_get_latitude (priv->georss_where));
+			break;
+		case PROP_LONGITUDE:
+			g_value_set_double (value, gdata_georss_where_get_longitude (priv->georss_where));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -735,6 +769,14 @@ gdata_picasaweb_file_set_property (GObject *object, guint property_id, const GVa
 		case PROP_TAGS:
 			gdata_picasaweb_file_set_tags (self, g_value_get_string (value));
 			break;
+		case PROP_LATITUDE:
+			gdata_picasaweb_file_set_coordinates (self, g_value_get_double (value),
+							      gdata_georss_where_get_longitude (self->priv->georss_where));
+			break;
+		case PROP_LONGITUDE:
+			gdata_picasaweb_file_set_coordinates (self, gdata_georss_where_get_latitude (self->priv->georss_where),
+							      g_value_get_double (value));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -759,6 +801,16 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			g_object_unref (self->priv->media_group);
 
 		self->priv->media_group = group;
+	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
+		/* georss:where */
+		GDataGeoRSSWhere *where = GDATA_GEORSS_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GEORSS_WHERE, doc, node, NULL, error));
+		if (where == NULL)
+			return FALSE;
+
+		if (self->priv->georss_where != NULL)
+			g_object_unref (self->priv->georss_where);
+
+		self->priv->georss_where = where;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "tags") == 0) {
 		/* exif:tags */
 		GDataExifTags *tags = GDATA_EXIF_TAGS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_EXIF_TAGS, doc, node, NULL, error));
@@ -917,6 +969,12 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* media:group */
 	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), xml_string, FALSE);
 
+	/* georss:where */
+	if (priv->georss_where != NULL && gdata_georss_where_get_latitude (priv->georss_where) != G_MAXDOUBLE &&
+	    gdata_georss_where_get_longitude (priv->georss_where) != G_MAXDOUBLE) {
+		_gdata_parsable_get_xml (GDATA_PARSABLE (priv->georss_where), xml_string, FALSE);
+	}
+
 	/* TODO:
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
@@ -941,6 +999,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 	GDATA_PARSABLE_GET_CLASS (priv->media_group)->get_namespaces (GDATA_PARSABLE (priv->media_group), namespaces);
 	/* Add the exif:tags namespaces */
 	GDATA_PARSABLE_GET_CLASS (priv->exif_tags)->get_namespaces (GDATA_PARSABLE (priv->exif_tags), namespaces);
+	/* Add the georss:where namespaces */
+	GDATA_PARSABLE_GET_CLASS (priv->georss_where)->get_namespaces (GDATA_PARSABLE (priv->georss_where), namespaces);
 }
 
 /**
@@ -1478,7 +1538,7 @@ gdata_picasaweb_file_get_thumbnails (GDataPicasaWebFile *self)
  *
  * Gets the #GDataPicasaWebFile:distance property.
  *
- * Return value: the distance recorded in the photo's EXIF, or %-1 if unknown 
+ * Return value: the distance recorded in the photo's EXIF, or %-1 if unknown
  *
  * Since: 0.5.0
  **/
@@ -1623,4 +1683,52 @@ gdata_picasaweb_file_get_model (GDataPicasaWebFile *self)
 {
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
 	return gdata_exif_tags_get_model (self->priv->exif_tags);
+}
+
+/**
+ * gdata_picasaweb_file_get_coordinates:
+ * @self: a #GDataPicasaWebFile
+ * @latitude: return location for the latitude, or %NULL
+ * @longitude: return location for the longitude, or %NULL
+ *
+ * Gets the #GDataPicasaWebFile:latitude and #GDataPicasaWebFile:longitude properties, setting the out parameters to them.
+ * If either latitude or longitude is %NULL, that parameter will not be set. If the coordinates are unset,
+ * @latitude and @longitude will be set to %G_MAXDOUBLE.
+ *
+ * Since: 0.5.0
+ **/
+void
+gdata_picasaweb_file_get_coordinates (GDataPicasaWebFile *self, gdouble *latitude, gdouble *longitude)
+{
+	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
+
+	if (latitude != NULL)
+		*latitude = gdata_georss_where_get_latitude (self->priv->georss_where);
+	if (longitude != NULL)
+		*longitude = gdata_georss_where_get_longitude (self->priv->georss_where);
+}
+
+/**
+ * gdata_picasaweb_file_set_coordinates:
+ * @self: a #GDataPicasaWebFile
+ * @latitude: the file's new latitude coordinate, or %G_MAXDOUBLE
+ * @longitude: the file's new longitude coordinate, or %G_MAXDOUBLE
+ *
+ * Sets the #GDataPicasaWebFile:latitude and #GDataPicasaWebFile:longitude properties to
+ * @latitude and @longitude respectively.
+ *
+ * Since: 0.5.0
+ **/
+void
+gdata_picasaweb_file_set_coordinates (GDataPicasaWebFile *self, gdouble latitude, gdouble longitude)
+{
+	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
+
+	gdata_georss_where_set_latitude (self->priv->georss_where, latitude);
+	gdata_georss_where_set_longitude (self->priv->georss_where, longitude);
+
+	g_object_freeze_notify (G_OBJECT (self));
+	g_object_notify (G_OBJECT (self), "latitude");
+	g_object_notify (G_OBJECT (self), "longitude");
+	g_object_thaw_notify (G_OBJECT (self));
 }

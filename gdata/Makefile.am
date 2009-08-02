@@ -1,5 +1,5 @@
-SUBDIRS = atom gd media exif services . tests
-DIST_SUBDIRS = atom gd media exif services tests
+SUBDIRS = atom gd media exif georss services . tests
+DIST_SUBDIRS = atom gd media exif georss services tests
 
 # Marshalling
 GDATA_MARSHAL_FILES = \
@@ -93,6 +93,7 @@ libgdata_la_LIBADD = \
 	gd/libgdatagd.la			\
 	media/libgdatamedia.la			\
 	exif/libgdataexif.la			\
+	georss/libgdatageorss.la		\
 	services/youtube/libgdatayoutube.la	\
 	services/calendar/libgdatacalendar.la	\
 	services/picasaweb/libgdatapicasaweb.la	\

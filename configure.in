@@ -89,6 +89,7 @@ gdata/atom/Makefile
 gdata/gd/Makefile
 gdata/media/Makefile
 gdata/exif/Makefile
+gdata/georss/Makefile
 gdata/services/Makefile
 gdata/services/calendar/Makefile
 gdata/services/contacts/Makefile

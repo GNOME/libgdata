@@ -46,6 +46,7 @@
 #include "gdata-types.h"
 #include "media/gdata-media-group.h"
 #include "gdata-picasaweb-enums.h"
+#include "georss/gdata-georss-where.h"
 
 static void gdata_picasaweb_album_dispose (GObject *object);
 static void gdata_picasaweb_album_finalize (GObject *object);
@@ -71,6 +72,8 @@ struct _GDataPicasaWebAlbumPrivate {
 
 	/* media:group */
 	GDataMediaGroup *media_group;
+	/* georss:where */
+	GDataGeoRSSWhere *georss_where;
 };
 
 enum {
@@ -87,7 +90,9 @@ enum {
 	PROP_IS_COMMENTING_ENABLED,
 	PROP_COMMENT_COUNT,
 	PROP_DESCRIPTION,
-	PROP_TAGS
+	PROP_TAGS,
+	PROP_LATITUDE,
+	PROP_LONGITUDE
 };
 
 G_DEFINE_TYPE (GDataPicasaWebAlbum, gdata_picasaweb_album, GDATA_TYPE_ENTRY)
@@ -335,6 +340,38 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 							      "Tags", "A comma-separated list of tags associated with the album",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebAlbum:latitude:
+	 *
+	 * The location as a latitude coordinate associated with this album. Valid latitudes range from %-90.0 to %90.0 inclusive.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#georss_where">
+	 * GeoRSS specification</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LATITUDE,
+					 g_param_spec_double ("latitude",
+							      "Latitude", "The location as a latitude coordinate associated with this album.",
+							      -90.0, 90.0, 0.0,
+							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebAlbum:longitude:
+	 *
+	 * The location as a longitude coordinate associated with this album. Valid longitudes range from %-180.0 to %180.0 inclusive.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#georss_where">
+	 * GeoRSS specification</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
+					 g_param_spec_double ("longitude",
+							      "Longitude", "The location as a longitude coordinate associated with this album.",
+							      -180.0, 180.0, 0.0,
+							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -361,7 +398,7 @@ notify_rights_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_da
 		gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PRIVATE);
 	} else {
 		/* Print out a warning and leave the visibility as it is */
-		g_message ("Unknown <rights> or <gd:access> value: %s", rights);
+		g_warning ("Unknown <rights> or <gd:access> value: %s", rights);
 	}
 
 	g_signal_handlers_unblock_by_func (self, notify_visibility_cb, NULL);
@@ -392,6 +429,7 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_ALBUM, GDataPicasaWebAlbumPrivate);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
+	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 
 	/* Connect to the notify::title signal from GDataEntry so our media:group title can be kept in sync */
 	g_signal_connect (GDATA_ENTRY (self), "notify::title", G_CALLBACK (notify_title_cb), NULL);
@@ -409,6 +447,10 @@ gdata_picasaweb_album_dispose (GObject *object)
 	if (priv->media_group != NULL)
 		g_object_unref (priv->media_group);
 	priv->media_group = NULL;
+
+	if (priv->georss_where != NULL)
+		g_object_unref (priv->georss_where);
+	priv->georss_where = NULL;
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_picasaweb_album_parent_class)->dispose (object);
@@ -476,6 +518,12 @@ gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *
 		case PROP_TAGS:
 			g_value_set_string (value, gdata_media_group_get_keywords (priv->media_group));
 			break;
+		case PROP_LATITUDE:
+			g_value_set_double (value, gdata_georss_where_get_latitude (priv->georss_where));
+			break;
+		case PROP_LONGITUDE:
+			g_value_set_double (value, gdata_georss_where_get_longitude (priv->georss_where));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -507,6 +555,14 @@ gdata_picasaweb_album_set_property (GObject *object, guint property_id, const GV
 		case PROP_TAGS:
 			gdata_picasaweb_album_set_tags (self, g_value_get_string (value));
 			break;
+		case PROP_LATITUDE:
+			gdata_picasaweb_album_set_coordinates (self, g_value_get_double (value),
+							       gdata_georss_where_get_longitude (self->priv->georss_where));
+			break;
+		case PROP_LONGITUDE:
+			gdata_picasaweb_album_set_coordinates (self, gdata_georss_where_get_latitude (self->priv->georss_where),
+							       g_value_get_double (value));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -531,6 +587,16 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			g_object_unref (self->priv->media_group);
 
 		self->priv->media_group = group;
+	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
+		/* georss:where */
+		GDataGeoRSSWhere *where = GDATA_GEORSS_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GEORSS_WHERE, doc, node, NULL, error));
+		if (where == NULL)
+			return FALSE;
+
+		if (self->priv->georss_where != NULL)
+			g_object_unref (self->priv->georss_where);
+
+		self->priv->georss_where = where;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "user") == 0) {
 		/* gphoto:user */
 		xmlChar *user = xmlNodeListGetString (doc, node->children, TRUE);
@@ -685,13 +751,19 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* media:group */
 	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), xml_string, FALSE);
 
-	/* TODO: add GML support */
+	/* georss:where */
+	if (priv->georss_where != NULL && gdata_georss_where_get_latitude (priv->georss_where) != G_MAXDOUBLE &&
+	    gdata_georss_where_get_longitude (priv->georss_where) != G_MAXDOUBLE) {
+		_gdata_parsable_get_xml (GDATA_PARSABLE (priv->georss_where), xml_string, FALSE);
+	}
+
 	/* TODO:
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
 	 * - Check things are escaped (or not) as appropriate
 	 * - Write a function to encapsulate g_markup_escape_text and
 	 *   g_string_append_printf to reduce the number of allocations
+	 * - add GML support
 	 */
 }
 
@@ -708,6 +780,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 	/* Add the media:group namespaces */
 	GDATA_PARSABLE_GET_CLASS (priv->media_group)->get_namespaces (GDATA_PARSABLE (priv->media_group), namespaces);
+	/* Add the georss:where namespaces */
+	GDATA_PARSABLE_GET_CLASS (priv->georss_where)->get_namespaces (GDATA_PARSABLE (priv->georss_where), namespaces);
 }
 
 /**
@@ -1119,4 +1193,52 @@ gdata_picasaweb_album_get_thumbnails (GDataPicasaWebAlbum *self)
 {
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (self), NULL);
 	return gdata_media_group_get_thumbnails (self->priv->media_group);
+}
+
+/**
+ * gdata_picasaweb_album_get_coordinates:
+ * @self: a #GDataPicasaWebAlbum
+ * @latitude: return location for the latitude, or %NULL
+ * @longitude: return location for the longitude, or %NULL
+ *
+ * Gets the #GDataPicasaWebAlbum:latitude and #GDataPicasaWebAlbum:longitude properties,
+ * setting the out parameters to them. If either latitude or longitude is %NULL, that parameter will not be set.
+ * If the coordinates are unset, @latitude and @longitude will be set to %G_MAXDOUBLE.
+ *
+ * Since: 0.5.0
+ **/
+void
+gdata_picasaweb_album_get_coordinates (GDataPicasaWebAlbum *self, gdouble *latitude, gdouble *longitude)
+{
+	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
+
+	if (latitude != NULL)
+		*latitude = gdata_georss_where_get_latitude (self->priv->georss_where);
+	if (longitude != NULL)
+		*longitude = gdata_georss_where_get_longitude (self->priv->georss_where);
+}
+
+/**
+ * gdata_picasaweb_album_set_coordinates:
+ * @self: a #GDataPicasaWebAlbum
+ * @latitude: the album's new latitude coordinate, or %G_MAXDOUBLE
+ * @longitude: the album's new longitude coordinate, or %G_MAXDOUBLE
+ *
+ * Sets the #GDataPicasaWebAlbum:latitude and #GDataPicasaWebAlbum:longitude properties to
+ * @latitude and @longitude respectively.
+ *
+ * Since: 0.5.0
+ **/
+void
+gdata_picasaweb_album_set_coordinates (GDataPicasaWebAlbum *self, gdouble latitude, gdouble longitude)
+{
+	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
+
+	gdata_georss_where_set_latitude (self->priv->georss_where, latitude);
+	gdata_georss_where_set_longitude (self->priv->georss_where, longitude);
+
+	g_object_freeze_notify (G_OBJECT (self));
+	g_object_notify (G_OBJECT (self), "latitude");
+	g_object_notify (G_OBJECT (self), "longitude");
+	g_object_thaw_notify (G_OBJECT (self));
 }

@@ -65,7 +65,9 @@ IGNORE_HFILES = \
 	gdata-youtube-control.h	\
 	gdata-picasaweb-enums.h	\
 	gdata-exif-tags.c	\
-	gdata-exif-tags.h
+	gdata-exif-tags.h	\
+	gdata-georss-where.c	\
+	gdata-georss-where.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png

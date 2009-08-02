@@ -103,6 +103,8 @@ const gchar *gdata_picasaweb_file_get_image_unique_id (GDataPicasaWebFile *self)
 gint gdata_picasaweb_file_get_iso (GDataPicasaWebFile *self);
 const gchar *gdata_picasaweb_file_get_make (GDataPicasaWebFile *self);
 const gchar *gdata_picasaweb_file_get_model (GDataPicasaWebFile *self);
+void gdata_picasaweb_file_get_coordinates (GDataPicasaWebFile *self, gdouble *latitude, gdouble *longitude);
+void gdata_picasaweb_file_set_coordinates (GDataPicasaWebFile *self, gdouble latitude, gdouble longitude);
 
 /* TODO implement is video */
 /* TODO implement get comments */

@@ -102,6 +102,8 @@ const gchar *gdata_picasaweb_album_get_description (GDataPicasaWebAlbum *self);
 void gdata_picasaweb_album_set_description (GDataPicasaWebAlbum *self, const gchar *description);
 GList *gdata_picasaweb_album_get_contents (GDataPicasaWebAlbum *self);
 GList *gdata_picasaweb_album_get_thumbnails (GDataPicasaWebAlbum *self);
+void gdata_picasaweb_album_get_coordinates (GDataPicasaWebAlbum *self, gdouble *latitude, gdouble *longitude);
+void gdata_picasaweb_album_set_coordinates (GDataPicasaWebAlbum *self, gdouble latitude, gdouble longitude);
 
 G_END_DECLS
 
