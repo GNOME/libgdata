@@ -361,7 +361,7 @@ notify_rights_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_da
 		gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PRIVATE);
 	} else {
 		/* Print out a warning and leave the visibility as it is */
-		g_warning ("Unknown <rights> or <gd:access> value: %s", rights);
+		g_message ("Unknown <rights> or <gd:access> value: %s", rights);
 	}
 
 	g_signal_handlers_unblock_by_func (self, notify_visibility_cb, NULL);

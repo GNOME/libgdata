@@ -75,6 +75,7 @@ libgdata_la_SOURCES = \
 libgdata_la_CPPFLAGS = \
 	-I$(top_srcdir)			\
 	-I$(top_srcdir)/gdata		\
+	-DG_LOG_DOMAIN=\"libgdata\"	\
 	$(DISABLE_DEPRECATED)		\
 	$(AM_CPPFLAGS)
 

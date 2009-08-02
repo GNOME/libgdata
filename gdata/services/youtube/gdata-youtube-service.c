@@ -282,7 +282,7 @@ parse_error_response (GDataService *self, GDataServiceError error_type, guint st
 				location = xmlNodeListGetString (doc, child_node->children, TRUE);
 			else if (xmlStrcmp (child_node->name, (xmlChar*) "internalReason") != 0) {
 				/* Unknown element (ignore internalReason) */
-				g_warning ("Unhandled <error/%s> element.", child_node->name);
+				g_message ("Unhandled <error/%s> element.", child_node->name);
 
 				xmlFree (domain);
 				xmlFree (code);
