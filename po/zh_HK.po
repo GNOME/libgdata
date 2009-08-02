@@ -1,14 +1,15 @@
 # Chinese (Hong Kong) translation of libgdata.
 # 2008. Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>, 2009.
+# Tryneeds translation team, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgdata 0.4.0\n"
+"Project-Id-Version: libgdata 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-06 20:57+0800\n"
-"PO-Revision-Date: 2009-07-06 20:58+0800\n"
+"POT-Creation-Date: 2009-08-02 16:13+0800\n"
+"PO-Revision-Date: 2009-08-02 16:13+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,14 +18,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../gdata/gdata-access-handler.c:176
-#, fuzzy
-#| msgid "The entry has already been inserted."
 msgid "The rule has already been inserted."
-msgstr "該項目已經插入了。"
+msgstr "該規則已經插入了。"
 
 #: ../gdata/gdata-access-handler.c:378
 msgid "The owner's rule may not be deleted."
-msgstr ""
+msgstr "擁有者的規則無法刪除。"
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:164 ../gdata/gdata-parsable.c:175
@@ -42,10 +41,9 @@ msgstr "文件是空白的。"
 #. * For example:
 #. *  A <title> element was missing required content.
 #: ../gdata/gdata-parser.c:65
-#, fuzzy, c-format
-#| msgid "A <%s> element was missing required content."
+#, c-format
 msgid "A %s element was missing required content."
-msgstr "必要的內容中缺少了 <%s> 元素。"
+msgstr "必要的內容中缺少了 %s 元素。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")), and the second parameter is
 #. * the erroneous value (which was not in ISO 8601 format).
@@ -53,10 +51,9 @@ msgstr "必要的內容中缺少了 <%s> 元素。"
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:81
-#, fuzzy, c-format
-#| msgid "A <%s>'s <%s> element content (\"%s\") was not in ISO 8601 format."
+#, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "<%s> 的 <%s> 元素內容(\"%s\")不是 ISO 8601 格式。"
+msgstr "%s 元素(\"%s\")的內容不是 ISO 8601 格式。"
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -66,7 +63,7 @@ msgstr "<%s> 的 <%s> 元素內容(\"%s\")不是 ISO 8601 格式。"
 #: ../gdata/gdata-parser.c:101
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr ""
+msgstr "%2$s 元素(\"%3$s\") %1$s 屬性的數值是不明的。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -76,7 +73,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:119
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
-msgstr ""
+msgstr "%s 元素 (\"%s\") 的內容不明。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -84,30 +81,27 @@ msgstr ""
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
 #: ../gdata/gdata-parser.c:139
-#, fuzzy, c-format
-#| msgid "A required @%s property of a <%s> was not present."
+#, c-format
 msgid "A required property of a %s element (%s) was not present."
-msgstr "<%2$s> 要求的 @%1$s 屬性並未顯現。"
+msgstr "%s 元素 (%s) 要求的屬性並未顯現。"
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
 #: ../gdata/gdata-parser.c:156
-#, fuzzy, c-format
-#| msgid "A required <%s> element as a child of <%s> was not present."
+#, c-format
 msgid "A required element (%s) was not present."
-msgstr "要求作為 <%2$s> 子項的 <%1$s> 元素並未顯現。"
+msgstr "要求的 (%s) 元素並未顯現。"
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
 #: ../gdata/gdata-parser.c:171
-#, fuzzy, c-format
-#| msgid "A <%s> element as a child of <%s> was duplicated."
+#, c-format
 msgid "A singleton element (%s) was duplicated."
-msgstr "作為 <%2$s> 子項的 <%1$s> 元素已重複。"
+msgstr "singleton 元素 (%s) 已重複。"
 
 #: ../gdata/gdata-service.c:308 ../gdata/gdata-service.c:738
 #: ../gdata/services/youtube/gdata-youtube-service.c:202
@@ -212,8 +206,8 @@ msgstr "這個服務現在無法使用。(%s)"
 msgid "Invalid redirect URI: %s"
 msgstr "無效的重新導向 URI：%s"
 
-#: ../gdata/gdata-service.c:1224
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:277
+#: ../gdata/gdata-service.c:1226
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:278
 #: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "The entry has already been inserted."
 msgstr "該項目已經插入了。"
@@ -224,11 +218,9 @@ msgstr "該項目已經插入了。"
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
 #: ../gdata/services/calendar/gdata-calendar-calendar.c:330
-#, fuzzy, c-format
-#| msgid ""
-#| "A <%s>'s <%s> element content (\"%s\") was not in hexadecimal RGB format."
+#, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "<%s> 的 <%s> 元素(\"%s\") 不是十六進位 RGB 格式。"
+msgstr "%s 元素(\"%s\") 的內容不是十六進位 RGB 格式。"
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:106
 #: ../gdata/services/calendar/gdata-calendar-service.c:140
@@ -250,24 +242,60 @@ msgstr "該日曆沒有內容來源。"
 msgid "You must be authenticated to query contacts."
 msgstr "你必須被驗證才能查詢聯絡人。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
+#: ../gdata/services/documents/gdata-documents-entry.c:619
 #, fuzzy
-#| msgid "You must be authenticated to query all calendars."
-msgid "You must specify a username or be authenticated to query all albums."
-msgstr "你必須被驗證才能查詢所有的日曆。"
+#| msgid "You must be authenticated to do this."
+msgid "You must be authenticated to download documents."
+msgstr "你必須被驗證才能這麼做。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:220
+#: ../gdata/services/documents/gdata-documents-service.c:188
+#: ../gdata/services/documents/gdata-documents-service.c:223
 #, fuzzy
-#| msgid "The video did not have a related videos <link>."
-msgid "The album did not have a feed link."
-msgstr "此影片沒有相關的影片 <link>。"
+#| msgid "You must be authenticated to query contacts."
+msgid "You must be authenticated to query documents."
+msgstr "你必須被驗證才能查詢聯絡人。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:283
+#: ../gdata/services/documents/gdata-documents-service.c:338
+msgid "The supplied document had an invalid content type."
+msgstr ""
+
+#: ../gdata/services/documents/gdata-documents-service.c:481
 #, fuzzy
 #| msgid "You must be authenticated to upload a video."
-msgid "You must be authenticated to upload a file."
+msgid "You must be authenticated to upload documents."
 msgstr "你必須被驗證才能上傳影片。"
+
+#: ../gdata/services/documents/gdata-documents-service.c:487
+#, fuzzy
+#| msgid "The entry has already been inserted."
+msgid "The document has already been uploaded."
+msgstr "該項目已經插入了。"
+
+#: ../gdata/services/documents/gdata-documents-service.c:543
+#, fuzzy
+#| msgid "You must be authenticated to query contacts."
+msgid "You must be authenticated to update documents."
+msgstr "你必須被驗證才能查詢聯絡人。"
+
+#: ../gdata/services/documents/gdata-documents-service.c:597
+#: ../gdata/services/documents/gdata-documents-service.c:694
+#, fuzzy
+#| msgid "You must be authenticated to do this."
+msgid "You must be authenticated to move documents."
+msgstr "你必須被驗證才能這麼做。"
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr "你必須指定用來驗證的使用者名稱才能查詢所有的相簿。"
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:220
+msgid "The album did not have a feed link."
+msgstr "該相簿沒有餵送連結。"
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
+msgid "You must be authenticated to upload a file."
+msgstr "你必須被驗證才能上傳檔案。"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:303
 #, c-format
@@ -287,13 +315,10 @@ msgid ""
 msgstr "你最近進行太多次 API 呼叫。請稍等幾分鐘後再試一次。"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:316
-#, fuzzy, c-format
-#| msgid ""
-#| "You have exceeded your entry quota with the entry \"%s\". Please delete "
-#| "some entries and try again."
+#, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "你已經超過了在項目「%s」的配額。請刪除一些項目後再試一次。"
+msgstr "你已經超過了你的項目配額。請刪除一些項目後再試一次。"
 
 #. Translators: the first parameter is an error code, which is a coded string. The second parameter
 #. * is an error domain, which is another coded string. The third parameter is the location of the
@@ -313,13 +338,3 @@ msgstr "此影片沒有相關的影片 <link>。"
 #: ../gdata/services/youtube/gdata-youtube-service.c:790
 msgid "You must be authenticated to upload a video."
 msgstr "你必須被驗證才能上傳影片。"
-
-#~ msgid "Unhandled <%s:%s> element as a child of <%s>."
-#~ msgstr "未處理的 <%s:%s> 元素為 <%s> 之子項。"
-
-#~ msgid "Unknown value \"%s\" of a <%s> @%s property."
-#~ msgstr "<%2$s>@%3$s 屬性的不明數值「%1$s」。"
-
-#~ msgid ""
-#~ "The @time property (\"%s\") of a <media:thumbnail> could not be parsed."
-#~ msgstr "無法解析 <media:thumbnail> 的 @time 屬性(\"%s\")。"
