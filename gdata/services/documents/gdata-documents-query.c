@@ -39,6 +39,11 @@
 #include "gdata-documents-query.h"
 #include "gdata-query.h"
 
+#include <gdata/services/documents/gdata-documents-spreadsheet.h>
+#include <gdata/services/documents/gdata-documents-presentation.h>
+#include <gdata/services/documents/gdata-documents-text.h>
+#include <gdata/services/documents/gdata-documents-folder.h>
+
 static void gdata_documents_query_finalize (GObject *object);
 static void gdata_documents_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_documents_query_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -223,16 +228,21 @@ static void
 get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboolean *params_started)
 {
 	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY (self)->priv;
+	const gchar *entry_id = gdata_query_get_entry_id (self);
 
 	#define APPEND_SEP g_string_append_c (query_uri, (*params_started == FALSE) ? '?' : '&'); *params_started = TRUE;
 
-	if (priv->folder_id != NULL) {
+	if (entry_id == NULL && priv->folder_id != NULL) {
 		g_string_append (query_uri, "/folder%%3A");
 		g_string_append_uri_escaped (query_uri, priv->folder_id, NULL, TRUE);
 	}
 
 	/* Chain up to the parent class */
 	GDATA_QUERY_CLASS (gdata_documents_query_parent_class)->get_query_uri (self, feed_uri, query_uri, params_started);
+
+	/* Return if the entry ID has been set, since that's handled in the parent class' get_query_uri() function */
+	if (entry_id != NULL)
+		return;
 
 	if  (priv->collaborator_addresses != NULL) {
 		GList *collaborator_address;

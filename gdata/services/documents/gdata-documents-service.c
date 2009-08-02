@@ -194,6 +194,68 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 }
 
 /**
+ * gdata_documents_service_query_single_document:
+ * @self: a #GDataDocumentsService
+ * @document_type: the expected #GType of the queried entry
+ * @document_id: the document ID of the queried document
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Retrieves information about a single document with the given document ID.
+ *
+ * @document_type should be the expected type of the document to be returned. e.g. %GDATA_TYPE_DOCUMENTS_SPREADSHEET if you're querying
+ * for a spreadsheet.
+ *
+ * @document_id should be the ID of the document as returned by gdata_document_entry_get_document_id().
+ *
+ * Parameters and errors are as for gdata_service_query().
+ *
+ * Return value: a #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.5.0
+ **/
+GDataDocumentsEntry *
+gdata_documents_service_query_single_document (GDataDocumentsService *self, GType document_type, const gchar *document_id,
+					       GCancellable *cancellable, GError **error)
+{
+	GDataDocumentsEntry *document;
+	SoupMessage *message;
+	GDataDocumentsQuery *query;
+	gchar *resource_id;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+
+	if (document_type == GDATA_TYPE_DOCUMENTS_FOLDER)
+		resource_id = g_strconcat ("folder:", document_id, NULL);
+	else if (document_type == GDATA_TYPE_DOCUMENTS_SPREADSHEET)
+		resource_id = g_strconcat ("spreasheet:", document_id, NULL);
+	else if (document_type == GDATA_TYPE_DOCUMENTS_TEXT)
+		resource_id = g_strconcat ("document:", document_id, NULL);
+	else if (document_type == GDATA_TYPE_DOCUMENTS_PRESENTATION)
+		resource_id = g_strconcat ("presentation:", document_id, NULL);
+	else
+		g_assert_not_reached ();
+
+	query = gdata_documents_query_new (NULL);
+	gdata_query_set_entry_id (GDATA_QUERY (query), resource_id);
+	g_free (resource_id);
+
+	message = _gdata_service_query (GDATA_SERVICE (self), "http://docs.google.com/feeds/documents/private/full", GDATA_QUERY (query),
+					cancellable, NULL, NULL, error);
+	g_object_unref (query);
+
+	if (message == NULL)
+		return NULL;
+
+	g_assert (message->response_body->data != NULL);
+	document = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (document_type, message->response_body->data,
+								       message->response_body->length, error));
+	g_object_unref (message);
+
+	return document;
+}
+
+/**
  * gdata_documents_service_query_documents_async:
  * @self: a #GDataDocumentsService
  * @query: a #GDataQuery with the query parameters, or %NULL

@@ -201,23 +201,31 @@ test_upload_metadata_file (GDataService *service)
 }
 
 static void
-test_upload_file (GDataService *service)
+test_upload_file_get_entry (GDataService *service)
 {
 	GDataDocumentsEntry *new_document;
+	GDataDocumentsPresentation *newly_created_presentation;
 	GFile *document_file;
 	GDataCategory *category;
+	GDataDocumentsQuery *query;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
-
 	category = gdata_category_new ("http://schemas.google.com/docs/2007#presentation", "http://schemas.google.com/g/2005#kind", "presentation");
 
 	/* Insert the document */
 	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, document_file, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
+
+	/* Get the entry on the server */
+	newly_created_presentation = gdata_documents_service_query_single_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_TYPE_DOCUMENTS_PRESENTATION,
+										    gdata_documents_entry_get_document_id (new_document), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
+
 
 	g_clear_error (&error);
 	g_object_unref (new_document);
@@ -590,7 +598,7 @@ main (int argc, char *argv[])
 
 	g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);
 
-	g_test_add_data_func ("/documents/upload/only_file", service, test_upload_file);
+	g_test_add_data_func ("/documents/upload/only_file_get_entry", service, test_upload_file_get_entry);
 	g_test_add_data_func ("/documents/upload/metadata_file", service, test_upload_metadata_file);
 	g_test_add_data_func ("/documents/upload/only_metadata", service, test_upload_metadata);
 	g_test_add_data_func ("/documents/upload/metadata_file_in_new_folder", service, test_upload_file_metadata_in_new_folder);
