@@ -233,7 +233,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	#define APPEND_SEP g_string_append_c (query_uri, (*params_started == FALSE) ? '?' : '&'); *params_started = TRUE;
 
 	if (entry_id == NULL && priv->folder_id != NULL) {
-		g_string_append (query_uri, "/folder%%3A");
+		g_string_append (query_uri, "/folder%3A");
 		g_string_append_uri_escaped (query_uri, priv->folder_id, NULL, TRUE);
 	}
 
