@@ -30,6 +30,7 @@
 #include <gdata/gdata-access-handler.h>
 #include <gdata/gdata-access-rule.h>
 #include <gdata/gdata-parsable.h>
+#include <gdata/gdata-download-stream.h>
 
 /* Namespaces */
 

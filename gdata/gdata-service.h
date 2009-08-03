@@ -43,6 +43,7 @@ G_BEGIN_DECLS
  * @GDATA_SERVICE_ERROR_CONFLICT: There was a conflict when updating an entry on the server; the server-side copy was modified inbetween downloading
  * and uploading the modified entry
  * @GDATA_SERVICE_ERROR_FORBIDDEN: Generic error for a forbidden action (not due to having insufficient permissions)
+ * @GDATA_SERVICE_ERROR_WITH_DOWNLOAD: Generic error when downloading a file (rather than querying for an entry).
  *
  * Error codes for #GDataService operations.
  **/
@@ -57,7 +58,8 @@ typedef enum {
 	GDATA_SERVICE_ERROR_WITH_DELETION,
 	GDATA_SERVICE_ERROR_NOT_FOUND,
 	GDATA_SERVICE_ERROR_CONFLICT,
-	GDATA_SERVICE_ERROR_FORBIDDEN
+	GDATA_SERVICE_ERROR_FORBIDDEN,
+	GDATA_SERVICE_ERROR_WITH_DOWNLOAD
 } GDataServiceError;
 
 /**

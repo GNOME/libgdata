@@ -29,6 +29,7 @@
 G_BEGIN_DECLS
 
 #include "gdata-service.h"
+SoupSession *_gdata_service_get_session (GDataService *self);
 void _gdata_service_set_authenticated (GDataService *self, gboolean authenticated);
 guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GError **error);
 SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,

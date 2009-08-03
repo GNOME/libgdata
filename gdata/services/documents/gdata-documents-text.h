@@ -97,6 +97,7 @@ GFile *gdata_documents_text_download_document (GDataDocumentsText *self, GDataDo
 					       GDataDocumentsTextFormat export_format, GFile *destination_file,
 					       gboolean replace_file_if_exists, GCancellable *cancellable,
 					       GError **error) G_GNUC_WARN_UNUSED_RESULT;
+gchar *gdata_documents_text_get_download_uri (GDataDocumentsText *self, GDataDocumentsTextFormat export_format) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

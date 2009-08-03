@@ -49,7 +49,8 @@ gdata_headers = \
 	gdata-query.h		\
 	gdata-access-handler.h	\
 	gdata-access-rule.h	\
-	gdata-parsable.h
+	gdata-parsable.h	\
+	gdata-download-stream.h
 
 gdataincludedir = $(pkgincludedir)/gdata
 gdatainclude_HEADERS = \
@@ -69,8 +70,11 @@ libgdata_la_SOURCES = \
 	gdata-access-handler.c	\
 	gdata-access-rule.c	\
 	gdata-parsable.c	\
+	gdata-download-stream.c	\
 	gdata-private.h		\
-	gdata-parser.h
+	gdata-parser.h		\
+	gdata-buffer.c		\
+	gdata-buffer.h
 
 libgdata_la_CPPFLAGS = \
 	-I$(top_srcdir)			\

@@ -43,6 +43,7 @@
 #include "gdata-types.h"
 #include "gdata-private.h"
 #include "gdata-access-handler.h"
+#include "gdata-download-stream.h"
 
 static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface);
 static void gdata_documents_entry_finalize (GObject *object);
@@ -550,9 +551,9 @@ gdata_documents_entry_is_deleted (GDataDocumentsEntry *self)
 }
 
 static void
-got_chunk_cb (SoupMessage *message, SoupBuffer *chunk, GOutputStream *output_stream)
+notify_content_type_cb (GDataDownloadStream *download_stream, GParamSpec *pspec, gchar **content_type)
 {
-	g_output_stream_write (output_stream, (void*) chunk->data, chunk->length, NULL, NULL);
+	*content_type = g_strdup (gdata_download_stream_get_content_type (download_stream));
 }
 
 /*
@@ -592,10 +593,10 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 					  GFile *destination_file, const gchar *file_extension, gboolean replace_file_if_exists,
 					  GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
+	GError *child_error = NULL;
+	GFile *output_file;
 	GFileOutputStream *file_stream;
-	SoupMessage *message;
-	guint status;
+	GInputStream *download_stream;
 
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
@@ -613,74 +614,47 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 	}
 
 	/* Create a new file */
-	file_stream = g_file_create (destination_file, G_FILE_CREATE_NONE, cancellable, error);
-	if (g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-		/* Replace a pre-existing file */
+	file_stream = g_file_create (destination_file, G_FILE_CREATE_NONE, cancellable, &child_error);
+	if (g_error_matches (child_error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
 		if (replace_file_if_exists == TRUE) {
-			g_clear_error (error);
-			file_stream = g_file_replace (destination_file, NULL, TRUE, G_FILE_CREATE_REPLACE_DESTINATION, cancellable, error);
+			g_error_free (child_error);
+			child_error = NULL;
+
+			/* Replace a pre-existing file */
+			file_stream = g_file_replace (destination_file, NULL, TRUE, G_FILE_CREATE_REPLACE_DESTINATION, cancellable, &child_error);
+
+			if (g_error_matches (child_error, G_IO_ERROR, G_IO_ERROR_IS_DIRECTORY)) {
+				GFile *new_destination_file;
+				const gchar *document_title;
+				gchar *filename;
+
+				g_error_free (child_error);
+
+				/* Prepare a new GFile */
+				document_title = gdata_entry_get_title (GDATA_ENTRY (self));
+				filename = g_strdup_printf ("%s.%s", document_title, file_extension);
+				new_destination_file = g_file_get_child (destination_file, filename);
+				g_free (filename);
+
+				file_stream = g_file_replace (new_destination_file, NULL, TRUE, G_FILE_CREATE_REPLACE_DESTINATION, cancellable, error);
+				output_file = new_destination_file;
+			} else {
+				output_file = g_object_ref (destination_file);
+			}
+		} else {
+			g_propagate_error (error, child_error);
+			return NULL;
 		}
-
-		if (g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_IS_DIRECTORY)) {
-			GFile *new_destination_file = NULL;
-			const gchar *document_title;
-			gchar *filename;
-
-			g_clear_error (error);
-
-			/* Prepare the GFile */
-			document_title = gdata_entry_get_title (GDATA_ENTRY (self));
-			filename = g_strdup_printf ("%s.%s", document_title, file_extension);
-			new_destination_file = g_file_get_child (destination_file, filename);
-			g_free (filename);
-
-			return _gdata_documents_entry_download_document (self, service, content_type, download_uri, new_destination_file, 
-									 file_extension, replace_file_if_exists, cancellable, error);
-		}
-
-		return NULL;
+	} else {
+		output_file = g_object_ref (destination_file);
 	}
 
-	/* Get the document URI */
-	message = soup_message_new (SOUP_METHOD_GET, download_uri);
-
-	/* We copy the data to disk as it comes through the network pipe */
-	soup_message_body_set_accumulate (message->response_body, FALSE);
-	g_signal_connect (message, "got-chunk", (GCallback) got_chunk_cb, file_stream);
-
-	/* Make sure the headers are set */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (service), message);
-
-	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (service), message, error);
+	download_stream = gdata_download_stream_new (GDATA_SERVICE (service), download_uri);
+	g_signal_connect (download_stream, "notify::content-type", (GCallback) notify_content_type_cb, content_type);
+	g_output_stream_splice (G_OUTPUT_STREAM (file_stream), download_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+				cancellable, error);
+	g_object_unref (download_stream);
 	g_object_unref (file_stream);
-	if (status == SOUP_STATUS_NONE) {
-		g_object_unref (message);
-		return NULL;
-	}
 
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != 200) {
-		/* Error */
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (service), GDATA_SERVICE_ERROR_WITH_QUERY, status, message->reason_phrase,
-					     message->response_body->data, message->response_body->length, error);
-		g_object_unref (message);
-		return NULL;
-	}
-
-	/* Sort out the return values */
-	if (content_type != NULL)
-		*content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
-
-	g_object_unref (message);
-
-	return g_object_ref (destination_file);
+	return output_file;
 }

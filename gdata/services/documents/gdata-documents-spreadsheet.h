@@ -93,6 +93,8 @@ GFile *gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet 
 						      GDataDocumentsSpreadsheetFormat export_format, gint gid, GFile *destination_file,
 						      gboolean replace_file_if_exists, GCancellable *cancellable,
 						      GError **error) G_GNUC_WARN_UNUSED_RESULT;
+gchar *gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, GDataDocumentsSpreadsheetFormat export_format,
+						     gint gid) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

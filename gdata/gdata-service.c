@@ -332,7 +332,6 @@ real_parse_error_response (GDataService *self, GDataServiceError error_type, gui
 			   gint length, GError **error)
 {
 	/* See: http://code.google.com/apis/gdata/docs/2.0/reference.html#HTTPStatusCodes */
-
 	switch (status) {
 		case 400:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
@@ -365,23 +364,28 @@ real_parse_error_response (GDataService *self, GDataServiceError error_type, gui
 	switch (error_type) {
 		case GDATA_SERVICE_ERROR_WITH_INSERTION:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_INSERTION,
-				     /* Translators: the first parameter is a HTTP status, and the second is an error message returned by the server. */
+				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
 				     _("Error code %u when inserting an entry: %s"), status, response_body);
 			break;
 		case GDATA_SERVICE_ERROR_WITH_UPDATE:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_UPDATE,
-				     /* Translators: the first parameter is a HTTP status, and the second is an error message returned by the server. */
+				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
 				     _("Error code %u when updating an entry: %s"), status, response_body);
 			break;
 		case GDATA_SERVICE_ERROR_WITH_DELETION:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_DELETION,
-				     /* Translators: the first parameter is a HTTP status, and the second is an error message returned by the server. */
+				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
 				     _("Error code %u when deleting an entry: %s"), status, response_body);
 			break;
 		case GDATA_SERVICE_ERROR_WITH_QUERY:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_QUERY,
-				     /* Translators: the first parameter is a HTTP status, and the second is an error message returned by the server. */
+				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
 				     _("Error code %u when querying: %s"), status, response_body);
+			break;
+		case GDATA_SERVICE_ERROR_WITH_DOWNLOAD:
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_DOWNLOAD,
+				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
+				     _("Error code %u when downloading: %s"), status, response_body);
 			break;
 		default:
 			/* We should not be called with anything other than the above four generic error types */
@@ -1719,4 +1723,10 @@ gdata_service_get_password (GDataService *self)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	return self->priv->password;
+}
+
+SoupSession *
+_gdata_service_get_session (GDataService *self)
+{
+	return self->priv->session;
 }

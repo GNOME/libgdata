@@ -293,10 +293,10 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 				   GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
 
-/**
+/*
  * To upload spreasheet documents, another token is needed since the service for it is "wise" as apposed to "writely" for other operations.
  * This callback aims to authenticate to this service as a private property (@priv->spreadsheet_service) of #GDataDocumentsService.
- * */
+ */
 static void
 notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self)
 {

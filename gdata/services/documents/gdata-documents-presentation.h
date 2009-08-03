@@ -90,6 +90,7 @@ GFile *gdata_documents_presentation_download_document (GDataDocumentsPresentatio
 						       GDataDocumentsPresentationFormat export_format, GFile *destination_file,
 						       gboolean replace_file_if_exists, GCancellable *cancellable,
 						       GError **error) G_GNUC_WARN_UNUSED_RESULT;
+gchar *gdata_documents_presentation_get_download_uri (GDataDocumentsPresentation *self, GDataDocumentsPresentationFormat export_format) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

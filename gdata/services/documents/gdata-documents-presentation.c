@@ -43,6 +43,14 @@
 
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 
+static const gchar *export_formats[] = {
+	"pdf", /* GDATA_DOCUMENTS_PRESENTATION_PDF */
+	"png", /* GDATA_DOCUMENTS_PRESENTATION_PNG */
+	"ppt", /* GDATA_DOCUMENTS_PRESENTATION_PPT */
+	"swf", /* GDATA_DOCUMENTS_PRESENTATION_SWF */
+	"txt" /* GDATA_DOCUMENTS_PRESENTATION_TXT */
+};
+
 G_DEFINE_TYPE (GDataDocumentsPresentation, gdata_documents_presentation, GDATA_TYPE_DOCUMENTS_ENTRY)
 #define GDATA_DOCUMENTS_PRESENTATION_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_PRESENTATION, GDataDocumentsPresentationPrivate))
 
@@ -119,34 +127,45 @@ gdata_documents_presentation_download_document (GDataDocumentsPresentation *self
 						GDataDocumentsPresentationFormat export_format, GFile *destination_file,
 						gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
-	const gchar *document_id;
 	gchar *link_href;
 
-	const gchar *export_formats[] = {
-		"pdf", /* GDATA_DOCUMENTS_PRESENTATION_PDF */
-		"png", /* GDATA_DOCUMENTS_PRESENTATION_PNG */
-		"ppt", /* GDATA_DOCUMENTS_PRESENTATION_PPT */
-		"swf", /* GDATA_DOCUMENTS_PRESENTATION_SWF */
-		"txt" /* GDATA_DOCUMENTS_PRESENTATION_TXT */
-	};
-
-	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_PRESENTATION (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (service), NULL);
 	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
-	g_return_val_if_fail (export_format >= 0 && export_format < G_N_ELEMENTS (export_formats), NULL);
+	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
+
+	/* Call the common download method on the parent class */
+	link_href = gdata_documents_presentation_get_download_uri (self, export_format);
+	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), GDATA_SERVICE (service), content_type, link_href,
+								     destination_file, export_formats[export_format], replace_file_if_exists, cancellable, error);
+	g_free (link_href);
+
+	return destination_file;
+}
+
+/**
+ * gdata_documents_presentation_get_download_uri:
+ * @self: a #GDataDocumentsPresentation
+ * @export_format: the format in which the presentation should be exported when downloaded
+ *
+ * Builds and returns the download URI for the given #GDataDocumentsPresentation in the desired format. Note that directly downloading
+ * the document using this URI isn't possible, as authentication is required. You should instead use gdata_download_stream_new() with
+ * the URI, and use the resulting #GInputStream.
+ *
+ * Return value: the download URI; free with g_free()
+ *
+ * Since: 0.5.0
+ **/
+gchar *
+gdata_documents_presentation_get_download_uri (GDataDocumentsPresentation *self, GDataDocumentsPresentationFormat export_format)
+{
+	const gchar *document_id;
+
+	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
 
 	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (self));
 	g_assert (document_id != NULL);
 
-	link_href = g_strdup_printf ("http://docs.google.com/feeds/download/presentations/Export?exportFormat=%s&docID=%s",
-				     export_formats[export_format], document_id);
-
-	/* Call the common download method on the parent class */
-	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), GDATA_SERVICE (service), content_type,
-								     link_href, destination_file, export_formats[export_format], replace_file_if_exists, cancellable, error);
-	g_free (link_href);
-
-	return destination_file;
+	return g_strdup_printf ("http://docs.google.com/feeds/download/presentations/Export?exportFormat=%s&docID=%s", export_formats[export_format], document_id);
 }

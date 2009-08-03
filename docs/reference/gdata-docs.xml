@@ -30,6 +30,7 @@
 			<xi:include href="xml/gdata-entry.xml"/>
 			<xi:include href="xml/gdata-types.xml"/>
 			<xi:include href="xml/gdata-parsable.xml"/>
+			<xi:include href="xml/gdata-download-stream.xml"/>
 		</chapter>
 
 		<chapter>
