@@ -317,11 +317,8 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append_printf (xml_string, " uri='%s'", priv->uri);
 	if (priv->relation_type != NULL)
 		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
-	if (priv->label != NULL) {
-		gchar *label = g_markup_escape_text (priv->label, -1);
-		g_string_append_printf (xml_string, " label='%s'", label);
-		g_free (label);
-	}
+	if (priv->label != NULL)
+		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
 
 	if (priv->is_primary == TRUE)
 		g_string_append (xml_string, " primary='true'");
@@ -332,12 +329,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	gchar *number;
-	GDataGDPhoneNumberPrivate *priv = GDATA_GD_PHONE_NUMBER (parsable)->priv;
-
-	number = g_markup_escape_text (priv->number, -1);
-	g_string_append (xml_string, number);
-	g_free (number);
+	gdata_parser_string_append_escaped (xml_string, NULL, GDATA_GD_PHONE_NUMBER (parsable)->priv->number, NULL);
 }
 
 static void

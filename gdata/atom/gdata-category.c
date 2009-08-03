@@ -216,11 +216,8 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->scheme != NULL)
 		g_string_append_printf (xml_string, " scheme='%s'", priv->scheme);
 
-	if (priv->label != NULL) {
-		gchar *label = g_markup_escape_text (priv->label, -1);
-		g_string_append_printf (xml_string, " label='%s'", label);
-		g_free (label);
-	}
+	if (priv->label != NULL)
+		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
 }
 
 /**

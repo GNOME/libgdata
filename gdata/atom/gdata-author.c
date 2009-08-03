@@ -245,23 +245,14 @@ static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataAuthorPrivate *priv = GDATA_AUTHOR (parsable)->priv;
-	gchar *name;
 
-	name = g_markup_escape_text (priv->name, -1);
-	g_string_append_printf (xml_string, "<name>%s</name>", name);
-	g_free (name);
+	gdata_parser_string_append_escaped (xml_string, "<name>", priv->name, "</name>");
 
-	if (priv->uri != NULL) {
-		gchar *uri = g_markup_escape_text (priv->uri, -1);
-		g_string_append_printf (xml_string, "<uri>%s</uri>", uri);
-		g_free (uri);
-	}
+	if (priv->uri != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<uri>", priv->uri, "</uri>");
 
-	if (priv->email_address != NULL) {
-		gchar *email = g_markup_escape_text (priv->email_address, -1);
-		g_string_append_printf (xml_string, "<email>%s</email>", email);
-		g_free (email);
-	}
+	if (priv->email_address != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<email>", priv->email_address, "</email>");
 }
 
 /**

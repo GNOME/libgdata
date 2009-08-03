@@ -375,11 +375,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->get_xml (parsable, xml_string);
 
 	/* Add all the Calendar-specific XML */
-	if (priv->timezone != NULL) {
-		gchar *_timezone = g_markup_escape_text (priv->timezone, -1);
-		g_string_append_printf (xml_string, "<gCal:timezone value='%s'/>", _timezone);
-		g_free (_timezone);
-	}
+	if (priv->timezone != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gCal:timezone value='", priv->timezone, "'/>");
 
 	if (priv->is_hidden == TRUE)
 		g_string_append (xml_string, "<gCal:hidden value='true'/>");

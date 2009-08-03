@@ -47,6 +47,7 @@ GDataParsable *_gdata_parsable_new_from_xml (GType parsable_type, const gchar *x
 GDataParsable *_gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *node, gpointer user_data,
 						  GError **error) G_GNUC_WARN_UNUSED_RESULT;
 void _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean declare_namespaces);
+void _gdata_parsable_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 
 #include "gdata-feed.h"
 GDataFeed *_gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,

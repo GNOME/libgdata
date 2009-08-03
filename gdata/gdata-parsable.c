@@ -212,7 +212,7 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
 	    klass->pre_parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		g_object_unref (parsable);
 		return NULL;
-	}	
+	}
 
 	/* Parse each child element */
 	node = node->children;

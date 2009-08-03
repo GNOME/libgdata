@@ -792,11 +792,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* media:group */
 	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), xml_string, FALSE);
 
-	if (priv->location != NULL) {
-		gchar *location = g_markup_escape_text (priv->location, -1);
-		g_string_append_printf (xml_string, "<yt:location>%s</yt:location>", location);
-		g_free (location);
-	}
+	if (priv->location != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<yt:location>", priv->location, "</yt:location>");
 
 	if (priv->recorded.tv_sec != 0 || priv->recorded.tv_usec != 0) {
 		gchar *recorded = gdata_parser_date_from_time_val (&(priv->recorded));

@@ -266,23 +266,14 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->category != NULL)
 		_gdata_parsable_get_xml (GDATA_PARSABLE (priv->category), xml_string, FALSE);
 
-	if (priv->title != NULL) {
-		gchar *title = g_markup_escape_text (priv->title, -1);
-		g_string_append_printf (xml_string, "<media:title type='plain'>%s</media:title>", title);
-		g_free (title);
-	}
+	if (priv->title != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<media:title type='plain'>", priv->title, "</media:title>");
 
-	if (priv->description != NULL) {
-		gchar *description = g_markup_escape_text (priv->description, -1);
-		g_string_append_printf (xml_string, "<media:description type='plain'>%s</media:description>", description);
-		g_free (description);
-	}
+	if (priv->description != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<media:description type='plain'>", priv->description, "</media:description>");
 
-	if (priv->keywords != NULL) {
-		gchar *keywords = g_markup_escape_text (priv->keywords, -1);
-		g_string_append_printf (xml_string, "<media:keywords>%s</media:keywords>", keywords);
-		g_free (keywords);
-	}
+	if (priv->keywords != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<media:keywords>", priv->keywords, "</media:keywords>");
 }
 
 static void

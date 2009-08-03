@@ -439,12 +439,9 @@ static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataEntryPrivate *priv = GDATA_ENTRY (parsable)->priv;
-	gchar *title;
 	GList *categories, *links, *authors;
 
-	title = g_markup_escape_text (priv->title, -1);
-	g_string_append_printf (xml_string, "<title type='text'>%s</title>", title);
-	g_free (title);
+	gdata_parser_string_append_escaped (xml_string, "<title type='text'>", priv->title, "</title>");
 
 	if (priv->id != NULL)
 		g_string_append_printf (xml_string, "<id>%s</id>", priv->id);
@@ -461,23 +458,14 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_free (published);
 	}
 
-	if (priv->summary != NULL) {
-		gchar *summary = g_markup_escape_text (priv->summary, -1);
-		g_string_append_printf (xml_string, "<summary type='text'>%s</summary>", summary);
-		g_free (summary);
-	}
+	if (priv->summary != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<summary type='text'>", priv->summary, "</summary>");
 
-	if (priv->rights != NULL) {
-		gchar *rights = g_markup_escape_text (priv->rights, -1);
-		g_string_append_printf (xml_string, "<rights>%s</rights>", rights);
-		g_free (rights);
-	}
+	if (priv->rights != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<rights>", priv->rights, "</rights>");
 
-	if (priv->content != NULL) {
-		gchar *content = g_markup_escape_text (priv->content, -1);
-		g_string_append_printf (xml_string, "<content type='text'>%s</content>", content);
-		g_free (content);
-	}
+	if (priv->content != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<content type='text'>", priv->content, "</content>");
 
 	for (categories = priv->categories; categories != NULL; categories = categories->next)
 		_gdata_parsable_get_xml (GDATA_PARSABLE (categories->data), xml_string, FALSE);

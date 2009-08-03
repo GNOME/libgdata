@@ -231,20 +231,14 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataGDWherePrivate *priv = GDATA_GD_WHERE (parsable)->priv;
 
-	if (priv->label != NULL) {
-		gchar *label = g_markup_escape_text (priv->label, -1);
-		g_string_append_printf (xml_string, " label='%s'", label);
-		g_free (label);
-	}
+	if (priv->label != NULL)
+		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
 
 	if (priv->relation_type != NULL)
 		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
 
-	if (priv->value_string != NULL) {
-		gchar *value_string = g_markup_escape_text (priv->value_string, -1);
-		g_string_append_printf (xml_string, " valueString='%s'", value_string);
-		g_free (value_string);
-	}
+	if (priv->value_string != NULL)
+		gdata_parser_string_append_escaped (xml_string, " valueString='", priv->value_string, "'");
 }
 
 static void

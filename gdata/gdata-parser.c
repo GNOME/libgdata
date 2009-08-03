@@ -203,3 +203,71 @@ gdata_parser_date_from_time_val (GTimeVal *_time)
 	/* Note: This doesn't need translating, as it's outputting an ISO 8601 date string */
 	return g_strdup_printf ("%4d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
 }
+
+void
+gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post)
+{
+	/* Allocate 10 extra bytes when reallocating the GString, to try and avoid having to reallocate again, by assuming
+	 * there will be an increase in the length of element_content when escaped of less than 10 characters. */
+/*	#define SIZE_FUZZINESS 10*/
+
+/*	guint new_size;*/
+	const gchar *p;
+
+	/* Expand xml_string as necessary */
+	/* TODO: There is no way to expand the allocation of a GString if you know in advance how much room
+	 * lots of append operations are going to require. */
+/*	new_size = xml_string->len + strlen (pre) + strlen (element_content) + strlen (post) + SIZE_FUZZINESS;
+	if (new_size > xml_string->allocated_len)
+		g_string_set_size (xml_string, new_size);*/
+
+	/* Append the pre content */
+	if (pre != NULL)
+		g_string_append (xml_string, pre);
+
+	/* Loop through the string to be escaped. Code adapted from GLib's g_markup_escape_text() function.
+	 *  Copyright 2000, 2003 Red Hat, Inc.
+	 *  Copyright 2007, 2008 Ryan Lortie <desrt@desrt.ca>
+	 */
+	p = element_content;
+	while (*p != '\0') {
+		const gchar *next = g_utf8_next_char (p);
+
+		switch (*p) {
+			case '&':
+				g_string_append (xml_string, "&amp;");
+				break;
+			case '<':
+				g_string_append (xml_string, "&lt;");
+				break;
+			case '>':
+				g_string_append (xml_string, "&gt;");
+				break;
+			case '\'':
+				g_string_append (xml_string, "&apos;");
+				break;
+			case '"':
+				g_string_append (xml_string, "&quot;");
+				break;
+			default: {
+				gunichar c = g_utf8_get_char (p);
+
+				if ((0x1 <= c && c <= 0x8) ||
+				    (0xb <= c && c  <= 0xc) ||
+				    (0xe <= c && c <= 0x1f) ||
+				    (0x7f <= c && c <= 0x84) ||
+				    (0x86 <= c && c <= 0x9f)) {
+					g_string_append_printf (xml_string, "&#x%x;", c);
+				} else {
+					g_string_append_len (xml_string, p, next - p);
+					break;
+				}
+			}
+		}
+		p = next;
+	}
+
+	/* Append the post content */
+	if (post != NULL)
+		g_string_append (xml_string, post);
+}

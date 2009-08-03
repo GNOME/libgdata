@@ -265,11 +265,8 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	g_string_append_printf (xml_string, " address='%s'", priv->address);
 	if (priv->relation_type != NULL)
 		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
-	if (priv->label != NULL) {
-		gchar *label = g_markup_escape_text (priv->label, -1);
-		g_string_append_printf (xml_string, " label='%s'", label);
-		g_free (label);
-	}
+	if (priv->label != NULL)
+		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
 
 	if (priv->is_primary == TRUE)
 		g_string_append (xml_string, " primary='true'");

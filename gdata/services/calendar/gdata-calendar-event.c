@@ -669,8 +669,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
 	 * - Check things are escaped (or not) as appropriate
-	 * - Write a function to encapsulate g_markup_escape_text and
-	 *   g_string_append_printf to reduce the number of allocations
 	 */
 }
 

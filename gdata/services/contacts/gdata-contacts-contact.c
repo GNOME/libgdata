@@ -390,8 +390,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* TODO:
 	 * - Finish supporting all tags
 	 * - Check things are escaped (or not) as appropriate
-	 * - Write a function to encapsulate g_markup_escape_text and
-	 *   g_string_append_printf to reduce the number of allocations
 	 */
 }
 

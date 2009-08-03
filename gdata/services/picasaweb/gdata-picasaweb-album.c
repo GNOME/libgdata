@@ -720,11 +720,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* Add all the album-specific XML */
 	/* TODO: gphoto:name?, gphoto:id */
-	if (priv->location != NULL) {
-		gchar *location = g_markup_escape_text (priv->location, -1);
-		g_string_append_printf (xml_string, "<gphoto:location>%s</gphoto:location>", location);
-		g_free (location);
-	}
+	if (priv->location != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gphoto:location>", priv->location, "</gphoto:location>");
 
 	switch (priv->visibility) {
 		case GDATA_PICASAWEB_PUBLIC:
@@ -761,8 +758,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
 	 * - Check things are escaped (or not) as appropriate
-	 * - Write a function to encapsulate g_markup_escape_text and
-	 *   g_string_append_printf to reduce the number of allocations
 	 * - add GML support
 	 */
 }

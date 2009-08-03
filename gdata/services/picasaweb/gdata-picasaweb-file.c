@@ -938,17 +938,11 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->album_id != NULL)
 		g_string_append_printf (xml_string, "<gphoto:albumid>%s</gphoto:albumid>", priv->album_id);
 
-	if (priv->client != NULL) {
-		gchar *client = g_markup_escape_text (priv->client, -1);
-		g_string_append_printf (xml_string, "<gphoto:client>%s</gphoto:client>", client);
-		g_free (client);
-	}
+	if (priv->client != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gphoto:client>", priv->client, "</gphoto:client>");
 
-	if (priv->checksum != NULL) {
-		gchar *checksum = g_markup_escape_text (priv->checksum, -1);
-		g_string_append_printf (xml_string, "<gphoto:checksum>%s</gphoto:checksum>", checksum);
-		g_free (checksum);
-	}
+	if (priv->checksum != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gphoto:checksum>", priv->checksum, "</gphoto:checksum>");
 
 	if (priv->timestamp.tv_sec != 0 || priv->timestamp.tv_usec != 0) {
 		/* timestamp is in milliseconds */
@@ -979,8 +973,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
 	 * - Check things are escaped (or not) as appropriate
-	 * - Write a function to encapsulate g_markup_escape_text and
-	 *   g_string_append_printf to reduce the number of allocations
 	 */
 }
 
