@@ -272,7 +272,7 @@ gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCa
 	}
 
 	/* Read the data off the buffer */
-	length_read = (gssize) gdata_buffer_pop_data (priv->buffer, buffer, count, cancellable);
+	length_read = (gssize) gdata_buffer_pop_data (priv->buffer, buffer, count, NULL, cancellable);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
 		/* Handle cancellation */

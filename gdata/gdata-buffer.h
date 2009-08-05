@@ -51,8 +51,8 @@ GDataBuffer *gdata_buffer_new (void) G_GNUC_WARN_UNUSED_RESULT;
 void gdata_buffer_free (GDataBuffer *self);
 
 gboolean gdata_buffer_push_data (GDataBuffer *self, const guint8 *data, gsize length);
-gsize gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, GCancellable *cancellable);
-gsize gdata_buffer_pop_data_limited (GDataBuffer *self, guint8 *data, gsize maximum_length);
+gsize gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, gboolean *reached_eof, GCancellable *cancellable);
+gsize gdata_buffer_pop_data_limited (GDataBuffer *self, guint8 *data, gsize maximum_length, gboolean *reached_eof);
 
 G_END_DECLS
 

@@ -454,8 +454,7 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
  * If we don't return from this signal handler, the message is never paused, and thus
  * Bad Things don't happen (due to the bug, messages can be paused, but not unpaused).
  * Obviously this means that our memory usage will increase, and we'll eventually end
- * up storing the entire request body in memory, but that's unavoidable at this point.
- * The additions to work around the bug are commented as "bgo#522147". */
+ * up storing the entire request body in memory, but that's unavoidable at this point. */
 static void
 wrote_chunk_cb (SoupMessage *message, GDataUploadStream *self)
 {
@@ -463,6 +462,7 @@ wrote_chunk_cb (SoupMessage *message, GDataUploadStream *self)
 
 	GDataUploadStreamPrivate *priv = self->priv;
 	gsize length;
+	gboolean reached_eof = FALSE;
 	guint8 buffer[CHUNK_SIZE];
 
 	/* Signal the main thread that the chunk has been written */
@@ -476,8 +476,8 @@ wrote_chunk_cb (SoupMessage *message, GDataUploadStream *self)
 	 * we could deadlock if we block on getting CHUNK_SIZE bytes at the end of the stream. write() could
 	 * easily be called with fewer bytes, but has no way to notify us that we've reached the end of the
 	 * stream, so we'd happily block on receiving more bytes which weren't forthcoming. */
-	length = gdata_buffer_pop_data_limited (priv->buffer, buffer, CHUNK_SIZE);
-	if (length == 0) {
+	length = gdata_buffer_pop_data_limited (priv->buffer, buffer, CHUNK_SIZE, &reached_eof);
+	if (reached_eof == TRUE) {
 		/* We've reached the end of the stream, so append the footer (if appropriate) and stop */
 		if (priv->entry != NULL) {
 			const gchar *footer = "\n--" BOUNDARY_STRING "--";

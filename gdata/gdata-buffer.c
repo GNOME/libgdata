@@ -167,6 +167,7 @@ pop_cancelled_cb (GCancellable *cancellable, CancelledData *data)
  * @self: a #GDataBuffer
  * @data: return location for the popped data
  * @length_requested: the number of bytes of data requested
+ * @reached_eof: return location for a value which is %TRUE when we've reached EOF, %FALSE otherwise, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  *
  * Pops up to @length_requested bytes off the head of the buffer and copies them to @data, which must be allocated by
@@ -188,7 +189,7 @@ pop_cancelled_cb (GCancellable *cancellable, CancelledData *data)
  * Since: 0.5.0
  **/
 gsize
-gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, GCancellable *cancellable)
+gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, gboolean *reached_eof, GCancellable *cancellable)
 {
 	GDataBufferChunk *chunk;
 	gsize return_length = 0, length_remaining;
@@ -203,6 +204,10 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	 */
 
 	g_static_mutex_lock (&(self->mutex));
+
+	/* Set reached_eof */
+	if (reached_eof != NULL)
+		*reached_eof = self->reached_eof;
 
 	if (self->reached_eof == TRUE && length_requested > self->total_length) {
 		/* Return data up to the EOF */
@@ -294,18 +299,26 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
  * gdata_buffer_pop_all_data:
  * @self: a #GDataBuffer
  * @data: return location for the popped data
+ * @maximum_length: the maximum number of bytes to return
+ * @reached_eof: return location for a value which is %TRUE when we've reached EOF, %FALSE otherwise, or %NULL
  *
  * Pops as much data as possible off the #GDataBuffer, up to a limit of @maxium_length bytes. If fewer bytes exist
  * in the buffer, fewer bytes will be returned. If more bytes exist in the buffer, @maximum_length bytes will be returned.
  *
- * This function will never block.
+ * If %0 bytes exist in the buffer, this function will block until data is available. Otherwise, it will never block.
  *
- * Return value: the number of bytes returned in @data
+ * Return value: the number of bytes returned in @data (guaranteed to be more than %0 and at most @maximum_length)
  *
  * Since: 0.5.0
  **/
 gsize
-gdata_buffer_pop_data_limited (GDataBuffer *self, guint8 *data, gsize maximum_length)
+gdata_buffer_pop_data_limited (GDataBuffer *self, guint8 *data, gsize maximum_length, gboolean *reached_eof)
 {
-	return gdata_buffer_pop_data (self, data, MIN (maximum_length, self->total_length), NULL);
+	/* If there's no data in the buffer, block until some is available */
+	g_static_mutex_lock (&(self->mutex));
+	if (self->total_length == 0 && self->reached_eof == FALSE)
+		g_cond_wait (self->cond, g_static_mutex_get_mutex (&(self->mutex)));
+	g_static_mutex_unlock (&(self->mutex));
+
+	return gdata_buffer_pop_data (self, data, MIN (maximum_length, self->total_length), reached_eof, NULL);
 }
