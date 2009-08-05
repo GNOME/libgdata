@@ -331,6 +331,7 @@ static void
 real_parse_error_response (GDataService *self, GDataServiceError error_type, guint status, const gchar *reason_phrase, const gchar *response_body,
 			   gint length, GError **error)
 {
+	g_message ("*** parse_error_response: %u, %s, %s, %i", status, reason_phrase, response_body, length);
 	/* See: http://code.google.com/apis/gdata/docs/2.0/reference.html#HTTPStatusCodes */
 	switch (status) {
 		case 400:
@@ -386,6 +387,11 @@ real_parse_error_response (GDataService *self, GDataServiceError error_type, gui
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_DOWNLOAD,
 				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
 				     _("Error code %u when downloading: %s"), status, response_body);
+			break;
+		case GDATA_SERVICE_ERROR_WITH_UPLOAD:
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_UPLOAD,
+				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
+				     _("Error code %u when uploading: %s"), status, response_body);
 			break;
 		default:
 			/* We should not be called with anything other than the above four generic error types */

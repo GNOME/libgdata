@@ -46,6 +46,7 @@
 #include "gdata-documents-presentation.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
+#include "gdata-upload-stream.h"
 
 GQuark
 gdata_documents_service_error_quark (void)
@@ -58,8 +59,7 @@ static void gdata_documents_service_get_property (GObject *object, guint propert
 static void notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self);
 static void notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self);
 GDataDocumentsEntry *upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-					     SoupMessage *message, guint good_status_code,
-					     GCancellable *cancellable, GError **error);
+					     const gchar *upload_uri, GCancellable *cancellable, GError **error);
 
 struct _GDataDocumentsServicePrivate {
 	GDataService *spreadsheet_service;
@@ -327,177 +327,102 @@ notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self)
 }
 
 GDataDocumentsEntry *
-upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file, SoupMessage *message,
-			guint good_status_code, GCancellable *cancellable, GError **error)
+upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file, const gchar *upload_uri,
+			GCancellable *cancellable, GError **error)
 {
-	/* TODO: Async variant */
-	#define BOUNDARY_STRING "0003Z5W789RTE456KlemsnoZV"
+	GDataDocumentsEntry *new_entry;
+	GOutputStream *output_stream;
+	GInputStream *input_stream;
+	const gchar *slug = NULL, *content_type = NULL, *response_body;
+	gssize response_length;
+	GFileInfo *file_info = NULL;
+	GType new_document_type;
 
-	GDataServiceClass *klass;
-	GType new_document_type = GDATA_TYPE_DOCUMENTS_ENTRY; /* If the document type is wrong we get an error from the server anyway */
-	gchar *entry_xml, *second_chunk_header, *upload_data, *document_contents = NULL, *i;
-	const gchar *first_chunk_header, *footer;
-	GFileInfo *document_file_info = NULL;
-	guint status;
-	gsize content_length, first_chunk_header_length, second_chunk_header_length, entry_xml_length, document_length, footer_length;
-
-	g_return_val_if_fail (document != NULL || document_file != NULL, NULL);
-	g_return_val_if_fail (message != NULL, NULL);
-
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (self), message);
-
-	/* Gets document file information */
+	/* Get some information about the file we're uploading */
 	if (document_file != NULL) {
-		/* Get the data early so we can calculate the content length */
-		if (g_file_load_contents (document_file, NULL, &document_contents, &document_length, NULL, error) == FALSE)
+		/* Get the slug and content type */
+		file_info = g_file_query_info (document_file, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
+		if (file_info == NULL)
 			return NULL;
 
-		document_file_info = g_file_query_info (document_file, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
-		if (document_file_info == NULL) {
-			g_free (document_contents);
-			return NULL;
-		}
+		slug = g_file_info_get_display_name (file_info);
+		content_type = g_file_info_get_content_type (file_info);
 
-		/* Check for cancellation */
-		if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-			g_free (document_contents);
-			g_object_unref (document_file_info);
-			return NULL;
-		}
-
-		/* Add document-upload--specific headers */
-		soup_message_headers_append (message->request_headers, "Slug", g_file_info_get_display_name (document_file_info));
-
-		if (document == NULL) {
-			const gchar *content_type = g_file_info_get_content_type (document_file_info);
-
-			/* Corrects a bug on spreadsheet content types handling
-			 * The content type for ODF spreasheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
-			 * but Google Documents' spreadsheet service is waiting for "application/x-vnd.oasis.opendocument.spreadsheet"
-			 * and nothing else.
-			 * Bug filed with Google: http://code.google.com/p/gdata-issues/issues/detail?id=1127 */
-			if (strcmp (content_type, "application/vnd.oasis.opendocument.spreadsheet") == 0)
-				content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
-			soup_message_set_request (message, content_type, SOUP_MEMORY_TAKE, document_contents, document_length);
-
-			/* We get the document type of the document which is being uploaded */
-			if (strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
-			    strcmp (content_type, "text/tab-separated-values") == 0 ||
-			    strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
-			    strcmp (content_type, "application/vnd.ms-excel") == 0) {
-				new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
-			} else if (strcmp (content_type, "application/msword") == 0 ||
-				 strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
-				 strcmp (content_type, "application/rtf") == 0 ||
-				 strcmp (content_type, "text/html") == 0 ||
-				 strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
-				 strcmp (content_type, "text/plain") == 0) {
-				new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
-			} else if (strcmp (content_type, "application/vnd.ms-powerpoint") == 0) {
-				new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
-			} else {
-				g_set_error_literal (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
-						     _("The supplied document had an invalid content type."));
-				g_free (document_contents);
-				g_object_unref (document_file_info);
-				return NULL;
-			}
-		}
+		/* Corrects a bug on spreadsheet content types handling
+		 * The content type for ODF spreasheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
+		 * but Google Documents' spreadsheet service is waiting for "application/x-vnd.oasis.opendocument.spreadsheet"
+		 * and nothing else.
+		 * Bug filed with Google: http://code.google.com/p/gdata-issues/issues/detail?id=1127 */
+		if (strcmp (content_type, "application/vnd.oasis.opendocument.spreadsheet") == 0)
+			content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
 	}
 
-	/* Prepare XML file to upload metadata */
-	if (document != NULL) {
-		/* Test on the document entry */
-		new_document_type = G_OBJECT_TYPE (document);
-
-		/* Get the XML content */
-		entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (document));
-
-		/* Check for cancellation */
-		if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-			g_free (entry_xml);
-			g_free (document_contents);
-			if (document_file_info != NULL)
-				g_object_unref (document_file_info);
-			return NULL;
-		}
-
-		/* Prepare the data to upload containg both metadata and document content */
-		if (document_file != NULL) {
-			const gchar *content_type = g_file_info_get_content_type (document_file_info);
-
-			first_chunk_header = "--" BOUNDARY_STRING "\nContent-Type: application/atom+xml; charset=UTF-8\n\n<?xml version='1.0'?>";
-			/* Corrects a bug on spreadsheet content types handling (see above) */
-			if (strcmp (content_type, "application/vnd.oasis.opendocument.spreadsheet") == 0)
-				content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
-
-			second_chunk_header = g_strdup_printf ("\n--" BOUNDARY_STRING "\nContent-Type: %s\n\n", content_type);
-			footer = "\n--" BOUNDARY_STRING "--";
-
-			first_chunk_header_length = strlen (first_chunk_header);
-			second_chunk_header_length = strlen (second_chunk_header);
-			entry_xml_length = strlen (entry_xml);
-			footer_length = strlen (footer);
-			content_length = first_chunk_header_length + entry_xml_length + second_chunk_header_length + document_length + footer_length;
-
-			/* Build the upload data */
-			upload_data = i = g_malloc (content_length);
-
-			memcpy (upload_data, first_chunk_header, first_chunk_header_length);
-			i += first_chunk_header_length;
-
-			memcpy (i, entry_xml, entry_xml_length);
-			i += entry_xml_length;
-			g_free (entry_xml);
-
-			memcpy (i, second_chunk_header, second_chunk_header_length);
-			g_free (second_chunk_header);
-			i += second_chunk_header_length;
-
-			memcpy (i, document_contents, document_length);
-			g_free (document_contents);
-			i += document_length;
-
-			memcpy (i, footer, footer_length);
-
-			/* Append the data */
-			soup_message_set_request (message, "multipart/related; boundary=" BOUNDARY_STRING, SOUP_MEMORY_TAKE, upload_data, content_length);
+	/* Determine the type of the document we're uploading */
+	if (document == NULL) {
+		/* We get the document type of the document which is being uploaded */
+		if (strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
+		    strcmp (content_type, "text/tab-separated-values") == 0 ||
+		    strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
+		    strcmp (content_type, "application/vnd.ms-excel") == 0) {
+			new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
+		} else if (strcmp (content_type, "application/msword") == 0 ||
+			 strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
+			 strcmp (content_type, "application/rtf") == 0 ||
+			 strcmp (content_type, "text/html") == 0 ||
+			 strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
+			 strcmp (content_type, "text/plain") == 0) {
+			new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
+		} else if (strcmp (content_type, "application/vnd.ms-powerpoint") == 0) {
+			new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
 		} else {
-			/* Send only metadata */
-			upload_data = g_strconcat ("<?xml version='1.0' encoding='UTF-8'?>", entry_xml, NULL);
-			g_free (entry_xml);
-			soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+			g_set_error_literal (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
+					     _("The supplied document had an invalid content type."));
+			if (file_info != NULL)
+				g_object_unref (file_info);
+			return NULL;
 		}
-
-		if (document_file_info != NULL)
-			g_object_unref (document_file_info);
+	} else {
+		new_document_type = G_OBJECT_TYPE (document);
 	}
 
-	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (self), message, error);
-	if (status == SOUP_STATUS_NONE)
+	/* If we're not uploading a file, simply use gdata_service_insert_entry() */
+	if (document_file == NULL) {
+		return GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document),
+									  cancellable, error));
+	}
+
+	/* Otherwise, we need streaming file I/O: GDataUploadStream */
+	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document), slug, content_type);
+
+	if (file_info != NULL)
+		g_object_unref (file_info);
+	if (output_stream == NULL)
 		return NULL;
 
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE)
-		return NULL;
-
-	if (status != good_status_code) {
-		/* Error */
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (self), GDATA_SERVICE_ERROR_WITH_INSERTION, status, message->reason_phrase, message->response_body->data,
-					     message->response_body->length, error);
+	/* Open the document file for reading and pipe it to the upload stream */
+	input_stream = G_INPUT_STREAM (g_file_read (document_file, cancellable, error));
+	if (input_stream == NULL) {
+		g_object_unref (output_stream);
 		return NULL;
 	}
 
-	/* Build the updated entry */
-	g_assert (message->response_body->data != NULL);
+	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+				cancellable, error);
 
-	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
-	return GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (new_document_type, message->response_body->data, (gint) message->response_body->length, error));
+	g_object_unref (input_stream);
+	if (error != NULL && *error != NULL) {
+		g_object_unref (output_stream);
+		return NULL;
+	}
+
+	/* Get and parse the response from the server */
+	response_body = gdata_upload_stream_get_response (GDATA_UPLOAD_STREAM (output_stream), &response_length);
+	g_assert (response_body != NULL && response_length > 0);
+
+	new_entry = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (new_document_type, response_body, (gint) response_length, error));
+	g_object_unref (output_stream);
+
+	return new_entry;
 }
 
 /**
@@ -531,7 +456,6 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 					 GCancellable *cancellable, GError **error)
 {
 	GDataDocumentsEntry *new_document;
-	SoupMessage *message;
 	gchar *upload_uri;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
@@ -562,11 +486,8 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 		upload_uri = g_strdup ("http://docs.google.com/feeds/documents/private/full");
 	}
 
-	message = soup_message_new (SOUP_METHOD_POST, upload_uri);
+	new_document = upload_update_document (self, document, document_file, upload_uri, cancellable, error);
 	g_free (upload_uri);
-
-	new_document = upload_update_document (self, document, document_file, message, 201, cancellable, error);
-	g_object_unref (message);
 
 	return new_document;
 }
@@ -594,9 +515,7 @@ GDataDocumentsEntry *
 gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
 					 GCancellable *cancellable, GError **error)
 {
-	GDataDocumentsEntry *updated_document;
-	SoupMessage *message;
-	GDataLink *update_uri;
+	GDataLink *update_link;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
@@ -610,18 +529,12 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	}
 
 	if (document_file == NULL)
-		update_uri = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT);
+		update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT);
 	else
-		update_uri = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
-	g_assert (update_uri != NULL);
+		update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
+	g_assert (update_link != NULL);
 
-	message = soup_message_new (SOUP_METHOD_PUT, gdata_link_get_uri (update_uri));
-	soup_message_headers_append (message->request_headers, "If-Match", gdata_entry_get_etag (GDATA_ENTRY (document)));
-
-	updated_document = upload_update_document (self, document, document_file, message, 200, cancellable, error);
-	g_object_unref (message);
-
-	return updated_document;
+	return upload_update_document (self, document, document_file, gdata_link_get_uri (update_link), cancellable, error);
 }
 
 /**

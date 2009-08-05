@@ -243,8 +243,10 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	}
 
 	/* Return if we haven't got any data to pop (i.e. if we were cancelled before even one chunk arrived) */
-	if (return_length == 0)
+	if (return_length == 0) {
+		g_static_mutex_unlock (&(self->mutex));
 		return 0;
+	}
 
 	/* Otherwise, get on with things */
 	length_remaining = return_length;
@@ -286,4 +288,24 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	g_static_mutex_unlock (&(self->mutex));
 
 	return return_length;
+}
+
+/**
+ * gdata_buffer_pop_all_data:
+ * @self: a #GDataBuffer
+ * @data: return location for the popped data
+ *
+ * Pops as much data as possible off the #GDataBuffer, up to a limit of @maxium_length bytes. If fewer bytes exist
+ * in the buffer, fewer bytes will be returned. If more bytes exist in the buffer, @maximum_length bytes will be returned.
+ *
+ * This function will never block.
+ *
+ * Return value: the number of bytes returned in @data
+ *
+ * Since: 0.5.0
+ **/
+gsize
+gdata_buffer_pop_data_limited (GDataBuffer *self, guint8 *data, gsize maximum_length)
+{
+	return gdata_buffer_pop_data (self, data, MIN (maximum_length, self->total_length), NULL);
 }

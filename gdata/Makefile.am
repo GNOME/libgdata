@@ -50,7 +50,8 @@ gdata_headers = \
 	gdata-access-handler.h	\
 	gdata-access-rule.h	\
 	gdata-parsable.h	\
-	gdata-download-stream.h
+	gdata-download-stream.h	\
+	gdata-upload-stream.h
 
 gdataincludedir = $(pkgincludedir)/gdata
 gdatainclude_HEADERS = \
@@ -71,6 +72,7 @@ libgdata_la_SOURCES = \
 	gdata-access-rule.c	\
 	gdata-parsable.c	\
 	gdata-download-stream.c	\
+	gdata-upload-stream.c	\
 	gdata-private.h		\
 	gdata-parser.h		\
 	gdata-buffer.c		\

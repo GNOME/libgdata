@@ -44,6 +44,7 @@ G_BEGIN_DECLS
  * and uploading the modified entry
  * @GDATA_SERVICE_ERROR_FORBIDDEN: Generic error for a forbidden action (not due to having insufficient permissions)
  * @GDATA_SERVICE_ERROR_WITH_DOWNLOAD: Generic error when downloading a file (rather than querying for an entry).
+ * @GDATA_SERVICE_ERROR_WITH_UPLOAD: Generic error when uploading a file (either inserting or updating an entry).
  *
  * Error codes for #GDataService operations.
  **/
@@ -59,7 +60,8 @@ typedef enum {
 	GDATA_SERVICE_ERROR_NOT_FOUND,
 	GDATA_SERVICE_ERROR_CONFLICT,
 	GDATA_SERVICE_ERROR_FORBIDDEN,
-	GDATA_SERVICE_ERROR_WITH_DOWNLOAD
+	GDATA_SERVICE_ERROR_WITH_DOWNLOAD,
+	GDATA_SERVICE_ERROR_WITH_UPLOAD
 } GDataServiceError;
 
 /**

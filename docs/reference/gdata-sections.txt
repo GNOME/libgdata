@@ -1500,3 +1500,27 @@ gdata_download_stream_get_type
 <SUBSECTION Private>
 GDataDownloadStreamPrivate
 </SECTION>
+
+<SECTION>
+<FILE>gdata-upload-stream</FILE>
+<TITLE>GDataUploadStream</TITLE>
+GDataUploadStream
+GDataUploadStreamClass
+gdata_upload_stream_new
+gdata_upload_stream_get_response
+gdata_upload_stream_get_service
+gdata_upload_stream_get_upload_uri
+gdata_upload_stream_get_entry
+gdata_upload_stream_get_slug
+gdata_upload_stream_get_content_type
+<SUBSECTION Standard>
+gdata_upload_stream_get_type
+GDATA_UPLOAD_STREAM
+GDATA_UPLOAD_STREAM_CLASS
+GDATA_UPLOAD_STREAM_GET_CLASS
+GDATA_IS_UPLOAD_STREAM
+GDATA_IS_UPLOAD_STREAM_CLASS
+GDATA_TYPE_UPLOAD_STREAM
+<SUBSECTION Private>
+GDataUploadStreamPrivate
+</SECTION>
