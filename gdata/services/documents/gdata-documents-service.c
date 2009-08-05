@@ -385,13 +385,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 		new_document_type = G_OBJECT_TYPE (document);
 	}
 
-	/* If we're not uploading a file, simply use gdata_service_insert_entry() */
-	if (document_file == NULL) {
-		return GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document),
-									  cancellable, error));
-	}
-
-	/* Otherwise, we need streaming file I/O: GDataUploadStream */
+	/* We need streaming file I/O: GDataUploadStream */
 	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document), slug, content_type);
 
 	if (file_info != NULL)
@@ -486,7 +480,12 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 		upload_uri = g_strdup ("http://docs.google.com/feeds/documents/private/full");
 	}
 
-	new_document = upload_update_document (self, document, document_file, upload_uri, cancellable, error);
+	if (document_file == NULL) {
+		new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document),
+										  cancellable, error));
+	} else {
+		new_document = upload_update_document (self, document, document_file, upload_uri, cancellable, error);
+	}
 	g_free (upload_uri);
 
 	return new_document;
@@ -500,7 +499,8 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Update the document using the properties from @document and the document file pointed to by @document_file.
+ * Update the document using the properties from @document and the document file pointed to by @document_file. If the document file does not
+ * need to be changed, @document_file can be %NULL.
  *
  * If there is a problem reading @document_file, an error from g_file_load_contents() or g_file_query_info() will be returned. Other errors from
  * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
@@ -529,9 +529,9 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	}
 
 	if (document_file == NULL)
-		update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT);
-	else
-		update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
+		return GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (self), GDATA_ENTRY (document), cancellable, error));
+
+	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
 	g_assert (update_link != NULL);
 
 	return upload_update_document (self, document, document_file, gdata_link_get_uri (update_link), cancellable, error);
