@@ -331,7 +331,6 @@ static void
 real_parse_error_response (GDataService *self, GDataServiceError error_type, guint status, const gchar *reason_phrase, const gchar *response_body,
 			   gint length, GError **error)
 {
-	g_message ("*** parse_error_response: %u, %s, %s, %i", status, reason_phrase, response_body, length);
 	/* See: http://code.google.com/apis/gdata/docs/2.0/reference.html#HTTPStatusCodes */
 	switch (status) {
 		case 400:

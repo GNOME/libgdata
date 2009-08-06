@@ -540,12 +540,16 @@ create_network_thread (GDataUploadStream *self, GError **error)
 /**
  * gdata_upload_stream_new:
  * @service: a #GDataService
+ * @method: the HTTP method to use
  * @upload_uri: the URI to upload
  * @entry: the entry to upload as metadata, or %NULL
  * @slug: the file's slug (filename)
  * @content_type: the content type of the file being uploaded
  *
  * Creates a new #GDataUploadStream, allowing a file to be uploaded from a GData service using standard #GOutputStream API.
+ *
+ * The HTTP method to use should be specified in @method, and will typically be either %SOUP_METHOD_POST or %SOUP_METHOD_PUT, according to the server
+ * and the @upload_uri.
  *
  * If @entry is specified, it will be attached to the upload as the entry to which the file being uploaded belongs. Otherwise, just the file
  * written to the stream will be uploaded, and given a default entry as determined by the server.
@@ -564,7 +568,8 @@ create_network_thread (GDataUploadStream *self, GError **error)
  * Since: 0.5.0
  **/
 GOutputStream *
-gdata_upload_stream_new (GDataService *service, const gchar *upload_uri, GDataEntry *entry, const gchar *slug, const gchar *content_type)
+gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar *upload_uri, GDataEntry *entry,
+			 const gchar *slug, const gchar *content_type)
 {
 	GDataServiceClass *klass;
 	GDataUploadStream *upload_stream;
@@ -577,7 +582,7 @@ gdata_upload_stream_new (GDataService *service, const gchar *upload_uri, GDataEn
 	g_return_val_if_fail (content_type != NULL, NULL);
 
 	/* Build the message */
-	message = soup_message_new (SOUP_METHOD_POST, upload_uri);
+	message = soup_message_new (method, upload_uri);
 
 	/* Make sure the headers are set */
 	klass = GDATA_SERVICE_GET_CLASS (service);

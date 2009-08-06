@@ -149,7 +149,7 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	xmlNode *node;
 
 	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE) == TRUE, FALSE);
-	g_return_val_if_fail (xml != NULL, NULL);
+	g_return_val_if_fail (xml != NULL && *xml != '\0', NULL);
 	g_return_val_if_fail (length >= -1, NULL);
 
 	if (length == -1)
@@ -162,7 +162,7 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 		g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_PARSING_STRING,
 			     /* Translators: the parameter is an error message */
 			     _("Error parsing XML: %s"),
-			     xml_error->message);
+			     (xml_error != NULL) ? xml_error->message : NULL);
 		return NULL;
 	}
 

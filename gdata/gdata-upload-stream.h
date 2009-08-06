@@ -64,7 +64,7 @@ typedef struct {
 
 GType gdata_upload_stream_get_type (void) G_GNUC_CONST;
 
-GOutputStream *gdata_upload_stream_new (GDataService *service, const gchar *upload_uri, GDataEntry *entry,
+GOutputStream *gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar *upload_uri, GDataEntry *entry,
 					const gchar *slug, const gchar *content_type) G_GNUC_WARN_UNUSED_RESULT;
 
 const gchar *gdata_upload_stream_get_response (GDataUploadStream *self, gssize *length);

@@ -59,7 +59,7 @@ static void gdata_documents_service_get_property (GObject *object, guint propert
 static void notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self);
 static void notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self);
 GDataDocumentsEntry *upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-					     const gchar *upload_uri, GCancellable *cancellable, GError **error);
+					     const gchar *method, const gchar *upload_uri, GCancellable *cancellable, GError **error);
 
 struct _GDataDocumentsServicePrivate {
 	GDataService *spreadsheet_service;
@@ -327,8 +327,8 @@ notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self)
 }
 
 GDataDocumentsEntry *
-upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file, const gchar *upload_uri,
-			GCancellable *cancellable, GError **error)
+upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file, const gchar *method,
+			const gchar *upload_uri, GCancellable *cancellable, GError **error)
 {
 	GDataDocumentsEntry *new_entry;
 	GOutputStream *output_stream;
@@ -386,7 +386,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 	}
 
 	/* We need streaming file I/O: GDataUploadStream */
-	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document), slug, content_type);
+	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), method, upload_uri, GDATA_ENTRY (document), slug, content_type);
 
 	if (file_info != NULL)
 		g_object_unref (file_info);
@@ -484,7 +484,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 		new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document),
 										  cancellable, error));
 	} else {
-		new_document = upload_update_document (self, document, document_file, upload_uri, cancellable, error);
+		new_document = upload_update_document (self, document, document_file, SOUP_METHOD_POST, upload_uri, cancellable, error);
 	}
 	g_free (upload_uri);
 
@@ -534,7 +534,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
 	g_assert (update_link != NULL);
 
-	return upload_update_document (self, document, document_file, gdata_link_get_uri (update_link), cancellable, error);
+	return upload_update_document (self, document, document_file, SOUP_METHOD_PUT, gdata_link_get_uri (update_link), cancellable, error);
 }
 
 /**
@@ -656,11 +656,10 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 						     GCancellable *cancellable, GError **error)
 {
 	GDataServiceClass *klass;
-	gchar *uri;
 	const gchar *document_id, *folder_id;
 	SoupMessage *message;
-	GDataDocumentsEntry *new_document;
 	guint status;
+	GDataLink *link;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
@@ -673,23 +672,9 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 		return NULL;
 	}
 
-	/* Get the document ID */
-	folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
-	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (document));
-	g_assert (folder_id != NULL);
-	g_assert (document_id != NULL);
-
-	if (GDATA_IS_DOCUMENTS_PRESENTATION (document))
-		uri = g_strdup_printf ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s", folder_id, document_id);
-	else if (GDATA_IS_DOCUMENTS_SPREADSHEET (document))
-		uri = g_strdup_printf ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s", folder_id, document_id);
-	else if (GDATA_IS_DOCUMENTS_TEXT (document))
-		uri = g_strdup_printf ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s", folder_id, document_id);
-	else
-		g_assert_not_reached ();
-
-	message = soup_message_new (SOUP_METHOD_DELETE, uri);
-	g_free (uri);
+	/* Build the message */
+	link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT);
+	message = soup_message_new (SOUP_METHOD_DELETE, gdata_link_get_uri (link));
 
 	/* Make sure subclasses set their headers */
 	klass = GDATA_SERVICE_GET_CLASS (self);
@@ -697,12 +682,6 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 		klass->append_query_headers (GDATA_SERVICE (self), message);
 
 	soup_message_headers_append (message->request_headers, "If-Match", gdata_entry_get_etag (GDATA_ENTRY (document)));
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
 
 	/* Send the message */
 	status = _gdata_service_send_message (GDATA_SERVICE (self), message, error);
@@ -726,15 +705,11 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 		return NULL;
 	}
 
-	/* Build the updated entry */
-	g_assert (message->response_body->data != NULL);
-
-	/* Parse the XML; and update the document*/
-	new_document = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (document), message->response_body->data,
-									   message->response_body->length, error));
 	g_object_unref (message);
 
-	return new_document;
+	/* Remove evidence of the folder from the entry and return it (since Google's servers don't return an updated entry for this query) */
+
+	return g_object_ref (document);
 }
 
 GDataService *
