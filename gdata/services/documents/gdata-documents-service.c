@@ -707,9 +707,10 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 
 	g_object_unref (message);
 
-	/* Remove evidence of the folder from the entry and return it (since Google's servers don't return an updated entry for this query) */
-
-	return g_object_ref (document);
+	/* Google's servers don't return an updated copy of the entry, so we have to query for it again.
+	 * See: http://code.google.com/p/gdata-issues/issues/detail?id=1380 */
+	return gdata_documents_service_query_single_document (self, G_OBJECT_TYPE (document), gdata_documents_entry_get_document_id (document),
+							      cancellable, error);
 }
 
 GDataService *

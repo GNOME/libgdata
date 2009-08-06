@@ -548,8 +548,8 @@ create_network_thread (GDataUploadStream *self, GError **error)
  *
  * Creates a new #GDataUploadStream, allowing a file to be uploaded from a GData service using standard #GOutputStream API.
  *
- * The HTTP method to use should be specified in @method, and will typically be either %SOUP_METHOD_POST or %SOUP_METHOD_PUT, according to the server
- * and the @upload_uri.
+ * The HTTP method to use should be specified in @method, and will typically be either %SOUP_METHOD_POST (for insertions) or %SOUP_METHOD_PUT
+ * (for updates), according to the server and the @upload_uri.
  *
  * If @entry is specified, it will be attached to the upload as the entry to which the file being uploaded belongs. Otherwise, just the file
  * written to the stream will be uploaded, and given a default entry as determined by the server.
