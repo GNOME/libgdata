@@ -126,7 +126,7 @@ gdata_buffer_push_data (GDataBuffer *self, const guint8 *data, gsize length)
 
 	/* Create the chunk */
 	chunk = g_malloc (sizeof (GDataBufferChunk) + length);
-	chunk->data = (gpointer) chunk + (gsize) sizeof (GDataBufferChunk);
+	chunk->data = (guint8*) ((guint8*) chunk + sizeof (GDataBufferChunk)); /* pointer arithmetic in terms of bytes here */
 	chunk->length = length;
 	chunk->next = NULL;
 
