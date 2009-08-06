@@ -62,6 +62,23 @@ test_remove_all_documents_and_folders (GDataService *service)
 	g_assert (service != NULL);
 
 	query = gdata_documents_query_new (NULL);
+	gdata_documents_query_set_show_folders (query, FALSE);
+
+	feed = gdata_documents_service_query_documents (GDATA_DOCUMENTS_SERVICE (service), query, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_FEED (feed));
+
+	/* We delete the folders after all the files so we don't get ETag mismatches; deleting a folder changes the version
+	 * of all the documents inside it. Conversely, deleting an entry inside a folder changes the version of the folder. */
+	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
+		gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (i->data), NULL, &error);
+		g_assert_no_error (error);
+		g_clear_error (&error);
+	}
+
+	g_object_unref (feed);
+
+	/* Now delete the folders */
 	gdata_documents_query_set_show_folders (query, TRUE);
 
 	feed = gdata_documents_service_query_documents (GDATA_DOCUMENTS_SERVICE (service), query, NULL, NULL, NULL, &error);
@@ -71,11 +88,9 @@ test_remove_all_documents_and_folders (GDataService *service)
 	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
 		gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (i->data), NULL, &error);
 		g_assert_no_error (error);
+		g_clear_error (&error);
 	}
 
-	g_clear_error (&error);
-
-	/* TODO: check entries and feed properties */
 	g_object_unref (feed);
 }
 

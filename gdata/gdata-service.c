@@ -1549,7 +1549,7 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Deletes @entry from the server. For more information about the concept of updating entries, see the
+ * Deletes @entry from the server. For more information about the concept of deleting entries, see the
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/basics.html#DeletingEntry">online documentation</ulink> for the GData
  * protocol.
  *
