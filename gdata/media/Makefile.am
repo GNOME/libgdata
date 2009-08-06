@@ -4,7 +4,7 @@ GDATA_MEDIA_ENUM_FILES = \
 	gdata-media-enums.h
 
 gdata-media-enums.h: $(gdata_media_headers) Makefile
-	(cd $(srcdir) && $(GLIB_MKENUMS) \
+	$(AM_V_GEN)(cd $(srcdir) && $(GLIB_MKENUMS) \
 			--fhead "#ifndef GDATA_MEDIA_ENUMS_H\n#define GDATA_MEDIA_ENUMS_H\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
@@ -15,7 +15,7 @@ gdata-media-enums.h: $(gdata_media_headers) Makefile
 	&& rm -f gdata-media-enums.h.tmp2
 
 gdata-media-enums.c: $(gdata_media_headers) Makefile gdata-media-enums.h
-	(cd $(srcdir) && $(GLIB_MKENUMS) \
+	$(AM_V_GEN)(cd $(srcdir) && $(GLIB_MKENUMS) \
 			--fhead "#include \"gdata-media-content.h\"\n#include \"gdata-media-enums.h\"" \
 			--fprod "\n/* enumerations from \"@filename@\" */" \
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \

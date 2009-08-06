@@ -9,9 +9,9 @@ GDATA_MARSHAL_FILES = \
 GLIB_GENMARSHAL = `pkg-config --variable=glib_genmarshal glib-2.0`
 
 gdata-marshal.h: gdata-marshal.list Makefile
-	( $(GLIB_GENMARSHAL) --prefix=gdata_marshal $(srcdir)/gdata-marshal.list --header > gdata-marshal.h )
+	$(AM_V_GEN)( $(GLIB_GENMARSHAL) --prefix=gdata_marshal $(srcdir)/gdata-marshal.list --header > gdata-marshal.h )
 gdata-marshal.c: gdata-marshal.h Makefile
-	( $(GLIB_GENMARSHAL) --prefix=gdata_marshal $(srcdir)/gdata-marshal.list --header --body > gdata-marshal.c )
+	$(AM_V_GEN)( $(GLIB_GENMARSHAL) --prefix=gdata_marshal $(srcdir)/gdata-marshal.list --header --body > gdata-marshal.c )
 
 # Enums
 GDATA_ENUM_FILES = \
@@ -19,7 +19,7 @@ GDATA_ENUM_FILES = \
 	gdata-enums.h
 
 gdata-enums.h: $(gdata_headers) Makefile
-	(cd $(srcdir) && $(GLIB_MKENUMS) \
+	$(AM_V_GEN)(cd $(srcdir) && $(GLIB_MKENUMS) \
 			--fhead "#ifndef GDATA_ENUMS_H\n#define GDATA_ENUMS_H\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
@@ -28,7 +28,7 @@ gdata-enums.h: $(gdata_headers) Makefile
 	&& rm -f gdata-enums.h.tmp
 
 gdata-enums.c: $(gdata_headers) Makefile gdata-enums.h
-	(cd $(srcdir) && $(GLIB_MKENUMS) \
+	$(AM_V_GEN)(cd $(srcdir) && $(GLIB_MKENUMS) \
 			--fhead "#include \"gdata.h\"\n#include \"gdata-enums.h\"" \
 			--fprod "\n/* enumerations from \"@filename@\" */" \
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
