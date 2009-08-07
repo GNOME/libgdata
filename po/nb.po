@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 0.3.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-10 15:28+0200\n"
-"PO-Revision-Date: 2009-06-10 15:31+0200\n"
+"POT-Creation-Date: 2009-08-07 14:02+0200\n"
+"PO-Revision-Date: 2009-08-07 14:06+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -17,20 +17,20 @@ msgstr ""
 
 #: ../gdata/gdata-access-handler.c:176
 msgid "The rule has already been inserted."
-msgstr ""
+msgstr "Regelen er allerede satt inn."
 
 #: ../gdata/gdata-access-handler.c:378
 msgid "The owner's rule may not be deleted."
 msgstr "Eiers regel kan ikke slettes."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:129 ../gdata/gdata-parsable.c:140
+#: ../gdata/gdata-parsable.c:164 ../gdata/gdata-parsable.c:175
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Feil under tolking av XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:142
+#: ../gdata/gdata-parsable.c:177
 msgid "Empty document."
 msgstr "Tomt dokument."
 
@@ -38,7 +38,7 @@ msgstr "Tomt dokument."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:72
+#: ../gdata/gdata-parser.c:65
 #, c-format
 msgid "A %s element was missing required content."
 msgstr ""
@@ -48,18 +48,9 @@ msgstr ""
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:88
+#: ../gdata/gdata-parser.c:81
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr ""
-
-#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
-#. *
-#. * For example:
-#. *  Unhandled <entry/yt:aspectRatio> element.
-#: ../gdata/gdata-parser.c:103
-#, c-format
-msgid "Unhandled %s element."
 msgstr ""
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
@@ -67,9 +58,19 @@ msgstr ""
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:123
+#: ../gdata/gdata-parser.c:101
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgstr ""
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#: ../gdata/gdata-parser.c:119
+#, c-format
+msgid "The content of a %s element (\"%s\") was unknown."
 msgstr ""
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
@@ -77,7 +78,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:144
+#: ../gdata/gdata-parser.c:139
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr ""
@@ -86,7 +87,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:161
+#: ../gdata/gdata-parser.c:156
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr ""
@@ -95,125 +96,138 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:176
+#: ../gdata/gdata-parser.c:171
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr ""
 
-#: ../gdata/gdata-service.c:308 ../gdata/gdata-service.c:738
-#: ../gdata/services/youtube/gdata-youtube-service.c:201
+#: ../gdata/gdata-service.c:308 ../gdata/gdata-service.c:747
+#: ../gdata/services/youtube/gdata-youtube-service.c:202
 msgid "The server returned a malformed response."
 msgstr ""
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:340
+#: ../gdata/gdata-service.c:339
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:346
+#: ../gdata/gdata-service.c:345
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Autentisering kreves: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:351
-#, fuzzy, c-format
+#: ../gdata/gdata-service.c:350
+#, c-format
 msgid "The requested resource was not found: %s"
-msgstr "Den valgte mappen ble ikke funnet"
+msgstr "Forespurt ressurs ble ikke funnet: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:356
+#: ../gdata/gdata-service.c:355
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr ""
 
-#. Translators: the first parameter is a HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:368
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr ""
 
-#. Translators: the first parameter is a HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:373
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr ""
 
-#. Translators: the first parameter is a HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:379
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:378
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr ""
 
-#. Translators: the first parameter is a HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:384
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:383
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr ""
 
-#: ../gdata/gdata-service.c:626
-msgid "A CAPTCHA must be filled out to log in."
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:388
+#, c-format
+msgid "Error code %u when downloading: %s"
 msgstr ""
 
-#: ../gdata/gdata-service.c:650
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:393
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr ""
+
+#: ../gdata/gdata-service.c:635
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "En CAPTCHA må fylles ut for å logge inn."
+
+#: ../gdata/gdata-service.c:659
 msgid "Your username or password were incorrect."
 msgstr "Feil brukernavn eller passord."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:669
+#: ../gdata/gdata-service.c:678
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr ""
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:674
+#: ../gdata/gdata-service.c:683
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr ""
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:679
+#: ../gdata/gdata-service.c:688
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Denne kontoen er slettet. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:684
+#: ../gdata/gdata-service.c:693
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Denne kontoen er deaktivert. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:689
+#: ../gdata/gdata-service.c:698
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr ""
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:694
-#, fuzzy, c-format
+#: ../gdata/gdata-service.c:703
+#, c-format
 msgid "This service is not available at the moment. (%s)"
-msgstr "Denne meldingen er ikke tilgjengelig i frakoblet modus."
+msgstr "Denne tjenesten er ikke tilgjengelig nå. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:808
-#, fuzzy, c-format
+#: ../gdata/gdata-service.c:817
+#, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "Ugyldig URI for tjener"
+msgstr "Ugyldig URI for omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1206
-#: ../gdata/services/youtube/gdata-youtube-service.c:628
+#: ../gdata/gdata-service.c:1235
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:278
+#: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "The entry has already been inserted."
-msgstr ""
+msgstr "Oppføringen er allerede satt inn."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">"),
 #. * and the second parameter is the erroneous value (which was not in hexadecimal RGB format).
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:352
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:330
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
@@ -238,24 +252,68 @@ msgstr ""
 msgid "You must be authenticated to query contacts."
 msgstr ""
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:305
-#, fuzzy, c-format
-msgid "This service is not available at the moment."
-msgstr "Denne meldingen er ikke tilgjengelig i frakoblet modus."
+#: ../gdata/services/documents/gdata-documents-entry.c:612
+msgid "You must be authenticated to download documents."
+msgstr "Du må være autentisert for å laste ned dokumenter."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:310
-#, fuzzy, c-format
-msgid "You must be authenticated to do this."
+#: ../gdata/services/documents/gdata-documents-service.c:188
+#: ../gdata/services/documents/gdata-documents-service.c:288
+msgid "You must be authenticated to query documents."
+msgstr "Du må være autentisert for å spørre på dokumenter."
+
+#: ../gdata/services/documents/gdata-documents-service.c:379
+msgid "The supplied document had an invalid content type."
+msgstr ""
+
+#: ../gdata/services/documents/gdata-documents-service.c:464
+msgid "You must be authenticated to upload documents."
+msgstr "Du må være autentisert for å laste opp dokumenter."
+
+#: ../gdata/services/documents/gdata-documents-service.c:470
+msgid "The document has already been uploaded."
+msgstr "Dokumentet er allerede lastet opp."
+
+#: ../gdata/services/documents/gdata-documents-service.c:527
+msgid "You must be authenticated to update documents."
+msgstr "Du må være autentisert for å oppdatere dokumenter."
+
+#: ../gdata/services/documents/gdata-documents-service.c:575
+#: ../gdata/services/documents/gdata-documents-service.c:671
+msgid "You must be authenticated to move documents."
+msgstr "Du må være autentisert for å flytte dokumenter."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
+#, fuzzy
+msgid "You must specify a username or be authenticated to query all albums."
 msgstr "Kan ikke autentisere mot tjener: %s"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:315
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:220
+msgid "The album did not have a feed link."
+msgstr ""
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
+msgid "You must be authenticated to upload a file."
+msgstr "Du må være autentisert for å laste opp en fil."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:303
+#, c-format
+msgid "This service is not available at the moment."
+msgstr "Denne tjenesten er ikke tilgjengelig nå."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:308
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Du må være autentisert for å gjøre dette."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:313
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr ""
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:318
+#: ../gdata/services/youtube/gdata-youtube-service.c:316
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -264,18 +322,18 @@ msgstr ""
 #. Translators: the first parameter is an error code, which is a coded string. The second parameter
 #. * is an error domain, which is another coded string. The third parameter is the location of the
 #. * error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:325
-#: ../gdata/services/youtube/gdata-youtube-service.c:331
+#: ../gdata/services/youtube/gdata-youtube-service.c:323
+#: ../gdata/services/youtube/gdata-youtube-service.c:329
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:541
-#: ../gdata/services/youtube/gdata-youtube-service.c:582
+#: ../gdata/services/youtube/gdata-youtube-service.c:697
+#: ../gdata/services/youtube/gdata-youtube-service.c:738
 msgid "The video did not have a related videos <link>."
 msgstr ""
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:634
+#: ../gdata/services/youtube/gdata-youtube-service.c:790
 msgid "You must be authenticated to upload a video."
-msgstr ""
+msgstr "Du må være autentisert for å laste opp en video."
