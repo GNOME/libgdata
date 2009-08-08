@@ -189,8 +189,16 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 		return NULL;
 	}
 
-	return GDATA_DOCUMENTS_FEED (gdata_service_query (GDATA_SERVICE (self), "http://docs.google.com/feeds/documents/private/full", GDATA_QUERY (query),
-				     GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data, error));
+	/* If we want to query for documents contained in a folder, the URI is different */
+	if (query != NULL && gdata_documents_query_get_folder_id (query) != NULL) {
+		return GDATA_DOCUMENTS_FEED (gdata_service_query (GDATA_SERVICE (self), "http://docs.google.com/feeds/folders/private/full",
+								  GDATA_QUERY (query), GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback,
+								  progress_user_data, error));
+	}
+
+	return GDATA_DOCUMENTS_FEED (gdata_service_query (GDATA_SERVICE (self), "http://docs.google.com/feeds/documents/private/full",
+							  GDATA_QUERY (query), GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback,
+							  progress_user_data, error));
 }
 
 /**
@@ -656,7 +664,6 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 						     GCancellable *cancellable, GError **error)
 {
 	GDataServiceClass *klass;
-	const gchar *document_id, *folder_id;
 	SoupMessage *message;
 	guint status;
 	GDataLink *link;
