@@ -8,7 +8,8 @@ gdatagdinclude_HEADERS = \
 	gdata-gd-reminder.h		\
 	gdata-gd-when.h			\
 	gdata-gd-where.h		\
-	gdata-gd-who.h
+	gdata-gd-who.h			\
+	gdata-gd-name.h
 
 noinst_LTLIBRARIES = libgdatagd.la
 
@@ -21,7 +22,8 @@ libgdatagd_la_SOURCES = \
 	gdata-gd-reminder.c		\
 	gdata-gd-when.c			\
 	gdata-gd-where.c		\
-	gdata-gd-who.c
+	gdata-gd-who.c			\
+	gdata-gd-name.c
 
 libgdatagd_la_CPPFLAGS = \
 	-I$(top_srcdir)			\

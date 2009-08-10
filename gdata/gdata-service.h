@@ -132,6 +132,7 @@ typedef struct {
  * @parent: the parent class
  * @service_name: the name of the service (for subclasses) as given in the service's GData API documentation
  * @authentication_uri: the authentication URI (for subclasses) if different from the Google ClientLogin default
+ * @api_version: the version of the GData API used by the service (typically %2)
  * @feed_type: the #GType of the feed class (subclass of #GDataFeed) to use for query results from this service
  * @parse_authentication_response: a function to parse the response from the online service to an authentication request as
  * issued by gdata_service_authenticate(). It should return %TRUE if authentication was successful, and %FALSE if there was
@@ -148,6 +149,7 @@ typedef struct {
 
 	const gchar *service_name;
 	const gchar *authentication_uri;
+	const gchar *api_version;
 	GType feed_type;
 
 	gboolean (*parse_authentication_response) (GDataService *self, guint status, const gchar *response_body, gint length, GError **error);

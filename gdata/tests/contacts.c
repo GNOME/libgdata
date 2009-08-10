@@ -156,7 +156,8 @@ test_insert_simple (GDataService *service)
 					      NULL, FALSE);
 	gdata_contacts_contact_add_im_address (contact, im_address);
 	g_object_unref (im_address);
-	postal_address = gdata_gd_postal_address_new ("1600 Amphitheatre Pkwy Mountain View", "http://schemas.google.com/g/2005#work", NULL, TRUE);
+	postal_address = gdata_gd_postal_address_new ("http://schemas.google.com/g/2005#work", NULL, TRUE);
+	gdata_gd_postal_address_set_street (postal_address, "1600 Amphitheatre Pkwy Mountain View");
 	gdata_contacts_contact_add_postal_address (contact, postal_address);
 	g_object_unref (postal_address);
 
@@ -175,15 +176,16 @@ test_insert_simple (GDataService *service)
 			 	"<title type='text'>Elizabeth Bennet</title>"
 			 	"<content type='text'>Notes</content>"
 				"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<gd:name><gd:fullName>Elizabeth Bennet</gd:fullName></gd:name>"
 				"<gd:email address='liz@gmail.com' rel='http://schemas.google.com/g/2005#work' primary='false'/>"
 				"<gd:email address='liz@example.org' rel='http://schemas.google.com/g/2005#home' primary='false'/>"
 				"<gd:im address='liz@gmail.com' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK' "
 					"rel='http://schemas.google.com/g/2005#home' primary='false'/>"
 				"<gd:phoneNumber rel='http://schemas.google.com/g/2005#work' primary='true'>(206)555-1212</gd:phoneNumber>"
 				"<gd:phoneNumber rel='http://schemas.google.com/g/2005#home' primary='false'>(206)555-1213</gd:phoneNumber>"
-				"<gd:postalAddress rel='http://schemas.google.com/g/2005#work' primary='true'>"
-					"1600 Amphitheatre Pkwy Mountain View"
-				"</gd:postalAddress>"
+				"<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work' primary='true'>"
+					"<gd:street>1600 Amphitheatre Pkwy Mountain View</gd:street>"
+				"</gd:structuredPostalAddress>"
 				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
 			 "</entry>");
 	g_free (xml);
@@ -410,11 +412,11 @@ main (int argc, char *argv[])
 	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
 
 	g_test_add_data_func ("/contacts/authentication", service, test_authentication);
+	if (g_test_slow () == TRUE)
+		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
 	g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
 	if (g_test_thorough () == TRUE)
 		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
-	if (g_test_slow () == TRUE)
-		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
 	g_test_add_data_func ("/contacts/query/uri", service, test_query_uri);
 	g_test_add_data_func ("/contacts/parser/minimal", service, test_parser_minimal);
 	g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);

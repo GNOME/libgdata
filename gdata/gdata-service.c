@@ -110,6 +110,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 
 	klass->service_name = "xapi";
 	klass->authentication_uri = "https://www.google.com/accounts/ClientLogin";
+	klass->api_version = "2";
 	klass->feed_type = GDATA_TYPE_FEED;
 	klass->parse_authentication_response = real_parse_authentication_response;
 	klass->append_query_headers = real_append_query_headers;
@@ -324,7 +325,7 @@ real_append_query_headers (GDataService *self, SoupMessage *message)
 	}
 
 	/* Set the GData-Version header to tell it we want to use the v2 API */
-	soup_message_headers_append (message->request_headers, "GData-Version", "2");
+	soup_message_headers_append (message->request_headers, "GData-Version", GDATA_SERVICE_GET_CLASS (self)->api_version);
 }
 
 static void

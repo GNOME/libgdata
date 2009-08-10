@@ -49,6 +49,7 @@ gdata_contacts_service_class_init (GDataContactsServiceClass *klass)
 {
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
 	service_class->service_name = "cp";
+	service_class->api_version = "3";
 }
 
 static void

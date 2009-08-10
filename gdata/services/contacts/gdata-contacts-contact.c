@@ -55,6 +55,7 @@ static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataContactsContactPrivate {
 	GTimeVal edited;
+	GDataGDName *name;
 	GList *email_addresses; /* GDataGDEmailAddress */
 	GList *im_addresses; /* GDataGDIMAddress */
 	GList *phone_numbers; /* GDataGDPhoneNumber */
@@ -69,7 +70,8 @@ struct _GDataContactsContactPrivate {
 enum {
 	PROP_EDITED = 1,
 	PROP_DELETED,
-	PROP_HAS_PHOTO
+	PROP_HAS_PHOTO,
+	PROP_NAME
 };
 
 G_DEFINE_TYPE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
@@ -132,6 +134,39 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 					"Has photo?", "Whether the contact has a photo.",
 					FALSE,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:name:
+	 *
+	 * The contact's name in a structured representation.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_NAME,
+				g_param_spec_object ("name",
+					"Name", "The contact's name in a structured representation.",
+					GDATA_TYPE_GD_NAME,
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+}
+
+static void notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *self);
+
+static void
+notify_title_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *self)
+{
+	/* Update GDataGDName:full-name */
+	g_signal_handlers_block_by_func (self->priv->name, notify_full_name_cb, self);
+	gdata_gd_name_set_full_name (self->priv->name, gdata_entry_get_title (GDATA_ENTRY (self)));
+	g_signal_handlers_unblock_by_func (self->priv->name, notify_full_name_cb, self);
+}
+
+static void
+notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *self)
+{
+	/* Update GDataEntry:title */
+	g_signal_handlers_block_by_func (self, notify_title_cb, self);
+	gdata_entry_set_title (GDATA_ENTRY (self), gdata_gd_name_get_full_name (self->priv->name));
+	g_signal_handlers_unblock_by_func (self, notify_title_cb, self);
 }
 
 static void
@@ -140,12 +175,23 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContactPrivate);
 	self->priv->extended_properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->groups = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	/* Create a default name, so the name's properties can be set for a blank contact */
+	self->priv->name = gdata_gd_name_new (NULL, NULL);
+
+	/* Listen to change notifications for the entry's title, since it's linked to GDataGDName:fullName */
+	g_signal_connect (self, "notify::title", (GCallback) notify_title_cb, self);
+	g_signal_connect (self->priv->name, "notify::fullName", (GCallback) notify_full_name_cb, self);
 }
 
 static void
 gdata_contacts_contact_dispose (GObject *object)
 {
 	GDataContactsContact *self = GDATA_CONTACTS_CONTACT (object);
+
+	if (self->priv->name != NULL)
+		g_object_unref (self->priv->name);
+	self->priv->name = NULL;
 
 	gdata_contacts_contact_remove_all_organizations (self);
 	gdata_contacts_contact_remove_all_email_addresses (self);
@@ -184,6 +230,9 @@ gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue 
 			break;
 		case PROP_HAS_PHOTO:
 			g_value_set_boolean (value, (priv->photo_etag != NULL) ? TRUE : FALSE);
+			break;
+		case PROP_NAME:
+			g_value_set_object (value, priv->name);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -230,6 +279,17 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (edited);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
+		/* gd:name */
+		GDataGDName *name = GDATA_GD_NAME (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_NAME, doc, node, NULL, error));
+
+		if (name == NULL)
+			return FALSE;
+
+		if (self->priv->name != NULL)
+			g_object_unref (self->priv->name);
+		self->priv->name = name;
+		g_object_notify (G_OBJECT (self), "name");
 	} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
 		/* gd:email */
 		GDataGDEmailAddress *email = GDATA_GD_EMAIL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_EMAIL_ADDRESS, doc,
@@ -253,8 +313,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 
 		gdata_contacts_contact_add_phone_number (self, number);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "postalAddress") == 0) {
-		/* gd:postalAddress */
+	} else if (xmlStrcmp (node->name, (xmlChar*) "structuredPostalAddress") == 0) {
+		/* gd:structuredPostalAddress — deprecates gd:postalAddress */
 		GDataGDPostalAddress *address = GDATA_GD_POSTAL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_POSTAL_ADDRESS,
 													    doc, node, NULL, error));
 		if (address == NULL)
@@ -374,6 +434,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->get_xml (parsable, xml_string);
 
+	/* Name */
+	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->name), xml_string, FALSE);
+
 	/* Lists of stuff */
 	get_child_xml (priv->email_addresses, xml_string);
 	get_child_xml (priv->im_addresses, xml_string);
@@ -420,6 +483,23 @@ gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *edited)
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (edited != NULL);
 	*edited = self->priv->edited;
+}
+
+/**
+ * gdata_contacts_contact_get_name:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:name property.
+ *
+ * Return value: the contact's name, or %NULL
+ *
+ * Since: 0.5.0
+ **/
+GDataGDName *
+gdata_contacts_contact_get_name (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->name;
 }
 
 /**

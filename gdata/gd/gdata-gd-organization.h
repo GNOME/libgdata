@@ -79,6 +79,15 @@ void gdata_gd_organization_set_label (GDataGDOrganization *self, const gchar *la
 gboolean gdata_gd_organization_is_primary (GDataGDOrganization *self);
 void gdata_gd_organization_set_is_primary (GDataGDOrganization *self, gboolean is_primary);
 
+const gchar *gdata_gd_organization_get_department (GDataGDOrganization *self);
+void gdata_gd_organization_set_department (GDataGDOrganization *self, const gchar *department);
+
+const gchar *gdata_gd_organization_get_job_description (GDataGDOrganization *self);
+void gdata_gd_organization_set_job_description (GDataGDOrganization *self, const gchar *job_description);
+
+const gchar *gdata_gd_organization_get_symbol (GDataGDOrganization *self);
+void gdata_gd_organization_set_symbol (GDataGDOrganization *self, const gchar *symbol);
+
 G_END_DECLS
 
 #endif /* !GDATA_GD_ORGANIZATION_H */

@@ -44,6 +44,7 @@
 /* GData */
 #include <gdata/gd/gdata-gd-email-address.h>
 #include <gdata/gd/gdata-gd-im-address.h>
+#include <gdata/gd/gdata-gd-name.h>
 #include <gdata/gd/gdata-gd-organization.h>
 #include <gdata/gd/gdata-gd-phone-number.h>
 #include <gdata/gd/gdata-gd-postal-address.h>

@@ -49,6 +49,9 @@ struct _GDataGDOrganizationPrivate {
 	gchar *relation_type;
 	gchar *label;
 	gboolean is_primary;
+	gchar *department;
+	gchar *job_description;
+	gchar *symbol;
 };
 
 enum {
@@ -56,7 +59,10 @@ enum {
 	PROP_TITLE,
 	PROP_RELATION_TYPE,
 	PROP_LABEL,
-	PROP_IS_PRIMARY
+	PROP_IS_PRIMARY,
+	PROP_DEPARTMENT,
+	PROP_JOB_DESCRIPTION,
+	PROP_SYMBOL
 };
 
 G_DEFINE_TYPE (GDataGDOrganization, gdata_gd_organization, GDATA_TYPE_PARSABLE)
@@ -88,7 +94,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * The name of the organization.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdOrganization">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -104,7 +110,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * The title of a person within the organization.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdOrganization">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -120,7 +126,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * A programmatic value that identifies the type of organization.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdOrganization">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -137,7 +143,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * "Professional Society", etc.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdOrganization">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -153,7 +159,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Indicates which organization out of a group is primary.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdOrganization">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -161,6 +167,54 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 				g_param_spec_boolean ("is-primary",
 					"Primary?", "Indicates which organization out of a group is primary.",
 					FALSE,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataGDOrganization:department:
+	 *
+	 * Specifies a department within the organization.
+	 *
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_DEPARTMENT,
+				g_param_spec_string ("department",
+					"Department", "Specifies a department within the organization.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataGDOrganization:job-description:
+	 *
+	 * Description of a job within the organization.
+	 *
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_JOB_DESCRIPTION,
+				g_param_spec_string ("job-description",
+					"Job description", "Description of a job within the organization.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataGDOrganization:symbol:
+	 *
+	 * Stock symbol of the organization.
+	 *
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
+	 *
+	 * Since: 0.5.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_SYMBOL,
+				g_param_spec_string ("symbol",
+					"Symbol", "Symbol of the organization.",
+					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
@@ -179,6 +233,9 @@ gdata_gd_organization_finalize (GObject *object)
 	g_free (priv->title);
 	g_free (priv->relation_type);
 	g_free (priv->label);
+	g_free (priv->department);
+	g_free (priv->job_description);
+	g_free (priv->symbol);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_gd_organization_parent_class)->finalize (object);
@@ -204,6 +261,15 @@ gdata_gd_organization_get_property (GObject *object, guint property_id, GValue *
 			break;
 		case PROP_IS_PRIMARY:
 			g_value_set_boolean (value, priv->is_primary);
+			break;
+		case PROP_DEPARTMENT:
+			g_value_set_string (value, priv->department);
+			break;
+		case PROP_JOB_DESCRIPTION:
+			g_value_set_string (value, priv->job_description);
+			break;
+		case PROP_SYMBOL:
+			g_value_set_string (value, priv->symbol);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -232,6 +298,15 @@ gdata_gd_organization_set_property (GObject *object, guint property_id, const GV
 			break;
 		case PROP_IS_PRIMARY:
 			gdata_gd_organization_set_is_primary (self, g_value_get_boolean (value));
+			break;
+		case PROP_DEPARTMENT:
+			gdata_gd_organization_set_department (self, g_value_get_string (value));
+			break;
+		case PROP_JOB_DESCRIPTION:
+			gdata_gd_organization_set_job_description (self, g_value_get_string (value));
+			break;
+		case PROP_SYMBOL:
+			gdata_gd_organization_set_symbol (self, g_value_get_string (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -305,6 +380,36 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		title = xmlNodeListGetString (doc, node->children, TRUE);
 		priv->title = g_strdup ((gchar*) title);
 		xmlFree (title);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "orgDepartment") == 0) {
+		/* gd:orgDepartment */
+		xmlChar *department;
+
+		if (priv->department != NULL)
+			return gdata_parser_error_duplicate_element (node, error);
+
+		department = xmlNodeListGetString (doc, node->children, TRUE);
+		priv->department = g_strdup ((gchar*) department);
+		xmlFree (department);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "orgJobDescription") == 0) {
+		/* gd:orgJobDescription */
+		xmlChar *job_description;
+
+		if (priv->job_description != NULL)
+			return gdata_parser_error_duplicate_element (node, error);
+
+		job_description = xmlNodeListGetString (doc, node->children, TRUE);
+		priv->job_description = g_strdup ((gchar*) job_description);
+		xmlFree (job_description);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "orgSymbol") == 0) {
+		/* gd:orgSymbol */
+		xmlChar *symbol;
+
+		if (priv->symbol != NULL)
+			return gdata_parser_error_duplicate_element (node, error);
+
+		symbol = xmlNodeListGetString (doc, node->children, TRUE);
+		priv->symbol = g_strdup ((gchar*) symbol);
+		xmlFree (symbol);
 	} else if (GDATA_PARSABLE_CLASS (gdata_gd_organization_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -336,9 +441,14 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->name != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gd:orgName>", priv->name, "</gd:orgName>");
-
 	if (priv->title != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gd:orgTitle>", priv->title, "</gd:orgTitle>");
+	if (priv->department != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gd:orgDepartment>", priv->department, "</gd:orgDepartment>");
+	if (priv->job_description != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gd:orgJobDescription>", priv->job_description, "</gd:orgJobDescription>");
+	if (priv->symbol != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gd:orgSymbol>", priv->symbol, "</gd:orgSymbol>");
 }
 
 static void
@@ -394,7 +504,8 @@ gdata_gd_organization_compare (const GDataGDOrganization *a, const GDataGDOrgani
 
 	if (a == b)
 		return 0;
-	if (g_strcmp0 (a->priv->name, b->priv->name) == 0 && g_strcmp0 (a->priv->title, b->priv->title) == 0)
+	if (g_strcmp0 (a->priv->name, b->priv->name) == 0 && g_strcmp0 (a->priv->title, b->priv->title) == 0 &&
+	    g_strcmp0 (a->priv->department, b->priv->department) == 0)
 		return 0;
 	return 1;
 }
@@ -585,4 +696,118 @@ gdata_gd_organization_set_is_primary (GDataGDOrganization *self, gboolean is_pri
 
 	self->priv->is_primary = is_primary;
 	g_object_notify (G_OBJECT (self), "is-primary");
+}
+
+/**
+ * gdata_gd_organization_get_department:
+ * @self: a #GDataGDOrganization
+ *
+ * Gets the #GDataGDOrganization:department property.
+ *
+ * Return value: the department in which the person works in this organization, or %NULL
+ *
+ * Since: 0.5.0
+ **/
+const gchar *
+gdata_gd_organization_get_department (GDataGDOrganization *self)
+{
+	g_return_val_if_fail (GDATA_IS_GD_ORGANIZATION (self), NULL);
+	return self->priv->department;
+}
+
+/**
+ * gdata_gd_organization_set_department:
+ * @self: a #GDataGDOrganization
+ * @department: the new department for the person working in the organization
+ *
+ * Sets the #GDataGDOrganization:department property to @department.
+ *
+ * Set @department to %NULL to unset the property in the organization.
+ *
+ * Since: 0.5.0
+ **/
+void
+gdata_gd_organization_set_department (GDataGDOrganization *self, const gchar *department)
+{
+	g_return_if_fail (GDATA_IS_GD_ORGANIZATION (self));
+
+	g_free (self->priv->department);
+	self->priv->department = g_strdup (department);
+	g_object_notify (G_OBJECT (self), "department");
+}
+
+/**
+ * gdata_gd_organization_get_job_description:
+ * @self: a #GDataGDOrganization
+ *
+ * Gets the #GDataGDOrganization:job-description property.
+ *
+ * Return value: the job description of the person in the organization, or %NULL
+ *
+ * Since: 0.5.0
+ **/
+const gchar *
+gdata_gd_organization_get_job_description (GDataGDOrganization *self)
+{
+	g_return_val_if_fail (GDATA_IS_GD_ORGANIZATION (self), NULL);
+	return self->priv->job_description;
+}
+
+/**
+ * gdata_gd_organization_set_job_description:
+ * @self: a #GDataGDOrganization
+ * @job_description: the new job description for the person in the organization
+ *
+ * Sets the #GDataGDOrganization:job-description property to @job_description.
+ *
+ * Set @job_description to %NULL to unset the property in the organization.
+ *
+ * Since: 0.5.0
+ **/
+void
+gdata_gd_organization_set_job_description (GDataGDOrganization *self, const gchar *job_description)
+{
+	g_return_if_fail (GDATA_IS_GD_ORGANIZATION (self));
+
+	g_free (self->priv->job_description);
+	self->priv->job_description = g_strdup (job_description);
+	g_object_notify (G_OBJECT (self), "job-description");
+}
+
+/**
+ * gdata_gd_organization_get_symbol:
+ * @self: a #GDataGDOrganization
+ *
+ * Gets the #GDataGDOrganization:symbol property.
+ *
+ * Return value: the organization's stock symbol, or %NULL
+ *
+ * Since: 0.5.0
+ **/
+const gchar *
+gdata_gd_organization_get_symbol (GDataGDOrganization *self)
+{
+	g_return_val_if_fail (GDATA_IS_GD_ORGANIZATION (self), NULL);
+	return self->priv->symbol;
+}
+
+/**
+ * gdata_gd_organization_set_symbol:
+ * @self: a #GDataGDOrganization
+ * @symbol: the new stock symbol for the organization
+ *
+ * Sets the #GDataGDOrganization:symbol property to @symbol.
+ *
+ * Set @symbol to %NULL to unset the property in the organization.
+ *
+ * Since: 0.5.0
+ **/
+void
+gdata_gd_organization_set_symbol (GDataGDOrganization *self, const gchar *symbol)
+{
+	g_return_if_fail (GDATA_IS_GD_ORGANIZATION (self));
+
+	g_free (self->priv->symbol);
+	self->priv->symbol = g_strdup (symbol);
+	g_object_notify (G_OBJECT (self), "symbol");
 }

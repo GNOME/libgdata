@@ -230,7 +230,7 @@ gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const
 	 *  Copyright 2007, 2008 Ryan Lortie <desrt@desrt.ca>
 	 */
 	p = element_content;
-	while (*p != '\0') {
+	while (p != NULL && *p != '\0') {
 		const gchar *next = g_utf8_next_char (p);
 
 		switch (*p) {
