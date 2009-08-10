@@ -102,6 +102,7 @@ GDataDocumentsEntry *gdata_documents_service_move_document_to_folder (GDataDocum
 GDataDocumentsEntry *gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *document,
 									  GDataDocumentsFolder *folder,
 									  GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+gchar *gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder);
 
 G_END_DECLS
 #endif /* !GDATA_DOCUMENTS_SERVICE_H */

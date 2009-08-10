@@ -479,14 +479,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 		return NULL;
 	}
 
-	/* Get the upload URI */
-	if (folder != NULL) {
-		const gchar *folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
-		g_assert (folder_id != NULL);
-		upload_uri = g_strconcat ("http://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
-	} else {
-		upload_uri = g_strdup ("http://docs.google.com/feeds/documents/private/full");
-	}
+	upload_uri = gdata_documents_service_get_upload_uri (folder);
 
 	if (document_file == NULL) {
 		new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document),
@@ -718,6 +711,34 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 	 * See: http://code.google.com/p/gdata-issues/issues/detail?id=1380 */
 	return gdata_documents_service_query_single_document (self, G_OBJECT_TYPE (document), gdata_documents_entry_get_document_id (document),
 							      cancellable, error);
+}
+
+/**
+ * gdata_documents_service_get_upload_uri:
+ * @folder: the #GDataDocumentsFolder into which to upload the document, or %NULL
+ *
+ * Gets the upload URI for documents for the service.
+ *
+ * If @folder is %NULL, the URI will be the one to upload documents to the "root" folder.
+ *
+ * Return value: the URI permitting the upload of documents to @folder, or %NULL; free with g_free()
+ *
+ * Since: 0.5.0
+ **/
+gchar *
+gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
+{
+	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
+
+	/* If we have a folder, return the folder's upload URI */
+	if (folder != NULL) {
+		const gchar *folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
+		g_assert (folder_id != NULL);
+		return g_strconcat ("http://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
+	}
+
+	/* Otherwise return the default upload URI */
+	return g_strdup ("http://docs.google.com/feeds/documents/private/full");
 }
 
 GDataService *
