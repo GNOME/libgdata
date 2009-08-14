@@ -114,8 +114,8 @@ msgstr "O servidor retornou uma resposta malformada."
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"Requisição de URI ou cabeçalho inválidos, ou parâmetro atípico sem "
-"suportado: %s"
+"Requisição de URI ou cabeçalho inválidos, ou parâmetro atípico sem suporte: %"
+"s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-service.c:346
@@ -127,7 +127,7 @@ msgstr "Autenticação requerida: %s"
 #: ../gdata/gdata-service.c:351
 #, c-format
 msgid "The requested resource was not found: %s"
-msgstr "O recurso requisitado não foi localizada: %s"
+msgstr "O recurso requisitado não foi localizado: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-service.c:356
@@ -319,7 +319,7 @@ msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr ""
-"Você fez muitas chamadas à API recentemente. Por favor aguarde alguns "
+"Você fez muitas chamadas à API recentemente. Por favor, aguarde alguns "
 "minutos e tente novamente."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:316
