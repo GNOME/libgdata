@@ -2,6 +2,7 @@
 # Copyright (C) 2009 Philip Withnall.
 # This file is distributed under the same license as the libgdata package.
 # Flamarion Jorge <jorge.flamarion@gmail.com>, 2009.
+# Leonardo Ferreira Fontenelle <leonardof@gnome.org>, 2009.
 #
 #
 msgid ""
@@ -9,23 +10,21 @@ msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&component=general\n"
-"POT-Creation-Date: 2009-08-10 20:21+0000\n"
+"POT-Creation-Date: 2009-08-14 01:40+0000\n"
 "PO-Revision-Date: 2009-07-16 10:25-0300\n"
-"Last-Translator: Flamarion Jorge <jorge.flamarion@gmail.com>\n"
+"Last-Translator: Leonardo Ferreira Fontenelle <leonardof@gnome.org>\n"
 "Language-Team: Portuguese/Brazil <gnome-pt_br-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gdata/gdata-access-handler.c:176
-#, fuzzy
-#| msgid "The entry has already been inserted."
 msgid "The rule has already been inserted."
-msgstr "A entrada já foi inserida."
+msgstr "A regra entrada já foi inserida."
 
 #: ../gdata/gdata-access-handler.c:378
 msgid "The owner's rule may not be deleted."
-msgstr ""
+msgstr "Não é possível excluir a regra do dono."
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:164 ../gdata/gdata-parsable.c:175
@@ -43,10 +42,9 @@ msgstr "Documento vazio."
 #. * For example:
 #. *  A <title> element was missing required content.
 #: ../gdata/gdata-parser.c:65
-#, fuzzy, c-format
-#| msgid "A <%s> element was missing required content."
+#, c-format
 msgid "A %s element was missing required content."
-msgstr "Um elemento <%s> é exigido mas estava faltando"
+msgstr "Um elemento %s estava sem o conteúdo obrigatório."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")), and the second parameter is
 #. * the erroneous value (which was not in ISO 8601 format).
@@ -54,11 +52,9 @@ msgstr "Um elemento <%s> é exigido mas estava faltando"
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:81
-#, fuzzy, c-format
-#| msgid "A <%s>'s <%s> element content (\"%s\") was not in ISO 8601 format."
+#, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr ""
-"Um elemento <%s>'s <%s> contendo (\"%s\") não estava no formato ISO 8601"
+msgstr "O conteúdo de um elemento %s (\"%s\") não estava no formato ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -68,7 +64,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:101
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr ""
+msgstr "O valor da propriedade %s de um elemento %s (\"%s\") era desconhecido."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -78,7 +74,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:119
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
-msgstr ""
+msgstr "O conteúdo de um elemento %s (\"%s\") era desconhecido."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -86,30 +82,27 @@ msgstr ""
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
 #: ../gdata/gdata-parser.c:139
-#, fuzzy, c-format
-#| msgid "A required @%s property of a <%s> was not present."
+#, c-format
 msgid "A required property of a %s element (%s) was not present."
-msgstr "Uma @%s propriedade necessária de um <%s> não estava presente."
+msgstr "Uma propriedade necessária de um elemento %s (%s) não estava presente."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
 #: ../gdata/gdata-parser.c:156
-#, fuzzy, c-format
-#| msgid "A required <%s> element as a child of <%s> was not present."
+#, c-format
 msgid "A required element (%s) was not present."
-msgstr "Um <%s> elemento necessário como filho de <%s> não estava presente."
+msgstr "Um elemento necessário (%s) não estava presente."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
 #: ../gdata/gdata-parser.c:171
-#, fuzzy, c-format
-#| msgid "A <%s> element as a child of <%s> was duplicated."
+#, c-format
 msgid "A singleton element (%s) was duplicated."
-msgstr "Um elemento <%s> como um filho de <%s> estava duplicado."
+msgstr "Um elemento único (%s) estava duplicado."
 
 #: ../gdata/gdata-service.c:309 ../gdata/gdata-service.c:748
 #: ../gdata/services/youtube/gdata-youtube-service.c:202
@@ -121,7 +114,7 @@ msgstr "O servidor retornou uma resposta malformada."
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"Requisição de URL ou cabeçalho inválidos, ou parâmetro atípico sem "
+"Requisição de URI ou cabeçalho inválidos, ou parâmetro atípico sem "
 "suportado: %s"
 
 #. Translators: the parameter is an error message returned by the server.
@@ -168,17 +161,15 @@ msgstr "Código de erro %u ao consultar: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:389
-#, fuzzy, c-format
-#| msgid "Error code %u when querying: %s"
+#, c-format
 msgid "Error code %u when downloading: %s"
-msgstr "Código de erro %u ao consultar: %s"
+msgstr "Código de erro %u ao fazer download: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:394
-#, fuzzy, c-format
-#| msgid "Error code %u when querying: %s"
+#, c-format
 msgid "Error code %u when uploading: %s"
-msgstr "Código de erro %u ao consultar: %s"
+msgstr "Código de erro %u ao fazer envio: %s"
 
 #: ../gdata/gdata-service.c:636
 msgid "A CAPTCHA must be filled out to log in."
@@ -228,7 +219,7 @@ msgstr "O serviço não está disponível no momento. (%s)"
 #: ../gdata/gdata-service.c:818
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "URL de redirecionamento inválida: %s"
+msgstr "URI de redirecionamento inválida: %s"
 
 #: ../gdata/gdata-service.c:1236
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:278
@@ -242,18 +233,15 @@ msgstr "A entrada já foi inserida."
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
 #: ../gdata/services/calendar/gdata-calendar-calendar.c:330
-#, fuzzy, c-format
-#| msgid ""
-#| "A <%s>'s <%s> element content (\"%s\") was not in hexadecimal RGB format."
+#, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
-"\tUm <% s> 's <% s> elemento de conteúdo ( \"% s\") não estava em formato "
-"hexadecimal RGB."
+"O conteúdo de um elemento %s (\"%s\") não estava em formato hexadecimal RGB."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:106
 #: ../gdata/services/calendar/gdata-calendar-service.c:140
 msgid "You must be authenticated to query all calendars."
-msgstr "Você deve estar autenticado para consultar todos os calendarios."
+msgstr "Você deve estar autenticado para consultar todos os calendários."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:172
 #: ../gdata/services/calendar/gdata-calendar-service.c:206
@@ -271,65 +259,49 @@ msgid "You must be authenticated to query contacts."
 msgstr "Você deve estar autenticado para consultar contatos."
 
 #: ../gdata/services/documents/gdata-documents-entry.c:612
-#, fuzzy
-#| msgid "You must be authenticated to do this."
 msgid "You must be authenticated to download documents."
-msgstr "Você deve estar autenticado para fazer isto."
+msgstr "Você deve estar autenticado para baixar documentos."
 
 #: ../gdata/services/documents/gdata-documents-service.c:188
 #: ../gdata/services/documents/gdata-documents-service.c:296
-#, fuzzy
-#| msgid "You must be authenticated to query contacts."
 msgid "You must be authenticated to query documents."
-msgstr "Você deve estar autenticado para consultar contatos."
+msgstr "Você deve estar autenticado para consultar documentos."
 
 #: ../gdata/services/documents/gdata-documents-service.c:387
 msgid "The supplied document had an invalid content type."
-msgstr ""
+msgstr "O documento fornecido tinha um tipo inválido de conteúdo."
 
 #: ../gdata/services/documents/gdata-documents-service.c:472
-#, fuzzy
-#| msgid "You must be authenticated to upload a video."
 msgid "You must be authenticated to upload documents."
-msgstr "Você deve estar autenticado para enviar um vídeo."
+msgstr "Você deve estar autenticado para enviar documentos."
 
 #: ../gdata/services/documents/gdata-documents-service.c:478
-#, fuzzy
-#| msgid "The entry has already been inserted."
 msgid "The document has already been uploaded."
-msgstr "A entrada já foi inserida."
+msgstr "O documento já foi enviado."
 
 #: ../gdata/services/documents/gdata-documents-service.c:528
-#, fuzzy
-#| msgid "You must be authenticated to query contacts."
 msgid "You must be authenticated to update documents."
-msgstr "Você deve estar autenticado para consultar contatos."
+msgstr "Você deve estar autenticado para atualizar documentos."
 
 #: ../gdata/services/documents/gdata-documents-service.c:576
 #: ../gdata/services/documents/gdata-documents-service.c:671
-#, fuzzy
-#| msgid "You must be authenticated to do this."
 msgid "You must be authenticated to move documents."
-msgstr "Você deve estar autenticado para fazer isto."
+msgstr "Você deve estar autenticado para mover documentos."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
-#, fuzzy
-#| msgid "You must be authenticated to query all calendars."
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Você deve estar autenticado para consultar todos os calendarios."
+msgstr ""
+"Você deve especificar um nome de usuário o estar autenticado para consultar "
+"todos os álbuns."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:220
-#, fuzzy
-#| msgid "The video did not have a related videos <link>."
 msgid "The album did not have a feed link."
-msgstr "O vídeo não tem um vídeo relacionado <link>."
+msgstr "O álbum não tinha um link de fonte de notícia (\"feed\")."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
-#, fuzzy
-#| msgid "You must be authenticated to upload a video."
 msgid "You must be authenticated to upload a file."
-msgstr "Você deve estar autenticado para enviar um vídeo."
+msgstr "Você deve estar autenticado para enviar um arquivo."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:303
 #, c-format
@@ -347,19 +319,16 @@ msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr ""
-"Você fez muitas chamadas API recentemente. Por favor aguarde alguns minutos e tente "
-"novamente."
+"Você fez muitas chamadas à API recentemente. Por favor aguarde alguns "
+"minutos e tente novamente."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:316
-#, fuzzy, c-format
-#| msgid ""
-#| "You have exceeded your entry quota with the entry \"%s\". Please delete "
-#| "some entries and try again."
+#, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
-"Você excedeu sua cota entrada com a entrada \"% s\". Por favor, apague "
-"algumas entradas e tente novamente."
+"Você excedeu sua cota entradas. Por favor, exclua algumas entradas e tente "
+"novamente."
 
 #. Translators: the first parameter is an error code, which is a coded string. The second parameter
 #. * is an error domain, which is another coded string. The third parameter is the location of the
