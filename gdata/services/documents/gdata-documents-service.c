@@ -656,10 +656,11 @@ GDataDocumentsEntry *
 gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *document, GDataDocumentsFolder *folder,
 						     GCancellable *cancellable, GError **error)
 {
+	const gchar *folder_id, *document_id;
 	GDataServiceClass *klass;
 	SoupMessage *message;
 	guint status;
-	GDataLink *link;
+	gchar *uri;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
@@ -672,9 +673,25 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 		return NULL;
 	}
 
-	/* Build the message */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT);
-	message = soup_message_new (SOUP_METHOD_DELETE, gdata_link_get_uri (link));
+	/* Get the document ID */
+	folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
+	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (document));
+	g_assert (folder_id != NULL);
+	g_assert (document_id != NULL);
+
+	if (GDATA_IS_DOCUMENTS_PRESENTATION (document))
+		uri = g_strdup_printf ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s", folder_id, document_id);
+	else if (GDATA_IS_DOCUMENTS_SPREADSHEET (document))
+		uri = g_strdup_printf ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s", folder_id, document_id);
+	else if (GDATA_IS_DOCUMENTS_TEXT (document))
+		uri = g_strdup_printf ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s", folder_id, document_id);
+	else if (GDATA_IS_DOCUMENTS_FOLDER (document))
+		uri = g_strdup_printf ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s", folder_id, document_id);
+	else
+		g_assert_not_reached ();
+
+	message = soup_message_new (SOUP_METHOD_DELETE, uri);
+	g_free (uri);
 
 	/* Make sure subclasses set their headers */
 	klass = GDATA_SERVICE_GET_CLASS (self);
