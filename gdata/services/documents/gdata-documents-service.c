@@ -239,7 +239,7 @@ gdata_documents_service_query_single_document (GDataDocumentsService *self, GTyp
 	if (document_type == GDATA_TYPE_DOCUMENTS_FOLDER)
 		resource_id = g_strconcat ("folder:", document_id, NULL);
 	else if (document_type == GDATA_TYPE_DOCUMENTS_SPREADSHEET)
-		resource_id = g_strconcat ("spreasheet:", document_id, NULL);
+		resource_id = g_strconcat ("spreadsheet:", document_id, NULL);
 	else if (document_type == GDATA_TYPE_DOCUMENTS_TEXT)
 		resource_id = g_strconcat ("document:", document_id, NULL);
 	else if (document_type == GDATA_TYPE_DOCUMENTS_PRESENTATION)
@@ -302,7 +302,7 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 }
 
 /*
- * To upload spreasheet documents, another token is needed since the service for it is "wise" as apposed to "writely" for other operations.
+ * To upload spreadsheet documents, another token is needed since the service for it is "wise" as apposed to "writely" for other operations.
  * This callback aims to authenticate to this service as a private property (@priv->spreadsheet_service) of #GDataDocumentsService.
  */
 static void
@@ -357,7 +357,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 		content_type = g_file_info_get_content_type (file_info);
 
 		/* Corrects a bug on spreadsheet content types handling
-		 * The content type for ODF spreasheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
+		 * The content type for ODF spreadsheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
 		 * but Google Documents' spreadsheet service is waiting for "application/x-vnd.oasis.opendocument.spreadsheet"
 		 * and nothing else.
 		 * Bug filed with Google: http://code.google.com/p/gdata-issues/issues/detail?id=1127 */
