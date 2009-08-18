@@ -20,6 +20,7 @@ libgdatacontacts_la_CPPFLAGS = \
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/gdata			\
 	-I$(top_srcdir)/gdata/services/contacts	\
+	-DG_LOG_DOMAIN=\"libgdata-Contacts\"	\
 	$(DISABLE_DEPRECATED)			\
 	$(AM_CPPFLAGS)
 

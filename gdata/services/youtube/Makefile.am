@@ -59,6 +59,7 @@ libgdatayoutube_la_CPPFLAGS = \
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/gdata			\
 	-I$(top_srcdir)/gdata/services/youtube	\
+	-DG_LOG_DOMAIN=\"libgdata-YouTube\"	\
 	$(DISABLE_DEPRECATED)			\
 	$(AM_CPPFLAGS)
 

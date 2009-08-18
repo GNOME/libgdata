@@ -49,10 +49,11 @@ libgdatamedia_la_SOURCES = \
 	gdata-media-group.h
 
 libgdatamedia_la_CPPFLAGS = \
-	-I$(top_srcdir)			\
-	-I$(top_srcdir)/gdata		\
-	-I$(top_srcdir)/gdata/media	\
-	$(DISABLE_DEPRECATED)		\
+	-I$(top_srcdir)				\
+	-I$(top_srcdir)/gdata			\
+	-I$(top_srcdir)/gdata/media		\
+	-DG_LOG_DOMAIN=\"libgdata-MediaRSS\"	\
+	$(DISABLE_DEPRECATED)			\
 	$(AM_CPPFLAGS)
 
 libgdatamedia_la_CFLAGS = \

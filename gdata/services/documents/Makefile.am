@@ -45,19 +45,20 @@ noinst_LTLIBRARIES = libgdatadocuments.la
 libgdatadocuments_la_SOURCES = \
 	$(GDATA_DOCUMENTS_ENUM_FILES)	\
 	gdata-documents-service.c	\
-	gdata-documents-feed.c	\
-	gdata-documents-entry.c	\
-	gdata-documents-text.c	\
+	gdata-documents-feed.c		\
+	gdata-documents-entry.c		\
+	gdata-documents-text.c		\
 	gdata-documents-presentation.c	\
 	gdata-documents-spreadsheet.c	\
 	gdata-documents-folder.c	\
 	gdata-documents-query.c
 
 libgdatadocuments_la_CPPFLAGS = \
-	-I$(top_srcdir)				\
-	-I$(top_srcdir)/gdata			\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/gdata				\
 	-I$(top_srcdir)/gdata/services/documents	\
-	$(DISABLE_DEPRECATED)			\
+	-DG_LOG_DOMAIN=\"libgdata-Documents\"		\
+	$(DISABLE_DEPRECATED)				\
 	$(AM_CPPFLAGS)
 
 libgdatadocuments_la_CFLAGS = \

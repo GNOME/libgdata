@@ -7,10 +7,11 @@ noinst_LTLIBRARIES = libgdatageorss.la
 libgdatageorss_la_SOURCES = gdata-georss-where.c
 
 libgdatageorss_la_CPPFLAGS = \
-	-I$(top_srcdir)			\
-	-I$(top_srcdir)/gdata		\
-	-I$(top_srcdir)/gdata/georss	\
-	$(DISABLE_DEPRECATED)		\
+	-I$(top_srcdir)				\
+	-I$(top_srcdir)/gdata			\
+	-I$(top_srcdir)/gdata/georss		\
+	-DG_LOG_DOMAIN=\"libgdata-GeoRSS\"	\
+	$(DISABLE_DEPRECATED)			\
 	$(AM_CPPFLAGS)
 
 libgdatageorss_la_CFLAGS = \

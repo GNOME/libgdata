@@ -26,6 +26,7 @@ libgdatacalendar_la_CPPFLAGS = \
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/gdata			\
 	-I$(top_srcdir)/gdata/services/calendar	\
+	-DG_LOG_DOMAIN=\"libgdata-Calendar\"	\
 	$(DISABLE_DEPRECATED)			\
 	$(AM_CPPFLAGS)
 

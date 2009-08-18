@@ -26,10 +26,11 @@ libgdatagd_la_SOURCES = \
 	gdata-gd-name.c
 
 libgdatagd_la_CPPFLAGS = \
-	-I$(top_srcdir)			\
-	-I$(top_srcdir)/gdata		\
-	-I$(top_srcdir)/gdata/gd	\
-	$(DISABLE_DEPRECATED)		\
+	-I$(top_srcdir)				\
+	-I$(top_srcdir)/gdata			\
+	-I$(top_srcdir)/gdata/gd		\
+	-DG_LOG_DOMAIN=\"libgdata-GData\"	\
+	$(DISABLE_DEPRECATED)			\
 	$(AM_CPPFLAGS)
 
 libgdatagd_la_CFLAGS = \

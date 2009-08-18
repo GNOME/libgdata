@@ -17,6 +17,7 @@ libgdataatom_la_CPPFLAGS = \
 	-I$(top_srcdir)			\
 	-I$(top_srcdir)/gdata		\
 	-I$(top_srcdir)/gdata/atom	\
+	-DG_LOG_DOMAIN=\"libgdata-Atom\"\
 	$(DISABLE_DEPRECATED)		\
 	$(AM_CPPFLAGS)
 
