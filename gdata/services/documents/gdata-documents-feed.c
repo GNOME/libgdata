@@ -47,7 +47,6 @@
 #include "gdata-service.h"
 
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean is_entry_type (xmlDoc *doc, xmlNode *node, const gchar *entry_type);
 
 G_DEFINE_TYPE (GDataDocumentsFeed, gdata_documents_feed, GDATA_TYPE_FEED)
 #define GDATA_DOCUMENTS_FEED_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_FEED, GDataDocumentsFeedPrivate))
@@ -65,26 +64,25 @@ gdata_documents_feed_init (GDataDocumentsFeed *self)
 	/* Why am I writing it? */
 }
 
-static gboolean
-is_entry_type (xmlDoc *doc, xmlNode *node, const gchar *entry_type)
+/* NOTE: Should be freed with xmlFree(), not g_free() */
+static xmlChar *
+get_kind (xmlDoc *doc, xmlNode *node)
 {
 	xmlNode *entry_node;
 
 	for (entry_node = node->children; entry_node != NULL; entry_node = entry_node->next) {
-		xmlChar *label;
+		if (xmlStrcmp (entry_node->name, (xmlChar*) "category") == 0) {
+			xmlChar *scheme = xmlGetProp (entry_node, (xmlChar*) "scheme");
 
-		if (xmlStrcmp (entry_node->name, (xmlChar*) "category") != 0)
-			continue;
-
-		label = xmlGetProp (entry_node, (xmlChar*) "label");
-		if (xmlStrcmp (label, (xmlChar*) entry_type) == 0) {
-			xmlFree (label);
-			return TRUE;
+			if (xmlStrcmp (scheme, (xmlChar*) "http://schemas.google.com/g/2005#kind") == 0) {
+				xmlFree (scheme);
+				return xmlGetProp (entry_node, (xmlChar*) "term");
+			}
+			xmlFree (scheme);
 		}
-		xmlFree (label);
 	}
 
-	return FALSE;
+	return NULL;
 }
 
 static gboolean
@@ -94,15 +92,24 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
 		GDataEntry *entry = NULL;
+		gchar *kind;
 
-		if (is_entry_type (doc, node, "spreadsheet"))
+		kind = (gchar*) get_kind (doc, node);
+
+		if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#spreadsheet") == 0)
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_SPREADSHEET, doc, node, NULL, error));
-		else if (is_entry_type (doc, node, "document"))
+		else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#document") == 0)
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_TEXT, doc, node, NULL, error));
-		else if (is_entry_type (doc, node, "presentation"))
+		else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#presentation") == 0)
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_PRESENTATION, doc, node, NULL, error));
-		else if (is_entry_type (doc, node, "folder"))
+		else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#folder") == 0)
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_FOLDER, doc, node, NULL, error));
+		else {
+			g_message ("%s documents are not handled yet", kind);
+			xmlFree (kind);
+			return TRUE;
+		}
+		xmlFree (kind);
 
 		if (entry == NULL)
 			return FALSE;
