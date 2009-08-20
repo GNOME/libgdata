@@ -628,7 +628,7 @@ main (int argc, char *argv[])
 
 	g_test_add_data_func ("/documents/move/remove_from_folder", service, test_add_remove_file_from_folder);
 
-	g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);
+	/*g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);*/
 
 	retval = g_test_run ();
 

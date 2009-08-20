@@ -15,7 +15,6 @@ AM_INIT_AUTOMAKE([1.9 dist-bzip2 no-dist-gzip check-news subdir-objects])
 # Enable silent build when available (Automake 1.11)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
-
 GETTEXT_PACKAGE=gdata
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define to the Gettext package name])
 AC_SUBST(GETTEXT_PACKAGE)
@@ -82,6 +81,23 @@ fi
 AC_SUBST(GNOME_CFLAGS)
 AC_SUBST(GNOME_LIBS)
 
+# Code testing coverage with gcov
+AC_MSG_CHECKING(whether to build with gcov testing)
+AC_ARG_ENABLE(gcov, AS_HELP_STRING([--enable-gcov], [Whether to enable gcov testing]),, enable_gcov=no)
+			
+if test "x$enable_gcov" = "xyes"; then
+	if test "$GCC" = "no"; then
+		AC_MSG_ERROR(not compiling with gcc, which is required for gcov testing)
+	fi
+
+	CFLAGS="$CFLAGS -fprofile-arcs -ftest-coverage"
+	LDFLAGS="$LDFLAGS -fprofile-arcs -ftest-coverage"
+fi
+
+AM_CONDITIONAL(GCOV_ENABLED, test x$enable_gcov = xyes)
+AC_MSG_RESULT($enable_gcov)
+
+# General GNOME macros
 GNOME_COMMON_INIT
 GNOME_DEBUG_CHECK
 GNOME_COMPILE_WARNINGS([maximum])
@@ -100,18 +116,6 @@ GTK_DOC_CHECK(1.0)
 AC_OUTPUT([
 Makefile
 libgdata.pc
-gdata/Makefile
-gdata/atom/Makefile
-gdata/gd/Makefile
-gdata/media/Makefile
-gdata/exif/Makefile
-gdata/georss/Makefile
-gdata/services/Makefile
-gdata/services/calendar/Makefile
-gdata/services/contacts/Makefile
-gdata/services/documents/Makefile
-gdata/services/picasaweb/Makefile
-gdata/services/youtube/Makefile
 gdata/tests/Makefile
 po/Makefile.in
 docs/Makefile

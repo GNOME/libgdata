@@ -1,9 +1,9 @@
-include $(top_srcdir)/Makefile.decl
+include $(top_srcdir)/gtester.mk
 
 INCLUDES = \
 	-I$(top_srcdir)/				\
 	-I$(top_srcdir)/gdata				\
-	$(GDK_CFLAGS)  					\
+	$(GDK_CFLAGS)					\
 	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\""\
 	$(DISABLE_DEPRECATED)				\
 	$(WARN_CFLAGS)					\

@@ -98,12 +98,14 @@ SCANOBJ_FILES += $(DOC_MODULE).types
 # This should also be dealt with elsewhere, but we can't call gtkdocize
 # with --flavour=no-tmpl because of gnome-autogen.sh being out of our
 # control. Grrr.
-distclean-local:
+distclean-local: distclean-docs
+distclean-docs:
 	cd $(srcdir) && \
 	  rm -rf xml tmpl $(REPORT_FILES) \
 	         $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt
 
-maintainer-clean-local: clean
+maintainer-clean-local: maintainer-clean-docs
+maintainer-clean-docs: clean
 	cd $(srcdir) && rm -rf xml tmpl html
 
 GITIGNOREFILES = tmpl/

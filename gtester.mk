@@ -1,9 +1,14 @@
-GTESTER        = gtester		# in $PATH for non-GLIB packages
-GTESTER_REPORT = gtester-report		# in $PATH for non-GLIB packages
+# GLIB - Library of useful C routines
+# From http://git.gnome.org/browse/glib/tree/Makefile.decl
+
+GTESTER = gtester
+GTESTER_REPORT = gtester-report
 
 # initialize variables for unconditional += appending
 EXTRA_DIST =
 TEST_PROGS =
+
+### testing rules
 
 # test: run all tests in cwd and subdirs
 test:	${TEST_PROGS}
@@ -52,3 +57,4 @@ test-report perf-report full-report:	${TEST_PROGS}
 .PHONY: test test-report perf-report full-report
 # run make test as part of make check
 check-local: test
+
