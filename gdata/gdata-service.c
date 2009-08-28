@@ -414,6 +414,8 @@ authenticate_async_data_free (AuthenticateAsyncData *self)
 {
 	g_free (self->username);
 	g_free (self->password);
+	if (self->service != NULL)
+		g_object_unref (self->service);
 
 	g_slice_free (AuthenticateAsyncData, self);
 }
@@ -470,7 +472,7 @@ authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 	}
 
 	/* Update the authentication details held by the service */
-	data->service = service;
+	data->service = g_object_ref (service);
 	g_idle_add ((GSourceFunc) set_authentication_details_cb, data);
 }
 
@@ -505,6 +507,7 @@ gdata_service_authenticate_async (GDataService *self, const gchar *username, con
 	data = g_slice_new (AuthenticateAsyncData);
 	data->username = g_strdup (username);
 	data->password = g_strdup (password);
+	data->service = NULL; /* set in authenticate_thread() */
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_authenticate_async);
 	g_simple_async_result_set_op_res_gpointer (result, data, NULL);
