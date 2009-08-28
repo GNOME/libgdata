@@ -78,8 +78,8 @@ GDataFeed *gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDa
 
 #include <gdata/services/picasaweb/gdata-picasaweb-file.h>
 
-GDataPicasaWebFile *gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file,
-							 GFile *actual_file, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+GDataPicasaWebFile *gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
+							 GFile *file_data, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 /* TODO: async version */
 
 G_END_DECLS

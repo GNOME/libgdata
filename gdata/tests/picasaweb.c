@@ -101,44 +101,49 @@ test_authentication_async (void)
 static void
 test_upload_simple (GDataService *service)
 {
-	GDataCategory *category;
 	GDataPicasaWebFile *photo;
 	GDataPicasaWebFile *photo_new;
 	GFile *photo_file;
 	gchar *xml;
 	GError *error = NULL;
+	GTimeVal timeval;
+	gchar *time_str;
+	gchar *summary;
+	gchar *expected_xml;
+
+	g_get_current_time (&timeval);
+	time_str = g_time_val_to_iso8601 (&timeval);
+	summary = g_strdup_printf ("Photo Summary (%s)", time_str);
+	g_free (time_str);
+
+	expected_xml = g_strdup_printf ("<entry "
+						"xmlns='http://www.w3.org/2005/Atom' "
+						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
+						"xmlns:media='http://video.search.yahoo.com/mrss' "
+						"xmlns:gd='http://schemas.google.com/g/2005' "
+						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
+						"xmlns:app='http://www.w3.org/2007/app' "
+						"xmlns:georss='http://www.georss.org/georss' "
+						"xmlns:gml='http://www.opengis.net/gml'>"
+						"<title type='text'>Photo Entry Title</title>"
+						"<summary type='text'>%s</summary>"
+						"<gphoto:position>0</gphoto:position>"
+						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
+						"<media:group>"
+							"<media:title type='plain'>Photo Entry Title</media:title>"
+							"<media:description type='plain'>%s</media:description>"
+						"</media:group>"
+					"</entry>", summary, summary);
 
 	photo = gdata_picasaweb_file_new (NULL);
 
 	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
-	gdata_picasaweb_file_set_caption (photo, "Photo Summary");
-	/* TODO: Have it add this category automatically? Same for GDataCalendarEvent */
-	category = gdata_category_new ("http://schemas.google.com/photos/2007#photo", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (GDATA_ENTRY (photo), category);
+	gdata_picasaweb_file_set_caption (photo, summary);
 
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
-	g_assert_cmpstr (xml, ==,
-			 "<entry "
-				"xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:gphoto='http://schemas.google.com/photos/2007' "
-				"xmlns:media='http://video.search.yahoo.com/mrss' "
-				"xmlns:gd='http://schemas.google.com/g/2005' "
-				"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
-				"xmlns:app='http://www.w3.org/2007/app' "
-				"xmlns:georss='http://www.georss.org/georss' "
-				"xmlns:gml='http://www.opengis.net/gml'>"
-				"<title type='text'>Photo Entry Title</title>"
-				"<summary type='text'>Photo Summary</summary>"
-				"<category term='http://schemas.google.com/photos/2007#photo' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gphoto:position>0</gphoto:position>"
-				"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
-				"<media:group>"
-					"<media:title type='plain'>Photo Entry Title</media:title>"
-					"<media:description type='plain'>Photo Summary</media:description>"
-				"</media:group>"
-			 "</entry>");
-	g_free(xml);
+	g_assert_cmpstr (xml, ==, expected_xml);
+	g_free (xml);
 
 	gdata_picasaweb_file_set_coordinates (photo, 17.127, -110.35);
 
@@ -154,6 +159,8 @@ test_upload_simple (GDataService *service)
 
 	/* TODO: check entries and feed properties */
 
+	g_free (summary);
+	g_free (expected_xml);
 	g_object_unref (photo);
 	g_object_unref (photo_new);
 	g_object_unref (photo_file);
@@ -581,7 +588,7 @@ static void
 test_query_all_albums_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	GDataFeed *feed;
-	GError *error;
+	GError *error = NULL;
 
 	feed = gdata_service_query_finish (service, async_result, &error);
 	g_assert_no_error (error);

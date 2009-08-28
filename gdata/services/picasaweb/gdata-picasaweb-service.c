@@ -40,6 +40,7 @@
 #include "gdata-private.h"
 #include "gdata-parser.h"
 #include "atom/gdata-link.h"
+#include "gdata-upload-stream.h"
 
 G_DEFINE_TYPE (GDataPicasaWebService, gdata_picasaweb_service, GDATA_TYPE_SERVICE)
 
@@ -235,8 +236,8 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
  * gdata_picasaweb_service_upload_file:
  * @self: a #GDataPicasaWebService
  * @album: a #GDataPicasaWebAlbum into which to insert the file, or %NULL
- * @file: a #GDataPicasaWebFile to insert
- * @actual_file: the actual file to upload
+ * @file_entry: a #GDataPicasaWebFile to insert
+ * @file_data: the actual file to upload
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -246,34 +247,31 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
  * If @file has already been inserted, a %GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED error will be returned. If no user is authenticated
  * with the service, %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be returned.
  *
- * If there is a problem reading @actual_file, an error from g_file_load_contents() or g_file_query_info() will be returned. Other errors from
+ * If there is a problem reading @file_data, an error from g_output_stream_splice() or g_file_query_info() will be returned. Other errors from
  * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
  *
- * Return value: the inserted #GDataPicasaWebFile with updated properties from @file; unref with g_object_unref()
+ * Return value: the inserted #GDataPicasaWebFile with updated properties from @file_entry; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
 GDataPicasaWebFile *
-gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file, GFile *actual_file,
+gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry, GFile *file_data,
 				     GCancellable *cancellable, GError **error)
 {
-	/* TODO: Async variant */
-	/* TODO: consider setting Client and Checksum by default? */
-	#define BOUNDARY_STRING "0xdeadbeef6e0808d5e6ed8bc168390bcc"
-
-	GDataServiceClass *klass;
-	SoupMessage *message;
-	gchar *entry_xml, *upload_uri, *second_chunk_header, *upload_data, *file_contents, *i;
-	const gchar *first_chunk_header, *footer, *album_id, *user_id;
-	guint status;
-	GFileInfo *actual_file_info;
-	gsize content_length, first_chunk_header_length, second_chunk_header_length, entry_xml_length, file_length, footer_length;
+	GDataPicasaWebFile *new_entry;
+	GDataCategory *category;
+	GOutputStream *output_stream;
+	GInputStream *input_stream;
+	const gchar *slug = NULL, *content_type = NULL, *response_body = NULL, *user_id = NULL, *album_id = NULL;
+	gchar *upload_uri;
+	gssize response_length;
+	GFileInfo *file_info = NULL;
 
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
-	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (file), NULL);
-	g_return_val_if_fail (G_IS_FILE (actual_file), NULL);
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (file_entry), NULL);
+	g_return_val_if_fail (G_IS_FILE (file_data), NULL);
 
-	if (gdata_entry_is_inserted (GDATA_ENTRY (file)) == TRUE) {
+	if (gdata_entry_is_inserted (GDATA_ENTRY (file_entry)) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
 				     _("The entry has already been inserted."));
 		return NULL;
@@ -285,115 +283,55 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 		return NULL;
 	}
 
+	file_info = g_file_query_info (file_data, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
+	if (file_info == NULL)
+		return NULL;
+
+	slug = g_file_info_get_display_name (file_info);
+	content_type = g_file_info_get_content_type (file_info);
+
+	/* Add the "photo" kind if the entry is missing it. If it already has the kind category, no duplicate is added. */
+	category = gdata_category_new ("http://schemas.google.com/photos/2007#photo", "http://schemas.google.com/g/2005#kind", NULL);
+	gdata_entry_add_category (GDATA_ENTRY (file_entry), category);
+	g_object_unref (category);
+
 	/* PicasaWeb allows you to post to a default Dropbox */
-	if (album == NULL)
-		album_id = "default";
-	else
-		album_id = gdata_entry_get_id (GDATA_ENTRY (album));
+	album_id = (album != NULL) ? gdata_entry_get_id (GDATA_ENTRY (album)) : "default";
 	user_id = gdata_service_get_username (GDATA_SERVICE (self));
 
+	/* Build the upload URI and upload stream */
 	upload_uri = g_strdup_printf ("http://picasaweb.google.com/data/feed/api/user/%s/albumid/%s", user_id, album_id);
-	message = soup_message_new (SOUP_METHOD_POST, upload_uri);
+	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST, upload_uri, GDATA_ENTRY (file_entry), slug, content_type);
 	g_free (upload_uri);
+	g_object_unref (file_info);
 
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (self), message);
+	if (output_stream == NULL)
+		return NULL;
 
-	/* Get the data early so we can calculate the content length */
-	if (g_file_load_contents (actual_file, NULL, &file_contents, &file_length, NULL, error) == FALSE) {
-		g_object_unref (message);
+	/* Pipe the input file to the upload stream */
+	input_stream = G_INPUT_STREAM (g_file_read (file_data, cancellable, error));
+	if (input_stream == NULL) {
+		g_object_unref (output_stream);
 		return NULL;
 	}
 
-	entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (file));
+	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+				cancellable, error);
 
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		g_free (entry_xml);
+	g_object_unref (input_stream);
+	if (error != NULL && *error != NULL) {
+		/* Error! */
+		g_object_unref (output_stream);
 		return NULL;
 	}
 
-	actual_file_info = g_file_query_info (actual_file, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
-	if (actual_file_info == NULL) {
-		g_object_unref (message);
-		g_free (entry_xml);
-		return NULL;
-	}
+	/* Get the response from the server */
+	response_body = gdata_upload_stream_get_response (GDATA_UPLOAD_STREAM (output_stream), &response_length);
+	g_assert (response_body != NULL && response_length > 0);
 
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		g_free (entry_xml);
-		g_object_unref (actual_file_info);
-		return NULL;
-	}
+	/* Parse the response to produce a GDataPicasaWebFile */
+	new_entry = GDATA_PICASAWEB_FILE (gdata_parsable_new_from_xml (GDATA_TYPE_PICASAWEB_FILE, response_body, (gint) response_length, error));
+	g_object_unref (output_stream);
 
-	/* Add file-upload--specific headers */
-	soup_message_headers_append (message->request_headers, "Slug", g_file_info_get_display_name (actual_file_info));
-
-	first_chunk_header = "--" BOUNDARY_STRING "\nContent-Type: application/atom+xml; charset=UTF-8\n\n<?xml version='1.0'?>";
-	second_chunk_header = g_strdup_printf ("\n--" BOUNDARY_STRING "\nContent-Type: %s\nContent-Transfer-Encoding: binary\n\n",
-					       g_file_info_get_content_type (actual_file_info));
-	footer = "\n--" BOUNDARY_STRING "--";
-
-	g_object_unref (actual_file_info);
-
-	first_chunk_header_length = strlen (first_chunk_header);
-	second_chunk_header_length = strlen (second_chunk_header);
-	footer_length = strlen (footer);
-	entry_xml_length = strlen (entry_xml);
-
-	content_length = first_chunk_header_length + entry_xml_length + second_chunk_header_length + file_length + footer_length;
-
-	/* Build the upload data */
-	upload_data = i = g_malloc (content_length);
-
-	memcpy (upload_data, first_chunk_header, first_chunk_header_length);
-	i += first_chunk_header_length;
-
-	memcpy (i, entry_xml, entry_xml_length);
-	i += entry_xml_length;
-	g_free (entry_xml);
-
-	memcpy (i, second_chunk_header, second_chunk_header_length);
-	g_free (second_chunk_header);
-	i += second_chunk_header_length;
-
-	memcpy (i, file_contents, file_length);
-	g_free (file_contents);
-	i += file_length;
-
-	memcpy (i, footer, footer_length);
-
-	/* Append the data */
-	soup_message_set_request (message, "multipart/related; boundary=" BOUNDARY_STRING, SOUP_MEMORY_TAKE, upload_data, content_length);
-
-	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (self), message, error);
-	if (status == SOUP_STATUS_NONE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != 201) {
-		/* Error */
-		klass->parse_error_response (GDATA_SERVICE (self), GDATA_SERVICE_ERROR_WITH_INSERTION, status, message->reason_phrase,
-					     message->response_body->data, message->response_body->length, error);
-		g_object_unref (message);
-		return NULL;
-	}
-
-	g_assert (message->response_body->data != NULL);
-
-	return GDATA_PICASAWEB_FILE (gdata_parsable_new_from_xml (GDATA_TYPE_PICASAWEB_FILE, message->response_body->data,
-								  (gint) message->response_body->length, error));
+	return new_entry;
 }
