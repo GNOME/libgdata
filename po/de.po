@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-11 21:36+0200\n"
-"PO-Revision-Date: 2009-08-11 21:37+0100\n"
+"POT-Creation-Date: 2009-09-20 22:01+0200\n"
+"PO-Revision-Date: 2009-09-20 22:02+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -101,7 +101,7 @@ msgstr "Ein benötigtes Element (%s) war nicht vorhanden."
 msgid "A singleton element (%s) was duplicated."
 msgstr "Ein Einzelelement (%s) war doppelt vorhanden."
 
-#: ../gdata/gdata-service.c:309 ../gdata/gdata-service.c:748
+#: ../gdata/gdata-service.c:309 ../gdata/gdata-service.c:751
 #: ../gdata/services/youtube/gdata-youtube-service.c:202
 msgid "The server returned a malformed response."
 msgstr "Der Server gab eine verstümmelte Antwort zurück."
@@ -168,58 +168,58 @@ msgstr "Fehlercode %u beim Herunterladen: %s"
 msgid "Error code %u when uploading: %s"
 msgstr "Fehlercode %u beim Hochladen: %s"
 
-#: ../gdata/gdata-service.c:636
+#: ../gdata/gdata-service.c:639
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Ein CAPTCHA muss zum Anmelden ausgefüllt werden."
 
-#: ../gdata/gdata-service.c:660
+#: ../gdata/gdata-service.c:663
 msgid "Your username or password were incorrect."
 msgstr "Ihr Benutzername oder Passwort waren nicht korrekt."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:679
+#: ../gdata/gdata-service.c:682
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Die E-Mail-Adresse Ihres Kontos wurde nicht bestätigt. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:684
+#: ../gdata/gdata-service.c:687
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Sie haben den Bedingungen dieses Dienstes nicht zugestimmt. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:689
+#: ../gdata/gdata-service.c:692
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Dieses Konto wurde entfernt. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:694
+#: ../gdata/gdata-service.c:697
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Dieses Konto wurde deaktiviert. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:699
+#: ../gdata/gdata-service.c:702
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Der Zugriff auf diesen Dienst über dieses Konto wurde deaktiviert. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:704
+#: ../gdata/gdata-service.c:707
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Dieser Dienst ist derzeit nicht verfügbar. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:818
+#: ../gdata/gdata-service.c:821
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ungültige Weiterleitungsadresse: %s"
 
-#: ../gdata/gdata-service.c:1236
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:278
+#: ../gdata/gdata-service.c:1239
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:293
 #: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "The entry has already been inserted."
 msgstr "Dieser Eintrag wurde bereits eingefügt."
@@ -281,22 +281,27 @@ msgid "You must be authenticated to update documents."
 msgstr "Sie müssen legitimiert sein, um Dokumente zu aktualisieren."
 
 #: ../gdata/services/documents/gdata-documents-service.c:576
-#: ../gdata/services/documents/gdata-documents-service.c:671
+#: ../gdata/services/documents/gdata-documents-service.c:672
 msgid "You must be authenticated to move documents."
 msgstr "Sie müssen legitimiert sein, um Dokumente zu verschieben."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:135
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:189
+msgid "Query parameter not allowed for albums."
+msgstr "Abfrageparameter ist für Alben nicht erlaubt."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:142
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:197
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Sie müssen einen Benutzernamen angeben oder legitimiert sein, um alle Alben "
 "abzufragen."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:220
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:238
 msgid "The album did not have a feed link."
 msgstr "Für dieses Album gibt es keinen Feed-Link."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:299
 msgid "You must be authenticated to upload a file."
 msgstr "Sie müssen legitimiert sein, um eine Datei hochzuladen."
 
