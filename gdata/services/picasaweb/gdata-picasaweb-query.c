@@ -298,6 +298,8 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  *
  * Creates a new #GDataPicasaWebQuery with its #GDataQuery:q property set to @q.
  *
+ * Note that when querying for albums with gdata_picasaweb_service_query_all_albums(), the @q parameter cannot be used.
+ *
  * Return value: a new #GDataPicasaWebQuery
  *
  * Since: 0.4.0

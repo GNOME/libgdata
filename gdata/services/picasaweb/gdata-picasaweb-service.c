@@ -111,6 +111,8 @@ gdata_picasaweb_service_new (const gchar *client_id)
  * @query. If a user is authenticated with the service, @username can be set as %NULL to return a list of albums belonging
  * to the currently-authenticated user.
  *
+ * Note that the #GDataQuery:q query parameter cannot be set on @query for album queries.
+ *
  * For more details, see gdata_service_query().
  *
  * Return value: a #GDataFeed of query results; unref with g_object_unref()
