@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-14 10:01+0200\n"
-"PO-Revision-Date: 2009-08-14 10:01+0100\n"
+"POT-Creation-Date: 2009-09-21 00:33+0200\n"
+"PO-Revision-Date: 2009-09-21 00:33+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -103,7 +103,7 @@ msgid "A singleton element (%s) was duplicated."
 msgstr "Ett singleton-element (%s) var duplicerat."
 
 #: ../gdata/gdata-service.c:309
-#: ../gdata/gdata-service.c:748
+#: ../gdata/gdata-service.c:751
 #: ../gdata/services/youtube/gdata-youtube-service.c:202
 msgid "The server returned a malformed response."
 msgstr "Servern returnerade ett felformulerat svar."
@@ -168,58 +168,58 @@ msgstr "Felkod %u vid hämtning: %s"
 msgid "Error code %u when uploading: %s"
 msgstr "Felkod %u vid sändning: %s"
 
-#: ../gdata/gdata-service.c:636
+#: ../gdata/gdata-service.c:639
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "En CAPTCHA måste fyllas i för att logga in."
 
-#: ../gdata/gdata-service.c:660
+#: ../gdata/gdata-service.c:663
 msgid "Your username or password were incorrect."
 msgstr "Ditt användarnamn eller lösenord var felaktigt."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:679
+#: ../gdata/gdata-service.c:682
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "E-postadressen för ditt konto har ännu inte verifierats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:684
+#: ../gdata/gdata-service.c:687
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Du har inte godkänt tjänstens villkor. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:689
+#: ../gdata/gdata-service.c:692
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Detta konto har tagits bort. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:694
+#: ../gdata/gdata-service.c:697
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Detta konto har inaktiverats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:699
+#: ../gdata/gdata-service.c:702
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Åtkomsten för detta konto till denna tjänst har inaktiverats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:704
+#: ../gdata/gdata-service.c:707
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Denna tjänst är inte tillgänglig för tillfället. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:818
+#: ../gdata/gdata-service.c:821
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ogiltig URI för omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1236
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:278
+#: ../gdata/gdata-service.c:1239
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:293
 #: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "The entry has already been inserted."
 msgstr "Objektet har redan infogats."
@@ -280,20 +280,25 @@ msgid "You must be authenticated to update documents."
 msgstr "Du måste vara autentiserad för att uppdatera dokument."
 
 #: ../gdata/services/documents/gdata-documents-service.c:576
-#: ../gdata/services/documents/gdata-documents-service.c:671
+#: ../gdata/services/documents/gdata-documents-service.c:672
 msgid "You must be authenticated to move documents."
 msgstr "Du måste vara autentiserad för att flytta dokument."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:135
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:189
+msgid "Query parameter not allowed for albums."
+msgstr "Frågeparametern tillåts inte för album."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:142
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:197
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "Du måste ange ett användarnamn eller vara autentiserad för att söka i alla album."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:220
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:238
 msgid "The album did not have a feed link."
 msgstr "Albumet saknade en webbkanalslänk."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:299
 msgid "You must be authenticated to upload a file."
 msgstr "Du måste vara autentiserad för att skicka upp en fil."
 
