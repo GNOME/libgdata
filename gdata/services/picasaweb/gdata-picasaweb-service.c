@@ -129,6 +129,13 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
 	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
 
+	if (query != NULL && gdata_query_get_q (query) != NULL) {
+		/* Bug #593336 — Query parameter "q=..." isn't valid for album kinds */
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
+				     _("Query parameter not allowed for albums."));
+		return NULL;
+	}
+
 	uri = create_uri (self, username);
 	if (uri == NULL) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -174,6 +181,14 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 	g_return_if_fail (GDATA_IS_PICASAWEB_SERVICE (self));
 	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
 	g_return_if_fail (callback != NULL);
+
+	if (query != NULL && gdata_query_get_q (query) != NULL) {
+		/* Bug #593336 — Query parameter "q=..." isn't valid for album kinds */
+		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
+						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
+						     _("Query parameter not allowed for albums."));
+		return;
+	}
 
 	uri = create_uri (self, username);
 	if (uri == NULL) {

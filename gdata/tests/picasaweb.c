@@ -554,21 +554,27 @@ test_album_feed (GDataService *service)
 static void
 test_query_all_albums (GDataService *service)
 {
-	GDataFeed *album_feed;
-	GDataFeed *photo_feed;
+	GDataFeed *album_feed, *photo_feed;
+	GDataQuery *query;
 	GError *error = NULL;
 	GList *albums;
 	GDataEntry *entry;
 	GDataPicasaWebAlbum *album;
 
-	/* TODO: find out whether I need to free this; probably */
+	/* Test a query with a "q" parameter; it should fail */
+	query = gdata_picasaweb_query_new ("foobar");
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER);
+	g_assert (album_feed == NULL);
+	g_clear_error (&error);
+
+	/* Now try a proper query */
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (album_feed));
 	g_clear_error (&error);
 
 	albums = gdata_feed_get_entries (album_feed);
-	/* g_object_unref (feed); TODO find out why this complains about not being an object */
 	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
 	album = GDATA_PICASAWEB_ALBUM (entry);
 
@@ -578,10 +584,8 @@ test_query_all_albums (GDataService *service)
 	g_assert (GDATA_IS_FEED (photo_feed));
 	g_clear_error (&error);
 
-	/*g_object_unref(photo_feed);
-	g_object_unref(album_feed);*/
-
-	g_list_free(albums);
+	g_object_unref (photo_feed);
+	g_object_unref (album_feed);
 }
 
 static void
