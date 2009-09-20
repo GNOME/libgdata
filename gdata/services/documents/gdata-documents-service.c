@@ -58,8 +58,8 @@ static void gdata_documents_service_dispose (GObject *object);
 static void gdata_documents_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self);
 static void notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self);
-GDataDocumentsEntry *upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-					     const gchar *method, const gchar *upload_uri, GCancellable *cancellable, GError **error);
+static GDataDocumentsEntry *upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
+						    const gchar *method, const gchar *upload_uri, GCancellable *cancellable, GError **error);
 
 struct _GDataDocumentsServicePrivate {
 	GDataService *spreadsheet_service;
@@ -334,7 +334,7 @@ notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self)
 	gdata_service_set_proxy_uri (GDATA_DOCUMENTS_SERVICE (self)->priv->spreadsheet_service, proxy_uri);
 }
 
-GDataDocumentsEntry *
+static GDataDocumentsEntry *
 upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file, const gchar *method,
 			const gchar *upload_uri, GCancellable *cancellable, GError **error)
 {
