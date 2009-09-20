@@ -25,6 +25,8 @@
  *
  * #GDataMediaContent represents a "content" element from the
  * <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
+ *
+ * The class only implements parsing, not XML output, at the moment.
  **/
 
 #include <glib.h>

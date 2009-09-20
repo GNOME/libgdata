@@ -1226,6 +1226,307 @@ test_gd_who (void)
 	g_object_unref (who);
 }
 
+static void
+test_media_category (void)
+{
+	GDataMediaCategory *category;
+	gchar *xml;
+	GError *error = NULL;
+
+	category = GDATA_MEDIA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CATEGORY,
+		"<media:category xmlns:media='http://video.search.yahoo.com/mrss' scheme='http://dmoz.org' "
+			"label='Ace Ventura - Pet &amp; Detective'>Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective"
+			"</media:category>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_CATEGORY (category));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_category_get_category (category), ==, "Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective");
+	g_assert_cmpstr (gdata_media_category_get_scheme (category), ==, "http://dmoz.org");
+	g_assert_cmpstr (gdata_media_category_get_label (category), ==, "Ace Ventura - Pet & Detective");
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
+	g_assert_cmpstr (xml, ==,
+			 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://video.search.yahoo.com/mrss' "
+				"scheme='http://dmoz.org' "
+				"label='Ace Ventura - Pet &amp; Detective'>Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective"
+				"</media:category>");
+	g_free (xml);
+	g_object_unref (category);
+
+	/* Now parse one with less information available */
+	category = GDATA_MEDIA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CATEGORY,
+		"<media:category xmlns:media='http://video.search.yahoo.com/mrss'>foo</media:category>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_CATEGORY (category));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_category_get_category (category), ==, "foo");
+	g_assert_cmpstr (gdata_media_category_get_scheme (category), ==, "http://video.search.yahoo.com/mrss/category_schema");
+	g_assert (gdata_media_category_get_label (category) == NULL);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
+	g_assert_cmpstr (xml, ==,
+			 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://video.search.yahoo.com/mrss' "
+				"scheme='http://video.search.yahoo.com/mrss/category_schema'>foo</media:category>");
+	g_free (xml);
+	g_object_unref (category);
+}
+
+static void
+test_media_content (void)
+{
+	GDataMediaContent *content;
+	GError *error = NULL;
+
+	content = GDATA_MEDIA_CONTENT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CONTENT,
+		"<media:content xmlns:media='http://video.search.yahoo.com/mrss' url='http://www.foo.com/movie.mov' fileSize='12216320' "
+			"type='video/quicktime' medium='video' isDefault='true' expression='nonstop' duration='185' height='200' width='300'/>",
+			-1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_CONTENT (content));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_content_get_uri (content), ==, "http://www.foo.com/movie.mov");
+	g_assert_cmpint (gdata_media_content_get_filesize (content), ==, 12216320);
+	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "video/quicktime");
+	g_assert (gdata_media_content_get_medium (content) == GDATA_MEDIA_VIDEO);
+	g_assert (gdata_media_content_is_default (content) == TRUE);
+	g_assert (gdata_media_content_get_expression (content) == GDATA_MEDIA_EXPRESSION_NONSTOP);
+	g_assert_cmpint (gdata_media_content_get_duration (content), ==, 185);
+	g_assert_cmpuint (gdata_media_content_get_width (content), ==, 300);
+	g_assert_cmpuint (gdata_media_content_get_height (content), ==, 200);
+
+	/* NOTE: We don't check the outputted XML, since the class currently doesn't have any support for outputting XML */
+	g_object_unref (content);
+
+	/* Now parse one with less information available */
+	content = GDATA_MEDIA_CONTENT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CONTENT,
+		"<media:content xmlns:media='http://video.search.yahoo.com/mrss' url='http://foobar.com/'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_CONTENT (content));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_content_get_uri (content), ==, "http://foobar.com/");
+	g_assert_cmpint (gdata_media_content_get_filesize (content), ==, 0);
+	g_assert (gdata_media_content_get_content_type (content) == NULL);
+	g_assert (gdata_media_content_get_medium (content) == GDATA_MEDIA_UNKNOWN);
+	g_assert (gdata_media_content_is_default (content) == FALSE);
+	g_assert (gdata_media_content_get_expression (content) == GDATA_MEDIA_EXPRESSION_FULL);
+	g_assert_cmpint (gdata_media_content_get_duration (content), ==, 0);
+	g_assert_cmpuint (gdata_media_content_get_width (content), ==, 0);
+	g_assert_cmpuint (gdata_media_content_get_height (content), ==, 0);
+
+	g_object_unref (content);
+}
+
+static void
+test_media_credit (void)
+{
+	GDataMediaCredit *credit;
+	GError *error = NULL;
+
+	credit = GDATA_MEDIA_CREDIT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CREDIT,
+		"<media:credit xmlns:media='http://video.search.yahoo.com/mrss' role='producer' scheme='urn:foobar'>entity name</media:credit>",
+			-1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_CREDIT (credit));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_credit_get_credit (credit), ==, "entity name");
+	g_assert_cmpstr (gdata_media_credit_get_scheme (credit), ==, "urn:foobar");
+	g_assert_cmpstr (gdata_media_credit_get_role (credit), ==, "producer");
+
+	/* NOTE: We don't check the outputted XML, since the class currently doesn't have any support for outputting XML */
+	g_object_unref (credit);
+
+	/* Now parse one with less information available */
+	credit = GDATA_MEDIA_CREDIT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CREDIT,
+		"<media:credit xmlns:media='http://video.search.yahoo.com/mrss'>John Smith</media:credit>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_CREDIT (credit));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_credit_get_credit (credit), ==, "John Smith");
+	g_assert_cmpstr (gdata_media_credit_get_scheme (credit), ==, "urn:ebu");
+	g_assert (gdata_media_credit_get_role (credit) == NULL);
+
+	g_object_unref (credit);
+}
+
+#if 0
+/* We can't test GDataMediaGroup, since it isn't currently publicly exposed */
+static void
+test_media_group (void)
+{
+	GDataMediaGroup *group;
+	GList *contents, *thumbnails;
+	gchar *xml;
+	GError *error = NULL;
+
+	group = GDATA_MEDIA_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_GROUP,
+		"<media:group xmlns:media='http://video.search.yahoo.com/mrss'>"
+			"<media:title>Foobar — shizzle!</media:title>"
+			"<media:description>This is a description, isn't it‽</media:description>"
+			"<media:keywords>keywords,are, fun</media:keywords>"
+			"<media:category scheme='http://dmoz.org' label='Ace Ventura - Pet Detective'>"
+				"Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective</media:category>"
+			"<media:content url='http://foobar.com/'/>"
+			"<media:content url='http://www.foo.com/movie.mov' fileSize='12216320' type='video/quicktime' medium='video' isDefault='true' "
+				"expression='nonstop' duration='185' height='200' width='300'/>"
+			"<media:credit>John Smith</media:credit>"
+			"<media:player url='http://www.foo.com/player?id=1111' height='200' width='400'/>"
+			"<media:restriction relationship='deny'>all</media:restriction>"
+			"<media:restriction relationship='allow' type='country'>au us</media:restriction>"
+			"<media:thumbnail url='http://www.foo.com/keyframe.jpg' width='75' height='50' time='12:05:01.123'/>"
+			"<media:thumbnail url='http://www.foo.com/keyframe0.jpg' time='00:00:00'/>"
+		"</media:group>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_GROUP (group));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_group_get_title (group), ==, "Foobar — shizzle!");
+	g_assert_cmpstr (gdata_media_group_get_description (group), ==, "This is a description, isn't it‽");
+	g_assert_cmpstr (gdata_media_group_get_keywords (group), ==, "keywords,are, fun");
+	g_assert (GDATA_IS_MEDIA_CATEGORY (gdata_media_group_get_category (group)));
+	g_assert (GDATA_IS_MEDIA_CONTENT (gdata_media_group_look_up_content (group, NULL)));
+	g_assert (GDATA_IS_MEDIA_CONTENT (gdata_media_group_look_up_content (group, "video/quicktime")));
+
+	contents = gdata_media_group_get_contents (group);
+	g_assert_cmpuint (g_list_length (contents), ==, 2);
+	g_assert (GDATA_IS_MEDIA_CONTENT (contents->data));
+	g_assert (GDATA_IS_MEDIA_CONTENT (contents->next->data));
+
+	g_assert (GDATA_IS_MEDIA_CREDIT (gdata_media_group_get_credit (group)));
+	g_assert_cmpstr (gdata_media_group_get_player_uri (group), ==, "http://www.foo.com/player?id=1111");
+	g_assert (gdata_media_group_is_restricted_in_country (group, "uk") == TRUE);
+	g_assert (gdata_media_group_is_restricted_in_country (group, "au") == FALSE);
+	g_assert (gdata_media_group_is_restricted_in_country (group, "us") == FALSE);
+
+	thumbnails = gdata_media_group_get_thumbnails (group);
+	g_assert_cmpuint (g_list_length (thumbnails), ==, 2);
+	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnails->data));
+	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnails->next->data));
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (group));
+	g_assert_cmpstr (xml, ==,
+			 "<media:group xmlns:media='http://video.search.yahoo.com/mrss'>"
+				"<media:title>Foobar — shizzle!</media:title>"
+				"<media:description>This is a description, isn't it‽</media:description>"
+				"<media:keywords>keywords,are, fun</media:keywords>"
+				"<media:category scheme='http://dmoz.org' label='Ace Ventura - Pet Detective'>"
+					"Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective</media:category>"
+				"<media:content url='http://foobar.com/'/>"
+				"<media:content url='http://www.foo.com/movie.mov' fileSize='12216320' type='video/quicktime' medium='video' "
+					"isDefault='true' expression='nonstop' duration='185' height='200' width='300'/>"
+				"<media:credit>John Smith</media:credit>"
+				"<media:player url='http://www.foo.com/player?id=1111' height='200' width='400'/>"
+				"<media:restriction relationship='deny'>all</media:restriction>"
+				"<media:restriction relationship='allow' type='country'>au us</media:restriction>"
+				"<media:thumbnail url='http://www.foo.com/keyframe.jpg' width='75' height='50' time='12:05:01.123'/>"
+				"<media:thumbnail url='http://www.foo.com/keyframe0.jpg' time='00:00:00'/>"
+			 "</media:group>");
+	g_free (xml);
+
+	/* Check setting things works */
+	gdata_media_group_set_title (group, "Test title");
+	g_assert_cmpstr (gdata_media_group_get_title (group), ==, "Test title");
+	gdata_media_group_set_title (group, NULL);
+	g_assert (gdata_media_group_get_title (group) == NULL);
+
+	gdata_media_group_set_description (group, "Foobar");
+	g_assert_cmpstr (gdata_media_group_get_description (group), ==, "Foobar");
+	gdata_media_group_set_description (group, NULL);
+	g_assert (gdata_media_group_get_description (group) == NULL);
+
+	gdata_media_group_set_keywords (group, "a,b, c");
+	g_assert_cmpstr (gdata_media_group_get_keywords (group), ==, "a,b, c");
+	gdata_media_group_set_keywords (group, NULL);
+	g_assert (gdata_media_group_get_keywords (group) == NULL);
+
+	gdata_media_group_set_category (group, NULL);
+	g_assert (gdata_media_group_get_category (group) == NULL);
+
+	g_object_unref (group);
+
+	/* Now parse one with less information available */
+	group = GDATA_MEDIA_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_GROUP,
+		"<media:group xmlns:media='http://video.search.yahoo.com/mrss'></media:group>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_GROUP (group));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert (gdata_media_group_get_title (group) == NULL);
+	g_assert (gdata_media_group_get_description (group) == NULL);
+	g_assert (gdata_media_group_get_keywords (group) == NULL);
+	g_assert (gdata_media_group_get_category (group) == NULL);
+	g_assert (gdata_media_group_look_up_content (group, NULL) == NULL);
+	g_assert (gdata_media_group_look_up_content (group, "video/quicktime") == NULL);
+	g_assert (gdata_media_group_get_contents (group) == NULL);
+	g_assert (gdata_media_group_get_credit (group) == NULL);
+	g_assert (gdata_media_group_get_player_uri (group) == NULL);
+	g_assert (gdata_media_group_is_restricted_in_country (group, "uk") == FALSE);
+	g_assert (gdata_media_group_is_restricted_in_country (group, "au") == FALSE);
+	g_assert (gdata_media_group_is_restricted_in_country (group, "us") == FALSE);
+	g_assert (gdata_media_group_get_thumbnails (group) == NULL);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (group));
+	g_assert_cmpstr (xml, ==, "<media:group xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://video.search.yahoo.com/mrss'></media:group>");
+	g_free (xml);
+	g_object_unref (group);
+}
+#endif
+
+static void
+test_media_thumbnail (void)
+{
+	GDataMediaThumbnail *thumbnail;
+	GError *error = NULL;
+
+	thumbnail = GDATA_MEDIA_THUMBNAIL (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_THUMBNAIL,
+		"<media:thumbnail xmlns:media='http://video.search.yahoo.com/mrss' url='http://www.foo.com/keyframe.jpg' width='75' height='50' "
+			"time='12:05:01.123'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnail));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==, "http://www.foo.com/keyframe.jpg");
+	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 75);
+	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 50);
+	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, 43501123);
+
+	/* NOTE: We don't check the outputted XML, since the class currently doesn't have any support for outputting XML */
+	g_object_unref (thumbnail);
+
+	/* Now parse one with less information available */
+	thumbnail = GDATA_MEDIA_THUMBNAIL (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_THUMBNAIL,
+		"<media:thumbnail xmlns:media='http://video.search.yahoo.com/mrss' url='http://foobar.com/'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnail));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==, "http://foobar.com/");
+	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 0);
+	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 0);
+	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1);
+
+	g_object_unref (thumbnail);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -1255,6 +1556,11 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/where", test_gd_where);
 	g_test_add_func ("/gd/who", test_gd_who);
 
+	g_test_add_func ("/media/category", test_media_category);
+	g_test_add_func ("/media/content", test_media_content);
+	g_test_add_func ("/media/credit", test_media_credit);
+	/* g_test_add_func ("/media/group", test_media_group); */
+	g_test_add_func ("/media/thumbnail", test_media_thumbnail);
 	/*g_test_add_data_func ("/media/thumbnail/parse_time", "", test_media_thumbnail_parse_time);
 	g_test_add_data_func ("/media/thumbnail/parse_time", "de_DE", test_media_thumbnail_parse_time);*/
 
