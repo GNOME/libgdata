@@ -258,7 +258,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 static void
 get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 {
-	g_hash_table_insert (namespaces, (gchar*) "media", (gchar*) "http://video.search.yahoo.com/mrss");
+	g_hash_table_insert (namespaces, (gchar*) "media", (gchar*) "http://search.yahoo.com/mrss/");
 }
 
 /**

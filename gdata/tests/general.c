@@ -1234,7 +1234,7 @@ test_media_category (void)
 	GError *error = NULL;
 
 	category = GDATA_MEDIA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CATEGORY,
-		"<media:category xmlns:media='http://video.search.yahoo.com/mrss' scheme='http://dmoz.org' "
+		"<media:category xmlns:media='http://search.yahoo.com/mrss/' scheme='http://dmoz.org' "
 			"label='Ace Ventura - Pet &amp; Detective'>Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective"
 			"</media:category>", -1, &error));
 	g_assert_no_error (error);
@@ -1249,7 +1249,7 @@ test_media_category (void)
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
 	g_assert_cmpstr (xml, ==,
-			 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://video.search.yahoo.com/mrss' "
+			 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
 				"scheme='http://dmoz.org' "
 				"label='Ace Ventura - Pet &amp; Detective'>Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective"
 				"</media:category>");
@@ -1258,7 +1258,7 @@ test_media_category (void)
 
 	/* Now parse one with less information available */
 	category = GDATA_MEDIA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CATEGORY,
-		"<media:category xmlns:media='http://video.search.yahoo.com/mrss'>foo</media:category>", -1, &error));
+		"<media:category xmlns:media='http://search.yahoo.com/mrss/'>foo</media:category>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_CATEGORY (category));
 	g_clear_error (&error);
@@ -1271,7 +1271,7 @@ test_media_category (void)
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
 	g_assert_cmpstr (xml, ==,
-			 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://video.search.yahoo.com/mrss' "
+			 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
 				"scheme='http://video.search.yahoo.com/mrss/category_schema'>foo</media:category>");
 	g_free (xml);
 	g_object_unref (category);
@@ -1284,7 +1284,7 @@ test_media_content (void)
 	GError *error = NULL;
 
 	content = GDATA_MEDIA_CONTENT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CONTENT,
-		"<media:content xmlns:media='http://video.search.yahoo.com/mrss' url='http://www.foo.com/movie.mov' fileSize='12216320' "
+		"<media:content xmlns:media='http://search.yahoo.com/mrss/' url='http://www.foo.com/movie.mov' fileSize='12216320' "
 			"type='video/quicktime' medium='video' isDefault='true' expression='nonstop' duration='185' height='200' width='300'/>",
 			-1, &error));
 	g_assert_no_error (error);
@@ -1307,7 +1307,7 @@ test_media_content (void)
 
 	/* Now parse one with less information available */
 	content = GDATA_MEDIA_CONTENT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CONTENT,
-		"<media:content xmlns:media='http://video.search.yahoo.com/mrss' url='http://foobar.com/'/>", -1, &error));
+		"<media:content xmlns:media='http://search.yahoo.com/mrss/' url='http://foobar.com/'/>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_CONTENT (content));
 	g_clear_error (&error);
@@ -1333,7 +1333,7 @@ test_media_credit (void)
 	GError *error = NULL;
 
 	credit = GDATA_MEDIA_CREDIT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CREDIT,
-		"<media:credit xmlns:media='http://video.search.yahoo.com/mrss' role='producer' scheme='urn:foobar'>entity name</media:credit>",
+		"<media:credit xmlns:media='http://search.yahoo.com/mrss/' role='producer' scheme='urn:foobar'>entity name</media:credit>",
 			-1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_CREDIT (credit));
@@ -1349,7 +1349,7 @@ test_media_credit (void)
 
 	/* Now parse one with less information available */
 	credit = GDATA_MEDIA_CREDIT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CREDIT,
-		"<media:credit xmlns:media='http://video.search.yahoo.com/mrss'>John Smith</media:credit>", -1, &error));
+		"<media:credit xmlns:media='http://search.yahoo.com/mrss/'>John Smith</media:credit>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_CREDIT (credit));
 	g_clear_error (&error);
@@ -1373,7 +1373,7 @@ test_media_group (void)
 	GError *error = NULL;
 
 	group = GDATA_MEDIA_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_GROUP,
-		"<media:group xmlns:media='http://video.search.yahoo.com/mrss'>"
+		"<media:group xmlns:media='http://search.yahoo.com/mrss/'>"
 			"<media:title>Foobar — shizzle!</media:title>"
 			"<media:description>This is a description, isn't it‽</media:description>"
 			"<media:keywords>keywords,are, fun</media:keywords>"
@@ -1420,7 +1420,7 @@ test_media_group (void)
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (group));
 	g_assert_cmpstr (xml, ==,
-			 "<media:group xmlns:media='http://video.search.yahoo.com/mrss'>"
+			 "<media:group xmlns:media='http://search.yahoo.com/mrss/'>"
 				"<media:title>Foobar — shizzle!</media:title>"
 				"<media:description>This is a description, isn't it‽</media:description>"
 				"<media:keywords>keywords,are, fun</media:keywords>"
@@ -1461,7 +1461,7 @@ test_media_group (void)
 
 	/* Now parse one with less information available */
 	group = GDATA_MEDIA_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_GROUP,
-		"<media:group xmlns:media='http://video.search.yahoo.com/mrss'></media:group>", -1, &error));
+		"<media:group xmlns:media='http://search.yahoo.com/mrss/'></media:group>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_GROUP (group));
 	g_clear_error (&error);
@@ -1483,7 +1483,7 @@ test_media_group (void)
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (group));
-	g_assert_cmpstr (xml, ==, "<media:group xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://video.search.yahoo.com/mrss'></media:group>");
+	g_assert_cmpstr (xml, ==, "<media:group xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/'></media:group>");
 	g_free (xml);
 	g_object_unref (group);
 }
@@ -1496,7 +1496,7 @@ test_media_thumbnail (void)
 	GError *error = NULL;
 
 	thumbnail = GDATA_MEDIA_THUMBNAIL (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_THUMBNAIL,
-		"<media:thumbnail xmlns:media='http://video.search.yahoo.com/mrss' url='http://www.foo.com/keyframe.jpg' width='75' height='50' "
+		"<media:thumbnail xmlns:media='http://search.yahoo.com/mrss/' url='http://www.foo.com/keyframe.jpg' width='75' height='50' "
 			"time='12:05:01.123'/>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnail));
@@ -1513,7 +1513,7 @@ test_media_thumbnail (void)
 
 	/* Now parse one with less information available */
 	thumbnail = GDATA_MEDIA_THUMBNAIL (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_THUMBNAIL,
-		"<media:thumbnail xmlns:media='http://video.search.yahoo.com/mrss' url='http://foobar.com/'/>", -1, &error));
+		"<media:thumbnail xmlns:media='http://search.yahoo.com/mrss/' url='http://foobar.com/'/>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnail));
 	g_clear_error (&error);

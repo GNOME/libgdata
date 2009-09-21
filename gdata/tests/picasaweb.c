@@ -119,7 +119,7 @@ test_upload_simple (GDataService *service)
 	expected_xml = g_strdup_printf ("<entry "
 						"xmlns='http://www.w3.org/2005/Atom' "
 						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
-						"xmlns:media='http://video.search.yahoo.com/mrss' "
+						"xmlns:media='http://search.yahoo.com/mrss/' "
 						"xmlns:gd='http://schemas.google.com/g/2005' "
 						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
 						"xmlns:app='http://www.w3.org/2007/app' "
@@ -562,7 +562,7 @@ test_query_all_albums (GDataService *service)
 	GDataPicasaWebAlbum *album;
 
 	/* Test a query with a "q" parameter; it should fail */
-	query = gdata_picasaweb_query_new ("foobar");
+	query = GDATA_PICASAWEB_QUERY (gdata_picasaweb_query_new ("foobar"));
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER);
 	g_assert (album_feed == NULL);

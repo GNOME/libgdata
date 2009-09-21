@@ -380,7 +380,7 @@ test_parsing_yt_recorded (GDataService *service)
 
 	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
-			"xmlns:media='http://video.search.yahoo.com/mrss' "
+			"xmlns:media='http://search.yahoo.com/mrss/' "
 			"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
 			"xmlns:gd='http://schemas.google.com/g/2005' "
 			"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
@@ -419,7 +419,7 @@ test_parsing_yt_recorded (GDataService *service)
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
 	g_assert_cmpstr (xml, ==,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:media='http://video.search.yahoo.com/mrss' "
+				"xmlns:media='http://search.yahoo.com/mrss/' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
 				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
 				"xmlns:app='http://www.w3.org/2007/app' "
@@ -607,7 +607,6 @@ test_query_single_async_cb (GDataService *service, GAsyncResult *async_result, G
 	video = gdata_youtube_service_query_single_video_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
 
 	g_assert_no_error (error);
-	g_assert (video != NULL);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
 	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
