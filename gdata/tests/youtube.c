@@ -276,7 +276,7 @@ test_upload_simple (GDataService *service)
 	gdata_entry_set_title (GDATA_ENTRY (video), "Bad Wedding Toast");
 	gdata_youtube_video_set_title (video, "Bad Wedding Toast");
 	gdata_youtube_video_set_description (video, "I gave a bad toast at my friend's wedding.");
-	category = gdata_media_category_new ("People", NULL, "http://gdata.youtube.com/schemas/2007/categories.cat");
+	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
 	gdata_youtube_video_set_category (video, category);
 	g_object_unref (category);
 	gdata_youtube_video_set_keywords (video, "toast, wedding");
@@ -287,7 +287,8 @@ test_upload_simple (GDataService *service)
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
-				"xmlns:yt='http://gdata.youtube.com/schemas/2007'>"
+				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+				"xmlns:app='http://www.w3.org/2007/app'>"
 			 	"<title type='text'>Bad Wedding Toast</title>"
 			 	"<media:group>"
 			 		"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>People</media:category>"
@@ -295,6 +296,9 @@ test_upload_simple (GDataService *service)
 			 		"<media:description type='plain'>I gave a bad toast at my friend&apos;s wedding.</media:description>"
 			 		"<media:keywords>toast, wedding</media:keywords>"
 			 	"</media:group>"
+				"<app:control>"
+					"<app:draft>no</app:draft>"
+				"</app:control>"
 			 "</entry>");
 	g_free (xml);
 

@@ -770,7 +770,7 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 
 	GDataServiceClass *klass;
 	SoupMessage *message;
-	gchar *entry_xml, *upload_uri, *second_chunk_header, *upload_data, *video_contents, *i;
+	gchar *entry_xml, *second_chunk_header, *upload_data, *video_contents, *i;
 	const gchar *first_chunk_header, *footer;
 	guint status;
 	GFileInfo *video_file_info;
@@ -791,9 +791,7 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 		return NULL;
 	}
 
-	upload_uri = g_strdup_printf ("http://uploads.gdata.youtube.com/feeds/api/users/%s/uploads", gdata_service_get_username (GDATA_SERVICE (self)));
-	message = soup_message_new (SOUP_METHOD_POST, upload_uri);
-	g_free (upload_uri);
+	message = soup_message_new (SOUP_METHOD_POST, "http://uploads.gdata.youtube.com/feeds/api/users/default/uploads");
 
 	/* Make sure subclasses set their headers */
 	klass = GDATA_SERVICE_GET_CLASS (self);
