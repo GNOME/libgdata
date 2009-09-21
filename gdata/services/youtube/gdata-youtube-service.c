@@ -561,7 +561,8 @@ static void
 query_single_video_async_data_free (QuerySingleVideoAsyncData *data)
 {
 	g_free (data->video_id);
-	g_object_unref (data->query);
+	if (data->query != NULL)
+		g_object_unref (data->query);
 	g_slice_free (QuerySingleVideoAsyncData, data);
 }
 
