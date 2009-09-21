@@ -1,3 +1,85 @@
+Overview of changes from libgdata 0.4.0 to libgdata 0.5.0
+=========================================================
+
+Major changes:
+* Added Exif support for PicasaWeb files
+* Added the ability to query single Google Documents files
+* Errors are now logged in the "libgdata" domain
+* Added GeoRSS support for PicasaWeb files and albums
+* Optimisation to the XML output functions
+* Added streaming download and upload support using GDataDownloadStream and GDataUploadStream
+* Added support for silent building with AM_SILENT_RULES
+* Updated the GData namespace to version 3, improving name and address support
+
+API changes:
+* Changed gdata_documents_*_download_document to accept a destination file, rather than a directory
+* Added gdata_picasaweb_file_get_distance, gdata_picasaweb_file_get_exposure, gdata_picasaweb_file_get_flash, gdata_picasaweb_file_get_focal_length
+  gdata_picasaweb_file_get_fstop, gdata_picasaweb_file_get_image_unique_id, gdata_picasaweb_file_get_iso, gdata_picasaweb_file_get_make
+  gdata_picasaweb_file_get_model and corresponding properties
+* Added GDataExifTags
+* Added gdata_documents_entry_is_deleted
+* Added GDataEntry:rights, gdata_entry_get_rights, gdata_entry_set_rights
+* Added gdata_documents_service_query_single_document
+* Added GDataPicasaWebAlbum:latitude, GDataPicasaWebAlbum:longitude, gdata_picasaweb_album_get_coordinates, gdata_picasaweb_album_set_coordinates,
+  GDataPicasaWebFile:latitude, GDataPicasaWebFile:longitude, gdata_picasaweb_file_get_coordinates, gdata_picasaweb_file_set_coordinates
+* Added GDataGeoRSSWhere
+* Added GDataDownloadStream
+* Added GDATA_SERVICE_ERROR_WITH_DOWNLOAD, GDATA_SERVICE_ERROR_WITH_UPLOAD service errors
+* Added gdata_documents_*_get_download_uri
+* Added GDataUploadStream
+* Added GDataGDName
+* Added GDataGDOrganization:department, gdata_gd_organization_get_department, gdata_gd_organization_set_department, GDataGDOrganization:job-description,
+  gdata_gd_organization_get_job_description, gdata_gd_organization_set_job_description, GDataGDOrganization:symbol, gdata_gd_organization_get_symbol,
+  gdata_gd_organization_set_symbol
+* Added GDATA_GD_MAIL_CLASS_*, GDATA_GD_ADDRESS_USAGE_*
+* Removed the address parameter from gdata_gd_postal_address_new
+* Added GDataGDPostalAddress:mail-class, gdata_gd_postal_address_get_mail_class, gdata_gd_postal_address_set_mail_class, GDataGDPostalAddress:usage,
+  gdata_gd_postal_address_get_usage, gdata_gd_postal_address_set_usage, GDataGDPostalAddress:agent, gdata_gd_postal_address_get_agent,
+  gdata_gd_postal_address_set_agent, GDataGDPostalAddress:house-name, gdata_gd_postal_address_get_house_name, gdata_gd_postal_address_set_house_name,
+  GDataGDPostalAddress:street, gdata_gd_postal_address_get_street, gdata_gd_postal_address_set_street, GDataGDPostalAddress:po-box,
+  gdata_gd_postal_address_get_po_box, gdata_gd_postal_address_set_po_box, GDataGDPostalAddress:neighborhood, gdata_gd_postal_address_get_neighborhood,
+  gdata_gd_postal_address_set_neighborhood, GDataGDPostalAddress:city, gdata_gd_postal_address_get_city, gdata_gd_postal_address_set_city,
+  GDataGDPostalAddress:subregion, gdata_gd_postal_address_get_subregion, gdata_gd_postal_address_set_subregion, GDataGDPostalAddress:region,
+  gdata_gd_postal_address_get_region, gdata_gd_postal_address_set_region, GDataGDPostalAddress:postcode, gdata_gd_postal_address_get_postcode,
+  gdata_gd_postal_address_set_postcode, GDataGDPostalAddress:country, GDataGDPostalAddress:country-code, gdata_gd_postal_address_get_country,
+  gdata_gd_postal_address_get_country_code, gdata_gd_postal_address_set_country
+* Added GDataContactsContact:name, gdata_contacts_contact_get_name
+* Added gdata_documents_service_get_upload_uri
+
+Bugs fixed:
+* Bug 589265 – Crash on query error
+* Bug 589545 – *_download_document(): let the client decide where to download
+* Bug 589201 – Add EXIF support for PicasaWeb image files
+* Bug 589850 – gdata_picasaweb_album_get_timestamp() returns date in 1970!
+* Bug 590345 – <gd:deleted> handling in GDataDocumentsEntry
+* Bug 589855 – Obsolete <rights> not handled in GDataPicasaWebAlbum parse_xml()
+* Bug 590341 – Allow querying of single documents
+* Bug 590132 – Unhandled XML for georss
+* Bug 590568 – Crash on querying inside a folder
+* Bug 591966 — Can't query single spreadsheets
+* Bug 591974 — remove_document_from_folder moves documents to the trash
+* Bug 591691 — Getting a feed containing PDF documents returns NULL
+* Bug 592124 — G_LOG_DOMAIN not set for subdirectories
+* Bug 592845 — Undefined symbol: gdata_picasaweb_query_new_with_limits
+* Bug 593239 — Use GDataUploadStream for uploading files
+* Bug 593336 — Query parameter "q=..." isn't valid for album kinds
+
+Updated translations:
+* de (Mario Blättermann)
+* en_GB (Philip Withnall)
+* es (Jorge González)
+* eu (Iñaki Larrañaga Murgoitio)
+* fr (Nicolas Repentin)
+* gl (Fran Dieguez)
+* hu (Gabor Kelemen)
+* nb (Kjartan Maraas)
+* po (Piotr Drąg)
+* pt (António Lima)
+* pt_BR (Flamarion Jorge)
+* sv (Daniel Nylander)
+* zh_HK (Chao-Hsiung Liao)
+* zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.3.0 to libgdata 0.4.0
 =========================================================
 
