@@ -79,6 +79,7 @@ GDataGenerator *gdata_feed_get_generator (GDataFeed *self);
 guint gdata_feed_get_items_per_page (GDataFeed *self);
 guint gdata_feed_get_start_index (GDataFeed *self);
 guint gdata_feed_get_total_results (GDataFeed *self);
+const gchar *gdata_feed_get_icon (GDataFeed *self);
 
 G_END_DECLS
 

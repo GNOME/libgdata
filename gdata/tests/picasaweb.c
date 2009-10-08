@@ -546,6 +546,7 @@ test_album_feed (GDataService *service)
 	/* TODO find out why subtitle == null when returned: no subtitle for feed? printf("feed subtitle: %s\n", gdata_feed_get_subtitle(feed)); */
 	g_assert_cmpstr (gdata_feed_get_id (album_feed), ==, "http://picasaweb.google.com/data/feed/user/libgdata.picasaweb");
 	g_assert_cmpstr (gdata_feed_get_etag (album_feed), !=, NULL); /* this varies as albums change, like when a new image is uploaded in our test! */
+	g_assert_cmpstr (gdata_feed_get_icon (album_feed), ==, "http://lh6.ggpht.com/_1kdcGyvOb8c/AAAA9mDag3s/AAAAAAAAAAA/Jq-NWYWKFao/s64-c/libgdata.picasaweb.jpg");
 	g_assert_cmpuint (gdata_feed_get_items_per_page (album_feed), ==, 1000);
 	g_assert_cmpuint (gdata_feed_get_start_index (album_feed), ==, 1);
 	g_assert_cmpuint (gdata_feed_get_total_results (album_feed), ==, NUM_ALBUMS);

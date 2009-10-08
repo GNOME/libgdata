@@ -60,6 +60,7 @@ struct _GDataFeedPrivate {
 	GTimeVal updated;
 	GList *categories; /* GDataCategory */
 	gchar *logo;
+	gchar *icon;
 	GList *links; /* GDataLink */
 	GList *authors; /* GDataAuthor */
 	GDataGenerator *generator;
@@ -75,6 +76,7 @@ enum {
 	PROP_TITLE,
 	PROP_SUBTITLE,
 	PROP_LOGO,
+	PROP_ICON,
 	PROP_GENERATOR,
 	PROP_ITEMS_PER_PAGE,
 	PROP_START_INDEX,
@@ -182,6 +184,21 @@ gdata_feed_class_init (GDataFeedClass *klass)
 					"Logo", "The URI of a logo for the feed.",
 					NULL,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataFeed:icon:
+	 *
+	 * The URI of an icon for the feed.
+	 *
+	 * API reference: <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.icon">atom:icon</ulink>
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_ICON,
+					 g_param_spec_string ("icon",
+							      "Icon", "The URI of an icon for the feed.",
+							      NULL,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:generator:
@@ -299,6 +316,7 @@ gdata_feed_finalize (GObject *object)
 	xmlFree (priv->id);
 	xmlFree (priv->etag);
 	xmlFree (priv->logo);
+	xmlFree (priv->icon);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_feed_parent_class)->finalize (object);
@@ -327,6 +345,9 @@ gdata_feed_get_property (GObject *object, guint property_id, GValue *value, GPar
 			break;
 		case PROP_LOGO:
 			g_value_set_string (value, priv->logo);
+			break;
+		case PROP_ICON:
+			g_value_set_string (value, priv->icon);
 			break;
 		case PROP_GENERATOR:
 			g_value_set_object (value, priv->generator);
@@ -444,6 +465,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return gdata_parser_error_duplicate_element (node, error);
 
 		self->priv->logo = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "icon") == 0) {
+		/* atom:icon */
+		if (self->priv->icon != NULL)
+			return gdata_parser_error_duplicate_element (node, error);
+
+		self->priv->icon = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
 		/* atom:link */
 		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
@@ -778,6 +805,23 @@ gdata_feed_get_logo (GDataFeed *self)
 {
 	g_return_val_if_fail (GDATA_IS_FEED (self), NULL);
 	return self->priv->logo;
+}
+
+/**
+ * gdata_feed_get_icon:
+ * @self: a #GDataFeed
+ *
+ * Returns the icon URI of the feed.
+ *
+ * Return value: the feed's icon URI, or %NULL
+ *
+ * Since: 0.6.0
+ **/
+const gchar *
+gdata_feed_get_icon (GDataFeed *self)
+{
+	g_return_val_if_fail (GDATA_IS_FEED (self), NULL);
+	return self->priv->icon;
 }
 
 /**
