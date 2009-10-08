@@ -906,6 +906,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return gdata_parser_error_duplicate_element (node, error);
 		}
 		self->priv->video_status = (gchar*) video_status;
+	} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
+		/* gphoto:access */
+		/* Visibility is already obtained through the album. When PicasaWeb supports per-file access restrictions,
+		   we'll expose this property. Until then, we'll catch this to suppress the Unhandled XML warning.
+		   See https://bugzilla.gnome.org/show_bug.cgi?id=589858 */
 	} else if (xmlStrcmp (node->name, (xmlChar*) "rotation") == 0) {
 		/* gphoto:rotation */
 		xmlChar *rotation = xmlNodeListGetString (doc, node->children, TRUE);
