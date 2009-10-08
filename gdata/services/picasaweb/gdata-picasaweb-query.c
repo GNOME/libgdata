@@ -311,6 +311,39 @@ gdata_picasaweb_query_new (const gchar *q)
 }
 
 /**
+ * gdata_picasaweb_query_new_with_limits:
+ * @q: a query string
+ * @start_index: the index of the first result to include
+ * @max_results: the maximum number of results to include
+ *
+ * Creates a #GDataPicasaWebQuery with its #GDataQuery:q property set
+ * to @q, returning @max_results starting from the @start_index
+ * result.
+ *
+ * Note that when querying for albums with gdata_picasaweb_service_query_all_albums(), the @q parameter cannot be used.
+ *
+ * This is useful for paging through results, but the result
+ * set between separate queries may change.  So, if you use this to
+ * request the next ten results after a previous query, it may include
+ * some of the previously returned results if their order changed, or
+ * omit ones that would have otherwise been found in a earlier but
+ * larger query.
+ *
+ * Return value: a new #GDataPicasaWebQuery
+ *
+ * Since: 0.6.0
+ **/
+GDataPicasaWebQuery *
+gdata_picasaweb_query_new_with_limits (const gchar *q, gint start_index, gint max_results)
+{
+	return g_object_new (GDATA_TYPE_PICASAWEB_QUERY,
+			     "q", q,
+			     "start-index", start_index,
+			     "max-results", max_results,
+			     NULL);
+}
+
+/**
  * gdata_picasaweb_query_get_visibility:
  * @self: a #GDataPicasaWebQuery
  *

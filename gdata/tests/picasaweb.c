@@ -562,7 +562,7 @@ test_query_all_albums (GDataService *service)
 	GDataPicasaWebAlbum *album;
 
 	/* Test a query with a "q" parameter; it should fail */
-	query = GDATA_PICASAWEB_QUERY (gdata_picasaweb_query_new ("foobar"));
+	query = GDATA_QUERY (gdata_picasaweb_query_new ("foobar"));
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER);
 	g_assert (album_feed == NULL);
@@ -586,6 +586,61 @@ test_query_all_albums (GDataService *service)
 
 	g_object_unref (photo_feed);
 	g_object_unref (album_feed);
+}
+
+static void
+test_query_new_with_limits (GDataService *service)
+{
+	GDataQuery *query;
+	GDataFeed *album_feed_1, *album_feed_2;
+	GError *error;
+	GList *albums_1, *albums_2;
+
+	error = NULL;
+
+	/* Test a query with a "q" parameter; it should fail */
+	query = GDATA_QUERY (gdata_picasaweb_query_new_with_limits ("foobar", 1, 1));
+	album_feed_1 = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER);
+	g_assert (album_feed_1 == NULL);
+	g_clear_error (&error);
+	g_object_unref (query);
+
+	/* Test that two queries starting at different indices don't return the same content */
+	query = GDATA_QUERY (gdata_picasaweb_query_new_with_limits (NULL, 1, 1));
+	album_feed_1 = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (album_feed_1));
+	albums_1 = gdata_feed_get_entries (album_feed_1);
+	g_object_unref (query);
+
+	query = GDATA_QUERY (gdata_picasaweb_query_new_with_limits (NULL, 2, 1));
+	album_feed_2 = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (album_feed_2));
+	albums_2 = gdata_feed_get_entries (album_feed_2);
+	g_object_unref (query);
+
+	g_assert_cmpint (g_list_length (albums_1), ==, 1);
+	g_assert_cmpint (g_list_length (albums_2), ==, 1);
+	g_assert (GDATA_IS_ENTRY (albums_1->data));
+	g_assert (GDATA_IS_ENTRY (albums_2->data));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (albums_1->data)), !=, gdata_entry_get_title (GDATA_ENTRY (albums_2->data)));
+
+	g_object_unref (album_feed_1);
+	g_object_unref (album_feed_2);
+
+	/* Test that we get at most as many results as we requested */
+	query = GDATA_QUERY (gdata_picasaweb_query_new_with_limits (NULL, 1, 3));
+	album_feed_1 = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (album_feed_1));
+	albums_1 = gdata_feed_get_entries (album_feed_1);
+	g_object_unref (query);
+
+	g_assert_cmpint (g_list_length (albums_1), ==, 3);
+
+	g_object_unref (album_feed_1);
 }
 
 static void
@@ -641,6 +696,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
 	if (g_test_thorough () == TRUE)
 		g_test_add_data_func ("/picasaweb/query/all_albums_async", service, test_query_all_albums_async);
+	g_test_add_data_func ("/picasaweb/query/new_with_limits", service, test_query_new_with_limits);
 	g_test_add_data_func ("/picasaweb/query/album_feed", service, test_album_feed);
 	g_test_add_data_func ("/picasaweb/query/album_feed_entry", service, test_album_feed_entry);
 	g_test_add_data_func ("/picasaweb/query/album", service, test_album);

@@ -65,6 +65,7 @@ typedef struct {
 GType gdata_picasaweb_query_get_type (void) G_GNUC_CONST;
 
 GDataPicasaWebQuery *gdata_picasaweb_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT;
+GDataPicasaWebQuery *gdata_picasaweb_query_new_with_limits (const gchar *q, gint start_index, gint max_results) G_GNUC_WARN_UNUSED_RESULT;
 
 GDataPicasaWebVisibility gdata_picasaweb_query_get_visibility (GDataPicasaWebQuery *self);
 void gdata_picasaweb_query_set_visibility (GDataPicasaWebQuery *self, GDataPicasaWebVisibility visibility);
