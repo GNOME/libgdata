@@ -737,7 +737,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->timestamp.tv_sec != 0 || priv->timestamp.tv_usec != 0) {
 		/* in milliseconds */
 		g_string_append_printf (xml_string, "<gphoto:timestamp>%" G_GUINT64_FORMAT "</gphoto:timestamp>",
-					(guint64) (priv->timestamp.tv_sec * 1000 + priv->timestamp.tv_usec));
+					((guint64) priv->timestamp.tv_sec) * 1000 + priv->timestamp.tv_usec / 1000);
 	}
 
 	if (priv->is_commenting_enabled == FALSE)
