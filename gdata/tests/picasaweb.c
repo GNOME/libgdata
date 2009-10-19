@@ -210,7 +210,7 @@ test_photo (GDataService *service)
 
 	gdata_picasaweb_file_get_edited (photo, &_time);
 	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-07-13T09:48:58.912000Z");
+	g_assert_cmpstr (str, ==, "2009-10-17T08:52:18.885000Z");
 	g_free (str);
 
 	/* tests */
@@ -232,7 +232,7 @@ test_photo (GDataService *service)
 	g_assert_cmpstr (gdata_picasaweb_file_get_video_status (photo), ==, NULL);
 	/* todo: not a good test of video status; want to upload a video for it */
 	g_assert_cmpuint (gdata_picasaweb_file_is_commenting_enabled (photo), ==, TRUE);
-	g_assert_cmpuint (gdata_picasaweb_file_get_comment_count (photo), ==, 1);
+	g_assert_cmpuint (gdata_picasaweb_file_get_comment_count (photo), ==, 2);
 	g_assert_cmpuint (gdata_picasaweb_file_get_rotation (photo), ==, 0);
 
 	g_assert_cmpstr (gdata_picasaweb_file_get_caption (photo), ==, "Ginger cookie caption");
@@ -338,7 +338,7 @@ test_photo_feed_entry (GDataService *service)
 
 	gdata_entry_get_updated (photo_entry, &_time);
 	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-07-13T09:48:58.912000Z");
+	g_assert_cmpstr (str, ==, "2009-10-17T08:52:18.885000Z");
 	g_free (str);
 
 	gdata_entry_get_published (photo_entry, &_time);
