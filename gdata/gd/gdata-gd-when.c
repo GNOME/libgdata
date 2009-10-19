@@ -404,6 +404,8 @@ gdata_gd_when_new (GTimeVal *start_time, GTimeVal *end_time, gboolean is_date)
 gint
 gdata_gd_when_compare (const GDataGDWhen *a, const GDataGDWhen *b)
 {
+	gint64 start_diff, end_diff;
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (b == NULL)
@@ -414,11 +416,14 @@ gdata_gd_when_compare (const GDataGDWhen *a, const GDataGDWhen *b)
 	if (a->priv->is_date != b->priv->is_date)
 		return CLAMP (b->priv->is_date - a->priv->is_date, -1, 1);
 
-	if (a->priv->start_time.tv_sec == b->priv->start_time.tv_sec && a->priv->start_time.tv_usec == b->priv->start_time.tv_usec)
-		return CLAMP ((b->priv->end_time.tv_sec * 1000 + b->priv->end_time.tv_usec) -
-			      (a->priv->end_time.tv_sec * 1000 + a->priv->end_time.tv_usec), -1, 1);
-	return CLAMP ((b->priv->start_time.tv_sec * 1000 + b->priv->start_time.tv_usec) -
-		      (a->priv->start_time.tv_sec * 1000 + a->priv->start_time.tv_usec), -1, 1);
+	start_diff = (b->priv->start_time.tv_sec - a->priv->start_time.tv_sec) * 1000000 +
+	             (b->priv->start_time.tv_usec - a->priv->start_time.tv_usec);
+	end_diff = (b->priv->end_time.tv_sec - a->priv->end_time.tv_sec) * 1000000 +
+	           (b->priv->end_time.tv_usec - a->priv->end_time.tv_usec);
+
+	if (start_diff == 0)
+		return CLAMP (end_diff, -1, 1);
+	return CLAMP (start_diff, -1, 1);
 }
 
 /**
