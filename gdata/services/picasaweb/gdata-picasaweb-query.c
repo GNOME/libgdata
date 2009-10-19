@@ -388,7 +388,7 @@ gdata_picasaweb_query_set_thumbnail_size (GDataPicasaWebQuery *self, const gchar
  *
  * Gets the #GDataPicasaWebQuery:image-size property.
  *
- * Return value: a comma-separated list of image sizes to retrieve, or %NULL
+ * Return value: the currently set desired image size for retrieval, or %NULL
  *
  * Since: 0.4.0
  **/
@@ -402,9 +402,11 @@ gdata_picasaweb_query_get_image_size (GDataPicasaWebQuery *self)
 /**
  * gdata_picasaweb_query_set_image_size:
  * @self: a #GDataPicasaWebQuery
- * @image_size: a comma-separated list of image sizes to retrieve, or %NULL
+ * @image_size: the desired size of the image to be retrieved, or %NULL
  *
  * Sets the #GDataPicasaWebQuery:image-size property to @image_size.
+ * Valid sizes are described here:
+ * http://code.google.com/apis/picasaweb/docs/2.0/reference.html#Parameters
  *
  * Set @image_size to %NULL to unset the property.
  *
