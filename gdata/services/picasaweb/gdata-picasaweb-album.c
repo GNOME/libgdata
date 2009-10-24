@@ -430,6 +430,7 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_ALBUM, GDataPicasaWebAlbumPrivate);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
+	self->priv->visibility = GDATA_PICASAWEB_PRIVATE;
 
 	/* Connect to the notify::title signal from GDataEntry so our media:group title can be kept in sync */
 	g_signal_connect (GDATA_ENTRY (self), "notify::title", G_CALLBACK (notify_title_cb), NULL);
