@@ -590,6 +590,9 @@ gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 	self->priv->is_commenting_enabled = TRUE;
 
+	/* Initialise the timestamp to the current time (bgo#599140) */
+	g_get_current_time (&(self->priv->timestamp));
+
 	/* We need to keep atom:title (the canonical title for the file) in sync with media:group/media:title */
 	g_signal_connect (self, "notify::title", G_CALLBACK (notify_title_cb), NULL);
 	/* atom:summary (the canonical summary/caption for the file) in sync with media:group/media:description */
