@@ -617,6 +617,36 @@ test_query_all_albums_async (GDataService *service)
 	g_main_loop_unref (main_loop);
 }
 
+static void
+test_album_new (GDataService *service)
+{
+	GDataPicasaWebAlbum *album;
+	gchar *xml;
+
+	g_test_bug ("598893");
+
+	album = gdata_picasaweb_album_new ("some-id");
+
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (album));
+	g_assert_cmpstr (xml, ==,
+			 "<entry xmlns='http://www.w3.org/2005/Atom' "
+				"xmlns:gphoto='http://schemas.google.com/photos/2007' "
+				"xmlns:media='http://search.yahoo.com/mrss/' "
+				"xmlns:gd='http://schemas.google.com/g/2005' "
+				"xmlns:gml='http://www.opengis.net/gml' "
+				"xmlns:app='http://www.w3.org/2007/app' "
+				"xmlns:georss='http://www.georss.org/georss'>"
+				"<title type='text'></title>"
+				"<id>some-id</id>"
+				"<gphoto:access>private</gphoto:access>"
+				"<gphoto:commentingEnabled>false</gphoto:commentingEnabled>"
+				"<media:group/>"
+			 "</entry>");
+
+	g_free (xml);
+	g_object_unref (album);
+}
+
 /* TODO: test private, public albums, test uploading */
 /* TODO: add queries to update albums, files on the server; test those */
 
@@ -647,6 +677,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
 	g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
 	g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
+	g_test_add_data_func ("/picasaweb/album/new", service, test_album_new);
 
 	retval = g_test_run ();
 	g_object_unref (service);
