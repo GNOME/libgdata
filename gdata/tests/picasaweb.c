@@ -101,20 +101,18 @@ test_authentication_async (void)
 static void
 test_upload_simple (GDataService *service)
 {
-	GDataPicasaWebFile *photo;
-	GDataPicasaWebFile *photo_new;
+	GDataPicasaWebFile *photo, *photo_new;
 	GFile *photo_file;
-	gchar *xml;
 	GError *error = NULL;
 	GTimeVal timeval;
-	gchar *time_str;
-	gchar *summary;
-	gchar *expected_xml;
+	gchar *xml, *time_str, *summary, *expected_xml, *parsed_time_str;
+	GRegex *regex;
+	GMatchInfo *match_info;
+	guint64 delta;
 
 	g_get_current_time (&timeval);
 	time_str = g_time_val_to_iso8601 (&timeval);
 	summary = g_strdup_printf ("Photo Summary (%s)", time_str);
-	g_free (time_str);
 
 	expected_xml = g_strdup_printf ("<entry "
 						"xmlns='http://www.w3.org/2005/Atom' "
@@ -126,24 +124,39 @@ test_upload_simple (GDataService *service)
 						"xmlns:georss='http://www.georss.org/georss' "
 						"xmlns:gml='http://www.opengis.net/gml'>"
 						"<title type='text'>Photo Entry Title</title>"
-						"<summary type='text'>%s</summary>"
+						"<summary type='text'>Photo Summary \\(%s\\)</summary>"
 						"<gphoto:position>0</gphoto:position>"
+						"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
 						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
 						"<media:group>"
 							"<media:title type='plain'>Photo Entry Title</media:title>"
-							"<media:description type='plain'>%s</media:description>"
+							"<media:description type='plain'>Photo Summary \\(%s\\)</media:description>"
 						"</media:group>"
-					"</entry>", summary, summary);
+					"</entry>", time_str, time_str);
+	g_free (time_str);
 
+	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
+	regex = g_regex_new (expected_xml, 0, 0, NULL);
+	g_free (expected_xml);
+
+	/* Build the photo */
 	photo = gdata_picasaweb_file_new (NULL);
-
 	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
 	gdata_picasaweb_file_set_caption (photo, summary);
 
-	/* Check the XML */
+	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
+	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected_xml and building the XML
+	 * for the photo. */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
-	g_assert_cmpstr (xml, ==, expected_xml);
+	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
+	parsed_time_str = g_match_info_fetch (match_info, 1);
+	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
+	g_assert_cmpuint (abs (delta), <, 100);
+
+	g_free (parsed_time_str);
 	g_free (xml);
+	g_regex_unref (regex);
+	g_match_info_free (match_info);
 
 	gdata_picasaweb_file_set_coordinates (photo, 17.127, -110.35);
 
@@ -160,7 +173,6 @@ test_upload_simple (GDataService *service)
 	/* TODO: check entries and feed properties */
 
 	g_free (summary);
-	g_free (expected_xml);
 	g_object_unref (photo);
 	g_object_unref (photo_new);
 	g_object_unref (photo_file);
@@ -698,29 +710,49 @@ static void
 test_album_new (GDataService *service)
 {
 	GDataPicasaWebAlbum *album;
-	gchar *xml;
+	gchar *xml, *parsed_time_str;
+	GRegex *regex;
+	GMatchInfo *match_info;
+	guint64 delta;
+	GTimeVal timeval;
 
 	g_test_bug ("598893");
 
+	/* Get the current time */
+	g_get_current_time (&timeval);
+
+	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
+	regex = g_regex_new ("<entry xmlns='http://www.w3.org/2005/Atom' "
+				    "xmlns:gphoto='http://schemas.google.com/photos/2007' "
+				    "xmlns:media='http://search.yahoo.com/mrss/' "
+				    "xmlns:gd='http://schemas.google.com/g/2005' "
+				    "xmlns:gml='http://www.opengis.net/gml' "
+				    "xmlns:app='http://www.w3.org/2007/app' "
+				    "xmlns:georss='http://www.georss.org/georss'>"
+					"<title type='text'></title>"
+					"<id>some-id</id>"
+					"<gphoto:access>private</gphoto:access>"
+					"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
+					"<gphoto:commentingEnabled>false</gphoto:commentingEnabled>"
+					"<media:group/>"
+			     "</entry>", 0, 0, NULL);
+
+	/* Build the album */
 	album = gdata_picasaweb_album_new ("some-id");
 
+	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
+	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected XML and building the XML
+	 * for the photo. */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (album));
-	g_assert_cmpstr (xml, ==,
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:gphoto='http://schemas.google.com/photos/2007' "
-				"xmlns:media='http://search.yahoo.com/mrss/' "
-				"xmlns:gd='http://schemas.google.com/g/2005' "
-				"xmlns:gml='http://www.opengis.net/gml' "
-				"xmlns:app='http://www.w3.org/2007/app' "
-				"xmlns:georss='http://www.georss.org/georss'>"
-				"<title type='text'></title>"
-				"<id>some-id</id>"
-				"<gphoto:access>private</gphoto:access>"
-				"<gphoto:commentingEnabled>false</gphoto:commentingEnabled>"
-				"<media:group/>"
-			 "</entry>");
+	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
+	parsed_time_str = g_match_info_fetch (match_info, 1);
+	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
+	g_assert_cmpuint (abs (delta), <, 100);
 
+	g_free (parsed_time_str);
 	g_free (xml);
+	g_regex_unref (regex);
+	g_match_info_free (match_info);
 	g_object_unref (album);
 }
 
