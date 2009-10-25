@@ -1183,6 +1183,7 @@ GDataYouTubeStatePrivate
 GDataPicasaWebService
 GDataPicasaWebServiceClass
 gdata_picasaweb_service_new
+gdata_picasaweb_service_get_user
 gdata_picasaweb_service_query_all_albums
 gdata_picasaweb_service_query_all_albums_async
 gdata_picasaweb_service_query_files
@@ -1195,6 +1196,44 @@ GDATA_PICASAWEB_SERVICE
 GDATA_PICASAWEB_SERVICE_CLASS
 GDATA_PICASAWEB_SERVICE_GET_CLASS
 GDATA_TYPE_PICASAWEB_SERVICE
+</SECTION>
+
+<SECTION>
+<FILE>gdata-picasaweb-feed</FILE>
+<TITLE>GDataPicasaWebFeed</TITLE>
+GDataPicasaWebFeed
+GDataPicasaWebFeedClass
+<SUBSECTION Standard>
+gdata_picasaweb_feed_get_type
+GDATA_PICASAWEB_FEED
+GDATA_PICASAWEB_FEED_CLASS
+GDATA_PICASAWEB_FEED_GET_CLASS
+GDATA_IS_PICASAWEB_FEED
+GDATA_IS_PICASAWEB_FEED_CLASS
+GDATA_TYPE_PICASAWEB_FEED
+</SECTION>
+
+<SECTION>
+<FILE>gdata-picasaweb-user</FILE>
+<TITLE>GDataPicasaWebUser</TITLE>
+GDataPicasaWebUser
+GDataPicasaWebUserClass
+gdata_picasaweb_user_get_user
+gdata_picasaweb_user_get_nickname
+gdata_picasaweb_user_get_quota_limit
+gdata_picasaweb_user_get_quota_current
+gdata_picasaweb_user_get_max_photos_per_album
+gdata_picasaweb_user_get_thumbnail_uri
+<SUBSECTION Standard>
+gdata_picasaweb_user_get_type
+GDATA_PICASAWEB_USER
+GDATA_PICASAWEB_USER_CLASS
+GDATA_PICASAWEB_USER_GET_CLASS
+GDATA_IS_PICASAWEB_USER
+GDATA_IS_PICASAWEB_USER_CLASS
+GDATA_TYPE_PICASAWEB_USER
+<SUBSECTION Private>
+GDataPicasaWebUserPrivate
 </SECTION>
 
 <SECTION>

@@ -32,7 +32,9 @@ gdata_picasaweb_headers = \
 	gdata-picasaweb-service.h	\
 	gdata-picasaweb-query.h		\
 	gdata-picasaweb-file.h		\
-	gdata-picasaweb-album.h
+	gdata-picasaweb-album.h    	\
+	gdata-picasaweb-user.h		\
+	gdata-picasaweb-feed.h
 
 gdatapicasawebinclude_HEADERS = \
 	$(gdata_picasaweb_headers)	\
@@ -45,7 +47,9 @@ libgdatapicasaweb_la_SOURCES = \
 	gdata-picasaweb-album.c		\
 	gdata-picasaweb-query.c		\
 	gdata-picasaweb-file.c		\
-	gdata-picasaweb-service.c
+	gdata-picasaweb-service.c	\
+	gdata-picasaweb-user.c		\
+	gdata-picasaweb-feed.c
 
 libgdatapicasaweb_la_CPPFLAGS = \
 	-I$(top_srcdir)					\

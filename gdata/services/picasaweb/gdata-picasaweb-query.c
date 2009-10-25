@@ -248,7 +248,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	APPEND_SEP
 	if (priv->visibility == 0)
-		g_string_append (query_uri, "access=all");
+		; // Appending nothing to retrieve all for authenticated users and just public albums for unauthenticated
 	else if (priv->visibility == GDATA_PICASAWEB_PUBLIC)
 		g_string_append (query_uri, "access=public");
 	else if (priv->visibility == GDATA_PICASAWEB_PRIVATE)

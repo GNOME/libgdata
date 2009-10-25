@@ -26,6 +26,7 @@
 
 #include <gdata/gdata-service.h>
 #include <gdata/services/picasaweb/gdata-picasaweb-album.h>
+#include <gdata/services/picasaweb/gdata-picasaweb-user.h>
 
 G_BEGIN_DECLS
 
@@ -64,6 +65,8 @@ GType gdata_picasaweb_service_get_type (void) G_GNUC_CONST;
 GDataPicasaWebService *gdata_picasaweb_service_new (const gchar *client_id) G_GNUC_WARN_UNUSED_RESULT;
 
 #include <gdata/services/picasaweb/gdata-picasaweb-query.h>
+
+GDataPicasaWebUser *gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *username, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 
 GDataFeed *gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuery *query, const gchar *username,
 						     GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,

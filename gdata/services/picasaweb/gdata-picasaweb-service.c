@@ -41,6 +41,7 @@
 #include "gdata-parser.h"
 #include "atom/gdata-link.h"
 #include "gdata-upload-stream.h"
+#include "gdata-picasaweb-feed.h"
 
 G_DEFINE_TYPE (GDataPicasaWebService, gdata_picasaweb_service, GDATA_TYPE_SERVICE)
 
@@ -49,6 +50,7 @@ gdata_picasaweb_service_class_init (GDataPicasaWebServiceClass *klass)
 {
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
 	service_class->service_name = "lh2";
+	service_class->feed_type = GDATA_TYPE_PICASAWEB_FEED;
 }
 
 static void
@@ -58,12 +60,17 @@ gdata_picasaweb_service_init (GDataPicasaWebService *self)
 }
 
 /*
- * This constructs the URI we want to access for querying albums.
+ * create_uri:
+ * @self: a #GDataPicasaWebService
+ * @username: the username to use, or %NULL to use the currently logged in user
+ * @type: the type of object to access: "entry" for a user, or "feed" for an album
  *
- * Remember to free the URI in the caller.
-*/
+ * Builds a URI to use when querying for albums or a user.
+ *
+ * Return value: a constructed URI; free with g_free()
+ */
 static gchar *
-create_uri (GDataPicasaWebService *self, const gchar *username)
+create_uri (GDataPicasaWebService *self, const gchar *username, const gchar *type)
 {
 	if (username == NULL) {
 		/* Ensure we're authenticated first */
@@ -74,7 +81,7 @@ create_uri (GDataPicasaWebService *self, const gchar *username)
 		username = "default";
 	}
 
-	return g_strdup_printf ("http://picasaweb.google.com/data/feed/api/user/%s", username);
+	return g_strdup_printf ("http://picasaweb.google.com/data/%s/api/user/%s", type, username);
 }
 
 /**
@@ -95,6 +102,45 @@ gdata_picasaweb_service_new (const gchar *client_id)
 	return g_object_new (GDATA_TYPE_PICASAWEB_SERVICE,
 			     "client-id", client_id,
 			     NULL);
+}
+
+/**
+ * gdata_picasaweb_service_get_user
+ * @self: a #GDataPicasaWebService
+ * @username: the username of the user whose information you wish to retrieve, or %NULL for the currently authenticated user.
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Queries the service to return the user specified by @username.
+ *
+ * Return value: a #GDataPicasaWebUser; unref with g_object_unref()
+ *
+ * Since: 0.6.0
+ **/
+GDataPicasaWebUser *
+gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *username, GCancellable *cancellable, GError **error)
+{
+	gchar *uri;
+	GDataParsable *user;
+	SoupMessage *message;
+
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
+
+	uri = create_uri (self, username, "entry");
+	if (uri == NULL) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+				     _("You must specify a username or be authenticated to query a user."));
+		return NULL;
+	}
+	message = _gdata_service_query (GDATA_SERVICE (self), uri, NULL, cancellable, NULL, NULL, error);
+	if (message == NULL)
+		return NULL;
+
+	g_assert (message->response_body->data != NULL);
+	user = gdata_parsable_new_from_xml (GDATA_TYPE_PICASAWEB_USER, message->response_body->data, message->response_body->length, error);
+	g_object_unref (message);
+
+	return GDATA_PICASAWEB_USER (user);
 }
 
 /**
@@ -136,7 +182,7 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
 		return NULL;
 	}
 
-	uri = create_uri (self, username);
+	uri = create_uri (self, username, "feed");
 	if (uri == NULL) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 				     _("You must specify a username or be authenticated to query all albums."));
@@ -190,7 +236,7 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 		return;
 	}
 
-	uri = create_uri (self, username);
+	uri = create_uri (self, username, "feed");
 	if (uri == NULL) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
 						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,

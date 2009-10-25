@@ -590,6 +590,27 @@ test_query_all_albums (GDataService *service)
 }
 
 static void
+test_query_user (GDataService *service)
+{
+	GDataPicasaWebUser *user;
+	GError *error = NULL;
+
+	user = gdata_picasaweb_service_get_user (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_USER (user));
+	g_clear_error (&error);
+
+	g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "libgdata.picasaweb");
+	g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "libgdata.picasaweb");
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 1073741824); /* 1GiB: it'll be a beautiful day when this assert gets tripped */
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), >, 0);
+	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), ==, 500);
+	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), ==, "http://lh6.ggpht.com/_1kdcGyvOb8c/AAAA9mDag3s/AAAAAAAAAAA/Jq-NWYWKFao/s64-c/libgdata.picasaweb.jpg");
+
+	g_object_unref (user);
+}
+
+static void
 test_query_new_with_limits (GDataService *service)
 {
 	GDataQuery *query;
@@ -725,6 +746,7 @@ main (int argc, char *argv[])
 		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);
 	g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
 	g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
+	g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
 	if (g_test_thorough () == TRUE)
 		g_test_add_data_func ("/picasaweb/query/all_albums_async", service, test_query_all_albums_async);
 	g_test_add_data_func ("/picasaweb/query/new_with_limits", service, test_query_new_with_limits);
