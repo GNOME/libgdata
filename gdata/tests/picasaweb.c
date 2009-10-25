@@ -432,10 +432,9 @@ test_album (GDataService *service)
 	g_assert_cmpstr (str, ==, "2009-04-26T06:57:03.474000Z");
 	g_free (str);
 
-	g_assert_cmpstr (gdata_picasaweb_album_get_description (album), ==, "This is the test description.  This album should be in Venice.");
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (album)), ==, "Test Album 1 - Venice - Public");
+	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (album)), ==, "This is the test description.  This album should be in Venice.");
 	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
-	/* TODO: Google doesn't seem to be returning this one any more; investigate */
-	/*g_assert_cmpstr (gdata_picasaweb_album_get_name (album), ==, "TestAlbum1VenicePublic");*/
 	g_assert_cmpstr (gdata_picasaweb_album_get_location (album), ==, "Venice");
 
 	gdata_picasaweb_album_get_timestamp (album, &_time);

@@ -83,7 +83,6 @@ GDataPicasaWebAlbum *gdata_picasaweb_album_new (const gchar *id) G_GNUC_WARN_UNU
 const gchar *gdata_picasaweb_album_get_user (GDataPicasaWebAlbum *self);
 const gchar *gdata_picasaweb_album_get_nickname (GDataPicasaWebAlbum *self);
 void gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self, GTimeVal *edited);
-const gchar *gdata_picasaweb_album_get_name (GDataPicasaWebAlbum *self);
 const gchar *gdata_picasaweb_album_get_location (GDataPicasaWebAlbum *self);
 void gdata_picasaweb_album_set_location (GDataPicasaWebAlbum *self, const gchar *location);
 GDataPicasaWebVisibility gdata_picasaweb_album_get_visibility (GDataPicasaWebAlbum *self);
@@ -98,8 +97,6 @@ void gdata_picasaweb_album_set_is_commenting_enabled (GDataPicasaWebAlbum *self,
 guint gdata_picasaweb_album_get_comment_count (GDataPicasaWebAlbum *self);
 const gchar *gdata_picasaweb_album_get_tags (GDataPicasaWebAlbum *self);
 void gdata_picasaweb_album_set_tags (GDataPicasaWebAlbum *self, const gchar *tags);
-const gchar *gdata_picasaweb_album_get_description (GDataPicasaWebAlbum *self);
-void gdata_picasaweb_album_set_description (GDataPicasaWebAlbum *self, const gchar *description);
 GList *gdata_picasaweb_album_get_contents (GDataPicasaWebAlbum *self);
 GList *gdata_picasaweb_album_get_thumbnails (GDataPicasaWebAlbum *self);
 void gdata_picasaweb_album_get_coordinates (GDataPicasaWebAlbum *self, gdouble *latitude, gdouble *longitude);

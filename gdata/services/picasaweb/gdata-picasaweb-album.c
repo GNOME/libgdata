@@ -30,7 +30,7 @@
  * online documentation</ulink>.
  **/
 
-/* TODO: support the album cover/icon ? */
+/* TODO: support the album cover/icon ? I think this is already done with the thumbnails, but we don't set it yet :( */
 
 #include <config.h>
 #include <glib.h>
@@ -60,7 +60,6 @@ struct _GDataPicasaWebAlbumPrivate {
 	gchar *user;
 	gchar *nickname;
 	GTimeVal edited;
-	gchar *name; /* album title, usable in URIs */
 	gchar *location;
 	GDataPicasaWebVisibility visibility;
 	GTimeVal timestamp;
@@ -80,7 +79,6 @@ enum {
 	PROP_USER = 1,
 	PROP_NICKNAME,
 	PROP_EDITED,
-	PROP_NAME,
 	PROP_LOCATION,
 	PROP_VISIBILITY,
 	PROP_TIMESTAMP,
@@ -89,7 +87,6 @@ enum {
 	PROP_BYTES_USED,
 	PROP_IS_COMMENTING_ENABLED,
 	PROP_COMMENT_COUNT,
-	PROP_DESCRIPTION,
 	PROP_TAGS,
 	PROP_LATITUDE,
 	PROP_LONGITUDE
@@ -162,22 +159,6 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 							     "Edited", "The time this album was last edited.",
 							     GDATA_TYPE_G_TIME_VAL,
 							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataPicasaWeb:name
-	 *
-	 * The name of the album, which is the URI-usable name derived from the album title (#GDataEntry:title).
-	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_name">
-	 * gphoto specification</ulink>.
-	 *
-	 * Since: 0.4.0
-	 **/
-	g_object_class_install_property (gobject_class, PROP_NAME,
-					 g_param_spec_string ("name",
-							      "Name", "The name of the album.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWeb:location
@@ -310,22 +291,6 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWebAlbum:description:
-	 *
-	 * Description of the album.
-	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#media_description">
-	 * Media RSS specification</ulink>.
-	 *
-	 * Since: 0.4.0
-	 **/
-	g_object_class_install_property (gobject_class, PROP_DESCRIPTION,
-					 g_param_spec_string ("description",
-							      "Description", "Description of the album.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
 	 * GDataPicasaWebAlbum:tags:
 	 *
 	 * A comma-separated list of tags associated with the album; all the tags associated with the individual photos in the album.
@@ -382,6 +347,14 @@ notify_title_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_dat
 		gdata_media_group_set_title (self->priv->media_group, gdata_entry_get_title (GDATA_ENTRY (self)));
 }
 
+static void
+notify_summary_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_data)
+{
+	/* Update our media:group description */
+	if (self->priv->media_group != NULL)
+		gdata_media_group_set_description (self->priv->media_group, gdata_entry_get_summary (GDATA_ENTRY (self)));
+}
+
 static void notify_visibility_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer user_data);
 
 static void
@@ -435,11 +408,15 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 	/* Initialise the timestamp to the current time (bgo#599140) */
 	g_get_current_time (&(self->priv->timestamp));
 
-	/* Connect to the notify::title signal from GDataEntry so our media:group title can be kept in sync */
+	/* Connect to the notify::title signal from GDataEntry so our media:group title can be kept in sync
+	 * (the title of an album is duplicated in atom:title and media:group/media:title) */
 	g_signal_connect (GDATA_ENTRY (self), "notify::title", G_CALLBACK (notify_title_cb), NULL);
-	/* Connect to the notify::rights signal from GDataEntry so our gphoto:visibility can be kept in sync */
+	/* Connect to the notify::description signal from GDataEntry so our media:group description can be kept in sync
+	 * (the description of an album is duplicated in atom:summary and media:group/media:description) */
+	g_signal_connect (GDATA_ENTRY (self), "notify::summary", G_CALLBACK (notify_summary_cb), NULL);
+	/* Connect to the notify::rights signal from GDataEntry so our gphoto:visibility can be kept in sync (and vice-versa)
+	 * (visibility settings are duplicated in atom:rights and gphoto:visibility) */
 	g_signal_connect (GDATA_ENTRY (self), "notify::rights", G_CALLBACK (notify_rights_cb), NULL);
-	/* Connect to the notify::visibility signal so our rights can be kept in sync */
 	g_signal_connect (self, "notify::visibility", G_CALLBACK (notify_visibility_cb), NULL);
 }
 
@@ -467,7 +444,6 @@ gdata_picasaweb_album_finalize (GObject *object)
 
 	xmlFree (priv->user);
 	xmlFree (priv->nickname);
-	xmlFree (priv->name);
 	g_free (priv->location);
 
 	/* Chain up to the parent class */
@@ -488,9 +464,6 @@ gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *
 			break;
 		case PROP_EDITED:
 			g_value_set_boxed (value, &(priv->edited));
-			break;
-		case PROP_NAME:
-			g_value_set_string (value, priv->name);
 			break;
 		case PROP_LOCATION:
 			g_value_set_string (value, priv->location);
@@ -515,9 +488,6 @@ gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *
 			break;
 		case PROP_COMMENT_COUNT:
 			g_value_set_uint (value, priv->comment_count);
-			break;
-		case PROP_DESCRIPTION:
-			g_value_set_string (value, gdata_media_group_get_description (priv->media_group));
 			break;
 		case PROP_TAGS:
 			g_value_set_string (value, gdata_media_group_get_keywords (priv->media_group));
@@ -552,9 +522,6 @@ gdata_picasaweb_album_set_property (GObject *object, guint property_id, const GV
 			break;
 		case PROP_IS_COMMENTING_ENABLED:
 			gdata_picasaweb_album_set_is_commenting_enabled (self, g_value_get_boolean (value));
-			break;
-		case PROP_DESCRIPTION:
-			gdata_picasaweb_album_set_description (self, g_value_get_string (value));
 			break;
 		case PROP_TAGS:
 			gdata_picasaweb_album_set_tags (self, g_value_get_string (value));
@@ -625,21 +592,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (edited);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "summary") == 0) {
-		/* gphoto:summary */
-		/* @summary and @description are the same, so they're combined to @description */
-		xmlChar *summary = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_picasaweb_album_set_description (self, (gchar*) summary);
-		xmlFree (summary);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
-		/* gphoto:name */
-		xmlChar *name = xmlNodeListGetString (doc, node->children, TRUE);
-		if (name == NULL || *name == '\0') {
-			xmlFree (name);
-			return gdata_parser_error_required_content_missing (node, error);
-		}
-		xmlFree (self->priv->name);
-		self->priv->name = (gchar*) name;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
 		/* gphoto:location */
 		xmlChar *location = xmlNodeListGetString (doc, node->children, TRUE);
@@ -723,7 +675,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GDATA_PARSABLE_CLASS (gdata_picasaweb_album_parent_class)->get_xml (parsable, xml_string);
 
 	/* Add all the album-specific XML */
-	/* TODO: gphoto:name?, gphoto:id */
+	/* TODO: gphoto:id */
 	if (priv->location != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:location>", priv->location, "</gphoto:location>");
 
@@ -849,23 +801,6 @@ gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self, GTimeVal *edited)
 	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
 	g_return_if_fail (edited != NULL);
 	*edited = self->priv->edited;
-}
-
-/**
- * gdata_picasaweb_album_get_name:
- * @self: a #GDataPicasaWebAlbum
- *
- * Gets the #GDataPicasaWebAlbum:name property.
- *
- * Return value: the album's name, as usable in URIs, or %NULL
- *
- * Since: 0.4.0
- **/
-const gchar *
-gdata_picasaweb_album_get_name (GDataPicasaWebAlbum *self)
-{
-	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (self), NULL);
-	return self->priv->name;
 }
 
 /**
@@ -1119,45 +1054,6 @@ gdata_picasaweb_album_set_tags (GDataPicasaWebAlbum *self, const gchar *tags)
 
 	gdata_media_group_set_keywords (self->priv->media_group, tags);
 	g_object_notify (G_OBJECT (self), "tags");
-}
-
-/**
- * gdata_picasaweb_album_get_description:
- * @self: a #GDataPicasaWebAlbum
- *
- * Gets the #GDataPicasaWebAlbum:description property.
- *
- * Return value: the album's long text description, or %NULL
- *
- * Since: 0.4.0
- **/
-const gchar *
-gdata_picasaweb_album_get_description (GDataPicasaWebAlbum *self)
-{
-	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (self), NULL);
-	return gdata_media_group_get_description (self->priv->media_group);
-}
-
-/**
- * gdata_picasaweb_album_set_description:
- * @self: a #GDataPicasaWebAlbum
- * @description: the album's new description, or %NULL
- *
- * Sets the #GDataPicasaWebAlbum:description property to the new description, @description.
- *
- * Set @description to %NULL to unset the album's description.
- *
- * Since: 0.4.0
- **/
-void
-gdata_picasaweb_album_set_description (GDataPicasaWebAlbum *self, const gchar *description)
-{
-	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
-
-	/* media:group/media:description is the same as atom:summary */
-	gdata_media_group_set_description (self->priv->media_group, description);
-	/*gdata_entry_set_summary (GDATA_ENTRY (self), description); TODO function doesn't exist yet */
-	g_object_notify (G_OBJECT (self), "description");
 }
 
 /**
