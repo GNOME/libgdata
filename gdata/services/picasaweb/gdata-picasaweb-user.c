@@ -1,0 +1,388 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/*
+ * GData Client
+ * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Richard Schwarting 2009 <aquarichy@gmail.com>
+ *
+ * GData Client is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * GData Client is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * SECTION:gdata-picasaweb-user
+ * @short_description: GData PicasaWeb User object
+ * @stability: Unstable
+ * @include: gdata/services/picasaweb/gdata-picasaweb-user.h
+ *
+ * #GDataPicasaWebUser is a subclass of #GDataEntry to represent properties for a PicasaWeb user. It adds a couple of
+ * properties which are specific to the Google PicasaWeb API.
+ **/
+
+#include <glib.h>
+#include <libxml/parser.h>
+
+#include "gdata-picasaweb-user.h"
+#include "gdata-feed.h"
+#include "gdata-private.h"
+
+static void gdata_picasaweb_user_finalize (GObject *object);
+static void gdata_picasaweb_user_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
+static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+
+struct _GDataPicasaWebUserPrivate {
+	gchar *user;
+	gchar *nickname;
+	gint64 quota_limit;
+	gint64 quota_current;
+	gint max_photos_per_album;
+	gchar *thumbnail_uri;
+};
+
+enum {
+	PROP_USER = 1,
+	PROP_NICKNAME,
+	PROP_QUOTA_LIMIT,
+	PROP_QUOTA_CURRENT,
+	PROP_MAX_PHOTOS_PER_ALBUM,
+	PROP_THUMBNAIL_URI
+};
+
+G_DEFINE_TYPE (GDataPicasaWebUser, gdata_picasaweb_user, GDATA_TYPE_ENTRY)
+#define GDATA_PICASAWEB_USER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_PICASAWEB_USER, GDataPicasaWebUserPrivate))
+
+static void
+gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
+{
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (GDataPicasaWebUserPrivate));
+
+	gobject_class->get_property = gdata_picasaweb_user_get_property;
+	gobject_class->finalize = gdata_picasaweb_user_finalize;
+
+	parsable_class->parse_xml = parse_xml;
+	parsable_class->get_namespaces = get_namespaces;
+
+	/**
+	 * GDataPicasaWebUser:user:
+	 *
+	 * The username of the user, as seen in feed URLs.
+	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_user
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_USER,
+					 g_param_spec_string ("user",
+							      "User", "The username of the user.",
+							      NULL,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebUser:nickname:
+	 *
+	 * The user's nickname. This is a user-specified value that should be used when referring to the user by name.
+	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_nickname
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_NICKNAME,
+					 g_param_spec_string ("nickname",
+							      "Nickname", "The user's nickname.",
+							      NULL,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebUser:quota-limit:
+	 *
+	 * The total amount of space, in bytes, available to the user.
+	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_quotalimit
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_QUOTA_LIMIT,
+					 g_param_spec_int64 ("quota-limit",
+							     "Quota Limit", "The total amount of space, in bytes, available to the user.",
+							     -1, G_MAXINT64, -1,
+							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebUser:quota-current:
+	 *
+	 * The current amount of space, in bytes, already used by the user.
+	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_quotacurrent
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_QUOTA_CURRENT,
+					 g_param_spec_int64 ("quota-current",
+							     "Quota Current", "The current amount of space, in bytes, already used by the user.",
+							     -1, G_MAXINT64, -1,
+							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebUser:max-photos-per-album:
+	 *
+	 * The maximum number of photos allowed in an album.
+	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_maxPhotosPerAlbum
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_MAX_PHOTOS_PER_ALBUM,
+					 g_param_spec_int ("max-photos-per-album",
+							   "Max Photos Per Album", "The maximum number of photos allowed in an album.",
+							   -1, G_MAXINT, -1,
+							   G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebUser:thumbnail-uri:
+	 *
+	 * The URI of a thumbnail-sized portrait of the user.
+	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_thumbnail
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_THUMBNAIL_URI,
+					 g_param_spec_string ("thumbnail-uri",
+							      "Thumbnail URI", "The URI of a thumbnail-sized portrait of the user.",
+							      NULL,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+}
+
+static void
+gdata_picasaweb_user_init (GDataPicasaWebUser *self)
+{
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_USER, GDataPicasaWebUserPrivate);
+
+	/* Initialise the properties whose values we can theoretically not know */
+	self->priv->quota_limit = self->priv->quota_current = self->priv->max_photos_per_album = -1;
+}
+
+static void
+gdata_picasaweb_user_finalize (GObject *object)
+{
+	GDataPicasaWebUserPrivate *priv = GDATA_PICASAWEB_USER_GET_PRIVATE (object);
+
+	xmlFree ((xmlChar*) priv->user);
+	xmlFree ((xmlChar*) priv->nickname);
+	xmlFree ((xmlChar*) priv->thumbnail_uri);
+
+	/* Chain up to the parent class */
+	G_OBJECT_CLASS (gdata_picasaweb_user_parent_class)->finalize (object);
+}
+
+static void
+gdata_picasaweb_user_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+{
+	GDataPicasaWebUserPrivate *priv = GDATA_PICASAWEB_USER_GET_PRIVATE (object);
+
+	switch (property_id) {
+		case PROP_USER:
+			g_value_set_string (value, priv->user);
+			break;
+		case PROP_NICKNAME:
+			g_value_set_string (value, priv->nickname);
+			break;
+		case PROP_QUOTA_LIMIT:
+			g_value_set_int64 (value, priv->quota_limit);
+			break;
+		case PROP_QUOTA_CURRENT:
+			g_value_set_int64 (value, priv->quota_current);
+			break;
+		case PROP_MAX_PHOTOS_PER_ALBUM:
+			g_value_set_int (value, priv->max_photos_per_album);
+			break;
+		case PROP_THUMBNAIL_URI:
+			g_value_set_string (value, priv->thumbnail_uri);
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
+}
+
+static gboolean
+parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+{
+	GDataPicasaWebUser *self = GDATA_PICASAWEB_USER (parsable);
+
+	if (xmlStrcmp (node->name, (xmlChar*) "user") == 0) {
+		/* gphoto:user */
+		xmlChar *user = xmlNodeListGetString (doc, node->children, TRUE);
+		if (user == NULL || *user == '\0')
+			return gdata_parser_error_required_content_missing (node, error);
+		xmlFree (self->priv->user);
+		self->priv->user = (gchar*) user;
+	} else if (xmlStrcmp (node->name, (xmlChar*) "nickname") == 0) {
+		/* gphoto:nickname */
+		xmlChar *nickname = xmlNodeListGetString (doc, node->children, TRUE);
+		if (nickname == NULL || *nickname == '\0')
+			return gdata_parser_error_required_content_missing (node, error);
+		xmlFree (self->priv->nickname);
+		self->priv->nickname = (gchar*) nickname;
+	} else if (xmlStrcmp (node->name, (xmlChar*) "quotacurrent") == 0) {
+		/* gphoto:quota-current */
+		xmlChar *quota_current = xmlNodeListGetString (doc, node->children, TRUE);
+		self->priv->quota_current = g_ascii_strtoll ((const gchar*) quota_current, NULL, 10);
+		xmlFree (quota_current);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "quotalimit") == 0) {
+		/* gphoto:quota-limit */
+		xmlChar *quota_limit = xmlNodeListGetString (doc, node->children, TRUE);
+		self->priv->quota_limit = g_ascii_strtoll ((const gchar*) quota_limit, NULL, 10);
+		xmlFree (quota_limit);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "maxPhotosPerAlbum") == 0) {
+		/* gphoto:max-photos-per-album */
+		xmlChar *max_photos_per_album = xmlNodeListGetString (doc, node->children, TRUE);
+		self->priv->max_photos_per_album = strtol ((char*) max_photos_per_album, NULL, 10);
+		xmlFree (max_photos_per_album);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "thumbnail") == 0) {
+		/* gphoto:thumbnail */
+		xmlChar *thumbnail = xmlNodeListGetString (doc, node->children, TRUE);
+		if (thumbnail == NULL || *thumbnail == '\0')
+			return gdata_parser_error_required_content_missing (node, error);
+		xmlFree (self->priv->thumbnail_uri);
+		self->priv->thumbnail_uri = (gchar*) thumbnail;
+	} else if (xmlStrcmp (node->name, (xmlChar*) "x-allowDownloads") == 0) { /* RHSTODO: see if this comes with the user */
+		/* gphoto:allowDownloads */
+		/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
+	} else if (xmlStrcmp (node->name, (xmlChar*) "x-allowPrints") == 0) { /* RHSTODO: see if this comes with the user */
+		/* gphoto:allowPrints */
+		/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
+	} else if (GDATA_PARSABLE_CLASS (gdata_picasaweb_user_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
+		/* Error! */
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static void
+get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
+{
+	/* Chain up to the parent class */
+	GDATA_PARSABLE_CLASS (gdata_picasaweb_user_parent_class)->get_namespaces (parsable, namespaces);
+
+	g_hash_table_insert (namespaces, (gchar*) "gphoto", (gchar*) "http://schemas.google.com/photos/2007");
+}
+
+/**
+ * gdata_picasaweb_user_get_user:
+ * @self: a #GDataPicasaWebUser
+ *
+ * Gets the #GDataPicasaWebUser:user property.
+ *
+ * Return value: the feed's user, or %NULL
+ *
+ * Since: 0.6.0
+ **/
+const gchar *
+gdata_picasaweb_user_get_user (GDataPicasaWebUser *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_USER (self), NULL);
+	return self->priv->user;
+}
+
+/**
+ * gdata_picasaweb_user_get_nickname:
+ * @self: a #GDataPicasaWebUser
+ *
+ * Gets the #GDataPicasaWebUser:nickname property.
+ *
+ * Return value: the nickname of the feed's user's nickname, or %NULL
+ *
+ * Since: 0.6.0
+ **/
+const gchar *
+gdata_picasaweb_user_get_nickname (GDataPicasaWebUser *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_USER (self), NULL);
+	return self->priv->nickname;
+}
+
+/**
+ * gdata_picasaweb_user_get_quota_limit:
+ * @self: a #GDataPicasaWebUser
+ *
+ * Gets the #GDataPicasaWebUser:quota-limit property.  Note that
+ * this information is not available when accessing feeds which we
+ * haven't authenticated, and %0 is returned.
+ *
+ * Return value: the maximum capacity in bytes for this feed's account, or %-1
+ *
+ * Since: 0.6.0
+ **/
+gint64
+gdata_picasaweb_user_get_quota_limit (GDataPicasaWebUser *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_USER (self), -1);
+	return self->priv->quota_limit;
+}
+
+/**
+ * gdata_picasaweb_user_get_quota_current:
+ * @self: a #GDataPicasaWebUser
+ *
+ * Gets the #GDataPicasaWebUser:quota-current property.  Note that
+ * this information is not available when accessing feeds which we
+ * haven't authenticated, and %0 is returned.
+ *
+ * Return value: the current number of bytes in use by this feed's account, or %-1
+ *
+ * Since: 0.6.0
+ **/
+gint64
+gdata_picasaweb_user_get_quota_current (GDataPicasaWebUser *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_USER (self), -1);
+	return self->priv->quota_current;
+}
+
+/**
+ * gdata_picasaweb_user_get_max_photos_per_album:
+ * @self: a #GDataPicasaWebUser
+ *
+ * Gets the #GDataPicasaWebUser:max-photos-per-album property.  Note that
+ * this information is not available when accessing feeds which we
+ * haven't authenticated, and %0 is returned.
+ *
+ * Return value: the maximum number of photos an album for this account can hold, or %-1
+ *
+ * Since: 0.6.0
+ **/
+gint
+gdata_picasaweb_user_get_max_photos_per_album (GDataPicasaWebUser *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_USER (self), -1);
+	return self->priv->max_photos_per_album;
+}
+
+/**
+ * gdata_picasaweb_user_get_thumbnail_uri:
+ * @self: a #GDataPicasaWebUser
+ *
+ * Gets the #GDataPicasaWebUser:thumbnail-uri property.
+ *
+ * Return value: the URI for the thumbnail of the account, or %NULL
+ *
+ * Since: 0.6.0
+ **/
+const gchar *
+gdata_picasaweb_user_get_thumbnail_uri (GDataPicasaWebUser *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_USER (self), NULL);
+	return self->priv->thumbnail_uri;
+}
+
+/* TODO: in the future, see if we can change things like the user's nickname and thumbnail/avatar */
