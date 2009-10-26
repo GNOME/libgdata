@@ -40,7 +40,7 @@
  * 		video = gdata_youtube_service_query_single_video (service, NULL, "R-9gzmQHoe0", NULL, NULL);
  *
  * 		video_id = gdata_youtube_video_get_video_id (video); /<!-- -->* e.g. "R-9gzmQHoe0" *<!-- -->/
- * 		title = gdata_youtube_video_get_title (video); /<!-- -->* e.g. "Korpiklaani Vodka (official video 2009)" *<!-- -->/
+ * 		title = gdata_entry_get_title (GDATA_ENTRY (video)); /<!-- -->* e.g. "Korpiklaani Vodka (official video 2009)" *<!-- -->/
  * 		player_uri = gdata_youtube_video_get_player_uri (video); /<!-- -->* e.g. "http://www.youtube.com/watch?v=ZTUVgYoeN_b" *<!-- -->/
  * 		description = gdata_youtube_video_get_description (video); /<!-- -->* e.g. "Vodka is the first single from the album..." *<!-- -->/
  * 		gdata_entry_get_published (GDATA_ENTRY (video), &published); /<!-- -->* Date and time the video was originally published *<!-- -->/
@@ -121,7 +121,6 @@ enum {
 	PROP_AVERAGE_RATING,
 	PROP_KEYWORDS,
 	PROP_PLAYER_URI,
-	PROP_TITLE,
 	PROP_CATEGORY,
 	PROP_CREDIT,
 	PROP_DESCRIPTION,
@@ -299,20 +298,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataYouTubeVideo:title:
-	 *
-	 * Identifies the title of the video. This field has a maximum length of 60 characters or 100 bytes, whichever is reached first.
-	 *
-	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:title">online documentation</ulink>.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_TITLE,
-				g_param_spec_string ("title",
-					"Title", "Identifies the title of the video.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
 	 * GDataYouTubeVideo:category:
 	 *
 	 * Specifies a genre or developer tag that describes the video.
@@ -473,9 +458,22 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 }
 
 static void
+notify_title_cb (GDataYouTubeVideo *self, GParamSpec *pspec, gpointer user_data)
+{
+	/* Update our media:group title */
+	if (self->priv->media_group != NULL)
+		gdata_media_group_set_title (self->priv->media_group, gdata_entry_get_title (GDATA_ENTRY (self)));
+}
+
+static void
 gdata_youtube_video_init (GDataYouTubeVideo *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoPrivate);
+
+	/* The video's title is duplicated between atom:title and media:group/media:title, so listen for change notifications on atom:title
+	 * and propagate them to media:group/media:title accordingly. Since the media group isn't publically accessible, we don't need to
+	 * listen for notifications from it. */
+	g_signal_connect (GDATA_ENTRY (self), "notify::title", G_CALLBACK (notify_title_cb), NULL);
 }
 
 static void
@@ -542,9 +540,6 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_PLAYER_URI:
 			g_value_set_string (value, gdata_media_group_get_player_uri (priv->media_group));
 			break;
-		case PROP_TITLE:
-			g_value_set_string (value, gdata_media_group_get_title (priv->media_group));
-			break;
 		case PROP_CATEGORY:
 			g_value_set_object (value, gdata_media_group_get_category (priv->media_group));
 			break;
@@ -601,9 +596,6 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 			break;
 		case PROP_KEYWORDS:
 			gdata_youtube_video_set_keywords (self, g_value_get_string (value));
-			break;
-		case PROP_TITLE:
-			gdata_youtube_video_set_title (self, g_value_get_string (value));
 			break;
 		case PROP_CATEGORY:
 			gdata_youtube_video_set_category (self, g_value_get_object (value));
@@ -1046,39 +1038,6 @@ gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gch
 	g_return_val_if_fail (country != NULL && *country != '\0', FALSE);
 
 	return gdata_media_group_is_restricted_in_country (self->priv->media_group, country);
-}
-
-/**
- * gdata_youtube_video_get_title:
- * @self: a #GDataYouTubeVideo
- *
- * Gets the #GDataYouTubeVideo:title property.
- *
- * Return value: the video's title, or %NULL
- **/
-const gchar *
-gdata_youtube_video_get_title (GDataYouTubeVideo *self)
-{
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_media_group_get_title (self->priv->media_group);
-}
-
-/**
- * gdata_youtube_video_set_title:
- * @self: a #GDataYouTubeVideo
- * @title: the new video title
- *
- * Sets the #GDataYouTubeVideo:title property to the new title, @title.
- *
- * Set @title to %NULL to unset the video's title.
- **/
-void
-gdata_youtube_video_set_title (GDataYouTubeVideo *self, const gchar *title)
-{
-	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-
-	gdata_media_group_set_title (self->priv->media_group, title);
-	g_object_notify (G_OBJECT (self), "title");
 }
 
 /**

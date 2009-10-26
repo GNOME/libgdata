@@ -91,8 +91,6 @@ const gchar *gdata_youtube_video_get_keywords (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar *keywords);
 const gchar *gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self);
 gboolean gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gchar *country);
-const gchar *gdata_youtube_video_get_title (GDataYouTubeVideo *self);
-void gdata_youtube_video_set_title (GDataYouTubeVideo *self, const gchar *title);
 GDataMediaCategory *gdata_youtube_video_get_category (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *category);
 GDataYouTubeCredit *gdata_youtube_video_get_credit (GDataYouTubeVideo *self);

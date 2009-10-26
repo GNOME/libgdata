@@ -274,7 +274,6 @@ test_upload_simple (GDataService *service)
 	video = gdata_youtube_video_new (NULL);
 
 	gdata_entry_set_title (GDATA_ENTRY (video), "Bad Wedding Toast");
-	gdata_youtube_video_set_title (video, "Bad Wedding Toast");
 	gdata_youtube_video_set_description (video, "I gave a bad toast at my friend's wedding.");
 	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
 	gdata_youtube_video_set_category (video, category);
