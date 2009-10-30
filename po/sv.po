@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-21 00:33+0200\n"
-"PO-Revision-Date: 2009-09-21 00:33+0100\n"
+"POT-Creation-Date: 2009-10-30 18:28+0100\n"
+"PO-Revision-Date: 2009-10-30 18:28+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -219,8 +219,8 @@ msgid "Invalid redirect URI: %s"
 msgstr "Ogiltig URI för omdirigering: %s"
 
 #: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:293
-#: ../gdata/services/youtube/gdata-youtube-service.c:784
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:339
+#: ../gdata/services/youtube/gdata-youtube-service.c:785
 msgid "The entry has already been inserted."
 msgstr "Objektet har redan infogats."
 
@@ -284,21 +284,25 @@ msgstr "Du måste vara autentiserad för att uppdatera dokument."
 msgid "You must be authenticated to move documents."
 msgstr "Du måste vara autentiserad för att flytta dokument."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:135
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:189
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+msgid "You must specify a username or be authenticated to query a user."
+msgstr "Du måste ange ett användarnamn eller vara autentiserad för att söka efter en användare."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:181
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:235
 msgid "Query parameter not allowed for albums."
 msgstr "Frågeparametern tillåts inte för album."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:142
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:197
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:188
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:243
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "Du måste ange ett användarnamn eller vara autentiserad för att söka i alla album."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:238
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
 msgid "The album did not have a feed link."
 msgstr "Albumet saknade en webbkanalslänk."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:299
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
 msgid "You must be authenticated to upload a file."
 msgstr "Du måste vara autentiserad för att skicka upp en fil."
 
@@ -331,12 +335,12 @@ msgstr "Du har överstigit din objektkvota. Ta bort några objekt och försök i
 msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Okänd felkod \"%s\" i domänen \"%s\" togs emot på platsen \"%s\"."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:697
-#: ../gdata/services/youtube/gdata-youtube-service.c:738
+#: ../gdata/services/youtube/gdata-youtube-service.c:698
+#: ../gdata/services/youtube/gdata-youtube-service.c:739
 msgid "The video did not have a related videos <link>."
 msgstr "Videoklippet hade inga relaterade videoklipp <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:790
+#: ../gdata/services/youtube/gdata-youtube-service.c:791
 msgid "You must be authenticated to upload a video."
 msgstr "Du måste vara autentiserad för att skicka upp en video."
 
