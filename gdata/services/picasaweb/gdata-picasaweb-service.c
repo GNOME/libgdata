@@ -283,6 +283,7 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 	gchar *upload_uri;
 	gssize response_length;
 	GFileInfo *file_info = NULL;
+	GError *child_error = NULL;
 
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (file_entry), NULL);
@@ -333,11 +334,12 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 	}
 
 	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-				cancellable, error);
+				cancellable, &child_error);
 
 	g_object_unref (input_stream);
-	if (error != NULL && *error != NULL) {
+	if (child_error != NULL) {
 		/* Error! */
+		g_propagate_error (error, child_error);
 		g_object_unref (output_stream);
 		return NULL;
 	}
