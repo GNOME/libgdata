@@ -210,6 +210,11 @@ gdata_upload_stream_dispose (GObject *object)
 {
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM_GET_PRIVATE (object);
 
+	/* Close the stream before unreffing things like priv->service, which stops crashes like bgo#602156 if the stream is unreffed in the middle
+	 * of network operations */
+	if (g_output_stream_is_closed (G_OUTPUT_STREAM (object)) == FALSE)
+		g_output_stream_close (G_OUTPUT_STREAM (object), NULL, NULL);
+
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
 	priv->service = NULL;
