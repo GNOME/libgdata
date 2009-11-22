@@ -206,29 +206,54 @@ test_query_categories (void)
 	/* AND */
 	gdata_query_set_categories (query, "Fritz/Laurie");
 	query_uri = gdata_query_get_query_uri (query, "http://example.com");
-
 	g_assert_cmpstr (query_uri, ==, "http://example.com/-/Fritz/Laurie?q=foobar");
 	g_free (query_uri);
 
 	/* OR */
 	gdata_query_set_categories (query, "Fritz|Laurie");
 	query_uri = gdata_query_get_query_uri (query, "http://example.com");
-
 	g_assert_cmpstr (query_uri, ==, "http://example.com/-/Fritz%7CLaurie?q=foobar");
 	g_free (query_uri);
 
 	/* Combination */
 	gdata_query_set_categories (query, "A|-{urn:google.com}B/-C");
 	query_uri = gdata_query_get_query_uri (query, "http://example.com/gdata_test");
-
 	g_assert_cmpstr (query_uri, ==, "http://example.com/gdata_test/-/A%7C-%7Burn%3Agoogle.com%7DB/-C?q=foobar");
 	g_free (query_uri);
 
 	/* Same combination without q param */
 	gdata_query_set_q (query, NULL);
 	query_uri = gdata_query_get_query_uri (query, "http://example.com");
-
 	g_assert_cmpstr (query_uri, ==, "http://example.com/-/A%7C-%7Burn%3Agoogle.com%7DB/-C");
+	g_free (query_uri);
+
+	g_object_unref (query);
+}
+
+static void
+test_query_unicode (void)
+{
+	GDataQuery *query;
+	gchar *query_uri;
+
+	g_test_bug ("602497");
+
+	/* Simple query */
+	query = gdata_query_new ("fööbar‽");
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=f%C3%B6%C3%B6bar%E2%80%BD");
+	g_free (query_uri);
+
+	/* Categories */
+	gdata_query_set_categories (query, "Ümlauts|¿Questions‽");
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/-/%C3%9Cmlauts%7C%C2%BFQuestions%E2%80%BD?q=f%C3%B6%C3%B6bar%E2%80%BD");
+	g_free (query_uri);
+
+	/* Author */
+	gdata_query_set_author (query, "Lørd Brïan Bleßêd");
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/-/%C3%9Cmlauts%7C%C2%BFQuestions%E2%80%BD?q=f%C3%B6%C3%B6bar%E2%80%BD&author=L%C3%B8rd%20Br%C3%AFan%20Ble%C3%9F%C3%AAd");
 	g_free (query_uri);
 
 	g_object_unref (query);
@@ -1537,6 +1562,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/entry/get_xml", test_entry_get_xml);
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);
 	g_test_add_func ("/query/categories", test_query_categories);
+	g_test_add_func ("/query/unicode", test_query_unicode);
 	g_test_add_func ("/color/parsing", test_color_parsing);
 	g_test_add_func ("/color/output", test_color_output);
 

@@ -271,7 +271,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->tag != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "tag=");
-		g_string_append_uri_escaped (query_uri, priv->tag, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->tag, NULL, FALSE);
 	}
 
 	if (priv->bounding_box.north != priv->bounding_box.south && priv->bounding_box.east != priv->bounding_box.west) {
@@ -288,7 +288,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->location != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "l=");
-		g_string_append_uri_escaped (query_uri, priv->location, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->location, NULL, FALSE);
 	}
 }
 

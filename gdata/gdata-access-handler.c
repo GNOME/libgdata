@@ -245,10 +245,10 @@ get_soup_message (GDataAccessHandler *access_handler, GDataAccessRule *rule, con
 
 	uri_string = g_string_sized_new (strlen (gdata_link_get_uri (link)) + 30);
 	g_string_append_printf (uri_string, "%s/", gdata_link_get_uri (link));
-	g_string_append_uri_escaped (uri_string, scope_type, NULL, TRUE);
+	g_string_append_uri_escaped (uri_string, scope_type, NULL, FALSE);
 	if (scope_value != NULL) {
 		g_string_append (uri_string, "%3A");
-		g_string_append_uri_escaped (uri_string, scope_value, NULL, TRUE);
+		g_string_append_uri_escaped (uri_string, scope_value, NULL, FALSE);
 	}
 
 	uri = g_string_free (uri_string, FALSE);
