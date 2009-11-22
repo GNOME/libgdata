@@ -1,3 +1,16 @@
+Overview of changes from libgdata 0.5.0 to libgdata 0.5.1
+=========================================================
+
+Major changes:
+* Fix up Unicode support in queries
+
+Bugs fixed:
+* Bug 598746 — gdata_picasaweb_query_set_image_size documentation fix
+* Bug 598910 — Timestamp bug
+* Bug 598912 — Test data was changed by my mucking around with comments
+* Bug 598893 — gdata_picasaweb_album_new doesn't set a valid visibility
+* Bug 602156 — GDataUploadStream should close GOutputStream on dispose
+
 Overview of changes from libgdata 0.4.0 to libgdata 0.5.0
 =========================================================
 
