@@ -212,7 +212,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->order_by != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "orderby=");
-		g_string_append_uri_escaped (query_uri, priv->order_by, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->order_by, NULL, FALSE);
 	}
 
 	APPEND_SEP
@@ -224,13 +224,13 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->sort_order != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "sortorder=");
-		g_string_append_uri_escaped (query_uri, priv->sort_order, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->sort_order, NULL, FALSE);
 	}
 
 	if (priv->group != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "group=");
-		g_string_append_uri_escaped (query_uri, priv->group, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->group, NULL, FALSE);
 	}
 }
 

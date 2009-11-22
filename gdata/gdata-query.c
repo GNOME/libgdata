@@ -426,13 +426,13 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	/* If we've been provided with an entry ID, only append that */
 	if (priv->entry_id != NULL) {
 		g_string_append_c (query_uri, '/');
-		g_string_append_uri_escaped (query_uri, priv->entry_id, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->entry_id, NULL, FALSE);
 		return;
 	}
 
 	if (priv->categories != NULL) {
 		g_string_append (query_uri, "/-/");
-		g_string_append_uri_escaped (query_uri, priv->categories, "/", TRUE);
+		g_string_append_uri_escaped (query_uri, priv->categories, "/", FALSE);
 	}
 
 	/* If that's it, return */
@@ -443,13 +443,13 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->q != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "q=");
-		g_string_append_uri_escaped (query_uri, priv->q, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->q, NULL, FALSE);
 	}
 
 	if (priv->author != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "author=");
-		g_string_append_uri_escaped (query_uri, priv->author, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->author, NULL, FALSE);
 	}
 
 	if (priv->updated_min.tv_sec != 0 || priv->updated_min.tv_usec != 0) {

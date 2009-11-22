@@ -234,7 +234,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	if (entry_id == NULL && priv->folder_id != NULL) {
 		g_string_append (query_uri, "/folder%3A");
-		g_string_append_uri_escaped (query_uri, priv->folder_id, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->folder_id, NULL, FALSE);
 	}
 
 	/* Chain up to the parent class */
@@ -250,10 +250,10 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		collaborator_address = priv->collaborator_addresses;
 
 		g_string_append (query_uri, "writer=");
-		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (collaborator_address->data), NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (collaborator_address->data), NULL, FALSE);
 		for (collaborator_address = collaborator_address->next; collaborator_address != NULL; collaborator_address = collaborator_address->next) {
 			g_string_append_c (query_uri, ';');
-			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (collaborator_address->data), NULL, TRUE);
+			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (collaborator_address->data), NULL, FALSE);
 		}
 	}
 
@@ -263,17 +263,17 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		reader_address = priv->reader_addresses;
 
 		g_string_append (query_uri, "reader=");
-		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (reader_address->data), NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (reader_address->data), NULL, FALSE);
 		for (reader_address = reader_address->next; reader_address != NULL; reader_address = reader_address->next) {
 			g_string_append_c (query_uri, ';');
-			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (reader_address->data), NULL, TRUE);
+			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (reader_address->data), NULL, FALSE);
 		}
 	}
 
 	if (priv->title != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "title=");
-		g_string_append_uri_escaped (query_uri, priv->title, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->title, NULL, FALSE);
 		if (priv->exact_title == TRUE)
 			g_string_append (query_uri, "&title-exact=true");
 	}

@@ -484,17 +484,17 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	if (priv->language != NULL) {
 		g_string_append (query_uri, "&lr=");
-		g_string_append_uri_escaped (query_uri, priv->language, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->language, NULL, FALSE);
 	}
 
 	if (priv->order_by != NULL) {
 		g_string_append (query_uri, "&orderby=");
-		g_string_append_uri_escaped (query_uri, priv->order_by, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->order_by, NULL, FALSE);
 	}
 
 	if (priv->restriction != NULL) {
 		g_string_append (query_uri, "&restriction=");
-		g_string_append_uri_escaped (query_uri, priv->restriction, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->restriction, NULL, FALSE);
 	}
 
 	if (priv->sort_order != GDATA_YOUTUBE_SORT_NONE) {

@@ -318,7 +318,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->order_by != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "orderby=");
-		g_string_append_uri_escaped (query_uri, priv->order_by, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->order_by, NULL, FALSE);
 	}
 
 	if (priv->recurrence_expansion_start.tv_sec != 0 || priv->recurrence_expansion_start.tv_usec != 0) {
@@ -350,7 +350,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->sort_order != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "sortorder=");
-		g_string_append_uri_escaped (query_uri, priv->sort_order, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->sort_order, NULL, FALSE);
 	}
 
 	if (priv->start_min.tv_sec != 0 || priv->start_min.tv_usec != 0) {
@@ -376,7 +376,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->timezone != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "ctz=");
-		g_string_append_uri_escaped (query_uri, priv->timezone, NULL, TRUE);
+		g_string_append_uri_escaped (query_uri, priv->timezone, NULL, FALSE);
 	}
 }
 
