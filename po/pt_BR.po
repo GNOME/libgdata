@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-18 15:58-0400\n"
-"PO-Revision-Date: 2009-10-18 15:59-0500\n"
-"Last-Translator: Og Maciel <ogmaciel@gnome.org>\n"
+"POT-Creation-Date: 2009-11-27 08:44-0200\n"
+"PO-Revision-Date: 2009-11-25 22:53-0300\n"
+"Last-Translator: Djavan Fagundes <dnoway@gmail.com>\n"
 "Language-Team: Portuguese/Brazil <gnome-pt_br-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -163,13 +163,13 @@ msgstr "Código de erro %u ao consultar: %s"
 #: ../gdata/gdata-service.c:389
 #, c-format
 msgid "Error code %u when downloading: %s"
-msgstr "Código de erro %u ao fazer download: %s"
+msgstr "Código de erro %u ao baixar: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:394
 #, c-format
 msgid "Error code %u when uploading: %s"
-msgstr "Código de erro %u ao fazer envio: %s"
+msgstr "Código de erro %u ao enviar: %s"
 
 #: ../gdata/gdata-service.c:639
 msgid "A CAPTCHA must be filled out to log in."
@@ -222,7 +222,7 @@ msgid "Invalid redirect URI: %s"
 msgstr "URI de redirecionamento inválida: %s"
 
 #: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:293
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:340
 #: ../gdata/services/youtube/gdata-youtube-service.c:785
 msgid "The entry has already been inserted."
 msgstr "A entrada já foi inserida."
@@ -288,23 +288,29 @@ msgstr "Você deve estar autenticado para atualizar documentos."
 msgid "You must be authenticated to move documents."
 msgstr "Você deve estar autenticado para mover documentos."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:135
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:189
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"Você deve especificar um nome de usuário ou estar autenticado para consultar "
+"um usuário."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:181
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:235
 msgid "Query parameter not allowed for albums."
 msgstr "Parâmetro de consulta não é permitido para álbuns."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:142
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:197
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:188
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:243
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Você deve especificar um nome de usuário o estar autenticado para consultar "
 "todos os álbuns."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:238
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
 msgid "The album did not have a feed link."
 msgstr "O álbum não tinha um link de fonte de notícia (\"feed\")."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:299
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:346
 msgid "You must be authenticated to upload a file."
 msgstr "Você deve estar autenticado para enviar um arquivo."
 
