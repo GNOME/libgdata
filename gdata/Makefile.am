@@ -120,4 +120,36 @@ EXTRA_DIST = \
 	gdata.symbols	\
 	gdata-marshal.list
 
+# Introspection
+
+if HAVE_INTROSPECTION
+GData-$(GDATA_VERSION_MAJOR).$(GDATA_VERSION_MINOR).gir: $(INTROSPECTION_SCANNER) libgdata.la
+	$(QUIET_GEN)$(INTROSPECTION_SCANNER) -v						\
+	--namespace GData --nsversion=$(GDATA_VERSION_MAJOR).$(GDATA_VERSION_MINOR)	\
+	--strip-prefix=GData --add-include-path=$(srcdir) --add-include=path=.		\
+	--c-include="gdata/gdata.h" --include=libxml2-2.0 --include=Soup-2.4		\
+	--library=gdata --output $@ --pkg gobject-2.0					\
+	-I$(top_srcdir)									\
+	-I$(top_srcdir)/gdata								\
+	`find -name "*.[ch]" | grep -vE ".*/gdata-(youtube-control|media-group|youtube-group|georss-where|exif-tags)\.[ch]"`
+# The files listed above are excluded because they're currently private
+
+BUILT_GIRSOURCES = GData-$(GDATA_VERSION_MAJOR).$(GDATA_VERSION_MINOR).gir
+
+# INTROSPECTION_GIRDIR/INTROSPECTION_TYPELIBDIR aren't the right place to
+# install anything - we need to install inside our prefix.
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(BUILT_GIRSOURCES)
+
+typelibsdir = $(libdir)/girepository-1.0/
+typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+
+%.typelib: %.gir $(INTROSPECTION_COMPILER)
+	$(QUIET_GEN)$(DEBUG) $(INTROSPECTION_COMPILER)	\
+	--includedir=$(srcdir) --includedir=.		\
+	$(INTROSPECTION_COMPILER_OPTS) $< -o $(builddir)/$(@F)
+
+CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
+endif
+
 -include $(top_srcdir)/git.mk

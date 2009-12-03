@@ -11,7 +11,8 @@ EXTRA_DIST = \
 	HACKING			\
 	gtk-doc.make		\
 	libgdata.pc.in		\
-	libgdata.doap
+	libgdata.doap		\
+	introspection.m4
 
 CLEANFILES = gdata.pc
 
