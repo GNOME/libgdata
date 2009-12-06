@@ -400,3 +400,51 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 
 	return new_entry;
 }
+
+/**
+ * gdata_picasaweb_service_insert_album:
+ * @self: a #GDataPicasaWebService
+ * @album: a #GDataPicasaWebAlbum to create on the server
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Inserts a new album described by @album. A user must be
+ * authenticated to use this function.
+ *
+ * Return value: the inserted #GDataPicasaWebAlbum; unref with
+ * g_object_unref()
+ *
+ * Since: 0.6.0
+ **/
+GDataPicasaWebAlbum *
+gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GCancellable *cancellable, GError **error)
+{
+	GDataCategory *album_kind;
+
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (album), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	if (gdata_entry_is_inserted (GDATA_ENTRY (album)) == TRUE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
+				     _("The album has already been inserted."));
+		return NULL;
+	}
+
+	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+				     _("You must be authenticated to insert an album."));
+		return NULL;
+	}
+
+	/* PicasaWeb needs to know that this is an album, so we're adding the category when we insert it to make sure it's there.
+	   gdata_entry_add_category() checks if it already exists for us. */
+	album_kind = gdata_category_new ("http://schemas.google.com/photos/2007#album", "http://schemas.google.com/g/2005#kind", NULL);
+	gdata_entry_add_category (GDATA_ENTRY (album), album_kind);
+	g_object_unref (album_kind);
+
+	return GDATA_PICASAWEB_ALBUM (gdata_service_insert_entry (GDATA_SERVICE (self), "http://picasaweb.google.com/data/feed/api/user/default",
+								  GDATA_ENTRY (album), cancellable, error));
+}
+

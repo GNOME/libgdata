@@ -856,6 +856,68 @@ test_album_feed (GDataService *service)
 }
 
 static void
+test_insert_album (GDataService *service)
+{
+	GDataPicasaWebAlbum *album;
+	GDataPicasaWebAlbum *inserted_album;
+	GTimeVal timestamp;
+	gchar *timestr;
+	GError *error;
+
+	GDataFeed *album_feed;
+	GList *albums;
+	gboolean album_found;
+	GList *node;
+
+	error = NULL;
+
+	album = gdata_picasaweb_album_new ("album_id_72");
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
+
+	gdata_entry_set_title (GDATA_ENTRY (album), "Thanksgiving photos");
+	gdata_entry_set_summary (GDATA_ENTRY (album), "Family photos of the feast!");
+	gdata_picasaweb_album_set_location (album, "Winnipeg, MN");
+
+	g_time_val_from_iso8601 ("2002-10-14T09:58:59.643554Z", &timestamp);
+	gdata_picasaweb_album_set_timestamp (album, &timestamp);
+
+	inserted_album = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (inserted_album));
+
+	/* Test that it returns what we gave */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (inserted_album)), ==, "Thanksgiving photos");
+	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (inserted_album)), ==, "Family photos of the feast!");
+	g_assert_cmpstr (gdata_picasaweb_album_get_location (inserted_album), ==, "Winnipeg, MN");
+
+	gdata_picasaweb_album_get_timestamp (inserted_album, &timestamp);
+	timestr = g_time_val_to_iso8601 (&timestamp);
+	g_assert_cmpstr (timestr, ==, "2002-10-14T09:58:59Z");
+	g_free (timestr);
+
+	/* Test that album is actually on server */
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	albums = gdata_feed_get_entries (album_feed);
+
+	album_found = FALSE;
+	for (node = albums; node != NULL; node = node->next) {
+		if (g_strcmp0 (gdata_entry_get_title (GDATA_ENTRY (node->data)), "Thanksgiving photos")) {
+			album_found = TRUE;
+		}
+	}
+	g_assert (album_found);
+
+	/* Clean up the evidence */
+	gdata_service_delete_entry (service, GDATA_ENTRY (inserted_album), NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (album_feed);
+	g_object_unref (album);
+	g_object_unref (inserted_album);
+}
+
+static void
 test_query_all_albums (GDataService *service)
 {
 	GDataFeed *album_feed, *photo_feed;
@@ -1075,6 +1137,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/picasaweb/query/album_feed", service, test_album_feed);
 	g_test_add_data_func ("/picasaweb/query/album_feed_entry", service, test_album_feed_entry);
 	g_test_add_data_func ("/picasaweb/query/album", service, test_album);
+	g_test_add_data_func ("/picasaweb/insert/album", service, test_insert_album);
 	g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
 	g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
 	g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
