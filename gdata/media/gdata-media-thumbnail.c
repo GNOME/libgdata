@@ -34,8 +34,10 @@
 #include <string.h>
 
 #include "gdata-media-thumbnail.h"
+#include "gdata-download-stream.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-private.h"
 
 static void gdata_media_thumbnail_finalize (GObject *object);
 static void gdata_media_thumbnail_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -359,4 +361,61 @@ gdata_media_thumbnail_get_time (GDataMediaThumbnail *self)
 {
 	g_return_val_if_fail (GDATA_IS_MEDIA_THUMBNAIL (self), -1);
 	return self->priv->time;
+}
+
+/**
+ * gdata_media_thumbnail_download:
+ * @self: a #GDataMediaThumbnail
+ * @service: the #GDataService
+ * @default_filename: an optional default filename used if the user selects a directory as the destination
+ * @target_dest_file: the destination file or directory to download to
+ * @replace_file_if_exists: whether to replace already existing files at the download location
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Downloads and returns the thumbnail represented by @self.
+ *
+ * If @target_dest_file is a directory, then the file will be
+ * downloaded into this directory with the default filename specified
+ * in @default_filename.
+ *
+ * Return value: the thumbnail's data, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.6.0
+ **/
+GFile *
+gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file, gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
+{
+	GFileOutputStream *dest_stream;
+	const gchar *src_uri;
+	GInputStream *src_stream;
+	GFile *actual_file = NULL;
+	GError *child_error = NULL;
+
+	g_return_val_if_fail (GDATA_IS_MEDIA_THUMBNAIL (self), NULL);
+	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (default_filename != NULL, NULL);
+	g_return_val_if_fail (G_IS_FILE (target_dest_file), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	dest_stream = _gdata_download_stream_find_destination (default_filename, target_dest_file, &actual_file, replace_file_if_exists, cancellable, error);
+	if (dest_stream == NULL)
+		return NULL;
+
+	src_uri = gdata_media_thumbnail_get_uri (self);
+
+	/* Synchronously splice the data from the download stream to the file stream (network -> disk) */
+	src_stream = gdata_download_stream_new (GDATA_SERVICE (service), src_uri);
+	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream,
+				G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
+	g_object_unref (src_stream);
+	g_object_unref (dest_stream);
+	if (child_error != NULL) {
+		g_object_unref (actual_file);
+		g_propagate_error (error, child_error);
+		return NULL;
+	}
+
+	return actual_file;
 }

@@ -1103,6 +1103,7 @@ gdata_media_content_get_expression
 gdata_media_content_get_duration
 gdata_media_content_get_height
 gdata_media_content_get_width
+gdata_media_content_download
 <SUBSECTION Standard>
 gdata_media_content_get_type
 GDATA_MEDIA_CONTENT
@@ -1142,6 +1143,7 @@ gdata_media_thumbnail_get_uri
 gdata_media_thumbnail_get_height
 gdata_media_thumbnail_get_width
 gdata_media_thumbnail_get_time
+gdata_media_thumbnail_download
 <SUBSECTION Standard>
 gdata_media_thumbnail_get_type
 GDATA_MEDIA_THUMBNAIL

@@ -59,6 +59,16 @@ PKG_CHECK_MODULES(GDATA, [$pkg_modules])
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
+# Optional dependencies
+
+PKG_CHECK_MODULES(GDK, gdk-2.0, have_gdk=yes, have_gdk=no)
+if test "x$have_gdk" = "xyes"; then
+	AC_DEFINE(HAVE_GDK, 1, [Defined if GDK+ is installed])
+fi
+
+AC_SUBST(GDK_CFLAGS) # TODO: test how this fairs without gdk-2.0.pc avail
+AC_SUBST(GDK_LIBS)
+
 # GNOME support, which pulls in libsoup-gnome-2.4 to provide transparent proxy support
 AC_MSG_CHECKING(whether to build with GNOME support)
 AC_ARG_ENABLE(gnome, AS_HELP_STRING([--enable-gnome], [Whether to enable GNOME support]),, enable_gnome=yes)

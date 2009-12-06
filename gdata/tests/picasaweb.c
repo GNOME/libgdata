@@ -21,6 +21,12 @@
 #include <glib.h>
 #include <unistd.h>
 #include <string.h>
+#include <config.h>
+
+/* For the thumbnail size tests in test_download_thumbnails() */
+#ifdef HAVE_GDK
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#endif
 
 #include "gdata.h"
 #include "common.h"
@@ -96,6 +102,292 @@ test_authentication_async (void)
 	g_main_loop_unref (main_loop);
 
 	g_object_unref (service);
+}
+
+static void
+test_download_thumbnails (GDataService *service)
+{
+	GDataFeed *album_feed, *photo_feed;
+	GList *album_entries, *photo_entries, *thumbnails, *node;
+	GDataPicasaWebAlbum *album;
+	GDataPicasaWebFile *photo;
+	GDataPicasaWebQuery *query;
+	GFile *dest_dir, *dest_file, *actual_file;
+	GDataMediaThumbnail *thumbnail;
+	GdkPixbuf *pixbuf;
+	gchar *file_path, *basename;
+	GError *error = NULL;
+
+	/* Acquire album, photo to test */
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (album_feed));
+
+	album_entries = gdata_feed_get_entries (album_feed);
+	g_assert (album_entries != NULL);
+
+	album = GDATA_PICASAWEB_ALBUM (album_entries->data);
+
+	query = gdata_picasaweb_query_new (NULL);
+	gdata_picasaweb_query_set_image_size (query, "32"); /* we're querying for the smallest size, to save bandwidth here :D */
+	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), album, GDATA_QUERY (query), NULL, NULL, NULL, &error);
+	g_object_unref (query);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (photo_feed));
+
+	photo_entries = gdata_feed_get_entries (photo_feed);
+	g_assert (photo_entries != NULL);
+
+	photo = GDATA_PICASAWEB_FILE (photo_entries->data);
+
+	dest_dir = g_file_new_for_path ("/tmp/gdata.picasaweb.test.dir/");
+	dest_file = g_file_new_for_path ("/tmp/gdata.picasaweb.test.dir/test.jpg");
+
+	/* clean up any pre-existing test output  */
+	if (g_file_query_exists (dest_dir, NULL)) {
+		g_file_trash (dest_dir, NULL, &error); /* TODO does this remove it even with files in it?  hope so */
+		g_assert_no_error (error);
+	}
+
+	thumbnails = gdata_picasaweb_file_get_thumbnails (photo);
+	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
+
+	/* to a directory, non-existent, should succeed, file with "directory"'s name */
+	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_dir, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (g_file_query_exists (actual_file, NULL));
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "gdata.picasaweb.test.dir");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* to a "directory", which doesn't actually exist (as a directory), should fail */
+	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_DIRECTORY);
+	g_clear_error (&error);
+	g_assert (actual_file == NULL);
+
+	/* create the directory so we can test on it and in it */
+	g_file_trash (dest_dir, NULL, &error);
+	g_assert_no_error (error);
+	g_file_make_directory (dest_dir, NULL, &error);
+	g_assert_no_error (error);
+
+	/* to a directory, existent, should succeed, making use of the default filename provided */
+	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_dir, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (actual_file != NULL);
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "thumbnail.jpg");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* to a directory, existent, with inferred file destination already existent, without replace, should fail */
+	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_dir, FALSE, NULL, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
+	g_clear_error (&error);
+	g_assert (actual_file == NULL);
+
+	/* to a directory, existent, with inferred file destination already existent, with replace, should succeed */
+	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_dir, TRUE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (g_file_query_exists (actual_file, NULL));
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "thumbnail.jpg");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* to a path, non-existent, should succeed */
+	g_assert (g_file_query_exists (dest_file, NULL) == FALSE);
+	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (g_file_query_exists (actual_file, NULL));
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "test.jpg");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* to a path, existent, without replace, should fail */
+	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
+	g_clear_error (&error);
+	g_assert (actual_file == NULL);
+
+	/* to a path, existent, with replace, should succeed */
+	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, TRUE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (g_file_query_exists (actual_file, NULL));
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "test.jpg");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* clean up test file and thumbnail*/
+	g_file_trash (dest_file, NULL, &error);
+	g_assert_no_error (error);
+
+	/* test getting all thumbnails and that they're all the correct size */
+	for (node = thumbnails; node != NULL; node = node->next) {
+		thumbnail = GDATA_MEDIA_THUMBNAIL (node->data);
+		actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
+		g_assert_no_error (error);
+		g_assert (g_file_query_exists (actual_file, NULL));
+
+#ifdef HAVE_GDK
+		file_path = g_file_get_path (actual_file);
+		pixbuf = gdk_pixbuf_new_from_file (file_path, &error);
+		g_assert_no_error (error);
+		g_free (file_path);
+
+		/* PicasaWeb reported the height of a thumbnail as a pixel too large once, but otherwise correct */
+		g_assert_cmpint (abs (gdk_pixbuf_get_width (pixbuf) - (gint)gdata_media_thumbnail_get_width (thumbnail)) , <=, 1);
+		g_assert_cmpint (abs (gdk_pixbuf_get_height (pixbuf) - (gint)gdata_media_thumbnail_get_height (thumbnail)) , <=, 1);
+		g_object_unref (pixbuf);
+#endif /* HAVE_GDK */
+
+		g_file_trash (actual_file, NULL, &error);
+		g_assert (g_file_query_exists (actual_file, NULL) == FALSE);
+		g_assert_no_error (error);
+		g_object_unref (actual_file);
+	}
+
+	/* clean up test directory again */
+	g_file_trash (dest_dir, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (photo_feed);
+	g_object_unref (album_feed);
+	g_object_unref (dest_dir);
+	g_object_unref (dest_file);
+}
+
+static void
+test_download (GDataService *service)
+{
+	GDataFeed *album_feed, *photo_feed;
+	GList *album_entries, *photo_entries, *media_contents;
+	GDataPicasaWebAlbum *album;
+	GDataPicasaWebFile *photo;
+	GDataPicasaWebQuery *query;
+	GDataMediaContent* content;
+	GFile *dest_dir, *dest_file, *actual_file;
+	gchar *basename;
+	GError *error = NULL;
+
+	/*** Acquire a photo to test ***/
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (album_feed));
+
+	album_entries = gdata_feed_get_entries (album_feed);
+	g_assert (album_entries != NULL);
+
+	album = GDATA_PICASAWEB_ALBUM (album_entries->data);
+
+	query = gdata_picasaweb_query_new (NULL);
+	gdata_picasaweb_query_set_image_size (query, "32"); /* we're querying for the smallest size, to save bandwidth here :D */
+	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), album, GDATA_QUERY (query), NULL, NULL, NULL, &error);
+	g_object_unref (query);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (photo_feed));
+
+	photo_entries = gdata_feed_get_entries (photo_feed);
+	g_assert (photo_entries != NULL);
+
+	photo = GDATA_PICASAWEB_FILE (photo_entries->data);
+
+	dest_dir = g_file_new_for_path ("/tmp/gdata.picasaweb.test.dir/");
+	dest_file = g_file_new_for_path ("/tmp/gdata.picasaweb.test.dir/test.jpg");
+
+	/* clean up any pre-existing test output  */
+	if (g_file_query_exists (dest_dir, NULL)) {
+		g_file_trash (dest_dir, NULL, &error); /* TODO does this remove it even with files in it?  hope so */
+		g_assert_no_error (error);
+	}
+
+	media_contents = gdata_picasaweb_file_get_contents (photo);
+	g_assert_cmpint (g_list_length (media_contents), ==, 1);
+	content = GDATA_MEDIA_CONTENT (media_contents->data);
+
+	/* to a directory, non-existent, should succeed, file with "directory"'s name */
+	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_dir, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (g_file_query_exists (actual_file, NULL));
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "gdata.picasaweb.test.dir");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* to a file in a "directory", which already exists as a file, should fail */
+	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_file, FALSE, NULL, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_DIRECTORY);
+	g_clear_error (&error);
+	g_assert (actual_file == NULL);
+
+	/* create the directory so we can test on it and in it */
+	g_file_trash (dest_dir, NULL, &error);
+	g_assert_no_error (error);
+	g_file_make_directory (dest_dir, NULL, &error);
+	g_assert_no_error (error);
+
+	/* to a directory, existent, should succeed, using default filename */
+	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_dir, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (actual_file != NULL);
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "default.jpg");
+	g_free (basename);
+	g_object_unref (actual_file);
+	/* TODO: test that it exists with default filename? */
+
+	/* to a directory, existent, should fail trying to use the default filename, which already exists */
+	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_dir, FALSE, NULL, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
+	g_clear_error (&error);
+	g_assert (actual_file == NULL);
+
+	/* to a directory, existent, should succeed with default filename, replacing what already exists */
+	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_dir, TRUE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (g_file_query_exists (actual_file, NULL));
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "default.jpg");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* to a path, non-existent, should succeed */
+	g_assert (g_file_query_exists (dest_file, NULL) == FALSE);
+	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_file, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (g_file_query_exists (actual_file, NULL));
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "test.jpg");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* to a path, existent, without replace, should fail */
+	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_file, FALSE, NULL, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
+	g_clear_error (&error);
+	g_assert (actual_file == NULL);
+
+	/* to a path, existent, with replace, should succeed */
+	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_file, TRUE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (g_file_query_exists (actual_file, NULL));
+	basename = g_file_get_basename (actual_file);
+	g_assert_cmpstr (basename, ==, "test.jpg");
+	g_free (basename);
+	g_object_unref (actual_file);
+
+	/* clean up test directory */
+	g_file_trash (dest_dir, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (photo_feed);
+	g_object_unref (album_feed);
+	g_object_unref (dest_dir);
+	g_object_unref (dest_file);
 }
 
 static void
@@ -775,7 +1067,6 @@ main (int argc, char *argv[])
 	g_test_add_func ("/picasaweb/authentication", test_authentication);
 	if (g_test_thorough () == TRUE)
 		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);
-	g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
 	g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
 	g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
 	if (g_test_thorough () == TRUE)
@@ -787,6 +1078,9 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
 	g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
 	g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
+	g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
+	g_test_add_data_func ("/picasaweb/download/photo", service, test_download);
+	g_test_add_data_func ("/picasaweb/download/thumbnails", service, test_download_thumbnails);
 	g_test_add_data_func ("/picasaweb/album/new", service, test_album_new);
 
 	retval = g_test_run ();

@@ -3,6 +3,7 @@ include $(top_srcdir)/Makefile.decl
 INCLUDES = \
 	-I$(top_srcdir)/				\
 	-I$(top_srcdir)/gdata				\
+	$(GDK_CFLAGS)  					\
 	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\""\
 	$(DISABLE_DEPRECATED)				\
 	$(WARN_CFLAGS)					\
@@ -10,6 +11,7 @@ INCLUDES = \
 
 LIBS = \
 	$(top_builddir)/gdata/libgdata.la	\
+	$(GDK_LIBS)				\
 	$(GDATA_LIBS)
 
 noinst_PROGRAMS = $(TEST_PROGS)
