@@ -114,7 +114,6 @@ test_download_thumbnails (GDataService *service)
 	GDataPicasaWebQuery *query;
 	GFile *dest_dir, *dest_file, *actual_file;
 	GDataMediaThumbnail *thumbnail;
-	GdkPixbuf *pixbuf;
 	gchar *file_path, *basename;
 	GError *error = NULL;
 
@@ -228,6 +227,10 @@ test_download_thumbnails (GDataService *service)
 
 	/* test getting all thumbnails and that they're all the correct size */
 	for (node = thumbnails; node != NULL; node = node->next) {
+#ifdef HAVE_GDK
+		GdkPixbuf *pixbuf;
+#endif /* HAVE_GDK */
+
 		thumbnail = GDATA_MEDIA_THUMBNAIL (node->data);
 		actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
 		g_assert_no_error (error);
