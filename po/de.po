@@ -4,9 +4,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-20 22:01+0200\n"
-"PO-Revision-Date: 2009-09-20 22:02+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&component=general\n"
+"POT-Creation-Date: 2009-12-06 05:12+0000\n"
+"PO-Revision-Date: 2009-12-11 17:02+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -219,8 +220,8 @@ msgid "Invalid redirect URI: %s"
 msgstr "Ungültige Weiterleitungsadresse: %s"
 
 #: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:293
-#: ../gdata/services/youtube/gdata-youtube-service.c:784
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:340
+#: ../gdata/services/youtube/gdata-youtube-service.c:785
 msgid "The entry has already been inserted."
 msgstr "Dieser Eintrag wurde bereits eingefügt."
 
@@ -285,25 +286,42 @@ msgstr "Sie müssen legitimiert sein, um Dokumente zu aktualisieren."
 msgid "You must be authenticated to move documents."
 msgstr "Sie müssen legitimiert sein, um Dokumente zu verschieben."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:135
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:189
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+#| msgid "You must specify a username or be authenticated to query all albums."
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"Sie müssen einen Benutzernamen angeben oder legitimiert sein, um einen "
+"Benutzer abzufragen."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:181
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:235
 msgid "Query parameter not allowed for albums."
 msgstr "Abfrageparameter ist für Alben nicht erlaubt."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:142
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:197
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:188
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:243
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Sie müssen einen Benutzernamen angeben oder legitimiert sein, um alle Alben "
 "abzufragen."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:238
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
 msgid "The album did not have a feed link."
 msgstr "Für dieses Album gibt es keinen Feed-Link."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:299
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:346
 msgid "You must be authenticated to upload a file."
 msgstr "Sie müssen legitimiert sein, um eine Datei hochzuladen."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:431
+#| msgid "The rule has already been inserted."
+msgid "The album has already been inserted."
+msgstr "Das Album wurde bereits eingefügt."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:437
+#| msgid "You must be authenticated to query all calendars."
+msgid "You must be authenticated to insert an album."
+msgstr "Sie müssen legitimiert sein, um ein Album einzufügen."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:303
 #, c-format
@@ -342,12 +360,12 @@ msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Unbekannter Fehlercode »%s« in Domain »%s«, empfangen mit »%s«."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:697
-#: ../gdata/services/youtube/gdata-youtube-service.c:738
+#: ../gdata/services/youtube/gdata-youtube-service.c:698
+#: ../gdata/services/youtube/gdata-youtube-service.c:739
 msgid "The video did not have a related videos <link>."
 msgstr "Für dieses Video gibt es keine ähnlichen Videos <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:790
+#: ../gdata/services/youtube/gdata-youtube-service.c:791
 msgid "You must be authenticated to upload a video."
 msgstr "Sie müssen legitimiert sein, um ein Video hochzuladen."
 
