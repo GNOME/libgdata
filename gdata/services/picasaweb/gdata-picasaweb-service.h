@@ -83,7 +83,13 @@ GDataFeed *gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDa
 
 GDataPicasaWebFile *gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
 							 GFile *file_data, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
-/* TODO: async version */
+
+void
+gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
+					   GFile *file_data, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+GDataPicasaWebFile *
+gdata_picasaweb_service_upload_file_finish (GDataPicasaWebService *self, GAsyncResult *result, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+
 GDataPicasaWebAlbum *gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GCancellable *cancellable,
 							   GError **error) G_GNUC_WARN_UNUSED_RESULT;
 

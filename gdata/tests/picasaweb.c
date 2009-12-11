@@ -105,6 +105,103 @@ test_authentication_async (void)
 }
 
 static void
+test_upload_async_cb (GDataPicasaWebService *service, GAsyncResult *result, GMainLoop *main_loop)
+{
+	GDataPicasaWebFile *photo_new;
+	GError *error = NULL;
+
+	photo_new = gdata_picasaweb_service_upload_file_finish (service, result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_FILE (photo_new));
+	g_clear_error (&error);
+	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (photo_new)));
+
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (photo_new)), ==, "Async Photo Entry Title");
+
+	g_main_loop_quit (main_loop);
+
+	g_object_unref (photo_new);
+}
+
+static void
+test_upload_async (GDataService *service)
+{
+	GDataPicasaWebFile *photo;
+	GFile *photo_file;
+	GTimeVal timeval;
+	gchar *xml, *time_str, *summary, *expected_xml, *parsed_time_str;
+	GRegex *regex;
+	GMatchInfo *match_info;
+	guint64 delta;
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
+
+
+	g_get_current_time (&timeval);
+	time_str = g_time_val_to_iso8601 (&timeval);
+	summary = g_strdup_printf ("Async Photo Summary (%s)", time_str);
+
+	expected_xml = g_strdup_printf ("<entry "
+						"xmlns='http://www.w3.org/2005/Atom' "
+						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
+						"xmlns:media='http://search.yahoo.com/mrss/' "
+						"xmlns:gd='http://schemas.google.com/g/2005' "
+						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
+						"xmlns:app='http://www.w3.org/2007/app' "
+						"xmlns:georss='http://www.georss.org/georss' "
+						"xmlns:gml='http://www.opengis.net/gml'>"
+						"<title type='text'>Async Photo Entry Title</title>"
+						"<summary type='text'>Async Photo Summary \\(%s\\)</summary>"
+						"<gphoto:position>0</gphoto:position>"
+						"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
+						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
+						"<media:group>"
+							"<media:title type='plain'>Async Photo Entry Title</media:title>"
+							"<media:description type='plain'>Async Photo Summary \\(%s\\)</media:description>"
+						"</media:group>"
+					"</entry>", time_str, time_str);
+	g_free (time_str);
+
+	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
+	regex = g_regex_new (expected_xml, 0, 0, NULL);
+	g_free (expected_xml);
+
+	/* Build the photo */
+	photo = gdata_picasaweb_file_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (photo), "Async Photo Entry Title");
+	gdata_picasaweb_file_set_caption (photo, summary);
+
+	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
+	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected_xml and building the XML
+	 * for the photo. */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
+	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
+	parsed_time_str = g_match_info_fetch (match_info, 1);
+	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
+	g_assert_cmpuint (abs (delta), <, 100);
+
+	g_free (parsed_time_str);
+	g_free (xml);
+	g_regex_unref (regex);
+	g_match_info_free (match_info);
+
+	gdata_picasaweb_file_set_coordinates (photo, 17.127, -110.35);
+
+	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+
+	/* Upload the photo */
+	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, NULL,
+						   (GAsyncReadyCallback) test_upload_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+
+	g_free (summary);
+	g_object_unref (photo);
+	g_object_unref (photo_file);
+}
+
+static void
 test_download_thumbnails (GDataService *service)
 {
 	GDataFeed *album_feed, *photo_feed;
@@ -1132,6 +1229,9 @@ main (int argc, char *argv[])
 	g_test_add_func ("/picasaweb/authentication", test_authentication);
 	if (g_test_thorough () == TRUE)
 		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);
+	g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
+	if (g_test_thorough () == TRUE)
+		g_test_add_data_func ("/picasaweb/upload/photo_async", service, test_upload_async);
 	g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
 	g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
 	if (g_test_thorough () == TRUE)
