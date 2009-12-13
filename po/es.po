@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: libgdata.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&component=general\n"
-"POT-Creation-Date: 2009-10-25 15:12+0000\n"
-"PO-Revision-Date: 2009-10-28 00:01+0100\n"
+"POT-Creation-Date: 2009-12-06 05:12+0000\n"
+"PO-Revision-Date: 2009-12-12 12:27+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -219,7 +219,7 @@ msgid "Invalid redirect URI: %s"
 msgstr "URI de redirección no válida: %s"
 
 #: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:339
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:340
 #: ../gdata/services/youtube/gdata-youtube-service.c:785
 msgid "The entry has already been inserted."
 msgstr "La entrada ya se ha introducido."
@@ -286,7 +286,6 @@ msgid "You must be authenticated to move documents."
 msgstr "Debe estar autenticado para mover documentos."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
-#| msgid "You must specify a username or be authenticated to query all albums."
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
 "Debe especificar un nombre de usuario o estar autenticado para consultar "
@@ -308,9 +307,19 @@ msgstr ""
 msgid "The album did not have a feed link."
 msgstr "El álbum no tenía ningún enlace para proveedor."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:346
 msgid "You must be authenticated to upload a file."
 msgstr "Debe estar autenticado para cargar un archivo."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:431
+#| msgid "The rule has already been inserted."
+msgid "The album has already been inserted."
+msgstr "El álbum ya se ha introducido."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:437
+#| msgid "You must be authenticated to query all calendars."
+msgid "You must be authenticated to insert an album."
+msgstr "Debe estar autenticado para introducir el álbum."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:303
 #, c-format
