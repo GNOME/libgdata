@@ -39,7 +39,7 @@ documents_SOURCES		 = documents.c $(TEST_SRCS)
 TEST_PROGS			+= memory
 memory_SOURCES			 = memory.c $(TEST_SRCS)
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	photo.jpg		\
 	sample.ogg		\
 	test.doc		\
