@@ -1517,7 +1517,11 @@ gdata_picasaweb_file_get_contents (GDataPicasaWebFile *self)
  * gdata_picasaweb_file_get_thumbnails:
  * @self: a #GDataPicasaWebFile
  *
- * Returns a list of thumbnails, often at different sizes, for this file.
+ * Returns a list of thumbnails, often at different sizes, for this
+ * file.  Currently, PicasaWeb usually returns three thumbnails, with
+ * widths in pixels of 72, 144, and 288.  However, the thumbnail will
+ * not be larger than the actual image, so thumbnails may be smaller
+ * than the widths listed above.
  *
  * Return value: a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
  *

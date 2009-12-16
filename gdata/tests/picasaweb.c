@@ -634,7 +634,7 @@ test_photo (GDataService *service)
 	g_assert_cmpstr (timestamp, ==, "2008-12-06T18:32:10Z");
 
 	g_assert_cmpstr (gdata_picasaweb_file_get_video_status (photo), ==, NULL);
-	/* todo: not a good test of video status; want to upload a video for it */
+	/* TODO: not a good test of video status; want to upload a video for it */
 	g_assert_cmpuint (gdata_picasaweb_file_is_commenting_enabled (photo), ==, TRUE);
 	g_assert_cmpuint (gdata_picasaweb_file_get_comment_count (photo), ==, 2);
 	g_assert_cmpuint (gdata_picasaweb_file_get_rotation (photo), ==, 0);
@@ -644,27 +644,6 @@ test_photo (GDataService *service)
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (photo)), ==, "100_0269.jpg");
 
 	g_assert_cmpstr (gdata_picasaweb_file_get_credit (photo), ==, "libgdata.picasaweb");
-
-	/* TODO put up warning not to free this, if we are going to be passing them our own internal copy! */
-	list = gdata_picasaweb_file_get_contents (photo);
-
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	content = GDATA_MEDIA_CONTENT (list->data);
-	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
-			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
-	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
-	g_assert_cmpuint (gdata_media_content_is_default (content), ==, FALSE);
-	g_assert_cmpint (gdata_media_content_get_duration (content), ==, 0); /* doesn't apply to photos, but let's sanity-check it */
-
-	list = gdata_picasaweb_file_get_thumbnails (photo);
-
-	g_assert_cmpuint (g_list_length (list), ==, 3);
-	thumbnail = GDATA_MEDIA_THUMBNAIL (list->data);
-	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
-			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/s288/100_0269.jpg");
-	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 288);
-	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 216);
-	/* TODO consider testing time, gint64 */
 
 	/* Check EXIF values */
 	g_assert_cmpfloat (gdata_picasaweb_file_get_distance (photo), ==, 0);
@@ -696,6 +675,34 @@ test_photo (GDataService *service)
 	gdata_picasaweb_file_get_coordinates (photo, &latitude, &longitude);
 	g_assert_cmpfloat (latitude, ==, 45.4341173);
 	g_assert_cmpfloat (longitude, ==, 12.1289062);
+
+	/* Check Media */
+	list = gdata_picasaweb_file_get_contents (photo);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+
+	content = GDATA_MEDIA_CONTENT (list->data);
+	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
+			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
+	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
+	g_assert_cmpuint (gdata_media_content_get_width (content), ==, 1600);
+	g_assert_cmpuint (gdata_media_content_get_height (content), ==, 1200);
+	g_assert_cmpuint (gdata_media_content_get_medium (content), ==, GDATA_MEDIA_IMAGE);
+
+	g_assert_cmpuint (gdata_media_content_is_default (content), ==, FALSE);
+	g_assert_cmpint (gdata_media_content_get_duration (content), ==, 0); /* doesn't apply to photos */
+	g_assert_cmpuint (gdata_media_content_get_filesize (content), ==, 0); /* PicasaWeb doesn't set anything better */
+	g_assert_cmpuint (gdata_media_content_get_expression (content), ==, GDATA_MEDIA_EXPRESSION_FULL);
+	/* TODO: really want to test these with a video clip */
+
+	list = gdata_picasaweb_file_get_thumbnails (photo);
+	g_assert_cmpuint (g_list_length (list), ==, 3);
+
+	thumbnail = GDATA_MEDIA_THUMBNAIL (list->data);
+	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
+			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/s288/100_0269.jpg");
+	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 288);
+	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 216);
+	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
 
 	g_free (timestamp);
 }
@@ -796,16 +803,15 @@ static void
 test_album (GDataService *service)
 {
 	GDataFeed *album_feed;
-	GError *error = NULL;
 	GDataPicasaWebAlbum *album;
-	GList *albums;
+	GList *albums, *contents, *thumbnails;
 	GTimeVal _time;
-	gchar *str;
-	gdouble latitude;
-	gdouble longitude;
-	gdouble original_latitude;
-	gdouble original_longitude;
-	gchar *original_rights;
+	gchar *str, *original_rights;
+	gdouble latitude, longitude, original_latitude, original_longitude;
+	const gchar *tags;
+	GDataMediaContent *content;
+	GDataMediaThumbnail *thumbnail;
+	GError *error = NULL;
 
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -816,6 +822,10 @@ test_album (GDataService *service)
 	album = GDATA_PICASAWEB_ALBUM (g_list_nth_data (albums, TEST_ALBUM_INDEX));
 
 	/* Tests */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (album)), ==, "Test Album 1 - Venice - Public");
+	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (album)), ==, "This is the test description.  This album should be in Venice.");
+
+	/* Check album-specific API */
 	g_assert_cmpstr (gdata_picasaweb_album_get_user (album), ==, "libgdata.picasaweb");
 	g_assert_cmpstr (gdata_picasaweb_album_get_nickname (album), ==, "libgdata.picasaweb");
 
@@ -824,8 +834,6 @@ test_album (GDataService *service)
 	g_assert_cmpstr (str, ==, "2009-04-26T06:57:03.474000Z");
 	g_free (str);
 
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (album)), ==, "Test Album 1 - Venice - Public");
-	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (album)), ==, "This is the test description.  This album should be in Venice.");
 	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
 	g_assert_cmpstr (gdata_picasaweb_album_get_location (album), ==, "Venice");
 
@@ -838,6 +846,7 @@ test_album (GDataService *service)
 	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos_remaining (album), >, 0); /* about 999 remaining, testing weakly to avoid having to update regularly */
 	g_assert_cmpuint (gdata_picasaweb_album_get_bytes_used (album), ==, 1124730);
 
+	/* Check GeoRSS coordinates */
 	gdata_picasaweb_album_get_coordinates (album, &latitude, &longitude);
 	g_assert_cmpfloat (latitude, ==, 45.434336);
 	gdata_picasaweb_album_get_coordinates (album, &original_latitude, &original_longitude);
@@ -880,6 +889,38 @@ test_album (GDataService *service)
 
 	gdata_entry_set_rights (GDATA_ENTRY (album), original_rights);
 	g_free (original_rights);
+
+	/* Check Media */
+	tags = gdata_picasaweb_album_get_tags (album);
+	g_assert_cmpstr (gdata_picasaweb_album_get_tags (album), ==, NULL);
+	/* TODO: they return a <media:keywords></...> but it's empty and the web interface can't set it;
+	   try setting it programmatically; if we can't do that either, consider removing API */
+
+	contents = gdata_picasaweb_album_get_contents (album);
+	g_assert_cmpuint (g_list_length (contents), ==, 1);
+	content = GDATA_MEDIA_CONTENT (contents->data);
+
+	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
+			 "http://lh5.ggpht.com/_1kdcGyvOb8c/SfQFLNjhg6E/AAAAAAAAAB8/2WtMjZCa71k/TestAlbum1VenicePublic.jpg");
+	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
+	g_assert_cmpuint (gdata_media_content_get_medium (content), ==, GDATA_MEDIA_IMAGE);
+
+	g_assert_cmpuint (gdata_media_content_is_default (content), ==, FALSE);
+	g_assert_cmpint (gdata_media_content_get_duration (content), ==, 0); /* doesn't apply to photos */
+	g_assert_cmpuint (gdata_media_content_get_width (content), ==, 0); /* PicasaWeb doesn't set anything better */
+	g_assert_cmpuint (gdata_media_content_get_height (content), ==, 0); /* PicasaWeb doesn't set anything better */
+	g_assert_cmpuint (gdata_media_content_get_filesize (content), ==, 0); /* PicasaWeb doesn't set anything better */
+	g_assert_cmpuint (gdata_media_content_get_expression (content), ==, GDATA_MEDIA_EXPRESSION_FULL);
+
+	thumbnails = gdata_picasaweb_album_get_thumbnails (album);
+	g_assert_cmpuint (g_list_length (thumbnails), ==, 1);
+	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
+
+	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
+			 "http://lh5.ggpht.com/_1kdcGyvOb8c/SfQFLNjhg6E/AAAAAAAAAB8/2WtMjZCa71k/s160-c/TestAlbum1VenicePublic.jpg");
+	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
+	g_assert_cmpint (gdata_media_thumbnail_get_width (thumbnail), ==, 160);
+	g_assert_cmpint (gdata_media_thumbnail_get_height (thumbnail), ==, 160);
 
 	g_object_unref (album_feed);
 }
