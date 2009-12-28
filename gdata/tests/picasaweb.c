@@ -37,6 +37,37 @@
 #define TEST_ALBUM_INDEX 2
 
 static void
+delete_directory (GFile *directory, GError **error)
+{
+	GFileEnumerator *enumerator;
+
+	enumerator = g_file_enumerate_children (directory, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, error);
+	if (enumerator == NULL)
+		return;
+
+	/* Delete all the files in the directory */
+	while (TRUE) {
+		GFileInfo *file_info;
+		GFile *file;
+
+		file_info = g_file_enumerator_next_file (enumerator, NULL, NULL);
+		if (file_info == NULL)
+			break;
+
+		file = g_file_get_child (directory, g_file_info_get_name (file_info));
+		g_object_unref (file_info);
+
+		g_file_delete (file, NULL, NULL);
+		g_object_unref (file);
+	}
+
+	g_file_enumerator_close (enumerator, NULL, error);
+
+	/* Delete the directory itself */
+	g_file_delete (directory, NULL, error);
+}
+
+static void
 test_authentication (void)
 {
 	gboolean retval;
@@ -241,7 +272,7 @@ test_download_thumbnails (GDataService *service)
 
 	/* clean up any pre-existing test output  */
 	if (g_file_query_exists (dest_dir, NULL)) {
-		g_file_trash (dest_dir, NULL, &error); /* TODO does this remove it even with files in it?  hope so */
+		delete_directory (dest_dir, &error);
 		g_assert_no_error (error);
 	}
 
@@ -264,7 +295,7 @@ test_download_thumbnails (GDataService *service)
 	g_assert (actual_file == NULL);
 
 	/* create the directory so we can test on it and in it */
-	g_file_trash (dest_dir, NULL, &error);
+	g_file_delete (dest_dir, NULL, &error);
 	g_assert_no_error (error);
 	g_file_make_directory (dest_dir, NULL, &error);
 	g_assert_no_error (error);
@@ -319,7 +350,7 @@ test_download_thumbnails (GDataService *service)
 	g_object_unref (actual_file);
 
 	/* clean up test file and thumbnail*/
-	g_file_trash (dest_file, NULL, &error);
+	g_file_delete (dest_file, NULL, &error);
 	g_assert_no_error (error);
 
 	/* test getting all thumbnails and that they're all the correct size */
@@ -345,14 +376,14 @@ test_download_thumbnails (GDataService *service)
 		g_object_unref (pixbuf);
 #endif /* HAVE_GDK */
 
-		g_file_trash (actual_file, NULL, &error);
+		g_file_delete (actual_file, NULL, &error);
 		g_assert (g_file_query_exists (actual_file, NULL) == FALSE);
 		g_assert_no_error (error);
 		g_object_unref (actual_file);
 	}
 
 	/* clean up test directory again */
-	g_file_trash (dest_dir, NULL, &error);
+	delete_directory (dest_dir, &error);
 	g_assert_no_error (error);
 
 	g_object_unref (photo_feed);
@@ -401,7 +432,7 @@ test_download (GDataService *service)
 
 	/* clean up any pre-existing test output  */
 	if (g_file_query_exists (dest_dir, NULL)) {
-		g_file_trash (dest_dir, NULL, &error); /* TODO does this remove it even with files in it?  hope so */
+		delete_directory (dest_dir, &error);
 		g_assert_no_error (error);
 	}
 
@@ -425,7 +456,7 @@ test_download (GDataService *service)
 	g_assert (actual_file == NULL);
 
 	/* create the directory so we can test on it and in it */
-	g_file_trash (dest_dir, NULL, &error);
+	g_file_delete (dest_dir, NULL, &error);
 	g_assert_no_error (error);
 	g_file_make_directory (dest_dir, NULL, &error);
 	g_assert_no_error (error);
@@ -481,7 +512,7 @@ test_download (GDataService *service)
 	g_object_unref (actual_file);
 
 	/* clean up test directory */
-	g_file_trash (dest_dir, NULL, &error);
+	delete_directory (dest_dir, &error);
 	g_assert_no_error (error);
 
 	g_object_unref (photo_feed);
