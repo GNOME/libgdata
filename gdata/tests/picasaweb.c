@@ -155,7 +155,7 @@ test_upload_async_cb (GDataPicasaWebService *service, GAsyncResult *result, GMai
 }
 
 static void
-test_upload_async (GDataService *service)
+test_upload_async (gconstpointer service)
 {
 	GDataPicasaWebFile *photo;
 	GFile *photo_file;
@@ -233,8 +233,9 @@ test_upload_async (GDataService *service)
 }
 
 static void
-test_download_thumbnails (GDataService *service)
+test_download_thumbnails (gconstpointer _service)
 {
+	GDataService *service = GDATA_SERVICE (_service);
 	GDataFeed *album_feed, *photo_feed;
 	GList *album_entries, *photo_entries, *thumbnails, *node;
 	GDataPicasaWebAlbum *album;
@@ -393,8 +394,9 @@ test_download_thumbnails (GDataService *service)
 }
 
 static void
-test_download (GDataService *service)
+test_download (gconstpointer _service)
 {
+	GDataService *service = GDATA_SERVICE (_service);
 	GDataFeed *album_feed, *photo_feed;
 	GList *album_entries, *photo_entries, *media_contents;
 	GDataPicasaWebAlbum *album;
@@ -522,7 +524,7 @@ test_download (GDataService *service)
 }
 
 static void
-test_upload_simple (GDataService *service)
+test_upload_simple (gconstpointer service)
 {
 	GDataPicasaWebFile *photo, *photo_new;
 	GFile *photo_file;
@@ -602,7 +604,7 @@ test_upload_simple (GDataService *service)
 }
 
 static void
-test_photo (GDataService *service)
+test_photo (gconstpointer service)
 {
 	GError *error = NULL;
 	GDataFeed *album_feed;
@@ -739,7 +741,7 @@ test_photo (GDataService *service)
 }
 
 static void
-test_photo_feed_entry (GDataService *service)
+test_photo_feed_entry (gconstpointer service)
 {
 	GDataFeed *album_feed;
 	GDataFeed *photo_feed;
@@ -795,7 +797,7 @@ test_photo_feed_entry (GDataService *service)
 }
 
 static void
-test_photo_feed (GDataService *service)
+test_photo_feed (gconstpointer service)
 {
 	GError *error = NULL;
 	GDataFeed *album_feed;
@@ -831,7 +833,7 @@ test_photo_feed (GDataService *service)
 }
 
 static void
-test_album (GDataService *service)
+test_album (gconstpointer service)
 {
 	GDataFeed *album_feed;
 	GDataPicasaWebAlbum *album;
@@ -957,7 +959,7 @@ test_album (GDataService *service)
 }
 
 static void
-test_album_feed_entry (GDataService *service)
+test_album_feed_entry (gconstpointer service)
 {
 	GDataFeed *album_feed;
 	GError *error = NULL;
@@ -1005,7 +1007,7 @@ test_album_feed_entry (GDataService *service)
 }
 
 static void
-test_album_feed (GDataService *service)
+test_album_feed (gconstpointer service)
 {
 	GDataFeed *album_feed;
 	GError *error = NULL;
@@ -1028,7 +1030,7 @@ test_album_feed (GDataService *service)
 }
 
 static void
-test_insert_album (GDataService *service)
+test_insert_album (gconstpointer service)
 {
 	GDataPicasaWebAlbum *album;
 	GDataPicasaWebAlbum *inserted_album;
@@ -1081,7 +1083,7 @@ test_insert_album (GDataService *service)
 	g_assert (album_found);
 
 	/* Clean up the evidence */
-	gdata_service_delete_entry (service, GDATA_ENTRY (inserted_album), NULL, &error);
+	gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (inserted_album), NULL, &error);
 	g_assert_no_error (error);
 
 	g_object_unref (album_feed);
@@ -1090,7 +1092,7 @@ test_insert_album (GDataService *service)
 }
 
 static void
-test_query_all_albums (GDataService *service)
+test_query_all_albums (gconstpointer service)
 {
 	GDataFeed *album_feed, *photo_feed;
 	GDataQuery *query;
@@ -1127,7 +1129,7 @@ test_query_all_albums (GDataService *service)
 }
 
 static void
-test_query_user (GDataService *service)
+test_query_user (gconstpointer service)
 {
 	GDataPicasaWebUser *user;
 	GError *error = NULL;
@@ -1148,7 +1150,7 @@ test_query_user (GDataService *service)
 }
 
 static void
-test_query_new_with_limits (GDataService *service)
+test_query_new_with_limits (gconstpointer service)
 {
 	GDataQuery *query;
 	GDataFeed *album_feed_1, *album_feed_2;
@@ -1220,7 +1222,7 @@ test_query_all_albums_async_cb (GDataService *service, GAsyncResult *async_resul
 }
 
 static void
-test_query_all_albums_async (GDataService *service)
+test_query_all_albums_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -1232,7 +1234,7 @@ test_query_all_albums_async (GDataService *service)
 }
 
 static void
-test_album_new (GDataService *service)
+test_album_new (gconstpointer service)
 {
 	GDataPicasaWebAlbum *album;
 	gchar *xml, *parsed_time_str;

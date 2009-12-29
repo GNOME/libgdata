@@ -25,7 +25,7 @@
 #include "common.h"
 
 static GDataCalendarCalendar *
-get_calendar (GDataService *service, GError **error)
+get_calendar (gconstpointer service, GError **error)
 {
 	GDataFeed *calendar_feed;
 	GDataCalendarCalendar *calendar;
@@ -114,7 +114,7 @@ test_authentication_async (void)
 }
 
 static void
-test_query_all_calendars (GDataService *service)
+test_query_all_calendars (gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -147,7 +147,7 @@ test_query_all_calendars_async_cb (GDataService *service, GAsyncResult *async_re
 }
 
 static void
-test_query_all_calendars_async (GDataService *service)
+test_query_all_calendars_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -159,7 +159,7 @@ test_query_all_calendars_async (GDataService *service)
 }
 
 static void
-test_query_own_calendars (GDataService *service)
+test_query_own_calendars (gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -192,7 +192,7 @@ test_query_own_calendars_async_cb (GDataService *service, GAsyncResult *async_re
 }
 
 static void
-test_query_own_calendars_async (GDataService *service)
+test_query_own_calendars_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -204,7 +204,7 @@ test_query_own_calendars_async (GDataService *service)
 }
 
 static void
-test_query_events (GDataService *service)
+test_query_events (gconstpointer service)
 {
 	GDataFeed *feed;
 	GDataCalendarCalendar *calendar;
@@ -225,7 +225,7 @@ test_query_events (GDataService *service)
 }
 
 static void
-test_insert_simple (GDataService *service)
+test_insert_simple (gconstpointer service)
 {
 	GDataCalendarEvent *event, *new_event;
 	GDataCategory *category;
@@ -294,7 +294,7 @@ test_insert_simple (GDataService *service)
 }
 
 static void
-test_xml_dates (GDataService *service)
+test_xml_dates (gconstpointer service)
 {
 	GDataCalendarEvent *event;
 	GList *times, *i;
@@ -387,7 +387,7 @@ test_xml_dates (GDataService *service)
 }
 
 static void
-test_xml_recurrence (GDataService *service)
+test_xml_recurrence (gconstpointer service)
 {
 	GDataCalendarEvent *event;
 	GError *error = NULL;
@@ -449,7 +449,7 @@ test_xml_recurrence (GDataService *service)
 }
 
 static void
-test_query_uri (GDataService *service)
+test_query_uri (gconstpointer service)
 {
 	GTimeVal time_val, time_val2;
 	gchar *query_uri;
@@ -520,7 +520,7 @@ test_query_uri (GDataService *service)
 }
 
 static void
-test_acls_get_rules (GDataService *service)
+test_acls_get_rules (gconstpointer service)
 {
 	GDataFeed *feed;
 	GDataCalendarCalendar *calendar;
@@ -529,7 +529,7 @@ test_acls_get_rules (GDataService *service)
 	calendar = get_calendar (service, &error);
 
 	/* Get the rules */
-	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), service, NULL, NULL, NULL, &error);
+	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
@@ -541,7 +541,7 @@ test_acls_get_rules (GDataService *service)
 }
 
 static void
-test_acls_insert_rule (GDataService *service)
+test_acls_insert_rule (gconstpointer service)
 {
 	GDataCalendarCalendar *calendar;
 	GDataAccessRule *rule, *new_rule;
@@ -577,7 +577,7 @@ test_acls_insert_rule (GDataService *service)
 	g_free (xml);
 
 	/* Insert the rule */
-	new_rule = gdata_access_handler_insert_rule (GDATA_ACCESS_HANDLER (calendar), service, rule, NULL, &error);
+	new_rule = gdata_access_handler_insert_rule (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), rule, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
@@ -604,7 +604,7 @@ test_acls_insert_rule (GDataService *service)
 }
 
 static void
-test_acls_update_rule (GDataService *service)
+test_acls_update_rule (gconstpointer service)
 {
 	GDataFeed *feed;
 	GDataCalendarCalendar *calendar;
@@ -616,7 +616,7 @@ test_acls_update_rule (GDataService *service)
 	calendar = get_calendar (service, &error);
 
 	/* Get a rule */
-	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), service, NULL, NULL, NULL, &error);
+	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
@@ -639,7 +639,7 @@ test_acls_update_rule (GDataService *service)
 	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, "http://schemas.google.com/gCal/2005#read");
 
 	/* Send the update to the server */
-	new_rule = gdata_access_handler_update_rule (GDATA_ACCESS_HANDLER (calendar), service, rule, NULL, &error);
+	new_rule = gdata_access_handler_update_rule (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), rule, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
@@ -656,7 +656,7 @@ test_acls_update_rule (GDataService *service)
 }
 
 static void
-test_acls_delete_rule (GDataService *service)
+test_acls_delete_rule (gconstpointer service)
 {
 	GDataFeed *feed;
 	GDataCalendarCalendar *calendar;
@@ -668,7 +668,7 @@ test_acls_delete_rule (GDataService *service)
 	calendar = get_calendar (service, &error);
 
 	/* Get a rule */
-	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), service, NULL, NULL, NULL, &error);
+	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
@@ -689,7 +689,7 @@ test_acls_delete_rule (GDataService *service)
 	g_object_unref (feed);
 
 	/* Delete the rule */
-	success = gdata_access_handler_delete_rule (GDATA_ACCESS_HANDLER (calendar), service, rule, NULL, &error);
+	success = gdata_access_handler_delete_rule (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), rule, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success == TRUE);
 	g_clear_error (&error);

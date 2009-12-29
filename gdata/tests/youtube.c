@@ -98,7 +98,7 @@ test_authentication_async (void)
 }
 
 static void
-test_query_standard_feed (GDataService *service)
+test_query_standard_feed (gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -131,7 +131,7 @@ test_query_standard_feed_async_cb (GDataService *service, GAsyncResult *async_re
 }
 
 static void
-test_query_standard_feed_async (GDataService *service)
+test_query_standard_feed_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -212,7 +212,7 @@ get_video_for_related (void)
 }
 
 static void
-test_query_related (GDataService *service)
+test_query_related (gconstpointer service)
 {
 	GDataFeed *feed;
 	GDataYouTubeVideo *video;
@@ -248,7 +248,7 @@ test_query_related_async_cb (GDataService *service, GAsyncResult *async_result, 
 }
 
 static void
-test_query_related_async (GDataService *service)
+test_query_related_async (gconstpointer service)
 {
 	GDataYouTubeVideo *video;
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
@@ -263,7 +263,7 @@ test_query_related_async (GDataService *service)
 }
 
 static void
-test_upload_simple (GDataService *service)
+test_upload_simple (gconstpointer service)
 {
 	GDataYouTubeVideo *video, *new_video;
 	GDataMediaCategory *category;
@@ -318,7 +318,7 @@ test_upload_simple (GDataService *service)
 }
 
 static void
-test_parsing_app_control (GDataService *service)
+test_parsing_app_control (gconstpointer service)
 {
 	GDataYouTubeVideo *video;
 	GDataYouTubeState *state;
@@ -370,7 +370,7 @@ test_parsing_app_control (GDataService *service)
 }
 
 static void
-test_parsing_yt_recorded (GDataService *service)
+test_parsing_yt_recorded (gconstpointer service)
 {
 	GDataYouTubeVideo *video;
 	GTimeVal recorded;
@@ -501,7 +501,7 @@ test_parsing_comments_feed_link (void)
 }*/
 
 static void
-test_query_uri (GDataService *service)
+test_query_uri (gconstpointer service)
 {
 	gdouble latitude, longitude, radius;
 	gboolean has_location;
@@ -580,7 +580,7 @@ test_query_uri (GDataService *service)
 }
 
 static void
-test_query_single (GDataService *service)
+test_query_single (gconstpointer service)
 {
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
@@ -616,7 +616,7 @@ test_query_single_async_cb (GDataService *service, GAsyncResult *async_result, G
 }
 
 static void
-test_query_single_async (GDataService *service)
+test_query_single_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 

@@ -24,7 +24,7 @@
 #include "common.h"
 
 static GDataContactsContact *
-get_contact (GDataService *service)
+get_contact (gconstpointer service)
 {
 	GDataFeed *feed;
 	GDataEntry *entry;
@@ -76,7 +76,7 @@ test_authentication (void)
 }
 
 static void
-test_query_all_contacts (GDataService *service)
+test_query_all_contacts (gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -109,7 +109,7 @@ test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_res
 }
 
 static void
-test_query_all_contacts_async (GDataService *service)
+test_query_all_contacts_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -121,7 +121,7 @@ test_query_all_contacts_async (GDataService *service)
 }
 
 static void
-test_insert_simple (GDataService *service)
+test_insert_simple (gconstpointer service)
 {
 	GDataContactsContact *contact, *new_contact;
 	GDataCategory *category;
@@ -203,7 +203,7 @@ test_insert_simple (GDataService *service)
 }
 
 static void
-test_query_uri (GDataService *service)
+test_query_uri (gconstpointer service)
 {
 	gchar *query_uri;
 	GDataContactsQuery *query = gdata_contacts_query_new ("q");
@@ -242,7 +242,7 @@ test_query_uri (GDataService *service)
 }
 
 static void
-test_parser_minimal (GDataService *service)
+test_parser_minimal (gconstpointer service)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
@@ -277,7 +277,7 @@ test_parser_minimal (GDataService *service)
 }
 
 static void
-test_photo_has_photo (GDataService *service)
+test_photo_has_photo (gconstpointer service)
 {
 	GDataContactsContact *contact;
 	gsize length = 0;
@@ -330,7 +330,7 @@ test_photo_has_photo (GDataService *service)
 }
 
 static void
-test_photo_add (GDataService *service)
+test_photo_add (gconstpointer service)
 {
 	GDataContactsContact *contact;
 	gchar *data;
@@ -343,7 +343,7 @@ test_photo_add (GDataService *service)
 
 	/* Add it to the contact */
 	contact = get_contact (service);
-	retval = gdata_contacts_contact_set_photo (contact, service, data, length, NULL, &error);
+	retval = gdata_contacts_contact_set_photo (contact, GDATA_SERVICE (service), data, length, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 
@@ -353,7 +353,7 @@ test_photo_add (GDataService *service)
 }
 
 static void
-test_photo_get (GDataService *service)
+test_photo_get (gconstpointer service)
 {
 	GDataContactsContact *contact;
 	gchar *data, *content_type = NULL;
@@ -379,7 +379,7 @@ test_photo_get (GDataService *service)
 }
 
 static void
-test_photo_delete (GDataService *service)
+test_photo_delete (gconstpointer service)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
@@ -388,7 +388,7 @@ test_photo_delete (GDataService *service)
 	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
 
 	/* Remove the contact's photo */
-	g_assert (gdata_contacts_contact_set_photo (contact, service, NULL, 0, NULL, &error) == TRUE);
+	g_assert (gdata_contacts_contact_set_photo (contact, GDATA_SERVICE (service), NULL, 0, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_assert (gdata_contacts_contact_has_photo (contact) == FALSE);
@@ -411,7 +411,7 @@ main (int argc, char *argv[])
 	service = GDATA_SERVICE (gdata_contacts_service_new (CLIENT_ID));
 	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
 
-	g_test_add_data_func ("/contacts/authentication", service, test_authentication);
+	g_test_add_func ("/contacts/authentication", test_authentication);
 	if (g_test_slow () == TRUE)
 		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
 	g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);

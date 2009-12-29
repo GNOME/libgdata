@@ -52,7 +52,7 @@ test_authentication (void)
 }
 
 static void
-test_remove_all_documents_and_folders (GDataService *service)
+test_remove_all_documents_and_folders (gconstpointer service)
 {
 	GDataDocumentsFeed *feed;
 	GDataDocumentsQuery *query;
@@ -95,7 +95,7 @@ test_remove_all_documents_and_folders (GDataService *service)
 }
 
 static void
-test_query_all_documents_with_folder (GDataService *service)
+test_query_all_documents_with_folder (gconstpointer service)
 {
 	GDataDocumentsFeed *feed;
 	GDataDocumentsQuery *query;
@@ -115,7 +115,7 @@ test_query_all_documents_with_folder (GDataService *service)
 }
 
 static void
-test_query_all_documents (GDataService *service)
+test_query_all_documents (gconstpointer service)
 {
 	GDataDocumentsFeed *feed;
 	GError *error = NULL;
@@ -149,7 +149,7 @@ test_query_all_documents_async_cb (GDataService *service, GAsyncResult *async_re
 }
 
 static void
-test_query_all_documents_async (GDataService *service)
+test_query_all_documents_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -163,7 +163,7 @@ test_query_all_documents_async (GDataService *service)
 }
 
 static void
-test_upload_metadata (GDataService *service)
+test_upload_metadata (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GDataCategory *category;
@@ -188,7 +188,7 @@ test_upload_metadata (GDataService *service)
 }
 
 static void
-test_upload_metadata_file (GDataService *service)
+test_upload_metadata_file (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GFile *document_file;
@@ -216,7 +216,7 @@ test_upload_metadata_file (GDataService *service)
 }
 
 static void
-test_upload_file_get_entry (GDataService *service)
+test_upload_file_get_entry (gconstpointer service)
 {
 	GDataDocumentsEntry *new_document, *newly_created_presentation;
 	GFile *document_file;
@@ -246,7 +246,7 @@ test_upload_file_get_entry (GDataService *service)
 }
 
 static void
-test_add_remove_file_from_folder (GDataService *service)
+test_add_remove_file_from_folder (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *new_document2;
 	GDataDocumentsFolder *folder, *new_folder;
@@ -292,7 +292,7 @@ test_add_remove_file_from_folder (GDataService *service)
 }
 
 static void
-test_add_file_folder_and_move (GDataService *service)
+test_add_file_folder_and_move (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *new_document2;
 	GDataDocumentsFolder *folder, *new_folder;
@@ -338,7 +338,7 @@ test_add_file_folder_and_move (GDataService *service)
 }
 
 static void
-test_upload_file_metadata_in_new_folder (GDataService *service)
+test_upload_file_metadata_in_new_folder (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GDataDocumentsFolder *folder, *new_folder;
@@ -380,7 +380,7 @@ test_upload_file_metadata_in_new_folder (GDataService *service)
 }
 
 static void
-test_update_metadata (GDataService *service)
+test_update_metadata (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *updated_document;
 	GDataCategory *category;
@@ -413,7 +413,7 @@ test_update_metadata (GDataService *service)
 }
 
 static void
-test_update_metadata_file (GDataService *service)
+test_update_metadata_file (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *updated_document;
 	GFile *document_file, *updated_document_file;
@@ -451,7 +451,7 @@ test_update_metadata_file (GDataService *service)
 }
 
 static void
-test_update_file (GDataService *service)
+test_update_file (gconstpointer service)
 {
 	GDataDocumentsEntry *new_document, *updated_document;
 	GFile *document_file, *updated_document_file;
@@ -480,7 +480,7 @@ test_update_file (GDataService *service)
 }
 
 static void
-test_download_all_documents (GDataService *service)
+test_download_all_documents (gconstpointer service)
 {
 	GDataDocumentsFeed *feed;
 	GError *error = NULL;
@@ -551,7 +551,7 @@ test_download_all_documents (GDataService *service)
 }
 
 static void
-test_new_document_with_collaborator (GDataService *service)
+test_new_document_with_collaborator (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GDataAccessRule *access_rule, *new_access_rule;
