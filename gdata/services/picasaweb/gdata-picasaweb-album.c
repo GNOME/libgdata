@@ -405,8 +405,9 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 	self->priv->visibility = GDATA_PICASAWEB_PRIVATE;
 
-	/* Initialise the timestamp to the current time (bgo#599140) */
+	/* Initialise the timestamp and edited properties to the current time (bgo#599140) */
 	g_get_current_time (&(self->priv->timestamp));
+	g_get_current_time (&(self->priv->edited));
 
 	/* Connect to the notify::title signal from GDataEntry so our media:group title can be kept in sync
 	 * (the title of an album is duplicated in atom:title and media:group/media:title) */

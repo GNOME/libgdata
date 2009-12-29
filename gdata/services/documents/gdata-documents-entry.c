@@ -181,6 +181,9 @@ static void
 gdata_documents_entry_init (GDataDocumentsEntry *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate);
+
+	/* Initialise the edited properties to the current time */
+	g_get_current_time (&(self->priv->edited));
 }
 
 static gboolean

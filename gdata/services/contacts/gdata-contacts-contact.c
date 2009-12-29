@@ -179,9 +179,12 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 	/* Create a default name, so the name's properties can be set for a blank contact */
 	self->priv->name = gdata_gd_name_new (NULL, NULL);
 
-	/* Listen to change notifications for the entry's title, since it's linked to GDataGDName:fullName */
+	/* Listen to change notifications for the entry's title, since it's linked to GDataGDName:full-name */
 	g_signal_connect (self, "notify::title", (GCallback) notify_title_cb, self);
-	g_signal_connect (self->priv->name, "notify::fullName", (GCallback) notify_full_name_cb, self);
+	g_signal_connect (self->priv->name, "notify::full-name", (GCallback) notify_full_name_cb, self);
+
+	/* Set the edited property to the current time (creation time) */
+	g_get_current_time (&(self->priv->edited));
 }
 
 static void
@@ -341,16 +344,20 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		/* Get either the value property, or the element's content */
 		value = xmlGetProp (node, (xmlChar*) "value");
 		if (value == NULL) {
+			xmlNode *child_node;
+
 			/* Use the element's content instead (arbitrary XML) */
 			buffer = xmlBufferCreate ();
-			xmlNodeDump (buffer, doc, node, 0, 0);
+			for (child_node = node->children; child_node != NULL; child_node = child_node->next)
+				xmlNodeDump (buffer, doc, child_node, 0, 0);
 			value = (xmlChar*) xmlBufferContent (buffer);
-			xmlBufferFree (buffer);
 		}
 
 		gdata_contacts_contact_set_extended_property (self, (gchar*) name, (gchar*) value);
 
-		if (buffer == NULL)
+		if (buffer != NULL)
+			xmlBufferFree (buffer);
+		else
 			xmlFree (value);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
 		/* gContact:groupMembershipInfo */
