@@ -90,8 +90,11 @@ if test "x$enable_gcov" = "xyes"; then
 		AC_MSG_ERROR(not compiling with gcc, which is required for gcov testing)
 	fi
 
-	CFLAGS="$CFLAGS -fprofile-arcs -ftest-coverage"
-	LDFLAGS="$LDFLAGS -fprofile-arcs -ftest-coverage"
+	GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
+	GCOV_LIBS="-lgcov"
+
+	AC_SUBST(GCOV_CFLAGS)
+	AC_SUBST(GCOV_LIBS)
 fi
 
 AM_CONDITIONAL(GCOV_ENABLED, test x$enable_gcov = xyes)

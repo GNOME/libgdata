@@ -341,12 +341,14 @@ gdata_libgdata_la_CPPFLAGS = \
 gdata_libgdata_la_CFLAGS = \
 	$(GDATA_CFLAGS)	\
 	$(GNOME_CFLAGS)	\
+	$(GCOV_CFLAGS)	\
 	$(WARN_CFLAGS)	\
 	$(AM_CFLAGS)
 
 gdata_libgdata_la_LIBADD = \
 	$(GDATA_LIBS)	\
 	$(GNOME_LIBS)	\
+	$(GCOV_LIBS)	\
 	$(AM_LIBADD)
 
 gdata_libgdata_la_LDFLAGS = \
