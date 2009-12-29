@@ -17,7 +17,7 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * SECTION:gdata-youtube-group
  * @short_description: YouTube group element
  * @stability: Unstable
@@ -26,7 +26,7 @@
  * #GDataYouTubeGroup represents the YouTube-specific customizations to #GDataMediaGroup. For more information,
  * see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:group">
  * online documentation</ulink>.
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>

@@ -17,7 +17,7 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * SECTION:gdata-exif-tags
  * @short_description: EXIF tags element
  * @stability: Unstable
@@ -37,7 +37,7 @@
  * For these reasons, properties have not been implemented on #GDataExifTags (yet).
  *
  * Since: 0.5.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>

@@ -17,7 +17,7 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * SECTION:gdata-buffer
  * @short_description: GData buffer to allow threadsafe buffering
  * @stability: Unstable
@@ -25,7 +25,7 @@
  *
  * #GDataBuffer is a simple object which allows threadsafe buffering of data meaning, for example, data can be received from
  * the network in a "push" fashion, buffered, then sent out to an output stream in a "pull" fashion.
- **/
+ */
 
 #include <config.h>
 #include <glib.h>

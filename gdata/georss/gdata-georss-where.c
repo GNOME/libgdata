@@ -18,7 +18,7 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * SECTION:gdata-georss-where
  * @short_description: GeoRSS where element
  * @stability: Unstable
@@ -34,7 +34,7 @@
  * for most of its properties, and it would be unnecessary and confusing to expose #GDataGeoRSSWhere itself.
  *
  * Since: 0.5.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>

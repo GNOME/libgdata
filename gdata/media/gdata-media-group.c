@@ -17,7 +17,7 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * SECTION:gdata-media-group
  * @short_description: Media RSS group element
  * @stability: Unstable
@@ -31,7 +31,7 @@
  * for most of its properties, and it would be unnecessary and confusing to expose #GDataMediaGroup itself.
  *
  * For this reason, properties have not been implemented on #GDataMediaGroup (yet).
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>

@@ -17,7 +17,7 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * SECTION:gdata-youtube-control
  * @short_description: Atom Publishing Protocol control element with YouTube-specific modifications
  * @stability: Unstable
@@ -33,7 +33,7 @@
  * APP support.
  *
  * For these reasons, properties have not been implemented on #GDataYouTubeControl (yet).
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
