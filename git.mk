@@ -115,6 +115,7 @@ $(srcdir)/.gitignore: Makefile.am $(top_srcdir)/git.mk
 				po/.intltool-merge-cache \
 				"po/*.gmo" \
 				"po/*.mo" \
+				po/$(GETTEXT_PACKAGE).pot \
 				intltool-extract.in \
 				intltool-merge.in \
 				intltool-update.in \
@@ -135,6 +136,7 @@ $(srcdir)/.gitignore: Makefile.am $(top_srcdir)/git.mk
 			$(GITIGNOREFILES) \
 			$(CLEANFILES) \
 			$(PROGRAMS) \
+			$(check_PROGRAMS) \
 			$(EXTRA_PROGRAMS) \
 			$(LTLIBRARIES) \
 			so_locations \
@@ -161,7 +163,7 @@ $(srcdir)/.gitignore: Makefile.am $(top_srcdir)/git.mk
 	} | \
 	sed "s@^/`echo "$(srcdir)" | sed 's/\(.\)/[\1]/g'`/@/@" | \
 	sed 's@/[.]/@/@g' | \
-	LANG=C sort | uniq > $@.tmp && \
+	LC_ALL=C sort | uniq > $@.tmp && \
 	mv $@.tmp $@;
 
 all: $(srcdir)/.gitignore gitignore-recurse-maybe
@@ -180,3 +182,4 @@ gitignore-clean:
 	-rm -f $(srcdir)/.gitignore
 
 .PHONY: gitignore-clean gitignore gitignore-recurse gitignore-recurse-maybe
+

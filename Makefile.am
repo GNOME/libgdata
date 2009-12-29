@@ -427,9 +427,6 @@ gcov:
 endif
 
 # Cleaning
-clean-local:
-	rm -f *~ *.bb *.bbg *.da .libs/*.da .libs/*.bbg
-
 EXTRA_DIST += \
 	COPYING.LIB		\
 	autogen.sh		\
@@ -441,6 +438,9 @@ EXTRA_DIST += \
 	HACKING			\
 	gtk-doc.make		\
 	libgdata.doap
+
+CLEANFILES += \
+	`find "$(srcdir)" -type f -name .dirstamp -print`
 
 DISTCLEANFILES = \
 	intltool-extract	\
