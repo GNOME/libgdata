@@ -328,7 +328,7 @@ static void
 test_atom_author (void)
 {
 	GDataAuthor *author, *author2;
-	gchar *xml;
+	gchar *xml, *name, *uri, *email_address;
 	GError *error = NULL;
 
 	author = GDATA_AUTHOR (gdata_parsable_new_from_xml (GDATA_TYPE_AUTHOR,
@@ -356,6 +356,12 @@ test_atom_author (void)
 	g_assert_cmpint (gdata_author_compare (author, author2), !=, 0);
 	g_object_unref (author2);
 
+	/* More comparisons */
+	g_assert_cmpint (gdata_author_compare (author, NULL), ==, 1);
+	g_assert_cmpint (gdata_author_compare (NULL, author), ==, -1);
+	g_assert_cmpint (gdata_author_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_author_compare (author, author), ==, 0);
+
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (author));
 	g_assert_cmpstr (xml, ==,
@@ -365,6 +371,21 @@ test_atom_author (void)
 				"<email>john@example.com</email>"
 			 "</author>");
 	g_free (xml);
+
+	/* Check the properties */
+	g_object_get (G_OBJECT (author),
+	              "name", &name,
+	              "uri", &uri,
+	              "email-address", &email_address,
+	              NULL);
+
+	g_assert_cmpstr (name, ==, "John Smöth");
+	g_assert_cmpstr (uri, ==, "http://example.com/");
+	g_assert_cmpstr (email_address, ==, "john@example.com");
+
+	g_free (name);
+	g_free (uri);
+	g_free (email_address);
 	g_object_unref (author);
 
 	/* Now parse an author with little information available */
@@ -380,14 +401,43 @@ test_atom_author (void)
 	g_assert_cmpstr (gdata_author_get_name (author), ==, "James Johnson");
 	g_assert (gdata_author_get_uri (author) == NULL);
 	g_assert (gdata_author_get_email_address (author) == NULL);
+
 	g_object_unref (author);
+}
+
+static void
+test_atom_author_error_handling (void)
+{
+	GDataAuthor *author;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) author = GDATA_AUTHOR (gdata_parsable_new_from_xml (GDATA_TYPE_AUTHOR,\
+		"<author>"\
+			x\
+		"</author>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (author == NULL);\
+	g_clear_error (&error)
+
+	/* name */
+	TEST_XML_ERROR_HANDLING ("<name>John Smöth</name><name>Not John Smöth</name>"); /* duplicated name */
+	TEST_XML_ERROR_HANDLING ("<name></name>"); /* empty name */
+	TEST_XML_ERROR_HANDLING ("<uri>http://example.com/</uri><email>john@example.com</email>"); /* missing name */
+
+	/* uri */
+	TEST_XML_ERROR_HANDLING ("<uri>http://example.com/</uri><uri>http://another-example.com/</uri>"); /* duplicated URI */
+
+	/* email */
+	TEST_XML_ERROR_HANDLING ("<email>john@example.com</email><email>john@another-example.com</email>"); /* duplicated e-mail address */
+
+#undef TEST_XML_ERROR_HANDLING
 }
 
 static void
 test_atom_category (void)
 {
 	GDataCategory *category, *category2;
-	gchar *xml;
+	gchar *xml, *term, *scheme, *label;
 	GError *error = NULL;
 
 	category = GDATA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_CATEGORY,
@@ -411,12 +461,33 @@ test_atom_category (void)
 	g_assert_cmpint (gdata_category_compare (category, category2), !=, 0);
 	g_object_unref (category2);
 
+	/* More comparisons */
+	g_assert_cmpint (gdata_category_compare (category, NULL), ==, 1);
+	g_assert_cmpint (gdata_category_compare (NULL, category), ==, -1);
+	g_assert_cmpint (gdata_category_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_category_compare (category, category), ==, 0);
+
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
 	g_assert_cmpstr (xml, ==,
 			 "<category xmlns='http://www.w3.org/2005/Atom' "
 				"term='jokes' scheme='http://foobar.com#categories' label='Jokes &amp; Trivia'/>");
 	g_free (xml);
+
+	/* Check the properties */
+	g_object_get (G_OBJECT (category),
+	              "term", &term,
+	              "scheme", &scheme,
+	              "label", &label,
+	              NULL);
+
+	g_assert_cmpstr (term, ==, "jokes");
+	g_assert_cmpstr (scheme, ==, "http://foobar.com#categories");
+	g_assert_cmpstr (label, ==, "Jokes & Trivia");
+
+	g_free (term);
+	g_free (scheme);
+	g_free (label);
 	g_object_unref (category);
 
 	/* Now parse a category with less information available */
@@ -454,9 +525,23 @@ test_atom_category (void)
 }
 
 static void
+test_atom_category_error_handling (void)
+{
+	GDataCategory *category;
+	GError *error = NULL;
+
+	/* Missing term */
+	category = GDATA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_CATEGORY, "<category/>", -1, &error));
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
+	g_assert (category == NULL);
+	g_clear_error (&error);
+}
+
+static void
 test_atom_generator (void)
 {
-	GDataGenerator *generator;
+	GDataGenerator *generator, *generator2;
+	gchar *name, *uri, *version;
 	GError *error = NULL;
 
 	generator = GDATA_GENERATOR (gdata_parsable_new_from_xml (GDATA_TYPE_GENERATOR,
@@ -465,10 +550,43 @@ test_atom_generator (void)
 	g_assert (GDATA_IS_GENERATOR (generator));
 	g_clear_error (&error);
 
+	/* Compare it against another identical generator */
+	generator2 = GDATA_GENERATOR (gdata_parsable_new_from_xml (GDATA_TYPE_GENERATOR,
+		"<generator uri='http://example.com/' version='15'>Bach &amp; Son's Generator</generator>", -1, NULL));
+	g_assert_cmpint (gdata_generator_compare (generator, generator2), ==, 0);
+	g_object_unref (generator2);
+
+	/* …and a different generator */
+	generator2 = GDATA_GENERATOR (gdata_parsable_new_from_xml (GDATA_TYPE_GENERATOR,
+		"<generator>Different generator</generator>", -1, NULL));
+	g_assert_cmpint (gdata_generator_compare (generator, generator2), !=, 0);
+	g_object_unref (generator2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_generator_compare (generator, NULL), ==, 1);
+	g_assert_cmpint (gdata_generator_compare (NULL, generator), ==, -1);
+	g_assert_cmpint (gdata_generator_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_generator_compare (generator, generator), ==, 0);
+
 	/* Check the properties */
 	g_assert_cmpstr (gdata_generator_get_name (generator), ==, "Bach & Son's Generator");
 	g_assert_cmpstr (gdata_generator_get_uri (generator), ==, "http://example.com/");
 	g_assert_cmpstr (gdata_generator_get_version (generator), ==, "15");
+
+	/* Check them a different way too */
+	g_object_get (G_OBJECT (generator),
+	              "name", &name,
+	              "uri", &uri,
+	              "version", &version,
+	              NULL);
+
+	g_assert_cmpstr (name, ==, "Bach & Son's Generator");
+	g_assert_cmpstr (uri, ==, "http://example.com/");
+	g_assert_cmpstr (version, ==, "15");
+
+	g_free (name);
+	g_free (uri);
+	g_free (version);
 	g_object_unref (generator);
 
 	/* Now parse a generator with less information available */
@@ -486,10 +604,24 @@ test_atom_generator (void)
 }
 
 static void
+test_atom_generator_error_handling (void)
+{
+	GDataGenerator *generator;
+	GError *error = NULL;
+
+	/* Empty URI */
+	generator = GDATA_GENERATOR (gdata_parsable_new_from_xml (GDATA_TYPE_GENERATOR, "<generator uri=''/>", -1, &error));
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
+	g_assert (generator == NULL);
+	g_clear_error (&error);
+}
+
+static void
 test_atom_link (void)
 {
 	GDataLink *link, *link2;
-	gchar *xml;
+	gchar *xml, *uri, *relation_type, *content_type, *language, *title;
+	gint length;
 	GError *error = NULL;
 
 	link = GDATA_LINK (gdata_parsable_new_from_xml (GDATA_TYPE_LINK,
@@ -521,12 +653,51 @@ test_atom_link (void)
 	g_assert_cmpint (gdata_link_compare (link, link2), !=, 0);
 	g_object_unref (link2);
 
+	/* More comparisons */
+	g_assert_cmpint (gdata_link_compare (link, NULL), ==, 1);
+	g_assert_cmpint (gdata_link_compare (NULL, link), ==, -1);
+	g_assert_cmpint (gdata_link_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_link_compare (link, link), ==, 0);
+
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (link));
 	g_assert_cmpstr (xml, ==,
 			 "<link xmlns='http://www.w3.org/2005/Atom' href='http://example.com/' title='All About Angle Brackets: &lt;, &gt;' "
 				"rel='http://test.com#link-type' type='text/plain' hreflang='de' length='2000'/>");
 	g_free (xml);
+
+	/* Set some of the properties */
+	g_object_set (G_OBJECT (link),
+	              "uri", "http://another-example.com/",
+	              "relation-type", "http://test.com#link-type2",
+	              "content-type", "text/html",
+	              "language", "sv",
+	              "title", "This & That About <Angle Brackets>",
+	              "length", -1,
+	              NULL);
+
+	/* Check the properties */
+	g_object_get (G_OBJECT (link),
+	              "uri", &uri,
+	              "relation-type", &relation_type,
+	              "content-type", &content_type,
+	              "language", &language,
+	              "title", &title,
+	              "length", &length,
+	              NULL);
+
+	g_assert_cmpstr (uri, ==, "http://another-example.com/");
+	g_assert_cmpstr (relation_type, ==, "http://test.com#link-type2");
+	g_assert_cmpstr (content_type, ==, "text/html");
+	g_assert_cmpstr (language, ==, "sv");
+	g_assert_cmpstr (title, ==, "This & That About <Angle Brackets>");
+	g_assert_cmpint (length, ==, -1);
+
+	g_free (uri);
+	g_free (relation_type);
+	g_free (content_type);
+	g_free (language);
+	g_free (title);
 	g_object_unref (link);
 
 	/* Now parse a link with less information available */
@@ -551,6 +722,34 @@ test_atom_link (void)
 				"Test Content<foobar/></link>");
 	g_free (xml);
 	g_object_unref (link);
+}
+
+static void
+test_atom_link_error_handling (void)
+{
+	GDataLink *link;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) link = GDATA_LINK (gdata_parsable_new_from_xml (GDATA_TYPE_LINK,\
+		"<link " x "/>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (link == NULL);\
+	g_clear_error (&error)
+
+	/* href */
+	TEST_XML_ERROR_HANDLING (""); /* missing href */
+	TEST_XML_ERROR_HANDLING ("href=''"); /* empty href */
+
+	/* rel */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' rel=''"); /* empty rel */
+
+	/* type */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' type=''"); /* empty type */
+
+	/* hreflang */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' hreflang=''"); /* empty hreflang */
+
+#undef TEST_XML_ERROR_HANDLING
 }
 
 static void
@@ -1567,9 +1766,13 @@ main (int argc, char *argv[])
 	g_test_add_func ("/color/output", test_color_output);
 
 	g_test_add_func ("/atom/author", test_atom_author);
+	g_test_add_func ("/atom/author/error_handling", test_atom_author_error_handling);
 	g_test_add_func ("/atom/category", test_atom_category);
+	g_test_add_func ("/atom/category/error_handling", test_atom_category_error_handling);
 	g_test_add_func ("/atom/generator", test_atom_generator);
+	g_test_add_func ("/atom/generator/error_handling", test_atom_generator_error_handling);
 	g_test_add_func ("/atom/link", test_atom_link);
+	g_test_add_func ("/atom/link/error_handling", test_atom_link_error_handling);
 
 	g_test_add_func ("/gd/email_address", test_gd_email_address);
 	g_test_add_func ("/gd/im_address", test_gd_im_address);

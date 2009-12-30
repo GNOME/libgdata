@@ -41,7 +41,7 @@ print_element (xmlNode *node)
 			return g_strdup_printf ("<%s>", node->name);
 	} else {
 		/* We have a parent node, which makes things a lot more complex */
-		gboolean parent_has_ns = (node->parent->ns == NULL || node->parent->ns->prefix == NULL ||
+		gboolean parent_has_ns = (node->parent->type == XML_DOCUMENT_NODE || node->parent->ns == NULL || node->parent->ns->prefix == NULL ||
 					  xmlStrcmp (node->parent->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
 
 		if (parent_has_ns == TRUE && node_has_ns == TRUE)
@@ -136,7 +136,7 @@ gdata_parser_error_required_property_missing (xmlNode *element, const gchar *pro
 		      *
 		      * For example:
 		      *  A required property of a <entry/gAcl:role> element (@value) was not present. */
-		     _("A required property of a %s element (%s) was not present."), property_string, element_string);
+		     _("A required property of a %s element (%s) was not present."), element_string, property_string);
 	g_free (property_string);
 	g_free (element_string);
 

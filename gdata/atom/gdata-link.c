@@ -269,7 +269,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* href */
 	uri = xmlGetProp (root_node, (xmlChar*) "href");
-	if (uri == NULL && *uri != '\0')
+	if (uri == NULL || *uri == '\0')
 		return gdata_parser_error_required_property_missing (root_node, "href", error);
 	self->priv->uri = g_strdup ((gchar*) uri);
 	xmlFree (uri);
@@ -374,7 +374,7 @@ gdata_link_compare (const GDataLink *a, const GDataLink *b)
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

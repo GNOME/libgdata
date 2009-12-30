@@ -292,7 +292,7 @@ gdata_author_compare (const GDataAuthor *a, const GDataAuthor *b)
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

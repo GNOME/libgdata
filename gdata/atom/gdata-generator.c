@@ -162,17 +162,14 @@ gdata_generator_get_property (GObject *object, guint property_id, GValue *value,
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *name;
 	GDataGeneratorPrivate *priv = GDATA_GENERATOR (parsable)->priv;
 
-	name = xmlNodeListGetString (doc, root_node->children, TRUE);
-	if (name != NULL && *name == '\0') {
-		xmlFree (name);
-		return gdata_parser_error_required_content_missing (root_node, error);
-	}
-
-	priv->name = (gchar*) name;
 	priv->uri = (gchar*) xmlGetProp (root_node, (xmlChar*) "uri");
+	if (priv->uri != NULL && *(priv->uri) == '\0')
+		/* priv->uri will be freed when the object is destroyed */
+		return gdata_parser_error_required_property_missing (root_node, "uri", error);
+
+	priv->name = (gchar*) xmlNodeListGetString (doc, root_node->children, TRUE);
 	priv->version = (gchar*) xmlGetProp (root_node, (xmlChar*) "version");
 
 	return TRUE;
@@ -212,7 +209,7 @@ gdata_generator_compare (const GDataGenerator *a, const GDataGenerator *b)
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

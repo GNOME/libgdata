@@ -257,7 +257,7 @@ gdata_category_compare (const GDataCategory *a, const GDataCategory *b)
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

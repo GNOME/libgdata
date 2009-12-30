@@ -421,8 +421,6 @@ gcov-clean:
 	@find . -name "*.gcda" -o -name "*.gcov" -delete
 
 MAINTAINERCLEANFILES += gcov-report.txt
-
-.PHONEY: gcov gcov-clean gcov-report.txt
 else
 gcov:
 	@echo "Need to reconfigure with --enable-gcov"
@@ -492,7 +490,7 @@ $(srcdir)/ChangeLog:
 	  (echo A git checkout and git-log is required to generate ChangeLog >&2 && \
 	  echo A git checkout and git-log is required to generate this file >> $@); \
 	fi
-.PHONY: $(srcdir)/ChangeLog
+.PHONY: $(srcdir)/ChangeLog gcov gcov-clean gcov-report.txt
 
 MAINTAINERCLEANFILES += ChangeLog
 
