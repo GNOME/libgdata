@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&component=general\n"
-"POT-Creation-Date: 2009-10-30 17:28+0000\n"
-"PO-Revision-Date: 2009-11-10 07:46+0100\n"
+"POT-Creation-Date: 2009-12-30 11:29+0000\n"
+"PO-Revision-Date: 2010-01-01 10:37+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -219,10 +219,11 @@ msgstr "Storitev trenutno ni na voljo. (%s)"
 #: ../gdata/gdata-service.c:821
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "Nevaljaven preusmeritveni URI: %s"
+msgstr "Neveljaven preusmeritveni URI: %s"
 
 #: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:339
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:389
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:546
 #: ../gdata/services/youtube/gdata-youtube-service.c:785
 msgid "The entry has already been inserted."
 msgstr "Vnos je že vstavljen."
@@ -240,13 +241,13 @@ msgstr "Vsebina predmeta %s (\"%s\") ni v osmiškem RGB zapisu."
 #: ../gdata/services/calendar/gdata-calendar-service.c:106
 #: ../gdata/services/calendar/gdata-calendar-service.c:140
 msgid "You must be authenticated to query all calendars."
-msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje vseh koledarjev"
+msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje vseh koledarjev."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:172
 #: ../gdata/services/calendar/gdata-calendar-service.c:206
 #: ../gdata/services/calendar/gdata-calendar-service.c:240
 msgid "You must be authenticated to query your own calendars."
-msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje koledarjev"
+msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje koledarjev."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:249
 msgid "The calendar did not have a content source."
@@ -257,7 +258,7 @@ msgstr "Koledar nima vira vsebine."
 msgid "You must be authenticated to query contacts."
 msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanjem o stikih."
 
-#: ../gdata/services/documents/gdata-documents-entry.c:612
+#: ../gdata/services/documents/gdata-documents-entry.c:615
 msgid "You must be authenticated to download documents."
 msgstr "Le pooblaščene osebe imajo dovoljenje za prejemanje dokumentov."
 
@@ -305,9 +306,18 @@ msgstr "Vpisati morate uporabniško ime ali pa morate biti pooblaščeni za poiz
 msgid "The album did not have a feed link."
 msgstr "Album nima povezave vira."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:395
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:552
 msgid "You must be authenticated to upload a file."
 msgstr "Le pooblaščene osebe imajo dovoljenje za pošiljanje datotek."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
+msgid "The album has already been inserted."
+msgstr "Album je že vstavljen."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:620
+msgid "You must be authenticated to insert an album."
+msgstr "Le pooblaščene osebe imajo dovoljenje za vstavljanje albuma."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:303
 #, c-format
@@ -341,7 +351,7 @@ msgstr "Neznana napaka kode \"%s\" v domeni \"%s\" prejeti z mesta \"%s\"."
 #: ../gdata/services/youtube/gdata-youtube-service.c:698
 #: ../gdata/services/youtube/gdata-youtube-service.c:739
 msgid "The video did not have a related videos <link>."
-msgstr "Posnetek nima <povezave> do sorodnih posnetkov"
+msgstr "Posnetek nima <povezave> do sorodnih posnetkov."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:791
 msgid "You must be authenticated to upload a video."
