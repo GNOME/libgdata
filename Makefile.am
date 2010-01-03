@@ -428,13 +428,7 @@ endif
 
 # Cleaning
 EXTRA_DIST += \
-	COPYING.LIB		\
 	autogen.sh		\
-	intltool-extract.in	\
-	intltool-merge.in	\
-	intltool-update.in	\
-	AUTHORS 		\
-	NEWS			\
 	HACKING			\
 	gtk-doc.make		\
 	libgdata.doap
@@ -443,9 +437,6 @@ CLEANFILES += \
 	`find "$(srcdir)" -type f -name .dirstamp -print`
 
 DISTCLEANFILES = \
-	intltool-extract	\
-	intltool-merge		\
-	intltool-update		\
 	gnome-doc-utils.make	\
 	gtk-doc.make
 
