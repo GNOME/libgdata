@@ -1,14 +1,14 @@
 # Swedish translation for libgdata.
-# Copyright (C) 2009 Free Software Foundation, Inc.
+# Copyright (C) 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
-# Daniel Nylander <po@danielnylander.se>, 2009.
+# Daniel Nylander <po@danielnylander.se>, 2009, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-30 18:28+0100\n"
-"PO-Revision-Date: 2009-10-30 18:28+0100\n"
+"POT-Creation-Date: 2010-01-10 11:58+0100\n"
+"PO-Revision-Date: 2010-01-10 11:59+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -219,7 +219,8 @@ msgid "Invalid redirect URI: %s"
 msgstr "Ogiltig URI för omdirigering: %s"
 
 #: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:339
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:389
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:546
 #: ../gdata/services/youtube/gdata-youtube-service.c:785
 msgid "The entry has already been inserted."
 msgstr "Objektet har redan infogats."
@@ -254,7 +255,7 @@ msgstr "Kalendern saknade en innehållskälla."
 msgid "You must be authenticated to query contacts."
 msgstr "Du måste vara autentiserad för att fråga efter kontakter."
 
-#: ../gdata/services/documents/gdata-documents-entry.c:612
+#: ../gdata/services/documents/gdata-documents-entry.c:615
 msgid "You must be authenticated to download documents."
 msgstr "Du måste vara autentiserad för att hämta dokument."
 
@@ -302,9 +303,18 @@ msgstr "Du måste ange ett användarnamn eller vara autentiserad för att söka 
 msgid "The album did not have a feed link."
 msgstr "Albumet saknade en webbkanalslänk."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:395
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:552
 msgid "You must be authenticated to upload a file."
 msgstr "Du måste vara autentiserad för att skicka upp en fil."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
+msgid "The album has already been inserted."
+msgstr "Albumet har redan infogats."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:620
+msgid "You must be authenticated to insert an album."
+msgstr "Du måste vara autentiserad för att infoga ett album."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:303
 #, c-format
