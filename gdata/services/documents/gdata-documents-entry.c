@@ -592,22 +592,25 @@ notify_content_type_cb (GDataDownloadStream *download_stream, GParamSpec *pspec,
  * Since: 0.4.0
  */
 GFile *
-_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *download_uri,
+_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *src_uri,
 					  GFile *destination_file, const gchar *file_extension, gboolean replace_file_if_exists,
 					  GCancellable *cancellable, GError **error)
 {
+	const gchar *document_title;
+	gchar *default_filename;
+	GFileOutputStream *dest_stream;
+	GInputStream *src_stream;
+	GFile *actual_file = NULL;
 	GError *child_error = NULL;
-	GFile *output_file;
-	GFileOutputStream *file_stream;
-	GInputStream *download_stream;
 
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
-	g_return_val_if_fail (download_uri != NULL, NULL);
+	g_return_val_if_fail (src_uri != NULL, NULL);
 	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (file_extension != NULL, NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (service)) == FALSE) {
@@ -616,48 +619,28 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 		return NULL;
 	}
 
-	/* Create a new file */
-	file_stream = g_file_create (destination_file, G_FILE_CREATE_NONE, cancellable, &child_error);
-	if (g_error_matches (child_error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-		if (replace_file_if_exists == TRUE) {
-			g_error_free (child_error);
-			child_error = NULL;
+	/* Determine a default filename based on the document's title */
+	document_title = gdata_entry_get_title (GDATA_ENTRY (self));
+	default_filename = g_strdup_printf ("%s.%s", document_title, file_extension);
 
-			/* Replace a pre-existing file */
-			file_stream = g_file_replace (destination_file, NULL, TRUE, G_FILE_CREATE_REPLACE_DESTINATION, cancellable, &child_error);
+	dest_stream = _gdata_download_stream_find_destination (default_filename, destination_file, &actual_file, replace_file_if_exists, cancellable, error);
+	g_free (default_filename);
 
-			if (g_error_matches (child_error, G_IO_ERROR, G_IO_ERROR_IS_DIRECTORY)) {
-				GFile *new_destination_file;
-				const gchar *document_title;
-				gchar *filename;
+	if (dest_stream == NULL)
+		return NULL;
 
-				g_error_free (child_error);
-
-				/* Prepare a new GFile */
-				document_title = gdata_entry_get_title (GDATA_ENTRY (self));
-				filename = g_strdup_printf ("%s.%s", document_title, file_extension);
-				new_destination_file = g_file_get_child (destination_file, filename);
-				g_free (filename);
-
-				file_stream = g_file_replace (new_destination_file, NULL, TRUE, G_FILE_CREATE_REPLACE_DESTINATION, cancellable, error);
-				output_file = new_destination_file;
-			} else {
-				output_file = g_object_ref (destination_file);
-			}
-		} else {
-			g_propagate_error (error, child_error);
-			return NULL;
-		}
-	} else {
-		output_file = g_object_ref (destination_file);
+	/* Synchronously splice the data from the download stream to the file stream (network -> disk) */
+	src_stream = gdata_download_stream_new (GDATA_SERVICE (service), src_uri);
+	g_signal_connect (src_stream, "notify::content-type", (GCallback) notify_content_type_cb, content_type);
+	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream,
+				G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
+	g_object_unref (src_stream);
+	g_object_unref (dest_stream);
+	if (child_error != NULL) {
+		g_object_unref (actual_file);
+		g_propagate_error (error, child_error);
+		return NULL;
 	}
 
-	download_stream = gdata_download_stream_new (GDATA_SERVICE (service), download_uri);
-	g_signal_connect (download_stream, "notify::content-type", (GCallback) notify_content_type_cb, content_type);
-	g_output_stream_splice (G_OUTPUT_STREAM (file_stream), download_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-				cancellable, error);
-	g_object_unref (download_stream);
-	g_object_unref (file_stream);
-
-	return output_file;
+	return actual_file;
 }
