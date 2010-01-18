@@ -170,5 +170,6 @@ gdata_documents_text_get_download_uri (GDataDocumentsText *self, GDataDocumentsT
 	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (self));
 	g_assert (document_id != NULL);
 
-	return g_strdup_printf ("http://docs.google.com/feeds/download/documents/Export?exportFormat=%s&docID=%s", export_formats[export_format], document_id);
+	return g_strdup_printf ("%s://docs.google.com/feeds/download/documents/Export?exportFormat=%s&docID=%s",
+	                        _gdata_service_get_scheme (), export_formats[export_format], document_id);
 }

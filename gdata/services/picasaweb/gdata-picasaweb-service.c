@@ -628,6 +628,6 @@ gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWe
 	g_object_unref (album_kind);
 
 	return GDATA_PICASAWEB_ALBUM (gdata_service_insert_entry (GDATA_SERVICE (self), "http://picasaweb.google.com/data/feed/api/user/default",
-								  GDATA_ENTRY (album), cancellable, error));
+	                                                          GDATA_ENTRY (album), cancellable, error));
 }
 

@@ -99,6 +99,9 @@ GDataFeed *
 gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
 				       GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
+	GDataFeed *feed;
+	gchar *request_uri;
+
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -106,8 +109,12 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
 		return NULL;
 	}
 
-	return gdata_service_query (GDATA_SERVICE (self), "http://www.google.com/m8/feeds/contacts/default/full", GDATA_QUERY (query),
-				    GDATA_TYPE_CONTACTS_CONTACT, cancellable, progress_callback, progress_user_data, error);
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/contacts/default/full", NULL);
+	feed = gdata_service_query (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query),
+	                            GDATA_TYPE_CONTACTS_CONTACT, cancellable, progress_callback, progress_user_data, error);
+	g_free (request_uri);
+
+	return feed;
 }
 
 /**
@@ -133,6 +140,8 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
 					     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 					     GAsyncReadyCallback callback, gpointer user_data)
 {
+	gchar *request_uri;
+
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
@@ -141,8 +150,10 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
 		return;
 	}
 
-	gdata_service_query_async (GDATA_SERVICE (self), "http://www.google.com/m8/feeds/contacts/default/full", GDATA_QUERY (query),
-				   GDATA_TYPE_CONTACTS_CONTACT, cancellable, progress_callback, progress_user_data, callback, user_data);
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/contacts/default/full", NULL);
+	gdata_service_query_async (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query),
+	                           GDATA_TYPE_CONTACTS_CONTACT, cancellable, progress_callback, progress_user_data, callback, user_data);
+	g_free (request_uri);
 }
 
 /**
@@ -170,7 +181,9 @@ gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContacts
 	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (contact), NULL);
 
-	uri = g_strdup_printf ("http://www.google.com/m8/feeds/contacts/%s/full", gdata_service_get_username (GDATA_SERVICE (self)));
+	uri = g_strdup_printf ("%s://www.google.com/m8/feeds/contacts/%s/full",
+	                       _gdata_service_get_scheme (),
+	                       gdata_service_get_username (GDATA_SERVICE (self)));
 	entry = gdata_service_insert_entry (GDATA_SERVICE (self), uri, GDATA_ENTRY (contact), cancellable, error);
 	g_free (uri);
 

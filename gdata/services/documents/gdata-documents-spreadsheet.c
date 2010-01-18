@@ -192,8 +192,11 @@ gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, G
 
 	fmcmd = export_formats[export_format].fmcmd;
 
-	if (gid != -1)
-		return g_strdup_printf ("http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&fmcmd=%s&gid=%d", document_id, fmcmd, gid);
-	else
-		return g_strdup_printf ("http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&fmcmd=%s", document_id, fmcmd);
+	if (gid != -1) {
+		return g_strdup_printf ("%s://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&fmcmd=%s&gid=%d",
+		                        _gdata_service_get_scheme (), document_id, fmcmd, gid);
+	} else {
+		return g_strdup_printf ("%s://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&fmcmd=%s",
+		                        _gdata_service_get_scheme (), document_id, fmcmd);
+	}
 }

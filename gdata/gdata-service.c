@@ -1739,3 +1739,27 @@ _gdata_service_get_session (GDataService *self)
 {
 	return self->priv->session;
 }
+
+/*
+ * _gdata_service_get_scheme:
+ *
+ * Returns the name of the scheme to use (either "http" or "https") for network operations if a request should use HTTPS. This allows
+ * requests to normally use HTTPS, but have the option of using HTTP for debugging purposes. If a request should normally use HTTP, that
+ * should be hard-coded in the relevant code, and this function needn't be called.
+ *
+ * Return value: the scheme to use
+ *
+ * Since: 0.6.0
+ */
+const gchar *
+_gdata_service_get_scheme (void)
+{
+	static gint force_http = -1;
+
+	if (force_http == -1)
+		force_http = (g_getenv ("LIBGDATA_FORCE_HTTP") != NULL);
+
+	if (force_http)
+		return "http";
+	return "https";
+}

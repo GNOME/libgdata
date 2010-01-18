@@ -38,6 +38,8 @@ void _gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDat
 				 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 				 GAsyncReadyCallback callback, gpointer user_data, GSimpleAsyncThreadFunc query_thread);
 
+const gchar *_gdata_service_get_scheme (void);
+
 #include "gdata-query.h"
 void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
 void _gdata_query_set_previous_uri (GDataQuery *self, const gchar *previous_uri);
