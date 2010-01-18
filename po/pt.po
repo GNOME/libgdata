@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-09 23:50+0100\n"
-"PO-Revision-Date: 2009-09-08 22:17+0000\n"
+"POT-Creation-Date: 2010-01-18 01:42+0000\n"
+"PO-Revision-Date: 2009-12-20 00:55-0100\n"
 "Last-Translator: António Lima <amrlima@gmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -219,8 +219,9 @@ msgid "Invalid redirect URI: %s"
 msgstr "URI de redireccionamento inválido: %s"
 
 #: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:276
-#: ../gdata/services/youtube/gdata-youtube-service.c:784
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:389
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:546
+#: ../gdata/services/youtube/gdata-youtube-service.c:785
 msgid "The entry has already been inserted."
 msgstr "A entrada já foi inserida."
 
@@ -235,70 +236,90 @@ msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
 "O conteúdo de um elemento %s (\"%s\") não estava no formato hexadecimal RGB."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:106
-#: ../gdata/services/calendar/gdata-calendar-service.c:140
+#: ../gdata/services/calendar/gdata-calendar-service.c:109
+#: ../gdata/services/calendar/gdata-calendar-service.c:149
 msgid "You must be authenticated to query all calendars."
 msgstr "Tem de estar autenticado para consultar todos os calendários."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:172
-#: ../gdata/services/calendar/gdata-calendar-service.c:206
-#: ../gdata/services/calendar/gdata-calendar-service.c:240
+#: ../gdata/services/calendar/gdata-calendar-service.c:186
+#: ../gdata/services/calendar/gdata-calendar-service.c:226
+#: ../gdata/services/calendar/gdata-calendar-service.c:262
 msgid "You must be authenticated to query your own calendars."
 msgstr "Tem de estar autenticado para consultar os seus calendários."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:249
+#: ../gdata/services/calendar/gdata-calendar-service.c:271
 msgid "The calendar did not have a content source."
 msgstr "O calendário não tinha uma árvore de conteúdo."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:105
-#: ../gdata/services/contacts/gdata-contacts-service.c:140
+#: ../gdata/services/contacts/gdata-contacts-service.c:108
+#: ../gdata/services/contacts/gdata-contacts-service.c:149
 msgid "You must be authenticated to query contacts."
 msgstr "Tem de estar autenticado para consultar contactos."
 
-#: ../gdata/services/documents/gdata-documents-entry.c:612
+#: ../gdata/services/documents/gdata-documents-entry.c:618
 msgid "You must be authenticated to download documents."
 msgstr "Tem de estar autenticado para transferir documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:188
-#: ../gdata/services/documents/gdata-documents-service.c:296
+#: ../gdata/services/documents/gdata-documents-service.c:191
+#: ../gdata/services/documents/gdata-documents-service.c:303
 msgid "You must be authenticated to query documents."
 msgstr "Tem de estar autenticado para consultar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:387
+#: ../gdata/services/documents/gdata-documents-service.c:396
 msgid "The supplied document had an invalid content type."
 msgstr "O documento fornecido possui um tipo de conteúdo inválido."
 
-#: ../gdata/services/documents/gdata-documents-service.c:472
+#: ../gdata/services/documents/gdata-documents-service.c:481
 msgid "You must be authenticated to upload documents."
 msgstr "Tem de estar autenticado para enviar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:478
+#: ../gdata/services/documents/gdata-documents-service.c:487
 msgid "The document has already been uploaded."
 msgstr "O documento já foi enviado-"
 
-#: ../gdata/services/documents/gdata-documents-service.c:528
+#: ../gdata/services/documents/gdata-documents-service.c:537
 msgid "You must be authenticated to update documents."
 msgstr "Tem de estar autenticado para actualizar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:576
-#: ../gdata/services/documents/gdata-documents-service.c:672
+#: ../gdata/services/documents/gdata-documents-service.c:585
+#: ../gdata/services/documents/gdata-documents-service.c:681
 msgid "You must be authenticated to move documents."
 msgstr "Tem de estar autenticado para mover documentos."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:133
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:180
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"Tem de especificar um nome de utilizador ou estar autenticado para consultar "
+"um utilizador."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:181
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:235
+msgid "Query parameter not allowed for albums."
+msgstr "Parâmetro de consulta não autorizado para álbuns."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:188
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:243
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Tem de especificar um nome de utilizador ou estar autenticado para consultar "
 "todos os álbuns."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:221
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
 msgid "The album did not have a feed link."
 msgstr "O álbum não tinha uma ligação de fonte."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:282
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:395
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:552
 msgid "You must be authenticated to upload a file."
 msgstr "Tem de estar autenticado para enviar um ficheiro."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
+msgid "The album has already been inserted."
+msgstr "O álbum já foi inserido."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:620
+msgid "You must be authenticated to insert an album."
+msgstr "Tem de estar autenticado para inserir um álbum."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:303
 #, c-format
@@ -339,11 +360,11 @@ msgstr ""
 "Código de erro desconhecido \"%s\" no domínio \"%s\" recebido com "
 "localização \"%s\"."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:697
-#: ../gdata/services/youtube/gdata-youtube-service.c:738
+#: ../gdata/services/youtube/gdata-youtube-service.c:698
+#: ../gdata/services/youtube/gdata-youtube-service.c:739
 msgid "The video did not have a related videos <link>."
 msgstr "O vídeo não tinha vídeos relacionados <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:790
+#: ../gdata/services/youtube/gdata-youtube-service.c:791
 msgid "You must be authenticated to upload a video."
 msgstr "Tem de estar autenticado para enviar um vídeo."
