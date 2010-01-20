@@ -354,6 +354,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 	gssize response_length;
 	GFileInfo *file_info = NULL;
 	GType new_document_type;
+	GError *child_error = NULL;
 
 	/* Get some information about the file we're uploading */
 	if (document_file != NULL) {
@@ -418,11 +419,12 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 	}
 
 	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-				cancellable, error);
+				cancellable, &child_error);
 
 	g_object_unref (input_stream);
-	if (error != NULL && *error != NULL) {
+	if (child_error != NULL) {
 		g_object_unref (output_stream);
+		g_propagate_error (error, child_error);
 		return NULL;
 	}
 

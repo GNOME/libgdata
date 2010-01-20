@@ -41,6 +41,7 @@
 #include "gdata-private.h"
 #include "gdata-parser.h"
 #include "atom/gdata-link.h"
+#include "gdata-upload-stream.h"
 
 /* Standards reference here: http://code.google.com/apis/youtube/2.0/reference.html */
 
@@ -763,137 +764,83 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
  * Return value: the inserted #GDataYouTubeVideo with updated properties from @video; unref with g_object_unref()
  **/
 GDataYouTubeVideo *
-gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, GFile *video_file,
-				    GCancellable *cancellable, GError **error)
+gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, GFile *video_file, GCancellable *cancellable, GError **error)
 {
 	/* TODO: Async variant */
-	#define BOUNDARY_STRING "0xdeadbeef6e0808d5e6ed8bc168390bcc"
-
-	GDataServiceClass *klass;
-	SoupMessage *message;
-	gchar *entry_xml, *second_chunk_header, *upload_data, *video_contents, *i;
-	const gchar *first_chunk_header, *footer;
-	guint status;
-	GFileInfo *video_file_info;
-	gsize content_length, first_chunk_header_length, second_chunk_header_length, entry_xml_length, video_length, footer_length;
+	GDataYouTubeVideo *new_entry;
+	GDataCategory *category;
+	GOutputStream *output_stream;
+	GInputStream *input_stream;
+	const gchar *slug, *content_type, *response_body;
+	gssize response_length;
+	GFileInfo *file_info;
+	GError *child_error = NULL;
 
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (video), NULL);
+	g_return_val_if_fail (G_IS_FILE (video_file), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (video)) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-				     _("The entry has already been inserted."));
+		                     _("The entry has already been inserted."));
 		return NULL;
 	}
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to upload a video."));
+		                     _("You must be authenticated to upload a video."));
 		return NULL;
 	}
 
-	message = soup_message_new (SOUP_METHOD_POST, "http://uploads.gdata.youtube.com/feeds/api/users/default/uploads");
+	/* Add the "video" kind if the entry is missing it. If it already has the kind category, no duplicate is added. */
+	category = gdata_category_new ("http://gdata.youtube.com/schemas/2007#video", "http://schemas.google.com/g/2005#kind", NULL);
+	gdata_entry_add_category (GDATA_ENTRY (video), category);
+	g_object_unref (category);
 
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (self), message);
+	file_info = g_file_query_info (video_file, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
+	if (file_info == NULL)
+		return NULL;
 
-	/* Get the data early so we can calculate the content length */
-	if (g_file_load_contents (video_file, NULL, &video_contents, &video_length, NULL, error) == FALSE) {
-		g_object_unref (message);
+	slug = g_file_info_get_display_name (file_info);
+	content_type = g_file_info_get_content_type (file_info);
+
+	/* Streaming upload support using GDataUploadStream; automatically handles the XML and multipart stuff for us */
+	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST,
+	                                         "http://uploads.gdata.youtube.com/feeds/api/users/default/uploads",
+	                                         GDATA_ENTRY (video), slug, content_type);
+
+	g_object_unref (file_info);
+	if (output_stream == NULL)
+		return NULL;
+
+	/* Open the video file for reading */
+	input_stream = G_INPUT_STREAM (g_file_read (video_file, cancellable, error));
+	if (input_stream == NULL) {
+		g_object_unref (output_stream);
 		return NULL;
 	}
 
-	entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
+	/* Splice the streams to upload the file and metadata */
+	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+	                        cancellable, &child_error);
 
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		g_free (entry_xml);
+	g_object_unref (input_stream);
+	if (child_error != NULL) {
+		g_object_unref (output_stream);
+		g_propagate_error (error, child_error);
 		return NULL;
 	}
 
-	video_file_info = g_file_query_info (video_file, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
-	if (video_file_info == NULL) {
-		g_object_unref (message);
-		g_free (entry_xml);
-		return NULL;
-	}
+	/* Get and parse the response from the server */
+	response_body = gdata_upload_stream_get_response (GDATA_UPLOAD_STREAM (output_stream), &response_length);
+	g_assert (response_body != NULL && response_length > 0);
 
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		g_free (entry_xml);
-		g_object_unref (video_file_info);
-		return NULL;
-	}
+	new_entry = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO, response_body, (gint) response_length, error));
+	g_object_unref (output_stream);
 
-	/* Add video-upload--specific headers */
-	soup_message_headers_append (message->request_headers, "Slug", g_file_info_get_display_name (video_file_info));
-
-	first_chunk_header = "--" BOUNDARY_STRING "\nContent-Type: application/atom+xml; charset=UTF-8\n\n<?xml version='1.0'?>";
-	second_chunk_header = g_strdup_printf ("\n--" BOUNDARY_STRING "\nContent-Type: %s\nContent-Transfer-Encoding: binary\n\n",
-					       g_file_info_get_content_type (video_file_info));
-	footer = "\n--" BOUNDARY_STRING "--";
-
-	g_object_unref (video_file_info);
-
-	first_chunk_header_length = strlen (first_chunk_header);
-	second_chunk_header_length = strlen (second_chunk_header);
-	footer_length = strlen (footer);
-	entry_xml_length = strlen (entry_xml);
-
-	content_length = first_chunk_header_length + entry_xml_length + second_chunk_header_length + video_length + footer_length;
-
-	/* Build the upload data */
-	upload_data = i = g_malloc (content_length);
-
-	memcpy (upload_data, first_chunk_header, first_chunk_header_length);
-	i += first_chunk_header_length;
-
-	memcpy (i, entry_xml, entry_xml_length);
-	i += entry_xml_length;
-	g_free (entry_xml);
-
-	memcpy (i, second_chunk_header, second_chunk_header_length);
-	g_free (second_chunk_header);
-	i += second_chunk_header_length;
-
-	memcpy (i, video_contents, video_length);
-	g_free (video_contents);
-	i += video_length;
-
-	memcpy (i, footer, footer_length);
-
-	/* Append the data */
-	soup_message_set_request (message, "multipart/related; boundary=" BOUNDARY_STRING, SOUP_MEMORY_TAKE, upload_data, content_length);
-
-	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (self), message, error);
-	if (status == SOUP_STATUS_NONE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != 201) {
-		/* Error */
-		parse_error_response (GDATA_SERVICE (self), GDATA_SERVICE_ERROR_WITH_INSERTION, status, message->reason_phrase,
-				      message->response_body->data, message->response_body->length, error);
-		g_object_unref (message);
-		return NULL;
-	}
-
-	g_assert (message->response_body->data != NULL);
-
-	return GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO, message->response_body->data,
-								 (gint) message->response_body->length, error));
+	return new_entry;
 }
 
 /**
