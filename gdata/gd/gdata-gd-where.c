@@ -24,7 +24,7 @@
  * @include: gdata/gd/gdata-gd-where.h
  *
  * #GDataGDWhere represents a "where" element from the
- * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhere">GData specification</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
  **/
 
 #include <glib.h>
@@ -84,7 +84,7 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * Specifies the relationship between the containing entity and the contained location.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhere">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -100,7 +100,7 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * A simple string value that can be used as a representation of this location.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhere">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -116,7 +116,7 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * Specifies a user-readable label to distinguish this location from other locations.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhere">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -262,7 +262,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @label: a human-readable label for the place, or %NULL
  *
  * Creates a new #GDataGDWhere. More information is available in the <ulink type="http"
- * url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhere">GData specification</ulink>.
+ * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
  *
  * Currently, entryLink functionality is not implemented in #GDataGDWhere.
  *

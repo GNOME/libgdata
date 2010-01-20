@@ -24,7 +24,7 @@
  * @include: gdata/gd/gdata-gd-reminder.h
  *
  * #GDataGDReminder represents a "reminder" element from the
- * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdReminder">GData specification</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
  **/
 
 #include <glib.h>
@@ -82,7 +82,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * The notification method the reminder should use.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdReminder">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -98,7 +98,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * Absolute time at which the reminder should be issued.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdReminder">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -114,7 +114,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * Whether the reminder is specified in terms of an absolute or relative time.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdReminder">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -130,7 +130,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * Time at which the reminder should be issued, in minutes relative to the start time of the corresponding event.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdReminder">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -289,7 +289,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @relative_time: the relative time for the reminder, in minutes, or %-1
  *
  * Creates a new #GDataGDReminder. More information is available in the <ulink type="http"
- * url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdReminder">GData specification</ulink>.
+ * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
  *
  * Return value: a new #GDataGDReminder, or %NULL; unref with g_object_unref()
  *

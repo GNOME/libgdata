@@ -24,7 +24,7 @@
  * @include: gdata/gd/gdata-gd-who.h
  *
  * #GDataGDWho represents an "who" element from the
- * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWho">GData specification</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
  **/
 
 #include <glib.h>
@@ -84,7 +84,7 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * Specifies the relationship between the containing entity and the contained person.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWho">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -100,7 +100,7 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * A simple string value that can be used as a representation of this person.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWho">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -116,7 +116,7 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * The e-mail address of the person represented by the #GDataWho.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWho">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -265,7 +265,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @email_address: the person's e-mail address, or %NULL
  *
  * Creates a new #GDataGDWho. More information is available in the <ulink type="http"
- * url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWho">GData specification</ulink>.
+ * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
  *
  * Currently, entryLink functionality is not implemented in #GDataGDWho.
  *

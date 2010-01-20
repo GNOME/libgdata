@@ -24,8 +24,10 @@
  * @include: gdata/gd/gdata-gd-organization.h
  *
  * #GDataGDOrganization represents an "organization" element from the
- * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdOrganization">GData specification</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
  **/
+
+/* TODO: Implement "where": http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -466,7 +468,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @is_primary: %TRUE if this organization is its owner's primary organization, %FALSE otherwise
  *
  * Creates a new #GDataGDOrganization. More information is available in the <ulink type="http"
- * url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdOrganization">GData specification</ulink>.
+ * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
  *
  * Return value: a new #GDataGDOrganization, or %NULL; unref with g_object_unref()
  *

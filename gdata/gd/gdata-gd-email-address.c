@@ -24,8 +24,10 @@
  * @include: gdata/gd/gdata-gd-email-address.h
  *
  * #GDataGDEmailAddress represents an "email" element from the
- * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdEmail">GData specification</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
  **/
+
+/* TODO: Implement "displayName": http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -82,7 +84,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * The e-mail address itself.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdEmail">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -98,7 +100,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * A programmatic value that identifies the type of e-mail address.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdEmail">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -114,7 +116,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * A simple string value used to name this e-mail address. It allows UIs to display a label such as "Work", "Personal", "Preferred", etc.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdEmail">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -130,7 +132,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * Indicates which e-mail address out of a group is primary.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdEmail">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -288,7 +290,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @is_primary: %TRUE if this e-mail address is its owner's primary address, %FALSE otherwise
  *
  * Creates a new #GDataGDEmailAddress. More information is available in the <ulink type="http"
- * url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdEmail">GData specification</ulink>.
+ * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
  *
  * Return value: a new #GDataGDEmailAddress, or %NULL; unref with g_object_unref()
  *

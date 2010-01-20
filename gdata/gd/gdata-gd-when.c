@@ -24,7 +24,7 @@
  * @include: gdata/gd/gdata-gd-when.h
  *
  * #GDataGDWhen represents a "when" element from the
- * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhen">GData specification</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
  **/
 
 #include <glib.h>
@@ -94,7 +94,7 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * The name of the when.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhen">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -110,7 +110,7 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * The title of a person within the when.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhen">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -126,7 +126,7 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * A programmatic value that identifies the type of when.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhen">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -143,7 +143,7 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * "Professional Society", etc.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhen">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -374,7 +374,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @is_date: %TRUE if @start_time and @end_time specify dates rather than times, %FALSE otherwise
  *
  * Creates a new #GDataGDWhen. More information is available in the <ulink type="http"
- * url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdWhen">GData specification</ulink>.
+ * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
  *
  * Return value: a new #GDataGDWhen, or %NULL; unref with g_object_unref()
  *

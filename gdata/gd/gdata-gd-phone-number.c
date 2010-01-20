@@ -24,7 +24,7 @@
  * @include: gdata/gd/gdata-gd-phone-number.h
  *
  * #GDataGDPhoneNumber represents a "phoneNumber" element from the
- * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPhoneNumber">GData specification</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
  **/
 
 #include <glib.h>
@@ -89,7 +89,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * Human-readable phone number; may be in any telephone number format.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPhoneNumber">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -105,7 +105,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * An optional "tel URI" used to represent the number in a formal way, useful for programmatic access, such as a VoIP/PSTN bridge.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPhoneNumber">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -121,7 +121,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * A programmatic value that identifies the type of phone number.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPhoneNumber">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -137,7 +137,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * A simple string value used to name this phone number. It allows UIs to display a label such as "Mobile", "Home", "Work", etc.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPhoneNumber">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -153,7 +153,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * Indicates which phone number out of a group is primary.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPhoneNumber">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -348,7 +348,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @is_primary: %TRUE if this phone number is its owner's primary number, %FALSE otherwise
  *
  * Creates a new #GDataGDPhoneNumber. More information is available in the <ulink type="http"
- * url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPhoneNumber">GData specification</ulink>.
+ * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
  *
  * Return value: a new #GDataGDPhoneNumber, or %NULL; unref with g_object_unref()
  *

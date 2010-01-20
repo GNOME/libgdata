@@ -55,6 +55,7 @@
 			<title>GData API</title>
 			<xi:include href="xml/gdata-gd-email-address.xml"/>
 			<xi:include href="xml/gdata-gd-im-address.xml"/>
+			<xi:include href="xml/gdata-gd-name.xml"/>
 			<xi:include href="xml/gdata-gd-organization.xml"/>
 			<xi:include href="xml/gdata-gd-phone-number.xml"/>
 			<xi:include href="xml/gdata-gd-postal-address.xml"/>

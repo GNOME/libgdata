@@ -24,7 +24,7 @@
  * @include: gdata/gd/gdata-gd-im-address.h
  *
  * #GDataGDIMAddress represents an "im" element from the
- * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdIm">GData specification</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
  **/
 
 #include <glib.h>
@@ -84,7 +84,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * The IM address itself.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdIm">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -100,7 +100,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * Identifies the IM network.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdIm">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -116,7 +116,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * A programmatic value that identifies the type of IM address.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdIm">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -132,7 +132,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * A simple string value used to name this IM address. It allows UIs to display a label such as "Work", "Personal", "Preferred", etc.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdIm">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -148,7 +148,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * Indicates which IM address out of a group is primary.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdIm">GData specification</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -322,7 +322,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @is_primary: %TRUE if this IM address is its owner's primary address, %FALSE otherwise
  *
  * Creates a new #GDataGDIMAddress. More information is available in the <ulink type="http"
- * url="http://code.google.com/apis/gdata/docs/1.0/elements.html#gdIm">GData specification</ulink>.
+ * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
  *
  * Return value: a new #GDataGDIMAddress, or %NULL; unref with g_object_unref()
  *
