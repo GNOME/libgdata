@@ -27,8 +27,6 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
  **/
 
-/* TODO: Implement "displayName": http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail */
-
 #include <glib.h>
 #include <libxml/parser.h>
 
@@ -48,13 +46,15 @@ struct _GDataGDEmailAddressPrivate {
 	gchar *relation_type;
 	gchar *label;
 	gboolean is_primary;
+	gchar *display_name;
 };
 
 enum {
 	PROP_ADDRESS = 1,
 	PROP_RELATION_TYPE,
 	PROP_LABEL,
-	PROP_IS_PRIMARY
+	PROP_IS_PRIMARY,
+	PROP_DISPLAY_NAME
 };
 
 G_DEFINE_TYPE (GDataGDEmailAddress, gdata_gd_email_address, GDATA_TYPE_PARSABLE)
@@ -141,6 +141,22 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 					"Primary?", "Indicates which e-mail address out of a group is primary.",
 					FALSE,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataGDEmailAddress:display-name:
+	 *
+	 * A display name of the entity (e.g. a person) the e-mail address belongs to.
+	 *
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_DISPLAY_NAME,
+				g_param_spec_string ("display-name",
+					"Display name", "A display name of the entity (e.g. a person) the e-mail address belongs to.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -157,6 +173,7 @@ gdata_gd_email_address_finalize (GObject *object)
 	g_free (priv->address);
 	g_free (priv->relation_type);
 	g_free (priv->label);
+	g_free (priv->display_name);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_gd_email_address_parent_class)->finalize (object);
@@ -179,6 +196,9 @@ gdata_gd_email_address_get_property (GObject *object, guint property_id, GValue 
 			break;
 		case PROP_IS_PRIMARY:
 			g_value_set_boolean (value, priv->is_primary);
+			break;
+		case PROP_DISPLAY_NAME:
+			g_value_set_string (value, priv->display_name);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -205,6 +225,9 @@ gdata_gd_email_address_set_property (GObject *object, guint property_id, const G
 		case PROP_IS_PRIMARY:
 			gdata_gd_email_address_set_is_primary (self, g_value_get_boolean (value));
 			break;
+		case PROP_DISPLAY_NAME:
+			gdata_gd_email_address_set_display_name (self, g_value_get_string (value));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -215,7 +238,7 @@ gdata_gd_email_address_set_property (GObject *object, guint property_id, const G
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *address, *rel, *label, *primary;
+	xmlChar *address, *rel, *label, *primary, *display_name;
 	gboolean primary_bool;
 	GDataGDEmailAddressPrivate *priv = GDATA_GD_EMAIL_ADDRESS (parsable)->priv;
 
@@ -246,15 +269,18 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* Other properties */
 	label = xmlGetProp (root_node, (xmlChar*) "label");
+	display_name = xmlGetProp (root_node, (xmlChar*) "displayName");
 
 	priv->address = g_strdup ((gchar*) address);
 	priv->relation_type = g_strdup ((gchar*) rel);
 	priv->label = g_strdup ((gchar*) label);
 	priv->is_primary = primary_bool;
+	priv->display_name = g_strdup ((gchar*) display_name);
 
 	xmlFree (address);
 	xmlFree (rel);
 	xmlFree (label);
+	xmlFree (display_name);
 
 	return TRUE;
 }
@@ -269,6 +295,8 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
 	if (priv->label != NULL)
 		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
+	if (priv->display_name != NULL)
+		gdata_parser_string_append_escaped (xml_string, " displayName='", priv->display_name, "'");
 
 	if (priv->is_primary == TRUE)
 		g_string_append (xml_string, " primary='true'");
@@ -479,4 +507,42 @@ gdata_gd_email_address_set_is_primary (GDataGDEmailAddress *self, gboolean is_pr
 
 	self->priv->is_primary = is_primary;
 	g_object_notify (G_OBJECT (self), "is-primary");
+}
+
+/**
+ * gdata_gd_email_address_get_display_name:
+ * @self: a #GDataGDEmailAddress
+ *
+ * Gets the #GDataGDEmailAddress:display-name property.
+ *
+ * Return value: a display name for the e-mail address, or %NULL
+ *
+ * Since: 0.6.0
+ **/
+const gchar *
+gdata_gd_email_address_get_display_name (GDataGDEmailAddress *self)
+{
+	g_return_val_if_fail (GDATA_IS_GD_EMAIL_ADDRESS (self), NULL);
+	return self->priv->display_name;
+}
+
+/**
+ * gdata_gd_email_address_set_display_name:
+ * @self: a #GDataGDEmailAddress
+ * @display_name: the new display name, or %NULL
+ *
+ * Sets the #GDataGDEmailAddress:display-name property to @display_name.
+ *
+ * Set @display_name to %NULL to unset the property in the e-mail address.
+ *
+ * Since: 0.6.0
+ **/
+void
+gdata_gd_email_address_set_display_name (GDataGDEmailAddress *self, const gchar *display_name)
+{
+	g_return_if_fail (GDATA_IS_GD_EMAIL_ADDRESS (self));
+
+	g_free (self->priv->display_name);
+	self->priv->display_name = g_strdup (display_name);
+	g_object_notify (G_OBJECT (self), "display-name");
 }

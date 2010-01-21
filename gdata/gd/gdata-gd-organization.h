@@ -24,6 +24,7 @@
 #include <glib-object.h>
 
 #include <gdata/gdata-parsable.h>
+#include <gdata/gd/gdata-gd-where.h>
 
 G_BEGIN_DECLS
 
@@ -87,6 +88,9 @@ void gdata_gd_organization_set_job_description (GDataGDOrganization *self, const
 
 const gchar *gdata_gd_organization_get_symbol (GDataGDOrganization *self);
 void gdata_gd_organization_set_symbol (GDataGDOrganization *self, const gchar *symbol);
+
+GDataGDWhere *gdata_gd_organization_get_location (GDataGDOrganization *self);
+void gdata_gd_organization_set_location (GDataGDOrganization *self, GDataGDWhere *location);
 
 G_END_DECLS
 

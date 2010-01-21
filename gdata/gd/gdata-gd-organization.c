@@ -27,15 +27,16 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
  **/
 
-/* TODO: Implement "where": http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization */
-
 #include <glib.h>
 #include <libxml/parser.h>
 
 #include "gdata-gd-organization.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-gd-where.h"
+#include "gdata-private.h"
 
+static void gdata_gd_organization_dispose (GObject *object);
 static void gdata_gd_organization_finalize (GObject *object);
 static void gdata_gd_organization_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_organization_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -54,6 +55,7 @@ struct _GDataGDOrganizationPrivate {
 	gchar *department;
 	gchar *job_description;
 	gchar *symbol;
+	GDataGDWhere *location;
 };
 
 enum {
@@ -64,7 +66,8 @@ enum {
 	PROP_IS_PRIMARY,
 	PROP_DEPARTMENT,
 	PROP_JOB_DESCRIPTION,
-	PROP_SYMBOL
+	PROP_SYMBOL,
+	PROP_LOCATION
 };
 
 G_DEFINE_TYPE (GDataGDOrganization, gdata_gd_organization, GDATA_TYPE_PARSABLE)
@@ -80,6 +83,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 
 	gobject_class->get_property = gdata_gd_organization_get_property;
 	gobject_class->set_property = gdata_gd_organization_set_property;
+	gobject_class->dispose = gdata_gd_organization_dispose;
 	gobject_class->finalize = gdata_gd_organization_finalize;
 
 	parsable_class->pre_parse_xml = pre_parse_xml;
@@ -218,12 +222,40 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 					"Symbol", "Symbol of the organization.",
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataGDOrganization:location:
+	 *
+	 * A place associated with the organization, e.g. office location.
+	 *
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
+	 *
+	 * Since: 0.6.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LOCATION,
+				g_param_spec_object ("location",
+					"Location", "A place associated with the organization, e.g. office location.",
+					GDATA_TYPE_GD_WHERE,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
 gdata_gd_organization_init (GDataGDOrganization *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_ORGANIZATION, GDataGDOrganizationPrivate);
+}
+
+static void
+gdata_gd_organization_dispose (GObject *object)
+{
+	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (object)->priv;
+
+	if (priv->location != NULL)
+		g_object_unref (priv->location);
+
+	/* Chain up to the parent class */
+	G_OBJECT_CLASS (gdata_gd_organization_parent_class)->dispose (object);
 }
 
 static void
@@ -273,6 +305,9 @@ gdata_gd_organization_get_property (GObject *object, guint property_id, GValue *
 		case PROP_SYMBOL:
 			g_value_set_string (value, priv->symbol);
 			break;
+		case PROP_LOCATION:
+			g_value_set_object (value, priv->location);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -309,6 +344,9 @@ gdata_gd_organization_set_property (GObject *object, guint property_id, const GV
 			break;
 		case PROP_SYMBOL:
 			gdata_gd_organization_set_symbol (self, g_value_get_string (value));
+			break;
+		case PROP_LOCATION:
+			gdata_gd_organization_set_location (self, g_value_get_object (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -412,6 +450,18 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		symbol = xmlNodeListGetString (doc, node->children, TRUE);
 		priv->symbol = g_strdup ((gchar*) symbol);
 		xmlFree (symbol);
+	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
+		/* gd:where */
+		GDataGDWhere *location = GDATA_GD_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_WHERE, doc, node, NULL, error));
+		if (location == NULL)
+			return FALSE;
+
+		if (priv->location != NULL) {
+			g_object_unref (location);
+			return gdata_parser_error_duplicate_element (node, error);
+		}
+
+		priv->location = location;
 	} else if (GDATA_PARSABLE_CLASS (gdata_gd_organization_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -451,6 +501,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		gdata_parser_string_append_escaped (xml_string, "<gd:orgJobDescription>", priv->job_description, "</gd:orgJobDescription>");
 	if (priv->symbol != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gd:orgSymbol>", priv->symbol, "</gd:orgSymbol>");
+	if (priv->location != NULL)
+		_gdata_parsable_get_xml (GDATA_PARSABLE (priv->location), xml_string, FALSE);
 }
 
 static void
@@ -812,4 +864,44 @@ gdata_gd_organization_set_symbol (GDataGDOrganization *self, const gchar *symbol
 	g_free (self->priv->symbol);
 	self->priv->symbol = g_strdup (symbol);
 	g_object_notify (G_OBJECT (self), "symbol");
+}
+
+/**
+ * gdata_gd_organization_get_location:
+ * @self: a #GDataGDOrganization
+ *
+ * Gets the #GDataGDOrganization:location property.
+ *
+ * Return value: the organization's location, or %NULL
+ *
+ * Since: 0.6.0
+ **/
+GDataGDWhere *
+gdata_gd_organization_get_location (GDataGDOrganization *self)
+{
+	g_return_val_if_fail (GDATA_IS_GD_ORGANIZATION (self), NULL);
+	return self->priv->location;
+}
+
+/**
+ * gdata_gd_organization_set_location:
+ * @self: a #GDataGDOrganization
+ * @location: the new location for the organization, or %NULL
+ *
+ * Sets the #GDataGDOrganization:location property to @location.
+ *
+ * Set @location to %NULL to unset the property in the organization.
+ *
+ * Since: 0.6.0
+ **/
+void
+gdata_gd_organization_set_location (GDataGDOrganization *self, GDataGDWhere *location)
+{
+	g_return_if_fail (GDATA_IS_GD_ORGANIZATION (self));
+	g_return_if_fail (location == NULL || GDATA_IS_GD_WHERE (location));
+
+	if (self->priv->location != NULL)
+		g_object_unref (self->priv->location);
+	self->priv->location = (location != NULL) ? g_object_ref (location) : NULL;
+	g_object_notify (G_OBJECT (self), "location");
 }

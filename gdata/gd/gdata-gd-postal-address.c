@@ -367,7 +367,6 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 					NULL,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
-	/* TODO: Should be an enum? */
 	/**
 	 * GDataGDPostalAddress:country-code:
 	 *

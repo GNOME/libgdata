@@ -38,9 +38,9 @@ static void gdata_gd_where_finalize (GObject *object);
 static void gdata_gd_where_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_where_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+/*static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);*/
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
-static void get_xml (GDataParsable *parsable, GString *xml_string);
+/*static void get_xml (GDataParsable *parsable, GString *xml_string);*/
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataGDWherePrivate {
@@ -71,9 +71,9 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	gobject_class->finalize = gdata_gd_where_finalize;
 
 	parsable_class->pre_parse_xml = pre_parse_xml;
-	parsable_class->parse_xml = parse_xml;
+	/*parsable_class->parse_xml = parse_xml;*/
 	parsable_class->pre_get_xml = pre_get_xml;
-	parsable_class->get_xml = get_xml;
+	/*parsable_class->get_xml = get_xml;*/
 	parsable_class->get_namespaces = get_namespaces;
 	parsable_class->element_name = "where";
 	parsable_class->element_namespace = "gd";
@@ -216,15 +216,15 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	return TRUE;
 }
 
-static gboolean
+/*static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
 	GDataGDWherePrivate *priv = GDATA_GD_WHERE (parsable)->priv;
 
-	/* TODO: deal with the entryLink */
+	TODO: deal with the entryLink
 
 	return TRUE;
-}
+}*/
 
 static void
 pre_get_xml (GDataParsable *parsable, GString *xml_string)
@@ -241,13 +241,13 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 		gdata_parser_string_append_escaped (xml_string, " valueString='", priv->value_string, "'");
 }
 
-static void
+/*static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataGDWherePrivate *priv = GDATA_GD_WHERE (parsable)->priv;
 
-	/* TODO: deal with the entryLink */
-}
+	TODO: deal with the entryLink
+}*/
 
 static void
 get_namespaces (GDataParsable *parsable, GHashTable *namespaces)

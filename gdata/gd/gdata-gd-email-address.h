@@ -73,6 +73,9 @@ void gdata_gd_email_address_set_relation_type (GDataGDEmailAddress *self, const 
 const gchar *gdata_gd_email_address_get_label (GDataGDEmailAddress *self);
 void gdata_gd_email_address_set_label (GDataGDEmailAddress *self, const gchar *label);
 
+const gchar *gdata_gd_email_address_get_display_name (GDataGDEmailAddress *self);
+void gdata_gd_email_address_set_display_name (GDataGDEmailAddress *self, const gchar *display_name);
+
 gboolean gdata_gd_email_address_is_primary (GDataGDEmailAddress *self);
 void gdata_gd_email_address_set_is_primary (GDataGDEmailAddress *self, gboolean is_primary);
 

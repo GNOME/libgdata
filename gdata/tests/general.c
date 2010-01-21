@@ -1205,7 +1205,7 @@ test_gd_email_address (void)
 
 	email = GDATA_GD_EMAIL_ADDRESS (gdata_parsable_new_from_xml (GDATA_TYPE_GD_EMAIL_ADDRESS,
 		"<gd:email xmlns:gd='http://schemas.google.com/g/2005' label='Personal &amp; Private' rel='http://schemas.google.com/g/2005#home' "
-			"address='fubar@gmail.com' primary='true'/>", -1, &error));
+			"address='fubar@gmail.com' primary='true' displayName='&lt;John Smith&gt;'/>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_GD_EMAIL_ADDRESS (email));
 	g_clear_error (&error);
@@ -1214,10 +1214,12 @@ test_gd_email_address (void)
 	g_assert_cmpstr (gdata_gd_email_address_get_address (email), ==, "fubar@gmail.com");
 	g_assert_cmpstr (gdata_gd_email_address_get_relation_type (email), ==, "http://schemas.google.com/g/2005#home");
 	g_assert_cmpstr (gdata_gd_email_address_get_label (email), ==, "Personal & Private");
+	g_assert_cmpstr (gdata_gd_email_address_get_display_name (email), ==, "<John Smith>");
 	g_assert (gdata_gd_email_address_is_primary (email) == TRUE);
 
 	/* Compare it against another identical address */
 	email2 = gdata_gd_email_address_new ("fubar@gmail.com", "http://schemas.google.com/g/2005#home", "Personal & Private", TRUE);
+	gdata_gd_email_address_set_display_name (email2, "<John Smith>");
 	g_assert_cmpint (gdata_gd_email_address_compare (email, email2), ==, 0);
 
 	/* …and a different one */
@@ -1229,7 +1231,8 @@ test_gd_email_address (void)
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (email));
 	g_assert_cmpstr (xml, ==,
 			 "<gd:email xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' address='fubar@gmail.com' "
-				"rel='http://schemas.google.com/g/2005#home' label='Personal &amp; Private' primary='true'/>");
+				"rel='http://schemas.google.com/g/2005#home' label='Personal &amp; Private' displayName='&lt;John Smith&gt;' "
+				"primary='true'/>");
 	g_free (xml);
 	g_object_unref (email);
 
@@ -1244,6 +1247,7 @@ test_gd_email_address (void)
 	g_assert_cmpstr (gdata_gd_email_address_get_address (email), ==, "test@example.com");
 	g_assert (gdata_gd_email_address_get_relation_type (email) == NULL);
 	g_assert (gdata_gd_email_address_get_label (email) == NULL);
+	g_assert (gdata_gd_email_address_get_display_name (email) == NULL);
 	g_assert (gdata_gd_email_address_is_primary (email) == FALSE);
 
 	/* Check the outputted XML contains the unknown XML */
@@ -1400,6 +1404,7 @@ static void
 test_gd_organization (void)
 {
 	GDataGDOrganization *org, *org2;
+	GDataGDWhere *location;
 	gchar *xml;
 	GError *error = NULL;
 
@@ -1411,6 +1416,7 @@ test_gd_organization (void)
 			"<gd:orgDepartment>Finance</gd:orgDepartment>"
 			"<gd:orgJobDescription>Doing stuff.</gd:orgJobDescription>"
 			"<gd:orgSymbol>FOO</gd:orgSymbol>"
+			"<gd:where valueString='Test location'/>"
 		"</gd:organization>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_GD_ORGANIZATION (org));
@@ -1424,11 +1430,14 @@ test_gd_organization (void)
 	g_assert_cmpstr (gdata_gd_organization_get_department (org), ==, "Finance");
 	g_assert_cmpstr (gdata_gd_organization_get_job_description (org), ==, "Doing stuff.");
 	g_assert_cmpstr (gdata_gd_organization_get_symbol (org), ==, "FOO");
+	location = gdata_gd_organization_get_location (org);
+	g_assert (GDATA_IS_GD_WHERE (location));
 	g_assert (gdata_gd_organization_is_primary (org) == TRUE);
 
 	/* Compare it against another identical organization */
 	org2 = gdata_gd_organization_new ("Google, Inc.", "<Angle Bracketeer>", "http://schemas.google.com/g/2005#work", "Work & Occupation", TRUE);
 	gdata_gd_organization_set_department (org2, "Finance");
+	gdata_gd_organization_set_location (org2, location);
 	g_assert_cmpint (gdata_gd_organization_compare (org, org2), ==, 0);
 
 	/* …and a different one */
@@ -1446,6 +1455,7 @@ test_gd_organization (void)
 				"<gd:orgDepartment>Finance</gd:orgDepartment>"
 				"<gd:orgJobDescription>Doing stuff.</gd:orgJobDescription>"
 				"<gd:orgSymbol>FOO</gd:orgSymbol>"
+				"<gd:where valueString='Test location'/>"
 			 "</gd:organization>");
 	g_free (xml);
 	g_object_unref (org);
@@ -1466,6 +1476,7 @@ test_gd_organization (void)
 	g_assert (gdata_gd_organization_get_department (org) == NULL);
 	g_assert (gdata_gd_organization_get_job_description (org) == NULL);
 	g_assert (gdata_gd_organization_get_symbol (org) == NULL);
+	g_assert (gdata_gd_organization_get_location (org) == NULL);
 
 	/* Check the outputted XML contains the unknown XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (org));
