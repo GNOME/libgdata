@@ -25,24 +25,36 @@
 static void
 test_entry_get_xml (void)
 {
-	/*GTimeVal updated, published, updated2, published2;*/
+	GTimeVal updated, published, updated2, published2, *updated3, *published3;
 	GDataEntry *entry, *entry2;
 	GDataCategory *category;
 	GDataLink *link;
 	GDataAuthor *author;
-	gchar *xml;
-	GList *links;
+	gchar *xml, *title, *summary, *id, *etag, *content, *rights;
+	gboolean is_inserted;
+	GList *list;
 	GError *error = NULL;
 
 	entry = gdata_entry_new (NULL);
+
+	/* Test setting properties directly */
+	g_object_set (G_OBJECT (entry),
+	              "title", "First testing title & escaping",
+	              "summary", "Test summary & escaping.",
+	              "content", "Test <markup> & escaping.",
+	              "rights", "Philip Withnall <philip@tecnocode.co.uk>",
+	              NULL);
+
+	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "First testing title & escaping");
+	g_assert_cmpstr (gdata_entry_get_summary (entry), ==, "Test summary & escaping.");
+	g_assert_cmpstr (gdata_entry_get_content (entry), ==, "Test <markup> & escaping.");
+	g_assert_cmpstr (gdata_entry_get_rights (entry), ==, "Philip Withnall <philip@tecnocode.co.uk>");
+
+	/* Set the properties more conventionally */
 	gdata_entry_set_title (entry, "Testing title & escaping");
+	gdata_entry_set_summary (entry, NULL);
 	gdata_entry_set_content (entry, "This is some sample content testing, amongst other things, <markup> & odd characters‽");
-
-	/*g_time_val_from_iso8601 ("2009-01-25T14:07:37.880860Z", &updated);
-	gdata_entry_set_updated (entry, &updated);
-
-	g_time_val_from_iso8601 ("2009-01-23T14:06:37.880860Z", &published);
-	gdata_entry_set_published (entry, &published);*/
+	gdata_entry_set_rights (entry, NULL);
 
 	/* Categories */
 	category = gdata_category_new ("test", NULL, NULL);
@@ -93,8 +105,6 @@ test_entry_get_xml (void)
 	g_assert_cmpstr (xml, ==,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
 				 "<title type='text'>Testing title &amp; escaping</title>"
-				 /*"<updated>2009-01-25T14:07:37.880860Z</updated>"
-				 "<published>2009-01-23T14:06:37.880860Z</published>"*/
 				 "<content type='text'>This is some sample content testing, amongst other things, &lt;markup&gt; &amp; odd characters\342\200\275</content>"
 				 "<category term='Film' scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Film &amp; Animation'/>"
 				 "<category term='example' label='Example stuff'/>"
@@ -120,7 +130,7 @@ test_entry_get_xml (void)
 	g_assert_cmpstr (gdata_entry_get_id (entry), ==, gdata_entry_get_id (entry2)); /* should both be NULL */
 	g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (entry2));
 
-	/*gdata_entry_get_updated (entry, &updated);
+	gdata_entry_get_updated (entry, &updated);
 	gdata_entry_get_updated (entry2, &updated2);
 	g_assert_cmpuint (updated.tv_sec, ==, updated2.tv_sec);
 	g_assert_cmpuint (updated.tv_usec, ==, updated2.tv_usec);
@@ -128,7 +138,7 @@ test_entry_get_xml (void)
 	gdata_entry_get_published (entry, &published);
 	gdata_entry_get_published (entry2, &published2);
 	g_assert_cmpuint (published.tv_sec, ==, published2.tv_sec);
-	g_assert_cmpuint (published.tv_usec, ==, published2.tv_usec);*/
+	g_assert_cmpuint (published.tv_usec, ==, published2.tv_usec);
 
 	/* Check links */
 	link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
@@ -137,23 +147,84 @@ test_entry_get_xml (void)
 	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, GDATA_LINK_SELF);
 	g_assert_cmpstr (gdata_link_get_content_type (link), ==, "application/atom+xml");
 
-	links = gdata_entry_look_up_links (entry, "http://foobar.link");
-	g_assert (links != NULL);
-	g_assert_cmpint (g_list_length (links), ==, 2);
+	link = gdata_entry_look_up_link (entry, "http://link.not.exist");
+	g_assert (link == NULL);
 
-	link = GDATA_LINK (links->data);
+	list = gdata_entry_look_up_links (entry, "http://foobar.link");
+	g_assert (list != NULL);
+	g_assert_cmpint (g_list_length (list), ==, 2);
+
+	link = GDATA_LINK (list->data);
 	g_assert (link != NULL);
 	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://example2.com/");
 	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, "http://foobar.link");
 
-	link = GDATA_LINK (links->next->data);
+	link = GDATA_LINK (list->next->data);
 	g_assert (link != NULL);
 	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://example.com/");
 	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, "http://foobar.link");
 
-	/* TODO: Check categories and authors */
+	g_list_free (list);
 
-	g_list_free (links);
+	/* Check categories */
+	list = gdata_entry_get_categories (entry);
+	g_assert (list != NULL);
+	g_assert_cmpint (g_list_length (list), ==, 3);
+
+	category = GDATA_CATEGORY (list->data);
+	g_assert (category != NULL);
+	g_assert_cmpstr (gdata_category_get_term (category), ==, "Film");
+	g_assert_cmpstr (gdata_category_get_scheme (category), ==, "http://gdata.youtube.com/schemas/2007/categories.cat");
+	g_assert_cmpstr (gdata_category_get_label (category), ==, "Film & Animation");
+
+	category = GDATA_CATEGORY (list->next->data);
+	g_assert (category != NULL);
+	g_assert_cmpstr (gdata_category_get_term (category), ==, "example");
+	g_assert (gdata_category_get_scheme (category) == NULL);
+	g_assert_cmpstr (gdata_category_get_label (category), ==, "Example stuff");
+
+	category = GDATA_CATEGORY (list->next->next->data);
+	g_assert (category != NULL);
+	g_assert_cmpstr (gdata_category_get_term (category), ==, "test");
+	g_assert (gdata_category_get_scheme (category) == NULL);
+	g_assert (gdata_category_get_label (category) == NULL);
+
+	/* TODO: Check authors */
+
+	/* Check properties a different way */
+	g_object_get (G_OBJECT (entry2),
+	              "title", &title,
+	              "summary", &summary,
+	              "id", &id,
+	              "etag", &etag,
+	              "updated", &updated3,
+	              "published", &published3,
+	              "content", &content,
+	              "is-inserted", &is_inserted,
+	              "rights", &rights,
+	              NULL);
+
+	g_assert_cmpstr (title, ==, gdata_entry_get_title (entry));
+	g_assert_cmpstr (summary, ==, gdata_entry_get_summary (entry));
+	g_assert_cmpstr (id, ==, gdata_entry_get_id (entry));
+	g_assert_cmpstr (etag, ==, gdata_entry_get_etag (entry));
+	g_assert_cmpint (updated3->tv_sec, ==, updated.tv_sec);
+	g_assert_cmpint (updated3->tv_usec, ==, updated.tv_usec);
+	g_assert_cmpint (published3->tv_sec, ==, published.tv_sec);
+	g_assert_cmpint (published3->tv_usec, ==, published.tv_usec);
+	g_assert_cmpstr (content, ==, gdata_entry_get_content (entry));
+	g_assert (is_inserted == FALSE);
+	g_assert_cmpstr (rights, ==, gdata_entry_get_rights (entry));
+
+	g_free (title);
+	g_free (summary);
+	g_free (id);
+	g_free (etag);
+	g_free (updated3);
+	g_free (published3);
+	g_free (content);
+	g_free (rights);
+
 	g_object_unref (entry);
 	g_object_unref (entry2);
 }
@@ -193,6 +264,285 @@ test_entry_parse_xml (void)
 				"<ns:barfoo shizzle=\"zing\" fo=\"shizzle\">How about some characters‽</ns:barfoo>"
 			 "</entry>");
 	g_free (xml);
+}
+
+static void
+test_entry_error_handling (void)
+{
+	GDataEntry *entry;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY,\
+		"<entry>"\
+			x\
+		"</entry>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (entry == NULL);\
+	g_clear_error (&error)
+
+	/* updated */
+	TEST_XML_ERROR_HANDLING ("<updated>not a date</updated>"); /* invalid date */
+
+	/* published */
+	TEST_XML_ERROR_HANDLING ("<published>also not a date</published>"); /* invalid date */
+
+	/* category */
+	TEST_XML_ERROR_HANDLING ("<category/>"); /* invalid category */
+
+	/* link */
+	TEST_XML_ERROR_HANDLING ("<link/>"); /* invalid link */
+
+	/* author */
+	TEST_XML_ERROR_HANDLING ("<author/>"); /* invalid author */
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
+static void
+test_feed_parse_xml (void)
+{
+	GDataFeed *feed;
+	GDataEntry *entry;
+	GDataLink *link;
+	GList *list;
+	gchar *title, *subtitle, *id, *etag, *logo, *icon;
+	GTimeVal *updated, updated2;
+	GDataGenerator *generator;
+	guint items_per_page, start_index, total_results;
+	GError *error = NULL;
+
+	feed = GDATA_FEED (gdata_parsable_new_from_xml (GDATA_TYPE_FEED,
+		"<feed xmlns='http://www.w3.org/2005/Atom' "
+		      "xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' "
+		      "xmlns:gd='http://schemas.google.com/g/2005' "
+		      "gd:etag='W/\"D08FQn8-eil7ImA9WxZbFEw.\"'>"
+			"<id>http://example.com/id</id>"
+			"<updated>2009-02-25T14:07:37.880860Z</updated>"
+			"<title type='text'>Test feed</title>"
+			"<subtitle type='text'>Test subtitle</subtitle>"
+			"<logo>http://example.com/logo.png</logo>"
+			"<icon>http://example.com/icon.png</icon>"
+			"<link rel='alternate' type='text/html' href='http://alternate.example.com/'/>"
+			"<link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='http://example.com/id'/>"
+			"<link rel='http://schemas.google.com/g/2005#post' type='application/atom+xml' href='http://example.com/post'/>"
+			"<link rel='self' type='application/atom+xml' href='http://example.com/id'/>"
+			"<category scheme='http://example.com/categories' term='feed'/>"
+			"<author>"
+				"<name>Joe Smith</name>"
+				"<email>j.smith@example.com</email>"
+			"</author>"
+			"<generator version='0.6' uri='http://example.com/'>Example Generator</generator>"
+			"<openSearch:totalResults>2</openSearch:totalResults>"
+			"<openSearch:startIndex>0</openSearch:startIndex>"
+			"<openSearch:itemsPerPage>50</openSearch:itemsPerPage>"
+			"<entry>"
+				"<id>entry1</id>"
+				"<title type='text'>Testing unhandled XML</title>"
+				"<updated>2009-01-25T14:07:37.880860Z</updated>"
+				"<published>2009-01-23T14:06:37.880860Z</published>"
+				"<content type='text'>Here we test unhandled XML elements.</content>"
+			"</entry>"
+			"<entry>"
+				"<id>entry2</id>"
+				"<title type='text'>Testing unhandled XML 2</title>"
+				"<updated>2009-02-25T14:07:37.880860Z</updated>"
+				"<published>2009-02-23T14:06:37.880860Z</published>"
+				"<content type='text'>Here we test unhandled XML elements again.</content>"
+			"</entry>"
+			"<foobar>Test unhandled elements!</foobar>"
+		"</feed>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (feed));
+	g_clear_error (&error);
+
+	/* Check the feed's properties */
+	g_object_get (G_OBJECT (feed),
+	              "title", &title,
+	              "subtitle", &subtitle,
+	              "id", &id,
+	              "etag", &etag,
+	              "updated", &updated,
+	              "logo", &logo,
+	              "icon", &icon,
+	              "generator", &generator,
+	              "items-per-page", &items_per_page,
+	              "start-index", &start_index,
+	              "total-results", &total_results,
+	              NULL);
+
+	g_assert_cmpstr (title, ==, "Test feed");
+	g_assert_cmpstr (subtitle, ==, "Test subtitle");
+	g_assert_cmpstr (id, ==, "http://example.com/id");
+	g_assert_cmpstr (etag, ==, "W/\"D08FQn8-eil7ImA9WxZbFEw.\"");
+
+	g_assert_cmpint (updated->tv_sec, ==, 1235570857);
+	g_assert_cmpint (updated->tv_usec, ==, 880860);
+
+	g_assert_cmpstr (logo, ==, "http://example.com/logo.png");
+	g_assert_cmpstr (icon, ==, "http://example.com/icon.png");
+
+	g_assert (GDATA_IS_GENERATOR (generator));
+	g_assert_cmpstr (gdata_generator_get_name (generator), ==, "Example Generator");
+	g_assert_cmpstr (gdata_generator_get_uri (generator), ==, "http://example.com/");
+	g_assert_cmpstr (gdata_generator_get_version (generator), ==, "0.6");
+
+	g_assert_cmpuint (items_per_page, ==, 50);
+	g_assert_cmpuint (start_index, ==, 0);
+	g_assert_cmpuint (total_results, ==, 2);
+
+	g_free (title);
+	g_free (subtitle);
+	g_free (id);
+	g_free (etag);
+	g_free (updated);
+	g_free (logo);
+	g_free (icon);
+	g_object_unref (generator);
+
+	/* Check the entries */
+	entry = gdata_feed_look_up_entry (feed, "entry1");
+	g_assert (GDATA_IS_ENTRY (entry));
+
+	entry = gdata_feed_look_up_entry (feed, "this doesn't exist");
+	g_assert (entry == NULL);
+
+	entry = gdata_feed_look_up_entry (feed, "entry2");
+	g_assert (GDATA_IS_ENTRY (entry));
+
+	/* Check the categories */
+	list = gdata_feed_get_categories (feed);
+	g_assert (list != NULL);
+	g_assert_cmpint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_CATEGORY (list->data));
+
+	/* Check the links */
+	list = gdata_feed_get_links (feed);
+	g_assert (list != NULL);
+	g_assert_cmpint (g_list_length (list), ==, 4);
+	g_assert (GDATA_IS_LINK (list->data));
+	g_assert (GDATA_IS_LINK (list->next->data));
+	g_assert (GDATA_IS_LINK (list->next->next->data));
+	g_assert (GDATA_IS_LINK (list->next->next->next->data));
+
+	link = gdata_feed_look_up_link (feed, GDATA_LINK_ALTERNATE);
+	g_assert (GDATA_IS_LINK (link));
+
+	link = gdata_feed_look_up_link (feed, "this doesn't exist");
+	g_assert (link == NULL);
+
+	link = gdata_feed_look_up_link (feed, "http://schemas.google.com/g/2005#feed");
+	g_assert (GDATA_IS_LINK (link));
+
+	link = gdata_feed_look_up_link (feed, "http://schemas.google.com/g/2005#post");
+	g_assert (GDATA_IS_LINK (link));
+
+	link = gdata_feed_look_up_link (feed, GDATA_LINK_SELF);
+	g_assert (GDATA_IS_LINK (link));
+
+	/* Check the authors */
+	list = gdata_feed_get_authors (feed);
+	g_assert (list != NULL);
+	g_assert_cmpint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_AUTHOR (list->data));
+
+	/* Check the other properties again, the more normal way this time */
+	g_assert_cmpstr (gdata_feed_get_title (feed), ==, "Test feed");
+	g_assert_cmpstr (gdata_feed_get_subtitle (feed), ==, "Test subtitle");
+	g_assert_cmpstr (gdata_feed_get_id (feed), ==, "http://example.com/id");
+	g_assert_cmpstr (gdata_feed_get_etag (feed), ==, "W/\"D08FQn8-eil7ImA9WxZbFEw.\"");
+
+	gdata_feed_get_updated (feed, &updated2);
+	g_assert_cmpint (updated2.tv_sec, ==, 1235570857);
+	g_assert_cmpint (updated2.tv_usec, ==, 880860);
+
+	g_assert_cmpstr (gdata_feed_get_logo (feed), ==, "http://example.com/logo.png");
+	g_assert_cmpstr (gdata_feed_get_icon (feed), ==, "http://example.com/icon.png");
+
+	generator = gdata_feed_get_generator (feed);
+	g_assert (GDATA_IS_GENERATOR (generator));
+	g_assert_cmpstr (gdata_generator_get_name (generator), ==, "Example Generator");
+	g_assert_cmpstr (gdata_generator_get_uri (generator), ==, "http://example.com/");
+	g_assert_cmpstr (gdata_generator_get_version (generator), ==, "0.6");
+
+	g_assert_cmpuint (gdata_feed_get_items_per_page (feed), ==, 50);
+	g_assert_cmpuint (gdata_feed_get_start_index (feed), ==, 0);
+	g_assert_cmpuint (gdata_feed_get_total_results (feed), ==, 2);
+
+	g_object_unref (feed);
+}
+
+static void
+test_feed_error_handling (void)
+{
+	GDataFeed *feed;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) feed = GDATA_FEED (gdata_parsable_new_from_xml (GDATA_TYPE_FEED, \
+		"<feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/'>"\
+			x\
+		"</feed>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (feed == NULL);\
+	g_clear_error (&error)
+
+	/* entry */
+	TEST_XML_ERROR_HANDLING ("<entry><updated>this isn't a date</updated></entry>"); /* invalid entry */
+
+	/* title */
+	TEST_XML_ERROR_HANDLING ("<title>First title</title><title>Second title</title>"); /* duplicate title */
+	TEST_XML_ERROR_HANDLING ("<id>ID</id><updated>2009-01-25T14:07:37.880860Z</updated>"); /* missing title */
+
+	/* subtitle */
+	TEST_XML_ERROR_HANDLING ("<subtitle>First subtitle</subtitle><subtitle>Second subtitle</subtitle>"); /* duplicate subtitle */
+
+	/* id */
+	TEST_XML_ERROR_HANDLING ("<id>First ID</id><id>Second ID</id>"); /* duplicate ID */
+	TEST_XML_ERROR_HANDLING ("<title>Title</title><updated>2009-01-25T14:07:37.880860Z</updated>"); /* missing ID */
+
+	/* updated */
+	TEST_XML_ERROR_HANDLING ("<updated>2009-01-25T14:07:37.880860Z</updated>"
+	                         "<updated>2009-01-25T14:07:37.880860Z</updated>"); /* duplicate updated */
+	TEST_XML_ERROR_HANDLING ("<updated>not a date</updated>"); /* invalid date */
+	TEST_XML_ERROR_HANDLING ("<title>Title</title><id>ID</id>"); /* missing updated */
+
+	/* category */
+	TEST_XML_ERROR_HANDLING ("<category/>"); /* invalid category */
+
+	/* logo */
+	TEST_XML_ERROR_HANDLING ("<logo>First logo</logo><logo>Second logo</logo>"); /* duplicate logo */
+
+	/* icon */
+	TEST_XML_ERROR_HANDLING ("<icon>First icon</icon><icon>Second icon</icon>"); /* duplicate icon */
+
+	/* link */
+	TEST_XML_ERROR_HANDLING ("<link/>"); /* invalid link */
+
+	/* author */
+	TEST_XML_ERROR_HANDLING ("<author/>"); /* invalid author */
+
+	/* generator */
+	TEST_XML_ERROR_HANDLING ("<generator>First generator</generator><generator>Second generator</generator>"); /* duplicate generator */
+	TEST_XML_ERROR_HANDLING ("<generator uri=''/>"); /* invalid generator */
+
+	/* openSearch:totalResults */
+	TEST_XML_ERROR_HANDLING ("<openSearch:totalResults>5</openSearch:totalResults>"
+	                         "<openSearch:totalResults>3</openSearch:totalResults>"); /* duplicate totalResults */
+	TEST_XML_ERROR_HANDLING ("<openSearch:totalResults></openSearch:totalResults>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<openSearch:totalResults>this isn't a number!</openSearch:totalResults>"); /* invalid number */
+
+	/* openSearch:startIndex */
+	TEST_XML_ERROR_HANDLING ("<openSearch:startIndex>5</openSearch:startIndex>"
+	                         "<openSearch:startIndex>3</openSearch:startIndex>"); /* duplicate startIndex */
+	TEST_XML_ERROR_HANDLING ("<openSearch:startIndex></openSearch:startIndex>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<openSearch:startIndex>this isn't a number!</openSearch:startIndex>"); /* invalid number */
+
+	/* openSearch:itemsPerPage */
+	TEST_XML_ERROR_HANDLING ("<openSearch:itemsPerPage>5</openSearch:itemsPerPage>"
+	                         "<openSearch:itemsPerPage>3</openSearch:itemsPerPage>"); /* duplicate itemsPerPage */
+	TEST_XML_ERROR_HANDLING ("<openSearch:itemsPerPage></openSearch:itemsPerPage>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<openSearch:itemsPerPage>this isn't a number!</openSearch:itemsPerPage>"); /* invalid number */
+
+#undef TEST_XML_ERROR_HANDLING
 }
 
 static void
@@ -257,6 +607,100 @@ test_query_unicode (void)
 	g_free (query_uri);
 
 	g_object_unref (query);
+}
+
+static void
+test_access_rule_get_xml (void)
+{
+	GDataAccessRule *rule, *rule2;
+	gchar *xml, *role, *scope_type3, *scope_value3;
+	const gchar *scope_type, *scope_value, *scope_type2, *scope_value2;
+	GError *error = NULL;
+
+	rule = gdata_access_rule_new ("an-id");
+
+	/* Test setting properties directly */
+	g_object_set (G_OBJECT (rule),
+	              "role", "A role",
+	              "scope-type", "A scope type",
+	              "scope-value", "A scope value",
+	              NULL);
+
+	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, "A role");
+	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
+	g_assert_cmpstr (scope_type, ==, "A scope type");
+	g_assert_cmpstr (scope_value, ==, "A scope value");
+
+	/* Set the properties more conventionally */
+	gdata_access_rule_set_role (rule, "writer");
+	gdata_access_rule_set_scope (rule, "user", "foo@example.com");
+
+	/* Check the generated XML's OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
+	g_assert_cmpstr (xml, ==,
+			 "<entry xmlns='http://www.w3.org/2005/Atom' "
+			 "xmlns:gd='http://schemas.google.com/g/2005' "
+			 "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+				"<title type='text'>writer</title>"
+				"<id>an-id</id>"
+				"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<gAcl:role value='writer'/>"
+				"<gAcl:scope type='user' value='foo@example.com'/>"
+			 "</entry>");
+
+	/* Check again by re-parsing the XML to a GDataAccessRule */
+	rule2 = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (GDATA_TYPE_ACCESS_RULE, xml, -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ACCESS_RULE (rule2));
+	g_clear_error (&error);
+	g_free (xml);
+
+	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, gdata_access_rule_get_role (rule2));
+	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
+	gdata_access_rule_get_scope (rule2, &scope_type2, &scope_value2);
+	g_assert_cmpstr (scope_type, ==, scope_type2);
+	g_assert_cmpstr (scope_value, ==, scope_value2);
+
+	/* Check properties a different way */
+	g_object_get (G_OBJECT (rule2),
+	              "role", &role,
+	              "scope-type", &scope_type3,
+	              "scope-value", &scope_value3,
+	              NULL);
+
+	g_assert_cmpstr (role, ==, gdata_access_rule_get_role (rule));
+	g_assert_cmpstr (scope_type, ==, scope_type3);
+	g_assert_cmpstr (scope_value, ==, scope_value3);
+
+	g_free (role);
+	g_free (scope_type3);
+	g_free (scope_value3);
+
+	g_object_unref (rule);
+	g_object_unref (rule2);
+}
+
+static void
+test_access_rule_error_handling (void)
+{
+	GDataAccessRule *rule;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (GDATA_TYPE_ACCESS_RULE,\
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gAcl='http://schemas.google.com/acl/2007'>"\
+			x\
+		"</entry>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (rule == NULL);\
+	g_clear_error (&error)
+
+	/* role */
+	TEST_XML_ERROR_HANDLING ("<gAcl:role/>"); /* missing value */
+
+	/* scope */
+	TEST_XML_ERROR_HANDLING ("<gAcl:scope/>"); /* missing type */
+
+#undef TEST_XML_ERROR_HANDLING
 }
 
 static void
@@ -1760,8 +2204,13 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/entry/get_xml", test_entry_get_xml);
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);
+	g_test_add_func ("/entry/error_handling", test_entry_error_handling);
+	g_test_add_func ("/feed/parse_xml", test_feed_parse_xml);
+	g_test_add_func ("/feed/error_handling", test_feed_error_handling);
 	g_test_add_func ("/query/categories", test_query_categories);
 	g_test_add_func ("/query/unicode", test_query_unicode);
+	g_test_add_func ("/access-rule/get_xml", test_access_rule_get_xml);
+	g_test_add_func ("/access-rule/error_handling", test_access_rule_error_handling);
 	g_test_add_func ("/color/parsing", test_color_parsing);
 	g_test_add_func ("/color/output", test_color_output);
 

@@ -148,7 +148,7 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	xmlDoc *doc;
 	xmlNode *node;
 
-	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE) == TRUE, FALSE);
+	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE), NULL);
 	g_return_val_if_fail (xml != NULL && *xml != '\0', NULL);
 	g_return_val_if_fail (length >= -1, NULL);
 
@@ -187,9 +187,9 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
 	GDataParsable *parsable;
 	GDataParsableClass *klass;
 
-	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE) == TRUE, FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
+	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE), NULL);
+	g_return_val_if_fail (doc != NULL, NULL);
+	g_return_val_if_fail (node != NULL, NULL);
 
 	parsable = g_object_new (parsable_type, NULL);
 

@@ -252,7 +252,7 @@ gdata_entry_get_property (GObject *object, guint property_id, GValue *value, GPa
 		case PROP_IS_INSERTED:
 			g_value_set_boolean (value, gdata_entry_is_inserted (GDATA_ENTRY (object)));
 			break;
-	        case PROP_RIGHTS:
+		case PROP_RIGHTS:
 			g_value_set_string (value, priv->rights);
 			break;
 		default:

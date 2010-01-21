@@ -157,7 +157,6 @@ gdata_feed_class_init (GDataFeedClass *klass)
 					NULL,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
-
 	/**
 	 * GDataFeed:updated:
 	 *
@@ -410,11 +409,19 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
 		/* atom:entry */
-		GDataEntry *entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (data->entry_type, doc, node, NULL, error));
+		GDataEntry *entry;
+		GType entry_type;
+
+		/* Allow @data to be %NULL, and assume we're parsing a vanilla feed, so that we can test #GDataFeed in tests/general.c. A little hacky,
+		 * but not too much so, and valuable for testing. */
+		entry_type = (data != NULL) ? data->entry_type : GDATA_TYPE_ENTRY;
+		entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (entry_type, doc, node, NULL, error));
 		if (entry == NULL)
 			return FALSE;
-		/*calls the callbacks in the main thread*/
-		_gdata_feed_call_progress_callback (self, data, entry);
+
+		/* Calls the callbacks in the main thread */
+		if (data != NULL)
+			_gdata_feed_call_progress_callback (self, data, entry);
 		_gdata_feed_add_entry (self, entry);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
 		/* atom:title */
@@ -575,20 +582,19 @@ post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
 
 GDataFeed *
 _gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,
-			  GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                          GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	ParseData *data;
 	GDataFeed *feed;
 
-	g_return_val_if_fail (g_type_is_a (feed_type, GDATA_TYPE_FEED) == TRUE, FALSE);
+	g_return_val_if_fail (g_type_is_a (feed_type, GDATA_TYPE_FEED), NULL);
 	g_return_val_if_fail (xml != NULL, NULL);
-	g_return_val_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY) == TRUE, FALSE);
+	g_return_val_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	data = _gdata_feed_parse_data_new (entry_type, progress_callback, progress_user_data);
-
 	feed = GDATA_FEED (_gdata_parsable_new_from_xml (feed_type, xml, length, data, error));
-
-	_gdata_feed_parse_data_free(data);
+	_gdata_feed_parse_data_free (data);
 
 	return feed;
 }
@@ -910,7 +916,6 @@ _gdata_feed_parse_data_free (gpointer data)
 {
 	g_slice_free (ParseData, data);
 }
-
 
 static gboolean
 progress_callback_idle (ProgressCallbackData *data)
