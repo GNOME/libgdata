@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -192,7 +192,7 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
 	GDataMediaCategoryPrivate *priv = GDATA_MEDIA_CATEGORY (parsable)->priv;
-	xmlChar *category, *scheme, *label;
+	xmlChar *category, *scheme;
 
 	category = xmlNodeListGetString (doc, root_node->children, TRUE);
 	if (category == NULL || *category == '\0') {
@@ -210,15 +210,9 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		scheme = xmlStrdup ((xmlChar*) "http://video.search.yahoo.com/mrss/category_schema");
 	}
 
-	label = xmlGetProp (root_node, (xmlChar*) "label");
-
-	priv->category = g_strdup ((gchar*) category);
-	priv->scheme = g_strdup ((gchar*) scheme);
-	priv->label = g_strdup ((gchar*) label);
-
-	xmlFree (category);
-	xmlFree (scheme);
-	xmlFree (label);
+	priv->category = (gchar*) category;
+	priv->scheme = (gchar*) scheme;
+	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
 
 	return TRUE;
 }

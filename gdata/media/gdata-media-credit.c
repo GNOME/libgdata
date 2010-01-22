@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -166,7 +166,8 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
 	GDataMediaCreditPrivate *priv = GDATA_MEDIA_CREDIT (parsable)->priv;
-	xmlChar *credit, *scheme, *role;
+	xmlChar *credit;
+	gchar *scheme;
 	guint i;
 
 	credit = xmlNodeListGetString (doc, root_node->children, TRUE);
@@ -175,31 +176,25 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		return gdata_parser_error_required_content_missing (root_node, error);
 	}
 
-	scheme = xmlGetProp (root_node, (xmlChar*) "scheme");
+	scheme = (gchar*) xmlGetProp (root_node, (xmlChar*) "scheme");
 	if (scheme != NULL && *scheme == '\0') {
-		xmlFree (scheme);
+		g_free (scheme);
 		xmlFree (credit);
 		return gdata_parser_error_required_property_missing (root_node, "scheme", error);
 	} else if (scheme == NULL) {
 		/* Default */
-		scheme = xmlStrdup ((xmlChar*) "urn:ebu");
+		scheme = g_strdup ("urn:ebu");
 	}
 
-	role = xmlGetProp (root_node, (xmlChar*) "role");
-
-	priv->credit = g_strdup ((gchar*) credit);
-	priv->scheme = g_strdup ((gchar*) scheme);
-	priv->role = g_strdup ((gchar*) role);
+	priv->credit = (gchar*) credit;
+	priv->scheme = scheme;
+	priv->role = (gchar*) xmlGetProp (root_node, (xmlChar*) "role");
 
 	/* Convert the role to lower case */
 	if (priv->role != NULL) {
 		for (i = 0; priv->role[i] != '\0'; i++)
 			priv->role[i] = g_ascii_tolower (priv->role[i]);
 	}
-
-	xmlFree (credit);
-	xmlFree (scheme);
-	xmlFree (role);
 
 	return TRUE;
 }

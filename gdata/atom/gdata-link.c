@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -264,15 +264,16 @@ gdata_link_set_property (GObject *object, guint property_id, const GValue *value
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *uri, *relation_type, *content_type, *language, *title, *length;
+	xmlChar *uri, *relation_type, *content_type, *language, *length;
 	GDataLink *self = GDATA_LINK (parsable);
 
 	/* href */
 	uri = xmlGetProp (root_node, (xmlChar*) "href");
-	if (uri == NULL || *uri == '\0')
+	if (uri == NULL || *uri == '\0') {
+		xmlFree (uri);
 		return gdata_parser_error_required_property_missing (root_node, "href", error);
-	self->priv->uri = g_strdup ((gchar*) uri);
-	xmlFree (uri);
+	}
+	self->priv->uri = (gchar*) uri;
 
 	/* rel */
 	relation_type = xmlGetProp (root_node, (xmlChar*) "rel");
@@ -290,8 +291,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		xmlFree (content_type);
 		return gdata_parser_error_required_property_missing (root_node, "type", error);
 	}
-	self->priv->content_type = g_strdup ((gchar*) content_type);
-	xmlFree (content_type);
+	self->priv->content_type = (gchar*) content_type;
 
 	/* hreflang */
 	language = xmlGetProp (root_node, (xmlChar*) "hreflang");
@@ -299,13 +299,10 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		xmlFree (language);
 		return gdata_parser_error_required_property_missing (root_node, "hreflang", error);
 	}
-	self->priv->language = g_strdup ((gchar*) language);
-	xmlFree (language);
+	self->priv->language = (gchar*) language;
 
 	/* title */
-	title = xmlGetProp (root_node, (xmlChar*) "title");
-	self->priv->title = g_strdup ((gchar*) title);
-	xmlFree (title);
+	self->priv->title = (gchar*) xmlGetProp (root_node, (xmlChar*) "title");
 
 	/* length */
 	length = xmlGetProp (root_node, (xmlChar*) "length");

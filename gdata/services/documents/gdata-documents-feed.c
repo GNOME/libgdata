@@ -64,8 +64,9 @@ gdata_documents_feed_init (GDataDocumentsFeed *self)
 	/* Why am I writing it? */
 }
 
-/* NOTE: Should be freed with xmlFree(), not g_free() */
-static xmlChar *
+/* NOTE: Cast from (xmlChar*) to (gchar*) (and corresponding change in memory management functions) is safe because we've changed
+ * libxml's memory functions. */
+static gchar *
 get_kind (xmlDoc *doc, xmlNode *node)
 {
 	xmlNode *entry_node;
@@ -76,7 +77,7 @@ get_kind (xmlDoc *doc, xmlNode *node)
 
 			if (xmlStrcmp (scheme, (xmlChar*) "http://schemas.google.com/g/2005#kind") == 0) {
 				xmlFree (scheme);
-				return xmlGetProp (entry_node, (xmlChar*) "term");
+				return (gchar*) xmlGetProp (entry_node, (xmlChar*) "term");
 			}
 			xmlFree (scheme);
 		}
@@ -92,9 +93,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
 		GDataEntry *entry = NULL;
-		gchar *kind;
-
-		kind = (gchar*) get_kind (doc, node);
+		gchar *kind = get_kind (doc, node);
 
 		if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#spreadsheet") == 0)
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_SPREADSHEET, doc, node, NULL, error));
@@ -106,10 +105,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_FOLDER, doc, node, NULL, error));
 		else {
 			g_message ("%s documents are not handled yet", kind);
-			xmlFree (kind);
+			g_free (kind);
 			return TRUE;
 		}
-		xmlFree (kind);
+		g_free (kind);
 
 		if (entry == NULL)
 			return FALSE;

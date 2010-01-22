@@ -95,9 +95,9 @@ gdata_exif_tags_finalize (GObject *object)
 {
 	GDataExifTagsPrivate *priv = GDATA_EXIF_TAGS (object)->priv;
 
-	xmlFree ((xmlChar*) priv->make);
-	xmlFree ((xmlChar*) priv->model);
-	xmlFree ((xmlChar*) priv->image_unique_id);
+	g_free (priv->make);
+	g_free (priv->model);
+	g_free (priv->image_unique_id);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_exif_tags_parent_class)->finalize (object);
@@ -120,11 +120,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (fstop);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "make") == 0) {
 		/* exif:make */
-		xmlFree ((xmlChar*) self->priv->make);
+		g_free (self->priv->make);
 		self->priv->make = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "model") == 0) {
 		/* exif:model */
-		xmlFree ((xmlChar*) self->priv->model);
+		g_free (self->priv->model);
 		self->priv->model = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "exposure") == 0) {
 		/* exif:exposure */
@@ -161,7 +161,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		self->priv->_time.tv_usec = (glong) ((milliseconds % 1000) * 1000);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "imageUniqueID") == 0) {
 		/* exif:imageUniqueID */
-		xmlFree ((xmlChar*) self->priv->image_unique_id);
+		g_free (self->priv->image_unique_id);
 		self->priv->image_unique_id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (GDATA_PARSABLE_CLASS (gdata_exif_tags_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */

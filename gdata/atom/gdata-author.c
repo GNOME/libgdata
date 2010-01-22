@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -198,30 +198,23 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return gdata_parser_error_duplicate_element (node, error);
 
 		name = xmlNodeListGetString (doc, node->children, TRUE);
-		if (name == NULL || *name == '\0')
+		if (name == NULL || *name == '\0') {
+			xmlFree (name);
 			return gdata_parser_error_required_content_missing (node, error);
-		priv->name = g_strdup ((gchar*) name);
-		xmlFree (name);
+		}
+		priv->name = (gchar*) name;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "uri") == 0) {
 		/* atom:uri */
-		xmlChar *uri;
-
 		if (priv->uri != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
 
-		uri = xmlNodeListGetString (doc, node->children, TRUE);
-		priv->uri = g_strdup ((gchar*) uri);
-		xmlFree (uri);
+		priv->uri = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
 		/* atom:email */
-		xmlChar *email_address;
-
 		if (priv->email_address != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
 
-		email_address = xmlNodeListGetString (doc, node->children, TRUE);
-		priv->email_address = g_strdup ((gchar*) email_address);
-		xmlFree (email_address);
+		priv->email_address = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (GDATA_PARSABLE_CLASS (gdata_author_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

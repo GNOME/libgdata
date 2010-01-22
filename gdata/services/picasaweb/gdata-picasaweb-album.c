@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Richard Schwarting 2009 <aquarichy@gmail.com>
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -443,8 +443,8 @@ gdata_picasaweb_album_finalize (GObject *object)
 {
 	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM_GET_PRIVATE (object);
 
-	xmlFree (priv->user);
-	xmlFree (priv->nickname);
+	g_free (priv->user);
+	g_free (priv->nickname);
 	g_free (priv->location);
 
 	/* Chain up to the parent class */
@@ -574,14 +574,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *user = xmlNodeListGetString (doc, node->children, TRUE);
 		if (user == NULL || *user == '\0')
 			return gdata_parser_error_required_content_missing (node, error);
-		xmlFree (self->priv->user);
+		g_free (self->priv->user);
 		self->priv->user = (gchar*) user;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "nickname") == 0) {
 		/* gphoto:nickname */
 		xmlChar *nickname = xmlNodeListGetString (doc, node->children, TRUE);
 		if (nickname == NULL || *nickname == '\0')
 			return gdata_parser_error_required_content_missing (node, error);
-		xmlFree (self->priv->nickname);
+		g_free (self->priv->nickname);
 		self->priv->nickname = (gchar*) nickname;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
 		/* app:edited */
@@ -595,9 +595,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (edited);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
 		/* gphoto:location */
-		xmlChar *location = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_picasaweb_album_set_location (self, (gchar*) location);
-		xmlFree (location);
+		g_free (self->priv->location);
+		self->priv->location = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
 		/* gphoto:access */
 		xmlChar *access = xmlNodeListGetString (doc, node->children, TRUE);
@@ -628,35 +627,50 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (xmlStrcmp (node->name, (xmlChar*) "numphotos") == 0) {
 		/* gphoto:numphotos */
 		xmlChar *num_photos = xmlNodeListGetString (doc, node->children, TRUE);
-		if (num_photos == NULL || *num_photos == '\0')
+		if (num_photos == NULL || *num_photos == '\0') {
+			xmlFree (num_photos);
 			return gdata_parser_error_required_content_missing (node, error);
+		}
+
 		self->priv->num_photos = strtoul ((char*) num_photos, NULL, 10);
 		xmlFree (num_photos);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "numphotosremaining") == 0) {
 		/* gphoto:numphotosremaining */
 		xmlChar *num_photos_remaining = xmlNodeListGetString (doc, node->children, TRUE);
-		if (num_photos_remaining == NULL || *num_photos_remaining == '\0')
+		if (num_photos_remaining == NULL || *num_photos_remaining == '\0') {
+			xmlFree (num_photos_remaining);
 			return gdata_parser_error_required_content_missing (node, error);
+		}
+
 		self->priv->num_photos_remaining = strtoul ((char*) num_photos_remaining, NULL, 10);
 		xmlFree (num_photos_remaining);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "bytesUsed") == 0) {
 		/* gphoto:bytesUsed */
 		xmlChar *bytes_used = xmlNodeListGetString (doc, node->children, TRUE);
-		if (bytes_used == NULL || *bytes_used == '\0')
+		if (bytes_used == NULL || *bytes_used == '\0') {
+			xmlFree (bytes_used);
 			return gdata_parser_error_required_content_missing (node, error);
+		}
+
 		self->priv->bytes_used = strtol ((char*) bytes_used, NULL, 10);
 		xmlFree (bytes_used);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "commentingEnabled") == 0) {
 		/* gphoto:commentingEnabled */
 		xmlChar *commenting_enabled = xmlNodeListGetString (doc, node->children, TRUE);
-		if (commenting_enabled == NULL || *commenting_enabled == '\0')
+		if (commenting_enabled == NULL || *commenting_enabled == '\0') {
+			xmlFree (commenting_enabled);
 			return gdata_parser_error_required_content_missing (node, error);
+		}
+
 		gdata_picasaweb_album_set_is_commenting_enabled (self, (xmlStrcmp (commenting_enabled, (xmlChar*) "true") == 0) ? TRUE : FALSE);
 		xmlFree (commenting_enabled);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "commentCount") == 0) {
 		xmlChar *comment_count = xmlNodeListGetString (doc, node->children, TRUE);
-		if (comment_count == NULL || *comment_count == '\0')
+		if (comment_count == NULL || *comment_count == '\0') {
+			xmlFree (comment_count);
 			return gdata_parser_error_required_content_missing (node, error);
+		}
+
 		self->priv->comment_count = strtoul ((char*) comment_count, NULL, 10);
 		xmlFree (comment_count);
 	} else if (GDATA_PARSABLE_CLASS (gdata_picasaweb_album_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {

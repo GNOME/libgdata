@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -193,7 +193,7 @@ gdata_gd_who_set_property (GObject *object, guint property_id, const GValue *val
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel, *value_string, *email;
+	xmlChar *rel, *email;
 	GDataGDWhoPrivate *priv = GDATA_GD_WHO (parsable)->priv;
 
 	rel = xmlGetProp (root_node, (xmlChar*) "rel");
@@ -208,15 +208,10 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		xmlFree (email);
 		return gdata_parser_error_required_property_missing (root_node, "email", error);
 	}
-	value_string = xmlGetProp (root_node, (xmlChar*) "valueString");
 
-	priv->relation_type = g_strdup ((gchar*) rel);
-	priv->value_string = g_strdup ((gchar*) value_string);
-	priv->email_address = g_strdup ((gchar*) email);
-
-	xmlFree (rel);
-	xmlFree (value_string);
-	xmlFree (email);
+	priv->relation_type = (gchar*) rel;
+	priv->value_string = (gchar*) xmlGetProp (root_node, (xmlChar*) "valueString");
+	priv->email_address = (gchar*) email;
 
 	return TRUE;
 }

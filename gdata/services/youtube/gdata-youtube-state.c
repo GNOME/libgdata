@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -151,10 +151,10 @@ gdata_youtube_state_finalize (GObject *object)
 {
 	GDataYouTubeStatePrivate *priv = GDATA_YOUTUBE_STATE (object)->priv;
 
-	xmlFree (priv->name);
-	xmlFree (priv->reason_code);
-	xmlFree (priv->help_uri);
-	xmlFree (priv->message);
+	g_free (priv->name);
+	g_free (priv->reason_code);
+	g_free (priv->help_uri);
+	g_free (priv->message);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_state_parent_class)->finalize (object);
@@ -189,22 +189,18 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
 	GDataYouTubeStatePrivate *priv = GDATA_YOUTUBE_STATE (parsable)->priv;
-	xmlChar *name, *message, *reason_code, *help_uri;
+	xmlChar *name;
 
 	name = xmlGetProp (root_node, (xmlChar*) "name");
 	if (name == NULL || *name == '\0') {
-		xmlFree (name);
+		g_free (name);
 		return gdata_parser_error_required_property_missing (root_node, "name", error);
 	}
 
-	message = xmlNodeListGetString (doc, root_node->children, TRUE);
-	reason_code = xmlGetProp (root_node, (xmlChar*) "reasonCode");
-	help_uri = xmlGetProp (root_node, (xmlChar*) "helpUrl");
-
 	priv->name = (gchar*) name;
-	priv->reason_code = (gchar*) reason_code;
-	priv->help_uri = (gchar*) help_uri;
-	priv->message = (gchar*) message;
+	priv->reason_code = (gchar*) xmlGetProp (root_node, (xmlChar*) "reasonCode");
+	priv->help_uri = (gchar*) xmlGetProp (root_node, (xmlChar*) "helpUrl");
+	priv->message = (gchar*) xmlNodeListGetString (doc, root_node->children, TRUE);
 
 	return TRUE;
 }

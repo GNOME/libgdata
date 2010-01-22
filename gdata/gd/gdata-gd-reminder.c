@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -209,7 +209,7 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
 	GDataGDReminderPrivate *priv = GDATA_GD_REMINDER (parsable)->priv;
-	xmlChar *absolute_time, *relative_time, *method;
+	xmlChar *absolute_time, *relative_time;
 	GTimeVal absolute_time_timeval;
 	gint relative_time_int = -1;
 	gboolean is_absolute_time = FALSE;
@@ -243,8 +243,6 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	}
 	xmlFree (relative_time);
 
-	method = xmlGetProp (root_node, (xmlChar*) "method");
-
 	if (is_absolute_time == TRUE) {
 		priv->absolute_time = absolute_time_timeval;
 		priv->relative_time = -1;
@@ -253,8 +251,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		priv->relative_time = relative_time_int;
 	}
 
-	priv->method = g_strdup ((gchar*) method);
-	xmlFree (method);
+	priv->method = (gchar*) xmlGetProp (root_node, (xmlChar*) "method");
 
 	return TRUE;
 }

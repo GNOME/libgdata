@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -287,7 +287,7 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
 	GDataMediaContentPrivate *priv = GDATA_MEDIA_CONTENT (parsable)->priv;
-	xmlChar *uri, *content_type, *is_default, *expression, *medium, *duration, *filesize, *height, *width;
+	xmlChar *uri, *is_default, *expression, *medium, *duration, *filesize, *height, *width;
 	gboolean is_default_bool;
 	GDataMediaExpression expression_enum;
 	GDataMediaMedium medium_enum;
@@ -370,20 +370,15 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		return gdata_parser_error_required_property_missing (root_node, "url", error);
 	}
 
-	content_type = xmlGetProp (root_node, (xmlChar*) "type");
-
-	priv->uri = g_strdup ((gchar*) uri);
+	priv->uri = (gchar*) uri;
 	priv->filesize = filesize_ulong;
-	priv->content_type = g_strdup ((gchar*) content_type);
+	priv->content_type = (gchar*) xmlGetProp (root_node, (xmlChar*) "type");
 	priv->medium = medium_enum;
 	priv->is_default = is_default_bool;
 	priv->expression = expression_enum;
 	priv->duration = duration_int64;
 	priv->height = height_uint;
 	priv->width = width_uint;
-
-	xmlFree (uri);
-	xmlFree (content_type);
 
 	return TRUE;
 }

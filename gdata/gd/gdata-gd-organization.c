@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -358,7 +358,7 @@ gdata_gd_organization_set_property (GObject *object, guint property_id, const GV
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel, *label, *primary;
+	xmlChar *rel, *primary;
 	gboolean primary_bool;
 	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (parsable)->priv;
 
@@ -382,15 +382,9 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	}
 	xmlFree (primary);
 
-	/* Other properties */
-	label = xmlGetProp (root_node, (xmlChar*) "label");
-
-	priv->relation_type = g_strdup ((gchar*) rel);
-	priv->label = g_strdup ((gchar*) label);
+	priv->relation_type = (gchar*) rel;
+	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
 	priv->is_primary = primary_bool;
-
-	xmlFree (rel);
-	xmlFree (label);
 
 	return TRUE;
 }
@@ -402,54 +396,29 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (xmlStrcmp (node->name, (xmlChar*) "orgName") == 0) {
 		/* gd:orgName */
-		xmlChar *name;
-
 		if (priv->name != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
-
-		name = xmlNodeListGetString (doc, node->children, TRUE);
-		priv->name = g_strdup ((gchar*) name);
-		xmlFree (name);
+		priv->name = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "orgTitle") == 0) {
 		/* gd:orgTitle */
-		xmlChar *title;
-
 		if (priv->title != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
-
-		title = xmlNodeListGetString (doc, node->children, TRUE);
-		priv->title = g_strdup ((gchar*) title);
-		xmlFree (title);
+		priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "orgDepartment") == 0) {
 		/* gd:orgDepartment */
-		xmlChar *department;
-
 		if (priv->department != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
-
-		department = xmlNodeListGetString (doc, node->children, TRUE);
-		priv->department = g_strdup ((gchar*) department);
-		xmlFree (department);
+		priv->department = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "orgJobDescription") == 0) {
 		/* gd:orgJobDescription */
-		xmlChar *job_description;
-
 		if (priv->job_description != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
-
-		job_description = xmlNodeListGetString (doc, node->children, TRUE);
-		priv->job_description = g_strdup ((gchar*) job_description);
-		xmlFree (job_description);
+		priv->job_description = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "orgSymbol") == 0) {
 		/* gd:orgSymbol */
-		xmlChar *symbol;
-
 		if (priv->symbol != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
-
-		symbol = xmlNodeListGetString (doc, node->children, TRUE);
-		priv->symbol = g_strdup ((gchar*) symbol);
-		xmlFree (symbol);
+		priv->symbol = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
 		/* gd:where */
 		GDataGDWhere *location = GDATA_GD_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_WHERE, doc, node, NULL, error));

@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -243,7 +243,7 @@ gdata_gd_phone_number_set_property (GObject *object, guint property_id, const GV
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *number, *uri, *rel, *label, *primary;
+	xmlChar *number, *rel, *primary;
 	gboolean primary_bool;
 	GDataGDPhoneNumberPrivate *priv = GDATA_GD_PHONE_NUMBER (parsable)->priv;
 
@@ -275,20 +275,11 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	}
 	xmlFree (primary);
 
-	/* Other properties */
-	label = xmlGetProp (root_node, (xmlChar*) "label");
-	uri = xmlGetProp (root_node, (xmlChar*) "uri");
-
 	gdata_gd_phone_number_set_number (GDATA_GD_PHONE_NUMBER (parsable), (gchar*) number);
-	priv->uri = g_strdup ((gchar*) uri);
-	priv->relation_type = g_strdup ((gchar*) rel);
-	priv->label = g_strdup ((gchar*) label);
+	priv->uri = (gchar*) xmlGetProp (root_node, (xmlChar*) "uri");
+	priv->relation_type = (gchar*) rel;
+	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
 	priv->is_primary = primary_bool;
-
-	xmlFree (number);
-	xmlFree (uri);
-	xmlFree (rel);
-	xmlFree (label);
 
 	return TRUE;
 }

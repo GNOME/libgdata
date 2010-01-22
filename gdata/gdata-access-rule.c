@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -217,8 +217,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *role = xmlGetProp (node, (xmlChar*) "value");
 		if (role == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_access_rule_set_role (self, (gchar*) role);
-		xmlFree (role);
+		self->priv->role = (gchar*) role;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "scope") == 0) {
 		/* gAcl:scope */
 		xmlChar *scope_type, *scope_value;
@@ -228,9 +227,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return gdata_parser_error_required_property_missing (node, "type", error);
 
 		scope_value = xmlGetProp (node, (xmlChar*) "value");
-		gdata_access_rule_set_scope (self, (gchar*) scope_type, (gchar*) scope_value);
-		xmlFree (scope_type);
-		xmlFree (scope_value);
+
+		if (xmlStrcmp (scope_type, (xmlChar*) "default") == 0 && scope_value == NULL) {
+			xmlFree (scope_type);
+			return gdata_parser_error_required_property_missing (node, "value", error);
+		}
+
+		self->priv->scope_type = (gchar*) scope_type;
+		self->priv->scope_value = (gchar*) scope_value;
 	} else if (GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -293,6 +297,7 @@ void
 gdata_access_rule_set_role (GDataAccessRule *self, const gchar *role)
 {
 	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));
+
 	g_free (self->priv->role);
 	self->priv->role = g_strdup (role);
 	g_object_notify (G_OBJECT (self), "role");
@@ -337,12 +342,7 @@ gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gch
 {
 	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));
 	g_return_if_fail (type != NULL);
-
-	/* Validate stuff first */
-	if (strcmp (type, "default") == 0)
-		g_return_if_fail (value == NULL);
-	else
-		g_return_if_fail (value != NULL);
+	g_return_if_fail ((strcmp (type, "default") == 0 && value == NULL) || value != NULL);
 
 	g_free (self->priv->scope_type);
 	self->priv->scope_type = g_strdup (type);

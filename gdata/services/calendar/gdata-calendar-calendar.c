@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -200,7 +200,7 @@ gdata_calendar_calendar_finalize (GObject *object)
 	GDataCalendarCalendarPrivate *priv = GDATA_CALENDAR_CALENDAR_GET_PRIVATE (object);
 
 	g_free (priv->timezone);
-	xmlFree ((xmlChar*) priv->access_level);
+	g_free (priv->access_level);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_calendar_calendar_parent_class)->finalize (object);
@@ -295,8 +295,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *_timezone = xmlGetProp (node, (xmlChar*) "value");
 		if (_timezone == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_calendar_set_timezone (self, (gchar*) _timezone);
-		xmlFree (_timezone);
+		self->priv->timezone = (gchar*) _timezone;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "timesCleaned") == 0) {
 		/* gCal:timesCleaned */
 		xmlChar *times_cleaned = xmlGetProp (node, (xmlChar*) "value");

@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -543,7 +543,7 @@ gdata_gd_postal_address_set_property (GObject *object, guint property_id, const 
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel, *label, *primary, *mail_class, *usage;
+	xmlChar *rel, *primary;
 	gboolean primary_bool;
 	GDataGDPostalAddressPrivate *priv = GDATA_GD_POSTAL_ADDRESS (parsable)->priv;
 
@@ -565,21 +565,11 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	}
 	xmlFree (primary);
 
-	/* Other properties */
-	label = xmlGetProp (root_node, (xmlChar*) "label");
-	mail_class = xmlGetProp (root_node, (xmlChar*) "mailClass");
-	usage = xmlGetProp (root_node, (xmlChar*) "usage");
-
-	priv->relation_type = g_strdup ((gchar*) rel);
-	priv->label = g_strdup ((gchar*) label);
-	priv->mail_class = g_strdup ((gchar*) mail_class);
-	priv->usage = g_strdup ((gchar*) usage);
+	priv->relation_type = (gchar*) rel;
+	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
+	priv->mail_class = (gchar*) xmlGetProp (root_node, (xmlChar*) "mailClass");
+	priv->usage = (gchar*) xmlGetProp (root_node, (xmlChar*) "usage");
 	priv->is_primary = primary_bool;
-
-	xmlFree (rel);
-	xmlFree (label);
-	xmlFree (mail_class);
-	xmlFree (usage);
 
 	return TRUE;
 }
@@ -587,14 +577,9 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 #define PARSE_STRING_ELEMENT(E,F)							\
 	if (xmlStrcmp (node->name, (xmlChar*) (E)) == 0) {				\
 		/* gd:##E */								\
-		xmlChar *name;								\
-											\
 		if (priv->F != NULL)							\
 			return gdata_parser_error_duplicate_element (node, error);	\
-											\
-		name = xmlNodeListGetString (doc, node->children, TRUE);		\
-		priv->F = g_strdup ((gchar*) name);					\
-		xmlFree (name);								\
+		priv->F = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);	\
 	}
 
 static gboolean

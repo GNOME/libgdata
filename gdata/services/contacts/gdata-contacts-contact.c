@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -278,10 +278,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (g_time_val_from_iso8601 ((gchar*) edited, &(self->priv->edited)) == FALSE) {
 			/* Error */
 			gdata_parser_error_not_iso8601_format (node, (gchar*) edited, error);
-			xmlFree (edited);
+			g_free (edited);
 			return FALSE;
 		}
-		xmlFree (edited);
+		g_free (edited);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
 		/* gd:name */
 		GDataGDName *name = GDATA_GD_NAME (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_NAME, doc, node, NULL, error));
@@ -358,7 +358,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (buffer != NULL)
 			xmlBufferFree (buffer);
 		else
-			xmlFree (value);
+			g_free (value);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
 		/* gContact:groupMembershipInfo */
 		xmlChar *href, *deleted;
@@ -376,14 +376,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			deleted_bool = TRUE;
 		else {
 			gdata_parser_error_unknown_property_value (node, "deleted", (gchar*) deleted, error);
-			xmlFree (deleted);
+			g_free (deleted);
 			return FALSE;
 		}
-		xmlFree (deleted);
+		g_free (deleted);
 
 		/* Insert it into the hash table */
-		g_hash_table_insert (self->priv->groups, g_strdup ((gchar*) href), GUINT_TO_POINTER (deleted_bool));
-		xmlFree (href);
+		g_hash_table_insert (self->priv->groups, (gchar*) href, GUINT_TO_POINTER (deleted_bool));
 	} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") == 0) {
 		/* gd:deleted */
 		self->priv->deleted = TRUE;
@@ -392,13 +391,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (self->priv->photo_etag == NULL && xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
 			xmlChar *rel = xmlGetProp (node, (xmlChar*) "rel");
 			if (xmlStrcmp (rel, (xmlChar*) "http://schemas.google.com/contacts/2008/rel#photo") == 0) {
-				xmlChar *etag;
-
 				/* It's the photo link (http://code.google.com/apis/contacts/docs/2.0/reference.html#Photos), whose ETag we should
 				 * note down, then pass onto the parent class to parse properly */
-				etag = xmlGetProp (node, (xmlChar*) "etag");
-				self->priv->photo_etag = g_strdup ((gchar*) etag);
-				xmlFree (etag);
+				self->priv->photo_etag = (gchar*) xmlGetProp (node, (xmlChar*) "etag");
 			}
 			xmlFree (rel);
 		}

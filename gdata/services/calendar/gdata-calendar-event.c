@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -328,8 +328,8 @@ gdata_calendar_event_finalize (GObject *object)
 	g_free (priv->transparency);
 	g_free (priv->uid);
 	g_free (priv->recurrence);
-	xmlFree ((xmlChar*) priv->original_event_id);
-	xmlFree ((xmlChar*) priv->original_event_uri);
+	g_free (priv->original_event_id);
+	g_free (priv->original_event_uri);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_calendar_event_parent_class)->finalize (object);
@@ -496,29 +496,25 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
 		if (value == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_event_set_status (self, (gchar*) value);
-		xmlFree (value);
+		self->priv->status = (gchar*) value;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "visibility") == 0) {
 		/* gd:visibility */
 		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
 		if (value == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_event_set_visibility (self, (gchar*) value);
-		xmlFree (value);
+		self->priv->visibility = (gchar*) value;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "transparency") == 0) {
 		/* gd:transparency */
 		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
 		if (value == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_event_set_transparency (self, (gchar*) value);
-		xmlFree (value);
+		self->priv->transparency = (gchar*) value;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "uid") == 0) {
 		/* gCal:uid */
 		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
 		if (value == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_event_set_uid (self, (gchar*) value);
-		xmlFree (value);
+		self->priv->uid = (gchar*) value;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "sequence") == 0) {
 		/* gCal:sequence */
 		xmlChar *value;
@@ -583,9 +579,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		gdata_calendar_event_add_place (self, where);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "recurrence") == 0) {
 		/* gd:recurrence */
-		xmlChar *recurrence = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_calendar_event_set_recurrence (self, (gchar*) recurrence);
-		xmlFree (recurrence);
+		self->priv->recurrence = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "originalEvent") == 0) {
 		/* gd:originalEvent */
 		g_object_freeze_notify (G_OBJECT (self));

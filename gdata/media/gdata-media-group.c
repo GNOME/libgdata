@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -142,19 +142,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
 		/* media:title */
-		xmlChar *title = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_media_group_set_title (self, (gchar*) title);
-		xmlFree (title);
+		self->priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "description") == 0) {
 		/* media:description */
-		xmlChar *description = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_media_group_set_description (self, (gchar*) description);
-		xmlFree (description);
+		self->priv->description = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "keywords") == 0) {
 		/* media:keywords */
-		xmlChar *keywords = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_media_group_set_keywords (self, (gchar*) keywords);
-		xmlFree (keywords);
+		self->priv->keywords = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
 		/* media:category */
 		GDataMediaCategory *category = GDATA_MEDIA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CATEGORY, doc,
@@ -187,9 +181,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *player_uri = xmlGetProp (node, (xmlChar*) "url");
 
 		g_free (self->priv->player_uri);
-		self->priv->player_uri = g_strdup ((gchar*) player_uri);
-
-		xmlFree (player_uri);
+		self->priv->player_uri = (gchar*) player_uri;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
 		/* media:rating */
 		xmlChar *countries;

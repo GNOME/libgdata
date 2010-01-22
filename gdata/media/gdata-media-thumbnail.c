@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -250,12 +250,6 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	guint width_uint, height_uint;
 	gint64 time_int64;
 
-	uri = xmlGetProp (root_node, (xmlChar*) "url");
-	if (uri == NULL || *uri == '\0') {
-		xmlFree (uri);
-		return gdata_parser_error_required_property_missing (root_node, "url", error);
-	}
-
 	/* Get the width and height */
 	width = xmlGetProp (root_node, (xmlChar*) "width");
 	width_uint = (width == NULL) ? 0 : strtoul ((gchar*) width, NULL, 10);
@@ -279,12 +273,17 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		xmlFree (_time);
 	}
 
-	priv->uri = g_strdup ((gchar*) uri);
+	/* Get the URI */
+	uri = xmlGetProp (root_node, (xmlChar*) "url");
+	if (uri == NULL || *uri == '\0') {
+		xmlFree (uri);
+		return gdata_parser_error_required_property_missing (root_node, "url", error);
+	}
+
+	priv->uri = (gchar*) uri;
 	priv->height = height_uint;
 	priv->width = width_uint;
 	priv->time = time_int64;
-
-	xmlFree (uri);
 
 	return TRUE;
 }

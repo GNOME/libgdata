@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  * Copyright (C) Richard Schwarting 2009 <aquarichy@gmail.com>
  *
  * GData Client is free software; you can redistribute it and/or
@@ -174,9 +174,9 @@ gdata_picasaweb_user_finalize (GObject *object)
 {
 	GDataPicasaWebUserPrivate *priv = GDATA_PICASAWEB_USER_GET_PRIVATE (object);
 
-	xmlFree ((xmlChar*) priv->user);
-	xmlFree ((xmlChar*) priv->nickname);
-	xmlFree ((xmlChar*) priv->thumbnail_uri);
+	g_free (priv->user);
+	g_free (priv->nickname);
+	g_free (priv->thumbnail_uri);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_picasaweb_user_parent_class)->finalize (object);
@@ -221,16 +221,22 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	if (xmlStrcmp (node->name, (xmlChar*) "user") == 0) {
 		/* gphoto:user */
 		xmlChar *user = xmlNodeListGetString (doc, node->children, TRUE);
-		if (user == NULL || *user == '\0')
+		if (user == NULL || *user == '\0') {
+			g_free (user);
 			return gdata_parser_error_required_content_missing (node, error);
-		xmlFree (self->priv->user);
+		}
+
+		g_free (self->priv->user);
 		self->priv->user = (gchar*) user;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "nickname") == 0) {
 		/* gphoto:nickname */
 		xmlChar *nickname = xmlNodeListGetString (doc, node->children, TRUE);
-		if (nickname == NULL || *nickname == '\0')
+		if (nickname == NULL || *nickname == '\0') {
+			g_free (nickname);
 			return gdata_parser_error_required_content_missing (node, error);
-		xmlFree (self->priv->nickname);
+		}
+
+		g_free (self->priv->nickname);
 		self->priv->nickname = (gchar*) nickname;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "quotacurrent") == 0) {
 		/* gphoto:quota-current */
@@ -250,9 +256,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (xmlStrcmp (node->name, (xmlChar*) "thumbnail") == 0) {
 		/* gphoto:thumbnail */
 		xmlChar *thumbnail = xmlNodeListGetString (doc, node->children, TRUE);
-		if (thumbnail == NULL || *thumbnail == '\0')
+		if (thumbnail == NULL || *thumbnail == '\0') {
+			g_free (thumbnail);
 			return gdata_parser_error_required_content_missing (node, error);
-		xmlFree (self->priv->thumbnail_uri);
+		}
+
+		g_free (self->priv->thumbnail_uri);
 		self->priv->thumbnail_uri = (gchar*) thumbnail;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "x-allowDownloads") == 0) { /* RHSTODO: see if this comes with the user */
 		/* gphoto:allowDownloads */

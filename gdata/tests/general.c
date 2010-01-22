@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1002,7 +1002,9 @@ test_atom_generator (void)
 
 	/* …and a different generator */
 	generator2 = GDATA_GENERATOR (gdata_parsable_new_from_xml (GDATA_TYPE_GENERATOR,
-		"<generator>Different generator</generator>", -1, NULL));
+		"<generator>Different generator</generator>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GENERATOR (generator));
 	g_assert_cmpint (gdata_generator_compare (generator, generator2), !=, 0);
 	g_object_unref (generator2);
 

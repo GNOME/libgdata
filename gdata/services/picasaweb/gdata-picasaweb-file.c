@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Richard Schwarting 2009 <aquarichy@gmail.com>
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -630,7 +630,7 @@ gdata_picasaweb_file_finalize (GObject *object)
 	g_free (priv->album_id);
 	g_free (priv->client);
 	g_free (priv->checksum);
-	xmlFree (priv->video_status);
+	g_free (priv->video_status);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_picasaweb_file_parent_class)->finalize (object);
@@ -837,10 +837,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (edited);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "imageVersion") == 0) {
 		/* gphoto:imageVersion */
-		xmlChar *version = xmlNodeListGetString (doc, node->children, TRUE);
 		g_free (self->priv->version);
-		self->priv->version = g_strdup ((gchar*) version);
-		xmlFree (version);
+		self->priv->version = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "position") == 0) {
 		/* gphoto:position */
 		xmlChar *position_str = xmlNodeListGetString (doc, node->children, TRUE);
@@ -848,9 +846,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (position_str);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "albumid") == 0) {
 		/* gphoto:album_id */
-		xmlChar *album_id = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_picasaweb_file_set_album_id (self, (gchar*) album_id);
-		xmlFree (album_id);
+		self->priv->album_id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "width") == 0) {
 		/* gphoto:width */
 		xmlChar *width = xmlNodeListGetString (doc, node->children, TRUE);
@@ -868,14 +864,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (size);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "client") == 0) {
 		/* gphoto:client */
-		xmlChar *client = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_picasaweb_file_set_client (self, (gchar*) client);
-		xmlFree (client);
+		self->priv->client = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "checksum") == 0) {
 		/* gphoto:checksum */
-		xmlChar *checksum = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_picasaweb_file_set_checksum (self, (gchar*) checksum);
-		xmlFree (checksum);
+		self->priv->checksum = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
 		/* gphoto:timestamp */
 		xmlChar *timestamp_str;

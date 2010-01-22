@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -129,9 +129,9 @@ gdata_generator_finalize (GObject *object)
 {
 	GDataGeneratorPrivate *priv = GDATA_GENERATOR (object)->priv;
 
-	xmlFree (priv->name);
-	xmlFree (priv->uri);
-	xmlFree (priv->version);
+	g_free (priv->name);
+	g_free (priv->uri);
+	g_free (priv->version);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_generator_parent_class)->finalize (object);
@@ -162,12 +162,15 @@ gdata_generator_get_property (GObject *object, guint property_id, GValue *value,
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
+	xmlChar *uri;
 	GDataGeneratorPrivate *priv = GDATA_GENERATOR (parsable)->priv;
 
-	priv->uri = (gchar*) xmlGetProp (root_node, (xmlChar*) "uri");
-	if (priv->uri != NULL && *(priv->uri) == '\0')
-		/* priv->uri will be freed when the object is destroyed */
+	uri = xmlGetProp (root_node, (xmlChar*) "uri");
+	if (uri != NULL && *uri == '\0') {
+		xmlFree (uri);
 		return gdata_parser_error_required_property_missing (root_node, "uri", error);
+	}
+	priv->uri = (gchar*) uri;
 
 	priv->name = (gchar*) xmlNodeListGetString (doc, root_node->children, TRUE);
 	priv->version = (gchar*) xmlGetProp (root_node, (xmlChar*) "version");

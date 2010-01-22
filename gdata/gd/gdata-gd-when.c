@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -240,7 +240,7 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
 	GDataGDWhenPrivate *priv = GDATA_GD_WHEN (parsable)->priv;
-	xmlChar *start_time, *end_time, *value_string;
+	xmlChar *start_time, *end_time;
 	GTimeVal start_time_timeval, end_time_timeval;
 	gboolean is_date = FALSE;
 
@@ -278,14 +278,10 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		end_time_timeval.tv_sec = end_time_timeval.tv_usec = 0;
 	}
 
-	value_string = xmlGetProp (root_node, (xmlChar*) "valueString");
-
 	priv->start_time = start_time_timeval;
 	priv->end_time = end_time_timeval;
 	priv->is_date = is_date;
-	priv->value_string = g_strdup ((gchar*) value_string);
-
-	xmlFree (value_string);
+	priv->value_string = (gchar*) xmlGetProp (root_node, (xmlChar*) "valueString");
 
 	return TRUE;
 }

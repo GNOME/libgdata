@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -750,9 +750,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (favorite_count);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
 		/* yt:location */
-		xmlChar *location = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_youtube_video_set_location (self, (gchar*) location);
-		xmlFree (location);
+		g_free (self->priv->location);
+		self->priv->location = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
 		/* yt:noembed */
 		gdata_youtube_video_set_no_embed (self, TRUE);

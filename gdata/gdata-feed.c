@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -310,12 +310,12 @@ gdata_feed_finalize (GObject *object)
 {
 	GDataFeedPrivate *priv = GDATA_FEED (object)->priv;
 
-	xmlFree (priv->title);
-	xmlFree (priv->subtitle);
-	xmlFree (priv->id);
-	xmlFree (priv->etag);
-	xmlFree (priv->logo);
-	xmlFree (priv->icon);
+	g_free (priv->title);
+	g_free (priv->subtitle);
+	g_free (priv->id);
+	g_free (priv->etag);
+	g_free (priv->logo);
+	g_free (priv->icon);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_feed_parent_class)->finalize (object);
@@ -457,7 +457,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			xmlFree (updated_string);
 			return FALSE;
 		}
-
 		xmlFree (updated_string);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
 		/* atom:category */

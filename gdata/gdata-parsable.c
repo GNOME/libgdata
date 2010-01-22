@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -147,10 +147,20 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 {
 	xmlDoc *doc;
 	xmlNode *node;
+	static gboolean libxml_initialised = FALSE;
 
 	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE), NULL);
 	g_return_val_if_fail (xml != NULL && *xml != '\0', NULL);
 	g_return_val_if_fail (length >= -1, NULL);
+
+	/* Set up libxml. We do this here to avoid introducing a libgdata setup function, which would be unnecessary hassle. This is the only place
+	 * that libxml can be initialised in the library. */
+	if (libxml_initialised == FALSE) {
+		/* Change the libxml memory allocation functions to be GLib's. This means we don't have to re-allocate all the strings we get from
+		 * libxml, which cuts down on strdup() calls dramatically. */
+		xmlMemSetup ((xmlFreeFunc) g_free, (xmlMallocFunc) g_malloc, (xmlReallocFunc) g_realloc, (xmlStrdupFunc) g_strdup);
+		libxml_initialised = TRUE;
+	}
 
 	if (length == -1)
 		length = strlen (xml);

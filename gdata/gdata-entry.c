@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -213,8 +213,8 @@ gdata_entry_finalize (GObject *object)
 
 	g_free (priv->title);
 	g_free (priv->summary);
-	xmlFree (priv->id);
-	xmlFree (priv->etag);
+	g_free (priv->id);
+	g_free (priv->etag);
 	g_free (priv->rights);
 	g_free (priv->content);
 
@@ -324,14 +324,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *title = xmlNodeListGetString (doc, node->children, TRUE);
 
 		/* Title can be empty */
-		if (title == NULL)
-			gdata_entry_set_title (self, "");
-		else
-			gdata_entry_set_title (self, (gchar*) title);
-		xmlFree (title);
+		self->priv->title = (title == NULL) ? g_strdup ("") : (gchar*) title;
+		g_object_notify (G_OBJECT (self), "title"); /* various classes depend on updates to our title */
 	} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
 		/* atom:id */
-		xmlFree (self->priv->id);
+		g_free (self->priv->id);
 		self->priv->id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "updated") == 0) {
 		/* atom:updated */
@@ -369,8 +366,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *content = xmlNodeListGetString (doc, node->children, TRUE);
 		if (content == NULL)
 			content = xmlGetProp (node, (xmlChar*) "src");
-		gdata_entry_set_content (self, (gchar*) content);
-		xmlFree (content);
+		self->priv->content = (gchar*) content;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
 		/* atom:link */
 		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
@@ -387,14 +383,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		self->priv->authors = g_list_prepend (self->priv->authors, author);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "summary") == 0) {
 		/* atom:summary */
-		xmlChar *summary = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_entry_set_summary (self, (gchar*) summary);
-		xmlFree (summary);
+		self->priv->summary = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		g_object_notify (G_OBJECT (self), "summary"); /* various classes depend on updates to our title */
 	} else if (xmlStrcmp (node->name, (xmlChar*) "rights") == 0) {
 		/* atom:rights */
-		xmlChar *rights = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_entry_set_rights (self, (gchar*) rights);
-		xmlFree (rights);
+		self->priv->rights = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		g_object_notify (G_OBJECT (self), "rights"); /* various classes depend on updates to our title */
 	} else if (GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -558,6 +552,7 @@ void
 gdata_entry_set_summary (GDataEntry *self, const gchar *summary)
 {
 	g_return_if_fail (GDATA_IS_ENTRY (self));
+
 	g_free (self->priv->summary);
 	self->priv->summary = g_strdup (summary);
 	g_object_notify (G_OBJECT (self), "summary");
@@ -849,6 +844,7 @@ void
 gdata_entry_set_rights (GDataEntry *self, const gchar *rights)
 {
 	g_return_if_fail (GDATA_IS_ENTRY (self));
+
 	g_free (self->priv->rights);
 	self->priv->rights = g_strdup (rights);
 	g_object_notify (G_OBJECT (self), "rights");
