@@ -252,6 +252,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* Ensure we have the correct category/kind */
 	category = gdata_category_new ("http://schemas.google.com/acl/2007#accessRule", "http://schemas.google.com/g/2005#kind", NULL);
 	gdata_entry_add_category (GDATA_ENTRY (parsable), category);
+	g_object_unref (category);
 
 	/* So it's valid Atom, set the title if one doesn't already exist */
 	if (gdata_entry_get_title (GDATA_ENTRY (parsable)) == NULL)

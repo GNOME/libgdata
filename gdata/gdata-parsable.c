@@ -106,9 +106,11 @@ real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer us
 
 	for (namespace = namespaces; *namespace != NULL; namespace++) {
 		if ((*namespace)->prefix != NULL) {
+			/* NOTE: These two g_strdup()s leak, but it's probably acceptable, given that it saves us
+			 * g_strdup()ing every other namespace we put in @extra_namespaces. */
 			g_hash_table_insert (parsable->priv->extra_namespaces,
-					     g_strdup ((gchar*) ((*namespace)->prefix)),
-					     g_strdup ((gchar*) ((*namespace)->href)));
+			                     g_strdup ((gchar*) ((*namespace)->prefix)),
+			                     g_strdup ((gchar*) ((*namespace)->href)));
 		}
 	}
 	xmlFree (namespaces);
@@ -147,6 +149,7 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 {
 	xmlDoc *doc;
 	xmlNode *node;
+	GDataParsable *parsable;
 	static gboolean libxml_initialised = FALSE;
 
 	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE), NULL);
@@ -188,7 +191,10 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 		return NULL;
 	}
 
-	return _gdata_parsable_new_from_xml_node (parsable_type, doc, node, user_data, error);
+	parsable = _gdata_parsable_new_from_xml_node (parsable_type, doc, node, user_data, error);
+	xmlFreeDoc (doc);
+
+	return parsable;
 }
 
 GDataParsable *
@@ -212,7 +218,6 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
 	/*if (xmlStrcmp (node->name, (xmlChar*) klass->element_name) != 0 ||
 	    (node->ns != NULL && xmlStrcmp (node->ns->prefix, (xmlChar*) klass->element_namespace) != 0)) {
 		* No <entry> element (required) *
-		xmlFreeDoc (doc);
 		gdata_parser_error_required_element_missing (klass->element_name, "root", error);
 		return NULL;
 	}*/
