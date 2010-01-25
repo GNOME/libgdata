@@ -734,23 +734,13 @@ gdata_gd_postal_address_get_address (GDataGDPostalAddress *self)
 void
 gdata_gd_postal_address_set_address (GDataGDPostalAddress *self, const gchar *address)
 {
-	gint len;
-
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
 	g_return_if_fail (address != NULL && *address != '\0');
 
-	g_free (self->priv->formatted_address);
-
 	/* Trim leading and trailing whitespace from the address.
 	 * See here: http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPostalAddress */
-	while (*address != '\0' && g_ascii_isspace (*address))
-		address++;
-
-	len = strlen (address);
-	while (len > 0 && g_ascii_isspace (address[len - 1]))
-		len--;
-
-	self->priv->formatted_address = g_strndup (address, len);
+	g_free (self->priv->formatted_address);
+	self->priv->formatted_address = gdata_parser_utf8_trim_whitespace (address);
 	g_object_notify (G_OBJECT (self), "address");
 }
 

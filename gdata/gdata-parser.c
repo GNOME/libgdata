@@ -271,3 +271,25 @@ gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const
 	if (post != NULL)
 		g_string_append (xml_string, post);
 }
+
+gchar *
+gdata_parser_utf8_trim_whitespace (const gchar *s)
+{
+	glong len;
+	const gchar *_s;
+
+	/* Skip the leading whitespace */
+	while (*s != '\0' && g_unichar_isspace (g_utf8_get_char (s)))
+		s = g_utf8_next_char (s);
+
+	/* Find the end of the string and backtrack until we've passed all the whitespace */
+	len = g_utf8_strlen (s, -1);
+	_s = g_utf8_offset_to_pointer (s, len - 1);
+	while (len > 0 && g_unichar_isspace (g_utf8_get_char (_s))) {
+		_s = g_utf8_prev_char (_s);
+		len--;
+	}
+	_s = g_utf8_next_char (_s);
+
+	return g_strndup (s, _s - s);
+}

@@ -1526,6 +1526,10 @@ test_gd_phone_number (void)
 				"uri='tel:+12065551212' rel='http://schemas.google.com/g/2005#mobile' label='Personal &amp; business calls only' "
 				"primary='false'>+1 206 555 1212</gd:phoneNumber>");
 	g_free (xml);
+
+	/* Check we trim whitespace properly, and respect Unicode characters */
+	gdata_gd_phone_number_set_number (phone, "  	 0123456 (789) ëxt 300  ");
+	g_assert_cmpstr (gdata_gd_phone_number_get_number (phone), ==, "0123456 (789) ëxt 300");
 	g_object_unref (phone);
 
 	/* Now parse a phone number with less information available, but some extraneous whitespace */
@@ -1599,6 +1603,10 @@ test_gd_postal_address (void)
 				"<gd:postcode>NY 10036</gd:postcode>"
 			 "</gd:structuredPostalAddress>");
 	g_free (xml);
+
+	/* Check we trim whitespace properly, and respect Unicode characters */
+	gdata_gd_postal_address_set_address (postal, "  	 Schöne Grüße Straße\nGermany  ");
+	g_assert_cmpstr (gdata_gd_postal_address_get_address (postal), ==, "Schöne Grüße Straße\nGermany");
 	g_object_unref (postal);
 
 	/* Now parse an address with less information available */

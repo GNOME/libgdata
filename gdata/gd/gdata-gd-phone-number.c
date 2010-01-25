@@ -411,23 +411,13 @@ gdata_gd_phone_number_get_number (GDataGDPhoneNumber *self)
 void
 gdata_gd_phone_number_set_number (GDataGDPhoneNumber *self, const gchar *number)
 {
-	gint len;
-
 	g_return_if_fail (GDATA_IS_GD_PHONE_NUMBER (self));
 	g_return_if_fail (number != NULL && *number != '\0');
 
-	g_free (self->priv->number);
-
 	/* Trim leading and trailing whitespace from the number.
 	 * See here: http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPhoneNumber */
-	while (*number != '\0' && g_ascii_isspace (*number))
-		number++;
-
-	len = strlen (number);
-	while (len > 0 && g_ascii_isspace (number[len - 1]))
-		len--;
-
-	self->priv->number = g_strndup (number, len);
+	g_free (self->priv->number);
+	self->priv->number = gdata_parser_utf8_trim_whitespace (number);
 	g_object_notify (G_OBJECT (self), "number");
 }
 
