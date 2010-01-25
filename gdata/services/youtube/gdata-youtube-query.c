@@ -378,19 +378,15 @@ gdata_youtube_query_set_property (GObject *object, guint property_id, const GVal
 			break;
 		case PROP_LATITUDE:
 			self->priv->latitude = g_value_get_double (value);
-			g_object_notify (object, "latitude");
 			break;
 		case PROP_LONGITUDE:
 			self->priv->longitude = g_value_get_double (value);
-			g_object_notify (object, "longitude");
 			break;
 		case PROP_LOCATION_RADIUS:
 			self->priv->location_radius = g_value_get_double (value);
-			g_object_notify (object, "location-radius");
 			break;
 		case PROP_HAS_LOCATION:
 			self->priv->has_location = g_value_get_boolean (value);
-			g_object_notify (object, "has-location");
 			break;
 		case PROP_LANGUAGE:
 			gdata_youtube_query_set_language (self, g_value_get_string (value));
@@ -611,10 +607,12 @@ gdata_youtube_query_set_location (GDataYouTubeQuery *self, gdouble latitude, gdo
 	self->priv->location_radius = radius;
 	self->priv->has_location = has_location;
 
+	g_object_freeze_notify (G_OBJECT (self));
 	g_object_notify (G_OBJECT (self), "latitude");
 	g_object_notify (G_OBJECT (self), "longitude");
 	g_object_notify (G_OBJECT (self), "location-radius");
 	g_object_notify (G_OBJECT (self), "has-location");
+	g_object_thaw_notify (G_OBJECT (self));
 }
 
 /**

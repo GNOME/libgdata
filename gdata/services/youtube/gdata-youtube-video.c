@@ -692,13 +692,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
 		self->priv->rating.count = num_raters_uint;
 		self->priv->rating.average = average_double;
-
-		g_object_freeze_notify (G_OBJECT (self));
-		g_object_notify (G_OBJECT (self), "min-rating");
-		g_object_notify (G_OBJECT (self), "max-rating");
-		g_object_notify (G_OBJECT (self), "rating-count");
-		g_object_notify (G_OBJECT (self), "average-rating");
-		g_object_thaw_notify (G_OBJECT (self));
 	} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
 		/* gd:comments */
 		xmlChar *rel, *href, *count_hint, *read_only;
@@ -722,8 +715,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		/* TODO */
 		/*gdata_gd_feed_link_free (self->priv->comments_feed_link);
 		self->priv->comments_feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint,
-									 ((xmlStrcmp (read_only, (xmlChar*) "true") == 0) ? TRUE : FALSE));
-		g_object_notify (G_OBJECT (self), "comments-feed-link");*/
+									 ((xmlStrcmp (read_only, (xmlChar*) "true") == 0) ? TRUE : FALSE));*/
 
 		xmlFree (rel);
 		xmlFree (href);
@@ -737,16 +729,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (view_count == NULL)
 			return gdata_parser_error_required_property_missing (node, "viewCount", error);
 		self->priv->view_count = strtoul ((gchar*) view_count, NULL, 10);
-		g_object_notify (G_OBJECT (self), "view-count");
 		xmlFree (view_count);
 
 		/* Favourite count */
 		favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
-		if (favorite_count == NULL)
-			self->priv->favorite_count = 0;
-		else
-			self->priv->favorite_count = strtoul ((gchar*) favorite_count, NULL, 10);
-		g_object_notify (G_OBJECT (self), "favorite-count");
+		self->priv->favorite_count = (favorite_count != NULL) ? strtoul ((gchar*) favorite_count, NULL, 10) : 0;
 		xmlFree (favorite_count);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
 		/* yt:location */

@@ -582,12 +582,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		self->priv->recurrence = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "originalEvent") == 0) {
 		/* gd:originalEvent */
-		g_object_freeze_notify (G_OBJECT (self));
 		self->priv->original_event_id = (gchar*) xmlGetProp (node, (xmlChar*) "id");
-		g_object_notify (G_OBJECT (self), "original-event-id");
 		self->priv->original_event_uri = (gchar*) xmlGetProp (node, (xmlChar*) "href");
-		g_object_notify (G_OBJECT (self), "original-event-uri");
-		g_object_thaw_notify (G_OBJECT (self));
 	} else if (GDATA_PARSABLE_CLASS (gdata_calendar_event_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

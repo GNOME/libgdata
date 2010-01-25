@@ -285,14 +285,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
 		/* gd:name */
 		GDataGDName *name = GDATA_GD_NAME (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_NAME, doc, node, NULL, error));
-
 		if (name == NULL)
 			return FALSE;
 
 		if (self->priv->name != NULL)
 			g_object_unref (self->priv->name);
 		self->priv->name = name;
-		g_object_notify (G_OBJECT (self), "name");
 	} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
 		/* gd:email */
 		GDataGDEmailAddress *email = GDATA_GD_EMAIL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_EMAIL_ADDRESS, doc,

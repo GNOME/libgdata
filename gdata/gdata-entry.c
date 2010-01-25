@@ -324,8 +324,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *title = xmlNodeListGetString (doc, node->children, TRUE);
 
 		/* Title can be empty */
-		self->priv->title = (title == NULL) ? g_strdup ("") : (gchar*) title;
-		g_object_notify (G_OBJECT (self), "title"); /* various classes depend on updates to our title */
+		self->priv->title = (title != NULL) ? (gchar*) title : g_strdup ("");
 	} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
 		/* atom:id */
 		g_free (self->priv->id);
@@ -384,11 +383,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (xmlStrcmp (node->name, (xmlChar*) "summary") == 0) {
 		/* atom:summary */
 		self->priv->summary = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-		g_object_notify (G_OBJECT (self), "summary"); /* various classes depend on updates to our title */
 	} else if (xmlStrcmp (node->name, (xmlChar*) "rights") == 0) {
 		/* atom:rights */
 		self->priv->rights = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-		g_object_notify (G_OBJECT (self), "rights"); /* various classes depend on updates to our title */
 	} else if (GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -517,6 +514,7 @@ void
 gdata_entry_set_title (GDataEntry *self, const gchar *title)
 {
 	g_return_if_fail (GDATA_IS_ENTRY (self));
+
 	g_free (self->priv->title);
 	self->priv->title = g_strdup (title);
 	g_object_notify (G_OBJECT (self), "title");

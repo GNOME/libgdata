@@ -295,7 +295,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (priv->full_name != NULL)
 			return gdata_parser_error_duplicate_element (node, error);
 		priv->full_name = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-		g_object_notify (G_OBJECT (parsable), "full-name"); /* various classes listen to this */
 	} else if (GDATA_PARSABLE_CLASS (gdata_gd_name_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
