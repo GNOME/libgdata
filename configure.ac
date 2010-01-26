@@ -1,29 +1,24 @@
-AC_PREREQ(2.52)
+AC_PREREQ(2.63)
 
 m4_define(gdata_major_version, 0)
 m4_define(gdata_minor_version, 6)
 m4_define(gdata_micro_version, 0)
 
-AC_INIT([libgdata], [gdata_major_version.gdata_minor_version.gdata_micro_version])
+AC_INIT([libgdata],[gdata_major_version.gdata_minor_version.gdata_micro_version],[https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata],
+        [libgdata],[http://live.gnome.org/libgdata])
 
 AC_CONFIG_SRCDIR([gdata/gdata.h])
 AC_CONFIG_HEADERS([config.h])
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 
 AM_INIT_AUTOMAKE([1.9 dist-bzip2 no-dist-gzip check-news subdir-objects])
 
 # Enable silent build when available (Automake 1.11)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
-GETTEXT_PACKAGE=gdata
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define to the Gettext package name])
-AC_SUBST(GETTEXT_PACKAGE)
-AM_GLIB_GNU_GETTEXT
-IT_PROG_INTLTOOL([0.40.0])
-
 AC_PROG_CXX
 AM_PROG_CC_C_O
-AC_PROG_LIBTOOL()
+LT_INIT([])
 PKG_PROG_PKG_CONFIG
 
 AC_PATH_PROG([GLIB_GENMARSHAL],[glib-genmarshal])
@@ -59,13 +54,12 @@ AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
 # Optional dependencies
-
 PKG_CHECK_MODULES(GDK, gdk-2.0, have_gdk=yes, have_gdk=no)
 if test "x$have_gdk" = "xyes"; then
 	AC_DEFINE(HAVE_GDK, 1, [Defined if GDK+ is installed])
 fi
 
-AC_SUBST(GDK_CFLAGS) # TODO: test how this fairs without gdk-2.0.pc avail
+AC_SUBST(GDK_CFLAGS)
 AC_SUBST(GDK_LIBS)
 
 # GNOME support, which pulls in libsoup-gnome-2.4 to provide transparent proxy support
@@ -80,6 +74,13 @@ fi
 
 AC_SUBST(GNOME_CFLAGS)
 AC_SUBST(GNOME_LIBS)
+
+# Internationalisation support
+GETTEXT_PACKAGE=gdata
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define to the Gettext package name])
+AC_SUBST(GETTEXT_PACKAGE)
+AM_GLIB_GNU_GETTEXT
+IT_PROG_INTLTOOL([0.40.0])
 
 # Code testing coverage with gcov
 AC_MSG_CHECKING(whether to build with gcov testing)
@@ -116,7 +117,7 @@ AC_SUBST([AM_LDFLAGS])
 
 GTK_DOC_CHECK(1.0)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 libgdata.pc
 gdata/tests/Makefile
@@ -125,3 +126,4 @@ docs/Makefile
 docs/reference/Makefile
 docs/reference/version.xml
 ])
+AC_OUTPUT

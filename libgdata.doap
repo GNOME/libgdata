@@ -2,7 +2,7 @@
 	<name xml:lang="en">libgdata</name>
 	<shortdesc xml:lang="en">GLib-based library for accessing online service APIs using the GData protocol</shortdesc>
 	<description xml:lang="en">libgdata is a GLib-based library for accessing online service APIs using the GData protocol — most notably, Google's services. It provides APIs to access the common Google services, and has full asynchronous support.</description>
-	<homepage rdf:resource="http://live.gnome.org/libgdata/"/>
+	<homepage rdf:resource="http://live.gnome.org/libgdata"/>
 	<license rdf:resource="http://usefulinc.com/doap/licenses/lgpl"/>
 	<download-page rdf:resource="http://download.gnome.org/sources/libgdata/"/>
 	<maintainer>
