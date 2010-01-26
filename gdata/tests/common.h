@@ -18,6 +18,7 @@
  */
 
 #include <glib.h>
+#include <gdata/gdata.h>
 
 #ifndef GDATA_TEST_COMMON_H
 #define GDATA_TEST_COMMON_H
@@ -30,6 +31,12 @@ G_BEGIN_DECLS
 #define PASSWORD "gdata-libgdata"
 
 void gdata_test_init (int *argc, char ***argv);
+
+guint gdata_test_batch_operation_query (GDataBatchOperation *operation, const gchar *id, GType entry_type,
+                                        GDataEntry *entry, GDataEntry **returned_entry, GError **error);
+guint gdata_test_batch_operation_insertion (GDataBatchOperation *operation, GDataEntry *entry, GDataEntry **inserted_entry, GError **error);
+guint gdata_test_batch_operation_update (GDataBatchOperation *operation, GDataEntry *entry, GDataEntry **updated_entry, GError **error);
+guint gdata_test_batch_operation_deletion (GDataBatchOperation *operation, GDataEntry *entry, GError **error);
 
 G_END_DECLS
 

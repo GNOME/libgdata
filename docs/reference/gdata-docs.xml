@@ -41,6 +41,12 @@
 			<xi:include href="xml/gdata-access-handler.xml"/>
 			<xi:include href="xml/gdata-access-rule.xml"/>
 		</chapter>
+
+		<chapter>
+			<title>Batch Operation API</title>
+			<xi:include href="xml/gdata-batchable.xml"/>
+			<xi:include href="xml/gdata-batch-operation.xml"/>
+		</chapter>
 	</part>
 
 	<part>

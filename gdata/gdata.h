@@ -33,6 +33,8 @@
 #include <gdata/gdata-download-stream.h>
 #include <gdata/gdata-upload-stream.h>
 #include <gdata/gdata-comparable.h>
+#include <gdata/gdata-batchable.h>
+#include <gdata/gdata-batch-operation.h>
 
 /* Namespaces */
 

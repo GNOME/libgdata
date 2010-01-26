@@ -344,8 +344,14 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->title != NULL)
 		gdata_parser_string_append_escaped (xml_string, " title='", priv->title, "'");
-	if (priv->relation_type != NULL)
-		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
+	if (priv->relation_type != NULL) {
+		/* TODO: This hack is necessary to get batch operations working.
+		 * See: http://code.google.com/p/gdata-issues/issues/detail?id=2129 */
+		if (strcmp (priv->relation_type, GDATA_LINK_EDIT) == 0)
+			g_string_append_printf (xml_string, " rel='%s'", "edit");
+		else
+			g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
+	}
 	if (priv->content_type != NULL)
 		g_string_append_printf (xml_string, " type='%s'", priv->content_type);
 	if (priv->language != NULL)

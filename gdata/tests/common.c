@@ -34,3 +34,220 @@ gdata_test_init (int *argc, char ***argv)
 	/* Enable full debugging */
 	g_setenv ("LIBGDATA_DEBUG", "3", FALSE);
 }
+
+typedef struct {
+	guint op_id;
+	GDataBatchOperationType operation_type;
+	GDataEntry *entry;
+	GDataEntry **returned_entry;
+	gchar *id;
+	GType entry_type;
+	GError **error;
+} BatchOperationData;
+
+static void
+batch_operation_data_free (BatchOperationData *data)
+{
+	if (data->entry != NULL)
+		g_object_unref (data->entry);
+	g_free (data->id);
+
+	/* We don't free data->error, as it's owned by the calling code */
+
+	g_slice_free (BatchOperationData, data);
+}
+
+static void
+test_batch_operation_query_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+{
+	BatchOperationData *data = user_data;
+
+	/* Check that the @operation_type and @operation_id matches those stored in @data */
+	g_assert_cmpuint (operation_id, ==, data->op_id);
+	g_assert_cmpuint (operation_type, ==, data->operation_type);
+
+	/* If data->error is set, we're expecting the operation to fail; otherwise, we're expecting it to succeed */
+	if (data->error != NULL) {
+		g_assert (error != NULL);
+		*(data->error) = g_error_copy (error);
+		g_assert (entry == NULL);
+
+		if (data->returned_entry != NULL)
+			*(data->returned_entry) = NULL;
+	} else {
+		g_assert_no_error (error);
+		g_assert (entry != NULL);
+		g_assert (entry != data->entry); /* check that the pointers aren't the same */
+		g_assert (gdata_entry_is_inserted (entry) == TRUE);
+
+		/* Check the ID and type of the returned entry */
+		/* TODO: We can't check this, because the Contacts service is stupid with IDs
+		 * g_assert_cmpstr (gdata_entry_get_id (entry), ==, data->id); */
+		g_assert (G_TYPE_CHECK_INSTANCE_TYPE (entry, data->entry_type));
+
+		/* Check the entries match */
+		if (data->entry != NULL) {
+			g_assert_cmpstr (gdata_entry_get_title (entry), ==, gdata_entry_get_title (data->entry));
+			g_assert_cmpstr (gdata_entry_get_summary (entry), ==, gdata_entry_get_summary (data->entry));
+			g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (data->entry));
+			g_assert_cmpstr (gdata_entry_get_rights (entry), ==, gdata_entry_get_rights (data->entry));
+		}
+
+		/* Copy the returned entry for the calling test code to prod later */
+		if (data->returned_entry != NULL)
+			*(data->returned_entry) = g_object_ref (entry);
+	}
+
+	/* Free the data */
+	batch_operation_data_free (data);
+}
+
+guint
+gdata_test_batch_operation_query (GDataBatchOperation *operation, const gchar *id, GType entry_type, GDataEntry *entry, GDataEntry **returned_entry,
+                                  GError **error)
+{
+	guint op_id;
+	BatchOperationData *data;
+
+	data = g_slice_new (BatchOperationData);
+	data->op_id = 0;
+	data->operation_type = GDATA_BATCH_OPERATION_QUERY;
+	data->entry = g_object_ref (entry);
+	data->returned_entry = returned_entry;
+	data->id = g_strdup (id);
+	data->entry_type = entry_type;
+	data->error = error;
+
+	op_id = gdata_batch_operation_add_query (operation, id, entry_type, test_batch_operation_query_cb, data);
+
+	data->op_id = op_id;
+
+	return op_id;
+}
+
+static void
+test_batch_operation_insertion_update_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error,
+                                          gpointer user_data)
+{
+	BatchOperationData *data = user_data;
+
+	/* Check that the @operation_type and @operation_id matches those stored in @data */
+	g_assert_cmpuint (operation_id, ==, data->op_id);
+	g_assert_cmpuint (operation_type, ==, data->operation_type);
+
+	/* If data->error is set, we're expecting the operation to fail; otherwise, we're expecting it to succeed */
+	if (data->error != NULL) {
+		g_assert (error != NULL);
+		*(data->error) = g_error_copy (error);
+		g_assert (entry == NULL);
+
+		if (data->returned_entry != NULL)
+			*(data->returned_entry) = NULL;
+	} else {
+		g_assert_no_error (error);
+		g_assert (entry != NULL);
+		g_assert (entry != data->entry); /* check that the pointers aren't the same */
+		g_assert (gdata_entry_is_inserted (entry) == TRUE);
+
+		/* Check the entries match */
+		g_assert_cmpstr (gdata_entry_get_title (entry), ==, gdata_entry_get_title (data->entry));
+		g_assert_cmpstr (gdata_entry_get_summary (entry), ==, gdata_entry_get_summary (data->entry));
+		g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (data->entry));
+		g_assert_cmpstr (gdata_entry_get_rights (entry), ==, gdata_entry_get_rights (data->entry));
+
+		/* Copy the inserted entry for the calling test code to prod later */
+		if (data->returned_entry != NULL)
+			*(data->returned_entry) = g_object_ref (entry);
+	}
+
+	/* Free the data */
+	batch_operation_data_free (data);
+}
+
+guint
+gdata_test_batch_operation_insertion (GDataBatchOperation *operation, GDataEntry *entry, GDataEntry **inserted_entry, GError **error)
+{
+	guint op_id;
+	BatchOperationData *data;
+
+	data = g_slice_new (BatchOperationData);
+	data->op_id = 0;
+	data->operation_type = GDATA_BATCH_OPERATION_INSERTION;
+	data->entry = g_object_ref (entry);
+	data->returned_entry = inserted_entry;
+	data->id = NULL;
+	data->entry_type = G_TYPE_INVALID;
+	data->error = error;
+
+	op_id = gdata_batch_operation_add_insertion (operation, entry, test_batch_operation_insertion_update_cb, data);
+
+	data->op_id = op_id;
+
+	return op_id;
+}
+
+guint
+gdata_test_batch_operation_update (GDataBatchOperation *operation, GDataEntry *entry, GDataEntry **updated_entry, GError **error)
+{
+	guint op_id;
+	BatchOperationData *data;
+
+	data = g_slice_new (BatchOperationData);
+	data->op_id = 0;
+	data->operation_type = GDATA_BATCH_OPERATION_UPDATE;
+	data->entry = g_object_ref (entry);
+	data->returned_entry = updated_entry;
+	data->id = NULL;
+	data->entry_type = G_TYPE_INVALID;
+	data->error = error;
+
+	op_id = gdata_batch_operation_add_update (operation, entry, test_batch_operation_insertion_update_cb, data);
+
+	data->op_id = op_id;
+
+	return op_id;
+}
+
+static void
+test_batch_operation_deletion_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+{
+	BatchOperationData *data = user_data;
+
+	/* Check that the @operation_type and @operation_id matches those stored in @data */
+	g_assert_cmpuint (operation_id, ==, data->op_id);
+	g_assert_cmpuint (operation_type, ==, data->operation_type);
+	g_assert (entry == NULL);
+
+	/* If data->error is set, we're expecting the operation to fail; otherwise, we're expecting it to succeed */
+	if (data->error != NULL) {
+		g_assert (error != NULL);
+		*(data->error) = g_error_copy (error);
+	} else {
+		g_assert_no_error (error);
+	}
+
+	/* Free the data */
+	batch_operation_data_free (data);
+}
+
+guint
+gdata_test_batch_operation_deletion (GDataBatchOperation *operation, GDataEntry *entry, GError **error)
+{
+	guint op_id;
+	BatchOperationData *data;
+
+	data = g_slice_new (BatchOperationData);
+	data->op_id = 0;
+	data->operation_type = GDATA_BATCH_OPERATION_DELETION;
+	data->entry = g_object_ref (entry);
+	data->returned_entry = NULL;
+	data->id = NULL;
+	data->entry_type = G_TYPE_INVALID;
+	data->error = error;
+
+	op_id = gdata_batch_operation_add_deletion (operation, entry, test_batch_operation_deletion_cb, data);
+
+	data->op_id = op_id;
+
+	return op_id;
+}

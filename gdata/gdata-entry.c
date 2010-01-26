@@ -68,6 +68,10 @@ struct _GDataEntryPrivate {
 	GList *links; /* GDataLink */
 	GList *authors; /* GDataAuthor */
 	gchar *rights;
+
+	/* Batch processing data */
+	GDataBatchOperationType batch_operation_type;
+	guint batch_id;
 };
 
 enum {
@@ -419,6 +423,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 			return TRUE;
 		}
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/gdata/batch") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "id") == 0 ||
+		    xmlStrcmp (node->name, (xmlChar*) "status") == 0 ||
+		    xmlStrcmp (node->name, (xmlChar*) "operation") == 0) {
+			/* Ignore batch operation elements; they're handled in GDataBatchFeed */
+			return TRUE;
+		}
 	}
 
 	return GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
@@ -496,12 +507,40 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	for (authors = priv->authors; authors != NULL; authors = authors->next)
 		_gdata_parsable_get_xml (GDATA_PARSABLE (authors->data), xml_string, FALSE);
+
+	/* Batch operation data */
+	if (priv->batch_id != 0) {
+		const gchar *batch_op;
+
+		switch (priv->batch_operation_type) {
+			case GDATA_BATCH_OPERATION_QUERY:
+				batch_op = "query";
+				break;
+			case GDATA_BATCH_OPERATION_INSERTION:
+				batch_op = "insert";
+				break;
+			case GDATA_BATCH_OPERATION_UPDATE:
+				batch_op = "update";
+				break;
+			case GDATA_BATCH_OPERATION_DELETION:
+				batch_op = "delete";
+				break;
+			default:
+				g_assert_not_reached ();
+				break;
+		}
+
+		g_string_append_printf (xml_string, "<batch:id>%u</batch:id><batch:operation type='%s'/>", priv->batch_id, batch_op);
+	}
 }
 
 static void
 get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 {
 	g_hash_table_insert (namespaces, (gchar*) "gd", (gchar*) "http://schemas.google.com/g/2005");
+
+	if (GDATA_ENTRY (parsable)->priv->batch_id != 0)
+		g_hash_table_insert (namespaces, (gchar*) "batch", (gchar*) "http://schemas.google.com/gdata/batch");
 }
 
 static gchar *
@@ -640,6 +679,24 @@ gdata_entry_get_updated (GDataEntry *self, GTimeVal *updated)
 	g_return_if_fail (GDATA_IS_ENTRY (self));
 	g_return_if_fail (updated != NULL);
 	*updated = self->priv->updated;
+}
+
+/*
+ * _gdata_entry_set_updated:
+ * @self: a #GDataEntry
+ * @updated: the new updated value
+ *
+ * Sets the value of the #GDataEntry:updated property to @updated.
+ *
+ * Since: 0.6.0
+ */
+void
+_gdata_entry_set_updated (GDataEntry *self, GTimeVal *updated)
+{
+	g_return_if_fail (GDATA_IS_ENTRY (self));
+	g_return_if_fail (updated != NULL);
+
+	self->priv->updated = *updated;
 }
 
 /**
@@ -911,4 +968,23 @@ gdata_entry_set_rights (GDataEntry *self, const gchar *rights)
 	g_free (self->priv->rights);
 	self->priv->rights = g_strdup (rights);
 	g_object_notify (G_OBJECT (self), "rights");
+}
+
+/*
+ * _gdata_entry_set_batch_data:
+ * @self: a #GDataEntry
+ * @id: the batch operation ID
+ * @type: the type of batch operation being performed on the #GDataEntry
+ *
+ * Sets the batch operation data needed when outputting the XML for a #GDataEntry to be put into a batch operation feed.
+ *
+ * Since: 0.6.0
+ */
+void
+_gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type)
+{
+	g_return_if_fail (GDATA_IS_ENTRY (self));
+
+	self->priv->batch_id = id;
+	self->priv->batch_operation_type = type;
 }

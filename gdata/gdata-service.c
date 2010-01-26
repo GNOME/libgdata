@@ -510,6 +510,12 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 			              * and the second is an error message returned by the server. */
 			             _("Error code %u when uploading: %s"), status, response_body);
 			break;
+		case GDATA_OPERATION_BATCH:
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION,
+			             /* Translators: the first parameter is a HTTP status,
+			              * and the second is an error message returned by the server. */
+			             _("Error code %u when running a batch operation: %s"), status, response_body);
+			break;
 		default:
 			/* We should not be called with anything other than the above operation types */
 			g_assert_not_reached ();

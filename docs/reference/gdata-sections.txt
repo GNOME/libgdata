@@ -751,6 +751,7 @@ GDataCategoryPrivate
 <FILE>gdata-link</FILE>
 <TITLE>GDataLink</TITLE>
 GDATA_LINK_ALTERNATE
+GDATA_LINK_BATCH
 GDATA_LINK_EDIT
 GDATA_LINK_EDIT_MEDIA
 GDATA_LINK_ENCLOSURE
@@ -2039,4 +2040,47 @@ GDATA_COMPARABLE_CLASS
 GDATA_COMPARABLE_GET_IFACE
 GDATA_IS_COMPARABLE
 GDATA_TYPE_COMPARABLE
+</SECTION>
+
+<SECTION>
+<FILE>gdata-batch-operation</FILE>
+<TITLE>GDataBatchOperation</TITLE>
+GDataBatchOperation
+GDataBatchOperationClass
+GDataBatchOperationType
+GDataBatchOperationCallback
+gdata_batch_operation_add_query
+gdata_batch_operation_add_insertion
+gdata_batch_operation_add_update
+gdata_batch_operation_add_deletion
+gdata_batch_operation_run
+gdata_batch_operation_run_async
+gdata_batch_operation_run_finish
+gdata_batch_operation_get_service
+gdata_batch_operation_get_feed_uri
+<SUBSECTION Standard>
+GDATA_BATCH_OPERATION
+GDATA_IS_BATCH_OPERATION
+GDATA_TYPE_BATCH_OPERATION
+gdata_batch_operation_get_type
+GDATA_BATCH_OPERATION_GET_CLASS
+GDATA_BATCH_OPERATION_CLASS
+GDATA_IS_BATCH_OPERATION_CLASS
+<SUBSECTION Private>
+GDataBatchOperationPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-batchable</FILE>
+<TITLE>GDataBatchable</TITLE>
+GDataBatchable
+GDataBatchableIface
+gdata_batchable_create_operation
+<SUBSECTION Standard>
+gdata_batchable_get_type
+GDATA_BATCHABLE
+GDATA_BATCHABLE_CLASS
+GDATA_BATCHABLE_GET_IFACE
+GDATA_IS_BATCHABLE
+GDATA_TYPE_BATCHABLE
 </SECTION>

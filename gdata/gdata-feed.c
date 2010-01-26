@@ -50,6 +50,8 @@ static void gdata_feed_get_property (GObject *object, guint property_id, GValue 
 static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
+static void get_xml (GDataParsable *parsable, GString *xml_string);
+static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 static void _gdata_feed_add_category (GDataFeed *self, GDataCategory *category);
 static void _gdata_feed_add_link (GDataFeed *self, GDataLink *link);
@@ -106,6 +108,8 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->post_parse_xml = post_parse_xml;
+	parsable_class->get_xml = get_xml;
+	parsable_class->get_namespaces = get_namespaces;
 	parsable_class->element_name = "feed";
 
 	/**
@@ -540,6 +544,66 @@ post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
 	priv->authors = g_list_reverse (priv->authors);
 
 	return TRUE;
+}
+
+static void
+get_xml (GDataParsable *parsable, GString *xml_string)
+{
+	GDataFeedPrivate *priv = GDATA_FEED (parsable)->priv;
+	GList *entries;
+	gchar *updated;
+
+	/* NOTE: Only the required elements are implemented at the moment */
+	gdata_parser_string_append_escaped (xml_string, "<title type='text'>", priv->title, "</title>");
+	g_string_append_printf (xml_string, "<id>%s</id>", priv->id);
+
+	updated = g_time_val_to_iso8601 (&(priv->updated));
+	g_string_append_printf (xml_string, "<updated>%s</updated>", updated);
+	g_free (updated);
+
+	/* Entries */
+	for (entries = priv->entries; entries != NULL; entries = entries->next)
+		_gdata_parsable_get_xml (GDATA_PARSABLE (entries->data), xml_string, FALSE);
+}
+
+static void
+get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
+{
+	GDataFeedPrivate *priv = GDATA_FEED (parsable)->priv;
+
+	/* Assume that all the entries in the feed have identical namespaces, so we just call get_namespaces() for the first one */
+	if (priv->entries != NULL)
+		GDATA_PARSABLE_GET_CLASS (priv->entries->data)->get_namespaces (GDATA_PARSABLE (priv->entries->data), namespaces);
+}
+
+/*
+ * _gdata_feed_new:
+ * @title: the feed's title
+ * @id: the feed's ID
+ * @updated: when the feed was last updated
+ *
+ * Creates a new #GDataFeed with the bare minimum of data to be valid.
+ *
+ * Return value: a new #GDataFeed
+ *
+ * Since: 0.6.0
+ */
+GDataFeed *
+_gdata_feed_new (const gchar *title, const gchar *id, GTimeVal *updated)
+{
+	GDataFeed *feed;
+
+	g_return_val_if_fail (title != NULL, NULL);
+	g_return_val_if_fail (id != NULL, NULL);
+	g_return_val_if_fail (updated != NULL, NULL);
+
+	feed = g_object_new (GDATA_TYPE_FEED, NULL);
+	feed->priv->title = g_strdup (title);
+	feed->priv->id = g_strdup (id);
+	feed->priv->updated.tv_sec = updated->tv_sec;
+	feed->priv->updated.tv_usec = updated->tv_usec;
+
+	return feed;
 }
 
 GDataFeed *

@@ -63,7 +63,9 @@ IGNORE_HFILES = \
 	gdata-picasaweb-enums.h	\
 	gdata-exif-tags.h	\
 	gdata-georss-where.h	\
-	gdata-buffer.h
+	gdata-buffer.h		\
+	gdata-batch-private.h	\
+	gdata-batch-feed.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png

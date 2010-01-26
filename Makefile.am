@@ -40,7 +40,7 @@ gdata/gdata-enums.h: $(gdata_headers) Makefile
 
 gdata/gdata-enums.c: $(gdata_headers) Makefile gdata/gdata-enums.h
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
-			--fhead "#include \"gdata-service.h\"\n#include \"gdata-parsable.h\"\n#include \"gdata-enums.h\"" \
+			--fhead "#include \"gdata-service.h\"\n#include \"gdata-parsable.h\"\n#include \"gdata-batch-operation.h\"\n#include \"gdata-enums.h\"" \
 			--fprod "\n/* enumerations from \"@filename@\" */" \
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
@@ -156,10 +156,14 @@ gdata_headers = \
 	gdata/gdata-parsable.h		\
 	gdata/gdata-download-stream.h	\
 	gdata/gdata-upload-stream.h	\
-	gdata/gdata-comparable.h
+	gdata/gdata-comparable.h	\
+	gdata/gdata-batch-operation.h	\
+	gdata/gdata-batchable.h
 # The following headers are private, and shouldn't be installed:
 private_headers = \
 	gdata/gdata-private.h		\
+	gdata/gdata-batch-private.h	\
+	gdata/gdata-batch-feed.h	\
 	gdata/gdata-parser.h		\
 	gdata/gdata-buffer.h		\
 	gdata/exif/gdata-exif-tags.h	\
@@ -287,6 +291,9 @@ gdata_libgdata_la_SOURCES = \
 	gdata/gdata-upload-stream.c	\
 	gdata/gdata-buffer.c		\
 	gdata/gdata-comparable.c	\
+	gdata/gdata-batch-operation.c	\
+	gdata/gdata-batchable.c		\
+	gdata/gdata-batch-feed.c	\
 	\
 	gdata/atom/gdata-author.c	\
 	gdata/atom/gdata-category.c	\

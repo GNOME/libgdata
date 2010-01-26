@@ -67,6 +67,7 @@ void _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean
 void _gdata_parsable_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 
 #include "gdata-feed.h"
+GDataFeed *_gdata_feed_new (const gchar *title, const gchar *id, GTimeVal *updated) G_GNUC_WARN_UNUSED_RESULT;
 GDataFeed *_gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,
                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
@@ -74,6 +75,11 @@ void _gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry);
 gpointer _gdata_feed_parse_data_new (GType entry_type, GDataQueryProgressCallback progress_callback, gpointer progress_user_data);
 void _gdata_feed_parse_data_free (gpointer data);
 void _gdata_feed_call_progress_callback (GDataFeed *self, gpointer user_data, GDataEntry *entry);
+
+#include "gdata-entry.h"
+#include "gdata-batch-operation.h"
+void _gdata_entry_set_updated (GDataEntry *self, GTimeVal *updated);
+void _gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type);
 
 #include "gdata/services/documents/gdata-documents-entry.h"
 GFile *_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *download_uri,

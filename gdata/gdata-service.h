@@ -37,6 +37,7 @@ G_BEGIN_DECLS
  * @GDATA_OPERATION_DOWNLOAD: a download of a file
  * @GDATA_OPERATION_UPLOAD: an upload of a file
  * @GDATA_OPERATION_AUTHENTICATION: authentication with the service
+ * @GDATA_OPERATION_BATCH: a batch operation with #GDataBatchOperation
  *
  * Representations of the different operations performed by the library.
  *
@@ -49,7 +50,8 @@ typedef enum {
 	GDATA_OPERATION_DELETION,
 	GDATA_OPERATION_DOWNLOAD,
 	GDATA_OPERATION_UPLOAD,
-	GDATA_OPERATION_AUTHENTICATION
+	GDATA_OPERATION_AUTHENTICATION,
+	GDATA_OPERATION_BATCH
 } GDataOperationType;
 
 /**
@@ -65,6 +67,7 @@ typedef enum {
  * @GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER: A given query parameter was invalid for the query type
  * @GDATA_SERVICE_ERROR_NETWORK_ERROR: The service is unavailable due to local network errors (e.g. no Internet connection)
  * @GDATA_SERVICE_ERROR_PROXY_ERROR: The service is unavailable due to proxy network errors (e.g. proxy unreachable)
+ * @GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION: Generic error when running a batch operation and the whole operation fails
  *
  * Error codes for #GDataService operations.
  **/
@@ -78,7 +81,8 @@ typedef enum {
 	GDATA_SERVICE_ERROR_FORBIDDEN,
 	GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
 	GDATA_SERVICE_ERROR_NETWORK_ERROR,
-	GDATA_SERVICE_ERROR_PROXY_ERROR
+	GDATA_SERVICE_ERROR_PROXY_ERROR,
+	GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION
 } GDataServiceError;
 
 /**
