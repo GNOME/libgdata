@@ -1,10 +1,16 @@
 AC_PREREQ(2.63)
 
-m4_define(gdata_major_version, 0)
-m4_define(gdata_minor_version, 6)
-m4_define(gdata_micro_version, 0)
+# Release version
+m4_define(gdata_version_major, 0)
+m4_define(gdata_version_minor, 6)
+m4_define(gdata_version_minor, 0)
 
-AC_INIT([libgdata],[gdata_major_version.gdata_minor_version.gdata_micro_version],[https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata],
+# API version
+# TODO: This currently isn't used in the library name; once we hit gdata_version_major=1, that should be changed
+m4_define(gdata_api_version_major, 0)
+m4_define(gdata_api_version_minor, 0)
+
+AC_INIT([libgdata],[gdata_version_major.gdata_version_minor.gdata_version_micro],[https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata],
         [libgdata],[http://live.gnome.org/libgdata])
 
 AC_CONFIG_SRCDIR([gdata/gdata.h])
@@ -41,12 +47,14 @@ SOUP_REQS=2.26.1
 GDATA_LT_VERSION=6:0:0
 AC_SUBST(GDATA_LT_VERSION)
 
-GDATA_VERSION_MAJOR=gdata_major_version
-GDATA_VERSION_MINOR=gdata_minor_version
-GDATA_VERSION_MICRO=gdata_micro_version
+GDATA_VERSION_MAJOR=gdata_version_major
+GDATA_VERSION_MINOR=gdata_version_minor
+GDATA_VERSION_MICRO=gdata_version_micro
+GDATA_API_VERSION=gdata_api_version_major.gdata_api_version_minor
 AC_SUBST(GDATA_VERSION_MAJOR)
 AC_SUBST(GDATA_VERSION_MINOR)
 AC_SUBST(GDATA_VERSION_MICRO)
+AC_SUBST(GDATA_API_VERSION)
 
 pkg_modules="glib-2.0 >= $GLIB_REQS libxml-2.0 gthread-2.0 gio-2.0 >= $GIO_REQS libsoup-2.4 >= $SOUP_REQS"
 PKG_CHECK_MODULES(GDATA, [$pkg_modules])

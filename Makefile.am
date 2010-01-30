@@ -361,9 +361,9 @@ EXTRA_DIST += gdata/gdata.symbols
 
 # Introspection
 if HAVE_INTROSPECTION
-gdata/GData-$(GDATA_VERSION_MAJOR).$(GDATA_VERSION_MINOR).gir: Makefile gdata/libgdata.la
+gdata/GData-$(GDATA_API_VERSION).gir: Makefile gdata/libgdata.la
 	$(AM_V_GEN)($(INTROSPECTION_SCANNER)						\
-	--namespace GData --nsversion=$(GDATA_VERSION_MAJOR).$(GDATA_VERSION_MINOR)	\
+	--namespace GData --nsversion=$(GDATA_API_VERSION)				\
 	--c-include="gdata/gdata.h" --include=libxml2-2.0 --include=Soup-2.4		\
 	--library=gdata/libgdata.la --output $@ --pkg libgdata				\
 	-I$(top_srcdir) -I$(top_srcdir)/gdata						\
@@ -371,7 +371,7 @@ gdata/GData-$(GDATA_VERSION_MAJOR).$(GDATA_VERSION_MINOR).gir: Makefile gdata/li
 	$(gdatamediainclude_HEADERS) $(gdatacalendarinclude_HEADERS)			\
 	$(gdatacontactsinclude_HEADERS) $(gdatadocumentsinclude_HEADERS)		\
 	$(gdatapicasawebinclude_HEADERS) $(gdatayoutubeinclude_HEADERS))
-BUILT_GIRSOURCES = gdata/GData-$(GDATA_VERSION_MAJOR).$(GDATA_VERSION_MINOR).gir
+BUILT_GIRSOURCES = gdata/GData-$(GDATA_API_VERSION).gir
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(BUILT_GIRSOURCES)
@@ -380,13 +380,12 @@ typelibsdir = $(libdir)/girepository-1.0/
 typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
 
 %.typelib: %.gir
-	$(AM_V_GEN)($(INTROSPECTION_COMPILER) --includedir=gdata --includedir=. $(INTROSPECTION_COMPILER_ARGS) $< -o $@)
+	$(AM_V_GEN)($(INTROSPECTION_COMPILER) --includedir=$(top_srcdir)/gdata --includedir=. $(INTROSPECTION_COMPILER_ARGS) $< -o $@)
 
 CLEANFILES += \
-	$(BUILT_GIRSOURCES)	\
+	$(gir_DATA)	\
 	$(typelibs_DATA)
 
-EXTRA_DIST += introspection.m4
 DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
 endif
 
