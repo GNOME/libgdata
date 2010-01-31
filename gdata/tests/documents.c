@@ -23,13 +23,11 @@
 #include "gdata.h"
 #include "common.h"
 
-/* TODO: probably a better way to do this; some kind of data associated with the test suite? */
-static GDataDocumentsService *service = NULL;
-
 static void
 test_authentication (void)
 {
 	gboolean retval;
+	GDataDocumentsService *service;
 	GError *error = NULL;
 
 	/* Create a service */
