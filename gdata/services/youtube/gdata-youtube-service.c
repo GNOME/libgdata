@@ -56,8 +56,8 @@ static void gdata_youtube_service_get_property (GObject *object, guint property_
 static void gdata_youtube_service_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static gboolean parse_authentication_response (GDataService *self, guint status, const gchar *response_body, gint length, GError **error);
 static void append_query_headers (GDataService *self, SoupMessage *message);
-static void parse_error_response (GDataService *self, GDataServiceError error_type, guint status, const gchar *reason_phrase,
-				  const gchar *response_body, gint length, GError **error);
+static void parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
+                                  const gchar *response_body, gint length, GError **error);
 
 struct _GDataYouTubeServicePrivate {
 	gchar *youtube_user;
@@ -224,8 +224,8 @@ append_query_headers (GDataService *self, SoupMessage *message)
 }
 
 static void
-parse_error_response (GDataService *self, GDataServiceError error_type, guint status, const gchar *reason_phrase, const gchar *response_body,
-		      gint length, GError **error)
+parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase, const gchar *response_body,
+                      gint length, GError **error)
 {
 	xmlDoc *doc;
 	xmlNode *node;
@@ -346,8 +346,8 @@ parse_error_response (GDataService *self, GDataServiceError error_type, guint st
 
 parent:
 	/* Chain up to the parent class */
-	GDATA_SERVICE_CLASS (gdata_youtube_service_parent_class)->parse_error_response (self, error_type, status, reason_phrase,
-											response_body, length, error);
+	GDATA_SERVICE_CLASS (gdata_youtube_service_parent_class)->parse_error_response (self, operation_type, status, reason_phrase,
+	                                                                                response_body, length, error);
 	return;
 }
 

@@ -121,7 +121,7 @@ gdata_documents_spreadsheet_new (const gchar *id)
  * If @destination_file is a directory, then the file will be downloaded in this directory with the #GDataEntry:title with 
  * the apropriate extension as name.
  *
- * If there is an error getting the document, a %GDATA_SERVICE_ERROR_WITH_QUERY error will be returned.
+ * If there is an error getting the document, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
  * Return value: the document's data, or %NULL; unref with g_object_unref()
  *

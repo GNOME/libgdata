@@ -6,6 +6,7 @@ GDataServiceClass
 GDataServiceError
 GDataAuthenticationError
 GDataParserError
+GDataOperationType
 GDataQueryProgressCallback
 gdata_service_authenticate
 gdata_service_authenticate_async

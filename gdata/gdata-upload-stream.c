@@ -523,8 +523,8 @@ upload_thread (GDataUploadStream *self)
 		/* Error! Store it in the structure, and it'll be returned by the next function in the main thread
 		 * which can give an error response.*/
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (priv->service, GDATA_SERVICE_ERROR_WITH_UPLOAD, status, priv->message->reason_phrase,
-					     priv->message->response_body->data, priv->message->response_body->length, &(priv->response_error));
+		klass->parse_error_response (priv->service, GDATA_OPERATION_UPLOAD, status, priv->message->reason_phrase,
+		                             priv->message->response_body->data, priv->message->response_body->length, &(priv->response_error));
 	}
 
 	/* Signal the main thread that the response is ready (good or bad) */
@@ -564,7 +564,7 @@ create_network_thread (GDataUploadStream *self, GError **error)
  * content type for the file, and should be in the service's list of acceptable content types.
  *
  * As well as the standard GIO errors, calls to the #GOutputStream API on a #GDataUploadStream can also return any relevant specific error from
- * #GDataServiceError, or %GDATA_SERVICE_ERROR_WITH_UPLOAD in the general case.
+ * #GDataServiceError, or %GDATA_SERVICE_ERROR_PROTOCOL_ERROR in the general case.
  *
  * Note that network communication won't begin until the first call to g_output_stream_write() on the #GDataUploadStream.
  *

@@ -1170,7 +1170,7 @@ gdata_contacts_contact_has_photo (GDataContactsContact *self)
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
  * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
  *
- * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_WITH_QUERY error will be returned.
+ * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
  * Return value: the image data, or %NULL; free with g_free()
  *
@@ -1221,8 +1221,8 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	if (status != 200) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (service), GDATA_SERVICE_ERROR_WITH_QUERY, status, message->reason_phrase,
-					     message->response_body->data, message->response_body->length, error);
+		klass->parse_error_response (GDATA_SERVICE (service), GDATA_OPERATION_DOWNLOAD, status, message->reason_phrase,
+		                             message->response_body->data, message->response_body->length, error);
 		g_object_unref (message);
 		return NULL;
 	}
@@ -1257,7 +1257,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
  * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
  *
- * If there is an error setting the photo, a %GDATA_SERVICE_ERROR_WITH_UPDATE error will be returned.
+ * If there is an error setting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
  * Return value: %TRUE on success, %FALSE otherwise
  *
@@ -1320,8 +1320,8 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 	if (status != 200) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (service, GDATA_SERVICE_ERROR_WITH_UPDATE, status, message->reason_phrase, message->response_body->data,
-					     message->response_body->length, error);
+		klass->parse_error_response (service, GDATA_OPERATION_UPLOAD, status, message->reason_phrase, message->response_body->data,
+		                             message->response_body->length, error);
 		g_object_unref (message);
 		return FALSE;
 	}

@@ -582,7 +582,7 @@ notify_content_type_cb (GDataDownloadStream *download_stream, GParamSpec *pspec,
  *
  * If @service isn't authenticated, a %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED is returned.
  *
- * If there is an error downloading the document, a %GDATA_SERVICE_ERROR_WITH_QUERY error will be returned.
+ * If there is an error downloading the document, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
  * If @destination_file is a directory, the file will be downloaded to this directory with the #GDataEntry:title and 
  * the appropriate extension as its filename.

@@ -282,8 +282,8 @@ gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCa
 
 		/* Set an appropriate error */
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (priv->service, GDATA_SERVICE_ERROR_WITH_DOWNLOAD, priv->message->status_code, priv->message->reason_phrase,
-					     NULL, 0, error);
+		klass->parse_error_response (priv->service, GDATA_OPERATION_DOWNLOAD, priv->message->status_code, priv->message->reason_phrase,
+		                             NULL, 0, error);
 		return 0;
 	}
 
@@ -456,7 +456,7 @@ create_network_thread (GDataDownloadStream *self, GError **error)
  * Creates a new #GDataDownloadStream, allowing a file to be downloaded from a GData service using standard #GInputStream API.
  *
  * As well as the standard GIO errors, calls to the #GInputStream API on a #GDataDownloadStream can also return any relevant specific error from
- * #GDataServiceError, or %GDATA_SERVICE_ERROR_WITH_DOWNLOAD in the general case.
+ * #GDataServiceError, or %GDATA_SERVICE_ERROR_PROTOCOL_ERROR in the general case.
  *
  * Return value: a new #GInputStream, or %NULL; unref with g_object_unref()
  *

@@ -630,8 +630,8 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 	if (status != 201) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (self), GDATA_SERVICE_ERROR_WITH_INSERTION, status, message->reason_phrase, message->response_body->data,
-					     message->response_body->length, error);
+		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase,
+		                             message->response_body->data, message->response_body->length, error);
 		g_object_unref (message);
 		return NULL;
 	}
@@ -641,7 +641,7 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 
 	/* Parse the XML; and update the document*/
 	new_document = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (document), message->response_body->data,
-									   message->response_body->length, error));
+	                                                                   message->response_body->length, error));
 	g_object_unref (message);
 
 	return new_document;
@@ -680,7 +680,7 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to move documents."));
+		                     _("You must be authenticated to move documents."));
 		return NULL;
 	}
 
@@ -728,8 +728,8 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 	if (status != 200) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (self), GDATA_SERVICE_ERROR_WITH_INSERTION, status, message->reason_phrase, message->response_body->data,
-					     message->response_body->length, error);
+		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
+		                             message->response_body->length, error);
 		g_object_unref (message);
 		return NULL;
 	}
@@ -739,7 +739,7 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 	/* Google's servers don't return an updated copy of the entry, so we have to query for it again.
 	 * See: http://code.google.com/p/gdata-issues/issues/detail?id=1380 */
 	return gdata_documents_service_query_single_document (self, G_OBJECT_TYPE (document), gdata_documents_entry_get_document_id (document),
-							      cancellable, error);
+	                                                      cancellable, error);
 }
 
 /**
