@@ -1,3 +1,67 @@
+Overview of changes from libgdata 0.5.0 to libgdata 0.6.0
+=========================================================
+
+Major changes:
+* Added feed icon support
+* Added support for querying for user information on the PicasaWeb service
+* Added some code examples to the documentation
+* Ensured UTF-8 is supported correctly everywhere
+* Added GObject introspection support (GData-0.0.gir)
+* Added a download API for PicasaWeb images and thumbnails
+* Added an asynchronous PicasaWeb upload API
+* Reorganised the build system to use non-recursive automake
+* Added gcov support and consequently improved test coverage somewhat
+* Ensured HTTPS requests are used wherever possible, unless the LIBGDATA_FORCE_HTTP environment variable is set
+* Modified memory management to consistently use the GLib memory manager, eliminating 53 calls to g_strdup() on an average test run
+* Consolidated generic API errors to GDATA_SERVICE_ERROR_PROTOCOL_ERROR
+
+API changes:
+* Added gdata_picasaweb_query_new_with_limits
+* Added gdata_feed_get_icon
+* Added GDataPicasaWebUser, gdata_picasaweb_service_get_user
+* Removed gdata_picasaweb_album_get_name, gdata_picasaweb_album_get_description, gdata_picasaweb_album_set_description and corresponding properties
+* Added GDataPicasaWebFeed
+* Removed gdata_youtube_video_get_title, gdata_youtube_video_set_title
+* Added gdata_media_content_download, gdata_media_thumbnail_download
+* Added gdata_picasaweb_service_insert_album
+* Added gdata_picasaweb_service_upload_file_async, gdata_picasaweb_service_upload_file_finish
+* Added gdata_gd_organization_get_location, gdata_gd_organization_set_location,
+  gdata_gd_email_address_get_display_name, gdata_gd_email_address_set_display_name
+* Added GDataOperationType
+* Removed GDATA_SERVICE_ERROR_WITH_*; GDATA_SERVICE_ERROR_PROTOCOL_ERROR is now returned instead
+
+Bugs fixed:
+* Bug 597248 — Add gdata_picasaweb_query_new_with_limits
+* Bug 598746 — gdata_picasaweb_query_set_image_size documentation fix
+* Bug 598910 — Timestamp bug
+* Bug 598912 — Test data was changed by my mucking around with comments
+* Bug 598893 — gdata_picasaweb_album_new doesn't set a valid visibility
+* Bug 599140 — Have albums initialise date to now by default
+* Bug 589858 — Handle gphoto XML elements found in 'GDataFeed'
+* Bug 598913 — Add gdata_picasaweb_service_insert_album()
+* Bug 602156 — GDataUploadStream should close GOutputStream on dispose
+* Bug 598649 — Download API for PicasaWeb images and thumbnails
+* Bug 600262 — Add async PicasaWeb upload API
+* Bug 604313 — Test failures in 0.5.1
+* Bug 601919 — Expand a comment, organise some media tests
+* Bug 598748 — *_download_document prevents non-overwriting saving into directories
+* Bug 607607 — Undefined symbol with introspection
+
+Updated translations:
+* cs (Marek Cernocky, Petr Kovar)
+* de (Mario Blättermann)
+* es (Jorge González)
+* fr (Claude Paroz, Julien Hardelin)
+* gl (Fran Dieguez)
+* hu (Gabor Kelemen)
+* it (Rita Bandiera)
+* ja (Takeshi AIHANA)
+* pt (António Lima)
+* pt_BR (Djavan Fagundes, Og Maciel)
+* sl (Matej Urbančič)
+* sv (Daniel Nylander)
+* zh_CN (Aron Xu)
+
 Overview of changes from libgdata 0.4.0 to libgdata 0.5.0
 =========================================================
 

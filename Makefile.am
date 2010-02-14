@@ -8,10 +8,10 @@ GDATA_MARSHAL_FILES = \
 	gdata/gdata-marshal.c	\
 	gdata/gdata-marshal.h
 
-gdata/gdata-marshal.h: gdata/gdata-marshal.list Makefile
-	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal gdata/gdata-marshal.list --header > $@)
-gdata/gdata-marshal.c: gdata/gdata-marshal.h Makefile
-	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal gdata/gdata-marshal.list --header --body > $@)
+gdata/gdata-marshal.h: $(top_srcdir)/gdata/gdata-marshal.list Makefile
+	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal $(srcdir)/gdata/gdata-marshal.list --header > $@)
+gdata/gdata-marshal.c: $(top_srcdir)/gdata/gdata-marshal.h Makefile
+	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal $(srcdir)/gdata/gdata-marshal.list --header --body > $@)
 
 EXTRA_DIST = gdata/gdata-marshal.list
 CLEANFILES = $(GDATA_MARSHAL_FILES)
@@ -34,7 +34,7 @@ gdata/gdata-enums.h: $(gdata_headers) Makefile
 			--fhead "#ifndef GDATA_ENUMS_H\n#define GDATA_ENUMS_H\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
-			--ftail "G_END_DECLS\n\n#endif /* !GDATA_ENUMS_H */" $(gdata_headers) > $@.tmp \
+			--ftail "G_END_DECLS\n\n#endif /* !GDATA_ENUMS_H */" $(addprefix $(srcdir)/,$(gdata_headers)) > $@.tmp \
 	&& sed "s/g_data/gdata/" $@.tmp > $@ \
 	&& rm -f $@.tmp)
 
@@ -45,7 +45,7 @@ gdata/gdata-enums.c: $(gdata_headers) Makefile gdata/gdata-enums.h
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(gdata_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_headers)) > $@.tmp \
 	&& sed "s/g_data/gdata/" $@.tmp > $@ \
 	&& rm -f $@.tmp)
 
@@ -55,7 +55,7 @@ gdata/media/gdata-media-enums.h: $(gdata_media_headers) Makefile
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* !GDATA_MEDIA_ENUMS_H */" \
-		$(gdata_media_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_media_headers)) > $@.tmp \
 	&& sed "s/g_data/gdata/" $@.tmp > $@.tmp2 \
 	&& sed "s/GDATA_TYPE_DATA/GDATA_TYPE/" $@.tmp2 > $@ \
 	&& rm -f $@.tmp \
@@ -68,7 +68,7 @@ gdata/media/gdata-media-enums.c: $(gdata_media_headers) Makefile gdata/media/gda
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(gdata_media_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_media_headers)) > $@.tmp \
 	&& sed "s/g_data/gdata/" $@.tmp > $@ \
 	&& rm -f $@.tmp)
 
@@ -78,7 +78,7 @@ gdata/services/documents/gdata-documents-enums.h: $(gdata_documents_headers) Mak
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* !GDATA_DOCUMENTS_ENUMS_H */" \
-		$(gdata_documents_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_documents_headers)) > $@.tmp \
 	&& sed "s/g_data/gdata/" $@.tmp > $@ \
 	&& rm -f $@.tmp)
 
@@ -89,7 +89,7 @@ gdata/services/documents/gdata-documents-enums.c: $(gdata_documents_headers) Mak
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(gdata_documents_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_documents_headers)) > $@.tmp \
 	&& sed "s/g_data/gdata/" $@.tmp > $@ \
 	&& rm -f $@.tmp)
 
@@ -99,7 +99,7 @@ gdata/services/picasaweb/gdata-picasaweb-enums.h: $(gdata_picasaweb_headers) Mak
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* !GDATA_PICASAWEB_ENUMS_H */" \
-		$(gdata_picasaweb_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_picasaweb_headers)) > $@.tmp \
 	&& sed "s/g_data_picasa_web/gdata_picasaweb/" $@.tmp > $@.tmp2 \
 	&& sed "s/GDATA_TYPE_DATA_PICASA_WEB/GDATA_TYPE_PICASAWEB/" $@.tmp2 > $@ \
 	&& rm -f $@.tmp \
@@ -112,7 +112,7 @@ gdata/services/picasaweb/gdata-picasaweb-enums.c: $(gdata_picasaweb_headers) Mak
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(gdata_picasaweb_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_picasaweb_headers)) > $@.tmp \
 	&& sed "s/g_data_picasa_web/gdata_picasaweb/" $@.tmp > $@ \
 	&& rm -f $@.tmp)
 
@@ -122,7 +122,7 @@ gdata/services/youtube/gdata-youtube-enums.h: $(gdata_youtube_headers) Makefile
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* !GDATA_YOUTUBE_ENUMS_H */" \
-		$(gdata_youtube_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_youtube_headers)) > $@.tmp \
 	&& sed "s/g_data_you_tube/gdata_youtube/" $@.tmp > $@.tmp2 \
 	&& sed "s/GDATA_TYPE_DATA_YOU_TUBE/GDATA_TYPE_YOUTUBE/" $@.tmp2 > $@ \
 	&& rm -f $@.tmp \
@@ -135,7 +135,7 @@ gdata/services/youtube/gdata-youtube-enums.c: $(gdata_youtube_headers) Makefile 
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(gdata_youtube_headers) > $@.tmp \
+		$(addprefix $(srcdir)/,$(gdata_youtube_headers)) > $@.tmp \
 	&& sed "s/g_data_you_tube/gdata_youtube/" $@.tmp > $@ \
 	&& rm -f $@.tmp)
 
@@ -157,11 +157,12 @@ gdata_headers = \
 	gdata/gdata-download-stream.h	\
 	gdata/gdata-upload-stream.h
 # The following headers are private, and shouldn't be installed:
-#	gdata/gdata-private.h		\
-#	gdata/gdata-parser.h		\
-#	gdata/gdata-buffer.h		\
-#	gdata/exif/gdata-exif-tags.h	\
-#	gdata/georss/gdata-georss-where.h
+private_headers = \
+	gdata/gdata-private.h		\
+	gdata/gdata-parser.h		\
+	gdata/gdata-buffer.h		\
+	gdata/exif/gdata-exif-tags.h	\
+	gdata/georss/gdata-georss-where.h
 gdatainclude_HEADERS = \
 	$(gdata_headers)	\
 	gdata/gdata-enums.h	\
@@ -193,8 +194,7 @@ gdata_media_headers = \
 	gdata/media/gdata-media-content.h	\
 	gdata/media/gdata-media-credit.h	\
 	gdata/media/gdata-media-thumbnail.h
-# The following headers are private, and shouldn't be installed:
-#	gdata/media/gdata-media-group.h
+private_headers += gdata/media/gdata-media-group.h
 gdatamediainclude_HEADERS = \
 	$(gdata_media_headers)		\
 	gdata/media/gdata-media-enums.h
@@ -247,9 +247,9 @@ gdata_youtube_headers = \
 	gdata/services/youtube/gdata-youtube-credit.h	\
 	gdata/services/youtube/gdata-youtube-query.h	\
 	gdata/services/youtube/gdata-youtube-state.h
-# The following headers are private, and shouldn't be installed:
-#	gdata/services/youtube/gdata-youtube-group.h	\
-#	gdata/services/youtube/gdata-youtube-control.h
+private_headers += \
+	gdata/services/youtube/gdata-youtube-group.h	\
+	gdata/services/youtube/gdata-youtube-control.h
 gdatayoutubeinclude_HEADERS = \
 	$(gdata_youtube_headers)			\
 	gdata/services/youtube/gdata-youtube-enums.h
@@ -257,6 +257,7 @@ gdatayoutubeinclude_HEADERS = \
 gdata_libgdata_la_SOURCES = \
 	$(GDATA_MARSHAL_FILES)		\
 	$(GDATA_ENUM_FILES)		\
+	$(private_headers)		\
 	gdata/gdata-entry.c		\
 	gdata/gdata-feed.c		\
 	gdata/gdata-service.c		\
@@ -331,9 +332,14 @@ gdata_libgdata_la_SOURCES = \
 	gdata/services/youtube/gdata-youtube-state.c		\
 	gdata/services/youtube/gdata-youtube-control.c
 
+# All but the first two -I flags here are to cope with compiling the enum files in a srcdir!=builddir environment
 gdata_libgdata_la_CPPFLAGS = \
 	-I$(top_srcdir)			\
 	-I$(top_srcdir)/gdata		\
+	-I$(top_srcdir)/gdata/media	\
+	-I$(top_srcdir)/gdata/services/documents	\
+	-I$(top_srcdir)/gdata/services/picasaweb	\
+	-I$(top_srcdir)/gdata/services/youtube		\
 	-DG_LOG_DOMAIN=\"libgdata\"	\
 	$(DISABLE_DEPRECATED)		\
 	$(AM_CPPFLAGS)
@@ -353,7 +359,7 @@ gdata_libgdata_la_LIBADD = \
 
 gdata_libgdata_la_LDFLAGS = \
 	-version-info $(GDATA_LT_VERSION)	\
-	-export-symbols gdata/gdata.symbols	\
+	-export-symbols $(srcdir)/gdata/gdata.symbols	\
 	-no-undefined				\
 	$(AM_LDFLAGS)
 
@@ -367,10 +373,11 @@ gdata/GData-$(GDATA_API_VERSION).gir: Makefile gdata/libgdata.la
 	--c-include="gdata/gdata.h" --include=libxml2-2.0 --include=Soup-2.4		\
 	--library=gdata/libgdata.la --output $@ --pkg libgdata				\
 	-I$(top_srcdir) -I$(top_srcdir)/gdata						\
-	$(gdatainclude_HEADERS) $(gdataatominclude_HEADERS) $(gdatagdinclude_HEADERS)	\
-	$(gdatamediainclude_HEADERS) $(gdatacalendarinclude_HEADERS)			\
-	$(gdatacontactsinclude_HEADERS) $(gdatadocumentsinclude_HEADERS)		\
-	$(gdatapicasawebinclude_HEADERS) $(gdatayoutubeinclude_HEADERS))
+	$(addprefix $(srcdir)/,$(gdatainclude_HEADERS) $(gdataatominclude_HEADERS)	\
+	$(gdatagdinclude_HEADERS) $(gdatamediainclude_HEADERS)				\
+	$(gdatacalendarinclude_HEADERS) $(gdatacontactsinclude_HEADERS)			\
+	$(gdatadocumentsinclude_HEADERS) $(gdatapicasawebinclude_HEADERS)		\
+	$(gdatayoutubeinclude_HEADERS)))
 BUILT_GIRSOURCES = gdata/GData-$(GDATA_API_VERSION).gir
 
 girdir = $(datadir)/gir-1.0
