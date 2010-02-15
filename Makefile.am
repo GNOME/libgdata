@@ -371,7 +371,7 @@ gdata/GData-$(GDATA_API_VERSION).gir: Makefile gdata/libgdata.la
 	$(AM_V_GEN)($(INTROSPECTION_SCANNER)						\
 	--namespace GData --nsversion=$(GDATA_API_VERSION)				\
 	--c-include="gdata/gdata.h" --include=libxml2-2.0 --include=Soup-2.4		\
-	--library=gdata/libgdata.la --output $@ --pkg libgdata				\
+	--library=gdata/libgdata.la --output $@						\
 	-I$(top_srcdir) -I$(top_srcdir)/gdata						\
 	$(addprefix $(srcdir)/,$(gdatainclude_HEADERS) $(gdataatominclude_HEADERS)	\
 	$(gdatagdinclude_HEADERS) $(gdatamediainclude_HEADERS)				\
