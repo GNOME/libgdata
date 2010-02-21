@@ -1,3 +1,15 @@
+Overview of changes from libgdata 0.6.1 to libgdata 0.6.2
+=========================================================
+
+Major changes:
+* Fixed introspection build for machines without a system-wide libtool
+
+Bugs fixed:
+* Bug 610273 — Fails to build without a system-wide libtool
+
+Updated translations:
+* zh_CN (Aron Xu)
+
 Overview of changes from libgdata 0.6.0 to libgdata 0.6.1
 =========================================================
 
