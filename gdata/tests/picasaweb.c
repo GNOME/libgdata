@@ -1292,10 +1292,7 @@ main (int argc, char *argv[])
 	GDataService *service;
 	gint retval;
 
-	g_type_init ();
-	g_thread_init (NULL);
-	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
+	gdata_test_init (&argc, &argv);
 
 	service = GDATA_SERVICE (gdata_picasaweb_service_new (CLIENT_ID));
 	gdata_service_authenticate (service, PW_USERNAME, PASSWORD, NULL, NULL);

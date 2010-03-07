@@ -67,6 +67,8 @@ static void real_append_query_headers (GDataService *self, SoupMessage *message)
 static void real_parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
                                        const gchar *response_body, gint length, GError **error);
 static void notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
+static void debug_handler (const char *log_domain, GLogLevelFlags log_level, const char *message, gpointer user_data);
+static void soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char direction, const char *data, gpointer user_data);
 
 struct _GDataServicePrivate {
 	SoupSession *session;
@@ -204,6 +206,33 @@ gdata_service_init (GDataService *self)
 #ifdef HAVE_GNOME
 	soup_session_add_feature_by_type (self->priv->session, SOUP_TYPE_GNOME_FEATURES_2_26);
 #endif /* HAVE_GNOME */
+
+	/* Debug log handling */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, (GLogFunc) debug_handler, self);
+
+	/* Log all libsoup traffic if debugging's turned on */
+	if (_gdata_service_get_log_level () > GDATA_LOG_MESSAGES) {
+		SoupLoggerLogLevel level;
+		SoupLogger *logger;
+
+		switch (_gdata_service_get_log_level ()) {
+			case GDATA_LOG_FULL:
+				level = SOUP_LOGGER_LOG_BODY;
+				break;
+			case GDATA_LOG_HEADERS:
+				level = SOUP_LOGGER_LOG_HEADERS;
+				break;
+			case GDATA_LOG_MESSAGES:
+			case GDATA_LOG_NONE:
+			default:
+				g_assert_not_reached ();
+		}
+
+		logger = soup_logger_new (level, -1);
+		soup_logger_set_printer (logger, (SoupLoggerPrinter) soup_log_printer, self, NULL);
+
+		soup_session_add_feature (self->priv->session, SOUP_SESSION_FEATURE (logger));
+	}
 
 	/* Proxy the SoupSession's proxy-uri property */
 	g_signal_connect (self->priv->session, "notify::proxy-uri", (GCallback) notify_proxy_uri_cb, self);
@@ -1762,4 +1791,52 @@ _gdata_service_get_scheme (void)
 	if (force_http)
 		return "http";
 	return "https";
+}
+
+/*
+ * debug_handler:
+ *
+ * GLib debug message handler, which is passed all messages from g_debug() calls, and decides whether to print them.
+ */
+static void
+debug_handler (const char *log_domain, GLogLevelFlags log_level, const char *message, gpointer user_data)
+{
+	if (_gdata_service_get_log_level () != GDATA_LOG_NONE)
+		g_log_default_handler (log_domain, log_level, message, NULL);
+}
+
+/*
+ * soup_log_printer:
+ *
+ * Log printer for the libsoup logging functionality, which just marshals all soup log output to the standard GLib logging framework
+ * (and thus to debug_handler(), above).
+ */
+static void
+soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char direction, const char *data, gpointer user_data)
+{
+	g_debug ("%c %s", direction, data);
+}
+
+/**
+ * _gdata_service_get_log_level:
+ *
+ * Returns the logging level for the library, currently set by an environment variable.
+ *
+ * Return value: the log level
+ *
+ * Since: 0.7.0
+ **/
+GDataLogLevel
+_gdata_service_get_log_level (void)
+{
+	static int level = -1;
+
+	if (level < 0) {
+		const gchar *envvar = g_getenv ("LIBGDATA_DEBUG");
+		if (envvar != NULL)
+			level = atoi (envvar);
+		level = MIN (MAX (level, 0), GDATA_LOG_FULL);
+	}
+
+	return level;
 }

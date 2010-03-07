@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<refentry id="gdata-running">
+	<refmeta>
+		<refentrytitle role="top_of_page" id="gdata-overview.top_of_page">Running GData Applications</refentrytitle>
+		<manvolnum>3</manvolnum>
+		<refmiscinfo>GDATA Library</refmiscinfo>
+	</refmeta>
+	<refnamediv>
+		<refname>Running GData Applications</refname>
+		<refpurpose>running and debugging GData applications</refpurpose>
+	</refnamediv>
+
+	<refsect1>
+		<title>Running and Debugging GData Applications</title>
+
+		<refsect2>
+			<title>Environment variables</title>
+			<para>libgdata makes use of a few environment variables which affect how it runs, mainly with respect to debugging.</para>
+
+			<formalpara id="LIBGDATA_FORCE_HTTP">
+				<title><envar>LIBGDATA_FORCE_HTTP</envar></title>
+				<para>If this environment variable is defined, libgdata will force the use of HTTP for requests which would otherwise
+					normally use HTTPS. This allows the network traffic to be debugged more easily.</para>
+			</formalpara>
+
+			<formalpara id="LIBGDATA_DEBUG">
+				<title><envar>LIBGDATA_DEBUG</envar></title>
+				<para>If this environment variable is set to one of the following values, libgdata will give debug output
+					(at various levels). If it's unset, no debug output will be produced.
+					<variablelist>
+						<varlistentry>
+							<term>0</term>
+							<listitem><para>Output no debug messages or network logs.</para></listitem>
+						</varlistentry>
+						<varlistentry>
+							<term>1</term>
+							<listitem><para>Output debug messages, but not network logs.</para></listitem>
+						</varlistentry>
+						<varlistentry>
+							<term>2</term>
+							<listitem><para>Output debug messages and network traffic headers.</para></listitem>
+						</varlistentry>
+						<varlistentry>
+							<term>3</term>
+							<listitem><para>Output debug messages and full network traffic logs.</para></listitem>
+						</varlistentry>
+					</variablelist>
+				</para>
+			</formalpara>
+		</refsect2>
+	</refsect1>
+</refentry>

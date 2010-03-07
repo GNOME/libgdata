@@ -14,6 +14,7 @@
 	<part>
 		<title>GData Overview</title>
 		<xi:include href="gdata-overview.xml"/>
+		<xi:include href="gdata-running.xml"/>
 		<chapter>
 			<title>Object Hierarchy</title>
 			<xi:include href="xml/tree_index.sgml"/>

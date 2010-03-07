@@ -5,6 +5,7 @@ INCLUDES = \
 	-I$(top_srcdir)/gdata				\
 	$(GDK_CFLAGS)					\
 	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\""\
+	-DG_LOG_DOMAIN=\"libgdata\"			\
 	$(DISABLE_DEPRECATED)				\
 	$(WARN_CFLAGS)					\
 	$(GDATA_CFLAGS)
@@ -16,7 +17,9 @@ LIBS = \
 
 noinst_PROGRAMS = $(TEST_PROGS)
 
-TEST_SRCS = common.h
+TEST_SRCS = \
+	common.c	\
+	common.h
 
 TEST_PROGS			+= general
 general_SOURCES			 = general.c $(TEST_SRCS)

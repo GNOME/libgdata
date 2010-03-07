@@ -13,13 +13,13 @@ libgdata's API is currently unstable and is likely to change wildly.
 Dependencies
 ============
 
-* glib-2.0 >= 2.19.0
-* libxml-2.0
-* gio-2.0 >= 2.17.3
-* libsoup-2.4 >= 2.26.1
+ * glib-2.0 >= 2.19.0
+ * libxml-2.0
+ * gio-2.0 >= 2.17.3
+ * libsoup-2.4 >= 2.26.1
 
 If compiling with --enable-gnome (for GNOME support):
-* libsoup-gnome-2.4
+ * libsoup-gnome-2.4
 
 Environment variables
 =====================
@@ -27,6 +27,14 @@ Environment variables
 If the environment variable LIBGDATA_FORCE_HTTP is defined, libgdata will
 force the use of HTTP for requests which would otherwise normally use
 HTTPS. This allows the network traffic to be debugged more easily.
+
+If the environment variable LIGDATA_DEBUG is set to one of the following
+values, libgdata will give debug output (at various levels):
+ 0: Output no debug messages or network logs
+ 1: Output debug messages, but not network logs
+ 2: Output debug messages and network traffic headers
+ 3: Output debug messages and full network traffic logs
+If LIBGDATA_DEBUG is unset, no debug output will be produced.
 
 Licensing
 =========

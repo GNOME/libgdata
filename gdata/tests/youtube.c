@@ -653,10 +653,7 @@ main (int argc, char *argv[])
 	gint retval;
 	GDataService *service;
 
-	g_type_init ();
-	g_thread_init (NULL);
-	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
+	gdata_test_init (&argc, &argv);
 
 	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
 	gdata_service_authenticate (service, YT_USERNAME, YT_PASSWORD, NULL, NULL);

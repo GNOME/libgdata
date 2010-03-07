@@ -21,6 +21,7 @@
 #include <locale.h>
 
 #include "gdata.h"
+#include "common.h"
 
 static void
 test_entry_get_xml (void)
@@ -2219,9 +2220,7 @@ test_media_thumbnail (void)
 int
 main (int argc, char *argv[])
 {
-	g_type_init ();
-	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
+	gdata_test_init (&argc, &argv);
 
 	g_test_add_func ("/entry/get_xml", test_entry_get_xml);
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);

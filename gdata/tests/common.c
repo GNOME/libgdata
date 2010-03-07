@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,19 +18,19 @@
  */
 
 #include <glib.h>
+#include <glib-object.h>
+#include <stdio.h>
 
-#ifndef GDATA_TEST_COMMON_H
-#define GDATA_TEST_COMMON_H
+#include "common.h"
 
-G_BEGIN_DECLS
+void
+gdata_test_init (int *argc, char ***argv)
+{
+	g_type_init ();
+	g_thread_init (NULL);
+	g_test_init (argc, argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
 
-#define CLIENT_ID "ytapi-GNOME-libgdata-444fubtt-0"
-#define USERNAME "libgdata.test@gmail.com"
-#define DOCUMENTS_USERNAME "libgdata.documents@gmail.com"
-#define PASSWORD "gdata-libgdata"
-
-void gdata_test_init (int *argc, char ***argv);
-
-G_END_DECLS
-
-#endif /* !GDATA_TEST_COMMON_H */
+	/* Enable full debugging */
+	g_setenv ("LIBGDATA_DEBUG", "3", FALSE);
+}

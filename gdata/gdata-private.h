@@ -28,6 +28,22 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDataLogLevel:
+ * @GDATA_LOG_NONE: Output no debug messages or network logs
+ * @GDATA_LOG_MESSAGES: Output debug messages, but not network logs
+ * @GDATA_LOG_HEADERS: Output debug messages and network traffic headers
+ * @GDATA_LOG_FULL: Output debug messages and full network traffic logs
+ *
+ * Logging level.
+ **/
+typedef enum {
+	GDATA_LOG_NONE = 0,
+	GDATA_LOG_MESSAGES = 1,
+	GDATA_LOG_HEADERS = 2,
+	GDATA_LOG_FULL = 3
+} GDataLogLevel;
+
 #include "gdata-service.h"
 SoupSession *_gdata_service_get_session (GDataService *self);
 void _gdata_service_set_authenticated (GDataService *self, gboolean authenticated);
@@ -37,8 +53,8 @@ SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GD
 void _gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type, GCancellable *cancellable,
 				 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 				 GAsyncReadyCallback callback, gpointer user_data, GSimpleAsyncThreadFunc query_thread);
-
 const gchar *_gdata_service_get_scheme (void);
+GDataLogLevel _gdata_service_get_log_level (void);
 
 #include "gdata-query.h"
 void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
