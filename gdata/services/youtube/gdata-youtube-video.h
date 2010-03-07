@@ -47,6 +47,47 @@ typedef enum {
 	GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN
 } GDataYouTubeAspectRatio;
 
+/**
+ * GDataYouTubeAction:
+ * @GDATA_YOUTUBE_ACTION_RATE: rate the video
+ * @GDATA_YOUTUBE_ACTION_COMMENT: comment on the video
+ * @GDATA_YOUTUBE_ACTION_COMMENT_VOTE: rate other users' comments on the video
+ * @GDATA_YOUTUBE_ACTION_VIDEO_RESPOND: add a video response to the video
+ * @GDATA_YOUTUBE_ACTION_EMBED: embed the video on third-party websites
+ * @GDATA_YOUTUBE_ACTION_SYNDICATE: YouTube can show the video on mobile phones and televisions
+ *
+ * Access-controllable actions which can be performed on a #GDataYouTubeVideo. The permissions for each action
+ * can be set using gdata_youtube_video_set_access_control().
+ *
+ * Since: 0.7.0
+ **/
+typedef enum {
+	GDATA_YOUTUBE_ACTION_RATE,
+	GDATA_YOUTUBE_ACTION_COMMENT,
+	GDATA_YOUTUBE_ACTION_COMMENT_VOTE,
+	GDATA_YOUTUBE_ACTION_VIDEO_RESPOND,
+	GDATA_YOUTUBE_ACTION_EMBED,
+	GDATA_YOUTUBE_ACTION_SYNDICATE
+} GDataYouTubeAction;
+
+/**
+ * GDataYouTubePermission:
+ * @GDATA_YOUTUBE_PERMISSION_ALLOWED: the action is allowed for everyone
+ * @GDATA_YOUTUBE_PERMISSION_DENIED: the action is denied for everyone
+ * @GDATA_YOUTUBE_PERMISSION_MODERATED: the action is moderated by the video owner
+ *
+ * Permissions for #GDataYouTubeAction<!-- -->s which can be set on a #GDataYouTubeVideo using gdata_youtube_video_set_access_control().
+ *
+ * The only actions which can have the %GDATA_YOUTUBE_PERMISSION_MODERATED permission are %GDATA_YOUTUBE_ACTION_RATE and %GDATA_YOUTUBE_ACTION_COMMENT.
+ *
+ * Since: 0.7.0
+ **/
+typedef enum {
+	GDATA_YOUTUBE_PERMISSION_ALLOWED,
+	GDATA_YOUTUBE_PERMISSION_DENIED,
+	GDATA_YOUTUBE_PERMISSION_MODERATED
+} GDataYouTubePermission;
+
 #define GDATA_TYPE_YOUTUBE_VIDEO		(gdata_youtube_video_get_type ())
 #define GDATA_YOUTUBE_VIDEO(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideo))
 #define GDATA_YOUTUBE_VIDEO_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoClass))
@@ -84,8 +125,8 @@ guint gdata_youtube_video_get_view_count (GDataYouTubeVideo *self);
 guint gdata_youtube_video_get_favorite_count (GDataYouTubeVideo *self);
 const gchar *gdata_youtube_video_get_location (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_location (GDataYouTubeVideo *self, const gchar *location);
-gboolean gdata_youtube_video_get_no_embed (GDataYouTubeVideo *self);
-void gdata_youtube_video_set_no_embed (GDataYouTubeVideo *self, gboolean no_embed);
+GDataYouTubePermission gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, GDataYouTubeAction action);
+void gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, GDataYouTubeAction action, GDataYouTubePermission permission);
 void gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max, guint *count, gdouble *average);
 const gchar *gdata_youtube_video_get_keywords (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar *keywords);

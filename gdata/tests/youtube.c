@@ -450,6 +450,98 @@ test_parsing_yt_recorded (gconstpointer service)
 	g_object_unref (video);
 }
 
+static void
+test_parsing_yt_access_control (gconstpointer service)
+{
+	GDataYouTubeVideo *video;
+	gchar *xml;
+	GError *error = NULL;
+
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+			"xmlns:media='http://search.yahoo.com/mrss/' "
+			"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+			"xmlns:gd='http://schemas.google.com/g/2005' "
+			"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
+			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
+			"<published>2006-05-16T14:06:37.000Z</published>"
+			"<updated>2009-03-23T12:46:58.000Z</updated>"
+			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
+			"<title>Judas Priest - Painkiller</title>"
+			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.youtube.com/watch?v=JAagedeKdcQ'/>"
+			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo'/>"
+			"<author>"
+				"<name>eluves</name>"
+				"<uri>http://gdata.youtube.com/feeds/api/users/eluves</uri>"
+			"</author>"
+			"<media:group>"
+				"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
+				"<media:credit role='uploader' scheme='urn:youtube'>eluves</media:credit>"
+				"<media:category label='Music' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Music</media:category>"
+			"</media:group>"
+			"<yt:accessControl action='rate' permission='allowed'/>"
+			"<yt:accessControl action='comment' permission='moderated'/>"
+			"<yt:accessControl action='commentVote' permission='denied'/>"
+			"<yt:accessControl action='videoRespond' permission='allowed'/>"
+			"<yt:accessControl action='syndicate' permission='denied'/>"
+			"<yt:accessControl action='random' permission='moderated'/>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
+	g_clear_error (&error);
+
+	/* Test the access controls */
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_RATE), ==, GDATA_YOUTUBE_PERMISSION_ALLOWED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_COMMENT), ==, GDATA_YOUTUBE_PERMISSION_MODERATED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_COMMENT_VOTE), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_VIDEO_RESPOND), ==, GDATA_YOUTUBE_PERMISSION_ALLOWED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_EMBED), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_SYNDICATE), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
+
+	/* Update some of them and see if the XML's written out OK */
+	gdata_youtube_video_set_access_control (video, GDATA_YOUTUBE_ACTION_RATE, GDATA_YOUTUBE_PERMISSION_MODERATED);
+	gdata_youtube_video_set_access_control (video, GDATA_YOUTUBE_ACTION_EMBED, GDATA_YOUTUBE_PERMISSION_DENIED);
+
+	/* Check the XML */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
+	g_assert_cmpstr (xml, ==,
+			 "<entry xmlns='http://www.w3.org/2005/Atom' "
+				"xmlns:media='http://search.yahoo.com/mrss/' "
+				"xmlns:gd='http://schemas.google.com/g/2005' "
+				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+				"xmlns:app='http://www.w3.org/2007/app' "
+				"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
+				"<title type='text'>Judas Priest - Painkiller</title>"
+				"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
+				"<updated>2009-03-23T12:46:58Z</updated>"
+				"<published>2006-05-16T14:06:37Z</published>"
+				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<link href='http://www.youtube.com/watch?v=JAagedeKdcQ' rel='http://www.iana.org/assignments/relation/alternate' type='text/html'/>"
+				"<link href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
+				"<author>"
+					"<name>eluves</name>"
+					"<uri>http://gdata.youtube.com/feeds/api/users/eluves</uri>"
+				"</author>"
+				"<media:group>"
+					"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
+					"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
+				"</media:group>"
+				"<yt:accessControl action='embed' permission='denied'/>"
+				"<yt:accessControl action='random' permission='moderated'/>"
+				"<yt:accessControl action='commentVote' permission='denied'/>"
+				"<yt:accessControl action='rate' permission='moderated'/>"
+				"<yt:accessControl action='comment' permission='moderated'/>"
+				"<yt:accessControl action='syndicate' permission='denied'/>"
+				"<yt:accessControl action='videoRespond' permission='allowed'/>"
+				"<app:control>"
+					"<app:draft>no</app:draft>"
+				"</app:control>"
+			 "</entry>");
+	g_free (xml);
+
+	g_object_unref (video);
+}
+
 /*static void
 test_parsing_comments_feed_link (void)
 {
@@ -672,6 +764,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/youtube/parsing/app:control", service, test_parsing_app_control);
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
 	g_test_add_data_func ("/youtube/parsing/yt:recorded", service, test_parsing_yt_recorded);
+	g_test_add_data_func ("/youtube/parsing/yt:accessControl", service, test_parsing_yt_access_control);
 	g_test_add_data_func ("/youtube/query/uri", service, test_query_uri);
 	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 	if (g_test_slow () == TRUE)

@@ -92,7 +92,7 @@ struct _GDataYouTubeVideoPrivate {
 	guint view_count;
 	guint favorite_count;
 	gchar *location;
-	gboolean no_embed;
+	GHashTable *access_controls;
 
 	/* gd:rating attributes */
 	struct {
@@ -114,7 +114,6 @@ enum {
 	PROP_VIEW_COUNT = 1,
 	PROP_FAVORITE_COUNT,
 	PROP_LOCATION,
-	PROP_NO_EMBED,
 	PROP_MIN_RATING,
 	PROP_MAX_RATING,
 	PROP_RATING_COUNT,
@@ -195,20 +194,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 				g_param_spec_string ("location",
 					"Location", "Descriptive text about the location where the video was taken.",
 					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataYouTubeVideo:no-embed:
-	 *
-	 * Specifies whether the video may not be embedded on other websites.
-	 *
-	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:noembed">online documentation</ulink>.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_NO_EMBED,
-				g_param_spec_boolean ("no-embed",
-					"No embed?", "Specifies whether the video may not be embedded on other websites.",
-					FALSE,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -469,6 +454,7 @@ static void
 gdata_youtube_video_init (GDataYouTubeVideo *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoPrivate);
+	self->priv->access_controls = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 
 	/* The video's title is duplicated between atom:title and media:group/media:title, so listen for change notifications on atom:title
 	 * and propagate them to media:group/media:title accordingly. Since the media group isn't publically accessible, we don't need to
@@ -499,6 +485,7 @@ gdata_youtube_video_finalize (GObject *object)
 	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (object)->priv;
 
 	g_free (priv->location);
+	g_hash_table_destroy (priv->access_controls);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_video_parent_class)->finalize (object);
@@ -518,9 +505,6 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 			break;
 		case PROP_LOCATION:
 			g_value_set_string (value, priv->location);
-			break;
-		case PROP_NO_EMBED:
-			g_value_set_boolean (value, priv->no_embed);
 			break;
 		case PROP_MIN_RATING:
 			g_value_set_uint (value, priv->rating.min);
@@ -590,9 +574,6 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 	switch (property_id) {
 		case PROP_LOCATION:
 			gdata_youtube_video_set_location (self, g_value_get_string (value));
-			break;
-		case PROP_NO_EMBED:
-			gdata_youtube_video_set_no_embed (self, g_value_get_boolean (value));
 			break;
 		case PROP_KEYWORDS:
 			gdata_youtube_video_set_keywords (self, g_value_get_string (value));
@@ -741,7 +722,37 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		self->priv->location = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
 		/* yt:noembed */
-		gdata_youtube_video_set_no_embed (self, TRUE);
+		/* Ignore this now; it's been superceded by yt:accessControl.
+		   See http://apiblog.youtube.com/2010/02/extended-access-controls-available-via.html */
+	} else if (xmlStrcmp (node->name, (xmlChar*) "accessControl") == 0) {
+		/* yt:accessControl */
+		xmlChar *action, *permission;
+		GDataYouTubePermission permission_enum;
+
+		action = xmlGetProp (node, (xmlChar*) "action");
+		if (action == NULL)
+			return gdata_parser_error_required_property_missing (node, "action", error);
+		permission = xmlGetProp (node, (xmlChar*) "permission");
+		if (permission == NULL) {
+			xmlFree (action);
+			return gdata_parser_error_required_property_missing (node, "permission", error);
+		}
+
+		/* Work out what the permission is */
+		if (xmlStrcmp (permission, (xmlChar*) "allowed") == 0) {
+			permission_enum = GDATA_YOUTUBE_PERMISSION_ALLOWED;
+		} else if (xmlStrcmp (permission, (xmlChar*) "denied") == 0) {
+			permission_enum = GDATA_YOUTUBE_PERMISSION_DENIED;
+		} else if (xmlStrcmp (permission, (xmlChar*) "moderated") == 0) {
+			permission_enum = GDATA_YOUTUBE_PERMISSION_MODERATED;
+		} else {
+			xmlFree (action);
+			xmlFree (permission);
+			return gdata_parser_error_unknown_property_value (node, "permission", (gchar*) permission, error);
+		}
+
+		/* Store the access control */
+		g_hash_table_insert (self->priv->access_controls, (gchar*) action, GINT_TO_POINTER (permission_enum));
 	} else if (xmlStrcmp (node->name, (xmlChar*) "recorded") == 0) {
 		/* yt:recorded */
 		xmlChar *recorded;
@@ -793,6 +804,29 @@ post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
 }
 
 static void
+access_control_cb (const gchar *action, gpointer value, GString *xml_string)
+{
+	GDataYouTubePermission permission = GPOINTER_TO_INT (value);
+	const gchar *permission_string;
+
+	switch (permission) {
+		case GDATA_YOUTUBE_PERMISSION_ALLOWED:
+			permission_string = "allowed";
+			break;
+		case GDATA_YOUTUBE_PERMISSION_DENIED:
+			permission_string = "denied";
+			break;
+		case GDATA_YOUTUBE_PERMISSION_MODERATED:
+			permission_string = "moderated";
+			break;
+		default:
+			g_assert_not_reached ();
+	}
+
+	g_string_append_printf (xml_string, "<yt:accessControl action='%s' permission='%s'/>", action, permission_string);
+}
+
+static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (parsable)->priv;
@@ -812,8 +846,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_free (recorded);
 	}
 
-	if (priv->no_embed == TRUE)
-		g_string_append (xml_string, "<yt:noembed/>");
+	/* yt:accessControl */
+	g_hash_table_foreach (priv->access_controls, (GHFunc) access_control_cb, xml_string);
 
 	/* app:control */
 	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->youtube_control), xml_string, FALSE);
@@ -903,34 +937,74 @@ gdata_youtube_video_set_location (GDataYouTubeVideo *self, const gchar *location
 	g_object_notify (G_OBJECT (self), "location");
 }
 
-/**
- * gdata_youtube_video_get_no_embed:
- * @self: a #GDataYouTubeVideo
- *
- * Gets the #GDataYouTubeVideo:no-embed property.
- *
- * Return value: %TRUE if the video cannot be embedded on web pages, %FALSE otherwise
- **/
-gboolean
-gdata_youtube_video_get_no_embed (GDataYouTubeVideo *self)
+/* Convert a GDataYouTubeAction into its string representation.
+ * See: http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:accessControl */
+static const gchar *
+action_to_string (GDataYouTubeAction action)
 {
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
-	return self->priv->no_embed;
+	switch (action) {
+		case GDATA_YOUTUBE_ACTION_RATE:
+			return "rate";
+		case GDATA_YOUTUBE_ACTION_COMMENT:
+			return "comment";
+		case GDATA_YOUTUBE_ACTION_COMMENT_VOTE:
+			return "commentVote";
+		case GDATA_YOUTUBE_ACTION_VIDEO_RESPOND:
+			return "videoRespond";
+		case GDATA_YOUTUBE_ACTION_EMBED:
+			return "embed";
+		case GDATA_YOUTUBE_ACTION_SYNDICATE:
+			return "syndicate";
+		default:
+			g_assert_not_reached ();
+	}
 }
 
 /**
- * gdata_youtube_video_set_no_embed:
+ * gdata_youtube_video_get_access_control:
  * @self: a #GDataYouTubeVideo
- * @no_embed: whether the video can be embedded 
+ * @action: the action whose permission should be returned
  *
- * Sets the #GDataYouTubeVideo:no-embed property to @no_embed.
+ * Gets the permission associated with the given @action on the #GDataYouTubeVideo. If the given @action
+ * doesn't have a permission set on the video, %GDATA_YOUTUBE_PERMISSION_DENIED is returned.
+ *
+ * Return value: the permission associated with @action, or %GDATA_YOUTUBE_PERMISSION_DENIED
+ *
+ * Since: 0.7.0
+ **/
+GDataYouTubePermission
+gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, GDataYouTubeAction action)
+{
+	gpointer value;
+
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), GDATA_YOUTUBE_PERMISSION_DENIED);
+
+	if (g_hash_table_lookup_extended (self->priv->access_controls, action_to_string (action), NULL, &value) == FALSE)
+		return GDATA_YOUTUBE_PERMISSION_DENIED;
+	return GPOINTER_TO_INT (value);
+}
+
+/**
+ * gdata_youtube_video_set_access_control:
+ * @self: a #GDataYouTubeVideo
+ * @action: the action whose permission is being set
+ * @permission: the permission to give to the action
+ *
+ * Sets the permission associated with @action on the #GDataYouTubeVideo, allowing restriction or derestriction of various
+ * operations on YouTube videos.
+ *
+ * Note that only %GDATA_YOUTUBE_ACTION_RATE and %GDATA_YOUTUBE_ACTION_COMMENT actions can have the %GDATA_YOUTUBE_PERMISSION_MODERATED permission.
+ *
+ * Since: 0.7.0
  **/
 void
-gdata_youtube_video_set_no_embed (GDataYouTubeVideo *self, gboolean no_embed)
+gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, GDataYouTubeAction action, GDataYouTubePermission permission)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	self->priv->no_embed = no_embed;
-	g_object_notify (G_OBJECT (self), "no-embed");
+	g_return_if_fail (action == GDATA_YOUTUBE_ACTION_RATE || action == GDATA_YOUTUBE_ACTION_COMMENT ||
+	                  permission != GDATA_YOUTUBE_PERMISSION_MODERATED);
+
+	g_hash_table_replace (self->priv->access_controls, g_strdup (action_to_string (action)), GINT_TO_POINTER (permission));
 }
 
 /**
