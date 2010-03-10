@@ -645,6 +645,20 @@ test_parsing_video_id_from_uri (void)
 
 	video_id = gdata_youtube_video_get_video_id_from_uri ("http://foobar.com/not/real");
 	g_assert (video_id == NULL);
+
+	video_id = gdata_youtube_video_get_video_id_from_uri ("http://www.youtube.com/watch#!v=ylLzyHk54Z0");
+	g_assert_cmpstr (video_id, ==, "ylLzyHk54Z0");
+	g_free (video_id);
+
+	video_id = gdata_youtube_video_get_video_id_from_uri ("http://www.youtube.com/watch#!foo=bar!v=ylLzyHk54Z0");
+	g_assert_cmpstr (video_id, ==, "ylLzyHk54Z0");
+	g_free (video_id);
+
+	video_id = gdata_youtube_video_get_video_id_from_uri ("http://www.youtube.com/watch#!foo=bar");
+	g_assert (video_id == NULL);
+
+	video_id = gdata_youtube_video_get_video_id_from_uri ("http://www.youtube.com/watch#random-fragment");
+	g_assert (video_id == NULL);
 }
 
 int

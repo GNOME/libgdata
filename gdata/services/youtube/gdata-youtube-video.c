@@ -1331,8 +1331,7 @@ gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
 gchar *
 gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)
 {
-	GHashTable *params;
-	gchar *video_id;
+	gchar *video_id = NULL;
 	SoupURI *uri;
 
 	g_return_val_if_fail (video_uri != NULL && *video_uri != '\0', NULL);
@@ -1341,15 +1340,35 @@ gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)
 	uri = soup_uri_new (video_uri);
 	if (uri == NULL)
 		return NULL;
-	else if (uri->query == NULL || uri->host == NULL || strstr (uri->host, "youtube") == NULL) {
+	else if (uri->host == NULL || strstr (uri->host, "youtube") == NULL) {
 		soup_uri_free (uri);
 		return NULL;
 	}
 
-	params = soup_form_decode (uri->query);
+	/* Try the "v" parameter (e.g. format is: http://www.youtube.com/watch?v=ylLzyHk54Z0) */
+	if (uri->query != NULL) {
+		GHashTable *params = soup_form_decode (uri->query);
+		video_id = g_strdup (g_hash_table_lookup (params, "v"));
+		g_hash_table_destroy (params);
+	}
+
+	/* Try the "v" fragment component (e.g. format is: http://www.youtube.com/watch#!v=ylLzyHk54Z0).
+	 * YouTube introduced this new URI format in March 2010:
+	 * http://apiblog.youtube.com/2010/03/upcoming-change-to-youtube-video-page.html */
+	if (video_id == NULL && uri->fragment != NULL) {
+		gchar **components, **i;
+
+		components = g_strsplit (uri->fragment, "!", -1);
+		for (i = components; *i != NULL; i++) {
+			if (**i == 'v' && *((*i) + 1) == '=') {
+				video_id = g_strdup ((*i) + 2);
+				break;
+			}
+		}
+		g_strfreev (components);
+	}
+
 	soup_uri_free (uri);
-	video_id = g_strdup (g_hash_table_lookup (params, "v"));
-	g_hash_table_destroy (params);
 
 	return video_id;
 }
