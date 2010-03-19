@@ -156,6 +156,12 @@ test_insert_simple (gconstpointer service)
 	gdata_gd_name_set_full_name (name, "Lizzie Bennet");
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (contact)), ==, "Lizzie Bennet");
 
+	name2 = gdata_gd_name_new ("John", "Smith");
+	gdata_gd_name_set_full_name (name2, "John Smith");
+	gdata_contacts_contact_set_name (contact, name2);
+	g_object_unref (name2);
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (contact)), ==, "John Smith");
+
 	gdata_entry_set_content (GDATA_ENTRY (contact), "Notes");
 	/* TODO: Have it add this category automatically? Same for GDataCalendarEvent */
 	category = gdata_category_new ("http://schemas.google.com/contact/2008#contact", "http://schemas.google.com/g/2005#kind", NULL);
@@ -192,7 +198,7 @@ test_insert_simple (gconstpointer service)
 	              "edited", &edited,
 	              "deleted", &deleted,
 	              "has-photo", &has_photo,
-	              "name", &name2,
+	              "name", &name,
 	              NULL);
 
 	g_assert_cmpint (edited->tv_sec, ==, creation_time.tv_sec);
@@ -207,13 +213,17 @@ test_insert_simple (gconstpointer service)
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
 	g_assert_cmpstr (xml, ==,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-			 	"xmlns:gd='http://schemas.google.com/g/2005' "
-			 	"xmlns:app='http://www.w3.org/2007/app' "
-			 	"xmlns:gContact='http://schemas.google.com/contact/2008'>"
-			 	"<title type='text'>Lizzie Bennet</title>"
-			 	"<content type='text'>Notes</content>"
+				"xmlns:gd='http://schemas.google.com/g/2005' "
+				"xmlns:app='http://www.w3.org/2007/app' "
+				"xmlns:gContact='http://schemas.google.com/contact/2008'>"
+				"<title type='text'>John Smith</title>"
+				"<content type='text'>Notes</content>"
 				"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gd:name><gd:fullName>Lizzie Bennet</gd:fullName></gd:name>"
+				"<gd:name>"
+					"<gd:givenName>John</gd:givenName>"
+					"<gd:familyName>Smith</gd:familyName>"
+					"<gd:fullName>John Smith</gd:fullName>"
+				"</gd:name>"
 				"<gd:email address='liz@gmail.com' rel='http://schemas.google.com/g/2005#work' primary='false'/>"
 				"<gd:email address='liz@example.org' rel='http://schemas.google.com/g/2005#home' primary='false'/>"
 				"<gd:im address='liz@gmail.com' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK' "

@@ -49,6 +49,7 @@
 static void gdata_contacts_contact_dispose (GObject *object);
 static void gdata_contacts_contact_finalize (GObject *object);
 static void gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
+static void gdata_contacts_contact_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -86,6 +87,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	g_type_class_add_private (klass, sizeof (GDataContactsContactPrivate));
 
 	gobject_class->get_property = gdata_contacts_contact_get_property;
+	gobject_class->set_property = gdata_contacts_contact_set_property;
 	gobject_class->dispose = gdata_contacts_contact_dispose;
 	gobject_class->finalize = gdata_contacts_contact_finalize;
 
@@ -146,7 +148,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 				g_param_spec_object ("name",
 					"Name", "The contact's name in a structured representation.",
 					GDATA_TYPE_GD_NAME,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *self);
@@ -236,6 +238,22 @@ gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue 
 			break;
 		case PROP_NAME:
 			g_value_set_object (value, priv->name);
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
+}
+
+static void
+gdata_contacts_contact_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+{
+	GDataContactsContact *self = GDATA_CONTACTS_CONTACT (object);
+
+	switch (property_id) {
+		case PROP_NAME:
+			gdata_contacts_contact_set_name (self, g_value_get_object (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -500,6 +518,32 @@ gdata_contacts_contact_get_name (GDataContactsContact *self)
 {
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 	return self->priv->name;
+}
+
+/**
+ * gdata_contacts_contact_set_name:
+ * @self: a #GDataContactsContact
+ * @name: the new #GDataGDName
+ *
+ * Sets the #GDataContactsContact:name property to @name, and increments its reference count.
+ *
+ * @name must not be %NULL, though all its properties may be %NULL.
+ *
+ * Since: 0.6.3
+ **/
+void
+gdata_contacts_contact_set_name (GDataContactsContact *self, GDataGDName *name)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_GD_NAME (name));
+
+	if (self->priv->name != NULL)
+		g_object_unref (self->priv->name);
+	self->priv->name = g_object_ref (name);
+	g_object_notify (G_OBJECT (self), "name");
+
+	/* Notify the change in #GDataGDName:full-name explicitly, so that our #GDataEntry:title gets updated */
+	notify_full_name_cb (G_OBJECT (name), NULL, self);
 }
 
 /**
