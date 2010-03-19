@@ -888,6 +888,7 @@ void
 gdata_gd_postal_address_set_mail_class (GDataGDPostalAddress *self, const gchar *mail_class)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (mail_class == NULL || *mail_class != '\0');
 
 	g_free (self->priv->mail_class);
 	self->priv->mail_class = g_strdup (mail_class);
@@ -926,6 +927,7 @@ void
 gdata_gd_postal_address_set_usage (GDataGDPostalAddress *self, const gchar *usage)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (usage == NULL || *usage != '\0');
 
 	g_free (self->priv->usage);
 	self->priv->usage = g_strdup (usage);
@@ -964,6 +966,7 @@ void
 gdata_gd_postal_address_set_agent (GDataGDPostalAddress *self, const gchar *agent)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (agent == NULL || *agent != '\0');
 
 	g_free (self->priv->agent);
 	self->priv->agent = g_strdup (agent);
@@ -1002,6 +1005,7 @@ void
 gdata_gd_postal_address_set_house_name (GDataGDPostalAddress *self, const gchar *house_name)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (house_name == NULL || *house_name != '\0');
 
 	g_free (self->priv->house_name);
 	self->priv->house_name = g_strdup (house_name);
@@ -1040,6 +1044,7 @@ void
 gdata_gd_postal_address_set_street (GDataGDPostalAddress *self, const gchar *street)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (street == NULL || *street != '\0');
 
 	g_free (self->priv->street);
 	self->priv->street = g_strdup (street);
@@ -1078,6 +1083,7 @@ void
 gdata_gd_postal_address_set_po_box (GDataGDPostalAddress *self, const gchar *po_box)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (po_box == NULL || *po_box != '\0');
 
 	g_free (self->priv->po_box);
 	self->priv->po_box = g_strdup (po_box);
@@ -1116,6 +1122,7 @@ void
 gdata_gd_postal_address_set_neighborhood (GDataGDPostalAddress *self, const gchar *neighborhood)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (neighborhood == NULL || *neighborhood != '\0');
 
 	g_free (self->priv->neighborhood);
 	self->priv->neighborhood = g_strdup (neighborhood);
@@ -1154,6 +1161,7 @@ void
 gdata_gd_postal_address_set_city (GDataGDPostalAddress *self, const gchar *city)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (city == NULL || *city != '\0');
 
 	g_free (self->priv->city);
 	self->priv->city = g_strdup (city);
@@ -1192,6 +1200,7 @@ void
 gdata_gd_postal_address_set_subregion (GDataGDPostalAddress *self, const gchar *subregion)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (subregion == NULL || *subregion != '\0');
 
 	g_free (self->priv->subregion);
 	self->priv->subregion = g_strdup (subregion);
@@ -1230,6 +1239,7 @@ void
 gdata_gd_postal_address_set_region (GDataGDPostalAddress *self, const gchar *region)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (region == NULL || *region != '\0');
 
 	g_free (self->priv->region);
 	self->priv->region = g_strdup (region);
@@ -1268,6 +1278,7 @@ void
 gdata_gd_postal_address_set_postcode (GDataGDPostalAddress *self, const gchar *postcode)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
+	g_return_if_fail (postcode == NULL || *postcode != '\0');
 
 	g_free (self->priv->postcode);
 	self->priv->postcode = g_strdup (postcode);
@@ -1326,6 +1337,8 @@ gdata_gd_postal_address_set_country (GDataGDPostalAddress *self, const gchar *co
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
 	g_return_if_fail (country != NULL || country_code == NULL);
+	g_return_if_fail (country == NULL || *country != '\0');
+	g_return_if_fail (country_code == NULL || *country_code != '\0');
 
 	g_free (self->priv->country);
 	g_free (self->priv->country_code);
