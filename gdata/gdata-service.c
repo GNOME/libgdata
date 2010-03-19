@@ -380,6 +380,7 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 				     _("The requested resource was not found: %s"), response_body);
 			return;
 		case 409:
+		case 412:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT,
 				     /* Translators: the parameter is an error message returned by the server. */
 				     _("The entry has been modified since it was downloaded: %s"), response_body);
