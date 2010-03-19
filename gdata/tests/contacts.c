@@ -19,9 +19,28 @@
 
 #include <glib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "gdata.h"
 #include "common.h"
+
+static void
+check_kind (GDataEntry *entry)
+{
+	GList *list;
+	gboolean has_kind = FALSE;
+
+	/* Check the contact's kind category is present and correct */
+	for (list = gdata_entry_get_categories (entry); list != NULL; list = list->next) {
+		GDataCategory *category = GDATA_CATEGORY (list->data);
+
+		if (strcmp (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
+			g_assert_cmpstr (gdata_category_get_term (category), ==, "http://schemas.google.com/contact/2008#contact");
+			has_kind = TRUE;
+		}
+	}
+	g_assert (has_kind == TRUE);
+}
 
 static GDataContactsContact *
 get_contact (gconstpointer service)
@@ -46,6 +65,7 @@ get_contact (gconstpointer service)
 	g_assert (entries != NULL);
 	entry = entries->data;
 	g_assert (GDATA_IS_CONTACTS_CONTACT (entry));
+	check_kind (entry);
 
 	g_object_ref (entry);
 	g_object_unref (feed);
@@ -95,7 +115,7 @@ test_query_all_contacts (gconstpointer service)
 	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
 
-	/* TODO: check entries and feed properties */
+	/* TODO: check entries, kinds and feed properties */
 
 	g_object_unref (feed);
 }
@@ -148,6 +168,10 @@ test_insert_simple (gconstpointer service)
 
 	contact = gdata_contacts_contact_new (NULL);
 	g_get_current_time (&creation_time);
+
+	/* Check the kind is present and correct */
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	check_kind (GDATA_ENTRY (contact));
 
 	/* Set and check the name (to check if the title of the entry is updated) */
 	gdata_entry_set_title (GDATA_ENTRY (contact), "Elizabeth Bennet");
@@ -241,6 +265,7 @@ test_insert_simple (gconstpointer service)
 	new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
+	check_kind (GDATA_ENTRY (new_contact));
 	g_clear_error (&error);
 
 	/* Check its edited date */
@@ -413,7 +438,8 @@ test_parser_minimal (gconstpointer service)
 			"<gd:email rel='http://schemas.google.com/g/2005#other' address='bob@example.com'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_ENTRY (contact));
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	check_kind (GDATA_ENTRY (contact));
 	g_clear_error (&error);
 
 	/* Check the contact's properties */
@@ -453,7 +479,8 @@ test_parser_normal (gconstpointer service)
 			"<gd:deleted/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_ENTRY (contact));
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	check_kind (GDATA_ENTRY (contact));
 	g_clear_error (&error);
 
 	/* TODO: Check the other properties */
@@ -528,7 +555,8 @@ test_photo_has_photo (gconstpointer service)
 				"href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_ENTRY (contact));
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	check_kind (GDATA_ENTRY (contact));
 	g_clear_error (&error);
 
 	/* Check for no photo */
@@ -555,7 +583,8 @@ test_photo_has_photo (gconstpointer service)
 				"gd:etag='&quot;QngzcDVSLyp7ImA9WxJTFkoITgU.&quot;'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_ENTRY (contact));
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	check_kind (GDATA_ENTRY (contact));
 	g_clear_error (&error);
 
 	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);

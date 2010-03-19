@@ -174,6 +174,8 @@ notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *
 static void
 gdata_contacts_contact_init (GDataContactsContact *self)
 {
+	GDataCategory *category;
+
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContactPrivate);
 	self->priv->extended_properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->groups = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -187,6 +189,11 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 
 	/* Set the edited property to the current time (creation time) */
 	g_get_current_time (&(self->priv->edited));
+
+	/* Add the "contact" kind category */
+	category = gdata_category_new ("http://schemas.google.com/contact/2008#contact", "http://schemas.google.com/g/2005#kind", NULL);
+	gdata_entry_add_category (GDATA_ENTRY (self), category);
+	g_object_unref (category);
 }
 
 static void
