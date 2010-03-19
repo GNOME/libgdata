@@ -70,6 +70,7 @@ void gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *ed
 gboolean gdata_contacts_contact_is_deleted (GDataContactsContact *self);
 
 GDataGDName *gdata_contacts_contact_get_name (GDataContactsContact *self);
+void gdata_contacts_contact_set_name (GDataContactsContact *self, GDataGDName *name);
 
 void gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEmailAddress *email_address);
 GList *gdata_contacts_contact_get_email_addresses (GDataContactsContact *self);
