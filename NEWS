@@ -1,3 +1,19 @@
+Overview of changes from libgdata 0.6.2 to libgdata 0.6.3
+=========================================================
+
+Major changes:
+* Contacts' names can now be set as an entire GDataGDName, rather than piecemeal
+* Added the kind category to GDataContactsContact on init
+
+API changes:
+* Added gdata_contacts_contact_set_name and made GDataContactsContact:name writeable
+* Setters in GDataGDPostalAddress no longer accept empty strings (only NULL or a non-empty string)
+
+Updated translations:
+* eu (Iñaki Larrañaga Murgoitio)
+* pl (Piotr Drąg)
+* ru (Alexandr Andrushchenko, Andrew Grigorev)
+
 Overview of changes from libgdata 0.6.1 to libgdata 0.6.2
 =========================================================
 
