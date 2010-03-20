@@ -1,38 +1,41 @@
 # libgdata ja.po.
-# Copyright (C) 2009 Free Software Foundation, Inc.
+# Copyright (C) 2009-2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
 # Takeshi AIHANA <takeshi.aihana@gmail.com>, 2009.
+# Nishio Futoshi <futoshi@momonga-linux.org>, 2009.
+# Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-12 18:19+0900\n"
-"PO-Revision-Date: 2009-10-12 18:19+0900\n"
-"Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
-"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\\\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&component=general\n"
+"POT-Creation-Date: 2010-03-19 21:03+0000\n"
+"PO-Revision-Date: 2010-03-20 19:15+0900\n"
+"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gdata/gdata-access-handler.c:176
 msgid "The rule has already been inserted."
-msgstr "既にそのルールは追加済です"
+msgstr "既にそのルールは挿入済です。"
 
 #: ../gdata/gdata-access-handler.c:378
 msgid "The owner's rule may not be deleted."
-msgstr "オーナーのルールは削除することはできません"
+msgstr "オーナーのルールは削除することはできません。"
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:164 ../gdata/gdata-parsable.c:175
+#: ../gdata/gdata-parsable.c:177 ../gdata/gdata-parsable.c:188
 #, c-format
 msgid "Error parsing XML: %s"
-msgstr "XML の解析エラー: %s"
+msgstr "XMLの解析エラー: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:177
+#: ../gdata/gdata-parsable.c:190
 msgid "Empty document."
-msgstr "ドキュメントが空です"
+msgstr "空のドキュメント。"
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -41,7 +44,7 @@ msgstr "ドキュメントが空です"
 #: ../gdata/gdata-parser.c:65
 #, c-format
 msgid "A %s element was missing required content."
-msgstr "%s という要素が必要ですが見つかりませんでした"
+msgstr "%s要素は、必須の内容が足りません。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")), and the second parameter is
 #. * the erroneous value (which was not in ISO 8601 format).
@@ -51,7 +54,7 @@ msgstr "%s という要素が必要ですが見つかりませんでした"
 #: ../gdata/gdata-parser.c:81
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "%s という要素のデータ (\"%s\") は ISO 8601 の形式ではありませんでした"
+msgstr "%s要素の内容(\"%s\")は、ISO 8601の書式ではありません。"
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -61,9 +64,7 @@ msgstr "%s という要素のデータ (\"%s\") は ISO 8601 の形式ではあ�
 #: ../gdata/gdata-parser.c:101
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr ""
-"%2$s という要素にある %1$s というプロパティのデータ (\"%3$s\") を解析できませ"
-"んでした"
+msgstr "%2$s要素の%1$s属性(\"%3$s\")を解析できませんでした。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -73,7 +74,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:119
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
-msgstr "%s という要素のデータ (\"%s\") を解析できませんでした"
+msgstr "%s要素の内容(\"%s\")を解析できませんでした。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -83,7 +84,7 @@ msgstr "%s という要素のデータ (\"%s\") を解析できませんでし�
 #: ../gdata/gdata-parser.c:139
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
-msgstr "%s という要素に必要な %s というプロパティが見つかりませんでした"
+msgstr "%s要素の必須属性(%s)が見つかりませんでした。"
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -92,7 +93,7 @@ msgstr "%s という要素に必要な %s というプロパティが見つか�
 #: ../gdata/gdata-parser.c:156
 #, c-format
 msgid "A required element (%s) was not present."
-msgstr "必須の要素である %s が見つかりませんでした"
+msgstr "必須要素(%s)は存在しません。"
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -101,255 +102,262 @@ msgstr "必須の要素である %s が見つかりませんでした"
 #: ../gdata/gdata-parser.c:171
 #, c-format
 msgid "A singleton element (%s) was duplicated."
-msgstr "シングルトンであるべき要素 (%s) が重複していました"
+msgstr "シングルトンであるべき要素(%s)が重複していました。"
 
-#: ../gdata/gdata-service.c:309 ../gdata/gdata-service.c:751
-#: ../gdata/services/youtube/gdata-youtube-service.c:202
+#: ../gdata/gdata-service.c:338 ../gdata/gdata-service.c:781
+#: ../gdata/services/youtube/gdata-youtube-service.c:203
 msgid "The server returned a malformed response."
-msgstr "サーバがおかしな応答を返してきました"
+msgstr "サーバがおかしな応答を返してきました。"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:340
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"要求した URI またはヘッダが間違っているか、もしくは未サポートの非標準なパラ"
-"メータです: %s"
+"不正なURIまたはヘッダ、またはサポートされていない非標準なパラメータ: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:346
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Authentication required: %s"
 msgstr "認証が必要です: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:351
+#: ../gdata/gdata-service.c:380
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "要求したリソースが見つかりませんでした: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:356
+#: ../gdata/gdata-service.c:386
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr "エントリはそれをダウンロードしてから変更が加えられています: %s"
+msgstr "その項目は、ダウンロード後に変更が加えられています: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
-#, c-format
-msgid "Error code %u when inserting an entry: %s"
-msgstr "エントリの追加エラー (コード %u): %s"
-
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
-#, c-format
-msgid "Error code %u when updating an entry: %s"
-msgstr "エントリの更新エラー (コード %u): %s"
-
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:379
-#, c-format
-msgid "Error code %u when deleting an entry: %s"
-msgstr "エントリの削除エラー (コード %u): %s"
-
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:384
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when querying: %s"
-msgstr "問い合わせエラー (コード %u): %s"
+msgstr "問い合わせエラー(コード %u): %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:389
+#: ../gdata/gdata-service.c:404
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "エントリの挿入エラー(コード %u): %s"
+
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:409
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "エントリの更新エラー(コード %u): %s"
+
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:414
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "エントリの削除エラー(コード %u): %s"
+
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:419
 #, c-format
 msgid "Error code %u when downloading: %s"
-msgstr "ダウンロードのエラー (コード %u): %s"
+msgstr "ダウンロードのエラー(コード %u): %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:394
+#: ../gdata/gdata-service.c:424
 #, c-format
 msgid "Error code %u when uploading: %s"
-msgstr "アップロードのエラー (コード %u): %s"
+msgstr "アップロードのエラー(コード %u): %s"
 
-#: ../gdata/gdata-service.c:639
+#: ../gdata/gdata-service.c:669
 msgid "A CAPTCHA must be filled out to log in."
-msgstr "ログインするには CAPTCHA の内容を入力して下さい"
+msgstr "ログインするには CAPTCHA の内容を入力して下さい。"
 
-#: ../gdata/gdata-service.c:663
+#: ../gdata/gdata-service.c:693
 msgid "Your username or password were incorrect."
-msgstr "ユーザ名またはパスワードが間違っていました"
+msgstr "ユーザ名またはパスワードが違います。"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:682
+#: ../gdata/gdata-service.c:712
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "お使いのアカウントの E-メール・アドレスが間違っていました (%s)"
+msgstr "アカウントの E-メール・アドレスが照合できませんでした。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:687
+#: ../gdata/gdata-service.c:717
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "あなたはサービスの規定とその条件に同意していませんでした (%s)"
+msgstr "サービスの利用条件に同意していません。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:692
+#: ../gdata/gdata-service.c:722
 #, c-format
 msgid "This account has been deleted. (%s)"
-msgstr "このアカウントは既に削除されています (%s)"
+msgstr "このアカウントは既に削除されています。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:697
+#: ../gdata/gdata-service.c:727
 #, c-format
 msgid "This account has been disabled. (%s)"
-msgstr "このアカウントは無効になっています (%s)"
+msgstr "このアカウントは無効になっています。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:702
+#: ../gdata/gdata-service.c:732
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
-msgstr "このアカウントを使ったサービスへのサクセスは無効になっています (%s)"
+msgstr "このアカウントを使ったサービスへのサクセスは無効になっています。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:707
+#: ../gdata/gdata-service.c:737
 #, c-format
 msgid "This service is not available at the moment. (%s)"
-msgstr "しばらくの間、このサービスは利用できません (%s)"
+msgstr "しばらくの間、このサービスは利用できません。(%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:821
+#: ../gdata/gdata-service.c:851
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "リダイレクト先の URI が間違っています: %s"
+msgstr "リダイレクト先のURIが間違っています: %s"
 
-#: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:293
-#: ../gdata/services/youtube/gdata-youtube-service.c:785
+#: ../gdata/gdata-service.c:1269
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:389
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:546
+#: ../gdata/services/youtube/gdata-youtube-service.c:787
 msgid "The entry has already been inserted."
-msgstr "既にそのエントリは追加済です"
+msgstr "既にそのエントリは挿入済です。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">"),
 #. * and the second parameter is the erroneous value (which was not in hexadecimal RGB format).
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:330
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:329
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr ""
-"%s という要素のデータ (\"%s\") は16進表記の RGB データではありませんでした"
+msgstr "%s要素の内容(\"%s\")が16進表記のRGBデータではありません。"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:106
-#: ../gdata/services/calendar/gdata-calendar-service.c:140
+#: ../gdata/services/calendar/gdata-calendar-service.c:109
+#: ../gdata/services/calendar/gdata-calendar-service.c:149
 msgid "You must be authenticated to query all calendars."
-msgstr "全てのカレンダにアクセスするには認証が必要です"
+msgstr "全てのカレンダにアクセスするには認証が必要です。"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:172
-#: ../gdata/services/calendar/gdata-calendar-service.c:206
-#: ../gdata/services/calendar/gdata-calendar-service.c:240
+#: ../gdata/services/calendar/gdata-calendar-service.c:186
+#: ../gdata/services/calendar/gdata-calendar-service.c:226
+#: ../gdata/services/calendar/gdata-calendar-service.c:262
 msgid "You must be authenticated to query your own calendars."
-msgstr "自分自身のカレンダにアクセスするには認証が必要です"
+msgstr "自分のカレンダにアクセスするには認証が必要です。"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:249
+#: ../gdata/services/calendar/gdata-calendar-service.c:271
 msgid "The calendar did not have a content source."
-msgstr "そのカレンダにはデータ・ソースはありません"
+msgstr "そのカレンダにはデータ・ソースはありません。"
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:105
-#: ../gdata/services/contacts/gdata-contacts-service.c:140
+#: ../gdata/services/contacts/gdata-contacts-service.c:108
+#: ../gdata/services/contacts/gdata-contacts-service.c:149
 msgid "You must be authenticated to query contacts."
-msgstr "連絡先にアクセスするには認証が必要です"
+msgstr "連絡先にアクセスするには認証が必要です。"
 
-#: ../gdata/services/documents/gdata-documents-entry.c:612
+#: ../gdata/services/documents/gdata-documents-entry.c:618
 msgid "You must be authenticated to download documents."
-msgstr "ドキュメントをダウンロードするには認証が必要です"
+msgstr "ドキュメントをダウンロードするには認証が必要です。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:188
-#: ../gdata/services/documents/gdata-documents-service.c:296
+#: ../gdata/services/documents/gdata-documents-service.c:191
+#: ../gdata/services/documents/gdata-documents-service.c:303
 msgid "You must be authenticated to query documents."
-msgstr "ドキュメントにアクセスするには認証が必要です"
+msgstr "ドキュメントにアクセスするには認証が必要です。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:387
+#: ../gdata/services/documents/gdata-documents-service.c:397
 msgid "The supplied document had an invalid content type."
-msgstr "提供したドキュメントの content-type が間違っています"
+msgstr "提供したドキュメントの Content-Type が間違っています。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:472
+#: ../gdata/services/documents/gdata-documents-service.c:483
 msgid "You must be authenticated to upload documents."
-msgstr "ドキュメントをアップロードするには認証が必要です"
+msgstr "ドキュメントをアップロードするには認証が必要です。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:478
+#: ../gdata/services/documents/gdata-documents-service.c:489
 msgid "The document has already been uploaded."
-msgstr "既にそのドキュメントはアップロード済です"
+msgstr "そのドキュメントは既にアップロードされています。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:528
+#: ../gdata/services/documents/gdata-documents-service.c:539
 msgid "You must be authenticated to update documents."
-msgstr "ドキュメントを更新するには認証が必要です"
+msgstr "ドキュメントを更新するには認証が必要です。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:576
-#: ../gdata/services/documents/gdata-documents-service.c:672
+#: ../gdata/services/documents/gdata-documents-service.c:587
+#: ../gdata/services/documents/gdata-documents-service.c:683
 msgid "You must be authenticated to move documents."
-msgstr "ドキュメントを移動するには認証が必要です"
+msgstr "ドキュメントを移動するには認証が必要です。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:135
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:189
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+msgid "You must specify a username or be authenticated to query a user."
+msgstr "ユーザを問い合わせるにはユーザ名を指定するか、もしくは認証が必要です。"
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:181
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:235
 msgid "Query parameter not allowed for albums."
-msgstr "アルバムに対する問い合わせでは引数を指定できません"
+msgstr "アルバムに対する問い合わせでは引数を指定できません。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:142
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:197
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:188
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:243
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
-"全てのアルバムにアクセスするにはユーザ名を指定するか、もしくは認証が必要です"
+"全てのアルバムにアクセスするにはユーザ名を指定するか、もしくは認証が必要で"
+"す。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:238
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
 msgid "The album did not have a feed link."
-msgstr "アルバムには配信元のリンク (feed) が含まれていませんでした"
+msgstr "そのアルバムにはフィードのリンクが含まれていませんでした。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:299
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:395
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:552
 msgid "You must be authenticated to upload a file."
-msgstr "ファイルをアップロードするには認証が必要です"
+msgstr "ファイルをアップロードするには認証が必要です。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:303
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
+msgid "The album has already been inserted."
+msgstr "そのアルバムは既に挿入済です。"
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:620
+msgid "You must be authenticated to insert an album."
+msgstr "アルバムを挿入するには認証が必要です。"
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:304
 #, c-format
 msgid "This service is not available at the moment."
-msgstr "しばらくの間、このサービスは利用できません"
+msgstr "しばらくの間、このサービスは利用できません。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:308
+#: ../gdata/services/youtube/gdata-youtube-service.c:309
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "この処理を実施するには認証が必要です"
+msgstr "この処理を実行するには認証が必要です。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:313
+#: ../gdata/services/youtube/gdata-youtube-service.c:314
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
-msgstr ""
-"大量の API の呼び出しを行っています (数分間ほど待機してからもう一度試してみて"
-"下さい)"
+msgstr "API呼び出しが多すぎます。数分待ってから再試行してください。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:316
+#: ../gdata/services/youtube/gdata-youtube-service.c:317
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr ""
-"エントリのクォータの容量が上限に到達しました (何かエントリを削除してからもう"
-"一度試してみて下さい)"
+msgstr "容量が超過しています。何か削除してから再試行してください。"
 
 #. Translators: the first parameter is an error code, which is a coded string. The second parameter
 #. * is an error domain, which is another coded string. The third parameter is the location of the
 #. * error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:323
-#: ../gdata/services/youtube/gdata-youtube-service.c:329
+#: ../gdata/services/youtube/gdata-youtube-service.c:324
+#: ../gdata/services/youtube/gdata-youtube-service.c:330
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr ""
-"\"%s\" という不明なエラー・コードが受信した \"%s\" というドメインの \"%s\" に"
-"ありました"
+msgstr "不明なエラー: code は\"%s\"、domainは\"%s\"、locationは\"%s\"。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:698
-#: ../gdata/services/youtube/gdata-youtube-service.c:739
+#: ../gdata/services/youtube/gdata-youtube-service.c:699
+#: ../gdata/services/youtube/gdata-youtube-service.c:740
 msgid "The video did not have a related videos <link>."
-msgstr "動画にはそれに関連する動画データへの <link> 要素が含まれていません"
+msgstr "その動画には、関連する動画の<link>要素がありません。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:791
+#: ../gdata/services/youtube/gdata-youtube-service.c:793
 msgid "You must be authenticated to upload a video."
-msgstr "動画をアップロードするには認証が必要です"
+msgstr "動画をアップロードするには認証が必要です。"
