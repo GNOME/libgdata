@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -554,6 +554,9 @@ gdata_youtube_query_set_format (GDataYouTubeQuery *self, GDataYouTubeFormat form
 	g_return_if_fail (GDATA_IS_YOUTUBE_QUERY (self));
 	self->priv->format = format;
 	g_object_notify (G_OBJECT (self), "format");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -613,6 +616,9 @@ gdata_youtube_query_set_location (GDataYouTubeQuery *self, gdouble latitude, gdo
 	g_object_notify (G_OBJECT (self), "location-radius");
 	g_object_notify (G_OBJECT (self), "has-location");
 	g_object_thaw_notify (G_OBJECT (self));
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -650,6 +656,9 @@ gdata_youtube_query_set_language (GDataYouTubeQuery *self, const gchar *language
 	g_free (self->priv->language);
 	self->priv->language = g_strdup (language);
 	g_object_notify (G_OBJECT (self), "language");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -688,6 +697,9 @@ gdata_youtube_query_set_order_by (GDataYouTubeQuery *self, const gchar *order_by
 	g_free (self->priv->order_by);
 	self->priv->order_by = g_strdup (order_by);
 	g_object_notify (G_OBJECT (self), "order-by");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -725,6 +737,9 @@ gdata_youtube_query_set_restriction (GDataYouTubeQuery *self, const gchar *restr
 	g_free (self->priv->restriction);
 	self->priv->restriction = g_strdup (restriction);
 	g_object_notify (G_OBJECT (self), "restriction");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -759,6 +774,9 @@ gdata_youtube_query_set_safe_search (GDataYouTubeQuery *self, GDataYouTubeSafeSe
 	g_return_if_fail (GDATA_IS_YOUTUBE_QUERY (self));
 	self->priv->safe_search = safe_search;
 	g_object_notify (G_OBJECT (self), "safe-search");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -795,6 +813,9 @@ gdata_youtube_query_set_sort_order (GDataYouTubeQuery *self, GDataYouTubeSortOrd
 	g_return_if_fail (GDATA_IS_YOUTUBE_QUERY (self));
 	self->priv->sort_order = sort_order;
 	g_object_notify (G_OBJECT (self), "sort-order");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -829,6 +850,9 @@ gdata_youtube_query_set_age (GDataYouTubeQuery *self, GDataYouTubeAge age)
 	g_return_if_fail (GDATA_IS_YOUTUBE_QUERY (self));
 	self->priv->age = age;
 	g_object_notify (G_OBJECT (self), "age");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -863,4 +887,7 @@ gdata_youtube_query_set_uploader (GDataYouTubeQuery *self, GDataYouTubeUploader 
 	g_return_if_fail (GDATA_IS_YOUTUBE_QUERY (self));
 	self->priv->uploader = uploader;
 	g_object_notify (G_OBJECT (self), "uploader");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }

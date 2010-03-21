@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -501,7 +501,7 @@ test_parsing_comments_feed_link (void)
 }*/
 
 static void
-test_query_uri (gconstpointer service)
+test_query_uri (void)
 {
 	gdouble latitude, longitude, radius;
 	gboolean has_location;
@@ -575,6 +575,34 @@ test_query_uri (gconstpointer service)
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com?foobar=shizzle");
 	g_assert_cmpstr (query_uri, ==, "http://example.com?foobar=shizzle&q=q&time=this_week&safeSearch=strict&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1&sortorder=ascending&uploader=partner");
 	g_free (query_uri);
+
+	g_object_unref (query);
+}
+
+static void
+test_query_etag (void)
+{
+	GDataYouTubeQuery *query = gdata_youtube_query_new (NULL);
+
+	/* Test that setting any property will unset the ETag */
+	g_test_bug ("613529");
+
+#define CHECK_ETAG(C) \
+	gdata_query_set_etag (GDATA_QUERY (query), "foobar");		\
+	(C);								\
+	g_assert (gdata_query_get_etag (GDATA_QUERY (query)) == NULL);
+
+	CHECK_ETAG (gdata_youtube_query_set_format (query, GDATA_YOUTUBE_FORMAT_RTSP_H263_AMR))
+	CHECK_ETAG (gdata_youtube_query_set_location (query, 0.0, 65.0, 15.0, TRUE))
+	CHECK_ETAG (gdata_youtube_query_set_language (query, "British English"))
+	CHECK_ETAG (gdata_youtube_query_set_order_by (query, "shizzle"))
+	CHECK_ETAG (gdata_youtube_query_set_restriction (query, "restriction"))
+	CHECK_ETAG (gdata_youtube_query_set_safe_search (query, GDATA_YOUTUBE_SAFE_SEARCH_MODERATE))
+	CHECK_ETAG (gdata_youtube_query_set_sort_order (query, GDATA_YOUTUBE_SORT_DESCENDING))
+	CHECK_ETAG (gdata_youtube_query_set_age (query, GDATA_YOUTUBE_AGE_THIS_WEEK))
+	CHECK_ETAG (gdata_youtube_query_set_uploader (query, GDATA_YOUTUBE_UPLOADER_PARTNER))
+
+#undef CHECK_ETAG
 
 	g_object_unref (query);
 }
@@ -689,7 +717,8 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/youtube/parsing/app:control", service, test_parsing_app_control);
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
 	g_test_add_data_func ("/youtube/parsing/yt:recorded", service, test_parsing_yt_recorded);
-	g_test_add_data_func ("/youtube/query/uri", service, test_query_uri);
+	g_test_add_func ("/youtube/query/uri", test_query_uri);
+	g_test_add_func ("/youtube/query/etag", test_query_etag);
 	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 	if (g_test_slow () == TRUE)
 		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);

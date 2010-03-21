@@ -610,6 +610,42 @@ test_query_unicode (void)
 }
 
 static void
+test_query_etag (void)
+{
+	GDataQuery *query = gdata_query_new (NULL);
+
+	/* Test that setting any property will unset the ETag */
+	g_test_bug ("613529");
+
+	/* Also check that setting the ETag doesn't unset the ETag! */
+	gdata_query_set_etag (query, "foobar");
+	g_assert_cmpstr (gdata_query_get_etag (query), ==, "foobar");
+
+#define CHECK_ETAG(C) \
+	gdata_query_set_etag (query, "foobar");		\
+	(C);						\
+	g_assert (gdata_query_get_etag (query) == NULL);
+
+	CHECK_ETAG (gdata_query_set_q (query, "q"))
+	CHECK_ETAG (gdata_query_set_categories (query, "shizzle,foobar"))
+	CHECK_ETAG (gdata_query_set_author (query, "John Smith"))
+	CHECK_ETAG (gdata_query_set_updated_min (query, NULL))
+	CHECK_ETAG (gdata_query_set_updated_max (query, NULL))
+	CHECK_ETAG (gdata_query_set_published_min (query, NULL))
+	CHECK_ETAG (gdata_query_set_published_max (query, NULL))
+	CHECK_ETAG (gdata_query_set_start_index (query, 5))
+	CHECK_ETAG (gdata_query_set_is_strict (query, TRUE))
+	CHECK_ETAG (gdata_query_set_max_results (query, 1000))
+	CHECK_ETAG (gdata_query_set_entry_id (query, "id"))
+	CHECK_ETAG (gdata_query_next_page (query))
+	CHECK_ETAG (gdata_query_previous_page (query))
+
+#undef CHECK_ETAG
+
+	g_object_unref (query);
+}
+
+static void
 test_access_rule_get_xml (void)
 {
 	GDataAccessRule *rule, *rule2;
@@ -2230,6 +2266,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/feed/error_handling", test_feed_error_handling);
 	g_test_add_func ("/query/categories", test_query_categories);
 	g_test_add_func ("/query/unicode", test_query_unicode);
+	g_test_add_func ("/query/etag", test_query_etag);
 	g_test_add_func ("/access-rule/get_xml", test_access_rule_get_xml);
 	g_test_add_func ("/access-rule/error_handling", test_access_rule_error_handling);
 	g_test_add_func ("/color/parsing", test_color_parsing);

@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -376,6 +376,29 @@ test_query_uri (void)
 }
 
 static void
+test_query_etag (void)
+{
+	GDataContactsQuery *query = gdata_contacts_query_new (NULL);
+
+	/* Test that setting any property will unset the ETag */
+	g_test_bug ("613529");
+
+#define CHECK_ETAG(C) \
+	gdata_query_set_etag (GDATA_QUERY (query), "foobar");		\
+	(C);								\
+	g_assert (gdata_query_get_etag (GDATA_QUERY (query)) == NULL);
+
+	CHECK_ETAG (gdata_contacts_query_set_order_by (query, "foobar"))
+	CHECK_ETAG (gdata_contacts_query_set_show_deleted (query, FALSE))
+	CHECK_ETAG (gdata_contacts_query_set_sort_order (query, "shizzle"))
+	CHECK_ETAG (gdata_contacts_query_set_group (query, "support group"))
+
+#undef CHECK_ETAG
+
+	g_object_unref (query);
+}
+
+static void
 test_query_properties (void)
 {
 	gchar *order_by, *sort_order, *group;
@@ -679,6 +702,7 @@ main (int argc, char *argv[])
 	if (g_test_thorough () == TRUE)
 		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
 	g_test_add_func ("/contacts/query/uri", test_query_uri);
+	g_test_add_func ("/contacts/query/etag", test_query_etag);
 	g_test_add_func ("/contacts/query/properties", test_query_properties);
 	g_test_add_data_func ("/contacts/parser/minimal", service, test_parser_minimal);
 	g_test_add_data_func ("/contacts/parser/normal", service, test_parser_normal);
