@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Richard Schwarting 2009 <aquarichy@gmail.com>
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -375,6 +375,9 @@ gdata_picasaweb_query_set_visibility (GDataPicasaWebQuery *self, GDataPicasaWebV
 	g_return_if_fail (GDATA_IS_PICASAWEB_QUERY (self));
 	self->priv->visibility = visibility;
 	g_object_notify (G_OBJECT (self), "visibility");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (self, NULL);
 }
 
 /**
@@ -413,6 +416,9 @@ gdata_picasaweb_query_set_thumbnail_size (GDataPicasaWebQuery *self, const gchar
 	g_free (self->priv->thumbnail_size);
 	self->priv->thumbnail_size = g_strdup (thumbnail_size);
 	g_object_notify (G_OBJECT (self), "thumbnail-size");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (self, NULL);
 }
 
 /**
@@ -453,6 +459,9 @@ gdata_picasaweb_query_set_image_size (GDataPicasaWebQuery *self, const gchar *im
 	g_free (self->priv->image_size);
 	self->priv->image_size = g_strdup (image_size);
 	g_object_notify (G_OBJECT (self), "image-size");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (self, NULL);
 }
 
 /**
@@ -491,6 +500,9 @@ gdata_picasaweb_query_set_tag (GDataPicasaWebQuery *self, const gchar *tag)
 	g_free (self->priv->tag);
 	self->priv->tag = g_strdup (tag);
 	g_object_notify (G_OBJECT (self), "tag");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (self, NULL);
 }
 
 /**
@@ -547,6 +559,9 @@ gdata_picasaweb_query_set_bounding_box (GDataPicasaWebQuery *self, gdouble north
 	self->priv->bounding_box.east = east;
 	self->priv->bounding_box.south = south;
 	self->priv->bounding_box.west = west;
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (self, NULL);
 }
 
 /**
@@ -585,4 +600,7 @@ gdata_picasaweb_query_set_location (GDataPicasaWebQuery *self, const gchar *loca
 	g_free (self->priv->location);
 	self->priv->location = g_strdup (location);
 	g_object_notify (G_OBJECT (self), "location");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (self, NULL);
 }

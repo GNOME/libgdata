@@ -2,6 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
+ * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -361,6 +362,9 @@ gdata_documents_query_set_show_deleted (GDataDocumentsQuery *self, gboolean show
 	g_return_if_fail (GDATA_IS_DOCUMENTS_QUERY (self));
 	self->priv->show_deleted = show_deleted;
 	g_object_notify (G_OBJECT (self), "show-deleted");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -395,6 +399,9 @@ gdata_documents_query_set_show_folders (GDataDocumentsQuery *self, gboolean show
 	g_return_if_fail (GDATA_IS_DOCUMENTS_QUERY (self));
 	self->priv->show_folders = show_folders;
 	g_object_notify (G_OBJECT (self), "show-folders");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -433,6 +440,9 @@ gdata_documents_query_set_folder_id (GDataDocumentsQuery *self, const gchar *fol
 	g_free (self->priv->folder_id);
 	self->priv->folder_id = g_strdup (folder_id);
 	g_object_notify (G_OBJECT (self), "folder-id");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -494,6 +504,9 @@ gdata_documents_query_set_title (GDataDocumentsQuery *self, const gchar *title, 
 	g_object_notify (G_OBJECT (self), "exact-title");
 	g_object_notify (G_OBJECT (self), "title");
 	g_object_thaw_notify (G_OBJECT (self));
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -549,6 +562,9 @@ gdata_documents_query_add_reader (GDataDocumentsQuery *self, const gchar *email_
 
 	address = gdata_gd_email_address_new (email_address, "reader", NULL, FALSE);
 	self->priv->reader_addresses = g_list_append (self->priv->reader_addresses, address);
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -570,4 +586,7 @@ gdata_documents_query_add_collaborator (GDataDocumentsQuery *self, const gchar *
 
 	address = gdata_gd_email_address_new (email_address, "collaborator", NULL, FALSE);
 	self->priv->collaborator_addresses = g_list_append (self->priv->collaborator_addresses, address);
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }

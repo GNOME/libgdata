@@ -2,6 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
+ * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -587,6 +588,31 @@ test_new_document_with_collaborator (gconstpointer service)
 	g_object_unref (new_access_rule);
 }
 
+static void
+test_query_etag (void)
+{
+	GDataDocumentsQuery *query = gdata_documents_query_new (NULL);
+
+	/* Test that setting any property will unset the ETag */
+	g_test_bug ("613529");
+
+#define CHECK_ETAG(C) \
+	gdata_query_set_etag (GDATA_QUERY (query), "foobar");		\
+	(C);								\
+	g_assert (gdata_query_get_etag (GDATA_QUERY (query)) == NULL);
+
+	CHECK_ETAG (gdata_documents_query_set_show_deleted (query, FALSE))
+	CHECK_ETAG (gdata_documents_query_set_show_folders (query, TRUE))
+	CHECK_ETAG (gdata_documents_query_set_folder_id (query, "this-is-an-id"))
+	CHECK_ETAG (gdata_documents_query_set_title (query, "Title", FALSE))
+	CHECK_ETAG (gdata_documents_query_add_reader (query, "foo@example.com"))
+	CHECK_ETAG (gdata_documents_query_add_collaborator (query, "foo@example.com"))
+
+#undef CHECK_ETAG
+
+	g_object_unref (query);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -611,8 +637,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/documents/update/only_file", service, test_update_file);
 	g_test_add_data_func ("/documents/update/metadata_file", service, test_update_metadata_file);
 
-	g_test_add_data_func ("/documents/access_rules/add_document_with_a_collaborator", service,
-			      test_new_document_with_collaborator);
+	g_test_add_data_func ("/documents/access_rules/add_document_with_a_collaborator", service, test_new_document_with_collaborator);
 
 	g_test_add_data_func ("/documents/query/all_documents_with_folder", service, test_query_all_documents_with_folder);
 	g_test_add_data_func ("/documents/query/all_documents", service, test_query_all_documents);
@@ -620,10 +645,10 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/documents/query/all_documents_async", service, test_query_all_documents_async);
 
 	g_test_add_data_func ("/documents/move/move_to_folder", service, test_add_file_folder_and_move);
-
 	g_test_add_data_func ("/documents/move/remove_from_folder", service, test_add_remove_file_from_folder);
-
 	/*g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);*/
+
+	g_test_add_func ("/documents/query/etag", test_query_etag);
 
 	retval = g_test_run ();
 

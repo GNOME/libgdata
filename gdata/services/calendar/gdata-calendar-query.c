@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -443,6 +443,9 @@ gdata_calendar_query_set_future_events (GDataCalendarQuery *self, gboolean futur
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
 	self->priv->future_events = future_events;
 	g_object_notify (G_OBJECT (self), "future-events");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -477,6 +480,9 @@ gdata_calendar_query_set_order_by (GDataCalendarQuery *self, const gchar *order_
 	g_free (self->priv->order_by);
 	self->priv->order_by = g_strdup (order_by);
 	g_object_notify (G_OBJECT (self), "order-by");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -518,6 +524,9 @@ gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, G
 	}
 
 	g_object_notify (G_OBJECT (self), "recurrence-expansion-start");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -559,6 +568,9 @@ gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, GTi
 	}
 
 	g_object_notify (G_OBJECT (self), "recurrence-expansion-end");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -589,6 +601,9 @@ gdata_calendar_query_set_single_events (GDataCalendarQuery *self, gboolean singl
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
 	self->priv->single_events = single_events;
 	g_object_notify (G_OBJECT (self), "single-events");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -623,6 +638,9 @@ gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort
 	g_free (self->priv->sort_order);
 	self->priv->sort_order = g_strdup (sort_order);
 	g_object_notify (G_OBJECT (self), "sort-order");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -664,6 +682,9 @@ gdata_calendar_query_set_start_min (GDataCalendarQuery *self, GTimeVal *start_mi
 	}
 
 	g_object_notify (G_OBJECT (self), "start-min");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -705,6 +726,9 @@ gdata_calendar_query_set_start_max (GDataCalendarQuery *self, GTimeVal *start_ma
 	}
 
 	g_object_notify (G_OBJECT (self), "start-max");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -757,4 +781,7 @@ gdata_calendar_query_set_timezone (GDataCalendarQuery *self, const gchar *_timez
 	}
 
 	g_object_notify (G_OBJECT (self), "timezone");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }

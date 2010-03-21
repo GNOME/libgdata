@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -449,7 +449,7 @@ test_xml_recurrence (gconstpointer service)
 }
 
 static void
-test_query_uri (gconstpointer service)
+test_query_uri (void)
 {
 	GTimeVal time_val, time_val2;
 	gchar *query_uri;
@@ -515,6 +515,34 @@ test_query_uri (gconstpointer service)
 					"&singleevents=true&sortorder=descending&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z"
 					"&ctz=America%2FLos_Angeles");
 	g_free (query_uri);
+
+	g_object_unref (query);
+}
+
+static void
+test_query_etag (void)
+{
+	GDataCalendarQuery *query = gdata_calendar_query_new (NULL);
+
+	/* Test that setting any property will unset the ETag */
+	g_test_bug ("613529");
+
+#define CHECK_ETAG(C) \
+	gdata_query_set_etag (GDATA_QUERY (query), "foobar");		\
+	(C);								\
+	g_assert (gdata_query_get_etag (GDATA_QUERY (query)) == NULL);
+
+	CHECK_ETAG (gdata_calendar_query_set_future_events (query, FALSE))
+	CHECK_ETAG (gdata_calendar_query_set_order_by (query, "shizzle"))
+	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_start (query, NULL))
+	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_end (query, NULL))
+	CHECK_ETAG (gdata_calendar_query_set_single_events (query, FALSE))
+	CHECK_ETAG (gdata_calendar_query_set_sort_order (query, "shizzle"))
+	CHECK_ETAG (gdata_calendar_query_set_start_min (query, NULL))
+	CHECK_ETAG (gdata_calendar_query_set_start_max (query, NULL))
+	CHECK_ETAG (gdata_calendar_query_set_timezone (query, "about now"))
+
+#undef CHECK_ETAG
 
 	g_object_unref (query);
 }
@@ -722,7 +750,8 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/calendar/insert/simple", service, test_insert_simple);
 	g_test_add_data_func ("/calendar/xml/dates", service, test_xml_dates);
 	g_test_add_data_func ("/calendar/xml/recurrence", service, test_xml_recurrence);
-	g_test_add_data_func ("/calendar/query/uri", service, test_query_uri);
+	g_test_add_func ("/calendar/query/uri", test_query_uri);
+	g_test_add_func ("/calendar/query/etag", test_query_etag);
 	g_test_add_data_func ("/calendar/acls/get_rules", service, test_acls_get_rules);
 	if (g_test_slow () == TRUE) {
 		g_test_add_data_func ("/calendar/acls/insert_rule", service, test_acls_insert_rule);

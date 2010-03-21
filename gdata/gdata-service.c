@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1062,14 +1062,14 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
  * If the query is successful and the feed supports pagination, @query will be updated with the pagination URIs, and the next or previous page
  * can then be loaded by calling gdata_query_next_page() or gdata_query_previous_page() before running the query again.
  *
- * If the #GDataQuery's ETag is set and it finds a match on the server, %FALSE will be returned, but @error will remain unset. Otherwise,
+ * If the #GDataQuery's ETag is set and it finds a match on the server, %NULL will be returned, but @error will remain unset. Otherwise,
  * @query's ETag will be updated with the ETag from the returned feed, if available.
  *
  * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type,
-		     GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                     GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataServiceClass *klass;
 	GDataFeed *feed;

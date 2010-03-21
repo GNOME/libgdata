@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Richard Schwarting 2009 <aquarichy@gmail.com>
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1283,6 +1283,31 @@ test_album_new (gconstpointer service)
 	g_object_unref (album);
 }
 
+static void
+test_query_etag (void)
+{
+	GDataPicasaWebQuery *query = gdata_picasaweb_query_new (NULL);
+
+	/* Test that setting any property will unset the ETag */
+	g_test_bug ("613529");
+
+#define CHECK_ETAG(C) \
+	gdata_query_set_etag (GDATA_QUERY (query), "foobar");		\
+	(C);								\
+	g_assert (gdata_query_get_etag (GDATA_QUERY (query)) == NULL);
+
+	CHECK_ETAG (gdata_picasaweb_query_set_visibility (query, GDATA_PICASAWEB_PUBLIC))
+	CHECK_ETAG (gdata_picasaweb_query_set_thumbnail_size (query, "500x430"))
+	CHECK_ETAG (gdata_picasaweb_query_set_image_size (query, "1024x768"))
+	CHECK_ETAG (gdata_picasaweb_query_set_tag (query, "tag"))
+	CHECK_ETAG (gdata_picasaweb_query_set_bounding_box (query, 0.0, 1.0, 20.0, 12.5))
+	CHECK_ETAG (gdata_picasaweb_query_set_location (query, "Somewhere near here"))
+
+#undef CHECK_ETAG
+
+	g_object_unref (query);
+}
+
 /* TODO: test private, public albums, test uploading */
 /* TODO: add queries to update albums, files on the server; test those */
 
@@ -1319,6 +1344,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/picasaweb/download/photo", service, test_download);
 	g_test_add_data_func ("/picasaweb/download/thumbnails", service, test_download_thumbnails);
 	g_test_add_data_func ("/picasaweb/album/new", service, test_album_new);
+	g_test_add_func ("/picasaweb/query/etag", test_query_etag);
 
 	retval = g_test_run ();
 	g_object_unref (service);
