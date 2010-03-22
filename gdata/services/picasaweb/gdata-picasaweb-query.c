@@ -377,7 +377,7 @@ gdata_picasaweb_query_set_visibility (GDataPicasaWebQuery *self, GDataPicasaWebV
 	g_object_notify (G_OBJECT (self), "visibility");
 
 	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (self, NULL);
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -418,7 +418,7 @@ gdata_picasaweb_query_set_thumbnail_size (GDataPicasaWebQuery *self, const gchar
 	g_object_notify (G_OBJECT (self), "thumbnail-size");
 
 	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (self, NULL);
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -461,7 +461,7 @@ gdata_picasaweb_query_set_image_size (GDataPicasaWebQuery *self, const gchar *im
 	g_object_notify (G_OBJECT (self), "image-size");
 
 	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (self, NULL);
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -502,7 +502,7 @@ gdata_picasaweb_query_set_tag (GDataPicasaWebQuery *self, const gchar *tag)
 	g_object_notify (G_OBJECT (self), "tag");
 
 	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (self, NULL);
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -561,7 +561,7 @@ gdata_picasaweb_query_set_bounding_box (GDataPicasaWebQuery *self, gdouble north
 	self->priv->bounding_box.west = west;
 
 	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (self, NULL);
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -602,5 +602,5 @@ gdata_picasaweb_query_set_location (GDataPicasaWebQuery *self, const gchar *loca
 	g_object_notify (G_OBJECT (self), "location");
 
 	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (self, NULL);
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
