@@ -298,17 +298,8 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	gulong filesize_ulong;
 
 	/* Parse isDefault */
-	is_default = xmlGetProp (root_node, (xmlChar*) "isDefault");
-	if (is_default == NULL || xmlStrcmp (is_default, (xmlChar*) "false") == 0)
-		is_default_bool = FALSE;
-	else if (xmlStrcmp (is_default, (xmlChar*) "true") == 0)
-		is_default_bool = TRUE;
-	else {
-		gdata_parser_error_unknown_property_value (root_node, "isDefault", (gchar*) is_default, error);
-		xmlFree (is_default);
+	if (gdata_parser_boolean_from_property (root_node, "isDefault", &is_default_bool, 0, error) == FALSE)
 		return FALSE;
-	}
-	xmlFree (is_default);
 
 	/* Parse expression */
 	expression = xmlGetProp (root_node, (xmlChar*) "expression");

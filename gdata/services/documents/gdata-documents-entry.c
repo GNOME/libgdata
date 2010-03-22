@@ -220,17 +220,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 		xmlFree (last_viewed);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
-		xmlChar *writers_can_invite = xmlGetProp (node, (xmlChar*) "value");
-		if (xmlStrcmp (writers_can_invite, (xmlChar*) "true") == 0) {
-			self->priv->writers_can_invite = TRUE;
-		} else if (xmlStrcmp (writers_can_invite, (xmlChar*) "false") == 0) {
-			self->priv->writers_can_invite = FALSE;
-		} else {
-			gdata_parser_error_unknown_property_value (node, "value", (gchar*) writers_can_invite, error);
-			xmlFree (writers_can_invite);
+		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->writers_can_invite), -1, error) == FALSE)
 			return FALSE;
-		}
-		xmlFree (writers_can_invite);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
 		/* <gd:deleted> */
 		/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */

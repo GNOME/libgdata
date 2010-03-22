@@ -305,11 +305,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (times_cleaned);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "hidden") == 0) {
 		/* gCal:hidden */
-		xmlChar *hidden = xmlGetProp (node, (xmlChar*) "value");
-		if (hidden == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_calendar_set_is_hidden (self, (xmlStrcmp (hidden, (xmlChar*) "true") == 0) ? TRUE : FALSE);
-		xmlFree (hidden);
+		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->is_hidden), -1, error) == FALSE)
+			return FALSE;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "color") == 0) {
 		/* gCal:color */
 		xmlChar *value;
@@ -336,11 +333,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (value);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "selected") == 0) {
 		/* gCal:selected */
-		xmlChar *selected = xmlGetProp (node, (xmlChar*) "value");
-		if (selected == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_calendar_set_is_selected (self, (xmlStrcmp (selected, (xmlChar*) "true") == 0) ? TRUE : FALSE);
-		xmlFree (selected);
+		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->is_selected), -1, error) == FALSE)
+			return FALSE;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "accesslevel") == 0) {
 		/* gCal:accesslevel */
 		self->priv->access_level = (gchar*) xmlGetProp (node, (xmlChar*) "value");

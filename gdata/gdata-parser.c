@@ -204,6 +204,49 @@ gdata_parser_date_from_time_val (const GTimeVal *_time)
 	return g_strdup_printf ("%4d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
 }
 
+/*
+ * gdata_parser_boolean_from_property:
+ * @element: the XML element which owns the property to parse
+ * @property_name: the name of the property to parse
+ * @output: the return location for the parsed boolean value
+ * @default_output: the default value to return in @output if the property can't be found
+ * @error: a #GError, or %NULL
+ *
+ * Parses a GData boolean value from the property @property_name of @element.
+ * The boolean value should be of the form: "<element property_name='[true|false]'/>".
+ * A %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned in @error if parsing fails, and @output will not be set.
+ *
+ * If no property with the name @property_name exists in @element and @default_output is %0, @output will be set to %FALSE.
+ * If @default_output is %1, @output will be set to %TRUE. If @default_output is %-1, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR will be
+ * returned in @error.
+ *
+ * Return value: %TRUE on successful parsing, %FALSE otherwise
+ */
+gboolean
+gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error)
+{
+	xmlChar *value = xmlGetProp (element, (xmlChar*) property_name);
+
+	if (value == NULL) {
+		/* Missing property */
+		if (default_output == -1)
+			return gdata_parser_error_required_property_missing (element, property_name, error);
+		*output = (default_output == 1) ? TRUE : FALSE;
+	} else if (xmlStrcmp (value, (xmlChar*) "false") == 0) {
+		*output = FALSE;
+	} else if (xmlStrcmp (value, (xmlChar*) "true") == 0) {
+		*output = TRUE;
+	} else {
+		/* Parsing failed */
+		gdata_parser_error_unknown_property_value (element, property_name, (gchar*) value, error);
+		xmlFree (value);
+		return FALSE;
+	}
+
+	xmlFree (value);
+	return TRUE;
+}
+
 void
 gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post)
 {
@@ -272,6 +315,7 @@ gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const
 		g_string_append (xml_string, post);
 }
 
+/* TODO: Should be perfectly possible to make this modify the string in-place */
 gchar *
 gdata_parser_utf8_trim_whitespace (const gchar *s)
 {

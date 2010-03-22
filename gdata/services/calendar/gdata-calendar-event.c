@@ -537,32 +537,28 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		gdata_calendar_event_add_time (self, when);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanModify") == 0) {
 		/* gCal:guestsCanModify */
-		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_event_set_guests_can_modify (self, (xmlStrcmp (value, (xmlChar*) "true") == 0) ? TRUE : FALSE);
-		xmlFree (value);
+		gboolean guests_can_modify;
+		if (gdata_parser_boolean_from_property (node, "value", &guests_can_modify, -1, error) == FALSE)
+			return FALSE;
+		gdata_calendar_event_set_guests_can_modify (self, guests_can_modify);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanInviteOthers") == 0) {
 		/* gCal:guestsCanInviteOthers */
-		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_event_set_guests_can_invite_others (self, (xmlStrcmp (value, (xmlChar*) "true") == 0) ? TRUE : FALSE);
-		xmlFree (value);
+		gboolean guests_can_invite_others;
+		if (gdata_parser_boolean_from_property (node, "value", &guests_can_invite_others, -1, error) == FALSE)
+			return FALSE;
+		gdata_calendar_event_set_guests_can_invite_others (self, guests_can_invite_others);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanSeeGuests") == 0) {
 		/* gCal:guestsCanSeeGuests */
-		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_event_set_guests_can_see_guests (self, (xmlStrcmp (value, (xmlChar*) "true") == 0) ? TRUE : FALSE);
-		xmlFree (value);
+		gboolean guests_can_see_guests;
+		if (gdata_parser_boolean_from_property (node, "value", &guests_can_see_guests, -1, error) == FALSE)
+			return FALSE;
+		gdata_calendar_event_set_guests_can_see_guests (self, guests_can_see_guests);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "anyoneCanAddSelf") == 0) {
 		/* gCal:anyoneCanAddSelf */
-		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		gdata_calendar_event_set_anyone_can_add_self (self, (xmlStrcmp (value, (xmlChar*) "true") == 0) ? TRUE : FALSE);
-		xmlFree (value);
+		gboolean anyone_can_add_self;
+		if (gdata_parser_boolean_from_property (node, "value", &anyone_can_add_self, -1, error) == FALSE)
+			return FALSE;
+		gdata_calendar_event_set_anyone_can_add_self (self, anyone_can_add_self);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "who") == 0) {
 		/* gd:who */
 		GDataGDWho *who = GDATA_GD_WHO (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_WHO, doc, node, NULL, error));

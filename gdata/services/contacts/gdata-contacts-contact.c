@@ -386,7 +386,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			g_free (value);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
 		/* gContact:groupMembershipInfo */
-		xmlChar *href, *deleted;
+		xmlChar *href;
 		gboolean deleted_bool;
 
 		href = xmlGetProp (node, (xmlChar*) "href");
@@ -394,17 +394,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return gdata_parser_error_required_property_missing (node, "href", error);
 
 		/* Has it been deleted? */
-		deleted = xmlGetProp (node, (xmlChar*) "deleted");
-		if (deleted == NULL || xmlStrcmp (deleted, (xmlChar*) "false") == 0)
-			deleted_bool = FALSE;
-		else if (xmlStrcmp (deleted, (xmlChar*) "true") == 0)
-			deleted_bool = TRUE;
-		else {
-			gdata_parser_error_unknown_property_value (node, "deleted", (gchar*) deleted, error);
-			g_free (deleted);
+		if (gdata_parser_boolean_from_property (node, "deleted", &deleted_bool, 0, error) == FALSE)
 			return FALSE;
-		}
-		g_free (deleted);
 
 		/* Insert it into the hash table */
 		g_hash_table_insert (self->priv->groups, (gchar*) href, GUINT_TO_POINTER (deleted_bool));

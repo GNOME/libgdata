@@ -360,29 +360,19 @@ gdata_gd_organization_set_property (GObject *object, guint property_id, const GV
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel, *primary;
+	xmlChar *rel;
 	gboolean primary_bool;
 	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (parsable)->priv;
+
+	/* Is it the primary organisation? */
+	if (gdata_parser_boolean_from_property (root_node, "primary", &primary_bool, 0, error) == FALSE)
+		return FALSE;
 
 	rel = xmlGetProp (root_node, (xmlChar*) "rel");
 	if (rel != NULL && *rel == '\0') {
 		xmlFree (rel);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
-
-	/* Is it the primary organisation? */
-	primary = xmlGetProp (root_node, (xmlChar*) "primary");
-	if (primary == NULL || xmlStrcmp (primary, (xmlChar*) "false") == 0)
-		primary_bool = FALSE;
-	else if (xmlStrcmp (primary, (xmlChar*) "true") == 0)
-		primary_bool = TRUE;
-	else {
-		gdata_parser_error_unknown_property_value (root_node, "primary", (gchar*) primary, error);
-		xmlFree (primary);
-		xmlFree (rel);
-		return FALSE;
-	}
-	xmlFree (primary);
 
 	priv->relation_type = (gchar*) rel;
 	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
