@@ -348,7 +348,7 @@ gdata_gd_im_address_compare (const GDataGDIMAddress *a, const GDataGDIMAddress *
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

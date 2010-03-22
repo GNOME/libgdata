@@ -364,7 +364,7 @@ gdata_gd_name_compare (const GDataGDName *a, const GDataGDName *b)
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

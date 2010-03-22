@@ -320,7 +320,7 @@ gdata_gd_reminder_compare (const GDataGDReminder *a, const GDataGDReminder *b)
 
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

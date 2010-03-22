@@ -1266,6 +1266,12 @@ test_gd_email_address (void)
 	g_assert_cmpint (gdata_gd_email_address_compare (email, email2), !=, 0);
 	g_object_unref (email2);
 
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_email_address_compare (email, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_email_address_compare (NULL, email), ==, -1);
+	g_assert_cmpint (gdata_gd_email_address_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_email_address_compare (email, email), ==, 0);
+
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (email));
 	g_assert_cmpstr (xml, ==,
@@ -1327,6 +1333,12 @@ test_gd_im_address (void)
 	gdata_gd_im_address_set_protocol (im2, "http://schemas.google.com/g/2005#GOOGLE_TALK");
 	g_assert_cmpint (gdata_gd_im_address_compare (im, im2), !=, 0);
 	g_object_unref (im2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_im_address_compare (im, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_im_address_compare (NULL, im), ==, -1);
+	g_assert_cmpint (gdata_gd_im_address_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_im_address_compare (im, im), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (im));
@@ -1399,6 +1411,12 @@ test_gd_name (void)
 	gdata_gd_name_set_prefix (name2, "Mrs");
 	g_assert_cmpint (gdata_gd_name_compare (name, name2), !=, 0);
 	g_object_unref (name2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_name_compare (name, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_name_compare (NULL, name), ==, -1);
+	g_assert_cmpint (gdata_gd_name_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_name_compare (name, name), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (name));
@@ -1484,6 +1502,12 @@ test_gd_organization (void)
 	g_assert_cmpint (gdata_gd_organization_compare (org, org2), !=, 0);
 	g_object_unref (org2);
 
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_organization_compare (org, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_organization_compare (NULL, org), ==, -1);
+	g_assert_cmpint (gdata_gd_organization_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_organization_compare (org, org), ==, 0);
+
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (org));
 	g_assert_cmpstr (xml, ==,
@@ -1555,6 +1579,12 @@ test_gd_phone_number (void)
 	gdata_gd_phone_number_set_number (phone2, "+1 206 555 1212 666");
 	g_assert_cmpint (gdata_gd_phone_number_compare (phone, phone2), !=, 0);
 	g_object_unref (phone2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_phone_number_compare (phone, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_phone_number_compare (NULL, phone), ==, -1);
+	g_assert_cmpint (gdata_gd_phone_number_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_phone_number_compare (phone, phone), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (phone));
@@ -1629,6 +1659,12 @@ test_gd_postal_address (void)
 	gdata_gd_postal_address_set_city (postal2, "Atlas Mountains");
 	g_assert_cmpint (gdata_gd_postal_address_compare (postal, postal2), !=, 0);
 	g_object_unref (postal2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_postal_address_compare (postal, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_postal_address_compare (NULL, postal), ==, -1);
+	g_assert_cmpint (gdata_gd_postal_address_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_postal_address_compare (postal, postal), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (postal));
@@ -1720,6 +1756,12 @@ test_gd_reminder (void)
 	g_assert (GDATA_IS_GD_REMINDER (reminder));
 	g_clear_error (&error);
 
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_reminder_compare (reminder, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_reminder_compare (NULL, reminder), ==, -1);
+	g_assert_cmpint (gdata_gd_reminder_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_reminder_compare (reminder, reminder), ==, 0);
+
 	/* Check the properties */
 	g_assert (gdata_gd_reminder_get_method (reminder) == NULL);
 	g_assert (gdata_gd_reminder_is_absolute_time (reminder) == FALSE);
@@ -1790,6 +1832,12 @@ test_gd_when (void)
 	gdata_gd_when_set_end_time (when2, &time_val2);
 	g_assert_cmpint (gdata_gd_when_compare (when, when2), !=, 0);
 	g_object_unref (when2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_when_compare (when, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_when_compare (NULL, when), ==, -1);
+	g_assert_cmpint (gdata_gd_when_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_when_compare (when, when), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (when));
@@ -1866,6 +1914,12 @@ test_gd_where (void)
 	g_assert_cmpint (gdata_gd_where_compare (where, where2), !=, 0);
 	g_object_unref (where2);
 
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_where_compare (where, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_where_compare (NULL, where), ==, -1);
+	g_assert_cmpint (gdata_gd_where_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_where_compare (where, where), ==, 0);
+
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (where));
 	g_assert_cmpstr (xml, ==,
@@ -1923,6 +1977,12 @@ test_gd_who (void)
 	gdata_gd_who_set_email_address (who2, "john@example.com");
 	g_assert_cmpint (gdata_gd_who_compare (who, who2), !=, 0);
 	g_object_unref (who2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gd_who_compare (who, NULL), ==, 1);
+	g_assert_cmpint (gdata_gd_who_compare (NULL, who), ==, -1);
+	g_assert_cmpint (gdata_gd_who_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gd_who_compare (who, who), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (who));

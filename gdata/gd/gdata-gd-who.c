@@ -293,7 +293,7 @@ gdata_gd_who_compare (const GDataGDWho *a, const GDataGDWho *b)
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)
