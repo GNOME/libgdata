@@ -25,6 +25,8 @@
  *
  * #GDataGDReminder represents a "reminder" element from the
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>

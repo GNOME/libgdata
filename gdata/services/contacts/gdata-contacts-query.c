@@ -28,6 +28,8 @@
  *
  * For more information on the custom GData query parameters supported by #GDataContactsQuery, see the <ulink type="http"
  * url="http://code.google.com/apis/contacts/docs/2.0/reference.html#Parameters">online documentation</ulink>.
+ *
+ * Since: 0.2.0
  **/
 
 #include <config.h>

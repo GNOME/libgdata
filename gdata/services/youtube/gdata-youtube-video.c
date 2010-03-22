@@ -1016,6 +1016,8 @@ gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self)
  * The return value from this function is purely informational, and no obligation is assumed.
  *
  * Return value: %TRUE if the video is restricted in @country, %FALSE otherwise
+ *
+ * Since: 0.4.0
  **/
 gboolean
 gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gchar *country)

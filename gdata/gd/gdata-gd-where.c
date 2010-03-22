@@ -25,6 +25,8 @@
  *
  * #GDataGDWhere represents a "where" element from the
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>
@@ -260,6 +262,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Currently, entryLink functionality is not implemented in #GDataGDWhere.
  *
  * Return value: a new #GDataGDWhere; unref with g_object_unref()
+ *
+ * Since: 0.2.0
  **/
 GDataGDWhere *
 gdata_gd_where_new (const gchar *relation_type, const gchar *value_string, const gchar *label)

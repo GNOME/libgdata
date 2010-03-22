@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Richard Schwarting 2009 <aquarichy@gmail.com>
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,8 @@
  *
  * For more details of PicasaWeb's GData API, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/developers_guide_protocol.html">
  * online documentation</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <config.h>
@@ -68,6 +70,8 @@ gdata_picasaweb_service_init (GDataPicasaWebService *self)
  * Builds a URI to use when querying for albums or a user.
  *
  * Return value: a constructed URI; free with g_free()
+ *
+ * Since: 0.4.0
  */
 static gchar *
 create_uri (GDataPicasaWebService *self, const gchar *username, const gchar *type)

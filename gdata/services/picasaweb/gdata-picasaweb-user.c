@@ -26,6 +26,8 @@
  *
  * #GDataPicasaWebUser is a subclass of #GDataEntry to represent properties for a PicasaWeb user. It adds a couple of
  * properties which are specific to the Google PicasaWeb API.
+ *
+ * Since: 0.6.0
  **/
 
 #include <glib.h>

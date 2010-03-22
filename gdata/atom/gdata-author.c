@@ -25,6 +25,8 @@
  *
  * #GDataAuthor represents a "author" element from the
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>

@@ -26,6 +26,8 @@
  * #GDataYouTubeCredit represents the YouTube-specific customizations to #GDataMediaCredit. For more information,
  * see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:credit">
  * online documentation</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>
