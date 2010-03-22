@@ -287,7 +287,7 @@ gdata_gd_where_compare (const GDataGDWhere *a, const GDataGDWhere *b)
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

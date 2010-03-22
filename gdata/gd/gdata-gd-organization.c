@@ -522,7 +522,7 @@ gdata_gd_organization_compare (const GDataGDOrganization *a, const GDataGDOrgani
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

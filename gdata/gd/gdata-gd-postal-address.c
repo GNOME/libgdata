@@ -694,7 +694,7 @@ gdata_gd_postal_address_compare (const GDataGDPostalAddress *a, const GDataGDPos
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

@@ -404,7 +404,7 @@ gdata_gd_when_compare (const GDataGDWhen *a, const GDataGDWhen *b)
 
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)

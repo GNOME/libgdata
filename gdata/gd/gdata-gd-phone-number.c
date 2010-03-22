@@ -374,7 +374,7 @@ gdata_gd_phone_number_compare (const GDataGDPhoneNumber *a, const GDataGDPhoneNu
 {
 	if (a == NULL && b != NULL)
 		return -1;
-	else if (b == NULL)
+	else if (a != NULL && b == NULL)
 		return 1;
 
 	if (a == b)
