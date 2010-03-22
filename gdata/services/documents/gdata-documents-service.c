@@ -218,7 +218,7 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
  * @document_type should be the expected type of the document to be returned. e.g. %GDATA_TYPE_DOCUMENTS_SPREADSHEET if you're querying
  * for a spreadsheet.
  *
- * @document_id should be the ID of the document as returned by gdata_document_entry_get_document_id().
+ * @document_id should be the ID of the document as returned by gdata_documents_entry_get_document_id().
  *
  * Parameters and errors are as for gdata_service_query().
  *

@@ -413,11 +413,15 @@ gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self, GTimeVal *last
  * gdata_documents_entry_get_path:
  * @self: a #GDataDocumentsEntry
  *
- * Gets the #GDataDocumentsEntry:path property.
+ * Builds a path for the #GDataDocumentsEntry, starting from a root node and traversing the folders containing the document, then
+ * ending with the document's ID.
  *
- * Note: the path is based on the entry ID, and not the entry human readable name (#GDataEntry::title).
+ * An example path would be: "/folder_id1/folder_id2/document_id".
  *
- * Return value: the folder hierarchy path containing the entry, or %NULL; free with g_free()
+ * Note: the path is based on the entry/document IDs of the folders (#GDataEntry:id) and document (#GDataDocumentsEntry:document-id),
+ * and not the entries' human-readable names (#GDataEntry:title).
+ *
+ * Return value: the folder hierarchy path containing the document, or %NULL; free with g_free()
  *
  * Since: 0.4.0
  **/
@@ -438,6 +442,9 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 		gchar *folder_id = NULL;
 		gchar **link_href_cut = g_strsplit (gdata_link_get_uri (GDATA_LINK (element->data)), "/", 0);
 
+		/* Extract the folder ID from the folder URI, which is of the form:
+		 *   http://docs.google.com/feeds/documents/private/full/folder%3Afolder_id
+		 * We want the "folder_id" bit. */
 		for (i = 0;; i++) {
 			gchar **path_cut = NULL;
 
@@ -457,6 +464,7 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 		g_strfreev (link_href_cut);
 		g_assert (folder_id != NULL);
 
+		/* Append the folder ID to our path */
 		g_string_append (path, folder_id);
 		g_string_append_c (path, '/');
 		g_free (folder_id);
