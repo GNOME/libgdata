@@ -35,6 +35,8 @@
  * 	<varlistentry><term>#GDataGDName:prefix</term><listitem><para>Sir</para></listitem></varlistentry>
  * 	<varlistentry><term>#GDataGDName:suffix</term><listitem><para>KG</para></listitem></varlistentry>
  * </variablelist>
+ *
+ * Since: 0.5.0
  **/
 
 #include <glib.h>

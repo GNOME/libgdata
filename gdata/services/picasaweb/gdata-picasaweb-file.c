@@ -28,6 +28,8 @@
  *
  * For more details of Google PicasaWeb's GData API, see the
  * <ulink type="http" url="http://code.google.com/apis/picasaweb/developers_guide_protocol.html">online documentation</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <config.h>

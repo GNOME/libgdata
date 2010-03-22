@@ -25,6 +25,8 @@
  *
  * #GDataYouTubeState represents a "state" element from the
  * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">YouTube namespace</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>

@@ -25,6 +25,8 @@
  *
  * #GDataMediaCategory represents a "category" element from the
  * <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>

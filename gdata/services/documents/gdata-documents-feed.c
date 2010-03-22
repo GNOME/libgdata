@@ -2,6 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
+ * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +29,8 @@
  *
  * Each #GDataDocumentsEntry represents a single object on the Google Documents online service, such as a text document, presentation document,
  * spreadsheet document or a folder, and the #GDataDocumentsFeed represents a collection of those objects.
+ *
+ * Since: 0.4.0
  **/
 
 #include <config.h>

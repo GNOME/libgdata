@@ -27,6 +27,8 @@
  * <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
  *
  * The class only implements parsing, not XML output, at the moment.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>

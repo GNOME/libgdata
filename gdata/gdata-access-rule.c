@@ -26,6 +26,8 @@
  *
  * #GDataAccessRule is a subclass of #GDataEntry to represent a generic access rule from an access control list (ACL).
  * It is returned by the ACL methods implemented in the #GDataAccessHandler interface.
+ *
+ * Since: 0.3.0
  **/
 
 #include <config.h>

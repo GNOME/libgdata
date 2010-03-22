@@ -29,6 +29,8 @@
  *
  * For more information on the custom GData query parameters supported by #GDataDocumentsQuery, see the <ulink type="http"
  * url="http://code.google.com/apis/documents/docs/2.0/reference.html#Parameters">online documentation</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <config.h>

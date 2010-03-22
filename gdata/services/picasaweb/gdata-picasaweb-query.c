@@ -29,6 +29,8 @@
  *
  * For more information on the custom GData query parameters supported by #GDataPicasaWebQuery, see the <ulink type="http"
  * url="http://code.google.com/apis/picasaweb/reference.html#Parameters">online documentation</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <config.h>

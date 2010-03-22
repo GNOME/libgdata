@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,8 @@ typedef enum {
  * @GDATA_MEDIA_EXECUTABLE: the media is an executable file
  *
  * An enum representing the possible values of #GDataMediaContent:medium.
+ *
+ * Since: 0.4.0
  **/
 typedef enum {
 	GDATA_MEDIA_UNKNOWN,

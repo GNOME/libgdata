@@ -25,6 +25,8 @@
  *
  * #GDataGDWho represents an "who" element from the
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>
@@ -265,6 +267,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Currently, entryLink functionality is not implemented in #GDataGDWho.
  *
  * Return value: a new #GDataGDWho; unref with g_object_unref()
+ *
+ * Since: 0.2.0
  **/
 GDataGDWho *
 gdata_gd_who_new (const gchar *relation_type, const gchar *value_string, const gchar *email_address)

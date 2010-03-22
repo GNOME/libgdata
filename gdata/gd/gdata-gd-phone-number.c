@@ -25,6 +25,8 @@
  *
  * #GDataGDPhoneNumber represents a "phoneNumber" element from the
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>

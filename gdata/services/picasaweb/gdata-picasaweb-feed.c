@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
- * Copyright (C) Richard Schwarting 2009 <aquarichy@gmail.com>
+ * Copyright (C) Richard Schwarting 2009–2010 <aquarichy@gmail.com>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,8 @@
  *
  * #GDataPicasaWebFeed is a subclass of #GDataFeed to represent properties for a PicasaWeb feed. It adds a couple of
  * properties which are specific to the Google PicasaWeb API.
+ *
+ * Since: 0.6.0
  **/
 
 #include <glib.h>

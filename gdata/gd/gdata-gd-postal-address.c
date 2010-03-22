@@ -26,6 +26,8 @@
  * #GDataGDPostalAddress represents a "structuredPostalAddress" element from the
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
  * Note that it does not represent a simple "postalAddress" element, as "structuredPostalAddress" is now used wherever possible in the GData API.
+ *
+ * Since: 0.4.0
  **/
 
 #include <glib.h>

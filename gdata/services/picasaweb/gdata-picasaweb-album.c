@@ -28,6 +28,8 @@
  *
  * For more details of Google PicasaWeb's GData API, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html">
  * online documentation</ulink>.
+ *
+ * Since: 0.4.0
  **/
 
 /* TODO: support the album cover/icon ? I think this is already done with the thumbnails, but we don't set it yet :( */

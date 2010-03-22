@@ -28,6 +28,8 @@
  *
  * For more information on the custom GData query parameters supported by #GDataYouTubeQuery, see the <ulink type="http"
  * url="http://code.google.com/apis/youtube/2.0/reference.html#Custom_parameters">online documentation</ulink>.
+ *
+ * Since: 0.3.0
  **/
 
 #include <config.h>

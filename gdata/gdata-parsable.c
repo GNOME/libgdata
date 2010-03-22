@@ -27,6 +27,8 @@
  * both of which require XML parsing which can be extended by subclassing.
  *
  * It allows methods to be defined for handling the root XML node, each of its child nodes, and a method to be called after parsing is complete.
+ *
+ * Since: 0.3.0
  **/
 
 #include <config.h>
@@ -137,6 +139,8 @@ real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer us
  * If an error occurs during parsing, a suitable error from #GDataParserError will be returned.
  *
  * Return value: a new #GDataParsable, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.4.0
  **/
 GDataParsable *
 gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, GError **error)
@@ -271,6 +275,8 @@ filter_namespaces_cb (gchar *prefix, gchar *href, GHashTable *canonical_namespac
  * all its namespaces declared properly in a self-contained fashion, and is valid for stand-alone use.
  *
  * Return value: the object's XML; free with g_free()
+ *
+ * Since: 0.4.0
  **/
 gchar *
 gdata_parsable_get_xml (GDataParsable *self)
@@ -290,6 +296,8 @@ gdata_parsable_get_xml (GDataParsable *self)
  * @declare_namespaces is %FALSE, none of the used namespaces are declared, and the XML is suitable for insertion into a larger XML tree.
  *
  * Return value: the object's XML; free with g_free()
+ *
+ * Since: 0.4.0
  */
 void
 _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean declare_namespaces)
