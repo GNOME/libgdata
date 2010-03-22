@@ -82,13 +82,13 @@ typedef enum {
  * directly to resolve the issue before logging in using a non-Google application.
  * @GDATA_AUTHENTICATION_ERROR_TERMS_NOT_AGREED: The user has not agreed to terms. The user will need to access their Google account directly to
  * resolve the issue before logging in using a non-Google application.
- * @GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED: A CAPTCHA is required. (A response with this error code will also contain an image URL and a
+ * @GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED: A CAPTCHA is required. (A response with this error code will also contain an image URI and a
  * CAPTCHA token.)
  * @GDATA_AUTHENTICATION_ERROR_ACCOUNT_DELETED: The user account has been deleted.
  * @GDATA_AUTHENTICATION_ERROR_ACCOUNT_DISABLED: The user account has been disabled.
  * @GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED: The user's access to the specified service has been disabled. (The user account may still be valid.)
  *
- * Error codes for #GDataDataService authentication operations. See http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Errors for
+ * Error codes for #GDataService authentication operations. See http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Errors for
  * the official reference.
  **/
 typedef enum {

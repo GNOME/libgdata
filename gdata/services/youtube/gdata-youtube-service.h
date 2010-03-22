@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * @GDATA_YOUTUBE_RECENTLY_FEATURED_FEED: This feed contains videos recently featured on the YouTube home page or featured videos tab.
  * @GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED: This feed contains videos suitable for playback on mobile devices.
  *
- * Standard feed types for standard feed queries with gata_youtube_service_query_standard_feed(). For more information, see
+ * Standard feed types for standard feed queries with gdata_youtube_service_query_standard_feed(). For more information, see
  * the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/developers_guide_protocol.html#Standard_feeds">online documentation</ulink>.
  **/
 typedef enum {

@@ -103,9 +103,17 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	parsable_class->get_namespaces = get_namespaces;
 	parsable_class->element_name = "entry";
 
+	/**
+	 * GDataEntry:title:
+	 *
+	 * A human-readable title for the entry.
+	 *
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.title">
+	 * Atom specification</ulink>.
+	 **/
 	g_object_class_install_property (gobject_class, PROP_TITLE,
 				g_param_spec_string ("title",
-					"Title", "The title for this entry.",
+					"Title", "A human-readable title for the entry.",
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -125,32 +133,85 @@ gdata_entry_class_init (GDataEntryClass *klass)
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * GDataEntry:id:
+	 *
+	 * A permanent, universally unique identifier for the entry, in IRI form.
+	 *
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.id">
+	 * Atom specification</ulink>.
+	 **/
 	g_object_class_install_property (gobject_class, PROP_ID,
 				g_param_spec_string ("id",
-					"ID", "The ID for this entry.",
+					"ID", "A permanent, universally unique identifier for the entry, in IRI form.",
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
-	/* Since: 0.2.0 */
+
+	/**
+	 * GDataEntry:etag:
+	 *
+	 * An identifier for a particular version of the entry. This changes every time the entry on the server changes, and can be used
+	 * for conditional retrieval and locking.
+	 *
+	 * For more information, see the <ulink type="http://code.google.com/apis/gdata/docs/2.0/reference.html#ResourceVersioning">
+	 * GData specification</ulink>.
+	 *
+	 * Since: 0.2.0
+	 **/
 	g_object_class_install_property (gobject_class, PROP_ETAG,
 				g_param_spec_string ("etag",
-					"ETag", "The ETag for this entry.",
+					"ETag", "An identifier for a particular version of the entry.",
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataEntry:updated:
+	 *
+	 * The date and time the entry was most recently updated in a significant way.
+	 *
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.updated">
+	 * Atom specification</ulink>.
+	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED,
 				g_param_spec_boxed ("updated",
-					"Updated", "The last update time for this entry.",
+					"Updated", "The date and time the entry was most recently updated in a significant way.",
 					GDATA_TYPE_G_TIME_VAL,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataEntry:published:
+	 *
+	 * The date and time the entry was first published or made available.
+	 *
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.published">
+	 * Atom specification</ulink>.
+	 **/
 	g_object_class_install_property (gobject_class, PROP_PUBLISHED,
 				g_param_spec_boxed ("published",
-					"Published", "The time this entry was published.",
+					"Published", "The date and time the entry was first published or made available.",
 					GDATA_TYPE_G_TIME_VAL,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataEntry:content:
+	 *
+	 * The content of the entry.
+	 *
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.published">
+	 * Atom specification</ulink>.
+	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT,
 				g_param_spec_string ("content",
-					"Content", "The textual content of this entry.",
+					"Content", "The content of the entry.",
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataEntry:is-inserted:
+	 *
+	 * Whether the entry has been inserted on the server. This is %FALSE for entries which have just been created using gdata_entry_new() and
+	 * %TRUE for entries returned from the server by queries. It is set to %TRUE when an entry is inserted using gdata_service_insert().
+	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_INSERTED,
 				g_param_spec_boolean ("is-inserted",
 					"Inserted?", "Whether the entry has been inserted on the server.",
@@ -159,7 +220,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	/**
 	 * GDataEntry:rights:
 	 *
-	 * The ownership rights pertaining to this entry. 
+	 * The ownership rights pertaining to the entry.
 	 *
 	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.rights">
 	 * Atom specification</ulink>.
@@ -168,7 +229,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RIGHTS,
 					 g_param_spec_string ("rights",
-							      "Rights", "Rights pertaining to the entry.",
+							      "Rights", "The ownership rights pertaining to the entry.",
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }

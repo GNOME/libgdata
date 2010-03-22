@@ -113,7 +113,7 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	/**
 	 * GDataGDWho:email-address:
 	 *
-	 * The e-mail address of the person represented by the #GDataWho.
+	 * The e-mail address of the person represented by the #GDataGDWho.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
@@ -122,7 +122,7 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EMAIL_ADDRESS,
 				g_param_spec_string ("email-address",
-					"E-mail address", "The e-mail address of the person represented by the #GDataWho.",
+					"E-mail address", "The e-mail address of the person represented by the #GDataGDWho.",
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
