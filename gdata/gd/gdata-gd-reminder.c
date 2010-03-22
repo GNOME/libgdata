@@ -295,7 +295,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Since: 0.2.0
  **/
 GDataGDReminder *
-gdata_gd_reminder_new (const gchar *method, GTimeVal *absolute_time, gint relative_time)
+gdata_gd_reminder_new (const gchar *method, const GTimeVal *absolute_time, gint relative_time)
 {
 	g_return_val_if_fail (absolute_time == NULL || relative_time == -1, NULL);
 	return g_object_new (GDATA_TYPE_GD_REMINDER, "absolute-time", absolute_time, "relative-time", relative_time, "method", method, NULL);
@@ -413,7 +413,7 @@ gdata_gd_reminder_get_absolute_time (GDataGDReminder *self, GTimeVal *absolute_t
  * Since: 0.4.0
  **/
 void
-gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, GTimeVal *absolute_time)
+gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, const GTimeVal *absolute_time)
 {
 	g_return_if_fail (GDATA_IS_GD_REMINDER (self));
 

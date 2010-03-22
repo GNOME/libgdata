@@ -148,7 +148,7 @@ gboolean gdata_youtube_video_is_draft (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft);
 GDataYouTubeState *gdata_youtube_video_get_state (GDataYouTubeVideo *self);
 void gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
-void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
+void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, const GTimeVal *recorded);
 GDataYouTubeAspectRatio gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, GDataYouTubeAspectRatio aspect_ratio);
 

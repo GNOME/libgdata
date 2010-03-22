@@ -379,7 +379,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Since: 0.2.0
  **/
 GDataGDWhen *
-gdata_gd_when_new (GTimeVal *start_time, GTimeVal *end_time, gboolean is_date)
+gdata_gd_when_new (const GTimeVal *start_time, const GTimeVal *end_time, gboolean is_date)
 {
 	g_return_val_if_fail (start_time != NULL, NULL);
 	return g_object_new (GDATA_TYPE_GD_WHEN, "start-time", start_time, "end-time", end_time, "is-date", is_date, NULL);
@@ -451,7 +451,7 @@ gdata_gd_when_get_start_time (GDataGDWhen *self, GTimeVal *start_time)
  * Since: 0.4.0
  **/
 void
-gdata_gd_when_set_start_time (GDataGDWhen *self, GTimeVal *start_time)
+gdata_gd_when_set_start_time (GDataGDWhen *self, const GTimeVal *start_time)
 {
 	g_return_if_fail (GDATA_IS_GD_WHEN (self));
 	g_return_if_fail (start_time != NULL);
@@ -491,7 +491,7 @@ gdata_gd_when_get_end_time (GDataGDWhen *self, GTimeVal *end_time)
  * Since: 0.4.0
  **/
 void
-gdata_gd_when_set_end_time (GDataGDWhen *self, GTimeVal *end_time)
+gdata_gd_when_set_end_time (GDataGDWhen *self, const GTimeVal *end_time)
 {
 	g_return_if_fail (GDATA_IS_GD_WHEN (self));
 

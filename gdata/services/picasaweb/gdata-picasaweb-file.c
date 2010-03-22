@@ -1274,7 +1274,7 @@ gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self, GTimeVal *timestam
  * Since: 0.4.0
  **/
 void
-gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, GTimeVal *timestamp)
+gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, const GTimeVal *timestamp)
 {
 	/* RHSTODO: I think the timestamp value is just being
 	   over-ridden by the file's actual EXIF time value; unless

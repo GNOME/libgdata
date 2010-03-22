@@ -763,7 +763,7 @@ gdata_query_get_updated_min (GDataQuery *self, GTimeVal *updated_min)
  * Set @updated_min to %NULL to unset the property in the query URI.
  **/
 void
-gdata_query_set_updated_min (GDataQuery *self, GTimeVal *updated_min)
+gdata_query_set_updated_min (GDataQuery *self, const GTimeVal *updated_min)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
 
@@ -808,7 +808,7 @@ gdata_query_get_updated_max (GDataQuery *self, GTimeVal *updated_max)
  * Set @updated_max to %NULL to unset the property in the query URI.
  **/
 void
-gdata_query_set_updated_max (GDataQuery *self, GTimeVal *updated_max)
+gdata_query_set_updated_max (GDataQuery *self, const GTimeVal *updated_max)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
 
@@ -853,7 +853,7 @@ gdata_query_get_published_min (GDataQuery *self, GTimeVal *published_min)
  * Set @published_min to %NULL to unset the property in the query URI.
  **/
 void
-gdata_query_set_published_min (GDataQuery *self, GTimeVal *published_min)
+gdata_query_set_published_min (GDataQuery *self, const GTimeVal *published_min)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
 
@@ -898,7 +898,7 @@ gdata_query_get_published_max (GDataQuery *self, GTimeVal *published_max)
  * Set @published_max to %NULL to unset the property in the query URI.
  **/
 void
-gdata_query_set_published_max (GDataQuery *self, GTimeVal *published_max)
+gdata_query_set_published_max (GDataQuery *self, const GTimeVal *published_max)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
 

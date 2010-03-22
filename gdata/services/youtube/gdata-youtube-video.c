@@ -1371,7 +1371,7 @@ gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
  * Since: 0.3.0
  **/
 void
-gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
+gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, const GTimeVal *recorded)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 	if (recorded == NULL) {

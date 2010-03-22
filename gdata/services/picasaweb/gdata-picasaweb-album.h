@@ -88,7 +88,7 @@ void gdata_picasaweb_album_set_location (GDataPicasaWebAlbum *self, const gchar 
 GDataPicasaWebVisibility gdata_picasaweb_album_get_visibility (GDataPicasaWebAlbum *self);
 void gdata_picasaweb_album_set_visibility (GDataPicasaWebAlbum *self, GDataPicasaWebVisibility visibility);
 void gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self, GTimeVal *timestamp);
-void gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, GTimeVal *timestamp);
+void gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, const GTimeVal *timestamp);
 guint gdata_picasaweb_album_get_num_photos (GDataPicasaWebAlbum *self);
 guint gdata_picasaweb_album_get_num_photos_remaining (GDataPicasaWebAlbum *self);
 glong gdata_picasaweb_album_get_bytes_used (GDataPicasaWebAlbum *self);

@@ -80,7 +80,7 @@ void gdata_picasaweb_file_set_client (GDataPicasaWebFile *self, const gchar *cli
 const gchar *gdata_picasaweb_file_get_checksum (GDataPicasaWebFile *self);
 void gdata_picasaweb_file_set_checksum (GDataPicasaWebFile *self, const gchar *checksum);
 void gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self, GTimeVal *timestamp);
-void gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, GTimeVal *timestamp);
+void gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, const GTimeVal *timestamp);
 gboolean gdata_picasaweb_file_is_commenting_enabled (GDataPicasaWebFile *self);
 void gdata_picasaweb_file_set_is_commenting_enabled (GDataPicasaWebFile *self, gboolean is_commenting_enabled);
 guint gdata_picasaweb_file_get_comment_count (GDataPicasaWebFile *self);

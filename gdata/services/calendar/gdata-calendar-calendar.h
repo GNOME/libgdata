@@ -67,7 +67,7 @@ guint gdata_calendar_calendar_get_times_cleaned (GDataCalendarCalendar *self);
 gboolean gdata_calendar_calendar_is_hidden (GDataCalendarCalendar *self);
 void gdata_calendar_calendar_set_is_hidden (GDataCalendarCalendar *self, gboolean is_hidden);
 void gdata_calendar_calendar_get_color (GDataCalendarCalendar *self, GDataColor *color);
-void gdata_calendar_calendar_set_color (GDataCalendarCalendar *self, GDataColor *color);
+void gdata_calendar_calendar_set_color (GDataCalendarCalendar *self, const GDataColor *color);
 gboolean gdata_calendar_calendar_is_selected (GDataCalendarCalendar *self);
 void gdata_calendar_calendar_set_is_selected (GDataCalendarCalendar *self, gboolean is_selected);
 const gchar *gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self);

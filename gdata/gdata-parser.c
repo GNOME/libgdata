@@ -192,7 +192,7 @@ gdata_parser_time_val_from_date (const gchar *date, GTimeVal *_time)
 }
 
 gchar *
-gdata_parser_date_from_time_val (GTimeVal *_time)
+gdata_parser_date_from_time_val (const GTimeVal *_time)
 {
 	time_t secs;
 	struct tm *tm;

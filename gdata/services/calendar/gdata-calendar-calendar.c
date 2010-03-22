@@ -509,7 +509,7 @@ gdata_calendar_calendar_get_color (GDataCalendarCalendar *self, GDataColor *colo
  * Sets the #GDataCalendarCalendar:color property to @color.
  **/
 void
-gdata_calendar_calendar_set_color (GDataCalendarCalendar *self, GDataColor *color)
+gdata_calendar_calendar_set_color (GDataCalendarCalendar *self, const GDataColor *color)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_CALENDAR (self));
 	g_return_if_fail (color != NULL);

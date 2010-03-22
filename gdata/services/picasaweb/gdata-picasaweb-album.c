@@ -923,7 +923,7 @@ gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self, GTimeVal *timest
  * Since: 0.4.0
  **/
 void
-gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, GTimeVal *timestamp)
+gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, const GTimeVal *timestamp)
 {
 	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
 	if (timestamp == NULL)

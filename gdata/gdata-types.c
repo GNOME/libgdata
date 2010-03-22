@@ -147,7 +147,7 @@ gdata_color_from_hexadecimal (const gchar *hexadecimal, GDataColor *color)
  * Since: 0.3.0
  **/
 gchar *
-gdata_color_to_hexadecimal (GDataColor *color)
+gdata_color_to_hexadecimal (const GDataColor *color)
 {
 	g_return_val_if_fail (color != NULL, NULL);
 	return g_strdup_printf ("#%02x%02x%02x", color->red, color->green, color->blue);

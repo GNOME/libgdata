@@ -406,7 +406,7 @@ gdata_calendar_query_new (const gchar *q)
  * Return value: a new #GDataCalendarQuery
  **/
 GDataCalendarQuery *
-gdata_calendar_query_new_with_limits (const gchar *q, GTimeVal *start_min, GTimeVal *start_max)
+gdata_calendar_query_new_with_limits (const gchar *q, const GTimeVal *start_min, const GTimeVal *start_max)
 {
 	return g_object_new (GDATA_TYPE_CALENDAR_QUERY,
 			     "q", q,
@@ -512,7 +512,7 @@ gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self, G
  * Set @start to %NULL to unset the property in the query URI.
  **/
 void
-gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, GTimeVal *start)
+gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, const GTimeVal *start)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
 
@@ -556,7 +556,7 @@ gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self, GTi
  * Set @end to %NULL to unset the property in the query URI.
  **/
 void
-gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, GTimeVal *end)
+gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, const GTimeVal *end)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
 
@@ -670,7 +670,7 @@ gdata_calendar_query_get_start_min (GDataCalendarQuery *self, GTimeVal *start_mi
  * Set @start_min to %NULL to unset the property in the query URI.
  **/
 void
-gdata_calendar_query_set_start_min (GDataCalendarQuery *self, GTimeVal *start_min)
+gdata_calendar_query_set_start_min (GDataCalendarQuery *self, const GTimeVal *start_min)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
 
@@ -714,7 +714,7 @@ gdata_calendar_query_get_start_max (GDataCalendarQuery *self, GTimeVal *start_ma
  * Set @start_max to %NULL to unset the property in the query URI.
  **/
 void
-gdata_calendar_query_set_start_max (GDataCalendarQuery *self, GTimeVal *start_max)
+gdata_calendar_query_set_start_max (GDataCalendarQuery *self, const GTimeVal *start_max)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
 
