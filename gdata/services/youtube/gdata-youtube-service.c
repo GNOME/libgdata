@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -289,7 +289,7 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 				xmlFree (code);
 				xmlFree (location);
 				xmlFreeDoc (doc);
-				return;
+				goto check_error;
 			}
 
 			child_node = child_node->next;
@@ -342,13 +342,17 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 		node = node->next;
 	}
 
+check_error:
+	/* Ensure we're actually set an error message */
+	if (*error == NULL)
+		g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, _("Unknown and unparsable error received."));
+
 	return;
 
 parent:
 	/* Chain up to the parent class */
 	GDATA_SERVICE_CLASS (gdata_youtube_service_parent_class)->parse_error_response (self, operation_type, status, reason_phrase,
 	                                                                                response_body, length, error);
-	return;
 }
 
 /**
@@ -416,7 +420,7 @@ standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
  *
  * Parameters and errors are as for gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTubeStandardFeedType feed_type, GDataQuery *query,
@@ -470,7 +474,7 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
  *
  * Parameters and errors are as for gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query,
