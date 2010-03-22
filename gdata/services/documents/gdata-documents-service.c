@@ -667,7 +667,7 @@ GDataDocumentsEntry *
 gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *document, GDataDocumentsFolder *folder,
 						     GCancellable *cancellable, GError **error)
 {
-	const gchar *folder_id, *document_id, *uri_template;
+	const gchar *folder_id, *document_id;
 	GDataServiceClass *klass;
 	SoupMessage *message;
 	guint status;
@@ -690,18 +690,22 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 	g_assert (folder_id != NULL);
 	g_assert (document_id != NULL);
 
-	if (GDATA_IS_DOCUMENTS_PRESENTATION (document))
-		uri_template = "%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s";
-	else if (GDATA_IS_DOCUMENTS_SPREADSHEET (document))
-		uri_template = "%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s";
-	else if (GDATA_IS_DOCUMENTS_TEXT (document))
-		uri_template = "%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s";
-	else if (GDATA_IS_DOCUMENTS_FOLDER (document))
-		uri_template = "%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s";
-	else
+	if (GDATA_IS_DOCUMENTS_PRESENTATION (document)) {
+		uri = g_strdup_printf ("%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s",
+		                       _gdata_service_get_scheme (), folder_id, document_id);
+	} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (document)) {
+		uri = g_strdup_printf ("%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s",
+		                       _gdata_service_get_scheme (), folder_id, document_id);
+	} else if (GDATA_IS_DOCUMENTS_TEXT (document)) {
+		uri = g_strdup_printf ("%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s",
+		                       _gdata_service_get_scheme (), folder_id, document_id);
+	} else if (GDATA_IS_DOCUMENTS_FOLDER (document)) {
+		uri = g_strdup_printf ("%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s",
+		                       _gdata_service_get_scheme (), folder_id, document_id);
+	} else {
 		g_assert_not_reached ();
+	}
 
-	uri = g_strdup_printf (uri_template, _gdata_service_get_scheme (), folder_id, document_id);
 	message = soup_message_new (SOUP_METHOD_DELETE, uri);
 	g_free (uri);
 
