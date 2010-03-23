@@ -289,7 +289,7 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
 	GDataMediaContentPrivate *priv = GDATA_MEDIA_CONTENT (parsable)->priv;
-	xmlChar *uri, *is_default, *expression, *medium, *duration, *filesize, *height, *width;
+	xmlChar *uri, *expression, *medium, *duration, *filesize, *height, *width;
 	gboolean is_default_bool;
 	GDataMediaExpression expression_enum;
 	GDataMediaMedium medium_enum;

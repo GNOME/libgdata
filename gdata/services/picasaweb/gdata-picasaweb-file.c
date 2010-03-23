@@ -793,6 +793,7 @@ gdata_picasaweb_file_set_property (GObject *object, guint property_id, const GVa
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataPicasaWebFile *self = GDATA_PICASAWEB_FILE (parsable);
 
 	if (xmlStrcmp (node->name, (xmlChar*) "group") == 0) {
@@ -837,18 +838,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (edited);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "imageVersion") == 0) {
-		/* gphoto:imageVersion */
-		g_free (self->priv->version);
-		self->priv->version = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "position") == 0) {
 		/* gphoto:position */
 		xmlChar *position_str = xmlNodeListGetString (doc, node->children, TRUE);
 		gdata_picasaweb_file_set_position (self, g_ascii_strtod ((gchar*) position_str, NULL));
 		xmlFree (position_str);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "albumid") == 0) {
-		/* gphoto:album_id */
-		self->priv->album_id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "width") == 0) {
 		/* gphoto:width */
 		xmlChar *width = xmlNodeListGetString (doc, node->children, TRUE);
@@ -864,12 +858,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *size = xmlNodeListGetString (doc, node->children, TRUE);
 		self->priv->size = strtoul ((gchar*) size, NULL, 10);
 		xmlFree (size);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "client") == 0) {
-		/* gphoto:client */
-		self->priv->client = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "checksum") == 0) {
-		/* gphoto:checksum */
-		self->priv->checksum = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
 		/* gphoto:timestamp */
 		xmlChar *timestamp_str;
@@ -896,14 +884,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *comment_count = xmlNodeListGetString (doc, node->children, TRUE);
 		self->priv->comment_count = strtoul ((gchar*) comment_count, NULL, 10);
 		xmlFree (comment_count);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "videostatus") == 0) {
-		/* gphoto:videostatus */
-		xmlChar *video_status = xmlNodeListGetString (doc, node->children, TRUE);
-		if (self->priv->video_status != NULL) {
-			xmlFree (video_status);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
-		self->priv->video_status = (gchar*) video_status;
+	} else if (gdata_parser_string_from_element (node, "videostatus", P_NO_DUPES, &(self->priv->video_status), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "imageVersion", P_NONE, &(self->priv->version), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "albumid", P_NONE, &(self->priv->album_id), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "client", P_NONE, &(self->priv->client), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->client), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
 		/* gphoto:access */
 		/* Visibility is already obtained through the album. When PicasaWeb supports per-file access restrictions,

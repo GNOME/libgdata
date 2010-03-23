@@ -274,29 +274,19 @@ gdata_gd_name_set_property (GObject *object, guint property_id, const GValue *va
 	}
 }
 
-#define PARSE_STRING_ELEMENT(E,F)							\
-	if (xmlStrcmp (node->name, (xmlChar*) (E)) == 0) {				\
-		/* gd:##E */								\
-		if (priv->F != NULL)							\
-			return gdata_parser_error_duplicate_element (node, error);	\
-		priv->F = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);	\
-	}
-
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataGDNamePrivate *priv = GDATA_GD_NAME (parsable)->priv;
 
-	PARSE_STRING_ELEMENT ("givenName", given_name)
-	else PARSE_STRING_ELEMENT ("additionalName", additional_name)
-	else PARSE_STRING_ELEMENT ("familyName", family_name)
-	else PARSE_STRING_ELEMENT ("namePrefix", prefix)
-	else PARSE_STRING_ELEMENT ("nameSuffix", suffix)
-	else if (xmlStrcmp (node->name, (xmlChar*) "fullName") == 0) {
-		/* gd:fullName */
-		if (priv->full_name != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-		priv->full_name = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+	if (gdata_parser_string_from_element (node, "givenName", P_NO_DUPES, &(priv->given_name), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "additionalName", P_NO_DUPES, &(priv->additional_name), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "familyName", P_NO_DUPES, &(priv->family_name), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "namePrefix", P_NO_DUPES, &(priv->prefix), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "nameSuffix", P_NO_DUPES, &(priv->suffix), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "fullName", P_NO_DUPES, &(priv->full_name), &success, error) == TRUE) {
+		return success;
 	} else if (GDATA_PARSABLE_CLASS (gdata_gd_name_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -305,14 +295,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	return TRUE;
 }
 
-#define OUTPUT_STRING_ELEMENT(E,F)									\
-	if (priv->F != NULL)										\
-		gdata_parser_string_append_escaped (xml_string, "<gd:" E ">", priv->F, "</gd:" E ">");
-
 static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataGDNamePrivate *priv = GDATA_GD_NAME (parsable)->priv;
+
+#define OUTPUT_STRING_ELEMENT(E,F)									\
+	if (priv->F != NULL)										\
+		gdata_parser_string_append_escaped (xml_string, "<gd:" E ">", priv->F, "</gd:" E ">");
 
 	OUTPUT_STRING_ELEMENT ("givenName", given_name)
 	OUTPUT_STRING_ELEMENT ("additionalName", additional_name)
@@ -320,6 +310,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	OUTPUT_STRING_ELEMENT ("namePrefix", prefix)
 	OUTPUT_STRING_ELEMENT ("nameSuffix", suffix)
 	OUTPUT_STRING_ELEMENT ("fullName", full_name)
+
+#undef OUTPUT_STRING_ELEMENT
 }
 
 static void

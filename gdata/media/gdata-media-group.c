@@ -138,17 +138,13 @@ gdata_media_group_finalize (GObject *object)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataMediaGroup *self = GDATA_MEDIA_GROUP (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
-		/* media:title */
-		self->priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "description") == 0) {
-		/* media:description */
-		self->priv->description = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "keywords") == 0) {
-		/* media:keywords */
-		self->priv->keywords = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+	if (gdata_parser_string_from_element (node, "title", P_NONE, &(self->priv->title), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "description", P_NONE, &(self->priv->description), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "keywords", P_NONE, &(self->priv->keywords), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
 		/* media:category */
 		GDataMediaCategory *category = GDATA_MEDIA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CATEGORY, doc,

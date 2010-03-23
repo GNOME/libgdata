@@ -398,6 +398,7 @@ typedef struct {
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataFeed *self;
 	ParseData *data = user_data;
 
@@ -423,25 +424,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (data != NULL)
 			_gdata_feed_call_progress_callback (self, data, entry);
 		_gdata_feed_add_entry (self, entry);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
-		/* atom:title */
-		if (self->priv->title != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		self->priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "subtitle") == 0) {
-		/* atom:subtitle */
-		if (self->priv->subtitle != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		self->priv->subtitle = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0 && xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) {
-		/* atom:id */
-		/* The namespace check is necessary because there's an "id" element in the gphoto namespace (PicasaWeb service) */
-		if (self->priv->id != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		self->priv->id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+	} else if (gdata_parser_string_from_element (node, "title", P_NO_DUPES, &(self->priv->title), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "subtitle", P_NO_DUPES, &(self->priv->subtitle), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "id", P_NO_DUPES, &(self->priv->id), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "logo", P_NO_DUPES, &(self->priv->logo), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "icon", P_NO_DUPES, &(self->priv->icon), &success, error) == TRUE) {
+		return success;
+	/*TODO for atom:id: xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) {*/
 	} else if (xmlStrcmp (node->name, (xmlChar*) "updated") == 0) {
 		/* atom:updated */
 		xmlChar *updated_string;
@@ -465,18 +454,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 
 		self->priv->categories = g_list_prepend (self->priv->categories, category);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "logo") == 0) {
-		/* atom:logo */
-		if (self->priv->logo != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		self->priv->logo = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "icon") == 0) {
-		/* atom:icon */
-		if (self->priv->icon != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		self->priv->icon = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
 		/* atom:link */
 		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));

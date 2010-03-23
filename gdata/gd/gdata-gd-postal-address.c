@@ -568,31 +568,25 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	return TRUE;
 }
 
-#define PARSE_STRING_ELEMENT(E,F)							\
-	if (xmlStrcmp (node->name, (xmlChar*) (E)) == 0) {				\
-		/* gd:##E */								\
-		if (priv->F != NULL)							\
-			return gdata_parser_error_duplicate_element (node, error);	\
-		priv->F = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);	\
-	}
-
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataGDPostalAddressPrivate *priv = GDATA_GD_POSTAL_ADDRESS (parsable)->priv;
 
-	PARSE_STRING_ELEMENT ("agent", agent)
-	else PARSE_STRING_ELEMENT ("housename", house_name)
-	else PARSE_STRING_ELEMENT ("pobox", po_box)
-	else PARSE_STRING_ELEMENT ("street", street)
-	else PARSE_STRING_ELEMENT ("neighborhood", neighborhood)
-	else PARSE_STRING_ELEMENT ("city", city)
-	else PARSE_STRING_ELEMENT ("subregion", subregion)
-	else PARSE_STRING_ELEMENT ("region", region)
-	else PARSE_STRING_ELEMENT ("postcode", postcode)
-	else PARSE_STRING_ELEMENT ("country", country)
-	else PARSE_STRING_ELEMENT ("formattedAddress", formatted_address)
-	else if (GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
+	if (gdata_parser_string_from_element (node, "agent", P_NO_DUPES, &(priv->agent), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "housename", P_NO_DUPES, &(priv->house_name), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "pobox", P_NO_DUPES, &(priv->po_box), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "street", P_NO_DUPES, &(priv->street), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "neighborhood", P_NO_DUPES, &(priv->neighborhood), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "city", P_NO_DUPES, &(priv->city), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "subregion", P_NO_DUPES, &(priv->subregion), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "region", P_NO_DUPES, &(priv->region), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "postcode", P_NO_DUPES, &(priv->postcode), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "country", P_NO_DUPES, &(priv->country), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "formattedAddress", P_NO_DUPES, &(priv->formatted_address), &success, error) == TRUE) {
+		return success;
+	} else if (GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
 	}
@@ -620,14 +614,14 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append (xml_string, " primary='false'");
 }
 
-#define OUTPUT_STRING_ELEMENT(E,F)									\
-	if (priv->F != NULL)										\
-		gdata_parser_string_append_escaped (xml_string, "<gd:" E ">", priv->F, "</gd:" E ">");
-
 static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataGDPostalAddressPrivate *priv = GDATA_GD_POSTAL_ADDRESS (parsable)->priv;
+
+#define OUTPUT_STRING_ELEMENT(E,F)									\
+	if (priv->F != NULL)										\
+		gdata_parser_string_append_escaped (xml_string, "<gd:" E ">", priv->F, "</gd:" E ">");
 
 	OUTPUT_STRING_ELEMENT ("agent", agent)
 	OUTPUT_STRING_ELEMENT ("housename", house_name)
@@ -640,6 +634,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	OUTPUT_STRING_ELEMENT ("postcode", postcode)
 	OUTPUT_STRING_ELEMENT ("country", country)
 	OUTPUT_STRING_ELEMENT ("formattedAddress", formatted_address)
+
+#undef OUTPUT_STRING_ELEMENT
 }
 
 static void

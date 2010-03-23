@@ -218,28 +218,13 @@ gdata_picasaweb_user_get_property (GObject *object, guint property_id, GValue *v
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataPicasaWebUser *self = GDATA_PICASAWEB_USER (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "user") == 0) {
-		/* gphoto:user */
-		xmlChar *user = xmlNodeListGetString (doc, node->children, TRUE);
-		if (user == NULL || *user == '\0') {
-			g_free (user);
-			return gdata_parser_error_required_content_missing (node, error);
-		}
-
-		g_free (self->priv->user);
-		self->priv->user = (gchar*) user;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "nickname") == 0) {
-		/* gphoto:nickname */
-		xmlChar *nickname = xmlNodeListGetString (doc, node->children, TRUE);
-		if (nickname == NULL || *nickname == '\0') {
-			g_free (nickname);
-			return gdata_parser_error_required_content_missing (node, error);
-		}
-
-		g_free (self->priv->nickname);
-		self->priv->nickname = (gchar*) nickname;
+	if (gdata_parser_string_from_element (node, "user", P_REQUIRED | P_NON_EMPTY, &(self->priv->user), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NON_EMPTY, &(self->priv->nickname), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "thumbnail", P_REQUIRED | P_NON_EMPTY, &(self->priv->thumbnail_uri), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "quotacurrent") == 0) {
 		/* gphoto:quota-current */
 		xmlChar *quota_current = xmlNodeListGetString (doc, node->children, TRUE);
@@ -255,22 +240,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *max_photos_per_album = xmlNodeListGetString (doc, node->children, TRUE);
 		self->priv->max_photos_per_album = strtol ((char*) max_photos_per_album, NULL, 10);
 		xmlFree (max_photos_per_album);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "thumbnail") == 0) {
-		/* gphoto:thumbnail */
-		xmlChar *thumbnail = xmlNodeListGetString (doc, node->children, TRUE);
-		if (thumbnail == NULL || *thumbnail == '\0') {
-			g_free (thumbnail);
-			return gdata_parser_error_required_content_missing (node, error);
-		}
-
-		g_free (self->priv->thumbnail_uri);
-		self->priv->thumbnail_uri = (gchar*) thumbnail;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "x-allowDownloads") == 0) { /* RHSTODO: see if this comes with the user */
 		/* gphoto:allowDownloads */
-		/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
+		/* TODO: Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
 	} else if (xmlStrcmp (node->name, (xmlChar*) "x-allowPrints") == 0) { /* RHSTODO: see if this comes with the user */
 		/* gphoto:allowPrints */
-		/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
+		/* TODO: Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
 	} else if (GDATA_PARSABLE_CLASS (gdata_picasaweb_user_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

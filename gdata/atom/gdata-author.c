@@ -190,33 +190,13 @@ gdata_author_set_property (GObject *object, guint property_id, const GValue *val
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataAuthorPrivate *priv = GDATA_AUTHOR (parsable)->priv;
 
-	if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
-		/* atom:name */
-		xmlChar *name;
-
-		if (priv->name != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		name = xmlNodeListGetString (doc, node->children, TRUE);
-		if (name == NULL || *name == '\0') {
-			xmlFree (name);
-			return gdata_parser_error_required_content_missing (node, error);
-		}
-		priv->name = (gchar*) name;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "uri") == 0) {
-		/* atom:uri */
-		if (priv->uri != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		priv->uri = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
-		/* atom:email */
-		if (priv->email_address != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		priv->email_address = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+	if (gdata_parser_string_from_element (node, "name", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->name), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "uri", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->uri), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "email", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->email_address), &success, error) == TRUE) {
+		return success;
 	} else if (GDATA_PARSABLE_CLASS (gdata_author_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

@@ -384,33 +384,15 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (parsable)->priv;
 
-	if (xmlStrcmp (node->name, (xmlChar*) "orgName") == 0) {
-		/* gd:orgName */
-		if (priv->name != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-		priv->name = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "orgTitle") == 0) {
-		/* gd:orgTitle */
-		if (priv->title != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-		priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "orgDepartment") == 0) {
-		/* gd:orgDepartment */
-		if (priv->department != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-		priv->department = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "orgJobDescription") == 0) {
-		/* gd:orgJobDescription */
-		if (priv->job_description != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-		priv->job_description = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "orgSymbol") == 0) {
-		/* gd:orgSymbol */
-		if (priv->symbol != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-		priv->symbol = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+	if (gdata_parser_string_from_element (node, "orgName", P_NO_DUPES, &(priv->name), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "orgTitle", P_NO_DUPES, &(priv->title), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "orgDepartment", P_NO_DUPES, &(priv->department), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "orgJobDescription", P_NO_DUPES, &(priv->job_description), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "orgSymbol", P_NO_DUPES, &(priv->symbol), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
 		/* gd:where */
 		GDataGDWhere *location = GDATA_GD_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_WHERE, doc, node, NULL, error));

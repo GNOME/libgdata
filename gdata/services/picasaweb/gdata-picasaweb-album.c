@@ -547,6 +547,7 @@ gdata_picasaweb_album_set_property (GObject *object, guint property_id, const GV
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataPicasaWebAlbum *self = GDATA_PICASAWEB_ALBUM (parsable);
 
 	if (xmlStrcmp (node->name, (xmlChar*) "group") == 0) {
@@ -571,20 +572,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			g_object_unref (self->priv->georss_where);
 
 		self->priv->georss_where = where;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "user") == 0) {
-		/* gphoto:user */
-		xmlChar *user = xmlNodeListGetString (doc, node->children, TRUE);
-		if (user == NULL || *user == '\0')
-			return gdata_parser_error_required_content_missing (node, error);
-		g_free (self->priv->user);
-		self->priv->user = (gchar*) user;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "nickname") == 0) {
-		/* gphoto:nickname */
-		xmlChar *nickname = xmlNodeListGetString (doc, node->children, TRUE);
-		if (nickname == NULL || *nickname == '\0')
-			return gdata_parser_error_required_content_missing (node, error);
-		g_free (self->priv->nickname);
-		self->priv->nickname = (gchar*) nickname;
+	} else if (gdata_parser_string_from_element (node, "user", P_REQUIRED | P_NON_EMPTY, &(self->priv->user), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NON_EMPTY, &(self->priv->nickname), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
 		/* app:edited */
 		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
@@ -595,10 +586,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (edited);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
-		/* gphoto:location */
-		g_free (self->priv->location);
-		self->priv->location = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
 		/* gphoto:access */
 		xmlChar *access = xmlNodeListGetString (doc, node->children, TRUE);

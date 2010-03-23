@@ -90,6 +90,7 @@ gdata_youtube_group_finalize (GObject *object)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataYouTubeGroup *self = GDATA_YOUTUBE_GROUP (parsable);
 
 	if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
@@ -139,14 +140,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (uploaded);
 
 		self->priv->uploaded = uploaded_timeval;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "videoid") == 0) {
+	} else if (gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE) {
 		/* yt:videoid */
-		xmlChar *video_id = xmlNodeListGetString (doc, node->children, TRUE);
-		if (self->priv->video_id != NULL) {
-			xmlFree (video_id);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
-		self->priv->video_id = (gchar*) video_id;
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "aspectRatio") == 0) {
 		/* yt:aspectRatio */
 		xmlChar *aspect_ratio = xmlNodeGetContent (node);

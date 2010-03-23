@@ -240,7 +240,7 @@ gdata_gd_im_address_set_property (GObject *object, guint property_id, const GVal
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *address, *protocol, *rel;
+	xmlChar *address, *rel;
 	gboolean primary_bool;
 	GDataGDIMAddressPrivate *priv = GDATA_GD_IM_ADDRESS (parsable)->priv;
 
@@ -249,18 +249,20 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		return FALSE;
 
 	address = xmlGetProp (root_node, (xmlChar*) "address");
-	if (address == NULL || *address == '\0')
+	if (address == NULL || *address == '\0') {
+		xmlFree (address);
 		return gdata_parser_error_required_property_missing (root_node, "address", error);
+	}
 
 	rel = xmlGetProp (root_node, (xmlChar*) "rel");
 	if (rel != NULL && *rel == '\0') {
 		xmlFree (address);
+		xmlFree (rel);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
-	protocol = xmlGetProp (root_node, (xmlChar*) "protocol");
 
 	priv->address = (gchar*) address;
-	priv->protocol = (gchar*) protocol;
+	priv->protocol = (gchar*) xmlGetProp (root_node, (xmlChar*) "protocol");
 	priv->relation_type = (gchar*) rel;
 	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
 	priv->is_primary = primary_bool;

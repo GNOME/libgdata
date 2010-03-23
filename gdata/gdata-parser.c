@@ -221,6 +221,8 @@ gdata_parser_date_from_time_val (const GTimeVal *_time)
  * returned in @error.
  *
  * Return value: %TRUE on successful parsing, %FALSE otherwise
+ *
+ * Since: 0.7.0
  */
 gboolean
 gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error)
@@ -244,6 +246,67 @@ gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name
 	}
 
 	xmlFree (value);
+	return TRUE;
+}
+
+/*
+ * gdata_parser_string_from_element:
+ * @element: the element to check against
+ * @element_name: the name of the element to parse
+ * @options: a bitwise combination of parsing options from #GDataParserStringOptions, or %P_NONE
+ * @output: the return location for the parsed string content
+ * @success: the return location for a value which is %TRUE if the string was parsed successfully, %FALSE if an error was encountered,
+ * and undefined if @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the string content of @element if its name is @element_name, subject to various checks specified by @options.
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by @options fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by @options pass, %TRUE will be returned, @error will be unset and
+ * @success will be set to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_string_from_element() can be chained
+ * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
+ * a given @element. If any of the calls to gdata_parser_string_from_element() return %TRUE, the value of @success can be examined.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: 0.7.0
+ */
+gboolean
+gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserStringOptions options,
+                                  gchar **output, gboolean *success, GError **error)
+{
+	xmlChar *text;
+
+	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
+		return FALSE;
+
+	/* Check if the output string has already been set */
+	if (*output != NULL) {
+		if (options & P_NO_DUPES) {
+			*success = gdata_parser_error_duplicate_element (element, error);
+			return TRUE;
+		} else {
+			g_free (*output);
+		}
+	}
+
+	/* Get the string and check it for NULLness or emptiness */
+	text = xmlNodeListGetString (element->doc, element->children, TRUE);
+	if ((options & P_REQUIRED && text == NULL) || (options & P_NON_EMPTY && text != NULL && *text == '\0')) {
+		xmlFree (text);
+		*success = gdata_parser_error_required_content_missing (element, error);
+		return TRUE;
+	}
+
+	*output = (gchar*) text;
+	*success = TRUE;
+
 	return TRUE;
 }
 

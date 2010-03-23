@@ -106,6 +106,7 @@ gdata_exif_tags_finalize (GObject *object)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataExifTags *self = GDATA_EXIF_TAGS (parsable);
 
 	if (xmlStrcmp (node->name, (xmlChar*) "distance") == 0 ) {
@@ -118,14 +119,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *fstop = xmlNodeListGetString (doc, node->children, TRUE);
 		self->priv->fstop = g_ascii_strtod ((gchar*) fstop, NULL);
 		xmlFree (fstop);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "make") == 0) {
-		/* exif:make */
-		g_free (self->priv->make);
-		self->priv->make = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "model") == 0) {
-		/* exif:model */
-		g_free (self->priv->model);
-		self->priv->model = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+	} else if (gdata_parser_string_from_element (node, "make", P_NONE, &(self->priv->make), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "model", P_NONE, &(self->priv->model), &success, error) == TRUE ||
+	           gdata_parser_string_from_element (node, "imageUniqueID", P_NONE, &(self->priv->image_unique_id), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "exposure") == 0) {
 		/* exif:exposure */
 		xmlChar *exposure = xmlNodeListGetString (doc, node->children, TRUE);
@@ -159,10 +156,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 		self->priv->_time.tv_sec = (glong) (milliseconds / 1000);
 		self->priv->_time.tv_usec = (glong) ((milliseconds % 1000) * 1000);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "imageUniqueID") == 0) {
-		/* exif:imageUniqueID */
-		g_free (self->priv->image_unique_id);
-		self->priv->image_unique_id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (GDATA_PARSABLE_CLASS (gdata_exif_tags_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
