@@ -19,6 +19,8 @@
 
 #include <glib.h>
 
+#include "gdata-parsable.h"
+
 #ifndef GDATA_PARSER_H
 #define GDATA_PARSER_H
 
@@ -36,14 +38,15 @@ gboolean gdata_parser_time_val_from_date (const gchar *date, GTimeVal *_time);
 gchar *gdata_parser_date_from_time_val (const GTimeVal *_time) G_GNUC_WARN_UNUSED_RESULT;
 
 /*
- * GDataParserStringOptions:
+ * GDataParserOptions:
  * @P_NONE: no special options; the content of the element will be outputted directly without any checks
  * @P_NO_DUPES: the element must be encountered at most once; if encountered more than once, an error will be returned
  * @P_REQUIRED: the element content must not be %NULL if the element exists
- * @P_NON_EMPTY: the element content must not be empty (i.e. a zero-length string) if the element exists
+ * @P_NON_EMPTY: the element content must not be empty (i.e. a zero-length string) if the element exists;
+ * this only applies to gdata_parser_string_from_element()
  *
- * Parsing options to be passed in a bitwise fashion to gdata_parser_string_from_element(). Their names aren't namespaced as they
- * aren't public, and brevity is important, since they're used frequently in the parsing code.
+ * Parsing options to be passed in a bitwise fashion to gdata_parser_string_from_element() or gdata_parser_object_from_element().
+ * Their names aren't namespaced as they aren't public, and brevity is important, since they're used frequently in the parsing code.
  *
  * Since: 0.7.0
  */
@@ -52,11 +55,18 @@ typedef enum {
 	P_NO_DUPES = 1 << 0,
 	P_REQUIRED = 1 << 1,
 	P_NON_EMPTY = 1 << 2
-} GDataParserStringOptions;
+} GDataParserOptions;
+
+typedef void (*GDataParserSetterFunc) (GDataParsable *parent_parsable, GDataParsable *parsable);
 
 gboolean gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error);
-gboolean gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserStringOptions options,
+gboolean gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
                                            gchar **output, gboolean *success, GError **error);
+gboolean gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
+                                                  gpointer /* GDataParserSetterFunc */ _setter, gpointer /* GDataParsable * */ _parent_parsable,
+                                                  gboolean *success, GError **error);
+gboolean gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
+                                           gpointer /* GDataParsable ** */ _output, gboolean *success, GError **error);
 
 void gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 gchar *gdata_parser_utf8_trim_whitespace (const gchar *s) G_GNUC_WARN_UNUSED_RESULT;

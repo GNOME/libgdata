@@ -393,6 +393,7 @@ gdata_gd_when_set_is_date
 gdata_gd_when_get_value_string
 gdata_gd_when_set_value_string
 gdata_gd_when_get_reminders
+gdata_gd_when_add_reminder
 gdata_gd_who_get_type
 gdata_gd_who_new
 gdata_gd_who_compare

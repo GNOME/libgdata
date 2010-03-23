@@ -804,6 +804,7 @@ gdata_gd_when_set_is_date
 gdata_gd_when_get_value_string
 gdata_gd_when_set_value_string
 gdata_gd_when_get_reminders
+gdata_gd_when_add_reminder
 <SUBSECTION Standard>
 gdata_gd_when_get_type
 GDATA_GD_WHEN

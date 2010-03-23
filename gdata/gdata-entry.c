@@ -372,6 +372,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataEntry *self;
 
 	g_return_val_if_fail (GDATA_IS_ENTRY (parsable), FALSE);
@@ -414,33 +415,19 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (published);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
-		/* atom:category */
-		GDataCategory *category = GDATA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_CATEGORY, doc, node, NULL, error));
-		if (category == NULL)
-			return FALSE;
-
-		self->priv->categories = g_list_prepend (self->priv->categories, category);
+	} else if (gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
+	                                                    gdata_entry_add_category, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,
+	                                                    gdata_entry_add_link, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
+	                                                    gdata_entry_add_author, self, &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
 		/* atom:content */
 		xmlChar *content = xmlNodeListGetString (doc, node->children, TRUE);
 		if (content == NULL)
 			content = xmlGetProp (node, (xmlChar*) "src");
 		self->priv->content = (gchar*) content;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
-		/* atom:link */
-		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
-		if (link == NULL)
-			return FALSE;
-
-		self->priv->links = g_list_prepend (self->priv->links, link);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "author") == 0) {
-		/* atom:author */
-		GDataAuthor *author = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
-		if (author == NULL)
-			return FALSE;
-
-		self->priv->authors = g_list_prepend (self->priv->authors, author);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "summary") == 0) {
 		/* atom:summary */
 		self->priv->summary = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);

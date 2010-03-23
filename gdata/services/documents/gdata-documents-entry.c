@@ -201,6 +201,7 @@ gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
 
 	if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
@@ -249,17 +250,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 		self->priv->document_id = g_strdup (document_id_parts[1]);
 		g_strfreev (document_id_parts);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "feedLink") ==  0) {
-		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
-		if (link == NULL)
-			return FALSE;
-		gdata_entry_add_link (GDATA_ENTRY (self), link);
-		g_object_unref (link);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "lastModifiedBy") ==  0) {
-		GDataAuthor *last_modified_by = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
-		if (last_modified_by == NULL)
-			return FALSE;
-		self->priv->last_modified_by = last_modified_by;
+	} else if (gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
+	                                                    gdata_entry_add_link, self,  &success, error) == TRUE ||
+	           gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
+	                                             &(self->priv->last_modified_by), &success, error) == TRUE) {
+		return success;
 	} else if (GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

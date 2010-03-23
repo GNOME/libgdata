@@ -143,35 +143,16 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (gdata_parser_string_from_element (node, "title", P_NONE, &(self->priv->title), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "description", P_NONE, &(self->priv->description), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "keywords", P_NONE, &(self->priv->keywords), &success, error) == TRUE) {
+	    gdata_parser_string_from_element (node, "keywords", P_NONE, &(self->priv->keywords), &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_MEDIA_CATEGORY,
+	                                             gdata_media_group_set_category, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_MEDIA_CONTENT,
+	                                             _gdata_media_group_add_content, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "thumbnail", P_REQUIRED, GDATA_TYPE_MEDIA_THUMBNAIL,
+	                                             _gdata_media_group_add_thumbnail, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element (node, "credit", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_MEDIA_CREDIT,
+	                                      &(self->priv->credit), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
-		/* media:category */
-		GDataMediaCategory *category = GDATA_MEDIA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CATEGORY, doc,
-													node, NULL, error));
-		if (category == NULL)
-			return FALSE;
-
-		gdata_media_group_set_category (self, category);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
-		/* media:content */
-		GDataMediaContent *content = GDATA_MEDIA_CONTENT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CONTENT, doc, node, NULL, error));
-		if (content == NULL)
-			return FALSE;
-
-		_gdata_media_group_add_content (self, content);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
-		/* media:credit */
-		GDataMediaCredit *credit = GDATA_MEDIA_CREDIT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CREDIT, doc, node, NULL, error));
-		if (credit == NULL)
-			return FALSE;
-
-		if (self->priv->credit != NULL) {
-			g_object_unref (credit);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
-
-		_gdata_media_group_set_credit (self, credit);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "player") == 0) {
 		/* media:player */
 		xmlChar *player_uri = xmlGetProp (node, (xmlChar*) "url");
@@ -229,14 +210,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		for (country = country_list; *country != NULL; country++)
 			g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (relationship_bool));
 		g_free (country_list);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "thumbnail") == 0) {
-		/* media:thumbnail */
-		GDataMediaThumbnail *thumb = GDATA_MEDIA_THUMBNAIL (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_THUMBNAIL, doc,
-												       node, NULL, error));
-		if (thumb == NULL)
-			return FALSE;
-
-		self->priv->thumbnails = g_list_prepend (self->priv->thumbnails, thumb);
 	} else if (GDATA_PARSABLE_CLASS (gdata_media_group_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;
@@ -460,7 +433,7 @@ gdata_media_group_get_contents (GDataMediaGroup *self)
 void
 _gdata_media_group_add_content (GDataMediaGroup *self, GDataMediaContent *content)
 {
-	self->priv->contents = g_list_prepend (self->priv->contents, content);
+	self->priv->contents = g_list_prepend (self->priv->contents, g_object_ref (content));
 }
 
 /**
@@ -534,4 +507,10 @@ gdata_media_group_get_thumbnails (GDataMediaGroup *self)
 {
 	g_return_val_if_fail (GDATA_IS_MEDIA_GROUP (self), NULL);
 	return self->priv->thumbnails;
+}
+
+void
+_gdata_media_group_add_thumbnail (GDataMediaGroup *self, GDataMediaThumbnail *thumbnail)
+{
+	self->priv->thumbnails = g_list_prepend (self->priv->thumbnails, g_object_ref (thumbnail));
 }

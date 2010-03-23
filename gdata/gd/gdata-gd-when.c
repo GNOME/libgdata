@@ -291,21 +291,14 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
-	GDataGDWhenPrivate *priv = GDATA_GD_WHEN (parsable)->priv;
+	gboolean success;
 
-	if (xmlStrcmp (node->name, (xmlChar*) "reminder") == 0) {
-		/* gd:reminder */
-		GDataGDReminder *reminder = GDATA_GD_REMINDER (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_REMINDER, doc, node, NULL, error));
-		if (reminder == NULL)
-			return FALSE;
-
-		priv->reminders = g_list_prepend (priv->reminders, reminder);
-	} else if (GDATA_PARSABLE_CLASS (gdata_gd_when_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	if (gdata_parser_object_from_element_setter (node, "reminder", P_REQUIRED, GDATA_TYPE_GD_REMINDER,
+	                                             gdata_gd_when_add_reminder, parsable, &success, error) == TRUE) {
+		return success;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_gd_when_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
-
-	return TRUE;
 }
 
 static gboolean
@@ -591,4 +584,25 @@ gdata_gd_when_get_reminders (GDataGDWhen *self)
 {
 	g_return_val_if_fail (GDATA_IS_GD_WHEN (self), NULL);
 	return self->priv->reminders;
+}
+
+/**
+ * gdata_gd_when_add_reminder:
+ * @self: a #GDataGDWhen
+ * @reminder: a #GDataGDReminder to add
+ *
+ * Adds a reminder to the #GDataGDWhen's list of reminders and increments its reference count.
+ *
+ * Duplicate reminders will not be added to the list.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_gd_when_add_reminder (GDataGDWhen *self, GDataGDReminder *reminder)
+{
+	g_return_if_fail (GDATA_IS_GD_WHEN (self));
+	g_return_if_fail (GDATA_IS_GD_REMINDER (reminder));
+
+	if (g_list_find_custom (self->priv->reminders, reminder, (GCompareFunc) gdata_gd_reminder_compare) == NULL)
+		self->priv->reminders = g_list_append (self->priv->reminders, g_object_ref (reminder));
 }

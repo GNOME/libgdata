@@ -391,26 +391,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	    gdata_parser_string_from_element (node, "orgTitle", P_NO_DUPES, &(priv->title), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "orgDepartment", P_NO_DUPES, &(priv->department), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "orgJobDescription", P_NO_DUPES, &(priv->job_description), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "orgSymbol", P_NO_DUPES, &(priv->symbol), &success, error) == TRUE) {
+	    gdata_parser_string_from_element (node, "orgSymbol", P_NO_DUPES, &(priv->symbol), &success, error) == TRUE ||
+	    gdata_parser_object_from_element (node, "where", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GD_WHERE,
+	                                      &(priv->location), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
-		/* gd:where */
-		GDataGDWhere *location = GDATA_GD_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_WHERE, doc, node, NULL, error));
-		if (location == NULL)
-			return FALSE;
-
-		if (priv->location != NULL) {
-			g_object_unref (location);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
-
-		priv->location = location;
-	} else if (GDATA_PARSABLE_CLASS (gdata_gd_organization_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_gd_organization_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
-
-	return TRUE;
 }
 
 static void

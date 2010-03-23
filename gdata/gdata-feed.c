@@ -51,6 +51,10 @@ static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *ro
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 
+static void _gdata_feed_add_category (GDataFeed *self, GDataCategory *category);
+static void _gdata_feed_add_link (GDataFeed *self, GDataLink *link);
+static void _gdata_feed_add_author (GDataFeed *self, GDataAuthor *author);
+
 struct _GDataFeedPrivate {
 	GList *entries;
 	gchar *title;
@@ -428,7 +432,15 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	           gdata_parser_string_from_element (node, "subtitle", P_NO_DUPES, &(self->priv->subtitle), &success, error) == TRUE ||
 	           gdata_parser_string_from_element (node, "id", P_NO_DUPES, &(self->priv->id), &success, error) == TRUE ||
 	           gdata_parser_string_from_element (node, "logo", P_NO_DUPES, &(self->priv->logo), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "icon", P_NO_DUPES, &(self->priv->icon), &success, error) == TRUE) {
+	           gdata_parser_string_from_element (node, "icon", P_NO_DUPES, &(self->priv->icon), &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
+	                                                    _gdata_feed_add_category, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,
+	                                                    _gdata_feed_add_link, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
+	                                                    _gdata_feed_add_author, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element (node, "generator", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GENERATOR,
+	                                             &(self->priv->generator), &success, error) == TRUE) {
 		return success;
 	/*TODO for atom:id: xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) {*/
 	} else if (xmlStrcmp (node->name, (xmlChar*) "updated") == 0) {
@@ -447,40 +459,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (updated_string);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
-		/* atom:category */
-		GDataCategory *category = GDATA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_CATEGORY, doc, node, NULL, error));
-		if (category == NULL)
-			return FALSE;
-
-		self->priv->categories = g_list_prepend (self->priv->categories, category);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
-		/* atom:link */
-		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
-		if (link == NULL)
-			return FALSE;
-
-		self->priv->links = g_list_prepend (self->priv->links, link);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "author") == 0) {
-		/* atom:author */
-		GDataAuthor *author = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
-		if (author == NULL)
-			return FALSE;
-
-		self->priv->authors = g_list_prepend (self->priv->authors, author);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "generator") == 0) {
-		/* atom:generator */
-		GDataGenerator *generator;
-
-		/* Duplicate checking */
-		if (self->priv->generator != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		generator = GDATA_GENERATOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GENERATOR, doc, node, NULL, error));
-		if (generator == NULL)
-			return FALSE;
-
-		self->priv->generator = generator;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "totalResults") == 0) {
 		/* openSearch:totalResults */
 		xmlChar *total_results_string;
@@ -636,6 +614,12 @@ gdata_feed_get_categories (GDataFeed *self)
 	return self->priv->categories;
 }
 
+static void
+_gdata_feed_add_category (GDataFeed *self, GDataCategory *category)
+{
+	self->priv->categories = g_list_prepend (self->priv->categories, g_object_ref (category));
+}
+
 /**
  * gdata_feed_get_links:
  * @self: a #GDataFeed
@@ -682,6 +666,12 @@ gdata_feed_look_up_link (GDataFeed *self, const gchar *rel)
 	return GDATA_LINK (element->data);
 }
 
+static void
+_gdata_feed_add_link (GDataFeed *self, GDataLink *link)
+{
+		self->priv->links = g_list_prepend (self->priv->links, g_object_ref (link));
+}
+
 /**
  * gdata_feed_get_authors:
  * @self: a #GDataFeed
@@ -695,6 +685,12 @@ gdata_feed_get_authors (GDataFeed *self)
 {
 	g_return_val_if_fail (GDATA_IS_FEED (self), NULL);
 	return self->priv->authors;
+}
+
+static void
+_gdata_feed_add_author (GDataFeed *self, GDataAuthor *author)
+{
+		self->priv->authors = g_list_prepend (self->priv->authors, g_object_ref (author));
 }
 
 /**

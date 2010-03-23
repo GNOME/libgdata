@@ -290,6 +290,7 @@ gdata_contacts_contact_new (const gchar *id)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataContactsContact *self;
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (parsable), FALSE);
@@ -309,54 +310,18 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		g_free (edited);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
-		/* gd:name */
-		GDataGDName *name = GDATA_GD_NAME (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_NAME, doc, node, NULL, error));
-		if (name == NULL)
-			return FALSE;
-
-		if (self->priv->name != NULL)
-			g_object_unref (self->priv->name);
-		self->priv->name = name;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
-		/* gd:email */
-		GDataGDEmailAddress *email = GDATA_GD_EMAIL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_EMAIL_ADDRESS, doc,
-													node, NULL, error));
-		if (email == NULL)
-			return FALSE;
-
-		gdata_contacts_contact_add_email_address (self, email);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "im") == 0) {
-		/* gd:im */
-		GDataGDIMAddress *im = GDATA_GD_IM_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_IM_ADDRESS, doc, node, NULL, error));
-		if (im == NULL)
-			return FALSE;
-
-		gdata_contacts_contact_add_im_address (self, im);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "phoneNumber") == 0) {
-		/* gd:phoneNumber */
-		GDataGDPhoneNumber *number = GDATA_GD_PHONE_NUMBER (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_PHONE_NUMBER, doc,
-												       node, NULL, error));
-		if (number == NULL)
-			return FALSE;
-
-		gdata_contacts_contact_add_phone_number (self, number);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "structuredPostalAddress") == 0) {
-		/* gd:structuredPostalAddress — deprecates gd:postalAddress */
-		GDataGDPostalAddress *address = GDATA_GD_POSTAL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_POSTAL_ADDRESS,
-													    doc, node, NULL, error));
-		if (address == NULL)
-			return FALSE;
-
-		gdata_contacts_contact_add_postal_address (self, address);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "organization") == 0) {
-		/* gd:organization */
-		GDataGDOrganization *organization = GDATA_GD_ORGANIZATION (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_ORGANIZATION,
-													      doc, node, NULL, error));
-		if (organization == NULL)
-			return FALSE;
-
-		gdata_contacts_contact_add_organization (self, organization);
+	} else if (gdata_parser_object_from_element_setter (node, "email", P_REQUIRED, GDATA_TYPE_GD_EMAIL_ADDRESS,
+	                                                    gdata_contacts_contact_add_email_address, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "im", P_REQUIRED, GDATA_TYPE_GD_IM_ADDRESS,
+	                                                    gdata_contacts_contact_add_im_address, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "phoneNumber", P_REQUIRED, GDATA_TYPE_GD_PHONE_NUMBER,
+	                                                    gdata_contacts_contact_add_phone_number, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "structuredPostalAddress", P_REQUIRED, GDATA_TYPE_GD_POSTAL_ADDRESS,
+	                                                    gdata_contacts_contact_add_postal_address, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "organization", P_REQUIRED, GDATA_TYPE_GD_ORGANIZATION,
+	                                                    gdata_contacts_contact_add_organization, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element (node, "name", P_REQUIRED, GDATA_TYPE_GD_NAME, &(self->priv->name), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "extendedProperty") == 0) {
 		/* gd:extendedProperty */
 		xmlChar *name, *value;

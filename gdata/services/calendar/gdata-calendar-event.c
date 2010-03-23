@@ -447,6 +447,7 @@ gdata_calendar_event_new (const gchar *id)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataCalendarEvent *self;
 
 	g_return_val_if_fail (GDATA_IS_CALENDAR_EVENT (parsable), FALSE);
@@ -528,13 +529,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (value);
 
 		gdata_calendar_event_set_sequence (self, value_uint);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "when") == 0) {
-		/* gd:when */
-		GDataGDWhen *when = GDATA_GD_WHEN (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_WHEN, doc, node, NULL, error));
-		if (when == NULL)
-			return FALSE;
-
-		gdata_calendar_event_add_time (self, when);
+	} else if (gdata_parser_object_from_element_setter (node, "when", P_REQUIRED, GDATA_TYPE_GD_WHEN,
+	                                                    gdata_calendar_event_add_time, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "who", P_REQUIRED, GDATA_TYPE_GD_WHO,
+	                                                    gdata_calendar_event_add_person, self, &success, error) == TRUE ||
+	           gdata_parser_object_from_element_setter (node, "where", P_REQUIRED, GDATA_TYPE_GD_WHERE,
+	                                                    gdata_calendar_event_add_place, self, &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanModify") == 0) {
 		/* gCal:guestsCanModify */
 		gboolean guests_can_modify;
@@ -559,20 +560,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (gdata_parser_boolean_from_property (node, "value", &anyone_can_add_self, -1, error) == FALSE)
 			return FALSE;
 		gdata_calendar_event_set_anyone_can_add_self (self, anyone_can_add_self);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "who") == 0) {
-		/* gd:who */
-		GDataGDWho *who = GDATA_GD_WHO (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_WHO, doc, node, NULL, error));
-		if (who == NULL)
-			return FALSE;
-
-		gdata_calendar_event_add_person (self, who);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
-		/* gd:where */
-		GDataGDWhere *where = GDATA_GD_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_WHERE, doc, node, NULL, error));
-		if (where == NULL)
-			return FALSE;
-
-		gdata_calendar_event_add_place (self, where);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "recurrence") == 0) {
 		/* gd:recurrence */
 		self->priv->recurrence = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);

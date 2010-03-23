@@ -24,6 +24,7 @@
 #include <glib-object.h>
 
 #include <gdata/gdata-parsable.h>
+#include <gdata/gd/gdata-gd-reminder.h>
 
 G_BEGIN_DECLS
 
@@ -78,6 +79,7 @@ const gchar *gdata_gd_when_get_value_string (GDataGDWhen *self);
 void gdata_gd_when_set_value_string (GDataGDWhen *self, const gchar *value_string);
 
 GList *gdata_gd_when_get_reminders (GDataGDWhen *self);
+void gdata_gd_when_add_reminder (GDataGDWhen *self, GDataGDReminder *reminder);
 /* TODO: More reminder API */
 
 G_END_DECLS

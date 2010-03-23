@@ -96,6 +96,7 @@ gdata_youtube_control_dispose (GObject *object)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataYouTubeControl *self = GDATA_YOUTUBE_CONTROL (parsable);
 
 	if (xmlStrcmp (node->name, (xmlChar*) "draft") == 0) {
@@ -106,18 +107,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		else
 			self->priv->is_draft = TRUE;
 		xmlFree (draft);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "state") == 0) {
-		/* yt:state */
-		GDataYouTubeState *state = GDATA_YOUTUBE_STATE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_STATE, doc, node, NULL, error));
-		if (state == NULL)
-			return FALSE;
-
-		if (self->priv->state != NULL) {
-			g_object_unref (state);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
-
-		self->priv->state = state;
+	} else if (gdata_parser_object_from_element (node, "state", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_STATE,
+	                                             &(self->priv->state), &success, error) == TRUE) {
+		return success;
 	} else if (GDATA_PARSABLE_CLASS (gdata_youtube_control_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

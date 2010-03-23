@@ -796,38 +796,20 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataPicasaWebFile *self = GDATA_PICASAWEB_FILE (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "group") == 0) {
-		/* media:group */
-		GDataMediaGroup *group = GDATA_MEDIA_GROUP (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_GROUP, doc, node, NULL, error));
-		if (group == NULL)
-			return FALSE;
-
-		if (self->priv->media_group != NULL)
-			/* We should really error here, but we can't, as priv->media_group has to be pre-populated
-			 * in order for things like gdata_picasaweb_file_set_description() to work. */
-			g_object_unref (self->priv->media_group);
-
-		self->priv->media_group = group;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
-		/* georss:where */
-		GDataGeoRSSWhere *where = GDATA_GEORSS_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GEORSS_WHERE, doc, node, NULL, error));
-		if (where == NULL)
-			return FALSE;
-
-		if (self->priv->georss_where != NULL)
-			g_object_unref (self->priv->georss_where);
-
-		self->priv->georss_where = where;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "tags") == 0) {
-		/* exif:tags */
-		GDataExifTags *tags = GDATA_EXIF_TAGS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_EXIF_TAGS, doc, node, NULL, error));
-		if (tags == NULL)
-			return FALSE;
-
-		if (self->priv->exif_tags != NULL)
-			g_object_unref (self->priv->exif_tags);
-
-		self->priv->exif_tags = tags;
+	/* TODO: This should also be P_NO_DUPES, but we can't, as priv->media_group has to be pre-populated
+	 * in order for things like gdata_picasaweb_file_set_description() to work. */
+	if (gdata_parser_object_from_element (node, "group", P_REQUIRED, GDATA_TYPE_MEDIA_GROUP,
+	                                      &(self->priv->media_group), &success, error) == TRUE ||
+	    gdata_parser_object_from_element (node, "where", P_REQUIRED, GDATA_TYPE_GEORSS_WHERE,
+	                                      &(self->priv->georss_where), &success, error) == TRUE ||
+	    gdata_parser_object_from_element (node, "tags", P_REQUIRED, GDATA_TYPE_EXIF_TAGS,
+	                                      &(self->priv->exif_tags), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "videostatus", P_NO_DUPES, &(self->priv->video_status), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "imageVersion", P_NONE, &(self->priv->version), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "albumid", P_NONE, &(self->priv->album_id), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "client", P_NONE, &(self->priv->client), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->client), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
 		/* app:edited */
 		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
@@ -884,12 +866,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlChar *comment_count = xmlNodeListGetString (doc, node->children, TRUE);
 		self->priv->comment_count = strtoul ((gchar*) comment_count, NULL, 10);
 		xmlFree (comment_count);
-	} else if (gdata_parser_string_from_element (node, "videostatus", P_NO_DUPES, &(self->priv->video_status), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "imageVersion", P_NONE, &(self->priv->version), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "albumid", P_NONE, &(self->priv->album_id), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "client", P_NONE, &(self->priv->client), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->client), &success, error) == TRUE) {
-		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
 		/* gphoto:access */
 		/* Visibility is already obtained through the album. When PicasaWeb supports per-file access restrictions,

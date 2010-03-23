@@ -93,14 +93,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataYouTubeGroup *self = GDATA_YOUTUBE_GROUP (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
-		/* media:content */
-		GDataYouTubeContent *content = GDATA_YOUTUBE_CONTENT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CONTENT, doc,
-													 node, NULL, error));
-		if (content == NULL)
-			return FALSE;
-
-		_gdata_media_group_add_content (GDATA_MEDIA_GROUP (self), GDATA_MEDIA_CONTENT (content));
+	if (gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_YOUTUBE_CONTENT,
+	                                             _gdata_media_group_add_content, self, &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
 		/* media:credit */
 		GDataYouTubeCredit *credit = GDATA_YOUTUBE_CREDIT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CREDIT, doc,

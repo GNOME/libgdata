@@ -26,6 +26,7 @@
 
 #include "gdata-parser.h"
 #include "gdata-service.h"
+#include "gdata-private.h"
 
 static gchar *
 print_element (xmlNode *node)
@@ -73,8 +74,8 @@ gdata_parser_error_not_iso8601_format (xmlNode *element, const gchar *actual_val
 {
 	gchar *element_string = print_element (element);
 	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		     /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")), and the second parameter is
-		      * the erroneous value (which was not in ISO 8601 format).
+		     /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+		      * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 		      *
 		      * For example:
 		      *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format. */
@@ -253,7 +254,7 @@ gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name
  * gdata_parser_string_from_element:
  * @element: the element to check against
  * @element_name: the name of the element to parse
- * @options: a bitwise combination of parsing options from #GDataParserStringOptions, or %P_NONE
+ * @options: a bitwise combination of parsing options from #GDataParserOptions, or %P_NONE
  * @output: the return location for the parsed string content
  * @success: the return location for a value which is %TRUE if the string was parsed successfully, %FALSE if an error was encountered,
  * and undefined if @element didn't match @element_name
@@ -278,22 +279,19 @@ gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name
  * Since: 0.7.0
  */
 gboolean
-gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserStringOptions options,
+gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
                                   gchar **output, gboolean *success, GError **error)
 {
 	xmlChar *text;
 
+	/* Check it's the right element */
 	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
 		return FALSE;
 
 	/* Check if the output string has already been set */
-	if (*output != NULL) {
-		if (options & P_NO_DUPES) {
-			*success = gdata_parser_error_duplicate_element (element, error);
-			return TRUE;
-		} else {
-			g_free (*output);
-		}
+	if (options & P_NO_DUPES && *output != NULL) {
+		*success = gdata_parser_error_duplicate_element (element, error);
+		return TRUE;
 	}
 
 	/* Get the string and check it for NULLness or emptiness */
@@ -304,7 +302,148 @@ gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, G
 		return TRUE;
 	}
 
+	/* Success! */
+	g_free (*output);
 	*output = (gchar*) text;
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
+ * gdata_parser_object_from_element_setter:
+ * @element: the element to check against
+ * @element_name: the name of the element to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions, or %P_NONE
+ * @object_type: the type of the object to parse
+ * @_setter: a function to call once parsing's finished to return the object (#GDataParserSetterFunc)
+ * @_parent_parsable: the first parameter to pass to @_setter (of type #GDataParsable)
+ * @success: the return location for a value which is %TRUE if the object was parsed successfully, %FALSE if an error was encountered,
+ * and undefined if @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the object content of @element if its name is @element_name, subject to various checks specified by @options. If @element matches @element_name,
+ * @element will be parsed as an @object_type, which must extend #GDataParsable. If parsing is successful, @_setter will be called with its first
+ * parameter as @_parent_parsable, and its second as the parsed object of type @object_type. @_setter must reference the parsed object it's passed if
+ * it wants to keep it, as gdata_parser_object_from_element_setter will unreference it before returning.
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by @options fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by @options pass, %TRUE will be returned, @error will be unset and
+ * @success will be set to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_object_from_element_setter() can be chained
+ * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
+ * a given @element. If any of the calls to gdata_parser_object_from_element_setter() return %TRUE, the value of @success can be examined.
+ *
+ * @_setter and @_parent_parsable are both #gpointer<!-- -->s to avoid casts having to be put into calls to gdata_parser_object_from_element_setter().
+ * @_setter is actually of type #GDataParserSetterFunc, and @_parent_parsable should be a subclass of #GDataParsable. Neither parameter should be %NULL.
+ * No checks are implemented against these conditions (for efficiency reasons), so calling code must be correct.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: 0.7.0
+ */
+gboolean
+gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
+                                         gpointer /* GDataParserSetterFunc */ _setter, gpointer /* GDataParsable * */ _parent_parsable,
+                                         gboolean *success, GError **error)
+{
+	GDataParsable *parsable, *parent_parsable;
+	GDataParserSetterFunc setter;
+
+	/* We're lax on the types so that we don't have to do loads of casting when calling the function, which makes the parsing code more legible */
+	setter = (GDataParserSetterFunc) _setter;
+	parent_parsable = (GDataParsable*) _parent_parsable;
+
+	/* Check it's the right element */
+	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
+		return FALSE;
+
+	/* Get the object and check for instantiation failure */
+	parsable = _gdata_parsable_new_from_xml_node (object_type, element->doc, element, NULL, error);
+	if (options & P_REQUIRED && parsable == NULL) {
+		/* The error has already been set by _gdata_parsable_new_from_xml_node() */
+		*success = FALSE;
+		return TRUE;
+	}
+
+	/* Success! */
+	setter (parent_parsable, parsable);
+	g_object_unref (parsable);
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
+ * gdata_parser_object_from_element:
+ * @element: the element to check against
+ * @element_name: the name of the element to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions, or %P_NONE
+ * @object_type: the type of the object to parse
+ * @_output: the return location for the parsed object (of type #GDataParsable)
+ * @success: the return location for a value which is %TRUE if the object was parsed successfully, %FALSE if an error was encountered,
+ * and undefined if @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the object content of @element if its name is @element_name, subject to various checks specified by @options. If @element matches @element_name,
+ * @element will be parsed as an @object_type, which must extend #GDataParsable. If parsing is successful, the parsed object will be returned in
+ * @_output, which must be of type #GDataParsable (or a subclass). Ownership of the parsed object will pass to the calling code.
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by @options fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by @options pass, %TRUE will be returned, @error will be unset and
+ * @success will be set to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_object_from_element_setter() can be chained
+ * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
+ * a given @element. If any of the calls to gdata_parser_object_from_element_setter() return %TRUE, the value of @success can be examined.
+ *
+ * @_object is a #gpointer to avoid casts having to be put into calls to gdata_parser_object_from_element(). It is actually of type #GDataParsable
+ * and must not be %NULL. No check is implemented against this condition (for efficiency reasons), so calling code must be correct.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: 0.7.0
+ */
+gboolean
+gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
+                                  gpointer /* GDataParsable ** */ _output, gboolean *success, GError **error)
+{
+	GDataParsable *parsable, **output;
+
+	/* We're lax on the types so that we don't have to do loads of casting when calling the function, which makes the parsing code more legible */
+	output = (GDataParsable**) _output;
+
+	/* Check it's the right element */
+	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
+		return FALSE;
+
+	/* If we're not using a setter, check if the output already exists */
+	if (options & P_NO_DUPES && *output != NULL) {
+		*success = gdata_parser_error_duplicate_element (element, error);
+		return TRUE;
+	}
+
+	/* Get the object and check for instantiation failure */
+	parsable = _gdata_parsable_new_from_xml_node (object_type, element->doc, element, NULL, error);
+	if (options & P_REQUIRED && parsable == NULL) {
+		/* The error has already been set by _gdata_parsable_new_from_xml_node() */
+		*success = FALSE;
+		return TRUE;
+	}
+
+	/* Success! */
+	if (*output != NULL)
+		g_object_unref (*output);
+	*output = parsable;
 	*success = TRUE;
 
 	return TRUE;

@@ -624,20 +624,14 @@ gdata_youtube_video_new (const gchar *id)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataYouTubeVideo *self = GDATA_YOUTUBE_VIDEO (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "group") == 0) {
-		/* media:group */
-		GDataMediaGroup *group = GDATA_MEDIA_GROUP (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_GROUP, doc, node, NULL, error));
-		if (group == NULL)
-			return FALSE;
-
-		if (self->priv->media_group != NULL) {
-			g_object_unref (group);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
-
-		self->priv->media_group = group;
+	if (gdata_parser_object_from_element (node, "group", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_GROUP,
+	                                      &(self->priv->media_group), &success, error) == TRUE ||
+	    gdata_parser_object_from_element (node, "control", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_CONTROL,
+	                                      &(self->priv->youtube_control), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
 		/* gd:rating */
 		xmlChar *min, *max, *num_raters, *average;
@@ -767,19 +761,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 		xmlFree (recorded);
 		gdata_youtube_video_set_recorded (self, &recorded_timeval);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "control") == 0) {
-		/* app:control */
-		GDataYouTubeControl *control = GDATA_YOUTUBE_CONTROL (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CONTROL, doc,
-													 node, NULL, error));
-		if (control == NULL)
-			return FALSE;
-
-		if (self->priv->youtube_control != NULL) {
-			g_object_unref (control);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
-
-		self->priv->youtube_control = control;
 	} else if (GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

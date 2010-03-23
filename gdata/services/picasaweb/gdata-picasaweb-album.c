@@ -550,31 +550,15 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataPicasaWebAlbum *self = GDATA_PICASAWEB_ALBUM (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "group") == 0) {
-		/* media:group */
-		GDataMediaGroup *group = GDATA_MEDIA_GROUP (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_GROUP, doc, node, NULL, error));
-		if (group == NULL)
-			return FALSE;
-
-		if (self->priv->media_group != NULL)
-			/* We should really error here, but we can't, as priv->media_group has to be pre-populated
-			 * in order for things like gdata_picasaweb_album_get_tags() to work. */
-			g_object_unref (self->priv->media_group);
-
-		self->priv->media_group = group;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
-		/* georss:where */
-		GDataGeoRSSWhere *where = GDATA_GEORSS_WHERE (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GEORSS_WHERE, doc, node, NULL, error));
-		if (where == NULL)
-			return FALSE;
-
-		if (self->priv->georss_where != NULL)
-			g_object_unref (self->priv->georss_where);
-
-		self->priv->georss_where = where;
-	} else if (gdata_parser_string_from_element (node, "user", P_REQUIRED | P_NON_EMPTY, &(self->priv->user), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NON_EMPTY, &(self->priv->nickname), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
+	/* TODO: This should also be P_NO_DUPES, but we can't, as priv->media_group has to be pre-populated
+	 * in order for things like gdata_picasaweb_album_get_tags() to work. */
+	if (gdata_parser_object_from_element (node, "group", P_REQUIRED, GDATA_TYPE_MEDIA_GROUP,
+	                                      &(self->priv->media_group), &success, error) == TRUE ||
+	    gdata_parser_object_from_element (node, "where", P_REQUIRED, GDATA_TYPE_GEORSS_WHERE,
+	                                      &(self->priv->georss_where), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "user", P_REQUIRED | P_NON_EMPTY, &(self->priv->user), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NON_EMPTY, &(self->priv->nickname), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
 		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
 		/* app:edited */

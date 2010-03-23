@@ -1800,6 +1800,7 @@ static void
 test_gd_when (void)
 {
 	GDataGDWhen *when, *when2;
+	GDataGDReminder *reminder;
 	gchar *xml;
 	GList *reminders;
 	GTimeVal time_val, time_val2;
@@ -1874,12 +1875,18 @@ test_gd_when (void)
 	g_assert (gdata_gd_reminder_is_absolute_time (GDATA_GD_REMINDER (reminders->data)) == FALSE);
 	g_assert_cmpint (gdata_gd_reminder_get_relative_time (GDATA_GD_REMINDER (reminders->data)), ==, 15);
 
+	/* Add another reminder */
+	reminder = gdata_gd_reminder_new ("alert", &time_val, -1);
+	gdata_gd_when_add_reminder (when, reminder);
+	g_object_unref (reminder);
+
 	/* Check the outputted XML is correct */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (when));
 	g_assert_cmpstr (xml, ==,
 			 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' startTime='2005-06-06' "
 				"endTime='2005-06-08' valueString='This weekend'>"
 				"<gd:reminder minutes='15'/>"
+				"<gd:reminder absoluteTime='2005-06-06T00:00:00Z' method='alert'/>"
 				"<foobar/>"
 			 "</gd:when>");
 	g_free (xml);

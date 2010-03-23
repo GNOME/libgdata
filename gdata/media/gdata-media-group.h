@@ -27,6 +27,7 @@
 #include <gdata/media/gdata-media-category.h>
 #include <gdata/media/gdata-media-content.h>
 #include <gdata/media/gdata-media-credit.h>
+#include <gdata/media/gdata-media-thumbnail.h>
 
 G_BEGIN_DECLS
 
@@ -79,6 +80,7 @@ void _gdata_media_group_set_credit (GDataMediaGroup *self, GDataMediaCredit *cre
 const gchar *gdata_media_group_get_player_uri (GDataMediaGroup *self);
 gboolean gdata_media_group_is_restricted_in_country (GDataMediaGroup *self, const gchar *country);
 GList *gdata_media_group_get_thumbnails (GDataMediaGroup *self);
+void _gdata_media_group_add_thumbnail (GDataMediaGroup *self, GDataMediaThumbnail *thumbnail);
 
 G_END_DECLS
 
