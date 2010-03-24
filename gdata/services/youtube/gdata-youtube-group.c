@@ -93,12 +93,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataYouTubeGroup *self = GDATA_YOUTUBE_GROUP (parsable);
 
-	if (gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_YOUTUBE_CONTENT,
-	                                             _gdata_media_group_add_content, self, &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE ||
-	    gdata_parser_time_val_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES, &(self->priv->uploaded), &success, error) == TRUE) {
-		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
+	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE && xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
 		/* media:credit */
 		GDataYouTubeCredit *credit = GDATA_YOUTUBE_CREDIT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CREDIT, doc,
 												      node, NULL, error));
@@ -111,31 +106,39 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 
 		_gdata_media_group_set_credit (GDATA_MEDIA_GROUP (self), GDATA_MEDIA_CREDIT (credit));
-	} else if (xmlStrcmp (node->name, (xmlChar*) "duration") == 0) {
-		/* yt:duration */
-		xmlChar *duration = xmlGetProp (node, (xmlChar*) "seconds");
-		if (duration == NULL)
-			return gdata_parser_error_required_property_missing (node, "seconds", error);
+	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
+		if (gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_YOUTUBE_CONTENT,
+		                                             _gdata_media_group_add_content, self, &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE ||
+		    gdata_parser_time_val_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES, &(self->priv->uploaded), &success, error) == TRUE) {
+			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "duration") == 0) {
+			/* yt:duration */
+			xmlChar *duration = xmlGetProp (node, (xmlChar*) "seconds");
+			if (duration == NULL)
+				return gdata_parser_error_required_property_missing (node, "seconds", error);
 
-		self->priv->duration = strtoul ((gchar*) duration, NULL, 10);
-		xmlFree (duration);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "private") == 0) {
-		/* yt:private */
-		gdata_youtube_group_set_is_private (self, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "aspectRatio") == 0) {
-		/* yt:aspectRatio */
-		xmlChar *aspect_ratio = xmlNodeGetContent (node);
-		if (xmlStrcmp (aspect_ratio, (xmlChar*) "widescreen") == 0) {
-			gdata_youtube_group_set_aspect_ratio (self, GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN);
-		} else {
-			gdata_parser_error_unknown_content (node, (const gchar*) aspect_ratio, error);
+			self->priv->duration = strtoul ((gchar*) duration, NULL, 10);
+			xmlFree (duration);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "private") == 0) {
+			/* yt:private */
+			gdata_youtube_group_set_is_private (self, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "aspectRatio") == 0) {
+			/* yt:aspectRatio */
+			xmlChar *aspect_ratio = xmlNodeGetContent (node);
+			if (xmlStrcmp (aspect_ratio, (xmlChar*) "widescreen") == 0) {
+				gdata_youtube_group_set_aspect_ratio (self, GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN);
+			} else {
+				gdata_parser_error_unknown_content (node, (const gchar*) aspect_ratio, error);
+				xmlFree (aspect_ratio);
+				return FALSE;
+			}
 			xmlFree (aspect_ratio);
-			return FALSE;
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_youtube_group_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-		xmlFree (aspect_ratio);
-	} else if (GDATA_PARSABLE_CLASS (gdata_youtube_group_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_youtube_group_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

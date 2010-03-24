@@ -456,111 +456,120 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataCalendarEvent *self = GDATA_CALENDAR_EVENT (parsable);
 
-	if (gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE ||
-	    gdata_parser_object_from_element_setter (node, "when", P_REQUIRED, GDATA_TYPE_GD_WHEN,
-	                                             gdata_calendar_event_add_time, self, &success, error) == TRUE ||
-	    gdata_parser_object_from_element_setter (node, "who", P_REQUIRED, GDATA_TYPE_GD_WHO,
-	                                             gdata_calendar_event_add_person, self, &success, error) == TRUE ||
-	    gdata_parser_object_from_element_setter (node, "where", P_REQUIRED, GDATA_TYPE_GD_WHERE,
-	                                             gdata_calendar_event_add_place, self, &success, error) == TRUE) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
-		/* gd:comments */
-		xmlChar *rel, *href, *count_hint;
-		xmlNode *child_node;
-		guint count_hint_uint;
-		/*GDataGDFeedLink *feed_link;*/
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		if (gdata_parser_object_from_element_setter (node, "when", P_REQUIRED, GDATA_TYPE_GD_WHEN,
+		                                             gdata_calendar_event_add_time, self, &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "who", P_REQUIRED, GDATA_TYPE_GD_WHO,
+		                                             gdata_calendar_event_add_person, self, &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "where", P_REQUIRED, GDATA_TYPE_GD_WHERE,
+		                                             gdata_calendar_event_add_place, self, &success, error) == TRUE) {
+			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
+			/* gd:comments */
+			xmlChar *rel, *href, *count_hint;
+			xmlNode *child_node;
+			guint count_hint_uint;
+			/*GDataGDFeedLink *feed_link;*/
 
-		/* This is actually the child of the <comments> element */
-		child_node = node->children;
+			/* This is actually the child of the <comments> element */
+			child_node = node->children;
 
-		count_hint = xmlGetProp (child_node, (xmlChar*) "countHint");
-		if (count_hint == NULL)
-			count_hint_uint = 0;
-		else
-			count_hint_uint = strtoul ((gchar*) count_hint, NULL, 10);
-		xmlFree (count_hint);
+			count_hint = xmlGetProp (child_node, (xmlChar*) "countHint");
+			if (count_hint == NULL)
+				count_hint_uint = 0;
+			else
+				count_hint_uint = strtoul ((gchar*) count_hint, NULL, 10);
+			xmlFree (count_hint);
 
-		rel = xmlGetProp (child_node, (xmlChar*) "rel");
-		href = xmlGetProp (child_node, (xmlChar*) "href");
+			rel = xmlGetProp (child_node, (xmlChar*) "rel");
+			href = xmlGetProp (child_node, (xmlChar*) "href");
 
-		/* TODO */
-		/*feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint);*/
-		/*gdata_calendar_event_set_comments_feed_link (self, feed_link);*/
+			/* TODO */
+			/*feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint);*/
+			/*gdata_calendar_event_set_comments_feed_link (self, feed_link);*/
 
-		xmlFree (rel);
-		xmlFree (href);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "eventStatus") == 0) {
-		/* gd:eventStatus */
-		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->status = (gchar*) value;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "visibility") == 0) {
-		/* gd:visibility */
-		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->visibility = (gchar*) value;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "transparency") == 0) {
-		/* gd:transparency */
-		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->transparency = (gchar*) value;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "uid") == 0) {
-		/* gCal:uid */
-		xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->uid = (gchar*) value;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "sequence") == 0) {
-		/* gCal:sequence */
-		xmlChar *value;
-		guint value_uint;
+			xmlFree (rel);
+			xmlFree (href);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "eventStatus") == 0) {
+			/* gd:eventStatus */
+			xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			self->priv->status = (gchar*) value;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "visibility") == 0) {
+			/* gd:visibility */
+			xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			self->priv->visibility = (gchar*) value;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "transparency") == 0) {
+			/* gd:transparency */
+			xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			self->priv->transparency = (gchar*) value;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "recurrence") == 0) {
+			/* gd:recurrence */
+			self->priv->recurrence = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "originalEvent") == 0) {
+			/* gd:originalEvent */
+			self->priv->original_event_id = (gchar*) xmlGetProp (node, (xmlChar*) "id");
+			self->priv->original_event_uri = (gchar*) xmlGetProp (node, (xmlChar*) "href");
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_calendar_event_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/gCal/2005") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "uid") == 0) {
+			/* gCal:uid */
+			xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			self->priv->uid = (gchar*) value;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "sequence") == 0) {
+			/* gCal:sequence */
+			xmlChar *value;
+			guint value_uint;
 
-		value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		else
-			value_uint = strtoul ((gchar*) value, NULL, 10);
-		xmlFree (value);
+			value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			else
+				value_uint = strtoul ((gchar*) value, NULL, 10);
+			xmlFree (value);
 
-		gdata_calendar_event_set_sequence (self, value_uint);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanModify") == 0) {
-		/* gCal:guestsCanModify */
-		gboolean guests_can_modify;
-		if (gdata_parser_boolean_from_property (node, "value", &guests_can_modify, -1, error) == FALSE)
-			return FALSE;
-		gdata_calendar_event_set_guests_can_modify (self, guests_can_modify);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanInviteOthers") == 0) {
-		/* gCal:guestsCanInviteOthers */
-		gboolean guests_can_invite_others;
-		if (gdata_parser_boolean_from_property (node, "value", &guests_can_invite_others, -1, error) == FALSE)
-			return FALSE;
-		gdata_calendar_event_set_guests_can_invite_others (self, guests_can_invite_others);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanSeeGuests") == 0) {
-		/* gCal:guestsCanSeeGuests */
-		gboolean guests_can_see_guests;
-		if (gdata_parser_boolean_from_property (node, "value", &guests_can_see_guests, -1, error) == FALSE)
-			return FALSE;
-		gdata_calendar_event_set_guests_can_see_guests (self, guests_can_see_guests);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "anyoneCanAddSelf") == 0) {
-		/* gCal:anyoneCanAddSelf */
-		gboolean anyone_can_add_self;
-		if (gdata_parser_boolean_from_property (node, "value", &anyone_can_add_self, -1, error) == FALSE)
-			return FALSE;
-		gdata_calendar_event_set_anyone_can_add_self (self, anyone_can_add_self);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "recurrence") == 0) {
-		/* gd:recurrence */
-		self->priv->recurrence = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "originalEvent") == 0) {
-		/* gd:originalEvent */
-		self->priv->original_event_id = (gchar*) xmlGetProp (node, (xmlChar*) "id");
-		self->priv->original_event_uri = (gchar*) xmlGetProp (node, (xmlChar*) "href");
-	} else if (GDATA_PARSABLE_CLASS (gdata_calendar_event_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+			gdata_calendar_event_set_sequence (self, value_uint);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanModify") == 0) {
+			/* gCal:guestsCanModify */
+			gboolean guests_can_modify;
+			if (gdata_parser_boolean_from_property (node, "value", &guests_can_modify, -1, error) == FALSE)
+				return FALSE;
+			gdata_calendar_event_set_guests_can_modify (self, guests_can_modify);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanInviteOthers") == 0) {
+			/* gCal:guestsCanInviteOthers */
+			gboolean guests_can_invite_others;
+			if (gdata_parser_boolean_from_property (node, "value", &guests_can_invite_others, -1, error) == FALSE)
+				return FALSE;
+			gdata_calendar_event_set_guests_can_invite_others (self, guests_can_invite_others);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanSeeGuests") == 0) {
+			/* gCal:guestsCanSeeGuests */
+			gboolean guests_can_see_guests;
+			if (gdata_parser_boolean_from_property (node, "value", &guests_can_see_guests, -1, error) == FALSE)
+				return FALSE;
+			gdata_calendar_event_set_guests_can_see_guests (self, guests_can_see_guests);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "anyoneCanAddSelf") == 0) {
+			/* gCal:anyoneCanAddSelf */
+			gboolean anyone_can_add_self;
+			if (gdata_parser_boolean_from_property (node, "value", &anyone_can_add_self, -1, error) == FALSE)
+				return FALSE;
+			gdata_calendar_event_set_anyone_can_add_self (self, anyone_can_add_self);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_calendar_event_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_calendar_event_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

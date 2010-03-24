@@ -193,9 +193,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataAuthorPrivate *priv = GDATA_AUTHOR (parsable)->priv;
 
-	if (gdata_parser_string_from_element (node, "name", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->name), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "uri", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->uri), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "email", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->email_address), &success, error) == TRUE) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE && (
+	     gdata_parser_string_from_element (node, "name", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->name), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "uri", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->uri), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "email", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->email_address), &success, error) == TRUE
+	    )) {
 		return success;
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_author_parent_class)->parse_xml (parsable, doc, node, user_data, error);

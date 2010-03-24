@@ -627,140 +627,151 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataYouTubeVideo *self = GDATA_YOUTUBE_VIDEO (parsable);
 
-	if (gdata_parser_object_from_element (node, "group", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_GROUP,
-	                                      &(self->priv->media_group), &success, error) == TRUE ||
-	    gdata_parser_object_from_element (node, "control", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_CONTROL,
-	                                      &(self->priv->youtube_control), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
+	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
+	    gdata_parser_object_from_element (node, "group", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_GROUP,
+	                                      &(self->priv->media_group), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
-		/* gd:rating */
-		xmlChar *min, *max, *num_raters, *average;
-		guint num_raters_uint;
-		gdouble average_double;
+	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	           gdata_parser_object_from_element (node, "control", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_CONTROL,
+		                                     &(self->priv->youtube_control), &success, error) == TRUE) {
+		return success;
+	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
+		if (gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
+			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "statistics") == 0) {
+			/* yt:statistics */
+			xmlChar *view_count, *favorite_count;
 
-		min = xmlGetProp (node, (xmlChar*) "min");
-		if (min == NULL)
-			return gdata_parser_error_required_property_missing (node, "min", error);
+			/* View count */
+			view_count = xmlGetProp (node, (xmlChar*) "viewCount");
+			if (view_count == NULL)
+				return gdata_parser_error_required_property_missing (node, "viewCount", error);
+			self->priv->view_count = strtoul ((gchar*) view_count, NULL, 10);
+			xmlFree (view_count);
 
-		max = xmlGetProp (node, (xmlChar*) "max");
-		if (max == NULL) {
-			gdata_parser_error_required_property_missing (node, "max", error);
-			xmlFree (min);
-			return FALSE;
-		}
+			/* Favourite count */
+			favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
+			self->priv->favorite_count = (favorite_count != NULL) ? strtoul ((gchar*) favorite_count, NULL, 10) : 0;
+			xmlFree (favorite_count);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
+			/* yt:noembed */
+			/* Ignore this now; it's been superceded by yt:accessControl.
+			   See http://apiblog.youtube.com/2010/02/extended-access-controls-available-via.html */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "accessControl") == 0) {
+			/* yt:accessControl */
+			xmlChar *action, *permission;
+			GDataYouTubePermission permission_enum;
 
-		num_raters = xmlGetProp (node, (xmlChar*) "numRaters");
-		if (num_raters == NULL)
-			num_raters_uint = 0;
-		else
-			num_raters_uint = strtoul ((gchar*) num_raters, NULL, 10);
-		xmlFree (num_raters);
+			action = xmlGetProp (node, (xmlChar*) "action");
+			if (action == NULL)
+				return gdata_parser_error_required_property_missing (node, "action", error);
+			permission = xmlGetProp (node, (xmlChar*) "permission");
+			if (permission == NULL) {
+				xmlFree (action);
+				return gdata_parser_error_required_property_missing (node, "permission", error);
+			}
 
-		average = xmlGetProp (node, (xmlChar*) "average");
-		if (average == NULL)
-			average_double = 0;
-		else
-			average_double = g_ascii_strtod ((gchar*) average, NULL);
-		xmlFree (average);
+			/* Work out what the permission is */
+			if (xmlStrcmp (permission, (xmlChar*) "allowed") == 0) {
+				permission_enum = GDATA_YOUTUBE_PERMISSION_ALLOWED;
+			} else if (xmlStrcmp (permission, (xmlChar*) "denied") == 0) {
+				permission_enum = GDATA_YOUTUBE_PERMISSION_DENIED;
+			} else if (xmlStrcmp (permission, (xmlChar*) "moderated") == 0) {
+				permission_enum = GDATA_YOUTUBE_PERMISSION_MODERATED;
+			} else {
+				xmlFree (action);
+				xmlFree (permission);
+				return gdata_parser_error_unknown_property_value (node, "permission", (gchar*) permission, error);
+			}
 
-		self->priv->rating.min = strtoul ((gchar*) min, NULL, 10);
-		self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
-		self->priv->rating.count = num_raters_uint;
-		self->priv->rating.average = average_double;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
-		/* gd:comments */
-		xmlChar *rel, *href, *count_hint, *read_only;
-		xmlNode *child_node;
-		guint count_hint_uint;
+			/* Store the access control */
+			g_hash_table_insert (self->priv->access_controls, (gchar*) action, GINT_TO_POINTER (permission_enum));
+		} else if (xmlStrcmp (node->name, (xmlChar*) "recorded") == 0) {
+			/* yt:recorded */
+			xmlChar *recorded;
+			GTimeVal recorded_timeval;
 
-		/* This is actually the child of the <comments> element */
-		child_node = node->children;
-
-		count_hint = xmlGetProp (child_node, (xmlChar*) "countHint");
-		if (count_hint == NULL)
-			count_hint_uint = 0;
-		else
-			count_hint_uint = strtoul ((gchar*) count_hint, NULL, 10);
-		xmlFree (count_hint);
-
-		read_only = xmlGetProp (child_node, (xmlChar*) "readOnly");
-		rel = xmlGetProp (child_node, (xmlChar*) "rel");
-		href = xmlGetProp (child_node, (xmlChar*) "href");
-
-		/* TODO */
-		/*gdata_gd_feed_link_free (self->priv->comments_feed_link);
-		self->priv->comments_feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint,
-									 ((xmlStrcmp (read_only, (xmlChar*) "true") == 0) ? TRUE : FALSE));*/
-
-		xmlFree (rel);
-		xmlFree (href);
-		xmlFree (read_only);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "statistics") == 0) {
-		/* yt:statistics */
-		xmlChar *view_count, *favorite_count;
-
-		/* View count */
-		view_count = xmlGetProp (node, (xmlChar*) "viewCount");
-		if (view_count == NULL)
-			return gdata_parser_error_required_property_missing (node, "viewCount", error);
-		self->priv->view_count = strtoul ((gchar*) view_count, NULL, 10);
-		xmlFree (view_count);
-
-		/* Favourite count */
-		favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
-		self->priv->favorite_count = (favorite_count != NULL) ? strtoul ((gchar*) favorite_count, NULL, 10) : 0;
-		xmlFree (favorite_count);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
-		/* yt:noembed */
-		/* Ignore this now; it's been superceded by yt:accessControl.
-		   See http://apiblog.youtube.com/2010/02/extended-access-controls-available-via.html */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "accessControl") == 0) {
-		/* yt:accessControl */
-		xmlChar *action, *permission;
-		GDataYouTubePermission permission_enum;
-
-		action = xmlGetProp (node, (xmlChar*) "action");
-		if (action == NULL)
-			return gdata_parser_error_required_property_missing (node, "action", error);
-		permission = xmlGetProp (node, (xmlChar*) "permission");
-		if (permission == NULL) {
-			xmlFree (action);
-			return gdata_parser_error_required_property_missing (node, "permission", error);
-		}
-
-		/* Work out what the permission is */
-		if (xmlStrcmp (permission, (xmlChar*) "allowed") == 0) {
-			permission_enum = GDATA_YOUTUBE_PERMISSION_ALLOWED;
-		} else if (xmlStrcmp (permission, (xmlChar*) "denied") == 0) {
-			permission_enum = GDATA_YOUTUBE_PERMISSION_DENIED;
-		} else if (xmlStrcmp (permission, (xmlChar*) "moderated") == 0) {
-			permission_enum = GDATA_YOUTUBE_PERMISSION_MODERATED;
-		} else {
-			xmlFree (action);
-			xmlFree (permission);
-			return gdata_parser_error_unknown_property_value (node, "permission", (gchar*) permission, error);
-		}
-
-		/* Store the access control */
-		g_hash_table_insert (self->priv->access_controls, (gchar*) action, GINT_TO_POINTER (permission_enum));
-	} else if (xmlStrcmp (node->name, (xmlChar*) "recorded") == 0) {
-		/* yt:recorded */
-		xmlChar *recorded;
-		GTimeVal recorded_timeval;
-
-		recorded = xmlNodeListGetString (doc, node->children, TRUE);
-		if (gdata_parser_time_val_from_date ((gchar*) recorded, &recorded_timeval) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) recorded, error);
+			recorded = xmlNodeListGetString (doc, node->children, TRUE);
+			if (gdata_parser_time_val_from_date ((gchar*) recorded, &recorded_timeval) == FALSE) {
+				/* Error */
+				gdata_parser_error_not_iso8601_format (node, (gchar*) recorded, error);
+				xmlFree (recorded);
+				return FALSE;
+			}
 			xmlFree (recorded);
-			return FALSE;
+			gdata_youtube_video_set_recorded (self, &recorded_timeval);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-		xmlFree (recorded);
-		gdata_youtube_video_set_recorded (self, &recorded_timeval);
-	} else if (GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
+			/* gd:rating */
+			xmlChar *min, *max, *num_raters, *average;
+			guint num_raters_uint;
+			gdouble average_double;
+
+			min = xmlGetProp (node, (xmlChar*) "min");
+			if (min == NULL)
+				return gdata_parser_error_required_property_missing (node, "min", error);
+
+			max = xmlGetProp (node, (xmlChar*) "max");
+			if (max == NULL) {
+				gdata_parser_error_required_property_missing (node, "max", error);
+				xmlFree (min);
+				return FALSE;
+			}
+
+			num_raters = xmlGetProp (node, (xmlChar*) "numRaters");
+			if (num_raters == NULL)
+				num_raters_uint = 0;
+			else
+				num_raters_uint = strtoul ((gchar*) num_raters, NULL, 10);
+			xmlFree (num_raters);
+
+			average = xmlGetProp (node, (xmlChar*) "average");
+			if (average == NULL)
+				average_double = 0;
+			else
+				average_double = g_ascii_strtod ((gchar*) average, NULL);
+			xmlFree (average);
+
+			self->priv->rating.min = strtoul ((gchar*) min, NULL, 10);
+			self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
+			self->priv->rating.count = num_raters_uint;
+			self->priv->rating.average = average_double;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
+			/* gd:comments */
+			xmlChar *rel, *href, *count_hint, *read_only;
+			xmlNode *child_node;
+			guint count_hint_uint;
+
+			/* This is actually the child of the <comments> element */
+			child_node = node->children;
+
+			count_hint = xmlGetProp (child_node, (xmlChar*) "countHint");
+			if (count_hint == NULL)
+				count_hint_uint = 0;
+			else
+				count_hint_uint = strtoul ((gchar*) count_hint, NULL, 10);
+			xmlFree (count_hint);
+
+			read_only = xmlGetProp (child_node, (xmlChar*) "readOnly");
+			rel = xmlGetProp (child_node, (xmlChar*) "rel");
+			href = xmlGetProp (child_node, (xmlChar*) "href");
+
+			/* TODO */
+			/*gdata_gd_feed_link_free (self->priv->comments_feed_link);
+			self->priv->comments_feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint,
+										 ((xmlStrcmp (read_only, (xmlChar*) "true") == 0) ? TRUE : FALSE));*/
+
+			xmlFree (rel);
+			xmlFree (href);
+			xmlFree (read_only);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

@@ -99,7 +99,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataYouTubeControl *self = GDATA_YOUTUBE_CONTROL (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "draft") == 0) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	    xmlStrcmp (node->name, (xmlChar*) "draft") == 0) {
 		/* app:draft */
 		xmlChar *draft = xmlNodeListGetString (doc, node, TRUE);
 		if (xmlStrcmp (draft, (xmlChar*) "no") == 0)
@@ -107,12 +108,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		else
 			self->priv->is_draft = TRUE;
 		xmlFree (draft);
-	} else if (gdata_parser_object_from_element (node, "state", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_STATE,
+	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE &&
+	           gdata_parser_object_from_element (node, "state", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_STATE,
 	                                             &(self->priv->state), &success, error) == TRUE) {
 		return success;
-	} else if (GDATA_PARSABLE_CLASS (gdata_youtube_control_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_youtube_control_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

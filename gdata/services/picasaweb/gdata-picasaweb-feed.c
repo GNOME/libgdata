@@ -58,60 +58,63 @@ gdata_picasaweb_feed_init (GDataPicasaWebFeed *self)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
-	if (xmlStrcmp (node->name, (xmlChar*) "user") == 0) {
-		/* gphoto:user */
-		/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "nickname") == 0) {
-		/* gphoto:nickname */
-		/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "quotacurrent") == 0) {
-		/* gphoto:quota-current */
-		/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "quotalimit") == 0) {
-		/* gphoto:quota-limit */
-		/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "maxPhotosPerAlbum") == 0) {
-		/* gphoto:max-photos-per-album */
-		/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "thumbnail") == 0) {
-		/* gphoto:thumbnail */
-		/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "allowDownloads") == 0) {
-		/* gphoto:allowDownloads */
-		/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "allowPrints") == 0) {
-		/* gphoto:allowPrints */
-		/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0 && xmlStrcmp (node->ns->href, (xmlChar*) "http://schemas.google.com/photos/2007") == 0) {
-		/* gphoto:id */
-		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "rights") == 0) {
-		/* gphoto:rights */
-		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
-		/* gphoto:location */
-		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
-		/* gphoto:access */
-		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
-		/* gphoto:timestamp */
-		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "numphotos") == 0) {
-		/* gphoto:numphotos */
-		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "numphotosremaining") == 0) {
-		/* gphoto:numphotosremaining */
-		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "bytesUsed") == 0) {
-		/* gphoto:bytesUsed */
-		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/photos/2007") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "user") == 0) {
+			/* gphoto:user */
+			/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "nickname") == 0) {
+			/* gphoto:nickname */
+			/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "quotacurrent") == 0) {
+			/* gphoto:quota-current */
+			/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "quotalimit") == 0) {
+			/* gphoto:quota-limit */
+			/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "maxPhotosPerAlbum") == 0) {
+			/* gphoto:max-photos-per-album */
+			/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "thumbnail") == 0) {
+			/* gphoto:thumbnail */
+			/* From user's feed of album entries.  Redundant with user entry represented by GDataPicasaWebUser.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "allowDownloads") == 0) {
+			/* gphoto:allowDownloads */
+			/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "allowPrints") == 0) {
+			/* gphoto:allowPrints */
+			/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0 && xmlStrcmp (node->ns->href, (xmlChar*) "http://schemas.google.com/photos/2007") == 0) {
+			/* gphoto:id */
+			/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "rights") == 0) {
+			/* gphoto:rights */
+			/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
+			/* gphoto:location */
+			/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
+			/* gphoto:access */
+			/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
+			/* gphoto:timestamp */
+			/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "numphotos") == 0) {
+			/* gphoto:numphotos */
+			/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "numphotosremaining") == 0) {
+			/* gphoto:numphotosremaining */
+			/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "bytesUsed") == 0) {
+			/* gphoto:bytesUsed */
+			/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_picasaweb_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else if (gdata_parser_is_namespace (node, "http://www.georss.org/georss") == TRUE && xmlStrcmp (node->name, (xmlChar*) "where") == 0) {
 		/* georss:where */
 		/* From album's feed of file entries.  Redundant with album entries represented by GDataPicasaWebAlbum.  Capturing and ignoring.  See bgo #589858. */
-	} else if (GDATA_PARSABLE_CLASS (gdata_picasaweb_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_picasaweb_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

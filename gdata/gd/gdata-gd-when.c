@@ -293,7 +293,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	gboolean success;
 
-	if (gdata_parser_object_from_element_setter (node, "reminder", P_REQUIRED, GDATA_TYPE_GD_REMINDER,
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE &&
+	    gdata_parser_object_from_element_setter (node, "reminder", P_REQUIRED, GDATA_TYPE_GD_REMINDER,
 	                                             gdata_gd_when_add_reminder, parsable, &success, error) == TRUE) {
 		return success;
 	} else {

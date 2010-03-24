@@ -63,6 +63,9 @@ typedef enum {
 typedef void (*GDataParserSetterFunc) (GDataParsable *parent_parsable, GDataParsable *parsable);
 
 gboolean gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error);
+
+gboolean gdata_parser_is_namespace (xmlNode *element, const gchar *namespace_uri);
+
 gboolean gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
                                            gchar **output, gboolean *success, GError **error);
 gboolean gdata_parser_time_val_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,

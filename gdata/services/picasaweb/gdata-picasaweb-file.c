@@ -792,80 +792,91 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataPicasaWebFile *self = GDATA_PICASAWEB_FILE (parsable);
 
-	/* TODO: This should also be P_NO_DUPES, but we can't, as priv->media_group has to be pre-populated
+	/* TODO: media:group should also be P_NO_DUPES, but we can't, as priv->media_group has to be pre-populated
 	 * in order for things like gdata_picasaweb_file_set_description() to work. */
-	if (gdata_parser_object_from_element (node, "group", P_REQUIRED, GDATA_TYPE_MEDIA_GROUP,
-	                                      &(self->priv->media_group), &success, error) == TRUE ||
-	    gdata_parser_object_from_element (node, "where", P_REQUIRED, GDATA_TYPE_GEORSS_WHERE,
-	                                      &(self->priv->georss_where), &success, error) == TRUE ||
-	    gdata_parser_object_from_element (node, "tags", P_REQUIRED, GDATA_TYPE_EXIF_TAGS,
-	                                      &(self->priv->exif_tags), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "videostatus", P_NO_DUPES, &(self->priv->video_status), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "imageVersion", P_NONE, &(self->priv->version), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "albumid", P_NONE, &(self->priv->album_id), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "client", P_NONE, &(self->priv->client), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->client), &success, error) == TRUE ||
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "position") == 0) {
-		/* gphoto:position */
-		xmlChar *position_str = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_picasaweb_file_set_position (self, g_ascii_strtod ((gchar*) position_str, NULL));
-		xmlFree (position_str);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "width") == 0) {
-		/* gphoto:width */
-		xmlChar *width = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->width = strtoul ((gchar*) width, NULL, 10);
-		xmlFree (width);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "height") == 0) {
-		/* gphoto:height */
-		xmlChar *height = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->height = strtoul ((gchar*) height, NULL, 10);
-		xmlFree (height);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "size") == 0) {
-		/* gphoto:size */
-		xmlChar *size = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->size = strtoul ((gchar*) size, NULL, 10);
-		xmlFree (size);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
-		/* gphoto:timestamp */
-		xmlChar *timestamp_str;
-		guint64 milliseconds;
-		GTimeVal timestamp;
+	} else if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
+	           gdata_parser_object_from_element (node, "group", P_REQUIRED, GDATA_TYPE_MEDIA_GROUP,
+	                                             &(self->priv->media_group), &success, error) == TRUE) {
+		return success;
+	} else if (gdata_parser_is_namespace (node, "http://www.georss.org/georss") == TRUE &&
+	          gdata_parser_object_from_element (node, "where", P_REQUIRED, GDATA_TYPE_GEORSS_WHERE,
+	                                            &(self->priv->georss_where), &success, error) == TRUE) {
+		return success;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/photos/exif/2007") == TRUE &&
+	           gdata_parser_object_from_element (node, "tags", P_REQUIRED, GDATA_TYPE_EXIF_TAGS,
+	                                             &(self->priv->exif_tags), &success, error) == TRUE) {
+		return success;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/photos/2007") == TRUE) {
+		if (gdata_parser_string_from_element (node, "videostatus", P_NO_DUPES, &(self->priv->video_status), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "imageVersion", P_NONE, &(self->priv->version), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "albumid", P_NONE, &(self->priv->album_id), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "client", P_NONE, &(self->priv->client), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->client), &success, error) == TRUE) {
+			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "position") == 0) {
+			/* gphoto:position */
+			xmlChar *position_str = xmlNodeListGetString (doc, node->children, TRUE);
+			gdata_picasaweb_file_set_position (self, g_ascii_strtod ((gchar*) position_str, NULL));
+			xmlFree (position_str);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "width") == 0) {
+			/* gphoto:width */
+			xmlChar *width = xmlNodeListGetString (doc, node->children, TRUE);
+			self->priv->width = strtoul ((gchar*) width, NULL, 10);
+			xmlFree (width);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "height") == 0) {
+			/* gphoto:height */
+			xmlChar *height = xmlNodeListGetString (doc, node->children, TRUE);
+			self->priv->height = strtoul ((gchar*) height, NULL, 10);
+			xmlFree (height);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "size") == 0) {
+			/* gphoto:size */
+			xmlChar *size = xmlNodeListGetString (doc, node->children, TRUE);
+			self->priv->size = strtoul ((gchar*) size, NULL, 10);
+			xmlFree (size);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
+			/* gphoto:timestamp */
+			xmlChar *timestamp_str;
+			guint64 milliseconds;
+			GTimeVal timestamp;
 
-		timestamp_str = xmlNodeListGetString (doc, node->children, TRUE);
-		milliseconds = g_ascii_strtoull ((gchar*) timestamp_str, NULL, 10);
-		xmlFree (timestamp_str);
+			timestamp_str = xmlNodeListGetString (doc, node->children, TRUE);
+			milliseconds = g_ascii_strtoull ((gchar*) timestamp_str, NULL, 10);
+			xmlFree (timestamp_str);
 
-		timestamp.tv_sec = (glong) (milliseconds / 1000);
-		timestamp.tv_usec = (glong) ((milliseconds % 1000) * 1000);
+			timestamp.tv_sec = (glong) (milliseconds / 1000);
+			timestamp.tv_usec = (glong) ((milliseconds % 1000) * 1000);
 
-		gdata_picasaweb_file_set_timestamp (self, &timestamp);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "commentingEnabled") == 0) {
-		/* gphoto:commentingEnabled */
-		xmlChar *is_commenting_enabled = xmlNodeListGetString (doc, node->children, TRUE);
-		if (is_commenting_enabled == NULL)
-			return gdata_parser_error_required_content_missing (node, error);
-		self->priv->is_commenting_enabled = (xmlStrcmp (is_commenting_enabled, (xmlChar*) "true") == 0 ? TRUE : FALSE);
-		xmlFree (is_commenting_enabled);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "commentCount") == 0) {
-		/* gphoto:commentCount */
-		xmlChar *comment_count = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->comment_count = strtoul ((gchar*) comment_count, NULL, 10);
-		xmlFree (comment_count);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
-		/* gphoto:access */
-		/* Visibility is already obtained through the album. When PicasaWeb supports per-file access restrictions,
-		   we'll expose this property. Until then, we'll catch this to suppress the Unhandled XML warning.
-		   See https://bugzilla.gnome.org/show_bug.cgi?id=589858 */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "rotation") == 0) {
-		/* gphoto:rotation */
-		xmlChar *rotation = xmlNodeListGetString (doc, node->children, TRUE);
-		gdata_picasaweb_file_set_rotation (self, strtoul ((gchar*) rotation, NULL, 10));
-		xmlFree (rotation);
-	} else if (GDATA_PARSABLE_CLASS (gdata_picasaweb_file_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+			gdata_picasaweb_file_set_timestamp (self, &timestamp);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "commentingEnabled") == 0) {
+			/* gphoto:commentingEnabled */
+			xmlChar *is_commenting_enabled = xmlNodeListGetString (doc, node->children, TRUE);
+			if (is_commenting_enabled == NULL)
+				return gdata_parser_error_required_content_missing (node, error);
+			self->priv->is_commenting_enabled = (xmlStrcmp (is_commenting_enabled, (xmlChar*) "true") == 0 ? TRUE : FALSE);
+			xmlFree (is_commenting_enabled);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "commentCount") == 0) {
+			/* gphoto:commentCount */
+			xmlChar *comment_count = xmlNodeListGetString (doc, node->children, TRUE);
+			self->priv->comment_count = strtoul ((gchar*) comment_count, NULL, 10);
+			xmlFree (comment_count);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
+			/* gphoto:access */
+			/* Visibility is already obtained through the album. When PicasaWeb supports per-file access restrictions,
+			   we'll expose this property. Until then, we'll catch this to suppress the Unhandled XML warning.
+			   See https://bugzilla.gnome.org/show_bug.cgi?id=589858 */
+		} else if (xmlStrcmp (node->name, (xmlChar*) "rotation") == 0) {
+			/* gphoto:rotation */
+			xmlChar *rotation = xmlNodeListGetString (doc, node->children, TRUE);
+			gdata_picasaweb_file_set_rotation (self, strtoul ((gchar*) rotation, NULL, 10));
+			xmlFree (rotation);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_picasaweb_file_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_picasaweb_file_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

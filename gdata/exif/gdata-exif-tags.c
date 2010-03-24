@@ -109,6 +109,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataExifTags *self = GDATA_EXIF_TAGS (parsable);
 
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/photos/exif/2007") == FALSE)
+		return GDATA_PARSABLE_CLASS (gdata_exif_tags_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+
 	if (xmlStrcmp (node->name, (xmlChar*) "distance") == 0 ) {
 		/* exif:distance */
 		xmlChar *distance = xmlNodeListGetString (doc, node->children, TRUE);
@@ -120,8 +123,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		self->priv->fstop = g_ascii_strtod ((gchar*) fstop, NULL);
 		xmlFree (fstop);
 	} else if (gdata_parser_string_from_element (node, "make", P_NONE, &(self->priv->make), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "model", P_NONE, &(self->priv->model), &success, error) == TRUE ||
-	           gdata_parser_string_from_element (node, "imageUniqueID", P_NONE, &(self->priv->image_unique_id), &success, error) == TRUE) {
+		   gdata_parser_string_from_element (node, "model", P_NONE, &(self->priv->model), &success, error) == TRUE ||
+		   gdata_parser_string_from_element (node, "imageUniqueID", P_NONE, &(self->priv->image_unique_id), &success, error) == TRUE) {
 		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "exposure") == 0) {
 		/* exif:exposure */
@@ -156,9 +159,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 		self->priv->_time.tv_sec = (glong) (milliseconds / 1000);
 		self->priv->_time.tv_usec = (glong) ((milliseconds % 1000) * 1000);
-	} else if (GDATA_PARSABLE_CLASS (gdata_exif_tags_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_exif_tags_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

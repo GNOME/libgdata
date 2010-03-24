@@ -280,12 +280,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataGDNamePrivate *priv = GDATA_GD_NAME (parsable)->priv;
 
-	if (gdata_parser_string_from_element (node, "givenName", P_NO_DUPES, &(priv->given_name), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "additionalName", P_NO_DUPES, &(priv->additional_name), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "familyName", P_NO_DUPES, &(priv->family_name), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "namePrefix", P_NO_DUPES, &(priv->prefix), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "nameSuffix", P_NO_DUPES, &(priv->suffix), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "fullName", P_NO_DUPES, &(priv->full_name), &success, error) == TRUE) {
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE && (
+	     gdata_parser_string_from_element (node, "givenName", P_NO_DUPES, &(priv->given_name), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "additionalName", P_NO_DUPES, &(priv->additional_name), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "familyName", P_NO_DUPES, &(priv->family_name), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "namePrefix", P_NO_DUPES, &(priv->prefix), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "nameSuffix", P_NO_DUPES, &(priv->suffix), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "fullName", P_NO_DUPES, &(priv->full_name), &success, error) == TRUE)) {
 		return success;
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_gd_name_parent_class)->parse_xml (parsable, doc, node, user_data, error);

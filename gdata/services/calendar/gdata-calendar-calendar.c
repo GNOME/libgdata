@@ -291,61 +291,66 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataCalendarCalendar *self = GDATA_CALENDAR_CALENDAR (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "timezone") == 0) {
-		/* gCal:timezone */
-		xmlChar *_timezone = xmlGetProp (node, (xmlChar*) "value");
-		if (_timezone == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->timezone = (gchar*) _timezone;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "timesCleaned") == 0) {
-		/* gCal:timesCleaned */
-		xmlChar *times_cleaned = xmlGetProp (node, (xmlChar*) "value");
-		if (times_cleaned == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->times_cleaned = strtoul ((gchar*) times_cleaned, NULL, 10);
-		xmlFree (times_cleaned);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "hidden") == 0) {
-		/* gCal:hidden */
-		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->is_hidden), -1, error) == FALSE)
-			return FALSE;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "color") == 0) {
-		/* gCal:color */
-		xmlChar *value;
-		GDataColor colour;
-
-		value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		if (gdata_color_from_hexadecimal ((gchar*) value, &colour) == FALSE) {
-			/* Error */
-			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">"),
-				      * and the second parameter is the erroneous value (which was not in hexadecimal RGB format).
-				      *
-				      * For example:
-				      *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format. */
-				     _("The content of a %s element (\"%s\") was not in hexadecimal RGB format."), "<entry/gCal:color>", value);
-			xmlFree (value);
-
-			return FALSE;
-		}
-
-		gdata_calendar_calendar_set_color (self, &colour);
-		xmlFree (value);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "selected") == 0) {
-		/* gCal:selected */
-		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->is_selected), -1, error) == FALSE)
-			return FALSE;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "accesslevel") == 0) {
-		/* gCal:accesslevel */
-		self->priv->access_level = (gchar*) xmlGetProp (node, (xmlChar*) "value");
-		if (self->priv->access_level == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-	} else if (gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
-	} else if (GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/gCal/2005") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "timezone") == 0) {
+			/* gCal:timezone */
+			xmlChar *_timezone = xmlGetProp (node, (xmlChar*) "value");
+			if (_timezone == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			self->priv->timezone = (gchar*) _timezone;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "timesCleaned") == 0) {
+			/* gCal:timesCleaned */
+			xmlChar *times_cleaned = xmlGetProp (node, (xmlChar*) "value");
+			if (times_cleaned == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			self->priv->times_cleaned = strtoul ((gchar*) times_cleaned, NULL, 10);
+			xmlFree (times_cleaned);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "hidden") == 0) {
+			/* gCal:hidden */
+			if (gdata_parser_boolean_from_property (node, "value", &(self->priv->is_hidden), -1, error) == FALSE)
+				return FALSE;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "color") == 0) {
+			/* gCal:color */
+			xmlChar *value;
+			GDataColor colour;
+
+			value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			if (gdata_color_from_hexadecimal ((gchar*) value, &colour) == FALSE) {
+				/* Error */
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+					     /* Translators: the first parameter is the name of an XML element (including the angle brackets
+					      * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+					      * RGB format).
+					      *
+					      * For example:
+					      *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format. */
+					     _("The content of a %s element (\"%s\") was not in hexadecimal RGB format."), "<entry/gCal:color>", value);
+				xmlFree (value);
+
+				return FALSE;
+			}
+
+			gdata_calendar_calendar_set_color (self, &colour);
+			xmlFree (value);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "selected") == 0) {
+			/* gCal:selected */
+			if (gdata_parser_boolean_from_property (node, "value", &(self->priv->is_selected), -1, error) == FALSE)
+				return FALSE;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "accesslevel") == 0) {
+			/* gCal:accesslevel */
+			self->priv->access_level = (gchar*) xmlGetProp (node, (xmlChar*) "value");
+			if (self->priv->access_level == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

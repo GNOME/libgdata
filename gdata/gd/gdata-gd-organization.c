@@ -387,13 +387,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (parsable)->priv;
 
-	if (gdata_parser_string_from_element (node, "orgName", P_NO_DUPES, &(priv->name), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "orgTitle", P_NO_DUPES, &(priv->title), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "orgDepartment", P_NO_DUPES, &(priv->department), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "orgJobDescription", P_NO_DUPES, &(priv->job_description), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "orgSymbol", P_NO_DUPES, &(priv->symbol), &success, error) == TRUE ||
-	    gdata_parser_object_from_element (node, "where", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GD_WHERE,
-	                                      &(priv->location), &success, error) == TRUE) {
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE && (
+	     gdata_parser_string_from_element (node, "orgName", P_NO_DUPES, &(priv->name), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "orgTitle", P_NO_DUPES, &(priv->title), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "orgDepartment", P_NO_DUPES, &(priv->department), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "orgJobDescription", P_NO_DUPES, &(priv->job_description), &success, error) == TRUE ||
+	     gdata_parser_string_from_element (node, "orgSymbol", P_NO_DUPES, &(priv->symbol), &success, error) == TRUE ||
+	     gdata_parser_object_from_element (node, "where", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GD_WHERE,
+	                                      &(priv->location), &success, error) == TRUE)) {
 		return success;
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_gd_organization_parent_class)->parse_xml (parsable, doc, node, user_data, error);

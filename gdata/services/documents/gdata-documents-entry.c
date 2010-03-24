@@ -218,46 +218,53 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
 
-	if (gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE ||
-	    gdata_parser_time_val_from_element (node, "lastViewed", P_REQUIRED | P_NO_DUPES, &(self->priv->last_viewed), &success, error) == TRUE ||
-	    gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
-	                                             gdata_entry_add_link, self,  &success, error) == TRUE ||
-	    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
-	                                      &(self->priv->last_modified_by), &success, error) == TRUE) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		if (gdata_parser_time_val_from_element (node, "lastViewed", P_REQUIRED | P_NO_DUPES,
+		                                        &(self->priv->last_viewed), &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
+		                                             gdata_entry_add_link, self,  &success, error) == TRUE ||
+		    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
+		                                      &(self->priv->last_modified_by), &success, error) == TRUE) {
+			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
+			/* <gd:deleted> */
+			/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */
+			self->priv->is_deleted = TRUE;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
+			gchar **document_id_parts;
+			xmlChar *resource_id;
+
+			if (self->priv->document_id != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			resource_id = xmlNodeListGetString (doc, node->children, TRUE);
+			if (resource_id == NULL || *resource_id == '\0') {
+				xmlFree (resource_id);
+				return gdata_parser_error_required_content_missing (node, error);
+			}
+
+			document_id_parts = g_strsplit ((gchar*) resource_id, ":", 2);
+			if (document_id_parts == NULL) {
+				gdata_parser_error_unknown_content (node, (gchar*) resource_id, error);
+				xmlFree (resource_id);
+				return FALSE;
+			}
+			xmlFree (resource_id);
+
+			self->priv->document_id = g_strdup (document_id_parts[1]);
+			g_strfreev (document_id_parts);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/docs/2007") == TRUE &&
+	           xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
 		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->writers_can_invite), -1, error) == FALSE)
 			return FALSE;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
-		/* <gd:deleted> */
-		/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */
-		self->priv->is_deleted = TRUE;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
-		gchar **document_id_parts;
-		xmlChar *resource_id;
-
-		if (self->priv->document_id != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		resource_id = xmlNodeListGetString (doc, node->children, TRUE);
-		if (resource_id == NULL || *resource_id == '\0') {
-			xmlFree (resource_id);
-			return gdata_parser_error_required_content_missing (node, error);
-		}
-
-		document_id_parts = g_strsplit ((gchar*) resource_id, ":", 2);
-		if (document_id_parts == NULL) {
-			gdata_parser_error_unknown_content (node, (gchar*) resource_id, error);
-			xmlFree (resource_id);
-			return FALSE;
-		}
-		xmlFree (resource_id);
-
-		self->priv->document_id = g_strdup (document_id_parts[1]);
-		g_strfreev (document_id_parts);
-	} else if (GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

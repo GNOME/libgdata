@@ -132,6 +132,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataCalendarFeed *self = GDATA_CALENDAR_FEED (parsable);
 
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/gCal/2005") == FALSE)
+		return GDATA_PARSABLE_CLASS (gdata_calendar_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+
 	if (xmlStrcmp (node->name, (xmlChar*) "timezone") == 0) {
 		/* gCal:timezone */
 		xmlChar *_timezone = xmlGetProp (node, (xmlChar*) "value");
@@ -146,9 +149,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return gdata_parser_error_required_property_missing (node, "value", error);
 		self->priv->times_cleaned = strtoul ((gchar*) times_cleaned, NULL, 10);
 		xmlFree (times_cleaned);
-	} else if (GDATA_PARSABLE_CLASS (gdata_calendar_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
 	}
 
 	return TRUE;

@@ -85,7 +85,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataGeoRSSWhere *self = GDATA_GEORSS_WHERE (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "Point") == 0) {
+	if (gdata_parser_is_namespace (node, "http://www.opengis.net/gml") == TRUE &&
+	    xmlStrcmp (node->name, (xmlChar*) "Point") == 0) {
 		/* gml:Point */
 		gboolean found_pos = FALSE;
 		xmlNode *child;
@@ -115,12 +116,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 		if (found_pos == FALSE)
 			return gdata_parser_error_required_element_missing ("pos", "gml:Point", error);
-	} else if (GDATA_PARSABLE_CLASS (gdata_georss_where_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+		return TRUE;
 	}
 
-	return TRUE;
+	return GDATA_PARSABLE_CLASS (gdata_georss_where_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 }
 
 static void
