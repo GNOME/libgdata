@@ -645,7 +645,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataYouTubeVideo *self = GDATA_YOUTUBE_VIDEO (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "group") == 0) {
+	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
+	    xmlStrcmp (node->name, (xmlChar*) "group") == 0) {
 		/* media:group */
 		GDataMediaGroup *group = GDATA_MEDIA_GROUP (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_GROUP, doc, node, NULL, error));
 		if (group == NULL)
@@ -657,106 +658,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 
 		self->priv->media_group = group;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
-		/* gd:rating */
-		xmlChar *min, *max, *num_raters, *average;
-		guint num_raters_uint;
-		gdouble average_double;
-
-		min = xmlGetProp (node, (xmlChar*) "min");
-		if (min == NULL)
-			return gdata_parser_error_required_property_missing (node, "min", error);
-
-		max = xmlGetProp (node, (xmlChar*) "max");
-		if (max == NULL) {
-			gdata_parser_error_required_property_missing (node, "max", error);
-			xmlFree (min);
-			return FALSE;
-		}
-
-		num_raters = xmlGetProp (node, (xmlChar*) "numRaters");
-		if (num_raters == NULL)
-			num_raters_uint = 0;
-		else
-			num_raters_uint = strtoul ((gchar*) num_raters, NULL, 10);
-		xmlFree (num_raters);
-
-		average = xmlGetProp (node, (xmlChar*) "average");
-		if (average == NULL)
-			average_double = 0;
-		else
-			average_double = g_ascii_strtod ((gchar*) average, NULL);
-		xmlFree (average);
-
-		self->priv->rating.min = strtoul ((gchar*) min, NULL, 10);
-		self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
-		self->priv->rating.count = num_raters_uint;
-		self->priv->rating.average = average_double;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
-		/* gd:comments */
-		xmlChar *rel, *href, *count_hint, *read_only;
-		xmlNode *child_node;
-		guint count_hint_uint;
-
-		/* This is actually the child of the <comments> element */
-		child_node = node->children;
-
-		count_hint = xmlGetProp (child_node, (xmlChar*) "countHint");
-		if (count_hint == NULL)
-			count_hint_uint = 0;
-		else
-			count_hint_uint = strtoul ((gchar*) count_hint, NULL, 10);
-		xmlFree (count_hint);
-
-		read_only = xmlGetProp (child_node, (xmlChar*) "readOnly");
-		rel = xmlGetProp (child_node, (xmlChar*) "rel");
-		href = xmlGetProp (child_node, (xmlChar*) "href");
-
-		/* TODO */
-		/*gdata_gd_feed_link_free (self->priv->comments_feed_link);
-		self->priv->comments_feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint,
-									 ((xmlStrcmp (read_only, (xmlChar*) "true") == 0) ? TRUE : FALSE));*/
-
-		xmlFree (rel);
-		xmlFree (href);
-		xmlFree (read_only);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "statistics") == 0) {
-		/* yt:statistics */
-		xmlChar *view_count, *favorite_count;
-
-		/* View count */
-		view_count = xmlGetProp (node, (xmlChar*) "viewCount");
-		if (view_count == NULL)
-			return gdata_parser_error_required_property_missing (node, "viewCount", error);
-		self->priv->view_count = strtoul ((gchar*) view_count, NULL, 10);
-		xmlFree (view_count);
-
-		/* Favourite count */
-		favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
-		self->priv->favorite_count = (favorite_count != NULL) ? strtoul ((gchar*) favorite_count, NULL, 10) : 0;
-		xmlFree (favorite_count);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
-		/* yt:location */
-		g_free (self->priv->location);
-		self->priv->location = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
-		/* yt:noembed */
-		gdata_youtube_video_set_no_embed (self, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "recorded") == 0) {
-		/* yt:recorded */
-		xmlChar *recorded;
-		GTimeVal recorded_timeval;
-
-		recorded = xmlNodeListGetString (doc, node->children, TRUE);
-		if (gdata_parser_time_val_from_date ((gchar*) recorded, &recorded_timeval) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) recorded, error);
-			xmlFree (recorded);
-			return FALSE;
-		}
-		xmlFree (recorded);
-		gdata_youtube_video_set_recorded (self, &recorded_timeval);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "control") == 0) {
+	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	           xmlStrcmp (node->name, (xmlChar*) "control") == 0) {
 		/* app:control */
 		GDataYouTubeControl *control = GDATA_YOUTUBE_CONTROL (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CONTROL, doc,
 													 node, NULL, error));
@@ -769,9 +672,115 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 
 		self->priv->youtube_control = control;
-	} else if (GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
+			/* gd:rating */
+			xmlChar *min, *max, *num_raters, *average;
+			guint num_raters_uint;
+			gdouble average_double;
+
+			min = xmlGetProp (node, (xmlChar*) "min");
+			if (min == NULL)
+				return gdata_parser_error_required_property_missing (node, "min", error);
+
+			max = xmlGetProp (node, (xmlChar*) "max");
+			if (max == NULL) {
+				gdata_parser_error_required_property_missing (node, "max", error);
+				xmlFree (min);
+				return FALSE;
+			}
+
+			num_raters = xmlGetProp (node, (xmlChar*) "numRaters");
+			if (num_raters == NULL)
+				num_raters_uint = 0;
+			else
+				num_raters_uint = strtoul ((gchar*) num_raters, NULL, 10);
+			xmlFree (num_raters);
+
+			average = xmlGetProp (node, (xmlChar*) "average");
+			if (average == NULL)
+				average_double = 0;
+			else
+				average_double = g_ascii_strtod ((gchar*) average, NULL);
+			xmlFree (average);
+
+			self->priv->rating.min = strtoul ((gchar*) min, NULL, 10);
+			self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
+			self->priv->rating.count = num_raters_uint;
+			self->priv->rating.average = average_double;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
+			/* gd:comments */
+			xmlChar *rel, *href, *count_hint, *read_only;
+			xmlNode *child_node;
+			guint count_hint_uint;
+
+			/* This is actually the child of the <comments> element */
+			child_node = node->children;
+
+			count_hint = xmlGetProp (child_node, (xmlChar*) "countHint");
+			if (count_hint == NULL)
+				count_hint_uint = 0;
+			else
+				count_hint_uint = strtoul ((gchar*) count_hint, NULL, 10);
+			xmlFree (count_hint);
+
+			read_only = xmlGetProp (child_node, (xmlChar*) "readOnly");
+			rel = xmlGetProp (child_node, (xmlChar*) "rel");
+			href = xmlGetProp (child_node, (xmlChar*) "href");
+
+			/* TODO */
+			/*gdata_gd_feed_link_free (self->priv->comments_feed_link);
+			self->priv->comments_feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint,
+										 ((xmlStrcmp (read_only, (xmlChar*) "true") == 0) ? TRUE : FALSE));*/
+
+			xmlFree (rel);
+			xmlFree (href);
+			xmlFree (read_only);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "statistics") == 0) {
+			/* yt:statistics */
+			xmlChar *view_count, *favorite_count;
+
+			/* View count */
+			view_count = xmlGetProp (node, (xmlChar*) "viewCount");
+			if (view_count == NULL)
+				return gdata_parser_error_required_property_missing (node, "viewCount", error);
+			self->priv->view_count = strtoul ((gchar*) view_count, NULL, 10);
+			xmlFree (view_count);
+
+			/* Favourite count */
+			favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
+			self->priv->favorite_count = (favorite_count != NULL) ? strtoul ((gchar*) favorite_count, NULL, 10) : 0;
+			xmlFree (favorite_count);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
+			/* yt:location */
+			g_free (self->priv->location);
+			self->priv->location = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
+			/* yt:noembed */
+			gdata_youtube_video_set_no_embed (self, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "recorded") == 0) {
+			/* yt:recorded */
+			xmlChar *recorded;
+			GTimeVal recorded_timeval;
+
+			recorded = xmlNodeListGetString (doc, node->children, TRUE);
+			if (gdata_parser_time_val_from_date ((gchar*) recorded, &recorded_timeval) == FALSE) {
+				/* Error */
+				gdata_parser_error_not_iso8601_format (node, (gchar*) recorded, error);
+				xmlFree (recorded);
+				return FALSE;
+			}
+			xmlFree (recorded);
+			gdata_youtube_video_set_recorded (self, &recorded_timeval);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

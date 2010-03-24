@@ -777,7 +777,7 @@ test_photo_feed_entry (gconstpointer service)
 	g_assert_cmpuint (g_list_length (files), ==, 1);
 
 	g_assert_cmpstr (gdata_entry_get_title (photo_entry), ==, "100_0269.jpg");
-	g_assert_cmpstr (gdata_entry_get_id (photo_entry), ==, "5328890138794566386");
+	g_assert_cmpstr (gdata_entry_get_id (photo_entry), ==, "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
 	g_assert_cmpstr (gdata_entry_get_etag (photo_entry), !=, NULL);
 
 	gdata_entry_get_updated (photo_entry, &_time);
@@ -984,7 +984,7 @@ test_album_feed_entry (gconstpointer service)
 
 	/* Tests */
 	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "Test Album 1 - Venice - Public");
-	g_assert_cmpstr (gdata_entry_get_id (entry), ==, "5328889949261497249");
+	g_assert_cmpstr (gdata_entry_get_id (entry), ==, "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249");
 	g_assert_cmpstr (gdata_entry_get_etag (entry), !=, NULL);
 	g_assert_cmpstr (gdata_entry_get_rights (entry), ==, "public");
 

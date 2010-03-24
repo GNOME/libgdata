@@ -203,7 +203,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	    xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
 		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
 		if (g_time_val_from_iso8601 ((gchar*) edited, &(self->priv->edited)) == FALSE) {
 			gdata_parser_error_not_iso8601_format (node, (gchar*) edited, error);
@@ -211,15 +212,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (edited);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "lastViewed") == 0) {
-		xmlChar *last_viewed = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) last_viewed, &(self->priv->last_viewed)) == FALSE) {
-			gdata_parser_error_not_iso8601_format (node, (gchar*) last_viewed, error);
-			xmlFree (last_viewed);
-			return FALSE;
-		}
-		xmlFree (last_viewed);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/docs/2007") == TRUE &&
+	           xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
 		xmlChar *writers_can_invite = xmlGetProp (node, (xmlChar*) "value");
 		if (xmlStrcmp (writers_can_invite, (xmlChar*) "true") == 0) {
 			self->priv->writers_can_invite = TRUE;
@@ -231,47 +225,58 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		xmlFree (writers_can_invite);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
-		/* <gd:deleted> */
-		/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */
-		self->priv->is_deleted = TRUE;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
-		gchar **document_id_parts;
-		xmlChar *resource_id;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "lastViewed") == 0) {
+			xmlChar *last_viewed = xmlNodeListGetString (doc, node->children, TRUE);
+			if (g_time_val_from_iso8601 ((gchar*) last_viewed, &(self->priv->last_viewed)) == FALSE) {
+				gdata_parser_error_not_iso8601_format (node, (gchar*) last_viewed, error);
+				xmlFree (last_viewed);
+				return FALSE;
+			}
+			xmlFree (last_viewed);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
+			/* <gd:deleted> */
+			/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */
+			self->priv->is_deleted = TRUE;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
+			gchar **document_id_parts;
+			xmlChar *resource_id;
 
-		if (self->priv->document_id != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
+			if (self->priv->document_id != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		resource_id = xmlNodeListGetString (doc, node->children, TRUE);
-		if (resource_id == NULL || *resource_id == '\0') {
+			resource_id = xmlNodeListGetString (doc, node->children, TRUE);
+			if (resource_id == NULL || *resource_id == '\0') {
+				xmlFree (resource_id);
+				return gdata_parser_error_required_content_missing (node, error);
+			}
+
+			document_id_parts = g_strsplit ((gchar*) resource_id, ":", 2);
+			if (document_id_parts == NULL) {
+				gdata_parser_error_unknown_content (node, (gchar*) resource_id, error);
+				xmlFree (resource_id);
+				return FALSE;
+			}
 			xmlFree (resource_id);
-			return gdata_parser_error_required_content_missing (node, error);
-		}
 
-		document_id_parts = g_strsplit ((gchar*) resource_id, ":", 2);
-		if (document_id_parts == NULL) {
-			gdata_parser_error_unknown_content (node, (gchar*) resource_id, error);
-			xmlFree (resource_id);
-			return FALSE;
+			self->priv->document_id = g_strdup (document_id_parts[1]);
+			g_strfreev (document_id_parts);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "feedLink") ==  0) {
+			GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
+			if (link == NULL)
+				return FALSE;
+			gdata_entry_add_link (GDATA_ENTRY (self), link);
+			g_object_unref (link);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "lastModifiedBy") ==  0) {
+			GDataAuthor *last_modified_by = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
+			if (last_modified_by == NULL)
+				return FALSE;
+			self->priv->last_modified_by = last_modified_by;
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-		xmlFree (resource_id);
-
-		self->priv->document_id = g_strdup (document_id_parts[1]);
-		g_strfreev (document_id_parts);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "feedLink") ==  0) {
-		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
-		if (link == NULL)
-			return FALSE;
-		gdata_entry_add_link (GDATA_ENTRY (self), link);
-		g_object_unref (link);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "lastModifiedBy") ==  0) {
-		GDataAuthor *last_modified_by = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
-		if (last_modified_by == NULL)
-			return FALSE;
-		self->priv->last_modified_by = last_modified_by;
-	} else if (GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

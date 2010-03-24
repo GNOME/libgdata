@@ -290,15 +290,10 @@ gdata_contacts_contact_new (const gchar *id)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
-	GDataContactsContact *self;
+	GDataContactsContact *self = GDATA_CONTACTS_CONTACT (parsable);
 
-	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
-
-	self = GDATA_CONTACTS_CONTACT (parsable);
-
-	if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	    xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
 		/* app:edited */
 		/* TODO: Should be in GDataEntry? */
 		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
@@ -309,82 +304,90 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return FALSE;
 		}
 		g_free (edited);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
-		/* gd:name */
-		GDataGDName *name = GDATA_GD_NAME (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_NAME, doc, node, NULL, error));
-		if (name == NULL)
-			return FALSE;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
+			/* gd:name */
+			GDataGDName *name = GDATA_GD_NAME (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_NAME, doc, node, NULL, error));
+			if (name == NULL)
+				return FALSE;
 
-		if (self->priv->name != NULL)
-			g_object_unref (self->priv->name);
-		self->priv->name = name;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
-		/* gd:email */
-		GDataGDEmailAddress *email = GDATA_GD_EMAIL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_EMAIL_ADDRESS, doc,
-													node, NULL, error));
-		if (email == NULL)
-			return FALSE;
+			if (self->priv->name != NULL)
+				g_object_unref (self->priv->name);
+			self->priv->name = name;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
+			/* gd:email */
+			GDataGDEmailAddress *email = GDATA_GD_EMAIL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_EMAIL_ADDRESS, doc,
+														node, NULL, error));
+			if (email == NULL)
+				return FALSE;
 
-		gdata_contacts_contact_add_email_address (self, email);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "im") == 0) {
-		/* gd:im */
-		GDataGDIMAddress *im = GDATA_GD_IM_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_IM_ADDRESS, doc, node, NULL, error));
-		if (im == NULL)
-			return FALSE;
+			gdata_contacts_contact_add_email_address (self, email);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "im") == 0) {
+			/* gd:im */
+			GDataGDIMAddress *im = GDATA_GD_IM_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_IM_ADDRESS, doc, node, NULL, error));
+			if (im == NULL)
+				return FALSE;
 
-		gdata_contacts_contact_add_im_address (self, im);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "phoneNumber") == 0) {
-		/* gd:phoneNumber */
-		GDataGDPhoneNumber *number = GDATA_GD_PHONE_NUMBER (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_PHONE_NUMBER, doc,
-												       node, NULL, error));
-		if (number == NULL)
-			return FALSE;
+			gdata_contacts_contact_add_im_address (self, im);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "phoneNumber") == 0) {
+			/* gd:phoneNumber */
+			GDataGDPhoneNumber *number = GDATA_GD_PHONE_NUMBER (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_PHONE_NUMBER, doc,
+													       node, NULL, error));
+			if (number == NULL)
+				return FALSE;
 
-		gdata_contacts_contact_add_phone_number (self, number);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "structuredPostalAddress") == 0) {
-		/* gd:structuredPostalAddress — deprecates gd:postalAddress */
-		GDataGDPostalAddress *address = GDATA_GD_POSTAL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_POSTAL_ADDRESS,
-													    doc, node, NULL, error));
-		if (address == NULL)
-			return FALSE;
+			gdata_contacts_contact_add_phone_number (self, number);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "structuredPostalAddress") == 0) {
+			/* gd:structuredPostalAddress — deprecates gd:postalAddress */
+			GDataGDPostalAddress *address = GDATA_GD_POSTAL_ADDRESS (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_POSTAL_ADDRESS,
+														    doc, node, NULL, error));
+			if (address == NULL)
+				return FALSE;
 
-		gdata_contacts_contact_add_postal_address (self, address);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "organization") == 0) {
-		/* gd:organization */
-		GDataGDOrganization *organization = GDATA_GD_ORGANIZATION (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_ORGANIZATION,
-													      doc, node, NULL, error));
-		if (organization == NULL)
-			return FALSE;
+			gdata_contacts_contact_add_postal_address (self, address);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "organization") == 0) {
+			/* gd:organization */
+			GDataGDOrganization *organization = GDATA_GD_ORGANIZATION (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_ORGANIZATION,
+														      doc, node, NULL, error));
+			if (organization == NULL)
+				return FALSE;
 
-		gdata_contacts_contact_add_organization (self, organization);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "extendedProperty") == 0) {
-		/* gd:extendedProperty */
-		xmlChar *name, *value;
-		xmlBuffer *buffer = NULL;
+			gdata_contacts_contact_add_organization (self, organization);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "extendedProperty") == 0) {
+			/* gd:extendedProperty */
+			xmlChar *name, *value;
+			xmlBuffer *buffer = NULL;
 
-		name = xmlGetProp (node, (xmlChar*) "name");
-		if (name == NULL)
-			return gdata_parser_error_required_property_missing (node, "name", error);
+			name = xmlGetProp (node, (xmlChar*) "name");
+			if (name == NULL)
+				return gdata_parser_error_required_property_missing (node, "name", error);
 
-		/* Get either the value property, or the element's content */
-		value = xmlGetProp (node, (xmlChar*) "value");
-		if (value == NULL) {
-			xmlNode *child_node;
+			/* Get either the value property, or the element's content */
+			value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL) {
+				xmlNode *child_node;
 
-			/* Use the element's content instead (arbitrary XML) */
-			buffer = xmlBufferCreate ();
-			for (child_node = node->children; child_node != NULL; child_node = child_node->next)
-				xmlNodeDump (buffer, doc, child_node, 0, 0);
-			value = (xmlChar*) xmlBufferContent (buffer);
+				/* Use the element's content instead (arbitrary XML) */
+				buffer = xmlBufferCreate ();
+				for (child_node = node->children; child_node != NULL; child_node = child_node->next)
+					xmlNodeDump (buffer, doc, child_node, 0, 0);
+				value = (xmlChar*) xmlBufferContent (buffer);
+			}
+
+			gdata_contacts_contact_set_extended_property (self, (gchar*) name, (gchar*) value);
+
+			if (buffer != NULL)
+				xmlBufferFree (buffer);
+			else
+				g_free (value);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") == 0) {
+			/* gd:deleted */
+			self->priv->deleted = TRUE;
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-
-		gdata_contacts_contact_set_extended_property (self, (gchar*) name, (gchar*) value);
-
-		if (buffer != NULL)
-			xmlBufferFree (buffer);
-		else
-			g_free (value);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/contact/2008") == TRUE &&
+	           xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
 		/* gContact:groupMembershipInfo */
 		xmlChar *href, *deleted;
 		gboolean deleted_bool;
@@ -408,9 +411,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 		/* Insert it into the hash table */
 		g_hash_table_insert (self->priv->groups, (gchar*) href, GUINT_TO_POINTER (deleted_bool));
-	} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") == 0) {
-		/* gd:deleted */
-		self->priv->deleted = TRUE;
 	} else {
 		/* If we haven't yet found a photo, check to see if it's a photo <link> element */
 		if (self->priv->photo_etag == NULL && xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
@@ -423,10 +423,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			xmlFree (rel);
 		}
 
-		if (GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-			/* Error! */
-			return FALSE;
-		}
+		return GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

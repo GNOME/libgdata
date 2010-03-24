@@ -293,16 +293,16 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataGDWhenPrivate *priv = GDATA_GD_WHEN (parsable)->priv;
 
-	if (xmlStrcmp (node->name, (xmlChar*) "reminder") == 0) {
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE &&
+	    xmlStrcmp (node->name, (xmlChar*) "reminder") == 0) {
 		/* gd:reminder */
 		GDataGDReminder *reminder = GDATA_GD_REMINDER (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_REMINDER, doc, node, NULL, error));
 		if (reminder == NULL)
 			return FALSE;
 
 		priv->reminders = g_list_prepend (priv->reminders, reminder);
-	} else if (GDATA_PARSABLE_CLASS (gdata_gd_when_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_gd_when_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

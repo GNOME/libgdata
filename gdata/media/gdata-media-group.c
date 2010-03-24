@@ -140,110 +140,113 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataMediaGroup *self = GDATA_MEDIA_GROUP (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
-		/* media:title */
-		self->priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "description") == 0) {
-		/* media:description */
-		self->priv->description = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "keywords") == 0) {
-		/* media:keywords */
-		self->priv->keywords = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
-		/* media:category */
-		GDataMediaCategory *category = GDATA_MEDIA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CATEGORY, doc,
-													node, NULL, error));
-		if (category == NULL)
-			return FALSE;
+	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
+			/* media:title */
+			self->priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "description") == 0) {
+			/* media:description */
+			self->priv->description = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "keywords") == 0) {
+			/* media:keywords */
+			self->priv->keywords = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
+			/* media:category */
+			GDataMediaCategory *category = GDATA_MEDIA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CATEGORY, doc,
+														node, NULL, error));
+			if (category == NULL)
+				return FALSE;
 
-		gdata_media_group_set_category (self, category);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
-		/* media:content */
-		GDataMediaContent *content = GDATA_MEDIA_CONTENT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CONTENT, doc, node, NULL, error));
-		if (content == NULL)
-			return FALSE;
+			gdata_media_group_set_category (self, category);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
+			/* media:content */
+			GDataMediaContent *content = GDATA_MEDIA_CONTENT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CONTENT, doc, node, NULL, error));
+			if (content == NULL)
+				return FALSE;
 
-		_gdata_media_group_add_content (self, content);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
-		/* media:credit */
-		GDataMediaCredit *credit = GDATA_MEDIA_CREDIT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CREDIT, doc, node, NULL, error));
-		if (credit == NULL)
-			return FALSE;
+			_gdata_media_group_add_content (self, content);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
+			/* media:credit */
+			GDataMediaCredit *credit = GDATA_MEDIA_CREDIT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_CREDIT, doc, node, NULL, error));
+			if (credit == NULL)
+				return FALSE;
 
-		if (self->priv->credit != NULL) {
-			g_object_unref (credit);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
+			if (self->priv->credit != NULL) {
+				g_object_unref (credit);
+				return gdata_parser_error_duplicate_element (node, error);
+			}
 
-		_gdata_media_group_set_credit (self, credit);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "player") == 0) {
-		/* media:player */
-		xmlChar *player_uri = xmlGetProp (node, (xmlChar*) "url");
+			_gdata_media_group_set_credit (self, credit);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "player") == 0) {
+			/* media:player */
+			xmlChar *player_uri = xmlGetProp (node, (xmlChar*) "url");
 
-		g_free (self->priv->player_uri);
-		self->priv->player_uri = (gchar*) player_uri;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
-		/* media:rating */
-		xmlChar *countries;
-		gchar **country_list, **country;
+			g_free (self->priv->player_uri);
+			self->priv->player_uri = (gchar*) player_uri;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
+			/* media:rating */
+			xmlChar *countries;
+			gchar **country_list, **country;
 
-		countries = xmlGetProp (node, (xmlChar*) "country");
-		country_list = g_strsplit ((const gchar*) countries, ",", -1);
-		xmlFree (countries);
+			countries = xmlGetProp (node, (xmlChar*) "country");
+			country_list = g_strsplit ((const gchar*) countries, ",", -1);
+			xmlFree (countries);
 
-		/* Add all the listed countries to the restricted countries table */
-		for (country = country_list; *country != NULL; country++)
-			g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (TRUE));
-		g_free (country_list);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "restriction") == 0) {
-		/* media:restriction */
-		xmlChar *type, *countries, *relationship;
-		gchar **country_list, **country;
-		gboolean relationship_bool;
+			/* Add all the listed countries to the restricted countries table */
+			for (country = country_list; *country != NULL; country++)
+				g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (TRUE));
+			g_free (country_list);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "restriction") == 0) {
+			/* media:restriction */
+			xmlChar *type, *countries, *relationship;
+			gchar **country_list, **country;
+			gboolean relationship_bool;
 
-		/* Check the type property is "country" */
-		type = xmlGetProp (node, (xmlChar*) "type");
-		if (xmlStrcmp (type, (xmlChar*) "country") != 0) {
-			gdata_parser_error_unknown_property_value (node, "type", (gchar*) type, error);
+			/* Check the type property is "country" */
+			type = xmlGetProp (node, (xmlChar*) "type");
+			if (xmlStrcmp (type, (xmlChar*) "country") != 0) {
+				gdata_parser_error_unknown_property_value (node, "type", (gchar*) type, error);
+				xmlFree (type);
+				return FALSE;
+			}
 			xmlFree (type);
-			return FALSE;
-		}
-		xmlFree (type);
 
-		relationship = xmlGetProp (node, (xmlChar*) "relationship");
-		if (xmlStrcmp (relationship, (xmlChar*) "allow") == 0)
-			relationship_bool = FALSE; /* it's *not* a restricted country */
-		else if (xmlStrcmp (relationship, (xmlChar*) "deny") == 0)
-			relationship_bool = TRUE; /* it *is* a restricted country */
-		else {
-			gdata_parser_error_unknown_property_value (node, "relationship", (gchar*) relationship, error);
+			relationship = xmlGetProp (node, (xmlChar*) "relationship");
+			if (xmlStrcmp (relationship, (xmlChar*) "allow") == 0)
+				relationship_bool = FALSE; /* it's *not* a restricted country */
+			else if (xmlStrcmp (relationship, (xmlChar*) "deny") == 0)
+				relationship_bool = TRUE; /* it *is* a restricted country */
+			else {
+				gdata_parser_error_unknown_property_value (node, "relationship", (gchar*) relationship, error);
+				xmlFree (relationship);
+				return FALSE;
+			}
 			xmlFree (relationship);
-			return FALSE;
+
+			countries = xmlNodeListGetString (doc, node->children, TRUE);
+			country_list = g_strsplit ((const gchar*) countries, " ", -1);
+			xmlFree (countries);
+
+			/* Add "all" to the table, since it's an exception table */
+			g_hash_table_insert (self->priv->restricted_countries, g_strdup ("all"), GUINT_TO_POINTER (!relationship_bool));
+
+			/* Add all the listed countries to the restricted countries table */
+			for (country = country_list; *country != NULL; country++)
+				g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (relationship_bool));
+			g_free (country_list);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "thumbnail") == 0) {
+			/* media:thumbnail */
+			GDataMediaThumbnail *thumb = GDATA_MEDIA_THUMBNAIL (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_THUMBNAIL, doc,
+													       node, NULL, error));
+			if (thumb == NULL)
+				return FALSE;
+
+			self->priv->thumbnails = g_list_prepend (self->priv->thumbnails, thumb);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_media_group_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-		xmlFree (relationship);
-
-		countries = xmlNodeListGetString (doc, node->children, TRUE);
-		country_list = g_strsplit ((const gchar*) countries, " ", -1);
-		xmlFree (countries);
-
-		/* Add "all" to the table, since it's an exception table */
-		g_hash_table_insert (self->priv->restricted_countries, g_strdup ("all"), GUINT_TO_POINTER (!relationship_bool));
-
-		/* Add all the listed countries to the restricted countries table */
-		for (country = country_list; *country != NULL; country++)
-			g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (relationship_bool));
-		g_free (country_list);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "thumbnail") == 0) {
-		/* media:thumbnail */
-		GDataMediaThumbnail *thumb = GDATA_MEDIA_THUMBNAIL (_gdata_parsable_new_from_xml_node (GDATA_TYPE_MEDIA_THUMBNAIL, doc,
-												       node, NULL, error));
-		if (thumb == NULL)
-			return FALSE;
-
-		self->priv->thumbnails = g_list_prepend (self->priv->thumbnails, thumb);
-	} else if (GDATA_PARSABLE_CLASS (gdata_media_group_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_media_group_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

@@ -204,6 +204,27 @@ gdata_parser_date_from_time_val (GTimeVal *_time)
 	return g_strdup_printf ("%4d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
 }
 
+/*
+ * gdata_parser_is_namespace:
+ * @element: the element to check
+ * @namespace_uri: the URI of the desired namespace
+ *
+ * Checks whether @element is in the namespace identified by @namespace_uri. If @element isn't in a namespace,
+ * %FALSE is returned.
+ *
+ * Return value: %TRUE if @element is in @namespace_uri; %FALSE otherwise
+ *
+ * Since: 0.6.4
+ */
+gboolean
+gdata_parser_is_namespace (xmlNode *element, const gchar *namespace_uri)
+{
+	if ((element->ns != NULL && xmlStrcmp (element->ns->href, (const xmlChar*) namespace_uri) == 0) ||
+	    (element->ns == NULL && strcmp (namespace_uri, "http://www.w3.org/2005/Atom") == 0))
+		return TRUE;
+	return FALSE;
+}
+
 void
 gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post)
 {

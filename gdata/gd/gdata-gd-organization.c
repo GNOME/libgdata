@@ -396,6 +396,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (parsable)->priv;
 
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == FALSE)
+		return GDATA_PARSABLE_CLASS (gdata_gd_organization_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+
 	if (xmlStrcmp (node->name, (xmlChar*) "orgName") == 0) {
 		/* gd:orgName */
 		if (priv->name != NULL)
@@ -433,9 +436,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 
 		priv->location = location;
-	} else if (GDATA_PARSABLE_CLASS (gdata_gd_organization_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_gd_organization_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

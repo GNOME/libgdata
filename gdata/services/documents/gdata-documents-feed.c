@@ -94,7 +94,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataDocumentsFeed *self = GDATA_DOCUMENTS_FEED (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE &&
+	    xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
 		GDataEntry *entry = NULL;
 		gchar *kind = get_kind (doc, node);
 
@@ -119,10 +120,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		/* Call the progress callback in the main thread */
 		_gdata_feed_call_progress_callback (GDATA_FEED (self), user_data, entry);
 		_gdata_feed_add_entry (GDATA_FEED (self), entry);
-	} else if (GDATA_PARSABLE_CLASS (gdata_documents_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+
+		return TRUE;
 	}
 
-	return TRUE;
+	return GDATA_PARSABLE_CLASS (gdata_documents_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 }

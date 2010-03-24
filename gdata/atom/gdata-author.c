@@ -192,34 +192,37 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataAuthorPrivate *priv = GDATA_AUTHOR (parsable)->priv;
 
-	if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
-		/* atom:name */
-		xmlChar *name;
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "name") == 0) {
+			/* atom:name */
+			xmlChar *name;
 
-		if (priv->name != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
+			if (priv->name != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		name = xmlNodeListGetString (doc, node->children, TRUE);
-		if (name == NULL || *name == '\0') {
-			xmlFree (name);
-			return gdata_parser_error_required_content_missing (node, error);
+			name = xmlNodeListGetString (doc, node->children, TRUE);
+			if (name == NULL || *name == '\0') {
+				xmlFree (name);
+				return gdata_parser_error_required_content_missing (node, error);
+			}
+			priv->name = (gchar*) name;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "uri") == 0) {
+			/* atom:uri */
+			if (priv->uri != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			priv->uri = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
+			/* atom:email */
+			if (priv->email_address != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			priv->email_address = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_author_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-		priv->name = (gchar*) name;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "uri") == 0) {
-		/* atom:uri */
-		if (priv->uri != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		priv->uri = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
-		/* atom:email */
-		if (priv->email_address != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		priv->email_address = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (GDATA_PARSABLE_CLASS (gdata_author_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_author_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

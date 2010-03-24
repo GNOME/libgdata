@@ -206,40 +206,37 @@ gdata_access_rule_finalize (GObject *object)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
-	GDataAccessRule *self;
+	GDataAccessRule *self = GDATA_ACCESS_RULE (parsable);
 
-	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/acl/2007") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "role") == 0) {
+			/* gAcl:role */
+			xmlChar *role = xmlGetProp (node, (xmlChar*) "value");
+			if (role == NULL)
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			self->priv->role = (gchar*) role;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "scope") == 0) {
+			/* gAcl:scope */
+			xmlChar *scope_type, *scope_value;
 
-	self = GDATA_ACCESS_RULE (parsable);
+			scope_type = xmlGetProp (node, (xmlChar*) "type");
+			if (scope_type == NULL)
+				return gdata_parser_error_required_property_missing (node, "type", error);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "role") == 0) {
-		/* gAcl:role */
-		xmlChar *role = xmlGetProp (node, (xmlChar*) "value");
-		if (role == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->role = (gchar*) role;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "scope") == 0) {
-		/* gAcl:scope */
-		xmlChar *scope_type, *scope_value;
+			scope_value = xmlGetProp (node, (xmlChar*) "value");
 
-		scope_type = xmlGetProp (node, (xmlChar*) "type");
-		if (scope_type == NULL)
-			return gdata_parser_error_required_property_missing (node, "type", error);
+			if (xmlStrcmp (scope_type, (xmlChar*) "default") == 0 && scope_value == NULL) {
+				xmlFree (scope_type);
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			}
 
-		scope_value = xmlGetProp (node, (xmlChar*) "value");
-
-		if (xmlStrcmp (scope_type, (xmlChar*) "default") == 0 && scope_value == NULL) {
-			xmlFree (scope_type);
-			return gdata_parser_error_required_property_missing (node, "value", error);
+			self->priv->scope_type = (gchar*) scope_type;
+			self->priv->scope_value = (gchar*) scope_value;
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-
-		self->priv->scope_type = (gchar*) scope_type;
-		self->priv->scope_value = (gchar*) scope_value;
-	} else if (GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

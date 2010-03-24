@@ -287,19 +287,22 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataGDNamePrivate *priv = GDATA_GD_NAME (parsable)->priv;
 
-	PARSE_STRING_ELEMENT ("givenName", given_name)
-	else PARSE_STRING_ELEMENT ("additionalName", additional_name)
-	else PARSE_STRING_ELEMENT ("familyName", family_name)
-	else PARSE_STRING_ELEMENT ("namePrefix", prefix)
-	else PARSE_STRING_ELEMENT ("nameSuffix", suffix)
-	else if (xmlStrcmp (node->name, (xmlChar*) "fullName") == 0) {
-		/* gd:fullName */
-		if (priv->full_name != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
-		priv->full_name = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (GDATA_PARSABLE_CLASS (gdata_gd_name_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		PARSE_STRING_ELEMENT ("givenName", given_name)
+		else PARSE_STRING_ELEMENT ("additionalName", additional_name)
+		else PARSE_STRING_ELEMENT ("familyName", family_name)
+		else PARSE_STRING_ELEMENT ("namePrefix", prefix)
+		else PARSE_STRING_ELEMENT ("nameSuffix", suffix)
+		else if (xmlStrcmp (node->name, (xmlChar*) "fullName") == 0) {
+			/* gd:fullName */
+			if (priv->full_name != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+			priv->full_name = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_gd_name_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_gd_name_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

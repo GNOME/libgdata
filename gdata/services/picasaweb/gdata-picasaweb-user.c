@@ -220,6 +220,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataPicasaWebUser *self = GDATA_PICASAWEB_USER (parsable);
 
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/photos/2007") == FALSE)
+		return GDATA_PARSABLE_CLASS (gdata_picasaweb_user_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+
 	if (xmlStrcmp (node->name, (xmlChar*) "user") == 0) {
 		/* gphoto:user */
 		xmlChar *user = xmlNodeListGetString (doc, node->children, TRUE);
@@ -270,10 +273,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
 	} else if (xmlStrcmp (node->name, (xmlChar*) "x-allowPrints") == 0) { /* RHSTODO: see if this comes with the user */
 		/* gphoto:allowPrints */
-		/* Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
-	} else if (GDATA_PARSABLE_CLASS (gdata_picasaweb_user_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+		/* TODO: Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_picasaweb_user_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

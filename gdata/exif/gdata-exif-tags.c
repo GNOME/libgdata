@@ -108,6 +108,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataExifTags *self = GDATA_EXIF_TAGS (parsable);
 
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/photos/exif/2007") == FALSE)
+		return GDATA_PARSABLE_CLASS (gdata_exif_tags_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+
 	if (xmlStrcmp (node->name, (xmlChar*) "distance") == 0 ) {
 		/* exif:distance */
 		xmlChar *distance = xmlNodeListGetString (doc, node->children, TRUE);

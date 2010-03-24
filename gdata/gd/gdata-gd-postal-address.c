@@ -589,20 +589,21 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 {
 	GDataGDPostalAddressPrivate *priv = GDATA_GD_POSTAL_ADDRESS (parsable)->priv;
 
-	PARSE_STRING_ELEMENT ("agent", agent)
-	else PARSE_STRING_ELEMENT ("housename", house_name)
-	else PARSE_STRING_ELEMENT ("pobox", po_box)
-	else PARSE_STRING_ELEMENT ("street", street)
-	else PARSE_STRING_ELEMENT ("neighborhood", neighborhood)
-	else PARSE_STRING_ELEMENT ("city", city)
-	else PARSE_STRING_ELEMENT ("subregion", subregion)
-	else PARSE_STRING_ELEMENT ("region", region)
-	else PARSE_STRING_ELEMENT ("postcode", postcode)
-	else PARSE_STRING_ELEMENT ("country", country)
-	else PARSE_STRING_ELEMENT ("formattedAddress", formatted_address)
-	else if (GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		PARSE_STRING_ELEMENT ("agent", agent)
+		else PARSE_STRING_ELEMENT ("housename", house_name)
+		else PARSE_STRING_ELEMENT ("pobox", po_box)
+		else PARSE_STRING_ELEMENT ("street", street)
+		else PARSE_STRING_ELEMENT ("neighborhood", neighborhood)
+		else PARSE_STRING_ELEMENT ("city", city)
+		else PARSE_STRING_ELEMENT ("subregion", subregion)
+		else PARSE_STRING_ELEMENT ("region", region)
+		else PARSE_STRING_ELEMENT ("postcode", postcode)
+		else PARSE_STRING_ELEMENT ("country", country)
+		else PARSE_STRING_ELEMENT ("formattedAddress", formatted_address)
+		else return GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;

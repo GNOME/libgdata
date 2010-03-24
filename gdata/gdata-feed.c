@@ -398,160 +398,161 @@ typedef struct {
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
-	GDataFeed *self;
+	GDataFeed *self = GDATA_FEED (parsable);
 	ParseData *data = user_data;
 
-	g_return_val_if_fail (GDATA_IS_FEED (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
+			/* atom:entry */
+			GDataEntry *entry;
+			GType entry_type;
 
-	self = GDATA_FEED (parsable);
+			/* Allow @data to be %NULL, and assume we're parsing a vanilla feed, so that we can test #GDataFeed in tests/general.c. A little hacky,
+			 * but not too much so, and valuable for testing. */
+			entry_type = (data != NULL) ? data->entry_type : GDATA_TYPE_ENTRY;
+			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (entry_type, doc, node, NULL, error));
+			if (entry == NULL)
+				return FALSE;
 
-	if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
-		/* atom:entry */
-		GDataEntry *entry;
-		GType entry_type;
+			/* Calls the callbacks in the main thread */
+			if (data != NULL)
+				_gdata_feed_call_progress_callback (self, data, entry);
+			_gdata_feed_add_entry (self, entry);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
+			/* atom:title */
+			if (self->priv->title != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		/* Allow @data to be %NULL, and assume we're parsing a vanilla feed, so that we can test #GDataFeed in tests/general.c. A little hacky,
-		 * but not too much so, and valuable for testing. */
-		entry_type = (data != NULL) ? data->entry_type : GDATA_TYPE_ENTRY;
-		entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (entry_type, doc, node, NULL, error));
-		if (entry == NULL)
-			return FALSE;
+			self->priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "subtitle") == 0) {
+			/* atom:subtitle */
+			if (self->priv->subtitle != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		/* Calls the callbacks in the main thread */
-		if (data != NULL)
-			_gdata_feed_call_progress_callback (self, data, entry);
-		_gdata_feed_add_entry (self, entry);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
-		/* atom:title */
-		if (self->priv->title != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
+			self->priv->subtitle = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0 && xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) {
+			/* atom:id */
+			/* The namespace check is necessary because there's an "id" element in the gphoto namespace (PicasaWeb service) */
+			if (self->priv->id != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		self->priv->title = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "subtitle") == 0) {
-		/* atom:subtitle */
-		if (self->priv->subtitle != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
+			self->priv->id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "updated") == 0) {
+			/* atom:updated */
+			xmlChar *updated_string;
 
-		self->priv->subtitle = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0 && xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) {
-		/* atom:id */
-		/* The namespace check is necessary because there's an "id" element in the gphoto namespace (PicasaWeb service) */
-		if (self->priv->id != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
+			/* Duplicate checking */
+			if (self->priv->updated.tv_sec != 0 || self->priv->updated.tv_usec != 0)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		self->priv->id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "updated") == 0) {
-		/* atom:updated */
-		xmlChar *updated_string;
-
-		/* Duplicate checking */
-		if (self->priv->updated.tv_sec != 0 || self->priv->updated.tv_usec != 0)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		/* Parse the string */
-		updated_string = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) updated_string, &(self->priv->updated)) == FALSE) {
-			gdata_parser_error_not_iso8601_format (node, (gchar*) updated_string, error);
+			/* Parse the string */
+			updated_string = xmlNodeListGetString (doc, node->children, TRUE);
+			if (g_time_val_from_iso8601 ((gchar*) updated_string, &(self->priv->updated)) == FALSE) {
+				gdata_parser_error_not_iso8601_format (node, (gchar*) updated_string, error);
+				xmlFree (updated_string);
+				return FALSE;
+			}
 			xmlFree (updated_string);
-			return FALSE;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
+			/* atom:category */
+			GDataCategory *category = GDATA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_CATEGORY, doc, node, NULL, error));
+			if (category == NULL)
+				return FALSE;
+
+			self->priv->categories = g_list_prepend (self->priv->categories, category);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "logo") == 0) {
+			/* atom:logo */
+			if (self->priv->logo != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			self->priv->logo = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "icon") == 0) {
+			/* atom:icon */
+			if (self->priv->icon != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			self->priv->icon = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
+			/* atom:link */
+			GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
+			if (link == NULL)
+				return FALSE;
+
+			self->priv->links = g_list_prepend (self->priv->links, link);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "author") == 0) {
+			/* atom:author */
+			GDataAuthor *author = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
+			if (author == NULL)
+				return FALSE;
+
+			self->priv->authors = g_list_prepend (self->priv->authors, author);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "generator") == 0) {
+			/* atom:generator */
+			GDataGenerator *generator;
+
+			/* Duplicate checking */
+			if (self->priv->generator != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			generator = GDATA_GENERATOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GENERATOR, doc, node, NULL, error));
+			if (generator == NULL)
+				return FALSE;
+
+			self->priv->generator = generator;
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-		xmlFree (updated_string);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "category") == 0) {
-		/* atom:category */
-		GDataCategory *category = GDATA_CATEGORY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_CATEGORY, doc, node, NULL, error));
-		if (category == NULL)
-			return FALSE;
+	} else if (gdata_parser_is_namespace (node, "http://a9.com/-/spec/opensearch/1.1/") == TRUE) {
+		if (xmlStrcmp (node->name, (xmlChar*) "totalResults") == 0) {
+			/* openSearch:totalResults */
+			xmlChar *total_results_string;
 
-		self->priv->categories = g_list_prepend (self->priv->categories, category);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "logo") == 0) {
-		/* atom:logo */
-		if (self->priv->logo != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
+			/* Duplicate checking */
+			if (self->priv->total_results != 0)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		self->priv->logo = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "icon") == 0) {
-		/* atom:icon */
-		if (self->priv->icon != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
+			/* Parse the number */
+			total_results_string = xmlNodeListGetString (doc, node->children, TRUE);
+			if (total_results_string == NULL)
+				return gdata_parser_error_required_content_missing (node, error);
 
-		self->priv->icon = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
-		/* atom:link */
-		GDataLink *link = GDATA_LINK (_gdata_parsable_new_from_xml_node (GDATA_TYPE_LINK, doc, node, NULL, error));
-		if (link == NULL)
-			return FALSE;
+			self->priv->total_results = strtoul ((gchar*) total_results_string, NULL, 10);
+			xmlFree (total_results_string);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "startIndex") == 0) {
+			/* openSearch:startIndex */
+			xmlChar *start_index_string;
 
-		self->priv->links = g_list_prepend (self->priv->links, link);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "author") == 0) {
-		/* atom:author */
-		GDataAuthor *author = GDATA_AUTHOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_AUTHOR, doc, node, NULL, error));
-		if (author == NULL)
-			return FALSE;
+			/* Duplicate checking */
+			if (self->priv->start_index != 0)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		self->priv->authors = g_list_prepend (self->priv->authors, author);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "generator") == 0) {
-		/* atom:generator */
-		GDataGenerator *generator;
+			/* Parse the number */
+			start_index_string = xmlNodeListGetString (doc, node->children, TRUE);
+			if (start_index_string == NULL)
+				return gdata_parser_error_required_content_missing (node, error);
 
-		/* Duplicate checking */
-		if (self->priv->generator != NULL)
-			return gdata_parser_error_duplicate_element (node, error);
+			self->priv->start_index = strtoul ((gchar*) start_index_string, NULL, 10);
+			xmlFree (start_index_string);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "itemsPerPage") == 0) {
+			/* openSearch:itemsPerPage */
+			xmlChar *items_per_page_string;
 
-		generator = GDATA_GENERATOR (_gdata_parsable_new_from_xml_node (GDATA_TYPE_GENERATOR, doc, node, NULL, error));
-		if (generator == NULL)
-			return FALSE;
+			/* Duplicate checking */
+			if (self->priv->items_per_page != 0)
+				return gdata_parser_error_duplicate_element (node, error);
 
-		self->priv->generator = generator;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "totalResults") == 0) {
-		/* openSearch:totalResults */
-		xmlChar *total_results_string;
+			/* Parse the number */
+			items_per_page_string = xmlNodeListGetString (doc, node->children, TRUE);
+			if (items_per_page_string == NULL)
+				return gdata_parser_error_required_content_missing (node, error);
 
-		/* Duplicate checking */
-		if (self->priv->total_results != 0)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		/* Parse the number */
-		total_results_string = xmlNodeListGetString (doc, node->children, TRUE);
-		if (total_results_string == NULL)
-			return gdata_parser_error_required_content_missing (node, error);
-
-		self->priv->total_results = strtoul ((gchar*) total_results_string, NULL, 10);
-		xmlFree (total_results_string);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "startIndex") == 0) {
-		/* openSearch:startIndex */
-		xmlChar *start_index_string;
-
-		/* Duplicate checking */
-		if (self->priv->start_index != 0)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		/* Parse the number */
-		start_index_string = xmlNodeListGetString (doc, node->children, TRUE);
-		if (start_index_string == NULL)
-			return gdata_parser_error_required_content_missing (node, error);
-
-		self->priv->start_index = strtoul ((gchar*) start_index_string, NULL, 10);
-		xmlFree (start_index_string);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "itemsPerPage") == 0) {
-		/* openSearch:itemsPerPage */
-		xmlChar *items_per_page_string;
-
-		/* Duplicate checking */
-		if (self->priv->items_per_page != 0)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		/* Parse the number */
-		items_per_page_string = xmlNodeListGetString (doc, node->children, TRUE);
-		if (items_per_page_string == NULL)
-			return gdata_parser_error_required_content_missing (node, error);
-
-		self->priv->items_per_page = strtoul ((gchar*) items_per_page_string, NULL, 10);
-		xmlFree (items_per_page_string);
-	} else if (GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+			self->priv->items_per_page = strtoul ((gchar*) items_per_page_string, NULL, 10);
+			xmlFree (items_per_page_string);
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
 
 	return TRUE;
