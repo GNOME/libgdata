@@ -440,25 +440,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	           gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
 	                                                    _gdata_feed_add_author, self, &success, error) == TRUE ||
 	           gdata_parser_object_from_element (node, "generator", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GENERATOR,
-	                                             &(self->priv->generator), &success, error) == TRUE) {
+	                                             &(self->priv->generator), &success, error) == TRUE ||
+	           gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES, &(self->priv->updated), &success, error) == TRUE) {
 		return success;
 	/*TODO for atom:id: xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) {*/
-	} else if (xmlStrcmp (node->name, (xmlChar*) "updated") == 0) {
-		/* atom:updated */
-		xmlChar *updated_string;
-
-		/* Duplicate checking */
-		if (self->priv->updated.tv_sec != 0 || self->priv->updated.tv_usec != 0)
-			return gdata_parser_error_duplicate_element (node, error);
-
-		/* Parse the string */
-		updated_string = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) updated_string, &(self->priv->updated)) == FALSE) {
-			gdata_parser_error_not_iso8601_format (node, (gchar*) updated_string, error);
-			xmlFree (updated_string);
-			return FALSE;
-		}
-		xmlFree (updated_string);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "totalResults") == 0) {
 		/* openSearch:totalResults */
 		xmlChar *total_results_string;

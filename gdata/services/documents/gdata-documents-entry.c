@@ -181,8 +181,22 @@ static void
 gdata_documents_entry_init (GDataDocumentsEntry *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate);
+}
 
-	/* Initialise the edited properties to the current time */
+/*
+ * _gdata_documents_entry_init_edited:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Initialises the #GDataDocumentsEntry:edited property of @self to the current time. This is designed
+ * to be called from the public constructors of classes which derive #GDataDocumentsEntry; it can't be
+ * put in the init function of #GDataDocumentsEntry, as it would then be called even for entries parsed
+ * from XML from the server, which would break duplicate element detection for the app:edited element.
+ *
+ * Since: 0.7.0
+ */
+void
+_gdata_documents_entry_init_edited (GDataDocumentsEntry *self)
+{
 	g_get_current_time (&(self->priv->edited));
 }
 
@@ -204,22 +218,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
-		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) edited, &(self->priv->edited)) == FALSE) {
-			gdata_parser_error_not_iso8601_format (node, (gchar*) edited, error);
-			xmlFree (edited);
-			return FALSE;
-		}
-		xmlFree (edited);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "lastViewed") == 0) {
-		xmlChar *last_viewed = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) last_viewed, &(self->priv->last_viewed)) == FALSE) {
-			gdata_parser_error_not_iso8601_format (node, (gchar*) last_viewed, error);
-			xmlFree (last_viewed);
-			return FALSE;
-		}
-		xmlFree (last_viewed);
+	if (gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE ||
+	    gdata_parser_time_val_from_element (node, "lastViewed", P_REQUIRED | P_NO_DUPES, &(self->priv->last_viewed), &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
+	                                             gdata_entry_add_link, self,  &success, error) == TRUE ||
+	    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
+	                                      &(self->priv->last_modified_by), &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
 		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->writers_can_invite), -1, error) == FALSE)
 			return FALSE;
@@ -250,11 +255,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 		self->priv->document_id = g_strdup (document_id_parts[1]);
 		g_strfreev (document_id_parts);
-	} else if (gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
-	                                                    gdata_entry_add_link, self,  &success, error) == TRUE ||
-	           gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
-	                                             &(self->priv->last_modified_by), &success, error) == TRUE) {
-		return success;
 	} else if (GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

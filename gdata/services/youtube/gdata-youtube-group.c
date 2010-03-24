@@ -95,7 +95,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_YOUTUBE_CONTENT,
 	                                             _gdata_media_group_add_content, self, &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE) {
+	    gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE ||
+	    gdata_parser_time_val_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES, &(self->priv->uploaded), &success, error) == TRUE) {
 		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
 		/* media:credit */
@@ -121,21 +122,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (xmlStrcmp (node->name, (xmlChar*) "private") == 0) {
 		/* yt:private */
 		gdata_youtube_group_set_is_private (self, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "uploaded") == 0) {
-		/* yt:uploaded */
-		xmlChar *uploaded;
-		GTimeVal uploaded_timeval;
-
-		uploaded = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) uploaded, &uploaded_timeval) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) uploaded, error);
-			xmlFree (uploaded);
-			return FALSE;
-		}
-		xmlFree (uploaded);
-
-		self->priv->uploaded = uploaded_timeval;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "aspectRatio") == 0) {
 		/* yt:aspectRatio */
 		xmlChar *aspect_ratio = xmlNodeGetContent (node);

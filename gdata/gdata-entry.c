@@ -373,73 +373,32 @@ static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
-	GDataEntry *self;
+	GDataEntryPrivate *priv = GDATA_ENTRY (parsable)->priv;
 
-	g_return_val_if_fail (GDATA_IS_ENTRY (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
-
-	self = GDATA_ENTRY (parsable);
-
-	if (xmlStrcmp (node->name, (xmlChar*) "title") == 0) {
-		/* atom:title */
-		xmlChar *title = xmlNodeListGetString (doc, node->children, TRUE);
-
-		/* Title can be empty */
-		self->priv->title = (title != NULL) ? (gchar*) title : g_strdup ("");
-	} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
-		/* atom:id */
-		g_free (self->priv->id);
-		self->priv->id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "updated") == 0) {
-		/* atom:updated */
-		xmlChar *updated;
-
-		updated = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) updated, &(self->priv->updated)) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) updated, error);
-			xmlFree (updated);
-			return FALSE;
-		}
-		xmlFree (updated);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "published") == 0) {
-		/* atom:published */
-		xmlChar *published;
-
-		published = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) published, &(self->priv->published)) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) published, error);
-			xmlFree (published);
-			return FALSE;
-		}
-		xmlFree (published);
-	} else if (gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
-	                                                    gdata_entry_add_category, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,
-	                                                    gdata_entry_add_link, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
-	                                                    gdata_entry_add_author, self, &success, error) == TRUE) {
+	if (gdata_parser_string_from_element (node, "title", P_DEFAULT, &(priv->title), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES, &(priv->id), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "summary", P_NONE, &(priv->summary), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "rights", P_NONE, &(priv->rights), &success, error) == TRUE ||
+	    gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES, &(priv->updated), &success, error) == TRUE ||
+	    gdata_parser_time_val_from_element (node, "published", P_REQUIRED | P_NO_DUPES, &(priv->published), &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
+	                                             gdata_entry_add_category, parsable, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,
+	                                             gdata_entry_add_link, parsable, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
+	                                             gdata_entry_add_author, parsable, &success, error) == TRUE) {
 		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
 		/* atom:content */
 		xmlChar *content = xmlNodeListGetString (doc, node->children, TRUE);
 		if (content == NULL)
 			content = xmlGetProp (node, (xmlChar*) "src");
-		self->priv->content = (gchar*) content;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "summary") == 0) {
-		/* atom:summary */
-		self->priv->summary = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "rights") == 0) {
-		/* atom:rights */
-		self->priv->rights = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
-	} else if (GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+		priv->content = (gchar*) content;
+
+		return TRUE;
 	}
 
-	return TRUE;
+	return GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 }
 
 static gboolean

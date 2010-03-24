@@ -98,7 +98,13 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 GDataDocumentsText *
 gdata_documents_text_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_DOCUMENTS_TEXT, "id", id, NULL);
+	GDataDocumentsText *text = GDATA_DOCUMENTS_TEXT (g_object_new (GDATA_TYPE_DOCUMENTS_TEXT, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	_gdata_documents_entry_init_edited (GDATA_DOCUMENTS_ENTRY (text));
+
+	return text;
 }
 
 /**

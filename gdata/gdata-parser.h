@@ -44,6 +44,8 @@ gchar *gdata_parser_date_from_time_val (const GTimeVal *_time) G_GNUC_WARN_UNUSE
  * @P_REQUIRED: the element content must not be %NULL if the element exists
  * @P_NON_EMPTY: the element content must not be empty (i.e. a zero-length string) if the element exists;
  * this only applies to gdata_parser_string_from_element()
+ * @P_DEFAULT: if the element content is %NULL or empty, return an empty value instead of erroring (this is mutually exclusive with %P_REQUIRED
+ * and %P_NON_EMPTY)
  *
  * Parsing options to be passed in a bitwise fashion to gdata_parser_string_from_element() or gdata_parser_object_from_element().
  * Their names aren't namespaced as they aren't public, and brevity is important, since they're used frequently in the parsing code.
@@ -54,7 +56,8 @@ typedef enum {
 	P_NONE = 0,
 	P_NO_DUPES = 1 << 0,
 	P_REQUIRED = 1 << 1,
-	P_NON_EMPTY = 1 << 2
+	P_NON_EMPTY = 1 << 2,
+	P_DEFAULT = 1 << 3
 } GDataParserOptions;
 
 typedef void (*GDataParserSetterFunc) (GDataParsable *parent_parsable, GDataParsable *parsable);
@@ -62,6 +65,8 @@ typedef void (*GDataParserSetterFunc) (GDataParsable *parent_parsable, GDataPars
 gboolean gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error);
 gboolean gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
                                            gchar **output, gboolean *success, GError **error);
+gboolean gdata_parser_time_val_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+                                             GTimeVal *output, gboolean *success, GError **error);
 gboolean gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
                                                   gpointer /* GDataParserSetterFunc */ _setter, gpointer /* GDataParsable * */ _parent_parsable,
                                                   gboolean *success, GError **error);

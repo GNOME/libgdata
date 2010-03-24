@@ -189,9 +189,6 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 	g_signal_connect (self, "notify::title", (GCallback) notify_title_cb, self);
 	g_signal_connect (self->priv->name, "notify::full-name", (GCallback) notify_full_name_cb, self);
 
-	/* Set the edited property to the current time (creation time) */
-	g_get_current_time (&(self->priv->edited));
-
 	/* Add the "contact" kind category */
 	category = gdata_category_new ("http://schemas.google.com/contact/2008#contact", "http://schemas.google.com/g/2005#kind", NULL);
 	gdata_entry_add_category (GDATA_ENTRY (self), category);
@@ -284,43 +281,33 @@ gdata_contacts_contact_set_property (GObject *object, guint property_id, const G
 GDataContactsContact *
 gdata_contacts_contact_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_CONTACTS_CONTACT, "id", id, NULL);
+	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (g_object_new (GDATA_TYPE_CONTACTS_CONTACT, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(contact->priv->edited));
+
+	return contact;
 }
 
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
-	GDataContactsContact *self;
+	GDataContactsContact *self = GDATA_CONTACTS_CONTACT (parsable);
 
-	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
-
-	self = GDATA_CONTACTS_CONTACT (parsable);
-
-	if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
-		/* app:edited */
-		/* TODO: Should be in GDataEntry? */
-		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) edited, &(self->priv->edited)) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) edited, error);
-			g_free (edited);
-			return FALSE;
-		}
-		g_free (edited);
-	} else if (gdata_parser_object_from_element_setter (node, "email", P_REQUIRED, GDATA_TYPE_GD_EMAIL_ADDRESS,
-	                                                    gdata_contacts_contact_add_email_address, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element_setter (node, "im", P_REQUIRED, GDATA_TYPE_GD_IM_ADDRESS,
-	                                                    gdata_contacts_contact_add_im_address, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element_setter (node, "phoneNumber", P_REQUIRED, GDATA_TYPE_GD_PHONE_NUMBER,
-	                                                    gdata_contacts_contact_add_phone_number, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element_setter (node, "structuredPostalAddress", P_REQUIRED, GDATA_TYPE_GD_POSTAL_ADDRESS,
-	                                                    gdata_contacts_contact_add_postal_address, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element_setter (node, "organization", P_REQUIRED, GDATA_TYPE_GD_ORGANIZATION,
-	                                                    gdata_contacts_contact_add_organization, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element (node, "name", P_REQUIRED, GDATA_TYPE_GD_NAME, &(self->priv->name), &success, error) == TRUE) {
+	if (gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "email", P_REQUIRED, GDATA_TYPE_GD_EMAIL_ADDRESS,
+	                                             gdata_contacts_contact_add_email_address, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "im", P_REQUIRED, GDATA_TYPE_GD_IM_ADDRESS,
+	                                             gdata_contacts_contact_add_im_address, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "phoneNumber", P_REQUIRED, GDATA_TYPE_GD_PHONE_NUMBER,
+	                                             gdata_contacts_contact_add_phone_number, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "structuredPostalAddress", P_REQUIRED, GDATA_TYPE_GD_POSTAL_ADDRESS,
+	                                             gdata_contacts_contact_add_postal_address, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "organization", P_REQUIRED, GDATA_TYPE_GD_ORGANIZATION,
+	                                             gdata_contacts_contact_add_organization, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element (node, "name", P_REQUIRED, GDATA_TYPE_GD_NAME, &(self->priv->name), &success, error) == TRUE) {
 		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "extendedProperty") == 0) {
 		/* gd:extendedProperty */

@@ -68,7 +68,13 @@ gdata_documents_folder_class_init (GDataDocumentsFolderClass *klass)
 GDataDocumentsFolder *
 gdata_documents_folder_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_DOCUMENTS_FOLDER, "id", id, NULL);
+	GDataDocumentsFolder *folder = GDATA_DOCUMENTS_FOLDER (g_object_new (GDATA_TYPE_DOCUMENTS_FOLDER, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	_gdata_documents_entry_init_edited (GDATA_DOCUMENTS_ENTRY (folder));
+
+	return folder;
 }
 
 static void

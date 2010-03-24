@@ -276,19 +276,20 @@ gdata_calendar_calendar_set_property (GObject *object, guint property_id, const 
 GDataCalendarCalendar *
 gdata_calendar_calendar_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_CALENDAR_CALENDAR, "id", id, NULL);
+	GDataCalendarCalendar *calendar = GDATA_CALENDAR_CALENDAR (g_object_new (GDATA_TYPE_CALENDAR_CALENDAR, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(calendar->priv->edited));
+
+	return calendar;
 }
 
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
-	GDataCalendarCalendar *self;
-
-	g_return_val_if_fail (GDATA_IS_CALENDAR_CALENDAR (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
-
-	self = GDATA_CALENDAR_CALENDAR (parsable);
+	gboolean success;
+	GDataCalendarCalendar *self = GDATA_CALENDAR_CALENDAR (parsable);
 
 	if (xmlStrcmp (node->name, (xmlChar*) "timezone") == 0) {
 		/* gCal:timezone */
@@ -340,16 +341,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		self->priv->access_level = (gchar*) xmlGetProp (node, (xmlChar*) "value");
 		if (self->priv->access_level == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
-		/* app:edited */
-		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) edited, &(self->priv->edited)) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) edited, error);
-			xmlFree (edited);
-			return FALSE;
-		}
-		xmlFree (edited);
+	} else if (gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+		return success;
 	} else if (GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 		/* Error! */
 		return FALSE;

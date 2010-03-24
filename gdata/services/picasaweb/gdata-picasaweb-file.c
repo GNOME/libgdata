@@ -592,10 +592,6 @@ gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 	self->priv->is_commenting_enabled = TRUE;
 
-	/* Initialise the timestamp and edited properties to the current time (bgo#599140) */
-	g_get_current_time (&(self->priv->timestamp));
-	g_get_current_time (&(self->priv->edited));
-
 	/* We need to keep atom:title (the canonical title for the file) in sync with media:group/media:title */
 	g_signal_connect (self, "notify::title", G_CALLBACK (notify_title_cb), NULL);
 	/* atom:summary (the canonical summary/caption for the file) in sync with media:group/media:description */
@@ -808,18 +804,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	    gdata_parser_string_from_element (node, "imageVersion", P_NONE, &(self->priv->version), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "albumid", P_NONE, &(self->priv->album_id), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "client", P_NONE, &(self->priv->client), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->client), &success, error) == TRUE) {
+	    gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->client), &success, error) == TRUE ||
+	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
-		/* app:edited */
-		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) edited, &(self->priv->edited)) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) edited, error);
-			xmlFree (edited);
-			return FALSE;
-		}
-		xmlFree (edited);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "position") == 0) {
 		/* gphoto:position */
 		xmlChar *position_str = xmlNodeListGetString (doc, node->children, TRUE);
@@ -971,7 +958,14 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 GDataPicasaWebFile *
 gdata_picasaweb_file_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_PICASAWEB_FILE, "id", id, NULL);
+	GDataPicasaWebFile *file = GDATA_PICASAWEB_FILE (g_object_new (GDATA_TYPE_PICASAWEB_FILE, "id", id, NULL));
+
+	/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
+	 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(file->priv->timestamp));
+	g_get_current_time (&(file->priv->edited));
+
+	return file;
 }
 
 /**

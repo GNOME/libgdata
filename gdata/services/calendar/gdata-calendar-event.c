@@ -441,31 +441,29 @@ gdata_calendar_event_set_property (GObject *object, guint property_id, const GVa
 GDataCalendarEvent *
 gdata_calendar_event_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_CALENDAR_EVENT, "id", id, NULL);
+	GDataCalendarEvent *event = GDATA_CALENDAR_EVENT (g_object_new (GDATA_TYPE_CALENDAR_EVENT, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(event->priv->edited));
+
+	return event;
 }
 
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
-	GDataCalendarEvent *self;
+	GDataCalendarEvent *self = GDATA_CALENDAR_EVENT (parsable);
 
-	g_return_val_if_fail (GDATA_IS_CALENDAR_EVENT (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
-
-	self = GDATA_CALENDAR_EVENT (parsable);
-
-	if (xmlStrcmp (node->name, (xmlChar*) "edited") == 0) {
-		/* app:edited */
-		xmlChar *edited = xmlNodeListGetString (doc, node->children, TRUE);
-		if (g_time_val_from_iso8601 ((gchar*) edited, &(self->priv->edited)) == FALSE) {
-			/* Error */
-			gdata_parser_error_not_iso8601_format (node, (gchar*) edited, error);
-			xmlFree (edited);
-			return FALSE;
-		}
-		xmlFree (edited);
+	if (gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "when", P_REQUIRED, GDATA_TYPE_GD_WHEN,
+	                                             gdata_calendar_event_add_time, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "who", P_REQUIRED, GDATA_TYPE_GD_WHO,
+	                                             gdata_calendar_event_add_person, self, &success, error) == TRUE ||
+	    gdata_parser_object_from_element_setter (node, "where", P_REQUIRED, GDATA_TYPE_GD_WHERE,
+	                                             gdata_calendar_event_add_place, self, &success, error) == TRUE) {
+		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
 		/* gd:comments */
 		xmlChar *rel, *href, *count_hint;
@@ -529,13 +527,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (value);
 
 		gdata_calendar_event_set_sequence (self, value_uint);
-	} else if (gdata_parser_object_from_element_setter (node, "when", P_REQUIRED, GDATA_TYPE_GD_WHEN,
-	                                                    gdata_calendar_event_add_time, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element_setter (node, "who", P_REQUIRED, GDATA_TYPE_GD_WHO,
-	                                                    gdata_calendar_event_add_person, self, &success, error) == TRUE ||
-	           gdata_parser_object_from_element_setter (node, "where", P_REQUIRED, GDATA_TYPE_GD_WHERE,
-	                                                    gdata_calendar_event_add_place, self, &success, error) == TRUE) {
-		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "guestsCanModify") == 0) {
 		/* gCal:guestsCanModify */
 		gboolean guests_can_modify;
