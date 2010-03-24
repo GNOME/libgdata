@@ -287,12 +287,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	    gdata_parser_string_from_element (node, "nameSuffix", P_NO_DUPES, &(priv->suffix), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "fullName", P_NO_DUPES, &(priv->full_name), &success, error) == TRUE) {
 		return success;
-	} else if (GDATA_PARSABLE_CLASS (gdata_gd_name_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_gd_name_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
-
-	return TRUE;
 }
 
 static void

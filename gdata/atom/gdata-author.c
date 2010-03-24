@@ -197,12 +197,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	    gdata_parser_string_from_element (node, "uri", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->uri), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "email", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->email_address), &success, error) == TRUE) {
 		return success;
-	} else if (GDATA_PARSABLE_CLASS (gdata_author_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_author_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
-
-	return TRUE;
 }
 
 static gboolean

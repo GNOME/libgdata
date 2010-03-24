@@ -185,12 +185,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	if (node->type != XML_ELEMENT_NODE)
 		return TRUE;
 
-	if (GDATA_PARSABLE_CLASS (gdata_generator_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
-	}
-
-	return TRUE;
+	return GDATA_PARSABLE_CLASS (gdata_generator_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 }
 
 /**

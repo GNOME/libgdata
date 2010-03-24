@@ -586,12 +586,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	    gdata_parser_string_from_element (node, "country", P_NO_DUPES, &(priv->country), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "formattedAddress", P_NO_DUPES, &(priv->formatted_address), &success, error) == TRUE) {
 		return success;
-	} else if (GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
-		/* Error! */
-		return FALSE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
-
-	return TRUE;
 }
 
 static void

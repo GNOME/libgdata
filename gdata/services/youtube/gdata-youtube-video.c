@@ -630,7 +630,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	if (gdata_parser_object_from_element (node, "group", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_GROUP,
 	                                      &(self->priv->media_group), &success, error) == TRUE ||
 	    gdata_parser_object_from_element (node, "control", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_CONTROL,
-	                                      &(self->priv->youtube_control), &success, error) == TRUE) {
+	                                      &(self->priv->youtube_control), &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
 		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
 		/* gd:rating */
@@ -710,10 +711,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
 		self->priv->favorite_count = (favorite_count != NULL) ? strtoul ((gchar*) favorite_count, NULL, 10) : 0;
 		xmlFree (favorite_count);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "location") == 0) {
-		/* yt:location */
-		g_free (self->priv->location);
-		self->priv->location = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
 		/* yt:noembed */
 		/* Ignore this now; it's been superceded by yt:accessControl.

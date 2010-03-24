@@ -94,7 +94,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	GDataYouTubeGroup *self = GDATA_YOUTUBE_GROUP (parsable);
 
 	if (gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_YOUTUBE_CONTENT,
-	                                             _gdata_media_group_add_content, self, &success, error) == TRUE) {
+	                                             _gdata_media_group_add_content, self, &success, error) == TRUE ||
+	    gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE) {
 		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
 		/* media:credit */
@@ -135,9 +136,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		xmlFree (uploaded);
 
 		self->priv->uploaded = uploaded_timeval;
-	} else if (gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE) {
-		/* yt:videoid */
-		return success;
 	} else if (xmlStrcmp (node->name, (xmlChar*) "aspectRatio") == 0) {
 		/* yt:aspectRatio */
 		xmlChar *aspect_ratio = xmlNodeGetContent (node);
