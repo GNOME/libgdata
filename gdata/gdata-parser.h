@@ -31,6 +31,7 @@ gboolean gdata_parser_error_not_iso8601_format (xmlNode *element, const gchar *a
 gboolean gdata_parser_error_unknown_property_value (xmlNode *element, const gchar *property_name, const gchar *actual_value, GError **error);
 gboolean gdata_parser_error_unknown_content (xmlNode *element, const gchar *actual_content, GError **error);
 gboolean gdata_parser_error_required_property_missing (xmlNode *element, const gchar *property_name, GError **error);
+gboolean gdata_parser_error_mutexed_properties (xmlNode *element, const gchar *property1_name, const gchar *property2_name, GError **error);
 gboolean gdata_parser_error_required_element_missing (const gchar *element_name, const gchar *parent_element_name, GError **error);
 gboolean gdata_parser_error_duplicate_element (xmlNode *element, GError **error);
 

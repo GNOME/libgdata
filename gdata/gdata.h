@@ -53,6 +53,13 @@
 #include <gdata/gd/gdata-gd-where.h>
 #include <gdata/gd/gdata-gd-who.h>
 
+/* GContact */
+#include <gdata/gcontact/gdata-gcontact-calendar.h>
+#include <gdata/gcontact/gdata-gcontact-event.h>
+#include <gdata/gcontact/gdata-gcontact-jot.h>
+#include <gdata/gcontact/gdata-gcontact-relation.h>
+#include <gdata/gcontact/gdata-gcontact-website.h>
+
 /* Media RSS */
 #include <gdata/media/gdata-media-category.h>
 #include <gdata/media/gdata-media-content.h>

@@ -68,13 +68,24 @@ struct _GDataContactsContactPrivate {
 	GHashTable *groups;
 	gboolean deleted;
 	gchar *photo_etag;
+	GList *jots; /* GDataGContactJot */
+	gchar *nickname;
+	GDate birthday;
+	gboolean birthday_has_year; /* contacts can choose to just give the month and day of their birth */
+	GList *relations; /* GDataGContactRelation */
+	GList *websites; /* GDataGContactWebsite */
+	GList *events; /* GDataGContactEvent */
+	GList *calendars; /* GDataGContactCalendar */
 };
 
 enum {
 	PROP_EDITED = 1,
 	PROP_DELETED,
 	PROP_HAS_PHOTO,
-	PROP_NAME
+	PROP_NAME,
+	PROP_NICKNAME,
+	PROP_BIRTHDAY,
+	PROP_BIRTHDAY_HAS_YEAR
 };
 
 G_DEFINE_TYPE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
@@ -150,6 +161,45 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 					"Name", "The contact's name in a structured representation.",
 					GDATA_TYPE_GD_NAME,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:nickname:
+	 *
+	 * The contact's chosen nickname.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_NICKNAME,
+				g_param_spec_string ("nickname",
+					"Nickname", "The contact's chosen nickname.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:birthday:
+	 *
+	 * The contact's birthday.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_BIRTHDAY,
+				g_param_spec_boxed ("birthday",
+					"Birthday", "The contact's birthday.",
+					G_TYPE_DATE,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:birthday-has-year:
+	 *
+	 * Whether the contact's birthday includes the year of their birth.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_BIRTHDAY_HAS_YEAR,
+				g_param_spec_boolean ("birthday-has-year",
+					"Birthday has year?", "Whether the contact's birthday includes the year of their birth.",
+					FALSE,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *self);
@@ -188,6 +238,9 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 	g_signal_connect (self, "notify::title", (GCallback) notify_title_cb, self);
 	g_signal_connect (self->priv->name, "notify::full-name", (GCallback) notify_full_name_cb, self);
 
+	/* Initialise the contact's birthday to a sane but invalid date */
+	g_date_clear (&(self->priv->birthday), 1);
+
 	/* Add the "contact" kind category */
 	category = gdata_category_new ("http://schemas.google.com/contact/2008#contact", "http://schemas.google.com/g/2005#kind", NULL);
 	gdata_entry_add_category (GDATA_ENTRY (self), category);
@@ -208,6 +261,11 @@ gdata_contacts_contact_dispose (GObject *object)
 	gdata_contacts_contact_remove_all_im_addresses (self);
 	gdata_contacts_contact_remove_all_postal_addresses (self);
 	gdata_contacts_contact_remove_all_phone_numbers (self);
+	gdata_contacts_contact_remove_all_jots (self);
+	gdata_contacts_contact_remove_all_relations (self);
+	gdata_contacts_contact_remove_all_websites (self);
+	gdata_contacts_contact_remove_all_events (self);
+	gdata_contacts_contact_remove_all_calendars (self);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->dispose (object);
@@ -221,6 +279,7 @@ gdata_contacts_contact_finalize (GObject *object)
 	g_hash_table_destroy (priv->extended_properties);
 	g_hash_table_destroy (priv->groups);
 	g_free (priv->photo_etag);
+	g_free (priv->nickname);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->finalize (object);
@@ -244,6 +303,15 @@ gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue 
 		case PROP_NAME:
 			g_value_set_object (value, priv->name);
 			break;
+		case PROP_NICKNAME:
+			g_value_set_string (value, priv->nickname);
+			break;
+		case PROP_BIRTHDAY:
+			g_value_set_boxed (value, &(priv->birthday));
+			break;
+		case PROP_BIRTHDAY_HAS_YEAR:
+			g_value_set_boolean (value, priv->birthday_has_year);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -260,33 +328,20 @@ gdata_contacts_contact_set_property (GObject *object, guint property_id, const G
 		case PROP_NAME:
 			gdata_contacts_contact_set_name (self, g_value_get_object (value));
 			break;
+		case PROP_NICKNAME:
+			gdata_contacts_contact_set_nickname (self, g_value_get_string (value));
+			break;
+		case PROP_BIRTHDAY:
+			gdata_contacts_contact_set_birthday (self, g_value_get_boxed (value), self->priv->birthday_has_year);
+			break;
+		case PROP_BIRTHDAY_HAS_YEAR:
+			gdata_contacts_contact_set_birthday (self, &(self->priv->birthday), g_value_get_boolean (value));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
 	}
-}
-
-/**
- * gdata_contacts_contact_new:
- * @id: the contact's ID, or %NULL
- *
- * Creates a new #GDataContactsContact with the given ID and default properties.
- *
- * Return value: a new #GDataContactsContact; unref with g_object_unref()
- *
- * Since: 0.2.0
- **/
-GDataContactsContact *
-gdata_contacts_contact_new (const gchar *id)
-{
-	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (g_object_new (GDATA_TYPE_CONTACTS_CONTACT, "id", id, NULL));
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(contact->priv->edited));
-
-	return contact;
 }
 
 static gboolean
@@ -344,22 +399,64 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/contact/2008") == TRUE &&
-	           xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
-		/* gContact:groupMembershipInfo */
-		xmlChar *href;
-		gboolean deleted_bool;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/contact/2008") == TRUE) {
+		if (gdata_parser_object_from_element_setter (node, "jot", P_REQUIRED, GDATA_TYPE_GCONTACT_JOT,
+		                                             gdata_contacts_contact_add_jot, self, &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "relation", P_REQUIRED, GDATA_TYPE_GCONTACT_RELATION,
+		                                             gdata_contacts_contact_add_relation, self, &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "event", P_REQUIRED, GDATA_TYPE_GCONTACT_EVENT,
+		                                             gdata_contacts_contact_add_event, self, &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "website", P_REQUIRED, GDATA_TYPE_GCONTACT_WEBSITE,
+		                                             gdata_contacts_contact_add_website, self, &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "calendarLink", P_REQUIRED, GDATA_TYPE_GCONTACT_CALENDAR,
+		                                             gdata_contacts_contact_add_calendar, self, &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NO_DUPES, &(self->priv->nickname), &success, error) == TRUE) {
+			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
+			/* gContact:groupMembershipInfo */
+			xmlChar *href;
+			gboolean deleted_bool;
 
-		href = xmlGetProp (node, (xmlChar*) "href");
-		if (href == NULL)
-			return gdata_parser_error_required_property_missing (node, "href", error);
+			href = xmlGetProp (node, (xmlChar*) "href");
+			if (href == NULL)
+				return gdata_parser_error_required_property_missing (node, "href", error);
 
-		/* Has it been deleted? */
-		if (gdata_parser_boolean_from_property (node, "deleted", &deleted_bool, 0, error) == FALSE)
-			return FALSE;
+			/* Has it been deleted? */
+			if (gdata_parser_boolean_from_property (node, "deleted", &deleted_bool, 0, error) == FALSE)
+				return FALSE;
 
-		/* Insert it into the hash table */
-		g_hash_table_insert (self->priv->groups, (gchar*) href, GUINT_TO_POINTER (deleted_bool));
+			/* Insert it into the hash table */
+			g_hash_table_insert (self->priv->groups, (gchar*) href, GUINT_TO_POINTER (deleted_bool));
+		} else if (xmlStrcmp (node->name, (xmlChar*) "birthday") == 0) {
+			/* gContact:birthday */
+			xmlChar *birthday;
+			guint length = 0, year = 666, month, day;
+
+			if (g_date_valid (&(self->priv->birthday)) == TRUE)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			birthday = xmlGetProp (node, (xmlChar*) "when");
+			if (birthday == NULL)
+				return gdata_parser_error_required_property_missing (node, "when", error);
+			length = strlen ((char*) birthday);
+
+			/* Try parsing the two possible formats: YYYY-MM-DD and --MM-DD */
+			if (((length == 10 && sscanf ((char*) birthday, "%4u-%2u-%2u", &year, &month, &day) == 3) ||
+			     (length == 7 && sscanf ((char*) birthday, "--%2u-%2u", &month, &day) == 2)) &&
+			    g_date_valid_dmy (day, month, year) == TRUE) {
+				/* Store the values in the GDate */
+				g_date_set_dmy (&(self->priv->birthday), day, month, year);
+				self->priv->birthday_has_year = (length == 10) ? TRUE : FALSE;
+				xmlFree (birthday);
+			} else {
+				/* Parsing failed */
+				gdata_parser_error_not_iso8601_format (node, (gchar*) birthday, error);
+				xmlFree (birthday);
+				return FALSE;
+			}
+		} else {
+			return GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		}
 	} else {
 		/* If we haven't yet found a photo, check to see if it's a photo <link> element */
 		if (self->priv->photo_etag == NULL && xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
@@ -416,12 +513,35 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	get_child_xml (priv->phone_numbers, xml_string);
 	get_child_xml (priv->postal_addresses, xml_string);
 	get_child_xml (priv->organizations, xml_string);
+	get_child_xml (priv->jots, xml_string);
+	get_child_xml (priv->relations, xml_string);
+	get_child_xml (priv->websites, xml_string);
+	get_child_xml (priv->events, xml_string);
+	get_child_xml (priv->calendars, xml_string);
 
 	/* Extended properties */
 	g_hash_table_foreach (priv->extended_properties, (GHFunc) get_extended_property_xml_cb, xml_string);
 
 	/* Group membership info */
 	g_hash_table_foreach (priv->groups, (GHFunc) get_group_xml_cb, xml_string);
+
+	/* gContact:nickname */
+	if (priv->nickname != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:nickname>", priv->nickname, "</gContact:nickname>");
+
+	/* gContact:birthday */
+	if (g_date_valid (&(priv->birthday)) == TRUE) {
+		if (priv->birthday_has_year == TRUE) {
+			g_string_append_printf (xml_string, "<gContact:birthday when='%04u-%02u-%02u'/>",
+			                        g_date_get_year (&(priv->birthday)),
+			                        g_date_get_month (&(priv->birthday)),
+			                        g_date_get_day (&(priv->birthday)));
+		} else {
+			g_string_append_printf (xml_string, "<gContact:birthday when='--%02u-%02u'/>",
+			                        g_date_get_month (&(priv->birthday)),
+			                        g_date_get_day (&(priv->birthday)));
+		}
+	}
 
 	/* TODO:
 	 * - Finish supporting all tags
@@ -438,6 +558,28 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 	g_hash_table_insert (namespaces, (gchar*) "gd", (gchar*) "http://schemas.google.com/g/2005");
 	g_hash_table_insert (namespaces, (gchar*) "gContact", (gchar*) "http://schemas.google.com/contact/2008");
 	g_hash_table_insert (namespaces, (gchar*) "app", (gchar*) "http://www.w3.org/2007/app");
+}
+
+/**
+ * gdata_contacts_contact_new:
+ * @id: the contact's ID, or %NULL
+ *
+ * Creates a new #GDataContactsContact with the given ID and default properties.
+ *
+ * Return value: a new #GDataContactsContact; unref with g_object_unref()
+ *
+ * Since: 0.2.0
+ **/
+GDataContactsContact *
+gdata_contacts_contact_new (const gchar *id)
+{
+	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (g_object_new (GDATA_TYPE_CONTACTS_CONTACT, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(contact->priv->edited));
+
+	return contact;
 }
 
 /**
@@ -499,6 +641,100 @@ gdata_contacts_contact_set_name (GDataContactsContact *self, GDataGDName *name)
 
 	/* Notify the change in #GDataGDName:full-name explicitly, so that our #GDataEntry:title gets updated */
 	notify_full_name_cb (G_OBJECT (name), NULL, self);
+}
+
+/**
+ * gdata_contacts_contact_get_nickname:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:nickname property.
+ *
+ * Return value: the contact's nickname, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_nickname (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->nickname;
+}
+
+/**
+ * gdata_contacts_contact_set_nickname:
+ * @self: a #GDataContactsContact
+ * @nickname: the new nickname, or %NULL
+ *
+ * Sets the #GDataContactsContact:nickname property to @nickname.
+ *
+ * If @nickname is %NULL, the contact's nickname will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_nickname (GDataContactsContact *self, const gchar *nickname)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	g_free (self->priv->nickname);
+	self->priv->nickname = g_strdup (nickname);
+	g_object_notify (G_OBJECT (self), "nickname");
+}
+
+/**
+ * gdata_contacts_contact_get_birthday:
+ * @self: a #GDataContactsContact
+ * @birthday: return location for the birthday, or %NULL
+ *
+ * Gets the #GDataContactsContact:birthday and #GDataContactsContact:birthday-has-year properties. If @birthday is non-%NULL,
+ * #GDataContactsContact:birthday is returned in it. The function returns the value of #GDataContactsContact:birthday-has-year,
+ * which specifies whether the year in @birthday is meaningful. Contacts may not have the year of their birth set, in which
+ * case, the function would return %FALSE, and the year in @birthday should be ignored.
+ *
+ * Return value: whether the contact's birthday has the year set
+ *
+ * Since: 0.7.0
+ **/
+gboolean
+gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
+
+	if (birthday != NULL)
+		*birthday = self->priv->birthday;
+	return self->priv->birthday_has_year;
+}
+
+/**
+ * gdata_contacts_contact_set_birthday:
+ * @self: a #GDataContactsContact
+ * @birthday: the new birthday, or %NULL
+ * @birthday_has_year: %TRUE if @birthday's year is relevant, %FALSE otherwise
+ *
+ * Sets the #GDataContactsContact:birthday property to @birthday and the #GDataContactsContact:birthday-has-year property to @birthday_has_year.
+ * See gdata_contacts_contact_get_birthday() for an explanation of the interation between these two properties.
+ *
+ * If @birthday is %NULL, the contact's birthday will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_birthday (GDataContactsContact *self, GDate *birthday, gboolean birthday_has_year)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (birthday == NULL || g_date_valid (birthday));
+
+	if (birthday != NULL)
+		self->priv->birthday = *birthday;
+	else
+		g_date_clear (&(self->priv->birthday), 1);
+
+	self->priv->birthday_has_year = birthday_has_year;
+
+	g_object_freeze_notify (G_OBJECT (self));
+	g_object_notify (G_OBJECT (self), "birthday");
+	g_object_notify (G_OBJECT (self), "birthday-has-year");
+	g_object_thaw_notify (G_OBJECT (self));
 }
 
 /**
@@ -944,6 +1180,357 @@ gdata_contacts_contact_remove_all_organizations (GDataContactsContact *self)
 		g_list_free (priv->organizations);
 	}
 	priv->organizations = NULL;
+}
+
+/**
+ * gdata_contacts_contact_add_jot:
+ * @self: a #GDataContactsContact
+ * @jot: a #GDataGContactJot to add
+ *
+ * Adds a jot to the contact's list of jots and increments its reference count.
+ *
+ * Duplicate jots will be added to the list, and multiple jots with the same relation type can be added to a single contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_add_jot (GDataContactsContact *self, GDataGContactJot *jot)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_GCONTACT_JOT (jot));
+
+	self->priv->jots = g_list_append (self->priv->jots, g_object_ref (jot));
+}
+
+/**
+ * gdata_contacts_contact_get_jots:
+ * @self: a #GDataContactsContact
+ *
+ * Gets a list of the jots attached to the contact.
+ *
+ * Return value: a #GList of #GDataGContactJot<!-- -->s, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_contacts_contact_get_jots (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->jots;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_jots:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all jots from the contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_remove_all_jots (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->jots != NULL) {
+		g_list_foreach (priv->jots, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->jots);
+	}
+	priv->jots = NULL;
+}
+
+/**
+ * gdata_contacts_contact_add_relation:
+ * @self: a #GDataContactsContact
+ * @relation: a #GDataGContactRelation to add
+ *
+ * Adds a relation to the contact's list of relations and increments its reference count.
+ *
+ * Duplicate relations will be added to the list, and multiple relations with the same relation type can be added to a single contact.
+ * Though it may not make sense for some relation types to be repeated, adding them is allowed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_add_relation (GDataContactsContact *self, GDataGContactRelation *relation)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_GCONTACT_RELATION (relation));
+
+	self->priv->relations = g_list_append (self->priv->relations, g_object_ref (relation));
+}
+
+/**
+ * gdata_contacts_contact_get_relations:
+ * @self: a #GDataContactsContact
+ *
+ * Gets a list of the relations of the contact.
+ *
+ * Return value: a #GList of #GDataGContactRelation<!-- -->s, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_contacts_contact_get_relations (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->relations;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_relations:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all relations from the contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_remove_all_relations (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->relations != NULL) {
+		g_list_foreach (priv->relations, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->relations);
+	}
+	priv->relations = NULL;
+}
+
+/**
+ * gdata_contacts_contact_add_website:
+ * @self: a #GDataContactsContact
+ * @website: a #GDataGContactWebsite to add
+ *
+ * Adds a website to the contact's list of websites and increments its reference count.
+ *
+ * Duplicate websites will not be added to the list, though the same URI may appear in several #GDataGContactWebsite<!-- -->s with different
+ * relation types or labels.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_add_website (GDataContactsContact *self, GDataGContactWebsite *website)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_GCONTACT_WEBSITE (website));
+
+	if (g_list_find_custom (self->priv->websites, website, (GCompareFunc) gdata_gcontact_website_compare) == NULL)
+		self->priv->websites = g_list_append (self->priv->websites, g_object_ref (website));
+}
+
+/**
+ * gdata_contacts_contact_get_websites:
+ * @self: a #GDataContactsContact
+ *
+ * Gets a list of the websites of the contact.
+ *
+ * Return value: a #GList of #GDataGContactWebsite<!-- -->s, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_contacts_contact_get_websites (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->websites;
+}
+
+/**
+ * gdata_contacts_contact_get_primary_website:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the contact's primary website, if one exists.
+ *
+ * Return value: a #GDataGContactWebsite, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GDataGContactWebsite *
+gdata_contacts_contact_get_primary_website (GDataContactsContact *self)
+{
+	GList *i;
+
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+
+	for (i = self->priv->websites; i != NULL; i = i->next) {
+		if (gdata_gcontact_website_is_primary (GDATA_GCONTACT_WEBSITE (i->data)) == TRUE)
+			return GDATA_GCONTACT_WEBSITE (i->data);
+	}
+
+	return NULL;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_websites:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all websites from the contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_remove_all_websites (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->websites != NULL) {
+		g_list_foreach (priv->websites, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->websites);
+	}
+	priv->websites = NULL;
+}
+
+/**
+ * gdata_contacts_contact_add_event:
+ * @self: a #GDataContactsContact
+ * @event: a #GDataGContactEvent to add
+ *
+ * Adds an event to the contact's list of events and increments its reference count.
+ *
+ * Duplicate events will be added to the list, and multiple events with the same event type can be added to a single contact.
+ * Though it may not make sense for some event types to be repeated, adding them is allowed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_add_event (GDataContactsContact *self, GDataGContactEvent *event)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_GCONTACT_EVENT (event));
+
+	self->priv->events = g_list_append (self->priv->events, g_object_ref (event));
+}
+
+/**
+ * gdata_contacts_contact_get_events:
+ * @self: a #GDataContactsContact
+ *
+ * Gets a list of the events of the contact.
+ *
+ * Return value: a #GList of #GDataGContactEvent<!-- -->s, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_contacts_contact_get_events (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->events;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_events:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all events from the contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_remove_all_events (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->events != NULL) {
+		g_list_foreach (priv->events, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->events);
+	}
+	priv->events = NULL;
+}
+
+/**
+ * gdata_contacts_contact_add_calendar:
+ * @self: a #GDataContactsContact
+ * @calendar: a #GDataGContactCalendar to add
+ *
+ * Adds a calendar to the contact's list of calendars and increments its reference count.
+ *
+ * Duplicate calendars will not be added to the list, though the same URI may appear in several #GDataGContactCalendar<!-- -->s with different
+ * relation types or labels.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGContactCalendar *calendar)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_GCONTACT_CALENDAR (calendar));
+
+	if (g_list_find_custom (self->priv->calendars, calendar, (GCompareFunc) gdata_gcontact_calendar_compare) == NULL)
+		self->priv->calendars = g_list_append (self->priv->calendars, g_object_ref (calendar));
+}
+
+/**
+ * gdata_contacts_contact_get_calendars:
+ * @self: a #GDataContactsContact
+ *
+ * Gets a list of the calendars of the contact.
+ *
+ * Return value: a #GList of #GDataGContactCalendar<!-- -->s, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_contacts_contact_get_calendars (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->calendars;
+}
+
+/**
+ * gdata_contacts_contact_get_primary_calendar:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the contact's primary calendar, if one exists.
+ *
+ * Return value: a #GDataGContactCalendar, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GDataGContactCalendar *
+gdata_contacts_contact_get_primary_calendar (GDataContactsContact *self)
+{
+	GList *i;
+
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+
+	for (i = self->priv->calendars; i != NULL; i = i->next) {
+		if (gdata_gcontact_calendar_is_primary (GDATA_GCONTACT_CALENDAR (i->data)) == TRUE)
+			return GDATA_GCONTACT_CALENDAR (i->data);
+	}
+
+	return NULL;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_calendars:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all calendars from the contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->calendars != NULL) {
+		g_list_foreach (priv->calendars, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->calendars);
+	}
+	priv->calendars = NULL;
 }
 
 /**

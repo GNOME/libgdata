@@ -153,17 +153,23 @@ static void
 test_insert_simple (gconstpointer service)
 {
 	GDataContactsContact *contact, *new_contact;
-	GDataCategory *category;
 	GDataGDName *name, *name2;
 	GDataGDEmailAddress *email_address1, *email_address2;
 	GDataGDPhoneNumber *phone_number1, *phone_number2;
 	GDataGDIMAddress *im_address;
+	GDataGDOrganization *org;
 	GDataGDPostalAddress *postal_address;
-	gchar *xml;
+	GDataGContactJot *jot;
+	GDataGContactRelation *relation;
+	GDataGContactWebsite *website;
+	GDataGContactEvent *event;
+	GDataGContactCalendar *calendar;
+	gchar *xml, *nickname;
 	GList *list;
+	GDate date, *date2;
 	GHashTable *properties;
 	GTimeVal *edited, creation_time;
-	gboolean deleted, has_photo;
+	gboolean deleted, has_photo, birthday_has_year;
 	GError *error = NULL;
 
 	contact = gdata_contacts_contact_new (NULL);
@@ -186,31 +192,60 @@ test_insert_simple (gconstpointer service)
 	g_object_unref (name2);
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (contact)), ==, "John Smith");
 
+	gdata_contacts_contact_set_nickname (contact, "Big J");
+	g_date_set_dmy (&date, 1, 1, 1900);
+	gdata_contacts_contact_set_birthday (contact, &date, FALSE);
 	gdata_entry_set_content (GDATA_ENTRY (contact), "Notes");
-	/* TODO: Have it add this category automatically? Same for GDataCalendarEvent */
-	category = gdata_category_new ("http://schemas.google.com/contact/2008#contact", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (GDATA_ENTRY (contact), category);
-	g_object_unref (category);
+
 	email_address1 = gdata_gd_email_address_new ("liz@gmail.com", "http://schemas.google.com/g/2005#work", NULL, FALSE);
 	gdata_contacts_contact_add_email_address (contact, email_address1);
 	g_object_unref (email_address1);
+
 	email_address2 = gdata_gd_email_address_new ("liz@example.org", "http://schemas.google.com/g/2005#home", NULL, FALSE);
 	gdata_contacts_contact_add_email_address (contact, email_address2);
 	g_object_unref (email_address2);
+
 	phone_number1 = gdata_gd_phone_number_new ("(206)555-1212", "http://schemas.google.com/g/2005#work", NULL, NULL, TRUE);
 	gdata_contacts_contact_add_phone_number (contact, phone_number1);
 	g_object_unref (phone_number1);
+
 	phone_number2 = gdata_gd_phone_number_new ("(206)555-1213", "http://schemas.google.com/g/2005#home", NULL, NULL, FALSE);
 	gdata_contacts_contact_add_phone_number (contact, phone_number2);
 	g_object_unref (phone_number2);
+
 	im_address = gdata_gd_im_address_new ("liz@gmail.com", "http://schemas.google.com/g/2005#GOOGLE_TALK", "http://schemas.google.com/g/2005#home",
 					      NULL, FALSE);
 	gdata_contacts_contact_add_im_address (contact, im_address);
 	g_object_unref (im_address);
+
 	postal_address = gdata_gd_postal_address_new ("http://schemas.google.com/g/2005#work", NULL, TRUE);
 	gdata_gd_postal_address_set_street (postal_address, "1600 Amphitheatre Pkwy Mountain View");
 	gdata_contacts_contact_add_postal_address (contact, postal_address);
 	g_object_unref (postal_address);
+
+	org = gdata_gd_organization_new ("OrgCorp", "President", "http://schemas.google.com/g/2005#work", NULL, FALSE);
+	gdata_contacts_contact_add_organization (contact, org);
+	g_object_unref (org);
+
+	jot = gdata_gcontact_jot_new ("This is a jot.", GDATA_GCONTACT_JOT_OTHER);
+	gdata_contacts_contact_add_jot (contact, jot);
+	g_object_unref (jot);
+
+	relation = gdata_gcontact_relation_new ("Brian Haddock", GDATA_GCONTACT_RELATION_FRIEND, NULL);
+	gdata_contacts_contact_add_relation (contact, relation);
+	g_object_unref (relation);
+
+	website = gdata_gcontact_website_new ("http://example.com/", GDATA_GCONTACT_WEBSITE_PROFILE, NULL, TRUE);
+	gdata_contacts_contact_add_website (contact, website);
+	g_object_unref (website);
+
+	event = gdata_gcontact_event_new (&date, GDATA_GCONTACT_EVENT_ANNIVERSARY, NULL);
+	gdata_contacts_contact_add_event (contact, event);
+	g_object_unref (event);
+
+	calendar = gdata_gcontact_calendar_new ("http://calendar.example.com/", GDATA_GCONTACT_CALENDAR_HOME, NULL, TRUE);
+	gdata_contacts_contact_add_calendar (contact, calendar);
+	g_object_unref (calendar);
 
 	/* Add some extended properties */
 	g_assert (gdata_contacts_contact_set_extended_property (contact, "TITLE", NULL) == TRUE);
@@ -223,6 +258,9 @@ test_insert_simple (gconstpointer service)
 	              "deleted", &deleted,
 	              "has-photo", &has_photo,
 	              "name", &name,
+	              "nickname", &nickname,
+	              "birthday", &date2,
+	              "birthday-has-year", &birthday_has_year,
 	              NULL);
 
 	g_assert_cmpint (edited->tv_sec, ==, creation_time.tv_sec);
@@ -230,8 +268,15 @@ test_insert_simple (gconstpointer service)
 	g_assert (deleted == FALSE);
 	g_assert (has_photo == FALSE);
 	g_assert (name2 == name);
+	g_assert_cmpstr (nickname, ==, "Big J");
+	g_assert (g_date_valid (date2) == TRUE);
+	g_assert_cmpuint (g_date_get_month (date2), ==, 1);
+	g_assert_cmpuint (g_date_get_day (date2), ==, 1);
+	g_assert (birthday_has_year == FALSE);
 
 	g_object_unref (name2);
+	g_free (date2);
+	g_free (nickname);
 
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
@@ -257,7 +302,18 @@ test_insert_simple (gconstpointer service)
 				"<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work' primary='true'>"
 					"<gd:street>1600 Amphitheatre Pkwy Mountain View</gd:street>"
 				"</gd:structuredPostalAddress>"
+				"<gd:organization rel='http://schemas.google.com/g/2005#work' primary='false'>"
+					"<gd:orgName>OrgCorp</gd:orgName>"
+					"<gd:orgTitle>President</gd:orgTitle>"
+				"</gd:organization>"
+				"<gContact:jot rel='other'>This is a jot.</gContact:jot>"
+				"<gContact:relation rel='friend'>Brian Haddock</gContact:relation>"
+				"<gContact:website href='http://example.com/' rel='profile' primary='true'/>"
+				"<gContact:event rel='anniversary'><gd:when startTime='1900-01-01'/></gContact:event>"
+				"<gContact:calendarLink href='http://calendar.example.com/' rel='home' primary='true'/>"
 				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
+				"<gContact:nickname>Big J</gContact:nickname>"
+				"<gContact:birthday when='--01-01'/>"
 			 "</entry>");
 	g_free (xml);
 
@@ -271,6 +327,13 @@ test_insert_simple (gconstpointer service)
 	/* Check its edited date */
 	gdata_contacts_contact_get_edited (new_contact, &creation_time);
 	g_assert_cmpint (creation_time.tv_sec, >=, edited->tv_sec);
+
+	/* Nickname and birthday */
+	g_assert_cmpstr (gdata_contacts_contact_get_nickname (new_contact), ==, "Big J");
+	g_assert (gdata_contacts_contact_get_birthday (new_contact, &date) == FALSE);
+	g_assert (g_date_valid (&date) == TRUE);
+	g_assert_cmpuint (g_date_get_month (&date), ==, 1);
+	g_assert_cmpuint (g_date_get_day (&date), ==, 1);
 
 	/* E-mail addresses */
 	list = gdata_contacts_contact_get_email_addresses (new_contact);
@@ -302,9 +365,39 @@ test_insert_simple (gconstpointer service)
 
 	/* Organizations */
 	list = gdata_contacts_contact_get_organizations (new_contact);
-	g_assert (list == NULL);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GD_ORGANIZATION (list->data));
 
 	g_assert (gdata_contacts_contact_get_primary_organization (new_contact) == NULL);
+
+	/* Jots */
+	list = gdata_contacts_contact_get_jots (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_JOT (list->data));
+
+	/* Relations */
+	list = gdata_contacts_contact_get_relations (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_RELATION (list->data));
+
+	/* Websites */
+	list = gdata_contacts_contact_get_websites (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (list->data));
+
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (gdata_contacts_contact_get_primary_website (new_contact)));
+
+	/* Events */
+	list = gdata_contacts_contact_get_events (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_EVENT (list->data));
+
+	/* Calendars */
+	list = gdata_contacts_contact_get_calendars (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (list->data));
+
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (gdata_contacts_contact_get_primary_calendar (new_contact)));
 
 	/* Extended properties */
 	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "CALURI"), ==, "http://example.com/");
@@ -322,6 +415,44 @@ test_insert_simple (gconstpointer service)
 	g_assert (gdata_contacts_contact_is_deleted (new_contact) == FALSE);
 
 	/* TODO: check entries and feed properties */
+
+	/* Try removing some things from the new contact and ensure it works */
+	gdata_contacts_contact_remove_all_email_addresses (new_contact);
+	g_assert (gdata_contacts_contact_get_email_addresses (new_contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_email_address (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_im_addresses (new_contact);
+	g_assert (gdata_contacts_contact_get_im_addresses (new_contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_im_address (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_phone_numbers (new_contact);
+	g_assert (gdata_contacts_contact_get_phone_numbers (new_contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_phone_number (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_postal_addresses (new_contact);
+	g_assert (gdata_contacts_contact_get_postal_addresses (new_contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_postal_address (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_organizations (new_contact);
+	g_assert (gdata_contacts_contact_get_organizations (new_contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_organization (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_jots (new_contact);
+	g_assert (gdata_contacts_contact_get_jots (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_relations (new_contact);
+	g_assert (gdata_contacts_contact_get_relations (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_websites (new_contact);
+	g_assert (gdata_contacts_contact_get_websites (new_contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_website (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_events (new_contact);
+	g_assert (gdata_contacts_contact_get_events (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_calendars (new_contact);
+	g_assert (gdata_contacts_contact_get_calendars (new_contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_calendar (new_contact) == NULL);
 
 	g_free (edited);
 	g_object_unref (contact);
@@ -442,6 +573,7 @@ static void
 test_parser_minimal (gconstpointer service)
 {
 	GDataContactsContact *contact;
+	GDate birthday;
 	GError *error = NULL;
 
 	g_test_bug ("580330");
@@ -471,6 +603,17 @@ test_parser_minimal (gconstpointer service)
 
 	/* TODO: Check the other properties */
 
+	g_assert (gdata_contacts_contact_get_nickname (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_birthday (contact, &birthday) == FALSE);
+	g_assert (g_date_valid (&birthday) == FALSE);
+	g_assert (gdata_contacts_contact_get_jots (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_relations (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_websites (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_website (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_events (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_calendars (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_calendar (contact) == NULL);
+
 	g_object_unref (contact);
 }
 
@@ -478,6 +621,8 @@ static void
 test_parser_normal (gconstpointer service)
 {
 	GDataContactsContact *contact;
+	GDate date;
+	GList *list;
 	GError *error = NULL;
 
 	contact = GDATA_CONTACTS_CONTACT (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT,
@@ -500,6 +645,21 @@ test_parser_normal (gconstpointer service)
 				"deleted='true'/>"
 			"<gContact:groupMembershipInfo href='http://www.google.com/feeds/contacts/groups/jo%40gmail.com/base/1234b'/>"
 			"<gd:deleted/>"
+			"<gContact:nickname>Agent Smith</gContact:nickname>"
+			"<gContact:birthday when='2010-12-03'/>"
+			"<gContact:jot rel='home'>Moved house on 2010-02-14 to the North Pole.</gContact:jot>"
+			"<gContact:jot rel='user'>Owes me ten pounds.</gContact:jot>"
+			"<gContact:jot rel='other'></gContact:jot>" /* Empty on purpose */
+			"<gContact:relation rel='father'>Darth Vader</gContact:relation>"
+			"<gContact:relation label='Favourite singer'>Rob Halford</gContact:relation>"
+			"<gContact:website href='http://example.com' rel='home-page' label='Home tab #1' primary='true'/>"
+			"<gContact:website href='http://example.com' rel='work'/>"
+			"<gContact:website href='http://bar.com' rel='profile' primary='false'/>"
+			"<gContact:event rel='anniversary'><gd:when startTime='2010-03-04'/></gContact:event>"
+			"<gContact:event label='Foobar'><gd:when startTime='1900-01-01'/></gContact:event>"
+			"<gContact:calendarLink href='http://example.com/' rel='free-busy' primary='true'/>"
+			"<gContact:calendarLink href='http://example.com/' label='Gig list' primary='false'/>"
+			"<gContact:calendarLink href='http://foo.com/calendar' rel='home'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -507,6 +667,123 @@ test_parser_normal (gconstpointer service)
 	g_clear_error (&error);
 
 	/* TODO: Check the other properties */
+
+	g_assert_cmpstr (gdata_contacts_contact_get_nickname (contact), ==, "Agent Smith");
+
+	/* Birthday */
+	g_assert (gdata_contacts_contact_get_birthday (contact, &date) == TRUE);
+	g_assert (g_date_valid (&date) == TRUE);
+	g_assert_cmpuint (g_date_get_year (&date), ==, 2010);
+	g_assert_cmpuint (g_date_get_month (&date), ==, 12);
+	g_assert_cmpuint (g_date_get_day (&date), ==, 3);
+
+	/* Jots */
+	list = gdata_contacts_contact_get_jots (contact);
+	g_assert_cmpuint (g_list_length (list), ==, 3);
+
+	g_assert (GDATA_IS_GCONTACT_JOT (list->data));
+	g_assert_cmpstr (gdata_gcontact_jot_get_content (GDATA_GCONTACT_JOT (list->data)), ==, "Moved house on 2010-02-14 to the North Pole.");
+	g_assert_cmpstr (gdata_gcontact_jot_get_relation_type (GDATA_GCONTACT_JOT (list->data)), ==, GDATA_GCONTACT_JOT_HOME);
+
+	list = list->next;
+	g_assert (GDATA_IS_GCONTACT_JOT (list->data));
+	g_assert_cmpstr (gdata_gcontact_jot_get_content (GDATA_GCONTACT_JOT (list->data)), ==, "Owes me ten pounds.");
+	g_assert_cmpstr (gdata_gcontact_jot_get_relation_type (GDATA_GCONTACT_JOT (list->data)), ==, GDATA_GCONTACT_JOT_USER);
+
+	list = list->next;
+	g_assert (GDATA_IS_GCONTACT_JOT (list->data));
+	g_assert (gdata_gcontact_jot_get_content (GDATA_GCONTACT_JOT (list->data)) == NULL);
+	g_assert_cmpstr (gdata_gcontact_jot_get_relation_type (GDATA_GCONTACT_JOT (list->data)), ==, GDATA_GCONTACT_JOT_OTHER);
+
+	/* Relations */
+	list = gdata_contacts_contact_get_relations (contact);
+	g_assert_cmpuint (g_list_length (list), ==, 2);
+
+	g_assert (GDATA_IS_GCONTACT_RELATION (list->data));
+	g_assert_cmpstr (gdata_gcontact_relation_get_name (GDATA_GCONTACT_RELATION (list->data)), ==, "Darth Vader");
+	g_assert_cmpstr (gdata_gcontact_relation_get_relation_type (GDATA_GCONTACT_RELATION (list->data)), ==, GDATA_GCONTACT_RELATION_FATHER);
+	g_assert (gdata_gcontact_relation_get_label (GDATA_GCONTACT_RELATION (list->data)) == NULL);
+
+	list = list->next;
+	g_assert (GDATA_IS_GCONTACT_RELATION (list->data));
+	g_assert_cmpstr (gdata_gcontact_relation_get_name (GDATA_GCONTACT_RELATION (list->data)), ==, "Rob Halford");
+	g_assert (gdata_gcontact_relation_get_relation_type (GDATA_GCONTACT_RELATION (list->data)) == NULL);
+	g_assert_cmpstr (gdata_gcontact_relation_get_label (GDATA_GCONTACT_RELATION (list->data)), ==, "Favourite singer");
+
+	/* Websites */
+	list = gdata_contacts_contact_get_websites (contact);
+	g_assert_cmpuint (g_list_length (list), ==, 3);
+
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (list->data));
+	g_assert_cmpstr (gdata_gcontact_website_get_uri (GDATA_GCONTACT_WEBSITE (list->data)), ==, "http://example.com");
+	g_assert_cmpstr (gdata_gcontact_website_get_relation_type (GDATA_GCONTACT_WEBSITE (list->data)), ==, GDATA_GCONTACT_WEBSITE_HOME_PAGE);
+	g_assert_cmpstr (gdata_gcontact_website_get_label (GDATA_GCONTACT_WEBSITE (list->data)), ==, "Home tab #1");
+	g_assert (gdata_gcontact_website_is_primary (GDATA_GCONTACT_WEBSITE (list->data)) == TRUE);
+
+	g_assert (gdata_contacts_contact_get_primary_website (contact) == list->data);
+
+	list = list->next;
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (list->data));
+	g_assert_cmpstr (gdata_gcontact_website_get_uri (GDATA_GCONTACT_WEBSITE (list->data)), ==, "http://example.com");
+	g_assert_cmpstr (gdata_gcontact_website_get_relation_type (GDATA_GCONTACT_WEBSITE (list->data)), ==, GDATA_GCONTACT_WEBSITE_WORK);
+	g_assert (gdata_gcontact_website_get_label (GDATA_GCONTACT_WEBSITE (list->data)) == NULL);
+	g_assert (gdata_gcontact_website_is_primary (GDATA_GCONTACT_WEBSITE (list->data)) == FALSE);
+
+	list = list->next;
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (list->data));
+	g_assert_cmpstr (gdata_gcontact_website_get_uri (GDATA_GCONTACT_WEBSITE (list->data)), ==, "http://bar.com");
+	g_assert_cmpstr (gdata_gcontact_website_get_relation_type (GDATA_GCONTACT_WEBSITE (list->data)), ==, GDATA_GCONTACT_WEBSITE_PROFILE);
+	g_assert (gdata_gcontact_website_get_label (GDATA_GCONTACT_WEBSITE (list->data)) == NULL);
+	g_assert (gdata_gcontact_website_is_primary (GDATA_GCONTACT_WEBSITE (list->data)) == FALSE);
+
+	/* Events */
+	list = gdata_contacts_contact_get_events (contact);
+	g_assert_cmpuint (g_list_length (list), ==, 2);
+
+	g_assert (GDATA_IS_GCONTACT_EVENT (list->data));
+	gdata_gcontact_event_get_date (GDATA_GCONTACT_EVENT (list->data), &date);
+	g_assert (g_date_valid (&date) == TRUE);
+	g_assert_cmpuint (g_date_get_year (&date), ==, 2010);
+	g_assert_cmpuint (g_date_get_month (&date), ==, 3);
+	g_assert_cmpuint (g_date_get_day (&date), ==, 4);
+	g_assert_cmpstr (gdata_gcontact_event_get_relation_type (GDATA_GCONTACT_EVENT (list->data)), ==, GDATA_GCONTACT_EVENT_ANNIVERSARY);
+	g_assert (gdata_gcontact_event_get_label (GDATA_GCONTACT_EVENT (list->data)) == NULL);
+
+	list = list->next;
+	g_assert (GDATA_IS_GCONTACT_EVENT (list->data));
+	gdata_gcontact_event_get_date (GDATA_GCONTACT_EVENT (list->data), &date);
+	g_assert (g_date_valid (&date) == TRUE);
+	g_assert_cmpuint (g_date_get_year (&date), ==, 1900);
+	g_assert_cmpuint (g_date_get_month (&date), ==, 1);
+	g_assert_cmpuint (g_date_get_day (&date), ==, 1);
+	g_assert (gdata_gcontact_event_get_relation_type (GDATA_GCONTACT_EVENT (list->data)) == NULL);
+	g_assert_cmpstr (gdata_gcontact_event_get_label (GDATA_GCONTACT_EVENT (list->data)), ==, "Foobar");
+
+	/* Calendars */
+	list = gdata_contacts_contact_get_calendars (contact);
+	g_assert_cmpuint (g_list_length (list), ==, 3);
+
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (list->data));
+	g_assert_cmpstr (gdata_gcontact_calendar_get_uri (GDATA_GCONTACT_CALENDAR (list->data)), ==, "http://example.com/");
+	g_assert_cmpstr (gdata_gcontact_calendar_get_relation_type (GDATA_GCONTACT_CALENDAR (list->data)), ==, GDATA_GCONTACT_CALENDAR_FREE_BUSY);
+	g_assert (gdata_gcontact_calendar_get_label (GDATA_GCONTACT_CALENDAR (list->data)) == NULL);
+	g_assert (gdata_gcontact_calendar_is_primary (GDATA_GCONTACT_CALENDAR (list->data)) == TRUE);
+
+	g_assert (gdata_contacts_contact_get_primary_calendar (contact) == list->data);
+
+	list = list->next;
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (list->data));
+	g_assert_cmpstr (gdata_gcontact_calendar_get_uri (GDATA_GCONTACT_CALENDAR (list->data)), ==, "http://example.com/");
+	g_assert (gdata_gcontact_calendar_get_relation_type (GDATA_GCONTACT_CALENDAR (list->data)) == NULL);
+	g_assert_cmpstr (gdata_gcontact_calendar_get_label (GDATA_GCONTACT_CALENDAR (list->data)), ==, "Gig list");
+	g_assert (gdata_gcontact_calendar_is_primary (GDATA_GCONTACT_CALENDAR (list->data)) == FALSE);
+
+	list = list->next;
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (list->data));
+	g_assert_cmpstr (gdata_gcontact_calendar_get_uri (GDATA_GCONTACT_CALENDAR (list->data)), ==, "http://foo.com/calendar");
+	g_assert_cmpstr (gdata_gcontact_calendar_get_relation_type (GDATA_GCONTACT_CALENDAR (list->data)), ==, GDATA_GCONTACT_CALENDAR_HOME);
+	g_assert (gdata_gcontact_calendar_get_label (GDATA_GCONTACT_CALENDAR (list->data)) == NULL);
+	g_assert (gdata_gcontact_calendar_is_primary (GDATA_GCONTACT_CALENDAR (list->data)) == FALSE);
 
 	g_object_unref (contact);
 }
@@ -555,6 +832,30 @@ test_parser_error_handling (gconstpointer service)
 	/* gContact:groupMembershipInfo */
 	TEST_XML_ERROR_HANDLING ("<gContact:groupMembershipInfo/>");
 	TEST_XML_ERROR_HANDLING ("<gContact:groupMembershipInfo href='http://foobar.com/base/1234b' deleted='maybe'/>");
+
+	/* gContact:nickname */
+	TEST_XML_ERROR_HANDLING ("<gContact:nickname/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:nickname>Nickname 1</gContact:nickname><gContact:nickname>Duplicate!</gContact:nickname>"); /* duplicate */
+
+	/* gContact:birthday */
+	TEST_XML_ERROR_HANDLING ("<gContact:birthday/>"); /* missing "when" attribute */
+	TEST_XML_ERROR_HANDLING ("<gContact:birthday when='foobar'/>"); /* invalid date */
+	TEST_XML_ERROR_HANDLING ("<gContact:birthday when='2000-01-01'/><gContact:birthday when='--01-01'/>"); /* duplicate */
+
+	/* gContact:jot */
+	TEST_XML_ERROR_HANDLING ("<gContact:jot/>");
+
+	/* gContact:relation */
+	TEST_XML_ERROR_HANDLING ("<gContact:relation/>");
+
+	/* gContact:website */
+	TEST_XML_ERROR_HANDLING ("<gContact:website/>");
+
+	/* gContact:event */
+	TEST_XML_ERROR_HANDLING ("<gContact:event/>");
+
+	/* gContact:calendar */
+	TEST_XML_ERROR_HANDLING ("<gContact:calendarLink/>");
 
 #undef TEST_XML_ERROR_HANDLING
 }

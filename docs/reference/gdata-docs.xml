@@ -67,6 +67,15 @@
 		</chapter>
 
 		<chapter>
+			<title>GContact API</title>
+			<xi:include href="xml/gdata-gcontact-calendar.xml"/>
+			<xi:include href="xml/gdata-gcontact-event.xml"/>
+			<xi:include href="xml/gdata-gcontact-jot.xml"/>
+			<xi:include href="xml/gdata-gcontact-relation.xml"/>
+			<xi:include href="xml/gdata-gcontact-website.xml"/>
+		</chapter>
+
+		<chapter>
 			<title>Media RSS API</title>
 			<xi:include href="xml/gdata-media-category.xml"/>
 			<xi:include href="xml/gdata-media-content.xml"/>

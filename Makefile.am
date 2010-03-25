@@ -188,6 +188,14 @@ gdatagdinclude_HEADERS = \
 	gdata/gd/gdata-gd-who.h			\
 	gdata/gd/gdata-gd-name.h
 
+gdatagcontactincludedir = $(gdataincludedir)/gcontact
+gdatagcontactinclude_HEADERS = \
+	gdata/gcontact/gdata-gcontact-calendar.h	\
+	gdata/gcontact/gdata-gcontact-event.h		\
+	gdata/gcontact/gdata-gcontact-jot.h		\
+	gdata/gcontact/gdata-gcontact-relation.h	\
+	gdata/gcontact/gdata-gcontact-website.h
+
 gdatamediaincludedir = $(gdataincludedir)/media
 gdata_media_headers = \
 	gdata/media/gdata-media-category.h	\
@@ -289,6 +297,12 @@ gdata_libgdata_la_SOURCES = \
 	gdata/gd/gdata-gd-who.c			\
 	gdata/gd/gdata-gd-name.c		\
 	\
+	gdata/gcontact/gdata-gcontact-calendar.c	\
+	gdata/gcontact/gdata-gcontact-event.c		\
+	gdata/gcontact/gdata-gcontact-jot.c		\
+	gdata/gcontact/gdata-gcontact-relation.c	\
+	gdata/gcontact/gdata-gcontact-website.c		\
+	\
 	gdata/georss/gdata-georss-where.c	\
 	\
 	gdata/media/gdata-media-category.c	\
@@ -375,10 +389,10 @@ gdata/GData-$(GDATA_API_VERSION).gir: Makefile gdata/libgdata.la
 	--library=gdata/libgdata.la $(_gir_libtool) --output $@				\
 	-I$(top_srcdir) -I$(top_srcdir)/gdata						\
 	$(addprefix $(srcdir)/,$(gdatainclude_HEADERS) $(gdataatominclude_HEADERS)	\
-	$(gdatagdinclude_HEADERS) $(gdatamediainclude_HEADERS)				\
-	$(gdatacalendarinclude_HEADERS) $(gdatacontactsinclude_HEADERS)			\
-	$(gdatadocumentsinclude_HEADERS) $(gdatapicasawebinclude_HEADERS)		\
-	$(gdatayoutubeinclude_HEADERS)))
+	$(gdatagdinclude_HEADERS) $(gdatagcontactinclude_HEADERS)			\
+	$(gdatamediainclude_HEADERS) $(gdatacalendarinclude_HEADERS)			\
+	$(gdatacontactsinclude_HEADERS) $(gdatadocumentsinclude_HEADERS)		\
+	$(gdatapicasawebinclude_HEADERS) $(gdatayoutubeinclude_HEADERS)))
 BUILT_GIRSOURCES = gdata/GData-$(GDATA_API_VERSION).gir
 
 girdir = $(datadir)/gir-1.0

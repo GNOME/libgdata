@@ -145,6 +145,31 @@ gdata_parser_error_required_property_missing (xmlNode *element, const gchar *pro
 }
 
 gboolean
+gdata_parser_error_mutexed_properties (xmlNode *element, const gchar *property1_name, const gchar *property2_name, GError **error)
+{
+	gchar *property1_string, *property2_string, *element_string;
+
+	property1_string = g_strdup_printf ("@%s", property1_name);
+	property2_string = g_strdup_printf ("@%s", property2_name);
+	element_string = print_element (element);
+
+	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+	             /* Translators: the first two parameters are the names of XML properties of an XML element given in the third
+	              * parameter (including the angle brackets ("<" and ">")).
+	              *
+	              * For example:
+	              *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+	              *  two is allowed. */
+	             _("Values were present for properties %s and %s of a %s element when only one of the two is allowed."),
+	             property1_string, property2_string, element_string);
+	g_free (property1_string);
+	g_free (property2_string);
+	g_free (element_string);
+
+	return FALSE;
+}
+
+gboolean
 gdata_parser_error_required_element_missing (const gchar *element_name, const gchar *parent_element_name, GError **error)
 {
 	/* NOTE: This can't take an xmlNode, since such a node wouldn't exist. */

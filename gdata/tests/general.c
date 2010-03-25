@@ -2334,6 +2334,427 @@ test_media_thumbnail (void)
 	g_object_unref (thumbnail);
 }
 
+static void
+test_gcontact_calendar (void)
+{
+	GDataGContactCalendar *calendar, *calendar2;
+	gchar *xml;
+	GError *error = NULL;
+
+	calendar = GDATA_GCONTACT_CALENDAR (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_CALENDAR,
+		"<gContact:calendarLink xmlns:gContact='http://schemas.google.com/contact/2008' rel='work' primary='true' "
+			"href='http://calendar.com/'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (calendar));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_calendar_get_uri (calendar), ==, "http://calendar.com/");
+	g_assert_cmpstr (gdata_gcontact_calendar_get_relation_type (calendar), ==, GDATA_GCONTACT_CALENDAR_WORK);
+	g_assert (gdata_gcontact_calendar_get_label (calendar) == NULL);
+	g_assert (gdata_gcontact_calendar_is_primary (calendar) == TRUE);
+
+	/* Compare it against another identical calendar */
+	calendar2 = gdata_gcontact_calendar_new ("http://calendar.com/", GDATA_GCONTACT_CALENDAR_WORK, NULL, TRUE);
+	g_assert_cmpint (gdata_gcontact_calendar_compare (calendar, calendar2), ==, 0);
+
+	/* …and a different one */
+	gdata_gcontact_calendar_set_uri (calendar2, "http://calendar.somewhereelse.com/");
+	g_assert_cmpint (gdata_gcontact_calendar_compare (calendar, calendar2), !=, 0);
+	g_object_unref (calendar2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gcontact_calendar_compare (calendar, NULL), ==, 1);
+	g_assert_cmpint (gdata_gcontact_calendar_compare (NULL, calendar), ==, -1);
+	g_assert_cmpint (gdata_gcontact_calendar_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gcontact_calendar_compare (calendar, calendar), ==, 0);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (calendar));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:calendarLink xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"href='http://calendar.com/' rel='work' primary='true'/>");
+	g_free (xml);
+	g_object_unref (calendar);
+
+	/* Now parse a calendar with less information available */
+	calendar = GDATA_GCONTACT_CALENDAR (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_CALENDAR,
+		"<gContact:calendarLink xmlns:gContact='http://schemas.google.com/contact/2008' href='http://example.com/' label='&lt;a&gt;'/>",
+		-1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (calendar));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_calendar_get_uri (calendar), ==, "http://example.com/");
+	g_assert (gdata_gcontact_calendar_get_relation_type (calendar) == NULL);
+	g_assert_cmpstr (gdata_gcontact_calendar_get_label (calendar), ==, "<a>");
+	g_assert (gdata_gcontact_calendar_is_primary (calendar) == FALSE);
+
+	/* Check the outputted XML is still OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (calendar));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:calendarLink xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"href='http://example.com/' label='&lt;a&gt;' primary='false'/>");
+	g_free (xml);
+	g_object_unref (calendar);
+}
+
+static void
+test_gcontact_calendar_error_handling (void)
+{
+	GDataGContactCalendar *calendar;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) calendar = GDATA_GCONTACT_CALENDAR (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_CALENDAR,\
+		"<gContact:calendarLink xmlns:gContact='http://schemas.google.com/contact/2008' "\
+			x\
+		"/>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (calendar == NULL);\
+	g_clear_error (&error)
+
+	TEST_XML_ERROR_HANDLING ("rel='work'"); /* no href */
+	TEST_XML_ERROR_HANDLING ("rel='work' href=''"); /* empty href */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/'"); /* no rel or label */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' rel=''"); /* empty rel */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' label=''"); /* empty label */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' rel='other' label='Other'"); /* rel and label */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' rel='home' primary='not a boolean'"); /* invalid primary */
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
+static void
+test_gcontact_event (void)
+{
+	GDataGContactEvent *event, *event2;
+	GDate date;
+	gchar *xml;
+	GError *error = NULL;
+
+	event = GDATA_GCONTACT_EVENT (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_EVENT,
+		"<gContact:event xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005' rel='other'>"
+			"<gd:when startTime='2004-03-12'/>"
+		"</gContact:event>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_EVENT (event));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	gdata_gcontact_event_get_date (event, &date);
+	g_assert (g_date_valid (&date) == TRUE);
+	g_assert_cmpuint (g_date_get_year (&date), ==, 2004);
+	g_assert_cmpuint (g_date_get_month (&date), ==, 3);
+	g_assert_cmpuint (g_date_get_day (&date), ==, 12);
+	g_assert_cmpstr (gdata_gcontact_event_get_relation_type (event), ==, GDATA_GCONTACT_EVENT_OTHER);
+	g_assert (gdata_gcontact_event_get_label (event) == NULL);
+
+	/* Try creating another event from scratch */
+	event2 = gdata_gcontact_event_new (&date, GDATA_GCONTACT_EVENT_OTHER, NULL);
+	g_assert (GDATA_IS_GCONTACT_EVENT (event2));
+	g_object_unref (event2);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:event xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+			   "xmlns:gContact='http://schemas.google.com/contact/2008' rel='other'>"
+				"<gd:when startTime='2004-03-12'/>"
+			 "</gContact:event>");
+	g_free (xml);
+	g_object_unref (event);
+
+	/* Now parse an event with different information available */
+	event = GDATA_GCONTACT_EVENT (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_EVENT,
+		"<gContact:event xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005' "
+		  "label='&lt;a&gt;'>"
+			"<gd:when startTime='2000-01-01'/>"
+		"</gContact:event>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_EVENT (event));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	gdata_gcontact_event_get_date (event, &date);
+	g_assert (g_date_valid (&date) == TRUE);
+	g_assert_cmpuint (g_date_get_year (&date), ==, 2000);
+	g_assert_cmpuint (g_date_get_month (&date), ==, 1);
+	g_assert_cmpuint (g_date_get_day (&date), ==, 1);
+	g_assert (gdata_gcontact_event_get_relation_type (event) == NULL);
+	g_assert_cmpstr (gdata_gcontact_event_get_label (event), ==, "<a>");
+
+	/* Check the outputted XML is still OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:event xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+			   "xmlns:gContact='http://schemas.google.com/contact/2008' label='&lt;a&gt;'>"
+				"<gd:when startTime='2000-01-01'/>"
+			 "</gContact:event>");
+	g_free (xml);
+	g_object_unref (event);
+}
+
+static void
+test_gcontact_event_error_handling (void)
+{
+	GDataGContactEvent *event;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) event = GDATA_GCONTACT_EVENT (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_EVENT,\
+		"<gContact:event xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005' "\
+			x\
+		"</gContact:event>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (event == NULL);\
+	g_clear_error (&error)
+
+	TEST_XML_ERROR_HANDLING ("rel='anniversary'>"); /* no gd:when */
+	TEST_XML_ERROR_HANDLING ("rel='anniversary'><gd:when/>"); /* no startTime */
+	TEST_XML_ERROR_HANDLING ("rel='anniversary'><gd:when startTime='foobar'/>"); /* invalid startTime */
+	TEST_XML_ERROR_HANDLING ("rel='anniversary'><gd:when startTime='2001-12-41'/>");
+	TEST_XML_ERROR_HANDLING ("rel='anniversary'><gd:when startTime='2010-03-25T22:01Z'/>");
+	TEST_XML_ERROR_HANDLING ("><gd:when startTime='2000-01-01'/>"); /* no rel or label */
+	TEST_XML_ERROR_HANDLING ("rel=''><gd:when startTime='2000-01-01'/>"); /* empty rel */
+	TEST_XML_ERROR_HANDLING ("label=''><gd:when startTime='2000-01-01'/>"); /* empty label */
+	TEST_XML_ERROR_HANDLING ("rel='other' label='Other'><gd:when startTime='2000-01-01'/>"); /* rel and label */
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
+static void
+test_gcontact_jot (void)
+{
+	GDataGContactJot *jot, *jot2;
+	gchar *xml;
+	GError *error = NULL;
+
+	jot = GDATA_GCONTACT_JOT (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_JOT,
+		"<gContact:jot xmlns:gContact='http://schemas.google.com/contact/2008' rel='user'>They like &lt;angles&gt;.</gContact:jot>",
+		-1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_JOT (jot));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_jot_get_relation_type (jot), ==, GDATA_GCONTACT_JOT_USER);
+	g_assert_cmpstr (gdata_gcontact_jot_get_content (jot), ==, "They like <angles>.");
+
+	/* Try creating another jot from scratch */
+	jot2 = gdata_gcontact_jot_new ("friend,local,oss", GDATA_GCONTACT_JOT_KEYWORDS);
+	g_assert (GDATA_IS_GCONTACT_JOT (jot2));
+	g_object_unref (jot2);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (jot));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:jot xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' rel='user'>"
+				"They like &lt;angles&gt;.</gContact:jot>");
+	g_free (xml);
+	g_object_unref (jot);
+
+	/* Now parse a jot with different information available */
+	jot = GDATA_GCONTACT_JOT (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_JOT,
+		"<gContact:jot xmlns:gContact='http://schemas.google.com/contact/2008' rel='other'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_JOT (jot));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_jot_get_relation_type (jot), ==, GDATA_GCONTACT_JOT_OTHER);
+	g_assert (gdata_gcontact_jot_get_content (jot) == NULL);
+
+	/* Check the outputted XML is still OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (jot));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:jot xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' rel='other'/>");
+	g_free (xml);
+	g_object_unref (jot);
+}
+
+static void
+test_gcontact_jot_error_handling (void)
+{
+	GDataGContactJot *jot;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) jot = GDATA_GCONTACT_JOT (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_JOT,\
+		"<gContact:jot xmlns:gContact='http://schemas.google.com/contact/2008' "\
+			x\
+		"</gContact:jot>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (jot == NULL);\
+	g_clear_error (&error)
+
+	TEST_XML_ERROR_HANDLING (">Content"); /* no rel */
+	TEST_XML_ERROR_HANDLING ("rel=''>Content"); /* empty rel */
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
+static void
+test_gcontact_relation (void)
+{
+	GDataGContactRelation *relation, *relation2;
+	gchar *xml;
+	GError *error = NULL;
+
+	relation = GDATA_GCONTACT_RELATION (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_RELATION,
+		"<gContact:relation xmlns:gContact='http://schemas.google.com/contact/2008' rel='child'>Fred</gContact:relation>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_RELATION (relation));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_relation_get_name (relation), ==, "Fred");
+	g_assert_cmpstr (gdata_gcontact_relation_get_relation_type (relation), ==, GDATA_GCONTACT_RELATION_CHILD);
+	g_assert (gdata_gcontact_relation_get_label (relation) == NULL);
+
+	/* Try creating another relation from scratch */
+	relation2 = gdata_gcontact_relation_new ("Brian", GDATA_GCONTACT_RELATION_RELATIVE, NULL);
+	g_assert (GDATA_IS_GCONTACT_RELATION (relation2));
+	g_object_unref (relation2);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (relation));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:relation xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' rel='child'>"
+				"Fred</gContact:relation>");
+	g_free (xml);
+	g_object_unref (relation);
+
+	/* Now parse a relation with different information available */
+	relation = GDATA_GCONTACT_RELATION (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_RELATION,
+		"<gContact:relation xmlns:gContact='http://schemas.google.com/contact/2008' label='&lt;a&gt;'>Sid</gContact:relation>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_RELATION (relation));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_relation_get_name (relation), ==, "Sid");
+	g_assert (gdata_gcontact_relation_get_relation_type (relation) == NULL);
+	g_assert_cmpstr (gdata_gcontact_relation_get_label (relation), ==, "<a>");
+
+	/* Check the outputted XML is still OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (relation));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:relation xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+			   "label='&lt;a&gt;'>Sid</gContact:relation>");
+	g_free (xml);
+	g_object_unref (relation);
+}
+
+static void
+test_gcontact_relation_error_handling (void)
+{
+	GDataGContactRelation *relation;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) relation = GDATA_GCONTACT_RELATION (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_RELATION,\
+		"<gContact:relation xmlns:gContact='http://schemas.google.com/contact/2008' "\
+			x\
+		"</gContact:relation>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (relation == NULL);\
+	g_clear_error (&error)
+
+	TEST_XML_ERROR_HANDLING ("rel='spouse'>"); /* no name */
+	TEST_XML_ERROR_HANDLING (">Brian"); /* no rel or label */
+	TEST_XML_ERROR_HANDLING ("rel=''>Brian"); /* empty rel */
+	TEST_XML_ERROR_HANDLING ("label=''>Brian"); /* empty label */
+	TEST_XML_ERROR_HANDLING ("rel='sister' label='Older sister'>Brian"); /* rel and label */
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
+static void
+test_gcontact_website (void)
+{
+	GDataGContactWebsite *website, *website2;
+	gchar *xml;
+	GError *error = NULL;
+
+	website = GDATA_GCONTACT_WEBSITE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_WEBSITE,
+		"<gContact:website xmlns:gContact='http://schemas.google.com/contact/2008' href='http://example.com/' rel='work' primary='true' "
+			"label='&lt;Markup&gt; blog'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (website));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_website_get_uri (website), ==, "http://example.com/");
+	g_assert_cmpstr (gdata_gcontact_website_get_relation_type (website), ==, GDATA_GCONTACT_WEBSITE_WORK);
+	g_assert_cmpstr (gdata_gcontact_website_get_label (website), ==, "<Markup> blog");
+	g_assert (gdata_gcontact_website_is_primary (website) == TRUE);
+
+	/* Compare it against another identical website */
+	website2 = gdata_gcontact_website_new ("http://example.com/", GDATA_GCONTACT_WEBSITE_WORK, "<Markup> blog", TRUE);
+	g_assert_cmpint (gdata_gcontact_website_compare (website, website2), ==, 0);
+
+	/* …and a different one */
+	gdata_gcontact_website_set_uri (website2, "http://somewhereelse.com/");
+	g_assert_cmpint (gdata_gcontact_website_compare (website, website2), !=, 0);
+	g_object_unref (website2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gcontact_website_compare (website, NULL), ==, 1);
+	g_assert_cmpint (gdata_gcontact_website_compare (NULL, website), ==, -1);
+	g_assert_cmpint (gdata_gcontact_website_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gcontact_website_compare (website, website), ==, 0);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (website));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:website xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"href='http://example.com/' rel='work' label='&lt;Markup&gt; blog' primary='true'/>");
+	g_free (xml);
+	g_object_unref (website);
+
+	/* Now parse a website with less information available */
+	website = GDATA_GCONTACT_WEBSITE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_WEBSITE,
+		"<gContact:website xmlns:gContact='http://schemas.google.com/contact/2008' href='http://test.com/' rel='ftp'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (website));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_website_get_uri (website), ==, "http://test.com/");
+	g_assert_cmpstr (gdata_gcontact_website_get_relation_type (website), ==, GDATA_GCONTACT_WEBSITE_FTP);
+	g_assert (gdata_gcontact_website_get_label (website) == NULL);
+	g_assert (gdata_gcontact_website_is_primary (website) == FALSE);
+
+	/* Check the outputted XML is still OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (website));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:website xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"href='http://test.com/' rel='ftp' primary='false'/>");
+	g_free (xml);
+	g_object_unref (website);
+}
+
+static void
+test_gcontact_website_error_handling (void)
+{
+	GDataGContactWebsite *website;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) website = GDATA_GCONTACT_WEBSITE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_WEBSITE,\
+		"<gContact:website xmlns:gContact='http://schemas.google.com/contact/2008' "\
+			x\
+		"/>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (website == NULL);\
+	g_clear_error (&error)
+
+	TEST_XML_ERROR_HANDLING ("rel='work'"); /* no href */
+	TEST_XML_ERROR_HANDLING ("rel='work' href=''"); /* empty href */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/'"); /* no rel */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' rel=''"); /* empty rel */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/' rel='profile' primary='not a boolean'"); /* invalid primary */
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -2379,6 +2800,17 @@ main (int argc, char *argv[])
 	g_test_add_func ("/media/thumbnail", test_media_thumbnail);
 	/*g_test_add_data_func ("/media/thumbnail/parse_time", "", test_media_thumbnail_parse_time);
 	g_test_add_data_func ("/media/thumbnail/parse_time", "de_DE", test_media_thumbnail_parse_time);*/
+
+	g_test_add_func ("/gcontact/calendar", test_gcontact_calendar);
+	g_test_add_func ("/gcontact/calendar/error_handling", test_gcontact_calendar_error_handling);
+	g_test_add_func ("/gcontact/event", test_gcontact_event);
+	g_test_add_func ("/gcontact/event/error_handling", test_gcontact_event_error_handling);
+	g_test_add_func ("/gcontact/jot", test_gcontact_jot);
+	g_test_add_func ("/gcontact/jot/error_handling", test_gcontact_jot_error_handling);
+	g_test_add_func ("/gcontact/relation", test_gcontact_relation);
+	g_test_add_func ("/gcontact/relation/error_handling", test_gcontact_relation_error_handling);
+	g_test_add_func ("/gcontact/website", test_gcontact_website);
+	g_test_add_func ("/gcontact/website/error_handling", test_gcontact_website_error_handling);
 
 	return g_test_run ();
 }

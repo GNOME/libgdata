@@ -30,6 +30,11 @@
 #include <gdata/gd/gdata-gd-organization.h>
 #include <gdata/gd/gdata-gd-phone-number.h>
 #include <gdata/gd/gdata-gd-postal-address.h>
+#include <gdata/gcontact/gdata-gcontact-calendar.h>
+#include <gdata/gcontact/gdata-gcontact-event.h>
+#include <gdata/gcontact/gdata-gcontact-jot.h>
+#include <gdata/gcontact/gdata-gcontact-relation.h>
+#include <gdata/gcontact/gdata-gcontact-website.h>
 
 G_BEGIN_DECLS
 
@@ -76,6 +81,12 @@ gboolean gdata_contacts_contact_is_deleted (GDataContactsContact *self);
 GDataGDName *gdata_contacts_contact_get_name (GDataContactsContact *self);
 void gdata_contacts_contact_set_name (GDataContactsContact *self, GDataGDName *name);
 
+const gchar *gdata_contacts_contact_get_nickname (GDataContactsContact *self);
+void gdata_contacts_contact_set_nickname (GDataContactsContact *self, const gchar *nickname);
+
+gboolean gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday);
+void gdata_contacts_contact_set_birthday (GDataContactsContact *self, GDate *birthday, gboolean birthday_has_year);
+
 void gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEmailAddress *email_address);
 GList *gdata_contacts_contact_get_email_addresses (GDataContactsContact *self);
 GDataGDEmailAddress *gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self);
@@ -101,6 +112,28 @@ GList *gdata_contacts_contact_get_organizations (GDataContactsContact *self);
 GDataGDOrganization *gdata_contacts_contact_get_primary_organization (GDataContactsContact *self);
 void gdata_contacts_contact_remove_all_organizations (GDataContactsContact *self);
 
+void gdata_contacts_contact_add_jot (GDataContactsContact *self, GDataGContactJot *jot);
+GList *gdata_contacts_contact_get_jots (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_jots (GDataContactsContact *self);
+
+void gdata_contacts_contact_add_relation (GDataContactsContact *self, GDataGContactRelation *relation);
+GList *gdata_contacts_contact_get_relations (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_relations (GDataContactsContact *self);
+
+void gdata_contacts_contact_add_website (GDataContactsContact *self, GDataGContactWebsite *website);
+GList *gdata_contacts_contact_get_websites (GDataContactsContact *self);
+GDataGContactWebsite *gdata_contacts_contact_get_primary_website (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_websites (GDataContactsContact *self);
+
+void gdata_contacts_contact_add_event (GDataContactsContact *self, GDataGContactEvent *event);
+GList *gdata_contacts_contact_get_events (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_events (GDataContactsContact *self);
+
+void gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGContactCalendar *calendar);
+GList *gdata_contacts_contact_get_calendars (GDataContactsContact *self);
+GDataGContactCalendar *gdata_contacts_contact_get_primary_calendar (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self);
+
 const gchar *gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const gchar *name);
 GHashTable *gdata_contacts_contact_get_extended_properties (GDataContactsContact *self);
 gboolean gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const gchar *name, const gchar *value);
@@ -114,9 +147,9 @@ GList *gdata_contacts_contact_get_groups (GDataContactsContact *self) G_GNUC_WAR
 
 gboolean gdata_contacts_contact_has_photo (GDataContactsContact *self);
 gchar *gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
-					  GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 gboolean gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const gchar *data, gsize length,
-					   GCancellable *cancellable, GError **error);
+                                           GCancellable *cancellable, GError **error);
 
 G_END_DECLS
 
