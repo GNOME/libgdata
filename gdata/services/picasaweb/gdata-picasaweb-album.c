@@ -59,6 +59,7 @@ static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, 
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataPicasaWebAlbumPrivate {
+	gchar *album_id;
 	gchar *user;
 	gchar *nickname;
 	GTimeVal edited;
@@ -91,7 +92,8 @@ enum {
 	PROP_COMMENT_COUNT,
 	PROP_TAGS,
 	PROP_LATITUDE,
-	PROP_LONGITUDE
+	PROP_LONGITUDE,
+	PROP_ALBUM_ID
 };
 
 G_DEFINE_TYPE (GDataPicasaWebAlbum, gdata_picasaweb_album, GDATA_TYPE_ENTRY)
@@ -115,7 +117,25 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	parsable_class->get_namespaces = get_namespaces;
 
 	/**
-	 * GDataPicasaWeb:user
+	 * GDataPicasaWebAlbum:album-id
+	 *
+	 * The ID of the album. This is a substring of the ID returned by gdata_entry_get_id() for #GDataPicasaWebAlbum<!-- -->s; for example,
+	 * if gdata_entry_get_id() returned "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249" for a
+	 * particular #GDataPicasaWebAlbum, the #GDataPicasaWebAlbum:album-id property would be "5328889949261497249".
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_id">
+	 * gphoto specification</ulink>.
+	 *
+	 * Since: 0.6.4
+	 **/
+	g_object_class_install_property (gobject_class, PROP_ALBUM_ID,
+					 g_param_spec_string ("album-id",
+							      "Album ID", "The ID of the album.",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataPicasaWebAlbum:user
 	 *
 	 * The username of the album owner.
 	 *
@@ -131,7 +151,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWeb:nickname
+	 * GDataPicasaWebAlbum:nickname
 	 *
 	 * The user's nickname. This is a user-specified value that should be used when referring to the user by name.
 	 *
@@ -147,7 +167,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWeb:edited
+	 * GDataPicasaWebAlbum:edited
 	 *
 	 * The time this album was last edited. If the album has not been edited yet, the content indicates the time it was created.
 	 *
@@ -163,7 +183,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWeb:location
+	 * GDataPicasaWebAlbum:location
 	 *
 	 * The user-specified location associated with the album. A place name.
 	 *
@@ -179,7 +199,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWeb:visibility
+	 * GDataPicasaWebAlbum:visibility
 	 *
 	 * The visibility (or access rights) of the album.
 	 *
@@ -195,7 +215,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 							    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWeb:timestamp
+	 * GDataPicasaWebAlbum:timestamp
 	 *
 	 * The timestamp of when the album occurred, settable by the user.
 	 *
@@ -445,6 +465,7 @@ gdata_picasaweb_album_finalize (GObject *object)
 {
 	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM_GET_PRIVATE (object);
 
+	g_free (priv->album_id);
 	g_free (priv->user);
 	g_free (priv->nickname);
 	g_free (priv->location);
@@ -459,6 +480,9 @@ gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *
 	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM_GET_PRIVATE (object);
 
 	switch (property_id) {
+		case PROP_ALBUM_ID:
+			g_value_set_string (value, priv->album_id);
+			break;
 		case PROP_USER:
 			g_value_set_string (value, priv->user);
 			break;
@@ -514,6 +538,11 @@ gdata_picasaweb_album_set_property (GObject *object, guint property_id, const GV
 	GDataPicasaWebAlbum *self = GDATA_PICASAWEB_ALBUM (object);
 
 	switch (property_id) {
+		case PROP_ALBUM_ID:
+			/* Construct only */
+			g_free (self->priv->album_id);
+			self->priv->album_id = g_value_dup_string (value);
+			break;
 		case PROP_LOCATION:
 			gdata_picasaweb_album_set_location (self, g_value_get_string (value));
 			break;
@@ -603,6 +632,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			/* gphoto:location */
 			g_free (self->priv->location);
 			self->priv->location = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
+			/* gphoto:id */
+			xmlChar *id = xmlNodeListGetString (doc, node->children, TRUE);
+			if (id == NULL || *id == '\0')
+				return gdata_parser_error_required_content_missing (node, error);
+			g_free (self->priv->album_id);
+			self->priv->album_id = (gchar*) id;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
 			/* gphoto:access */
 			xmlChar *access = xmlNodeListGetString (doc, node->children, TRUE);
@@ -697,7 +733,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GDATA_PARSABLE_CLASS (gdata_picasaweb_album_parent_class)->get_xml (parsable, xml_string);
 
 	/* Add all the album-specific XML */
-	/* TODO: gphoto:id */
+	if (priv->album_id != NULL)
+		g_string_append_printf (xml_string, "<gphoto:id>%s</gphoto:id>", priv->album_id);
+
 	if (priv->location != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:location>", priv->location, "</gphoto:location>");
 
@@ -759,18 +797,53 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_picasaweb_album_new:
- * @id: the album's ID, or %NULL
+ * @id: the album's entry ID, or %NULL
  *
- * Creates a new #GDataPicasaWebAlbum with the given ID and default properties.
+ * Creates a new #GDataPicasaWebAlbum with the given ID and default properties. @id is the ID which would be returned by gdata_entry_get_id(),
+ * not gdata_picasaweb_album_get_id().
  *
- * Return value: a new #GDataPicasaWebAlbum; unref with g_object_unref()
+ * If @id is not %NULL and can't be parsed to extract an album ID, %NULL will be returned.
+ *
+ * Return value: a new #GDataPicasaWebAlbum, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
 GDataPicasaWebAlbum *
 gdata_picasaweb_album_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_PICASAWEB_ALBUM, "id", id, NULL);
+	const gchar *album_id = NULL, *i;
+
+	if (id != NULL) {
+		album_id = g_strrstr (id, "/");
+		if (album_id == NULL)
+			return NULL;
+		album_id++; /* skip the slash */
+
+		/* Ensure the @album_id is entirely numeric */
+		for (i = album_id; *i != '\0'; i = g_utf8_next_char (i)) {
+			if (g_unichar_isdigit (g_utf8_get_char (i)) == FALSE)
+				return NULL;
+		}
+	}
+
+	return GDATA_PICASAWEB_ALBUM (g_object_new (GDATA_TYPE_PICASAWEB_ALBUM, "id", id, "album-id", album_id, NULL));
+}
+
+/**
+ * gdata_picasaweb_album_get_id:
+ * @self: a #GDataPicasaWebAlbum
+ *
+ * Gets the #GDataPicasaWebAlbum:album-id property.
+ *
+ * Return value: the album's ID
+ *
+ * Since: 0.6.4
+ **/
+const gchar *
+gdata_picasaweb_album_get_id (GDataPicasaWebAlbum *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (self), NULL);
+	return self->priv->album_id;
 }
 
 /**

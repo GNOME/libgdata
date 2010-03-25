@@ -56,6 +56,7 @@ static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, 
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataPicasaWebFilePrivate {
+	gchar *file_id;
 	GTimeVal edited;
 	gchar *version;
 	gdouble position;
@@ -107,7 +108,8 @@ enum {
 	PROP_MAKE,
 	PROP_MODEL,
 	PROP_LATITUDE,
-	PROP_LONGITUDE
+	PROP_LONGITUDE,
+	PROP_FILE_ID
 };
 
 G_DEFINE_TYPE (GDataPicasaWebFile, gdata_picasaweb_file, GDATA_TYPE_ENTRY)
@@ -131,6 +133,25 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	parsable_class->get_namespaces = get_namespaces;
 
 	/**
+	 * GDataPicasaWebFile:file-id:
+	 *
+	 * The ID of the file. This is a substring of the ID returned by gdata_entry_get_id() for #GDataPicasaWebFile<!-- -->s; for example,
+	 * if gdata_entry_get_id() returned
+	 * "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386" for a
+	 * particular #GDataPicasaWebFile, the #GDataPicasaWebFile:file-id property would be "5328890138794566386".
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_id">
+	 * gphoto specification</ulink>.
+	 *
+	 * Since: 0.6.4
+	 **/
+	g_object_class_install_property (gobject_class, PROP_FILE_ID,
+					 g_param_spec_string ("file-id",
+							      "File ID", "The ID of the file.",
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * GDataPicasaWebFile:version:
 	 *
 	 * The version number of the file. Version numbers are based on modification time, so they don't increment linearly.
@@ -149,7 +170,7 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	/**
 	 * GDataPicasaWebFile:album-id:
 	 *
-	 * The ID for the file's album.
+	 * The ID for the file's album. This is in the same form as returned by gdata_picasaweb_album_get_id().
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_albumid">
 	 * gphoto specification</ulink>.
@@ -628,6 +649,7 @@ gdata_picasaweb_file_finalize (GObject *object)
 {
 	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE_GET_PRIVATE (object);
 
+	g_free (priv->file_id);
 	g_free (priv->version);
 	g_free (priv->album_id);
 	g_free (priv->client);
@@ -644,6 +666,9 @@ gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *v
 	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE_GET_PRIVATE (object);
 
 	switch (property_id) {
+		case PROP_FILE_ID:
+			g_value_set_string (value, priv->file_id);
+			break;
 		case PROP_EDITED:
 			g_value_set_boxed (value, &(priv->edited));
 			break;
@@ -742,6 +767,11 @@ gdata_picasaweb_file_set_property (GObject *object, guint property_id, const GVa
 	GDataPicasaWebFile *self = GDATA_PICASAWEB_FILE (object);
 
 	switch (property_id) {
+		case PROP_FILE_ID:
+			/* Construct only */
+			g_free (self->priv->file_id);
+			self->priv->file_id = g_value_dup_string (value);
+			break;
 		case PROP_VERSION:
 			/* Construct only */
 			g_free (self->priv->version);
@@ -846,13 +876,20 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			/* gphoto:imageVersion */
 			g_free (self->priv->version);
 			self->priv->version = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		} else if (xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
+			/* gphoto:id */
+			xmlChar *id = xmlNodeListGetString (doc, node->children, TRUE);
+			if (id == NULL || *id == '\0')
+				return gdata_parser_error_required_content_missing (node, error);
+			g_free (self->priv->file_id);
+			self->priv->file_id = (gchar*) id;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "position") == 0) {
 			/* gphoto:position */
 			xmlChar *position_str = xmlNodeListGetString (doc, node->children, TRUE);
 			gdata_picasaweb_file_set_position (self, g_ascii_strtod ((gchar*) position_str, NULL));
 			xmlFree (position_str);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "albumid") == 0) {
-			/* gphoto:album_id */
+			/* gphoto:albumid */
 			self->priv->album_id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "width") == 0) {
 			/* gphoto:width */
@@ -939,6 +976,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	GDATA_PARSABLE_CLASS (gdata_picasaweb_file_parent_class)->get_xml (parsable, xml_string);
 
 	/* Add all the PicasaWeb-specific XML */
+	if (priv->file_id != NULL)
+		g_string_append_printf (xml_string, "<gphoto:id>%s</gphoto:id>", priv->file_id);
+
 	if (priv->version != NULL)
 		g_string_append_printf (xml_string, "<gphoto:version>%s</gphoto:version>", priv->version);
 
@@ -1016,7 +1056,39 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 GDataPicasaWebFile *
 gdata_picasaweb_file_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_PICASAWEB_FILE, "id", id, NULL);
+	const gchar *file_id = NULL, *i;
+
+	if (id != NULL) {
+		file_id = g_strrstr (id, "/");
+		if (file_id == NULL)
+			return NULL;
+		file_id++; /* skip the slash */
+
+		/* Ensure the @file_id is entirely numeric */
+		for (i = file_id; *i != '\0'; i = g_utf8_next_char (i)) {
+			if (g_unichar_isdigit (g_utf8_get_char (i)) == FALSE)
+				return NULL;
+		}
+	}
+
+	return GDATA_PICASAWEB_FILE (g_object_new (GDATA_TYPE_PICASAWEB_FILE, "id", id, "file-id", file_id, NULL));
+}
+
+/**
+ * gdata_picasaweb_file_get_id:
+ * @self: a #GDataPicasaWebFile
+ *
+ * Gets the #GDataPicasaWebFile:file-id property.
+ *
+ * Return value: the file's ID
+ *
+ * Since: 0.6.4
+ **/
+const gchar *
+gdata_picasaweb_file_get_id (GDataPicasaWebFile *self)
+{
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
+	return self->priv->file_id;
 }
 
 /**
@@ -1092,7 +1164,7 @@ gdata_picasaweb_file_set_position (GDataPicasaWebFile *self, gdouble position)
  * gdata_picasaweb_file_get_album_id:
  * @self: a #GDataPicasaWebFile
  *
- * Gets the #GDataPicasaWebFile:album-id property.
+ * Gets the #GDataPicasaWebFile:album-id property. This is in the same form as returned by gdata_picasaweb_album_get_id().
  *
  * Return value: the ID of the album containing the #GDataPicasaWebFile
  *

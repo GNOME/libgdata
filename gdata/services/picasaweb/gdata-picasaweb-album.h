@@ -80,6 +80,7 @@ GType gdata_picasaweb_album_get_type (void) G_GNUC_CONST;
 
 GDataPicasaWebAlbum *gdata_picasaweb_album_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
+const gchar *gdata_picasaweb_album_get_id (GDataPicasaWebAlbum *self);
 const gchar *gdata_picasaweb_album_get_user (GDataPicasaWebAlbum *self);
 const gchar *gdata_picasaweb_album_get_nickname (GDataPicasaWebAlbum *self);
 void gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self, GTimeVal *edited);
