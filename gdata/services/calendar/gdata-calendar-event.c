@@ -86,7 +86,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataCalendarEvent, gdata_calendar_event, GDATA_TYPE_ENTRY)
-#define GDATA_CALENDAR_EVENT_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CALENDAR_EVENT, GDataCalendarEventPrivate))
 
 static void
 gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
@@ -338,7 +337,7 @@ gdata_calendar_event_finalize (GObject *object)
 static void
 gdata_calendar_event_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataCalendarEventPrivate *priv = GDATA_CALENDAR_EVENT_GET_PRIVATE (object);
+	GDataCalendarEventPrivate *priv = GDATA_CALENDAR_EVENT (object)->priv;
 
 	switch (property_id) {
 		case PROP_EDITED:

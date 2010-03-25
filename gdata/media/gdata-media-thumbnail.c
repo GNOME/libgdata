@@ -59,7 +59,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataMediaThumbnail, gdata_media_thumbnail, GDATA_TYPE_PARSABLE)
-#define GDATA_MEDIA_THUMBNAIL_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_MEDIA_THUMBNAIL, GDataMediaThumbnailPrivate))
 
 static void
 gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)

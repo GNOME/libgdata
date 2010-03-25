@@ -71,7 +71,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataPicasaWebQuery, gdata_picasaweb_query, GDATA_TYPE_QUERY)
-#define GDATA_PICASAWEB_QUERY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_PICASAWEB_QUERY, GDataPicasaWebQueryPrivate))
 
 static void
 gdata_picasaweb_query_class_init (GDataPicasaWebQueryClass *klass)
@@ -171,7 +170,7 @@ gdata_picasaweb_query_init (GDataPicasaWebQuery *self)
 static void
 gdata_picasaweb_query_finalize (GObject *object)
 {
-	GDataPicasaWebQueryPrivate *priv = GDATA_PICASAWEB_QUERY_GET_PRIVATE (object);
+	GDataPicasaWebQueryPrivate *priv = GDATA_PICASAWEB_QUERY (object)->priv;
 
 	g_free (priv->thumbnail_size);
 	g_free (priv->image_size);
@@ -185,7 +184,7 @@ gdata_picasaweb_query_finalize (GObject *object)
 static void
 gdata_picasaweb_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataPicasaWebQueryPrivate *priv = GDATA_PICASAWEB_QUERY_GET_PRIVATE (object);
+	GDataPicasaWebQueryPrivate *priv = GDATA_PICASAWEB_QUERY (object)->priv;
 
 	switch (property_id) {
 		case PROP_VISIBILITY:

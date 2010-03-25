@@ -44,7 +44,6 @@
 #include "gdata-query.h"
 
 G_DEFINE_TYPE (GDataContactsService, gdata_contacts_service, GDATA_TYPE_SERVICE)
-#define GDATA_CONTACTS_SERVICE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CONTACTS_SERVICE, GDataContactsServicePrivate))
 
 static void
 gdata_contacts_service_class_init (GDataContactsServiceClass *klass)

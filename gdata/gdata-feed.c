@@ -88,7 +88,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataFeed, gdata_feed, GDATA_TYPE_PARSABLE)
-#define GDATA_FEED_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_FEED, GDataFeedPrivate))
 
 static void
 gdata_feed_class_init (GDataFeedClass *klass)

@@ -70,7 +70,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE)
-#define GDATA_YOUTUBE_SERVICE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_YOUTUBE_SERVICE, GDataYouTubeServicePrivate))
 
 static void
 gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
@@ -126,7 +125,7 @@ gdata_youtube_service_init (GDataYouTubeService *self)
 static void
 gdata_youtube_service_finalize (GObject *object)
 {
-	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE_GET_PRIVATE (object);
+	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE (object)->priv;
 
 	g_free (priv->youtube_user);
 	g_free (priv->developer_key);
@@ -138,7 +137,7 @@ gdata_youtube_service_finalize (GObject *object)
 static void
 gdata_youtube_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE_GET_PRIVATE (object);
+	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE (object)->priv;
 
 	switch (property_id) {
 		case PROP_DEVELOPER_KEY:
@@ -157,7 +156,7 @@ gdata_youtube_service_get_property (GObject *object, guint property_id, GValue *
 static void
 gdata_youtube_service_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE_GET_PRIVATE (object);
+	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE (object)->priv;
 
 	switch (property_id) {
 		case PROP_DEVELOPER_KEY:

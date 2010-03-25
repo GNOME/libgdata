@@ -58,7 +58,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataMediaCredit, gdata_media_credit, GDATA_TYPE_PARSABLE)
-#define GDATA_MEDIA_CREDIT_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_MEDIA_CREDIT, GDataMediaCreditPrivate))
 
 static void
 gdata_media_credit_class_init (GDataMediaCreditClass *klass)

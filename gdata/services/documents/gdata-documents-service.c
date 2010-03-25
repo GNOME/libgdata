@@ -73,7 +73,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataDocumentsService, gdata_documents_service, GDATA_TYPE_SERVICE)
-#define GDATA_DOCUMENTS_SERVICE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_SERVICE, GDataDocumentsServicePrivate))
 
 static void
 gdata_documents_service_class_init (GDataDocumentsServiceClass *klass)
@@ -138,7 +137,7 @@ gdata_documents_service_new (const gchar *client_id)
 static void
 gdata_documents_service_dispose (GObject *object)
 {
-	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE_GET_PRIVATE (object);
+	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE (object)->priv;
 
 	if (priv->spreadsheet_service != NULL)
 		g_object_unref (priv->spreadsheet_service);
@@ -150,7 +149,7 @@ gdata_documents_service_dispose (GObject *object)
 static void
 gdata_documents_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE_GET_PRIVATE (object);
+	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE (object)->priv;
 
 	switch (property_id) {
 		case PROP_SPREADSHEET_SERVICE:
@@ -321,7 +320,7 @@ static void
 notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self)
 {
 	GDataService *spreadsheet_service;
-	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE_GET_PRIVATE (GDATA_DOCUMENTS_SERVICE (service));
+	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE (service)->priv;
 
 	if (priv->spreadsheet_service != NULL)
 		g_object_unref (priv->spreadsheet_service);

@@ -58,7 +58,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDWhere, gdata_gd_where, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_WHERE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_WHERE, GDataGDWherePrivate))
 
 static void
 gdata_gd_where_class_init (GDataGDWhereClass *klass)

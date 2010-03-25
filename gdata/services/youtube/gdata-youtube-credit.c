@@ -52,7 +52,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataYouTubeCredit, gdata_youtube_credit, GDATA_TYPE_MEDIA_CREDIT)
-#define GDATA_YOUTUBE_CREDIT_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_YOUTUBE_CREDIT, GDataYouTubeCreditPrivate))
 
 static void
 gdata_youtube_credit_class_init (GDataYouTubeCreditClass *klass)

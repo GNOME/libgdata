@@ -56,7 +56,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataAuthor, gdata_author, GDATA_TYPE_PARSABLE)
-#define GDATA_AUTHOR_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_AUTHOR, GDataAuthorPrivate))
 
 static void
 gdata_author_class_init (GDataAuthorClass *klass)

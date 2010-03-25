@@ -113,7 +113,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataPicasaWebFile, gdata_picasaweb_file, GDATA_TYPE_ENTRY)
-#define GDATA_PICASAWEB_FILE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_PICASAWEB_FILE, GDataPicasaWebFilePrivate))
 
 static void
 gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
@@ -622,7 +621,7 @@ gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 static void
 gdata_picasaweb_file_dispose (GObject *object)
 {
-	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE_GET_PRIVATE (object);
+	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (object)->priv;
 
 	if (priv->media_group != NULL)
 		g_object_unref (priv->media_group);
@@ -643,7 +642,7 @@ gdata_picasaweb_file_dispose (GObject *object)
 static void
 gdata_picasaweb_file_finalize (GObject *object)
 {
-	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE_GET_PRIVATE (object);
+	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (object)->priv;
 
 	g_free (priv->file_id);
 	g_free (priv->version);
@@ -659,7 +658,7 @@ gdata_picasaweb_file_finalize (GObject *object)
 static void
 gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE_GET_PRIVATE (object);
+	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (object)->priv;
 
 	switch (property_id) {
 		case PROP_FILE_ID:

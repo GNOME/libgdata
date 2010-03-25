@@ -64,7 +64,6 @@ struct _GDataMediaGroupPrivate {
 };
 
 G_DEFINE_TYPE (GDataMediaGroup, gdata_media_group, GDATA_TYPE_PARSABLE)
-#define GDATA_MEDIA_GROUP_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_MEDIA_GROUP, GDataMediaGroupPrivate))
 
 static void
 gdata_media_group_class_init (GDataMediaGroupClass *klass)

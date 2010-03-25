@@ -55,7 +55,6 @@ struct _GDataGeoRSSWherePrivate {
 };
 
 G_DEFINE_TYPE (GDataGeoRSSWhere, gdata_georss_where, GDATA_TYPE_PARSABLE)
-#define GDATA_GEORSS_WHERE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GEORSS_WHERE, GDataGeoRSSWherePrivate))
 
 static void
 gdata_georss_where_class_init (GDataGeoRSSWhereClass *klass)

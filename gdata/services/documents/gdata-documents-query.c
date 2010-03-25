@@ -71,7 +71,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataDocumentsQuery, gdata_documents_query, GDATA_TYPE_QUERY)
-#define GDATA_DOCUMENTS_QUERY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_QUERY, GDataDocumentsQueryPrivate))
 
 static void
 gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
@@ -163,7 +162,7 @@ gdata_documents_query_init (GDataDocumentsQuery *self)
 static void
 gdata_documents_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY_GET_PRIVATE (object);
+	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY (object)->priv;
 
 	switch (property_id) {
 		case PROP_SHOW_DELETED:
@@ -219,7 +218,7 @@ gdata_documents_query_set_property (GObject *object, guint property_id, const GV
 static void
 gdata_documents_query_finalize (GObject *object)
 {
-	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY_GET_PRIVATE (object);
+	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY (object)->priv;
 
 	g_free (priv->folder_id);
 	g_free (priv->title);

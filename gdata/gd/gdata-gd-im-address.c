@@ -60,7 +60,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDIMAddress, gdata_gd_im_address, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_IM_ADDRESS_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_IM_ADDRESS, GDataGDIMAddressPrivate))
 
 static void
 gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)

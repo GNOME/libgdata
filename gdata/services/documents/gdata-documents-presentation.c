@@ -55,7 +55,6 @@ static const gchar *export_formats[] = {
 };
 
 G_DEFINE_TYPE (GDataDocumentsPresentation, gdata_documents_presentation, GDATA_TYPE_DOCUMENTS_ENTRY)
-#define GDATA_DOCUMENTS_PRESENTATION_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_PRESENTATION, GDataDocumentsPresentationPrivate))
 
 static void
 gdata_documents_presentation_class_init (GDataDocumentsPresentationClass *klass)

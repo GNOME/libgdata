@@ -58,7 +58,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDReminder, gdata_gd_reminder, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_REMINDER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_REMINDER, GDataGDReminderPrivate))
 
 static void
 gdata_gd_reminder_class_init (GDataGDReminderClass *klass)

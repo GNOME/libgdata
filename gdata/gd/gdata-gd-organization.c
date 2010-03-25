@@ -73,7 +73,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDOrganization, gdata_gd_organization, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_ORGANIZATION_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_ORGANIZATION, GDataGDOrganizationPrivate))
 
 static void
 gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)

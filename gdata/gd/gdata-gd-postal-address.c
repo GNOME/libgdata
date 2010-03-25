@@ -88,7 +88,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDPostalAddress, gdata_gd_postal_address, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_POSTAL_ADDRESS_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_POSTAL_ADDRESS, GDataGDPostalAddressPrivate))
 
 static void
 gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)

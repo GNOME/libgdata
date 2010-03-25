@@ -80,7 +80,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataEntry, gdata_entry, GDATA_TYPE_PARSABLE)
-#define GDATA_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_ENTRY, GDataEntryPrivate))
 
 static void
 gdata_entry_class_init (GDataEntryClass *klass)
@@ -270,7 +269,7 @@ gdata_entry_dispose (GObject *object)
 static void
 gdata_entry_finalize (GObject *object)
 {
-	GDataEntryPrivate *priv = GDATA_ENTRY_GET_PRIVATE (object);
+	GDataEntryPrivate *priv = GDATA_ENTRY (object)->priv;
 
 	g_free (priv->title);
 	g_free (priv->summary);
@@ -286,7 +285,7 @@ gdata_entry_finalize (GObject *object)
 static void
 gdata_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataEntryPrivate *priv = GDATA_ENTRY_GET_PRIVATE (object);
+	GDataEntryPrivate *priv = GDATA_ENTRY (object)->priv;
 
 	switch (property_id) {
 		case PROP_TITLE:

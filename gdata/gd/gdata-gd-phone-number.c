@@ -63,7 +63,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDPhoneNumber, gdata_gd_phone_number, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_PHONE_NUMBER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_PHONE_NUMBER, GDataGDPhoneNumberPrivate))
 
 static void
 gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)

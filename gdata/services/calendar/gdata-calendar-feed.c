@@ -49,7 +49,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataCalendarFeed, gdata_calendar_feed, GDATA_TYPE_FEED)
-#define GDATA_CALENDAR_FEED_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CALENDAR_FEED, GDataCalendarFeedPrivate))
 
 static void
 gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
@@ -100,7 +99,7 @@ gdata_calendar_feed_init (GDataCalendarFeed *self)
 static void
 gdata_calendar_feed_finalize (GObject *object)
 {
-	GDataCalendarFeedPrivate *priv = GDATA_CALENDAR_FEED_GET_PRIVATE (object);
+	GDataCalendarFeedPrivate *priv = GDATA_CALENDAR_FEED (object)->priv;
 
 	g_free (priv->timezone);
 
@@ -111,7 +110,7 @@ gdata_calendar_feed_finalize (GObject *object)
 static void
 gdata_calendar_feed_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataCalendarFeedPrivate *priv = GDATA_CALENDAR_FEED_GET_PRIVATE (object);
+	GDataCalendarFeedPrivate *priv = GDATA_CALENDAR_FEED (object)->priv;
 
 	switch (property_id) {
 		case PROP_TIMEZONE:

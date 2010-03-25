@@ -59,7 +59,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataMediaCategory, gdata_media_category, GDATA_TYPE_PARSABLE)
-#define GDATA_MEDIA_CATEGORY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_MEDIA_CATEGORY, GDataMediaCategoryPrivate))
 
 static void
 gdata_media_category_class_init (GDataMediaCategoryClass *klass)

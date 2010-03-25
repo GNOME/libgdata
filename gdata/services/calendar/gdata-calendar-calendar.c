@@ -73,7 +73,6 @@ enum {
 
 G_DEFINE_TYPE_WITH_CODE (GDataCalendarCalendar, gdata_calendar_calendar, GDATA_TYPE_ENTRY,
 			 G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_calendar_calendar_access_handler_init))
-#define GDATA_CALENDAR_CALENDAR_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CALENDAR_CALENDAR, GDataCalendarCalendarPrivate))
 
 static void
 gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
@@ -197,7 +196,7 @@ gdata_calendar_calendar_access_handler_init (GDataAccessHandlerIface *iface)
 static void
 gdata_calendar_calendar_finalize (GObject *object)
 {
-	GDataCalendarCalendarPrivate *priv = GDATA_CALENDAR_CALENDAR_GET_PRIVATE (object);
+	GDataCalendarCalendarPrivate *priv = GDATA_CALENDAR_CALENDAR (object)->priv;
 
 	g_free (priv->timezone);
 	g_free (priv->access_level);
@@ -209,7 +208,7 @@ gdata_calendar_calendar_finalize (GObject *object)
 static void
 gdata_calendar_calendar_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataCalendarCalendarPrivate *priv = GDATA_CALENDAR_CALENDAR_GET_PRIVATE (object);
+	GDataCalendarCalendarPrivate *priv = GDATA_CALENDAR_CALENDAR (object)->priv;
 
 	switch (property_id) {
 		case PROP_TIMEZONE:

@@ -72,7 +72,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDName, gdata_gd_name, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_NAME_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_NAME, GDataGDNamePrivate))
 
 static void
 gdata_gd_name_class_init (GDataGDNameClass *klass)

@@ -66,7 +66,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDWhen, gdata_gd_when, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_WHEN_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_WHEN, GDataGDWhenPrivate))
 
 static void
 gdata_gd_when_class_init (GDataGDWhenClass *klass)

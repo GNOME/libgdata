@@ -60,7 +60,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDEmailAddress, gdata_gd_email_address, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_EMAIL_ADDRESS_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_EMAIL_ADDRESS, GDataGDEmailAddressPrivate))
 
 static void
 gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)

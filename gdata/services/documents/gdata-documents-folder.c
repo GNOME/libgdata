@@ -46,7 +46,6 @@
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 
 G_DEFINE_TYPE (GDataDocumentsFolder, gdata_documents_folder, GDATA_TYPE_DOCUMENTS_ENTRY)
-#define GDATA_DOCUMENTS_FOLDER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate))
 
 static void
 gdata_documents_folder_class_init (GDataDocumentsFolderClass *klass)

@@ -97,7 +97,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataPicasaWebAlbum, gdata_picasaweb_album, GDATA_TYPE_ENTRY)
-#define GDATA_PICASAWEB_ALBUM_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_PICASAWEB_ALBUM, GDataPicasaWebAlbumPrivate))
 
 static void
 gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
@@ -442,7 +441,7 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 static void
 gdata_picasaweb_album_dispose (GObject *object)
 {
-	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM_GET_PRIVATE (object);
+	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM (object)->priv;
 
 	if (priv->media_group != NULL)
 		g_object_unref (priv->media_group);
@@ -459,7 +458,7 @@ gdata_picasaweb_album_dispose (GObject *object)
 static void
 gdata_picasaweb_album_finalize (GObject *object)
 {
-	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM_GET_PRIVATE (object);
+	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM (object)->priv;
 
 	g_free (priv->album_id);
 	g_free (priv->user);
@@ -473,7 +472,7 @@ gdata_picasaweb_album_finalize (GObject *object)
 static void
 gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM_GET_PRIVATE (object);
+	GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM (object)->priv;
 
 	switch (property_id) {
 		case PROP_ALBUM_ID:

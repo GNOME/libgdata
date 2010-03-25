@@ -74,7 +74,6 @@ enum {
 
 G_DEFINE_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
 			 G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_documents_entry_access_handler_init))
-#define GDATA_DOCUMENTS_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate))
 
 static void
 gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
@@ -273,7 +272,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 static void
 gdata_documents_entry_finalize (GObject *object)
 {
-	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY_GET_PRIVATE (object);
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
 
 	g_free (priv->document_id);
 
@@ -284,7 +283,7 @@ gdata_documents_entry_finalize (GObject *object)
 static void
 gdata_entry_dispose (GObject *object)
 {
-	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY_GET_PRIVATE (object);
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
 
 	if (priv->last_modified_by != NULL)
 		g_object_unref (priv->last_modified_by);
@@ -297,7 +296,7 @@ gdata_entry_dispose (GObject *object)
 static void
 gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY_GET_PRIVATE (object);
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
 
 	switch (property_id) {
 		case PROP_DOCUMENT_ID:

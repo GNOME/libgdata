@@ -55,7 +55,6 @@ struct _GDataYouTubeControlPrivate {
 };
 
 G_DEFINE_TYPE (GDataYouTubeControl, gdata_youtube_control, GDATA_TYPE_PARSABLE)
-#define GDATA_YOUTUBE_CONTROL_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_YOUTUBE_CONTROL, GDataYouTubeControlPrivate))
 
 static void
 gdata_youtube_control_class_init (GDataYouTubeControlClass *klass)

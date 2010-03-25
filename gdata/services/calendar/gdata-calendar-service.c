@@ -45,7 +45,6 @@
 /* Standards reference here: http://code.google.com/apis/calendar/docs/2.0/reference.html */
 
 G_DEFINE_TYPE (GDataCalendarService, gdata_calendar_service, GDATA_TYPE_SERVICE)
-#define GDATA_CALENDAR_SERVICE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CALENDAR_SERVICE, GDataCalendarServicePrivate))
 
 static void
 gdata_calendar_service_class_init (GDataCalendarServiceClass *klass)

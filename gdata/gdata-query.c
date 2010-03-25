@@ -108,7 +108,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataQuery, gdata_query, G_TYPE_OBJECT)
-#define GDATA_QUERY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_QUERY, GDataQueryPrivate))
 
 static void
 gdata_query_class_init (GDataQueryClass *klass)
@@ -311,7 +310,7 @@ gdata_query_init (GDataQuery *self)
 static void
 gdata_query_finalize (GObject *object)
 {
-	GDataQueryPrivate *priv = GDATA_QUERY_GET_PRIVATE (object);
+	GDataQueryPrivate *priv = GDATA_QUERY (object)->priv;
 
 	g_free (priv->q);
 	g_free (priv->categories);
@@ -330,7 +329,7 @@ gdata_query_finalize (GObject *object)
 static void
 gdata_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataQueryPrivate *priv = GDATA_QUERY_GET_PRIVATE (object);
+	GDataQueryPrivate *priv = GDATA_QUERY (object)->priv;
 
 	switch (property_id) {
 		case PROP_Q:

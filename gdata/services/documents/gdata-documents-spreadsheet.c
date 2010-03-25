@@ -55,7 +55,6 @@ static const struct { const gchar *extension; const gchar *fmcmd; } export_forma
 };
 
 G_DEFINE_TYPE (GDataDocumentsSpreadsheet, gdata_documents_spreadsheet, GDATA_TYPE_DOCUMENTS_ENTRY)
-#define GDATA_DOCUMENTS_SPREADSHEET_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOCUMENTS_SPREADSHEET, GDataDocumentsSpreadsheetPrivate))
 
 static void
 gdata_documents_spreadsheet_class_init (GDataDocumentsSpreadsheetClass *klass)

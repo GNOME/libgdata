@@ -53,7 +53,6 @@ struct _GDataYouTubeGroupPrivate {
 };
 
 G_DEFINE_TYPE (GDataYouTubeGroup, gdata_youtube_group, GDATA_TYPE_MEDIA_GROUP)
-#define GDATA_YOUTUBE_GROUP_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_YOUTUBE_GROUP, GDataYouTubeGroupPrivate))
 
 static void
 gdata_youtube_group_class_init (GDataYouTubeGroupClass *klass)

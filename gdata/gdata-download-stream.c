@@ -85,7 +85,6 @@ enum {
 
 G_DEFINE_TYPE_WITH_CODE (GDataDownloadStream, gdata_download_stream, G_TYPE_INPUT_STREAM,
 			 G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, gdata_download_stream_seekable_iface_init))
-#define GDATA_DOWNLOAD_STREAM_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_DOWNLOAD_STREAM, GDataDownloadStreamPrivate))
 
 static void
 gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
@@ -180,7 +179,7 @@ gdata_download_stream_init (GDataDownloadStream *self)
 static void
 gdata_download_stream_dispose (GObject *object)
 {
-	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM_GET_PRIVATE (object);
+	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (object)->priv;
 
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
@@ -197,7 +196,7 @@ gdata_download_stream_dispose (GObject *object)
 static void
 gdata_download_stream_finalize (GObject *object)
 {
-	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM_GET_PRIVATE (object);
+	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (object)->priv;
 
 	g_thread_join (priv->network_thread);
 	g_static_mutex_free (&(priv->content_mutex));
@@ -212,7 +211,7 @@ gdata_download_stream_finalize (GObject *object)
 static void
 gdata_download_stream_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM_GET_PRIVATE (object);
+	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (object)->priv;
 
 	switch (property_id) {
 		case PROP_SERVICE:

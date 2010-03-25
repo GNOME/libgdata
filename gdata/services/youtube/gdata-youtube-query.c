@@ -77,7 +77,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataYouTubeQuery, gdata_youtube_query, GDATA_TYPE_QUERY)
-#define GDATA_YOUTUBE_QUERY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_YOUTUBE_QUERY, GDataYouTubeQueryPrivate))
 
 static void
 gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
@@ -310,7 +309,7 @@ gdata_youtube_query_init (GDataYouTubeQuery *self)
 static void
 gdata_youtube_query_finalize (GObject *object)
 {
-	GDataYouTubeQueryPrivate *priv = GDATA_YOUTUBE_QUERY_GET_PRIVATE (object);
+	GDataYouTubeQueryPrivate *priv = GDATA_YOUTUBE_QUERY (object)->priv;
 
 	g_free (priv->language);
 	g_free (priv->order_by);
@@ -323,7 +322,7 @@ gdata_youtube_query_finalize (GObject *object)
 static void
 gdata_youtube_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataYouTubeQueryPrivate *priv = GDATA_YOUTUBE_QUERY_GET_PRIVATE (object);
+	GDataYouTubeQueryPrivate *priv = GDATA_YOUTUBE_QUERY (object)->priv;
 
 	switch (property_id) {
 		case PROP_FORMAT:

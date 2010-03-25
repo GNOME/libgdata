@@ -61,7 +61,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataPicasaWebUser, gdata_picasaweb_user, GDATA_TYPE_ENTRY)
-#define GDATA_PICASAWEB_USER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_PICASAWEB_USER, GDataPicasaWebUserPrivate))
 
 static void
 gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
@@ -174,7 +173,7 @@ gdata_picasaweb_user_init (GDataPicasaWebUser *self)
 static void
 gdata_picasaweb_user_finalize (GObject *object)
 {
-	GDataPicasaWebUserPrivate *priv = GDATA_PICASAWEB_USER_GET_PRIVATE (object);
+	GDataPicasaWebUserPrivate *priv = GDATA_PICASAWEB_USER (object)->priv;
 
 	g_free (priv->user);
 	g_free (priv->nickname);
@@ -187,7 +186,7 @@ gdata_picasaweb_user_finalize (GObject *object)
 static void
 gdata_picasaweb_user_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataPicasaWebUserPrivate *priv = GDATA_PICASAWEB_USER_GET_PRIVATE (object);
+	GDataPicasaWebUserPrivate *priv = GDATA_PICASAWEB_USER (object)->priv;
 
 	switch (property_id) {
 		case PROP_USER:

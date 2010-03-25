@@ -66,7 +66,6 @@ struct _GDataExifTagsPrivate {
 };
 
 G_DEFINE_TYPE (GDataExifTags, gdata_exif_tags, GDATA_TYPE_PARSABLE)
-#define GDATA_EXIF_TAGS_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_EXIF_TAGS, GDataExifTagsPrivate))
 
 static void
 gdata_exif_tags_class_init (GDataExifTagsClass *klass)

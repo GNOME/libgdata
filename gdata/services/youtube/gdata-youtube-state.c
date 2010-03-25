@@ -57,7 +57,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataYouTubeState, gdata_youtube_state, GDATA_TYPE_PARSABLE)
-#define GDATA_YOUTUBE_STATE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_YOUTUBE_STATE, GDataYouTubeStatePrivate))
 
 static void
 gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)

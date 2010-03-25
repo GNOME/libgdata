@@ -62,7 +62,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataLink, gdata_link, GDATA_TYPE_PARSABLE)
-#define GDATA_LINK_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_LINK, GDataLinkPrivate))
 
 static void
 gdata_link_class_init (GDataLinkClass *klass)

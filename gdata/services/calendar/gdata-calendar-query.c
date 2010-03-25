@@ -68,7 +68,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataCalendarQuery, gdata_calendar_query, GDATA_TYPE_QUERY)
-#define GDATA_CALENDAR_QUERY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CALENDAR_QUERY, GDataCalendarQueryPrivate))
 
 static void
 gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
@@ -209,7 +208,7 @@ gdata_calendar_query_init (GDataCalendarQuery *self)
 static void
 gdata_calendar_query_finalize (GObject *object)
 {
-	GDataCalendarQueryPrivate *priv = GDATA_CALENDAR_QUERY_GET_PRIVATE (object);
+	GDataCalendarQueryPrivate *priv = GDATA_CALENDAR_QUERY (object)->priv;
 
 	g_free (priv->order_by);
 	g_free (priv->sort_order);
@@ -222,7 +221,7 @@ gdata_calendar_query_finalize (GObject *object)
 static void
 gdata_calendar_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataCalendarQueryPrivate *priv = GDATA_CALENDAR_QUERY_GET_PRIVATE (object);
+	GDataCalendarQueryPrivate *priv = GDATA_CALENDAR_QUERY (object)->priv;
 
 	switch (property_id) {
 		case PROP_FUTURE_EVENTS:

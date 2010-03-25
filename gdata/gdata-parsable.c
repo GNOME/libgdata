@@ -56,7 +56,6 @@ struct _GDataParsablePrivate {
 };
 
 G_DEFINE_ABSTRACT_TYPE (GDataParsable, gdata_parsable, G_TYPE_OBJECT)
-#define GDATA_PARSABLE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_PARSABLE, GDataParsablePrivate))
 
 static void
 gdata_parsable_class_init (GDataParsableClass *klass)
@@ -79,7 +78,7 @@ gdata_parsable_init (GDataParsable *self)
 static void
 gdata_parsable_finalize (GObject *object)
 {
-	GDataParsablePrivate *priv = GDATA_PARSABLE_GET_PRIVATE (object);
+	GDataParsablePrivate *priv = GDATA_PARSABLE (object)->priv;
 
 	g_string_free (priv->extra_xml, TRUE);
 	g_hash_table_destroy (priv->extra_namespaces);

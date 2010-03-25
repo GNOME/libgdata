@@ -60,7 +60,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataContactsQuery, gdata_contacts_query, GDATA_TYPE_QUERY)
-#define GDATA_CONTACTS_QUERY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CONTACTS_QUERY, GDataContactsQueryPrivate))
 
 static void
 gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
@@ -141,7 +140,7 @@ gdata_contacts_query_init (GDataContactsQuery *self)
 static void
 gdata_contacts_query_finalize (GObject *object)
 {
-	GDataContactsQueryPrivate *priv = GDATA_CONTACTS_QUERY_GET_PRIVATE (object);
+	GDataContactsQueryPrivate *priv = GDATA_CONTACTS_QUERY (object)->priv;
 
 	g_free (priv->order_by);
 	g_free (priv->sort_order);
@@ -154,7 +153,7 @@ gdata_contacts_query_finalize (GObject *object)
 static void
 gdata_contacts_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataContactsQueryPrivate *priv = GDATA_CONTACTS_QUERY_GET_PRIVATE (object);
+	GDataContactsQueryPrivate *priv = GDATA_CONTACTS_QUERY (object)->priv;
 
 	switch (property_id) {
 		case PROP_ORDER_BY:

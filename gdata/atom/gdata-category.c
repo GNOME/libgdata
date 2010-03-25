@@ -55,7 +55,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataCategory, gdata_category, GDATA_TYPE_PARSABLE)
-#define GDATA_CATEGORY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CATEGORY, GDataCategoryPrivate))
 
 static void
 gdata_category_class_init (GDataCategoryClass *klass)

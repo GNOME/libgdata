@@ -78,7 +78,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
-#define GDATA_CONTACTS_CONTACT_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContactPrivate))
 
 static void
 gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
@@ -230,7 +229,7 @@ gdata_contacts_contact_finalize (GObject *object)
 static void
 gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT_GET_PRIVATE (object);
+	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (object)->priv;
 
 	switch (property_id) {
 		case PROP_EDITED:

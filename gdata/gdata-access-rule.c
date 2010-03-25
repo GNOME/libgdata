@@ -61,7 +61,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataAccessRule, gdata_access_rule, GDATA_TYPE_ENTRY)
-#define GDATA_ACCESS_RULE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_ACCESS_RULE, GDataAccessRulePrivate))
 
 static void
 gdata_access_rule_class_init (GDataAccessRuleClass *klass)
@@ -165,7 +164,7 @@ gdata_access_rule_set_property (GObject *object, guint property_id, const GValue
 static void
 gdata_access_rule_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE_GET_PRIVATE (object);
+	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (object)->priv;
 
 	switch (property_id) {
 		case PROP_ROLE:
@@ -193,7 +192,7 @@ gdata_access_rule_init (GDataAccessRule *self)
 static void
 gdata_access_rule_finalize (GObject *object)
 {
-	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE_GET_PRIVATE (object);
+	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (object)->priv;
 
 	g_free (priv->role);
 	g_free (priv->scope_type); 

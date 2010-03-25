@@ -58,7 +58,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGDWho, gdata_gd_who, GDATA_TYPE_PARSABLE)
-#define GDATA_GD_WHO_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GD_WHO, GDataGDWhoPrivate))
 
 static void
 gdata_gd_who_class_init (GDataGDWhoClass *klass)

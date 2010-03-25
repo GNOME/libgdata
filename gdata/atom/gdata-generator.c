@@ -52,7 +52,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataGenerator, gdata_generator, GDATA_TYPE_PARSABLE)
-#define GDATA_GENERATOR_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GENERATOR, GDataGeneratorPrivate))
 
 static void
 gdata_generator_class_init (GDataGeneratorClass *klass)

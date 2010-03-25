@@ -96,7 +96,6 @@ enum {
 static guint service_signals[LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GDataService, gdata_service, G_TYPE_OBJECT)
-#define GDATA_SERVICE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_SERVICE, GDataServicePrivate))
 
 static void
 gdata_service_class_init (GDataServiceClass *klass)
@@ -241,7 +240,7 @@ gdata_service_init (GDataService *self)
 static void
 gdata_service_dispose (GObject *object)
 {
-	GDataServicePrivate *priv = GDATA_SERVICE_GET_PRIVATE (object);
+	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
 
 	if (priv->session != NULL)
 		g_object_unref (priv->session);
@@ -254,7 +253,7 @@ gdata_service_dispose (GObject *object)
 static void
 gdata_service_finalize (GObject *object)
 {
-	GDataServicePrivate *priv = GDATA_SERVICE_GET_PRIVATE (object);
+	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
 
 	g_free (priv->username);
 	g_free (priv->password);
@@ -268,7 +267,7 @@ gdata_service_finalize (GObject *object)
 static void
 gdata_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataServicePrivate *priv = GDATA_SERVICE_GET_PRIVATE (object);
+	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
 
 	switch (property_id) {
 		case PROP_CLIENT_ID:
@@ -296,7 +295,7 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 static void
 gdata_service_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	GDataServicePrivate *priv = GDATA_SERVICE_GET_PRIVATE (object);
+	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
 
 	switch (property_id) {
 		case PROP_CLIENT_ID:

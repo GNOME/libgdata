@@ -108,7 +108,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataUploadStream, gdata_upload_stream, G_TYPE_OUTPUT_STREAM)
-#define GDATA_UPLOAD_STREAM_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_UPLOAD_STREAM, GDataUploadStreamPrivate))
 
 static void
 gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
@@ -208,7 +207,7 @@ gdata_upload_stream_init (GDataUploadStream *self)
 static void
 gdata_upload_stream_dispose (GObject *object)
 {
-	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM_GET_PRIVATE (object);
+	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (object)->priv;
 
 	/* Close the stream before unreffing things like priv->service, which stops crashes like bgo#602156 if the stream is unreffed in the middle
 	 * of network operations */
@@ -234,7 +233,7 @@ gdata_upload_stream_dispose (GObject *object)
 static void
 gdata_upload_stream_finalize (GObject *object)
 {
-	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM_GET_PRIVATE (object);
+	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (object)->priv;
 
 	g_thread_join (priv->network_thread);
 	g_static_mutex_free (&(priv->response_mutex));
@@ -253,7 +252,7 @@ gdata_upload_stream_finalize (GObject *object)
 static void
 gdata_upload_stream_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM_GET_PRIVATE (object);
+	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (object)->priv;
 
 	switch (property_id) {
 		case PROP_SERVICE:

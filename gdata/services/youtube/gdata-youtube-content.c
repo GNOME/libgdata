@@ -51,7 +51,6 @@ enum {
 };
 
 G_DEFINE_TYPE (GDataYouTubeContent, gdata_youtube_content, GDATA_TYPE_MEDIA_CONTENT)
-#define GDATA_YOUTUBE_CONTENT_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_YOUTUBE_CONTENT, GDataYouTubeContentPrivate))
 
 static void
 gdata_youtube_content_class_init (GDataYouTubeContentClass *klass)
