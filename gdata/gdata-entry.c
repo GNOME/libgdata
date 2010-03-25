@@ -209,7 +209,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * GDataEntry:is-inserted:
 	 *
 	 * Whether the entry has been inserted on the server. This is %FALSE for entries which have just been created using gdata_entry_new() and
-	 * %TRUE for entries returned from the server by queries. It is set to %TRUE when an entry is inserted using gdata_service_insert().
+	 * %TRUE for entries returned from the server by queries. It is set to %TRUE when an entry is inserted using gdata_service_insert_entry().
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_INSERTED,
 				g_param_spec_boolean ("is-inserted",
