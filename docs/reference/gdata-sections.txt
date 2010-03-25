@@ -1290,6 +1290,7 @@ GDataPicasaWebAlbum
 GDataPicasaWebAlbumClass
 GDataPicasaWebVisibility
 gdata_picasaweb_album_new
+gdata_picasaweb_album_get_id
 gdata_picasaweb_album_get_user
 gdata_picasaweb_album_get_nickname
 gdata_picasaweb_album_get_edited
@@ -1329,6 +1330,7 @@ GDataPicasaWebAlbumPrivate
 GDataPicasaWebFile
 GDataPicasaWebFileClass
 gdata_picasaweb_file_new
+gdata_picasaweb_file_get_id
 gdata_picasaweb_file_get_edited
 gdata_picasaweb_file_get_version
 gdata_picasaweb_file_get_position

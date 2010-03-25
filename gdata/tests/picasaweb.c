@@ -777,6 +777,7 @@ test_photo_feed_entry (gconstpointer service)
 	g_assert_cmpuint (g_list_length (files), ==, 1);
 
 	g_assert_cmpstr (gdata_entry_get_title (photo_entry), ==, "100_0269.jpg");
+	g_assert_cmpstr (gdata_picasaweb_file_get_id (GDATA_PICASAWEB_FILE (photo_entry)), ==, "5328890138794566386");
 	g_assert_cmpstr (gdata_entry_get_id (photo_entry), ==, "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
 	g_assert_cmpstr (gdata_entry_get_etag (photo_entry), !=, NULL);
 
@@ -984,6 +985,7 @@ test_album_feed_entry (gconstpointer service)
 
 	/* Tests */
 	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "Test Album 1 - Venice - Public");
+	g_assert_cmpstr (gdata_picasaweb_album_get_id (GDATA_PICASAWEB_ALBUM (entry)), ==, "5328889949261497249");
 	g_assert_cmpstr (gdata_entry_get_id (entry), ==, "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249");
 	g_assert_cmpstr (gdata_entry_get_etag (entry), !=, NULL);
 	g_assert_cmpstr (gdata_entry_get_rights (entry), ==, "public");
@@ -1045,7 +1047,7 @@ test_insert_album (gconstpointer service)
 
 	error = NULL;
 
-	album = gdata_picasaweb_album_new ("album_id_72");
+	album = gdata_picasaweb_album_new (NULL);
 	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
 
 	gdata_entry_set_title (GDATA_ENTRY (album), "Thanksgiving photos");
@@ -1257,7 +1259,8 @@ test_album_new (gconstpointer service)
 				    "xmlns:app='http://www.w3.org/2007/app' "
 				    "xmlns:georss='http://www.georss.org/georss'>"
 					"<title type='text'></title>"
-					"<id>some-id</id>"
+					"<id>http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249</id>"
+					"<gphoto:id>5328889949261497249</gphoto:id>"
 					"<gphoto:access>private</gphoto:access>"
 					"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
 					"<gphoto:commentingEnabled>false</gphoto:commentingEnabled>"
@@ -1265,7 +1268,8 @@ test_album_new (gconstpointer service)
 			     "</entry>", 0, 0, NULL);
 
 	/* Build the album */
-	album = gdata_picasaweb_album_new ("some-id");
+	album = gdata_picasaweb_album_new ("http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249");
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
 
 	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
 	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected XML and building the XML

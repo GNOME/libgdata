@@ -66,6 +66,7 @@ GType gdata_picasaweb_file_get_type (void) G_GNUC_CONST;
 
 GDataPicasaWebFile *gdata_picasaweb_file_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
+const gchar *gdata_picasaweb_file_get_id (GDataPicasaWebFile *self);
 void gdata_picasaweb_file_get_edited (GDataPicasaWebFile *self, GTimeVal *edited);
 const gchar *gdata_picasaweb_file_get_version (GDataPicasaWebFile *self);
 gdouble gdata_picasaweb_file_get_position (GDataPicasaWebFile *self);

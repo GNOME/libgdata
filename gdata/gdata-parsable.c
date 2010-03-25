@@ -281,7 +281,11 @@ filter_namespaces_cb (gchar *prefix, gchar *href, GHashTable *canonical_namespac
 gchar *
 gdata_parsable_get_xml (GDataParsable *self)
 {
-	GString *xml_string = g_string_sized_new (100);
+	GString *xml_string;
+
+	g_return_val_if_fail (GDATA_IS_PARSABLE (self), NULL);
+
+	xml_string = g_string_sized_new (100);
 	_gdata_parsable_get_xml (self, xml_string, TRUE);
 	return g_string_free (xml_string, FALSE);
 }
