@@ -863,9 +863,8 @@ gdata_entry_is_inserted (GDataEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), FALSE);
 
-	if (self->priv->id != NULL &&
-	    self->priv->links != NULL &&
-	    (self->priv->updated.tv_sec != 0 || self->priv->updated.tv_usec != 0))
+	if (self->priv->id != NULL ||
+	    self->priv->updated.tv_sec != 0 || self->priv->updated.tv_usec != 0)
 		return TRUE;
 	return FALSE;
 }
