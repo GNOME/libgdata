@@ -358,10 +358,6 @@ gdata_entry_set_property (GObject *object, guint property_id, const GValue *valu
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	g_return_val_if_fail (GDATA_IS_ENTRY (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (root_node != NULL, FALSE);
-
 	/* Extract the ETag */
 	GDATA_ENTRY (parsable)->priv->etag = (gchar*) xmlGetProp (root_node, (xmlChar*) "etag");
 

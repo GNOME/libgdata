@@ -380,10 +380,6 @@ typedef struct {
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	g_return_val_if_fail (GDATA_IS_FEED (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (root_node != NULL, FALSE);
-
 	/* Extract the ETag */
 	GDATA_FEED (parsable)->priv->etag = (gchar*) xmlGetProp (root_node, (xmlChar*) "etag");
 
@@ -402,14 +398,8 @@ static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
-	GDataFeed *self;
+	GDataFeed *self = GDATA_FEED (parsable);
 	ParseData *data = user_data;
-
-	g_return_val_if_fail (GDATA_IS_FEED (parsable), FALSE);
-	g_return_val_if_fail (doc != NULL, FALSE);
-	g_return_val_if_fail (node != NULL, FALSE);
-
-	self = GDATA_FEED (parsable);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE) {
 		if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
