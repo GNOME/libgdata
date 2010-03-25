@@ -651,6 +651,7 @@ test_access_rule_get_xml (void)
 {
 	GDataAccessRule *rule, *rule2;
 	gchar *xml, *role, *scope_type3, *scope_value3;
+	GTimeVal edited, *edited2;
 	const gchar *scope_type, *scope_value, *scope_type2, *scope_value2;
 	GError *error = NULL;
 
@@ -667,6 +668,8 @@ test_access_rule_get_xml (void)
 	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, "A scope type");
 	g_assert_cmpstr (scope_value, ==, "A scope value");
+	gdata_access_rule_get_edited (rule, &edited);
+	g_assert_cmpuint (edited.tv_sec, >, 0); /* current time */
 
 	/* Set the properties more conventionally */
 	gdata_access_rule_set_role (rule, "writer");
@@ -697,18 +700,25 @@ test_access_rule_get_xml (void)
 	gdata_access_rule_get_scope (rule2, &scope_type2, &scope_value2);
 	g_assert_cmpstr (scope_type, ==, scope_type2);
 	g_assert_cmpstr (scope_value, ==, scope_value2);
+	gdata_access_rule_get_edited (rule2, &edited);
+	g_assert_cmpuint (edited.tv_sec, ==, 0); /* unspecified in XML */
+	g_assert_cmpuint (edited.tv_usec, ==, 0);
 
 	/* Check properties a different way */
 	g_object_get (G_OBJECT (rule2),
 	              "role", &role,
 	              "scope-type", &scope_type3,
 	              "scope-value", &scope_value3,
+	              "edited", &edited2,
 	              NULL);
 
 	g_assert_cmpstr (role, ==, gdata_access_rule_get_role (rule));
 	g_assert_cmpstr (scope_type, ==, scope_type3);
 	g_assert_cmpstr (scope_value, ==, scope_value3);
+	g_assert_cmpuint (edited2->tv_sec, ==, 0);
+	g_assert_cmpuint (edited2->tv_usec, ==, 0);
 
+	g_free (edited2);
 	g_free (role);
 	g_free (scope_type3);
 	g_free (scope_value3);
@@ -724,7 +734,7 @@ test_access_rule_error_handling (void)
 	GError *error = NULL;
 
 #define TEST_XML_ERROR_HANDLING(x) rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (GDATA_TYPE_ACCESS_RULE,\
-		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gAcl='http://schemas.google.com/acl/2007'>"\
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gAcl='http://schemas.google.com/acl/2007'>"\
 			x\
 		"</entry>", -1, &error));\
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
@@ -736,6 +746,10 @@ test_access_rule_error_handling (void)
 
 	/* scope */
 	TEST_XML_ERROR_HANDLING ("<gAcl:scope/>"); /* missing type */
+
+	/* edited */
+	TEST_XML_ERROR_HANDLING ("<app:edited/>"); /* missing date */
+	TEST_XML_ERROR_HANDLING ("<app:edited>not a date</app:edited>"); /* bad date */
 
 #undef TEST_XML_ERROR_HANDLING
 }

@@ -52,12 +52,14 @@ struct _GDataAccessRulePrivate {
 	gchar *role;
 	gchar *scope_type; 
 	gchar *scope_value;
+	GTimeVal edited;
 };
 
 enum {
 	PROP_ROLE = 1,
 	PROP_SCOPE_TYPE,
 	PROP_SCOPE_VALUE,
+	PROP_EDITED
 };
 
 G_DEFINE_TYPE (GDataAccessRule, gdata_access_rule, GDATA_TYPE_ENTRY)
@@ -117,6 +119,22 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 					"Scope value", "The scope value for this access rule.",
 					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataAccessRule:edited:
+	 *
+	 * The last time the access rule was edited. If the rule has not been edited yet, the content indicates the time it was created.
+	 *
+	 * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/protocol/#appEdited">
+	 * Atom Publishing Protocol specification</ulink>.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_EDITED,
+				g_param_spec_boxed ("edited",
+					"Edited", "The last time the access rule was edited.",
+					GDATA_TYPE_G_TIME_VAL,
+					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 /**
@@ -132,7 +150,13 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 GDataAccessRule *
 gdata_access_rule_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_ACCESS_RULE, "id", id, NULL);
+	GDataAccessRule *rule = GDATA_ACCESS_RULE (g_object_new (GDATA_TYPE_ACCESS_RULE, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(rule->priv->edited));
+
+	return rule;
 }
 
 static void
@@ -176,6 +200,9 @@ gdata_access_rule_get_property (GObject *object, guint property_id, GValue *valu
 		case PROP_SCOPE_VALUE:
 			g_value_set_string (value, priv->scope_value);
 			break;
+		case PROP_EDITED:
+			g_value_set_boxed (value, &(priv->edited));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -205,9 +232,13 @@ gdata_access_rule_finalize (GObject *object)
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
+	gboolean success;
 	GDataAccessRule *self = GDATA_ACCESS_RULE (parsable);
 
-	if (gdata_parser_is_namespace (node, "http://schemas.google.com/acl/2007") == TRUE) {
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
+	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+		return success;
+	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/acl/2007") == TRUE) {
 		if (xmlStrcmp (node->name, (xmlChar*) "role") == 0) {
 			/* gAcl:role */
 			xmlChar *role = xmlGetProp (node, (xmlChar*) "value");
@@ -373,4 +404,22 @@ gdata_access_rule_get_scope (GDataAccessRule *self, const gchar **type, const gc
 		*type = self->priv->scope_type;
 	if (value != NULL)
 		*value = self->priv->scope_value;
+}
+
+/**
+ * gdata_access_rule_get_edited:
+ * @self: a #GDataAccessRule
+ * @edited: return location for the edited time
+ *
+ * Gets the #GDataAccessRule:edited property and puts it in @edited. If the property is unset,
+ * both fields in the #GTimeVal will be set to %0.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_access_rule_get_edited (GDataAccessRule *self, GTimeVal *edited)
+{
+	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));
+	g_return_if_fail (edited != NULL);
+	*edited = self->priv->edited;
 }

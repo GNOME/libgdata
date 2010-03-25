@@ -577,6 +577,7 @@ test_acls_insert_rule (gconstpointer service)
 	GDataCategory *category;
 	GList *categories;
 	gchar *xml;
+	GTimeVal edited;
 	GError *error = NULL;
 
 	calendar = get_calendar (service, &error);
@@ -615,6 +616,8 @@ test_acls_insert_rule (gconstpointer service)
 	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, "user");
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
+	gdata_access_rule_get_edited (new_rule, &edited);
+	g_assert_cmpuint (edited.tv_sec, >, 0);
 
 	/* Check it only has the one category and that it's correct */
 	categories = gdata_entry_get_categories (GDATA_ENTRY (new_rule));
@@ -639,6 +642,7 @@ test_acls_update_rule (gconstpointer service)
 	GDataAccessRule *rule = NULL, *new_rule;
 	const gchar *scope_type, *scope_value;
 	GList *rules;
+	GTimeVal edited;
 	GError *error = NULL;
 
 	calendar = get_calendar (service, &error);
@@ -678,6 +682,8 @@ test_acls_update_rule (gconstpointer service)
 	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, "user");
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
+	gdata_access_rule_get_edited (new_rule, &edited);
+	g_assert_cmpuint (edited.tv_sec, >, 0);
 
 	g_object_unref (new_rule);
 	g_object_unref (calendar);
