@@ -53,8 +53,8 @@
 						connection to the relevant web service, holding their authentication state, and making the necessary
 						requests to read and write data to and from the service. All top-level actions, such as creating a new
 						object on the server, are carried out through a service.</para>
-						<para>There should be one <type><link linkend="GDataService">GDataService</link></type> subclass for each
-						of the services listed <ulink type="http" url="http://code.google.com/apis/gdata/">in the GData
+						<para>There should be one <type><link linkend="GDataService">GDataService</link></type> subclass for
+						each of the services listed <ulink type="http" url="http://code.google.com/apis/gdata/">in the GData
 						documentation</ulink>.</para></listitem>
 				</varlistentry>
 				<varlistentry>
@@ -63,7 +63,8 @@
 						<type><link linkend="GDataQuery">GDataQuery</link></type> can be used to specify the parameters.</para>
 						<para>Query objects are optional, and can only be used with queries (not with entry insertions, updates
 						or deletions). The query object builds the query URI used by the
-						<type><link linkend="GDataService">GDataService</link></type> when sending the query to the server.</para>
+						<type><link linkend="GDataService">GDataService</link></type> when sending the query to the
+						server.</para>
 						<para>Services can subclass <type><link linkend="GDataQuery">GDataQuery</link></type> if the service
 						supports non-standard query parameters.</para>
 					</listitem>
@@ -90,6 +91,46 @@
 					</listitem>
 				</varlistentry>
 			</variablelist>
+		</refsect2>
+	</refsect1>
+
+	<refsect1>
+		<title>Development Philosophy</title>
+		<para>As the GData protocol (and all the service-specific protocols which extend it) is reasonably young, it is subject to fairly
+			frequent updates and expansions. While backwards compatibility is maintained, these updates necessitate that libgdata
+			remains fairly flexible in how it treats data. The sections below detail some of the ways in which libgdata achieves this,
+			and the reasoning behind them.</para>
+
+		<refsect2>
+			<title>Enumerable Properties</title>
+			<para>There are many class properties in libgdata which should, at first glance, be implemented as enumerated types. Function
+				calls such as <function><link linkend="gdata-link-get-relation-type">gdata_link_get_relation_type()</link></function>
+				and <function><link linkend="gdata-gd-im-address-get-protocol">gdata_gd_im_address_get_protocol()</link></function>
+				would, in a conventional library, return a value from an enum, which would work well, and be more typesafe and
+				memory-efficient than using arbitrary strings.</para>
+			<para>However, such an implementation would not be forwards-compatible. If a protocol addition was made which added another
+				link relation type, or added supportf or another IM protocol, there would be no way for libgdata to represent some
+				of the data it retrieved from the server. It could return an "other" value from the enum, but that could lead to
+				data loss in the common case of GData entries being queried from the server, processed, then updated again.</para>
+			<para>For this reason – which is made more troublesome by the fact that it is unpredictable when updates to the protocol are
+				released, or when updated XML will start coming over the wire – libgdata uses enumerated types sparingly; they are
+				only used when it is very improbable (or even impossible) for the property in question to be extended or changed in
+				the future. In any other case, a string value is used instead, with libgdata providing <code>#define</code>d values
+				for the known values of the property. These values should be used as much as possible by applications which use
+				libgdata (i.e. they should be treated as if they were enumerated values), but applications are free to use strings
+				of their own, too. All validation of such pseudi-enums is left to the server.</para>
+		</refsect2>
+
+		<refsect2>
+			<title>New Services</title>
+			<para>The API required to implement support for a new service using libgdata is not publicly exposed. This is because doing
+				so would clutter the API to a large extent; for example, exposing various properties as writeable which are currently
+				only readable. While the freedom for users of libgdata to write their own services is a good one, it is outweighed by
+				the muddlement that this would bring to the API.</para>
+			<para>Furthermore, since it is highly unlikely that anyone except Google will use GData as a basis for communicating with
+				their service, there is little harm in restricting the implementation of services to libgdata. If someone wants to
+				implement support for a new GData service, it is for the benefit of everyone if this implementation is done in libgdata
+				itself, rather than their application.</para>
 		</refsect2>
 	</refsect1>
 </refentry>

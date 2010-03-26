@@ -55,9 +55,13 @@ libgdata employs:
 
 	* Return value: a new #GDataEntry; unref with g_object_unref()
 
-   If the function can also return NULL (on error), format it as follows:
+   If the function can also return NULL (on error, for example) or some other "default" value (-1, 0, etc.), format it as follows:
 
 	* Return value: a new #GDataGDFeedLink, or %NULL; free with gdata_gd_feed_link_free()
+
+   Note that if a function returns NULL as a result of a precondition or assertion failure, this should not be listed in the documentation. The
+   precondition itself may be listed in the function documentation prose, but if it's the only reason for a function to return NULL, the "or %NULL"
+   clause should be omitted.
 
  - When adding API, make sure to add a "Since" clause:
 
@@ -71,7 +75,12 @@ libgdata employs:
 
 	* @updated_max: the new maximum update time, or %NULL
 
- - If numbers are mentioned in documentation as values to be passed around in code, they should be prefixed by a '%', just like %NULL.
+ - If numbers, such as %-1, are mentioned in documentation as values to be passed around in code, they should be prefixed by a '%', just like %NULL.
+
+ - The documentation explaining the purpose of a property, its limitations, interpretation, etc., should be given in the gtk-doc comment for the
+   GObject property itself, not in the documentation for its getter or setter. The documentation for the getter and setter should be stubs which
+   refer to the property's documentation. The getter and setter documentation should, however, still include full details about whether NULL values
+   are permissible for the function parameters, or are possible as the return value, for example.
 
 Adding public API
 =================
@@ -97,6 +106,12 @@ Adding public API
 
  - All GObject *_get_type function declarations must be tagged with the G_GNUC_CONST macro, as well as any other applicable functions
    (see the gcc documentation: http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html#index-g_t_0040code_007bconst_007d-function-attribute-2207).
+
+ - All properties which could be considered to use an enumerated value should almost definitely use a string instead. See the documentation section
+   on "Enumerable Properties" in the "GData Overview" section.
+
+ - New services should be implemented in libgdata itself, not by applications which use libgdata. See the documentation section on "New Services" in
+   the "GData Overview" section.
 
 Choosing function names
 =======================
@@ -124,6 +139,8 @@ The short explanation of a commit should always be prefixed by a tag to describe
  - [core] — for the core code in the gdata directory, such as GDataEntry.
 
  - [atom] — for the Atom-namespaced code in the gdata/atom directory.
+
+ - [gcontact] — for the gContact-namespaced code in the gdata/gcontact directory.
 
  - [gd] — for the GData-namespaced code in the gdata/gd directory.
 
