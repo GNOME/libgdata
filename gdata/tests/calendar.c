@@ -584,12 +584,12 @@ test_acls_insert_rule (gconstpointer service)
 
 	rule = gdata_access_rule_new (NULL);
 
-	gdata_access_rule_set_role (rule, "http://schemas.google.com/gCal/2005#editor");
-	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, "http://schemas.google.com/gCal/2005#editor");
+	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 
-	gdata_access_rule_set_scope (rule, "user", "darcy@gmail.com");
+	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
 	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
-	g_assert_cmpstr (scope_type, ==, "user");
+	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
 
 	/* Check the XML */
@@ -612,9 +612,9 @@ test_acls_insert_rule (gconstpointer service)
 	g_clear_error (&error);
 
 	/* Check the properties of the returned rule */
-	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, "http://schemas.google.com/gCal/2005#editor");
+	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
-	g_assert_cmpstr (scope_type, ==, "user");
+	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
 	gdata_access_rule_get_edited (new_rule, &edited);
 	g_assert_cmpuint (edited.tv_sec, >, 0);
@@ -667,8 +667,8 @@ test_acls_update_rule (gconstpointer service)
 	g_object_unref (feed);
 
 	/* Update the rule */
-	gdata_access_rule_set_role (rule, "http://schemas.google.com/gCal/2005#read");
-	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, "http://schemas.google.com/gCal/2005#read");
+	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_READ);
+	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
 
 	/* Send the update to the server */
 	new_rule = gdata_access_handler_update_rule (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), rule, NULL, &error);
@@ -678,9 +678,9 @@ test_acls_update_rule (gconstpointer service)
 	g_object_unref (rule);
 
 	/* Check the properties of the returned rule */
-	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, "http://schemas.google.com/gCal/2005#read");
+	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
 	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
-	g_assert_cmpstr (scope_type, ==, "user");
+	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
 	gdata_access_rule_get_edited (new_rule, &edited);
 	g_assert_cmpuint (edited.tv_sec, >, 0);

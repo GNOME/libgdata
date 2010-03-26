@@ -572,8 +572,8 @@ test_new_document_with_collaborator (gconstpointer service)
 
 	/* New access rule */
 	access_rule = gdata_access_rule_new (NULL);
-	gdata_access_rule_set_role (access_rule, "writer");
-	gdata_access_rule_set_scope (access_rule, "user", "libgdata.test@gmail.com");
+	gdata_access_rule_set_role (access_rule, GDATA_DOCUMENTS_ACCESS_ROLE_WRITER);
+	gdata_access_rule_set_scope (access_rule, GDATA_ACCESS_SCOPE_USER, "libgdata.test@gmail.com");
 
 	/* Set access rules */
 	new_access_rule = gdata_access_handler_insert_rule (GDATA_ACCESS_HANDLER (new_document), GDATA_SERVICE (service), access_rule, NULL, &error);

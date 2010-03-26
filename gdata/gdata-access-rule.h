@@ -28,6 +28,42 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_ACCESS_SCOPE_USER:
+ *
+ * The #GDataAccessRule applies to a single individual, whose e-mail address is given in #GDataAccessRule:scope-value.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_ACCESS_SCOPE_USER "user"
+
+/**
+ * GDATA_ACCESS_SCOPE_DOMAIN:
+ *
+ * The #GDataAccessRule applies to all users in a Google Apps For Your Domain domain, given in #GDataAccessRule:scope-value.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_ACCESS_SCOPE_DOMAIN "domain"
+
+/**
+ * GDATA_ACCESS_SCOPE_DEFAULT:
+ *
+ * The #GDataAccessRule applies to all users.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_ACCESS_SCOPE_DEFAULT "default"
+
+/**
+ * GDATA_ACCESS_ROLE_NONE:
+ *
+ * The users specified by the #GDataAccessRule have no rights.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_ACCESS_ROLE_NONE "none"
+
 #define GDATA_TYPE_ACCESS_RULE		(gdata_access_rule_get_type ())
 #define GDATA_ACCESS_RULE(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_ACCESS_RULE, GDataAccessRule))
 #define GDATA_ACCESS_RULE_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_ACCESS_RULE, GDataAccessRuleClass))

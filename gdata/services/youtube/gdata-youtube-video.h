@@ -103,7 +103,7 @@ G_BEGIN_DECLS
  * @GDATA_YOUTUBE_PERMISSION_DENIED: the action is denied for everyone
  * @GDATA_YOUTUBE_PERMISSION_MODERATED: the action is moderated by the video owner
  *
- * Permissions for #GDataYouTubeAction<!-- -->s which can be set on a #GDataYouTubeVideo using gdata_youtube_video_set_access_control().
+ * Permissions for actions which can be set on a #GDataYouTubeVideo using gdata_youtube_video_set_access_control().
  *
  * The only actions which can have the %GDATA_YOUTUBE_PERMISSION_MODERATED permission are %GDATA_YOUTUBE_ACTION_RATE and %GDATA_YOUTUBE_ACTION_COMMENT.
  *

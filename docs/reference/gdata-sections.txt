@@ -448,6 +448,11 @@ GDataCalendarQueryPrivate
 <SECTION>
 <FILE>gdata-calendar-calendar</FILE>
 <TITLE>GDataCalendarCalendar</TITLE>
+GDATA_CALENDAR_ACCESS_ROLE_READ
+GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY
+GDATA_CALENDAR_ACCESS_ROLE_EDITOR
+GDATA_CALENDAR_ACCESS_ROLE_OWNER
+GDATA_CALENDAR_ACCESS_ROLE_ROOT
 GDataCalendarCalendar
 GDataCalendarCalendarClass
 gdata_calendar_calendar_new
@@ -607,6 +612,10 @@ GDATA_TYPE_ACCESS_HANDLER
 <SECTION>
 <FILE>gdata-access-rule</FILE>
 <TITLE>GDataAccessRule</TITLE>
+GDATA_ACCESS_SCOPE_USER
+GDATA_ACCESS_SCOPE_DOMAIN
+GDATA_ACCESS_SCOPE_DEFAULT
+GDATA_ACCESS_ROLE_NONE
 GDataAccessRule
 GDataAccessRuleClass
 gdata_access_rule_new
@@ -1408,6 +1417,9 @@ GDataPicasaWebFilePrivate
 <SECTION>
 <FILE>gdata-documents-entry</FILE>
 <TITLE>GDataDocumentsEntry</TITLE>
+GDATA_DOCUMENTS_ACCESS_ROLE_OWNER
+GDATA_DOCUMENTS_ACCESS_ROLE_ROOT
+GDATA_DOCUMENTS_ACCESS_ROLE_READER
 GDataDocumentsEntry
 GDataDocumentsEntryClass
 gdata_documents_entry_get_path

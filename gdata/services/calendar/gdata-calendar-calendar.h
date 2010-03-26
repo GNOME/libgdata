@@ -28,6 +28,52 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_CALENDAR_ACCESS_ROLE_READ:
+ *
+ * The users specified by the #GDataAccessRule have read-only access to the calendar.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CALENDAR_ACCESS_ROLE_READ "http://schemas.google.com/gCal/2005#read"
+
+/**
+ * GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY:
+ *
+ * The users specified by the #GDataAccessRule can only see the free/busy information on the calendar; not event details.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY "http://schemas.google.com/gCal/2005#freebusy"
+
+/**
+ * GDATA_CALENDAR_ACCESS_ROLE_EDITOR:
+ *
+ * The users specified by the #GDataAccessRule have full edit access to the calendar, except they can't change the calendar's access rules.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CALENDAR_ACCESS_ROLE_EDITOR "http://schemas.google.com/gCal/2005#editor"
+
+/**
+ * GDATA_CALENDAR_ACCESS_ROLE_OWNER:
+ *
+ * The users specified by the #GDataAccessRule have full owner access to the calendar.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CALENDAR_ACCESS_ROLE_OWNER "http://schemas.google.com/gCal/2005#owner"
+
+/**
+ * GDATA_CALENDAR_ACCESS_ROLE_ROOT:
+ *
+ * The users specified by the #GDataAccessRule have full administrator access to the calendar server.
+ * This is only available in Google Apps For Your Domain.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CALENDAR_ACCESS_ROLE_ROOT "http://schemas.google.com/gCal/2005#root"
+
 #define GDATA_TYPE_CALENDAR_CALENDAR		(gdata_calendar_calendar_get_type ())
 #define GDATA_CALENDAR_CALENDAR(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_CALENDAR_CALENDAR, GDataCalendarCalendar))
 #define GDATA_CALENDAR_CALENDAR_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_CALENDAR_CALENDAR, GDataCalendarCalendarClass))

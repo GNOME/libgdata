@@ -672,8 +672,8 @@ test_access_rule_get_xml (void)
 	g_assert_cmpuint (edited.tv_sec, >, 0); /* current time */
 
 	/* Set the properties more conventionally */
-	gdata_access_rule_set_role (rule, "writer");
-	gdata_access_rule_set_scope (rule, "user", "foo@example.com");
+	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE);
+	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "foo@example.com");
 
 	/* Check the generated XML's OK */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
@@ -684,7 +684,7 @@ test_access_rule_get_xml (void)
 				"<title type='text'>writer</title>"
 				"<id>an-id</id>"
 				"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gAcl:role value='writer'/>"
+				"<gAcl:role value='none'/>"
 				"<gAcl:scope type='user' value='foo@example.com'/>"
 			 "</entry>");
 

@@ -25,6 +25,10 @@
  *
  * #GDataCalendarCalendar is a subclass of #GDataEntry to represent a calendar from Google Calendar.
  *
+ * #GDataCalendarCalendar implements #GDataAccessHandler, meaning the access rules to it can be modified using that interface. As well as the
+ * access roles defined for the base #GDataAccessRule (e.g. %GDATA_ACCESS_ROLE_NONE), #GDataCalendarCalendar has its own, such as
+ * %GDATA_CALENDAR_ACCESS_ROLE_EDITOR and %GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY.
+ *
  * For more details of Google Calendar's GData API, see the <ulink type="http" url="http://code.google.com/apis/calendar/docs/2.0/reference.html">
  * online documentation</ulink>.
  **/
@@ -184,7 +188,7 @@ gdata_calendar_calendar_init (GDataCalendarCalendar *self)
 static gboolean
 is_owner_rule (GDataAccessRule *rule)
 {
-	return (strcmp (gdata_access_rule_get_role (rule), "http://schemas.google.com/gCal/2005#owner") == 0) ? TRUE : FALSE;
+	return (strcmp (gdata_access_rule_get_role (rule), GDATA_CALENDAR_ACCESS_ROLE_OWNER) == 0) ? TRUE : FALSE;
 }
 
 static void

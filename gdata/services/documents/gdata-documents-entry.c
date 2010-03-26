@@ -26,6 +26,10 @@
  * #GDataDocumentsEntry is a subclass of #GDataEntry to represent a Google Documents entry, which is then further subclassed
  * to give specific document types.
  *
+ * #GDataDocumentsEntry implements #GDataAccessHandler, meaning the access rules to it can be modified using that interface. As well as the
+ * access roles defined for the base #GDataAccessRule (e.g. %GDATA_ACCESS_ROLE_NONE), #GDataDocumentsEntry has its own, such as
+ * %GDATA_DOCUMENTS_ACCESS_ROLE_OWNER and %GDATA_DOCUMENTS_ACCESS_ROLE_READER.
+ *
  * For more details of Google Documents' GData API, see the <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">
  * online documentation</ulink>.
  *
@@ -202,7 +206,7 @@ _gdata_documents_entry_init_edited (GDataDocumentsEntry *self)
 static gboolean
 is_owner_rule (GDataAccessRule *rule)
 {
-	return (strcmp (gdata_access_rule_get_role (rule), "owner") == 0) ? TRUE : FALSE;
+	return (strcmp (gdata_access_rule_get_role (rule), GDATA_DOCUMENTS_ACCESS_ROLE_OWNER) == 0) ? TRUE : FALSE;
 }
 
 static void

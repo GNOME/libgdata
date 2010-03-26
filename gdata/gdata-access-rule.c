@@ -83,27 +83,28 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	/**
 	 * GDataAccessRule:role:
 	 *
-	 * The role of the person concerned by this ACL.
+	 * The role of the person concerned by this ACL. By default, this can only be %GDATA_ACCESS_ROLE_NONE. Services may extend it with
+	 * their own namespaced roles.
 	 *
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ROLE,
 				g_param_spec_string ("role",
 					"Role", "The role of the person concerned by this ACL.",
-					NULL,
+					GDATA_ACCESS_ROLE_NONE,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataAccessRule:scope-type:
 	 *
-	 * Specifies to whom this access rule applies.
+	 * Specifies to whom this access rule applies. For example, %GDATA_ACCESS_SCOPE_USER or %GDATA_ACCESS_SCOPE_DEFAULT.
 	 *
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SCOPE_TYPE,
 				g_param_spec_string ("scope-type",
 					"Scope type", "Specifies to whom this access rule applies.",
-					NULL,
+					GDATA_ACCESS_SCOPE_DEFAULT,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -155,6 +156,10 @@ gdata_access_rule_new (const gchar *id)
 	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 	 * setting it from parse_xml() to fail (duplicate element). */
 	g_get_current_time (&(rule->priv->edited));
+
+	/* Set up the role and scope type */
+	rule->priv->role = g_strdup (GDATA_ACCESS_ROLE_NONE);
+	rule->priv->scope_type = g_strdup (GDATA_ACCESS_SCOPE_DEFAULT);
 
 	return rule;
 }
@@ -255,7 +260,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 			scope_value = xmlGetProp (node, (xmlChar*) "value");
 
-			if (xmlStrcmp (scope_type, (xmlChar*) "default") == 0 && scope_value == NULL) {
+			if (xmlStrcmp (scope_type, (xmlChar*) GDATA_ACCESS_SCOPE_DEFAULT) == 0 && scope_value == NULL) {
 				xmlFree (scope_type);
 				return gdata_parser_error_required_property_missing (node, "value", error);
 			}
@@ -372,7 +377,7 @@ gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gch
 {
 	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));
 	g_return_if_fail (type != NULL);
-	g_return_if_fail ((strcmp (type, "default") == 0 && value == NULL) || value != NULL);
+	g_return_if_fail ((strcmp (type, GDATA_ACCESS_SCOPE_DEFAULT) == 0 && value == NULL) || value != NULL);
 
 	g_free (self->priv->scope_type);
 	self->priv->scope_type = g_strdup (type);

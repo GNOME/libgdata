@@ -29,6 +29,34 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_DOCUMENTS_ACCESS_ROLE_OWNER:
+ *
+ * The users specified by the #GDataAccessRule have full owner access to the document. This allows them to modify the access rules and delete
+ * the document, amongst other things.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_ACCESS_ROLE_OWNER "owner"
+
+/**
+ * GDATA_DOCUMENTS_ACCESS_ROLE_WRITER:
+ *
+ * The users specified by the #GDataAccessRule have write access to the document. They cannot modify the access rules or delete the document.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_ACCESS_ROLE_WRITER "writer"
+
+/**
+ * GDATA_DOCUMENTS_ACCESS_ROLE_READER:
+ *
+ * The users specified by the #GDataAccessRule have read-only access to the document.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_ACCESS_ROLE_READER "reader"
+
 #define GDATA_TYPE_DOCUMENTS_ENTRY		(gdata_documents_entry_get_type ())
 #define GDATA_DOCUMENTS_ENTRY(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntry))
 #define GDATA_DOCUMENTS_ENTRY_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryClass))
