@@ -118,7 +118,10 @@
 				the future. In any other case, a string value is used instead, with libgdata providing <code>#define</code>d values
 				for the known values of the property. These values should be used as much as possible by applications which use
 				libgdata (i.e. they should be treated as if they were enumerated values), but applications are free to use strings
-				of their own, too. All validation of such pseudi-enums is left to the server.</para>
+				of their own, too. All validation of such pseudo-enums is left to the server.</para>
+			<para>One situation where it is acceptable to use enumerated types is in API which is only ever used to query the server, and
+				isn't involved in processing or representing the response at all, i.e. subclasses of
+				<type><link linkend="GDataQuery">GDataQuery</link></type>.</para>
 		</refsect2>
 
 		<refsect2>

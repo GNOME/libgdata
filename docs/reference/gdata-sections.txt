@@ -206,10 +206,15 @@ GDataYouTubeServicePrivate
 <SECTION>
 <FILE>gdata-youtube-video</FILE>
 <TITLE>GDataYouTubeVideo</TITLE>
+GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN
+GDATA_YOUTUBE_ACTION_RATE
+GDATA_YOUTUBE_ACTION_COMMENT
+GDATA_YOUTUBE_ACTION_COMMENT_VOTE
+GDATA_YOUTUBE_ACTION_VIDEO_RESPOND
+GDATA_YOUTUBE_ACTION_EMBED
+GDATA_YOUTUBE_ACTION_SYNDICATE
 GDataYouTubeVideo
 GDataYouTubeVideoClass
-GDataYouTubeAspectRatio
-GDataYouTubeAction
 GDataYouTubePermission
 gdata_youtube_video_new
 gdata_youtube_video_look_up_content
@@ -251,11 +256,7 @@ GDATA_YOUTUBE_VIDEO
 GDATA_YOUTUBE_VIDEO_CLASS
 GDATA_YOUTUBE_VIDEO_GET_CLASS
 gdata_youtube_video_get_type
-GDATA_TYPE_YOUTUBE_ASPECT_RATIO
-GDATA_TYPE_YOUTUBE_ACTION
 GDATA_TYPE_YOUTUBE_PERMISSION
-gdata_youtube_aspect_ratio_get_type
-gdata_youtube_action_get_type
 gdata_youtube_permission_get_type
 <SUBSECTION Private>
 GDataYouTubeVideoPrivate

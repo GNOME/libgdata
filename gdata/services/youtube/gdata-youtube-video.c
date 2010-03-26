@@ -426,7 +426,8 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	/**
 	 * GDataYouTubeVideo:aspect-ratio:
 	 *
-	 * The aspect ratio of the video.
+	 * The aspect ratio of the video. A %NULL value means the aspect ratio is unknown (it could still be a widescreen video). A value of
+	 * %GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN means the video is definitely widescreen.
 	 *
 	 * For more information see the <ulink type="http"
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:aspectratio">online documentation</ulink>.
@@ -434,10 +435,9 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ASPECT_RATIO,
-				g_param_spec_enum ("aspect-ratio",
+				g_param_spec_string ("aspect-ratio",
 					"Aspect Ratio", "The aspect ratio of the video.",
-					GDATA_TYPE_YOUTUBE_ASPECT_RATIO,
-					GDATA_YOUTUBE_ASPECT_RATIO_UNKNOWN,
+					NULL,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
@@ -556,7 +556,7 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 			g_value_set_boxed (value, &(priv->recorded));
 			break;
 		case PROP_ASPECT_RATIO:
-			g_value_set_enum (value, gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (priv->media_group)));
+			g_value_set_string (value, gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (priv->media_group)));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -593,7 +593,7 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 			gdata_youtube_video_set_recorded (self, g_value_get_boxed (value));
 			break;
 		case PROP_ASPECT_RATIO:
-			gdata_youtube_video_set_aspect_ratio (self, g_value_get_enum (value));
+			gdata_youtube_video_set_aspect_ratio (self, g_value_get_string (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -925,29 +925,6 @@ gdata_youtube_video_set_location (GDataYouTubeVideo *self, const gchar *location
 	g_object_notify (G_OBJECT (self), "location");
 }
 
-/* Convert a GDataYouTubeAction into its string representation.
- * See: http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:accessControl */
-static const gchar *
-action_to_string (GDataYouTubeAction action)
-{
-	switch (action) {
-		case GDATA_YOUTUBE_ACTION_RATE:
-			return "rate";
-		case GDATA_YOUTUBE_ACTION_COMMENT:
-			return "comment";
-		case GDATA_YOUTUBE_ACTION_COMMENT_VOTE:
-			return "commentVote";
-		case GDATA_YOUTUBE_ACTION_VIDEO_RESPOND:
-			return "videoRespond";
-		case GDATA_YOUTUBE_ACTION_EMBED:
-			return "embed";
-		case GDATA_YOUTUBE_ACTION_SYNDICATE:
-			return "syndicate";
-		default:
-			g_assert_not_reached ();
-	}
-}
-
 /**
  * gdata_youtube_video_get_access_control:
  * @self: a #GDataYouTubeVideo
@@ -961,13 +938,14 @@ action_to_string (GDataYouTubeAction action)
  * Since: 0.7.0
  **/
 GDataYouTubePermission
-gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, GDataYouTubeAction action)
+gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, const gchar *action)
 {
 	gpointer value;
 
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), GDATA_YOUTUBE_PERMISSION_DENIED);
+	g_return_val_if_fail (action != NULL, GDATA_YOUTUBE_PERMISSION_DENIED);
 
-	if (g_hash_table_lookup_extended (self->priv->access_controls, action_to_string (action), NULL, &value) == FALSE)
+	if (g_hash_table_lookup_extended (self->priv->access_controls, action, NULL, &value) == FALSE)
 		return GDATA_YOUTUBE_PERMISSION_DENIED;
 	return GPOINTER_TO_INT (value);
 }
@@ -986,13 +964,14 @@ gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, GDataYouTubeAct
  * Since: 0.7.0
  **/
 void
-gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, GDataYouTubeAction action, GDataYouTubePermission permission)
+gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, const gchar *action, GDataYouTubePermission permission)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	g_return_if_fail (action == GDATA_YOUTUBE_ACTION_RATE || action == GDATA_YOUTUBE_ACTION_COMMENT ||
+	g_return_if_fail (action != NULL);
+	g_return_if_fail (strcmp (action, GDATA_YOUTUBE_ACTION_RATE) == 0 || strcmp (action, GDATA_YOUTUBE_ACTION_COMMENT) == 0 ||
 	                  permission != GDATA_YOUTUBE_PERMISSION_MODERATED);
 
-	g_hash_table_replace (self->priv->access_controls, g_strdup (action_to_string (action)), GINT_TO_POINTER (permission));
+	g_hash_table_replace (self->priv->access_controls, g_strdup (action), GINT_TO_POINTER (permission));
 }
 
 /**
@@ -1443,28 +1422,29 @@ gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)
  *
  * Gets the #GDataYouTubeVideo:aspect-ratio property.
  *
- * Return value: the aspect ratio property
+ * Return value: the aspect ratio property, or %NULL
  *
  * Since: 0.4.0
  **/
-GDataYouTubeAspectRatio
+const gchar *
 gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self)
 {
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
 	return gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (self->priv->media_group));
 }
 
 /**
  * gdata_youtube_video_set_aspect_ratio:
  * @self: a #GDataYouTubeVideo
- * @aspect_ratio: the aspect ratio property
+ * @aspect_ratio: the aspect ratio property, or %NULL
  *
  * Sets the #GDataYouTubeVideo:aspect-ratio property to specify the video's aspect ratio.
+ * If @aspect_ratio is %NULL, the property will be unset.
  *
  * Since: 0.4.0
  **/
 void
-gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, GDataYouTubeAspectRatio aspect_ratio)
+gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, const gchar *aspect_ratio)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 	gdata_youtube_group_set_aspect_ratio (GDATA_YOUTUBE_GROUP (self->priv->media_group), aspect_ratio);

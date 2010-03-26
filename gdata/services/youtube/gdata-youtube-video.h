@@ -32,43 +32,70 @@
 G_BEGIN_DECLS
 
 /**
- * GDataYouTubeAspectRatio:
- * @GDATA_YOUTUBE_ASPECT_RATIO_UNKNOWN: unknown aspect ratio
- * @GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN: widescreen (16:9) video
+ * GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN:
  *
- * The aspect ratio of a video. See the
- * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:aspectratio">online documentation</ulink>
- * for more information.
+ * The aspect ratio for widescreen (16:9) videos.
  *
- * Since: 0.4.0
- **/
-typedef enum {
-	GDATA_YOUTUBE_ASPECT_RATIO_UNKNOWN = 0,
-	GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN
-} GDataYouTubeAspectRatio;
-
-/**
- * GDataYouTubeAction:
- * @GDATA_YOUTUBE_ACTION_RATE: rate the video
- * @GDATA_YOUTUBE_ACTION_COMMENT: comment on the video
- * @GDATA_YOUTUBE_ACTION_COMMENT_VOTE: rate other users' comments on the video
- * @GDATA_YOUTUBE_ACTION_VIDEO_RESPOND: add a video response to the video
- * @GDATA_YOUTUBE_ACTION_EMBED: embed the video on third-party websites
- * @GDATA_YOUTUBE_ACTION_SYNDICATE: YouTube can show the video on mobile phones and televisions
- *
- * Access-controllable actions which can be performed on a #GDataYouTubeVideo. The permissions for each action
- * can be set using gdata_youtube_video_set_access_control().
+ * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:aspectratio">
+ * online documentation</ulink>.
  *
  * Since: 0.7.0
  **/
-typedef enum {
-	GDATA_YOUTUBE_ACTION_RATE,
-	GDATA_YOUTUBE_ACTION_COMMENT,
-	GDATA_YOUTUBE_ACTION_COMMENT_VOTE,
-	GDATA_YOUTUBE_ACTION_VIDEO_RESPOND,
-	GDATA_YOUTUBE_ACTION_EMBED,
-	GDATA_YOUTUBE_ACTION_SYNDICATE
-} GDataYouTubeAction;
+#define GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN "widescreen"
+
+/**
+ * GDATA_YOUTUBE_ACTION_RATE:
+ *
+ * An action to rate a video, for use with gdata_youtube_video_set_access_control().
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_YOUTUBE_ACTION_RATE "rate"
+
+/**
+ * GDATA_YOUTUBE_ACTION_COMMENT:
+ *
+ * An action to comment on a video, for use with gdata_youtube_video_set_access_control().
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_YOUTUBE_ACTION_COMMENT "comment"
+
+/**
+ * GDATA_YOUTUBE_ACTION_COMMENT_VOTE:
+ *
+ * An action to rate other users' comments on a video, for use with gdata_youtube_video_set_access_control().
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_YOUTUBE_ACTION_COMMENT_VOTE "commentVote"
+
+/**
+ * GDATA_YOUTUBE_ACTION_VIDEO_RESPOND:
+ *
+ * An action to add a video response to a video, for use with gdata_youtube_video_set_access_control().
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_YOUTUBE_ACTION_VIDEO_RESPOND "videoRespond"
+
+/**
+ * GDATA_YOUTUBE_ACTION_EMBED:
+ *
+ * An action to embed a video on third-party websites, for use with gdata_youtube_video_set_access_control().
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_YOUTUBE_ACTION_EMBED "embed"
+
+/**
+ * GDATA_YOUTUBE_ACTION_SYNDICATE:
+ *
+ * An action allowing YouTube to show the video on mobile phones and televisions, for use with gdata_youtube_video_set_access_control().
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_YOUTUBE_ACTION_SYNDICATE "syndicate"
 
 /**
  * GDataYouTubePermission:
@@ -125,8 +152,8 @@ guint gdata_youtube_video_get_view_count (GDataYouTubeVideo *self);
 guint gdata_youtube_video_get_favorite_count (GDataYouTubeVideo *self);
 const gchar *gdata_youtube_video_get_location (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_location (GDataYouTubeVideo *self, const gchar *location);
-GDataYouTubePermission gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, GDataYouTubeAction action);
-void gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, GDataYouTubeAction action, GDataYouTubePermission permission);
+GDataYouTubePermission gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, const gchar *action);
+void gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, const gchar *action, GDataYouTubePermission permission);
 void gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max, guint *count, gdouble *average);
 const gchar *gdata_youtube_video_get_keywords (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar *keywords);
@@ -149,8 +176,8 @@ void gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draf
 GDataYouTubeState *gdata_youtube_video_get_state (GDataYouTubeVideo *self);
 void gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded);
 void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, const GTimeVal *recorded);
-GDataYouTubeAspectRatio gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self);
-void gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, GDataYouTubeAspectRatio aspect_ratio);
+const gchar *gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self);
+void gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, const gchar *aspect_ratio);
 
 gchar *gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri);
 
