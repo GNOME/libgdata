@@ -71,7 +71,7 @@ gdata_youtube_credit_class_init (GDataYouTubeCreditClass *klass)
 	/**
 	 * GDataYouTubeCredit:entity-type:
 	 *
-	 * The type of entity who is credited. Currently this can only be "partner", for a YouTube partner.
+	 * The type of entity who is credited. Currently this can only be %GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER, for a YouTube partner.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:credit">
@@ -157,7 +157,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  *
  * Gets the #GDataYouTubeCredit:entity-type property.
  *
- * Return value: the type of the credited user (e.g. "partner"), or %NULL
+ * Return value: the type of the credited user (e.g. %GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER), or %NULL
  *
  * Since: 0.4.0
  **/

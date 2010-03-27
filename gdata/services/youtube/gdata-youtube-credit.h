@@ -28,6 +28,15 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER:
+ *
+ * The credited entity is a YouTube partner.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER "partner"
+
 #define GDATA_TYPE_YOUTUBE_CREDIT		(gdata_youtube_credit_get_type ())
 #define GDATA_YOUTUBE_CREDIT(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_YOUTUBE_CREDIT, GDataYouTubeCredit))
 #define GDATA_YOUTUBE_CREDIT_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_YOUTUBE_CREDIT, GDataYouTubeCreditClass))
