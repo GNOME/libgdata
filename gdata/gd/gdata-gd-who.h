@@ -27,6 +27,44 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_GD_WHO_EVENT_ATTENDEE:
+ *
+ * The relation type URI for a general meeting or event attendee.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_WHO_EVENT_ATTENDEE "http://schemas.google.com/g/2005#event.attendee"
+
+/**
+ * GDATA_GD_WHO_EVENT_ORGANIZER:
+ *
+ * The relation type URI for an event organizer (not necessarily an attendee).
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_WHO_EVENT_ORGANIZER "http://schemas.google.com/g/2005#event.organizer"
+
+/**
+ * GDATA_GD_WHO_EVENT_PERFORMER:
+ *
+ * The relation type URI for an event performer, which is similar to %GDATA_GD_WHO_EVENT_SPEAKER, but with more emphasis on art rather than speaking.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_WHO_EVENT_PERFORMER "http://schemas.google.com/g/2005#event.performer"
+
+/**
+ * GDATA_GD_WHO_EVENT_SPEAKER:
+ *
+ * The relation type URI for a speaker at an event.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_WHO_EVENT_SPEAKER "http://schemas.google.com/g/2005#event.speaker"
+
+/* TODO: Message kind relation types (http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho) */
+
 #define GDATA_TYPE_GD_WHO		(gdata_gd_who_get_type ())
 #define GDATA_GD_WHO(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_GD_WHO, GDataGDWho))
 #define GDATA_GD_WHO_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_GD_WHO, GDataGDWhoClass))

@@ -27,6 +27,33 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_GD_REMINDER_ALERT:
+ *
+ * The #GDataGDReminder:method for an alert to appear in the user's browser.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_REMINDER_ALERT "alert"
+
+/**
+ * GDATA_GD_REMINDER_EMAIL:
+ *
+ * The #GDataGDReminder:method for an alert to be sent to the user by e-mail.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_REMINDER_EMAIL "email"
+
+/**
+ * GDATA_GD_REMINDER_SMS:
+ *
+ * The #GDataGDReminder:method for an alert to be sent to the user by SMS.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_REMINDER_SMS "sms"
+
 #define GDATA_TYPE_GD_REMINDER		(gdata_gd_reminder_get_type ())
 #define GDATA_GD_REMINDER(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_GD_REMINDER, GDataGDReminder))
 #define GDATA_GD_REMINDER_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_GD_REMINDER, GDataGDReminderClass))

@@ -27,6 +27,33 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_GD_WHERE_EVENT:
+ *
+ * The relation type URI for an event location.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_WHERE_EVENT "http://schemas.google.com/g/2005#event"
+
+/**
+ * GDATA_GD_WHERE_EVENT_ALTERNATE:
+ *
+ * The relation type URI for an alternate event location, such as a video conference site.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_WHERE_EVENT_ALTERNATE "http://schemas.google.com/g/2005#event.alternate"
+
+/**
+ * GDATA_GD_WHERE_EVENT_PARKING:
+ *
+ * The relation type URI for an event's parking lot.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_WHERE_EVENT_PARKING "http://schemas.google.com/g/2005#event.parking"
+
 #define GDATA_TYPE_GD_WHERE		(gdata_gd_where_get_type ())
 #define GDATA_GD_WHERE(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_GD_WHERE, GDataGDWhere))
 #define GDATA_GD_WHERE_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_GD_WHERE, GDataGDWhereClass))

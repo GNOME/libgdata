@@ -80,7 +80,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	/**
 	 * GDataGDReminder:method:
 	 *
-	 * The notification method the reminder should use.
+	 * The notification method the reminder should use. For example: %GDATA_GD_REMINDER_ALERT or %GDATA_GD_REMINDER_EMAIL.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.

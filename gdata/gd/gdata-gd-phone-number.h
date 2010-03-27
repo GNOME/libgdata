@@ -27,6 +27,186 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_GD_PHONE_NUMBER_ASSISTANT:
+ *
+ * The relation type URI for the phone number of an assistant.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_ASSISTANT "http://schemas.google.com/g/2005#assistant"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_CALLBACK:
+ *
+ * The relation type URI for the phone number of a callback service.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_CALLBACK "http://schemas.google.com/g/2005#callback"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_CAR:
+ *
+ * The relation type URI for the phone number of a car phone.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_CAR "http://schemas.google.com/g/2005#car"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_COMPANY_MAIN:
+ *
+ * The relation type URI for the main phone number of a company.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_COMPANY_MAIN "http://schemas.google.com/g/2005#company_main"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_FAX:
+ *
+ * The relation type URI for the phone number of a fax machine.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_FAX "http://schemas.google.com/g/2005#fax"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_HOME:
+ *
+ * The relation type URI for a home phone number.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_HOME "http://schemas.google.com/g/2005#home"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_HOME_FAX:
+ *
+ * The relation type URI for the phone number of a home fax machine.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_HOME_FAX "http://schemas.google.com/g/2005#home_fax"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_ISDN:
+ *
+ * The relation type URI for the phone number of an ISDN phone.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_ISDN "http://schemas.google.com/g/2005#isdn"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_MAIN:
+ *
+ * The relation type URI for the main phone number of a person.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_MAIN "http://schemas.google.com/g/2005#main"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_MOBILE:
+ *
+ * The relation type URI for the phone number of a mobile phone.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_MOBILE "http://schemas.google.com/g/2005#mobile"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_OTHER:
+ *
+ * The relation type URI for a miscellaneous phone number.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_OTHER "http://schemas.google.com/g/2005#other"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_OTHER_FAX:
+ *
+ * The relation type URI for a miscellaneous fax machine's phone number.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_OTHER_FAX "http://schemas.google.com/g/2005#other_fax"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_PAGER:
+ *
+ * The relation type URI for the phone number of a pager.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_PAGER "http://schemas.google.com/g/2005#pager"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_RADIO:
+ *
+ * The relation type URI for the phone number of a radio phone.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_RADIO "http://schemas.google.com/g/2005#radio"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_TELEX:
+ *
+ * The relation type URI for the phone number of a telex machine.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_TELEX "http://schemas.google.com/g/2005#telex"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_TTY_TDD:
+ *
+ * The relation type URI for the phone number of a TTY TTD.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_TTY_TDD "http://schemas.google.com/g/2005#tty_tdd"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_WORK:
+ *
+ * The relation type URI for the phone number of a work place.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_WORK "http://schemas.google.com/g/2005#work"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_WORK_FAX:
+ *
+ * The relation type URI for the phone number of a work fax machine.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_WORK_FAX "http://schemas.google.com/g/2005#work_fax"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_WORK_MOBILE:
+ *
+ * The relation type URI for the phone number of a work mobile phone.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_WORK_MOBILE "http://schemas.google.com/g/2005#work_mobile"
+
+/**
+ * GDATA_GD_PHONE_NUMBER_WORK_PAGER:
+ *
+ * The relation type URI for the phone number of a work pager.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_PHONE_NUMBER_WORK_PAGER "http://schemas.google.com/g/2005#work_pager"
+
 #define GDATA_TYPE_GD_PHONE_NUMBER		(gdata_gd_phone_number_get_type ())
 #define GDATA_GD_PHONE_NUMBER(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_GD_PHONE_NUMBER, GDataGDPhoneNumber))
 #define GDATA_GD_PHONE_NUMBER_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_GD_PHONE_NUMBER, GDataGDPhoneNumberClass))

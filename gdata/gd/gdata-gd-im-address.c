@@ -98,7 +98,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	/**
 	 * GDataGDIMAddress:protocol:
 	 *
-	 * Identifies the IM network.
+	 * Identifies the IM network. For example: %GDATA_GD_IM_PROTOCOL_JABBER or %GDATA_GD_IM_PROTOCOL_GOOGLE_TALK.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
@@ -114,7 +114,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	/**
 	 * GDataGDIMAddress:relation-type:
 	 *
-	 * A programmatic value that identifies the type of IM address.
+	 * A programmatic value that identifies the type of IM address. For example: %GDATA_GD_IM_ADDRESS_HOME or %GDATA_GD_IM_ADDRESS_WORK.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.

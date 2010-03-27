@@ -130,7 +130,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	/**
 	 * GDataGDOrganization:relation-type:
 	 *
-	 * A programmatic value that identifies the type of organization.
+	 * A programmatic value that identifies the type of organization. For example: %GDATA_GD_ORGANIZATION_WORK or %GDATA_GD_ORGANIZATION_OTHER.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.

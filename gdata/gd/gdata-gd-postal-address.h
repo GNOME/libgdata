@@ -28,6 +28,33 @@
 G_BEGIN_DECLS
 
 /**
+ * GDATA_GD_POSTAL_ADDRESS_WORK:
+ *
+ * The relation type URI for the postal address of a workplace.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_POSTAL_ADDRESS_WORK "http://schemas.google.com/g/2005#work"
+
+/**
+ * GDATA_GD_POSTAL_ADDRESS_HOME:
+ *
+ * The relation type URI for the postal address of a home.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_POSTAL_ADDRESS_HOME "http://schemas.google.com/g/2005#home"
+
+/**
+ * GDATA_GD_POSTAL_ADDRESS_OTHER:
+ *
+ * The relation type URI for a miscellaneous postal address.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_POSTAL_ADDRESS_OTHER "http://schemas.google.com/g/2005#other"
+
+/**
  * GDATA_GD_MAIL_CLASS_BOTH:
  *
  * Parcels and letters can be sent to the address. Value for #GDataGDPostalAddress:mail-class.

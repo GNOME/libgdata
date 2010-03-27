@@ -1265,13 +1265,13 @@ test_gd_email_address (void)
 
 	/* Check the properties */
 	g_assert_cmpstr (gdata_gd_email_address_get_address (email), ==, "fubar@gmail.com");
-	g_assert_cmpstr (gdata_gd_email_address_get_relation_type (email), ==, "http://schemas.google.com/g/2005#home");
+	g_assert_cmpstr (gdata_gd_email_address_get_relation_type (email), ==, GDATA_GD_EMAIL_ADDRESS_HOME);
 	g_assert_cmpstr (gdata_gd_email_address_get_label (email), ==, "Personal & Private");
 	g_assert_cmpstr (gdata_gd_email_address_get_display_name (email), ==, "<John Smith>");
 	g_assert (gdata_gd_email_address_is_primary (email) == TRUE);
 
 	/* Compare it against another identical address */
-	email2 = gdata_gd_email_address_new ("fubar@gmail.com", "http://schemas.google.com/g/2005#home", "Personal & Private", TRUE);
+	email2 = gdata_gd_email_address_new ("fubar@gmail.com", GDATA_GD_EMAIL_ADDRESS_HOME, "Personal & Private", TRUE);
 	gdata_gd_email_address_set_display_name (email2, "<John Smith>");
 	g_assert_cmpint (gdata_gd_email_address_compare (email, email2), ==, 0);
 
@@ -1334,17 +1334,17 @@ test_gd_im_address (void)
 
 	/* Check the properties */
 	g_assert_cmpstr (gdata_gd_im_address_get_address (im), ==, "foo@bar.msn.com");
-	g_assert_cmpstr (gdata_gd_im_address_get_protocol (im), ==, "http://schemas.google.com/g/2005#MSN");
-	g_assert_cmpstr (gdata_gd_im_address_get_relation_type (im), ==, "http://schemas.google.com/g/2005#home");
+	g_assert_cmpstr (gdata_gd_im_address_get_protocol (im), ==, GDATA_GD_IM_PROTOCOL_LIVE_MESSENGER);
+	g_assert_cmpstr (gdata_gd_im_address_get_relation_type (im), ==, GDATA_GD_IM_ADDRESS_HOME);
 	g_assert (gdata_gd_im_address_get_label (im) == NULL);
 	g_assert (gdata_gd_im_address_is_primary (im) == TRUE);
 
 	/* Compare it against another identical address */
-	im2 = gdata_gd_im_address_new ("foo@bar.msn.com", "http://schemas.google.com/g/2005#MSN", "http://schemas.google.com/g/2005#home", NULL, TRUE);
+	im2 = gdata_gd_im_address_new ("foo@bar.msn.com", GDATA_GD_IM_PROTOCOL_LIVE_MESSENGER, GDATA_GD_IM_ADDRESS_HOME, NULL, TRUE);
 	g_assert_cmpint (gdata_gd_im_address_compare (im, im2), ==, 0);
 
 	/* …and a different one */
-	gdata_gd_im_address_set_protocol (im2, "http://schemas.google.com/g/2005#GOOGLE_TALK");
+	gdata_gd_im_address_set_protocol (im2, GDATA_GD_IM_PROTOCOL_GOOGLE_TALK);
 	g_assert_cmpint (gdata_gd_im_address_compare (im, im2), !=, 0);
 	g_object_unref (im2);
 
@@ -1496,7 +1496,7 @@ test_gd_organization (void)
 	/* Check the properties */
 	g_assert_cmpstr (gdata_gd_organization_get_name (org), ==, "Google, Inc.");
 	g_assert_cmpstr (gdata_gd_organization_get_title (org), ==, "<Angle Bracketeer>");
-	g_assert_cmpstr (gdata_gd_organization_get_relation_type (org), ==, "http://schemas.google.com/g/2005#work");
+	g_assert_cmpstr (gdata_gd_organization_get_relation_type (org), ==, GDATA_GD_ORGANIZATION_WORK);
 	g_assert_cmpstr (gdata_gd_organization_get_label (org), ==, "Work & Occupation");
 	g_assert_cmpstr (gdata_gd_organization_get_department (org), ==, "Finance");
 	g_assert_cmpstr (gdata_gd_organization_get_job_description (org), ==, "Doing stuff.");
@@ -1506,7 +1506,7 @@ test_gd_organization (void)
 	g_assert (gdata_gd_organization_is_primary (org) == TRUE);
 
 	/* Compare it against another identical organization */
-	org2 = gdata_gd_organization_new ("Google, Inc.", "<Angle Bracketeer>", "http://schemas.google.com/g/2005#work", "Work & Occupation", TRUE);
+	org2 = gdata_gd_organization_new ("Google, Inc.", "<Angle Bracketeer>", GDATA_GD_ORGANIZATION_WORK, "Work & Occupation", TRUE);
 	gdata_gd_organization_set_department (org2, "Finance");
 	gdata_gd_organization_set_location (org2, location);
 	g_assert_cmpint (gdata_gd_organization_compare (org, org2), ==, 0);
@@ -1580,12 +1580,12 @@ test_gd_phone_number (void)
 	/* Check the properties */
 	g_assert_cmpstr (gdata_gd_phone_number_get_number (phone), ==, "+1 206 555 1212");
 	g_assert_cmpstr (gdata_gd_phone_number_get_uri (phone), ==, "tel:+12065551212");
-	g_assert_cmpstr (gdata_gd_phone_number_get_relation_type (phone), ==, "http://schemas.google.com/g/2005#mobile");
+	g_assert_cmpstr (gdata_gd_phone_number_get_relation_type (phone), ==, GDATA_GD_PHONE_NUMBER_MOBILE);
 	g_assert_cmpstr (gdata_gd_phone_number_get_label (phone), ==, "Personal & business calls only");
 	g_assert (gdata_gd_phone_number_is_primary (phone) == FALSE);
 
 	/* Compare it against another identical number */
-	phone2 = gdata_gd_phone_number_new ("+1 206 555 1212", "http://schemas.google.com/g/2005#mobile", "Personal & business calls only",
+	phone2 = gdata_gd_phone_number_new ("+1 206 555 1212", GDATA_GD_PHONE_NUMBER_MOBILE, "Personal & business calls only",
 					    "tel:+12065551212", FALSE);
 	g_assert_cmpint (gdata_gd_phone_number_compare (phone, phone2), ==, 0);
 
@@ -1658,12 +1658,12 @@ test_gd_postal_address (void)
 	g_assert_cmpstr (gdata_gd_postal_address_get_street (postal), ==, "500 West 45th Street");
 	g_assert_cmpstr (gdata_gd_postal_address_get_city (postal), ==, "New York");
 	g_assert_cmpstr (gdata_gd_postal_address_get_postcode (postal), ==, "NY 10036");
-	g_assert_cmpstr (gdata_gd_postal_address_get_relation_type (postal), ==, "http://schemas.google.com/g/2005#home");
+	g_assert_cmpstr (gdata_gd_postal_address_get_relation_type (postal), ==, GDATA_GD_POSTAL_ADDRESS_HOME);
 	g_assert_cmpstr (gdata_gd_postal_address_get_label (postal), ==, "Home & Safe House");
 	g_assert (gdata_gd_postal_address_is_primary (postal) == TRUE);
 
 	/* Compare it against another identical address */
-	postal2 = gdata_gd_postal_address_new ("http://schemas.google.com/g/2005#home", "Home & Safe House", TRUE);
+	postal2 = gdata_gd_postal_address_new (GDATA_GD_POSTAL_ADDRESS_HOME, "Home & Safe House", TRUE);
 	gdata_gd_postal_address_set_street (postal2, "500 West 45th Street");
 	gdata_gd_postal_address_set_city (postal2, "New York");
 	gdata_gd_postal_address_set_postcode (postal2, "NY 10036");
@@ -1790,14 +1790,14 @@ test_gd_reminder (void)
 	g_clear_error (&error);
 
 	/* Check the properties */
-	g_assert_cmpstr (gdata_gd_reminder_get_method (reminder), ==, "alert");
+	g_assert_cmpstr (gdata_gd_reminder_get_method (reminder), ==, GDATA_GD_REMINDER_ALERT);
 	g_assert (gdata_gd_reminder_is_absolute_time (reminder) == TRUE);
 	gdata_gd_reminder_get_absolute_time (reminder, &time_val);
 	g_assert_cmpint (time_val.tv_sec, ==, 1118105700);
 	g_assert_cmpint (time_val.tv_usec, ==, 0);
 
 	/* Compare to another reminder */
-	reminder2 = gdata_gd_reminder_new ("alert", &time_val, -1);
+	reminder2 = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, &time_val, -1);
 	g_assert_cmpint (gdata_gd_reminder_compare (reminder, reminder2), ==, 0);
 	g_object_unref (reminder2);
 
@@ -1890,7 +1890,7 @@ test_gd_when (void)
 	g_assert_cmpint (gdata_gd_reminder_get_relative_time (GDATA_GD_REMINDER (reminders->data)), ==, 15);
 
 	/* Add another reminder */
-	reminder = gdata_gd_reminder_new ("alert", &time_val, -1);
+	reminder = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, &time_val, -1);
 	gdata_gd_when_add_reminder (when, reminder);
 	g_object_unref (reminder);
 
@@ -1922,12 +1922,12 @@ test_gd_where (void)
 	g_clear_error (&error);
 
 	/* Check the properties */
-	g_assert_cmpstr (gdata_gd_where_get_relation_type (where), ==, "http://schemas.google.com/g/2005#event.alternate");
+	g_assert_cmpstr (gdata_gd_where_get_relation_type (where), ==, GDATA_GD_WHERE_EVENT_ALTERNATE);
 	g_assert_cmpstr (gdata_gd_where_get_value_string (where), ==, "Metropolis");
 	g_assert_cmpstr (gdata_gd_where_get_label (where), ==, "New York Location <videoconference>");
 
 	/* Compare it against another identical place */
-	where2 = gdata_gd_where_new ("http://schemas.google.com/g/2005#event.alternate", "Metropolis", "New York Location <videoconference>");
+	where2 = gdata_gd_where_new (GDATA_GD_WHERE_EVENT_ALTERNATE, "Metropolis", "New York Location <videoconference>");
 	g_assert_cmpint (gdata_gd_where_compare (where, where2), ==, 0);
 
 	/* …and a different one */

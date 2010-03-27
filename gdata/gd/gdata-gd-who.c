@@ -82,7 +82,8 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	/**
 	 * GDataGDWho:relation-type:
 	 *
-	 * Specifies the relationship between the containing entity and the contained person.
+	 * Specifies the relationship between the containing entity and the contained person. For example: %GDATA_GD_WHO_EVENT_PERFORMER or
+	 * %GDATA_GD_WHO_EVENT_ATTENDEE.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.

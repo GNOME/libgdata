@@ -248,7 +248,7 @@ test_insert_simple (gconstpointer service)
 	where = gdata_gd_where_new (NULL, "Rolling Lawn Courts", NULL);
 	gdata_calendar_event_add_place (event, where);
 	g_object_unref (where);
-	who = gdata_gd_who_new ("http://schemas.google.com/g/2005#event.organizer", "John Smith‽", "john.smith@example.com");
+	who = gdata_gd_who_new (GDATA_GD_WHO_EVENT_ORGANIZER, "John Smith‽", "john.smith@example.com");
 	gdata_calendar_event_add_person (event, who);
 	g_object_unref (who);
 	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &start_time);

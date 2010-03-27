@@ -82,7 +82,8 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	/**
 	 * GDataGDWhere:relation-type:
 	 *
-	 * Specifies the relationship between the containing entity and the contained location.
+	 * Specifies the relationship between the containing entity and the contained location. For example: %GDATA_GD_WHERE_EVENT or
+	 * %GDATA_GD_WHERE_EVENT_PARKING.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.

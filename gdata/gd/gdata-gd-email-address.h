@@ -27,6 +27,33 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_GD_EMAIL_ADDRESS_HOME:
+ *
+ * The relation type URI for a home e-mail address.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_EMAIL_ADDRESS_HOME "http://schemas.google.com/g/2005#home"
+
+/**
+ * GDATA_GD_EMAIL_ADDRESS_OTHER:
+ *
+ * The relation type URI for a miscellaneous e-mail address.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_EMAIL_ADDRESS_OTHER "http://schemas.google.com/g/2005#other"
+
+/**
+ * GDATA_GD_EMAIL_ADDRESS_WORK:
+ *
+ * The relation type URI for a work e-mail address.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_EMAIL_ADDRESS_WORK "http://schemas.google.com/g/2005#work"
+
 #define GDATA_TYPE_GD_EMAIL_ADDRESS		(gdata_gd_email_address_get_type ())
 #define GDATA_GD_EMAIL_ADDRESS(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_GD_EMAIL_ADDRESS, GDataGDEmailAddress))
 #define GDATA_GD_EMAIL_ADDRESS_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_GD_EMAIL_ADDRESS, GDataGDEmailAddressClass))

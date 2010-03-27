@@ -28,6 +28,24 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_GD_ORGANIZATION_WORK:
+ *
+ * The relation type URI for a work organization.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_ORGANIZATION_WORK "http://schemas.google.com/g/2005#work"
+
+/**
+ * GDATA_GD_ORGANIZATION_OTHER:
+ *
+ * The relation type URI for a miscellaneous organization.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_GD_ORGANIZATION_OTHER "http://schemas.google.com/g/2005#other"
+
 #define GDATA_TYPE_GD_ORGANIZATION		(gdata_gd_organization_get_type ())
 #define GDATA_GD_ORGANIZATION(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_GD_ORGANIZATION, GDataGDOrganization))
 #define GDATA_GD_ORGANIZATION_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_GD_ORGANIZATION, GDataGDOrganizationClass))

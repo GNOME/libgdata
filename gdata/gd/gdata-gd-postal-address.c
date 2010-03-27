@@ -128,7 +128,8 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	/**
 	 * GDataGDPostalAddress:relation-type:
 	 *
-	 * A programmatic value that identifies the type of postal address.
+	 * A programmatic value that identifies the type of postal address. For example: %GDATA_GD_POSTAL_ADDRESS_WORK or
+	 * %GDATA_GD_POSTAL_ADDRESS_OTHER.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
@@ -138,7 +139,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 				g_param_spec_string ("relation-type",
 					"Relation type", "A programmatic value that identifies the type of postal address.",
-					NULL,
+					GDATA_GD_POSTAL_ADDRESS_WORK,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -176,7 +177,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	/**
 	 * GDataGDPostalAddress:mail-class:
 	 *
-	 * Classes of mail accepted at this address.
+	 * Classes of mail accepted at this address. For example: %GDATA_GD_MAIL_CLASS_LETTERS or %GDATA_GD_MAIL_CLASS_BOTH.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
@@ -192,7 +193,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	/**
 	 * GDataGDPostalAddress:usage:
 	 *
-	 * The context in which this addess can be used.
+	 * The context in which this addess can be used. For example: %GDATA_GD_ADDRESS_USAGE_GENERAL or %GDATA_GD_ADDRESS_USAGE_LOCAL.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.

@@ -119,7 +119,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	/**
 	 * GDataGDPhoneNumber:relation-type:
 	 *
-	 * A programmatic value that identifies the type of phone number.
+	 * A programmatic value that identifies the type of phone number. For example: %GDATA_GD_PHONE_NUMBER_WORK or %GDATA_GD_PHONE_NUMBER_PAGER.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.

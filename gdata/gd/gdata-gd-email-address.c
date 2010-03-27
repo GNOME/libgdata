@@ -98,7 +98,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	/**
 	 * GDataGDEmailAddress:relation-type:
 	 *
-	 * A programmatic value that identifies the type of e-mail address.
+	 * A programmatic value that identifies the type of e-mail address. For example: %GDATA_GD_EMAIL_ADDRESS_HOME or %GDATA_GD_EMAIL_ADDRESS_WORK.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
