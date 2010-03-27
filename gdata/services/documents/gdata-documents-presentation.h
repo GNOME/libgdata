@@ -45,7 +45,7 @@ typedef struct _GDataDocumentsPresentationPrivate	GDataDocumentsPresentationPriv
  * @GDATA_DOCUMENTS_PRESENTATION_SWF: the document in Adobe Flash SWF format
  * @GDATA_DOCUMENTS_PRESENTATION_TXT: the document in text format
  *
- * The various different file formats in which a presentation can be downloaded, with conversation happening on the server.
+ * The different available download formats for presentations.
  *
  * Since: 0.4.0
  **/
