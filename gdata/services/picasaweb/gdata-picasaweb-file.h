@@ -29,6 +29,42 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_PICASAWEB_VIDEO_STATUS_PENDING:
+ *
+ * The video is still being processed.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_PICASAWEB_VIDEO_STATUS_PENDING "pending"
+
+/**
+ * GDATA_PICASAWEB_VIDEO_STATUS_READY:
+ *
+ * The video has been processed, but still needs thumbnailing.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_PICASAWEB_VIDEO_STATUS_READY "ready"
+
+/**
+ * GDATA_PICASAWEB_VIDEO_STATUS_FINAL:
+ *
+ * The video has been processed and thumbnailed.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_PICASAWEB_VIDEO_STATUS_FINAL "final"
+
+/**
+ * GDATA_PICASAWEB_VIDEO_STATUS_FAILED:
+ *
+ * There was an error while processing or thumbnailing the video and it should be deleted.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_PICASAWEB_VIDEO_STATUS_FAILED "failed"
+
 #define GDATA_TYPE_PICASAWEB_FILE 		(gdata_picasaweb_file_get_type ())
 #define GDATA_PICASAWEB_FILE(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_PICASAWEB_FILE, GDataPicasaWebFile))
 #define GDATA_PICASAWEB_FILE_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_PICASAWEB_FILE, GDataPicasaWebFileClass))

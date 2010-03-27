@@ -215,9 +215,7 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	/**
 	 * GDataPicasaWebFile:video-status:
 	 *
-	 * The status of the file, if it is a video.
-	 *
-	 * Possible values include "pending", "ready", "final", and "failed".
+	 * The status of the file, if it is a video. For example: %GDATA_PICASAWEB_VIDEO_STATUS_PENDING or %GDATA_PICASAWEB_VIDEO_STATUS_FAILED.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_videostatus">
 	 * gphoto specification</ulink>.
