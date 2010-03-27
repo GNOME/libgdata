@@ -1192,7 +1192,7 @@ gdata_youtube_video_get_thumbnails (GDataYouTubeVideo *self)
  *
  * Gets the #GDataYouTubeVideo:duration property.
  *
- * Return value: the video duration in seconds, or %0 if unknown
+ * Return value: the video duration in seconds, or <code class="literal">0</code> if unknown
  **/
 guint
 gdata_youtube_video_get_duration (GDataYouTubeVideo *self)
@@ -1237,7 +1237,7 @@ gdata_youtube_video_set_is_private (GDataYouTubeVideo *self, gboolean is_private
  * @uploaded: a #GTimeVal
  *
  * Gets the #GDataYouTubeVideo:uploaded property and puts it in @uploaded. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  **/
 void
 gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self, GTimeVal *uploaded)
@@ -1315,7 +1315,7 @@ gdata_youtube_video_get_state (GDataYouTubeVideo *self)
  * @recorded: a #GTimeVal
  *
  * Gets the #GDataYouTubeVideo:recorded property and puts it in @recorded. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.3.0
  **/

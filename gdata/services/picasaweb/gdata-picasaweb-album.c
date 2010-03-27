@@ -269,7 +269,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * GDataPicasaWebAlbum:bytes-used:
 	 *
 	 * The number of bytes consumed by this album and its contents. Note that this is only set if the authenticated user is the owner of the
-	 * album; it's otherwise %-1.
+	 * album; it's otherwise <code class="literal">-1</code>.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_bytesUsed">
 	 * gphoto specification</ulink>.
@@ -330,7 +330,8 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	/**
 	 * GDataPicasaWebAlbum:latitude:
 	 *
-	 * The location as a latitude coordinate associated with this album. Valid latitudes range from %-90.0 to %90.0 inclusive.
+	 * The location as a latitude coordinate associated with this album. Valid latitudes range from <code class="literal">-90.0</code>
+	 * to <code class="literal">90.0</code> inclusive.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#georss_where">
 	 * GeoRSS specification</ulink>.
@@ -346,7 +347,8 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	/**
 	 * GDataPicasaWebAlbum:longitude:
 	 *
-	 * The location as a longitude coordinate associated with this album. Valid longitudes range from %-180.0 to %180.0 inclusive.
+	 * The location as a longitude coordinate associated with this album. Valid longitudes range from <code class="literal">-180.0</code>
+	 * to <code class="literal">180.0</code> inclusive.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#georss_where">
 	 * GeoRSS specification</ulink>.
@@ -851,7 +853,7 @@ gdata_picasaweb_album_get_nickname (GDataPicasaWebAlbum *self)
  * @edited: a #GTimeVal
  *
  * Gets the #GDataPicasaWebAlbum:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/
@@ -942,7 +944,7 @@ gdata_picasaweb_album_set_visibility (GDataPicasaWebAlbum *self, GDataPicasaWebV
  * @timestamp: a #GTimeVal
  *
  * Gets the #GDataPicasaWebAlbum:timestamp property and puts it in @timestamp. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/
@@ -1014,10 +1016,10 @@ gdata_picasaweb_album_get_num_photos_remaining (GDataPicasaWebAlbum *self)
  * gdata_picasaweb_album_get_bytes_used:
  * @self: a #GDataPicasaWebAlbum
  *
- * Gets the #GDataPicasaWebAlbum:bytes-used property. It will return %-1 if the current authenticated
+ * Gets the #GDataPicasaWebAlbum:bytes-used property. It will return <code class="literal">-1</code> if the current authenticated
  * user is not the owner of the album.
  *
- * Return value: the number of bytes used by the album and its contents, or %-1
+ * Return value: the number of bytes used by the album and its contents, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/

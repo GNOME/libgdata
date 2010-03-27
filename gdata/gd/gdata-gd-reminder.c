@@ -284,7 +284,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * gdata_gd_reminder_new:
  * @method: the notification method the reminder should use, or %NULL
  * @absolute_time: the absolute time for the reminder, or %NULL
- * @relative_time: the relative time for the reminder, in minutes, or %-1
+ * @relative_time: the relative time for the reminder, in minutes, or <code class="literal">-1</code>
  *
  * Creates a new #GDataGDReminder. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
@@ -306,11 +306,13 @@ gdata_gd_reminder_new (const gchar *method, const GTimeVal *absolute_time, gint 
  * @b: another #GDataGDReminder, or %NULL
  *
  * Compares the two reminders in a strcmp() fashion. %NULL values are handled gracefully, with
- * %0 returned if both @a and @b are %NULL, %-1 if @a is %NULL and %1 if @b is %NULL.
+ * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
+ * and <code class="literal">1</code> if @b is %NULL.
  *
  * The comparison of non-%NULL values is done on the basis all the properties of the #GDataGDReminder<!-- -->s.
  *
- * Return value: %0 if @a equals @b, %-1 or %1 as appropriate otherwise
+ * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
+ * appropriate otherwise
  *
  * Since: 0.4.0
  **/
@@ -388,7 +390,7 @@ gdata_gd_reminder_set_method (GDataGDReminder *self, const gchar *method)
  * @absolute_time: return location for the absolute time
  *
  * Gets the #GDataGDReminder:absolute-time property and returns it in @absolute_time. If the
- * property is unset, both fields of @start_time are set to %0.
+ * property is unset, both fields of @start_time are set to <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/
@@ -447,7 +449,7 @@ gdata_gd_reminder_is_absolute_time (GDataGDReminder *self)
  *
  * Gets the #GDataGDReminder:relative-time property.
  *
- * Return value: the relative time, or %-1
+ * Return value: the relative time, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
@@ -461,11 +463,11 @@ gdata_gd_reminder_get_relative_time (GDataGDReminder *self)
 /**
  * gdata_gd_reminder_set_relative_time:
  * @self: a #GDataGDReminder
- * @relative_time: the new relative time, or %-1
+ * @relative_time: the new relative time, or <code class="literal">-1</code>
  *
  * Sets the #GDataGDReminder:relative-time property to @relative_time.
  *
- * Set @relative_time to %-1 to unset the property.
+ * Set @relative_time to <code class="literal">-1</code> to unset the property.
  *
  * Since: 0.4.0
  **/

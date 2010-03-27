@@ -227,7 +227,7 @@ gdata_parser_date_from_time_val (const GTimeVal *_time)
 	tm = gmtime (&secs);
 
 	/* Note: This doesn't need translating, as it's outputting an ISO 8601 date string */
-	return g_strdup_printf ("%4d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
+	return g_strdup_printf ("%04d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
 }
 
 /*
@@ -242,9 +242,9 @@ gdata_parser_date_from_time_val (const GTimeVal *_time)
  * The boolean value should be of the form: "<element property_name='[true|false]'/>".
  * A %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned in @error if parsing fails, and @output will not be set.
  *
- * If no property with the name @property_name exists in @element and @default_output is %0, @output will be set to %FALSE.
- * If @default_output is %1, @output will be set to %TRUE. If @default_output is %-1, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR will be
- * returned in @error.
+ * If no property with the name @property_name exists in @element and @default_output is <code class="literal">0</code>, @output will be set to %FALSE.
+ * If @default_output is <code class="literal">1</code>, @output will be set to %TRUE. If @default_output is <code class="literal">-1</code>,
+ * a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR will be returned in @error.
  *
  * Return value: %TRUE on successful parsing, %FALSE otherwise
  *

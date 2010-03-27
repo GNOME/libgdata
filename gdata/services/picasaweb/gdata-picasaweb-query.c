@@ -91,7 +91,8 @@ gdata_picasaweb_query_class_init (GDataPicasaWebQueryClass *klass)
 	 *
 	 * Specifies which albums should be listed, in terms of their visibility (#GDataPicasaWebAlbum:visibility).
 	 *
-	 * Set the property to %0 to list all albums, regardless of their visibility. Otherwise, use values from #GDataPicasaWebVisibility.
+	 * Set the property to <code class="literal">0</code> to list all albums, regardless of their visibility. Otherwise, use values
+	 * from #GDataPicasaWebVisibility.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#Visibility">
 	 * online documentation</ulink>.
@@ -350,7 +351,7 @@ gdata_picasaweb_query_new_with_limits (const gchar *q, gint start_index, gint ma
  *
  * Gets the #GDataPicasaWebQuery:visibility property.
  *
- * Return value: the visibility of the objects to retrieve, or %0 to retrieve all objects
+ * Return value: the visibility of the objects to retrieve, or <code class="literal">0</code> to retrieve all objects
  *
  * Since: 0.4.0
  **/
@@ -364,7 +365,7 @@ gdata_picasaweb_query_get_visibility (GDataPicasaWebQuery *self)
 /**
  * gdata_picasaweb_query_set_visibility:
  * @self: a #GDataPicasaWebQuery
- * @visibility: the visibility of the objects to retrieve, or %0 to retrieve all objects
+ * @visibility: the visibility of the objects to retrieve, or <code class="literal">0</code> to retrieve all objects
  *
  * Sets the #GDataPicasaWebQuery:visibility property to @visibility.
  *
@@ -445,8 +446,8 @@ gdata_picasaweb_query_get_image_size (GDataPicasaWebQuery *self)
  * @image_size: the desired size of the image to be retrieved, or %NULL
  *
  * Sets the #GDataPicasaWebQuery:image-size property to @image_size.
- * Valid sizes are described here:
- * http://code.google.com/apis/picasaweb/docs/2.0/reference.html#Parameters
+ * Valid sizes are described in the
+ * <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#Parameters">online documentation</ulink>.
  *
  * Set @image_size to %NULL to unset the property.
  *
@@ -543,7 +544,7 @@ gdata_picasaweb_query_get_bounding_box (GDataPicasaWebQuery *self, gdouble *nort
  *
  * Sets a bounding box, inside which all the returned results must lie.
  *
- * Set @north, @east, @south and @west to %0 to unset the property.
+ * Set @north, @east, @south and @west to <code class="literal">0</code> to unset the property.
  *
  * Since: 0.4.0
  **/

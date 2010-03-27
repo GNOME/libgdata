@@ -338,7 +338,7 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * GDataPicasaWebFile:rotation:
 	 *
 	 * The rotation of the photo, in degrees. This will only be non-zero for files which are pending rotation, and haven't yet been
-	 * permanently modified. For files which have already been rotated, this will be %0.
+	 * permanently modified. For files which have already been rotated, this will be <code class="literal">0</code>.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_rotation">
 	 * gphoto specification</ulink>.
@@ -555,7 +555,8 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	/**
 	 * GDataPicasaWebFile:latitude:
 	 *
-	 * The location as a latitude coordinate associated with this file. Valid latitudes range from %-90.0 to %90.0 inclusive.
+	 * The location as a latitude coordinate associated with this file. Valid latitudes range from <code class="literal">-90.0</code>
+	 * to <code class="literal">90.0</code> inclusive.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#georss_where">
 	 * GeoRSS specification</ulink>.
@@ -571,7 +572,8 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	/**
 	 * GDataPicasaWebFile:longitude:
 	 *
-	 * The location as a longitude coordinate associated with this file. Valid longitudes range from %-180.0 to %180.0 inclusive.
+	 * The location as a longitude coordinate associated with this file. Valid longitudes range from <code class="literal">-180.0</code>
+	 * to <code class="literal">180.0</code> inclusive.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/docs/2.0/reference.html#georss_where">
 	 * GeoRSS specification</ulink>.
@@ -1050,7 +1052,7 @@ gdata_picasaweb_file_get_id (GDataPicasaWebFile *self)
  * @edited: a #GTimeVal
  *
  * Gets the #GDataPicasaWebFile:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/
@@ -1283,7 +1285,7 @@ gdata_picasaweb_file_set_checksum (GDataPicasaWebFile *self, const gchar *checks
  * @timestamp: a #GTimeVal
  *
  * Gets the #GDataPicasaWebFile:timestamp property and puts it in @timestamp. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/
@@ -1567,7 +1569,7 @@ gdata_picasaweb_file_get_thumbnails (GDataPicasaWebFile *self)
  *
  * Gets the #GDataPicasaWebFile:distance property.
  *
- * Return value: the distance recorded in the photo's EXIF, or %-1 if unknown
+ * Return value: the distance recorded in the photo's EXIF, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -1584,7 +1586,7 @@ gdata_picasaweb_file_get_distance (GDataPicasaWebFile *self)
  *
  * Gets the #GDataPicasaWebFile:exposure property.
  *
- * Return value: the exposure value, or %0 if unknown
+ * Return value: the exposure value, or <code class="literal">0</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -1618,7 +1620,7 @@ gdata_picasaweb_file_get_flash (GDataPicasaWebFile *self)
  *
  * Gets the #GDataPicasaWebFile:focal-length property.
  *
- * Return value: the focal-length value, or %-1 if unknown
+ * Return value: the focal-length value, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -1635,7 +1637,7 @@ gdata_picasaweb_file_get_focal_length (GDataPicasaWebFile *self)
  *
  * Gets the #GDataPicasaWebFile:fstop property.
  *
- * Return value: the F-stop value, or %0 if unknown
+ * Return value: the F-stop value, or <code class="literal">0</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -1669,7 +1671,7 @@ gdata_picasaweb_file_get_image_unique_id (GDataPicasaWebFile *self)
  *
  * Gets the #GDataPicasaWebFile:iso property.
  *
- * Return value: the ISO speed, or %-1 if unknown
+ * Return value: the ISO speed, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
  **/

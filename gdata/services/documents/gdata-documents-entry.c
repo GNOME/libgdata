@@ -375,7 +375,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @edited: a #GTimeVal
  *
  * Gets the #GDataDocumentsEntry:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/
@@ -393,7 +393,7 @@ gdata_documents_entry_get_edited (GDataDocumentsEntry *self, GTimeVal *edited)
  * @last_viewed: a #GTimeVal
  *
  * Gets the #GDataDocumentsEntry:last-viewed property and puts it in @last_viewed. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/

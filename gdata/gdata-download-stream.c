@@ -29,9 +29,10 @@
  * the file. Network communication may not actually begin until the first call to g_input_stream_read(), so having a #GDataDownloadStream around is no
  * guarantee that the file is being downloaded.
  *
- * The content type and length of the file being downloaded are made available through #GDataDownloadStream:content-type and #GDataDownloadStream:content-length
- * as soon as the appropriate data is received from the server. Connect to #GDataDownloadStream::notify::content-type and
- * #GDataDownloadStream::notify::content-length to be notified as soon as the data is available.
+ * The content type and length of the file being downloaded are made available through #GDataDownloadStream:content-type and
+ * #GDataDownloadStream:content-length as soon as the appropriate data is received from the server. Connect to the
+ * #GObject::notify <code type="literal">content-type</code> and <code type="literal">content-length</code> details to be notified as
+ * soon as the data is available.
  *
  * Since: 0.5.0
  **/
@@ -547,9 +548,9 @@ gdata_download_stream_get_content_type (GDataDownloadStream *self)
  * @self: a #GDataDownloadStream
  *
  * Gets the length (in bytes) of the file being downloaded. If the <literal>Content-Length</literal> header has not yet
- * been received from the server, %-1 will be returned.
+ * been received from the server, <code class="literal">-1</code> will be returned.
  *
- * Return value: the content length of the file being downloaded, or %-1
+ * Return value: the content length of the file being downloaded, or <code class="literal">-1</code>
  *
  * Since: 0.5.0
  **/

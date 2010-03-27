@@ -417,7 +417,7 @@ gdata_access_rule_get_scope (GDataAccessRule *self, const gchar **type, const gc
  * @edited: return location for the edited time
  *
  * Gets the #GDataAccessRule:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.7.0
  **/

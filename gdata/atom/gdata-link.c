@@ -163,7 +163,7 @@ gdata_link_class_init (GDataLinkClass *klass)
 	/**
 	 * GDataLink:length:
 	 *
-	 * Indicates an advisory length of the linked content in octets. %-1 means the length is unspecified.
+	 * Indicates an advisory length of the linked content in octets. <code class="literal">-1</code> means the length is unspecified.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
@@ -360,11 +360,13 @@ gdata_link_new (const gchar *uri, const gchar *relation_type)
  * @b: another #GDataLink, or %NULL
  *
  * Compares the two links in a strcmp() fashion. %NULL values are handled gracefully, with
- * %0 returned if both @a and @b are %NULL, %-1 if @a is %NULL and %1 if @b is %NULL.
+ * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
+ * and <code class="literal">1</code> if @b is %NULL.
  *
  * The comparison of non-%NULL values is done on the basis of the @uri property of the #GDataLink<!-- -->s.
  *
- * Return value: %0 if @a equals @b, %-1 or %1 as appropriate otherwise
+ * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
+ * appropriate otherwise
  *
  * Since: 0.4.0
  **/
@@ -597,7 +599,7 @@ gdata_link_set_title (GDataLink *self, const gchar *title)
  *
  * Gets the #GDataLink:length property.
  *
- * Return value: the link's length, or %-1
+ * Return value: the link's length, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
@@ -611,11 +613,11 @@ gdata_link_get_length (GDataLink *self)
 /**
  * gdata_link_set_length:
  * @self: a #GDataLink
- * @length: the new length for the link, or %-1
+ * @length: the new length for the link, or <code class="literal">-1</code>
  *
  * Sets the #GDataLink:length property to @length.
  *
- * Set @length to %-1 to unset the property in the link.
+ * Set @length to <code class="literal">-1</code> to unset the property in the link.
  *
  * Since: 0.4.0
  **/

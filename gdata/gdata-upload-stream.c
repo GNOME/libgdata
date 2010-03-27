@@ -628,9 +628,9 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
  * @length: return location for the length of the response, or %NULL
  *
  * Returns the server's response to the upload operation performed by the #GDataUploadStream. If the operation
- * is still underway, or the server's response hasn't been received yet, %NULL is returned and @length is set to %-1.
+ * is still underway, or the server's response hasn't been received yet, %NULL is returned and @length is set to <code class="literal">-1</code>.
  *
- * If there was an error during the upload operation (but it is complete), %NULL is returned, and @length is set to %0.
+ * If there was an error during the upload operation (but it is complete), %NULL is returned, and @length is set to <code class="literal">0</code>.
  *
  * While it is safe to call this function from any thread at any time during the network operation, the only way to
  * guarantee that the response has been set before calling this function is to have closed the #GDataUploadStream. Once

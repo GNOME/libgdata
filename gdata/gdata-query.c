@@ -156,7 +156,7 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * of the categories (like using AND between terms). For example: <userinput>Fritz/Laurie</userinput> returns
 	 * entries that match both categories ("Fritz" and "Laurie").
 	 *
-	 * To do an OR between terms, use a pipe character (<literal>|</literal>). For example: <userinput>Fritz%%7CLaurie</userinput> returns
+	 * To do an OR between terms, use a pipe character (<literal>|</literal>). For example: <userinput>Fritz\%7CLaurie</userinput> returns
 	 * entries that match either category.
 	 *
 	 * An entry matches a specified category if the entry is in a category that has a matching term or label, as defined in the Atom specification.
@@ -742,7 +742,7 @@ gdata_query_set_author (GDataQuery *self, const gchar *author)
  * @updated_min: a #GTimeVal
  *
  * Gets the #GDataQuery:updated-min property and puts it in @updated_min. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  **/
 void
 gdata_query_get_updated_min (GDataQuery *self, GTimeVal *updated_min)
@@ -787,7 +787,7 @@ gdata_query_set_updated_min (GDataQuery *self, const GTimeVal *updated_min)
  * @updated_max: a #GTimeVal
  *
  * Gets the #GDataQuery:updated-max property and puts it in @updated_max. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  **/
 void
 gdata_query_get_updated_max (GDataQuery *self, GTimeVal *updated_max)
@@ -832,7 +832,7 @@ gdata_query_set_updated_max (GDataQuery *self, const GTimeVal *updated_max)
  * @published_min: a #GTimeVal
  *
  * Gets the #GDataQuery:published-min property and puts it in @published_min. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  **/
 void
 gdata_query_get_published_min (GDataQuery *self, GTimeVal *published_min)
@@ -877,7 +877,7 @@ gdata_query_set_published_min (GDataQuery *self, const GTimeVal *published_min)
  * @published_max: a #GTimeVal
  *
  * Gets the #GDataQuery:published-max property and puts it in @published_max. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  **/
 void
 gdata_query_get_published_max (GDataQuery *self, GTimeVal *published_max)
@@ -922,7 +922,7 @@ gdata_query_set_published_max (GDataQuery *self, const GTimeVal *published_max)
  *
  * Gets the #GDataQuery:start-index property.
  *
- * Return value: the start index property, or %-1 if it is unset
+ * Return value: the start index property, or <code class="literal">-1</code> if it is unset
  **/
 gint
 gdata_query_get_start_index (GDataQuery *self)
@@ -938,7 +938,7 @@ gdata_query_get_start_index (GDataQuery *self)
  *
  * Sets the #GDataQuery:start-index property of the #GDataQuery to the new one-based start index, @start_index.
  *
- * Set @start_index to %-1 or %0 to unset the property in the query URI.
+ * Set @start_index to <code class="literal">-1</code> or <code class="literal">0</code> to unset the property in the query URI.
  **/
 void
 gdata_query_set_start_index (GDataQuery *self, gint start_index)
@@ -1013,7 +1013,7 @@ gdata_query_set_is_strict (GDataQuery *self, gboolean is_strict)
  *
  * Gets the #GDataQuery:max-results property.
  *
- * Return value: the maximum results property, or %-1 if it is unset
+ * Return value: the maximum results property, or <code class="literal">-1</code> if it is unset
  **/
 gint
 gdata_query_get_max_results (GDataQuery *self)
@@ -1029,7 +1029,7 @@ gdata_query_get_max_results (GDataQuery *self)
  *
  * Sets the #GDataQuery:max-results property of the #GDataQuery to the new maximum results value, @max_results.
  *
- * Set @max_results to %-1 to unset the property in the query URI.
+ * Set @max_results to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
 gdata_query_set_max_results (GDataQuery *self, gint max_results)

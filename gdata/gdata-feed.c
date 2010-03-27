@@ -803,7 +803,7 @@ gdata_feed_get_generator (GDataFeed *self)
  *
  * Returns the number of items per results page feed.
  *
- * Return value: the number of items per results page feed, or %0
+ * Return value: the number of items per results page feed, or <code class="literal">0</code>
  **/
 guint
 gdata_feed_get_items_per_page (GDataFeed *self)
@@ -818,7 +818,7 @@ gdata_feed_get_items_per_page (GDataFeed *self)
  *
  * Returns the one-based start index of the results feed in the result set.
  *
- * Return value: the one-based start index, or %0
+ * Return value: the one-based start index, or <code class="literal">0</code>
  **/
 guint
 gdata_feed_get_start_index (GDataFeed *self)
@@ -834,7 +834,7 @@ gdata_feed_get_start_index (GDataFeed *self)
  * Returns the total number of results in the result set, including results on other
  * pages.
  *
- * Return value: the total number of results, or %0
+ * Return value: the total number of results, or <code class="literal">0</code>
  **/
 guint
 gdata_feed_get_total_results (GDataFeed *self)
