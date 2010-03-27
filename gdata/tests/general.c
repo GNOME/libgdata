@@ -681,7 +681,7 @@ test_access_rule_get_xml (void)
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 "xmlns:gd='http://schemas.google.com/g/2005' "
 			 "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
-				"<title type='text'>writer</title>"
+				"<title type='text'>none</title>"
 				"<id>an-id</id>"
 				"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
 				"<gAcl:role value='none'/>"

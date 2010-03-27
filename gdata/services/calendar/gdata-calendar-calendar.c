@@ -97,7 +97,8 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	/**
 	 * GDataCalendarCalendar:timezone:
 	 *
-	 * The timezone in which the calendar's times are given.
+	 * The timezone in which the calendar's times are given. This is a timezone name in tz database notation: <ulink type="http"
+	 * url="http://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones">reference</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
 				g_param_spec_string ("timezone",
@@ -156,7 +157,8 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	/**
 	 * GDataCalendarCalendar:access-level:
 	 *
-	 * Indicates what level of access the authenticated user has to the calendar.
+	 * Indicates what level of access the authenticated user has to the calendar. For example: %GDATA_CALENDAR_ACCESS_ROLE_READ or
+	 * %GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ACCESS_LEVEL,
 				g_param_spec_string ("access-level",

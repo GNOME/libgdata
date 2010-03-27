@@ -243,8 +243,8 @@ test_insert_simple (gconstpointer service)
 	category = gdata_category_new ("http://schemas.google.com/g/2005#event", "http://schemas.google.com/g/2005#kind", NULL);
 	gdata_entry_add_category (GDATA_ENTRY (event), category);
 	g_object_unref (category);
-	gdata_calendar_event_set_transparency (event, "http://schemas.google.com/g/2005#event.opaque");
-	gdata_calendar_event_set_status (event, "http://schemas.google.com/g/2005#event.confirmed");
+	gdata_calendar_event_set_transparency (event, GDATA_GD_EVENT_TRANSPARENCY_OPAQUE);
+	gdata_calendar_event_set_status (event, GDATA_GD_EVENT_STATUS_CONFIRMED);
 	where = gdata_gd_where_new (NULL, "Rolling Lawn Courts", NULL);
 	gdata_calendar_event_add_place (event, where);
 	g_object_unref (where);

@@ -66,7 +66,8 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	/**
 	 * GDataCalendarFeed:timezone:
 	 *
-	 * The timezone in which the feed's times are given.
+	 * The timezone in which the feed's times are given. This is a timezone name in tz database notation: <ulink type="http"
+	 * url="http://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones">reference</ulink>.
 	 *
 	 * Since: 0.3.0
 	 **/

@@ -121,7 +121,7 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	/**
 	 * GDataCalendarEvent:status:
 	 *
-	 * The scheduling status of the event.
+	 * The scheduling status of the event. For example: %GDATA_GD_EVENT_STATUS_CANCELED or %GDATA_GD_EVENT_STATUS_CONFIRMED.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/gdata/elements.html#gdEventStatus">
 	 * GData specification</ulink>.
@@ -137,7 +137,7 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	/**
 	 * GDataCalendarEvent:visibility:
 	 *
-	 * The event's visibility to calendar users.
+	 * The event's visibility to calendar users. For example: %GDATA_GD_EVENT_VISIBILITY_PUBLIC or %GDATA_GD_EVENT_VISIBILITY_DEFAULT.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/gdata/elements.html#gdVisibility">
 	 * GData specification</ulink>.
@@ -151,7 +151,8 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	/**
 	 * GDataCalendarEvent:transparency:
 	 *
-	 * How the event is marked as consuming time on a calendar.
+	 * How the event is marked as consuming time on a calendar. For example: %GDATA_GD_EVENT_TRANSPARENCY_OPAQUE or
+	 * %GDATA_GD_EVENT_TRANSPARENCY_TRANSPARENT.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/gdata/elements.html#gdTransparency">
 	 * GData specification</ulink>.
