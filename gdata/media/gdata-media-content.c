@@ -414,7 +414,7 @@ gdata_media_content_get_uri (GDataMediaContent *self)
  *
  * Gets the #GDataMediaContent:filesize property.
  *
- * Return value: the number of bytes in the content, or %0
+ * Return value: the number of bytes in the content, or <code class="literal">0</code>
  *
  * Since: 0.4.0
  **/
@@ -499,7 +499,7 @@ gdata_media_content_get_expression (GDataMediaContent *self)
  *
  * Gets the #GDataMediaContent:duration property.
  *
- * Return value: the content's duration in seconds, or %0
+ * Return value: the content's duration in seconds, or <code class="literal">0</code>
  *
  * Since: 0.4.0
  **/
@@ -516,7 +516,7 @@ gdata_media_content_get_duration (GDataMediaContent *self)
  *
  * Gets the #GDataMediaContent:height property.
  *
- * Return value: the content's height in pixels, or %0
+ * Return value: the content's height in pixels, or <code class="literal">0</code>
  *
  * Since: 0.4.0
  **/
@@ -533,7 +533,7 @@ gdata_media_content_get_height (GDataMediaContent *self)
  *
  * Gets the #GDataMediaContent:width property.
  *
- * Return value: the content's width in pixels, or %0
+ * Return value: the content's width in pixels, or <code class="literal">0</code>
  *
  * Since: 0.4.0
  **/

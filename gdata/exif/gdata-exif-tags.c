@@ -186,7 +186,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  *
  * Gets the #GDataExifTags:distance property.
  *
- * Return value: the distance value, or %-1 if unknown
+ * Return value: the distance value, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -203,7 +203,7 @@ gdata_exif_tags_get_distance (GDataExifTags *self)
  *
  * Gets the #GDataExifTags:exposure property.
  *
- * Return value: the exposure value, or %0 if unknown
+ * Return value: the exposure value, or <code class="literal">0</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -237,7 +237,7 @@ gdata_exif_tags_get_flash (GDataExifTags *self)
  *
  * Gets the #GDataExifTags:focal-length property.
  *
- * Return value: the focal-length value, or %-1 if unknown
+ * Return value: the focal-length value, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -254,7 +254,7 @@ gdata_exif_tags_get_focal_length (GDataExifTags *self)
  *
  * Gets the #GDataExifTags:fstop property.
  *
- * Return value: the F-stop value, or %0 if unknown
+ * Return value: the F-stop value, or <code class="literal">0</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -288,7 +288,7 @@ gdata_exif_tags_get_image_unique_id (GDataExifTags *self)
  *
  * Gets the #GDataExifTags:iso property.
  *
- * Return value: the ISO speed, or %-1 if unknown
+ * Return value: the ISO speed, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
  **/
@@ -339,7 +339,7 @@ gdata_exif_tags_get_model (GDataExifTags *self)
  * @_time: a #GTimeVal
  *
  * Gets the #GDataExifTags:time property and puts it in @_time. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.5.0
  **/

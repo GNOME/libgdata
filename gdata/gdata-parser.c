@@ -201,7 +201,7 @@ gdata_parser_date_from_time_val (GTimeVal *_time)
 	tm = gmtime (&secs);
 
 	/* Note: This doesn't need translating, as it's outputting an ISO 8601 date string */
-	return g_strdup_printf ("%4d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
+	return g_strdup_printf ("%04d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
 }
 
 /*

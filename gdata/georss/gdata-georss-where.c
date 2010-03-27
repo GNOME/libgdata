@@ -184,7 +184,7 @@ gdata_georss_where_get_longitude (GDataGeoRSSWhere *self)
  *
  * Sets the #GDataGeoRSSWhere:latitude property to @latitude.
  *
- * Valid values range from %-90.0 to %90.0 inclusive. Set @latitude to %G_MAXDOUBLE to unset it.
+ * Valid values range from <code class="literal">-90.0</code> to <code class="literal">90.0</code> inclusive. Set @latitude to %G_MAXDOUBLE to unset it.
  *
  * Since: 0.5.0
  **/
@@ -206,7 +206,8 @@ gdata_georss_where_set_latitude (GDataGeoRSSWhere *self, gdouble latitude)
  *
  * Sets the #GDataGeoRSSWhere:longitude property to @longitude.
  *
- * Valid values range from %-180.0 to %180.0 inclusive. Set @longitude to %G_MAXDOUBLE to unset it.
+ * Valid values range from <code class="literal">-180.0</code> to <code class="literal">180.0</code> inclusive. Set @longitude to %G_MAXDOUBLE
+ * to unset it.
  *
  * Since: 0.5.0
  **/

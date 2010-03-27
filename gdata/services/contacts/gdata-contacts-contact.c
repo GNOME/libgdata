@@ -497,7 +497,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * @edited: a #GTimeVal
  *
  * Gets the #GDataContactsContact:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  *
  * Since: 0.2.0
  **/
@@ -1298,7 +1298,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  * @self: a #GDataContactsContact
  * @service: a #GDataService
  * @data: the image data, or %NULL
- * @length: the image length, in bytes, or %0
+ * @length: the image length, in bytes, or <code class="literal">0</code>
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *

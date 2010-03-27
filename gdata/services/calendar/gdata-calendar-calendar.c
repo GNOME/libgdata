@@ -570,7 +570,7 @@ gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self)
  * @edited: a #GTimeVal
  *
  * Gets the #GDataCalendarCalendar:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to %0.
+ * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
  **/
 void
 gdata_calendar_calendar_get_edited (GDataCalendarCalendar *self, GTimeVal *edited)

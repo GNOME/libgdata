@@ -105,7 +105,7 @@ gdata_documents_spreadsheet_new (const gchar *id)
  * @service: a #GDataDocumentsService
  * @content_type: return location for the document's content type, or %NULL; free with g_free()
  * @export_format: the format in which the spreadsheet should be exported
- * @gid: the %0-based sheet ID to download, or %-1
+ * @gid: the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
  * @destination_file: the #GFile into which the spreadsheet file should be saved
  * @replace_file_if_exists: %TRUE if the file should be replaced if it already exists, %FALSE otherwise
  * @cancellable: optional #GCancellable object, or %NULL
@@ -118,8 +118,8 @@ gdata_documents_spreadsheet_new (const gchar *id)
  * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
  *
  * When requesting a %GDATA_DOCUMENTS_SPREADSHEET_CSV or %GDATA_DOCUMENTS_SPREADSHEET_TSV file you must specify an additional
- * parameter called @gid which indicates which grid, or sheet, you wish to get (the index is %0-based, so GID %1 actually refers
- * to the second sheet on a given spreadsheet).
+ * parameter called @gid which indicates which grid, or sheet, you wish to get (the index is <code class="literal">0</code>-based, so
+ * GID <code class="literal">1</code> actually refers to the second sheet on a given spreadsheet).
  *
  * If @destination_file is a directory, then the file will be downloaded in this directory with the #GDataEntry:title with 
  * the apropriate extension as name.
@@ -167,15 +167,15 @@ gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, 
  * gdata_documents_spreadsheet_get_download_uri:
  * @self: a #GDataDocumentsSpreadsheet
  * @export_format: the format in which the spreadsheet should be exported when downloaded
- * @gid: the %0-based sheet ID to download, or %-1
+ * @gid: the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
  *
  * Builds and returns the download URI for the given #GDataDocumentsSpreadsheet in the desired format. Note that directly downloading
  * the document using this URI isn't possible, as authentication is required. You should instead use gdata_download_stream_new() with
  * the URI, and use the resulting #GInputStream.
  *
  * When requesting a %GDATA_DOCUMENTS_SPREADSHEET_CSV or %GDATA_DOCUMENTS_SPREADSHEET_TSV file you must specify an additional
- * parameter called @gid which indicates which grid, or sheet, you wish to get (the index is %0-based, so GID %1 actually refers
- * to the second sheet on a given spreadsheet).
+ * parameter called @gid which indicates which grid, or sheet, you wish to get (the index is <code class="literal">0</code>-based, so
+ * GID <code class="literal">1</code> actually refers to the second sheet on a given spreadsheet).
  *
  * Return value: the download URI; free with g_free()
  *

@@ -391,11 +391,13 @@ gdata_gd_when_new (GTimeVal *start_time, GTimeVal *end_time, gboolean is_date)
  * @b: another #GDataGDWhen, or %NULL
  *
  * Compares the two times in a strcmp() fashion. %NULL values are handled gracefully, with
- * %0 returned if both @a and @b are %NULL, %-1 if @a is %NULL and %1 if @b is %NULL.
+ * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
+ * and <code class="literal">1</code> if @b is %NULL.
  *
  * The comparison of non-%NULL values is done on the basis of the @start_time, @end_time and @is_date properties of the #GDataGDWhen<!-- -->s.
  *
- * Return value: %0 if @a equals @b, %-1 or %1 as appropriate otherwise
+ * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
+ * appropriate otherwise
  *
  * Since: 0.4.0
  **/
@@ -467,7 +469,7 @@ gdata_gd_when_set_start_time (GDataGDWhen *self, GTimeVal *start_time)
  *
  * Gets the #GDataGDWhen:end-time property and returns it in @end_time.
  *
- * If the end time is unset, both fields of the #GTimeVal will be %0.
+ * If the end time is unset, both fields of the #GTimeVal will be <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/

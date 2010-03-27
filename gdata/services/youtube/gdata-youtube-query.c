@@ -112,10 +112,11 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 *
 	 * The latitude of a particular location of which videos should be found. This should be used in conjunction with
 	 * #GDataYouTubeQuery:longitude; if either property is outside the valid range, neither will be used. Valid latitudes
-	 * are between %-90 and %90 degrees; any values of this property outside that range will unset the property in the
-	 * query URI.
+	 * are between <code class="literal">-90</code> and <code class="literal">90</code>0 degrees; any values of this property outside that range
+	 * will unset the property in the query URI.
 	 *
-	 * If #GDataYouTubeQuery:location-radius is a non-%0 value, this will define a circle from which videos should be found.
+	 * If #GDataYouTubeQuery:location-radius is a non-<code class="literal">0</code> value, this will define a circle from which videos should be
+	 * found.
 	 *
 	 * If #GDataYouTubeQuery:has-location is %TRUE, only videos which are associated with specific coordinates in the search
 	 * circle will be returned. Otherwise, videos which have a relevant descriptive address (but no specific coordinates) will
@@ -137,8 +138,8 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 *
 	 * The longitude of a particular location of which videos should be found. This should be used in conjunction with
 	 * #GDataYouTubeQuery:latitude; if either property is outside the valid range, neither will be used. Valid longitudes
-	 * are between %-180 and %180 degrees; any values of this property outside that range will unset the property in the
-	 * query URI.
+	 * are between <code class="literal">-180</code> and <code class="literal">180</code> degrees; any values of this property outside that
+	 * range will unset the property in the query URI.
 	 *
 	 * For more information, see the documentation for #GDataYouTubeQuery:latitude.
 	 *
@@ -156,7 +157,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * The radius, in metres, of a circle from within which videos should be returned. The circle is centred on the latitude and
 	 * longitude given in #GDataYouTubeQuery:latitude and #GDataYouTubeQuery:longitude.
 	 *
-	 * Set this property to %0 to search for specific coordinates, rather than within a given radius.
+	 * Set this property to <code class="literal">0</code> to search for specific coordinates, rather than within a given radius.
 	 *
 	 * For more information, see the documentation for #GDataYouTubeQuery:latitude.
 	 *
@@ -594,7 +595,7 @@ gdata_youtube_query_get_location (GDataYouTubeQuery *self, gdouble *latitude, gd
  * @self: a #GDataYouTubeQuery
  * @latitude: the new latitude, or %G_MAXDOUBLE
  * @longitude: the new longitude, or %G_MAXDOUBLE
- * @radius: the new location radius, or %0
+ * @radius: the new location radius, or <code class="literal">0</code>
  * @has_location: %TRUE if the query is for videos with a specific location, %FALSE otherwise
  *
  * Sets the location-based properties of the #GDataYouTubeQuery<!-- -->: #GDataYouTubeQuery:latitude, #GDataYouTubeQuery:longitude,

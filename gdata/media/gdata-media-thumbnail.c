@@ -317,7 +317,7 @@ gdata_media_thumbnail_get_uri (GDataMediaThumbnail *self)
  *
  * Gets the #GDataMediaThumbnail:height property.
  *
- * Return value: the thumbnail's height in pixels, or %0
+ * Return value: the thumbnail's height in pixels, or <code class="literal">0</code>
  *
  * Since: 0.4.0
  **/
@@ -334,7 +334,7 @@ gdata_media_thumbnail_get_height (GDataMediaThumbnail *self)
  *
  * Gets the #GDataMediaThumbnail:width property.
  *
- * Return value: the thumbnail's width in pixels, or %0
+ * Return value: the thumbnail's width in pixels, or <code class="literal">0</code>
  *
  * Since: 0.4.0
  **/
@@ -351,7 +351,7 @@ gdata_media_thumbnail_get_width (GDataMediaThumbnail *self)
  *
  * Gets the #GDataMediaThumbnail:time property.
  *
- * Return value: the thumbnail's time offset in the media, or %-1
+ * Return value: the thumbnail's time offset in the media, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/

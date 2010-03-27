@@ -91,7 +91,7 @@ gdata_buffer_free (GDataBuffer *self)
  * @data: the data to push onto the buffer
  * @length: the length of @data
  *
- * Pushes @length bytes of @data onto the buffer, taking a copy of the data. If @data is %NULL and @length is %0,
+ * Pushes @length bytes of @data onto the buffer, taking a copy of the data. If @data is %NULL and @length is <code class="literal">0</code>,
  * the buffer will be marked as having reached the EOF, and subsequent calls to gdata_buffer_push_data()
  * will fail and return %FALSE.
  *
@@ -305,9 +305,9 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
  * Pops as much data as possible off the #GDataBuffer, up to a limit of @maxium_length bytes. If fewer bytes exist
  * in the buffer, fewer bytes will be returned. If more bytes exist in the buffer, @maximum_length bytes will be returned.
  *
- * If %0 bytes exist in the buffer, this function will block until data is available. Otherwise, it will never block.
+ * If <code class="literal">0</code> bytes exist in the buffer, this function will block until data is available. Otherwise, it will never block.
  *
- * Return value: the number of bytes returned in @data (guaranteed to be more than %0 and at most @maximum_length)
+ * Return value: the number of bytes returned in @data (guaranteed to be more than <code class="literal">0</code> and at most @maximum_length)
  *
  * Since: 0.5.0
  **/

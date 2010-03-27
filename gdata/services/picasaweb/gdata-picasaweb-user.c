@@ -328,11 +328,11 @@ gdata_picasaweb_user_get_nickname (GDataPicasaWebUser *self)
  * gdata_picasaweb_user_get_quota_limit:
  * @self: a #GDataPicasaWebUser
  *
- * Gets the #GDataPicasaWebUser:quota-limit property.  Note that
+ * Gets the #GDataPicasaWebUser:quota-limit property. Note that
  * this information is not available when accessing feeds which we
- * haven't authenticated, and %0 is returned.
+ * haven't authenticated, and <code class="literal">0</code> is returned.
  *
- * Return value: the maximum capacity in bytes for this feed's account, or %-1
+ * Return value: the maximum capacity in bytes for this feed's account, or <code class="literal">-1</code>
  *
  * Since: 0.6.0
  **/
@@ -349,9 +349,9 @@ gdata_picasaweb_user_get_quota_limit (GDataPicasaWebUser *self)
  *
  * Gets the #GDataPicasaWebUser:quota-current property.  Note that
  * this information is not available when accessing feeds which we
- * haven't authenticated, and %0 is returned.
+ * haven't authenticated, and <code class="literal">0</code> is returned.
  *
- * Return value: the current number of bytes in use by this feed's account, or %-1
+ * Return value: the current number of bytes in use by this feed's account, or <code class="literal">-1</code>
  *
  * Since: 0.6.0
  **/
@@ -368,9 +368,9 @@ gdata_picasaweb_user_get_quota_current (GDataPicasaWebUser *self)
  *
  * Gets the #GDataPicasaWebUser:max-photos-per-album property.  Note that
  * this information is not available when accessing feeds which we
- * haven't authenticated, and %0 is returned.
+ * haven't authenticated, and <code class="literal">0</code> is returned.
  *
- * Return value: the maximum number of photos an album for this account can hold, or %-1
+ * Return value: the maximum number of photos an album for this account can hold, or <code class="literal">-1</code>
  *
  * Since: 0.6.0
  **/

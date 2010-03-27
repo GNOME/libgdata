@@ -71,7 +71,13 @@ libgdata employs:
 
 	* @updated_max: the new maximum update time, or %NULL
 
- - If numbers are mentioned in documentation as values to be passed around in code, they should be prefixed by a '%', just like %NULL.
+ - If numbers, such as -1, are mentioned in documentation as values to be passed around in code, they should be wrapped in a DocBook "code" tag
+   (e.g. "<code class="literal">-1</code>"), so that they appear similarly to NULL in the documentation.
+
+ - The documentation explaining the purpose of a property, its limitations, interpretation, etc., should be given in the gtk-doc comment for the
+   GObject property itself, not in the documentation for its getter or setter. The documentation for the getter and setter should be stubs which
+   refer to the property's documentation. The getter and setter documentation should, however, still include full details about whether NULL values
+   are permissible for the function parameters, or are possible as the return value, for example.
 
 Adding public API
 =================

@@ -88,8 +88,9 @@ typedef enum {
  * @GDATA_AUTHENTICATION_ERROR_ACCOUNT_DISABLED: The user account has been disabled.
  * @GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED: The user's access to the specified service has been disabled. (The user account may still be valid.)
  *
- * Error codes for #GDataService authentication operations. See http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Errors for
- * the official reference.
+ * Error codes for #GDataService authentication operations. See the
+ * <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Errors">Google accounts documentation</ulink> for
+ * more information.
  **/
 typedef enum {
 	GDATA_AUTHENTICATION_ERROR_BAD_AUTHENTICATION = 1,
@@ -143,7 +144,7 @@ typedef struct {
  * @parent: the parent class
  * @service_name: the name of the service (for subclasses) as given in the service's GData API documentation
  * @authentication_uri: the authentication URI (for subclasses) if different from the Google ClientLogin default
- * @api_version: the version of the GData API used by the service (typically %2)
+ * @api_version: the version of the GData API used by the service (typically <code class="literal">2</code>)
  * @feed_type: the #GType of the feed class (subclass of #GDataFeed) to use for query results from this service
  * @parse_authentication_response: a function to parse the response from the online service to an authentication request as
  * issued by gdata_service_authenticate(). It should return %TRUE if authentication was successful, and %FALSE if there was
