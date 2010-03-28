@@ -3,16 +3,13 @@
 # This file is distributed under the same license as the libgdata package.
 # Marek Černocký <marek@manet.cz>, 2009.
 # Petr Kovar <pknbe@volny.cz>, 2010.
-# Marek Černocký <marek@manet.cz>, 2010.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-03-27 14:38+0000\n"
-"PO-Revision-Date: 2010-03-23 07:41+0100\n"
-"Last-Translator: Marek Černocký <marek@manet.cz>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-29 00:47+0200\n"
+"PO-Revision-Date: 2010-03-29 00:46+0200\n"
+"Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -102,6 +99,8 @@ msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
 msgstr ""
+"U vlastností %s a %s prvku %s se nacházely hodnoty, ze kterých je povolena "
+"pouze jedna."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -380,7 +379,7 @@ msgstr "Neznámý kód chyby „%s“ v doméně „%s“ byl přijat pro umíst
 #: ../gdata/services/youtube/gdata-youtube-service.c:347
 #, c-format
 msgid "Unknown and unparsable error received."
-msgstr "Obdržena neznámá a neanalyzovatelná chyba."
+msgstr "Obdržena neznámá a nezpracovatelná chyba."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:702
 #: ../gdata/services/youtube/gdata-youtube-service.c:743
@@ -390,4 +389,3 @@ msgstr "Video nemělo odpovídající element videa <link>."
 #: ../gdata/services/youtube/gdata-youtube-service.c:796
 msgid "You must be authenticated to upload a video."
 msgstr "Abyste mohli odesílat video, musíte projít ověřením."
-
