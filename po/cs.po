@@ -3,13 +3,16 @@
 # This file is distributed under the same license as the libgdata package.
 # Marek Černocký <marek@manet.cz>, 2009.
 # Petr Kovar <pknbe@volny.cz>, 2010.
+# Marek Černocký <marek@manet.cz>, 2010.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-12 00:27+0100\n"
-"PO-Revision-Date: 2010-01-12 00:22+0100\n"
-"Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&component=general\n"
+"POT-Creation-Date: 2010-03-27 14:38+0000\n"
+"PO-Revision-Date: 2010-03-23 07:41+0100\n"
+"Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,22 +22,22 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Lokalize 1.0\n"
 
-#: ../gdata/gdata-access-handler.c:176
+#: ../gdata/gdata-access-handler.c:178
 msgid "The rule has already been inserted."
 msgstr "Pravidlo již bylo vloženo."
 
-#: ../gdata/gdata-access-handler.c:378
+#: ../gdata/gdata-access-handler.c:380
 msgid "The owner's rule may not be deleted."
 msgstr "Vlastníkovo pravidlo nelze smazat."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:164 ../gdata/gdata-parsable.c:175
+#: ../gdata/gdata-parsable.c:180 ../gdata/gdata-parsable.c:191
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Chyba rozboru XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:177
+#: ../gdata/gdata-parsable.c:193
 msgid "Empty document."
 msgstr "Prázdný dokument."
 
@@ -42,17 +45,17 @@ msgstr "Prázdný dokument."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:65
+#: ../gdata/gdata-parser.c:66
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "V elementu %s schází vyžadovaný obsah."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")), and the second parameter is
-#. * the erroneous value (which was not in ISO 8601 format).
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:81
+#: ../gdata/gdata-parser.c:82
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "V elementu %s nebyl obsah („%s“) ve formátu ISO 8601."
@@ -62,7 +65,7 @@ msgstr "V elementu %s nebyl obsah („%s“) ve formátu ISO 8601."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:101
+#: ../gdata/gdata-parser.c:102
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "U elementu %2$s byla neznámá hodnota vlastnosti %1$s („%3$s“)."
@@ -72,7 +75,7 @@ msgstr "U elementu %2$s byla neznámá hodnota vlastnosti %1$s („%3$s“)."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:119
+#: ../gdata/gdata-parser.c:120
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "V elementu %s byl neznámý obsah („%s“)."
@@ -82,16 +85,29 @@ msgstr "V elementu %s byl neznámý obsah („%s“)."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:139
+#: ../gdata/gdata-parser.c:140
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Pro element %s schází vyžadovaná vlastnost (%s)."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:156
+#: ../gdata/gdata-parser.c:182
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Schází vyžadovaný element (%s)."
@@ -100,18 +116,18 @@ msgstr "Schází vyžadovaný element (%s)."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:171
+#: ../gdata/gdata-parser.c:197
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Byl zdvojený element (%s), který se může vyskytovat jen jednou."
 
-#: ../gdata/gdata-service.c:309 ../gdata/gdata-service.c:751
+#: ../gdata/gdata-service.c:337 ../gdata/gdata-service.c:780
 #: ../gdata/services/youtube/gdata-youtube-service.c:202
 msgid "The server returned a malformed response."
 msgstr "Server vrátil chybnou odpověď."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:340
+#: ../gdata/gdata-service.c:368
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -119,208 +135,209 @@ msgstr ""
 "parametr: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:346
+#: ../gdata/gdata-service.c:374
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Vyžadováno ověření: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:351
+#: ../gdata/gdata-service.c:379
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Vyžadovaný zdroj nebyl nalezen: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:356
+#: ../gdata/gdata-service.c:385
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Záznam byl od doby svého stažení změněn: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
-#, c-format
-msgid "Error code %u when inserting an entry: %s"
-msgstr "Kód chyby %u při vkládání záznamu: %s"
-
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
-#, c-format
-msgid "Error code %u when updating an entry: %s"
-msgstr "Kód chyby %u při aktualizaci záznamu: %s"
-
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:379
-#, c-format
-msgid "Error code %u when deleting an entry: %s"
-msgstr "Kód chyby %u při mazání záznamu: %s"
-
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:384
+#: ../gdata/gdata-service.c:398
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Kód chyby %u při dotazu: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:389
+#: ../gdata/gdata-service.c:403
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Kód chyby %u při vkládání záznamu: %s"
+
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:408
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Kód chyby %u při aktualizaci záznamu: %s"
+
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:413
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Kód chyby %u při mazání záznamu: %s"
+
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:418
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Kód chyby %u při stahování: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:394
+#: ../gdata/gdata-service.c:423
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Kód chyby %u při odesílání: %s"
 
-#: ../gdata/gdata-service.c:639
+#: ../gdata/gdata-service.c:668
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Pro přihlášení se musí vyplnit CAPTCHA."
 
-#: ../gdata/gdata-service.c:663
+#: ../gdata/gdata-service.c:692
 msgid "Your username or password were incorrect."
 msgstr "Vaše uživatelské jméno nebo heslo byly nesprávné."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:682
+#: ../gdata/gdata-service.c:711
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "E-mailová adresa vašeho účtu nebyla ověřena. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:687
+#: ../gdata/gdata-service.c:716
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Neodsouhlasili jste pravidla a podmínky služby. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:692
+#: ../gdata/gdata-service.c:721
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Tento účet byl smazán. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:697
+#: ../gdata/gdata-service.c:726
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Tento účet byl zablokován. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:702
+#: ../gdata/gdata-service.c:731
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Účet pro přístup k této službě byl zablokován. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:707
+#: ../gdata/gdata-service.c:736
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Tato služba není v tuto chvíli dostupná. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:821
+#: ../gdata/gdata-service.c:850
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neplatné přesměrované URI: %s"
 
-#: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:389
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:546
-#: ../gdata/services/youtube/gdata-youtube-service.c:785
+#: ../gdata/gdata-service.c:1268
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:393
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:550
+#: ../gdata/services/youtube/gdata-youtube-service.c:790
 msgid "The entry has already been inserted."
 msgstr "Záznam byl již vložen."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">"),
-#. * and the second parameter is the erroneous value (which was not in hexadecimal RGB format).
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:330
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:337
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Obsah elementu %s („%s“) nebyl v šestnáctkovém formátu RGB."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:106
-#: ../gdata/services/calendar/gdata-calendar-service.c:140
+#: ../gdata/services/calendar/gdata-calendar-service.c:108
+#: ../gdata/services/calendar/gdata-calendar-service.c:148
 msgid "You must be authenticated to query all calendars."
 msgstr "Abyste se mohli dotázat na všechny kalendáře, musíte projít ověřením."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:172
-#: ../gdata/services/calendar/gdata-calendar-service.c:206
-#: ../gdata/services/calendar/gdata-calendar-service.c:240
+#: ../gdata/services/calendar/gdata-calendar-service.c:185
+#: ../gdata/services/calendar/gdata-calendar-service.c:225
+#: ../gdata/services/calendar/gdata-calendar-service.c:261
 msgid "You must be authenticated to query your own calendars."
 msgstr "Abyste se mohli dotázat na vlastní kalendář, musíte projít ověřením."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:249
+#: ../gdata/services/calendar/gdata-calendar-service.c:270
 msgid "The calendar did not have a content source."
 msgstr "Kalendář neměl zdroj obsahu."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:105
-#: ../gdata/services/contacts/gdata-contacts-service.c:140
+#: ../gdata/services/contacts/gdata-contacts-service.c:109
+#: ../gdata/services/contacts/gdata-contacts-service.c:150
 msgid "You must be authenticated to query contacts."
 msgstr "Abyste se mohli dotázat na kontakt, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-entry.c:615
+#: ../gdata/services/documents/gdata-documents-entry.c:622
 msgid "You must be authenticated to download documents."
 msgstr "Abyste mohli stáhnout dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:188
-#: ../gdata/services/documents/gdata-documents-service.c:296
+#: ../gdata/services/documents/gdata-documents-service.c:193
+#: ../gdata/services/documents/gdata-documents-service.c:305
 msgid "You must be authenticated to query documents."
 msgstr "Abyste se mohli dotázat na dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:387
+#: ../gdata/services/documents/gdata-documents-service.c:399
 msgid "The supplied document had an invalid content type."
 msgstr "Dodaný dokument měl neplatný typ obsahu."
 
-#: ../gdata/services/documents/gdata-documents-service.c:472
+#: ../gdata/services/documents/gdata-documents-service.c:485
 msgid "You must be authenticated to upload documents."
 msgstr "Abyste mohli odeslat dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:478
+#: ../gdata/services/documents/gdata-documents-service.c:491
 msgid "The document has already been uploaded."
 msgstr "Dokument byl již odeslán."
 
-#: ../gdata/services/documents/gdata-documents-service.c:528
+#: ../gdata/services/documents/gdata-documents-service.c:541
 msgid "You must be authenticated to update documents."
 msgstr "Abyste mohli aktualizovat dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:576
-#: ../gdata/services/documents/gdata-documents-service.c:672
+#: ../gdata/services/documents/gdata-documents-service.c:589
+#: ../gdata/services/documents/gdata-documents-service.c:685
 msgid "You must be authenticated to move documents."
 msgstr "Abyste mohli přesunout dokument, musíte projít ověřením."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:136
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
 "Abyste se mohli dotázat na uživatele, musíte zadat uživatelské jméno nebo "
 "projít ověřením."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:181
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:235
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:185
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:239
 msgid "Query parameter not allowed for albums."
 msgstr "Parametr dotazu není možný pro album."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:188
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:243
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:192
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:247
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Abyste se mohli dotázat na všechna alba, musíte zadat uživatelské jméno nebo "
 "projít ověřením."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:288
 msgid "The album did not have a feed link."
 msgstr "Na album nevede přístupný odkaz."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:395
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:552
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:399
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:556
 msgid "You must be authenticated to upload a file."
 msgstr "Abyste mohli odeslat soubor, musíte projít ověřením."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:618
 msgid "The album has already been inserted."
 msgstr "Album již bylo vloženo."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:620
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 msgid "You must be authenticated to insert an album."
 msgstr "Abyste mohli vložit album, musíte projít ověřením."
 
@@ -360,11 +377,17 @@ msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Neznámý kód chyby „%s“ v doméně „%s“ byl přijat pro umístěním „%s“."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:698
-#: ../gdata/services/youtube/gdata-youtube-service.c:739
+#: ../gdata/services/youtube/gdata-youtube-service.c:347
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr "Obdržena neznámá a neanalyzovatelná chyba."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:702
+#: ../gdata/services/youtube/gdata-youtube-service.c:743
 msgid "The video did not have a related videos <link>."
 msgstr "Video nemělo odpovídající element videa <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:791
+#: ../gdata/services/youtube/gdata-youtube-service.c:796
 msgid "You must be authenticated to upload a video."
 msgstr "Abyste mohli odesílat video, musíte projít ověřením."
+
