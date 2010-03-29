@@ -1,3 +1,21 @@
+Overview of changes from libgdata 0.6.3 to libgdata 0.6.4
+=========================================================
+
+Major changes:
+* Fixed the behaviour of gdata_entry_get_id() for GDataPicasaWebAlbum and GDataPicasaWebFile, which was previously *broken*
+  Use gdata_picasaweb_album_get_id() and gdata_picasaweb_file_get_id() for the equivalent results now
+* Don't send ETags if a query is modified since it was last used; this improves libgdata's behaviour for programs which re-use GDataQuery instances
+* Lots of documentation fixes and improvements
+* Added missing #includes to gdata.h
+* Improved error reporting about network and proxy problems
+
+API changes:
+* Added GDataPicasaWebAlbum:album-id, gdata_picasaweb_album_get_id(), GDataPicasaWebFile:file-id and gdata_picasaweb_file_get_id()
+* Fix the value returned by gdata_entry_get_id() for GDataPicasaWebAlbum and GDataPicasaWebFile; it is now a full URI
+
+Bugs fixed:
+* Bug 613529 — Sending ETag with modified query
+
 Overview of changes from libgdata 0.6.2 to libgdata 0.6.3
 =========================================================
 
