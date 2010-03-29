@@ -21,6 +21,7 @@
 #include <locale.h>
 
 #include "gdata.h"
+#include "common.h"
 
 static void
 test_entry_get_xml (void)
