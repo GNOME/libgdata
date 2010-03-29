@@ -1,13 +1,15 @@
+# Slovenian translation of libgdata
 # Copyright (C) 2009 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
-# Matej Urbančič <mateju@svn.gnome.org>, 2009.
+#
+# Matej Urbančič <mateju@svn.gnome.org>, 2009 - 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-03-27 16:22+0000\n"
-"PO-Revision-Date: 2010-03-27 19:31+0100\n"
+"POT-Creation-Date: 2010-03-29 18:21+0000\n"
+"PO-Revision-Date: 2010-03-29 20:55+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -117,122 +119,137 @@ msgid "A singleton element (%s) was duplicated."
 msgstr "Enkratni predmet (%s) je podvojen."
 
 #: ../gdata/gdata-service.c:337
-#: ../gdata/gdata-service.c:780
 #: ../gdata/services/youtube/gdata-youtube-service.c:202
 msgid "The server returned a malformed response."
 msgstr "Strežnik je vrnil izmaličen odgovor."
 
+#: ../gdata/gdata-service.c:370
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "Ni se mogoče povezati s strežnikom storitev."
+
+#: ../gdata/gdata-service.c:375
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "Ni se mogoče povezati s posredniškim strežnikom."
+
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "Neveljavna zahteva naslova URI, glave ali pa neobičajen parameter ni podprt: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Zahtevana je overitev: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:379
+#: ../gdata/gdata-service.c:392
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Zahtevanega vira ni mogoče najti: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:385
+#: ../gdata/gdata-service.c:398
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Vnos je bil spremenjen odkar je bil prejet: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
+#: ../gdata/gdata-service.c:411
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Koda napake %u med overitvijo: %s"
+
+#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:416
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Koda napake %u med poizvedovanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:403
+#: ../gdata/gdata-service.c:421
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Koda napake %u med vstavljanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:408
+#: ../gdata/gdata-service.c:426
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Koda napake %u med posodabljanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:413
+#: ../gdata/gdata-service.c:431
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Koda napake %u med brisanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:418
+#: ../gdata/gdata-service.c:436
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Koda napake %u med prejemanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:423
+#: ../gdata/gdata-service.c:441
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Koda napake %u med pošiljanjem vnosa: %s"
 
-#: ../gdata/gdata-service.c:668
+#: ../gdata/gdata-service.c:686
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Vnosno polje vprašanja CAPTCHA mora biti izpolnjeno pred prijavo."
 
-#: ../gdata/gdata-service.c:692
+#: ../gdata/gdata-service.c:710
 msgid "Your username or password were incorrect."
 msgstr "Uporabniško ime ali geslo ni vpisano pravilno."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:711
+#: ../gdata/gdata-service.c:729
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Vaš elektronski naslov ni overjen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:716
+#: ../gdata/gdata-service.c:734
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Za nadaljevanje se morate strinjati z določili in s pogoji storitve. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:721
+#: ../gdata/gdata-service.c:739
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Račun je bil izbrisan. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:726
+#: ../gdata/gdata-service.c:744
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Račun je onemogočen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:731
+#: ../gdata/gdata-service.c:749
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Dostop računa do storitve je onemogočen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:736
+#: ../gdata/gdata-service.c:754
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Storitev trenutno ni na voljo. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:850
+#: ../gdata/gdata-service.c:869
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neveljaven preusmeritveni URI: %s"
 
-#: ../gdata/gdata-service.c:1268
+#: ../gdata/gdata-service.c:1287
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:393
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:550
 #: ../gdata/services/youtube/gdata-youtube-service.c:790
