@@ -647,6 +647,33 @@ test_query_etag (void)
 }
 
 static void
+test_service_network_error (void)
+{
+	GDataService *service;
+	SoupURI *proxy_uri;
+	GError *error = NULL;
+
+	/* This is a little hacky, but it should work */
+	service = g_object_new (GDATA_TYPE_SERVICE, "client-id", CLIENT_ID, NULL);
+
+	/* Try a query which should always fail due to errors resolving the hostname */
+	g_assert (gdata_service_query (service, "http://thisshouldnotexist.localhost", NULL, GDATA_TYPE_ENTRY, NULL, NULL, NULL, &error) == NULL);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR);
+	g_clear_error (&error);
+
+	/* Try one with a bad proxy set */
+	proxy_uri = soup_uri_new ("http://thisshouldalsonotexist.localhost/proxy");
+	gdata_service_set_proxy_uri (service, proxy_uri);
+	soup_uri_free (proxy_uri);
+
+	g_assert (gdata_service_query (service, "http://google.com", NULL, GDATA_TYPE_ENTRY, NULL, NULL, NULL, &error) == NULL);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROXY_ERROR);
+	g_clear_error (&error);
+
+	g_object_unref (service);
+}
+
+static void
 test_access_rule_get_xml (void)
 {
 	GDataAccessRule *rule, *rule2;
@@ -2760,16 +2787,22 @@ main (int argc, char *argv[])
 {
 	gdata_test_init (&argc, &argv);
 
+	g_test_add_func ("/service/network_error", test_service_network_error);
+
 	g_test_add_func ("/entry/get_xml", test_entry_get_xml);
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);
 	g_test_add_func ("/entry/error_handling", test_entry_error_handling);
+
 	g_test_add_func ("/feed/parse_xml", test_feed_parse_xml);
 	g_test_add_func ("/feed/error_handling", test_feed_error_handling);
+
 	g_test_add_func ("/query/categories", test_query_categories);
 	g_test_add_func ("/query/unicode", test_query_unicode);
 	g_test_add_func ("/query/etag", test_query_etag);
+
 	g_test_add_func ("/access-rule/get_xml", test_access_rule_get_xml);
 	g_test_add_func ("/access-rule/error_handling", test_access_rule_error_handling);
+
 	g_test_add_func ("/color/parsing", test_color_parsing);
 	g_test_add_func ("/color/output", test_color_output);
 

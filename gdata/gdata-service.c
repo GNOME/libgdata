@@ -362,29 +362,42 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 {
 	/* See: http://code.google.com/apis/gdata/docs/2.0/reference.html#HTTPStatusCodes */
 	switch (status) {
-		case 400:
+		case SOUP_STATUS_CANT_RESOLVE:
+		case SOUP_STATUS_CANT_CONNECT:
+		case SOUP_STATUS_SSL_FAILED:
+		case SOUP_STATUS_IO_ERROR:
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR,
+			             _("Cannot connect to the service's server."));
+			return;
+		case SOUP_STATUS_CANT_RESOLVE_PROXY:
+		case SOUP_STATUS_CANT_CONNECT_PROXY:
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROXY_ERROR,
+			             _("Cannot connect to the proxy server."));
+			return;
+		case SOUP_STATUS_MALFORMED:
+		case SOUP_STATUS_BAD_REQUEST: /* 400 */
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
 				     /* Translators: the parameter is an error message returned by the server. */
 				     _("Invalid request URI or header, or unsupported nonstandard parameter: %s"), response_body);
 			return;
-		case 401:
-		case 403:
+		case SOUP_STATUS_UNAUTHORIZED: /* 401 */
+		case SOUP_STATUS_FORBIDDEN: /* 403 */
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 				     /* Translators: the parameter is an error message returned by the server. */
 				     _("Authentication required: %s"), response_body);
 			return;
-		case 404:
+		case SOUP_STATUS_NOT_FOUND: /* 404 */
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND,
 				     /* Translators: the parameter is an error message returned by the server. */
 				     _("The requested resource was not found: %s"), response_body);
 			return;
-		case 409:
-		case 412:
+		case SOUP_STATUS_CONFLICT: /* 409 */
+		case SOUP_STATUS_PRECONDITION_FAILED: /* 412 */
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT,
 				     /* Translators: the parameter is an error message returned by the server. */
 				     _("The entry has been modified since it was downloaded: %s"), response_body);
 			return;
-		case 500:
+		case SOUP_STATUS_INTERNAL_SERVER_ERROR: /* 500 */
 		default:
 			/* We'll fall back to generic errors, below */
 			break;
@@ -392,6 +405,11 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 
 	/* If the error hasn't been handled already, throw a generic error */
 	switch (operation_type) {
+		case GDATA_OPERATION_AUTHENTICATION:
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+			             /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
+			             _("Error code %u when authenticating: %s"), status, response_body);
+			break;
 		case GDATA_OPERATION_QUERY:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
 				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
@@ -776,8 +794,9 @@ login_error:
 	return retval;
 
 protocol_error:
-	g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-			     _("The server returned a malformed response."));
+	g_assert (klass->parse_error_response != NULL);
+	klass->parse_error_response (self, GDATA_OPERATION_AUTHENTICATION, status, message->reason_phrase, message->response_body->data,
+	                             message->response_body->length, error);
 
 general_error:
 	g_object_unref (message);

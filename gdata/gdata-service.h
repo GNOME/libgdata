@@ -36,6 +36,7 @@ G_BEGIN_DECLS
  * @GDATA_OPERATION_DELETION: a deletion of a #GDataEntry
  * @GDATA_OPERATION_DOWNLOAD: a download of a file
  * @GDATA_OPERATION_UPLOAD: an upload of a file
+ * @GDATA_OPERATION_AUTHENTICATION: authentication with the service
  *
  * Representations of the different operations performed by the library.
  *
@@ -47,12 +48,13 @@ typedef enum {
 	GDATA_OPERATION_UPDATE,
 	GDATA_OPERATION_DELETION,
 	GDATA_OPERATION_DOWNLOAD,
-	GDATA_OPERATION_UPLOAD
+	GDATA_OPERATION_UPLOAD,
+	GDATA_OPERATION_AUTHENTICATION
 } GDataOperationType;
 
 /**
  * GDataServiceError:
- * @GDATA_SERVICE_ERROR_UNAVAILABLE: The service is unavailable due to maintainence or other reasons
+ * @GDATA_SERVICE_ERROR_UNAVAILABLE: The service is unavailable due to maintainence or other reasons (e.g. network errors at the server end)
  * @GDATA_SERVICE_ERROR_PROTOCOL_ERROR: The client or server unexpectedly strayed from the protocol (fatal error)
  * @GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED: An entry has already been inserted, and cannot be re-inserted
  * @GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED: The user attempted to do something which required authentication, and they weren't authenticated
@@ -61,6 +63,8 @@ typedef enum {
  * and uploading the modified entry
  * @GDATA_SERVICE_ERROR_FORBIDDEN: Generic error for a forbidden action (not due to having insufficient permissions)
  * @GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER: A given query parameter was invalid for the query type
+ * @GDATA_SERVICE_ERROR_NETWORK_ERROR: The service is unavailable due to local network errors (e.g. no Internet connection)
+ * @GDATA_SERVICE_ERROR_PROXY_ERROR: The service is unavailable due to proxy network errors (e.g. proxy unreachable)
  *
  * Error codes for #GDataService operations.
  **/
@@ -72,7 +76,9 @@ typedef enum {
 	GDATA_SERVICE_ERROR_NOT_FOUND,
 	GDATA_SERVICE_ERROR_CONFLICT,
 	GDATA_SERVICE_ERROR_FORBIDDEN,
-	GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER
+	GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
+	GDATA_SERVICE_ERROR_NETWORK_ERROR,
+	GDATA_SERVICE_ERROR_PROXY_ERROR
 } GDataServiceError;
 
 /**
