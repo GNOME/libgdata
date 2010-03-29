@@ -155,8 +155,8 @@ void gdata_youtube_video_set_location (GDataYouTubeVideo *self, const gchar *loc
 GDataYouTubePermission gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, const gchar *action);
 void gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, const gchar *action, GDataYouTubePermission permission);
 void gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max, guint *count, gdouble *average);
-const gchar *gdata_youtube_video_get_keywords (GDataYouTubeVideo *self);
-void gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar *keywords);
+const gchar * const *gdata_youtube_video_get_keywords (GDataYouTubeVideo *self);
+void gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *keywords);
 const gchar *gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self);
 gboolean gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gchar *country);
 GDataMediaCategory *gdata_youtube_video_get_category (GDataYouTubeVideo *self);

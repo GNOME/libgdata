@@ -52,7 +52,7 @@ static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataMediaGroupPrivate {
-	gchar *keywords;
+	gchar **keywords;
 	gchar *player_uri;
 	GHashTable *restricted_countries;
 	GList *thumbnails; /* GDataMediaThumbnail */
@@ -124,7 +124,7 @@ gdata_media_group_finalize (GObject *object)
 {
 	GDataMediaGroupPrivate *priv = GDATA_MEDIA_GROUP (object)->priv;
 
-	g_free (priv->keywords);
+	g_strfreev (priv->keywords);
 	g_free (priv->player_uri);
 	g_hash_table_destroy (priv->restricted_countries);
 	g_free (priv->title);
@@ -143,7 +143,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE) {
 		if (gdata_parser_string_from_element (node, "title", P_NONE, &(self->priv->title), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "description", P_NONE, &(self->priv->description), &success, error) == TRUE ||
-		    gdata_parser_string_from_element (node, "keywords", P_NONE, &(self->priv->keywords), &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_MEDIA_CATEGORY,
 			                                     gdata_media_group_set_category, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_MEDIA_CONTENT,
@@ -153,6 +152,40 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_object_from_element (node, "credit", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_MEDIA_CREDIT,
 			                              &(self->priv->credit), &success, error) == TRUE) {
 			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "keywords") == 0) {
+			/* media:keywords */
+			guint i;
+			xmlChar *text = xmlNodeListGetString (node->doc, node->children, TRUE);
+
+			g_strfreev (self->priv->keywords);
+			if (text == NULL) {
+				self->priv->keywords = NULL;
+				return TRUE;
+			}
+
+			self->priv->keywords = g_strsplit ((gchar*) text, ",", -1);
+
+			for (i = 0; self->priv->keywords[i] != NULL; i++) {
+				gchar *comma, *start = self->priv->keywords[i];
+				gchar *end = start + strlen (start);
+
+				/* Strip any whitespace from the ends of the keyword */
+				g_strstrip (start);
+
+				/* Unescape any %2Cs in the keyword to commas in-place */
+				while ((comma = g_strstr_len (start, -1, "%2C")) != NULL) {
+					/* Unescape the comma */
+					*comma = ',';
+
+					/* Move forwards, skipping the comma */
+					comma++;
+					end -= 2;
+
+					/* Shift the remainder of the string downwards */
+					g_memmove (comma, comma + 2, end - comma);
+					*end = '\0';
+				}
+			}
 		} else if (xmlStrcmp (node->name, (xmlChar*) "player") == 0) {
 			/* media:player */
 			xmlChar *player_uri = xmlGetProp (node, (xmlChar*) "url");
@@ -234,8 +267,39 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->description != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<media:description type='plain'>", priv->description, "</media:description>");
 
-	if (priv->keywords != NULL)
-		gdata_parser_string_append_escaped (xml_string, "<media:keywords>", priv->keywords, "</media:keywords>");
+	if (priv->keywords != NULL) {
+		guint i;
+
+		g_string_append (xml_string, "<media:keywords>");
+
+		/* Add each keyword to the text content, comma-separated from the previous one */
+		for (i = 0; priv->keywords[i] != NULL; i++) {
+			const gchar *comma, *start = priv->keywords[i];
+
+			/* Delimit the previous keyword */
+			if (i != 0)
+				g_string_append_c (xml_string, ',');
+
+			/* Escape any commas in the keyword to %2C */
+			while ((comma = g_utf8_strchr (start, -1, ',')) != NULL) {
+				/* Copy the span */
+				gchar *span = g_strndup (start, comma - start);
+				g_string_append (xml_string, span);
+				g_free (span);
+
+				/* Add an escaped comma */
+				g_string_append (xml_string, "%2C");
+
+				/* Move forwards, skipping the comma */
+				start = comma + 1;
+			}
+
+			/* Append the rest of the string (the entire string if there were no commas) */
+			g_string_append (xml_string, start);
+		}
+
+		g_string_append (xml_string, "</media:keywords>");
+	}
 }
 
 static void
@@ -322,21 +386,21 @@ gdata_media_group_set_description (GDataMediaGroup *self, const gchar *descripti
  *
  * Gets the #GDataMediaGroup:keywords property.
  *
- * Return value: the group's keywords, or %NULL
+ * Return value: a %NULL-terminated array of the group's keywords, or %NULL
  *
  * Since: 0.4.0
  **/
-const gchar *
+const gchar * const *
 gdata_media_group_get_keywords (GDataMediaGroup *self)
 {
 	g_return_val_if_fail (GDATA_IS_MEDIA_GROUP (self), NULL);
-	return self->priv->keywords;
+	return (const gchar * const *) self->priv->keywords;
 }
 
 /**
  * gdata_media_group_set_keywords:
  * @self: a #GDataMediaGroup
- * @keywords: the group's new keywords, or %NULL
+ * @keywords: a %NULL-terminated array of the group's new keywords, or %NULL
  *
  * Sets the #GDataMediaGroup:keywords property to @keywords.
  *
@@ -345,11 +409,11 @@ gdata_media_group_get_keywords (GDataMediaGroup *self)
  * Since: 0.4.0
  **/
 void
-gdata_media_group_set_keywords (GDataMediaGroup *self, const gchar *keywords)
+gdata_media_group_set_keywords (GDataMediaGroup *self, const gchar * const *keywords)
 {
 	g_return_if_fail (GDATA_IS_MEDIA_GROUP (self));
-	g_free (self->priv->keywords);
-	self->priv->keywords = g_strdup (keywords);
+	g_strfreev (self->priv->keywords);
+	self->priv->keywords = g_strdupv ((gchar**) keywords);
 }
 
 /**

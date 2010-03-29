@@ -254,15 +254,15 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	/**
 	 * GDataYouTubeVideo:keywords:
 	 *
-	 * A comma-separated list of words associated with the video.
+	 * A %NULL-terminated array of words associated with the video.
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:keywords">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_KEYWORDS,
-				g_param_spec_string ("keywords",
-					"Keywords", "A comma-separated list of words associated with the video.",
-					NULL,
+				g_param_spec_boxed ("keywords",
+					"Keywords", "A NULL-terminated array of words associated with the video.",
+					G_TYPE_STRV,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -518,7 +518,7 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 			g_value_set_double (value, priv->rating.average);
 			break;
 		case PROP_KEYWORDS:
-			g_value_set_string (value, gdata_media_group_get_keywords (priv->media_group));
+			g_value_set_boxed (value, gdata_media_group_get_keywords (priv->media_group));
 			break;
 		case PROP_PLAYER_URI:
 			g_value_set_string (value, gdata_media_group_get_player_uri (priv->media_group));
@@ -575,7 +575,7 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 			gdata_youtube_video_set_location (self, g_value_get_string (value));
 			break;
 		case PROP_KEYWORDS:
-			gdata_youtube_video_set_keywords (self, g_value_get_string (value));
+			gdata_youtube_video_set_keywords (self, g_value_get_boxed (value));
 			break;
 		case PROP_CATEGORY:
 			gdata_youtube_video_set_category (self, g_value_get_object (value));
@@ -1004,9 +1004,9 @@ gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max,
  *
  * Gets the #GDataYouTubeVideo:keywords property.
  *
- * Return value: a comma-separated list of words associated with the video
+ * Return value: a %NULL-terminated array of words associated with the video
  **/
-const gchar *
+const gchar * const *
 gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
@@ -1016,7 +1016,7 @@ gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
 /**
  * gdata_youtube_video_set_keywords:
  * @self: a #GDataYouTubeVideo
- * @keywords: a new comma-separated list of keywords
+ * @keywords: a new %NULL-terminated array of keywords
  *
  * Sets the #GDataYouTubeVideo:keywords property to the new keyword list, @keywords.
  *
@@ -1024,7 +1024,7 @@ gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
  * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:keywords">online documentation</ulink>.
  **/
 void
-gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar *keywords)
+gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *keywords)
 {
 	g_return_if_fail (keywords != NULL);
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
@@ -1149,7 +1149,7 @@ gdata_youtube_video_set_description (GDataYouTubeVideo *self, const gchar *descr
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 
 	gdata_media_group_set_description (self->priv->media_group, description);
-	g_object_notify (G_OBJECT (self), "keywords");
+	g_object_notify (G_OBJECT (self), "description");
 }
 
 /**

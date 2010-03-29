@@ -164,8 +164,8 @@ test_upload_async (gconstpointer service)
 	GRegex *regex;
 	GMatchInfo *match_info;
 	guint64 delta;
+	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
 
 	g_get_current_time (&timeval);
 	time_str = g_time_val_to_iso8601 (&timeval);
@@ -188,6 +188,7 @@ test_upload_async (gconstpointer service)
 						"<media:group>"
 							"<media:title type='plain'>Async Photo Entry Title</media:title>"
 							"<media:description type='plain'>Async Photo Summary \\(%s\\)</media:description>"
+							"<media:keywords>foo,bar,%%2C%%2Cbaz%%2Cbaz</media:keywords>"
 						"</media:group>"
 					"</entry>", time_str, time_str);
 	g_free (time_str);
@@ -200,6 +201,7 @@ test_upload_async (gconstpointer service)
 	photo = gdata_picasaweb_file_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (photo), "Async Photo Entry Title");
 	gdata_picasaweb_file_set_caption (photo, summary);
+	gdata_picasaweb_file_set_tags (photo, tags);
 
 	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
 	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected_xml and building the XML
@@ -534,6 +536,8 @@ test_upload_simple (gconstpointer service)
 	GRegex *regex;
 	GMatchInfo *match_info;
 	guint64 delta;
+	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
+	const gchar * const *tags2;
 
 	g_get_current_time (&timeval);
 	time_str = g_time_val_to_iso8601 (&timeval);
@@ -556,6 +560,7 @@ test_upload_simple (gconstpointer service)
 						"<media:group>"
 							"<media:title type='plain'>Photo Entry Title</media:title>"
 							"<media:description type='plain'>Photo Summary \\(%s\\)</media:description>"
+							"<media:keywords>foo,bar,%%2C%%2Cbaz%%2Cbaz</media:keywords>"
 						"</media:group>"
 					"</entry>", time_str, time_str);
 	g_free (time_str);
@@ -568,6 +573,7 @@ test_upload_simple (gconstpointer service)
 	photo = gdata_picasaweb_file_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
 	gdata_picasaweb_file_set_caption (photo, summary);
+	gdata_picasaweb_file_set_tags (photo, tags);
 
 	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
 	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected_xml and building the XML
@@ -596,6 +602,11 @@ test_upload_simple (gconstpointer service)
 	g_clear_error (&error);
 
 	/* TODO: check entries and feed properties */
+	tags2 = gdata_picasaweb_file_get_tags (photo_new);
+	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, 3);
+	g_assert_cmpstr (tags2[0], ==, tags[0]);
+	g_assert_cmpstr (tags2[1], ==, tags[1]);
+	g_assert_cmpstr (tags2[2], ==, tags[2]);
 
 	g_free (summary);
 	g_object_unref (photo);
@@ -621,6 +632,7 @@ test_photo (gconstpointer service)
 	GTimeVal _time;
 	gchar *str;
 	gchar *timestamp;
+	const gchar * const *tags;
 	gdouble latitude;
 	gdouble longitude;
 	gdouble original_latitude;
@@ -673,7 +685,10 @@ test_photo (gconstpointer service)
 	g_assert_cmpuint (gdata_picasaweb_file_get_rotation (photo), ==, 0);
 
 	g_assert_cmpstr (gdata_picasaweb_file_get_caption (photo), ==, "Ginger cookie caption");
-	g_assert_cmpstr (gdata_picasaweb_file_get_tags (photo), ==, "cookies");
+	tags = gdata_picasaweb_file_get_tags (photo);
+	g_assert (tags != NULL);
+	g_assert_cmpstr (tags[0], ==, "cookies");
+	g_assert (tags[1] == NULL);
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (photo)), ==, "100_0269.jpg");
 
 	g_assert_cmpstr (gdata_picasaweb_file_get_credit (photo), ==, "libgdata.picasaweb");
@@ -842,7 +857,6 @@ test_album (gconstpointer service)
 	GTimeVal _time;
 	gchar *str, *original_rights;
 	gdouble latitude, longitude, original_latitude, original_longitude;
-	const gchar *tags;
 	GDataMediaContent *content;
 	GDataMediaThumbnail *thumbnail;
 	GError *error = NULL;
@@ -925,8 +939,7 @@ test_album (gconstpointer service)
 	g_free (original_rights);
 
 	/* Check Media */
-	tags = gdata_picasaweb_album_get_tags (album);
-	g_assert_cmpstr (gdata_picasaweb_album_get_tags (album), ==, NULL);
+	g_assert (gdata_picasaweb_album_get_tags (album) == NULL);
 	/* TODO: they return a <media:keywords></...> but it's empty and the web interface can't set it;
 	   try setting it programmatically; if we can't do that either, consider removing API */
 

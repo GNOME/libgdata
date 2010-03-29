@@ -395,7 +395,7 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	/**
 	 * GDataPicasaWebFile:tags:
 	 *
-	 * A comma-separated list of tags associated with the file.
+	 * A %NULL-terminated array of tags associated with the file.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#media_keywords">
 	 * Media RSS specification</ulink>.
@@ -403,9 +403,9 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TAGS,
-					 g_param_spec_string ("tags",
-							      "Tags", "A comma-separated list of tags associated with the file.",
-							      NULL,
+					 g_param_spec_boxed ("tags",
+							      "Tags", "A NULL-terminated array of tags associated with the file.",
+							      G_TYPE_STRV,
 							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -714,7 +714,7 @@ gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *v
 			g_value_set_string (value, gdata_entry_get_summary (GDATA_ENTRY (object)));
 			break;
 		case PROP_TAGS:
-			g_value_set_string (value, gdata_media_group_get_keywords (priv->media_group));
+			g_value_set_boxed (value, gdata_media_group_get_keywords (priv->media_group));
 			break;
 		case PROP_DISTANCE:
 			g_value_set_double (value, gdata_exif_tags_get_distance (priv->exif_tags));
@@ -798,7 +798,7 @@ gdata_picasaweb_file_set_property (GObject *object, guint property_id, const GVa
 			gdata_picasaweb_file_set_caption (self, g_value_get_string (value));
 			break;
 		case PROP_TAGS:
-			gdata_picasaweb_file_set_tags (self, g_value_get_string (value));
+			gdata_picasaweb_file_set_tags (self, g_value_get_boxed (value));
 			break;
 		case PROP_LATITUDE:
 			gdata_picasaweb_file_set_coordinates (self, g_value_get_double (value),
@@ -1435,11 +1435,11 @@ gdata_picasaweb_file_get_video_status (GDataPicasaWebFile *self)
  *
  * Gets the #GDataPicasaWebFile:tags property.
  *
- * Return value: a comma-separated list of tags associated with the file, or %NULL
+ * Return value: a %NULL-terminated array of tags associated with the file, or %NULL
  *
  * Since: 0.4.0
  **/
-const gchar *
+const gchar * const *
 gdata_picasaweb_file_get_tags (GDataPicasaWebFile *self)
 {
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
@@ -1449,7 +1449,7 @@ gdata_picasaweb_file_get_tags (GDataPicasaWebFile *self)
 /**
  * gdata_picasaweb_file_set_tags:
  * @self: a #GDataPicasaWebFile
- * @tags: a new comma-separated list of tags, or %NULL
+ * @tags: a new %NULL-terminated array of tags, or %NULL
  *
  * Sets the #GDataPicasaWebFile:tags property to @tags.
  *
@@ -1458,7 +1458,7 @@ gdata_picasaweb_file_get_tags (GDataPicasaWebFile *self)
  * Since: 0.4.0
  **/
 void
-gdata_picasaweb_file_set_tags (GDataPicasaWebFile *self, const gchar *tags)
+gdata_picasaweb_file_set_tags (GDataPicasaWebFile *self, const gchar * const *tags)
 {
 	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
 

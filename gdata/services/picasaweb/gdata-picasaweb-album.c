@@ -314,7 +314,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	/**
 	 * GDataPicasaWebAlbum:tags:
 	 *
-	 * A comma-separated list of tags associated with the album; all the tags associated with the individual photos in the album.
+	 * A %NULL-terminated array of tags associated with the album; all the tags associated with the individual photos in the album.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#media_keywords">
 	 * Media RSS specification</ulink>.
@@ -322,9 +322,9 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TAGS,
-					 g_param_spec_string ("tags",
-							      "Tags", "A comma-separated list of tags associated with the album",
-							      NULL,
+					 g_param_spec_boxed ("tags",
+							      "Tags", "A NULL-terminated array of tags associated with the album",
+							      G_TYPE_STRV,
 							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -514,7 +514,7 @@ gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_uint (value, priv->comment_count);
 			break;
 		case PROP_TAGS:
-			g_value_set_string (value, gdata_media_group_get_keywords (priv->media_group));
+			g_value_set_boxed (value, gdata_media_group_get_keywords (priv->media_group));
 			break;
 		case PROP_LATITUDE:
 			g_value_set_double (value, gdata_georss_where_get_latitude (priv->georss_where));
@@ -553,7 +553,7 @@ gdata_picasaweb_album_set_property (GObject *object, guint property_id, const GV
 			gdata_picasaweb_album_set_is_commenting_enabled (self, g_value_get_boolean (value));
 			break;
 		case PROP_TAGS:
-			gdata_picasaweb_album_set_tags (self, g_value_get_string (value));
+			gdata_picasaweb_album_set_tags (self, g_value_get_boxed (value));
 			break;
 		case PROP_LATITUDE:
 			gdata_picasaweb_album_set_coordinates (self, g_value_get_double (value),
@@ -1087,11 +1087,11 @@ gdata_picasaweb_album_get_comment_count (GDataPicasaWebAlbum *self)
  *
  * Gets the #GDataPicasaWebAlbum:tags property.
  *
- * Return value: a comma-separated list of tags associated with all the photos in the album, or %NULL
+ * Return value: a %NULL-terminated array of tags associated with all the photos in the album, or %NULL
  *
  * Since: 0.4.0
  **/
-const gchar *
+const gchar * const *
 gdata_picasaweb_album_get_tags (GDataPicasaWebAlbum *self)
 {
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (self), NULL);
@@ -1101,7 +1101,7 @@ gdata_picasaweb_album_get_tags (GDataPicasaWebAlbum *self)
 /**
  * gdata_picasaweb_album_set_tags:
  * @self: a #GDataPicasaWebAlbum
- * @tags: the new comma-separated list of tags, or %NULL
+ * @tags: the new %NULL-terminated array of tags, or %NULL
  *
  * Sets the #GDataPicasaWebAlbum:tags property to @tags.
  *
@@ -1110,7 +1110,7 @@ gdata_picasaweb_album_get_tags (GDataPicasaWebAlbum *self)
  * Since: 0.4.0
  **/
 void
-gdata_picasaweb_album_set_tags (GDataPicasaWebAlbum *self, const gchar *tags)
+gdata_picasaweb_album_set_tags (GDataPicasaWebAlbum *self, const gchar * const *tags)
 {
 	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
 
