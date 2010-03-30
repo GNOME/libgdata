@@ -269,6 +269,7 @@ test_upload_simple (gconstpointer service)
 	GDataMediaCategory *category;
 	GFile *video_file;
 	gchar *xml;
+	const gchar * const tags[] = { "toast", "wedding", NULL };
 	GError *error = NULL;
 
 	video = gdata_youtube_video_new (NULL);
@@ -278,7 +279,7 @@ test_upload_simple (gconstpointer service)
 	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
 	gdata_youtube_video_set_category (video, category);
 	g_object_unref (category);
-	gdata_youtube_video_set_keywords (video, "toast, wedding");
+	gdata_youtube_video_set_keywords (video, tags);
 
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
@@ -288,13 +289,13 @@ test_upload_simple (gconstpointer service)
 				"xmlns:gd='http://schemas.google.com/g/2005' "
 				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
 				"xmlns:app='http://www.w3.org/2007/app'>"
-			 	"<title type='text'>Bad Wedding Toast</title>"
-			 	"<media:group>"
-			 		"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>People</media:category>"
-			 		"<media:title type='plain'>Bad Wedding Toast</media:title>"
-			 		"<media:description type='plain'>I gave a bad toast at my friend&apos;s wedding.</media:description>"
-			 		"<media:keywords>toast, wedding</media:keywords>"
-			 	"</media:group>"
+				"<title type='text'>Bad Wedding Toast</title>"
+				"<media:group>"
+					"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>People</media:category>"
+					"<media:title type='plain'>Bad Wedding Toast</media:title>"
+					"<media:description type='plain'>I gave a bad toast at my friend&apos;s wedding.</media:description>"
+					"<media:keywords>toast,wedding</media:keywords>"
+				"</media:group>"
 				"<app:control>"
 					"<app:draft>no</app:draft>"
 				"</app:control>"
