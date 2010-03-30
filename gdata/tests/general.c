@@ -637,7 +637,6 @@ test_query_etag (void)
 	CHECK_ETAG (gdata_query_set_start_index (query, 5))
 	CHECK_ETAG (gdata_query_set_is_strict (query, TRUE))
 	CHECK_ETAG (gdata_query_set_max_results (query, 1000))
-	CHECK_ETAG (gdata_query_set_entry_id (query, "id"))
 	CHECK_ETAG (gdata_query_next_page (query))
 	CHECK_ETAG (gdata_query_previous_page (query))
 

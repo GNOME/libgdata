@@ -59,8 +59,7 @@ typedef enum {
 	GDATA_QUERY_PARAM_START_INDEX = 1 << 7,
 	GDATA_QUERY_PARAM_IS_STRICT = 1 << 8,
 	GDATA_QUERY_PARAM_MAX_RESULTS = 1 << 9,
-	GDATA_QUERY_PARAM_ENTRY_ID = 1 << 10,
-	GDATA_QUERY_PARAM_ALL = (1 << 11) - 1
+	GDATA_QUERY_PARAM_ALL = (1 << 10) - 1
 } GDataQueryParam;
 
 static void gdata_query_finalize (GObject *object);
@@ -82,7 +81,6 @@ struct _GDataQueryPrivate {
 	gint start_index;
 	gboolean is_strict;
 	gint max_results;
-	gchar *entry_id;
 
 	gchar *next_uri;
 	gchar *previous_uri;
@@ -103,7 +101,6 @@ enum {
 	PROP_START_INDEX,
 	PROP_IS_STRICT,
 	PROP_MAX_RESULTS,
-	PROP_ENTRY_ID,
 	PROP_ETAG
 };
 
@@ -271,17 +268,6 @@ gdata_query_class_init (GDataQueryClass *klass)
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataQuery:entry-id:
-	 *
-	 * The ID of a specific entry to be retrieved. If you specify an entry ID, you cannot specify any other parameters.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_ENTRY_ID,
-				g_param_spec_string ("entry-id",
-					"Entry ID", "A specific entry ID to return.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
 	 * GDataQuery:etag:
 	 *
 	 * The ETag against which to check for updates. If the server-side ETag matches this one, the requested feed hasn't changed, and is not
@@ -315,7 +301,6 @@ gdata_query_finalize (GObject *object)
 	g_free (priv->q);
 	g_free (priv->categories);
 	g_free (priv->author);
-	g_free (priv->entry_id);
 
 	g_free (priv->next_uri);
 	g_free (priv->previous_uri);
@@ -361,9 +346,6 @@ gdata_query_get_property (GObject *object, guint property_id, GValue *value, GPa
 			break;
 		case PROP_MAX_RESULTS:
 			g_value_set_int (value, priv->max_results);
-			break;
-		case PROP_ENTRY_ID:
-			g_value_set_string (value, priv->entry_id);
 			break;
 		case PROP_ETAG:
 			g_value_set_string (value, priv->etag);
@@ -411,9 +393,6 @@ gdata_query_set_property (GObject *object, guint property_id, const GValue *valu
 		case PROP_MAX_RESULTS:
 			gdata_query_set_max_results (self, g_value_get_int (value));
 			break;
-		case PROP_ENTRY_ID:
-			gdata_query_set_entry_id (self, g_value_get_string (value));
-			break;
 		case PROP_ETAG:
 			gdata_query_set_etag (self, g_value_get_string (value));
 			break;
@@ -435,20 +414,13 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if ((priv->parameter_mask & GDATA_QUERY_PARAM_ALL) == 0)
 		return;
 
-	/* If we've been provided with an entry ID, only append that */
-	if (priv->entry_id != NULL) {
-		g_string_append_c (query_uri, '/');
-		g_string_append_uri_escaped (query_uri, priv->entry_id, NULL, FALSE);
-		return;
-	}
-
 	if (priv->categories != NULL) {
 		g_string_append (query_uri, "/-/");
 		g_string_append_uri_escaped (query_uri, priv->categories, "/", FALSE);
 	}
 
 	/* If that's it, return */
-	if ((priv->parameter_mask & (GDATA_QUERY_PARAM_ALL ^ GDATA_QUERY_PARAM_ENTRY_ID ^ GDATA_QUERY_PARAM_CATEGORIES)) == 0)
+	if ((priv->parameter_mask & (GDATA_QUERY_PARAM_ALL ^ GDATA_QUERY_PARAM_CATEGORIES)) == 0)
 		return;
 
 	/* q param */
@@ -553,20 +525,6 @@ gdata_query_new_with_limits (const gchar *q, gint start_index, gint max_results)
 			     "start-index", start_index,
 			     "max-results", max_results,
 			     NULL);
-}
-
-/**
- * gdata_query_new_for_id:
- * @entry_id: an entry URN ID
- *
- * Creates a new #GDataQuery to query for @entry_id.
- *
- * Return value: a new #GDataQuery
- **/
-GDataQuery *
-gdata_query_new_for_id (const gchar *entry_id)
-{
-	return g_object_new (GDATA_TYPE_QUERY, "entry-id", entry_id, NULL);
 }
 
 /**
@@ -1045,49 +1003,6 @@ gdata_query_set_max_results (GDataQuery *self, gint max_results)
 		self->priv->parameter_mask |= GDATA_QUERY_PARAM_MAX_RESULTS;
 
 	g_object_notify (G_OBJECT (self), "max-results");
-
-	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (self, NULL);
-}
-
-/**
- * gdata_query_get_entry_id:
- * @self: a #GDataQuery
- *
- * Gets the #GDataQuery:entry-id property.
- *
- * Return value: the entry ID property, or %NULL if it is unset
- **/
-const gchar *
-gdata_query_get_entry_id (GDataQuery *self)
-{
-	g_return_val_if_fail (GDATA_IS_QUERY (self), NULL);
-	return self->priv->entry_id;
-}
-
-/**
- * gdata_query_set_entry_id:
- * @self: a #GDataQuery
- * @entry_id: the new entry ID string
- *
- * Sets the #GDataQuery:entry-id property of the #GDataQuery to the new entry ID string, @entry_id.
- *
- * Set @entry_id to %NULL to unset the property in the query URI.
- **/
-void
-gdata_query_set_entry_id (GDataQuery *self, const gchar *entry_id)
-{
-	g_return_if_fail (GDATA_IS_QUERY (self));
-
-	g_free (self->priv->entry_id);
-	self->priv->entry_id = g_strdup (entry_id);
-
-	if (entry_id == NULL)
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_ENTRY_ID;
-	else
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_ENTRY_ID;
-
-	g_object_notify (G_OBJECT (self), "entry-id");
 
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (self, NULL);

@@ -55,6 +55,7 @@ static void gdata_contacts_contact_set_property (GObject *object, guint property
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
 struct _GDataContactsContactPrivate {
 	GTimeVal edited;
@@ -95,6 +96,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataContactsContactPrivate));
 
@@ -106,6 +108,8 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+
+	entry_class->get_entry_uri = get_entry_uri;
 
 	/**
 	 * GDataContactsContact:edited:
@@ -558,6 +562,21 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 	g_hash_table_insert (namespaces, (gchar*) "gd", (gchar*) "http://schemas.google.com/g/2005");
 	g_hash_table_insert (namespaces, (gchar*) "gContact", (gchar*) "http://schemas.google.com/contact/2008");
 	g_hash_table_insert (namespaces, (gchar*) "app", (gchar*) "http://www.w3.org/2007/app");
+}
+
+static gchar *
+get_entry_uri (const gchar *id)
+{
+	const gchar *base_pos;
+	gchar *uri = g_strdup (id);
+
+	/* The service API sometimes stubbornly insists on using the "base" view instead of the "full" view, which we have
+	 * to fix, or our extended attributes are never visible */
+	base_pos = strstr (uri, "/base/");
+	if (base_pos != NULL)
+		memcpy ((char*) base_pos, "/full/", 6);
+
+	return uri;
 }
 
 /**

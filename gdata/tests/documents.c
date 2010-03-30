@@ -217,7 +217,8 @@ test_upload_metadata_file (gconstpointer service)
 static void
 test_upload_file_get_entry (gconstpointer service)
 {
-	GDataDocumentsEntry *new_document, *newly_created_presentation;
+	GDataDocumentsEntry *new_document;
+	GDataEntry *new_presentation;
 	GFile *document_file;
 	GDataCategory *category;
 	GError *error = NULL;
@@ -233,14 +234,14 @@ test_upload_file_get_entry (gconstpointer service)
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
 
 	/* Get the entry on the server */
-	newly_created_presentation = gdata_documents_service_query_single_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_TYPE_DOCUMENTS_PRESENTATION,
-										    gdata_documents_entry_get_document_id (new_document), NULL, &error);
+	new_presentation = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                     GDATA_TYPE_DOCUMENTS_PRESENTATION, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (newly_created_presentation));
+	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_presentation));
 
 	g_clear_error (&error);
 	g_object_unref (new_document);
-	g_object_unref (newly_created_presentation);
+	g_object_unref (new_presentation);
 	g_object_unref (document_file);
 }
 

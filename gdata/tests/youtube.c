@@ -706,7 +706,8 @@ test_query_single (gconstpointer service)
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
 
-	video = gdata_youtube_service_query_single_video (GDATA_YOUTUBE_SERVICE (service), NULL, "_LeQuMpwbW4", NULL, &error);
+	video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry (GDATA_SERVICE (service), "tag:youtube.com,2008:video:_LeQuMpwbW4", NULL,
+	                                                               GDATA_TYPE_YOUTUBE_VIDEO, NULL, &error));
 
 	g_assert_no_error (error);
 	g_assert (video != NULL);
@@ -724,7 +725,7 @@ test_query_single_async_cb (GDataService *service, GAsyncResult *async_result, G
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
 
-	video = gdata_youtube_service_query_single_video_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
+	video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry_finish (GDATA_SERVICE (service), async_result, &error));
 
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
@@ -741,8 +742,8 @@ test_query_single_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_youtube_service_query_single_video_async (GDATA_YOUTUBE_SERVICE (service), NULL, "_LeQuMpwbW4", NULL,
-							(GAsyncReadyCallback) test_query_single_async_cb, main_loop);
+	gdata_service_query_single_entry_async (GDATA_SERVICE (service), "tag:youtube.com,2008:video:_LeQuMpwbW4", NULL, GDATA_TYPE_YOUTUBE_VIDEO,
+	                                        NULL, (GAsyncReadyCallback) test_query_single_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);

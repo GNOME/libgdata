@@ -49,13 +49,9 @@ get_contact (gconstpointer service)
 	GDataEntry *entry;
 	GList *entries;
 	GError *error = NULL;
-	GDataQuery *query = NULL;
 	static gchar *entry_id = NULL;
 
 	/* Make sure we use the same contact throughout */
-	if (entry_id != NULL)
-		query = gdata_query_new_for_id (entry_id);
-
 	feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (feed));

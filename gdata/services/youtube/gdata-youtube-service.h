@@ -123,13 +123,6 @@ void gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQ
 					       GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 					       GAsyncReadyCallback callback, gpointer user_data);
 
-GDataYouTubeVideo *gdata_youtube_service_query_single_video (GDataYouTubeService *self, GDataQuery *query, const gchar *video_id,
-							     GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
-void gdata_youtube_service_query_single_video_async (GDataYouTubeService *self, GDataQuery *query, const gchar *video_id,
-						     GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-GDataYouTubeVideo *gdata_youtube_service_query_single_video_finish (GDataYouTubeService *self, GAsyncResult *async_result,
-								    GError **error);
-
 GDataFeed *gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVideo *video, GDataQuery *query,
 						GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 						GError **error) G_GNUC_WARN_UNUSED_RESULT;

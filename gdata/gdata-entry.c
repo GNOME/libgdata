@@ -52,6 +52,7 @@ static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GEr
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
 struct _GDataEntryPrivate {
 	gchar *title;
@@ -101,6 +102,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
 	parsable_class->element_name = "entry";
+
+	klass->get_entry_uri = get_entry_uri;
 
 	/**
 	 * GDataEntry:title:
@@ -476,6 +479,14 @@ static void
 get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 {
 	g_hash_table_insert (namespaces, (gchar*) "gd", (gchar*) "http://schemas.google.com/g/2005");
+}
+
+static gchar *
+get_entry_uri (const gchar *id)
+{
+	/* We assume the entry ID is also its entry URI; subclasses can override this
+	 * if the service they implement has a convoluted API */
+	return g_strdup (id);
 }
 
 /**

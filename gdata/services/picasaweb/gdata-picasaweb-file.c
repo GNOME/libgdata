@@ -54,6 +54,7 @@ static void gdata_picasaweb_file_set_property (GObject *object, guint property_i
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
 struct _GDataPicasaWebFilePrivate {
 	gchar *file_id;
@@ -119,6 +120,7 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataPicasaWebFilePrivate));
 
@@ -130,6 +132,8 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	parsable_class->get_xml = get_xml;
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_namespaces = get_namespaces;
+
+	entry_class->get_entry_uri = get_entry_uri;
 
 	/**
 	 * GDataPicasaWebFile:file-id:
@@ -988,6 +992,21 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 	GDATA_PARSABLE_GET_CLASS (priv->exif_tags)->get_namespaces (GDATA_PARSABLE (priv->exif_tags), namespaces);
 	/* Add the georss:where namespaces */
 	GDATA_PARSABLE_GET_CLASS (priv->georss_where)->get_namespaces (GDATA_PARSABLE (priv->georss_where), namespaces);
+}
+
+static gchar *
+get_entry_uri (const gchar *id)
+{
+	/* For files, the ID is of the form: "http://picasaweb.google.com/data/entry/user/liz/albumid/albumID/photoid/photoID"
+	 *   whereas the URI is of the form: "http://picasaweb.google.com/data/entry/api/user/liz/albumid/albumID/photoid/photoID" */
+	gchar **parts, *uri;
+
+	parts = g_strsplit (id, "/entry/user/", 2);
+	g_assert (parts[0] != NULL && parts[1] != NULL && parts[2] == NULL);
+	uri = g_strconcat (parts[0], "/entry/api/user/", parts[1], NULL);
+	g_strfreev (parts);
+
+	return uri;
 }
 
 /**

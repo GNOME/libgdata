@@ -89,8 +89,6 @@ void gdata_documents_service_query_documents_async (GDataDocumentsService *self,
 
 #include <gdata/services/documents/gdata-documents-folder.h>
 
-GDataDocumentsEntry *gdata_documents_service_query_single_document (GDataDocumentsService *self, GType document_type, const gchar *document_id,
-								    GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 GDataDocumentsEntry *gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
 							      GDataDocumentsFolder *folder, GCancellable *cancellable,
 							      GError **error) G_GNUC_WARN_UNUSED_RESULT;

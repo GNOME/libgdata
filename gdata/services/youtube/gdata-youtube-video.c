@@ -87,6 +87,7 @@ static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, 
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
 struct _GDataYouTubeVideoPrivate {
 	guint view_count;
@@ -140,6 +141,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataYouTubeVideoPrivate));
 
@@ -152,6 +154,8 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	parsable_class->post_parse_xml = post_parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+
+	entry_class->get_entry_uri = get_entry_uri;
 
 	/**
 	 * GDataYouTubeVideo:view-count:
@@ -859,6 +863,32 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 	/* Add the media:group and app:control namespaces */
 	GDATA_PARSABLE_GET_CLASS (priv->media_group)->get_namespaces (GDATA_PARSABLE (priv->media_group), namespaces);
 	GDATA_PARSABLE_GET_CLASS (priv->youtube_control)->get_namespaces (GDATA_PARSABLE (priv->youtube_control), namespaces);
+}
+
+static gchar *
+get_entry_uri (const gchar *id)
+{
+	/* The entry ID is in the format: "tag:youtube.com,2008:video:QjA5faZF1A8"; we want the bit after "video" */
+	const gchar *video_id = NULL;
+	gchar **parts, *uri;
+	guint i;
+
+	parts = g_strsplit (id, ":", -1);
+
+	for (i = 0; parts[i] != NULL && parts[i + 1] != NULL; i += 2) {
+		if (strcmp (parts[i], "video") == 0) {
+			video_id = parts[i + 1];
+			break;
+		}
+	}
+
+	g_assert (video_id != NULL);
+
+	/* Build the URI using the video ID */
+	uri = g_strconcat ("http://gdata.youtube.com/feeds/api/videos/", video_id, NULL);
+	g_strfreev (parts);
+
+	return uri;
 }
 
 /**

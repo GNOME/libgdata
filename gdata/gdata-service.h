@@ -196,6 +196,12 @@ void gdata_service_query_async (GDataService *self, const gchar *feed_uri, GData
                                 GAsyncReadyCallback callback, gpointer user_data);
 GDataFeed *gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 
+GDataEntry *gdata_service_query_single_entry (GDataService *self, const gchar *entry_id, GDataQuery *query, GType entry_type,
+                                              GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+void gdata_service_query_single_entry_async (GDataService *self, const gchar *entry_id, GDataQuery *query, GType entry_type,
+                                             GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+GDataEntry *gdata_service_query_single_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+
 GDataEntry *gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEntry *entry,
                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 void gdata_service_insert_entry_async (GDataService *self, const gchar *upload_uri, GDataEntry *entry, GCancellable *cancellable,

@@ -849,6 +849,27 @@ test_photo_feed (gconstpointer service)
 }
 
 static void
+test_photo_single (gconstpointer service)
+{
+	GDataEntry *photo;
+	GError *error = NULL;
+
+	photo = gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                          "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386",
+	                                          NULL, GDATA_TYPE_PICASAWEB_FILE, NULL, &error);
+
+	g_assert_no_error (error);
+	g_assert (photo != NULL);
+	g_assert (GDATA_IS_PICASAWEB_FILE (photo));
+	g_assert_cmpstr (gdata_picasaweb_file_get_id (GDATA_PICASAWEB_FILE (photo)), ==, "5328890138794566386");
+	g_assert_cmpstr (gdata_entry_get_id (photo), ==,
+	                 "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
+	g_clear_error (&error);
+
+	g_object_unref (photo);
+}
+
+static void
 test_album (gconstpointer service)
 {
 	GDataFeed *album_feed;
@@ -1357,6 +1378,7 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
 	g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
 	g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
+	g_test_add_data_func ("/picasaweb/query/photo_single", service, test_photo_single);
 	g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
 	g_test_add_data_func ("/picasaweb/download/photo", service, test_download);
 	g_test_add_data_func ("/picasaweb/download/thumbnails", service, test_download_thumbnails);

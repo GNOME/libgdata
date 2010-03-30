@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,12 +51,15 @@ typedef struct {
 
 /**
  * GDataEntryClass:
+ * @parent: the parent class
+ * @get_entry_uri: a function to build the entry URI for the entry, given its entry ID; free the URI with g_free()
  *
- * All the fields in the #GDataEntryClass structure are private and should never be accessed directly.
+ * The class structure for the #GDataEntry type.
  **/
 typedef struct {
-	/*< private >*/
 	GDataParsableClass parent;
+
+	gchar *(*get_entry_uri) (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 } GDataEntryClass;
 
 GType gdata_entry_get_type (void) G_GNUC_CONST;

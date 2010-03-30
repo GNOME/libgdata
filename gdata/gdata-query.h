@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,7 +60,6 @@ GType gdata_query_get_type (void) G_GNUC_CONST;
 
 GDataQuery *gdata_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT;
 GDataQuery *gdata_query_new_with_limits (const gchar *q, gint start_index, gint max_results) G_GNUC_WARN_UNUSED_RESULT;
-GDataQuery *gdata_query_new_for_id (const gchar *entry_id) G_GNUC_WARN_UNUSED_RESULT;
 
 gchar *gdata_query_get_query_uri (GDataQuery *self, const gchar *feed_uri) G_GNUC_WARN_UNUSED_RESULT;
 void gdata_query_next_page (GDataQuery *self);
@@ -86,8 +85,6 @@ gboolean gdata_query_is_strict (GDataQuery *self);
 void gdata_query_set_is_strict (GDataQuery *self, gboolean is_strict);
 gint gdata_query_get_max_results (GDataQuery *self);
 void gdata_query_set_max_results (GDataQuery *self, gint max_results);
-const gchar *gdata_query_get_entry_id (GDataQuery *self);
-void gdata_query_set_entry_id (GDataQuery *self, const gchar *entry_id);
 const gchar *gdata_query_get_etag (GDataQuery *self);
 void gdata_query_set_etag (GDataQuery *self, const gchar *etag);
 

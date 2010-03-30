@@ -1004,7 +1004,7 @@ gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GErr
 }
 
 /* Does the bulk of the work of gdata_service_query. Split out because certain queries (such as that done by
- * gdata_youtube_service_query_single_video()) only return a single entry, and thus need special parsing code. */
+ * gdata_service_query_single_entry()) only return a single entry, and thus need special parsing code. */
 SoupMessage *
 _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
 		      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
@@ -1127,6 +1127,179 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 	}
 
 	return feed;
+}
+
+/**
+ * gdata_service_query_single_entry:
+ * @self: a #GDataService
+ * @entry_id: the entry ID of the desired entry
+ * @query: a #GDataQuery with the query parameters, or %NULL
+ * @entry_type: a #GType for the #GDataEntry to build from the XML
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Retrieves information about the single entry with the given @entry_id. @entry_id should be as returned by
+ * gdata_entry_get_id().
+ *
+ * Parameters and errors are as for gdata_service_query(). Most of the properties of @query aren't relevant, and
+ * will cause a server-side error if used. The most useful property to use is #GDataQuery:etag, which will cause the
+ * server to not return anything if the entry hasn't been modified since it was given the specified ETag; thus saving
+ * bandwidth. If the server does not return anything for this reason, gdata_service_query_single_entry() will return
+ * %NULL, but will not set an error in @error.
+ *
+ * Return value: a #GDataEntry, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.7.0
+ **/
+GDataEntry *
+gdata_service_query_single_entry (GDataService *self, const gchar *entry_id, GDataQuery *query, GType entry_type,
+                                  GCancellable *cancellable, GError **error)
+{
+	GDataEntryClass *klass;
+	GDataEntry *entry;
+	gchar *entry_uri;
+	SoupMessage *message;
+
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (entry_id != NULL, NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY) == TRUE, NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* Query for just the specified entry */
+	klass = GDATA_ENTRY_CLASS (g_type_class_peek_static (entry_type));
+	g_assert (klass->get_entry_uri != NULL);
+
+	entry_uri = klass->get_entry_uri (entry_id);
+	message = _gdata_service_query (GDATA_SERVICE (self), entry_uri, query, cancellable, NULL, NULL, error);
+	g_free (entry_uri);
+
+	if (message == NULL)
+		return NULL;
+
+	g_assert (message->response_body->data != NULL);
+	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (entry_type, message->response_body->data, message->response_body->length, error));
+	g_object_unref (message);
+
+	return entry;
+}
+
+typedef struct {
+	gchar *entry_id;
+	GDataQuery *query;
+	GType entry_type;
+} QuerySingleEntryAsyncData;
+
+static void
+query_single_entry_async_data_free (QuerySingleEntryAsyncData *data)
+{
+	g_free (data->entry_id);
+	if (data->query != NULL)
+		g_object_unref (data->query);
+	g_slice_free (QuerySingleEntryAsyncData, data);
+}
+
+static void
+query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
+{
+	GDataEntry *entry;
+	GError *error = NULL;
+	QuerySingleEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+
+	/* Check to see if it's been cancelled already */
+	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+		return;
+	}
+
+	/* Execute the query and return */
+	entry = gdata_service_query_single_entry (service, data->entry_id, data->query, data->entry_type, cancellable, &error);
+	if (entry == NULL && error != NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+	}
+
+	g_simple_async_result_set_op_res_gpointer (result, entry, (GDestroyNotify) g_object_unref);
+}
+
+/**
+ * gdata_service_query_single_entry_async:
+ * @self: a #GDataService
+ * @entry_id: the entry ID of the desired entry
+ * @query: a #GDataQuery with the query parameters, or %NULL
+ * @entry_type: a #GType for the #GDataEntry to build from the XML
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the query is finished
+ * @user_data: data to pass to the @callback function
+ *
+ * Retrieves information about the single entry with the given @entry_id. @entry_id should be as returned by
+ * gdata_entry_get_id(). @self, @query and @entry_id are reffed/copied when this
+ * function is called, so can safely be freed after this function returns.
+ *
+ * For more details, see gdata_service_query_single_entry(), which is the synchronous version of this function.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_service_query_single_entry_finish()
+ * to get the results of the operation.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_service_query_single_entry_async (GDataService *self, const gchar *entry_id, GDataQuery *query, GType entry_type,
+                                        GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+	QuerySingleEntryAsyncData *data;
+
+	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_return_if_fail (entry_id != NULL);
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY) == TRUE);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	data = g_slice_new (QuerySingleEntryAsyncData);
+	data->query = (query != NULL) ? g_object_ref (query) : NULL;
+	data->entry_id = g_strdup (entry_id);
+	data->entry_type = entry_type;
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_single_entry_async);
+	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) query_single_entry_async_data_free);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) query_single_entry_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_service_query_single_entry_finish:
+ * @self: a #GDataService
+ * @async_result: a #GAsyncResult
+ * @error: a #GError, or %NULL
+ *
+ * Finishes an asynchronous query operation for a single entry, as started with gdata_service_query_single_entry_async().
+ *
+ * Return value: a #GDataEntry, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.7.0
+ **/
+GDataEntry *
+gdata_service_query_single_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
+{
+	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	GDataEntry *entry;
+
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_query_single_entry_async);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE)
+		return NULL;
+
+	entry = g_simple_async_result_get_op_res_gpointer (result);
+	if (entry != NULL)
+		return g_object_ref (entry);
+	return NULL;
 }
 
 typedef struct {
