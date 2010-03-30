@@ -25,7 +25,7 @@
 #include <glib-object.h>
 
 #include <gdata/gdata-parsable.h>
-#include <gdata/gdata-feed.h>
+#include <gdata/gdata-entry.h>
 
 G_BEGIN_DECLS
 
@@ -46,7 +46,7 @@ typedef struct _GDataPicasaWebUserPrivate	GDataPicasaWebUserPrivate;
  * Since: 0.6.0
  **/
 typedef struct {
-	GDataFeed parent;
+	GDataEntry parent;
 	GDataPicasaWebUserPrivate *priv;
 } GDataPicasaWebUser;
 
@@ -59,7 +59,7 @@ typedef struct {
  **/
 typedef struct {
 	/*< private >*/
-	GDataFeedClass parent;
+	GDataEntryClass parent;
 } GDataPicasaWebUserClass;
 
 GType gdata_picasaweb_user_get_type (void) G_GNUC_CONST;

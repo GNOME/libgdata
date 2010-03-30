@@ -34,7 +34,7 @@
 #include <libxml/parser.h>
 
 #include "gdata-picasaweb-user.h"
-#include "gdata-feed.h"
+#include "gdata-entry.h"
 #include "gdata-private.h"
 
 static void gdata_picasaweb_user_finalize (GObject *object);
