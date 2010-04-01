@@ -101,7 +101,7 @@
 			remains fairly flexible in how it treats data. The sections below detail some of the ways in which libgdata achieves this,
 			and the reasoning behind them.</para>
 
-		<refsect2>
+		<refsect2 id="enumerable-properties">
 			<title>Enumerable Properties</title>
 			<para>There are many class properties in libgdata which should, at first glance, be implemented as enumerated types. Function
 				calls such as <function><link linkend="gdata-link-get-relation-type">gdata_link_get_relation_type()</link></function>
@@ -122,6 +122,14 @@
 			<para>One situation where it is acceptable to use enumerated types is in API which is only ever used to query the server, and
 				isn't involved in processing or representing the response at all, i.e. subclasses of
 				<type><link linkend="GDataQuery">GDataQuery</link></type>.</para>
+		</refsect2>
+
+		<refsect2>
+			<title>String Constants</title>
+			<para>As the GData protocol is XML-based, it makes extensive use of string constants, typically as
+				<link linkend="enumerable-properties">enumerated types</link> or namespaced URIs. To stop the authors of applications
+				which use libgdata from having to continually look up the correct "magic strings" to use, all such strings should
+				be <code>#define</code>d in libgdata, and referenced in the appropriate function documentation.</para>
 		</refsect2>
 
 		<refsect2>

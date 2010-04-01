@@ -109,7 +109,8 @@ Adding public API
    (see the gcc documentation: http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html#index-g_t_0040code_007bconst_007d-function-attribute-2207).
 
  - All properties which could be considered to use an enumerated value should almost definitely use a string instead. See the documentation section
-   on "Enumerable Properties" in the "GData Overview" section.
+   on "Enumerable Properties" in the "GData Overview" section. Where appropriate, the values for these string properties should be made available
+   as #defines.
 
  - New services should be implemented in libgdata itself, not by applications which use libgdata. See the documentation section on "New Services" in
    the "GData Overview" section.
