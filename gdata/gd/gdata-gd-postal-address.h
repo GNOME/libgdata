@@ -143,7 +143,8 @@ typedef struct {
 
 GType gdata_gd_postal_address_get_type (void) G_GNUC_CONST;
 
-GDataGDPostalAddress *gdata_gd_postal_address_new (const gchar *relation_type, const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT;
+GDataGDPostalAddress *gdata_gd_postal_address_new (const gchar *relation_type, const gchar *label,
+                                                   gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gint gdata_gd_postal_address_compare (const GDataGDPostalAddress *a, const GDataGDPostalAddress *b);
 
 const gchar *gdata_gd_postal_address_get_address (GDataGDPostalAddress *self);

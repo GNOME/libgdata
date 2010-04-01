@@ -146,7 +146,7 @@ typedef struct {
 
 GType gdata_youtube_video_get_type (void) G_GNUC_CONST;
 
-GDataYouTubeVideo *gdata_youtube_video_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
+GDataYouTubeVideo *gdata_youtube_video_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 guint gdata_youtube_video_get_view_count (GDataYouTubeVideo *self);
 guint gdata_youtube_video_get_favorite_count (GDataYouTubeVideo *self);
@@ -179,7 +179,7 @@ void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, const GTimeVal *
 const gchar *gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, const gchar *aspect_ratio);
 
-gchar *gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri);
+gchar *gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

@@ -47,7 +47,7 @@ typedef struct {
 	GCond *cond; /* a GCond to allow a popping thread to block on data being pushed into the buffer */
 } GDataBuffer;
 
-GDataBuffer *gdata_buffer_new (void) G_GNUC_WARN_UNUSED_RESULT;
+GDataBuffer *gdata_buffer_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_buffer_free (GDataBuffer *self);
 
 gboolean gdata_buffer_push_data (GDataBuffer *self, const guint8 *data, gsize length);

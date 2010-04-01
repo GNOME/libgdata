@@ -59,12 +59,12 @@ typedef struct {
 typedef struct {
 	GDataParsableClass parent;
 
-	gchar *(*get_entry_uri) (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
+	gchar *(*get_entry_uri) (const gchar *id); /* G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC */
 } GDataEntryClass;
 
 GType gdata_entry_get_type (void) G_GNUC_CONST;
 
-GDataEntry *gdata_entry_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
+GDataEntry *gdata_entry_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_entry_get_title (GDataEntry *self);
 void gdata_entry_set_title (GDataEntry *self, const gchar *title);

@@ -86,7 +86,8 @@ typedef struct {
 
 GType gdata_gcontact_event_get_type (void) G_GNUC_CONST;
 
-GDataGContactEvent *gdata_gcontact_event_new (const GDate *date, const gchar *relation_type, const gchar *label) G_GNUC_WARN_UNUSED_RESULT;
+GDataGContactEvent *gdata_gcontact_event_new (const GDate *date, const gchar *relation_type,
+                                              const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 void gdata_gcontact_event_get_date (GDataGContactEvent *self, GDate *date);
 void gdata_gcontact_event_set_date (GDataGContactEvent *self, const GDate *date);

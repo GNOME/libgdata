@@ -100,7 +100,8 @@ typedef struct {
 
 GType gdata_gd_who_get_type (void) G_GNUC_CONST;
 
-GDataGDWho *gdata_gd_who_new (const gchar *relation_type, const gchar *value_string, const gchar *email_address) G_GNUC_WARN_UNUSED_RESULT;
+GDataGDWho *gdata_gd_who_new (const gchar *relation_type, const gchar *value_string,
+                              const gchar *email_address) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gint gdata_gd_who_compare (const GDataGDWho *a, const GDataGDWho *b);
 
 const gchar *gdata_gd_who_get_relation_type (GDataGDWho *self);

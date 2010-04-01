@@ -36,7 +36,7 @@ gboolean gdata_parser_error_required_element_missing (const gchar *element_name,
 gboolean gdata_parser_error_duplicate_element (xmlNode *element, GError **error);
 
 gboolean gdata_parser_time_val_from_date (const gchar *date, GTimeVal *_time);
-gchar *gdata_parser_date_from_time_val (const GTimeVal *_time) G_GNUC_WARN_UNUSED_RESULT;
+gchar *gdata_parser_date_from_time_val (const GTimeVal *_time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 /*
  * GDataParserOptions:
@@ -78,7 +78,7 @@ gboolean gdata_parser_object_from_element (xmlNode *element, const gchar *elemen
                                            gpointer /* GDataParsable ** */ _output, gboolean *success, GError **error);
 
 void gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
-gchar *gdata_parser_utf8_trim_whitespace (const gchar *s) G_GNUC_WARN_UNUSED_RESULT;
+gchar *gdata_parser_utf8_trim_whitespace (const gchar *s) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

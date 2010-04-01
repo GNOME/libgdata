@@ -144,7 +144,7 @@ typedef struct {
 
 GType gdata_link_get_type (void) G_GNUC_CONST;
 
-GDataLink *gdata_link_new (const gchar *uri, const gchar *relation_type) G_GNUC_WARN_UNUSED_RESULT;
+GDataLink *gdata_link_new (const gchar *uri, const gchar *relation_type) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gint gdata_link_compare (const GDataLink *a, const GDataLink *b);
 
 const gchar *gdata_link_get_uri (GDataLink *self);

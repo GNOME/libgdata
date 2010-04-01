@@ -63,7 +63,7 @@ typedef struct {
 
 GType gdata_download_stream_get_type (void) G_GNUC_CONST;
 
-GInputStream *gdata_download_stream_new (GDataService *service, const gchar *download_uri) G_GNUC_WARN_UNUSED_RESULT;
+GInputStream *gdata_download_stream_new (GDataService *service, const gchar *download_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataService *gdata_download_stream_get_service (GDataDownloadStream *self);
 const gchar *gdata_download_stream_get_download_uri (GDataDownloadStream *self);

@@ -60,7 +60,7 @@ typedef struct {
 
 GType gdata_author_get_type (void) G_GNUC_CONST;
 
-GDataAuthor *gdata_author_new (const gchar *name, const gchar *uri, const gchar *email_address) G_GNUC_WARN_UNUSED_RESULT;
+GDataAuthor *gdata_author_new (const gchar *name, const gchar *uri, const gchar *email_address) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gint gdata_author_compare (const GDataAuthor *a, const GDataAuthor *b);
 
 const gchar *gdata_author_get_name (GDataAuthor *self);

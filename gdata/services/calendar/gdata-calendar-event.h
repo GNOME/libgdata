@@ -62,7 +62,7 @@ typedef struct {
 
 GType gdata_calendar_event_get_type (void) G_GNUC_CONST;
 
-GDataCalendarEvent *gdata_calendar_event_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
+GDataCalendarEvent *gdata_calendar_event_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 void gdata_calendar_event_get_edited (GDataCalendarEvent *self, GTimeVal *edited);
 const gchar *gdata_calendar_event_get_status (GDataCalendarEvent *self);

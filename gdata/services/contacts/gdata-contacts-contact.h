@@ -73,7 +73,7 @@ typedef struct {
 
 GType gdata_contacts_contact_get_type (void) G_GNUC_CONST;
 
-GDataContactsContact *gdata_contacts_contact_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
+GDataContactsContact *gdata_contacts_contact_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 void gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *edited);
 gboolean gdata_contacts_contact_is_deleted (GDataContactsContact *self);
@@ -141,13 +141,13 @@ gboolean gdata_contacts_contact_set_extended_property (GDataContactsContact *sel
 void gdata_contacts_contact_add_group (GDataContactsContact *self, const gchar *href);
 void gdata_contacts_contact_remove_group (GDataContactsContact *self, const gchar *href);
 gboolean gdata_contacts_contact_is_group_deleted (GDataContactsContact *self, const gchar *href);
-GList *gdata_contacts_contact_get_groups (GDataContactsContact *self) G_GNUC_WARN_UNUSED_RESULT;
+GList *gdata_contacts_contact_get_groups (GDataContactsContact *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 #include <gdata/services/contacts/gdata-contacts-service.h>
 
 gboolean gdata_contacts_contact_has_photo (GDataContactsContact *self);
 gchar *gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
-                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gboolean gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const gchar *data, gsize length,
                                            GCancellable *cancellable, GError **error);
 

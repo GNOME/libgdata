@@ -122,7 +122,7 @@ typedef struct {
 
 GType gdata_gcontact_jot_get_type (void) G_GNUC_CONST;
 
-GDataGContactJot *gdata_gcontact_jot_new (const gchar *content, const gchar *relation_type) G_GNUC_WARN_UNUSED_RESULT;
+GDataGContactJot *gdata_gcontact_jot_new (const gchar *content, const gchar *relation_type) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_gcontact_jot_get_content (GDataGContactJot *self);
 void gdata_gcontact_jot_set_content (GDataGContactJot *self, const gchar *content);

@@ -60,7 +60,7 @@ typedef struct {
 
 GType gdata_media_category_get_type (void) G_GNUC_CONST;
 
-GDataMediaCategory *gdata_media_category_new (const gchar *category, const gchar *scheme, const gchar *label) G_GNUC_WARN_UNUSED_RESULT;
+GDataMediaCategory *gdata_media_category_new (const gchar *category, const gchar *scheme, const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_media_category_get_category (GDataMediaCategory *self);
 void gdata_media_category_set_category (GDataMediaCategory *self, const gchar *category);

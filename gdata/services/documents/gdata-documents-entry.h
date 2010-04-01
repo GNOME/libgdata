@@ -92,7 +92,7 @@ typedef struct {
 
 GType gdata_documents_entry_get_type (void) G_GNUC_CONST;
 
-gchar *gdata_documents_entry_get_path (GDataDocumentsEntry *self);
+gchar *gdata_documents_entry_get_path (GDataDocumentsEntry *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_documents_entry_get_document_id (GDataDocumentsEntry *self);
 

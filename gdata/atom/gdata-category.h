@@ -60,7 +60,7 @@ typedef struct {
 
 GType gdata_category_get_type (void) G_GNUC_CONST;
 
-GDataCategory *gdata_category_new (const gchar *term, const gchar *scheme, const gchar *label) G_GNUC_WARN_UNUSED_RESULT;
+GDataCategory *gdata_category_new (const gchar *term, const gchar *scheme, const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gint gdata_category_compare (const GDataCategory *a, const GDataCategory *b);
 
 const gchar *gdata_category_get_term (GDataCategory *self);

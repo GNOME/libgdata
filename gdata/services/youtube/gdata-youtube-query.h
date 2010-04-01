@@ -131,7 +131,7 @@ typedef struct {
 
 GType gdata_youtube_query_get_type (void) G_GNUC_CONST;
 
-GDataYouTubeQuery *gdata_youtube_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT;
+GDataYouTubeQuery *gdata_youtube_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataYouTubeFormat gdata_youtube_query_get_format (GDataYouTubeQuery *self);
 void gdata_youtube_query_set_format (GDataYouTubeQuery *self, GDataYouTubeFormat format);

@@ -58,10 +58,10 @@ typedef struct {
 
 GType gdata_query_get_type (void) G_GNUC_CONST;
 
-GDataQuery *gdata_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT;
-GDataQuery *gdata_query_new_with_limits (const gchar *q, gint start_index, gint max_results) G_GNUC_WARN_UNUSED_RESULT;
+GDataQuery *gdata_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataQuery *gdata_query_new_with_limits (const gchar *q, gint start_index, gint max_results) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-gchar *gdata_query_get_query_uri (GDataQuery *self, const gchar *feed_uri) G_GNUC_WARN_UNUSED_RESULT;
+gchar *gdata_query_get_query_uri (GDataQuery *self, const gchar *feed_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_query_next_page (GDataQuery *self);
 gboolean gdata_query_previous_page (GDataQuery *self);
 

@@ -62,7 +62,7 @@ typedef struct {
 } GDataDocumentsFolderClass;
 
 GType gdata_documents_folder_get_type (void) G_GNUC_CONST;
-GDataDocumentsFolder *gdata_documents_folder_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
+GDataDocumentsFolder *gdata_documents_folder_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

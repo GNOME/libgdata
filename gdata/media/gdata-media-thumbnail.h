@@ -65,7 +65,9 @@ const gchar *gdata_media_thumbnail_get_uri (GDataMediaThumbnail *self);
 guint gdata_media_thumbnail_get_height (GDataMediaThumbnail *self);
 guint gdata_media_thumbnail_get_width (GDataMediaThumbnail *self);
 gint64 gdata_media_thumbnail_get_time (GDataMediaThumbnail *self);
-GFile *gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file, gboolean replace_file_if_exists, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+GFile *gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file,
+                                       gboolean replace_file_if_exists,
+                                       GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

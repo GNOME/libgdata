@@ -62,11 +62,11 @@ typedef struct {
 
 GType gdata_contacts_service_get_type (void) G_GNUC_CONST;
 
-GDataContactsService *gdata_contacts_service_new (const gchar *client_id);
+GDataContactsService *gdata_contacts_service_new (const gchar *client_id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataFeed *gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
 						  GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-						  GError **error) G_GNUC_WARN_UNUSED_RESULT;
+						  GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
 						  GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 						  GAsyncReadyCallback callback, gpointer user_data);
@@ -74,9 +74,9 @@ void gdata_contacts_service_query_contacts_async (GDataContactsService *self, GD
 #include <gdata/services/contacts/gdata-contacts-contact.h>
 
 GDataContactsContact *gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContactsContact *contact,
-							     GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+							     GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataContactsContact *gdata_contacts_service_update_contact (GDataContactsService *self, GDataContactsContact *contact,
-							     GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+							     GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

@@ -230,7 +230,8 @@ typedef struct {
 
 GType gdata_gcontact_relation_get_type (void) G_GNUC_CONST;
 
-GDataGContactRelation *gdata_gcontact_relation_new (const gchar *name, const gchar *relation_type, const gchar *label) G_GNUC_WARN_UNUSED_RESULT;
+GDataGContactRelation *gdata_gcontact_relation_new (const gchar *name, const gchar *relation_type,
+                                                    const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_gcontact_relation_get_name (GDataGContactRelation *self);
 void gdata_gcontact_relation_set_name (GDataGContactRelation *self, const gchar *name);
