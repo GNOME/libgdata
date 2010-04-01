@@ -563,7 +563,7 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 		return NULL;
 	}
 
-	if (status != 201) {
+	if (status != SOUP_STATUS_CREATED) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase,
@@ -665,7 +665,7 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 		return NULL;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,

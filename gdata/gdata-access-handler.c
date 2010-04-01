@@ -117,7 +117,7 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 		return NULL;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_QUERY, status, message->reason_phrase, message->response_body->data,
@@ -206,7 +206,7 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 		return NULL;
 	}
 
-	if (status != 201) {
+	if (status != SOUP_STATUS_CREATED) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_INSERTION, status, message->reason_phrase, message->response_body->data,
@@ -320,7 +320,7 @@ gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *servic
 		return NULL;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
@@ -403,7 +403,7 @@ gdata_access_handler_delete_rule (GDataAccessHandler *self, GDataService *servic
 		return FALSE;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_DELETION, status, message->reason_phrase, message->response_body->data,

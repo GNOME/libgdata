@@ -650,7 +650,7 @@ gdata_upload_stream_get_response (GDataUploadStream *self, gssize *length)
 
 	g_static_mutex_lock (&(self->priv->response_mutex));
 
-	if (self->priv->response_status == 0) {
+	if (self->priv->response_status == SOUP_STATUS_NONE) {
 		/* We can't touch the message until the network thread has finished using it, since it isn't threadsafe */
 		_length = -1;
 		_response = NULL;

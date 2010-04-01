@@ -636,7 +636,7 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 		return FALSE;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		const gchar *response_body = message->response_body->data;
 		gchar *error_start, *error_end, *uri_start, *uri_end, *uri = NULL;
 
@@ -1039,11 +1039,11 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
 		return NULL;
 	}
 
-	if (status == 304) {
+	if (status == SOUP_STATUS_NOT_MODIFIED) {
 		/* Not modified; ETag has worked */
 		g_object_unref (message);
 		return NULL;
-	} else if (status != 200) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (self, GDATA_OPERATION_QUERY, status, message->reason_phrase, message->response_body->data,
@@ -1485,7 +1485,7 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 		return NULL;
 	}
 
-	if (status != 201) {
+	if (status != SOUP_STATUS_CREATED) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (self, GDATA_OPERATION_INSERTION, status, message->reason_phrase, message->response_body->data,
@@ -1662,7 +1662,7 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 		return NULL;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (self, GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
@@ -1826,7 +1826,7 @@ gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable 
 		return FALSE;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (self, GDATA_OPERATION_DELETION, status, message->reason_phrase, message->response_body->data,

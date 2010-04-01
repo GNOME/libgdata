@@ -1823,7 +1823,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 		return NULL;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (GDATA_SERVICE (service), GDATA_OPERATION_DOWNLOAD, status, message->reason_phrase,
@@ -1922,7 +1922,7 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 		return FALSE;
 	}
 
-	if (status != 200) {
+	if (status != SOUP_STATUS_OK) {
 		/* Error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_UPLOAD, status, message->reason_phrase, message->response_body->data,
