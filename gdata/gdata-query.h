@@ -65,11 +65,11 @@ gchar *gdata_query_get_query_uri (GDataQuery *self, const gchar *feed_uri) G_GNU
 void gdata_query_next_page (GDataQuery *self);
 gboolean gdata_query_previous_page (GDataQuery *self);
 
-const gchar *gdata_query_get_q (GDataQuery *self);
+const gchar *gdata_query_get_q (GDataQuery *self) G_GNUC_PURE;
 void gdata_query_set_q (GDataQuery *self, const gchar *q);
-const gchar *gdata_query_get_categories (GDataQuery *self);
+const gchar *gdata_query_get_categories (GDataQuery *self) G_GNUC_PURE;
 void gdata_query_set_categories (GDataQuery *self, const gchar *categories);
-const gchar *gdata_query_get_author (GDataQuery *self);
+const gchar *gdata_query_get_author (GDataQuery *self) G_GNUC_PURE;
 void gdata_query_set_author (GDataQuery *self, const gchar *author);
 void gdata_query_get_updated_min (GDataQuery *self, GTimeVal *updated_min);
 void gdata_query_set_updated_min (GDataQuery *self, const GTimeVal *updated_min);
@@ -79,13 +79,13 @@ void gdata_query_get_published_min (GDataQuery *self, GTimeVal *published_min);
 void gdata_query_set_published_min (GDataQuery *self, const GTimeVal *published_min);
 void gdata_query_get_published_max (GDataQuery *self, GTimeVal *published_max);
 void gdata_query_set_published_max (GDataQuery *self, const GTimeVal *published_max);
-guint gdata_query_get_start_index (GDataQuery *self);
+guint gdata_query_get_start_index (GDataQuery *self) G_GNUC_PURE;
 void gdata_query_set_start_index (GDataQuery *self, guint start_index);
-gboolean gdata_query_is_strict (GDataQuery *self);
+gboolean gdata_query_is_strict (GDataQuery *self) G_GNUC_PURE;
 void gdata_query_set_is_strict (GDataQuery *self, gboolean is_strict);
-guint gdata_query_get_max_results (GDataQuery *self);
+guint gdata_query_get_max_results (GDataQuery *self) G_GNUC_PURE;
 void gdata_query_set_max_results (GDataQuery *self, guint max_results);
-const gchar *gdata_query_get_etag (GDataQuery *self);
+const gchar *gdata_query_get_etag (GDataQuery *self) G_GNUC_PURE;
 void gdata_query_set_etag (GDataQuery *self, const gchar *etag);
 
 G_END_DECLS

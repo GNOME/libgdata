@@ -62,8 +62,8 @@ typedef struct {
 
 GType gdata_georss_where_get_type (void) G_GNUC_CONST;
 
-gdouble gdata_georss_where_get_latitude (GDataGeoRSSWhere *self);
-gdouble gdata_georss_where_get_longitude (GDataGeoRSSWhere *self);
+gdouble gdata_georss_where_get_latitude (GDataGeoRSSWhere *self) G_GNUC_PURE;
+gdouble gdata_georss_where_get_longitude (GDataGeoRSSWhere *self) G_GNUC_PURE;
 void gdata_georss_where_set_latitude (GDataGeoRSSWhere *self, gdouble latitude);
 void gdata_georss_where_set_longitude (GDataGeoRSSWhere *self, gdouble longitude);
 

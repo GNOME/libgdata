@@ -91,16 +91,16 @@ GType gdata_gd_reminder_get_type (void) G_GNUC_CONST;
 
 GDataGDReminder *gdata_gd_reminder_new (const gchar *method, const GTimeVal *absolute_time,
                                         gint relative_time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_reminder_compare (const GDataGDReminder *a, const GDataGDReminder *b);
+gint gdata_gd_reminder_compare (const GDataGDReminder *a, const GDataGDReminder *b) G_GNUC_PURE;
 
-const gchar *gdata_gd_reminder_get_method (GDataGDReminder *self);
+const gchar *gdata_gd_reminder_get_method (GDataGDReminder *self) G_GNUC_PURE;
 void gdata_gd_reminder_set_method (GDataGDReminder *self, const gchar *method);
 
 void gdata_gd_reminder_get_absolute_time (GDataGDReminder *self, GTimeVal *absolute_time);
 void gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, const GTimeVal *absolute_time);
 gboolean gdata_gd_reminder_is_absolute_time (GDataGDReminder *self);
 
-gint gdata_gd_reminder_get_relative_time (GDataGDReminder *self);
+gint gdata_gd_reminder_get_relative_time (GDataGDReminder *self) G_GNUC_PURE;
 void gdata_gd_reminder_set_relative_time (GDataGDReminder *self, gint relative_time);
 
 G_END_DECLS

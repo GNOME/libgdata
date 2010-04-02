@@ -68,17 +68,17 @@ GDataPicasaWebQuery *gdata_picasaweb_query_new (const gchar *q) G_GNUC_WARN_UNUS
 GDataPicasaWebQuery *gdata_picasaweb_query_new_with_limits (const gchar *q,
                                                             guint start_index, guint max_results) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-GDataPicasaWebVisibility gdata_picasaweb_query_get_visibility (GDataPicasaWebQuery *self);
+GDataPicasaWebVisibility gdata_picasaweb_query_get_visibility (GDataPicasaWebQuery *self) G_GNUC_PURE;
 void gdata_picasaweb_query_set_visibility (GDataPicasaWebQuery *self, GDataPicasaWebVisibility visibility);
-const gchar *gdata_picasaweb_query_get_thumbnail_size (GDataPicasaWebQuery *self);
+const gchar *gdata_picasaweb_query_get_thumbnail_size (GDataPicasaWebQuery *self) G_GNUC_PURE;
 void gdata_picasaweb_query_set_thumbnail_size (GDataPicasaWebQuery *self, const gchar *thumbnail_size);
-const gchar *gdata_picasaweb_query_get_image_size (GDataPicasaWebQuery *self);
+const gchar *gdata_picasaweb_query_get_image_size (GDataPicasaWebQuery *self) G_GNUC_PURE;
 void gdata_picasaweb_query_set_image_size (GDataPicasaWebQuery *self, const gchar *image_size);
-const gchar *gdata_picasaweb_query_get_tag (GDataPicasaWebQuery *self);
+const gchar *gdata_picasaweb_query_get_tag (GDataPicasaWebQuery *self) G_GNUC_PURE;
 void gdata_picasaweb_query_set_tag (GDataPicasaWebQuery *self, const gchar *tag);
 void gdata_picasaweb_query_get_bounding_box (GDataPicasaWebQuery *self, gdouble *north, gdouble *east, gdouble *south, gdouble *west);
 void gdata_picasaweb_query_set_bounding_box (GDataPicasaWebQuery *self, gdouble north, gdouble east, gdouble south, gdouble west);
-const gchar *gdata_picasaweb_query_get_location (GDataPicasaWebQuery *self);
+const gchar *gdata_picasaweb_query_get_location (GDataPicasaWebQuery *self) G_GNUC_PURE;
 void gdata_picasaweb_query_set_location (GDataPicasaWebQuery *self, const gchar *location);
 
 G_END_DECLS

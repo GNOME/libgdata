@@ -94,17 +94,17 @@ GType gdata_documents_entry_get_type (void) G_GNUC_CONST;
 
 gchar *gdata_documents_entry_get_path (GDataDocumentsEntry *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-const gchar *gdata_documents_entry_get_document_id (GDataDocumentsEntry *self);
+const gchar *gdata_documents_entry_get_document_id (GDataDocumentsEntry *self) G_GNUC_PURE;
 
 void gdata_documents_entry_get_edited (GDataDocumentsEntry *self, GTimeVal *edited);
 void gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self, GTimeVal *last_viewed);
 
 void gdata_documents_entry_set_writers_can_invite (GDataDocumentsEntry *self, gboolean writers_can_invite);
-gboolean gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self);
+gboolean gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self) G_GNUC_PURE;
 
-GDataAuthor *gdata_documents_entry_get_last_modified_by (GDataDocumentsEntry *self);
+GDataAuthor *gdata_documents_entry_get_last_modified_by (GDataDocumentsEntry *self) G_GNUC_PURE;
 
-gboolean gdata_documents_entry_is_deleted (GDataDocumentsEntry *self);
+gboolean gdata_documents_entry_is_deleted (GDataDocumentsEntry *self) G_GNUC_PURE;
 
 G_END_DECLS
 

@@ -478,153 +478,34 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 	}
 }
 
-typedef struct {
-	/* Input */
-	gchar *username;
-	gchar *password;
-
-	/* Output */
-	GDataService *service;
-	gboolean success;
-} AuthenticateAsyncData;
-
 static void
-authenticate_async_data_free (AuthenticateAsyncData *self)
+set_authentication_details (GDataService *self, const gchar *username, const gchar *password, gboolean authenticated)
 {
-	g_free (self->username);
-	g_free (self->password);
-	if (self->service != NULL)
-		g_object_unref (self->service);
-
-	g_slice_free (AuthenticateAsyncData, self);
-}
-
-static gboolean
-set_authentication_details_cb (AuthenticateAsyncData *data)
-{
-	GObject *service = G_OBJECT (data->service);
-	GDataServicePrivate *priv = data->service->priv;
-
-	g_free (priv->username);
-	/* Ensure the username is always a full e-mail address */
-	if (strchr (data->username, '@') == NULL)
-		priv->username = g_strdup_printf ("%s@" EMAIL_DOMAIN, data->username);
-	else
-		priv->username = g_strdup (data->username);
-
-	g_free (priv->password);
-	priv->password = g_strdup (data->password);
-	priv->authenticated = TRUE;
+	GObject *service = G_OBJECT (self);
+	GDataServicePrivate *priv = self->priv;
 
 	g_object_freeze_notify (service);
-	g_object_notify (service, "username");
-	g_object_notify (service, "password");
+	priv->authenticated = authenticated;
+
+	if (authenticated == TRUE) {
+		/* Update several properties the service holds */
+		g_free (priv->username);
+
+		/* Ensure the username is always a full e-mail address */
+		if (strchr (username, '@') == NULL)
+			priv->username = g_strdup_printf ("%s@" EMAIL_DOMAIN, username);
+		else
+			priv->username = g_strdup (username);
+
+		g_free (priv->password);
+		priv->password = g_strdup (password);
+
+		g_object_notify (service, "username");
+		g_object_notify (service, "password");
+	}
+
 	g_object_notify (service, "authenticated");
 	g_object_thaw_notify (service);
-
-	authenticate_async_data_free (data);
-
-	return FALSE;
-}
-
-static void
-authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
-{
-	GError *error = NULL;
-	AuthenticateAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
-
-	/* Check to see if it's been cancelled already */
-	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		authenticate_async_data_free (data);
-		return;
-	}
-
-	/* Authenticate and return */
-	data->success = gdata_service_authenticate (service, data->username, data->password, cancellable, &error);
-	if (data->success == FALSE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		authenticate_async_data_free (data);
-		return;
-	}
-
-	/* Update the authentication details held by the service */
-	data->service = g_object_ref (service);
-	g_idle_add ((GSourceFunc) set_authentication_details_cb, data);
-}
-
-/**
- * gdata_service_authenticate_async:
- * @self: a #GDataService
- * @username: the user's username
- * @password: the user's password
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: data to pass to the @callback function
- *
- * Authenticates the #GDataService with the online service using the given @username and @password. @self, @username and
- * @password are all reffed/copied when this function is called, so can safely be freed after this function returns.
- *
- * For more details, see gdata_service_authenticate(), which is the synchronous version of this function.
- *
- * When the operation is finished, @callback will be called. You can then call gdata_service_authenticate_finish()
- * to get the results of the operation.
- **/
-void
-gdata_service_authenticate_async (GDataService *self, const gchar *username, const gchar *password,
-                                  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
-{
-	GSimpleAsyncResult *result;
-	AuthenticateAsyncData *data;
-
-	g_return_if_fail (GDATA_IS_SERVICE (self));
-	g_return_if_fail (username != NULL);
-	g_return_if_fail (password != NULL);
-	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-
-	data = g_slice_new (AuthenticateAsyncData);
-	data->username = g_strdup (username);
-	data->password = g_strdup (password);
-	data->service = NULL; /* set in authenticate_thread() */
-
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_authenticate_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, NULL);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) authenticate_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
-}
-
-/**
- * gdata_service_authenticate_finish:
- * @self: a #GDataService
- * @async_result: a #GAsyncResult
- * @error: a #GError, or %NULL
- *
- * Finishes an asynchronous authentication operation started with gdata_service_authenticate_async().
- *
- * Return value: %TRUE if authentication was successful, %FALSE otherwise
- **/
-gboolean
-gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_result, GError **error)
-{
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	AuthenticateAsyncData *data;
-
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_authenticate_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return FALSE;
-
-	data = g_simple_async_result_get_op_res_gpointer (result);
-	if (data->success == TRUE)
-		return TRUE;
-
-	g_assert_not_reached ();
 }
 
 static gboolean
@@ -791,36 +672,15 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 
 login_error:
 		g_free (uri);
-		goto general_error;
+		g_object_unref (message);
+
+		return FALSE;
 	}
 
 	g_assert (message->response_body->data != NULL);
 
 	retval = klass->parse_authentication_response (self, status, message->response_body->data, message->response_body->length, error);
 	g_object_unref (message);
-
-	g_object_freeze_notify (G_OBJECT (self));
-	priv->authenticated = retval;
-
-	if (retval == TRUE) {
-		/* Update several properties the service holds */
-		g_free (priv->username);
-
-		/* Ensure the username is always a full e-mail address */
-		if (strchr (username, '@') == NULL)
-			priv->username = g_strdup_printf ("%s@" EMAIL_DOMAIN, username);
-		else
-			priv->username = g_strdup (username);
-
-		g_free (priv->password);
-		priv->password = g_strdup (password);
-
-		g_object_notify (G_OBJECT (self), "username");
-		g_object_notify (G_OBJECT (self), "password");
-	}
-
-	g_object_notify (G_OBJECT (self), "authenticated");
-	g_object_thaw_notify (G_OBJECT (self));
 
 	return retval;
 
@@ -829,12 +689,139 @@ protocol_error:
 	klass->parse_error_response (self, GDATA_OPERATION_AUTHENTICATION, status, message->reason_phrase, message->response_body->data,
 	                             message->response_body->length, error);
 
-general_error:
 	g_object_unref (message);
-	priv->authenticated = FALSE;
-	g_object_notify (G_OBJECT (self), "authenticated");
 
 	return FALSE;
+}
+
+typedef struct {
+	/* Input */
+	gchar *username;
+	gchar *password;
+
+	/* Output */
+	GDataService *service;
+	gboolean success;
+} AuthenticateAsyncData;
+
+static void
+authenticate_async_data_free (AuthenticateAsyncData *self)
+{
+	g_free (self->username);
+	g_free (self->password);
+	if (self->service != NULL)
+		g_object_unref (self->service);
+
+	g_slice_free (AuthenticateAsyncData, self);
+}
+
+/* This is always called in the main thread via an idle function */
+static gboolean
+set_authentication_details_cb (AuthenticateAsyncData *data)
+{
+	set_authentication_details (data->service, data->username, data->password, data->success);
+	authenticate_async_data_free (data);
+
+	return FALSE;
+}
+
+static void
+authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
+{
+	GError *error = NULL;
+	AuthenticateAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+
+	/* Check to see if it's been cancelled already */
+	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+		authenticate_async_data_free (data);
+		return;
+	}
+
+	/* Authenticate and return */
+	data->success = authenticate (service, data->username, data->password, NULL, NULL, cancellable, &error);
+	if (data->success == FALSE) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+	}
+
+	/* Update the authentication details held by the service in an idle function so that
+	 * the service is only ever modified in the main thread */
+	data->service = g_object_ref (service);
+	g_idle_add ((GSourceFunc) set_authentication_details_cb, data);
+}
+
+/**
+ * gdata_service_authenticate_async:
+ * @self: a #GDataService
+ * @username: the user's username
+ * @password: the user's password
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when authentication is finished
+ * @user_data: data to pass to the @callback function
+ *
+ * Authenticates the #GDataService with the online service using the given @username and @password. @self, @username and
+ * @password are all reffed/copied when this function is called, so can safely be freed after this function returns.
+ *
+ * For more details, see gdata_service_authenticate(), which is the synchronous version of this function.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_service_authenticate_finish()
+ * to get the results of the operation.
+ **/
+void
+gdata_service_authenticate_async (GDataService *self, const gchar *username, const gchar *password,
+				  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+	AuthenticateAsyncData *data;
+
+	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_return_if_fail (username != NULL);
+	g_return_if_fail (password != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	data = g_slice_new (AuthenticateAsyncData);
+	data->username = g_strdup (username);
+	data->password = g_strdup (password);
+	data->service = NULL; /* set in authenticate_thread() */
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_authenticate_async);
+	g_simple_async_result_set_op_res_gpointer (result, data, NULL);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) authenticate_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_service_authenticate_finish:
+ * @self: a #GDataService
+ * @async_result: a #GAsyncResult
+ * @error: a #GError, or %NULL
+ *
+ * Finishes an asynchronous authentication operation started with gdata_service_authenticate_async().
+ *
+ * Return value: %TRUE if authentication was successful, %FALSE otherwise
+ **/
+gboolean
+gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_result, GError **error)
+{
+	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	AuthenticateAsyncData *data;
+
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_authenticate_async);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE)
+		return FALSE;
+
+	data = g_simple_async_result_get_op_res_gpointer (result);
+	if (data->success == TRUE)
+		return TRUE;
+
+	g_assert_not_reached ();
 }
 
 /**
@@ -868,13 +855,18 @@ general_error:
 gboolean
 gdata_service_authenticate (GDataService *self, const gchar *username, const gchar *password, GCancellable *cancellable, GError **error)
 {
+	gboolean retval;
+
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
 	g_return_val_if_fail (username != NULL, FALSE);
 	g_return_val_if_fail (password != NULL, FALSE);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	return authenticate (self, username, password, NULL, NULL, cancellable, error);
+	retval = authenticate (self, username, password, NULL, NULL, cancellable, error);
+	set_authentication_details (self, username, password, retval);
+
+	return retval;
 }
 
 SoupMessage *
@@ -1977,11 +1969,13 @@ gdata_service_is_authenticated (GDataService *self)
 	return self->priv->authenticated;
 }
 
+/* This should only ever be called in the main thread */
 void
 _gdata_service_set_authenticated (GDataService *self, gboolean authenticated)
 {
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	self->priv->authenticated = authenticated;
+	g_object_notify (G_OBJECT (self), "authenticated");
 }
 
 /**

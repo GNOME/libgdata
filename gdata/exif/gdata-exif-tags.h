@@ -62,15 +62,15 @@ typedef struct {
 
 GType gdata_exif_tags_get_type (void) G_GNUC_CONST;
 
-gdouble gdata_exif_tags_get_distance (GDataExifTags *self);
-gdouble gdata_exif_tags_get_exposure (GDataExifTags *self);
-gboolean gdata_exif_tags_get_flash (GDataExifTags *self);
-gdouble gdata_exif_tags_get_focal_length (GDataExifTags *self);
-gdouble gdata_exif_tags_get_fstop (GDataExifTags *self);
-const gchar *gdata_exif_tags_get_image_unique_id (GDataExifTags *self);
-gint gdata_exif_tags_get_iso (GDataExifTags *self);
-const gchar *gdata_exif_tags_get_make (GDataExifTags *self);
-const gchar *gdata_exif_tags_get_model (GDataExifTags *self);
+gdouble gdata_exif_tags_get_distance (GDataExifTags *self) G_GNUC_PURE;
+gdouble gdata_exif_tags_get_exposure (GDataExifTags *self) G_GNUC_PURE;
+gboolean gdata_exif_tags_get_flash (GDataExifTags *self) G_GNUC_PURE;
+gdouble gdata_exif_tags_get_focal_length (GDataExifTags *self) G_GNUC_PURE;
+gdouble gdata_exif_tags_get_fstop (GDataExifTags *self) G_GNUC_PURE;
+const gchar *gdata_exif_tags_get_image_unique_id (GDataExifTags *self) G_GNUC_PURE;
+gint gdata_exif_tags_get_iso (GDataExifTags *self) G_GNUC_PURE;
+const gchar *gdata_exif_tags_get_make (GDataExifTags *self) G_GNUC_PURE;
+const gchar *gdata_exif_tags_get_model (GDataExifTags *self) G_GNUC_PURE;
 void gdata_exif_tags_get_time (GDataExifTags *self, GTimeVal *time);
 
 G_END_DECLS

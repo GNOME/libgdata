@@ -83,33 +83,33 @@ GType gdata_gd_organization_get_type (void) G_GNUC_CONST;
 
 GDataGDOrganization *gdata_gd_organization_new (const gchar *name, const gchar *title, const gchar *relation_type,
                                                 const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_organization_compare (const GDataGDOrganization *a, const GDataGDOrganization *b);
+gint gdata_gd_organization_compare (const GDataGDOrganization *a, const GDataGDOrganization *b) G_GNUC_PURE;
 
-const gchar *gdata_gd_organization_get_name (GDataGDOrganization *self);
+const gchar *gdata_gd_organization_get_name (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_name (GDataGDOrganization *self, const gchar *name);
 
-const gchar *gdata_gd_organization_get_title (GDataGDOrganization *self);
+const gchar *gdata_gd_organization_get_title (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_title (GDataGDOrganization *self, const gchar *title);
 
-const gchar *gdata_gd_organization_get_relation_type (GDataGDOrganization *self);
+const gchar *gdata_gd_organization_get_relation_type (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_relation_type (GDataGDOrganization *self, const gchar *relation_type);
 
-const gchar *gdata_gd_organization_get_label (GDataGDOrganization *self);
+const gchar *gdata_gd_organization_get_label (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_label (GDataGDOrganization *self, const gchar *label);
 
-gboolean gdata_gd_organization_is_primary (GDataGDOrganization *self);
+gboolean gdata_gd_organization_is_primary (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_is_primary (GDataGDOrganization *self, gboolean is_primary);
 
-const gchar *gdata_gd_organization_get_department (GDataGDOrganization *self);
+const gchar *gdata_gd_organization_get_department (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_department (GDataGDOrganization *self, const gchar *department);
 
-const gchar *gdata_gd_organization_get_job_description (GDataGDOrganization *self);
+const gchar *gdata_gd_organization_get_job_description (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_job_description (GDataGDOrganization *self, const gchar *job_description);
 
-const gchar *gdata_gd_organization_get_symbol (GDataGDOrganization *self);
+const gchar *gdata_gd_organization_get_symbol (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_symbol (GDataGDOrganization *self, const gchar *symbol);
 
-GDataGDWhere *gdata_gd_organization_get_location (GDataGDOrganization *self);
+GDataGDWhere *gdata_gd_organization_get_location (GDataGDOrganization *self) G_GNUC_PURE;
 void gdata_gd_organization_set_location (GDataGDOrganization *self, GDataGDWhere *location);
 
 G_END_DECLS

@@ -159,125 +159,125 @@ GType gdata_contacts_contact_get_type (void) G_GNUC_CONST;
 GDataContactsContact *gdata_contacts_contact_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 void gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *edited);
-gboolean gdata_contacts_contact_is_deleted (GDataContactsContact *self);
+gboolean gdata_contacts_contact_is_deleted (GDataContactsContact *self) G_GNUC_PURE;
 
-GDataGDName *gdata_contacts_contact_get_name (GDataContactsContact *self);
+GDataGDName *gdata_contacts_contact_get_name (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_name (GDataContactsContact *self, GDataGDName *name);
 
-const gchar *gdata_contacts_contact_get_nickname (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_nickname (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_nickname (GDataContactsContact *self, const gchar *nickname);
 
-gboolean gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday);
+gboolean gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday) G_GNUC_PURE;
 void gdata_contacts_contact_set_birthday (GDataContactsContact *self, GDate *birthday, gboolean birthday_has_year);
 
-const gchar *gdata_contacts_contact_get_billing_information (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_billing_information (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_billing_information (GDataContactsContact *self, const gchar *billing_information);
 
-const gchar *gdata_contacts_contact_get_directory_server (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_directory_server (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_directory_server (GDataContactsContact *self, const gchar *directory_server);
 
-const gchar *gdata_contacts_contact_get_gender (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_gender (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_gender (GDataContactsContact *self, const gchar *gender);
 
-const gchar *gdata_contacts_contact_get_initials (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_initials (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_initials (GDataContactsContact *self, const gchar *initials);
 
-const gchar *gdata_contacts_contact_get_maiden_name (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_maiden_name (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_maiden_name (GDataContactsContact *self, const gchar *maiden_name);
 
-const gchar *gdata_contacts_contact_get_mileage (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_mileage (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_mileage (GDataContactsContact *self, const gchar *mileage);
 
-const gchar *gdata_contacts_contact_get_occupation (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_occupation (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_occupation (GDataContactsContact *self, const gchar *occupation);
 
-const gchar *gdata_contacts_contact_get_priority (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_priority (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_priority (GDataContactsContact *self, const gchar *priority);
 
-const gchar *gdata_contacts_contact_get_sensitivity (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_sensitivity (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_sensitivity (GDataContactsContact *self, const gchar *sensitivity);
 
-const gchar *gdata_contacts_contact_get_short_name (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_short_name (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_short_name (GDataContactsContact *self, const gchar *short_name);
 
-const gchar *gdata_contacts_contact_get_subject (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_subject (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_subject (GDataContactsContact *self, const gchar *subject);
 
 void gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEmailAddress *email_address);
-GList *gdata_contacts_contact_get_email_addresses (GDataContactsContact *self);
-GDataGDEmailAddress *gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_email_addresses (GDataContactsContact *self) G_GNUC_PURE;
+GDataGDEmailAddress *gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_email_addresses (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_im_address (GDataContactsContact *self, GDataGDIMAddress *im_address);
-GList *gdata_contacts_contact_get_im_addresses (GDataContactsContact *self);
-GDataGDIMAddress *gdata_contacts_contact_get_primary_im_address (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_im_addresses (GDataContactsContact *self) G_GNUC_PURE;
+GDataGDIMAddress *gdata_contacts_contact_get_primary_im_address (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_im_addresses (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhoneNumber *phone_number);
-GList *gdata_contacts_contact_get_phone_numbers (GDataContactsContact *self);
-GDataGDPhoneNumber *gdata_contacts_contact_get_primary_phone_number (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_phone_numbers (GDataContactsContact *self) G_GNUC_PURE;
+GDataGDPhoneNumber *gdata_contacts_contact_get_primary_phone_number (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_phone_numbers (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_postal_address (GDataContactsContact *self, GDataGDPostalAddress *postal_address);
-GList *gdata_contacts_contact_get_postal_addresses (GDataContactsContact *self);
-GDataGDPostalAddress *gdata_contacts_contact_get_primary_postal_address (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_postal_addresses (GDataContactsContact *self) G_GNUC_PURE;
+GDataGDPostalAddress *gdata_contacts_contact_get_primary_postal_address (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_postal_addresses (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrganization *organization);
-GList *gdata_contacts_contact_get_organizations (GDataContactsContact *self);
-GDataGDOrganization *gdata_contacts_contact_get_primary_organization (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_organizations (GDataContactsContact *self) G_GNUC_PURE;
+GDataGDOrganization *gdata_contacts_contact_get_primary_organization (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_organizations (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_jot (GDataContactsContact *self, GDataGContactJot *jot);
-GList *gdata_contacts_contact_get_jots (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_jots (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_jots (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_relation (GDataContactsContact *self, GDataGContactRelation *relation);
-GList *gdata_contacts_contact_get_relations (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_relations (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_relations (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_website (GDataContactsContact *self, GDataGContactWebsite *website);
-GList *gdata_contacts_contact_get_websites (GDataContactsContact *self);
-GDataGContactWebsite *gdata_contacts_contact_get_primary_website (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_websites (GDataContactsContact *self) G_GNUC_PURE;
+GDataGContactWebsite *gdata_contacts_contact_get_primary_website (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_websites (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_event (GDataContactsContact *self, GDataGContactEvent *event);
-GList *gdata_contacts_contact_get_events (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_events (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_events (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGContactCalendar *calendar);
-GList *gdata_contacts_contact_get_calendars (GDataContactsContact *self);
-GDataGContactCalendar *gdata_contacts_contact_get_primary_calendar (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_calendars (GDataContactsContact *self) G_GNUC_PURE;
+GDataGContactCalendar *gdata_contacts_contact_get_primary_calendar (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContactExternalID *external_id);
-GList *gdata_contacts_contact_get_external_ids (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_external_ids (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_external_ids (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_hobby (GDataContactsContact *self, const gchar *hobby);
-GList *gdata_contacts_contact_get_hobbies (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_hobbies (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_hobbies (GDataContactsContact *self);
 
 void gdata_contacts_contact_add_language (GDataContactsContact *self, GDataGContactLanguage *language);
-GList *gdata_contacts_contact_get_languages (GDataContactsContact *self);
+GList *gdata_contacts_contact_get_languages (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_remove_all_languages (GDataContactsContact *self);
 
-const gchar *gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const gchar *name);
-GHashTable *gdata_contacts_contact_get_extended_properties (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const gchar *name) G_GNUC_PURE;
+GHashTable *gdata_contacts_contact_get_extended_properties (GDataContactsContact *self) G_GNUC_PURE;
 gboolean gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const gchar *name, const gchar *value);
 
-const gchar *gdata_contacts_contact_get_user_defined_field (GDataContactsContact *self, const gchar *name);
-GHashTable *gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self);
+const gchar *gdata_contacts_contact_get_user_defined_field (GDataContactsContact *self, const gchar *name) G_GNUC_PURE;
+GHashTable *gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_user_defined_field (GDataContactsContact *self, const gchar *name, const gchar *value);
 
 void gdata_contacts_contact_add_group (GDataContactsContact *self, const gchar *href);
 void gdata_contacts_contact_remove_group (GDataContactsContact *self, const gchar *href);
-gboolean gdata_contacts_contact_is_group_deleted (GDataContactsContact *self, const gchar *href);
+gboolean gdata_contacts_contact_is_group_deleted (GDataContactsContact *self, const gchar *href) G_GNUC_PURE;
 GList *gdata_contacts_contact_get_groups (GDataContactsContact *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 #include <gdata/services/contacts/gdata-contacts-service.h>
 
-gboolean gdata_contacts_contact_has_photo (GDataContactsContact *self);
+gboolean gdata_contacts_contact_has_photo (GDataContactsContact *self) G_GNUC_PURE;
 gchar *gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
                                          GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gboolean gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const gchar *data, gsize length,

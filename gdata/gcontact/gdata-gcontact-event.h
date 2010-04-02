@@ -92,10 +92,10 @@ GDataGContactEvent *gdata_gcontact_event_new (const GDate *date, const gchar *re
 void gdata_gcontact_event_get_date (GDataGContactEvent *self, GDate *date);
 void gdata_gcontact_event_set_date (GDataGContactEvent *self, const GDate *date);
 
-const gchar *gdata_gcontact_event_get_relation_type (GDataGContactEvent *self);
+const gchar *gdata_gcontact_event_get_relation_type (GDataGContactEvent *self) G_GNUC_PURE;
 void gdata_gcontact_event_set_relation_type (GDataGContactEvent *self, const gchar *relation_type);
 
-const gchar *gdata_gcontact_event_get_label (GDataGContactEvent *self);
+const gchar *gdata_gcontact_event_get_label (GDataGContactEvent *self) G_GNUC_PURE;
 void gdata_gcontact_event_set_label (GDataGContactEvent *self, const gchar *label);
 
 G_END_DECLS

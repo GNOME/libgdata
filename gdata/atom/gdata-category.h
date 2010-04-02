@@ -61,15 +61,15 @@ typedef struct {
 GType gdata_category_get_type (void) G_GNUC_CONST;
 
 GDataCategory *gdata_category_new (const gchar *term, const gchar *scheme, const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_category_compare (const GDataCategory *a, const GDataCategory *b);
+gint gdata_category_compare (const GDataCategory *a, const GDataCategory *b) G_GNUC_PURE;
 
-const gchar *gdata_category_get_term (GDataCategory *self);
+const gchar *gdata_category_get_term (GDataCategory *self) G_GNUC_PURE;
 void gdata_category_set_term (GDataCategory *self, const gchar *term);
 
-const gchar *gdata_category_get_scheme (GDataCategory *self);
+const gchar *gdata_category_get_scheme (GDataCategory *self) G_GNUC_PURE;
 void gdata_category_set_scheme (GDataCategory *self, const gchar *scheme);
 
-const gchar *gdata_category_get_label (GDataCategory *self);
+const gchar *gdata_category_get_label (GDataCategory *self) G_GNUC_PURE;
 void gdata_category_set_label (GDataCategory *self, const gchar *label);
 
 G_END_DECLS

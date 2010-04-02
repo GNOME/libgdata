@@ -69,11 +69,11 @@ GOutputStream *gdata_upload_stream_new (GDataService *service, const gchar *meth
 
 const gchar *gdata_upload_stream_get_response (GDataUploadStream *self, gssize *length);
 
-GDataService *gdata_upload_stream_get_service (GDataUploadStream *self);
-const gchar *gdata_upload_stream_get_upload_uri (GDataUploadStream *self);
-GDataEntry *gdata_upload_stream_get_entry (GDataUploadStream *self);
-const gchar *gdata_upload_stream_get_slug (GDataUploadStream *self);
-const gchar *gdata_upload_stream_get_content_type (GDataUploadStream *self);
+GDataService *gdata_upload_stream_get_service (GDataUploadStream *self) G_GNUC_PURE;
+const gchar *gdata_upload_stream_get_upload_uri (GDataUploadStream *self) G_GNUC_PURE;
+GDataEntry *gdata_upload_stream_get_entry (GDataUploadStream *self) G_GNUC_PURE;
+const gchar *gdata_upload_stream_get_slug (GDataUploadStream *self) G_GNUC_PURE;
+const gchar *gdata_upload_stream_get_content_type (GDataUploadStream *self) G_GNUC_PURE;
 
 G_END_DECLS
 

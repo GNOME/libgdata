@@ -66,13 +66,13 @@ GDataContactsQuery *gdata_contacts_query_new (const gchar *q) G_GNUC_WARN_UNUSED
 GDataContactsQuery *gdata_contacts_query_new_with_limits (const gchar *q, guint start_index,
                                                           guint max_results) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-const gchar *gdata_contacts_query_get_order_by (GDataContactsQuery *self);
+const gchar *gdata_contacts_query_get_order_by (GDataContactsQuery *self) G_GNUC_PURE;
 void gdata_contacts_query_set_order_by (GDataContactsQuery *self, const gchar *order_by);
-gboolean gdata_contacts_query_show_deleted (GDataContactsQuery *self);
+gboolean gdata_contacts_query_show_deleted (GDataContactsQuery *self) G_GNUC_PURE;
 void gdata_contacts_query_set_show_deleted (GDataContactsQuery *self, gboolean show_deleted);
-const gchar *gdata_contacts_query_get_sort_order (GDataContactsQuery *self);
+const gchar *gdata_contacts_query_get_sort_order (GDataContactsQuery *self) G_GNUC_PURE;
 void gdata_contacts_query_set_sort_order (GDataContactsQuery *self, const gchar *sort_order);
-const gchar *gdata_contacts_query_get_group (GDataContactsQuery *self);
+const gchar *gdata_contacts_query_get_group (GDataContactsQuery *self) G_GNUC_PURE;
 void gdata_contacts_query_set_group (GDataContactsQuery *self, const gchar *group);
 
 G_END_DECLS

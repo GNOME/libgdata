@@ -66,26 +66,26 @@ GType gdata_entry_get_type (void) G_GNUC_CONST;
 
 GDataEntry *gdata_entry_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-const gchar *gdata_entry_get_title (GDataEntry *self);
+const gchar *gdata_entry_get_title (GDataEntry *self) G_GNUC_PURE;
 void gdata_entry_set_title (GDataEntry *self, const gchar *title);
-const gchar *gdata_entry_get_summary (GDataEntry *self);
+const gchar *gdata_entry_get_summary (GDataEntry *self) G_GNUC_PURE;
 void gdata_entry_set_summary (GDataEntry *self, const gchar *summary);
-const gchar *gdata_entry_get_id (GDataEntry *self);
-const gchar *gdata_entry_get_etag (GDataEntry *self);
+const gchar *gdata_entry_get_id (GDataEntry *self) G_GNUC_PURE;
+const gchar *gdata_entry_get_etag (GDataEntry *self) G_GNUC_PURE;
 void gdata_entry_get_updated (GDataEntry *self, GTimeVal *updated);
 void gdata_entry_get_published (GDataEntry *self, GTimeVal *published);
 void gdata_entry_add_category (GDataEntry *self, GDataCategory *category);
-GList *gdata_entry_get_categories (GDataEntry *self);
-const gchar *gdata_entry_get_content (GDataEntry *self);
+GList *gdata_entry_get_categories (GDataEntry *self) G_GNUC_PURE;
+const gchar *gdata_entry_get_content (GDataEntry *self) G_GNUC_PURE;
 void gdata_entry_set_content (GDataEntry *self, const gchar *content);
 void gdata_entry_add_link (GDataEntry *self, GDataLink *link);
-GDataLink *gdata_entry_look_up_link (GDataEntry *self, const gchar *rel);
-GList *gdata_entry_look_up_links (GDataEntry *self, const gchar *rel);
+GDataLink *gdata_entry_look_up_link (GDataEntry *self, const gchar *rel) G_GNUC_PURE;
+GList *gdata_entry_look_up_links (GDataEntry *self, const gchar *rel) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_entry_add_author (GDataEntry *self, GDataAuthor *author);
-const gchar *gdata_entry_get_rights (GDataEntry *self);
+const gchar *gdata_entry_get_rights (GDataEntry *self) G_GNUC_PURE;
 void gdata_entry_set_rights (GDataEntry *self, const gchar *rights);
 
-gboolean gdata_entry_is_inserted (GDataEntry *self);
+gboolean gdata_entry_is_inserted (GDataEntry *self) G_GNUC_PURE;
 
 G_END_DECLS
 

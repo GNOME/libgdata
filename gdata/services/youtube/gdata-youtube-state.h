@@ -60,10 +60,10 @@ typedef struct {
 
 GType gdata_youtube_state_get_type (void) G_GNUC_CONST;
 
-const gchar *gdata_youtube_state_get_name (GDataYouTubeState *self);
-const gchar *gdata_youtube_state_get_reason_code (GDataYouTubeState *self);
-const gchar *gdata_youtube_state_get_help_uri (GDataYouTubeState *self);
-const gchar *gdata_youtube_state_get_message (GDataYouTubeState *self);
+const gchar *gdata_youtube_state_get_name (GDataYouTubeState *self) G_GNUC_PURE;
+const gchar *gdata_youtube_state_get_reason_code (GDataYouTubeState *self) G_GNUC_PURE;
+const gchar *gdata_youtube_state_get_help_uri (GDataYouTubeState *self) G_GNUC_PURE;
+const gchar *gdata_youtube_state_get_message (GDataYouTubeState *self) G_GNUC_PURE;
 
 G_END_DECLS
 

@@ -81,7 +81,7 @@ typedef struct {
 } GDataYouTubeContentClass;
 
 GType gdata_youtube_content_get_type (void) G_GNUC_CONST;
-GDataYouTubeFormat gdata_youtube_content_get_format (GDataYouTubeContent *self);
+GDataYouTubeFormat gdata_youtube_content_get_format (GDataYouTubeContent *self) G_GNUC_PURE;
 
 G_END_DECLS
 

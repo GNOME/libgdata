@@ -145,55 +145,55 @@ GType gdata_gd_postal_address_get_type (void) G_GNUC_CONST;
 
 GDataGDPostalAddress *gdata_gd_postal_address_new (const gchar *relation_type, const gchar *label,
                                                    gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_postal_address_compare (const GDataGDPostalAddress *a, const GDataGDPostalAddress *b);
+gint gdata_gd_postal_address_compare (const GDataGDPostalAddress *a, const GDataGDPostalAddress *b) G_GNUC_PURE;
 
-const gchar *gdata_gd_postal_address_get_address (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_address (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_address (GDataGDPostalAddress *self, const gchar *address);
 
-const gchar *gdata_gd_postal_address_get_relation_type (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_relation_type (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_relation_type (GDataGDPostalAddress *self, const gchar *relation_type);
 
-const gchar *gdata_gd_postal_address_get_label (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_label (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_label (GDataGDPostalAddress *self, const gchar *label);
 
-gboolean gdata_gd_postal_address_is_primary (GDataGDPostalAddress *self);
+gboolean gdata_gd_postal_address_is_primary (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_is_primary (GDataGDPostalAddress *self, gboolean is_primary);
 
-const gchar *gdata_gd_postal_address_get_mail_class (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_mail_class (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_mail_class (GDataGDPostalAddress *self, const gchar *mail_class);
 
-const gchar *gdata_gd_postal_address_get_usage (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_usage (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_usage (GDataGDPostalAddress *self, const gchar *usage);
 
-const gchar *gdata_gd_postal_address_get_agent (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_agent (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_agent (GDataGDPostalAddress *self, const gchar *agent);
 
-const gchar *gdata_gd_postal_address_get_house_name (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_house_name (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_house_name (GDataGDPostalAddress *self, const gchar *house_name);
 
-const gchar *gdata_gd_postal_address_get_street (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_street (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_street (GDataGDPostalAddress *self, const gchar *street);
 
-const gchar *gdata_gd_postal_address_get_po_box (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_po_box (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_po_box (GDataGDPostalAddress *self, const gchar *po_box);
 
-const gchar *gdata_gd_postal_address_get_neighborhood (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_neighborhood (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_neighborhood (GDataGDPostalAddress *self, const gchar *neighborhood);
 
-const gchar *gdata_gd_postal_address_get_city (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_city (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_city (GDataGDPostalAddress *self, const gchar *city);
 
-const gchar *gdata_gd_postal_address_get_subregion (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_subregion (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_subregion (GDataGDPostalAddress *self, const gchar *subregion);
 
-const gchar *gdata_gd_postal_address_get_region (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_region (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_region (GDataGDPostalAddress *self, const gchar *region);
 
-const gchar *gdata_gd_postal_address_get_postcode (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_postcode (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_postcode (GDataGDPostalAddress *self, const gchar *postcode);
 
-const gchar *gdata_gd_postal_address_get_country (GDataGDPostalAddress *self);
-const gchar *gdata_gd_postal_address_get_country_code (GDataGDPostalAddress *self);
+const gchar *gdata_gd_postal_address_get_country (GDataGDPostalAddress *self) G_GNUC_PURE;
+const gchar *gdata_gd_postal_address_get_country_code (GDataGDPostalAddress *self) G_GNUC_PURE;
 void gdata_gd_postal_address_set_country (GDataGDPostalAddress *self, const gchar *country, const gchar *country_code);
 
 G_END_DECLS

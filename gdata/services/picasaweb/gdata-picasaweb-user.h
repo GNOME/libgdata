@@ -64,12 +64,12 @@ typedef struct {
 
 GType gdata_picasaweb_user_get_type (void) G_GNUC_CONST;
 
-const gchar *gdata_picasaweb_user_get_user (GDataPicasaWebUser *self);
-const gchar *gdata_picasaweb_user_get_nickname (GDataPicasaWebUser *self);
-gint64 gdata_picasaweb_user_get_quota_limit (GDataPicasaWebUser *self);
-gint64 gdata_picasaweb_user_get_quota_current (GDataPicasaWebUser *self);
-gint gdata_picasaweb_user_get_max_photos_per_album (GDataPicasaWebUser *self);
-const gchar *gdata_picasaweb_user_get_thumbnail_uri (GDataPicasaWebUser *self);
+const gchar *gdata_picasaweb_user_get_user (GDataPicasaWebUser *self) G_GNUC_PURE;
+const gchar *gdata_picasaweb_user_get_nickname (GDataPicasaWebUser *self) G_GNUC_PURE;
+gint64 gdata_picasaweb_user_get_quota_limit (GDataPicasaWebUser *self) G_GNUC_PURE;
+gint64 gdata_picasaweb_user_get_quota_current (GDataPicasaWebUser *self) G_GNUC_PURE;
+gint gdata_picasaweb_user_get_max_photos_per_album (GDataPicasaWebUser *self) G_GNUC_PURE;
+const gchar *gdata_picasaweb_user_get_thumbnail_uri (GDataPicasaWebUser *self) G_GNUC_PURE;
 
 G_END_DECLS
 

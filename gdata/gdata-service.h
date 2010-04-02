@@ -223,16 +223,16 @@ void gdata_service_delete_entry_async (GDataService *self, GDataEntry *entry, GC
                                        GAsyncReadyCallback callback, gpointer user_data);
 gboolean gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error);
 
-SoupURI *gdata_service_get_proxy_uri (GDataService *self);
+SoupURI *gdata_service_get_proxy_uri (GDataService *self) G_GNUC_PURE;
 void gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri);
 
-guint gdata_service_get_timeout (GDataService *self);
+guint gdata_service_get_timeout (GDataService *self) G_GNUC_PURE;
 void gdata_service_set_timeout (GDataService *self, guint timeout);
 
-gboolean gdata_service_is_authenticated (GDataService *self);
-const gchar *gdata_service_get_client_id (GDataService *self);
-const gchar *gdata_service_get_username (GDataService *self);
-const gchar *gdata_service_get_password (GDataService *self);
+gboolean gdata_service_is_authenticated (GDataService *self) G_GNUC_PURE;
+const gchar *gdata_service_get_client_id (GDataService *self) G_GNUC_PURE;
+const gchar *gdata_service_get_username (GDataService *self) G_GNUC_PURE;
+const gchar *gdata_service_get_password (GDataService *self) G_GNUC_PURE;
 
 G_END_DECLS
 

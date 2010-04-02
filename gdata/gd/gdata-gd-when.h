@@ -145,7 +145,7 @@ typedef struct {
 GType gdata_gd_when_get_type (void) G_GNUC_CONST;
 
 GDataGDWhen *gdata_gd_when_new (const GTimeVal *start_time, const GTimeVal *end_time, gboolean is_date) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_when_compare (const GDataGDWhen *a, const GDataGDWhen *b);
+gint gdata_gd_when_compare (const GDataGDWhen *a, const GDataGDWhen *b) G_GNUC_PURE;
 
 void gdata_gd_when_get_start_time (GDataGDWhen *self, GTimeVal *start_time);
 void gdata_gd_when_set_start_time (GDataGDWhen *self, const GTimeVal *start_time);
@@ -153,13 +153,13 @@ void gdata_gd_when_set_start_time (GDataGDWhen *self, const GTimeVal *start_time
 void gdata_gd_when_get_end_time (GDataGDWhen *self, GTimeVal *end_time);
 void gdata_gd_when_set_end_time (GDataGDWhen *self, const GTimeVal *end_time);
 
-gboolean gdata_gd_when_is_date (GDataGDWhen *self);
+gboolean gdata_gd_when_is_date (GDataGDWhen *self) G_GNUC_PURE;
 void gdata_gd_when_set_is_date (GDataGDWhen *self, gboolean is_date);
 
-const gchar *gdata_gd_when_get_value_string (GDataGDWhen *self);
+const gchar *gdata_gd_when_get_value_string (GDataGDWhen *self) G_GNUC_PURE;
 void gdata_gd_when_set_value_string (GDataGDWhen *self, const gchar *value_string);
 
-GList *gdata_gd_when_get_reminders (GDataGDWhen *self);
+GList *gdata_gd_when_get_reminders (GDataGDWhen *self) G_GNUC_PURE;
 void gdata_gd_when_add_reminder (GDataGDWhen *self, GDataGDReminder *reminder);
 /* TODO: More reminder API */
 

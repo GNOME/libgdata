@@ -62,13 +62,13 @@ GType gdata_media_category_get_type (void) G_GNUC_CONST;
 
 GDataMediaCategory *gdata_media_category_new (const gchar *category, const gchar *scheme, const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-const gchar *gdata_media_category_get_category (GDataMediaCategory *self);
+const gchar *gdata_media_category_get_category (GDataMediaCategory *self) G_GNUC_PURE;
 void gdata_media_category_set_category (GDataMediaCategory *self, const gchar *category);
 
-const gchar *gdata_media_category_get_scheme (GDataMediaCategory *self);
+const gchar *gdata_media_category_get_scheme (GDataMediaCategory *self) G_GNUC_PURE;
 void gdata_media_category_set_scheme (GDataMediaCategory *self, const gchar *scheme);
 
-const gchar *gdata_media_category_get_label (GDataMediaCategory *self);
+const gchar *gdata_media_category_get_label (GDataMediaCategory *self) G_GNUC_PURE;
 void gdata_media_category_set_label (GDataMediaCategory *self, const gchar *label);
 
 G_END_DECLS

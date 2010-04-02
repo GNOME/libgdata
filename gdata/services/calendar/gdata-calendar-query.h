@@ -63,23 +63,23 @@ GDataCalendarQuery *gdata_calendar_query_new (const gchar *q) G_GNUC_WARN_UNUSED
 GDataCalendarQuery *gdata_calendar_query_new_with_limits (const gchar *q, const GTimeVal *start_min,
                                                           const GTimeVal *start_max) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-gboolean gdata_calendar_query_get_future_events (GDataCalendarQuery *self);
+gboolean gdata_calendar_query_get_future_events (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_future_events (GDataCalendarQuery *self, gboolean future_events);
-const gchar *gdata_calendar_query_get_order_by (GDataCalendarQuery *self);
+const gchar *gdata_calendar_query_get_order_by (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_order_by (GDataCalendarQuery *self, const gchar *order_by);
 void gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self, GTimeVal *start);
 void gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, const GTimeVal *start);
 void gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self, GTimeVal *end);
 void gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, const GTimeVal *end);
-gboolean gdata_calendar_query_get_single_events (GDataCalendarQuery *self);
+gboolean gdata_calendar_query_get_single_events (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_single_events (GDataCalendarQuery *self, gboolean single_events);
-const gchar *gdata_calendar_query_get_sort_order (GDataCalendarQuery *self);
+const gchar *gdata_calendar_query_get_sort_order (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort_order);
 void gdata_calendar_query_get_start_min (GDataCalendarQuery *self, GTimeVal *start_min);
 void gdata_calendar_query_set_start_min (GDataCalendarQuery *self, const GTimeVal *start_min);
 void gdata_calendar_query_get_start_max (GDataCalendarQuery *self, GTimeVal *start_max);
 void gdata_calendar_query_set_start_max (GDataCalendarQuery *self, const GTimeVal *start_max);
-const gchar *gdata_calendar_query_get_timezone (GDataCalendarQuery *self);
+const gchar *gdata_calendar_query_get_timezone (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_timezone (GDataCalendarQuery *self, const gchar *_timezone);
 
 G_END_DECLS

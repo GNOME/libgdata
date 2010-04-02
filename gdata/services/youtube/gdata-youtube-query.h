@@ -133,23 +133,23 @@ GType gdata_youtube_query_get_type (void) G_GNUC_CONST;
 
 GDataYouTubeQuery *gdata_youtube_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-GDataYouTubeFormat gdata_youtube_query_get_format (GDataYouTubeQuery *self);
+GDataYouTubeFormat gdata_youtube_query_get_format (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_format (GDataYouTubeQuery *self, GDataYouTubeFormat format);
 void gdata_youtube_query_get_location (GDataYouTubeQuery *self, gdouble *latitude, gdouble *longitude, gdouble *radius, gboolean *has_location);
 void gdata_youtube_query_set_location (GDataYouTubeQuery *self, gdouble latitude, gdouble longitude, gdouble radius, gboolean has_location);
-const gchar *gdata_youtube_query_get_language (GDataYouTubeQuery *self);
+const gchar *gdata_youtube_query_get_language (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_language (GDataYouTubeQuery *self, const gchar *language);
-const gchar *gdata_youtube_query_get_order_by (GDataYouTubeQuery *self);
+const gchar *gdata_youtube_query_get_order_by (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_order_by (GDataYouTubeQuery *self, const gchar *order_by);
-const gchar *gdata_youtube_query_get_restriction (GDataYouTubeQuery *self);
+const gchar *gdata_youtube_query_get_restriction (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_restriction (GDataYouTubeQuery *self, const gchar *restriction);
-GDataYouTubeSafeSearch gdata_youtube_query_get_safe_search (GDataYouTubeQuery *self);
+GDataYouTubeSafeSearch gdata_youtube_query_get_safe_search (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_safe_search (GDataYouTubeQuery *self, GDataYouTubeSafeSearch safe_search);
-GDataYouTubeSortOrder gdata_youtube_query_get_sort_order (GDataYouTubeQuery *self);
+GDataYouTubeSortOrder gdata_youtube_query_get_sort_order (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_sort_order (GDataYouTubeQuery *self, GDataYouTubeSortOrder sort_order);
-GDataYouTubeAge gdata_youtube_query_get_age (GDataYouTubeQuery *self);
+GDataYouTubeAge gdata_youtube_query_get_age (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_age (GDataYouTubeQuery *self, GDataYouTubeAge age);
-GDataYouTubeUploader gdata_youtube_query_get_uploader (GDataYouTubeQuery *self);
+GDataYouTubeUploader gdata_youtube_query_get_uploader (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_uploader (GDataYouTubeQuery *self, GDataYouTubeUploader uploader);
 
 G_END_DECLS

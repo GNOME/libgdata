@@ -112,15 +112,15 @@ GType gdata_gcontact_external_id_get_type (void) G_GNUC_CONST;
 
 GDataGContactExternalID *gdata_gcontact_external_id_new (const gchar *value, const gchar *relation_type,
                                                          const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gcontact_external_id_compare (const GDataGContactExternalID *a, const GDataGContactExternalID *b);
+gint gdata_gcontact_external_id_compare (const GDataGContactExternalID *a, const GDataGContactExternalID *b) G_GNUC_PURE;
 
-const gchar *gdata_gcontact_external_id_get_value (GDataGContactExternalID *self);
+const gchar *gdata_gcontact_external_id_get_value (GDataGContactExternalID *self) G_GNUC_PURE;
 void gdata_gcontact_external_id_set_value (GDataGContactExternalID *self, const gchar *value);
 
-const gchar *gdata_gcontact_external_id_get_relation_type (GDataGContactExternalID *self);
+const gchar *gdata_gcontact_external_id_get_relation_type (GDataGContactExternalID *self) G_GNUC_PURE;
 void gdata_gcontact_external_id_set_relation_type (GDataGContactExternalID *self, const gchar *relation_type);
 
-const gchar *gdata_gcontact_external_id_get_label (GDataGContactExternalID *self);
+const gchar *gdata_gcontact_external_id_get_label (GDataGContactExternalID *self) G_GNUC_PURE;
 void gdata_gcontact_external_id_set_label (GDataGContactExternalID *self, const gchar *label);
 
 G_END_DECLS

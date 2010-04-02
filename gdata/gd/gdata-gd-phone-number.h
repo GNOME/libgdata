@@ -246,19 +246,19 @@ GDataGDPhoneNumber *gdata_gd_phone_number_new (const gchar *number, const gchar 
                                                gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gint gdata_gd_phone_number_compare (const GDataGDPhoneNumber *a, const GDataGDPhoneNumber *b);
 
-const gchar *gdata_gd_phone_number_get_number (GDataGDPhoneNumber *self);
+const gchar *gdata_gd_phone_number_get_number (GDataGDPhoneNumber *self) G_GNUC_PURE;
 void gdata_gd_phone_number_set_number (GDataGDPhoneNumber *self, const gchar *number);
 
-const gchar *gdata_gd_phone_number_get_uri (GDataGDPhoneNumber *self);
+const gchar *gdata_gd_phone_number_get_uri (GDataGDPhoneNumber *self) G_GNUC_PURE;
 void gdata_gd_phone_number_set_uri (GDataGDPhoneNumber *self, const gchar *uri);
 
-const gchar *gdata_gd_phone_number_get_relation_type (GDataGDPhoneNumber *self);
+const gchar *gdata_gd_phone_number_get_relation_type (GDataGDPhoneNumber *self) G_GNUC_PURE;
 void gdata_gd_phone_number_set_relation_type (GDataGDPhoneNumber *self, const gchar *relation_type);
 
-const gchar *gdata_gd_phone_number_get_label (GDataGDPhoneNumber *self);
+const gchar *gdata_gd_phone_number_get_label (GDataGDPhoneNumber *self) G_GNUC_PURE;
 void gdata_gd_phone_number_set_label (GDataGDPhoneNumber *self, const gchar *label);
 
-gboolean gdata_gd_phone_number_is_primary (GDataGDPhoneNumber *self);
+gboolean gdata_gd_phone_number_is_primary (GDataGDPhoneNumber *self) G_GNUC_PURE;
 void gdata_gd_phone_number_set_is_primary (GDataGDPhoneNumber *self, gboolean is_primary);
 
 G_END_DECLS

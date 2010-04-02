@@ -60,9 +60,9 @@ typedef struct {
 
 GType gdata_media_credit_get_type (void) G_GNUC_CONST;
 
-const gchar *gdata_media_credit_get_credit (GDataMediaCredit *self);
-const gchar *gdata_media_credit_get_scheme (GDataMediaCredit *self);
-const gchar *gdata_media_credit_get_role (GDataMediaCredit *self);
+const gchar *gdata_media_credit_get_credit (GDataMediaCredit *self) G_GNUC_PURE;
+const gchar *gdata_media_credit_get_scheme (GDataMediaCredit *self) G_GNUC_PURE;
+const gchar *gdata_media_credit_get_role (GDataMediaCredit *self) G_GNUC_PURE;
 
 G_END_DECLS
 

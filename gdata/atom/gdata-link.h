@@ -146,24 +146,24 @@ typedef struct {
 GType gdata_link_get_type (void) G_GNUC_CONST;
 
 GDataLink *gdata_link_new (const gchar *uri, const gchar *relation_type) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_link_compare (const GDataLink *a, const GDataLink *b);
+gint gdata_link_compare (const GDataLink *a, const GDataLink *b) G_GNUC_PURE;
 
-const gchar *gdata_link_get_uri (GDataLink *self);
+const gchar *gdata_link_get_uri (GDataLink *self) G_GNUC_PURE;
 void gdata_link_set_uri (GDataLink *self, const gchar *uri);
 
-const gchar *gdata_link_get_relation_type (GDataLink *self);
+const gchar *gdata_link_get_relation_type (GDataLink *self) G_GNUC_PURE;
 void gdata_link_set_relation_type (GDataLink *self, const gchar *relation_type);
 
-const gchar *gdata_link_get_content_type (GDataLink *self);
+const gchar *gdata_link_get_content_type (GDataLink *self) G_GNUC_PURE;
 void gdata_link_set_content_type (GDataLink *self, const gchar *content_type);
 
-const gchar *gdata_link_get_language (GDataLink *self);
+const gchar *gdata_link_get_language (GDataLink *self) G_GNUC_PURE;
 void gdata_link_set_language (GDataLink *self, const gchar *language);
 
-const gchar *gdata_link_get_title (GDataLink *self);
+const gchar *gdata_link_get_title (GDataLink *self) G_GNUC_PURE;
 void gdata_link_set_title (GDataLink *self, const gchar *title);
 
-gint gdata_link_get_length (GDataLink *self);
+gint gdata_link_get_length (GDataLink *self) G_GNUC_PURE;
 void gdata_link_set_length (GDataLink *self, gint length);
 
 G_END_DECLS

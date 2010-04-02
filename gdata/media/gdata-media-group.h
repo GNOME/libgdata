@@ -64,22 +64,22 @@ typedef struct {
 
 GType gdata_media_group_get_type (void) G_GNUC_CONST;
 
-const gchar *gdata_media_group_get_title (GDataMediaGroup *self);
+const gchar *gdata_media_group_get_title (GDataMediaGroup *self) G_GNUC_PURE;
 void gdata_media_group_set_title (GDataMediaGroup *self, const gchar *title);
-const gchar *gdata_media_group_get_description (GDataMediaGroup *self);
+const gchar *gdata_media_group_get_description (GDataMediaGroup *self) G_GNUC_PURE;
 void gdata_media_group_set_description (GDataMediaGroup *self, const gchar *description);
-const gchar * const *gdata_media_group_get_keywords (GDataMediaGroup *self);
+const gchar * const *gdata_media_group_get_keywords (GDataMediaGroup *self) G_GNUC_PURE;
 void gdata_media_group_set_keywords (GDataMediaGroup *self, const gchar * const *keywords);
-GDataMediaCategory *gdata_media_group_get_category (GDataMediaGroup *self);
+GDataMediaCategory *gdata_media_group_get_category (GDataMediaGroup *self) G_GNUC_PURE;
 void gdata_media_group_set_category (GDataMediaGroup *self, GDataMediaCategory *category);
-GDataMediaContent *gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type);
-GList *gdata_media_group_get_contents (GDataMediaGroup *self);
+GDataMediaContent *gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type) G_GNUC_PURE;
+GList *gdata_media_group_get_contents (GDataMediaGroup *self) G_GNUC_PURE;
 void _gdata_media_group_add_content (GDataMediaGroup *self, GDataMediaContent *content);
-GDataMediaCredit *gdata_media_group_get_credit (GDataMediaGroup *self);
+GDataMediaCredit *gdata_media_group_get_credit (GDataMediaGroup *self) G_GNUC_PURE;
 void _gdata_media_group_set_credit (GDataMediaGroup *self, GDataMediaCredit *credit);
-const gchar *gdata_media_group_get_player_uri (GDataMediaGroup *self);
-gboolean gdata_media_group_is_restricted_in_country (GDataMediaGroup *self, const gchar *country);
-GList *gdata_media_group_get_thumbnails (GDataMediaGroup *self);
+const gchar *gdata_media_group_get_player_uri (GDataMediaGroup *self) G_GNUC_PURE;
+gboolean gdata_media_group_is_restricted_in_country (GDataMediaGroup *self, const gchar *country) G_GNUC_PURE;
+GList *gdata_media_group_get_thumbnails (GDataMediaGroup *self) G_GNUC_PURE;
 void _gdata_media_group_add_thumbnail (GDataMediaGroup *self, GDataMediaThumbnail *thumbnail);
 
 G_END_DECLS

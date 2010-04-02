@@ -61,9 +61,9 @@ typedef struct {
 
 GType gdata_youtube_control_get_type (void) G_GNUC_CONST;
 
-gboolean gdata_youtube_control_is_draft (GDataYouTubeControl *self);
+gboolean gdata_youtube_control_is_draft (GDataYouTubeControl *self) G_GNUC_PURE;
 void gdata_youtube_control_set_is_draft (GDataYouTubeControl *self, gboolean is_draft);
-GDataYouTubeState *gdata_youtube_control_get_state (GDataYouTubeControl *self);
+GDataYouTubeState *gdata_youtube_control_get_state (GDataYouTubeControl *self) G_GNUC_PURE;
 
 G_END_DECLS
 

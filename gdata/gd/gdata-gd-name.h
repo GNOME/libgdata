@@ -63,24 +63,24 @@ typedef struct {
 GType gdata_gd_name_get_type (void) G_GNUC_CONST;
 
 GDataGDName *gdata_gd_name_new (const gchar *given_name, const gchar *family_name) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_name_compare (const GDataGDName *a, const GDataGDName *b);
+gint gdata_gd_name_compare (const GDataGDName *a, const GDataGDName *b) G_GNUC_PURE;
 
-const gchar *gdata_gd_name_get_given_name (GDataGDName *self);
+const gchar *gdata_gd_name_get_given_name (GDataGDName *self) G_GNUC_PURE;
 void gdata_gd_name_set_given_name (GDataGDName *self, const gchar *given_name);
 
-const gchar *gdata_gd_name_get_additional_name (GDataGDName *self);
+const gchar *gdata_gd_name_get_additional_name (GDataGDName *self) G_GNUC_PURE;
 void gdata_gd_name_set_additional_name (GDataGDName *self, const gchar *additional_name);
 
-const gchar *gdata_gd_name_get_family_name (GDataGDName *self);
+const gchar *gdata_gd_name_get_family_name (GDataGDName *self) G_GNUC_PURE;
 void gdata_gd_name_set_family_name (GDataGDName *self, const gchar *family_name);
 
-const gchar *gdata_gd_name_get_prefix (GDataGDName *self);
+const gchar *gdata_gd_name_get_prefix (GDataGDName *self) G_GNUC_PURE;
 void gdata_gd_name_set_prefix (GDataGDName *self, const gchar *prefix);
 
-const gchar *gdata_gd_name_get_suffix (GDataGDName *self);
+const gchar *gdata_gd_name_get_suffix (GDataGDName *self) G_GNUC_PURE;
 void gdata_gd_name_set_suffix (GDataGDName *self, const gchar *suffix);
 
-const gchar *gdata_gd_name_get_full_name (GDataGDName *self);
+const gchar *gdata_gd_name_get_full_name (GDataGDName *self) G_GNUC_PURE;
 void gdata_gd_name_set_full_name (GDataGDName *self, const gchar *full_name);
 
 G_END_DECLS

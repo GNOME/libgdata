@@ -101,7 +101,7 @@ GType gdata_access_rule_get_type (void) G_GNUC_CONST;
 
 GDataAccessRule *gdata_access_rule_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-const gchar *gdata_access_rule_get_role (GDataAccessRule *self);
+const gchar *gdata_access_rule_get_role (GDataAccessRule *self) G_GNUC_PURE;
 void gdata_access_rule_set_role (GDataAccessRule *self, const gchar *role);
 void gdata_access_rule_get_scope (GDataAccessRule *self, const gchar **type, const gchar **value);
 void gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gchar *value);

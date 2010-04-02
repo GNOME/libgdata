@@ -62,25 +62,25 @@ typedef struct {
 
 GType gdata_feed_get_type (void) G_GNUC_CONST;
 
-GList *gdata_feed_get_entries (GDataFeed *self);
-GDataEntry *gdata_feed_look_up_entry (GDataFeed *self, const gchar *id);
-GList *gdata_feed_get_categories (GDataFeed *self);
-GList *gdata_feed_get_links (GDataFeed *self);
-GDataLink *gdata_feed_look_up_link (GDataFeed *self, const gchar *rel);
-GList *gdata_feed_get_authors (GDataFeed *self);
+GList *gdata_feed_get_entries (GDataFeed *self) G_GNUC_PURE;
+GDataEntry *gdata_feed_look_up_entry (GDataFeed *self, const gchar *id) G_GNUC_PURE;
+GList *gdata_feed_get_categories (GDataFeed *self) G_GNUC_PURE;
+GList *gdata_feed_get_links (GDataFeed *self) G_GNUC_PURE;
+GDataLink *gdata_feed_look_up_link (GDataFeed *self, const gchar *rel) G_GNUC_PURE;
+GList *gdata_feed_get_authors (GDataFeed *self) G_GNUC_PURE;
 
-const gchar *gdata_feed_get_title (GDataFeed *self);
-const gchar *gdata_feed_get_subtitle (GDataFeed *self);
-const gchar *gdata_feed_get_id (GDataFeed *self);
-const gchar *gdata_feed_get_etag (GDataFeed *self);
+const gchar *gdata_feed_get_title (GDataFeed *self) G_GNUC_PURE;
+const gchar *gdata_feed_get_subtitle (GDataFeed *self) G_GNUC_PURE;
+const gchar *gdata_feed_get_id (GDataFeed *self) G_GNUC_PURE;
+const gchar *gdata_feed_get_etag (GDataFeed *self) G_GNUC_PURE;
 void gdata_feed_get_updated (GDataFeed *self, GTimeVal *updated);
-const gchar *gdata_feed_get_logo (GDataFeed *self);
-GDataGenerator *gdata_feed_get_generator (GDataFeed *self);
-const gchar *gdata_feed_get_rights (GDataFeed *self);
-guint gdata_feed_get_items_per_page (GDataFeed *self);
-guint gdata_feed_get_start_index (GDataFeed *self);
-guint gdata_feed_get_total_results (GDataFeed *self);
-const gchar *gdata_feed_get_icon (GDataFeed *self);
+const gchar *gdata_feed_get_logo (GDataFeed *self) G_GNUC_PURE;
+GDataGenerator *gdata_feed_get_generator (GDataFeed *self) G_GNUC_PURE;
+const gchar *gdata_feed_get_rights (GDataFeed *self) G_GNUC_PURE;
+guint gdata_feed_get_items_per_page (GDataFeed *self) G_GNUC_PURE;
+guint gdata_feed_get_start_index (GDataFeed *self) G_GNUC_PURE;
+guint gdata_feed_get_total_results (GDataFeed *self) G_GNUC_PURE;
+const gchar *gdata_feed_get_icon (GDataFeed *self) G_GNUC_PURE;
 
 G_END_DECLS
 

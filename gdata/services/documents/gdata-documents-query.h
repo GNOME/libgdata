@@ -68,17 +68,17 @@ GDataDocumentsQuery *gdata_documents_query_new (const gchar *q) G_GNUC_WARN_UNUS
 GDataDocumentsQuery *gdata_documents_query_new_with_limits (const gchar *q,
                                                             guint start_index, guint max_results) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-gboolean gdata_documents_query_show_deleted (GDataDocumentsQuery *self);
+gboolean gdata_documents_query_show_deleted (GDataDocumentsQuery *self) G_GNUC_PURE;
 void gdata_documents_query_set_show_deleted (GDataDocumentsQuery *self, gboolean show_deleted);
-gboolean gdata_documents_query_show_folders (GDataDocumentsQuery *self);
+gboolean gdata_documents_query_show_folders (GDataDocumentsQuery *self) G_GNUC_PURE;
 void gdata_documents_query_set_show_folders (GDataDocumentsQuery *self, gboolean show_folders);
-const gchar *gdata_documents_query_get_folder_id (GDataDocumentsQuery *self);
+const gchar *gdata_documents_query_get_folder_id (GDataDocumentsQuery *self) G_GNUC_PURE;
 void gdata_documents_query_set_folder_id (GDataDocumentsQuery *self, const gchar *folder_id);
-const gchar *gdata_documents_query_get_title (GDataDocumentsQuery *self);
-gboolean gdata_documents_query_get_exact_title (GDataDocumentsQuery *self);
+const gchar *gdata_documents_query_get_title (GDataDocumentsQuery *self) G_GNUC_PURE;
+gboolean gdata_documents_query_get_exact_title (GDataDocumentsQuery *self) G_GNUC_PURE;
 void gdata_documents_query_set_title (GDataDocumentsQuery *self, const gchar *title, gboolean exact_title);
-GList *gdata_documents_query_get_collaborator_addresses (GDataDocumentsQuery *self);
-GList *gdata_documents_query_get_reader_addresses (GDataDocumentsQuery *self);
+GList *gdata_documents_query_get_collaborator_addresses (GDataDocumentsQuery *self) G_GNUC_PURE;
+GList *gdata_documents_query_get_reader_addresses (GDataDocumentsQuery *self) G_GNUC_PURE;
 void gdata_documents_query_add_reader (GDataDocumentsQuery *self, const gchar *email_address);
 void gdata_documents_query_add_collaborator (GDataDocumentsQuery *self, const gchar *email_address);
 

@@ -91,21 +91,21 @@ GType gdata_gd_email_address_get_type (void) G_GNUC_CONST;
 
 GDataGDEmailAddress *gdata_gd_email_address_new (const gchar *address, const gchar *relation_type,
                                                  const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_email_address_compare (const GDataGDEmailAddress *a, const GDataGDEmailAddress *b);
+gint gdata_gd_email_address_compare (const GDataGDEmailAddress *a, const GDataGDEmailAddress *b) G_GNUC_PURE;
 
-const gchar *gdata_gd_email_address_get_address (GDataGDEmailAddress *self);
+const gchar *gdata_gd_email_address_get_address (GDataGDEmailAddress *self) G_GNUC_PURE;
 void gdata_gd_email_address_set_address (GDataGDEmailAddress *self, const gchar *address);
 
-const gchar *gdata_gd_email_address_get_relation_type (GDataGDEmailAddress *self);
+const gchar *gdata_gd_email_address_get_relation_type (GDataGDEmailAddress *self) G_GNUC_PURE;
 void gdata_gd_email_address_set_relation_type (GDataGDEmailAddress *self, const gchar *relation_type);
 
-const gchar *gdata_gd_email_address_get_label (GDataGDEmailAddress *self);
+const gchar *gdata_gd_email_address_get_label (GDataGDEmailAddress *self) G_GNUC_PURE;
 void gdata_gd_email_address_set_label (GDataGDEmailAddress *self, const gchar *label);
 
-const gchar *gdata_gd_email_address_get_display_name (GDataGDEmailAddress *self);
+const gchar *gdata_gd_email_address_get_display_name (GDataGDEmailAddress *self) G_GNUC_PURE;
 void gdata_gd_email_address_set_display_name (GDataGDEmailAddress *self, const gchar *display_name);
 
-gboolean gdata_gd_email_address_is_primary (GDataGDEmailAddress *self);
+gboolean gdata_gd_email_address_is_primary (GDataGDEmailAddress *self) G_GNUC_PURE;
 void gdata_gd_email_address_set_is_primary (GDataGDEmailAddress *self, gboolean is_primary);
 
 G_END_DECLS

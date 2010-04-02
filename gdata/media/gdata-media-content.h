@@ -97,15 +97,16 @@ typedef struct {
 
 GType gdata_media_content_get_type (void) G_GNUC_CONST;
 
-const gchar *gdata_media_content_get_uri (GDataMediaContent *self);
-gsize gdata_media_content_get_filesize (GDataMediaContent *self);
-const gchar *gdata_media_content_get_content_type (GDataMediaContent *self);
-GDataMediaMedium gdata_media_content_get_medium (GDataMediaContent *self);
-gboolean gdata_media_content_is_default (GDataMediaContent *self);
-GDataMediaExpression gdata_media_content_get_expression (GDataMediaContent *self);
-gint64 gdata_media_content_get_duration (GDataMediaContent *self);
-guint gdata_media_content_get_height (GDataMediaContent *self);
-guint gdata_media_content_get_width (GDataMediaContent *self);
+const gchar *gdata_media_content_get_uri (GDataMediaContent *self) G_GNUC_PURE;
+gsize gdata_media_content_get_filesize (GDataMediaContent *self) G_GNUC_PURE;
+const gchar *gdata_media_content_get_content_type (GDataMediaContent *self) G_GNUC_PURE;
+GDataMediaMedium gdata_media_content_get_medium (GDataMediaContent *self) G_GNUC_PURE;
+gboolean gdata_media_content_is_default (GDataMediaContent *self) G_GNUC_PURE;
+GDataMediaExpression gdata_media_content_get_expression (GDataMediaContent *self) G_GNUC_PURE;
+gint64 gdata_media_content_get_duration (GDataMediaContent *self) G_GNUC_PURE;
+guint gdata_media_content_get_height (GDataMediaContent *self) G_GNUC_PURE;
+guint gdata_media_content_get_width (GDataMediaContent *self) G_GNUC_PURE;
+
 GFile *gdata_media_content_download (GDataMediaContent *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file,
                                      gboolean replace_file_if_exists,
                                      GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

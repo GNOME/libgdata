@@ -100,18 +100,18 @@ GType gdata_gcontact_calendar_get_type (void) G_GNUC_CONST;
 
 GDataGContactCalendar *gdata_gcontact_calendar_new (const gchar *uri, const gchar *relation_type,
                                                     const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gcontact_calendar_compare (const GDataGContactCalendar *a, const GDataGContactCalendar *b);
+gint gdata_gcontact_calendar_compare (const GDataGContactCalendar *a, const GDataGContactCalendar *b) G_GNUC_PURE;
 
-const gchar *gdata_gcontact_calendar_get_uri (GDataGContactCalendar *self);
+const gchar *gdata_gcontact_calendar_get_uri (GDataGContactCalendar *self) G_GNUC_PURE;
 void gdata_gcontact_calendar_set_uri (GDataGContactCalendar *self, const gchar *uri);
 
-const gchar *gdata_gcontact_calendar_get_relation_type (GDataGContactCalendar *self);
+const gchar *gdata_gcontact_calendar_get_relation_type (GDataGContactCalendar *self) G_GNUC_PURE;
 void gdata_gcontact_calendar_set_relation_type (GDataGContactCalendar *self, const gchar *relation_type);
 
-const gchar *gdata_gcontact_calendar_get_label (GDataGContactCalendar *self);
+const gchar *gdata_gcontact_calendar_get_label (GDataGContactCalendar *self) G_GNUC_PURE;
 void gdata_gcontact_calendar_set_label (GDataGContactCalendar *self, const gchar *label);
 
-gboolean gdata_gcontact_calendar_is_primary (GDataGContactCalendar *self);
+gboolean gdata_gcontact_calendar_is_primary (GDataGContactCalendar *self) G_GNUC_PURE;
 void gdata_gcontact_calendar_set_is_primary (GDataGContactCalendar *self, gboolean is_primary);
 
 G_END_DECLS

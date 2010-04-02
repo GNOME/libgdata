@@ -63,12 +63,12 @@ typedef struct {
 GType gdata_gcontact_language_get_type (void) G_GNUC_CONST;
 
 GDataGContactLanguage *gdata_gcontact_language_new (const gchar *code, const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gcontact_language_compare (const GDataGContactLanguage *a, const GDataGContactLanguage *b);
+gint gdata_gcontact_language_compare (const GDataGContactLanguage *a, const GDataGContactLanguage *b) G_GNUC_PURE;
 
-const gchar *gdata_gcontact_language_get_code (GDataGContactLanguage *self);
+const gchar *gdata_gcontact_language_get_code (GDataGContactLanguage *self) G_GNUC_PURE;
 void gdata_gcontact_language_set_code (GDataGContactLanguage *self, const gchar *code);
 
-const gchar *gdata_gcontact_language_get_label (GDataGContactLanguage *self);
+const gchar *gdata_gcontact_language_get_label (GDataGContactLanguage *self) G_GNUC_PURE;
 void gdata_gcontact_language_set_label (GDataGContactLanguage *self, const gchar *label);
 
 G_END_DECLS

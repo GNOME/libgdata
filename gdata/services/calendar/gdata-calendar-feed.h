@@ -63,8 +63,8 @@ typedef struct {
 
 GType gdata_calendar_feed_get_type (void);
 
-const gchar *gdata_calendar_feed_get_timezone (GDataCalendarFeed *self);
-guint gdata_calendar_feed_get_times_cleaned (GDataCalendarFeed *self);
+const gchar *gdata_calendar_feed_get_timezone (GDataCalendarFeed *self) G_GNUC_PURE;
+guint gdata_calendar_feed_get_times_cleaned (GDataCalendarFeed *self) G_GNUC_PURE;
 
 G_END_DECLS
 

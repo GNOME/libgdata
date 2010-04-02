@@ -148,18 +148,18 @@ GType gdata_gcontact_website_get_type (void) G_GNUC_CONST;
 
 GDataGContactWebsite *gdata_gcontact_website_new (const gchar *uri, const gchar *relation_type,
                                                   const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gcontact_website_compare (const GDataGContactWebsite *a, const GDataGContactWebsite *b);
+gint gdata_gcontact_website_compare (const GDataGContactWebsite *a, const GDataGContactWebsite *b) G_GNUC_PURE;
 
-const gchar *gdata_gcontact_website_get_uri (GDataGContactWebsite *self);
+const gchar *gdata_gcontact_website_get_uri (GDataGContactWebsite *self) G_GNUC_PURE;
 void gdata_gcontact_website_set_uri (GDataGContactWebsite *self, const gchar *uri);
 
-const gchar *gdata_gcontact_website_get_relation_type (GDataGContactWebsite *self);
+const gchar *gdata_gcontact_website_get_relation_type (GDataGContactWebsite *self) G_GNUC_PURE;
 void gdata_gcontact_website_set_relation_type (GDataGContactWebsite *self, const gchar *relation_type);
 
-const gchar *gdata_gcontact_website_get_label (GDataGContactWebsite *self);
+const gchar *gdata_gcontact_website_get_label (GDataGContactWebsite *self) G_GNUC_PURE;
 void gdata_gcontact_website_set_label (GDataGContactWebsite *self, const gchar *label);
 
-gboolean gdata_gcontact_website_is_primary (GDataGContactWebsite *self);
+gboolean gdata_gcontact_website_is_primary (GDataGContactWebsite *self) G_GNUC_PURE;
 void gdata_gcontact_website_set_is_primary (GDataGContactWebsite *self, gboolean is_primary);
 
 G_END_DECLS

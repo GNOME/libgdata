@@ -62,12 +62,12 @@ typedef struct {
 
 GType gdata_youtube_group_get_type (void) G_GNUC_CONST;
 
-guint gdata_youtube_group_get_duration (GDataYouTubeGroup *self);
-gboolean gdata_youtube_group_is_private (GDataYouTubeGroup *self);
+guint gdata_youtube_group_get_duration (GDataYouTubeGroup *self) G_GNUC_PURE;
+gboolean gdata_youtube_group_is_private (GDataYouTubeGroup *self) G_GNUC_PURE;
 void gdata_youtube_group_set_is_private (GDataYouTubeGroup *self, gboolean is_private);
 void gdata_youtube_group_get_uploaded (GDataYouTubeGroup *self, GTimeVal *uploaded);
-const gchar *gdata_youtube_group_get_video_id (GDataYouTubeGroup *self);
-const gchar *gdata_youtube_group_get_aspect_ratio (GDataYouTubeGroup *self);
+const gchar *gdata_youtube_group_get_video_id (GDataYouTubeGroup *self) G_GNUC_PURE;
+const gchar *gdata_youtube_group_get_aspect_ratio (GDataYouTubeGroup *self) G_GNUC_PURE;
 void gdata_youtube_group_set_aspect_ratio (GDataYouTubeGroup *self, const gchar *aspect_ratio);
 
 G_END_DECLS
