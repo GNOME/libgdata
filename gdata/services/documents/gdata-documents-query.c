@@ -160,6 +160,17 @@ gdata_documents_query_init (GDataDocumentsQuery *self)
 }
 
 static void
+gdata_documents_query_finalize (GObject *object)
+{
+	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY (object)->priv;
+
+	g_free (priv->folder_id);
+	g_free (priv->title);
+
+	G_OBJECT_CLASS (gdata_documents_query_parent_class)->finalize (object);
+}
+
+static void
 gdata_documents_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
 	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY (object)->priv;
@@ -213,17 +224,6 @@ gdata_documents_query_set_property (GObject *object, guint property_id, const GV
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
 	}
-}
-
-static void
-gdata_documents_query_finalize (GObject *object)
-{
-	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY (object)->priv;
-
-	g_free (priv->folder_id);
-	g_free (priv->title);
-
-	G_OBJECT_CLASS (gdata_documents_query_parent_class)->finalize (object);
 }
 
 static void

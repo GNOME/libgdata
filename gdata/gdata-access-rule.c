@@ -50,7 +50,7 @@ static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, 
 
 struct _GDataAccessRulePrivate {
 	gchar *role;
-	gchar *scope_type; 
+	gchar *scope_type;
 	gchar *scope_value;
 	GTimeVal edited;
 };
@@ -73,8 +73,8 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	g_type_class_add_private (klass, sizeof (GDataAccessRulePrivate));
 
 	gobject_class->finalize = gdata_access_rule_finalize;
-	gobject_class->set_property = gdata_access_rule_set_property; 
-	gobject_class->get_property = gdata_access_rule_get_property; 
+	gobject_class->get_property = gdata_access_rule_get_property;
+	gobject_class->set_property = gdata_access_rule_set_property;
 
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_xml = get_xml;
@@ -138,56 +138,23 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
-/**
- * gdata_access_rule_new:
- * @id: the access rule's ID, or %NULL
- *
- * Creates a new #GDataAccessRule with the given ID and default properties.
- *
- * Return value: a new #GDataAccessRule; unref with g_object_unref()
- *
- * Since: 0.3.0
- **/
-GDataAccessRule *
-gdata_access_rule_new (const gchar *id)
+static void
+gdata_access_rule_init (GDataAccessRule *self)
 {
-	GDataAccessRule *rule = GDATA_ACCESS_RULE (g_object_new (GDATA_TYPE_ACCESS_RULE, "id", id, NULL));
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(rule->priv->edited));
-
-	/* Set up the role and scope type */
-	rule->priv->role = g_strdup (GDATA_ACCESS_ROLE_NONE);
-	rule->priv->scope_type = g_strdup (GDATA_ACCESS_SCOPE_DEFAULT);
-
-	return rule;
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ACCESS_RULE, GDataAccessRulePrivate);
 }
 
 static void
-gdata_access_rule_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+gdata_access_rule_finalize (GObject *object)
 {
-	GDataAccessRule *self = GDATA_ACCESS_RULE (object);
+	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (object)->priv;
 
-	switch (property_id) {
-		case PROP_ROLE:
-			gdata_access_rule_set_role (self, g_value_get_string (value));
-			break;
-		case PROP_SCOPE_TYPE:
-			g_free (self->priv->scope_type);
-			self->priv->scope_type = g_value_dup_string (value);
-			g_object_notify (object, "scope-type");
-			break;
-		case PROP_SCOPE_VALUE:
-			g_free (self->priv->scope_value);
-			self->priv->scope_value = g_value_dup_string (value);
-			g_object_notify (object, "scope-value");
-			break;
-		default:
-			/* We don't have any other property... */
-			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-			break;
-	}
+	g_free (priv->role);
+	g_free (priv->scope_type);
+	g_free (priv->scope_value);
+
+	/* Chain up to the parent class */
+	G_OBJECT_CLASS (gdata_access_rule_parent_class)->finalize (object);
 }
 
 static void
@@ -216,22 +183,29 @@ gdata_access_rule_get_property (GObject *object, guint property_id, GValue *valu
 }
 
 static void
-gdata_access_rule_init (GDataAccessRule *self)
+gdata_access_rule_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ACCESS_RULE, GDataAccessRulePrivate);
-}
+	GDataAccessRule *self = GDATA_ACCESS_RULE (object);
 
-static void
-gdata_access_rule_finalize (GObject *object)
-{
-	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (object)->priv;
-
-	g_free (priv->role);
-	g_free (priv->scope_type); 
-	g_free (priv->scope_value);
-
-	/* Chain up to the parent class */
-	G_OBJECT_CLASS (gdata_access_rule_parent_class)->finalize (object);
+	switch (property_id) {
+		case PROP_ROLE:
+			gdata_access_rule_set_role (self, g_value_get_string (value));
+			break;
+		case PROP_SCOPE_TYPE:
+			g_free (self->priv->scope_type);
+			self->priv->scope_type = g_value_dup_string (value);
+			g_object_notify (object, "scope-type");
+			break;
+		case PROP_SCOPE_VALUE:
+			g_free (self->priv->scope_value);
+			self->priv->scope_value = g_value_dup_string (value);
+			g_object_notify (object, "scope-value");
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
 }
 
 static gboolean
@@ -314,7 +288,33 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->get_namespaces (parsable, namespaces);
 
-	g_hash_table_insert (namespaces, (gchar*) "gAcl", (gchar*) "http://schemas.google.com/acl/2007"); 
+	g_hash_table_insert (namespaces, (gchar*) "gAcl", (gchar*) "http://schemas.google.com/acl/2007");
+}
+
+/**
+ * gdata_access_rule_new:
+ * @id: the access rule's ID, or %NULL
+ *
+ * Creates a new #GDataAccessRule with the given ID and default properties.
+ *
+ * Return value: a new #GDataAccessRule; unref with g_object_unref()
+ *
+ * Since: 0.3.0
+ **/
+GDataAccessRule *
+gdata_access_rule_new (const gchar *id)
+{
+	GDataAccessRule *rule = GDATA_ACCESS_RULE (g_object_new (GDATA_TYPE_ACCESS_RULE, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(rule->priv->edited));
+
+	/* Set up the role and scope type */
+	rule->priv->role = g_strdup (GDATA_ACCESS_ROLE_NONE);
+	rule->priv->scope_type = g_strdup (GDATA_ACCESS_SCOPE_DEFAULT);
+
+	return rule;
 }
 
 /**
@@ -328,7 +328,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  *
  * Since: 0.3.0
  **/
-void 
+void
 gdata_access_rule_set_role (GDataAccessRule *self, const gchar *role)
 {
 	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));

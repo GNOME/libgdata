@@ -606,24 +606,6 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 	}
 }
 
-/**
- * gdata_youtube_video_new:
- * @id: the video's ID, or %NULL
- *
- * Creates a new #GDataYouTubeVideo with the given ID and default properties.
- *
- * Return value: a new #GDataYouTubeVideo; unref with g_object_unref()
- **/
-GDataYouTubeVideo *
-gdata_youtube_video_new (const gchar *id)
-{
-	GDataYouTubeVideo *video = g_object_new (GDATA_TYPE_YOUTUBE_VIDEO, "id", id, NULL);
-	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
-	video->priv->media_group = g_object_new (GDATA_TYPE_YOUTUBE_GROUP, NULL);
-	video->priv->youtube_control = g_object_new (GDATA_TYPE_YOUTUBE_CONTROL, NULL);
-	return video;
-}
-
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
@@ -889,6 +871,24 @@ get_entry_uri (const gchar *id)
 	g_strfreev (parts);
 
 	return uri;
+}
+
+/**
+ * gdata_youtube_video_new:
+ * @id: the video's ID, or %NULL
+ *
+ * Creates a new #GDataYouTubeVideo with the given ID and default properties.
+ *
+ * Return value: a new #GDataYouTubeVideo; unref with g_object_unref()
+ **/
+GDataYouTubeVideo *
+gdata_youtube_video_new (const gchar *id)
+{
+	GDataYouTubeVideo *video = g_object_new (GDATA_TYPE_YOUTUBE_VIDEO, "id", id, NULL);
+	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
+	video->priv->media_group = g_object_new (GDATA_TYPE_YOUTUBE_GROUP, NULL);
+	video->priv->youtube_control = g_object_new (GDATA_TYPE_YOUTUBE_CONTROL, NULL);
+	return video;
 }
 
 /**

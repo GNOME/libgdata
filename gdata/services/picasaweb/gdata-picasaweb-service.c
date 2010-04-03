@@ -61,6 +61,26 @@ gdata_picasaweb_service_init (GDataPicasaWebService *self)
 	/* Nothing to see here */
 }
 
+/**
+ * gdata_picasaweb_service_new:
+ * @client_id: your application's client ID
+ *
+ * Creates a new #GDataPicasaWebService. The @client_id must be unique for your application, and as registered with Google.
+ *
+ * Return value: a new #GDataPicasaWebService, or %NULL
+ *
+ * Since: 0.4.0
+ **/
+GDataPicasaWebService *
+gdata_picasaweb_service_new (const gchar *client_id)
+{
+	g_return_val_if_fail (client_id != NULL, NULL);
+
+	return g_object_new (GDATA_TYPE_PICASAWEB_SERVICE,
+			     "client-id", client_id,
+			     NULL);
+}
+
 /*
  * create_uri:
  * @self: a #GDataPicasaWebService
@@ -86,26 +106,6 @@ create_uri (GDataPicasaWebService *self, const gchar *username, const gchar *typ
 	}
 
 	return g_strdup_printf ("http://picasaweb.google.com/data/%s/api/user/%s", type, username);
-}
-
-/**
- * gdata_picasaweb_service_new:
- * @client_id: your application's client ID
- *
- * Creates a new #GDataPicasaWebService. The @client_id must be unique for your application, and as registered with Google.
- *
- * Return value: a new #GDataPicasaWebService, or %NULL
- *
- * Since: 0.4.0
- **/
-GDataPicasaWebService *
-gdata_picasaweb_service_new (const gchar *client_id)
-{
-	g_return_val_if_fail (client_id != NULL, NULL);
-
-	return g_object_new (GDATA_TYPE_PICASAWEB_SERVICE,
-			     "client-id", client_id,
-			     NULL);
 }
 
 /**

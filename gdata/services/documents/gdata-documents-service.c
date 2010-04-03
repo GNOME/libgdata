@@ -114,26 +114,6 @@ gdata_documents_service_init (GDataDocumentsService *self)
 	g_signal_connect (self, "notify::proxy-uri", G_CALLBACK (notify_proxy_uri_cb), NULL);
 }
 
-/**
- * gdata_documents_service_new:
- * @client_id: your application's client ID
- *
- * Creates a new #GDataDocumentsService. The @client_id must be unique for your application, and as registered with Google.
- *
- * Return value: a new #GDataDocumentsService, or %NULL; unref with g_object_unref()
- *
- * Since: 0.4.0
- **/
-GDataDocumentsService *
-gdata_documents_service_new (const gchar *client_id)
-{
-	g_return_val_if_fail (client_id != NULL, NULL);
-
-	return g_object_new (GDATA_TYPE_DOCUMENTS_SERVICE,
-			     "client-id", client_id,
-			     NULL);
-}
-
 static void
 gdata_documents_service_dispose (GObject *object)
 {
@@ -160,6 +140,26 @@ gdata_documents_service_get_property (GObject *object, guint property_id, GValue
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
 	}
+}
+
+/**
+ * gdata_documents_service_new:
+ * @client_id: your application's client ID
+ *
+ * Creates a new #GDataDocumentsService. The @client_id must be unique for your application, and as registered with Google.
+ *
+ * Return value: a new #GDataDocumentsService, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.4.0
+ **/
+GDataDocumentsService *
+gdata_documents_service_new (const gchar *client_id)
+{
+	g_return_val_if_fail (client_id != NULL, NULL);
+
+	return g_object_new (GDATA_TYPE_DOCUMENTS_SERVICE,
+			     "client-id", client_id,
+			     NULL);
 }
 
 /**

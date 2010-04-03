@@ -181,12 +181,6 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
-static void
-gdata_calendar_calendar_init (GDataCalendarCalendar *self)
-{
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_CALENDAR, GDataCalendarCalendarPrivate);
-}
-
 static gboolean
 is_owner_rule (GDataAccessRule *rule)
 {
@@ -197,6 +191,12 @@ static void
 gdata_calendar_calendar_access_handler_init (GDataAccessHandlerIface *iface)
 {
 	iface->is_owner_rule = is_owner_rule;
+}
+
+static void
+gdata_calendar_calendar_init (GDataCalendarCalendar *self)
+{
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_CALENDAR, GDataCalendarCalendarPrivate);
 }
 
 static void

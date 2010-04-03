@@ -54,6 +54,25 @@ gdata_documents_folder_class_init (GDataDocumentsFolderClass *klass)
 	parsable_class->get_xml = get_xml;
 }
 
+static void
+gdata_documents_folder_init (GDataDocumentsFolder *self)
+{
+	/* Why am I writing it? */
+}
+
+static void
+get_xml (GDataParsable *parsable, GString *xml_string)
+{
+	const gchar *document_id;
+
+	/* Chain up to the parent class */
+	GDATA_PARSABLE_CLASS (gdata_documents_folder_parent_class)->get_xml (parsable, xml_string);
+
+	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (parsable));
+	if (document_id != NULL)
+		g_string_append_printf (xml_string, "<gd:resourceId>folder:%s</gd:resourceId>", document_id);
+}
+
 /**
  * gdata_documents_folder_new:
  * @id: the entry's ID (not the document ID of the folder), or %NULL
@@ -74,23 +93,4 @@ gdata_documents_folder_new (const gchar *id)
 	_gdata_documents_entry_init_edited (GDATA_DOCUMENTS_ENTRY (folder));
 
 	return folder;
-}
-
-static void
-gdata_documents_folder_init (GDataDocumentsFolder *self)
-{
-	/* Why am I writing it? */
-}
-
-static void
-get_xml (GDataParsable *parsable, GString *xml_string)
-{
-	const gchar *document_id;
-
-	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_documents_folder_parent_class)->get_xml (parsable, xml_string);
-
-	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (parsable));
-	if (document_id != NULL)
-		g_string_append_printf (xml_string, "<gd:resourceId>folder:%s</gd:resourceId>", document_id);
 }

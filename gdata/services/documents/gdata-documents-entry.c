@@ -180,6 +180,18 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 
 }
 
+static gboolean
+is_owner_rule (GDataAccessRule *rule)
+{
+	return (strcmp (gdata_access_rule_get_role (rule), GDATA_DOCUMENTS_ACCESS_ROLE_OWNER) == 0) ? TRUE : FALSE;
+}
+
+static void
+gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface)
+{
+	iface->is_owner_rule = is_owner_rule;
+}
+
 static void
 gdata_documents_entry_init (GDataDocumentsEntry *self)
 {
@@ -203,16 +215,75 @@ _gdata_documents_entry_init_edited (GDataDocumentsEntry *self)
 	g_get_current_time (&(self->priv->edited));
 }
 
-static gboolean
-is_owner_rule (GDataAccessRule *rule)
+static void
+gdata_entry_dispose (GObject *object)
 {
-	return (strcmp (gdata_access_rule_get_role (rule), GDATA_DOCUMENTS_ACCESS_ROLE_OWNER) == 0) ? TRUE : FALSE;
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
+
+	if (priv->last_modified_by != NULL)
+		g_object_unref (priv->last_modified_by);
+	priv->last_modified_by = NULL;
+
+	/* Chain up to the parent class */
+	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->dispose (object);
 }
 
 static void
-gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface)
+gdata_documents_entry_finalize (GObject *object)
 {
-	iface->is_owner_rule = is_owner_rule;
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
+
+	g_free (priv->document_id);
+
+	/* Chain up to the parent class */
+	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->finalize (object);
+}
+
+static void
+gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+{
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
+
+	switch (property_id) {
+		case PROP_DOCUMENT_ID:
+			g_value_set_string (value, priv->document_id);
+			break;
+		case PROP_WRITERS_CAN_INVITE:
+			g_value_set_boolean (value, priv->writers_can_invite);
+			break;
+		case PROP_IS_DELETED:
+			g_value_set_boolean (value, priv->is_deleted);
+			break;
+		case PROP_EDITED:
+			g_value_set_boxed (value, &(priv->edited));
+			break;
+		case PROP_LAST_VIEWED:
+			g_value_set_boxed (value, &(priv->last_viewed));
+			break;
+		case PROP_LAST_MODIFIED_BY:
+			g_value_set_object (value, priv->last_modified_by);
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
+}
+
+static void
+gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+{
+	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (object);
+
+	switch (property_id) {
+		case PROP_WRITERS_CAN_INVITE:
+			gdata_documents_entry_set_writers_can_invite (self, g_value_get_boolean (value));
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
 }
 
 static gboolean
@@ -271,77 +342,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	}
 
 	return TRUE;
-}
-
-static void
-gdata_documents_entry_finalize (GObject *object)
-{
-	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
-
-	g_free (priv->document_id);
-
-	/* Chain up to the parent class */
-	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->finalize (object);
-}
-
-static void
-gdata_entry_dispose (GObject *object)
-{
-	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
-
-	if (priv->last_modified_by != NULL)
-		g_object_unref (priv->last_modified_by);
-	priv->last_modified_by = NULL;
-
-	/* Chain up to the parent class */
-	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->dispose (object);
-}
-
-static void
-gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
-{
-	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
-
-	switch (property_id) {
-		case PROP_DOCUMENT_ID:
-			g_value_set_string (value, priv->document_id);
-			break;
-		case PROP_WRITERS_CAN_INVITE:
-			g_value_set_boolean (value, priv->writers_can_invite);
-			break;
-		case PROP_IS_DELETED:
-			g_value_set_boolean (value, priv->is_deleted);
-			break;
-		case PROP_EDITED:
-			g_value_set_boxed (value, &(priv->edited));
-			break;
-		case PROP_LAST_VIEWED:
-			g_value_set_boxed (value, &(priv->last_viewed));
-			break;
-		case PROP_LAST_MODIFIED_BY:
-			g_value_set_object (value, priv->last_modified_by);
-			break;
-		default:
-			/* We don't have any other property... */
-			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-			break;
-	}
-}
-
-static void
-gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
-{
-	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (object);
-
-	switch (property_id) {
-		case PROP_WRITERS_CAN_INVITE:
-			gdata_documents_entry_set_writers_can_invite (self, g_value_get_boolean (value));
-			break;
-		default:
-			/* We don't have any other property... */
-			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-			break;
-	}
 }
 
 static void
