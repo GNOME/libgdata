@@ -32,6 +32,7 @@
 #include <gdata/gd/gdata-gd-postal-address.h>
 #include <gdata/gcontact/gdata-gcontact-calendar.h>
 #include <gdata/gcontact/gdata-gcontact-event.h>
+#include <gdata/gcontact/gdata-gcontact-external-id.h>
 #include <gdata/gcontact/gdata-gcontact-jot.h>
 #include <gdata/gcontact/gdata-gcontact-relation.h>
 #include <gdata/gcontact/gdata-gcontact-website.h>
@@ -247,6 +248,10 @@ void gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGCont
 GList *gdata_contacts_contact_get_calendars (GDataContactsContact *self);
 GDataGContactCalendar *gdata_contacts_contact_get_primary_calendar (GDataContactsContact *self);
 void gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self);
+
+void gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContactExternalID *external_id);
+GList *gdata_contacts_contact_get_external_ids (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_external_ids (GDataContactsContact *self);
 
 const gchar *gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const gchar *name);
 GHashTable *gdata_contacts_contact_get_extended_properties (GDataContactsContact *self);

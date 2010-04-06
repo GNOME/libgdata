@@ -192,6 +192,7 @@ gdatagcontactincludedir = $(gdataincludedir)/gcontact
 gdatagcontactinclude_HEADERS = \
 	gdata/gcontact/gdata-gcontact-calendar.h	\
 	gdata/gcontact/gdata-gcontact-event.h		\
+	gdata/gcontact/gdata-gcontact-external-id.h	\
 	gdata/gcontact/gdata-gcontact-jot.h		\
 	gdata/gcontact/gdata-gcontact-relation.h	\
 	gdata/gcontact/gdata-gcontact-website.h
@@ -299,6 +300,7 @@ gdata_libgdata_la_SOURCES = \
 	\
 	gdata/gcontact/gdata-gcontact-calendar.c	\
 	gdata/gcontact/gdata-gcontact-event.c		\
+	gdata/gcontact/gdata-gcontact-external-id.c	\
 	gdata/gcontact/gdata-gcontact-jot.c		\
 	gdata/gcontact/gdata-gcontact-relation.c	\
 	gdata/gcontact/gdata-gcontact-website.c		\

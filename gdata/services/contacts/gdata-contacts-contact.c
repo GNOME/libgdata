@@ -85,6 +85,7 @@ struct _GDataContactsContactPrivate {
 	GList *websites; /* GDataGContactWebsite */
 	GList *events; /* GDataGContactEvent */
 	GList *calendars; /* GDataGContactCalendar */
+	GList *external_ids; /* GDataGContactExternalID */
 	gchar *billing_information;
 	gchar *directory_server;
 	gchar *gender;
@@ -445,6 +446,7 @@ gdata_contacts_contact_dispose (GObject *object)
 	gdata_contacts_contact_remove_all_websites (self);
 	gdata_contacts_contact_remove_all_events (self);
 	gdata_contacts_contact_remove_all_calendars (self);
+	gdata_contacts_contact_remove_all_external_ids (self);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->dispose (object);
@@ -668,6 +670,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                             gdata_contacts_contact_add_website, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "calendarLink", P_REQUIRED, GDATA_TYPE_GCONTACT_CALENDAR,
 		                                             gdata_contacts_contact_add_calendar, self, &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "externalId", P_REQUIRED, GDATA_TYPE_GCONTACT_EXTERNAL_ID,
+		                                             gdata_contacts_contact_add_external_id, self, &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NO_DUPES, &(self->priv->nickname), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "billingInformation", P_REQUIRED | P_NO_DUPES | P_NON_EMPTY,
 		                                      &(self->priv->billing_information), &success, error) == TRUE ||
@@ -858,6 +862,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	get_child_xml (priv->websites, xml_string);
 	get_child_xml (priv->events, xml_string);
 	get_child_xml (priv->calendars, xml_string);
+	get_child_xml (priv->external_ids, xml_string);
 
 	/* Extended properties */
 	g_hash_table_foreach (priv->extended_properties, (GHFunc) get_extended_property_xml_cb, xml_string);
@@ -2361,6 +2366,66 @@ gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self)
 }
 
 /**
+ * gdata_contacts_contact_add_external_id:
+ * @self: a #GDataContactsContact
+ * @external_id: a #GDataGContactExternalID to add
+ *
+ * Adds an external ID to the contact's list of external IDs and increments its reference count.
+ *
+ * Duplicate IDs will not be added to the list.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContactExternalID *external_id)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_GCONTACT_EXTERNAL_ID (external_id));
+
+	if (g_list_find_custom (self->priv->external_ids, external_id, (GCompareFunc) gdata_gcontact_external_id_compare) == NULL)
+		self->priv->external_ids = g_list_append (self->priv->external_ids, g_object_ref (external_id));
+}
+
+/**
+ * gdata_contacts_contact_get_external_ids:
+ * @self: a #GDataContactsContact
+ *
+ * Gets a list of the external IDs of the contact.
+ *
+ * Return value: a #GList of #GDataGContactExternalID<!-- -->s, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_contacts_contact_get_external_ids (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->external_ids;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_external_ids:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all external IDs from the contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_remove_all_external_ids (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->external_ids != NULL) {
+		g_list_foreach (priv->external_ids, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->external_ids);
+	}
+	priv->external_ids = NULL;
+}
+
+/**
  * gdata_contacts_contact_get_extended_property:
  * @self: a #GDataContactsContact
  * @name: the property name; an arbitrary, unique string
@@ -2489,8 +2554,6 @@ gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self)
  * and reusing the same field name will result in the old value of that field being overwritten.
  *
  * To unset a field, set @value to %NULL.
- *
- * Return value: %TRUE if the field was updated or deleted successfully, %FALSE otherwise
  *
  * Since: 0.7.0
  **/

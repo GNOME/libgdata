@@ -2554,6 +2554,91 @@ test_gcontact_event_error_handling (void)
 }
 
 static void
+test_gcontact_external_id (void)
+{
+	GDataGContactExternalID *id, *id2;
+	gchar *xml;
+	GError *error = NULL;
+
+	id = GDATA_GCONTACT_EXTERNAL_ID (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_EXTERNAL_ID,
+		"<gContact:externalId xmlns:gContact='http://schemas.google.com/contact/2008' rel='account' value='5'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (id));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_external_id_get_value (id), ==, "5");
+	g_assert_cmpstr (gdata_gcontact_external_id_get_relation_type (id), ==, GDATA_GCONTACT_EXTERNAL_ID_ACCOUNT);
+	g_assert (gdata_gcontact_external_id_get_label (id) == NULL);
+
+	/* Compare it against another identical external ID */
+	id2 = gdata_gcontact_external_id_new ("5", GDATA_GCONTACT_EXTERNAL_ID_ACCOUNT, NULL);
+	g_assert_cmpint (gdata_gcontact_external_id_compare (id, id2), ==, 0);
+
+	/* …and a different one */
+	gdata_gcontact_external_id_set_value (id2, "http://identifying.uri");
+	g_assert_cmpint (gdata_gcontact_external_id_compare (id, id2), !=, 0);
+	g_object_unref (id2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gcontact_external_id_compare (id, NULL), ==, 1);
+	g_assert_cmpint (gdata_gcontact_external_id_compare (NULL, id), ==, -1);
+	g_assert_cmpint (gdata_gcontact_external_id_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gcontact_external_id_compare (id, id), ==, 0);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (id));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:externalId xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"value='5' rel='account'/>");
+	g_free (xml);
+	g_object_unref (id);
+
+	/* Now parse an ID with less information available */
+	id = GDATA_GCONTACT_EXTERNAL_ID (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_EXTERNAL_ID,
+		"<gContact:externalId xmlns:gContact='http://schemas.google.com/contact/2008' value='' label='&lt;a&gt;'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (id));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_external_id_get_value (id), ==, "");
+	g_assert (gdata_gcontact_external_id_get_relation_type (id) == NULL);
+	g_assert_cmpstr (gdata_gcontact_external_id_get_label (id), ==, "<a>");
+
+	/* Check the outputted XML is still OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (id));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:externalId xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"value='' label='&lt;a&gt;'/>");
+	g_free (xml);
+	g_object_unref (id);
+}
+
+static void
+test_gcontact_external_id_error_handling (void)
+{
+	GDataGContactExternalID *id;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) id = GDATA_GCONTACT_EXTERNAL_ID (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_EXTERNAL_ID,\
+		"<gContact:externalId xmlns:gContact='http://schemas.google.com/contact/2008' "\
+			x\
+		"/>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (id == NULL);\
+	g_clear_error (&error)
+
+	TEST_XML_ERROR_HANDLING ("rel='account'"); /* no value */
+	TEST_XML_ERROR_HANDLING ("value='foo'"); /* no rel or label */
+	TEST_XML_ERROR_HANDLING ("value='foo' rel=''"); /* empty rel */
+	TEST_XML_ERROR_HANDLING ("value='foo' label=''"); /* empty label */
+	TEST_XML_ERROR_HANDLING ("value='foo' rel='organization' label='Other'"); /* rel and label */
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
+static void
 test_gcontact_jot (void)
 {
 	GDataGContactJot *jot, *jot2;
@@ -2842,6 +2927,8 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gcontact/calendar/error_handling", test_gcontact_calendar_error_handling);
 	g_test_add_func ("/gcontact/event", test_gcontact_event);
 	g_test_add_func ("/gcontact/event/error_handling", test_gcontact_event_error_handling);
+	g_test_add_func ("/gcontact/external_id", test_gcontact_external_id);
+	g_test_add_func ("/gcontact/external_id/error_handling", test_gcontact_external_id_error_handling);
 	g_test_add_func ("/gcontact/jot", test_gcontact_jot);
 	g_test_add_func ("/gcontact/jot/error_handling", test_gcontact_jot_error_handling);
 	g_test_add_func ("/gcontact/relation", test_gcontact_relation);

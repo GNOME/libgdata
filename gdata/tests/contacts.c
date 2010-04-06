@@ -160,6 +160,7 @@ test_insert_simple (gconstpointer service)
 	GDataGContactWebsite *website;
 	GDataGContactEvent *event;
 	GDataGContactCalendar *calendar;
+	GDataGContactExternalID *external_id;
 	gchar *xml, *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
 	gchar *priority, *sensitivity, *short_name, *subject;
 	GList *list;
@@ -253,6 +254,10 @@ test_insert_simple (gconstpointer service)
 	calendar = gdata_gcontact_calendar_new ("http://calendar.example.com/", GDATA_GCONTACT_CALENDAR_HOME, NULL, TRUE);
 	gdata_contacts_contact_add_calendar (contact, calendar);
 	g_object_unref (calendar);
+
+	external_id = gdata_gcontact_external_id_new ("Number Six", GDATA_GCONTACT_EXTERNAL_ID_ORGANIZATION, NULL);
+	gdata_contacts_contact_add_external_id (contact, external_id);
+	g_object_unref (external_id);
 
 	/* Add some extended properties */
 	g_assert (gdata_contacts_contact_set_extended_property (contact, "TITLE", NULL) == TRUE);
@@ -356,6 +361,7 @@ test_insert_simple (gconstpointer service)
 				"<gContact:website href='http://example.com/' rel='profile' primary='true'/>"
 				"<gContact:event rel='anniversary'><gd:when startTime='1900-01-01'/></gContact:event>"
 				"<gContact:calendarLink href='http://calendar.example.com/' rel='home' primary='true'/>"
+				"<gContact:externalId value='Number Six' rel='organization'/>"
 				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
 				"<gContact:userDefinedField key='Favourite colour' value='Blue'/>"
 				"<gContact:userDefinedField key='Owes me' value='£10'/>"
@@ -469,6 +475,11 @@ test_insert_simple (gconstpointer service)
 
 	g_assert (GDATA_IS_GCONTACT_CALENDAR (gdata_contacts_contact_get_primary_calendar (new_contact)));
 
+	/* External IDs */
+	list = gdata_contacts_contact_get_external_ids (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (list->data));
+
 	/* Extended properties */
 	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "CALURI"), ==, "http://example.com/");
 	g_assert (gdata_contacts_contact_get_extended_property (new_contact, "non-existent") == NULL);
@@ -532,6 +543,9 @@ test_insert_simple (gconstpointer service)
 	gdata_contacts_contact_remove_all_calendars (new_contact);
 	g_assert (gdata_contacts_contact_get_calendars (new_contact) == NULL);
 	g_assert (gdata_contacts_contact_get_primary_calendar (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_external_ids (new_contact);
+	g_assert (gdata_contacts_contact_get_external_ids (new_contact) == NULL);
 
 	g_free (edited);
 	g_object_unref (contact);
@@ -703,6 +717,7 @@ test_parser_minimal (gconstpointer service)
 	g_assert (gdata_contacts_contact_get_events (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_calendars (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_primary_calendar (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_external_ids (contact) == NULL);
 
 	g_object_unref (contact);
 }
@@ -761,6 +776,8 @@ test_parser_normal (gconstpointer service)
 			"<gContact:calendarLink href='http://example.com/' rel='free-busy' primary='true'/>"
 			"<gContact:calendarLink href='http://example.com/' label='Gig list' primary='false'/>"
 			"<gContact:calendarLink href='http://foo.com/calendar' rel='home'/>"
+			"<gContact:externalId value='Number Six' label='The Prisoner'/>"
+			"<gContact:externalId value='1545' rel='account'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -897,6 +914,13 @@ test_parser_normal (gconstpointer service)
 	g_assert (gdata_gcontact_calendar_get_label (GDATA_GCONTACT_CALENDAR (list->data)) == NULL);
 	g_assert (gdata_gcontact_calendar_is_primary (GDATA_GCONTACT_CALENDAR (list->data)) == FALSE);
 
+	/* External IDs */
+	list = gdata_contacts_contact_get_external_ids (contact);
+	g_assert_cmpuint (g_list_length (list), ==, 2);
+
+	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (list->data));
+	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (list->next->data));
+
 	g_object_unref (contact);
 }
 
@@ -1022,6 +1046,9 @@ test_parser_error_handling (gconstpointer service)
 
 	/* gContact:calendar */
 	TEST_XML_ERROR_HANDLING ("<gContact:calendarLink/>");
+
+	/* gContact:externalId */
+	TEST_XML_ERROR_HANDLING ("<gContact:externalId/>");
 
 #undef TEST_XML_ERROR_HANDLING
 }

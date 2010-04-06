@@ -70,6 +70,7 @@
 			<title>GContact API</title>
 			<xi:include href="xml/gdata-gcontact-calendar.xml"/>
 			<xi:include href="xml/gdata-gcontact-event.xml"/>
+			<xi:include href="xml/gdata-gcontact-external-id.xml"/>
 			<xi:include href="xml/gdata-gcontact-jot.xml"/>
 			<xi:include href="xml/gdata-gcontact-relation.xml"/>
 			<xi:include href="xml/gdata-gcontact-website.xml"/>
