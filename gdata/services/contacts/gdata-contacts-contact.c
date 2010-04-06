@@ -77,6 +77,17 @@ struct _GDataContactsContactPrivate {
 	GList *websites; /* GDataGContactWebsite */
 	GList *events; /* GDataGContactEvent */
 	GList *calendars; /* GDataGContactCalendar */
+	gchar *billing_information;
+	gchar *directory_server;
+	gchar *gender;
+	gchar *initials;
+	gchar *maiden_name;
+	gchar *mileage;
+	gchar *occupation;
+	gchar *priority;
+	gchar *sensitivity;
+	gchar *short_name;
+	gchar *subject;
 };
 
 enum {
@@ -86,7 +97,18 @@ enum {
 	PROP_NAME,
 	PROP_NICKNAME,
 	PROP_BIRTHDAY,
-	PROP_BIRTHDAY_HAS_YEAR
+	PROP_BIRTHDAY_HAS_YEAR,
+	PROP_BILLING_INFORMATION,
+	PROP_DIRECTORY_SERVER,
+	PROP_GENDER,
+	PROP_INITIALS,
+	PROP_MAIDEN_NAME,
+	PROP_MILEAGE,
+	PROP_OCCUPATION,
+	PROP_PRIORITY,
+	PROP_SENSITIVITY,
+	PROP_SHORT_NAME,
+	PROP_SUBJECT
 };
 
 G_DEFINE_TYPE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
@@ -204,6 +226,150 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 					"Birthday has year?", "Whether the contact's birthday includes the year of their birth.",
 					FALSE,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:billing-information:
+	 *
+	 * Billing information for the contact, such as their billing name and address.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_BILLING_INFORMATION,
+				g_param_spec_string ("billing-information",
+					"Billing information", "Billing information for the contact.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:directory-server:
+	 *
+	 * The name or address of a directory server associated with the contact.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_DIRECTORY_SERVER,
+				g_param_spec_string ("directory-server",
+					"Directory server", "The name or address of a directory server associated with the contact.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:gender:
+	 *
+	 * The gender of the contact. For example: %GDATA_CONTACTS_GENDER_MALE or %GDATA_CONTACTS_GENDER_FEMALE.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_GENDER,
+				g_param_spec_string ("gender",
+					"Gender", "The gender of the contact.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:initials:
+	 *
+	 * The initials of the contact.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_INITIALS,
+				g_param_spec_string ("initials",
+					"Initials", "The initials of the contact.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:maiden-name:
+	 *
+	 * The maiden name of the contact.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_MAIDEN_NAME,
+				g_param_spec_string ("maiden-name",
+					"Maiden name", "The maiden name of the contact.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:mileage:
+	 *
+	 * A mileage associated with the contact, such as one for reimbursement purposes. It can be in any format.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_MILEAGE,
+				g_param_spec_string ("mileage",
+					"Mileage", "A mileage associated with the contact, such as one for reimbursement purposes.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:occupation:
+	 *
+	 * The contact's occupation.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_OCCUPATION,
+				g_param_spec_string ("occupation",
+					"Occupation", "The contact's occupation.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:priority:
+	 *
+	 * The contact's importance. For example: %GDATA_CONTACTS_PRIORITY_NORMAL or %GDATA_CONTACTS_PRIORITY_HIGH.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_PRIORITY,
+				g_param_spec_string ("priority",
+					"Priority", "The contact's importance.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:sensitivity:
+	 *
+	 * The sensitivity of the contact's data. For example: %GDATA_CONTACTS_SENSITIVITY_NORMAL or %GDATA_CONTACTS_SENSITIVITY_PRIVATE.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_SENSITIVITY,
+				g_param_spec_string ("sensitivity",
+					"Sensitivity", "The sensitivity of the contact's data.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:short-name:
+	 *
+	 * A short name for the contact. This should be used for contracted versions of the contact's actual name,
+	 * whereas #GDataContactsContact:nickname should be used for nicknames.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_SHORT_NAME,
+				g_param_spec_string ("short-name",
+					"Short name", "A short name for the contact.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:subject:
+	 *
+	 * The subject of the contact. (i.e. The contact's relevance to the address book.)
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_SUBJECT,
+				g_param_spec_string ("subject",
+					"Subject", "The subject of the contact.",
+					NULL,
+					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *self);
@@ -284,6 +450,17 @@ gdata_contacts_contact_finalize (GObject *object)
 	g_hash_table_destroy (priv->groups);
 	g_free (priv->photo_etag);
 	g_free (priv->nickname);
+	g_free (priv->billing_information);
+	g_free (priv->directory_server);
+	g_free (priv->gender);
+	g_free (priv->initials);
+	g_free (priv->maiden_name);
+	g_free (priv->mileage);
+	g_free (priv->occupation);
+	g_free (priv->priority);
+	g_free (priv->sensitivity);
+	g_free (priv->short_name);
+	g_free (priv->subject);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->finalize (object);
@@ -316,6 +493,39 @@ gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue 
 		case PROP_BIRTHDAY_HAS_YEAR:
 			g_value_set_boolean (value, priv->birthday_has_year);
 			break;
+		case PROP_BILLING_INFORMATION:
+			g_value_set_string (value, priv->billing_information);
+			break;
+		case PROP_DIRECTORY_SERVER:
+			g_value_set_string (value, priv->directory_server);
+			break;
+		case PROP_GENDER:
+			g_value_set_string (value, priv->gender);
+			break;
+		case PROP_INITIALS:
+			g_value_set_string (value, priv->initials);
+			break;
+		case PROP_MAIDEN_NAME:
+			g_value_set_string (value, priv->maiden_name);
+			break;
+		case PROP_MILEAGE:
+			g_value_set_string (value, priv->mileage);
+			break;
+		case PROP_OCCUPATION:
+			g_value_set_string (value, priv->occupation);
+			break;
+		case PROP_PRIORITY:
+			g_value_set_string (value, priv->priority);
+			break;
+		case PROP_SENSITIVITY:
+			g_value_set_string (value, priv->sensitivity);
+			break;
+		case PROP_SHORT_NAME:
+			g_value_set_string (value, priv->short_name);
+			break;
+		case PROP_SUBJECT:
+			g_value_set_string (value, priv->subject);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -340,6 +550,39 @@ gdata_contacts_contact_set_property (GObject *object, guint property_id, const G
 			break;
 		case PROP_BIRTHDAY_HAS_YEAR:
 			gdata_contacts_contact_set_birthday (self, &(self->priv->birthday), g_value_get_boolean (value));
+			break;
+		case PROP_BILLING_INFORMATION:
+			gdata_contacts_contact_set_billing_information (self, g_value_get_string (value));
+			break;
+		case PROP_DIRECTORY_SERVER:
+			gdata_contacts_contact_set_directory_server (self, g_value_get_string (value));
+			break;
+		case PROP_GENDER:
+			gdata_contacts_contact_set_gender (self, g_value_get_string (value));
+			break;
+		case PROP_INITIALS:
+			gdata_contacts_contact_set_initials (self, g_value_get_string (value));
+			break;
+		case PROP_MAIDEN_NAME:
+			gdata_contacts_contact_set_maiden_name (self, g_value_get_string (value));
+			break;
+		case PROP_MILEAGE:
+			gdata_contacts_contact_set_mileage (self, g_value_get_string (value));
+			break;
+		case PROP_OCCUPATION:
+			gdata_contacts_contact_set_occupation (self, g_value_get_string (value));
+			break;
+		case PROP_PRIORITY:
+			gdata_contacts_contact_set_priority (self, g_value_get_string (value));
+			break;
+		case PROP_SENSITIVITY:
+			gdata_contacts_contact_set_sensitivity (self, g_value_get_string (value));
+			break;
+		case PROP_SHORT_NAME:
+			gdata_contacts_contact_set_short_name (self, g_value_get_string (value));
+			break;
+		case PROP_SUBJECT:
+			gdata_contacts_contact_set_subject (self, g_value_get_string (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -414,8 +657,63 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                             gdata_contacts_contact_add_website, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "calendarLink", P_REQUIRED, GDATA_TYPE_GCONTACT_CALENDAR,
 		                                             gdata_contacts_contact_add_calendar, self, &success, error) == TRUE ||
-		    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NO_DUPES, &(self->priv->nickname), &success, error) == TRUE) {
+		    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NO_DUPES, &(self->priv->nickname), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "billingInformation", P_REQUIRED | P_NO_DUPES | P_NON_EMPTY,
+		                                      &(self->priv->billing_information), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "directoryServer", P_REQUIRED | P_NO_DUPES | P_NON_EMPTY,
+		                                      &(self->priv->directory_server), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "initials", P_REQUIRED | P_NO_DUPES, &(self->priv->initials), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "maidenName", P_REQUIRED | P_NO_DUPES,
+		                                      &(self->priv->maiden_name), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "mileage", P_REQUIRED | P_NO_DUPES, &(self->priv->mileage), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "occupation", P_REQUIRED | P_NO_DUPES,
+		                                      &(self->priv->occupation), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "shortName", P_REQUIRED | P_NO_DUPES,
+		                                      &(self->priv->short_name), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "subject", P_REQUIRED | P_NO_DUPES, &(self->priv->subject), &success, error) == TRUE) {
 			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "gender") == 0) {
+			/* gContact:gender */
+			xmlChar *value;
+
+			if (self->priv->gender != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL || *value == '\0') {
+				xmlFree (value);
+				return gdata_parser_error_required_content_missing (node, error);
+			}
+
+			self->priv->gender = (gchar*) value;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "priority") == 0) {
+			/* gContact:priority */
+			xmlChar *rel;
+
+			if (self->priv->priority != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			rel = xmlGetProp (node, (xmlChar*) "rel");
+			if (rel == NULL || *rel == '\0') {
+				xmlFree (rel);
+				return gdata_parser_error_required_content_missing (node, error);
+			}
+
+			self->priv->priority = (gchar*) rel;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "sensitivity") == 0) {
+			/* gContact:sensitivity */
+			xmlChar *rel;
+
+			if (self->priv->sensitivity != NULL)
+				return gdata_parser_error_duplicate_element (node, error);
+
+			rel = xmlGetProp (node, (xmlChar*) "rel");
+			if (rel == NULL || *rel == '\0') {
+				xmlFree (rel);
+				return gdata_parser_error_required_content_missing (node, error);
+			}
+
+			self->priv->sensitivity = (gchar*) rel;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
 			/* gContact:groupMembershipInfo */
 			xmlChar *href;
@@ -546,6 +844,52 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 			                        g_date_get_day (&(priv->birthday)));
 		}
 	}
+
+	/* gContact:billingInformation */
+	if (priv->billing_information != NULL) {
+		gdata_parser_string_append_escaped (xml_string,
+		                                    "<gContact:billingInformation>", priv->billing_information, "</gContact:billingInformation>");
+	}
+
+	/* gContact:directoryServer */
+	if (priv->directory_server != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:directoryServer>", priv->directory_server, "</gContact:directoryServer>");
+
+	/* gContact:gender */
+	if (priv->gender != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:gender value='", priv->gender, "'/>");
+
+	/* gContact:initials */
+	if (priv->initials != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:initials>", priv->initials, "</gContact:initials>");
+
+	/* gContact:maidenName */
+	if (priv->maiden_name != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:maidenName>", priv->maiden_name, "</gContact:maidenName>");
+
+	/* gContact:mileage */
+	if (priv->mileage != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:mileage>", priv->mileage, "</gContact:mileage>");
+
+	/* gContact:occupation */
+	if (priv->occupation != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:occupation>", priv->occupation, "</gContact:occupation>");
+
+	/* gContact:priority */
+	if (priv->priority != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:priority rel='", priv->priority, "'/>");
+
+	/* gContact:sensitivity */
+	if (priv->sensitivity != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:sensitivity rel='", priv->sensitivity, "'/>");
+
+	/* gContact:shortName */
+	if (priv->short_name != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:shortName>", priv->short_name, "</gContact:shortName>");
+
+	/* gContact:subject */
+	if (priv->subject != NULL)
+		gdata_parser_string_append_escaped (xml_string, "<gContact:subject>", priv->subject, "</gContact:subject>");
 
 	/* TODO:
 	 * - Finish supporting all tags
@@ -754,6 +1098,429 @@ gdata_contacts_contact_set_birthday (GDataContactsContact *self, GDate *birthday
 	g_object_notify (G_OBJECT (self), "birthday");
 	g_object_notify (G_OBJECT (self), "birthday-has-year");
 	g_object_thaw_notify (G_OBJECT (self));
+}
+
+/**
+ * gdata_contacts_contact_get_billing_information:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:billing-information property.
+ *
+ * Return value: the contact's billing information, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_billing_information (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->billing_information;
+}
+
+/**
+ * gdata_contacts_contact_set_billing_information:
+ * @self: a #GDataContactsContact
+ * @billing_information: the new billing information for the contact, or %NULL
+ *
+ * Sets the #GDataContactsContact:billing-information property to @billing_information.
+ *
+ * If @billing_information is %NULL, the contact's billing information will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_billing_information (GDataContactsContact *self, const gchar *billing_information)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (billing_information == NULL || *billing_information != '\0');
+
+	g_free (self->priv->billing_information);
+	self->priv->billing_information = g_strdup (billing_information);
+	g_object_notify (G_OBJECT (self), "billing-information");
+}
+
+/**
+ * gdata_contacts_contact_get_directory_server:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:directory-server property.
+ *
+ * Return value: the name or address of a directory server associated with the contact, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_directory_server (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->directory_server;
+}
+
+/**
+ * gdata_contacts_contact_set_directory_server:
+ * @self: a #GDataContactsContact
+ * @directory_server: the new name or address of a directory server associated with the contact, or %NULL
+ *
+ * Sets the #GDataContactsContact:directory-server property to @directory_server.
+ *
+ * If @directory_server is %NULL, the contact's directory server will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_directory_server (GDataContactsContact *self, const gchar *directory_server)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (directory_server == NULL || *directory_server != '\0');
+
+	g_free (self->priv->directory_server);
+	self->priv->directory_server = g_strdup (directory_server);
+	g_object_notify (G_OBJECT (self), "directory-server");
+}
+
+/**
+ * gdata_contacts_contact_get_gender:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:gender property.
+ *
+ * Return value: the gender of the contact, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_gender (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->gender;
+}
+
+/**
+ * gdata_contacts_contact_set_gender:
+ * @self: a #GDataContactsContact
+ * @gender: the new gender of the contact, or %NULL
+ *
+ * Sets the #GDataContactsContact:gender property to @gender.
+ *
+ * If @gender is %NULL, the contact's gender will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_gender (GDataContactsContact *self, const gchar *gender)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (gender == NULL || *gender != '\0');
+
+	g_free (self->priv->gender);
+	self->priv->gender = g_strdup (gender);
+	g_object_notify (G_OBJECT (self), "gender");
+}
+
+/**
+ * gdata_contacts_contact_get_initials:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:initials property.
+ *
+ * Return value: the initials of the contact, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_initials (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->initials;
+}
+
+/**
+ * gdata_contacts_contact_set_initials:
+ * @self: a #GDataContactsContact
+ * @initials: the new initials of the contact, or %NULL
+ *
+ * Sets the #GDataContactsContact:initials property to @initials.
+ *
+ * If @initials is %NULL, the contact's initials will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_initials (GDataContactsContact *self, const gchar *initials)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	g_free (self->priv->initials);
+	self->priv->initials = g_strdup (initials);
+	g_object_notify (G_OBJECT (self), "initials");
+}
+
+/**
+ * gdata_contacts_contact_get_maiden_name:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:maiden-name property.
+ *
+ * Return value: the maiden name of the contact, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_maiden_name (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->maiden_name;
+}
+
+/**
+ * gdata_contacts_contact_set_maiden_name:
+ * @self: a #GDataContactsContact
+ * @maiden_name: the new maiden name of the contact, or %NULL
+ *
+ * Sets the #GDataContactsContact:maiden-name property to @maiden_name.
+ *
+ * If @maiden_name is %NULL, the contact's maiden name will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_maiden_name (GDataContactsContact *self, const gchar *maiden_name)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	g_free (self->priv->maiden_name);
+	self->priv->maiden_name = g_strdup (maiden_name);
+	g_object_notify (G_OBJECT (self), "maiden-name");
+}
+
+/**
+ * gdata_contacts_contact_get_mileage:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:mileage property.
+ *
+ * Return value: a mileage associated with the contact, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_mileage (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->mileage;
+}
+
+/**
+ * gdata_contacts_contact_set_mileage:
+ * @self: a #GDataContactsContact
+ * @mileage: the new mileage associated with the contact, or %NULL
+ *
+ * Sets the #GDataContactsContact:mileage property to @mileage.
+ *
+ * If @mileage is %NULL, the contact's mileage will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_mileage (GDataContactsContact *self, const gchar *mileage)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	g_free (self->priv->mileage);
+	self->priv->mileage = g_strdup (mileage);
+	g_object_notify (G_OBJECT (self), "mileage");
+}
+
+/**
+ * gdata_contacts_contact_get_occupation:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:occupation property.
+ *
+ * Return value: the contact's occupation, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_occupation (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->occupation;
+}
+
+/**
+ * gdata_contacts_contact_set_occupation:
+ * @self: a #GDataContactsContact
+ * @occupation: the contact's new occupation, or %NULL
+ *
+ * Sets the #GDataContactsContact:occupation property to @occupation.
+ *
+ * If @occupation is %NULL, the contact's occupation will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_occupation (GDataContactsContact *self, const gchar *occupation)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	g_free (self->priv->occupation);
+	self->priv->occupation = g_strdup (occupation);
+	g_object_notify (G_OBJECT (self), "occupation");
+}
+
+/**
+ * gdata_contacts_contact_get_priority:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:priority property.
+ *
+ * Return value: the contact's priority, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_priority (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->priority;
+}
+
+/**
+ * gdata_contacts_contact_set_priority:
+ * @self: a #GDataContactsContact
+ * @priority: the contact's new priority, or %NULL
+ *
+ * Sets the #GDataContactsContact:priority property to @priority.
+ *
+ * If @priority is %NULL, the contact's priority will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_priority (GDataContactsContact *self, const gchar *priority)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (priority == NULL || *priority != '\0');
+
+	g_free (self->priv->priority);
+	self->priv->priority = g_strdup (priority);
+	g_object_notify (G_OBJECT (self), "priority");
+}
+
+/**
+ * gdata_contacts_contact_get_sensitivity:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:sensitivity property.
+ *
+ * Return value: the contact's sensitivity, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_sensitivity (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->sensitivity;
+}
+
+/**
+ * gdata_contacts_contact_set_sensitivity:
+ * @self: a #GDataContactsContact
+ * @sensitivity: the contact's new sensitivity, or %NULL
+ *
+ * Sets the #GDataContactsContact:sensitivity property to @sensitivity.
+ *
+ * If @sensitivity is %NULL, the contact's sensitivity will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_sensitivity (GDataContactsContact *self, const gchar *sensitivity)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (sensitivity == NULL || *sensitivity != '\0');
+
+	g_free (self->priv->sensitivity);
+	self->priv->sensitivity = g_strdup (sensitivity);
+	g_object_notify (G_OBJECT (self), "sensitivity");
+}
+
+/**
+ * gdata_contacts_contact_get_short_name:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:short-name property.
+ *
+ * Return value: the contact's short name, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_short_name (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->short_name;
+}
+
+/**
+ * gdata_contacts_contact_set_short_name:
+ * @self: a #GDataContactsContact
+ * @short_name: the contact's new short name, or %NULL
+ *
+ * Sets the #GDataContactsContact:short-name property to @short_name.
+ *
+ * If @short_name is %NULL, the contact's short name will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_short_name (GDataContactsContact *self, const gchar *short_name)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	g_free (self->priv->short_name);
+	self->priv->short_name = g_strdup (short_name);
+	g_object_notify (G_OBJECT (self), "short-name");
+}
+
+/**
+ * gdata_contacts_contact_get_subject:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:subject property.
+ *
+ * Return value: the contact's subject, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_subject (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->subject;
+}
+
+/**
+ * gdata_contacts_contact_set_subject:
+ * @self: a #GDataContactsContact
+ * @subject: the contact's new subject, or %NULL
+ *
+ * Sets the #GDataContactsContact:subject property to @subject.
+ *
+ * If @subject is %NULL, the contact's subject will be removed.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_subject (GDataContactsContact *self, const gchar *subject)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	g_free (self->priv->subject);
+	self->priv->subject = g_strdup (subject);
+	g_object_notify (G_OBJECT (self), "subject");
 }
 
 /**

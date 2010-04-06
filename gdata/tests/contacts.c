@@ -160,7 +160,8 @@ test_insert_simple (gconstpointer service)
 	GDataGContactWebsite *website;
 	GDataGContactEvent *event;
 	GDataGContactCalendar *calendar;
-	gchar *xml, *nickname;
+	gchar *xml, *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
+	gchar *priority, *sensitivity, *short_name, *subject;
 	GList *list;
 	GDate date, *date2;
 	GHashTable *properties;
@@ -192,6 +193,17 @@ test_insert_simple (gconstpointer service)
 	g_date_set_dmy (&date, 1, 1, 1900);
 	gdata_contacts_contact_set_birthday (contact, &date, FALSE);
 	gdata_entry_set_content (GDATA_ENTRY (contact), "Notes");
+	gdata_contacts_contact_set_billing_information (contact, "Big J Enterprises, Ltd.");
+	gdata_contacts_contact_set_directory_server (contact, "This is a server");
+	gdata_contacts_contact_set_gender (contact, GDATA_CONTACTS_GENDER_MALE);
+	gdata_contacts_contact_set_initials (contact, "A. B. C.");
+	gdata_contacts_contact_set_maiden_name (contact, "Smith");
+	gdata_contacts_contact_set_mileage (contact, "12km");
+	gdata_contacts_contact_set_occupation (contact, "Professional bum");
+	gdata_contacts_contact_set_priority (contact, GDATA_CONTACTS_PRIORITY_HIGH);
+	gdata_contacts_contact_set_sensitivity (contact, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
+	gdata_contacts_contact_set_short_name (contact, "Jon");
+	gdata_contacts_contact_set_subject (contact, "Charity work");
 
 	email_address1 = gdata_gd_email_address_new ("liz@gmail.com", GDATA_GD_EMAIL_ADDRESS_WORK, NULL, FALSE);
 	gdata_contacts_contact_add_email_address (contact, email_address1);
@@ -256,6 +268,17 @@ test_insert_simple (gconstpointer service)
 	              "nickname", &nickname,
 	              "birthday", &date2,
 	              "birthday-has-year", &birthday_has_year,
+	              "billing-information", &billing_information,
+	              "directory-server", &directory_server,
+	              "gender", &gender,
+	              "initials", &initials,
+	              "maiden-name", &maiden_name,
+	              "mileage", &mileage,
+	              "occupation", &occupation,
+	              "priority", &priority,
+	              "sensitivity", &sensitivity,
+	              "short-name", &short_name,
+	              "subject", &subject,
 	              NULL);
 
 	g_assert_cmpint (edited->tv_sec, ==, creation_time.tv_sec);
@@ -268,10 +291,32 @@ test_insert_simple (gconstpointer service)
 	g_assert_cmpuint (g_date_get_month (date2), ==, 1);
 	g_assert_cmpuint (g_date_get_day (date2), ==, 1);
 	g_assert (birthday_has_year == FALSE);
+	g_assert_cmpstr (billing_information, ==, "Big J Enterprises, Ltd.");
+	g_assert_cmpstr (directory_server, ==, "This is a server");
+	g_assert_cmpstr (gender, ==, GDATA_CONTACTS_GENDER_MALE);
+	g_assert_cmpstr (initials, ==, "A. B. C.");
+	g_assert_cmpstr (maiden_name, ==, "Smith");
+	g_assert_cmpstr (mileage, ==, "12km");
+	g_assert_cmpstr (occupation, ==, "Professional bum");
+	g_assert_cmpstr (priority, ==, GDATA_CONTACTS_PRIORITY_HIGH);
+	g_assert_cmpstr (sensitivity, ==, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
+	g_assert_cmpstr (short_name, ==, "Jon");
+	g_assert_cmpstr (subject, ==, "Charity work");
 
 	g_object_unref (name2);
 	g_free (date2);
 	g_free (nickname);
+	g_free (billing_information);
+	g_free (directory_server);
+	g_free (gender);
+	g_free (initials);
+	g_free (maiden_name);
+	g_free (mileage);
+	g_free (occupation);
+	g_free (priority);
+	g_free (sensitivity);
+	g_free (short_name);
+	g_free (subject);
 
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
@@ -309,6 +354,17 @@ test_insert_simple (gconstpointer service)
 				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
 				"<gContact:nickname>Big J</gContact:nickname>"
 				"<gContact:birthday when='--01-01'/>"
+				"<gContact:billingInformation>Big J Enterprises, Ltd.</gContact:billingInformation>"
+				"<gContact:directoryServer>This is a server</gContact:directoryServer>"
+				"<gContact:gender value='male'/>"
+				"<gContact:initials>A. B. C.</gContact:initials>"
+				"<gContact:maidenName>Smith</gContact:maidenName>"
+				"<gContact:mileage>12km</gContact:mileage>"
+				"<gContact:occupation>Professional bum</gContact:occupation>"
+				"<gContact:priority rel='high'/>"
+				"<gContact:sensitivity rel='personal'/>"
+				"<gContact:shortName>Jon</gContact:shortName>"
+				"<gContact:subject>Charity work</gContact:subject>"
 			 "</entry>");
 	g_free (xml);
 
@@ -323,12 +379,23 @@ test_insert_simple (gconstpointer service)
 	gdata_contacts_contact_get_edited (new_contact, &creation_time);
 	g_assert_cmpint (creation_time.tv_sec, >=, edited->tv_sec);
 
-	/* Nickname and birthday */
+	/* Various properties */
 	g_assert_cmpstr (gdata_contacts_contact_get_nickname (new_contact), ==, "Big J");
 	g_assert (gdata_contacts_contact_get_birthday (new_contact, &date) == FALSE);
 	g_assert (g_date_valid (&date) == TRUE);
 	g_assert_cmpuint (g_date_get_month (&date), ==, 1);
 	g_assert_cmpuint (g_date_get_day (&date), ==, 1);
+	g_assert_cmpstr (gdata_contacts_contact_get_billing_information (new_contact), ==, "Big J Enterprises, Ltd.");
+	g_assert_cmpstr (gdata_contacts_contact_get_directory_server (new_contact), ==, "This is a server");
+	g_assert_cmpstr (gdata_contacts_contact_get_gender (new_contact), ==, GDATA_CONTACTS_GENDER_MALE);
+	g_assert_cmpstr (gdata_contacts_contact_get_initials (new_contact), ==, "A. B. C.");
+	g_assert_cmpstr (gdata_contacts_contact_get_maiden_name (new_contact), ==, "Smith");
+	g_assert_cmpstr (gdata_contacts_contact_get_mileage (new_contact), ==, "12km");
+	g_assert_cmpstr (gdata_contacts_contact_get_occupation (new_contact), ==, "Professional bum");
+	g_assert_cmpstr (gdata_contacts_contact_get_priority (new_contact), ==, GDATA_CONTACTS_PRIORITY_HIGH);
+	g_assert_cmpstr (gdata_contacts_contact_get_sensitivity (new_contact), ==, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
+	g_assert_cmpstr (gdata_contacts_contact_get_short_name (new_contact), ==, "Jon");
+	g_assert_cmpstr (gdata_contacts_contact_get_subject (new_contact), ==, "Charity work");
 
 	/* E-mail addresses */
 	list = gdata_contacts_contact_get_email_addresses (new_contact);
@@ -601,6 +668,17 @@ test_parser_minimal (gconstpointer service)
 	g_assert (gdata_contacts_contact_get_nickname (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_birthday (contact, &birthday) == FALSE);
 	g_assert (g_date_valid (&birthday) == FALSE);
+	g_assert (gdata_contacts_contact_get_billing_information (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_directory_server (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_gender (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_initials (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_maiden_name (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_mileage (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_occupation (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_priority (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_sensitivity (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_short_name (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_subject (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_jots (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_relations (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_websites (contact) == NULL);
@@ -642,6 +720,17 @@ test_parser_normal (gconstpointer service)
 			"<gd:deleted/>"
 			"<gContact:nickname>Agent Smith</gContact:nickname>"
 			"<gContact:birthday when='2010-12-03'/>"
+			"<gContact:billingInformation>Foo &amp; Bar Inc.</gContact:billingInformation>"
+			"<gContact:directoryServer>Directory &amp; server</gContact:directoryServer>"
+			"<gContact:gender value='female'/>"
+			"<gContact:initials>X. Y. Z.</gContact:initials>"
+			"<gContact:maidenName>Foo</gContact:maidenName>"
+			"<gContact:mileage>15km</gContact:mileage>"
+			"<gContact:occupation>Occupied</gContact:occupation>"
+			"<gContact:priority rel='low'/>"
+			"<gContact:sensitivity rel='confidential'/>"
+			"<gContact:shortName>Smith</gContact:shortName>"
+			"<gContact:subject>Film buddy</gContact:subject>"
 			"<gContact:jot rel='home'>Moved house on 2010-02-14 to the North Pole.</gContact:jot>"
 			"<gContact:jot rel='user'>Owes me ten pounds.</gContact:jot>"
 			"<gContact:jot rel='other'></gContact:jot>" /* Empty on purpose */
@@ -664,6 +753,17 @@ test_parser_normal (gconstpointer service)
 	/* TODO: Check the other properties */
 
 	g_assert_cmpstr (gdata_contacts_contact_get_nickname (contact), ==, "Agent Smith");
+	g_assert_cmpstr (gdata_contacts_contact_get_billing_information (contact), ==, "Foo & Bar Inc.");
+	g_assert_cmpstr (gdata_contacts_contact_get_directory_server (contact), ==, "Directory & server");
+	g_assert_cmpstr (gdata_contacts_contact_get_gender (contact), ==, GDATA_CONTACTS_GENDER_FEMALE);
+	g_assert_cmpstr (gdata_contacts_contact_get_initials (contact), ==, "X. Y. Z.");
+	g_assert_cmpstr (gdata_contacts_contact_get_maiden_name (contact), ==, "Foo");
+	g_assert_cmpstr (gdata_contacts_contact_get_mileage (contact), ==, "15km");
+	g_assert_cmpstr (gdata_contacts_contact_get_occupation (contact), ==, "Occupied");
+	g_assert_cmpstr (gdata_contacts_contact_get_priority (contact), ==, GDATA_CONTACTS_PRIORITY_LOW);
+	g_assert_cmpstr (gdata_contacts_contact_get_sensitivity (contact), ==, GDATA_CONTACTS_SENSITIVITY_CONFIDENTIAL);
+	g_assert_cmpstr (gdata_contacts_contact_get_short_name (contact), ==, "Smith");
+	g_assert_cmpstr (gdata_contacts_contact_get_subject (contact), ==, "Film buddy");
 
 	/* Birthday */
 	g_assert (gdata_contacts_contact_get_birthday (contact, &date) == TRUE);
@@ -836,6 +936,54 @@ test_parser_error_handling (gconstpointer service)
 	TEST_XML_ERROR_HANDLING ("<gContact:birthday/>"); /* missing "when" attribute */
 	TEST_XML_ERROR_HANDLING ("<gContact:birthday when='foobar'/>"); /* invalid date */
 	TEST_XML_ERROR_HANDLING ("<gContact:birthday when='2000-01-01'/><gContact:birthday when='--01-01'/>"); /* duplicate */
+
+	/* gContact:billingInformation */
+	TEST_XML_ERROR_HANDLING ("<gContact:billingInformation/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:billingInformation>foo</gContact:billingInformation>"
+	                         "<gContact:billingInformation>Dupe!</gContact:billingInformation>"); /* duplicate */
+
+	/* gContact:directoryServer */
+	TEST_XML_ERROR_HANDLING ("<gContact:directoryServer/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:directoryServer>foo</gContact:directoryServer>"
+	                         "<gContact:directoryServer>Dupe!</gContact:directoryServer>"); /* duplicate */
+
+	/* gContact:gender */
+	TEST_XML_ERROR_HANDLING ("<gContact:gender/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:gender value='male'/><gContact:gender value='female'/>"); /* duplicate */
+
+	/* gContact:initials */
+	TEST_XML_ERROR_HANDLING ("<gContact:initials/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:initials>A</gContact:initials><gContact:initials>B</gContact:initials>"); /* duplicate */
+
+	/* gContact:maidenName */
+	TEST_XML_ERROR_HANDLING ("<gContact:maidenName/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:maidenName>A</gContact:maidenName><gContact:maidenName>B</gContact:maidenName>"); /* duplicate */
+
+	/* gContact:mileage */
+	TEST_XML_ERROR_HANDLING ("<gContact:mileage/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:mileage>12 mi</gContact:mileage><gContact:mileage>12 mi</gContact:mileage>"); /* duplicate */
+
+	/* gContact:occupation */
+	TEST_XML_ERROR_HANDLING ("<gContact:occupation/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:occupation>Foo</gContact:occupation><gContact:occupation>Bar</gContact:occupation>"); /* duplicate */
+
+	/* gContact:priority */
+	TEST_XML_ERROR_HANDLING ("<gContact:priority/>"); /* missing rel param */
+	TEST_XML_ERROR_HANDLING ("<gContact:priority rel=''/>"); /* empty rel param */
+	TEST_XML_ERROR_HANDLING ("<gContact:priority rel='high'/><gContact:priority rel='low'/>"); /* duplicate */
+
+	/* gContact:sensitivity */
+	TEST_XML_ERROR_HANDLING ("<gContact:sensitivity/>"); /* missing rel param */
+	TEST_XML_ERROR_HANDLING ("<gContact:sensitivity rel=''/>"); /* empty rel param */
+	TEST_XML_ERROR_HANDLING ("<gContact:sensitivity rel='private'/><gContact:sensitivity rel='normal'/>"); /* duplicate */
+
+	/* gContact:shortName */
+	TEST_XML_ERROR_HANDLING ("<gContact:shortName/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:shortName>Foo</gContact:shortName><gContact:shortName>Bar</gContact:shortName>"); /* duplicate */
+
+	/* gContact:subject */
+	TEST_XML_ERROR_HANDLING ("<gContact:subject/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:subject>Foo</gContact:subject><gContact:subject>Bar</gContact:subject>"); /* duplicate */
 
 	/* gContact:jot */
 	TEST_XML_ERROR_HANDLING ("<gContact:jot/>");

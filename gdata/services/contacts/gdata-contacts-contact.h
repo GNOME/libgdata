@@ -38,6 +38,87 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_CONTACTS_GENDER_MALE:
+ *
+ * The contact is male.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_GENDER_MALE "male"
+
+/**
+ * GDATA_CONTACTS_GENDER_FEMALE:
+ *
+ * The contact is female.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_GENDER_FEMALE "female"
+
+/**
+ * GDATA_CONTACTS_PRIORITY_LOW:
+ *
+ * The contact is of low importance.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_PRIORITY_LOW "low"
+
+/**
+ * GDATA_CONTACTS_PRIORITY_NORMAL:
+ *
+ * The contact is of normal importance.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_PRIORITY_NORMAL "normal"
+
+/**
+ * GDATA_CONTACTS_PRIORITY_HIGH:
+ *
+ * The contact is of high importance.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_PRIORITY_HIGH "high"
+
+/**
+ * GDATA_CONTACTS_SENSITIVITY_CONFIDENTIAL:
+ *
+ * The contact's data is confidential.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_SENSITIVITY_CONFIDENTIAL "confidential"
+
+/**
+ * GDATA_CONTACTS_SENSITIVITY_NORMAL:
+ *
+ * The contact's data is of normal sensitivity.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_SENSITIVITY_NORMAL "normal"
+
+/**
+ * GDATA_CONTACTS_SENSITIVITY_PERSONAL:
+ *
+ * The contact's data is personal.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_SENSITIVITY_PERSONAL "personal"
+
+/**
+ * GDATA_CONTACTS_SENSITIVITY_PRIVATE:
+ *
+ * The contact's data is private.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_CONTACTS_SENSITIVITY_PRIVATE "private"
+
 #define GDATA_TYPE_CONTACTS_CONTACT		(gdata_contacts_contact_get_type ())
 #define GDATA_CONTACTS_CONTACT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContact))
 #define GDATA_CONTACTS_CONTACT_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContactClass))
@@ -86,6 +167,39 @@ void gdata_contacts_contact_set_nickname (GDataContactsContact *self, const gcha
 
 gboolean gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday);
 void gdata_contacts_contact_set_birthday (GDataContactsContact *self, GDate *birthday, gboolean birthday_has_year);
+
+const gchar *gdata_contacts_contact_get_billing_information (GDataContactsContact *self);
+void gdata_contacts_contact_set_billing_information (GDataContactsContact *self, const gchar *billing_information);
+
+const gchar *gdata_contacts_contact_get_directory_server (GDataContactsContact *self);
+void gdata_contacts_contact_set_directory_server (GDataContactsContact *self, const gchar *directory_server);
+
+const gchar *gdata_contacts_contact_get_gender (GDataContactsContact *self);
+void gdata_contacts_contact_set_gender (GDataContactsContact *self, const gchar *gender);
+
+const gchar *gdata_contacts_contact_get_initials (GDataContactsContact *self);
+void gdata_contacts_contact_set_initials (GDataContactsContact *self, const gchar *initials);
+
+const gchar *gdata_contacts_contact_get_maiden_name (GDataContactsContact *self);
+void gdata_contacts_contact_set_maiden_name (GDataContactsContact *self, const gchar *maiden_name);
+
+const gchar *gdata_contacts_contact_get_mileage (GDataContactsContact *self);
+void gdata_contacts_contact_set_mileage (GDataContactsContact *self, const gchar *mileage);
+
+const gchar *gdata_contacts_contact_get_occupation (GDataContactsContact *self);
+void gdata_contacts_contact_set_occupation (GDataContactsContact *self, const gchar *occupation);
+
+const gchar *gdata_contacts_contact_get_priority (GDataContactsContact *self);
+void gdata_contacts_contact_set_priority (GDataContactsContact *self, const gchar *priority);
+
+const gchar *gdata_contacts_contact_get_sensitivity (GDataContactsContact *self);
+void gdata_contacts_contact_set_sensitivity (GDataContactsContact *self, const gchar *sensitivity);
+
+const gchar *gdata_contacts_contact_get_short_name (GDataContactsContact *self);
+void gdata_contacts_contact_set_short_name (GDataContactsContact *self, const gchar *short_name);
+
+const gchar *gdata_contacts_contact_get_subject (GDataContactsContact *self);
+void gdata_contacts_contact_set_subject (GDataContactsContact *self, const gchar *subject);
 
 void gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEmailAddress *email_address);
 GList *gdata_contacts_contact_get_email_addresses (GDataContactsContact *self);
