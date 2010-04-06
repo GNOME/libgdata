@@ -219,6 +219,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 					"Inserted?", "Whether the entry has been inserted on the server.",
 					FALSE,
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataEntry:rights:
 	 *

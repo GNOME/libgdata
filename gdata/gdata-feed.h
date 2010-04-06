@@ -76,6 +76,7 @@ const gchar *gdata_feed_get_etag (GDataFeed *self);
 void gdata_feed_get_updated (GDataFeed *self, GTimeVal *updated);
 const gchar *gdata_feed_get_logo (GDataFeed *self);
 GDataGenerator *gdata_feed_get_generator (GDataFeed *self);
+const gchar *gdata_feed_get_rights (GDataFeed *self);
 guint gdata_feed_get_items_per_page (GDataFeed *self);
 guint gdata_feed_get_start_index (GDataFeed *self);
 guint gdata_feed_get_total_results (GDataFeed *self);

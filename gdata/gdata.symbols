@@ -37,6 +37,7 @@ gdata_feed_get_updated
 gdata_feed_get_logo
 gdata_feed_get_icon
 gdata_feed_get_generator
+gdata_feed_get_rights
 gdata_feed_get_items_per_page
 gdata_feed_get_start_index
 gdata_feed_get_total_results

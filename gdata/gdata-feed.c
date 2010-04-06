@@ -71,6 +71,7 @@ struct _GDataFeedPrivate {
 	guint items_per_page;
 	guint start_index;
 	guint total_results;
+	gchar *rights;
 };
 
 enum {
@@ -84,7 +85,8 @@ enum {
 	PROP_GENERATOR,
 	PROP_ITEMS_PER_PAGE,
 	PROP_START_INDEX,
-	PROP_TOTAL_RESULTS
+	PROP_TOTAL_RESULTS,
+	PROP_RIGHTS
 };
 
 G_DEFINE_TYPE (GDataFeed, gdata_feed, GDATA_TYPE_PARSABLE)
@@ -217,6 +219,22 @@ gdata_feed_class_init (GDataFeedClass *klass)
 					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
+	 * GDataFeed:rights:
+	 *
+	 * The ownership rights pertaining to the entire feed.
+	 *
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.rights">
+	 * Atom specification</ulink>.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_RIGHTS,
+					 g_param_spec_string ("rights",
+							      "Rights", "The ownership rights pertaining to the entire feed.",
+							      NULL,
+							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * GDataFeed:items-per-page:
 	 *
 	 * The number of items per results page feed.
@@ -319,6 +337,7 @@ gdata_feed_finalize (GObject *object)
 	g_free (priv->etag);
 	g_free (priv->logo);
 	g_free (priv->icon);
+	g_free (priv->rights);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_feed_parent_class)->finalize (object);
@@ -353,6 +372,9 @@ gdata_feed_get_property (GObject *object, guint property_id, GValue *value, GPar
 			break;
 		case PROP_GENERATOR:
 			g_value_set_object (value, priv->generator);
+			break;
+		case PROP_RIGHTS:
+			g_value_set_string (value, priv->rights);
 			break;
 		case PROP_ITEMS_PER_PAGE:
 			g_value_set_uint (value, priv->items_per_page);
@@ -431,7 +453,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			                                            _gdata_feed_add_author, self, &success, error) == TRUE ||
 			   gdata_parser_object_from_element (node, "generator", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GENERATOR,
 			                                     &(self->priv->generator), &success, error) == TRUE ||
-			   gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES, &(self->priv->updated), &success, error) == TRUE) {
+			   gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES,
+			                                       &(self->priv->updated), &success, error) == TRUE ||
+			   gdata_parser_string_from_element (node, "rights", P_NONE, &(self->priv->rights), &success, error) == TRUE) {
 			return success;
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
@@ -795,6 +819,23 @@ gdata_feed_get_generator (GDataFeed *self)
 {
 	g_return_val_if_fail (GDATA_IS_FEED (self), NULL);
 	return self->priv->generator;
+}
+
+/**
+ * gdata_feed_get_rights:
+ * @self: a #GDataFeed
+ *
+ * Returns the rights pertaining to the entire feed, or %NULL if not set.
+ *
+ * Return value: the feed's rights information
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_feed_get_rights (GDataFeed *self)
+{
+	g_return_val_if_fail (GDATA_IS_FEED (self), NULL);
+	return self->priv->rights;
 }
 
 /**

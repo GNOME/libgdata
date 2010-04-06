@@ -306,7 +306,7 @@ test_feed_parse_xml (void)
 	GDataEntry *entry;
 	GDataLink *link;
 	GList *list;
-	gchar *title, *subtitle, *id, *etag, *logo, *icon;
+	gchar *title, *subtitle, *id, *etag, *logo, *icon, *rights;
 	GTimeVal *updated, updated2;
 	GDataGenerator *generator;
 	guint items_per_page, start_index, total_results;
@@ -328,6 +328,7 @@ test_feed_parse_xml (void)
 			"<link rel='http://schemas.google.com/g/2005#post' type='application/atom+xml' href='http://example.com/post'/>"
 			"<link rel='self' type='application/atom+xml' href='http://example.com/id'/>"
 			"<category scheme='http://example.com/categories' term='feed'/>"
+			"<rights>public</rights>"
 			"<author>"
 				"<name>Joe Smith</name>"
 				"<email>j.smith@example.com</email>"
@@ -366,6 +367,7 @@ test_feed_parse_xml (void)
 	              "logo", &logo,
 	              "icon", &icon,
 	              "generator", &generator,
+	              "rights", &rights,
 	              "items-per-page", &items_per_page,
 	              "start-index", &start_index,
 	              "total-results", &total_results,
@@ -381,6 +383,7 @@ test_feed_parse_xml (void)
 
 	g_assert_cmpstr (logo, ==, "http://example.com/logo.png");
 	g_assert_cmpstr (icon, ==, "http://example.com/icon.png");
+	g_assert_cmpstr (rights, ==, "public");
 
 	g_assert (GDATA_IS_GENERATOR (generator));
 	g_assert_cmpstr (gdata_generator_get_name (generator), ==, "Example Generator");
@@ -398,6 +401,7 @@ test_feed_parse_xml (void)
 	g_free (updated);
 	g_free (logo);
 	g_free (icon);
+	g_free (rights);
 	g_object_unref (generator);
 
 	/* Check the entries */
@@ -458,6 +462,7 @@ test_feed_parse_xml (void)
 
 	g_assert_cmpstr (gdata_feed_get_logo (feed), ==, "http://example.com/logo.png");
 	g_assert_cmpstr (gdata_feed_get_icon (feed), ==, "http://example.com/icon.png");
+	g_assert_cmpstr (gdata_feed_get_rights (feed), ==, "public");
 
 	generator = gdata_feed_get_generator (feed);
 	g_assert (GDATA_IS_GENERATOR (generator));
