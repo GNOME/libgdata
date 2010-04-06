@@ -28,6 +28,13 @@
  * For more details of Google Contacts' GData API, see the <ulink type="http" url="http://code.google.com/apis/contacts/docs/2.0/reference.html">
  * online documentation</ulink>.
  *
+ * In addition to all the standard properties available for a contact, #GDataContactsContact supports two kinds of additional property: extended
+ * properties and user-defined fields. Extended properties, set with gdata_contacts_contact_set_extended_property() and retrieved with
+ * gdata_contacts_contact_get_extended_property(), are provided as a method of storing client-specific data which shouldn't be seen  or be editable
+ * by the user, such as IDs and cache times. User-defined fields, set with gdata_contacts_contact_set_user_defined_field() and retrieved with
+ * gdata_contacts_contact_get_user_defined_field(), store fields defined by the user, and editable by them in the interface (both the interface of
+ * the appliation using libgdata, and the Google Contacts web interface).
+ *
  * Since: 0.2.0
  **/
 
@@ -66,6 +73,7 @@ struct _GDataContactsContactPrivate {
 	GList *postal_addresses; /* GDataGDPostalAddress */
 	GList *organizations; /* GDataGDOrganization */
 	GHashTable *extended_properties;
+	GHashTable *user_defined_fields;
 	GHashTable *groups;
 	gboolean deleted;
 	gchar *photo_etag;
@@ -399,6 +407,7 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContactPrivate);
 	self->priv->extended_properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	self->priv->user_defined_fields = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->groups = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	/* Create a default name, so the name's properties can be set for a blank contact */
@@ -447,6 +456,7 @@ gdata_contacts_contact_finalize (GObject *object)
 	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (object)->priv;
 
 	g_hash_table_destroy (priv->extended_properties);
+	g_hash_table_destroy (priv->user_defined_fields);
 	g_hash_table_destroy (priv->groups);
 	g_free (priv->photo_etag);
 	g_free (priv->nickname);
@@ -636,10 +646,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 			gdata_contacts_contact_set_extended_property (self, (gchar*) name, (gchar*) value);
 
+			xmlFree (name);
 			if (buffer != NULL)
 				xmlBufferFree (buffer);
 			else
-				g_free (value);
+				xmlFree (value);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") == 0) {
 			/* gd:deleted */
 			self->priv->deleted = TRUE;
@@ -686,6 +697,27 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			}
 
 			self->priv->gender = (gchar*) value;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "userDefinedField") == 0) {
+			/* gContact:userDefinedField */
+			xmlChar *name, *value;
+
+			name = xmlGetProp (node, (xmlChar*) "key");
+			if (name == NULL || *name == '\0') {
+				xmlFree (name);
+				return gdata_parser_error_required_property_missing (node, "key", error);
+			}
+
+			/* Get either the value property, or the element's content */
+			value = xmlGetProp (node, (xmlChar*) "value");
+			if (value == NULL) {
+				xmlFree (name);
+				return gdata_parser_error_required_property_missing (node, "value", error);
+			}
+
+			gdata_contacts_contact_set_user_defined_field (self, (gchar*) name, (gchar*) value);
+
+			xmlFree (name);
+			xmlFree (value);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "priority") == 0) {
 			/* gContact:priority */
 			xmlChar *rel;
@@ -793,6 +825,12 @@ get_extended_property_xml_cb (const gchar *name, const gchar *value, GString *xm
 }
 
 static void
+get_user_defined_field_xml_cb (const gchar *name, const gchar *value, GString *xml_string)
+{
+	g_string_append_printf (xml_string, "<gContact:userDefinedField key='%s' value='%s'/>", name, value);
+}
+
+static void
 get_group_xml_cb (const gchar *href, gpointer deleted, GString *xml_string)
 {
 	g_string_append_printf (xml_string, "<gContact:groupMembershipInfo href='%s'/>", href);
@@ -823,6 +861,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* Extended properties */
 	g_hash_table_foreach (priv->extended_properties, (GHFunc) get_extended_property_xml_cb, xml_string);
+
+	/* User defined fields */
+	g_hash_table_foreach (priv->user_defined_fields, (GHFunc) get_user_defined_field_xml_cb, xml_string);
 
 	/* Group membership info */
 	g_hash_table_foreach (priv->groups, (GHFunc) get_group_xml_cb, xml_string);
@@ -2335,7 +2376,7 @@ const gchar *
 gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const gchar *name)
 {
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
-	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (name != NULL && *name != '\0', NULL);
 	return g_hash_table_lookup (self->priv->extended_properties, name);
 }
 
@@ -2365,7 +2406,7 @@ gdata_contacts_contact_get_extended_properties (GDataContactsContact *self)
  * Sets the value of a contact's extended property. Extended property names are unique (but of the client's choosing),
  * and reusing the same property name will result in the old value of that property being overwritten.
  *
- * To unset a property, set @value to %NULL.
+ * To unset a property, set @value to %NULL or an empty string.
  *
  * A contact may have up to 10 extended properties, and each should be reasonably small (i.e. not a photo or ringtone).
  * For more information, see the <ulink type="http"
@@ -2382,7 +2423,7 @@ gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const 
 	GHashTable *extended_properties = self->priv->extended_properties;
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
-	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (name != NULL && *name != '\0', FALSE);
 
 	if (value == NULL || *value == '\0') {
 		/* Removing a property */
@@ -2399,6 +2440,73 @@ gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const 
 	g_hash_table_insert (extended_properties, g_strdup (name), g_strdup (value));
 
 	return TRUE;
+}
+
+/**
+ * gdata_contacts_contact_get_user_defined_field:
+ * @self: a #GDataContactsContact
+ * @name: the field name; an arbitrary, case-sensitive, unique string
+ *
+ * Gets the value of a user-defined field of the contact. User-defined fields are settable by the user through the Google Contacts web interface,
+ * in contrast to extended properties, which are visible and settable only through the GData interface.
+ *
+ * Return value: the field's value, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_contacts_contact_get_user_defined_field (GDataContactsContact *self, const gchar *name)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	g_return_val_if_fail (name != NULL && *name != '\0', NULL);
+	return g_hash_table_lookup (self->priv->user_defined_fields, name);
+}
+
+/**
+ * gdata_contacts_contact_get_user_defined_fields:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the full list of user-defined fields of the contact; a hash table mapping field name to value.
+ *
+ * Return value: a #GHashTable of user-defined fields
+ *
+ * Since: 0.7.0
+ **/
+GHashTable *
+gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->user_defined_fields;
+}
+
+/**
+ * gdata_contacts_contact_set_user_defined_field:
+ * @self: a #GDataContactsContact
+ * @name: the field name; an arbitrary, case-sensitive, unique string
+ * @value: the field value, or %NULL
+ *
+ * Sets the value of a contact's user-defined field. User-defined field names are unique (but of the client's choosing),
+ * and reusing the same field name will result in the old value of that field being overwritten.
+ *
+ * To unset a field, set @value to %NULL.
+ *
+ * Return value: %TRUE if the field was updated or deleted successfully, %FALSE otherwise
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_user_defined_field (GDataContactsContact *self, const gchar *name, const gchar *value)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (name != NULL && *name != '\0');
+
+	if (value == NULL) {
+		/* Removing a field */
+		g_hash_table_remove (self->priv->user_defined_fields, name);
+	} else {
+		/* Updating an existing field or adding a new one */
+		g_hash_table_insert (self->priv->user_defined_fields, g_strdup (name), g_strdup (value));
+	}
 }
 
 /**

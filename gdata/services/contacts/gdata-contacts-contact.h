@@ -252,6 +252,10 @@ const gchar *gdata_contacts_contact_get_extended_property (GDataContactsContact 
 GHashTable *gdata_contacts_contact_get_extended_properties (GDataContactsContact *self);
 gboolean gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const gchar *name, const gchar *value);
 
+const gchar *gdata_contacts_contact_get_user_defined_field (GDataContactsContact *self, const gchar *name);
+GHashTable *gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self);
+void gdata_contacts_contact_set_user_defined_field (GDataContactsContact *self, const gchar *name, const gchar *value);
+
 void gdata_contacts_contact_add_group (GDataContactsContact *self, const gchar *href);
 void gdata_contacts_contact_remove_group (GDataContactsContact *self, const gchar *href);
 gboolean gdata_contacts_contact_is_group_deleted (GDataContactsContact *self, const gchar *href);

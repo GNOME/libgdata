@@ -259,6 +259,11 @@ test_insert_simple (gconstpointer service)
 	g_assert (gdata_contacts_contact_set_extended_property (contact, "ROLE", "") == TRUE);
 	g_assert (gdata_contacts_contact_set_extended_property (contact, "CALURI", "http://example.com/") == TRUE);
 
+	/* Add some user-defined fields */
+	gdata_contacts_contact_set_user_defined_field (contact, "Favourite colour", "Blue");
+	gdata_contacts_contact_set_user_defined_field (contact, "Owes me", "£10");
+	gdata_contacts_contact_set_user_defined_field (contact, "My notes", "");
+
 	/* Check the properties of the object */
 	g_object_get (G_OBJECT (contact),
 	              "edited", &edited,
@@ -352,6 +357,9 @@ test_insert_simple (gconstpointer service)
 				"<gContact:event rel='anniversary'><gd:when startTime='1900-01-01'/></gContact:event>"
 				"<gContact:calendarLink href='http://calendar.example.com/' rel='home' primary='true'/>"
 				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
+				"<gContact:userDefinedField key='Favourite colour' value='Blue'/>"
+				"<gContact:userDefinedField key='Owes me' value='£10'/>"
+				"<gContact:userDefinedField key='My notes' value=''/>"
 				"<gContact:nickname>Big J</gContact:nickname>"
 				"<gContact:birthday when='--01-01'/>"
 				"<gContact:billingInformation>Big J Enterprises, Ltd.</gContact:billingInformation>"
@@ -468,6 +476,15 @@ test_insert_simple (gconstpointer service)
 	properties = gdata_contacts_contact_get_extended_properties (new_contact);
 	g_assert (properties != NULL);
 	g_assert_cmpuint (g_hash_table_size (properties), ==, 1);
+
+	/* User-defined fields */
+	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "Favourite colour"), ==, "Blue");
+	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "Owes me"), ==, "£10");
+	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "My notes"), ==, "");
+
+	properties = gdata_contacts_contact_get_user_defined_fields (new_contact);
+	g_assert (properties != NULL);
+	g_assert_cmpuint (g_hash_table_size (properties), ==, 3);
 
 	/* Groups */
 	list = gdata_contacts_contact_get_groups (new_contact);
@@ -923,6 +940,12 @@ test_parser_error_handling (gconstpointer service)
 
 	/* gd:extendedProperty */
 	TEST_XML_ERROR_HANDLING ("<gd:extendedProperty/>");
+
+	/* gContact:userDefinedField */
+	TEST_XML_ERROR_HANDLING ("<gContact:userDefinedField/>"); /* no key or value */
+	TEST_XML_ERROR_HANDLING ("<gContact:userDefinedField key='foo'/>"); /* no value */
+	TEST_XML_ERROR_HANDLING ("<gContact:userDefinedField value='bar'/>"); /* no key */
+	TEST_XML_ERROR_HANDLING ("<gContact:userDefinedField key='' value='bar'/>"); /* empty key */
 
 	/* gContact:groupMembershipInfo */
 	TEST_XML_ERROR_HANDLING ("<gContact:groupMembershipInfo/>");
