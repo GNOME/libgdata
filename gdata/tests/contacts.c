@@ -161,6 +161,7 @@ test_insert_simple (gconstpointer service)
 	GDataGContactEvent *event;
 	GDataGContactCalendar *calendar;
 	GDataGContactExternalID *external_id;
+	GDataGContactLanguage *language;
 	gchar *xml, *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
 	gchar *priority, *sensitivity, *short_name, *subject;
 	GList *list;
@@ -258,6 +259,12 @@ test_insert_simple (gconstpointer service)
 	external_id = gdata_gcontact_external_id_new ("Number Six", GDATA_GCONTACT_EXTERNAL_ID_ORGANIZATION, NULL);
 	gdata_contacts_contact_add_external_id (contact, external_id);
 	g_object_unref (external_id);
+
+	gdata_contacts_contact_add_hobby (contact, "Rowing");
+
+	language = gdata_gcontact_language_new ("en-GB", NULL);
+	gdata_contacts_contact_add_language (contact, language);
+	g_object_unref (language);
 
 	/* Add some extended properties */
 	g_assert (gdata_contacts_contact_set_extended_property (contact, "TITLE", NULL) == TRUE);
@@ -362,10 +369,12 @@ test_insert_simple (gconstpointer service)
 				"<gContact:event rel='anniversary'><gd:when startTime='1900-01-01'/></gContact:event>"
 				"<gContact:calendarLink href='http://calendar.example.com/' rel='home' primary='true'/>"
 				"<gContact:externalId value='Number Six' rel='organization'/>"
+				"<gContact:language code='en-GB'/>"
 				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
 				"<gContact:userDefinedField key='Favourite colour' value='Blue'/>"
 				"<gContact:userDefinedField key='Owes me' value='£10'/>"
 				"<gContact:userDefinedField key='My notes' value=''/>"
+				"<gContact:hobby>Rowing</gContact:hobby>"
 				"<gContact:nickname>Big J</gContact:nickname>"
 				"<gContact:birthday when='--01-01'/>"
 				"<gContact:billingInformation>Big J Enterprises, Ltd.</gContact:billingInformation>"
@@ -480,6 +489,16 @@ test_insert_simple (gconstpointer service)
 	g_assert_cmpuint (g_list_length (list), ==, 1);
 	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (list->data));
 
+	/* Languages */
+	list = gdata_contacts_contact_get_languages (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_LANGUAGE (list->data));
+
+	/* Hobbies */
+	list = gdata_contacts_contact_get_hobbies (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert_cmpstr (list->data, ==, "Rowing");
+
 	/* Extended properties */
 	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "CALURI"), ==, "http://example.com/");
 	g_assert (gdata_contacts_contact_get_extended_property (new_contact, "non-existent") == NULL);
@@ -546,6 +565,12 @@ test_insert_simple (gconstpointer service)
 
 	gdata_contacts_contact_remove_all_external_ids (new_contact);
 	g_assert (gdata_contacts_contact_get_external_ids (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_languages (new_contact);
+	g_assert (gdata_contacts_contact_get_languages (new_contact) == NULL);
+
+	gdata_contacts_contact_remove_all_hobbies (new_contact);
+	g_assert (gdata_contacts_contact_get_hobbies (new_contact) == NULL);
 
 	g_free (edited);
 	g_object_unref (contact);
@@ -718,6 +743,8 @@ test_parser_minimal (gconstpointer service)
 	g_assert (gdata_contacts_contact_get_calendars (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_primary_calendar (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_external_ids (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_languages (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_hobbies (contact) == NULL);
 
 	g_object_unref (contact);
 }
@@ -778,6 +805,11 @@ test_parser_normal (gconstpointer service)
 			"<gContact:calendarLink href='http://foo.com/calendar' rel='home'/>"
 			"<gContact:externalId value='Number Six' label='The Prisoner'/>"
 			"<gContact:externalId value='1545' rel='account'/>"
+			"<gContact:language label='Fresian'/>"
+			"<gContact:language code='en-US'/>"
+			"<gContact:hobby>Programming</gContact:hobby>"
+			"<gContact:hobby>Heavy metal</gContact:hobby>"
+			"<gContact:hobby>Heavy metal</gContact:hobby>" /* Test that duplicates get merged */
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -921,6 +953,20 @@ test_parser_normal (gconstpointer service)
 	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (list->data));
 	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (list->next->data));
 
+	/* Languages */
+	list = gdata_contacts_contact_get_languages (contact);
+	g_assert_cmpuint (g_list_length (list), ==, 2);
+
+	g_assert (GDATA_IS_GCONTACT_LANGUAGE (list->data));
+	g_assert (GDATA_IS_GCONTACT_LANGUAGE (list->next->data));
+
+	/* Hobbies */
+	list = gdata_contacts_contact_get_hobbies (contact);
+	g_assert_cmpuint (g_list_length (list), ==, 2);
+
+	g_assert_cmpstr (list->data, ==, "Programming");
+	g_assert_cmpstr (list->next->data, ==, "Heavy metal");
+
 	g_object_unref (contact);
 }
 
@@ -1049,6 +1095,12 @@ test_parser_error_handling (gconstpointer service)
 
 	/* gContact:externalId */
 	TEST_XML_ERROR_HANDLING ("<gContact:externalId/>");
+
+	/* gContact:language */
+	TEST_XML_ERROR_HANDLING ("<gContact:language/>");
+
+	/* gContact:hobby */
+	TEST_XML_ERROR_HANDLING ("<gContact:hobby/>");
 
 #undef TEST_XML_ERROR_HANDLING
 }

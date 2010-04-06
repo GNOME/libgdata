@@ -97,6 +97,8 @@ struct _GDataContactsContactPrivate {
 	gchar *sensitivity;
 	gchar *short_name;
 	gchar *subject;
+	GList *hobbies; /* gchar* */
+	GList *languages; /* GDataGContactLanguage */
 };
 
 enum {
@@ -447,6 +449,7 @@ gdata_contacts_contact_dispose (GObject *object)
 	gdata_contacts_contact_remove_all_events (self);
 	gdata_contacts_contact_remove_all_calendars (self);
 	gdata_contacts_contact_remove_all_external_ids (self);
+	gdata_contacts_contact_remove_all_languages (self);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->dispose (object);
@@ -473,6 +476,11 @@ gdata_contacts_contact_finalize (GObject *object)
 	g_free (priv->sensitivity);
 	g_free (priv->short_name);
 	g_free (priv->subject);
+
+	if (priv->hobbies != NULL) {
+		g_list_foreach (priv->hobbies, (GFunc) g_free, NULL);
+		g_list_free (priv->hobbies);
+	}
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->finalize (object);
@@ -672,6 +680,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                             gdata_contacts_contact_add_calendar, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "externalId", P_REQUIRED, GDATA_TYPE_GCONTACT_EXTERNAL_ID,
 		                                             gdata_contacts_contact_add_external_id, self, &success, error) == TRUE ||
+		    gdata_parser_object_from_element_setter (node, "language", P_REQUIRED, GDATA_TYPE_GCONTACT_LANGUAGE,
+		                                             gdata_contacts_contact_add_language, self, &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NO_DUPES, &(self->priv->nickname), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "billingInformation", P_REQUIRED | P_NO_DUPES | P_NON_EMPTY,
 		                                      &(self->priv->billing_information), &success, error) == TRUE ||
@@ -701,6 +711,18 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			}
 
 			self->priv->gender = (gchar*) value;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "hobby") == 0) {
+			/* gContact:hobby */
+			xmlChar *hobby;
+
+			hobby = xmlNodeListGetString (doc, node->children, TRUE);
+			if (hobby == NULL || *hobby == '\0') {
+				xmlFree (hobby);
+				return gdata_parser_error_required_content_missing (node, error);
+			}
+
+			gdata_contacts_contact_add_hobby (self, (gchar*) hobby);
+			xmlFree (hobby);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "userDefinedField") == 0) {
 			/* gContact:userDefinedField */
 			xmlChar *name, *value;
@@ -841,6 +863,12 @@ get_group_xml_cb (const gchar *href, gpointer deleted, GString *xml_string)
 }
 
 static void
+get_hobby_xml_cb (const gchar *hobby, GString *xml_string)
+{
+	gdata_parser_string_append_escaped (xml_string, "<gContact:hobby>", hobby, "</gContact:hobby>");
+}
+
+static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (parsable)->priv;
@@ -863,6 +891,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	get_child_xml (priv->events, xml_string);
 	get_child_xml (priv->calendars, xml_string);
 	get_child_xml (priv->external_ids, xml_string);
+	get_child_xml (priv->languages, xml_string);
 
 	/* Extended properties */
 	g_hash_table_foreach (priv->extended_properties, (GHFunc) get_extended_property_xml_cb, xml_string);
@@ -872,6 +901,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* Group membership info */
 	g_hash_table_foreach (priv->groups, (GHFunc) get_group_xml_cb, xml_string);
+
+	/* Hobbies */
+	g_list_foreach (priv->hobbies, (GFunc) get_hobby_xml_cb, xml_string);
 
 	/* gContact:nickname */
 	if (priv->nickname != NULL)
@@ -2423,6 +2455,126 @@ gdata_contacts_contact_remove_all_external_ids (GDataContactsContact *self)
 		g_list_free (priv->external_ids);
 	}
 	priv->external_ids = NULL;
+}
+
+/**
+ * gdata_contacts_contact_add_hobby:
+ * @self: a #GDataContactsContact
+ * @hobby: a hobby to add
+ *
+ * Adds a hobby to the contact's list of hobbies, copying it in the process.
+ *
+ * Duplicate hobbies will not be added to the list.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_add_hobby (GDataContactsContact *self, const gchar *hobby)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (hobby != NULL && *hobby != '\0');
+
+	if (g_list_find_custom (self->priv->hobbies, hobby, (GCompareFunc) g_strcmp0) == NULL)
+		self->priv->hobbies = g_list_append (self->priv->hobbies, g_strdup (hobby));
+}
+
+/**
+ * gdata_contacts_contact_get_hobbies:
+ * @self: a #GDataContactsContact
+ *
+ * Gets a list of the hobbies of the contact.
+ *
+ * Return value: a #GList of hobby strings, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_contacts_contact_get_hobbies (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->hobbies;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_hobbies:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all hobbies from the contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_remove_all_hobbies (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->hobbies != NULL) {
+		g_list_foreach (priv->hobbies, (GFunc) g_free, NULL);
+		g_list_free (priv->hobbies);
+	}
+	priv->hobbies = NULL;
+}
+
+/**
+ * gdata_contacts_contact_add_language:
+ * @self: a #GDataContactsContact
+ * @language: a #GDataGContactLanguage to add
+ *
+ * Adds a language to the contact's list of languages and increments its reference count.
+ *
+ * Duplicate languages will not be added to the list.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_add_language (GDataContactsContact *self, GDataGContactLanguage *language)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_GCONTACT_LANGUAGE (language));
+
+	if (g_list_find_custom (self->priv->languages, language, (GCompareFunc) gdata_gcontact_language_compare) == NULL)
+		self->priv->languages = g_list_append (self->priv->languages, g_object_ref (language));
+}
+
+/**
+ * gdata_contacts_contact_get_languages:
+ * @self: a #GDataContactsContact
+ *
+ * Gets a list of the languages of the contact.
+ *
+ * Return value: a #GList of #GDataGContactLanguage<!-- -->s, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_contacts_contact_get_languages (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->languages;
+}
+
+/**
+ * gdata_contacts_contact_remove_all_languages:
+ * @self: a #GDataContactsContact
+ *
+ * Removes all languages from the contact.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_remove_all_languages (GDataContactsContact *self)
+{
+	GDataContactsContactPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	if (priv->languages != NULL) {
+		g_list_foreach (priv->languages, (GFunc) g_object_unref, NULL);
+		g_list_free (priv->languages);
+	}
+	priv->languages = NULL;
 }
 
 /**

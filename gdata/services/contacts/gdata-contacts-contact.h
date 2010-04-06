@@ -34,6 +34,7 @@
 #include <gdata/gcontact/gdata-gcontact-event.h>
 #include <gdata/gcontact/gdata-gcontact-external-id.h>
 #include <gdata/gcontact/gdata-gcontact-jot.h>
+#include <gdata/gcontact/gdata-gcontact-language.h>
 #include <gdata/gcontact/gdata-gcontact-relation.h>
 #include <gdata/gcontact/gdata-gcontact-website.h>
 
@@ -252,6 +253,14 @@ void gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self);
 void gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContactExternalID *external_id);
 GList *gdata_contacts_contact_get_external_ids (GDataContactsContact *self);
 void gdata_contacts_contact_remove_all_external_ids (GDataContactsContact *self);
+
+void gdata_contacts_contact_add_hobby (GDataContactsContact *self, const gchar *hobby);
+GList *gdata_contacts_contact_get_hobbies (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_hobbies (GDataContactsContact *self);
+
+void gdata_contacts_contact_add_language (GDataContactsContact *self, GDataGContactLanguage *language);
+GList *gdata_contacts_contact_get_languages (GDataContactsContact *self);
+void gdata_contacts_contact_remove_all_languages (GDataContactsContact *self);
 
 const gchar *gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const gchar *name);
 GHashTable *gdata_contacts_contact_get_extended_properties (GDataContactsContact *self);

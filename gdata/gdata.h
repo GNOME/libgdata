@@ -58,6 +58,7 @@
 #include <gdata/gcontact/gdata-gcontact-event.h>
 #include <gdata/gcontact/gdata-gcontact-external-id.h>
 #include <gdata/gcontact/gdata-gcontact-jot.h>
+#include <gdata/gcontact/gdata-gcontact-language.h>
 #include <gdata/gcontact/gdata-gcontact-relation.h>
 #include <gdata/gcontact/gdata-gcontact-website.h>
 

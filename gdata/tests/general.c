@@ -2709,6 +2709,89 @@ test_gcontact_jot_error_handling (void)
 }
 
 static void
+test_gcontact_language (void)
+{
+	GDataGContactLanguage *language, *language2;
+	gchar *xml;
+	GError *error = NULL;
+
+	language = GDATA_GCONTACT_LANGUAGE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_LANGUAGE,
+		"<gContact:language xmlns:gContact='http://schemas.google.com/contact/2008' code='en-GB'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_LANGUAGE (language));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_language_get_code (language), ==, "en-GB");
+	g_assert (gdata_gcontact_language_get_label (language) == NULL);
+
+	/* Compare it against another identical language */
+	language2 = gdata_gcontact_language_new ("en-GB", NULL);
+	g_assert_cmpint (gdata_gcontact_language_compare (language, language2), ==, 0);
+
+	/* …and a different one */
+	gdata_gcontact_language_set_code (language2, "sv");
+	g_assert_cmpint (gdata_gcontact_language_compare (language, language2), !=, 0);
+	g_object_unref (language2);
+
+	/* More comparisons */
+	g_assert_cmpint (gdata_gcontact_language_compare (language, NULL), ==, 1);
+	g_assert_cmpint (gdata_gcontact_language_compare (NULL, language), ==, -1);
+	g_assert_cmpint (gdata_gcontact_language_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_gcontact_language_compare (language, language), ==, 0);
+
+	/* Check the outputted XML is the same */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (language));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:language xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"code='en-GB'/>");
+	g_free (xml);
+	g_object_unref (language);
+
+	/* Now parse a language with less information available */
+	language = GDATA_GCONTACT_LANGUAGE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_LANGUAGE,
+		"<gContact:language xmlns:gContact='http://schemas.google.com/contact/2008' label='Gobbledegook'/>",
+		-1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_LANGUAGE (language));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert (gdata_gcontact_language_get_code (language) == NULL);
+	g_assert_cmpstr (gdata_gcontact_language_get_label (language), ==, "Gobbledegook");
+
+	/* Check the outputted XML is still OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (language));
+	g_assert_cmpstr (xml, ==,
+			 "<gContact:language xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"label='Gobbledegook'/>");
+	g_free (xml);
+	g_object_unref (language);
+}
+
+static void
+test_gcontact_language_error_handling (void)
+{
+	GDataGContactLanguage *language;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) language = GDATA_GCONTACT_LANGUAGE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_LANGUAGE,\
+		"<gContact:language xmlns:gContact='http://schemas.google.com/contact/2008' "\
+			x\
+		"/>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (language == NULL);\
+	g_clear_error (&error)
+
+	TEST_XML_ERROR_HANDLING (""); /* no code or label */
+	TEST_XML_ERROR_HANDLING ("code=''"); /* empty code */
+	TEST_XML_ERROR_HANDLING ("label=''"); /* empty label */
+	TEST_XML_ERROR_HANDLING ("code='en-GB' label='Other'"); /* code and label */
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
+static void
 test_gcontact_relation (void)
 {
 	GDataGContactRelation *relation, *relation2;
@@ -2931,6 +3014,8 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gcontact/external_id/error_handling", test_gcontact_external_id_error_handling);
 	g_test_add_func ("/gcontact/jot", test_gcontact_jot);
 	g_test_add_func ("/gcontact/jot/error_handling", test_gcontact_jot_error_handling);
+	g_test_add_func ("/gcontact/language", test_gcontact_language);
+	g_test_add_func ("/gcontact/language/error_handling", test_gcontact_language_error_handling);
 	g_test_add_func ("/gcontact/relation", test_gcontact_relation);
 	g_test_add_func ("/gcontact/relation/error_handling", test_gcontact_relation_error_handling);
 	g_test_add_func ("/gcontact/website", test_gcontact_website);
