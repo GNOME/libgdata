@@ -81,10 +81,9 @@ gdata_access_handler_get_type (void)
  * Since: 0.3.0
  **/
 GDataFeed *
-gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable, GDataQueryProgressCallback progress_callback,
-				gpointer progress_user_data, GError **error)
+gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
+                                GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataFeed *feed;
 	GDataLink *link;
 	SoupMessage *message;
@@ -93,32 +92,25 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Get the ACL URI */
+	/* TODO: ETag support */
 	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/acl/2007#accessControlList");
 	g_assert (link != NULL);
-	message = soup_message_new (SOUP_METHOD_GET, gdata_link_get_uri (link));
-
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (service, message);
+	message = _gdata_service_build_message (service, SOUP_METHOD_GET, gdata_link_get_uri (link), NULL, FALSE);
 
 	/* Send the message */
-	status = _gdata_service_send_message (service, message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (service, message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (service);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_QUERY, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);
@@ -127,7 +119,6 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 	}
 
 	g_assert (message->response_body->data != NULL);
-
 	feed = _gdata_feed_new_from_xml (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_ACCESS_RULE,
 	                                 progress_callback, progress_user_data, error);
 	g_object_unref (message);
@@ -162,7 +153,6 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 GDataAccessRule *
 gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *service, GDataAccessRule *rule, GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataAccessRule *updated_rule;
 	GDataLink *link;
 	SoupMessage *message;
@@ -172,6 +162,8 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (rule), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (rule)) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
@@ -180,34 +172,25 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 	}
 
 	/* Get the ACL URI */
+	/* TODO: ETag support */
 	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/acl/2007#accessControlList");
 	g_assert (link != NULL);
-	message = soup_message_new (SOUP_METHOD_POST, gdata_link_get_uri (link));
-
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (service, message);
+	message = _gdata_service_build_message (service, SOUP_METHOD_POST, gdata_link_get_uri (link), NULL, FALSE);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
 
 	/* Send the message */
-	status = _gdata_service_send_message (service, message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (service, message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != SOUP_STATUS_CREATED) {
+	} else if (status != SOUP_STATUS_CREATED) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (service);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_INSERTION, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);
@@ -215,10 +198,8 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 		return NULL;
 	}
 
-	/* Build the updated entry */
-	g_assert (message->response_body->data != NULL);
-
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
+	g_assert (message->response_body->data != NULL);
 	updated_rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (G_OBJECT_TYPE (rule), message->response_body->data,
 								       message->response_body->length, error));
 	g_object_unref (message);
@@ -227,7 +208,7 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 }
 
 static SoupMessage *
-get_soup_message (GDataAccessHandler *access_handler, GDataAccessRule *rule, const gchar *method)
+build_message (GDataAccessHandler *access_handler, GDataService *service, GDataAccessRule *rule, const gchar *method)
 {
 	GDataLink *link;
 	SoupMessage *message;
@@ -238,7 +219,7 @@ get_soup_message (GDataAccessHandler *access_handler, GDataAccessRule *rule, con
 	/* Get the edit URI */
 	link = gdata_entry_look_up_link (GDATA_ENTRY (rule), GDATA_LINK_EDIT);
 	if (link != NULL)
-		return soup_message_new (method, gdata_link_get_uri (link));
+		return _gdata_service_build_message (service, method, gdata_link_get_uri (link), NULL, FALSE);
 
 	/* Try building the URI instead */
 	link = gdata_entry_look_up_link (GDATA_ENTRY (access_handler), "http://schemas.google.com/acl/2007#accessControlList");
@@ -254,7 +235,7 @@ get_soup_message (GDataAccessHandler *access_handler, GDataAccessRule *rule, con
 	}
 
 	uri = g_string_free (uri_string, FALSE);
-	message = soup_message_new (method, uri);
+	message = _gdata_service_build_message (service, method, uri, NULL, FALSE);
 	g_free (uri);
 
 	return message;
@@ -284,7 +265,6 @@ get_soup_message (GDataAccessHandler *access_handler, GDataAccessRule *rule, con
 GDataAccessRule *
 gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *service, GDataAccessRule *rule, GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataAccessRule *updated_rule;
 	SoupMessage *message;
 	gchar *upload_data;
@@ -293,35 +273,26 @@ gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *servic
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (rule), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	message = get_soup_message (self, rule, SOUP_METHOD_PUT);
-
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (service, message);
-
-	/* Looks like ACLs don't support ETags */
+	/* TODO: ETag support */
+	message = build_message (self, service, rule, SOUP_METHOD_PUT);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
 
 	/* Send the message */
-	status = _gdata_service_send_message (service, message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (service, message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (service);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);
@@ -329,10 +300,8 @@ gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *servic
 		return NULL;
 	}
 
-	/* Build the updated entry */
-	g_assert (message->response_body->data != NULL);
-
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
+	g_assert (message->response_body->data != NULL);
 	updated_rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (G_OBJECT_TYPE (rule), message->response_body->data,
 								       message->response_body->length, error));
 	g_object_unref (message);
@@ -363,7 +332,6 @@ gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *servic
 gboolean
 gdata_access_handler_delete_rule (GDataAccessHandler *self, GDataService *service, GDataAccessRule *rule, GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataAccessHandlerIface *iface;
 	SoupMessage *message;
 	guint status;
@@ -371,6 +339,8 @@ gdata_access_handler_delete_rule (GDataAccessHandler *self, GDataService *servic
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), FALSE);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), FALSE);
 	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (rule), FALSE);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* The owner of the access handler can't be deleted */
 	iface = GDATA_ACCESS_HANDLER_GET_IFACE (self);
@@ -381,30 +351,18 @@ gdata_access_handler_delete_rule (GDataAccessHandler *self, GDataService *servic
 		return FALSE;
 	}
 
-	message = get_soup_message (self, rule, SOUP_METHOD_DELETE);
+	/* TODO: ETag support */
+	/* Build and send the message */
+	message = build_message (self, service, rule, SOUP_METHOD_DELETE);
+	status = _gdata_service_send_message (service, message, cancellable, error);
 
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (service, message);
-
-	/* Looks like ACLs don't support ETags */
-
-	/* Send the message */
-	status = _gdata_service_send_message (service, message, error);
-	if (status == SOUP_STATUS_NONE) {
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return FALSE;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return FALSE;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (service);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_DELETION, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);

@@ -99,7 +99,7 @@
 		<para>As the GData protocol (and all the service-specific protocols which extend it) is reasonably young, it is subject to fairly
 			frequent updates and expansions. While backwards compatibility is maintained, these updates necessitate that libgdata
 			remains fairly flexible in how it treats data. The sections below detail some of the ways in which libgdata achieves this,
-			and the reasoning behind them.</para>
+			and the reasoning behind them, as well as other major design decisions behind libgdata's API.</para>
 
 		<refsect2 id="enumerable-properties">
 			<title>Enumerable Properties</title>
@@ -142,6 +142,30 @@
 				their service, there is little harm in restricting the implementation of services to libgdata. If someone wants to
 				implement support for a new GData service, it is for the benefit of everyone if this implementation is done in libgdata
 				itself, rather than their application.</para>
+		</refsect2>
+
+		<refsect2>
+			<title>Cancellable Support</title>
+			<para>As libgdata is a network library, it has to be able to deal with operations which take a long (and indeterminate) amount
+				of time due to network latencies. As well as providing asynchronous operation support, every such operation in libgdata
+				is cancellable, using <type><link linkend="GCancellable">GCancellable</link></type>.</para>
+			<para>Using <type><link linkend="GCancellable">GCancellable</link></type>, any ongoing libgdata operation can be cancelled
+				from any other thread by calling <function><link linkend="g-cancellable-cancel">g_cancellable_cancel</link></function>.
+				If the ongoing operation is doing network activity, the operation will be cancelled as safely as possible (although
+				the server's state cannot be guaranteed when cancelling a non-idempotent operation, such as an insertion or update,
+				since the server may have already committed the results of the operation, but might not have returned them to libgdata
+				yet) and the operation will return to its calling function with a
+				<link linkend="G-IO-ERROR-CANCELLED:CAPS"><code class="literal">G_IO_ERROR_CANCELLED</code></link> error. Similarly,
+				if the operation is yet to do network activity, it will return with the above error before the network activity is
+				started, leaving the server unchanged.</para>
+			<para>However, if the operation has finished its network activity, libgdata does not guarantee that it will return with an
+				error — it may return successfully. There is no way to fix this, as it is an inherent race condition between checking
+				for cancellation for the last time, and returning the successful result. Rather than reduce the probability of the race
+				condition occurring, but still have the possibility of it occurring, libgdata will just continue to process an operation
+				after its network activity is over, and return success.</para>
+			<para>This may be useful in situations where the user is cancelling an operation due to it taking too long; the application
+				using libgdata may want to make use of the result of the operation, even if it has previously tried to cancel the
+				operation after network activity finished.</para>
 		</refsect2>
 	</refsect1>
 </refentry>

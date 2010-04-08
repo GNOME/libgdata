@@ -506,9 +506,8 @@ GDataDocumentsEntry *
 gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *document, GDataDocumentsFolder *folder,
 						 GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataDocumentsEntry *new_document;
-	gchar *uri, *entry_xml, *upload_data;
+	gchar *uri, *upload_data;
 	const gchar *folder_id;
 	SoupMessage *message;
 	guint status;
@@ -517,6 +516,7 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -524,47 +524,27 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 		return NULL;
 	}
 
+	/* TODO: ETag support */
 	folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
 	g_assert (folder_id != NULL);
 	uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
-
-	message = soup_message_new (SOUP_METHOD_POST, uri);
+	message = _gdata_service_build_message (GDATA_SERVICE (self), SOUP_METHOD_POST, uri, NULL, TRUE);
 	g_free (uri);
 
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (self), message);
-
-	/* Get the XML content */
-	entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (document));
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		g_free (entry_xml);
-		return NULL;
-	}
-
-	upload_data = g_strconcat ("<?xml version='1.0' encoding='UTF-8'?>", entry_xml, NULL);
-	g_free (entry_xml);
+	/* Append the data */
+	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (document));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
 
 	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (self), message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != SOUP_STATUS_CREATED) {
+	} else if (status != SOUP_STATUS_CREATED) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase,
 		                             message->response_body->data, message->response_body->length, error);
@@ -572,10 +552,8 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 		return NULL;
 	}
 
-	/* Build the updated entry */
+	/* Parse the XML; and update the document */
 	g_assert (message->response_body->data != NULL);
-
-	/* Parse the XML; and update the document*/
 	new_document = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (document), message->response_body->data,
 	                                                                   message->response_body->length, error));
 	g_object_unref (message);
@@ -604,7 +582,6 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 						     GCancellable *cancellable, GError **error)
 {
 	const gchar *folder_id, *document_id;
-	GDataServiceClass *klass;
 	SoupMessage *message;
 	guint status;
 	gchar *uri;
@@ -613,6 +590,7 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -642,31 +620,19 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 		g_assert_not_reached ();
 	}
 
-	message = soup_message_new (SOUP_METHOD_DELETE, uri);
+	message = _gdata_service_build_message (GDATA_SERVICE (self), SOUP_METHOD_DELETE, uri, gdata_entry_get_etag (GDATA_ENTRY (document)), TRUE);
 	g_free (uri);
 
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (self), message);
-
-	soup_message_headers_append (message->request_headers, "If-Match", gdata_entry_get_etag (GDATA_ENTRY (document)));
-
 	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (self), message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);

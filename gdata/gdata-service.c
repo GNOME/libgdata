@@ -627,6 +627,7 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 
 	/* Build the message */
 	message = soup_message_new (SOUP_METHOD_POST, klass->authentication_uri);
+	g_object_set_data_full (G_OBJECT (message), "session", g_object_ref (self->priv->session), (GDestroyNotify) g_object_unref);
 	soup_message_set_request (message, "application/x-www-form-urlencoded", SOUP_MEMORY_TAKE, request_body, strlen (request_body));
 
 	/* Send the message */
@@ -848,8 +849,38 @@ gdata_service_authenticate (GDataService *self, const gchar *username, const gch
 	return authenticate (self, username, password, NULL, NULL, cancellable, error);
 }
 
+SoupMessage *
+_gdata_service_build_message (GDataService *self, const gchar *method, const gchar *uri, const gchar *etag, gboolean etag_if_match)
+{
+	SoupMessage *message;
+	GDataServiceClass *klass;
+
+	/* Create the message and store a pointer to the session in it,
+	 * so we can cancel the message in message_cancel_cb() from _gdata_service_send_message() */
+	message = soup_message_new (method, uri);
+	g_object_set_data_full (G_OBJECT (message), "session", g_object_ref (self->priv->session), (GDestroyNotify) g_object_unref);
+
+	/* Make sure subclasses set their headers */
+	klass = GDATA_SERVICE_GET_CLASS (self);
+	if (klass->append_query_headers != NULL)
+		klass->append_query_headers (self, message);
+
+	/* Append the ETag header if possible */
+	if (etag != NULL)
+		soup_message_headers_append (message->request_headers, (etag_if_match == TRUE) ? "If-Match" : "If-None-Match", etag);
+
+	return message;
+}
+
+static void
+message_cancel_cb (GCancellable *cancellable, SoupMessage *message)
+{
+	if (message != NULL)
+		soup_session_cancel_message (g_object_get_data (G_OBJECT (message), "session"), message, SOUP_STATUS_CANCELLED);
+}
+
 guint
-_gdata_service_send_message (GDataService *self, SoupMessage *message, GError **error)
+_gdata_service_send_message (GDataService *self, SoupMessage *message, GCancellable *cancellable, GError **error)
 {
 	/* Based on code from evolution-data-server's libgdata:
 	 *  Ebby Wiselyn <ebbywiselyn@gmail.com>
@@ -858,9 +889,17 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GError **
 	 * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
 	 */
 
+	gulong cancel_signal = 0;
+
+	if (cancellable != NULL)
+		cancel_signal = g_cancellable_connect (cancellable, (GCallback) message_cancel_cb, message, NULL);
+
 	soup_message_set_flags (message, SOUP_MESSAGE_NO_REDIRECT);
 	soup_session_send_message (self->priv->session, message);
 	soup_message_set_flags (message, 0);
+
+	if (cancel_signal != 0)
+		g_cancellable_disconnect (cancellable, cancel_signal);
 
 	if (SOUP_STATUS_IS_REDIRECTION (message->status_code)) {
 		SoupURI *new_uri;
@@ -882,8 +921,18 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GError **
 		soup_message_set_uri (message, new_uri);
 		soup_uri_free (new_uri);
 
+		/* Send the message again */
+		if (cancellable != NULL)
+			cancel_signal = g_cancellable_connect (cancellable, (GCallback) message_cancel_cb, message, NULL);
+
 		soup_session_send_message (self->priv->session, message);
+
+		if (cancel_signal != 0)
+			g_cancellable_disconnect (cancellable, cancel_signal);
 	}
+
+	if (message->status_code == SOUP_STATUS_CANCELLED)
+		g_assert (cancellable != NULL && g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE);
 
 	return message->status_code;
 }
@@ -918,16 +967,9 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
 	GError *error = NULL;
 	QueryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
-	/* Check to see if it's been cancelled already */
-	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
 	/* Execute the query and return */
 	data->feed = gdata_service_query (service, data->feed_uri, data->query, data->entry_type, cancellable,
-					  data->progress_callback, data->progress_user_data, &error);
+	                                  data->progress_callback, data->progress_user_data, &error);
 	if (data->feed == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -956,8 +998,8 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
  **/
 void
 gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type, GCancellable *cancellable,
-			   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-			   GAsyncReadyCallback callback, gpointer user_data)
+                           GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                           GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
 	QueryAsyncData *data;
@@ -1016,44 +1058,49 @@ gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GErr
  * gdata_service_query_single_entry()) only return a single entry, and thus need special parsing code. */
 SoupMessage *
 _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
-		      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
-	GDataServiceClass *klass;
 	SoupMessage *message;
 	guint status;
-
-	if (query != NULL) {
-		gchar *query_uri = gdata_query_get_query_uri (query, feed_uri);
-		message = soup_message_new (SOUP_METHOD_GET, query_uri);
-		g_free (query_uri);
-	} else {
-		message = soup_message_new (SOUP_METHOD_GET, feed_uri);
-	}
-
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (self, message);
+	gulong cancel_signal = 0;
+	const gchar *etag = NULL;
 
 	/* Append the ETag header if possible */
-	if (query != NULL && gdata_query_get_etag (query) != NULL)
-		soup_message_headers_append (message->request_headers, "If-None-Match", gdata_query_get_etag (query));
+	if (query != NULL)
+		etag = gdata_query_get_etag (query);
+
+	/* Build the message */
+	if (query != NULL) {
+		gchar *query_uri = gdata_query_get_query_uri (query, feed_uri);
+		message = _gdata_service_build_message (self, SOUP_METHOD_GET, query_uri, etag, FALSE);
+		g_free (query_uri);
+	} else {
+		message = _gdata_service_build_message (self, SOUP_METHOD_GET, feed_uri, etag, FALSE);
+	}
+
+	/* TODO: Document that cancellation only applies to network activity; not to the processing done afterwards */
 
 	/* Send the message */
+	if (cancellable != NULL)
+		cancel_signal = g_cancellable_connect (cancellable, (GCallback) message_cancel_cb, message, NULL);
+
 	status = soup_session_send_message (self->priv->session, message);
 
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
+	if (cancel_signal != 0)
+		g_cancellable_disconnect (cancellable, cancel_signal);
 
 	if (status == SOUP_STATUS_NOT_MODIFIED) {
 		/* Not modified; ETag has worked */
 		g_object_unref (message);
 		return NULL;
+	} else if (status == SOUP_STATUS_CANCELLED) {
+		/* Cancelled */
+		g_assert (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE);
+		g_object_unref (message);
+		return NULL;
 	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (self, GDATA_OPERATION_QUERY, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);
@@ -1218,13 +1265,6 @@ query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GC
 	GError *error = NULL;
 	QuerySingleEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
-	/* Check to see if it's been cancelled already */
-	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
 	/* Execute the query and return */
 	entry = gdata_service_query_single_entry (service, data->entry_id, data->query, data->entry_type, cancellable, &error);
 	if (entry == NULL && error != NULL) {
@@ -1336,13 +1376,6 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 	GError *error = NULL;
 	InsertEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
-	/* Check to see if it's been cancelled already */
-	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
 	/* Insert the entry and return */
 	updated_entry = gdata_service_insert_entry (service, data->upload_uri, data->entry, cancellable, &error);
 	if (updated_entry == NULL) {
@@ -1352,8 +1385,7 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 	}
 
 	/* Swap the old entry with the new one */
-	g_object_unref (data->entry);
-	data->entry = updated_entry;
+	g_simple_async_result_set_op_res_gpointer (result, updated_entry, (GDestroyNotify) g_object_unref);
 }
 
 /**
@@ -1413,7 +1445,7 @@ GDataEntry *
 gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
 	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	InsertEntryAsyncData *data;
+	GDataEntry *entry;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
@@ -1424,9 +1456,9 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
 	if (g_simple_async_result_propagate_error (result, error) == TRUE)
 		return NULL;
 
-	data = g_simple_async_result_get_op_res_gpointer (result);
-	if (data->entry != NULL)
-		return g_object_ref (data->entry);
+	entry = g_simple_async_result_get_op_res_gpointer (result);
+	if (entry != NULL)
+		return g_object_ref (entry);
 
 	g_assert_not_reached ();
 }
@@ -1459,7 +1491,6 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
 GDataEntry *
 gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataEntry *updated_entry;
 	SoupMessage *message;
 	gchar *upload_data;
@@ -1477,32 +1508,22 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 		return NULL;
 	}
 
-	message = soup_message_new (SOUP_METHOD_POST, upload_uri);
-
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (self, message);
+	message = _gdata_service_build_message (self, SOUP_METHOD_POST, upload_uri, NULL, FALSE);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
 
 	/* Send the message */
-	status = _gdata_service_send_message (self, message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (self, message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != SOUP_STATUS_CREATED) {
+	} else if (status != SOUP_STATUS_CREATED) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (self, GDATA_OPERATION_INSERTION, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);
@@ -1510,10 +1531,8 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 		return NULL;
 	}
 
-	/* Build the updated entry */
-	g_assert (message->response_body->data != NULL);
-
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
+	g_assert (message->response_body->data != NULL);
 	updated_entry = GDATA_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data, message->response_body->length,
 								  error));
 	g_object_unref (message);
@@ -1526,13 +1545,6 @@ update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 {
 	GDataEntry *updated_entry;
 	GError *error = NULL;
-
-	/* Check to see if it's been cancelled already */
-	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
 
 	/* Update the entry and return */
 	updated_entry = gdata_service_update_entry (service, g_simple_async_result_get_op_res_gpointer (result), cancellable, &error);
@@ -1639,7 +1651,6 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
 GDataEntry *
 gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataEntry *updated_entry;
 	GDataLink *link;
 	SoupMessage *message;
@@ -1654,36 +1665,22 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	/* Get the edit URI */
 	link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
 	g_assert (link != NULL);
-	message = soup_message_new (SOUP_METHOD_PUT, gdata_link_get_uri (link));
-
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (self, message);
-
-	/* Append the ETag header if possible */
-	if (gdata_entry_get_etag (entry) != NULL)
-		soup_message_headers_append (message->request_headers, "If-Match", gdata_entry_get_etag (entry));
+	message = _gdata_service_build_message (self, SOUP_METHOD_PUT, gdata_link_get_uri (link), gdata_entry_get_etag (entry), TRUE);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
 
 	/* Send the message */
-	status = _gdata_service_send_message (self, message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (self, message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (self, GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);
@@ -1691,10 +1688,8 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 		return NULL;
 	}
 
-	/* Build the updated entry */
-	g_assert (message->response_body->data != NULL);
-
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
+	g_assert (message->response_body->data != NULL);
 	updated_entry = GDATA_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data, message->response_body->length,
 								  error));
 	g_object_unref (message);
@@ -1707,13 +1702,6 @@ delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 {
 	gboolean success;
 	GError *error = NULL;
-
-	/* Check to see if it's been cancelled already */
-	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
 
 	/* Delete the entry and return */
 	success = gdata_service_delete_entry (service, g_simple_async_result_get_op_res_gpointer (result), cancellable, &error);
@@ -1813,7 +1801,6 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
 gboolean
 gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataLink *link;
 	SoupMessage *message;
 	guint status;
@@ -1826,32 +1813,18 @@ gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	/* Get the edit URI */
 	link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
 	g_assert (link != NULL);
-	message = soup_message_new (SOUP_METHOD_DELETE, gdata_link_get_uri (link));
-
-	/* Make sure subclasses set their headers */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (self, message);
-
-	/* Append the ETag header if possible */
-	if (gdata_entry_get_etag (entry) != NULL)
-		soup_message_headers_append (message->request_headers, "If-Match", gdata_entry_get_etag (entry));
+	message = _gdata_service_build_message (self, SOUP_METHOD_DELETE, gdata_link_get_uri (link), gdata_entry_get_etag (entry), TRUE);
 
 	/* Send the message */
-	status = _gdata_service_send_message (self, message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (self, message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return FALSE;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return FALSE;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (self, GDATA_OPERATION_DELETION, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);

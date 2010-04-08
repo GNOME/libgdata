@@ -47,7 +47,8 @@ typedef enum {
 #include "gdata-service.h"
 SoupSession *_gdata_service_get_session (GDataService *self);
 void _gdata_service_set_authenticated (GDataService *self, gboolean authenticated);
-guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GError **error);
+SoupMessage *_gdata_service_build_message (GDataService *self, const gchar *method, const gchar *uri, const gchar *etag, gboolean etag_if_match);
+guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancellable *cancellable, GError **error);
 SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
 				   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 				   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

@@ -2875,7 +2875,6 @@ gchar *
 gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
 				  GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataLink *link;
 	SoupMessage *message;
 	guint status;
@@ -2885,36 +2884,29 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (service), NULL);
 	g_return_val_if_fail (length != NULL, NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Return if there is no photo */
 	if (gdata_contacts_contact_has_photo (self) == FALSE)
 		return NULL;
 
 	/* Get the photo URI */
+	/* TODO: ETag support */
 	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
 	g_assert (link != NULL);
-	message = soup_message_new (SOUP_METHOD_GET, gdata_link_get_uri (link));
-
-	/* Make sure the headers are set */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (service), message);
+	message = _gdata_service_build_message (GDATA_SERVICE (service), SOUP_METHOD_GET, gdata_link_get_uri (link), NULL, FALSE);
 
 	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (service), message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (GDATA_SERVICE (service), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return NULL;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (service);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (GDATA_SERVICE (service), GDATA_OPERATION_DOWNLOAD, status, message->reason_phrase,
 		                             message->response_body->data, message->response_body->length, error);
@@ -2943,7 +2935,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  * @self: a #GDataContactsContact
  * @service: a #GDataService
  * @data: the image data, or %NULL
- * @length: the image length, in bytes, or <code class="literal">0</code>
+ * @length: the image length, in bytes
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -2962,7 +2954,6 @@ gboolean
 gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const gchar *data, gsize length,
 				  GCancellable *cancellable, GError **error)
 {
-	GDataServiceClass *klass;
 	GDataLink *link;
 	SoupMessage *message;
 	guint status;
@@ -2971,6 +2962,8 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), FALSE);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	if (self->priv->photo_etag == NULL && data != NULL)
 		adding_photo = TRUE;
@@ -2980,40 +2973,23 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 	/* Get the photo URI */
 	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
 	g_assert (link != NULL);
-	if (deleting_photo == TRUE)
-		message = soup_message_new (SOUP_METHOD_DELETE, gdata_link_get_uri (link));
-	else
-		message = soup_message_new (SOUP_METHOD_PUT, gdata_link_get_uri (link));
+	message = _gdata_service_build_message (GDATA_SERVICE (service), (deleting_photo == TRUE) ? SOUP_METHOD_DELETE : SOUP_METHOD_PUT,
+	                                        gdata_link_get_uri (link), self->priv->photo_etag, TRUE);
 
-	/* Make sure the headers are set */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (service, message);
-
-	/* Append the ETag header if possible */
-	if (self->priv->photo_etag != NULL)
-		soup_message_headers_append (message->request_headers, "If-Match", self->priv->photo_etag);
-
-	if (deleting_photo == FALSE) {
-		/* Append the data */
+	/* Append the data */
+	if (deleting_photo == FALSE)
 		soup_message_set_request (message, "image/*", SOUP_MEMORY_STATIC, (gchar*) data, length);
-	}
 
 	/* Send the message */
-	status = _gdata_service_send_message (service, message, error);
-	if (status == SOUP_STATUS_NONE) {
+	status = _gdata_service_send_message (service, message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return FALSE;
-	}
-
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
-		g_object_unref (message);
-		return FALSE;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (service);
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (service, GDATA_OPERATION_UPLOAD, status, message->reason_phrase, message->response_body->data,
 		                             message->response_body->length, error);
