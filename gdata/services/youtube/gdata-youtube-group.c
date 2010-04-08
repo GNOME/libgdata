@@ -92,23 +92,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataYouTubeGroup *self = GDATA_YOUTUBE_GROUP (parsable);
 
-	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE && xmlStrcmp (node->name, (xmlChar*) "credit") == 0) {
-		/* media:credit */
-		GDataYouTubeCredit *credit = GDATA_YOUTUBE_CREDIT (_gdata_parsable_new_from_xml_node (GDATA_TYPE_YOUTUBE_CREDIT, doc,
-												      node, NULL, error));
-		if (credit == NULL)
-			return FALSE;
-
-		if (gdata_media_group_get_credit (GDATA_MEDIA_GROUP (self)) != NULL) {
-			g_object_unref (credit);
-			return gdata_parser_error_duplicate_element (node, error);
-		}
-
-		_gdata_media_group_set_credit (GDATA_MEDIA_GROUP (self), GDATA_MEDIA_CREDIT (credit));
+	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
+	    (gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_YOUTUBE_CONTENT,
+	                                              _gdata_media_group_add_content, self, &success, error) == TRUE ||
+	     gdata_parser_object_from_element_setter (node, "credit", P_REQUIRED, GDATA_TYPE_YOUTUBE_CREDIT,
+	                                              _gdata_media_group_set_credit, self, &success, error) == TRUE)) {
+		return success;
 	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
-		if (gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_YOUTUBE_CONTENT,
-		                                             _gdata_media_group_add_content, self, &success, error) == TRUE ||
-		    gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE ||
+		if (gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "aspectRatio", P_REQUIRED | P_NO_DUPES,
 		                                      &(self->priv->aspect_ratio), &success, error) == TRUE ||
 		    gdata_parser_time_val_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES, &(self->priv->uploaded), &success, error) == TRUE) {

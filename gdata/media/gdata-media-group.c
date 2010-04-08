@@ -519,7 +519,9 @@ gdata_media_group_get_credit (GDataMediaGroup *self)
 void
 _gdata_media_group_set_credit (GDataMediaGroup *self, GDataMediaCredit *credit)
 {
-	self->priv->credit = credit;
+	if (self->priv->credit != NULL)
+		g_object_unref (self->priv->credit);
+	self->priv->credit = g_object_ref (credit);
 }
 
 /**
