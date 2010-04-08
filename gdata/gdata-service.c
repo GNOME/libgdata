@@ -892,7 +892,7 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
 	/* Execute the query and return */
 	data->feed = gdata_service_query (service, data->feed_uri, data->query, data->entry_type, cancellable,
 					  data->progress_callback, data->progress_user_data, &error);
-	if (data->feed == NULL) {
+	if (data->feed == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
 	}
@@ -971,8 +971,7 @@ gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GErr
 	data = g_simple_async_result_get_op_res_gpointer (result);
 	if (data->feed != NULL)
 		return g_object_ref (data->feed);
-
-	g_assert_not_reached ();
+	return NULL;
 }
 
 /* Does the bulk of the work of gdata_service_query. Split out because certain queries (such as that done by
