@@ -362,7 +362,7 @@ gdata_gcontact_external_id_get_relation_type (GDataGContactExternalID *self)
  * @relation_type: the new type for the external ID, or %NULL
  *
  * Sets the #GDataGContactExternalID:relation-type property to @relation_type,
- * such as %GDATA_GCONTACT_EXTERNAL_ID_HOME or %GDATA_GCONTACT_EXTERNAL_ID_FREE_BUSY.
+ * such as %GDATA_GCONTACT_EXTERNAL_ID_NETWORK or %GDATA_GCONTACT_EXTERNAL_ID_ACCOUNT.
  *
  * If @relation_type is %NULL, the relation type will be unset. When the #GDataGContactExternalID is used in a query, however,
  * exactly one of #GDataGContactExternalID:relation-type and #GDataGContactExternalID:label must be %NULL.
