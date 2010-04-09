@@ -550,6 +550,7 @@ gdata_service_authenticate_async (GDataService *self, const gchar *username, con
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	g_return_if_fail (username != NULL);
 	g_return_if_fail (password != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	data = g_slice_new (AuthenticateAsyncData);
 	data->username = g_strdup (username);
@@ -580,6 +581,7 @@ gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_resul
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_authenticate_async);
 
@@ -837,6 +839,12 @@ general_error:
 gboolean
 gdata_service_authenticate (GDataService *self, const gchar *username, const gchar *password, GCancellable *cancellable, GError **error)
 {
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
+	g_return_val_if_fail (username != NULL, FALSE);
+	g_return_val_if_fail (password != NULL, FALSE);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
 	return authenticate (self, username, password, NULL, NULL, cancellable, error);
 }
 
@@ -956,7 +964,8 @@ gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	g_return_if_fail (feed_uri != NULL);
-	g_return_if_fail (entry_type != G_TYPE_INVALID);
+	g_return_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
 	data = g_slice_new (QueryAsyncData);
@@ -990,6 +999,7 @@ gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GErr
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_query_async);
 
@@ -1094,7 +1104,9 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (feed_uri != NULL, NULL);
-	g_return_val_if_fail (entry_type != G_TYPE_INVALID, NULL);
+	g_return_val_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	message = _gdata_service_query (self, feed_uri, query, cancellable, progress_callback, progress_user_data, error);
 	if (message == NULL)
@@ -1256,6 +1268,7 @@ gdata_service_query_single_entry_async (GDataService *self, const gchar *entry_i
 	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
 	g_return_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY) == TRUE);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
 
 	data = g_slice_new (QuerySingleEntryAsyncData);
 	data->query = (query != NULL) ? g_object_ref (query) : NULL;
@@ -1349,7 +1362,7 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @upload_uri: the URI to which the upload should be sent
  * @entry: the #GDataEntry to insert
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when insertion is finished
+ * @callback: a #GAsyncReadyCallback to call when insertion is finished, or %NULL
  * @user_data: data to pass to the @callback function
  *
  * Inserts @entry by uploading it to the online service at @upload_uri. @self, @upload_uri and
@@ -1372,6 +1385,7 @@ gdata_service_insert_entry_async (GDataService *self, const gchar *upload_uri, G
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	g_return_if_fail (upload_uri != NULL);
 	g_return_if_fail (GDATA_IS_ENTRY (entry));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	data = g_slice_new (InsertEntryAsyncData);
 	data->upload_uri = g_strdup (upload_uri);
@@ -1403,6 +1417,7 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_insert_entry_async);
 
@@ -1453,6 +1468,8 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (upload_uri != NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	if (gdata_entry_is_inserted (entry) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
@@ -1534,7 +1551,7 @@ update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @self: a #GDataService
  * @entry: the #GDataEntry to update
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the update is finished
+ * @callback: a #GAsyncReadyCallback to call when the update is finished, or %NULL
  * @user_data: data to pass to the @callback function
  *
  * Updates @entry by PUTting it to its <literal>edit</literal> link's URI. @self and
@@ -1554,6 +1571,7 @@ gdata_service_update_entry_async (GDataService *self, GDataEntry *entry, GCancel
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	g_return_if_fail (GDATA_IS_ENTRY (entry));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_update_entry_async);
 	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (entry), (GDestroyNotify) g_object_unref);
@@ -1581,6 +1599,7 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_update_entry_async);
 
@@ -1629,6 +1648,8 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* Get the edit URI */
 	link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
@@ -1711,7 +1732,7 @@ delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @self: a #GDataService
  * @entry: the #GDataEntry to delete
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when deletion is finished
+ * @callback: a #GAsyncReadyCallback to call when deletion is finished, or %NULL
  * @user_data: data to pass to the @callback function
  *
  * Deletes @entry from the server. @self and @entry are both reffed when this function is called,
@@ -1731,6 +1752,7 @@ gdata_service_delete_entry_async (GDataService *self, GDataEntry *entry, GCancel
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	g_return_if_fail (GDATA_IS_ENTRY (entry));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_delete_entry_async);
 	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (entry), (GDestroyNotify) g_object_unref);
@@ -1757,6 +1779,7 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_delete_entry_async);
 
@@ -1797,6 +1820,8 @@ gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable 
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), FALSE);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* Get the edit URI */
 	link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
@@ -1871,10 +1896,12 @@ gdata_service_get_proxy_uri (GDataService *self)
 /**
  * gdata_service_set_proxy_uri:
  * @self: a #GDataService
- * @proxy_uri: the proxy URI
+ * @proxy_uri: the proxy URI, or %NULL
  *
  * Sets the proxy URI on the #SoupSession used internally by the given #GDataService.
  * This forces all requests through the given proxy.
+ *
+ * If @proxy_uri is %NULL, no proxy will be used.
  *
  * Since: 0.2.0
  **/
@@ -1957,6 +1984,7 @@ gdata_service_get_password (GDataService *self)
 SoupSession *
 _gdata_service_get_session (GDataService *self)
 {
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	return self->priv->session;
 }
 
