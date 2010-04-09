@@ -901,6 +901,7 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancella
 	if (cancel_signal != 0)
 		g_cancellable_disconnect (cancellable, cancel_signal);
 
+	/* Handle redirections specially so we don't lose our custom headers when making the second request */
 	if (SOUP_STATUS_IS_REDIRECTION (message->status_code)) {
 		SoupURI *new_uri;
 		const gchar *new_location;
