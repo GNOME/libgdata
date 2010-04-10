@@ -334,7 +334,7 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 
 	/* Listen for cancellation events */
 	if (cancellable != NULL)
-		cancelled_signal = g_signal_connect (cancellable, "cancelled", (GCallback) write_cancelled_cb, GDATA_UPLOAD_STREAM (stream));
+		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) write_cancelled_cb, GDATA_UPLOAD_STREAM (stream), NULL);
 
 	/* Set write_finished so we know if the write operation has finished before we reach write_cond */
 	priv->write_finished = FALSE;
@@ -371,7 +371,7 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 	create_network_thread (GDATA_UPLOAD_STREAM (stream), error);
 	if (priv->network_thread == NULL) {
 		if (cancellable != NULL)
-			g_signal_handler_disconnect (cancellable, cancelled_signal);
+			g_cancellable_disconnect (cancellable, cancelled_signal);
 		return -1;
 	}
 
@@ -386,7 +386,7 @@ write:
 
 	/* Disconnect from the cancelled signal so we can't receive any more cancel events before we handle errors */
 	if (cancellable != NULL)
-		g_signal_handler_disconnect (cancellable, cancelled_signal);
+		g_cancellable_disconnect (cancellable, cancelled_signal);
 
 	/* Check for an error and return if necessary */
 	if (priv->response_error != NULL) {
@@ -430,14 +430,14 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 
 		/* Allow cancellation */
 		if (cancellable != NULL)
-			cancelled_signal = g_signal_connect (cancellable, "cancelled", (GCallback) close_cancelled_cb, GDATA_UPLOAD_STREAM (stream));
+			cancelled_signal = g_cancellable_connect (cancellable, (GCallback) close_cancelled_cb, GDATA_UPLOAD_STREAM (stream), NULL);
 
 		/* Wait for the signal that we've finished */
 		g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->response_mutex)));
 
 		/* Disconnect from the signal handler so we can't receive any more cancellation events before we handle errors*/
 		if (cancellable != NULL)
-			g_signal_handler_disconnect (cancellable, cancelled_signal);
+			g_cancellable_disconnect (cancellable, cancelled_signal);
 	}
 
 	/* Report any errors which have been set by the network thread */
