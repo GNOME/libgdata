@@ -232,7 +232,7 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 			cancelled_data.buffer = self;
 			cancelled_data.cancelled = &cancelled;
 
-			cancelled_signal = g_signal_connect (cancellable, "cancelled", (GCallback) pop_cancelled_cb, &cancelled_data);
+			cancelled_signal = g_cancellable_connect (cancellable, (GCallback) pop_cancelled_cb, &cancelled_data, NULL);
 		}
 
 		/* Block until more data is available */
@@ -251,7 +251,7 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 
 		/* Disconnect from the cancelled signal */
 		if (cancellable != NULL)
-			g_signal_handler_disconnect (cancellable, cancelled_signal);
+			g_cancellable_disconnect (cancellable, cancelled_signal);
 	} else {
 		return_length = length_requested;
 	}
