@@ -165,13 +165,14 @@ gdata_documents_service_new (const gchar *client_id)
 /**
  * gdata_documents_service_query_documents:
  * @self: a #GDataDocumentsService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: a #GDataDocumentsQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
- * Queries the service to return a list of documents matching the given @query.
+ * Queries the service to return a list of documents matching the given @query. Note that @query has to be a #GDataDocumentsQuery, rather than just
+ * a #GDataQuery, as it uses the folder ID specified in #GDataDocumentsQuery:folder-id.
  *
  * For more details, see gdata_service_query().
  *
@@ -188,7 +189,7 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 	gchar *request_uri;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
-	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_DOCUMENTS_QUERY (query), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
@@ -215,7 +216,7 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 /**
  * gdata_documents_service_query_documents_async:
  * @self: a #GDataDocumentsService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: a #GDataDocumentsQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: data to pass to the @progress_callback function
@@ -238,7 +239,7 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 	gchar *request_uri;
 
 	g_return_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self));
-	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (query == NULL || GDATA_IS_DOCUMENTS_QUERY (query));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
