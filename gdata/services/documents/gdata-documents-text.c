@@ -144,6 +144,7 @@ gdata_documents_text_download_document (GDataDocumentsText *self, GDataDocuments
 	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
 	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Download the file */
 	link_href = gdata_documents_text_get_download_uri (self, export_format);
@@ -173,6 +174,7 @@ gdata_documents_text_get_download_uri (GDataDocumentsText *self, GDataDocumentsT
 {
 	const gchar *document_id;
 
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_TEXT (self), NULL);
 	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
 
 	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (self));

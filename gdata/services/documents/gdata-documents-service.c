@@ -187,6 +187,11 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 	GDataFeed *feed;
 	gchar *request_uri;
 
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -231,6 +236,11 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 					       GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *request_uri;
+
+	g_return_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
 
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
@@ -413,6 +423,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (document != NULL || document_file != NULL, NULL);
 	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -469,6 +480,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
 	g_return_val_if_fail (document_file == NULL || G_IS_FILE (document_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,

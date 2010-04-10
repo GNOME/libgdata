@@ -152,6 +152,7 @@ gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, 
 	g_return_val_if_fail ((export_format != GDATA_DOCUMENTS_SPREADSHEET_CSV && export_format != GDATA_DOCUMENTS_SPREADSHEET_TSV) || gid != -1, NULL);
 	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	extension = export_formats[export_format].extension;
 
@@ -191,6 +192,7 @@ gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, G
 {
 	const gchar *document_id, *fmcmd;
 
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SPREADSHEET (self), NULL);
 	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
 	g_return_val_if_fail (gid >= -1, NULL);
 	g_return_val_if_fail ((export_format != GDATA_DOCUMENTS_SPREADSHEET_CSV && export_format != GDATA_DOCUMENTS_SPREADSHEET_TSV) || gid != -1, NULL);

@@ -682,6 +682,9 @@ gdata_gd_postal_address_new (const gchar *relation_type, const gchar *label, gbo
 gint
 gdata_gd_postal_address_compare (const GDataGDPostalAddress *a, const GDataGDPostalAddress *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_GD_POSTAL_ADDRESS (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GD_POSTAL_ADDRESS (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)

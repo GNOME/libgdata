@@ -606,10 +606,6 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 	guint status;
 	gboolean retval;
 
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
-	g_return_val_if_fail (username != NULL, FALSE);
-	g_return_val_if_fail (password != NULL, FALSE);
-
 	/* Prepare the request */
 	klass = GDATA_SERVICE_GET_CLASS (self);
 	request_body = soup_form_encode ("accountType", "HOSTED_OR_GOOGLE",

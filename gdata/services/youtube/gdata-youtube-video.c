@@ -998,8 +998,6 @@ gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, const gchar *ac
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 	g_return_if_fail (action != NULL);
-	g_return_if_fail (strcmp (action, GDATA_YOUTUBE_ACTION_RATE) == 0 || strcmp (action, GDATA_YOUTUBE_ACTION_COMMENT) == 0 ||
-	                  permission != GDATA_YOUTUBE_PERMISSION_MODERATED);
 
 	g_hash_table_replace (self->priv->access_controls, g_strdup (action), GINT_TO_POINTER (permission));
 }
@@ -1056,8 +1054,8 @@ gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
 void
 gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *keywords)
 {
-	g_return_if_fail (keywords != NULL);
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
+	g_return_if_fail (keywords != NULL);
 
 	gdata_media_group_set_keywords (self->priv->media_group, keywords);
 	g_object_notify (G_OBJECT (self), "keywords");
@@ -1273,6 +1271,7 @@ void
 gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self, GTimeVal *uploaded)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
+	g_return_if_fail (uploaded != NULL);
 	gdata_youtube_group_get_uploaded (GDATA_YOUTUBE_GROUP (self->priv->media_group), uploaded);
 }
 
@@ -1353,6 +1352,7 @@ void
 gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
+	g_return_if_fail (recorded != NULL);
 	*recorded = self->priv->recorded;
 }
 

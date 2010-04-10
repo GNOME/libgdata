@@ -103,6 +103,11 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
 	GDataFeed *feed;
 	gchar *request_uri;
 
+	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -143,6 +148,11 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
 {
 	gchar *request_uri;
 
+	g_return_if_fail (GDATA_IS_CONTACTS_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
@@ -181,6 +191,8 @@ gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContacts
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (contact), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	uri = g_strdup_printf ("%s://www.google.com/m8/feeds/contacts/%s/full",
 	                       _gdata_service_get_scheme (),
@@ -215,6 +227,8 @@ gdata_contacts_service_update_contact (GDataContactsService *self, GDataContacts
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (contact), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Can't trust the edit URI the contact gives us, as it has the wrong projection; it uses the base projection, which
 	 * doesn't allow for extended attributes to be set (for some weird reason). */

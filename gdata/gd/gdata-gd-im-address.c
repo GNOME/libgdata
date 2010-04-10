@@ -315,6 +315,7 @@ GDataGDIMAddress *
 gdata_gd_im_address_new (const gchar *address, const gchar *protocol, const gchar *relation_type, const gchar *label, gboolean is_primary)
 {
 	g_return_val_if_fail (address != NULL && *address != '\0', NULL);
+	g_return_val_if_fail (protocol != NULL && *protocol != '\0', NULL);
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_IM_ADDRESS, "address", address, "protocol", protocol, "relation-type", relation_type,
 			     "label", label, "is-primary", is_primary, NULL);
@@ -339,6 +340,9 @@ gdata_gd_im_address_new (const gchar *address, const gchar *protocol, const gcha
 gint
 gdata_gd_im_address_compare (const GDataGDIMAddress *a, const GDataGDIMAddress *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_GD_IM_ADDRESS (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GD_IM_ADDRESS (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)

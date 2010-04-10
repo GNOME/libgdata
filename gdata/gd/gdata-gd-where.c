@@ -291,6 +291,9 @@ gdata_gd_where_new (const gchar *relation_type, const gchar *value_string, const
 gint
 gdata_gd_where_compare (const GDataGDWhere *a, const GDataGDWhere *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_GD_WHERE (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GD_WHERE (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)

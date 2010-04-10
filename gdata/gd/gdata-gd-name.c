@@ -332,6 +332,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 GDataGDName *
 gdata_gd_name_new (const gchar *given_name, const gchar *family_name)
 {
+	g_return_val_if_fail (given_name == NULL || *given_name != '\0', NULL);
+	g_return_val_if_fail (family_name == NULL || *family_name != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_NAME, "given-name", given_name, "family-name", family_name, NULL);
 }
 
@@ -355,6 +357,9 @@ gdata_gd_name_new (const gchar *given_name, const gchar *family_name)
 gint
 gdata_gd_name_compare (const GDataGDName *a, const GDataGDName *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_GD_NAME (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GD_NAME (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)

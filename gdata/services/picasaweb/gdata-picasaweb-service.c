@@ -129,6 +129,8 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
 	SoupMessage *message;
 
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	uri = create_uri (self, username, "entry");
 	if (uri == NULL) {
@@ -181,6 +183,8 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
 
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
 	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (query != NULL && gdata_query_get_q (query) != NULL) {
 		/* Bug #593336 — Query parameter "q=..." isn't valid for album kinds */
@@ -233,6 +237,7 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 
 	g_return_if_fail (GDATA_IS_PICASAWEB_SERVICE (self));
 	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
 	if (query != NULL && gdata_query_get_q (query) != NULL) {
@@ -282,6 +287,12 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 {
 	/* TODO: Async variant */
 	const gchar *uri;
+
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
+	g_return_val_if_fail (album == NULL || GDATA_IS_PICASAWEB_ALBUM (album), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (album != NULL) {
 		GDataLink *link = gdata_entry_look_up_link (GDATA_ENTRY (album), "http://schemas.google.com/g/2005#feed");
@@ -388,8 +399,8 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 	g_return_val_if_fail (album == NULL || GDATA_IS_PICASAWEB_ALBUM (album), NULL);
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (file_entry), NULL);
 	g_return_val_if_fail (G_IS_FILE (file_data), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (file_entry)) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
@@ -459,6 +470,7 @@ GDataPicasaWebFile *
 gdata_picasaweb_service_upload_file_finish (GDataPicasaWebService *self, GAsyncResult *result, GError **error)
 {
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* propagate any potential errors we might have encountered in g_output_stream_splice() or gdata_picasaweb_service_upload_file_async() */

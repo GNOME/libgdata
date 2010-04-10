@@ -694,7 +694,7 @@ gdata_feed_get_authors (GDataFeed *self)
 static void
 _gdata_feed_add_author (GDataFeed *self, GDataAuthor *author)
 {
-		self->priv->authors = g_list_prepend (self->priv->authors, g_object_ref (author));
+	self->priv->authors = g_list_prepend (self->priv->authors, g_object_ref (author));
 }
 
 /**

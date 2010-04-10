@@ -297,6 +297,9 @@ gdata_gd_who_new (const gchar *relation_type, const gchar *value_string, const g
 gint
 gdata_gd_who_compare (const GDataGDWho *a, const GDataGDWho *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_GD_WHO (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GD_WHO (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)

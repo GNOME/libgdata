@@ -144,6 +144,11 @@ real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer us
 GDataParsable *
 gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, GError **error)
 {
+	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE), NULL);
+	g_return_val_if_fail (xml != NULL && *xml != '\0', NULL);
+	g_return_val_if_fail (length >= -1, NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	return _gdata_parsable_new_from_xml (parsable_type, xml, length, NULL, error);
 }
 
@@ -158,6 +163,7 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE), NULL);
 	g_return_val_if_fail (xml != NULL && *xml != '\0', NULL);
 	g_return_val_if_fail (length >= -1, NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Set up libxml. We do this here to avoid introducing a libgdata setup function, which would be unnecessary hassle. This is the only place
 	 * that libxml can be initialised in the library. */
@@ -209,6 +215,7 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
 	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE), NULL);
 	g_return_val_if_fail (doc != NULL, NULL);
 	g_return_val_if_fail (node != NULL, NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	parsable = g_object_new (parsable_type, NULL);
 
@@ -292,6 +299,7 @@ gdata_parsable_get_xml (GDataParsable *self)
 /*
  * _gdata_parsable_get_xml:
  * @self: a #GDataParsable
+ * @xml_string: a #GString to build the XML in
  * @declare_namespaces: %TRUE if all the namespaces used in the outputted XML should be declared in the opening tag of the root element, %FALSE otherwise
  *
  * Builds an XML representation of the #GDataParsable in its current state, such that it could be inserted on the server. If @declare_namespaces is
@@ -308,6 +316,9 @@ _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean decl
 	GDataParsableClass *klass;
 	guint length;
 	GHashTable *namespaces = NULL; /* shut up, gcc */
+
+	g_return_if_fail (GDATA_IS_PARSABLE (self));
+	g_return_if_fail (xml_string != NULL);
 
 	klass = GDATA_PARSABLE_GET_CLASS (self);
 	g_assert (klass->element_name != NULL);

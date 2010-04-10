@@ -426,6 +426,11 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
 					   GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 					   GError **error)
 {
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	/* TODO: Support the "time" parameter, as well as category- and region-specific feeds */
 	return gdata_service_query (GDATA_SERVICE (self), standard_feed_type_to_feed_uri (feed_type), query,
 				    GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
@@ -455,6 +460,11 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
 						 GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 						 GAsyncReadyCallback callback, gpointer user_data)
 {
+	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
 	gdata_service_query_async (GDATA_SERVICE (self), standard_feed_type_to_feed_uri (feed_type), query,
 				   GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
@@ -480,6 +490,11 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
 				    GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 				    GError **error)
 {
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	return gdata_service_query (GDATA_SERVICE (self), "http://gdata.youtube.com/feeds/api/videos", query,
 				    GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
 }
@@ -507,6 +522,11 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
 					  GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
 					  GAsyncReadyCallback callback, gpointer user_data)
 {
+	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
 	gdata_service_query_async (GDATA_SERVICE (self), "http://gdata.youtube.com/feeds/api/videos", query,
 				   GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
@@ -534,6 +554,12 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
 				     GError **error)
 {
 	GDataLink *related_link;
+
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (video), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* See if the video already has a rel="http://gdata.youtube.com/schemas/2007#video.related" link */
 	related_link = gdata_entry_look_up_link (GDATA_ENTRY (video), "http://gdata.youtube.com/schemas/2007#video.related");
@@ -574,6 +600,12 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
 					   GAsyncReadyCallback callback, gpointer user_data)
 {
 	GDataLink *related_link;
+
+	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
+	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (video));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
 
 	/* See if the video already has a rel="http://gdata.youtube.com/schemas/2007#video.related" link */
 	related_link = gdata_entry_look_up_link (GDATA_ENTRY (video), "http://gdata.youtube.com/schemas/2007#video.related");

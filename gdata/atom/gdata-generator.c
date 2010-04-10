@@ -206,6 +206,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 gint
 gdata_generator_compare (const GDataGenerator *a, const GDataGenerator *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_GENERATOR (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GENERATOR (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)

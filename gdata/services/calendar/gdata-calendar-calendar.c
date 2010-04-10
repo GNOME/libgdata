@@ -270,26 +270,6 @@ gdata_calendar_calendar_set_property (GObject *object, guint property_id, const 
 	}
 }
 
-/**
- * gdata_calendar_calendar_new:
- * @id: the calendar's ID, or %NULL
- *
- * Creates a new #GDataCalendarCalendar with the given ID and default properties.
- *
- * Return value: a new #GDataCalendarCalendar; unref with g_object_unref()
- **/
-GDataCalendarCalendar *
-gdata_calendar_calendar_new (const gchar *id)
-{
-	GDataCalendarCalendar *calendar = GDATA_CALENDAR_CALENDAR (g_object_new (GDATA_TYPE_CALENDAR_CALENDAR, "id", id, NULL));
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(calendar->priv->edited));
-
-	return calendar;
-}
-
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
@@ -397,6 +377,26 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 	g_hash_table_insert (namespaces, (gchar*) "gCal", (gchar*) "http://schemas.google.com/gCal/2005");
 	g_hash_table_insert (namespaces, (gchar*) "app", (gchar*) "http://www.w3.org/2007/app");
+}
+
+/**
+ * gdata_calendar_calendar_new:
+ * @id: the calendar's ID, or %NULL
+ *
+ * Creates a new #GDataCalendarCalendar with the given ID and default properties.
+ *
+ * Return value: a new #GDataCalendarCalendar; unref with g_object_unref()
+ **/
+GDataCalendarCalendar *
+gdata_calendar_calendar_new (const gchar *id)
+{
+	GDataCalendarCalendar *calendar = GDATA_CALENDAR_CALENDAR (g_object_new (GDATA_TYPE_CALENDAR_CALENDAR, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(calendar->priv->edited));
+
+	return calendar;
 }
 
 /**

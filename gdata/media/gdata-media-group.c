@@ -498,6 +498,8 @@ gdata_media_group_get_contents (GDataMediaGroup *self)
 void
 _gdata_media_group_add_content (GDataMediaGroup *self, GDataMediaContent *content)
 {
+	g_return_if_fail (GDATA_IS_MEDIA_GROUP (self));
+	g_return_if_fail (GDATA_IS_MEDIA_CONTENT (content));
 	self->priv->contents = g_list_prepend (self->priv->contents, g_object_ref (content));
 }
 
@@ -519,6 +521,9 @@ gdata_media_group_get_credit (GDataMediaGroup *self)
 void
 _gdata_media_group_set_credit (GDataMediaGroup *self, GDataMediaCredit *credit)
 {
+	g_return_if_fail (GDATA_IS_MEDIA_GROUP (self));
+	g_return_if_fail (credit == NULL ||GDATA_IS_MEDIA_CREDIT (credit));
+
 	if (self->priv->credit != NULL)
 		g_object_unref (self->priv->credit);
 	self->priv->credit = g_object_ref (credit);
@@ -579,5 +584,7 @@ gdata_media_group_get_thumbnails (GDataMediaGroup *self)
 void
 _gdata_media_group_add_thumbnail (GDataMediaGroup *self, GDataMediaThumbnail *thumbnail)
 {
+	g_return_if_fail (GDATA_IS_MEDIA_GROUP (self));
+	g_return_if_fail (GDATA_IS_MEDIA_THUMBNAIL (thumbnail));
 	self->priv->thumbnails = g_list_prepend (self->priv->thumbnails, g_object_ref (thumbnail));
 }

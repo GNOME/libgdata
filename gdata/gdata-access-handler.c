@@ -159,7 +159,7 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 	gchar *upload_data;
 	guint status;
 
-	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
+	g_return_val_if_fail (GDATA_IS_ACCESS_HANDLER (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (rule), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
@@ -270,7 +270,7 @@ gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *servic
 	gchar *upload_data;
 	guint status;
 
-	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
+	g_return_val_if_fail (GDATA_IS_ACCESS_HANDLER (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (rule), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
@@ -336,7 +336,7 @@ gdata_access_handler_delete_rule (GDataAccessHandler *self, GDataService *servic
 	SoupMessage *message;
 	guint status;
 
-	g_return_val_if_fail (GDATA_IS_ENTRY (self), FALSE);
+	g_return_val_if_fail (GDATA_IS_ACCESS_HANDLER (self), FALSE);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), FALSE);
 	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (rule), FALSE);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);

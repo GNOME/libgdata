@@ -580,6 +580,7 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
 	SoupMessage *message;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (method != NULL, NULL);
 	g_return_val_if_fail (upload_uri != NULL, NULL);
 	g_return_val_if_fail (entry == NULL || GDATA_IS_ENTRY (entry), NULL);
 	g_return_val_if_fail (slug != NULL, NULL);

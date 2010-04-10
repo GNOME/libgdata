@@ -142,6 +142,7 @@ gdata_documents_presentation_download_document (GDataDocumentsPresentation *self
 	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Call the common download method on the parent class */
 	link_href = gdata_documents_presentation_get_download_uri (self, export_format);
@@ -170,6 +171,7 @@ gdata_documents_presentation_get_download_uri (GDataDocumentsPresentation *self,
 {
 	const gchar *document_id;
 
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_PRESENTATION (self), NULL);
 	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
 
 	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (self));

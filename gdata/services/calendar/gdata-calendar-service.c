@@ -102,6 +102,11 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
 	GDataFeed *feed;
 	gchar *request_uri;
 
+	g_return_val_if_fail (GDATA_IS_CALENDAR_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -141,6 +146,11 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
 {
 	gchar *request_uri;
 
+	g_return_if_fail (GDATA_IS_CALENDAR_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
@@ -178,6 +188,11 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
 {
 	GDataFeed *feed;
 	gchar *request_uri;
+
+	g_return_val_if_fail (GDATA_IS_CALENDAR_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
@@ -218,6 +233,11 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
 {
 	gchar *request_uri;
 
+	g_return_if_fail (GDATA_IS_CALENDAR_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
@@ -254,6 +274,12 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 {
 	/* TODO: Async variant */
 	const gchar *uri;
+
+	g_return_val_if_fail (GDATA_IS_CALENDAR_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_CALENDAR_CALENDAR (calendar), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
@@ -301,6 +327,8 @@ gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEv
 
 	g_return_val_if_fail (GDATA_IS_CALENDAR_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_CALENDAR_EVENT (event), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	uri = g_strdup_printf ("%s://www.google.com/calendar/feeds/%s/private/full",
 	                       _gdata_service_get_scheme (), gdata_service_get_username (GDATA_SERVICE (self)));

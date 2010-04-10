@@ -689,7 +689,7 @@ gdata_entry_get_content (GDataEntry *self)
 /**
  * gdata_entry_set_content:
  * @self: a #GDataEntry
- * @content: the new content for the entry
+ * @content: the new content for the entry, or %NULL
  *
  * Sets the entry's content to @content.
  **/
@@ -802,7 +802,7 @@ gdata_entry_add_author (GDataEntry *self, GDataAuthor *author)
 {
 	/* TODO: More author API */
 	g_return_if_fail (GDATA_IS_ENTRY (self));
-	g_return_if_fail (author != NULL);
+	g_return_if_fail (GDATA_IS_AUTHOR (author));
 
 	if (g_list_find_custom (self->priv->authors, author, (GCompareFunc) gdata_author_compare) == NULL)
 		self->priv->authors = g_list_prepend (self->priv->authors, g_object_ref (author));

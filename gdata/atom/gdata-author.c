@@ -265,6 +265,9 @@ gdata_author_new (const gchar *name, const gchar *uri, const gchar *email_addres
 gint
 gdata_author_compare (const GDataAuthor *a, const GDataAuthor *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_AUTHOR (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_AUTHOR (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)

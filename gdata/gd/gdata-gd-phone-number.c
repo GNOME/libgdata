@@ -335,6 +335,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 GDataGDPhoneNumber *
 gdata_gd_phone_number_new (const gchar *number, const gchar *relation_type, const gchar *label, const gchar *uri, gboolean is_primary)
 {
+	g_return_val_if_fail (number != NULL && *number != '\0', NULL);
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_PHONE_NUMBER, "number", number, "uri", uri, "relation-type", relation_type,
 			     "label", label, "is-primary", is_primary, NULL);
@@ -359,6 +360,9 @@ gdata_gd_phone_number_new (const gchar *number, const gchar *relation_type, cons
 gint
 gdata_gd_phone_number_compare (const GDataGDPhoneNumber *a, const GDataGDPhoneNumber *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_GD_PHONE_NUMBER (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GD_PHONE_NUMBER (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)

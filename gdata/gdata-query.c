@@ -548,6 +548,9 @@ gdata_query_get_query_uri (GDataQuery *self, const gchar *feed_uri)
 	GString *query_uri;
 	gboolean params_started;
 
+	g_return_val_if_fail (GDATA_IS_QUERY (self), NULL);
+	g_return_val_if_fail (feed_uri != NULL, NULL);
+
 	/* Check to see if we're paginating first */
 	if (self->priv->use_next_uri == TRUE)
 		return g_strdup (self->priv->next_uri);
@@ -1079,6 +1082,8 @@ gdata_query_next_page (GDataQuery *self)
 {
 	GDataQueryPrivate *priv = self->priv;
 
+	g_return_if_fail (GDATA_IS_QUERY (self));
+
 	if (priv->next_uri != NULL) {
 		priv->use_next_uri = TRUE;
 		priv->use_previous_uri = FALSE;
@@ -1107,6 +1112,8 @@ gboolean
 gdata_query_previous_page (GDataQuery *self)
 {
 	GDataQueryPrivate *priv = self->priv;
+
+	g_return_val_if_fail (GDATA_IS_QUERY (self), FALSE);
 
 	if (priv->next_uri != NULL) {
 		priv->use_previous_uri = TRUE;

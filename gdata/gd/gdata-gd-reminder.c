@@ -297,6 +297,7 @@ GDataGDReminder *
 gdata_gd_reminder_new (const gchar *method, const GTimeVal *absolute_time, gint relative_time)
 {
 	g_return_val_if_fail (absolute_time == NULL || relative_time == -1, NULL);
+	g_return_val_if_fail (relative_time >= -1, NULL);
 	return g_object_new (GDATA_TYPE_GD_REMINDER, "absolute-time", absolute_time, "relative-time", relative_time, "method", method, NULL);
 }
 
@@ -320,6 +321,9 @@ gint
 gdata_gd_reminder_compare (const GDataGDReminder *a, const GDataGDReminder *b)
 {
 	gint method_cmp;
+
+	g_return_val_if_fail (a == NULL || GDATA_IS_GD_REMINDER (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GD_REMINDER (b), 0);
 
 	if (a == NULL && b != NULL)
 		return -1;

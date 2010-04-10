@@ -430,26 +430,6 @@ gdata_calendar_event_set_property (GObject *object, guint property_id, const GVa
 	}
 }
 
-/**
- * gdata_calendar_event_new:
- * @id: the event's ID, or %NULL
- *
- * Creates a new #GDataCalendarEvent with the given ID and default properties.
- *
- * Return value: a new #GDataCalendarEvent; unref with g_object_unref()
- **/
-GDataCalendarEvent *
-gdata_calendar_event_new (const gchar *id)
-{
-	GDataCalendarEvent *event = GDATA_CALENDAR_EVENT (g_object_new (GDATA_TYPE_CALENDAR_EVENT, "id", id, NULL));
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(event->priv->edited));
-
-	return event;
-}
-
 static gboolean
 parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
 {
@@ -657,6 +637,26 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 }
 
 /**
+ * gdata_calendar_event_new:
+ * @id: the event's ID, or %NULL
+ *
+ * Creates a new #GDataCalendarEvent with the given ID and default properties.
+ *
+ * Return value: a new #GDataCalendarEvent; unref with g_object_unref()
+ **/
+GDataCalendarEvent *
+gdata_calendar_event_new (const gchar *id)
+{
+	GDataCalendarEvent *event = GDATA_CALENDAR_EVENT (g_object_new (GDATA_TYPE_CALENDAR_EVENT, "id", id, NULL));
+
+	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+	 * setting it from parse_xml() to fail (duplicate element). */
+	g_get_current_time (&(event->priv->edited));
+
+	return event;
+}
+
+/**
  * gdata_calendar_event_get_edited:
  * @self: a #GDataCalendarEvent
  * @edited: a #GTimeVal
@@ -831,7 +831,7 @@ gdata_calendar_event_get_sequence (GDataCalendarEvent *self)
 /**
  * gdata_calendar_event_set_sequence:
  * @self: a #GDataCalendarEvent
- * @sequence: a new sequence number, or %NULL
+ * @sequence: a new sequence number, or <code class="literal">0</code>
  *
  * Sets the #GDataCalendarEvent:sequence property to the new sequence number, @sequence.
  **/
@@ -976,7 +976,7 @@ void
 gdata_calendar_event_add_person (GDataCalendarEvent *self, GDataGDWho *who)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (self));
-	g_return_if_fail (who != NULL);
+	g_return_if_fail (GDATA_IS_GD_WHO (who));
 
 	if (g_list_find_custom (self->priv->people, who, (GCompareFunc) gdata_gd_who_compare) == NULL)
 		self->priv->people = g_list_append (self->priv->people, g_object_ref (who));
@@ -1012,7 +1012,7 @@ void
 gdata_calendar_event_add_place (GDataCalendarEvent *self, GDataGDWhere *where)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (self));
-	g_return_if_fail (where != NULL);
+	g_return_if_fail (GDATA_IS_GD_WHERE (where));
 
 	if (g_list_find_custom (self->priv->places, where, (GCompareFunc) gdata_gd_where_compare) == NULL)
 		self->priv->places = g_list_append (self->priv->places, g_object_ref (where));

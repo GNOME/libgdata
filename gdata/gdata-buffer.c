@@ -75,6 +75,8 @@ gdata_buffer_free (GDataBuffer *self)
 {
 	GDataBufferChunk *chunk, *next_chunk;
 
+	g_return_if_fail (self != NULL);
+
 	for (chunk = self->head; chunk != NULL; chunk = next_chunk) {
 		next_chunk = chunk->next;
 		g_free (chunk);
@@ -108,6 +110,8 @@ gboolean
 gdata_buffer_push_data (GDataBuffer *self, const guint8 *data, gsize length)
 {
 	GDataBufferChunk *chunk;
+
+	g_return_val_if_fail (self != NULL, 0);
 
 	g_static_mutex_lock (&(self->mutex));
 
@@ -194,13 +198,18 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	GDataBufferChunk *chunk;
 	gsize return_length = 0, length_remaining;
 
+	g_return_val_if_fail (self != NULL, 0);
+	g_return_val_if_fail (data != NULL, 0);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), 0);
+
 	/* In the case:
 	 *  - length_requested < amount available: return length_requested
 	 *  - length_requested > amount available: block until more is available, return length_requested
 	 *  - length_requested > amount available and we've reached EOF: don't block, return all remaining data
 	 *  - length_requested is a whole number of chunks: remove those chunks, return length_requested
 	 *  - length_requested is less than one chunk: remove no chunks, return length_requested, set head_read_offset
-	 *  - length_requested is a fraction of multiple chunks: remove whole chunks, return length_requested, set head_read_offset for remaining fraction
+	 *  - length_requested is a fraction of multiple chunks: remove whole chunks, return length_requested, set head_read_offset
+	 *    for remaining fraction
 	 */
 
 	g_static_mutex_lock (&(self->mutex));
@@ -302,7 +311,7 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
  * @maximum_length: the maximum number of bytes to return
  * @reached_eof: return location for a value which is %TRUE when we've reached EOF, %FALSE otherwise, or %NULL
  *
- * Pops as much data as possible off the #GDataBuffer, up to a limit of @maxium_length bytes. If fewer bytes exist
+ * Pops as much data as possible off the #GDataBuffer, up to a limit of @maximum_length bytes. If fewer bytes exist
  * in the buffer, fewer bytes will be returned. If more bytes exist in the buffer, @maximum_length bytes will be returned.
  *
  * If <code class="literal">0</code> bytes exist in the buffer, this function will block until data is available. Otherwise, it will never block.
@@ -314,6 +323,10 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 gsize
 gdata_buffer_pop_data_limited (GDataBuffer *self, guint8 *data, gsize maximum_length, gboolean *reached_eof)
 {
+	g_return_val_if_fail (self != NULL, 0);
+	g_return_val_if_fail (data != NULL, 0);
+	g_return_val_if_fail (maximum_length > 0, 0);
+
 	/* If there's no data in the buffer, block until some is available */
 	g_static_mutex_lock (&(self->mutex));
 	if (self->total_length == 0 && self->reached_eof == FALSE)

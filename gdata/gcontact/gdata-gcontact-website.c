@@ -307,6 +307,9 @@ gdata_gcontact_website_new (const gchar *uri, const gchar *relation_type, const 
 gint
 gdata_gcontact_website_compare (const GDataGContactWebsite *a, const GDataGContactWebsite *b)
 {
+	g_return_val_if_fail (a == NULL || GDATA_IS_GCONTACT_WEBSITE (a), 0);
+	g_return_val_if_fail (b == NULL || GDATA_IS_GCONTACT_WEBSITE (b), 0);
+
 	if (a == NULL && b != NULL)
 		return -1;
 	else if (a != NULL && b == NULL)
