@@ -289,7 +289,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 /**
  * gdata_documents_query_new:
- * @q: a query string
+ * @q: a query string, or %NULL
  *
  * Creates a new #GDataDocumentsQuery with its #GDataQuery:q property set to @q.
  *
@@ -305,9 +305,9 @@ gdata_documents_query_new (const gchar *q)
 
 /**
  * gdata_documents_query_new_with_limits:
- * @q: a query string
- * @start_index: a one-based start index for the results
- * @max_results: the maximum number of results to return
+ * @q: a query string, or %NULL
+ * @start_index: a one-based start index for the results, or <code class="literal">0</code>
+ * @max_results: the maximum number of results to return, or <code class="literal">0</code>
  *
  * Creates a new #GDataDocumentsQuery with its #GDataQuery:q property set to @q, and the limits @start_index and @max_results
  * applied.
@@ -317,7 +317,7 @@ gdata_documents_query_new (const gchar *q)
  * Since: 0.4.0
  **/
 GDataDocumentsQuery *
-gdata_documents_query_new_with_limits (const gchar *q, gint start_index, gint max_results)
+gdata_documents_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
 {
 	return g_object_new (GDATA_TYPE_DOCUMENTS_QUERY,
 			     "q", q,

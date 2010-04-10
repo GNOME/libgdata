@@ -335,7 +335,7 @@ test_feed_parse_xml (void)
 			"</author>"
 			"<generator version='0.6' uri='http://example.com/'>Example Generator</generator>"
 			"<openSearch:totalResults>2</openSearch:totalResults>"
-			"<openSearch:startIndex>0</openSearch:startIndex>"
+			"<openSearch:startIndex>1</openSearch:startIndex>"
 			"<openSearch:itemsPerPage>50</openSearch:itemsPerPage>"
 			"<entry>"
 				"<id>entry1</id>"
@@ -391,7 +391,7 @@ test_feed_parse_xml (void)
 	g_assert_cmpstr (gdata_generator_get_version (generator), ==, "0.6");
 
 	g_assert_cmpuint (items_per_page, ==, 50);
-	g_assert_cmpuint (start_index, ==, 0);
+	g_assert_cmpuint (start_index, ==, 1);
 	g_assert_cmpuint (total_results, ==, 2);
 
 	g_free (title);
@@ -471,7 +471,7 @@ test_feed_parse_xml (void)
 	g_assert_cmpstr (gdata_generator_get_version (generator), ==, "0.6");
 
 	g_assert_cmpuint (gdata_feed_get_items_per_page (feed), ==, 50);
-	g_assert_cmpuint (gdata_feed_get_start_index (feed), ==, 0);
+	g_assert_cmpuint (gdata_feed_get_start_index (feed), ==, 1);
 	g_assert_cmpuint (gdata_feed_get_total_results (feed), ==, 2);
 
 	g_object_unref (feed);

@@ -234,11 +234,13 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 *
 	 * The one-based index of the first result to be retrieved. Use gdata_query_next_page() and gdata_query_previous_page() to
 	 * implement pagination, rather than manually changing #GDataQuery:start-index.
+	 *
+	 * Use <code class="literal">0</code> to not specify a start index.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_INDEX,
-				g_param_spec_int ("start-index",
-					"Start index", "Zero-based result start index.",
-					-1, G_MAXINT, -1,
+				g_param_spec_uint ("start-index",
+					"Start index", "One-based result start index.",
+					0, G_MAXUINT, 0,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -259,12 +261,14 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * GDataQuery:max-results:
 	 *
 	 * Maximum number of results to be retrieved. Most services have a default #GDataQuery:max-results size imposed by the server; if you wish
-	 * to receive the entire feed, specify a large number such as %G_MAXINT for this property.
+	 * to receive the entire feed, specify a large number such as %G_MAXUINT for this property.
+	 *
+	 * Use <code class="literal">0</code> to not specify a maximum number of results.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MAX_RESULTS,
-				g_param_spec_int ("max-results",
+				g_param_spec_uint ("max-results",
 					"Maximum number of results", "The maximum number of entries to return.",
-					-1, G_MAXINT, -1,
+					0, G_MAXUINT, 0,
 					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -289,8 +293,6 @@ static void
 gdata_query_init (GDataQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_QUERY, GDataQueryPrivate);
-	self->priv->start_index = -1;
-	self->priv->max_results = -1;
 }
 
 static void
@@ -339,13 +341,13 @@ gdata_query_get_property (GObject *object, guint property_id, GValue *value, GPa
 			g_value_set_boxed (value, &(priv->published_max));
 			break;
 		case PROP_START_INDEX:
-			g_value_set_int (value, priv->start_index);
+			g_value_set_uint (value, priv->start_index);
 			break;
 		case PROP_IS_STRICT:
 			g_value_set_boolean (value, priv->is_strict);
 			break;
 		case PROP_MAX_RESULTS:
-			g_value_set_int (value, priv->max_results);
+			g_value_set_uint (value, priv->max_results);
 			break;
 		case PROP_ETAG:
 			g_value_set_string (value, priv->etag);
@@ -385,13 +387,13 @@ gdata_query_set_property (GObject *object, guint property_id, const GValue *valu
 			gdata_query_set_published_max (self, g_value_get_boxed (value));
 			break;
 		case PROP_START_INDEX:
-			gdata_query_set_start_index (self, g_value_get_int (value));
+			gdata_query_set_start_index (self, g_value_get_uint (value));
 			break;
 		case PROP_IS_STRICT:
 			gdata_query_set_is_strict (self, g_value_get_boolean (value));
 			break;
 		case PROP_MAX_RESULTS:
-			gdata_query_set_max_results (self, g_value_get_int (value));
+			gdata_query_set_max_results (self, g_value_get_uint (value));
 			break;
 		case PROP_ETAG:
 			gdata_query_set_etag (self, g_value_get_string (value));
@@ -478,7 +480,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	if (priv->start_index > 0) {
 		APPEND_SEP
-		g_string_append_printf (query_uri, "start-index=%d", priv->start_index);
+		g_string_append_printf (query_uri, "start-index=%u", priv->start_index);
 	}
 
 	if (priv->is_strict == TRUE) {
@@ -488,7 +490,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	if (priv->max_results > 0) {
 		APPEND_SEP
-		g_string_append_printf (query_uri, "max-results=%d", priv->max_results);
+		g_string_append_printf (query_uri, "max-results=%u", priv->max_results);
 	}
 }
 
@@ -509,8 +511,8 @@ gdata_query_new (const gchar *q)
 /**
  * gdata_query_new_with_limits:
  * @q: a query string
- * @start_index: a one-based start index for the results
- * @max_results: the maximum number of results to return
+ * @start_index: a one-based start index for the results, or <code class="literal">0</code>
+ * @max_results: the maximum number of results to return, or <code class="literal">0</code>
  *
  * Creates a new #GDataQuery with its #GDataQuery:q property set to @q, and the limits @start_index and @max_results
  * applied.
@@ -518,7 +520,7 @@ gdata_query_new (const gchar *q)
  * Return value: a new #GDataQuery
  **/
 GDataQuery *
-gdata_query_new_with_limits (const gchar *q, gint start_index, gint max_results)
+gdata_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
 {
 	return g_object_new (GDATA_TYPE_QUERY,
 			     "q", q,
@@ -880,37 +882,32 @@ gdata_query_set_published_max (GDataQuery *self, const GTimeVal *published_max)
  *
  * Gets the #GDataQuery:start-index property.
  *
- * Return value: the start index property, or <code class="literal">-1</code> if it is unset
+ * Return value: the start index property, or <code class="literal">0</code> if it is unset
  **/
-gint
+guint
 gdata_query_get_start_index (GDataQuery *self)
 {
-	g_return_val_if_fail (GDATA_IS_QUERY (self), -1);
+	g_return_val_if_fail (GDATA_IS_QUERY (self), 0);
 	return self->priv->start_index;
 }
 
 /**
  * gdata_query_set_start_index:
  * @self: a #GDataQuery
- * @start_index: the new start index
+ * @start_index: the new start index, or <code class="literal">0</code>
  *
  * Sets the #GDataQuery:start-index property of the #GDataQuery to the new one-based start index, @start_index.
  *
- * Set @start_index to <code class="literal">-1</code> or <code class="literal">0</code> to unset the property in the query URI.
+ * Set @start_index to <code class="literal">0</code> to unset the property in the query URI.
  **/
 void
-gdata_query_set_start_index (GDataQuery *self, gint start_index)
+gdata_query_set_start_index (GDataQuery *self, guint start_index)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
-	g_return_if_fail (start_index >= -1);
-
-	/* Normalise it first */
-	if (start_index <= 0)
-		start_index = -1;
 
 	self->priv->start_index = start_index;
 
-	if (start_index == -1)
+	if (start_index == 0)
 		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_START_INDEX;
 	else
 		self->priv->parameter_mask |= GDATA_QUERY_PARAM_START_INDEX;
@@ -971,33 +968,32 @@ gdata_query_set_is_strict (GDataQuery *self, gboolean is_strict)
  *
  * Gets the #GDataQuery:max-results property.
  *
- * Return value: the maximum results property, or <code class="literal">-1</code> if it is unset
+ * Return value: the maximum results property, or <code class="literal">0</code> if it is unset
  **/
-gint
+guint
 gdata_query_get_max_results (GDataQuery *self)
 {
-	g_return_val_if_fail (GDATA_IS_QUERY (self), -1);
+	g_return_val_if_fail (GDATA_IS_QUERY (self), 0);
 	return self->priv->max_results;
 }
 
 /**
  * gdata_query_set_max_results:
  * @self: a #GDataQuery
- * @max_results: the new maximum results value
+ * @max_results: the new maximum results value, or <code class="literal">0</code>
  *
  * Sets the #GDataQuery:max-results property of the #GDataQuery to the new maximum results value, @max_results.
  *
- * Set @max_results to <code class="literal">-1</code> to unset the property in the query URI.
+ * Set @max_results to <code class="literal">0</code> to unset the property in the query URI.
  **/
 void
-gdata_query_set_max_results (GDataQuery *self, gint max_results)
+gdata_query_set_max_results (GDataQuery *self, guint max_results)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
-	g_return_if_fail (max_results >= -1);
 
 	self->priv->max_results = max_results;
 
-	if (max_results == -1)
+	if (max_results == 0)
 		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_MAX_RESULTS;
 	else
 		self->priv->parameter_mask |= GDATA_QUERY_PARAM_MAX_RESULTS;
@@ -1087,6 +1083,8 @@ gdata_query_next_page (GDataQuery *self)
 		priv->use_next_uri = TRUE;
 		priv->use_previous_uri = FALSE;
 	} else {
+		if (priv->start_index == 0)
+			priv->start_index++;
 		priv->start_index += priv->max_results;
 	}
 
@@ -1113,10 +1111,12 @@ gdata_query_previous_page (GDataQuery *self)
 	if (priv->next_uri != NULL) {
 		priv->use_previous_uri = TRUE;
 		priv->use_next_uri = FALSE;
-	} else if (priv->start_index < priv->max_results) {
+	} else if (priv->start_index <= priv->max_results) {
 		return FALSE;
 	} else {
 		priv->start_index -= priv->max_results;
+		if (priv->start_index == 1)
+			priv->start_index--;
 	}
 
 	/* Our current ETag will no longer be relevant */

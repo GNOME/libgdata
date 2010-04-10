@@ -510,7 +510,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 /**
  * gdata_youtube_query_new:
- * @q: a query string
+ * @q: a query string, or %NULL
  *
  * Creates a new #GDataYouTubeQuery with its #GDataQuery:q property set to @q.
  *

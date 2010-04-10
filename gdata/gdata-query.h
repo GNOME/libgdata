@@ -59,7 +59,7 @@ typedef struct {
 GType gdata_query_get_type (void) G_GNUC_CONST;
 
 GDataQuery *gdata_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-GDataQuery *gdata_query_new_with_limits (const gchar *q, gint start_index, gint max_results) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataQuery *gdata_query_new_with_limits (const gchar *q, guint start_index, guint max_results) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 gchar *gdata_query_get_query_uri (GDataQuery *self, const gchar *feed_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_query_next_page (GDataQuery *self);
@@ -79,12 +79,12 @@ void gdata_query_get_published_min (GDataQuery *self, GTimeVal *published_min);
 void gdata_query_set_published_min (GDataQuery *self, const GTimeVal *published_min);
 void gdata_query_get_published_max (GDataQuery *self, GTimeVal *published_max);
 void gdata_query_set_published_max (GDataQuery *self, const GTimeVal *published_max);
-gint gdata_query_get_start_index (GDataQuery *self);
-void gdata_query_set_start_index (GDataQuery *self, gint start_index);
+guint gdata_query_get_start_index (GDataQuery *self);
+void gdata_query_set_start_index (GDataQuery *self, guint start_index);
 gboolean gdata_query_is_strict (GDataQuery *self);
 void gdata_query_set_is_strict (GDataQuery *self, gboolean is_strict);
-gint gdata_query_get_max_results (GDataQuery *self);
-void gdata_query_set_max_results (GDataQuery *self, gint max_results);
+guint gdata_query_get_max_results (GDataQuery *self);
+void gdata_query_set_max_results (GDataQuery *self, guint max_results);
 const gchar *gdata_query_get_etag (GDataQuery *self);
 void gdata_query_set_etag (GDataQuery *self, const gchar *etag);
 
