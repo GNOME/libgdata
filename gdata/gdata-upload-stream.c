@@ -351,7 +351,7 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 		const gchar *first_part_header;
 		gchar *entry_xml, *second_part_header;
 
-		first_part_header = "--" BOUNDARY_STRING "\nContent-Type: application/atom+xml; charset=UTF-8\n\n<?xml version='1.0'?>";
+		first_part_header = "--" BOUNDARY_STRING "\nContent-Type: application/atom+xml; charset=UTF-8\n\n";
 		entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (priv->entry));
 		second_part_header = g_strdup_printf ("\n--" BOUNDARY_STRING "\nContent-Type: %s\nContent-Transfer-Encoding: binary\n\n",
 		                                      priv->content_type);

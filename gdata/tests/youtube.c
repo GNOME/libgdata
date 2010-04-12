@@ -284,6 +284,7 @@ test_upload_simple (gconstpointer service)
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
 	g_assert_cmpstr (xml, ==,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
@@ -418,6 +419,7 @@ test_parsing_yt_recorded (gconstpointer service)
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
 	g_assert_cmpstr (xml, ==,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
@@ -506,6 +508,7 @@ test_parsing_yt_access_control (gconstpointer service)
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
 	g_assert_cmpstr (xml, ==,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "

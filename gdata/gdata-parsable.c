@@ -291,7 +291,8 @@ gdata_parsable_get_xml (GDataParsable *self)
 
 	g_return_val_if_fail (GDATA_IS_PARSABLE (self), NULL);
 
-	xml_string = g_string_sized_new (100);
+	xml_string = g_string_sized_new (1000);
+	g_string_append (xml_string, "<?xml version='1.0' encoding='UTF-8'?>");
 	_gdata_parsable_get_xml (self, xml_string, TRUE);
 	return g_string_free (xml_string, FALSE);
 }

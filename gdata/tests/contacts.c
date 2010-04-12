@@ -338,6 +338,7 @@ test_insert_simple (gconstpointer service)
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
 	g_assert_cmpstr (xml, ==,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
 				"xmlns:app='http://www.w3.org/2007/app' "

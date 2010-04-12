@@ -260,6 +260,7 @@ test_insert_simple (gconstpointer service)
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
 	g_assert_cmpstr (xml, ==,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 	"xmlns:gd='http://schemas.google.com/g/2005' "
 			 	"xmlns:gCal='http://schemas.google.com/gCal/2005' "
@@ -366,6 +367,7 @@ test_xml_dates (gconstpointer service)
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
 	g_assert_cmpstr (xml, ==,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 	"xmlns:gd='http://schemas.google.com/g/2005' "
 			 	"xmlns:gCal='http://schemas.google.com/gCal/2005' "
@@ -595,6 +597,7 @@ test_acls_insert_rule (gconstpointer service)
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
 	g_assert_cmpstr (xml, ==,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 	"xmlns:gd='http://schemas.google.com/g/2005' "
 			 	"xmlns:gAcl='http://schemas.google.com/acl/2007'>"
