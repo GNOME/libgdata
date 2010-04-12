@@ -41,7 +41,20 @@
 #include "gdata-private.h"
 #include "gdata-access-rule.h"
 
-G_DEFINE_INTERFACE (GDataAccessHandler, gdata_access_handler, GDATA_TYPE_ENTRY)
+GType
+gdata_access_handler_get_type (void)
+{
+	static GType access_handler_type = 0;
+
+	if (!access_handler_type) {
+		access_handler_type = g_type_register_static_simple (G_TYPE_INTERFACE, "GDataAccessHandler",
+		                                                     sizeof (GDataAccessHandlerIface),
+		                                                     NULL, 0, NULL, 0);
+		g_type_interface_add_prerequisite (access_handler_type, GDATA_TYPE_ENTRY);
+	}
+
+	return access_handler_type;
+}
 
 /**
  * gdata_access_handler_get_rules:
