@@ -108,7 +108,8 @@ const gchar *gdata_picasaweb_file_get_version (GDataPicasaWebFile *self);
 gdouble gdata_picasaweb_file_get_position (GDataPicasaWebFile *self);
 void gdata_picasaweb_file_set_position (GDataPicasaWebFile *self, gdouble position);
 const gchar *gdata_picasaweb_file_get_album_id (GDataPicasaWebFile *self);
-void gdata_picasaweb_file_set_album_id (GDataPicasaWebFile *self, const gchar *album_id); /* TODO should we have a more obvious _move() API too? nah */
+/* TODO should we have a more obvious _move() API too? nah */
+void gdata_picasaweb_file_set_album_id (GDataPicasaWebFile *self, const gchar *album_id);
 guint gdata_picasaweb_file_get_width (GDataPicasaWebFile *self);
 guint gdata_picasaweb_file_get_height (GDataPicasaWebFile *self);
 gsize gdata_picasaweb_file_get_size (GDataPicasaWebFile *self);

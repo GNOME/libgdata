@@ -100,10 +100,10 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_TIME,
-				g_param_spec_boxed ("start-time",
-					"Start time", "The name of the when.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("start-time",
+	                                                     "Start time", "The name of the when.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDWhen:end-time:
@@ -116,10 +116,10 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_END_TIME,
-				g_param_spec_boxed ("end-time",
-					"End time", "The title of a person within the when.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("end-time",
+	                                                     "End time", "The title of a person within the when.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDWhen:is-date:
@@ -132,10 +132,10 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_DATE,
-				g_param_spec_boolean ("is-date",
-					"Date?", "A programmatic value that identifies the type of when.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-date",
+	                                                       "Date?", "A programmatic value that identifies the type of when.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDWhen:value-string:
@@ -149,10 +149,10 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VALUE_STRING,
-				g_param_spec_string ("value-string",
-					"Value string", "A simple string value used to name this when.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("value-string",
+	                                                      "Value string", "A simple string value used to name this when.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

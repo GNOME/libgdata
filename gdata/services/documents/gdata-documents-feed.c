@@ -98,15 +98,15 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		GDataEntry *entry = NULL;
 		gchar *kind = get_kind (doc, node);
 
-		if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#spreadsheet") == 0)
+		if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#spreadsheet") == 0) {
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_SPREADSHEET, doc, node, NULL, error));
-		else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#document") == 0)
+		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#document") == 0) {
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_TEXT, doc, node, NULL, error));
-		else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#presentation") == 0)
+		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#presentation") == 0) {
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_PRESENTATION, doc, node, NULL, error));
-		else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#folder") == 0)
+		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#folder") == 0) {
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_FOLDER, doc, node, NULL, error));
-		else {
+		} else {
 			g_message ("%s documents are not handled yet", kind);
 			g_free (kind);
 			return TRUE;

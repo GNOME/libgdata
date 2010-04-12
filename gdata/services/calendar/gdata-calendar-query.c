@@ -86,15 +86,15 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	/**
 	 * GDataCalendarQuery:future-events:
 	 *
-	 * A shortcut to request all events that are scheduled for future times. Overrides the
+	 * A shortcut to request all events scheduled for the future. Overrides the
 	 * #GDataCalendarQuery:recurrence-expansion-start, #GDataCalendarQuery:recurrence-expansion-end,
 	 * #GDataCalendarQuery:start-min and #GDataCalendarQuery:start-max properties.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FUTURE_EVENTS,
-				g_param_spec_boolean ("future-events",
-					"Future events?", "A shortcut to request all events that are scheduled for future times.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("future-events",
+	                                                       "Future events?", "A shortcut to request all events scheduled for the future.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarQuery:order-by:
@@ -103,32 +103,32 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * <literal>starttime</literal>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ORDER_BY,
-				g_param_spec_string ("order-by",
-					"Order by", "Specifies order of entries in a feed.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("order-by",
+	                                                      "Order by", "Specifies order of entries in a feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarQuery:recurrence-expansion-start:
 	 *
-	 * Specifies beginning of time period for which to expand recurring events, inclusive.
+	 * Specifies the beginning of the time period to expand recurring events for, inclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RECURRENCE_EXPANSION_START,
-				g_param_spec_boxed ("recurrence-expansion-start",
-					"Recurrence expansion start", "Specifies beginning of time period for which to expand recurring events.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("recurrence-expansion-start",
+	                                                     "Recurrence expansion start", "Specifies start of period to expand recurrences for.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarQuery:recurrence-expansion-end:
 	 *
-	 * Specifies end of time period for which to expand recurring events, exclusive.
+	 * Specifies the end of the time period to expand recurring events for, exclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RECURRENCE_EXPANSION_END,
-				g_param_spec_boxed ("recurrence-expansion-end",
-					"Recurrence expansion end", "Specifies end of time period for which to expand recurring events.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("recurrence-expansion-end",
+	                                                     "Recurrence expansion end", "Specifies end of period to expand recurrences for.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarQuery:single-events:
@@ -136,10 +136,10 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * Indicates whether recurring events should be expanded or represented as a single event.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SINGLE_EVENTS,
-				g_param_spec_boolean ("single-events",
-					"Single events?", "Indicates whether recurring events should be expanded or represented as a single event.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("single-events",
+	                                                       "Single events?", "Indicates whether recurring events should be expanded.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarQuery:sort-order:
@@ -148,15 +148,15 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * <literal>descending</literal>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
-				g_param_spec_string ("sort-order",
-					"Sort order", "Specifies direction of sorting.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("sort-order",
+	                                                      "Sort order", "Specifies direction of sorting.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarQuery:start-min:
 	 *
-	 * Together with #GDataCalendarQuery:start-max creates a timespan such that only events that are within the timespan are returned.
+	 * Together with #GDataCalendarQuery:start-max, creates a timespan such that only events within the timespan are returned.
 	 *
 	 * #GDataCalendarQuery:start-min is inclusive, while #GDataCalendarQuery:start-max is exclusive. Events that overlap the range are
 	 * included.
@@ -164,15 +164,15 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * If not specified, the default #GDataCalendarQuery:start-min is <literal>1970-01-01</literal>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_MIN,
-				g_param_spec_boxed ("start-min",
-					"Start min", "A timespan such that only events that are within the timespan are returned.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("start-min",
+	                                                     "Start min", "A timespan such that only events within the timespan are returned.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarQuery:start-max:
 	 *
-	 * Together with #GDataCalendarQuery:start-min creates a timespan such that only events that are within the timespan are returned
+	 * Together with #GDataCalendarQuery:start-min, creates a timespan such that only events within the timespan are returned
 	 *
 	 * #GDataCalendarQuery:start-min is inclusive, while #GDataCalendarQuery:start-max is exclusive. Events that overlap the range are
 	 * included.
@@ -180,23 +180,23 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * If not specified, the default #GDataCalendarQuery:start-max is <literal>2031-01-01</literal>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_MAX,
-				g_param_spec_boxed ("start-max",
-					"Start max", "A timespan such that only events that are within the timespan are returned.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("start-max",
+	                                                     "Start max", "A timespan such that only events within the timespan are returned.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarQuery:timezone:
 	 *
-	 * The current timezone. If not specified, times are returned in UTC.
+	 * The current timezone. If this is not specified, all times are returned in UTC.
 	 *
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
-				g_param_spec_string ("timezone",
-					"Timezone", "The current timezone. If not specified, times are returned in UTC.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("timezone",
+	                                                      "Timezone", "The current timezone.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -408,10 +408,10 @@ GDataCalendarQuery *
 gdata_calendar_query_new_with_limits (const gchar *q, const GTimeVal *start_min, const GTimeVal *start_max)
 {
 	return g_object_new (GDATA_TYPE_CALENDAR_QUERY,
-			     "q", q,
-			     "start-min", start_min,
-			     "start-max", start_max,
-			     NULL);
+	                     "q", q,
+	                     "start-min", start_min,
+	                     "start-max", start_max,
+	                     NULL);
 }
 
 /**

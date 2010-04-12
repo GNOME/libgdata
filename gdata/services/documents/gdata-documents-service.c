@@ -62,7 +62,7 @@ static void gdata_documents_service_get_property (GObject *object, guint propert
 static void notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self);
 static void notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self);
 static GDataDocumentsEntry *upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-						    const gchar *method, const gchar *upload_uri, GCancellable *cancellable, GError **error);
+                                                    const gchar *method, const gchar *upload_uri, GCancellable *cancellable, GError **error);
 
 struct _GDataDocumentsServicePrivate {
 	GDataService *spreadsheet_service;
@@ -100,10 +100,10 @@ gdata_documents_service_class_init (GDataDocumentsServiceClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SPREADSHEET_SERVICE,
-				g_param_spec_object ("spreadsheet-service",
-					"Spreadsheet service", "Another service for spreadsheets.",
-					GDATA_TYPE_SERVICE,
-					G_PARAM_READABLE));
+	                                 g_param_spec_object ("spreadsheet-service",
+	                                                      "Spreadsheet service", "Another service for spreadsheets.",
+	                                                      GDATA_TYPE_SERVICE,
+	                                                      G_PARAM_READABLE));
 }
 
 static void
@@ -158,8 +158,8 @@ gdata_documents_service_new (const gchar *client_id)
 	g_return_val_if_fail (client_id != NULL, NULL);
 
 	return g_object_new (GDATA_TYPE_DOCUMENTS_SERVICE,
-			     "client-id", client_id,
-			     NULL);
+	                     "client-id", client_id,
+	                     NULL);
 }
 
 /**
@@ -182,8 +182,8 @@ gdata_documents_service_new (const gchar *client_id)
  **/
 GDataDocumentsFeed *
 gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocumentsQuery *query, GCancellable *cancellable,
-					 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-					 GError **error)
+                                         GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                         GError **error)
 {
 	GDataFeed *feed;
 	gchar *request_uri;
@@ -196,7 +196,7 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to query documents."));
+		                     _("You must be authenticated to query documents."));
 		return NULL;
 	}
 
@@ -233,8 +233,8 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
  **/
 void
 gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDataDocumentsQuery *query, GCancellable *cancellable,
-					       GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-					       GAsyncReadyCallback callback, gpointer user_data)
+                                               GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                               GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *request_uri;
 
@@ -246,8 +246,8 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-						     _("You must be authenticated to query documents."));
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                                     _("You must be authenticated to query documents."));
 		return;
 	}
 
@@ -273,7 +273,7 @@ notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self)
 	spreadsheet_service = g_object_new (GDATA_TYPE_SERVICE, "client-id", gdata_service_get_client_id (GDATA_SERVICE (service)), NULL);
 	GDATA_SERVICE_GET_CLASS (spreadsheet_service)->service_name = "wise";
 	gdata_service_authenticate (spreadsheet_service, gdata_service_get_username (GDATA_SERVICE (service)),
-				    gdata_service_get_password (GDATA_SERVICE (service)), NULL, NULL);
+	                            gdata_service_get_password (GDATA_SERVICE (service)), NULL, NULL);
 	priv->spreadsheet_service = spreadsheet_service;
 }
 
@@ -292,7 +292,7 @@ notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self)
 
 static GDataDocumentsEntry *
 upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file, const gchar *method,
-			const gchar *upload_uri, GCancellable *cancellable, GError **error)
+                        const gchar *upload_uri, GCancellable *cancellable, GError **error)
 {
 	GDataDocumentsEntry *new_entry;
 	GOutputStream *output_stream;
@@ -331,17 +331,17 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 		    strcmp (content_type, "application/vnd.ms-excel") == 0) {
 			new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
 		} else if (strcmp (content_type, "application/msword") == 0 ||
-			 strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
-			 strcmp (content_type, "application/rtf") == 0 ||
-			 strcmp (content_type, "text/html") == 0 ||
-			 strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
-			 strcmp (content_type, "text/plain") == 0) {
+		           strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
+		           strcmp (content_type, "application/rtf") == 0 ||
+		           strcmp (content_type, "text/html") == 0 ||
+		           strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
+		           strcmp (content_type, "text/plain") == 0) {
 			new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
 		} else if (strcmp (content_type, "application/vnd.ms-powerpoint") == 0) {
 			new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
 		} else {
 			g_set_error_literal (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
-					     _("The supplied document had an invalid content type."));
+			                     _("The supplied document had an invalid content type."));
 			if (file_info != NULL)
 				g_object_unref (file_info);
 			return NULL;
@@ -366,7 +366,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 	}
 
 	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-				cancellable, &child_error);
+	                        cancellable, &child_error);
 
 	g_object_unref (input_stream);
 	if (child_error != NULL) {
@@ -412,8 +412,8 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
  * Since: 0.4.0
  **/
 GDataDocumentsEntry *
-gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file, GDataDocumentsFolder *folder,
-					 GCancellable *cancellable, GError **error)
+gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
+                                         GDataDocumentsFolder *folder, GCancellable *cancellable, GError **error)
 {
 	GDataDocumentsEntry *new_document;
 	gchar *upload_uri;
@@ -428,13 +428,13 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to upload documents."));
+		                     _("You must be authenticated to upload documents."));
 		return NULL;
 	}
 
 	if (document != NULL && gdata_entry_is_inserted (GDATA_ENTRY (document)) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-				     _("The document has already been uploaded."));
+		                     _("The document has already been uploaded."));
 		return NULL;
 	}
 
@@ -442,7 +442,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 
 	if (document_file == NULL) {
 		new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document),
-										  cancellable, error));
+		                                                                  cancellable, error));
 	} else {
 		new_document = upload_update_document (self, document, document_file, SOUP_METHOD_POST, upload_uri, cancellable, error);
 	}
@@ -473,7 +473,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  **/
 GDataDocumentsEntry *
 gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-					 GCancellable *cancellable, GError **error)
+                                         GCancellable *cancellable, GError **error)
 {
 	GDataLink *update_link;
 
@@ -485,7 +485,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to update documents."));
+		                     _("You must be authenticated to update documents."));
 		return NULL;
 	}
 
@@ -517,7 +517,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
  **/
 GDataDocumentsEntry *
 gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *document, GDataDocumentsFolder *folder,
-						 GCancellable *cancellable, GError **error)
+                                                 GCancellable *cancellable, GError **error)
 {
 	GDataDocumentsEntry *new_document;
 	gchar *uri, *upload_data;
@@ -533,7 +533,7 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to move documents."));
+		                     _("You must be authenticated to move documents."));
 		return NULL;
 	}
 
@@ -592,7 +592,7 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
  **/
 GDataDocumentsEntry *
 gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *document, GDataDocumentsFolder *folder,
-						     GCancellable *cancellable, GError **error)
+                                                     GCancellable *cancellable, GError **error)
 {
 	const gchar *folder_id, *document_id;
 	SoupMessage *message;
@@ -647,8 +647,8 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 		/* Error */
 		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
-		                             message->response_body->length, error);
+		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase,
+		                             message->response_body->data, message->response_body->length, error);
 		g_object_unref (message);
 		return NULL;
 	}

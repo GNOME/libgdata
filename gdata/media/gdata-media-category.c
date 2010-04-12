@@ -90,10 +90,10 @@ gdata_media_category_class_init (GDataMediaCategoryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CATEGORY,
-				g_param_spec_string ("category",
-					"Category", "The category name.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("category",
+	                                                      "Category", "The category name.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaCategory:scheme:
@@ -105,10 +105,10 @@ gdata_media_category_class_init (GDataMediaCategoryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SCHEME,
-				g_param_spec_string ("scheme",
-					"Scheme", "A URI that identifies the categorization scheme.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("scheme",
+	                                                      "Scheme", "A URI that identifies the categorization scheme.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaCategory:label:
@@ -120,10 +120,10 @@ gdata_media_category_class_init (GDataMediaCategoryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A human-readable label that can be displayed in end-user applications.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A human-readable label that can be displayed in end-user applications.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

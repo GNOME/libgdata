@@ -26,8 +26,8 @@
  *
  * #GDataDocumentsSpreadsheet is a subclass of #GDataDocumentsEntry to represent a spreadsheet from Google Documents.
  *
- * For more details of Google Documents' GData API, see the <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">
- * online documentation</ulink>.
+ * For more details of Google Documents' GData API, see the
+ * <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
  * Since: 0.4.0
  **/
@@ -137,8 +137,8 @@ gdata_documents_spreadsheet_new (const gchar *id)
  **/
 GFile *
 gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, GDataDocumentsService *service, gchar **content_type,
-					       GDataDocumentsSpreadsheetFormat export_format, gint gid, GFile *destination_file,
-					       gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
+                                               GDataDocumentsSpreadsheetFormat export_format, gint gid, GFile *destination_file,
+                                               gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
 	gchar *link_href;
 	const gchar *extension;
@@ -149,7 +149,8 @@ gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (service), NULL);
 	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
 	g_return_val_if_fail (gid >= -1, NULL);
-	g_return_val_if_fail ((export_format != GDATA_DOCUMENTS_SPREADSHEET_CSV && export_format != GDATA_DOCUMENTS_SPREADSHEET_TSV) || gid != -1, NULL);
+	g_return_val_if_fail ((export_format != GDATA_DOCUMENTS_SPREADSHEET_CSV && export_format != GDATA_DOCUMENTS_SPREADSHEET_TSV) ||
+	                      gid != -1, NULL);
 	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -162,8 +163,8 @@ gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, 
 	/* Download the document */
 	link_href = gdata_documents_spreadsheet_get_download_uri (self, export_format, gid);
 	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), spreadsheet_service, content_type,
-								     link_href, destination_file, extension, replace_file_if_exists,
-								     cancellable, error);
+	                                                             link_href, destination_file, extension, replace_file_if_exists,
+	                                                             cancellable, error);
 	g_free (link_href);
 
 	return destination_file;
@@ -195,7 +196,8 @@ gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, G
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SPREADSHEET (self), NULL);
 	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
 	g_return_val_if_fail (gid >= -1, NULL);
-	g_return_val_if_fail ((export_format != GDATA_DOCUMENTS_SPREADSHEET_CSV && export_format != GDATA_DOCUMENTS_SPREADSHEET_TSV) || gid != -1, NULL);
+	g_return_val_if_fail ((export_format != GDATA_DOCUMENTS_SPREADSHEET_CSV && export_format != GDATA_DOCUMENTS_SPREADSHEET_TSV) ||
+	                      gid != -1, NULL);
 
 	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (self));
 	g_assert (document_id != NULL);

@@ -106,10 +106,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NAME,
-				g_param_spec_string ("name",
-					"Name", "The name of the organization.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("name",
+	                                                      "Name", "The name of the organization.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDOrganization:title:
@@ -122,10 +122,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TITLE,
-				g_param_spec_string ("title",
-					"Title", "The title of a person within the organization.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("title",
+	                                                      "Title", "The title of a person within the organization.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDOrganization:relation-type:
@@ -138,10 +138,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of organization.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of organization.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDOrganization:label:
@@ -155,10 +155,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A simple string value used to name this organization.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A simple string value used to name this organization.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDOrganization:is-primary:
@@ -171,10 +171,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
-				g_param_spec_boolean ("is-primary",
-					"Primary?", "Indicates which organization out of a group is primary.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-primary",
+	                                                       "Primary?", "Indicates which organization out of a group is primary.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDOrganization:department:
@@ -187,10 +187,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DEPARTMENT,
-				g_param_spec_string ("department",
-					"Department", "Specifies a department within the organization.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("department",
+	                                                      "Department", "Specifies a department within the organization.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDOrganization:job-description:
@@ -203,10 +203,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_JOB_DESCRIPTION,
-				g_param_spec_string ("job-description",
-					"Job description", "Description of a job within the organization.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("job-description",
+	                                                      "Job description", "Description of a job within the organization.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDOrganization:symbol:
@@ -219,10 +219,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SYMBOL,
-				g_param_spec_string ("symbol",
-					"Symbol", "Symbol of the organization.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("symbol",
+	                                                      "Symbol", "Symbol of the organization.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDOrganization:location:
@@ -235,10 +235,10 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
-				g_param_spec_object ("location",
-					"Location", "A place associated with the organization, e.g. office location.",
-					GDATA_TYPE_GD_WHERE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("location",
+	                                                      "Location", "A place associated with the organization, e.g. office location.",
+	                                                      GDATA_TYPE_GD_WHERE,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -461,7 +461,7 @@ gdata_gd_organization_new (const gchar *name, const gchar *title, const gchar *r
 {
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_ORGANIZATION, "name", name, "title", title, "relation-type", relation_type,
-			     "label", label, "is-primary", is_primary, NULL);
+	                     "label", label, "is-primary", is_primary, NULL);
 }
 
 /**

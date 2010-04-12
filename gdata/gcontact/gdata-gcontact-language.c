@@ -84,10 +84,10 @@ gdata_gcontact_language_class_init (GDataGContactLanguageClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CODE,
-				g_param_spec_string ("code",
-					"Code", "A code identifying the language, conforming to the IETF BCP 47 specification.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("code",
+	                                                      "Code", "A code identifying the language, conforming to the IETF BCP 47 specification.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactLanguage:label:
@@ -100,10 +100,10 @@ gdata_gcontact_language_class_init (GDataGContactLanguageClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A free-form string that identifies the language.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A free-form string that identifies the language.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

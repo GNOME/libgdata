@@ -48,8 +48,8 @@ gdata_access_handler_get_type (void)
 
 	if (!access_handler_type) {
 		access_handler_type = g_type_register_static_simple (G_TYPE_INTERFACE, "GDataAccessHandler",
-								     sizeof (GDataAccessHandlerIface),
-								     NULL, 0, NULL, 0);
+		                                                     sizeof (GDataAccessHandlerIface),
+		                                                     NULL, 0, NULL, 0);
 		g_type_interface_add_prerequisite (access_handler_type, GDATA_TYPE_ENTRY);
 	}
 
@@ -167,7 +167,7 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (rule)) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-				     _("The rule has already been inserted."));
+		                     _("The rule has already been inserted."));
 		return NULL;
 	}
 
@@ -201,7 +201,7 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
 	g_assert (message->response_body->data != NULL);
 	updated_rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (G_OBJECT_TYPE (rule), message->response_body->data,
-								       message->response_body->length, error));
+	                                                               message->response_body->length, error));
 	g_object_unref (message);
 
 	return updated_rule;
@@ -303,7 +303,7 @@ gdata_access_handler_update_rule (GDataAccessHandler *self, GDataService *servic
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
 	g_assert (message->response_body->data != NULL);
 	updated_rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (G_OBJECT_TYPE (rule), message->response_body->data,
-								       message->response_body->length, error));
+	                                                               message->response_body->length, error));
 	g_object_unref (message);
 
 	return updated_rule;
@@ -347,7 +347,7 @@ gdata_access_handler_delete_rule (GDataAccessHandler *self, GDataService *servic
 	g_assert (iface->is_owner_rule != NULL);
 	if (iface->is_owner_rule (rule) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
-				     _("The owner's rule may not be deleted."));
+		                     _("The owner's rule may not be deleted."));
 		return FALSE;
 	}
 

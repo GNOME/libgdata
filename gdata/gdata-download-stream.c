@@ -85,7 +85,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataDownloadStream, gdata_download_stream, G_TYPE_INPUT_STREAM,
-			 G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, gdata_download_stream_seekable_iface_init))
+                         G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, gdata_download_stream_seekable_iface_init))
 
 static void
 gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
@@ -113,10 +113,10 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
-					 g_param_spec_object ("service",
-							      "Service", "The service which is used to authenticate the download.",
-							      GDATA_TYPE_SERVICE,
-							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("service",
+	                                                      "Service", "The service which is used to authenticate the download.",
+	                                                      GDATA_TYPE_SERVICE,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDownloadStream:download-uri:
@@ -126,10 +126,10 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DOWNLOAD_URI,
-					 g_param_spec_string ("download-uri",
-							      "Download URI", "The URI of the file to download.",
-							      NULL,
-							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("download-uri",
+	                                                      "Download URI", "The URI of the file to download.",
+	                                                      NULL,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDownloadStream:content-type:
@@ -139,10 +139,10 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE,
-					 g_param_spec_string ("content-type",
-							      "Content type", "The content type of the file being downloaded.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("content-type",
+	                                                      "Content type", "The content type of the file being downloaded.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDownloadStream:content-length:
@@ -152,10 +152,10 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT_LENGTH,
-					 g_param_spec_long ("content-length",
-							    "Content length", "The length (in bytes) of the file being downloaded.",
-							    -1, G_MAXSSIZE, -1,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_long ("content-length",
+	                                                    "Content length", "The length (in bytes) of the file being downloaded.",
+	                                                    -1, G_MAXSSIZE, -1,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -589,7 +589,8 @@ gdata_download_stream_get_content_length (GDataDownloadStream *self)
  * Since: 0.6.0
  **/
 GFileOutputStream *
-_gdata_download_stream_find_destination (const gchar *default_filename, GFile *target_dest_file, GFile **actual_dest_file, gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
+_gdata_download_stream_find_destination (const gchar *default_filename, GFile *target_dest_file, GFile **actual_dest_file,
+                                         gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
 	GFileInfo *target_dest_info;
 	GFileOutputStream *dest_stream;

@@ -166,24 +166,24 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:statistics">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VIEW_COUNT,
-				g_param_spec_uint ("view-count",
-					"View count", "The number of times the video has been viewed.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("view-count",
+	                                                    "View count", "The number of times the video has been viewed.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:favorite-count:
 	 *
-	 * The number of YouTube users who have added the video to their list of favorite videos.
+	 * The number of users who have added the video to their favorites.
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:statistics">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FAVORITE_COUNT,
-				g_param_spec_uint ("favorite-count",
-					"Favorite count", "The number of YouTube users who have added the video to their list of favorite videos.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("favorite-count",
+	                                                    "Favorite count", "The number of users who have added the video to their favorites.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:location:
@@ -194,10 +194,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:location">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
-				g_param_spec_string ("location",
-					"Location", "Descriptive text about the location where the video was taken.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("location",
+	                                                      "Location", "Descriptive text about the location where the video was taken.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:min-rating:
@@ -208,10 +208,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MIN_RATING,
-				g_param_spec_uint ("min-rating",
-					"Minimum rating", "The minimum allowed rating for the video.",
-					0, G_MAXUINT, 1, /* defaults to 1 */
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("min-rating",
+	                                                    "Minimum rating", "The minimum allowed rating for the video.",
+	                                                    0, G_MAXUINT, 1, /* defaults to 1 */
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:max-rating:
@@ -222,10 +222,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MAX_RATING,
-				g_param_spec_uint ("max-rating",
-					"Maximum rating", "The maximum allowed rating for the video.",
-					0, G_MAXUINT, 5, /* defaults to 5 */
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("max-rating",
+	                                                    "Maximum rating", "The maximum allowed rating for the video.",
+	                                                    0, G_MAXUINT, 5, /* defaults to 5 */
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:rating-count:
@@ -236,10 +236,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RATING_COUNT,
-				g_param_spec_uint ("rating-count",
-					"Rating count", "The number of times the video has been rated.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("rating-count",
+	                                                    "Rating count", "The number of times the video has been rated.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:average-rating:
@@ -250,10 +250,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_AVERAGE_RATING,
-				g_param_spec_double ("average-rating",
-					"Average rating", "The average rating of the video, over all the ratings it's received.",
-					0.0, G_MAXDOUBLE, 0.0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("average-rating",
+	                                                      "Average rating", "The average rating of the video.",
+	                                                      0.0, G_MAXDOUBLE, 0.0,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:keywords:
@@ -264,26 +264,24 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:keywords">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_KEYWORDS,
-				g_param_spec_boxed ("keywords",
-					"Keywords", "A NULL-terminated array of words associated with the video.",
-					G_TYPE_STRV,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("keywords",
+	                                                     "Keywords", "A NULL-terminated array of words associated with the video.",
+	                                                     G_TYPE_STRV,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:player-uri:
 	 *
-	 * Specifies a URI where the full-length video is available through a media player that runs inside a web browser
-	 * (i.e. the video's page on YouTube).
+	 * A URI for a browser-based media player for the full-length video (i.e. the video's page on YouTube).
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:player">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PLAYER_URI,
-				g_param_spec_string ("player-uri",
-					"Player URI", "Specifies a URI where the full-length video is available through a media player"
-					"that runs inside a web browser.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("player-uri",
+	                                                      "Player URI", "A URI for a browser-based media player for the full-length video.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:category:
@@ -294,10 +292,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:category">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CATEGORY,
-				g_param_spec_object ("category",
-					"Category", "Specifies a genre or developer tag that describes the video.",
-					GDATA_TYPE_MEDIA_CATEGORY,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("category",
+	                                                      "Category", "Specifies a genre or developer tag that describes the video.",
+	                                                      GDATA_TYPE_MEDIA_CATEGORY,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:credit:
@@ -308,10 +306,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:credit">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CREDIT,
-				g_param_spec_object ("credit",
-					"Credit", "Identifies the owner of the video.",
-					GDATA_TYPE_YOUTUBE_CREDIT,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("credit",
+	                                                      "Credit", "Identifies the owner of the video.",
+	                                                      GDATA_TYPE_YOUTUBE_CREDIT,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:description:
@@ -322,10 +320,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:description">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DESCRIPTION,
-				g_param_spec_string ("description",
-					"Description", "A summary or description of the video.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("description",
+	                                                      "Description", "A summary or description of the video.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:duration:
@@ -336,10 +334,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:duration">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DURATION,
-				g_param_spec_uint ("duration",
-					"Duration", "The duration of the video in seconds.",
-					0, G_MAXINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("duration",
+	                                                    "Duration", "The duration of the video in seconds.",
+	                                                    0, G_MAXINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:private:
@@ -350,10 +348,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:private">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_PRIVATE,
-				g_param_spec_boolean ("is-private",
-					"Private?", "Indicates whether the video is private.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-private",
+	                                                       "Private?", "Indicates whether the video is private.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:uploaded:
@@ -364,10 +362,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:uploaded">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPLOADED,
-				g_param_spec_boxed ("uploaded",
-					"Uploaded", "Specifies the time the video was originally uploaded to YouTube.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("uploaded",
+	                                                     "Uploaded", "Specifies the time the video was originally uploaded to YouTube.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:video-id:
@@ -378,10 +376,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:videoid">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VIDEO_ID,
-				g_param_spec_string ("video-id",
-					"Video ID", "Specifies a unique ID which YouTube uses to identify the video.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("video-id",
+	                                                      "Video ID", "Specifies a unique ID which YouTube uses to identify the video.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:is-draft:
@@ -392,9 +390,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_app:draft">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_DRAFT,
-				g_param_spec_boolean ("is-draft",
-					"Draft?", "Indicates whether the video is in draft, or unpublished, status.",
-					FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-draft",
+	                                                       "Draft?", "Indicates whether the video is in draft, or unpublished, status.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:state:
@@ -406,10 +405,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_STATE,
-				g_param_spec_object ("state",
-					"State", "Information describing the state of the video.",
-					GDATA_TYPE_YOUTUBE_STATE,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("state",
+	                                                      "State", "Information describing the state of the video.",
+	                                                      GDATA_TYPE_YOUTUBE_STATE,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:recorded:
@@ -422,10 +421,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RECORDED,
-				g_param_spec_boxed ("recorded",
-					"Recorded", "Specifies the time the video was originally recorded.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("recorded",
+	                                                     "Recorded", "Specifies the time the video was originally recorded.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:aspect-ratio:
@@ -439,10 +438,10 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ASPECT_RATIO,
-				g_param_spec_string ("aspect-ratio",
-					"Aspect Ratio", "The aspect ratio of the video.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("aspect-ratio",
+	                                                      "Aspect Ratio", "The aspect ratio of the video.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -618,7 +617,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	           gdata_parser_object_from_element (node, "control", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_CONTROL,
-		                                     &(self->priv->youtube_control), &success, error) == TRUE) {
+	                                             &(self->priv->youtube_control), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
 		if (gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
@@ -641,7 +640,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
 			/* yt:noembed */
 			/* Ignore this now; it's been superceded by yt:accessControl.
-			   See http://apiblog.youtube.com/2010/02/extended-access-controls-available-via.html */
+			 * See http://apiblog.youtube.com/2010/02/extended-access-controls-available-via.html */
 		} else if (xmlStrcmp (node->name, (xmlChar*) "accessControl") == 0) {
 			/* yt:accessControl */
 			xmlChar *action, *permission;

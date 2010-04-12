@@ -25,8 +25,8 @@
  *
  * #GDataYouTubeControl represents a "control" element from the
  * <ulink type="http" url="http://www.atomenabled.org/developers/protocol/#appControl">Atom Publishing Protocol specification</ulink>,
- * with support for the YouTube-specific <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">
- * "state" element</ulink>.
+ * with support for the YouTube-specific
+ * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">"state" element</ulink>.
  *
  * It is private API, since it would be unnecessary and confusing to expose #GDataYouTubeControl itself. There is the option
  * of breaking this up into #GDataAPPControl and extending #GDataYouTubeControl classes in the future, if more entry types implement

@@ -94,10 +94,10 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SHOW_DELETED,
-				g_param_spec_boolean ("show-deleted",
-					"Show deleted?", "A shortcut to request all documents that have been deleted.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("show-deleted",
+	                                                       "Show deleted?", "A shortcut to request all documents that have been deleted.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsQuery:show-folders:
@@ -107,10 +107,10 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SHOW_FOLDERS,
-				g_param_spec_boolean ("show-folders",
-					"Show folders?", "Specifies if the request also returns folders.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("show-folders",
+	                                                       "Show folders?", "Specifies if the request also returns folders.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsQuery:exact-title:
@@ -120,10 +120,10 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EXACT_TITLE,
-				g_param_spec_boolean ("exact-title",
-					"Exact title?", "Specifies whether the query should search for an exact title match.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("exact-title",
+	                                                       "Exact title?", "Specifies whether the query should search for an exact title match.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsQuery:folder-id:
@@ -133,10 +133,10 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FOLDER_ID,
-				g_param_spec_string ("folder-id",
-					"Folder ID", "Specifies the ID of the folder in which to search.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("folder-id",
+	                                                      "Folder ID", "Specifies the ID of the folder in which to search.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsQuery:title:
@@ -147,10 +147,10 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TITLE,
-				g_param_spec_string ("title",
-					"Title", "A title (or title fragment) to be searched for.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("title",
+	                                                      "Title", "A title (or title fragment) to be searched for.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -242,28 +242,28 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	GDATA_QUERY_CLASS (gdata_documents_query_parent_class)->get_query_uri (self, feed_uri, query_uri, params_started);
 
 	if  (priv->collaborator_addresses != NULL) {
-		GList *collaborator_address;
+		GList *address;
 		APPEND_SEP
-		collaborator_address = priv->collaborator_addresses;
+		address = priv->collaborator_addresses;
 
 		g_string_append (query_uri, "writer=");
-		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (collaborator_address->data), NULL, FALSE);
-		for (collaborator_address = collaborator_address->next; collaborator_address != NULL; collaborator_address = collaborator_address->next) {
+		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (address->data), NULL, FALSE);
+		for (address = address->next; address != NULL; address = address->next) {
 			g_string_append_c (query_uri, ';');
-			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (collaborator_address->data), NULL, FALSE);
+			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (address->data), NULL, FALSE);
 		}
 	}
 
 	if  (priv->reader_addresses != NULL) {
-		GList *reader_address;
+		GList *address;
 		APPEND_SEP
-		reader_address = priv->reader_addresses;
+		address = priv->reader_addresses;
 
 		g_string_append (query_uri, "reader=");
-		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (reader_address->data), NULL, FALSE);
-		for (reader_address = reader_address->next; reader_address != NULL; reader_address = reader_address->next) {
+		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (address->data), NULL, FALSE);
+		for (address = address->next; address != NULL; address = address->next) {
 			g_string_append_c (query_uri, ';');
-			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (reader_address->data), NULL, FALSE);
+			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (address->data), NULL, FALSE);
 		}
 	}
 
@@ -320,10 +320,10 @@ GDataDocumentsQuery *
 gdata_documents_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
 {
 	return g_object_new (GDATA_TYPE_DOCUMENTS_QUERY,
-			     "q", q,
-			     "start-index", start_index,
-			     "max-results", max_results,
-			     NULL);
+	                     "q", q,
+	                     "start-index", start_index,
+	                     "max-results", max_results,
+	                     NULL);
 }
 
 /**

@@ -48,8 +48,8 @@ gdata_g_time_val_get_type (void)
 
 	if (type_id == 0) {
 		type_id = g_boxed_type_register_static (g_intern_static_string ("GTimeVal"),
-							(GBoxedCopyFunc) gdata_g_time_val_copy,
-							(GBoxedFreeFunc) g_free);
+		                                        (GBoxedCopyFunc) gdata_g_time_val_copy,
+		                                        (GBoxedFreeFunc) g_free);
 	}
 
 	return type_id;
@@ -68,8 +68,8 @@ gdata_color_get_type (void)
 
 	if (type_id == 0) {
 		type_id = g_boxed_type_register_static (g_intern_static_string ("GDataColor"),
-							(GBoxedCopyFunc) gdata_color_copy,
-							(GBoxedFreeFunc) g_free);
+		                                        (GBoxedCopyFunc) gdata_color_copy,
+		                                        (GBoxedFreeFunc) g_free);
 	}
 
 	return type_id;

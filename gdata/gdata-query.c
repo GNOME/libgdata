@@ -139,10 +139,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * word "Austen", use the following query: <userinput>"Elizabeth Bennet" Darcy -Austen</userinput>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_Q,
-				g_param_spec_string ("q",
-					"Query terms", "Query terms for which to search.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("q",
+	                                                      "Query terms", "Query terms for which to search.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:categories:
@@ -156,9 +156,9 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * To do an OR between terms, use a pipe character (<literal>|</literal>). For example: <userinput>Fritz\%7CLaurie</userinput> returns
 	 * entries that match either category.
 	 *
-	 * An entry matches a specified category if the entry is in a category that has a matching term or label, as defined in the Atom specification.
-	 * (Roughly, the "term" is the internal string used by the software to identify the category, while the "label" is the human-readable string
-	 * presented to a user in a user interface.)
+	 * An entry matches a specified category if the entry is in a category that has a matching term or label, as defined in the Atom
+	 * specification. (Roughly, the "term" is the internal string used by the software to identify the category, while the "label" is the
+	 * human-readable string presented to a user in a user interface.)
 	 *
 	 * To exclude entries that match a given category, use the form <userinput>-categoryname</userinput>.
 	 *
@@ -169,10 +169,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * The above features can be combined. For example: <userinput>A|-{urn:google.com}B/-C</userinput> means (A OR (NOT B)) AND (NOT C).
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CATEGORIES,
-				g_param_spec_string ("categories",
-					"Category string", "Category search string.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("categories",
+	                                                      "Category string", "Category search string.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:author:
@@ -180,10 +180,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * An entry author. The service returns entries where the author name and/or e-mail address match your query string.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_AUTHOR,
-				g_param_spec_string ("author",
-					"Author", "Author search string.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("author",
+	                                                      "Author", "Author search string.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:updated-min:
@@ -191,10 +191,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Lower bound on the entry update date, inclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED_MIN,
-				g_param_spec_boxed ("updated-min",
-					"Minimum update date", "Minimum date for updates on returned entries.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("updated-min",
+	                                                     "Minimum update date", "Minimum date for updates on returned entries.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:updated-max:
@@ -202,10 +202,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Upper bound on the entry update date, exclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED_MAX,
-				g_param_spec_boxed ("updated-max",
-					"Maximum update date", "Maximum date for updates on returned entries.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("updated-max",
+	                                                     "Maximum update date", "Maximum date for updates on returned entries.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:published-min:
@@ -213,10 +213,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Lower bound on the entry publish date, inclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PUBLISHED_MIN,
-				g_param_spec_boxed ("published-min",
-					"Minimum publish date", "Minimum date for returned entries to be published.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("published-min",
+	                                                     "Minimum publish date", "Minimum date for returned entries to be published.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:published-max:
@@ -224,10 +224,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Upper bound on the entry publish date, exclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PUBLISHED_MAX,
-				g_param_spec_boxed ("published-max",
-					"Maximum publish date", "Maximum date for returned entries to be published.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("published-max",
+	                                                     "Maximum publish date", "Maximum date for returned entries to be published.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:start-index:
@@ -238,10 +238,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Use <code class="literal">0</code> to not specify a start index.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_INDEX,
-				g_param_spec_uint ("start-index",
-					"Start index", "One-based result start index.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("start-index",
+	                                                    "Start index", "One-based result start index.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:is-strict:
@@ -252,10 +252,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_STRICT,
-				g_param_spec_boolean ("is-strict",
-					"Strict?", "Should the server be strict about the query?",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-strict",
+	                                                       "Strict?", "Should the server be strict about the query?",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:max-results:
@@ -266,10 +266,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Use <code class="literal">0</code> to not specify a maximum number of results.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MAX_RESULTS,
-				g_param_spec_uint ("max-results",
-					"Maximum number of results", "The maximum number of entries to return.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("max-results",
+	                                                    "Maximum number of results", "The maximum number of entries to return.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataQuery:etag:
@@ -283,10 +283,10 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ETAG,
-				g_param_spec_string ("etag",
-					"ETag", "An ETag against which to check.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("etag",
+	                                                      "ETag", "An ETag against which to check.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -303,10 +303,8 @@ gdata_query_finalize (GObject *object)
 	g_free (priv->q);
 	g_free (priv->categories);
 	g_free (priv->author);
-
 	g_free (priv->next_uri);
 	g_free (priv->previous_uri);
-
 	g_free (priv->etag);
 
 	/* Chain up to the parent class */
@@ -523,10 +521,10 @@ GDataQuery *
 gdata_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
 {
 	return g_object_new (GDATA_TYPE_QUERY,
-			     "q", q,
-			     "start-index", start_index,
-			     "max-results", max_results,
-			     NULL);
+	                     "q", q,
+	                     "start-index", start_index,
+	                     "max-results", max_results,
+	                     NULL);
 }
 
 /**

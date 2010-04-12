@@ -33,8 +33,8 @@ G_BEGIN_DECLS
  * @GDATA_PICASAWEB_PUBLIC: the album is visible to everyone, regardless of whether they're authenticated
  * @GDATA_PICASAWEB_PRIVATE: the album is visible only to authenticated users in a whitelist
  *
- * Visibility statuses available for albums on PicasaWeb. For more information, see the <ulink type="http"
- * url="http://code.google.com/apis/picasaweb/reference.html#Visibility">online documentation</ulink>.
+ * Visibility statuses available for albums on PicasaWeb. For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#Visibility">online documentation</ulink>.
  *
  * Since: 0.4.0
  **/

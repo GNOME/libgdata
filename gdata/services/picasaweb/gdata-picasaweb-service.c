@@ -75,10 +75,7 @@ GDataPicasaWebService *
 gdata_picasaweb_service_new (const gchar *client_id)
 {
 	g_return_val_if_fail (client_id != NULL, NULL);
-
-	return g_object_new (GDATA_TYPE_PICASAWEB_SERVICE,
-			     "client-id", client_id,
-			     NULL);
+	return g_object_new (GDATA_TYPE_PICASAWEB_SERVICE, "client-id", client_id, NULL);
 }
 
 /*
@@ -135,7 +132,7 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
 	uri = create_uri (self, username, "entry");
 	if (uri == NULL) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must specify a username or be authenticated to query a user."));
+		                     _("You must specify a username or be authenticated to query a user."));
 		return NULL;
 	}
 
@@ -176,7 +173,7 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
  **/
 GDataFeed *
 gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuery *query, const gchar *username, GCancellable *cancellable,
-					  GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                                          GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	gchar *uri;
 	GDataFeed *album_feed;
@@ -189,20 +186,20 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
 	if (query != NULL && gdata_query_get_q (query) != NULL) {
 		/* Bug #593336 — Query parameter "q=..." isn't valid for album kinds */
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
-				     _("Query parameter not allowed for albums."));
+		                     _("Query parameter not allowed for albums."));
 		return NULL;
 	}
 
 	uri = create_uri (self, username, "feed");
 	if (uri == NULL) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must specify a username or be authenticated to query all albums."));
+		                     _("You must specify a username or be authenticated to query all albums."));
 		return NULL;
 	}
 
 	/* Execute the query */
 	album_feed = gdata_service_query (GDATA_SERVICE (self), uri, query, GDATA_TYPE_PICASAWEB_ALBUM,
-					  cancellable, progress_callback, progress_user_data, error);
+	                                  cancellable, progress_callback, progress_user_data, error);
 	g_free (uri);
 
 	return album_feed;
@@ -230,8 +227,8 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
  **/
 void
 gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDataQuery *query, const gchar *username,
-						GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-						GAsyncReadyCallback callback, gpointer user_data)
+                                                GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *uri;
 
@@ -243,22 +240,22 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 	if (query != NULL && gdata_query_get_q (query) != NULL) {
 		/* Bug #593336 — Query parameter "q=..." isn't valid for album kinds */
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
-						     _("Query parameter not allowed for albums."));
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
+		                                     _("Query parameter not allowed for albums."));
 		return;
 	}
 
 	uri = create_uri (self, username, "feed");
 	if (uri == NULL) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-						     _("You must specify a username or be authenticated to query all albums."));
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                                     _("You must specify a username or be authenticated to query all albums."));
 		return;
 	}
 
 	/* Schedule the async query */
 	gdata_service_query_async (GDATA_SERVICE (self), uri, query, GDATA_TYPE_PICASAWEB_ALBUM, cancellable, progress_callback, progress_user_data,
-				   callback, user_data);
+	                           callback, user_data);
 	g_free (uri);
 }
 
@@ -283,7 +280,7 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
  **/
 GDataFeed *
 gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataQuery *query, GCancellable *cancellable,
-				     GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	/* TODO: Async variant */
 	const gchar *uri;
@@ -299,7 +296,7 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 		if (link == NULL) {
 			/* Error */
 			g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-					     _("The album did not have a feed link."));
+			                     _("The album did not have a feed link."));
 			return NULL;
 		}
 		uri = gdata_link_get_uri (link);
@@ -310,7 +307,7 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 
 	/* Execute the query */
 	return gdata_service_query (GDATA_SERVICE (self), uri, GDATA_QUERY (query), GDATA_TYPE_PICASAWEB_FILE, cancellable,
-				    progress_callback, progress_user_data, error);
+	                            progress_callback, progress_user_data, error);
 }
 
 static GOutputStream *
@@ -388,7 +385,7 @@ parse_spliced_stream (GOutputStream *output_stream, GError **error)
  **/
 GDataPicasaWebFile *
 gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry, GFile *file_data,
-				     GCancellable *cancellable, GError **error)
+                                     GCancellable *cancellable, GError **error)
 {
 	GOutputStream *output_stream;
 	GInputStream *input_stream;
@@ -404,13 +401,13 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (file_entry)) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-				     _("The entry has already been inserted."));
+		                     _("The entry has already been inserted."));
 		return NULL;
 	}
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to upload a file."));
+		                     _("You must be authenticated to upload a file."));
 		return NULL;
 	}
 
@@ -426,7 +423,7 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 	}
 
 	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-				cancellable, &child_error);
+	                        cancellable, &child_error);
 
 	g_object_unref (input_stream);
 	if (child_error != NULL) {
@@ -473,7 +470,6 @@ gdata_picasaweb_service_upload_file_finish (GDataPicasaWebService *self, GAsyncR
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	/* propagate any potential errors we might have encountered in g_output_stream_splice() or gdata_picasaweb_service_upload_file_async() */
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
 		return NULL;
 
@@ -510,10 +506,10 @@ upload_file_async_cb (GOutputStream *output_stream, GAsyncResult *result, Upload
 
 	if (error == NULL && file != NULL)
 		async_result = g_simple_async_result_new (G_OBJECT (data->service), (GAsyncReadyCallback) data->callback,
-							  data->user_data, gdata_picasaweb_service_upload_file_async);
+		                                          data->user_data, gdata_picasaweb_service_upload_file_async);
 	else
 		async_result = g_simple_async_result_new_from_error (G_OBJECT (data->service), (GAsyncReadyCallback) data->callback,
-								     data->user_data, error);
+		                                                     data->user_data, error);
 
 	g_simple_async_result_set_op_res_gpointer (async_result, file, NULL);
 
@@ -546,7 +542,7 @@ upload_file_async_cb (GOutputStream *output_stream, GAsyncResult *result, Upload
  **/
 void
 gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
-					   GFile *file_data, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+                                           GFile *file_data, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GOutputStream *output_stream;
 	GInputStream *input_stream;
@@ -562,13 +558,13 @@ gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPic
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (file_entry)) == TRUE) {
 		g_set_error_literal (&error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-				     _("The entry has already been inserted."));
+		                     _("The entry has already been inserted."));
 		goto error;
 	}
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (&error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to upload a file."));
+		                     _("You must be authenticated to upload a file."));
 		goto error;
 	}
 
@@ -591,14 +587,14 @@ gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPic
 
 	/* Actually transfer the data */
 	g_output_stream_splice_async (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-				      0, cancellable, (GAsyncReadyCallback) upload_file_async_cb, data);
+	                              0, cancellable, (GAsyncReadyCallback) upload_file_async_cb, data);
 
 	g_object_unref (input_stream);
 	g_object_unref (output_stream);
 
 	return;
 
- error:
+error:
 	result = g_simple_async_result_new_from_error (G_OBJECT (self), callback, user_data, error);
 	g_simple_async_result_complete (result);
 }
@@ -630,13 +626,13 @@ gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWe
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (album)) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-				     _("The album has already been inserted."));
+		                     _("The album has already been inserted."));
 		return NULL;
 	}
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to insert an album."));
+		                     _("You must be authenticated to insert an album."));
 		return NULL;
 	}
 

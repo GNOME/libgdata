@@ -102,10 +102,10 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_GIVEN_NAME,
-				g_param_spec_string ("given-name",
-					"Given name", "The person's given name.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("given-name",
+	                                                      "Given name", "The person's given name.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDName:additional-name:
@@ -118,10 +118,10 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ADDITIONAL_NAME,
-				g_param_spec_string ("additional-name",
-					"Additional name", "An additional name for the person (e.g. a middle name).",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("additional-name",
+	                                                      "Additional name", "An additional name for the person (e.g. a middle name).",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDName:family-name:
@@ -134,10 +134,10 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FAMILY_NAME,
-				g_param_spec_string ("family-name",
-					"Family name", "The person's family name.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("family-name",
+	                                                      "Family name", "The person's family name.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDName:prefix:
@@ -150,10 +150,10 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PREFIX,
-				g_param_spec_string ("prefix",
-					"Prefix", "An honorific prefix.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("prefix",
+	                                                      "Prefix", "An honorific prefix.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDName:suffix:
@@ -166,10 +166,10 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SUFFIX,
-				g_param_spec_string ("suffix",
-					"Suffix", "An honorific suffix.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("suffix",
+	                                                      "Suffix", "An honorific suffix.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDName:full-name:
@@ -183,10 +183,10 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FULL_NAME,
-				g_param_spec_string ("full-name",
-					"Full name", "An unstructured representation of the person's full name.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("full-name",
+	                                                      "Full name", "An unstructured representation of the person's full name.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

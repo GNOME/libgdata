@@ -90,10 +90,10 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ADDRESS,
-				g_param_spec_string ("address",
-					"Address", "The e-mail address itself.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("address",
+	                                                      "Address", "The e-mail address itself.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDEmailAddress:relation-type:
@@ -106,10 +106,10 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of e-mail address.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of e-mail address.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDEmailAddress:label:
@@ -122,10 +122,10 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A simple string value used to name this e-mail address.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A simple string value used to name this e-mail address.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDEmailAddress:is-primary:
@@ -138,10 +138,10 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
-				g_param_spec_boolean ("is-primary",
-					"Primary?", "Indicates which e-mail address out of a group is primary.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-primary",
+	                                                       "Primary?", "Indicates which e-mail address out of a group is primary.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDEmailAddress:display-name:
@@ -154,10 +154,10 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DISPLAY_NAME,
-				g_param_spec_string ("display-name",
-					"Display name", "A display name of the entity (e.g. a person) the e-mail address belongs to.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("display-name",
+	                                                      "Display name", "A display name of the entity the e-mail address belongs to.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -314,7 +314,7 @@ gdata_gd_email_address_new (const gchar *address, const gchar *relation_type, co
 	g_return_val_if_fail (address != NULL && *address != '\0', NULL);
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_EMAIL_ADDRESS, "address", address, "relation-type", relation_type,
-			     "label", label, "is-primary", is_primary, NULL);
+	                     "label", label, "is-primary", is_primary, NULL);
 }
 
 /**

@@ -120,10 +120,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FORMATTED_ADDRESS,
-				g_param_spec_string ("address",
-					"Address", "The postal address itself.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("address",
+	                                                      "Address", "The postal address itself.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:relation-type:
@@ -137,10 +137,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of postal address.",
-					GDATA_GD_POSTAL_ADDRESS_WORK,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of postal address.",
+	                                                      GDATA_GD_POSTAL_ADDRESS_WORK,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:label:
@@ -153,10 +153,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A simple string value used to name this postal address.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A simple string value used to name this postal address.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:is-primary:
@@ -169,10 +169,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
-				g_param_spec_boolean ("is-primary",
-					"Primary?", "Indicates which postal address out of a group is primary.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-primary",
+	                                                       "Primary?", "Indicates which postal address out of a group is primary.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:mail-class:
@@ -185,10 +185,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MAIL_CLASS,
-				g_param_spec_string ("mail-class",
-					"Mail class", "Classes of mail accepted at this address.",
-					GDATA_GD_MAIL_CLASS_BOTH,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("mail-class",
+	                                                      "Mail class", "Classes of mail accepted at this address.",
+	                                                      GDATA_GD_MAIL_CLASS_BOTH,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:usage:
@@ -201,10 +201,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_USAGE,
-				g_param_spec_string ("usage",
-					"Usage", "The context in which this addess can be used.",
-					GDATA_GD_ADDRESS_USAGE_GENERAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("usage",
+	                                                      "Usage", "The context in which this addess can be used.",
+	                                                      GDATA_GD_ADDRESS_USAGE_GENERAL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:agent:
@@ -217,10 +217,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_AGENT,
-				g_param_spec_string ("agent",
-					"Agent", "The agent who actually receives the mail.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("agent",
+	                                                      "Agent", "The agent who actually receives the mail.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:house-name:
@@ -233,10 +233,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HOUSE_NAME,
-				g_param_spec_string ("house-name",
-					"House name", "Used in places where houses or buildings have names (and not necessarily numbers).",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("house-name",
+	                                                      "House name", "Used in places where houses or buildings have names (and not numbers).",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:street:
@@ -249,10 +249,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_STREET,
-				g_param_spec_string ("street",
-					"Street", "Can be street, avenue, road, etc.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("street",
+	                                                      "Street", "Can be street, avenue, road, etc.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:po-box:
@@ -265,10 +265,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PO_BOX,
-				g_param_spec_string ("po-box",
-					"PO box", "Covers actual P.O. boxes, drawers, locked bags, etc.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("po-box",
+	                                                      "PO box", "Covers actual P.O. boxes, drawers, locked bags, etc.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:neighborhood:
@@ -282,10 +282,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NEIGHBORHOOD,
-				g_param_spec_string ("neighborhood",
-					"Neighborhood", "This is used to disambiguate a street address.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("neighborhood",
+	                                                      "Neighborhood", "This is used to disambiguate a street address.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:city:
@@ -298,10 +298,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CITY,
-				g_param_spec_string ("city",
-					"City", "Can be city, village, town, borough, etc.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("city",
+	                                                      "City", "Can be city, village, town, borough, etc.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:subregion:
@@ -315,10 +315,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SUBREGION,
-				g_param_spec_string ("subregion",
-					"Subregion", "Handles administrative districts such as U.S. or U.K. counties.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("subregion",
+	                                                      "Subregion", "Handles administrative districts such as U.S. or U.K. counties.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:region:
@@ -331,10 +331,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_REGION,
-				g_param_spec_string ("region",
-					"Region", "A state, province, county (in Ireland), Land (in Germany), departement (in France), etc.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("region",
+	                                                      "Region", "A state, province, county, Land, departement, etc.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:postcode:
@@ -347,10 +347,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_POSTCODE,
-				g_param_spec_string ("postcode",
-					"Postcode", "Postal code.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("postcode",
+	                                                      "Postcode", "Postal code.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:country:
@@ -364,10 +364,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_COUNTRY,
-				g_param_spec_string ("country",
-					"Country", "The name of the country.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("country",
+	                                                      "Country", "The name of the country.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPostalAddress:country-code:
@@ -382,10 +382,10 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_COUNTRY_CODE,
-				g_param_spec_string ("country-code",
-					"Country code", "The ISO 3166-1 alpha-2 country code for the country.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("country-code",
+	                                                      "Country code", "The ISO 3166-1 alpha-2 country code for the country.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

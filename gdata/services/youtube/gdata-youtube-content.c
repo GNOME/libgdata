@@ -77,10 +77,10 @@ gdata_youtube_content_class_init (GDataYouTubeContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FORMAT,
-				g_param_spec_enum ("format",
-					"Format", "The video format of the video object.",
-					GDATA_TYPE_YOUTUBE_FORMAT, GDATA_YOUTUBE_FORMAT_UNKNOWN,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("format",
+	                                                    "Format", "The video format of the video object.",
+	                                                    GDATA_TYPE_YOUTUBE_FORMAT, GDATA_YOUTUBE_FORMAT_UNKNOWN,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

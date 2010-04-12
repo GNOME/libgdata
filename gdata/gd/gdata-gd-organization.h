@@ -82,7 +82,7 @@ typedef struct {
 GType gdata_gd_organization_get_type (void) G_GNUC_CONST;
 
 GDataGDOrganization *gdata_gd_organization_new (const gchar *name, const gchar *title, const gchar *relation_type,
-						const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gint gdata_gd_organization_compare (const GDataGDOrganization *a, const GDataGDOrganization *b);
 
 const gchar *gdata_gd_organization_get_name (GDataGDOrganization *self);

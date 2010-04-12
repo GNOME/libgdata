@@ -90,10 +90,10 @@ gdata_gcontact_relation_class_init (GDataGContactRelationClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NAME,
-				g_param_spec_string ("name",
-					"Name", "The name of the relation.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("name",
+	                                                      "Name", "The name of the relation.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactRelation:relation-type:
@@ -107,10 +107,10 @@ gdata_gcontact_relation_class_init (GDataGContactRelationClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of relation.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of relation.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactRelation:label:
@@ -123,10 +123,10 @@ gdata_gcontact_relation_class_init (GDataGContactRelationClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A free-form string that identifies the type of relation.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A free-form string that identifies the type of relation.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

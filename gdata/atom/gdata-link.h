@@ -104,7 +104,8 @@ G_BEGIN_DECLS
  *
  * The relation type URI of the edit location for media resources attached to this resource.
  *
- * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/protocol/atom-protocol-spec.php#new-media-link-relation">
+ * For more information, see the
+ * <ulink type="http" url="http://www.atomenabled.org/developers/protocol/atom-protocol-spec.php#new-media-link-relation">
  * Atom Publishing Protocol specification</ulink>.
  *
  * Since: 0.4.0

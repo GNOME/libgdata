@@ -72,10 +72,10 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
-				g_param_spec_string ("timezone",
-					"Timezone", "The timezone in which the feed's times are given.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("timezone",
+	                                                      "Timezone", "The timezone in which the feed's times are given.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarFeed:times-cleaned:
@@ -85,10 +85,10 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMES_CLEANED,
-				g_param_spec_uint ("times-cleaned",
-					"Times cleaned", "The number of times the feed has been completely cleared of entries.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("times-cleaned",
+	                                                    "Times cleaned", "The number of times the feed has been completely cleared of entries.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

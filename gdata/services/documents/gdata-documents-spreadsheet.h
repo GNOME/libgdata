@@ -29,11 +29,14 @@
 G_BEGIN_DECLS
 
 #define GDATA_TYPE_DOCUMENTS_SPREADSHEET		(gdata_documents_spreadsheet_get_type ())
-#define GDATA_DOCUMENTS_SPREADSHEET(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_DOCUMENTS_SPREADSHEET, GDataDocumentsSpreadsheet))
-#define GDATA_DOCUMENTS_SPREADSHEET_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_DOCUMENTS_SPREADSHEET, GDataDocumentsSpreadsheetClass))
+#define GDATA_DOCUMENTS_SPREADSHEET(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_DOCUMENTS_SPREADSHEET, \
+                                                         GDataDocumentsSpreadsheet))
+#define GDATA_DOCUMENTS_SPREADSHEET_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_DOCUMENTS_SPREADSHEET, \
+                                                         GDataDocumentsSpreadsheetClass))
 #define GDATA_IS_DOCUMENTS_SPREADSHEET(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), GDATA_TYPE_DOCUMENTS_SPREADSHEET))
 #define GDATA_IS_DOCUMENTS_SPREADSHEET_CLASS(k)		(G_TYPE_CHECK_CLASS_TYPE ((k), GDATA_TYPE_DOCUMENTS_SPREADSHEET))
-#define GDATA_DOCUMENTS_SPREADSHEET_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), GDATA_TYPE_DOCUMENTS_SPREADSHEET, GDataDocumentsSpreadsheetClass))
+#define GDATA_DOCUMENTS_SPREADSHEET_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), GDATA_TYPE_DOCUMENTS_SPREADSHEET, \
+                                                         GDataDocumentsSpreadsheetClass))
 
 typedef struct _GDataDocumentsSpreadsheetPrivate	GDataDocumentsSpreadsheetPrivate;
 
@@ -51,7 +54,7 @@ typedef struct _GDataDocumentsSpreadsheetPrivate	GDataDocumentsSpreadsheetPrivat
  * Since: 0.4.0
  **/
 typedef enum {
-        GDATA_DOCUMENTS_SPREADSHEET_XLS = 0,
+	GDATA_DOCUMENTS_SPREADSHEET_XLS = 0,
 	GDATA_DOCUMENTS_SPREADSHEET_CSV,
 	GDATA_DOCUMENTS_SPREADSHEET_PDF,
 	GDATA_DOCUMENTS_SPREADSHEET_ODS,
@@ -90,11 +93,11 @@ GDataDocumentsSpreadsheet *gdata_documents_spreadsheet_new (const gchar *id) G_G
 #include <gdata/services/documents/gdata-documents-service.h>
 
 GFile *gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, GDataDocumentsService *service, gchar **content_type,
-						      GDataDocumentsSpreadsheetFormat export_format, gint gid, GFile *destination_file,
-						      gboolean replace_file_if_exists, GCancellable *cancellable,
-						      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                      GDataDocumentsSpreadsheetFormat export_format, gint gid, GFile *destination_file,
+                                                      gboolean replace_file_if_exists, GCancellable *cancellable,
+                                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, GDataDocumentsSpreadsheetFormat export_format,
-						     gint gid) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                     gint gid) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

@@ -88,10 +88,10 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_METHOD,
-				g_param_spec_string ("method",
-					"Method", "The notification method the reminder should use.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("method",
+	                                                      "Method", "The notification method the reminder should use.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDReminder:absolute-time:
@@ -104,15 +104,15 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ABSOLUTE_TIME,
-				g_param_spec_boxed ("absolute-time",
-					"Absolute time", "Absolute time at which the reminder should be issued.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("absolute-time",
+	                                                     "Absolute time", "Absolute time at which the reminder should be issued.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDReminder:is-absolute-time:
 	 *
-	 * Whether the reminder is specified in terms of an absolute or relative time.
+	 * Whether the reminder is specified as an absolute or relative time.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
@@ -120,10 +120,10 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_ABSOLUTE_TIME,
-				g_param_spec_boolean ("is-absolute-time",
-					"Absolute time?", "Whether the reminder is specified in terms of an absolute or relative time.",
-					FALSE,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-absolute-time",
+	                                                       "Absolute time?", "Whether the reminder is specified as an absolute or relative time.",
+	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDReminder:relative-time:
@@ -136,10 +136,10 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATIVE_TIME,
-				g_param_spec_int ("relative-time",
-					"Relative time", "Time at which the reminder should be issued, in minutes.",
-					-1, G_MAXINT, -1,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_int ("relative-time",
+	                                                   "Relative time", "Time at which the reminder should be issued, in minutes.",
+	                                                   -1, G_MAXINT, -1,
+	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

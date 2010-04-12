@@ -90,7 +90,7 @@ typedef struct {
 GType gdata_gd_email_address_get_type (void) G_GNUC_CONST;
 
 GDataGDEmailAddress *gdata_gd_email_address_new (const gchar *address, const gchar *relation_type,
-						 const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                 const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gint gdata_gd_email_address_compare (const GDataGDEmailAddress *a, const GDataGDEmailAddress *b);
 
 const gchar *gdata_gd_email_address_get_address (GDataGDEmailAddress *self);

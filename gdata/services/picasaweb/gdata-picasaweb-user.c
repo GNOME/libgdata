@@ -85,10 +85,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_USER,
-					 g_param_spec_string ("user",
-							      "User", "The username of the user.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("user",
+	                                                      "User", "The username of the user.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebUser:nickname:
@@ -99,10 +99,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NICKNAME,
-					 g_param_spec_string ("nickname",
-							      "Nickname", "The user's nickname.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("nickname",
+	                                                      "Nickname", "The user's nickname.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebUser:quota-limit:
@@ -113,10 +113,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_QUOTA_LIMIT,
-					 g_param_spec_int64 ("quota-limit",
-							     "Quota Limit", "The total amount of space, in bytes, available to the user.",
-							     -1, G_MAXINT64, -1,
-							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_int64 ("quota-limit",
+	                                                     "Quota Limit", "The total amount of space, in bytes, available to the user.",
+	                                                     -1, G_MAXINT64, -1,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebUser:quota-current:
@@ -127,10 +127,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_QUOTA_CURRENT,
-					 g_param_spec_int64 ("quota-current",
-							     "Quota Current", "The current amount of space, in bytes, already used by the user.",
-							     -1, G_MAXINT64, -1,
-							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_int64 ("quota-current",
+	                                                     "Quota Current", "The current amount of space, in bytes, already used by the user.",
+	                                                     -1, G_MAXINT64, -1,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebUser:max-photos-per-album:
@@ -141,10 +141,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MAX_PHOTOS_PER_ALBUM,
-					 g_param_spec_int ("max-photos-per-album",
-							   "Max Photos Per Album", "The maximum number of photos allowed in an album.",
-							   -1, G_MAXINT, -1,
-							   G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_int ("max-photos-per-album",
+	                                                   "Max Photos Per Album", "The maximum number of photos allowed in an album.",
+	                                                   -1, G_MAXINT, -1,
+	                                                   G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebUser:thumbnail-uri:
@@ -155,10 +155,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_THUMBNAIL_URI,
-					 g_param_spec_string ("thumbnail-uri",
-							      "Thumbnail URI", "The URI of a thumbnail-sized portrait of the user.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("thumbnail-uri",
+	                                                      "Thumbnail URI", "The URI of a thumbnail-sized portrait of the user.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

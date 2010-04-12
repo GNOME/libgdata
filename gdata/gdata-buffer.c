@@ -209,8 +209,7 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	 *  - length_requested is a whole number of chunks: remove those chunks, return length_requested
 	 *  - length_requested is less than one chunk: remove no chunks, return length_requested, set head_read_offset
 	 *  - length_requested is a fraction of multiple chunks: remove whole chunks, return length_requested, set head_read_offset
-	 *    for remaining fraction
-	 */
+	 *    for remaining fraction */
 
 	g_static_mutex_lock (&(self->mutex));
 

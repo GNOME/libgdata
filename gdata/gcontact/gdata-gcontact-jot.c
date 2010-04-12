@@ -88,10 +88,10 @@ gdata_gcontact_jot_class_init (GDataGContactJotClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT,
-				g_param_spec_string ("content",
-					"Content", "The content of the jot.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("content",
+	                                                      "Content", "The content of the jot.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactJot:relation-type:
@@ -104,10 +104,10 @@ gdata_gcontact_jot_class_init (GDataGContactJotClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of jot.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of jot.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

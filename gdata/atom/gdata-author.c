@@ -85,10 +85,10 @@ gdata_author_class_init (GDataAuthorClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NAME,
-				g_param_spec_string ("name",
-					"Name", "A human-readable name for the person.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("name",
+	                                                      "Name", "A human-readable name for the person.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataAuthor:uri:
@@ -101,10 +101,10 @@ gdata_author_class_init (GDataAuthorClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_URI,
-				g_param_spec_string ("uri",
-					"URI", "An IRI associated with the person.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uri",
+	                                                      "URI", "An IRI associated with the person.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataAuthor:email-address:
@@ -117,10 +117,10 @@ gdata_author_class_init (GDataAuthorClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EMAIL_ADDRESS,
-				g_param_spec_string ("email-address",
-					"E-mail address", "An e-mail address associated with the person.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("email-address",
+	                                                      "E-mail address", "An e-mail address associated with the person.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -192,8 +192,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataAuthorPrivate *priv = GDATA_AUTHOR (parsable)->priv;
 
-	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE && (
-	     gdata_parser_string_from_element (node, "name", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->name), &success, error) == TRUE ||
+	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE &&
+	    (gdata_parser_string_from_element (node, "name", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->name), &success, error) == TRUE ||
 	     gdata_parser_string_from_element (node, "uri", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->uri), &success, error) == TRUE ||
 	     gdata_parser_string_from_element (node, "email", P_NO_DUPES | P_REQUIRED | P_NON_EMPTY, &(priv->email_address), &success, error) == TRUE
 	    )) {

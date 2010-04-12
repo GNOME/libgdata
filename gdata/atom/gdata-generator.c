@@ -74,15 +74,16 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 	 * A human-readable name for the generating agent.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.generator">Atom specification</ulink>.
+	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.generator">
+	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NAME,
-				g_param_spec_string ("name",
-					"Name", "A human-readable name for the generating agent.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("name",
+	                                                      "Name", "A human-readable name for the generating agent.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGenerator:uri:
@@ -90,15 +91,16 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 	 * An IRI reference that is relevant to the agent.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.generator">Atom specification</ulink>.
+	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.generator">
+	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_URI,
-				g_param_spec_string ("uri",
-					"URI", "An IRI reference that is relevant to the agent.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uri",
+	                                                      "URI", "An IRI reference that is relevant to the agent.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGenerator:version:
@@ -106,15 +108,16 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 	 * Indicates the version of the generating agent.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.generator">Atom specification</ulink>.
+	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.generator">
+	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VERSION,
-				g_param_spec_string ("version",
-					"Version", "Indicates the version of the generating agent.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("version",
+	                                                      "Version", "Indicates the version of the generating agent.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

@@ -89,10 +89,10 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ROLE,
-				g_param_spec_string ("role",
-					"Role", "The role of the person concerned by this ACL.",
-					GDATA_ACCESS_ROLE_NONE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("role",
+	                                                      "Role", "The role of the person concerned by this ACL.",
+	                                                      GDATA_ACCESS_ROLE_NONE,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataAccessRule:scope-type:
@@ -102,10 +102,10 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SCOPE_TYPE,
-				g_param_spec_string ("scope-type",
-					"Scope type", "Specifies to whom this access rule applies.",
-					GDATA_ACCESS_SCOPE_DEFAULT,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("scope-type",
+	                                                      "Scope type", "Specifies to whom this access rule applies.",
+	                                                      GDATA_ACCESS_SCOPE_DEFAULT,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataAccessRule:scope-value:
@@ -116,10 +116,10 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SCOPE_VALUE,
-				g_param_spec_string ("scope-value",
-					"Scope value", "The scope value for this access rule.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("scope-value",
+	                                                      "Scope value", "The scope value for this access rule.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataAccessRule:edited:
@@ -132,10 +132,10 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-				g_param_spec_boxed ("edited",
-					"Edited", "The last time the access rule was edited.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("edited",
+	                                                     "Edited", "The last time the access rule was edited.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

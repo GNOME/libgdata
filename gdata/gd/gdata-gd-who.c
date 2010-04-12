@@ -91,15 +91,15 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "Specifies the relationship between the containing entity and the contained person.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "Specifies the relationship between the container and the containee.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDWho:value-string:
 	 *
-	 * A simple string value that can be used as a representation of this person.
+	 * A simple string representation of this person.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
@@ -107,10 +107,10 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VALUE_STRING,
-				g_param_spec_string ("value-string",
-					"Value string", "A simple string value that can be used as a representation of this person.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("value-string",
+	                                                      "Value string", "A simple string representation of this person.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDWho:email-address:
@@ -123,10 +123,10 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EMAIL_ADDRESS,
-				g_param_spec_string ("email-address",
-					"E-mail address", "The e-mail address of the person represented by the #GDataGDWho.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("email-address",
+	                                                      "E-mail address", "The e-mail address of the person represented by the #GDataGDWho.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

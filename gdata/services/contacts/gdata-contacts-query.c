@@ -83,10 +83,10 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ORDER_BY,
-				g_param_spec_string ("order-by",
-					"Order by", "Sorting criterion.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("order-by",
+	                                                      "Order by", "Sorting criterion.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsQuery:show-deleted:
@@ -98,10 +98,10 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SHOW_DELETED,
-				g_param_spec_boolean ("show-deleted",
-					"Show deleted?", "Whether to include deleted contacts in the query feed.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("show-deleted",
+	                                                       "Show deleted?", "Whether to include deleted contacts in the query feed.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsQuery:sort-order:
@@ -111,24 +111,24 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
-				g_param_spec_string ("sort-order",
-					"Sort order", "Sorting order direction.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("sort-order",
+	                                                      "Sort order", "Sorting order direction.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsQuery:group:
 	 *
-	 * Constrains the results to only the contacts belonging to the group specified. The value of this parameter
+	 * Constrains the results to only those belonging to the group specified. The value of this parameter
 	 * should be a group ID URI.
 	 *
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_GROUP,
-				g_param_spec_string ("group",
-					"Group", "Constrains the results to only the contacts belonging to the group specified.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("group",
+	                                                      "Group", "Constrains the results to only those belonging to the group specified.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -268,10 +268,10 @@ GDataContactsQuery *
 gdata_contacts_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
 {
 	return g_object_new (GDATA_TYPE_CONTACTS_QUERY,
-			     "q", q,
-			     "start-index", start_index,
-			     "max-results", max_results,
-			     NULL);
+	                     "q", q,
+	                     "start-index", start_index,
+	                     "max-results", max_results,
+	                     NULL);
 }
 
 /**

@@ -76,7 +76,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataCalendarCalendar, gdata_calendar_calendar, GDATA_TYPE_ENTRY,
-			 G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_calendar_calendar_access_handler_init))
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_calendar_calendar_access_handler_init))
 
 static void
 gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
@@ -101,21 +101,21 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * url="http://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones">reference</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
-				g_param_spec_string ("timezone",
-					"Timezone", "The timezone in which the calendar's times are given.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("timezone",
+	                                                      "Timezone", "The timezone in which the calendar's times are given.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarCalendar:times-cleaned:
 	 *
-	 * The number of times the calendar has been completely cleared of events.
+	 * The number of times the calendar has been cleared of events.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMES_CLEANED,
-				g_param_spec_uint ("times-cleaned",
-					"Times cleaned", "The number of times the calendar has been completely cleared of events.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("times-cleaned",
+	                                                    "Times cleaned", "The number of times the calendar has been cleared of events.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarCalendar:is-hidden:
@@ -125,10 +125,10 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_HIDDEN,
-				g_param_spec_boolean ("is-hidden",
-					"Hidden?", "Indicates whether the calendar is visible.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-hidden",
+	                                                       "Hidden?", "Indicates whether the calendar is visible.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarCalendar:color:
@@ -136,10 +136,10 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * The color used to highlight the calendar in the user's browser.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_COLOR,
-				g_param_spec_boxed ("color",
-					"Color", "The color used to highlight the calendar in the user's browser.",
-					GDATA_TYPE_COLOR,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("color",
+	                                                     "Color", "The color used to highlight the calendar in the user's browser.",
+	                                                     GDATA_TYPE_COLOR,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarCalendar:is-selected:
@@ -149,22 +149,22 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_SELECTED,
-				g_param_spec_boolean ("is-selected",
-					"Selected?", "Indicates whether the calendar is selected.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-selected",
+	                                                       "Selected?", "Indicates whether the calendar is selected.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarCalendar:access-level:
 	 *
-	 * Indicates what level of access the authenticated user has to the calendar. For example: %GDATA_CALENDAR_ACCESS_ROLE_READ or
-	 * %GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY.
+	 * Indicates the access level the current user has to the calendar. For example: %GDATA_CALENDAR_ACCESS_ROLE_READ or
+	 * %GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY. The "current user" is the one logged in with gdata_service_authenticate() or the guest user.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ACCESS_LEVEL,
-				g_param_spec_string ("access-level",
-					"Access level", "Indicates what level of access the authenticated user has to the calendar.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("access-level",
+	                                                      "Access level", "Indicates the access level the current user has to the calendar.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarCalendar:edited:
@@ -175,10 +175,10 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-				g_param_spec_boxed ("edited",
-					"Edited", "The last time the calendar was edited.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("edited",
+	                                                     "Edited", "The last time the calendar was edited.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static gboolean
@@ -308,13 +308,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (gdata_color_from_hexadecimal ((gchar*) value, &colour) == FALSE) {
 				/* Error */
 				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-					     /* Translators: the first parameter is the name of an XML element (including the angle brackets
-					      * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
-					      * RGB format).
-					      *
-					      * For example:
-					      *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format. */
-					     _("The content of a %s element (\"%s\") was not in hexadecimal RGB format."), "<entry/gCal:color>", value);
+				             /* Translators: the first parameter is the name of an XML element (including the angle brackets
+				              * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+				              * RGB format).
+				              *
+				              * For example:
+				              *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format. */
+				             _("The content of a %s element (\"%s\") was not in hexadecimal RGB format."),
+				             "<entry/gCal:color>", value);
 				xmlFree (value);
 
 				return FALSE;

@@ -114,10 +114,10 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TITLE,
-				g_param_spec_string ("title",
-					"Title", "A human-readable title for the entry.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("title",
+	                                                      "Title", "A human-readable title for the entry.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataEntry:summary:
@@ -130,10 +130,10 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SUMMARY,
-				g_param_spec_string ("summary",
-					"Summary", "A short summary, abstract, or excerpt of the entry.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("summary",
+	                                                      "Summary", "A short summary, abstract, or excerpt of the entry.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataEntry:id:
@@ -144,10 +144,10 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ID,
-				g_param_spec_string ("id",
-					"ID", "A permanent, universally unique identifier for the entry, in IRI form.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("id",
+	                                                      "ID", "A permanent, universally unique identifier for the entry, in IRI form.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataEntry:etag:
@@ -161,24 +161,24 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ETAG,
-				g_param_spec_string ("etag",
-					"ETag", "An identifier for a particular version of the entry.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("etag",
+	                                                      "ETag", "An identifier for a particular version of the entry.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataEntry:updated:
 	 *
-	 * The date and time the entry was most recently updated in a significant way.
+	 * The date and time when the entry was most recently updated significantly.
 	 *
 	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.updated">
 	 * Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED,
-				g_param_spec_boxed ("updated",
-					"Updated", "The date and time the entry was most recently updated in a significant way.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("updated",
+	                                                     "Updated", "The date and time when the entry was most recently updated significantly.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataEntry:published:
@@ -189,10 +189,10 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PUBLISHED,
-				g_param_spec_boxed ("published",
-					"Published", "The date and time the entry was first published or made available.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("published",
+	                                                     "Published", "The date and time the entry was first published or made available.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataEntry:content:
@@ -203,10 +203,10 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT,
-				g_param_spec_string ("content",
-					"Content", "The content of the entry.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("content",
+	                                                      "Content", "The content of the entry.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataEntry:is-inserted:
@@ -215,10 +215,10 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * %TRUE for entries returned from the server by queries. It is set to %TRUE when an entry is inserted using gdata_service_insert_entry().
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_INSERTED,
-				g_param_spec_boolean ("is-inserted",
-					"Inserted?", "Whether the entry has been inserted on the server.",
-					FALSE,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-inserted",
+	                                                       "Inserted?", "Whether the entry has been inserted on the server.",
+	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataEntry:rights:
@@ -231,10 +231,10 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RIGHTS,
-					 g_param_spec_string ("rights",
-							      "Rights", "The ownership rights pertaining to the entry.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("rights",
+	                                                      "Rights", "The ownership rights pertaining to the entry.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -382,11 +382,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES, &(priv->updated), &success, error) == TRUE ||
 		    gdata_parser_time_val_from_element (node, "published", P_REQUIRED | P_NO_DUPES, &(priv->published), &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
-			                                     gdata_entry_add_category, parsable, &success, error) == TRUE ||
+		                                             gdata_entry_add_category, parsable, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,
-			                                     gdata_entry_add_link, parsable, &success, error) == TRUE ||
+		                                             gdata_entry_add_link, parsable, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
-			                                     gdata_entry_add_author, parsable, &success, error) == TRUE) {
+		                                             gdata_entry_add_author, parsable, &success, error) == TRUE) {
 			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
 			/* atom:content */

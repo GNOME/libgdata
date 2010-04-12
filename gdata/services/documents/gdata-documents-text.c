@@ -26,8 +26,8 @@
  *
  * #GDataDocumentsText is a subclass of #GDataDocumentsEntry to represent a text document from Google Documents.
  *
- * For more details of Google Documents' GData API, see the <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">
- * online documentation</ulink>.
+ * For more details of Google Documents' GData API, see the
+ * <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
  * Since: 0.4.0
  **/
@@ -134,8 +134,8 @@ gdata_documents_text_new (const gchar *id)
  **/
 GFile *
 gdata_documents_text_download_document (GDataDocumentsText *self, GDataDocumentsService *service, gchar **content_type,
-					GDataDocumentsTextFormat export_format, GFile *destination_file,
-					gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
+                                        GDataDocumentsTextFormat export_format, GFile *destination_file,
+                                        gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
 	gchar *link_href;
 
@@ -149,8 +149,8 @@ gdata_documents_text_download_document (GDataDocumentsText *self, GDataDocuments
 	/* Download the file */
 	link_href = gdata_documents_text_get_download_uri (self, export_format);
 	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), GDATA_SERVICE (service),
-								     content_type, link_href, destination_file, export_formats[export_format], replace_file_if_exists,
-								     cancellable, error);
+	                                                             content_type, link_href, destination_file, export_formats[export_format],
+	                                                             replace_file_if_exists, cancellable, error);
 	g_free (link_href);
 
 	return destination_file;

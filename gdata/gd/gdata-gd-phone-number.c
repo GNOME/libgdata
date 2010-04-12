@@ -95,15 +95,15 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NUMBER,
-				g_param_spec_string ("number",
-					"Number", "Human-readable phone number; may be in any telephone number format.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("number",
+	                                                      "Number", "Human-readable phone number; may be in any telephone number format.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPhoneNumber:uri:
 	 *
-	 * An optional "tel URI" used to represent the number in a formal way, useful for programmatic access, such as a VoIP/PSTN bridge.
+	 * An optional "tel URI" used to represent the number in a formal way. Useful for programmatic access, such as a VoIP/PSTN bridge.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
@@ -111,10 +111,10 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_URI,
-				g_param_spec_string ("uri",
-					"URI", "An optional \"tel URI\" used to represent the number in a formal way, useful for programmatic access.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uri",
+	                                                      "URI", "An optional \"tel URI\" used to represent the number in a formal way.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPhoneNumber:relation-type:
@@ -127,10 +127,10 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of phone number.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of phone number.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPhoneNumber:label:
@@ -143,10 +143,10 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A simple string value used to name this phone number.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A simple string value used to name this phone number.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDPhoneNumber:is-primary:
@@ -159,10 +159,10 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
-				g_param_spec_boolean ("is-primary",
-					"Primary?", "Indicates which phone number out of a group is primary.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-primary",
+	                                                       "Primary?", "Indicates which phone number out of a group is primary.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -338,7 +338,7 @@ gdata_gd_phone_number_new (const gchar *number, const gchar *relation_type, cons
 	g_return_val_if_fail (number != NULL && *number != '\0', NULL);
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_PHONE_NUMBER, "number", number, "uri", uri, "relation-type", relation_type,
-			     "label", label, "is-primary", is_primary, NULL);
+	                     "label", label, "is-primary", is_primary, NULL);
 }
 
 /**

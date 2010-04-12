@@ -30,8 +30,8 @@
  * access roles defined for the base #GDataAccessRule (e.g. %GDATA_ACCESS_ROLE_NONE), #GDataDocumentsEntry has its own, such as
  * %GDATA_DOCUMENTS_ACCESS_ROLE_OWNER and %GDATA_DOCUMENTS_ACCESS_ROLE_READER.
  *
- * For more details of Google Documents' GData API, see the <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">
- * online documentation</ulink>.
+ * For more details of Google Documents' GData API, see the
+ * <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
  * Since: 0.4.0
  **/
@@ -77,7 +77,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
-			 G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_documents_entry_access_handler_init))
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_documents_entry_access_handler_init))
 
 static void
 gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
@@ -107,10 +107,10 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-				g_param_spec_boxed ("edited",
-					"Edited", "The last time the document was edited.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("edited",
+	                                                     "Edited", "The last time the document was edited.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsEntry:last-viewed
@@ -120,10 +120,10 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LAST_VIEWED,
-				g_param_spec_boxed ("last-viewed",
-					"Last viewed", "The last time the document was viewed.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("last-viewed",
+	                                                     "Last viewed", "The last time the document was viewed.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsEntry:writers-can-invite:
@@ -133,10 +133,10 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_WRITERS_CAN_INVITE,
-				g_param_spec_boolean ("writers-can-invite",
-					"Writers can invite?", "Indicates whether writers can invite others to edit.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("writers-can-invite",
+	                                                       "Writers can invite?", "Indicates whether writers can invite others to edit.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsEntry:is-deleted:
@@ -147,10 +147,10 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_DELETED,
-				g_param_spec_boolean ("is-deleted",
-					"Deleted?", "Indicates whether the document entry has been deleted.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-deleted",
+	                                                       "Deleted?", "Indicates whether the document entry has been deleted.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsEntry:document-id
@@ -160,10 +160,10 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DOCUMENT_ID,
-				g_param_spec_string ("document-id",
-					"Document ID", "The document ID of the document.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("document-id",
+	                                                      "Document ID", "The document ID of the document.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsEntry:last-modified-by
@@ -173,10 +173,10 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LAST_MODIFIED_BY,
-				g_param_spec_object ("last-modified-by",
-					"Last modified by", "Indicates the author of the last modification.",
-					GDATA_TYPE_AUTHOR,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("last-modified-by",
+	                                                      "Last modified by", "Indicates the author of the last modification.",
+	                                                      GDATA_TYPE_AUTHOR,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 }
 
@@ -409,10 +409,10 @@ gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self, GTimeVal *last
  * gdata_documents_entry_get_path:
  * @self: a #GDataDocumentsEntry
  *
- * Builds a path for the #GDataDocumentsEntry, starting from a root node and traversing the folders containing the document, then
- * ending with the document's ID.
+ * Builds a path for the #GDataDocumentsEntry, starting from a root node and traversing the folders containing the document, then ending with the
+ * document's ID.
  *
- * An example path would be: "/folder_id1/folder_id2/document_id".
+ * An example path would be: <literal>/folder_id1/folder_id2/document_id</literal>.
  *
  * Note: the path is based on the entry/document IDs of the folders (#GDataEntry:id) and document (#GDataDocumentsEntry:document-id),
  * and not the entries' human-readable names (#GDataEntry:title).
@@ -597,8 +597,8 @@ notify_content_type_cb (GDataDownloadStream *download_stream, GParamSpec *pspec,
  */
 GFile *
 _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *src_uri,
-					  GFile *destination_file, const gchar *file_extension, gboolean replace_file_if_exists,
-					  GCancellable *cancellable, GError **error)
+                                          GFile *destination_file, const gchar *file_extension, gboolean replace_file_if_exists,
+                                          GCancellable *cancellable, GError **error)
 {
 	const gchar *document_title;
 	gchar *default_filename;
@@ -619,7 +619,7 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (service)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to download documents."));
+		                     _("You must be authenticated to download documents."));
 		return NULL;
 	}
 
@@ -627,7 +627,8 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 	document_title = gdata_entry_get_title (GDATA_ENTRY (self));
 	default_filename = g_strdup_printf ("%s.%s", document_title, file_extension);
 
-	dest_stream = _gdata_download_stream_find_destination (default_filename, destination_file, &actual_file, replace_file_if_exists, cancellable, error);
+	dest_stream = _gdata_download_stream_find_destination (default_filename, destination_file, &actual_file, replace_file_if_exists,
+	                                                       cancellable, error);
 	g_free (default_filename);
 
 	if (dest_stream == NULL)
@@ -637,7 +638,7 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 	src_stream = gdata_download_stream_new (GDATA_SERVICE (service), src_uri);
 	g_signal_connect (src_stream, "notify::content-type", (GCallback) notify_content_type_cb, content_type);
 	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream,
-				G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
 	g_object_unref (src_stream);
 	g_object_unref (dest_stream);
 	if (child_error != NULL) {

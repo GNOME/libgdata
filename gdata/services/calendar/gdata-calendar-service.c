@@ -72,10 +72,7 @@ GDataCalendarService *
 gdata_calendar_service_new (const gchar *client_id)
 {
 	g_return_val_if_fail (client_id != NULL, NULL);
-
-	return g_object_new (GDATA_TYPE_CALENDAR_SERVICE,
-			     "client-id", client_id,
-			     NULL);
+	return g_object_new (GDATA_TYPE_CALENDAR_SERVICE, "client-id", client_id, NULL);
 }
 
 /**
@@ -97,7 +94,7 @@ gdata_calendar_service_new (const gchar *client_id)
  **/
 GDataFeed *
 gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
-					    GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                                            GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataFeed *feed;
 	gchar *request_uri;
@@ -110,7 +107,7 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to query all calendars."));
+		                     _("You must be authenticated to query all calendars."));
 		return NULL;
 	}
 
@@ -141,8 +138,8 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
  **/
 void
 gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
-						  GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-						  GAsyncReadyCallback callback, gpointer user_data)
+                                                  GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                  GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *request_uri;
 
@@ -154,8 +151,8 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-						     _("You must be authenticated to query all calendars."));
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                                     _("You must be authenticated to query all calendars."));
 		return;
 	}
 
@@ -184,7 +181,7 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
  **/
 GDataFeed *
 gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
-					    GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                                            GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataFeed *feed;
 	gchar *request_uri;
@@ -197,7 +194,7 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to query your own calendars."));
+		                     _("You must be authenticated to query your own calendars."));
 		return NULL;
 	}
 
@@ -228,8 +225,8 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
  **/
 void
 gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
-						  GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-						  GAsyncReadyCallback callback, gpointer user_data)
+                                                  GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                  GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *request_uri;
 
@@ -241,8 +238,8 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-						     _("You must be authenticated to query your own calendars."));
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                                     _("You must be authenticated to query your own calendars."));
 		return;
 	}
 
@@ -270,7 +267,7 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
  **/
 GDataFeed *
 gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCalendar *calendar, GDataQuery *query, GCancellable *cancellable,
-				     GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	/* TODO: Async variant */
 	const gchar *uri;
@@ -284,7 +281,7 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to query your own calendars."));
+		                     _("You must be authenticated to query your own calendars."));
 		return NULL;
 	}
 
@@ -293,13 +290,13 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 	if (uri == NULL) {
 		/* Erroring out is probably the safest thing to do */
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     _("The calendar did not have a content source."));
+		                     _("The calendar did not have a content source."));
 		return NULL;
 	}
 
 	/* Execute the query */
 	return gdata_service_query (GDATA_SERVICE (self), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable,
-				    progress_callback, progress_user_data, error);
+	                            progress_callback, progress_user_data, error);
 }
 
 /**

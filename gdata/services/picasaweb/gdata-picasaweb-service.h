@@ -70,31 +70,29 @@ GDataPicasaWebUser *gdata_picasaweb_service_get_user (GDataPicasaWebService *sel
                                                       GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataFeed *gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuery *query, const gchar *username, GCancellable *cancellable,
-						     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-						     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDataQuery *query, const gchar *username, GCancellable *cancellable,
-						     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-						     GAsyncReadyCallback callback, gpointer user_data);
+                                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                     GAsyncReadyCallback callback, gpointer user_data);
 
 GDataFeed *gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataQuery *query,
-						GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-						GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 #include <gdata/services/picasaweb/gdata-picasaweb-file.h>
 
 GDataPicasaWebFile *gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
-							 GFile *file_data,
-							 GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                         GFile *file_data,
+                                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-void
-gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
-					   GFile *file_data, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-GDataPicasaWebFile *
-gdata_picasaweb_service_upload_file_finish (GDataPicasaWebService *self, GAsyncResult *result, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
+                                                GFile *file_data, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+GDataPicasaWebFile *gdata_picasaweb_service_upload_file_finish (GDataPicasaWebService *self, GAsyncResult *result,
+                                                                GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataPicasaWebAlbum *gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GCancellable *cancellable,
-							   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-
+                                                           GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

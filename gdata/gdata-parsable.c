@@ -130,8 +130,8 @@ real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer us
  *
  * An object of the given @parsable_type is created, and its <function>pre_parse_xml</function>, <function>parse_xml</function> and
  * <function>post_parse_xml</function> class functions called on the XML tree obtained from @xml. <function>pre_parse_xml</function> and
- * <function>post_parse_xml</function> are called once each on the root node of the tree, while <function>parse_xml</function> is called for each of the
- * child nodes of the root node.
+ * <function>post_parse_xml</function> are called once each on the root node of the tree, while <function>parse_xml</function> is called for
+ * each of the child nodes of the root node.
  *
  * If @length is -1, @xml will be assumed to be null-terminated.
  *
@@ -182,9 +182,9 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	if (doc == NULL) {
 		xmlError *xml_error = xmlGetLastError ();
 		g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_PARSING_STRING,
-			     /* Translators: the parameter is an error message */
-			     _("Error parsing XML: %s"),
-			     (xml_error != NULL) ? xml_error->message : NULL);
+		             /* Translators: the parameter is an error message */
+		             _("Error parsing XML: %s"),
+		             (xml_error != NULL) ? xml_error->message : NULL);
 		return NULL;
 	}
 
@@ -194,9 +194,9 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 		/* XML document's empty */
 		xmlFreeDoc (doc);
 		g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_EMPTY_DOCUMENT,
-			     _("Error parsing XML: %s"),
-			     /* Translators: this is a dummy error message to be substituted into "Error parsing XML: %s". */
-			     _("Empty document."));
+		             _("Error parsing XML: %s"),
+		             /* Translators: this is a dummy error message to be substituted into "Error parsing XML: %s". */
+		             _("Empty document."));
 		return NULL;
 	}
 
@@ -277,8 +277,8 @@ filter_namespaces_cb (gchar *prefix, gchar *href, GHashTable *canonical_namespac
  * gdata_parsable_get_xml:
  * @self: a #GDataParsable
  *
- * Builds an XML representation of the #GDataParsable in its current state, such that it could be inserted on the server. The XML is guaranteed to have
- * all its namespaces declared properly in a self-contained fashion, and is valid for stand-alone use.
+ * Builds an XML representation of the #GDataParsable in its current state, such that it could be inserted on the server. The XML is guaranteed
+ * to have all its namespaces declared properly in a self-contained fashion, and is valid for stand-alone use.
  *
  * Return value: the object's XML; free with g_free()
  *
@@ -300,7 +300,8 @@ gdata_parsable_get_xml (GDataParsable *self)
  * _gdata_parsable_get_xml:
  * @self: a #GDataParsable
  * @xml_string: a #GString to build the XML in
- * @declare_namespaces: %TRUE if all the namespaces used in the outputted XML should be declared in the opening tag of the root element, %FALSE otherwise
+ * @declare_namespaces: %TRUE if all the namespaces used in the outputted XML should be declared in the opening tag of the root element,
+ * %FALSE otherwise
  *
  * Builds an XML representation of the #GDataParsable in its current state, such that it could be inserted on the server. If @declare_namespaces is
  * %TRUE, the XML is guaranteed to have all its namespaces declared properly in a self-contained fashion, and is valid for stand-alone use. If

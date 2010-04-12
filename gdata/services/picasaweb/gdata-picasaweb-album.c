@@ -128,10 +128,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ALBUM_ID,
-					 g_param_spec_string ("album-id",
-							      "Album ID", "The ID of the album.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("album-id",
+	                                                      "Album ID", "The ID of the album.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:user
@@ -144,10 +144,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_USER,
-					 g_param_spec_string ("user",
-							      "User", "The username of the album owner.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("user",
+	                                                      "User", "The username of the album owner.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:nickname
@@ -160,10 +160,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NICKNAME,
-					 g_param_spec_string ("nickname",
-							      "Nickname", "The user's nickname.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("nickname",
+	                                                      "Nickname", "The user's nickname.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:edited
@@ -176,10 +176,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-					 g_param_spec_boxed ("edited",
-							     "Edited", "The time this album was last edited.",
-							     GDATA_TYPE_G_TIME_VAL,
-							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("edited",
+	                                                     "Edited", "The time this album was last edited.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:location
@@ -192,10 +192,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
-					 g_param_spec_string ("location",
-							      "Location", "The user-specified location associated with the album.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("location",
+	                                                      "Location", "The user-specified location associated with the album.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:visibility
@@ -208,10 +208,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VISIBILITY,
-					 g_param_spec_enum ("visibility",
-							    "Visibility", "The visibility (or access rights) of the album.",
-							    GDATA_TYPE_PICASAWEB_VISIBILITY, GDATA_PICASAWEB_PUBLIC,
-							    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("visibility",
+	                                                    "Visibility", "The visibility (or access rights) of the album.",
+	                                                    GDATA_TYPE_PICASAWEB_VISIBILITY, GDATA_PICASAWEB_PUBLIC,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:timestamp
@@ -224,10 +224,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMESTAMP,
-					 g_param_spec_boxed ("timestamp",
-							     "Timestamp", "The timestamp of when the album occurred, settable by the user.",
-							     GDATA_TYPE_G_TIME_VAL,
-							     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("timestamp",
+	                                                     "Timestamp", "The timestamp of when the album occurred, settable by the user.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* TODO: Change to photo-count? */
 	/**
@@ -241,10 +241,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NUM_PHOTOS,
-					 g_param_spec_uint ("num-photos",
-							    "Number of photos", "The number of photos and videos in the album.",
-							    0, G_MAXUINT, 0,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("num-photos",
+	                                                    "Number of photos", "The number of photos and videos in the album.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/* TODO: Change to remaining-photos-count? */
 	/**
@@ -259,11 +259,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NUM_PHOTOS_REMAINING,
-					 g_param_spec_uint ("num-photos-remaining",
-							    "Number of photo spaces remaining", "The number of photos and videos that can still be"
-							    " uploaded to this album.",
-							    0, G_MAXUINT, 0,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("num-photos-remaining",
+	                                                    "Number of photo spaces remaining", "The number of files spaces still free for uploads.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:bytes-used:
@@ -277,10 +276,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_BYTES_USED,
-					 g_param_spec_long ("bytes-used",
-							    "Number of bytes used", "The number of bytes consumed by this album and its contents.",
-							    -1, G_MAXLONG, -1,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_long ("bytes-used",
+	                                                    "Number of bytes used", "The number of bytes consumed by this album and its contents.",
+	                                                    -1, G_MAXLONG, -1,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:commenting-enabled:
@@ -290,10 +289,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_COMMENTING_ENABLED,
-					 g_param_spec_boolean ("is-commenting-enabled",
-							       "Commenting enabled?", "Whether commenting is enabled for this album.",
-							       FALSE,
-							       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-commenting-enabled",
+	                                                       "Commenting enabled?", "Whether commenting is enabled for this album.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:comment-count:
@@ -306,10 +305,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_COMMENT_COUNT,
-					 g_param_spec_uint ("comment-count",
-							    "Comment count", "The number of comments on the album.",
-							    0, G_MAXUINT, 0,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("comment-count",
+	                                                    "Comment count", "The number of comments on the album.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:tags:
@@ -322,10 +321,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TAGS,
-					 g_param_spec_boxed ("tags",
-							      "Tags", "A NULL-terminated array of tags associated with the album",
-							      G_TYPE_STRV,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("tags",
+	                                                     "Tags", "A NULL-terminated array of tags associated with the album",
+	                                                     G_TYPE_STRV,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:latitude:
@@ -339,10 +338,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LATITUDE,
-					 g_param_spec_double ("latitude",
-							      "Latitude", "The location as a latitude coordinate associated with this album.",
-							      -90.0, 90.0, 0.0,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("latitude",
+	                                                      "Latitude", "The location as a latitude coordinate associated with this album.",
+	                                                      -90.0, 90.0, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebAlbum:longitude:
@@ -356,10 +355,10 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
-					 g_param_spec_double ("longitude",
-							      "Longitude", "The location as a longitude coordinate associated with this album.",
-							      -180.0, 180.0, 0.0,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("longitude",
+	                                                      "Longitude", "The location as a longitude coordinate associated with this album.",
+	                                                      -180.0, 180.0, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -661,7 +660,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
-			gdata_picasaweb_album_set_is_commenting_enabled (self, (xmlStrcmp (commenting_enabled, (xmlChar*) "true") == 0) ? TRUE : FALSE);
+			gdata_picasaweb_album_set_is_commenting_enabled (self,
+			                                                 (xmlStrcmp (commenting_enabled, (xmlChar*) "true") == 0) ? TRUE : FALSE);
 			xmlFree (commenting_enabled);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "commentCount") == 0) {
 			/* gphoto:commentCount */
@@ -712,7 +712,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->timestamp.tv_sec != 0 || priv->timestamp.tv_usec != 0) {
 		/* in milliseconds */
 		g_string_append_printf (xml_string, "<gphoto:timestamp>%" G_GUINT64_FORMAT "</gphoto:timestamp>",
-					((guint64) priv->timestamp.tv_sec) * 1000 + priv->timestamp.tv_usec / 1000);
+		                        ((guint64) priv->timestamp.tv_sec) * 1000 + priv->timestamp.tv_usec / 1000);
 	}
 
 	if (priv->is_commenting_enabled == FALSE)

@@ -135,10 +135,10 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
-					 g_param_spec_object ("service",
-							      "Service", "The service which is used to authenticate the upload.",
-							      GDATA_TYPE_SERVICE,
-							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("service",
+	                                                      "Service", "The service which is used to authenticate the upload.",
+	                                                      GDATA_TYPE_SERVICE,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataUploadStream:upload-uri:
@@ -148,10 +148,10 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPLOAD_URI,
-					 g_param_spec_string ("upload-uri",
-							      "Upload URI", "The URI of the file to upload.",
-							      NULL,
-							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("upload-uri",
+	                                                      "Upload URI", "The URI of the file to upload.",
+	                                                      NULL,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataUploadStream:entry:
@@ -161,10 +161,10 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ENTRY,
-					 g_param_spec_object ("entry",
-						      "Entry", "The entry used for metadata to upload.",
-							      GDATA_TYPE_ENTRY,
-							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("entry",
+	                                                      "Entry", "The entry used for metadata to upload.",
+	                                                      GDATA_TYPE_ENTRY,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataUploadStream:slug:
@@ -174,10 +174,10 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SLUG,
-					 g_param_spec_string ("slug",
-							      "Slug", "The slug of the file being uploaded.",
-							      NULL,
-							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("slug",
+	                                                      "Slug", "The slug of the file being uploaded.",
+	                                                      NULL,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataUploadStream:content-type:
@@ -187,10 +187,10 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE,
-					 g_param_spec_string ("content-type",
-							      "Content type", "The content type of the file being uploaded.",
-							      NULL,
-							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("content-type",
+	                                                      "Content type", "The content type of the file being uploaded.",
+	                                                      NULL,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -354,7 +354,7 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 		first_part_header = "--" BOUNDARY_STRING "\nContent-Type: application/atom+xml; charset=UTF-8\n\n<?xml version='1.0'?>";
 		entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (priv->entry));
 		second_part_header = g_strdup_printf ("\n--" BOUNDARY_STRING "\nContent-Type: %s\nContent-Transfer-Encoding: binary\n\n",
-						      priv->content_type);
+		                                      priv->content_type);
 
 		/* Push the message parts onto the message body; we can skip the buffer, since the network thread hasn't yet been created,
 		 * so we're the sole thread accessing the SoupMessage. */
@@ -615,7 +615,7 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
 
 	/* Create the upload stream */
 	upload_stream = g_object_new (GDATA_TYPE_UPLOAD_STREAM, "upload-uri", upload_uri, "service", service, "entry", entry,
-				      "slug", slug, "content-type", content_type, NULL);
+	                              "slug", slug, "content-type", content_type, NULL);
 	upload_stream->priv->message = message;
 
 	/* Uploading doesn't actually start until the first call to write() */

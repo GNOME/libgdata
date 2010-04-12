@@ -149,10 +149,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FILE_ID,
-					 g_param_spec_string ("file-id",
-							      "File ID", "The ID of the file.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("file-id",
+	                                                      "File ID", "The ID of the file.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:version:
@@ -165,10 +165,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VERSION,
-					 g_param_spec_string ("version",
-							      "Version", "The version number of the file.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("version",
+	                                                      "Version", "The version number of the file.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:album-id:
@@ -181,10 +181,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ALBUM_ID,
-					 g_param_spec_string ("album-id",
-							      "Album ID", "The ID for the file's album.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("album-id",
+	                                                      "Album ID", "The ID for the file's album.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:client:
@@ -197,10 +197,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CLIENT,
-					 g_param_spec_string ("client",
-							      "Client", "The name of the software which created or last modified the file.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("client",
+	                                                      "Client", "The name of the software which created or last modified the file.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:checksum:
 	 *
@@ -212,10 +213,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CHECKSUM,
-					 g_param_spec_string ("checksum",
-							      "Checksum", "A checksum of the file, useful for duplicate detection.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("checksum",
+	                                                      "Checksum", "A checksum of the file, useful for duplicate detection.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:video-status:
 	 *
@@ -227,10 +229,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VIDEO_STATUS,
-					 g_param_spec_string ("video-status",
-							      "Video Status", "The status of the file, if it is a video.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("video-status",
+	                                                      "Video Status", "The status of the file, if it is a video.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:position:
@@ -243,10 +245,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_POSITION,
-					 g_param_spec_double ("position",
-							      "Position", "The ordinal position of the file within the album.",
-							      0.0, G_MAXFLOAT, 0.0,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("position",
+	                                                      "Position", "The ordinal position of the file within the album.",
+	                                                      0.0, G_MAXFLOAT, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:width:
 	 *
@@ -258,10 +261,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_WIDTH,
-					 g_param_spec_uint ("width",
-							    "Width", "The width of the photo or video, in pixels.",
-							    0, G_MAXUINT, 0,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("width",
+	                                                    "Width", "The width of the photo or video, in pixels.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:height:
 	 *
@@ -273,10 +277,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HEIGHT,
-					 g_param_spec_uint ("height",
-							    "Height", "The height of the photo or video, in pixels.",
-							    0, G_MAXUINT, 0,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("height",
+	                                                    "Height", "The height of the photo or video, in pixels.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:size:
 	 *
@@ -288,10 +293,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SIZE,
-					 g_param_spec_ulong ("size",
-							     "Size", "The size of the file, in bytes.",
-							     0, G_MAXULONG, 0,
-							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_ulong ("size",
+	                                                     "Size", "The size of the file, in bytes.",
+	                                                     0, G_MAXULONG, 0,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:edited:
@@ -304,10 +309,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-					 g_param_spec_boxed ("edited",
-							     "Edited", "The time this file was last edited.",
-							     GDATA_TYPE_G_TIME_VAL,
-							     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("edited",
+	                                                     "Edited", "The time this file was last edited.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:timestamp:
 	 *
@@ -319,10 +325,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMESTAMP,
-					 g_param_spec_boxed ("timestamp",
-							     "Timestamp", "The time the file was purportedly taken.",
-							     GDATA_TYPE_G_TIME_VAL,
-							     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("timestamp",
+	                                                     "Timestamp", "The time the file was purportedly taken.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:comment-count:
 	 *
@@ -334,10 +341,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_COMMENT_COUNT,
-					 g_param_spec_uint ("comment-count",
-							    "Comment Count", "The number of comments on the file.",
-							    0, G_MAXUINT, 0,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("comment-count",
+	                                                    "Comment Count", "The number of comments on the file.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:rotation:
 	 *
@@ -350,10 +358,11 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ROTATION,
-					 g_param_spec_uint ("rotation",
-							    "Rotation", "The rotation of the photo, in degrees.",
-							    0, 359, 0,
-							    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("rotation",
+	                                                    "Rotation", "The rotation of the photo, in degrees.",
+	                                                    0, 359, 0,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * GDataPicasaWebFile:is-commenting-enabled:
 	 *
@@ -362,10 +371,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_COMMENTING_ENABLED,
-					 g_param_spec_boolean ("is-commenting-enabled",
-							       "Commenting enabled?", "Indicates whether comments are enabled.",
-							       TRUE,
-							       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-commenting-enabled",
+	                                                       "Commenting enabled?", "Indicates whether comments are enabled.",
+	                                                       TRUE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:credit:
@@ -378,10 +387,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CREDIT,
-					 g_param_spec_string ("credit",
-							      "Credit", "The nickname of the user credited with this file.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("credit",
+	                                                      "Credit", "The nickname of the user credited with this file.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:caption:
@@ -391,10 +400,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CAPTION,
-					 g_param_spec_string ("caption",
-							      "Caption", "The file's descriptive caption.",
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("caption",
+	                                                      "Caption", "The file's descriptive caption.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:tags:
@@ -407,10 +416,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TAGS,
-					 g_param_spec_boxed ("tags",
-							      "Tags", "A NULL-terminated array of tags associated with the file.",
-							      G_TYPE_STRV,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("tags",
+	                                                     "Tags", "A NULL-terminated array of tags associated with the file.",
+	                                                     G_TYPE_STRV,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:distance:
@@ -423,10 +432,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DISTANCE,
-					 g_param_spec_double ("distance",
-							      "Distance", "The distance to the subject.",
-							      -1.0, G_MAXDOUBLE, -1.0,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("distance",
+	                                                      "Distance", "The distance to the subject.",
+	                                                      -1.0, G_MAXDOUBLE, -1.0,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:exposure:
@@ -439,10 +448,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EXPOSURE,
-					 g_param_spec_double ("exposure",
-							      "Exposure", "The exposure time.",
-							      0.0, G_MAXDOUBLE, 0.0,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("exposure",
+	                                                      "Exposure", "The exposure time.",
+	                                                      0.0, G_MAXDOUBLE, 0.0,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:flash:
@@ -455,10 +464,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FLASH,
-					 g_param_spec_boolean ("flash",
-							       "Flash", "Indicates whether the flash was used.",
-							       FALSE,
-							       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("flash",
+	                                                       "Flash", "Indicates whether the flash was used.",
+	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:focal-length:
@@ -471,11 +480,12 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FOCAL_LENGTH,
-					 g_param_spec_double ("focal-length",
-							      "Focal Length", "The focal length used in the shot.",
-							      -1.0, G_MAXDOUBLE, -1.0,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("focal-length",
+	                                                      "Focal Length", "The focal length used in the shot.",
+	                                                      -1.0, G_MAXDOUBLE, -1.0,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
+	/* TODO: Rename to f-stop */
 	/**
 	 * GDataPicasaWebFile:fstop:
 	 *
@@ -487,10 +497,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FSTOP,
-					 g_param_spec_double ("fstop",
-							      "F-stop", "The F-stop used.",
-							      0.0, G_MAXDOUBLE, 0.0,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("fstop",
+	                                                      "F-stop", "The F-stop used.",
+	                                                      0.0, G_MAXDOUBLE, 0.0,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:image-unique-id:
@@ -503,10 +513,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IMAGE_UNIQUE_ID,
-					 g_param_spec_string ("image-unique-id",
-							      "Image Unique ID", "An unique ID for the image.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("image-unique-id",
+	                                                      "Image Unique ID", "An unique ID for the image.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:iso:
@@ -519,10 +529,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ISO,
-					 g_param_spec_long ("iso",
-							    "ISO", "The ISO speed.",
-							    -1, G_MAXLONG, -1,
-							    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_long ("iso",
+	                                                    "ISO", "The ISO speed.",
+	                                                    -1, G_MAXLONG, -1,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:make:
@@ -535,10 +545,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MAKE,
-					 g_param_spec_string ("make",
-							      "Make", "The name of the manufacturer.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("make",
+	                                                      "Make", "The name of the manufacturer.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:model:
@@ -551,10 +561,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MODEL,
-					 g_param_spec_string ("model",
-							      "Model", "The model of the camera.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("model",
+	                                                      "Model", "The model of the camera.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:latitude:
@@ -568,10 +578,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LATITUDE,
-					 g_param_spec_double ("latitude",
-							      "Latitude", "The location as a latitude coordinate associated with this file.",
-							      -90.0, 90.0, 0.0,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("latitude",
+	                                                      "Latitude", "The location as a latitude coordinate associated with this file.",
+	                                                      -90.0, 90.0, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:longitude:
@@ -585,10 +595,10 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
-					 g_param_spec_double ("longitude",
-							      "Longitude", "The location as a longitude coordinate associated with this file.",
-							      -180.0, 180.0, 0.0,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("longitude",
+	                                                      "Longitude", "The location as a longitude coordinate associated with this file.",
+	                                                      -180.0, 180.0, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -806,11 +816,11 @@ gdata_picasaweb_file_set_property (GObject *object, guint property_id, const GVa
 			break;
 		case PROP_LATITUDE:
 			gdata_picasaweb_file_set_coordinates (self, g_value_get_double (value),
-							      gdata_georss_where_get_longitude (self->priv->georss_where));
+			                                      gdata_georss_where_get_longitude (self->priv->georss_where));
 			break;
 		case PROP_LONGITUDE:
 			gdata_picasaweb_file_set_coordinates (self, gdata_georss_where_get_latitude (self->priv->georss_where),
-							      g_value_get_double (value));
+			                                      g_value_get_double (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -900,8 +910,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
 			/* gphoto:access */
 			/* Visibility is already obtained through the album. When PicasaWeb supports per-file access restrictions,
-			   we'll expose this property. Until then, we'll catch this to suppress the Unhandled XML warning.
-			   See https://bugzilla.gnome.org/show_bug.cgi?id=589858 */
+			 * we'll expose this property. Until then, we'll catch this to suppress the Unhandled XML warning.
+			 * See https://bugzilla.gnome.org/show_bug.cgi?id=589858 */
 		} else if (xmlStrcmp (node->name, (xmlChar*) "rotation") == 0) {
 			/* gphoto:rotation */
 			xmlChar *rotation = xmlNodeListGetString (doc, node->children, TRUE);
@@ -934,7 +944,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append_printf (xml_string, "<gphoto:version>%s</gphoto:version>", priv->version);
 
 	g_string_append_printf (xml_string, "<gphoto:position>%s</gphoto:position>",
-				g_ascii_dtostr (ascii_double_str, sizeof (ascii_double_str), priv->position));
+	                        g_ascii_dtostr (ascii_double_str, sizeof (ascii_double_str), priv->position));
 
 	if (priv->album_id != NULL)
 		g_string_append_printf (xml_string, "<gphoto:albumid>%s</gphoto:albumid>", priv->album_id);
@@ -948,7 +958,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->timestamp.tv_sec != 0 || priv->timestamp.tv_usec != 0) {
 		/* timestamp is in milliseconds */
 		g_string_append_printf (xml_string, "<gphoto:timestamp>%" G_GUINT64_FORMAT "</gphoto:timestamp>",
-					((guint64) priv->timestamp.tv_sec) * 1000 + priv->timestamp.tv_usec / 1000);
+		                        ((guint64) priv->timestamp.tv_sec) * 1000 + priv->timestamp.tv_usec / 1000);
 	}
 
 	if (priv->is_commenting_enabled == TRUE)

@@ -88,10 +88,10 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_URI,
-				g_param_spec_string ("uri",
-					"URI", "The URI of the website.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uri",
+	                                                      "URI", "The URI of the website.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactWebsite:relation-type:
@@ -104,10 +104,10 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of website.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of website.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactWebsite:label:
@@ -120,10 +120,10 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A simple string value used to name this website.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A simple string value used to name this website.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactWebsite:is-primary:
@@ -136,10 +136,10 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
-				g_param_spec_boolean ("is-primary",
-					"Primary?", "Indicates which website out of a group is primary.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-primary",
+	                                                       "Primary?", "Indicates which website out of a group is primary.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

@@ -113,13 +113,14 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 *
 	 * The title of the feed.
 	 *
-	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_title">atom:title</ulink>
+	 * API reference:
+	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_title">atom:title</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TITLE,
-				g_param_spec_string ("title",
-					"Title", "The title of the feed.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("title",
+	                                                      "Title", "The title of the feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:subtitle:
@@ -129,10 +130,10 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * API reference: <ulink type="http" url="http://atomenabled.org/developers/syndication/">atom:subtitle</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SUBTITLE,
-				g_param_spec_string ("subtitle",
-					"Subtitle", "The subtitle of the feed.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("subtitle",
+	                                                      "Subtitle", "The subtitle of the feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:id:
@@ -142,10 +143,10 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_id">atom:id</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ID,
-				g_param_spec_string ("id",
-					"ID", "The unique and permanent URN ID for the feed.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("id",
+	                                                      "ID", "The unique and permanent URN ID for the feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:etag:
@@ -157,10 +158,10 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ETAG,
-				g_param_spec_string ("etag",
-					"ETag", "The unique ETag for this version of the feed.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("etag",
+	                                                      "ETag", "The unique ETag for this version of the feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:updated:
@@ -171,10 +172,10 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * atom:updated</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED,
-				g_param_spec_boxed ("updated",
-					"Updated", "The time the feed was last updated.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("updated",
+	                                                     "Updated", "The time the feed was last updated.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:logo:
@@ -184,25 +185,26 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_logo">atom:logo</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LOGO,
-				g_param_spec_string ("logo",
-					"Logo", "The URI of a logo for the feed.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("logo",
+	                                                      "Logo", "The URI of a logo for the feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:icon:
 	 *
 	 * The URI of an icon for the feed.
 	 *
-	 * API reference: <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.icon">atom:icon</ulink>
+	 * API reference:
+	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.icon">atom:icon</ulink>
 	 *
 	 * Since: 0.6.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ICON,
-					 g_param_spec_string ("icon",
-							      "Icon", "The URI of an icon for the feed.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("icon",
+	                                                      "Icon", "The URI of an icon for the feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:generator:
@@ -213,10 +215,10 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * atom:generator</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_GENERATOR,
-				g_param_spec_object ("generator",
-					"Generator", "Details of the software used to generate the feed.",
-					GDATA_TYPE_GENERATOR,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("generator",
+	                                                      "Generator", "Details of the software used to generate the feed.",
+	                                                      GDATA_TYPE_GENERATOR,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:rights:
@@ -229,24 +231,25 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RIGHTS,
-					 g_param_spec_string ("rights",
-							      "Rights", "The ownership rights pertaining to the entire feed.",
-							      NULL,
-							      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("rights",
+	                                                      "Rights", "The ownership rights pertaining to the entire feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:items-per-page:
 	 *
 	 * The number of items per results page feed.
 	 *
-	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_openSearch:itemsPerPage">
+	 * API reference:
+	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_openSearch:itemsPerPage">
 	 * openSearch:itemsPerPage</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ITEMS_PER_PAGE,
-				g_param_spec_uint ("items-per-page",
-					"Items per page", "The number of items per results page feed.",
-					0, G_MAXINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("items-per-page",
+	                                                    "Items per page", "The number of items per results page feed.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:start-index:
@@ -260,10 +263,10 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * openSearch:startIndex</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_INDEX,
-				g_param_spec_uint ("start-index",
-					"Start index", "The one-based index of the first item in the results feed.",
-					1, G_MAXINT, 1,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("start-index",
+	                                                    "Start index", "The one-based index of the first item in the results feed.",
+	                                                    1, G_MAXUINT, 1,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataFeed:total-results:
@@ -273,14 +276,15 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * This should <emphasis>not</emphasis> be used manually for pagination. Instead, use a #GDataQuery and call its gdata_query_next_page()
 	 * or gdata_query_previous_page() functions before making the query to the service.
 	 *
-	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_openSearch:totalResults">
+	 * API reference:
+	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_openSearch:totalResults">
 	 * openSearch:totalResults</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TOTAL_RESULTS,
-				g_param_spec_uint ("total-results",
-					"Total results", "The total number of results in the feed.",
-					0, 1000000, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("total-results",
+	                                                    "Total results", "The total number of results in the feed.",
+	                                                    0, 1000000, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -404,7 +408,6 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 {
 	/* Extract the ETag */
 	GDATA_FEED (parsable)->priv->etag = (gchar*) xmlGetProp (root_node, (xmlChar*) "etag");
-
 	return TRUE;
 }
 
@@ -429,8 +432,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			GDataEntry *entry;
 			GType entry_type;
 
-			/* Allow @data to be %NULL, and assume we're parsing a vanilla feed, so that we can test #GDataFeed in tests/general.c. A little hacky,
-			 * but not too much so, and valuable for testing. */
+			/* Allow @data to be %NULL, and assume we're parsing a vanilla feed, so that we can test #GDataFeed in tests/general.c.
+			 * A little hacky, but not too much so, and valuable for testing. */
 			entry_type = (data != NULL) ? data->entry_type : GDATA_TYPE_ENTRY;
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (entry_type, doc, node, NULL, error));
 			if (entry == NULL)
@@ -441,21 +444,21 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				_gdata_feed_call_progress_callback (self, data, entry);
 			_gdata_feed_add_entry (self, entry);
 		} else if (gdata_parser_string_from_element (node, "title", P_NO_DUPES, &(self->priv->title), &success, error) == TRUE ||
-			   gdata_parser_string_from_element (node, "subtitle", P_NO_DUPES, &(self->priv->subtitle), &success, error) == TRUE ||
-			   gdata_parser_string_from_element (node, "id", P_NO_DUPES, &(self->priv->id), &success, error) == TRUE ||
-			   gdata_parser_string_from_element (node, "logo", P_NO_DUPES, &(self->priv->logo), &success, error) == TRUE ||
-			   gdata_parser_string_from_element (node, "icon", P_NO_DUPES, &(self->priv->icon), &success, error) == TRUE ||
-			   gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
-			                                            _gdata_feed_add_category, self, &success, error) == TRUE ||
-			   gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,
-			                                            _gdata_feed_add_link, self, &success, error) == TRUE ||
-			   gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
-			                                            _gdata_feed_add_author, self, &success, error) == TRUE ||
-			   gdata_parser_object_from_element (node, "generator", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GENERATOR,
-			                                     &(self->priv->generator), &success, error) == TRUE ||
-			   gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES,
-			                                       &(self->priv->updated), &success, error) == TRUE ||
-			   gdata_parser_string_from_element (node, "rights", P_NONE, &(self->priv->rights), &success, error) == TRUE) {
+		           gdata_parser_string_from_element (node, "subtitle", P_NO_DUPES, &(self->priv->subtitle), &success, error) == TRUE ||
+		           gdata_parser_string_from_element (node, "id", P_NO_DUPES, &(self->priv->id), &success, error) == TRUE ||
+		           gdata_parser_string_from_element (node, "logo", P_NO_DUPES, &(self->priv->logo), &success, error) == TRUE ||
+		           gdata_parser_string_from_element (node, "icon", P_NO_DUPES, &(self->priv->icon), &success, error) == TRUE ||
+		           gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
+		                                                    _gdata_feed_add_category, self, &success, error) == TRUE ||
+		           gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,
+		                                                    _gdata_feed_add_link, self, &success, error) == TRUE ||
+		           gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
+		                                                    _gdata_feed_add_author, self, &success, error) == TRUE ||
+		           gdata_parser_object_from_element (node, "generator", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GENERATOR,
+		                                             &(self->priv->generator), &success, error) == TRUE ||
+		           gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES,
+		                                               &(self->priv->updated), &success, error) == TRUE ||
+		           gdata_parser_string_from_element (node, "rights", P_NONE, &(self->priv->rights), &success, error) == TRUE) {
 			return success;
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
@@ -673,7 +676,7 @@ gdata_feed_look_up_link (GDataFeed *self, const gchar *rel)
 static void
 _gdata_feed_add_link (GDataFeed *self, GDataLink *link)
 {
-		self->priv->links = g_list_prepend (self->priv->links, g_object_ref (link));
+	self->priv->links = g_list_prepend (self->priv->links, g_object_ref (link));
 }
 
 /**

@@ -86,10 +86,10 @@ gdata_media_credit_class_init (GDataMediaCreditClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CREDIT,
-				g_param_spec_string ("credit",
-					"Credit", "The credited entity's name.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("credit",
+	                                                      "Credit", "The credited entity's name.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaCredit:scheme:
@@ -101,10 +101,10 @@ gdata_media_credit_class_init (GDataMediaCreditClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SCHEME,
-				g_param_spec_string ("scheme",
-					"Scheme", "A URI that identifies the role scheme.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("scheme",
+	                                                      "Scheme", "A URI that identifies the role scheme.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaCredit:role:
@@ -116,10 +116,10 @@ gdata_media_credit_class_init (GDataMediaCreditClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ROLE,
-				g_param_spec_string ("role",
-					"Role", "The role the credited entity played in the production of the media.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("role",
+	                                                      "Role", "The role the credited entity played in the production of the media.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

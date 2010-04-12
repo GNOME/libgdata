@@ -102,7 +102,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "aspectRatio", P_REQUIRED | P_NO_DUPES,
 		                                      &(self->priv->aspect_ratio), &success, error) == TRUE ||
-		    gdata_parser_time_val_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES, &(self->priv->uploaded), &success, error) == TRUE) {
+		    gdata_parser_time_val_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES,
+		                                        &(self->priv->uploaded), &success, error) == TRUE) {
 			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "duration") == 0) {
 			/* yt:duration */

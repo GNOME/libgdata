@@ -91,15 +91,15 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "Specifies the relationship between the containing entity and the contained location.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "Specifies the relationship between the container and the containee.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDWhere:value-string:
 	 *
-	 * A simple string value that can be used as a representation of this location.
+	 * A simple string representation of this location.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
@@ -107,15 +107,15 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VALUE_STRING,
-				g_param_spec_string ("value-string",
-					"Value string", "A simple string value that can be used as a representation of this location.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("value-string",
+	                                                      "Value string", "A simple string representation of this location.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGDWhere:label:
 	 *
-	 * Specifies a user-readable label to distinguish this location from other locations.
+	 * Specifies a user-readable label to distinguish this location from others.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
@@ -123,10 +123,10 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "Specifies a user-readable label to distinguish this location from other locations.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "Specifies a user-readable label to distinguish this location from others.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

@@ -90,10 +90,10 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_URI,
-				g_param_spec_string ("uri",
-					"URI", "The link's IRI.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uri",
+	                                                      "URI", "The link's IRI.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataLink:relation-type:
@@ -106,10 +106,10 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "The link relation type.",
-					GDATA_LINK_ALTERNATE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "The link relation type.",
+	                                                      GDATA_LINK_ALTERNATE,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataLink:content-type:
@@ -123,10 +123,10 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE,
-				g_param_spec_string ("content-type",
-					"Content type", "An advisory media type.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("content-type",
+	                                                      "Content type", "An advisory media type.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataLink:language:
@@ -139,10 +139,10 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
-				g_param_spec_string ("language",
-					"Language", "Describes the language of the resource pointed to by the #GDataLink:uri property.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("language",
+	                                                      "Language", "Describes the language of the resource pointed to by the uri property.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataLink:title:
@@ -155,10 +155,10 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TITLE,
-				g_param_spec_string ("title",
-					"Title", "Conveys human-readable information about the link.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("title",
+	                                                      "Title", "Conveys human-readable information about the link.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataLink:length:
@@ -171,10 +171,10 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LENGTH,
-				g_param_spec_int ("length",
-					"Length", "Indicates an advisory length of the linked content in octets.",
-					-1, G_MAXINT, -1,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_int ("length",
+	                                                   "Length", "Indicates an advisory length of the linked content in octets.",
+	                                                   -1, G_MAXINT, -1,
+	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

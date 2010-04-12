@@ -86,10 +86,10 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_URI,
-				g_param_spec_string ("uri",
-					"URI", "The URI of the thumbnail.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uri",
+	                                                      "URI", "The URI of the thumbnail.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaThumbnail:height:
@@ -101,10 +101,10 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HEIGHT,
-				g_param_spec_uint ("height",
-					"Height", "The height of the thumbnail, in pixels.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("height",
+	                                                    "Height", "The height of the thumbnail, in pixels.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaThumbnail:width:
@@ -116,10 +116,10 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_WIDTH,
-				g_param_spec_uint ("width",
-					"Width", "The width of the thumbnail, in pixels.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("width",
+	                                                    "Width", "The width of the thumbnail, in pixels.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaThumbnail:time:
@@ -131,10 +131,10 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIME,
-				g_param_spec_int64 ("time",
-					"Time", "The time offset of the thumbnail in relation to the media object, in milliseconds.",
-					-1, G_MAXINT64, -1,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_int64 ("time",
+	                                                     "Time", "The time offset of the thumbnail in relation to the media object, in ms.",
+	                                                     -1, G_MAXINT64, -1,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -382,7 +382,8 @@ gdata_media_thumbnail_get_time (GDataMediaThumbnail *self)
  * Since: 0.6.0
  **/
 GFile *
-gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file, gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
+gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file,
+                                gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
 	GFileOutputStream *dest_stream;
 	const gchar *src_uri;
@@ -397,7 +398,8 @@ gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	dest_stream = _gdata_download_stream_find_destination (default_filename, target_dest_file, &actual_file, replace_file_if_exists, cancellable, error);
+	dest_stream = _gdata_download_stream_find_destination (default_filename, target_dest_file, &actual_file, replace_file_if_exists,
+	                                                       cancellable, error);
 	if (dest_stream == NULL)
 		return NULL;
 
@@ -406,7 +408,7 @@ gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service
 	/* Synchronously splice the data from the download stream to the file stream (network -> disk) */
 	src_stream = gdata_download_stream_new (GDATA_SERVICE (service), src_uri);
 	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream,
-				G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
 	g_object_unref (src_stream);
 	g_object_unref (dest_stream);
 	if (child_error != NULL) {

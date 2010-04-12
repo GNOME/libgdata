@@ -105,7 +105,8 @@ G_BEGIN_DECLS
  *
  * Permissions for actions which can be set on a #GDataYouTubeVideo using gdata_youtube_video_set_access_control().
  *
- * The only actions which can have the %GDATA_YOUTUBE_PERMISSION_MODERATED permission are %GDATA_YOUTUBE_ACTION_RATE and %GDATA_YOUTUBE_ACTION_COMMENT.
+ * The only actions which can have the %GDATA_YOUTUBE_PERMISSION_MODERATED permission are
+ * %GDATA_YOUTUBE_ACTION_RATE and %GDATA_YOUTUBE_ACTION_COMMENT.
  *
  * Since: 0.7.0
  **/

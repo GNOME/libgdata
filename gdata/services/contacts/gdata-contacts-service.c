@@ -75,8 +75,8 @@ gdata_contacts_service_new (const gchar *client_id)
 	g_return_val_if_fail (client_id != NULL, NULL);
 
 	return g_object_new (GDATA_TYPE_CONTACTS_SERVICE,
-			     "client-id", client_id,
-			     NULL);
+	                     "client-id", client_id,
+	                     NULL);
 }
 
 /**
@@ -98,7 +98,7 @@ gdata_contacts_service_new (const gchar *client_id)
  **/
 GDataFeed *
 gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
-				       GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+                                       GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataFeed *feed;
 	gchar *request_uri;
@@ -111,7 +111,7 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     _("You must be authenticated to query contacts."));
+		                     _("You must be authenticated to query contacts."));
 		return NULL;
 	}
 
@@ -143,8 +143,8 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
  **/
 void
 gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
-					     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-					     GAsyncReadyCallback callback, gpointer user_data)
+                                             GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                             GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *request_uri;
 
@@ -156,8 +156,8 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
 	/* Ensure we're authenticated first */
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-						     _("You must be authenticated to query contacts."));
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                                     _("You must be authenticated to query contacts."));
 		return;
 	}
 

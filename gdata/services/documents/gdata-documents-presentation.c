@@ -132,8 +132,8 @@ gdata_documents_presentation_new (const gchar *id)
  **/
 GFile *
 gdata_documents_presentation_download_document (GDataDocumentsPresentation *self, GDataDocumentsService *service, gchar **content_type,
-						GDataDocumentsPresentationFormat export_format, GFile *destination_file,
-						gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
+                                                GDataDocumentsPresentationFormat export_format, GFile *destination_file,
+                                                gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
 	gchar *link_href;
 
@@ -147,7 +147,8 @@ gdata_documents_presentation_download_document (GDataDocumentsPresentation *self
 	/* Call the common download method on the parent class */
 	link_href = gdata_documents_presentation_get_download_uri (self, export_format);
 	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), GDATA_SERVICE (service), content_type, link_href,
-								     destination_file, export_formats[export_format], replace_file_if_exists, cancellable, error);
+	                                                             destination_file, export_formats[export_format], replace_file_if_exists,
+	                                                             cancellable, error);
 	g_free (link_href);
 
 	return destination_file;

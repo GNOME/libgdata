@@ -32,7 +32,7 @@ static gchar *
 print_element (xmlNode *node)
 {
 	gboolean node_has_ns = (node->ns == NULL || node->ns->prefix == NULL ||
-				xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
+	                        xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
 
 	if (node->parent == NULL) {
 		/* No parent node */
@@ -43,7 +43,7 @@ print_element (xmlNode *node)
 	} else {
 		/* We have a parent node, which makes things a lot more complex */
 		gboolean parent_has_ns = (node->parent->type == XML_DOCUMENT_NODE || node->parent->ns == NULL || node->parent->ns->prefix == NULL ||
-					  xmlStrcmp (node->parent->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
+		                          xmlStrcmp (node->parent->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
 
 		if (parent_has_ns == TRUE && node_has_ns == TRUE)
 			return g_strdup_printf ("<%s:%s/%s:%s>", node->parent->ns->prefix, node->parent->name, node->ns->prefix, node->name);
@@ -74,12 +74,12 @@ gdata_parser_error_not_iso8601_format (xmlNode *element, const gchar *actual_val
 {
 	gchar *element_string = print_element (element);
 	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		     /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
-		      * and the second parameter is the erroneous value (which was not in ISO 8601 format).
-		      *
-		      * For example:
-		      *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format. */
-		     _("The content of a %s element (\"%s\") was not in ISO 8601 format."), element_string, actual_value);
+	             /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+	              * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+	              *
+	              * For example:
+	              *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format. */
+	             _("The content of a %s element (\"%s\") was not in ISO 8601 format."), element_string, actual_value);
 	g_free (element_string);
 
 	return FALSE;
@@ -94,12 +94,12 @@ gdata_parser_error_unknown_property_value (xmlNode *element, const gchar *proper
 	element_string = print_element (element);
 
 	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		     /* Translators: the first parameter is the name of an XML property, the second is the name of an XML element
-		      * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
-		      *
-		      * For example:
-		      *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown. */
-		     _("The value of the %s property of a %s element (\"%s\") was unknown."), property_string, element_string, actual_value);
+	             /* Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+	              * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+	              *
+	              * For example:
+	              *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown. */
+	             _("The value of the %s property of a %s element (\"%s\") was unknown."), property_string, element_string, actual_value);
 	g_free (property_string);
 	g_free (element_string);
 
@@ -112,12 +112,12 @@ gdata_parser_error_unknown_content (xmlNode *element, const gchar *actual_conten
 	gchar *element_string = print_element (element);
 
 	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		     /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
-		      * and the second parameter is the unknown content of that element.
-		      *
-		      * For example:
-		      *  The content of a <gphoto:access> element ("protected") was unknown. */
-		     _("The content of a %s element (\"%s\") was unknown."), element_string, actual_content);
+	             /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+	              * and the second parameter is the unknown content of that element.
+	              *
+	              * For example:
+	              *  The content of a <gphoto:access> element ("protected") was unknown. */
+	             _("The content of a %s element (\"%s\") was unknown."), element_string, actual_content);
 	g_free (element_string);
 
 	return FALSE;
@@ -132,12 +132,12 @@ gdata_parser_error_required_property_missing (xmlNode *element, const gchar *pro
 	element_string = print_element (element);
 
 	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		     /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
-		      * and the second is the name of an XML property which it should have contained.
-		      *
-		      * For example:
-		      *  A required property of a <entry/gAcl:role> element (@value) was not present. */
-		     _("A required property of a %s element (%s) was not present."), element_string, property_string);
+	             /* Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+	              * and the second is the name of an XML property which it should have contained.
+	              *
+	              * For example:
+	              *  A required property of a <entry/gAcl:role> element (@value) was not present. */
+	             _("A required property of a %s element (%s) was not present."), element_string, property_string);
 	g_free (property_string);
 	g_free (element_string);
 
@@ -242,7 +242,8 @@ gdata_parser_date_from_time_val (const GTimeVal *_time)
  * The boolean value should be of the form: "<element property_name='[true|false]'/>".
  * A %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned in @error if parsing fails, and @output will not be set.
  *
- * If no property with the name @property_name exists in @element and @default_output is <code class="literal">0</code>, @output will be set to %FALSE.
+ * If no property with the name @property_name exists in @element and @default_output is <code class="literal">0</code>,
+ * @output will be set to %FALSE.
  * If @default_output is <code class="literal">1</code>, @output will be set to %TRUE. If @default_output is <code class="literal">-1</code>,
  * a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR will be returned in @error.
  *
@@ -437,10 +438,10 @@ gdata_parser_time_val_from_element (xmlNode *element, const gchar *element_name,
  * and undefined if @element didn't match @element_name
  * @error: a #GError, or %NULL
  *
- * Gets the object content of @element if its name is @element_name, subject to various checks specified by @options. If @element matches @element_name,
- * @element will be parsed as an @object_type, which must extend #GDataParsable. If parsing is successful, @_setter will be called with its first
- * parameter as @_parent_parsable, and its second as the parsed object of type @object_type. @_setter must reference the parsed object it's passed if
- * it wants to keep it, as gdata_parser_object_from_element_setter will unreference it before returning.
+ * Gets the object content of @element if its name is @element_name, subject to various checks specified by @options. If @element matches
+ * @element_name, @element will be parsed as an @object_type, which must extend #GDataParsable. If parsing is successful, @_setter will be called
+ * with its first parameter as @_parent_parsable, and its second as the parsed object of type @object_type. @_setter must reference the parsed object
+ * it's passed if it wants to keep it, as gdata_parser_object_from_element_setter will unreference it before returning.
  *
  * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
  *
@@ -455,8 +456,8 @@ gdata_parser_time_val_from_element (xmlNode *element, const gchar *element_name,
  * a given @element. If any of the calls to gdata_parser_object_from_element_setter() return %TRUE, the value of @success can be examined.
  *
  * @_setter and @_parent_parsable are both #gpointer<!-- -->s to avoid casts having to be put into calls to gdata_parser_object_from_element_setter().
- * @_setter is actually of type #GDataParserSetterFunc, and @_parent_parsable should be a subclass of #GDataParsable. Neither parameter should be %NULL.
- * No checks are implemented against these conditions (for efficiency reasons), so calling code must be correct.
+ * @_setter is actually of type #GDataParserSetterFunc, and @_parent_parsable should be a subclass of #GDataParsable.
+ * Neither parameter should be %NULL. No checks are implemented against these conditions (for efficiency reasons), so calling code must be correct.
  *
  * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
  *
@@ -505,9 +506,9 @@ gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_
  * and undefined if @element didn't match @element_name
  * @error: a #GError, or %NULL
  *
- * Gets the object content of @element if its name is @element_name, subject to various checks specified by @options. If @element matches @element_name,
- * @element will be parsed as an @object_type, which must extend #GDataParsable. If parsing is successful, the parsed object will be returned in
- * @_output, which must be of type #GDataParsable (or a subclass). Ownership of the parsed object will pass to the calling code.
+ * Gets the object content of @element if its name is @element_name, subject to various checks specified by @options. If @element matches
+ * @element_name, @element will be parsed as an @object_type, which must extend #GDataParsable. If parsing is successful, the parsed object will be
+ * returned in @_output, which must be of type #GDataParsable (or a subclass). Ownership of the parsed object will pass to the calling code.
  *
  * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
  *
@@ -587,8 +588,7 @@ gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const
 
 	/* Loop through the string to be escaped. Code adapted from GLib's g_markup_escape_text() function.
 	 *  Copyright 2000, 2003 Red Hat, Inc.
-	 *  Copyright 2007, 2008 Ryan Lortie <desrt@desrt.ca>
-	 */
+	 *  Copyright 2007, 2008 Ryan Lortie <desrt@desrt.ca> */
 	p = element_content;
 	while (p != NULL && *p != '\0') {
 		const gchar *next = g_utf8_next_char (p);

@@ -50,11 +50,11 @@ void _gdata_service_set_authenticated (GDataService *self, gboolean authenticate
 SoupMessage *_gdata_service_build_message (GDataService *self, const gchar *method, const gchar *uri, const gchar *etag, gboolean etag_if_match);
 guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancellable *cancellable, GError **error);
 SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
-				   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-				   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void _gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type, GCancellable *cancellable,
-				 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-				 GAsyncReadyCallback callback, gpointer user_data, GSimpleAsyncThreadFunc query_thread);
+                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                 GAsyncReadyCallback callback, gpointer user_data, GSimpleAsyncThreadFunc query_thread);
 const gchar *_gdata_service_get_scheme (void);
 GDataLogLevel _gdata_service_get_log_level (void);
 
@@ -64,16 +64,16 @@ void _gdata_query_set_previous_uri (GDataQuery *self, const gchar *previous_uri)
 
 #include "gdata-parsable.h"
 GDataParsable *_gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, gpointer user_data,
-					     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                             GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataParsable *_gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *node, gpointer user_data,
-						  GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                  GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean declare_namespaces);
 void _gdata_parsable_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 
 #include "gdata-feed.h"
 GDataFeed *_gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,
-				     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-				     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void _gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry);
 gpointer _gdata_feed_parse_data_new(GType entry_type, GDataQueryProgressCallback progress_callback, gpointer progress_user_data);
 void _gdata_feed_parse_data_free (gpointer data);
@@ -81,8 +81,8 @@ void _gdata_feed_call_progress_callback (GDataFeed *self, gpointer user_data, GD
 
 #include "gdata/services/documents/gdata-documents-entry.h"
 GFile *_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *download_uri,
-						 GFile *destination_directory, const gchar *file_extension, gboolean replace_file_if_exists,
-						 GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                 GFile *destination_directory, const gchar *file_extension, gboolean replace_file_if_exists,
+                                                 GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void _gdata_documents_entry_init_edited (GDataDocumentsEntry *self);
 
 #include "gdata/services/documents/gdata-documents-service.h"

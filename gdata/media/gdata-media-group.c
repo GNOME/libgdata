@@ -144,13 +144,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (gdata_parser_string_from_element (node, "title", P_NONE, &(self->priv->title), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "description", P_NONE, &(self->priv->description), &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_MEDIA_CATEGORY,
-			                                     gdata_media_group_set_category, self, &success, error) == TRUE ||
+		                                             gdata_media_group_set_category, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_MEDIA_CONTENT,
-			                                     _gdata_media_group_add_content, self, &success, error) == TRUE ||
+		                                             _gdata_media_group_add_content, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "thumbnail", P_REQUIRED, GDATA_TYPE_MEDIA_THUMBNAIL,
-			                                     _gdata_media_group_add_thumbnail, self, &success, error) == TRUE ||
+		                                             _gdata_media_group_add_thumbnail, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element (node, "credit", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_MEDIA_CREDIT,
-			                              &(self->priv->credit), &success, error) == TRUE) {
+		                                      &(self->priv->credit), &success, error) == TRUE) {
 			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "keywords") == 0) {
 			/* media:keywords */
@@ -220,11 +220,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			xmlFree (type);
 
 			relationship = xmlGetProp (node, (xmlChar*) "relationship");
-			if (xmlStrcmp (relationship, (xmlChar*) "allow") == 0)
+			if (xmlStrcmp (relationship, (xmlChar*) "allow") == 0) {
 				relationship_bool = FALSE; /* it's *not* a restricted country */
-			else if (xmlStrcmp (relationship, (xmlChar*) "deny") == 0)
+			} else if (xmlStrcmp (relationship, (xmlChar*) "deny") == 0) {
 				relationship_bool = TRUE; /* it *is* a restricted country */
-			else {
+			} else {
 				gdata_parser_error_unknown_property_value (node, "relationship", (gchar*) relationship, error);
 				xmlFree (relationship);
 				return FALSE;

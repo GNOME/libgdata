@@ -42,7 +42,8 @@ additions. Briefly:
 
  - Comparisons to NULL, TRUE and FALSE should always be made explicit, for clarity.
 
- - Code should be wrapped at around 150 columns, such that it doesn't require horizontal scrolling on a decent-sized display. Don't wrap at 80 columns.
+ - Code should be wrapped at the 150th column, such that it doesn't require horizontal scrolling on a decent-sized display.
+   Don't wrap at the 80th column.
 
 Documentation comments
 ======================

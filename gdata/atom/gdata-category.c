@@ -78,15 +78,16 @@ gdata_category_class_init (GDataCategoryClass *klass)
 	 * Identifies the category to which the entry or feed belongs.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.category">Atom specification</ulink>.
+	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.category">
+	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TERM,
-				g_param_spec_string ("term",
-					"Term", "Identifies the category to which the entry or feed belongs.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("term",
+	                                                      "Term", "Identifies the category to which the entry or feed belongs.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCategory:scheme:
@@ -94,15 +95,16 @@ gdata_category_class_init (GDataCategoryClass *klass)
 	 * An IRI that identifies a categorization scheme.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.category">Atom specification</ulink>.
+	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.category">
+	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SCHEME,
-				g_param_spec_string ("scheme",
-					"Scheme", "An IRI that identifies a categorization scheme.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("scheme",
+	                                                      "Scheme", "An IRI that identifies a categorization scheme.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCategory:label:
@@ -110,15 +112,16 @@ gdata_category_class_init (GDataCategoryClass *klass)
 	 * A human-readable label for display in end-user applications.
 	 *
 	 * For more information, see the
-	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.category">Atom specification</ulink>.
+	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.category">
+	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A human-readable label for display in end-user applications.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A human-readable label for display in end-user applications.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

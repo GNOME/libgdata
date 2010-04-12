@@ -125,10 +125,10 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * YouTube reference documentation</ulink>).
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CLIENT_ID,
-				g_param_spec_string ("client-id",
-					"Client ID", "A client ID for your application.",
-					NULL,
-					G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("client-id",
+	                                                      "Client ID", "A client ID for your application.",
+	                                                      NULL,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataService:username:
@@ -136,10 +136,10 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * The user's Google or YouTube username for authentication. This will always be a full e-mail address.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_USERNAME,
-				g_param_spec_string ("username",
-					"Username", "The user's Google or YouTube username for authentication.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("username",
+	                                                      "Username", "The user's Google or YouTube username for authentication.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataService:password:
@@ -147,10 +147,10 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * The user's account password for authentication.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PASSWORD,
-				g_param_spec_string ("password",
-					"Password", "The user's account password for authentication.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("password",
+	                                                      "Password", "The user's account password for authentication.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataService:authenticated:
@@ -158,10 +158,10 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * Whether the user is authenticated (logged in) with the service.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_AUTHENTICATED,
-				g_param_spec_boolean ("authenticated",
-					"Authenticated", "Whether the user is authenticated (logged in) with the service.",
-					FALSE,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("authenticated",
+	                                                       "Authenticated", "Whether the user is authenticated (logged in) with the service.",
+	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataService:proxy-uri:
@@ -171,10 +171,10 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PROXY_URI,
-				g_param_spec_boxed ("proxy-uri",
-					"Proxy URI", "The proxy URI used internally for all Internet requests.",
-					SOUP_TYPE_URI,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("proxy-uri",
+	                                                     "Proxy URI", "The proxy URI used internally for all Internet requests.",
+	                                                     SOUP_TYPE_URI,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataService::captcha-challenge:
@@ -189,11 +189,11 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * Return value: the text in the CAPTCHA image
 	 **/
 	service_signals[SIGNAL_CAPTCHA_CHALLENGE] = g_signal_new ("captcha-challenge",
-				G_TYPE_FROM_CLASS (klass),
-				G_SIGNAL_RUN_LAST,
-				0, NULL, NULL,
-				gdata_marshal_STRING__OBJECT_STRING,
-				G_TYPE_STRING, 1, G_TYPE_STRING);
+	                                                          G_TYPE_FROM_CLASS (klass),
+	                                                          G_SIGNAL_RUN_LAST,
+	                                                          0, NULL, NULL,
+	                                                          gdata_marshal_STRING__OBJECT_STRING,
+	                                                          G_TYPE_STRING, 1, G_TYPE_STRING);
 }
 
 static void
@@ -334,7 +334,7 @@ real_parse_authentication_response (GDataService *self, guint status, const gcha
 
 protocol_error:
 	g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-			     _("The server returned a malformed response."));
+	                     _("The server returned a malformed response."));
 	return FALSE;
 }
 
@@ -357,8 +357,8 @@ real_append_query_headers (GDataService *self, SoupMessage *message)
 }
 
 static void
-real_parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase, const gchar *response_body,
-			   gint length, GError **error)
+real_parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
+                           const gchar *response_body, gint length, GError **error)
 {
 	/* See: http://code.google.com/apis/gdata/docs/2.0/reference.html#HTTPStatusCodes */
 	switch (status) {
@@ -377,25 +377,25 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 		case SOUP_STATUS_MALFORMED:
 		case SOUP_STATUS_BAD_REQUEST: /* 400 */
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the parameter is an error message returned by the server. */
-				     _("Invalid request URI or header, or unsupported nonstandard parameter: %s"), response_body);
+			             /* Translators: the parameter is an error message returned by the server. */
+			             _("Invalid request URI or header, or unsupported nonstandard parameter: %s"), response_body);
 			return;
 		case SOUP_STATUS_UNAUTHORIZED: /* 401 */
 		case SOUP_STATUS_FORBIDDEN: /* 403 */
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				     /* Translators: the parameter is an error message returned by the server. */
-				     _("Authentication required: %s"), response_body);
+			             /* Translators: the parameter is an error message returned by the server. */
+			             _("Authentication required: %s"), response_body);
 			return;
 		case SOUP_STATUS_NOT_FOUND: /* 404 */
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND,
-				     /* Translators: the parameter is an error message returned by the server. */
-				     _("The requested resource was not found: %s"), response_body);
+			             /* Translators: the parameter is an error message returned by the server. */
+			             _("The requested resource was not found: %s"), response_body);
 			return;
 		case SOUP_STATUS_CONFLICT: /* 409 */
 		case SOUP_STATUS_PRECONDITION_FAILED: /* 412 */
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT,
-				     /* Translators: the parameter is an error message returned by the server. */
-				     _("The entry has been modified since it was downloaded: %s"), response_body);
+			             /* Translators: the parameter is an error message returned by the server. */
+			             _("The entry has been modified since it was downloaded: %s"), response_body);
 			return;
 		case SOUP_STATUS_INTERNAL_SERVER_ERROR: /* 500 */
 		default:
@@ -407,38 +407,45 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 	switch (operation_type) {
 		case GDATA_OPERATION_AUTHENTICATION:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-			             /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
+			             /* Translators: the first parameter is an HTTP status,
+			              * and the second is an error message returned by the server. */
 			             _("Error code %u when authenticating: %s"), status, response_body);
 			break;
 		case GDATA_OPERATION_QUERY:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when querying: %s"), status, response_body);
+			             /* Translators: the first parameter is an HTTP status,
+			              * and the second is an error message returned by the server. */
+			             _("Error code %u when querying: %s"), status, response_body);
 			break;
 		case GDATA_OPERATION_INSERTION:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when inserting an entry: %s"), status, response_body);
+			             /* Translators: the first parameter is an HTTP status,
+			              * and the second is an error message returned by the server. */
+			             _("Error code %u when inserting an entry: %s"), status, response_body);
 			break;
 		case GDATA_OPERATION_UPDATE:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when updating an entry: %s"), status, response_body);
+			             /* Translators: the first parameter is an HTTP status,
+			              * and the second is an error message returned by the server. */
+			             _("Error code %u when updating an entry: %s"), status, response_body);
 			break;
 		case GDATA_OPERATION_DELETION:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when deleting an entry: %s"), status, response_body);
+			             /* Translators: the first parameter is an HTTP status,
+			              * and the second is an error message returned by the server. */
+			             _("Error code %u when deleting an entry: %s"), status, response_body);
 			break;
 		case GDATA_OPERATION_DOWNLOAD:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when downloading: %s"), status, response_body);
+			             /* Translators: the first parameter is an HTTP status,
+			              * and the second is an error message returned by the server. */
+			             _("Error code %u when downloading: %s"), status, response_body);
 			break;
 		case GDATA_OPERATION_UPLOAD:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the first parameter is an HTTP status, and the second is an error message returned by the server. */
-				     _("Error code %u when uploading: %s"), status, response_body);
+			             /* Translators: the first parameter is an HTTP status,
+			              * and the second is an error message returned by the server. */
+			             _("Error code %u when uploading: %s"), status, response_body);
 			break;
 		default:
 			/* We should not be called with anything other than the above operation types */
@@ -542,7 +549,7 @@ authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  **/
 void
 gdata_service_authenticate_async (GDataService *self, const gchar *username, const gchar *password,
-				  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+                                  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
 	AuthenticateAsyncData *data;
@@ -597,7 +604,7 @@ gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_resul
 
 static gboolean
 authenticate (GDataService *self, const gchar *username, const gchar *password, gchar *captcha_token, gchar *captcha_answer,
-	      GCancellable *cancellable, GError **error)
+              GCancellable *cancellable, GError **error)
 {
 	GDataServicePrivate *priv = self->priv;
 	GDataServiceClass *klass;
@@ -609,13 +616,13 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 	/* Prepare the request */
 	klass = GDATA_SERVICE_GET_CLASS (self);
 	request_body = soup_form_encode ("accountType", "HOSTED_OR_GOOGLE",
-					 "Email", username,
-					 "Passwd", password,
-					 "service", klass->service_name,
-					 "source", priv->client_id,
-					 (captcha_token == NULL) ? NULL : "logintoken", captcha_token,
-					 "loginanswer", captcha_answer,
-					 NULL);
+	                                 "Email", username,
+	                                 "Passwd", password,
+	                                 "service", klass->service_name,
+	                                 "source", priv->client_id,
+	                                 (captcha_token == NULL) ? NULL : "logintoken", captcha_token,
+	                                 "loginanswer", captcha_answer,
+	                                 NULL);
 
 	/* Free the CAPTCHA token and answer if necessary */
 	g_free (captcha_token);
@@ -682,7 +689,7 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 			if (new_captcha_answer == NULL || *new_captcha_answer == '\0') {
 				/* Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs */
 				g_set_error_literal (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED,
-						     _("A CAPTCHA must be filled out to log in."));
+				                     _("A CAPTCHA must be filled out to log in."));
 				goto login_error;
 			}
 
@@ -700,13 +707,13 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 			g_object_unref (message);
 
 			return authenticate (self, username, password, g_strndup (captcha_start, captcha_end - captcha_start), new_captcha_answer,
-					     cancellable, error);
+			                     cancellable, error);
 		} else if (strncmp (error_start, "Unknown", error_end - error_start) == 0) {
 			goto protocol_error;
 		} else if (strncmp (error_start, "BadAuthentication", error_end - error_start) == 0) {
 			/* Looks like Error=BadAuthentication errors don't return a URI */
 			g_set_error_literal (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_BAD_AUTHENTICATION,
-					     _("Your username or password were incorrect."));
+			                     _("Your username or password were incorrect."));
 			goto login_error;
 		}
 
@@ -724,33 +731,33 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 
 		if (strncmp (error_start, "NotVerified", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_NOT_VERIFIED,
-				     /* Translators: the parameter is a URI for further information. */
-				     _("Your account's e-mail address has not been verified. (%s)"), uri);
+			             /* Translators: the parameter is a URI for further information. */
+			             _("Your account's e-mail address has not been verified. (%s)"), uri);
 			goto login_error;
 		} else if (strncmp (error_start, "TermsNotAgreed", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_TERMS_NOT_AGREED,
-				     /* Translators: the parameter is a URI for further information. */
-				     _("You have not agreed to the service's terms and conditions. (%s)"), uri);
+			             /* Translators: the parameter is a URI for further information. */
+			             _("You have not agreed to the service's terms and conditions. (%s)"), uri);
 			goto login_error;
 		} else if (strncmp (error_start, "AccountDeleted", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_ACCOUNT_DELETED,
-				     /* Translators: the parameter is a URI for further information. */
-				     _("This account has been deleted. (%s)"), uri);
+			             /* Translators: the parameter is a URI for further information. */
+			             _("This account has been deleted. (%s)"), uri);
 			goto login_error;
 		} else if (strncmp (error_start, "AccountDisabled", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_ACCOUNT_DISABLED,
-				     /* Translators: the parameter is a URI for further information. */
-				     _("This account has been disabled. (%s)"), uri);
+			             /* Translators: the parameter is a URI for further information. */
+			             _("This account has been disabled. (%s)"), uri);
 			goto login_error;
 		} else if (strncmp (error_start, "ServiceDisabled", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED,
-				     /* Translators: the parameter is a URI for further information. */
-				     _("This account's access to this service has been disabled. (%s)"), uri);
+			             /* Translators: the parameter is a URI for further information. */
+			             _("This account's access to this service has been disabled. (%s)"), uri);
 			goto login_error;
 		} else if (strncmp (error_start, "ServiceUnavailable", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
-				     /* Translators: the parameter is a URI for further information. */
-				     _("This service is not available at the moment. (%s)"), uri);
+			             /* Translators: the parameter is a URI for further information. */
+			             _("This service is not available at the moment. (%s)"), uri);
 			goto login_error;
 		}
 
@@ -909,8 +916,8 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancella
 		if (new_uri == NULL) {
 			gchar *uri_string = soup_uri_to_string (new_uri, FALSE);
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     /* Translators: the parameter is the URI which is invalid. */
-				     _("Invalid redirect URI: %s"), uri_string);
+			             /* Translators: the parameter is the URI which is invalid. */
+			             _("Invalid redirect URI: %s"), uri_string);
 			g_free (uri_string);
 			return SOUP_STATUS_NONE;
 		}
@@ -1406,7 +1413,7 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  **/
 void
 gdata_service_insert_entry_async (GDataService *self, const gchar *upload_uri, GDataEntry *entry, GCancellable *cancellable,
-				  GAsyncReadyCallback callback, gpointer user_data)
+                                  GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
 	InsertEntryAsyncData *data;
@@ -1501,7 +1508,7 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 
 	if (gdata_entry_is_inserted (entry) == TRUE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-				     _("The entry has already been inserted."));
+		                     _("The entry has already been inserted."));
 		return NULL;
 	}
 
@@ -1531,7 +1538,7 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
 	g_assert (message->response_body->data != NULL);
 	updated_entry = GDATA_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data, message->response_body->length,
-								  error));
+	                                                          error));
 	g_object_unref (message);
 
 	return updated_entry;
@@ -1688,7 +1695,7 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
 	g_assert (message->response_body->data != NULL);
 	updated_entry = GDATA_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data, message->response_body->length,
-								  error));
+	                                                          error));
 	g_object_unref (message);
 
 	return updated_entry;

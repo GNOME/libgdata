@@ -98,10 +98,10 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 	 * The matching #GDataService:client-id property belongs to #GDataService.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DEVELOPER_KEY,
-				g_param_spec_string ("developer-key",
-					"Developer key", "Your YouTube developer API key.",
-					NULL,
-					G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("developer-key",
+	                                                      "Developer key", "Your YouTube developer API key.",
+	                                                      NULL,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeService:youtube-user:
@@ -110,10 +110,10 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 	 * YouTube was converted to use Google's centralised login system.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_YOUTUBE_USER,
-				g_param_spec_string ("youtube-user",
-					"YouTube username", "The YouTube account username.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("youtube-user",
+	                                                      "YouTube username", "The YouTube account username.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -177,7 +177,7 @@ parse_authentication_response (GDataService *self, guint status, const gchar *re
 
 	/* Chain up to the parent method first */
 	if (GDATA_SERVICE_CLASS (gdata_youtube_service_parent_class)->parse_authentication_response (self, status,
-												     response_body, length, error) == FALSE) {
+		                                                                                     response_body, length, error) == FALSE) {
 		return FALSE;
 	}
 
@@ -199,7 +199,7 @@ parse_authentication_response (GDataService *self, guint status, const gchar *re
 
 protocol_error:
 	g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-			     _("The server returned a malformed response."));
+	                     _("The server returned a malformed response."));
 	return FALSE;
 }
 
@@ -300,34 +300,34 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 			if (xmlStrcmp (domain, (xmlChar*) "yt:service") == 0 && xmlStrcmp (code, (xmlChar*) "disabled_in_maintenance_mode") == 0) {
 				/* Service disabled */
 				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
-					     _("This service is not available at the moment."));
+				             _("This service is not available at the moment."));
 			} else if (xmlStrcmp (domain, (xmlChar*) "yt:authentication") == 0) {
 				/* Authentication problem; make sure to set our status as unauthenticated */
 				_gdata_service_set_authenticated (GDATA_SERVICE (self), FALSE);
 				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-					     _("You must be authenticated to do this."));
+				             _("You must be authenticated to do this."));
 			} else if (xmlStrcmp (domain, (xmlChar*) "yt:quota") == 0) {
 				/* Quota errors */
 				if (xmlStrcmp (code, (xmlChar*) "too_many_recent_calls") == 0) {
 					g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR, GDATA_YOUTUBE_SERVICE_ERROR_API_QUOTA_EXCEEDED,
-						     _("You have made too many API calls recently. Please wait a few minutes and try again."));
+					             _("You have made too many API calls recently. Please wait a few minutes and try again."));
 				} else if (xmlStrcmp (code, (xmlChar*) "too_many_entries") == 0) {
 					g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR, GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED,
-						     _("You have exceeded your entry quota. Please delete some entries and try again."));
+					             _("You have exceeded your entry quota. Please delete some entries and try again."));
 				} else {
 					/* Protocol error */
 					g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-						     /* Translators: the first parameter is an error code, which is a coded string. The second parameter
-						      * is an error domain, which is another coded string. The third parameter is the location of the
-						      * error, which is either a URI or an XPath. */
-						     _("Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."),
-						     code, domain, location);
+					             /* Translators: the first parameter is an error code, which is a coded string.
+					              * The second parameter is an error domain, which is another coded string.
+					              * The third parameter is the location of the error, which is either a URI or an XPath. */
+					             _("Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."),
+					             code, domain, location);
 				}
 			} else {
 				/* Unknown or validation (protocol) error */
 				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-					     _("Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."),
-					     code, domain, location);
+				             _("Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."),
+				             code, domain, location);
 			}
 		} else {
 			/* For all errors after the first, log the error in the terminal */
@@ -371,9 +371,9 @@ gdata_youtube_service_new (const gchar *developer_key, const gchar *client_id)
 	g_return_val_if_fail (client_id != NULL, NULL);
 
 	return g_object_new (GDATA_TYPE_YOUTUBE_SERVICE,
-			     "developer-key", developer_key,
-			     "client-id", client_id,
-			     NULL);
+	                     "developer-key", developer_key,
+	                     "client-id", client_id,
+	                     NULL);
 }
 
 static const gchar *
@@ -423,8 +423,8 @@ standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
  **/
 GDataFeed *
 gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTubeStandardFeedType feed_type, GDataQuery *query,
-					   GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-					   GError **error)
+                                           GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                           GError **error)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
@@ -433,7 +433,7 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
 
 	/* TODO: Support the "time" parameter, as well as category- and region-specific feeds */
 	return gdata_service_query (GDATA_SERVICE (self), standard_feed_type_to_feed_uri (feed_type), query,
-				    GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
+	                            GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
 }
 
 /**
@@ -457,8 +457,8 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
  **/
 void
 gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDataYouTubeStandardFeedType feed_type, GDataQuery *query,
-						 GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-						 GAsyncReadyCallback callback, gpointer user_data)
+                                                 GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                 GAsyncReadyCallback callback, gpointer user_data)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
 	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
@@ -466,7 +466,7 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
 	g_return_if_fail (callback != NULL);
 
 	gdata_service_query_async (GDATA_SERVICE (self), standard_feed_type_to_feed_uri (feed_type), query,
-				   GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
 
 /**
@@ -487,8 +487,8 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
  **/
 GDataFeed *
 gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query,
-				    GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-				    GError **error)
+                                    GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                    GError **error)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
@@ -496,7 +496,7 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	return gdata_service_query (GDATA_SERVICE (self), "http://gdata.youtube.com/feeds/api/videos", query,
-				    GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
+	                            GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
 }
 
 /**
@@ -519,8 +519,8 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
  **/
 void
 gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery *query,
-					  GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-					  GAsyncReadyCallback callback, gpointer user_data)
+                                          GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                          GAsyncReadyCallback callback, gpointer user_data)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
 	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
@@ -528,7 +528,7 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
 	g_return_if_fail (callback != NULL);
 
 	gdata_service_query_async (GDATA_SERVICE (self), "http://gdata.youtube.com/feeds/api/videos", query,
-				   GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
 
 /**
@@ -550,8 +550,8 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
  **/
 GDataFeed *
 gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVideo *video, GDataQuery *query,
-				     GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-				     GError **error)
+                                     GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                     GError **error)
 {
 	GDataLink *related_link;
 
@@ -566,13 +566,13 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
 	if (related_link == NULL) {
 		/* Erroring out is probably the safest thing to do */
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				     _("The video did not have a related videos <link>."));
+		                     _("The video did not have a related videos <link>."));
 		return NULL;
 	}
 
 	/* Execute the query */
 	return gdata_service_query (GDATA_SERVICE (self), gdata_link_get_uri (related_link), query,
-				    GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
+	                            GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
 }
 
 /**
@@ -596,8 +596,8 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
  **/
 void
 gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTubeVideo *video, GDataQuery *query,
-					   GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-					   GAsyncReadyCallback callback, gpointer user_data)
+                                           GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                           GAsyncReadyCallback callback, gpointer user_data)
 {
 	GDataLink *related_link;
 
@@ -612,13 +612,13 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
 	if (related_link == NULL) {
 		/* Erroring out is probably the safest thing to do */
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-						     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-						     _("The video did not have a related videos <link>."));
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+		                                     _("The video did not have a related videos <link>."));
 		return;
 	}
 
 	gdata_service_query_async (GDATA_SERVICE (self), gdata_link_get_uri (related_link), query,
-				   GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
 
 /**

@@ -80,10 +80,10 @@ gdata_youtube_credit_class_init (GDataYouTubeCreditClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ENTITY_TYPE,
-				g_param_spec_string ("entity-type",
-					"Entity type", "The type of entity who is credited.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("entity-type",
+	                                                      "Entity type", "The type of entity who is credited.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

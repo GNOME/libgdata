@@ -88,10 +88,10 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_URI,
-				g_param_spec_string ("uri",
-					"URI", "The URI of the calendar.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uri",
+	                                                      "URI", "The URI of the calendar.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactCalendar:relation-type:
@@ -105,10 +105,10 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of calendar.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of calendar.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactCalendar:label:
@@ -121,10 +121,10 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A free-form string that identifies the type of calendar.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A free-form string that identifies the type of calendar.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactCalendar:is-primary:
@@ -137,10 +137,10 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
-				g_param_spec_boolean ("is-primary",
-					"Primary?", "Indicates which calendar out of a group is primary.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-primary",
+	                                                       "Primary?", "Indicates which calendar out of a group is primary.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -301,7 +301,8 @@ gdata_gcontact_calendar_new (const gchar *uri, const gchar *relation_type, const
 	g_return_val_if_fail ((relation_type != NULL && *relation_type != '\0' && label == NULL) ||
 	                      (relation_type == NULL && label != NULL && *label != '\0'), NULL);
 
-	return g_object_new (GDATA_TYPE_GCONTACT_CALENDAR, "uri", uri, "relation-type", relation_type, "label", label, "is-primary", is_primary, NULL);
+	return g_object_new (GDATA_TYPE_GCONTACT_CALENDAR,
+	                     "uri", uri, "relation-type", relation_type, "label", label, "is-primary", is_primary, NULL);
 }
 
 /**

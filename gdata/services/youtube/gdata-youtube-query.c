@@ -101,10 +101,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FORMAT,
-				g_param_spec_enum ("format",
-					"Format", "Specifies that videos must be available in a particular video format.",
-					GDATA_TYPE_YOUTUBE_FORMAT, GDATA_YOUTUBE_FORMAT_UNKNOWN,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("format",
+	                                                    "Format", "Specifies that videos must be available in a particular video format.",
+	                                                    GDATA_TYPE_YOUTUBE_FORMAT, GDATA_YOUTUBE_FORMAT_UNKNOWN,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:latitude:
@@ -127,10 +127,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LATITUDE,
-				g_param_spec_double ("latitude",
-					"Latitude", "The latitude of a particular location of which videos should be found.",
-					-G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("latitude",
+	                                                      "Latitude", "The latitude of a particular location of which videos should be found.",
+	                                                      -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:longitude:
@@ -145,10 +145,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
-				g_param_spec_double ("longitude",
-					"Longitude", "The longitude of a particular location of which videos should be found.",
-					-G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("longitude",
+	                                                      "Longitude", "The longitude of a particular location of which videos should be found.",
+	                                                      -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:location-radius:
@@ -163,10 +163,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LOCATION_RADIUS,
-				g_param_spec_double ("location-radius",
-					"Location radius", "The radius, in metres, of a circle from within which videos should be returned.",
-					0.0, G_MAXDOUBLE, 0.0,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_double ("location-radius",
+	                                                      "Location radius", "The radius, in metres, of a circle to search within.",
+	                                                      0.0, G_MAXDOUBLE, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:has-location:
@@ -181,10 +181,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HAS_LOCATION,
-				g_param_spec_boolean ("has-location",
-					"Has location?", "Whether to restrict search results to videos with specific coordinates associated with them.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("has-location",
+	                                                       "Has location?", "Whether to restrict results to videos with specific coordinates.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:language:
@@ -199,10 +199,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
-				g_param_spec_string ("language",
-					"Language", "Restricts the search to videos that have a title, description or keywords in a specified language.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("language",
+	                                                      "Language", "Restricts the search to videos described in the given language.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:order-by:
@@ -220,10 +220,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ORDER_BY,
-				g_param_spec_string ("order-by",
-					"Order by", "Specifies the order of entries in a feed.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("order-by",
+	                                                      "Order by", "Specifies the order of entries in a feed.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:restriction:
@@ -238,10 +238,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RESTRICTION,
-				g_param_spec_string ("restriction",
-					"Restriction", "The IP address that should be used to filter videos playable only in specific countries.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("restriction",
+	                                                      "Restriction", "The IP address to filter videos playable only in specific countries.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:safe-search:
@@ -254,10 +254,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SAFE_SEARCH,
-				g_param_spec_enum ("safe-search",
-					"Safe search", "Whether the search results should include restricted content as well as standard content.",
-					GDATA_TYPE_YOUTUBE_SAFE_SEARCH, GDATA_YOUTUBE_SAFE_SEARCH_MODERATE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("safe-search",
+	                                                    "Safe search", "Whether the search results should include restricted content.",
+	                                                    GDATA_TYPE_YOUTUBE_SAFE_SEARCH, GDATA_YOUTUBE_SAFE_SEARCH_MODERATE,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:sort-order:
@@ -267,10 +267,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
-				g_param_spec_enum ("sort-order",
-					"Sort order", "Specifies the direction of sorting.",
-					GDATA_TYPE_YOUTUBE_SORT_ORDER, GDATA_YOUTUBE_SORT_NONE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("sort-order",
+	                                                    "Sort order", "Specifies the direction of sorting.",
+	                                                    GDATA_TYPE_YOUTUBE_SORT_ORDER, GDATA_YOUTUBE_SORT_NONE,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:age:
@@ -281,10 +281,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_AGE,
-				g_param_spec_enum ("age",
-					"Age", "Restricts the search to videos uploaded within the specified time period.",
-					GDATA_TYPE_YOUTUBE_AGE, GDATA_YOUTUBE_AGE_ALL_TIME,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("age",
+	                                                    "Age", "Restricts the search to videos uploaded within the specified time period.",
+	                                                    GDATA_TYPE_YOUTUBE_AGE, GDATA_YOUTUBE_AGE_ALL_TIME,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeQuery:uploader:
@@ -295,10 +295,10 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPLOADER,
-				g_param_spec_enum ("uploader",
-					"Uploader", "Restricts the search to videos from the specified type of uploader.",
-					GDATA_TYPE_YOUTUBE_UPLOADER, GDATA_YOUTUBE_UPLOADER_ALL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("uploader",
+	                                                    "Uploader", "Restricts the search to videos from the specified type of uploader.",
+	                                                    GDATA_TYPE_YOUTUBE_UPLOADER, GDATA_YOUTUBE_UPLOADER_ALL,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -469,8 +469,8 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		gchar latitude[G_ASCII_DTOSTR_BUF_SIZE], longitude[G_ASCII_DTOSTR_BUF_SIZE];
 
 		g_string_append_printf (query_uri, (priv->has_location == TRUE) ? "&location=%s,%s!" : "&location=%s,%s",
-					g_ascii_dtostr (latitude, sizeof (latitude), priv->latitude),
-					g_ascii_dtostr (longitude, sizeof (longitude), priv->longitude));
+		                        g_ascii_dtostr (latitude, sizeof (latitude), priv->latitude),
+		                        g_ascii_dtostr (longitude, sizeof (longitude), priv->longitude));
 
 		if (priv->location_radius >= 0.0) {
 			gchar radius[G_ASCII_DTOSTR_BUF_SIZE];

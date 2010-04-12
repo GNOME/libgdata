@@ -208,13 +208,15 @@ GDataEntry *gdata_service_insert_entry (GDataService *self, const gchar *upload_
                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_service_insert_entry_async (GDataService *self, const gchar *upload_uri, GDataEntry *entry, GCancellable *cancellable,
                                        GAsyncReadyCallback callback, gpointer user_data);
-GDataEntry *gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataEntry *gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_result,
+                                               GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataEntry *gdata_service_update_entry (GDataService *self, GDataEntry *entry,
                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_service_update_entry_async (GDataService *self, GDataEntry *entry, GCancellable *cancellable,
                                        GAsyncReadyCallback callback, gpointer user_data);
-GDataEntry *gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataEntry *gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_result,
+                                               GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 gboolean gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GError **error);
 void gdata_service_delete_entry_async (GDataService *self, GDataEntry *entry, GCancellable *cancellable,

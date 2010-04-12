@@ -100,25 +100,25 @@ gdata_picasaweb_query_class_init (GDataPicasaWebQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VISIBILITY,
-				g_param_spec_int ("visibility",
-					"Visibility", "Specifies which albums should be listed, in terms of their visibility.",
-					0, GDATA_PICASAWEB_PRIVATE, 0,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_int ("visibility",
+	                                                   "Visibility", "Specifies which albums should be listed, in terms of their visibility.",
+	                                                   0, GDATA_PICASAWEB_PRIVATE, 0,
+	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebQuery:thumbnail-size:
 	 *
-	 * A comma-separated list of thumbnail sizes (width in pixels) to return. Only certain sizes are allowed, and whether the thumbnail should be
+	 * A comma-separated list of thumbnail widths (in pixels) to return. Only certain sizes are allowed, and whether the thumbnail should be
 	 * cropped or scaled can be specified; for more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#Parameters">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_THUMBNAIL_SIZE,
-				g_param_spec_string ("thumbnail-size",
-					"Thumbnail size", "A comma-separated list of thumbnail sizes (width in pixels) to return.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("thumbnail-size",
+	                                                      "Thumbnail size", "A comma-separated list of thumbnail width (in pixels) to return.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebQuery:image-size:
@@ -130,10 +130,10 @@ gdata_picasaweb_query_class_init (GDataPicasaWebQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IMAGE_SIZE,
-				g_param_spec_string ("image-size",
-					"Image size", "A comma-separated list of image sizes (width in pixels) to return.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("image-size",
+	                                                      "Image size", "A comma-separated list of image sizes (width in pixels) to return.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebQuery:tag:
@@ -143,10 +143,10 @@ gdata_picasaweb_query_class_init (GDataPicasaWebQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TAG,
-				g_param_spec_string ("tag",
-					"Tag", "A tag which returned results must contain.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("tag",
+	                                                      "Tag", "A tag which returned results must contain.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebQuery:location:
@@ -156,10 +156,10 @@ gdata_picasaweb_query_class_init (GDataPicasaWebQueryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
-				g_param_spec_string ("location",
-					"Location", "A location to search for photos, e.g. \"London\".",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("location",
+	                                                      "Location", "A location to search for photos, e.g. \"London\".",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -281,10 +281,10 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 		APPEND_SEP
 		g_string_append_printf (query_uri, "bbox=%s,%s,%s,%s",
-					g_ascii_dtostr (west, sizeof (west), priv->bounding_box.west),
-					g_ascii_dtostr (south, sizeof (south), priv->bounding_box.south),
-					g_ascii_dtostr (east, sizeof (east), priv->bounding_box.east),
-					g_ascii_dtostr (north, sizeof (north), priv->bounding_box.north));
+		                        g_ascii_dtostr (west, sizeof (west), priv->bounding_box.west),
+		                        g_ascii_dtostr (south, sizeof (south), priv->bounding_box.south),
+		                        g_ascii_dtostr (east, sizeof (east), priv->bounding_box.east),
+		                        g_ascii_dtostr (north, sizeof (north), priv->bounding_box.north));
 	}
 
 	if (priv->location != NULL) {
@@ -334,10 +334,10 @@ GDataPicasaWebQuery *
 gdata_picasaweb_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
 {
 	return g_object_new (GDATA_TYPE_PICASAWEB_QUERY,
-			     "q", q,
-			     "start-index", start_index,
-			     "max-results", max_results,
-			     NULL);
+	                     "q", q,
+	                     "start-index", start_index,
+	                     "max-results", max_results,
+	                     NULL);
 }
 
 /**

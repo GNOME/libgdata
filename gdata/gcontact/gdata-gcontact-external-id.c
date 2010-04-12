@@ -86,10 +86,10 @@ gdata_gcontact_external_id_class_init (GDataGContactExternalIDClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VALUE,
-				g_param_spec_string ("value",
-					"Value", "The value of the external ID.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("value",
+	                                                      "Value", "The value of the external ID.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactExternalID:relation-type:
@@ -103,10 +103,10 @@ gdata_gcontact_external_id_class_init (GDataGContactExternalIDClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
-				g_param_spec_string ("relation-type",
-					"Relation type", "A programmatic value that identifies the type of external ID.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("relation-type",
+	                                                      "Relation type", "A programmatic value that identifies the type of external ID.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataGContactExternalID:label:
@@ -119,10 +119,10 @@ gdata_gcontact_external_id_class_init (GDataGContactExternalIDClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LABEL,
-				g_param_spec_string ("label",
-					"Label", "A free-form string that identifies the type of external ID.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("label",
+	                                                      "Label", "A free-form string that identifies the type of external ID.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -277,7 +277,8 @@ gdata_gcontact_external_id_new (const gchar *value, const gchar *relation_type, 
  * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
  * and <code class="literal">1</code> if @b is %NULL.
  *
- * The comparison of non-%NULL values is done on the basis of the @value, @relation_type and @label properties of the #GDataGContactExternalID<!-- -->s.
+ * The comparison of non-%NULL values is done on the basis of the @value, @relation_type and @label properties of
+ * the #GDataGContactExternalID<!-- -->s.
  *
  * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
  * appropriate otherwise

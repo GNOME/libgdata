@@ -113,10 +113,10 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-				g_param_spec_boxed ("edited",
-					"Edited", "The last time the event was edited.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("edited",
+	                                                     "Edited", "The last time the event was edited.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:status:
@@ -129,10 +129,10 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_STATUS,
-				g_param_spec_string ("status",
-					"Status", "The scheduling status of the event.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("status",
+	                                                      "Status", "The scheduling status of the event.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:visibility:
@@ -143,10 +143,10 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * GData specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VISIBILITY,
-				g_param_spec_string ("visibility",
-					"Visibility", "The event's visibility to calendar users.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("visibility",
+	                                                      "Visibility", "The event's visibility to calendar users.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:transparency:
@@ -158,10 +158,10 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * GData specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TRANSPARENCY,
-				g_param_spec_string ("transparency",
-					"Transparency", "How the event is marked as consuming time on a calendar.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("transparency",
+	                                                      "Transparency", "How the event is marked as consuming time on a calendar.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:uid:
@@ -170,10 +170,10 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * url="http://www.ietf.org/rfc/rfc2445.txt">RFC 2445</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UID,
-				g_param_spec_string ("uid",
-					"UID", "The globally unique identifier (UID) of the event.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uid",
+	                                                      "UID", "The globally unique identifier (UID) of the event.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:sequence:
@@ -182,64 +182,64 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * url="http://www.ietf.org/rfc/rfc2445.txt">RFC 2445</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SEQUENCE,
-				g_param_spec_uint ("sequence",
-					"Sequence", "The revision sequence number of the event.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("sequence",
+	                                                    "Sequence", "The revision sequence number of the event.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:guests-can-modify:
 	 *
-	 * Indicates whether event attendees may modify the original event, so that changes are visible to organizer and other attendees.
+	 * Indicates whether attendees may modify the original event, so that changes are visible to organizers and other attendees.
 	 * Otherwise, any changes made by attendees will be restricted to that attendee's calendar.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/calendar/docs/2.0/reference.html#gCalguestsCanModify">
 	 * GData specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_GUESTS_CAN_MODIFY,
-				g_param_spec_boolean ("guests-can-modify",
-					"Guests can modify", "Indicates whether event attendees may modify the original event.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("guests-can-modify",
+	                                                       "Guests can modify", "Indicates whether attendees may modify the original event.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:guests-can-invite-others:
 	 *
-	 * Indicates whether event attendees may invite other people to the event.
+	 * Indicates whether attendees may invite others to the event.
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="http://code.google.com/apis/calendar/docs/2.0/reference.html#gCalguestsCanInviteOthers">GData specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_GUESTS_CAN_INVITE_OTHERS,
-				g_param_spec_boolean ("guests-can-invite-others",
-					"Guests can invite others", "Indicates whether event attendees may invite other people to the event.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("guests-can-invite-others",
+	                                                       "Guests can invite others", "Indicates whether attendees may invite others.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:guests-can-see-guests:
 	 *
-	 * Indicates whether event attendees can see other people invited to the event.
+	 * Indicates whether attendees can see other people invited to the event.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/calendar/docs/2.0/reference.html#gCalguestsCanSeeGuests">
 	 * GData specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_GUESTS_CAN_SEE_GUESTS,
-				g_param_spec_boolean ("guests-can-see-guests",
-					"Guests can see guests", "Indicates whether event attendees can see other people invited to the event.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("guests-can-see-guests",
+	                                                       "Guests can see guests", "Indicates whether attendees can see other people invited.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:anyone-can-add-self:
 	 *
-	 * Indicates whether anyone can add themselves to the attendee list of the event.
+	 * Indicates whether anyone can invite themselves to the event, by adding themselves to the attendee list.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ANYONE_CAN_ADD_SELF,
-				g_param_spec_boolean ("anyone-can-add-self",
-					"Anyone can add self", "Indicates whether anyone can add themselves to the attendee list of the event.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("anyone-can-add-self",
+	                                                       "Anyone can add self", "Indicates whether anyone can invite themselves to the event.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:recurrence:
@@ -252,10 +252,10 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RECURRENCE,
-				g_param_spec_string ("recurrence",
-					"Recurrence", "Represents the dates and times when a recurring event takes place.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("recurrence",
+	                                                      "Recurrence", "Represents the dates and times when a recurring event takes place.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:original-event-id:
@@ -265,10 +265,10 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ORIGINAL_EVENT_ID,
-				g_param_spec_string ("original-event-id",
-					"Original event ID", "The event ID for the original event, if this event is an exception to a recurring event.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("original-event-id",
+	                                                      "Original event ID", "The event ID for the original event.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarEvent:original-event-uri:
@@ -278,11 +278,10 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ORIGINAL_EVENT_URI,
-				g_param_spec_string ("original-event-uri",
-					"Original event URI", "The event URI for the original event, if this event is an exception"
-					" to a recurring event.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("original-event-uri",
+	                                                      "Original event URI", "The event URI for the original event.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

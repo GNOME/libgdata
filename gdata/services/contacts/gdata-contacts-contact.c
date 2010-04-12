@@ -155,10 +155,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-				g_param_spec_boxed ("edited",
-					"Edited", "The last time the contact was edited.",
-					GDATA_TYPE_G_TIME_VAL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("edited",
+	                                                     "Edited", "The last time the contact was edited.",
+	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:deleted:
@@ -168,10 +168,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DELETED,
-				g_param_spec_boolean ("deleted",
-					"Deleted", "Whether the entry has been deleted.",
-					FALSE,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("deleted",
+	                                                       "Deleted", "Whether the entry has been deleted.",
+	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:has-photo:
@@ -181,10 +181,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HAS_PHOTO,
-				g_param_spec_boolean ("has-photo",
-					"Has photo?", "Whether the contact has a photo.",
-					FALSE,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("has-photo",
+	                                                       "Has photo?", "Whether the contact has a photo.",
+	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:name:
@@ -194,10 +194,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NAME,
-				g_param_spec_object ("name",
-					"Name", "The contact's name in a structured representation.",
-					GDATA_TYPE_GD_NAME,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_object ("name",
+	                                                      "Name", "The contact's name in a structured representation.",
+	                                                      GDATA_TYPE_GD_NAME,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:nickname:
@@ -207,10 +207,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NICKNAME,
-				g_param_spec_string ("nickname",
-					"Nickname", "The contact's chosen nickname.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("nickname",
+	                                                      "Nickname", "The contact's chosen nickname.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:birthday:
@@ -220,23 +220,23 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_BIRTHDAY,
-				g_param_spec_boxed ("birthday",
-					"Birthday", "The contact's birthday.",
-					G_TYPE_DATE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boxed ("birthday",
+	                                                     "Birthday", "The contact's birthday.",
+	                                                     G_TYPE_DATE,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:birthday-has-year:
 	 *
-	 * Whether the contact's birthday includes the year of their birth.
+	 * Whether the contact's birthday includes their year of birth.
 	 *
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_BIRTHDAY_HAS_YEAR,
-				g_param_spec_boolean ("birthday-has-year",
-					"Birthday has year?", "Whether the contact's birthday includes the year of their birth.",
-					FALSE,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("birthday-has-year",
+	                                                       "Birthday has year?", "Whether the contact's birthday includes their year of birth.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:billing-information:
@@ -246,10 +246,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_BILLING_INFORMATION,
-				g_param_spec_string ("billing-information",
-					"Billing information", "Billing information for the contact.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("billing-information",
+	                                                      "Billing information", "Billing information for the contact.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:directory-server:
@@ -259,10 +259,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DIRECTORY_SERVER,
-				g_param_spec_string ("directory-server",
-					"Directory server", "The name or address of a directory server associated with the contact.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("directory-server",
+	                                                      "Directory server", "The name or address of an associated directory server.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:gender:
@@ -272,10 +272,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_GENDER,
-				g_param_spec_string ("gender",
-					"Gender", "The gender of the contact.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("gender",
+	                                                      "Gender", "The gender of the contact.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:initials:
@@ -285,10 +285,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_INITIALS,
-				g_param_spec_string ("initials",
-					"Initials", "The initials of the contact.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("initials",
+	                                                      "Initials", "The initials of the contact.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:maiden-name:
@@ -298,10 +298,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MAIDEN_NAME,
-				g_param_spec_string ("maiden-name",
-					"Maiden name", "The maiden name of the contact.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("maiden-name",
+	                                                      "Maiden name", "The maiden name of the contact.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:mileage:
@@ -311,10 +311,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MILEAGE,
-				g_param_spec_string ("mileage",
-					"Mileage", "A mileage associated with the contact, such as one for reimbursement purposes.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("mileage",
+	                                                      "Mileage", "A mileage associated with the contact.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:occupation:
@@ -324,10 +324,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_OCCUPATION,
-				g_param_spec_string ("occupation",
-					"Occupation", "The contact's occupation.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("occupation",
+	                                                      "Occupation", "The contact's occupation.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:priority:
@@ -337,10 +337,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PRIORITY,
-				g_param_spec_string ("priority",
-					"Priority", "The contact's importance.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("priority",
+	                                                      "Priority", "The contact's importance.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:sensitivity:
@@ -350,10 +350,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SENSITIVITY,
-				g_param_spec_string ("sensitivity",
-					"Sensitivity", "The sensitivity of the contact's data.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("sensitivity",
+	                                                      "Sensitivity", "The sensitivity of the contact's data.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:short-name:
@@ -364,10 +364,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SHORT_NAME,
-				g_param_spec_string ("short-name",
-					"Short name", "A short name for the contact.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("short-name",
+	                                                      "Short name", "A short name for the contact.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataContactsContact:subject:
@@ -377,10 +377,10 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SUBJECT,
-				g_param_spec_string ("subject",
-					"Subject", "The subject of the contact.",
-					NULL,
-					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("subject",
+	                                                      "Subject", "The subject of the contact.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *self);
@@ -2873,7 +2873,7 @@ gdata_contacts_contact_has_photo (GDataContactsContact *self)
  **/
 gchar *
 gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
-				  GCancellable *cancellable, GError **error)
+                                  GCancellable *cancellable, GError **error)
 {
 	GDataLink *link;
 	SoupMessage *message;
@@ -2952,7 +2952,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  **/
 gboolean
 gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const gchar *data, gsize length,
-				  GCancellable *cancellable, GError **error)
+                                  GCancellable *cancellable, GError **error)
 {
 	GDataLink *link;
 	SoupMessage *message;

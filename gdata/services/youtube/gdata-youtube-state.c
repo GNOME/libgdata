@@ -80,32 +80,32 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	 *
 	 * The name of the status of the unpublished video. Valid values are: "processing", "restricted", "deleted", "rejected" and "failed".
 	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">
-	 * online documentation</ulink>.
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_NAME,
-				g_param_spec_string ("name",
-					"Name", "The name of the status of the unpublished video.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("name",
+	                                                      "Name", "The name of the status of the unpublished video.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeState:reason-code:
 	 *
 	 * The reason code explaining why the video failed to upload.
 	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">
-	 * online documentation</ulink>.
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_REASON_CODE,
-				g_param_spec_string ("reason-code",
-					"Reason code", "The reason code explaining why the video failed to upload.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("reason-code",
+	                                                      "Reason code", "The reason code explaining why the video failed to upload.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeState:help-uri:
@@ -113,32 +113,32 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	 * A URI for a YouTube Help Center page that may help the developer or the video owner to diagnose
 	 * the reason that an upload failed or was rejected.
 	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">
-	 * online documentation</ulink>.
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HELP_URI,
-				g_param_spec_string ("help-uri",
-					"Help URI", "A URI for a YouTube Help Center page.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("help-uri",
+	                                                      "Help URI", "A URI for a YouTube Help Center page.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeState:message:
 	 *
 	 * A human-readable description of why the video failed to upload.
 	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">
-	 * online documentation</ulink>.
+	 * For more information, see the
+	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MESSAGE,
-				g_param_spec_string ("message",
-					"Message", "A human-readable description of why the video failed to upload.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("message",
+	                                                      "Message", "A human-readable description of why the video failed to upload.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

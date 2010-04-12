@@ -29,11 +29,14 @@
 G_BEGIN_DECLS
 
 #define GDATA_TYPE_DOCUMENTS_PRESENTATION		(gdata_documents_presentation_get_type ())
-#define GDATA_DOCUMENTS_PRESENTATION(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_DOCUMENTS_PRESENTATION, GDataDocumentsPresentation))
-#define GDATA_DOCUMENTS_PRESENTATION_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_DOCUMENTS_PRESENTATION, GDataDocumentsPresentationClass))
+#define GDATA_DOCUMENTS_PRESENTATION(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_DOCUMENTS_PRESENTATION, \
+                                                         GDataDocumentsPresentation))
+#define GDATA_DOCUMENTS_PRESENTATION_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_DOCUMENTS_PRESENTATION, \
+                                                         GDataDocumentsPresentationClass))
 #define GDATA_IS_DOCUMENTS_PRESENTATION(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), GDATA_TYPE_DOCUMENTS_PRESENTATION))
 #define GDATA_IS_DOCUMENTS_PRESENTATION_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), GDATA_TYPE_DOCUMENTS_PRESENTATION))
-#define GDATA_DOCUMENTS_PRESENTATION_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), GDATA_TYPE_DOCUMENTS_PRESENTATION, GDataDocumentsPresentationClass))
+#define GDATA_DOCUMENTS_PRESENTATION_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), GDATA_TYPE_DOCUMENTS_PRESENTATION, \
+                                                         GDataDocumentsPresentationClass))
 
 typedef struct _GDataDocumentsPresentationPrivate	GDataDocumentsPresentationPrivate;
 
@@ -54,7 +57,7 @@ typedef enum {
 	GDATA_DOCUMENTS_PRESENTATION_PNG,
 	GDATA_DOCUMENTS_PRESENTATION_PPT,
 	GDATA_DOCUMENTS_PRESENTATION_SWF,
-	GDATA_DOCUMENTS_PRESENTATION_TXT,
+	GDATA_DOCUMENTS_PRESENTATION_TXT
 } GDataDocumentsPresentationFormat;
 
 /**
@@ -87,9 +90,9 @@ GDataDocumentsPresentation *gdata_documents_presentation_new (const gchar *id) G
 
 #include <gdata/services/documents/gdata-documents-service.h>
 GFile *gdata_documents_presentation_download_document (GDataDocumentsPresentation *self, GDataDocumentsService *service, gchar **content_type,
-						       GDataDocumentsPresentationFormat export_format, GFile *destination_file,
-						       gboolean replace_file_if_exists, GCancellable *cancellable,
-						       GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                       GDataDocumentsPresentationFormat export_format, GFile *destination_file,
+                                                       gboolean replace_file_if_exists, GCancellable *cancellable,
+                                                       GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_documents_presentation_get_download_uri (GDataDocumentsPresentation *self,
                                                       GDataDocumentsPresentationFormat export_format) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 

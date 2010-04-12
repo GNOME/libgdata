@@ -99,10 +99,10 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_URI,
-				g_param_spec_string ("uri",
-					"URI", "The direct URI to the media object.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("uri",
+	                                                      "URI", "The direct URI to the media object.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaContent:filesize:
@@ -114,10 +114,10 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FILESIZE,
-				g_param_spec_ulong ("filesize",
-					"Filesize", "The number of bytes of the media object.",
-					0, G_MAXULONG, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_ulong ("filesize",
+	                                                     "Filesize", "The number of bytes of the media object.",
+	                                                     0, G_MAXULONG, 0,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaContent:content-type:
@@ -129,10 +129,10 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE,
-				g_param_spec_string ("content-type",
-					"Content type", "The standard MIME type of the object.",
-					NULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_string ("content-type",
+	                                                      "Content type", "The standard MIME type of the object.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaContent:medium:
@@ -145,25 +145,25 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MEDIUM,
-				g_param_spec_enum ("medium",
-					"Medium", "The type of object.",
-					GDATA_TYPE_MEDIA_MEDIUM, GDATA_MEDIA_UNKNOWN,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("medium",
+	                                                    "Medium", "The type of object.",
+	                                                    GDATA_TYPE_MEDIA_MEDIUM, GDATA_MEDIA_UNKNOWN,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaContent:is-default:
 	 *
-	 * Determines if this is the default object that should be used for the media group. There should only be one default object per media group.
+	 * Determines if this is the default content for the media group. There should only be one default object per media group.
 	 *
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_DEFAULT,
-				g_param_spec_boolean ("is-default",
-					"Default?", "Determines if this is the default object that should be used for the media group.",
-					FALSE,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_boolean ("is-default",
+	                                                       "Default?", "Determines if this is the default content for the media group.",
+	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaContent:expression:
@@ -175,10 +175,10 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EXPRESSION,
-				g_param_spec_enum ("expression",
-					"Expression", "Determines if the object is a sample or the full version of the object.",
-					GDATA_TYPE_MEDIA_EXPRESSION, GDATA_MEDIA_EXPRESSION_FULL,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_enum ("expression",
+	                                                    "Expression", "Determines if the object is a sample or the full version of the object.",
+	                                                    GDATA_TYPE_MEDIA_EXPRESSION, GDATA_MEDIA_EXPRESSION_FULL,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaContent:duration:
@@ -190,10 +190,10 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DURATION,
-				g_param_spec_int64 ("duration",
-					"Duration", "The number of seconds for which the media object plays.",
-					0, G_MAXINT64, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_int64 ("duration",
+	                                                     "Duration", "The number of seconds for which the media object plays.",
+	                                                     0, G_MAXINT64, 0,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaContent:height:
@@ -205,10 +205,10 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HEIGHT,
-				g_param_spec_uint ("height",
-					"Height", "The height of the media object.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("height",
+	                                                    "Height", "The height of the media object.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataMediaContent:width:
@@ -220,10 +220,10 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_WIDTH,
-				g_param_spec_uint ("width",
-					"Width", "The width of the media object.",
-					0, G_MAXUINT, 0,
-					G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 g_param_spec_uint ("width",
+	                                                    "Width", "The width of the media object.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -302,13 +302,13 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* Parse expression */
 	expression = xmlGetProp (root_node, (xmlChar*) "expression");
-	if (expression == NULL || xmlStrcmp (expression, (xmlChar*) "full") == 0)
+	if (expression == NULL || xmlStrcmp (expression, (xmlChar*) "full") == 0) {
 		expression_enum = GDATA_MEDIA_EXPRESSION_FULL;
-	else if (xmlStrcmp (expression, (xmlChar*) "sample") == 0)
+	} else if (xmlStrcmp (expression, (xmlChar*) "sample") == 0) {
 		expression_enum = GDATA_MEDIA_EXPRESSION_SAMPLE;
-	else if (xmlStrcmp (expression, (xmlChar*) "nonstop") == 0)
+	} else if (xmlStrcmp (expression, (xmlChar*) "nonstop") == 0) {
 		expression_enum = GDATA_MEDIA_EXPRESSION_NONSTOP;
-	else {
+	} else {
 		gdata_parser_error_unknown_property_value (root_node, "expression", (gchar*) expression, error);
 		xmlFree (expression);
 		return FALSE;
@@ -317,19 +317,19 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* Parse medium */
 	medium = xmlGetProp (root_node, (xmlChar*) "medium");
-	if (medium == NULL)
+	if (medium == NULL) {
 		medium_enum = GDATA_MEDIA_UNKNOWN;
-	else if (xmlStrcmp (medium, (xmlChar*) "image") == 0)
+	} else if (xmlStrcmp (medium, (xmlChar*) "image") == 0) {
 		medium_enum = GDATA_MEDIA_IMAGE;
-	else if (xmlStrcmp (medium, (xmlChar*) "audio") == 0)
+	} else if (xmlStrcmp (medium, (xmlChar*) "audio") == 0) {
 		medium_enum = GDATA_MEDIA_AUDIO;
-	else if (xmlStrcmp (medium, (xmlChar*) "video") == 0)
+	} else if (xmlStrcmp (medium, (xmlChar*) "video") == 0) {
 		medium_enum = GDATA_MEDIA_VIDEO;
-	else if (xmlStrcmp (medium, (xmlChar*) "document") == 0)
+	} else if (xmlStrcmp (medium, (xmlChar*) "document") == 0) {
 		medium_enum = GDATA_MEDIA_DOCUMENT;
-	else if (xmlStrcmp (medium, (xmlChar*) "executable") == 0)
+	} else if (xmlStrcmp (medium, (xmlChar*) "executable") == 0) {
 		medium_enum = GDATA_MEDIA_EXECUTABLE;
-	else {
+	} else {
 		gdata_parser_error_unknown_property_value (root_node, "medium", (gchar*) medium, error);
 		xmlFree (medium);
 		return FALSE;
@@ -555,7 +555,8 @@ gdata_media_content_get_width (GDataMediaContent *self)
  * Since: 0.6.0
  **/
 GFile *
-gdata_media_content_download (GDataMediaContent *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file, gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
+gdata_media_content_download (GDataMediaContent *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file,
+                              gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
 	GFileOutputStream *dest_stream;
 	const gchar *src_uri;
@@ -570,7 +571,8 @@ gdata_media_content_download (GDataMediaContent *self, GDataService *service, co
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	dest_stream = _gdata_download_stream_find_destination (default_filename, target_dest_file, &actual_file, replace_file_if_exists, cancellable, error);
+	dest_stream = _gdata_download_stream_find_destination (default_filename, target_dest_file, &actual_file, replace_file_if_exists,
+	                                                       cancellable, error);
 	if (dest_stream == NULL)
 		return NULL;
 
@@ -579,7 +581,7 @@ gdata_media_content_download (GDataMediaContent *self, GDataService *service, co
 	/* Synchronously splice the data from the download stream to the file stream (network -> disk) */
 	src_stream = gdata_download_stream_new (GDATA_SERVICE (service), src_uri);
 	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream,
-				G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
 	g_object_unref (src_stream);
 	g_object_unref (dest_stream);
 	if (child_error != NULL) {
