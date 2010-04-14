@@ -1061,8 +1061,7 @@ gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GErr
 /* Does the bulk of the work of gdata_service_query. Split out because certain queries (such as that done by
  * gdata_service_query_single_entry()) only return a single entry, and thus need special parsing code. */
 SoupMessage *
-_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
-                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable, GError **error)
 {
 	SoupMessage *message;
 	guint status;
@@ -1159,7 +1158,7 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	message = _gdata_service_query (self, feed_uri, query, cancellable, progress_callback, progress_user_data, error);
+	message = _gdata_service_query (self, feed_uri, query, cancellable, error);
 	if (message == NULL)
 		return NULL;
 
@@ -1234,7 +1233,7 @@ gdata_service_query_single_entry (GDataService *self, const gchar *entry_id, GDa
 	g_assert (klass->get_entry_uri != NULL);
 
 	entry_uri = klass->get_entry_uri (entry_id);
-	message = _gdata_service_query (GDATA_SERVICE (self), entry_uri, query, cancellable, NULL, NULL, error);
+	message = _gdata_service_query (GDATA_SERVICE (self), entry_uri, query, cancellable, error);
 	g_free (entry_uri);
 
 	if (message == NULL)

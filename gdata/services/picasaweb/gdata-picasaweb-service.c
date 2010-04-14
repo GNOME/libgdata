@@ -136,7 +136,7 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
 		return NULL;
 	}
 
-	message = _gdata_service_query (GDATA_SERVICE (self), uri, NULL, cancellable, NULL, NULL, error);
+	message = _gdata_service_query (GDATA_SERVICE (self), uri, NULL, cancellable, error);
 	g_free (uri);
 
 	if (message == NULL)

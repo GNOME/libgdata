@@ -50,11 +50,7 @@ void _gdata_service_set_authenticated (GDataService *self, gboolean authenticate
 SoupMessage *_gdata_service_build_message (GDataService *self, const gchar *method, const gchar *uri, const gchar *etag, gboolean etag_if_match);
 guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancellable *cancellable, GError **error);
 SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
-                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                    GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-void _gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type, GCancellable *cancellable,
-                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-                                 GAsyncReadyCallback callback, gpointer user_data, GSimpleAsyncThreadFunc query_thread);
 const gchar *_gdata_service_get_scheme (void);
 GDataLogLevel _gdata_service_get_log_level (void);
 
