@@ -67,6 +67,7 @@ static void real_append_query_headers (GDataService *self, SoupMessage *message)
 static void real_parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
                                        const gchar *response_body, gint length, GError **error);
 static void notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
+static void notify_timeout_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
 static void debug_handler (const char *log_domain, GLogLevelFlags log_level, const char *message, gpointer user_data);
 static void soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char direction, const char *data, gpointer user_data);
 
@@ -85,7 +86,8 @@ enum {
 	PROP_USERNAME,
 	PROP_PASSWORD,
 	PROP_AUTHENTICATED,
-	PROP_PROXY_URI
+	PROP_PROXY_URI,
+	PROP_TIMEOUT
 };
 
 enum {
@@ -177,6 +179,22 @@ gdata_service_class_init (GDataServiceClass *klass)
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
+	 * GDataService:timeout:
+	 *
+	 * A timeout, in seconds, for network operations. If the timeout is exceeded, the operation will be cancelled and
+	 * %GDATA_SERVICE_ERROR_NETWORK_ERROR will be returned.
+	 *
+	 * If the timeout is <code class="literal">0</code>, operations will never time out.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_TIMEOUT,
+	                                 g_param_spec_uint ("timeout",
+	                                                    "Timeout", "A timeout, in seconds, for network operations.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * GDataService::captcha-challenge:
 	 * @service: the #GDataService which received the challenge
 	 * @uri: the URI of the CAPTCHA image to be used
@@ -233,8 +251,9 @@ gdata_service_init (GDataService *self)
 		soup_session_add_feature (self->priv->session, SOUP_SESSION_FEATURE (logger));
 	}
 
-	/* Proxy the SoupSession's proxy-uri property */
+	/* Proxy the SoupSession's proxy-uri and timeout properties */
 	g_signal_connect (self->priv->session, "notify::proxy-uri", (GCallback) notify_proxy_uri_cb, self);
+	g_signal_connect (self->priv->session, "notify::timeout", (GCallback) notify_timeout_cb, self);
 }
 
 static void
@@ -285,6 +304,9 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 		case PROP_PROXY_URI:
 			g_value_set_boxed (value, gdata_service_get_proxy_uri (GDATA_SERVICE (object)));
 			break;
+		case PROP_TIMEOUT:
+			g_value_set_uint (value, gdata_service_get_timeout (GDATA_SERVICE (object)));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -303,6 +325,9 @@ gdata_service_set_property (GObject *object, guint property_id, const GValue *va
 			break;
 		case PROP_PROXY_URI:
 			gdata_service_set_proxy_uri (GDATA_SERVICE (object), g_value_get_boxed (value));
+			break;
+		case PROP_TIMEOUT:
+			gdata_service_set_timeout (GDATA_SERVICE (object), g_value_get_uint (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -1887,6 +1912,53 @@ gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	g_object_set (self->priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
 	g_object_notify (G_OBJECT (self), "proxy-uri");
+}
+
+static void
+notify_timeout_cb (GObject *gobject, GParamSpec *pspec, GObject *self)
+{
+	g_object_notify (self, "timeout");
+}
+
+/**
+ * gdata_service_get_timeout:
+ * @self: a #GDataService
+ *
+ * Gets the #GDataService:timeout property; the network timeout, in seconds.
+ *
+ * Return value: the timeout, or <code class="literal">0</code>
+ *
+ * Since: 0.7.0
+ **/
+guint
+gdata_service_get_timeout (GDataService *self)
+{
+	guint timeout;
+
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), 0);
+
+	g_object_get (self->priv->session, SOUP_SESSION_TIMEOUT, &timeout, NULL);
+
+	return timeout;
+}
+
+/**
+ * gdata_service_set_timeout:
+ * @self: a #GDataService
+ * @timeout: the timeout, or <code class="literal">0</code>
+ *
+ * Sets the #GDataService:timeout property; the network timeout, in seconds.
+ *
+ * If @timeout is <code class="literal">0</code>, network operations will never time out.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_service_set_timeout (GDataService *self, guint timeout)
+{
+	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_object_set (self->priv->session, SOUP_SESSION_TIMEOUT, timeout, NULL);
+	g_object_notify (G_OBJECT (self), "timeout");
 }
 
 /**

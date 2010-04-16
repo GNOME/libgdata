@@ -830,3 +830,5 @@ gdata_gcontact_language_set_label
 gdata_contacts_contact_add_language
 gdata_contacts_contact_get_languages
 gdata_contacts_contact_remove_all_languages
+gdata_service_get_timeout
+gdata_service_set_timeout

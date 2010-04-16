@@ -226,6 +226,9 @@ gboolean gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *as
 SoupURI *gdata_service_get_proxy_uri (GDataService *self);
 void gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri);
 
+guint gdata_service_get_timeout (GDataService *self);
+void gdata_service_set_timeout (GDataService *self, guint timeout);
+
 gboolean gdata_service_is_authenticated (GDataService *self);
 const gchar *gdata_service_get_client_id (GDataService *self);
 const gchar *gdata_service_get_username (GDataService *self);
