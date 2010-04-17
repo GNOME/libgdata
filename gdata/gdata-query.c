@@ -48,28 +48,12 @@
 #include "gdata-private.h"
 #include "gdata-types.h"
 
-typedef enum {
-	GDATA_QUERY_PARAM_Q = 1 << 0,
-	GDATA_QUERY_PARAM_CATEGORIES = 1 << 1,
-	GDATA_QUERY_PARAM_AUTHOR = 1 << 2,
-	GDATA_QUERY_PARAM_UPDATED_MIN = 1 << 3,
-	GDATA_QUERY_PARAM_UPDATED_MAX = 1 << 4,
-	GDATA_QUERY_PARAM_PUBLISHED_MIN = 1 << 5,
-	GDATA_QUERY_PARAM_PUBLISHED_MAX = 1 << 6,
-	GDATA_QUERY_PARAM_START_INDEX = 1 << 7,
-	GDATA_QUERY_PARAM_IS_STRICT = 1 << 8,
-	GDATA_QUERY_PARAM_MAX_RESULTS = 1 << 9,
-	GDATA_QUERY_PARAM_ALL = (1 << 10) - 1
-} GDataQueryParam;
-
 static void gdata_query_finalize (GObject *object);
 static void gdata_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_query_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboolean *params_started);
 
 struct _GDataQueryPrivate {
-	guint parameter_mask; /* GDataQueryParam */
-
 	/* Standard query parameters (see: http://code.google.com/apis/gdata/docs/2.0/reference.html#Queries) */
 	gchar *q;
 	gchar *categories;
@@ -410,18 +394,11 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	#define APPEND_SEP g_string_append_c (query_uri, (*params_started == FALSE) ? '?' : '&'); *params_started = TRUE;
 
-	/* Check to see if any parameters have been set */
-	if ((priv->parameter_mask & GDATA_QUERY_PARAM_ALL) == 0)
-		return;
-
+	/* Categories */
 	if (priv->categories != NULL) {
 		g_string_append (query_uri, "/-/");
 		g_string_append_uri_escaped (query_uri, priv->categories, "/", FALSE);
 	}
-
-	/* If that's it, return */
-	if ((priv->parameter_mask & (GDATA_QUERY_PARAM_ALL ^ GDATA_QUERY_PARAM_CATEGORIES)) == 0)
-		return;
 
 	/* q param */
 	if (priv->q != NULL) {
@@ -599,12 +576,6 @@ gdata_query_set_q (GDataQuery *self, const gchar *q)
 
 	g_free (self->priv->q);
 	self->priv->q = g_strdup (q);
-
-	if (q == NULL)
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_Q;
-	else
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_Q;
-
 	g_object_notify (G_OBJECT (self), "q");
 
 	/* Our current ETag will no longer be relevant */
@@ -642,12 +613,6 @@ gdata_query_set_categories (GDataQuery *self, const gchar *categories)
 
 	g_free (self->priv->categories);
 	self->priv->categories = g_strdup (categories);
-
-	if (categories == NULL)
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_CATEGORIES;
-	else
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_CATEGORIES;
-
 	g_object_notify (G_OBJECT (self), "categories");
 
 	/* Our current ETag will no longer be relevant */
@@ -685,12 +650,6 @@ gdata_query_set_author (GDataQuery *self, const gchar *author)
 
 	g_free (self->priv->author);
 	self->priv->author = g_strdup (author);
-
-	if (author == NULL)
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_AUTHOR;
-	else
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_AUTHOR;
-
 	g_object_notify (G_OBJECT (self), "author");
 
 	/* Our current ETag will no longer be relevant */
@@ -730,10 +689,8 @@ gdata_query_set_updated_min (GDataQuery *self, const GTimeVal *updated_min)
 	if (updated_min == NULL) {
 		self->priv->updated_min.tv_sec = 0;
 		self->priv->updated_min.tv_usec = 0;
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_UPDATED_MIN;
 	} else {
 		self->priv->updated_min = *updated_min;
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_UPDATED_MIN;
 	}
 
 	g_object_notify (G_OBJECT (self), "updated-min");
@@ -775,10 +732,8 @@ gdata_query_set_updated_max (GDataQuery *self, const GTimeVal *updated_max)
 	if (updated_max == NULL) {
 		self->priv->updated_max.tv_sec = 0;
 		self->priv->updated_max.tv_usec = 0;
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_UPDATED_MAX;
 	} else {
 		self->priv->updated_max = *updated_max;
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_UPDATED_MAX;
 	}
 
 	g_object_notify (G_OBJECT (self), "updated-max");
@@ -820,10 +775,8 @@ gdata_query_set_published_min (GDataQuery *self, const GTimeVal *published_min)
 	if (published_min == NULL) {
 		self->priv->published_min.tv_sec = 0;
 		self->priv->published_min.tv_usec = 0;
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_PUBLISHED_MIN;
 	} else {
 		self->priv->published_min = *published_min;
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_PUBLISHED_MIN;
 	}
 
 	g_object_notify (G_OBJECT (self), "published-min");
@@ -865,10 +818,8 @@ gdata_query_set_published_max (GDataQuery *self, const GTimeVal *published_max)
 	if (published_max == NULL) {
 		self->priv->published_max.tv_sec = 0;
 		self->priv->published_max.tv_usec = 0;
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_PUBLISHED_MAX;
 	} else {
 		self->priv->published_max = *published_max;
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_PUBLISHED_MAX;
 	}
 
 	g_object_notify (G_OBJECT (self), "published-max");
@@ -907,12 +858,6 @@ gdata_query_set_start_index (GDataQuery *self, guint start_index)
 	g_return_if_fail (GDATA_IS_QUERY (self));
 
 	self->priv->start_index = start_index;
-
-	if (start_index == 0)
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_START_INDEX;
-	else
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_START_INDEX;
-
 	g_object_notify (G_OBJECT (self), "start-index");
 
 	/* Our current ETag will no longer be relevant */
@@ -951,12 +896,6 @@ gdata_query_set_is_strict (GDataQuery *self, gboolean is_strict)
 	g_return_if_fail (GDATA_IS_QUERY (self));
 
 	self->priv->is_strict = is_strict;
-
-	if (is_strict == FALSE)
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_IS_STRICT;
-	else
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_IS_STRICT;
-
 	g_object_notify (G_OBJECT (self), "is-strict");
 
 	/* Our current ETag will no longer be relevant */
@@ -993,12 +932,6 @@ gdata_query_set_max_results (GDataQuery *self, guint max_results)
 	g_return_if_fail (GDATA_IS_QUERY (self));
 
 	self->priv->max_results = max_results;
-
-	if (max_results == 0)
-		self->priv->parameter_mask &= ~GDATA_QUERY_PARAM_MAX_RESULTS;
-	else
-		self->priv->parameter_mask |= GDATA_QUERY_PARAM_MAX_RESULTS;
-
 	g_object_notify (G_OBJECT (self), "max-results");
 
 	/* Our current ETag will no longer be relevant */
