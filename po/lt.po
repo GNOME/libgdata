@@ -1,0 +1,412 @@
+# Lithuanian translation for libgdata.
+# Copyright (C) 2010 libgdata's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgdata package.
+# Aurimas Černius <aurisc4@gmail.com>, 2010.
+# Aurimas Černius <aurisc4@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: libgdata master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-19 02:09+0300\n"
+"PO-Revision-Date: 2010-04-19 02:09+0300\n"
+"Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
+"Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ../gdata/gdata-access-handler.c:170
+msgid "The rule has already been inserted."
+msgstr "Taisyklė jau įterpta."
+
+#: ../gdata/gdata-access-handler.c:350
+msgid "The owner's rule may not be deleted."
+msgstr "Savininko taisyklė negali būti ištrinta."
+
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:186 ../gdata/gdata-parsable.c:197
+#, c-format
+msgid "Error parsing XML: %s"
+msgstr "Klaida skaitant XML: %s"
+
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: ../gdata/gdata-parsable.c:199
+msgid "Empty document."
+msgstr "Tuščias dokumentas"
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#: ../gdata/gdata-parser.c:66
+#, c-format
+msgid "A %s element was missing required content."
+msgstr "Elementui %s trūksta privalomo turinio."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:82
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgstr "Elemento %s turinys („%s“) yra ne ISO 8601 formato."
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#: ../gdata/gdata-parser.c:102
+#, c-format
+msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgstr "Savybės %s elemente %s reikšmė („%s“) nežinoma."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#: ../gdata/gdata-parser.c:120
+#, c-format
+msgid "The content of a %s element (\"%s\") was unknown."
+msgstr "Elemento %s turinys („%s“) nežinomas."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: ../gdata/gdata-parser.c:140
+#, c-format
+msgid "A required property of a %s element (%s) was not present."
+msgstr "Elemento %s privaloma savybė (%s) nerasta."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"Reikšmės savybėms %s ir %s elemente %s pateiktos abiems, nors leidžiama tik "
+"viena iš dviejų."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#: ../gdata/gdata-parser.c:182
+#, c-format
+msgid "A required element (%s) was not present."
+msgstr "Privalomas elementas (%s) nerastas."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#: ../gdata/gdata-parser.c:197
+#, c-format
+msgid "A singleton element (%s) was duplicated."
+msgstr "Vienetinis elementas (%s) buvo dubliuotas."
+
+#: ../gdata/gdata-service.c:362
+#: ../gdata/services/youtube/gdata-youtube-service.c:202
+msgid "The server returned a malformed response."
+msgstr "Serveris grąžino netinkamai suformuotą atsakymą."
+
+#: ../gdata/gdata-service.c:395
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "Nepavyko prisijungti prie paslaugos serverio."
+
+#: ../gdata/gdata-service.c:400
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "Nepavyko prisijungti prie proxy serverio."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:406
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+"Netinkama užklausos URI, antraštė arba nepalaikomas nestandartinis "
+"parametras: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:412
+#, c-format
+msgid "Authentication required: %s"
+msgstr "Būtina autentikacija: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:417
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "Prašomas resursas nerastas: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:423
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "Įrašas buvo pakeistas nuo tada, kai buvo atsiųstas: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:437
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Autentikacijos klaidos kodas %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:443
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "Užklausos klaidos kodas %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:449
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Įrašo įterpimo klaidos kodas %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:455
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Įrašo atnaujinimo klaidos kodas %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:461
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Įrašo trynimo klaidos kodas %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:467
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "Atsisiuntimo klaidos kodas %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:473
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Nusiuntimo klaidos kodas %u: %s"
+
+#: ../gdata/gdata-service.c:598
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "Prisijungimui turi būti užpildyta CAPTCHA."
+
+#: ../gdata/gdata-service.c:622
+msgid "Your username or password were incorrect."
+msgstr "Neteisingas naudotojo vardas arba slaptažodis."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:641
+#, c-format
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "Jūsų paskyros el. pašto adresas nebuvo patikrintas. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:646
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr "Jūs nesutikote su paslaugos naudojimo sąlygomis. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:651
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "Ši paskyra buvo ištrinti. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:656
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "Ši paskyra buvo uždrausta. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:661
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "Šiai paskyrai prieiga prie paslaugos buvo uždrausta. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:666
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "Ši paslauga šiuo metu nepasiekiama. (%s)"
+
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:937
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "Netinkamas nukreipimo URI: %s"
+
+#: ../gdata/gdata-service.c:1527
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:404
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:561
+#: ../gdata/services/youtube/gdata-youtube-service.c:663
+msgid "The entry has already been inserted."
+msgstr "Įrašas buvo įterptas."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:317
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgstr "Elemento %s turinys („%s“) ne šešioliktainio RGB formato."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:110
+#: ../gdata/services/calendar/gdata-calendar-service.c:155
+msgid "You must be authenticated to query all calendars."
+msgstr "Turite prisijungti, jei norite peržiūrėti visus kalendorius."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:197
+#: ../gdata/services/calendar/gdata-calendar-service.c:242
+#: ../gdata/services/calendar/gdata-calendar-service.c:284
+msgid "You must be authenticated to query your own calendars."
+msgstr "Turite prisijungti, jei norite peržiūrėti savo kalendorius."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:293
+msgid "The calendar did not have a content source."
+msgstr "Kalendorius neturi turinio šaltinio."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:114
+#: ../gdata/services/contacts/gdata-contacts-service.c:160
+msgid "You must be authenticated to query contacts."
+msgstr "Turite prisijungti, jei norite peržiūrėti kontaktus."
+
+#: ../gdata/services/documents/gdata-documents-entry.c:622
+msgid "You must be authenticated to download documents."
+msgstr "Turite prisijungti, jei norite atsisiųsti dokumentus."
+
+#: ../gdata/services/documents/gdata-documents-service.c:199
+#: ../gdata/services/documents/gdata-documents-service.c:250
+msgid "You must be authenticated to query documents."
+msgstr "Turite prisijungti, jei norite peržiūrėti dokumentus."
+
+#: ../gdata/services/documents/gdata-documents-service.c:344
+msgid "The supplied document had an invalid content type."
+msgstr "Pateiktas dokumentas turi netinkamą turinio tipą."
+
+#: ../gdata/services/documents/gdata-documents-service.c:431
+msgid "You must be authenticated to upload documents."
+msgstr "Turite prisijungti, jei norite nusiųsti dokumentus."
+
+#: ../gdata/services/documents/gdata-documents-service.c:437
+msgid "The document has already been uploaded."
+msgstr "Dokumentas jau nusiųstas."
+
+#: ../gdata/services/documents/gdata-documents-service.c:488
+msgid "You must be authenticated to update documents."
+msgstr "Turite prisijungti, jei norite atnaujinti dokumentus."
+
+#: ../gdata/services/documents/gdata-documents-service.c:536
+#: ../gdata/services/documents/gdata-documents-service.c:610
+msgid "You must be authenticated to move documents."
+msgstr "Turite prisijungti, jei norite perkelti dokumentus."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:135
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"Turite nurodyti naudotojo vartą arba būti prisijungęs, norėdami peržiūrėti "
+"naudotoją."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:189
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
+msgid "Query parameter not allowed for albums."
+msgstr "Užklausos parametras neleidžiamas albumams."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:196
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:252
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr ""
+"Turite nurodyti naudotojo vardą arba būti prisijungęs, norėdami peržiūrėti "
+"albumus."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:299
+msgid "The album did not have a feed link."
+msgstr "Albumas neturi atgalinio ryšio saito."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:410
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:567
+msgid "You must be authenticated to upload a file."
+msgstr "Turite prisijungti, jei norite nusiųsti failą."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:629
+msgid "The album has already been inserted."
+msgstr "Albumas jau įterptas."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:635
+msgid "You must be authenticated to insert an album."
+msgstr "Turite prisijungti, jei norite įterpti albumą."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:303
+#, c-format
+msgid "This service is not available at the moment."
+msgstr "Ši paslauga šiuo metu nepasiekiama."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:308
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Turite prisijungti šio veiksmo atlikimui."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:313
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Jūs neseniai atlikote per daug API iškvietimų. Palaukite keletą minučių ir "
+"bandykite vėl."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:316
+#, c-format
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Jūs perkopėte savo įrašų kvotą. Ištrinkite keletą įrašų ir bandykite vėl."
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:323
+#: ../gdata/services/youtube/gdata-youtube-service.c:329
+#, c-format
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr "Nežinomas klaidos kodas „%s“ srityje „%s“, vietoje „%s“."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:347
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr "Gauta nežinoma neperskaitoma klaida."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:569
+#: ../gdata/services/youtube/gdata-youtube-service.c:616
+msgid "The video did not have a related videos <link>."
+msgstr "Filmas neturi susijusių filmų <link>."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:669
+msgid "You must be authenticated to upload a video."
+msgstr "Turite prisijungti, jei norite nusiųsti filmą."
