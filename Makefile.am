@@ -9,11 +9,11 @@ GDATA_MARSHAL_FILES = \
 	gdata/gdata-marshal.h
 
 gdata/gdata-marshal.h: $(top_srcdir)/gdata/gdata-marshal.list Makefile
-	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal $(srcdir)/gdata/gdata-marshal.list --header > $@)
-gdata/gdata-marshal.c: $(top_srcdir)/gdata/gdata-marshal.h Makefile
-	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal $(srcdir)/gdata/gdata-marshal.list --header --body > $@)
+	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal $(top_srcdir)/gdata/gdata-marshal.list --header > $@)
+gdata/gdata-marshal.c: gdata/gdata-marshal.h Makefile
+	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal $(top_srcdir)/gdata/gdata-marshal.list --header --body > $@)
 
-EXTRA_DIST = gdata/gdata-marshal.list
+EXTRA_DIST = $(top_srcdir)/gdata/gdata-marshal.list
 CLEANFILES = $(GDATA_MARSHAL_FILES)
 
 # Enums
@@ -334,14 +334,18 @@ gdata_libgdata_la_SOURCES = \
 
 # All but the first two -I flags here are to cope with compiling the enum files in a srcdir!=builddir environment
 gdata_libgdata_la_CPPFLAGS = \
-	-I$(top_srcdir)			\
-	-I$(top_srcdir)/gdata		\
-	-I$(top_srcdir)/gdata/media	\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/gdata				\
+	-I$(top_srcdir)/gdata/media			\
 	-I$(top_srcdir)/gdata/services/documents	\
 	-I$(top_srcdir)/gdata/services/picasaweb	\
 	-I$(top_srcdir)/gdata/services/youtube		\
-	-DG_LOG_DOMAIN=\"libgdata\"	\
-	$(DISABLE_DEPRECATED)		\
+	-I$(top_builddir)/gdata				\
+	-I$(top_builddir)/gdata/media			\
+	-I$(top_builddir)/gdata/services/picasaweb	\
+	-I$(top_builddir)/gdata/services/youtube	\
+	-DG_LOG_DOMAIN=\"libgdata\"			\
+	$(DISABLE_DEPRECATED)				\
 	$(AM_CPPFLAGS)
 
 gdata_libgdata_la_CFLAGS = \
