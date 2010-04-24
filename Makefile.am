@@ -417,6 +417,7 @@ CLEANFILES += \
 	$(typelibs_DATA)
 
 DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
+EXTRA_DIST = introspection.m4
 endif
 
 # gcov
