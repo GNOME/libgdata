@@ -123,8 +123,10 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * GDataService:client-id:
 	 *
 	 * A client ID for your application (see the
-	 * <ulink url="http://code.google.com/apis/youtube/2.0/developers_guide_protocol_api_query_parameters.html#clientsp" type="http">
-	 * YouTube reference documentation</ulink>).
+	 * <ulink url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request" type="http">reference documentation</ulink>).
+	 *
+	 * It is recommended that the ID is of the form <literal><replaceable>company name</replaceable>-<replaceable>application name</replaceable>-
+	 * <replaceable>version ID</replaceable></literal>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CLIENT_ID,
 	                                 g_param_spec_string ("client-id",
@@ -135,11 +137,11 @@ gdata_service_class_init (GDataServiceClass *klass)
 	/**
 	 * GDataService:username:
 	 *
-	 * The user's Google or YouTube username for authentication. This will always be a full e-mail address.
+	 * The user's Google username for authentication. This will always be a full e-mail address.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_USERNAME,
 	                                 g_param_spec_string ("username",
-	                                                      "Username", "The user's Google or YouTube username for authentication.",
+	                                                      "Username", "The user's Google username for authentication.",
 	                                                      NULL,
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
@@ -168,13 +170,13 @@ gdata_service_class_init (GDataServiceClass *klass)
 	/**
 	 * GDataService:proxy-uri:
 	 *
-	 * The proxy URI used internally for all Internet requests.
+	 * The proxy URI used internally for all network requests.
 	 *
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PROXY_URI,
 	                                 g_param_spec_boxed ("proxy-uri",
-	                                                     "Proxy URI", "The proxy URI used internally for all Internet requests.",
+	                                                     "Proxy URI", "The proxy URI used internally for all network requests.",
 	                                                     SOUP_TYPE_URI,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
