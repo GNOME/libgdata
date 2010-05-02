@@ -30,6 +30,55 @@
  * For more details of PicasaWeb's GData API, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/developers_guide_protocol.html">
  * online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Authenticating and Creating a New Album</title>
+ * 	<programlisting>
+ *	GDataPicasaWebService *service;
+ *	GDataPicasaWebAlbum *album, *inserted_album;
+ *
+ *	/<!-- -->* Create a service object and authenticate with the PicasaWeb server *<!-- -->/
+ *	service = gdata_picasaweb_service_new ("companyName-applicationName-versionID");
+ *	gdata_service_authenticate (GDATA_SERVICE (service), username, password, NULL, NULL);
+ *
+ *	/<!-- -->* Create a GDataPicasaWebAlbum entry for the new album, setting some information about it *<!-- -->/
+ *	album = gdata_picasaweb_album_new (NULL);
+ *	gdata_entry_set_title (GDATA_ENTRY (album), "Photos from the Rhine");
+ *	gdata_entry_set_summary (GDATA_ENTRY (album), "An album of our adventures on the great river.");
+ *	gdata_picasaweb_album_set_location (album, "The Rhine, Germany");
+ *
+ *	/<!-- -->* Insert the new album on the server. Note that this is a blocking operation. *<!-- -->/
+ *	inserted_album = gdata_picasaweb_service_insert_album (service, album, NULL, NULL);
+ *
+ *	g_object_unref (album);
+ *	g_object_unref (inserted_album);
+ *	g_object_unref (service);
+ *	</programlisting>
+ * </example>
+ *
+ * <example>
+ * 	<title>Uploading a Photo or Video</title>
+ * 	<programlisting>
+ *	GDataPicasaWebFile *file_entry, *uploaded_file_entry;
+ *	GFile *file_data;
+ *
+ *	/<!-- -->* Specify the GFile image on disk to upload *<!-- -->/
+ *	file_data = g_file_new_for_path (path);
+ *
+ *	/<!-- -->* Create a GDataPicasaWebFile entry for the image, setting a title and caption/summary *<!-- -->/
+ *	file_entry = gdata_picasaweb_file_new (NULL);
+ *	gdata_entry_set_title (GDATA_ENTRY (file_entry), "Black Cat");
+ *	gdata_entry_set_summary (GDATA_ENTRY (file_entry), "Photo of the world's most beautiful cat.");
+ *
+ *	/<!-- -->* Upload the file to the server. Note that this is a blocking operation. *<!-- -->/
+ *	uploaded_file_entry = gdata_picasaweb_service_upload_file (service, album, file_entry, file_data, NULL, NULL);
+ *
+ *	g_object_unref (file_entry);
+ *	g_object_unref (uploaded_file_entry);
+ *	g_object_unref (file_data);
+ * 	</programlisting>
+ * </example>
+ *
+ *
  * Since: 0.4.0
  **/
 
@@ -66,6 +115,8 @@ gdata_picasaweb_service_init (GDataPicasaWebService *self)
  * @client_id: your application's client ID
  *
  * Creates a new #GDataPicasaWebService. The @client_id must be unique for your application, and as registered with Google.
+ * The <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request">recommended
+ * form</ulink> is "companyName-applicationName-versionID".
  *
  * Return value: a new #GDataPicasaWebService, or %NULL
  *

@@ -29,6 +29,53 @@
  * For more details of Google PicasaWeb's GData API, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html">
  * online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Getting Basic Album Data</title>
+ * 	<programlisting>
+ *	GDataFeed *album_feed;
+ *	GList *album_entries;
+ *
+ *	/<!-- -->* Query for a feed of GDataPicasaWebAlbum<!-- -->s owned by user "libgdata.picasaweb" *<!-- -->/
+ *	album_feed = gdata_picasaweb_service_query_all_albums (service, NULL, "libgdata.picasaweb", NULL, NULL, NULL, NULL);
+ *
+ *	/<!-- -->* Get a list of GDataPicasaWebAlbum<!-- -->s from the query's feed *<!-- -->/
+ *	for (album_entries = gdata_feed_get_entries (album_feed); album_entries != NULL; album_entries = album_entries->next) {
+ *		GDataPicasaWebAlbum *album;
+ *		guint num_photos;
+ *		const gchar *owner_nickname, *title, *summary;
+ *		GTimeVal timeval;
+ *		GList *thumbnails;
+ *
+ *		album = GDATA_PICASAWEB_ALBUM (album_entries->data);
+ *
+ *		/<!-- -->* Get various bits of information about the album *<!-- -->/
+ *		num_photos = gdata_picasaweb_album_get_num_photos (album);
+ *		owner_nickname = gdata_picasaweb_album_get_nickname (album);
+ *		title = gdata_entry_get_title (GDATA_ENTRY (album));
+ *		summary = gdata_entry_get_summary (GDATA_ENTRY (album));
+ *		/<!-- -->* Get the day the album was shot on or, if not set, when it was uploaded *<!-- -->/
+ *		gdata_picasaweb_album_get_timestamp (album, &timeval);
+ *
+ *		for (thumbnails = gdata_picasaweb_album_get_thumbnails (album); thumbnails != NULL; thumbnails = thumbnails->next) {
+ *			GDataMediaThumbnail *thumbnail;
+ *			GFile *new_file;
+ *
+ *			thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
+ *			/<!-- -->* Do something fun with the thumbnails, like download and display them.
+ *			 * Note that this is a blocking operation. *<!-- -->/
+ *			new_file = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), default_filename, target_file, FALSE,
+ *			                                           NULL, NULL);
+ *			/<!-- -->* ... *<!-- -->/
+ *			g_object_unref (new_file);
+ *		}
+ *
+ *		/<!-- -->* Do something worthwhile with your album data *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (album_feed);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.4.0
  **/
 
@@ -943,8 +990,11 @@ gdata_picasaweb_album_set_visibility (GDataPicasaWebAlbum *self, GDataPicasaWebV
  * @self: a #GDataPicasaWebAlbum
  * @timestamp: a #GTimeVal
  *
- * Gets the #GDataPicasaWebAlbum:timestamp property and puts it in @timestamp. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataPicasaWebAlbum:timestamp property and puts it in
+ * @timestamp. This value usually holds either the date that best
+ * corresponds to the album of photos, or to the day it was uploaded.
+ * If the property is unset, both fields in the #GTimeVal will be set
+ * to <code class="literal">0</code>.
  *
  * Since: 0.4.0
  **/

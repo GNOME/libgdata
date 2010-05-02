@@ -24,10 +24,58 @@
  * @stability: Unstable
  * @include: gdata/services/picasaweb/gdata-picasaweb-file.h
  *
- * #GDataPicasaWebFile is a subclass of #GDataEntry to represent a file in an album on Google PicasaWeb.
+ * #GDataPicasaWebFile is a subclass of #GDataEntry to represent a file (photo or video) in an album on Google PicasaWeb.
  *
  * For more details of Google PicasaWeb's GData API, see the
  * <ulink type="http" url="http://code.google.com/apis/picasaweb/developers_guide_protocol.html">online documentation</ulink>.
+ *
+ * <example>
+ *	<title>Getting Basic Photo Data</title>
+ *	<programlisting>
+ *	GDataFeed *photo_feed;
+ *	GList *photo_entries;
+ *
+ *	/<!-- -->* Query for a feed of GDataPicasaWebFile<!-- -->s belonging to the given GDataPicasaWebAlbum album *<!-- -->/
+ *	photo_feed = gdata_picasaweb_service_query_files (service, album, NULL, NULL, NULL, NULL, NULL);
+ *
+ *	/<!-- -->* Get a list of GDataPicasaWebFile<!-- -->s from the query's feed *<!-- -->/
+ *	for (photo_entries = gdata_feed_get_entries (photo_feed); photo_entries != NULL; photo_entries = photo_entries->next) {
+ *		GDataPicasaWebFile *photo;
+ *		guint height, width;
+ *		gsize file_size;
+ *		GTimeVal timestamp;
+ *		const gchar *title, *summary;
+ *		GList *contents;
+ *
+ *		photo = GDATA_PICASAWEB_FILE (photo_entries->data);
+ *
+ *		/<!-- -->* Get various bits of information about the photo *<!-- -->/
+ *		height = gdata_picasaweb_file_get_height (photo);
+ *		width = gdata_picasaweb_file_get_width (photo);
+ *		file_size = gdata_picasaweb_file_get_size (photo);
+ *		gdata_picasaweb_file_get_timestamp (photo, &timestamp);
+ *		title = gdata_entry_get_title (GDATA_ENTRY (photo));
+ *		summary = gdata_entry_get_summary (GDATA_ENTRY (photo));
+ *
+ *		/<!-- -->* Obtain the image data at various sizes *<!-- -->/
+ *		for (contents = gdata_picasaweb_file_get_contents (photo); contents != NULL; contents = contents->next) {
+ *			GDataMediaContent *content;
+ *			GFile *new_file;
+ *
+ *			content = GDATA_MEDIA_CONTENT (contents->data);
+ *			/<!-- -->* Do something fun with the actual images, like download and display them.
+ *			 * Note that this is a blocking operation. *<!-- -->/
+ *			new_file = gdata_media_content_download (content, GDATA_SERVICE (service), default_filename, target_file, FALSE, NULL, NULL);
+ *			/<!-- -->* ... *<!-- -->/
+ *			g_object_unref (new_file);
+ *		}
+ *
+ *		/<!-- -->* Do something worthwhile with your image data *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (photo_feed);
+ *	</programlisting>
+ * </example>
  *
  * Since: 0.4.0
  **/
