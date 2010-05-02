@@ -31,33 +31,33 @@
  * <example>
  * 	<title>Getting Basic Video Data</title>
  * 	<programlisting>
- * 		GDataYouTubeVideo *video;
- * 		const gchar *video_id, *title, *player_uri, *description, *video_uri = NULL;
- * 		GTimeVal updated, published;
- * 		GDataMediaContent *content;
- * 		GList *thumbnails;
+ * 	GDataYouTubeVideo *video;
+ * 	const gchar *video_id, *title, *player_uri, *description, *video_uri = NULL;
+ * 	GTimeVal updated, published;
+ * 	GDataMediaContent *content;
+ * 	GList *thumbnails;
  *
- * 		video = gdata_youtube_service_query_single_video (service, NULL, "R-9gzmQHoe0", NULL, NULL);
+ * 	video = gdata_youtube_service_query_single_video (service, NULL, "R-9gzmQHoe0", NULL, NULL);
  *
- * 		video_id = gdata_youtube_video_get_video_id (video); /<!-- -->* e.g. "R-9gzmQHoe0" *<!-- -->/
- * 		title = gdata_entry_get_title (GDATA_ENTRY (video)); /<!-- -->* e.g. "Korpiklaani Vodka (official video 2009)" *<!-- -->/
- * 		player_uri = gdata_youtube_video_get_player_uri (video); /<!-- -->* e.g. "http://www.youtube.com/watch?v=ZTUVgYoeN_b" *<!-- -->/
- * 		description = gdata_youtube_video_get_description (video); /<!-- -->* e.g. "Vodka is the first single from the album..." *<!-- -->/
- * 		gdata_entry_get_published (GDATA_ENTRY (video), &published); /<!-- -->* Date and time the video was originally published *<!-- -->/
- * 		gdata_entry_get_updated (GDATA_ENTRY (video), &updated); /<!-- -->* When the video was most recently updated by the author *<!-- -->/
+ * 	video_id = gdata_youtube_video_get_video_id (video); /<!-- -->* e.g. "R-9gzmQHoe0" *<!-- -->/
+ * 	title = gdata_entry_get_title (GDATA_ENTRY (video)); /<!-- -->* e.g. "Korpiklaani Vodka (official video 2009)" *<!-- -->/
+ * 	player_uri = gdata_youtube_video_get_player_uri (video); /<!-- -->* e.g. "http://www.youtube.com/watch?v=ZTUVgYoeN_b" *<!-- -->/
+ * 	description = gdata_youtube_video_get_description (video); /<!-- -->* e.g. "Vodka is the first single from the album..." *<!-- -->/
+ * 	gdata_entry_get_published (GDATA_ENTRY (video), &published); /<!-- -->* Date and time the video was originally published *<!-- -->/
+ * 	gdata_entry_get_updated (GDATA_ENTRY (video), &updated); /<!-- -->* When the video was most recently updated by the author *<!-- -->/
  *
- * 		/<!-- -->* Retrieve a specific encoding of the video in #GDataMediaContent format *<!-- -->/
- * 		content = gdata_youtube_video_look_up_content (video, "video/3gpp");
- * 		if (content != NULL)
- * 			video_uri = gdata_media_content_get_uri (content); /<!-- -->* the URI for the direct 3GP version of the video *<!-- -->/
- * 		else
- * 			/<!-- -->* Fall back and try a different video encoding? SWF ("application/x-shockwave-flash") is always present. *<!-- -->/
+ * 	/<!-- -->* Retrieve a specific encoding of the video in GDataMediaContent format *<!-- -->/
+ * 	content = gdata_youtube_video_look_up_content (video, "video/3gpp");
+ * 	if (content != NULL)
+ * 		video_uri = gdata_media_content_get_uri (content); /<!-- -->* the URI for the direct 3GP version of the video *<!-- -->/
+ * 	else
+ * 		/<!-- -->* Fall back and try a different video encoding? SWF ("application/x-shockwave-flash") is always present. *<!-- -->/
  *
- * 		/<!-- -->* Get a list of #GDataMediaThumbnail<!-- -->s for the video *<!-- -->/
- * 		for (thumbnails = gdata_youtube_video_get_thumbnails (video); thumbnails != NULL; thumbnails = thumbnails->next)
- * 			download_and_do_something_with_thumbnail (gdata_media_thumbnail_get_uri (thumbnail));
+ * 	/<!-- -->* Get a list of GDataMediaThumbnail<!-- -->s for the video *<!-- -->/
+ * 	for (thumbnails = gdata_youtube_video_get_thumbnails (video); thumbnails != NULL; thumbnails = thumbnails->next)
+ * 		download_and_do_something_with_thumbnail (gdata_media_thumbnail_get_uri (thumbnail));
  *
- * 		g_object_unref (video);
+ * 	g_object_unref (video);
  * 	</programlisting>
  * </example>
  **/
