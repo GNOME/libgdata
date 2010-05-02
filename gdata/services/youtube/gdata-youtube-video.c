@@ -632,7 +632,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 
 		self->priv->media_group = group;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
+	} else if (node->ns != NULL && xmlStrcmp (node->ns->href, (xmlChar*) "http://schemas.google.com/g/2005") == 0 &&
+	           xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
 		/* gd:rating */
 		xmlChar *min, *max, *num_raters, *average;
 		guint num_raters_uint;
