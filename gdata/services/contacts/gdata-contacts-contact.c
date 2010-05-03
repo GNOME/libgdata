@@ -2798,7 +2798,7 @@ get_groups_cb (const gchar *href, gpointer deleted, GList **groups)
 GList *
 gdata_contacts_contact_get_groups (GDataContactsContact *self)
 {
-	GList *groups;
+	GList *groups = NULL;
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 
