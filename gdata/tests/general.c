@@ -168,6 +168,29 @@ test_entry_get_xml (void)
 
 	g_list_free (list);
 
+	/* Check authors */
+	list = gdata_entry_get_authors (entry);
+	g_assert_cmpuint (g_list_length (list), ==, 3);
+
+	author = GDATA_AUTHOR (list->data);
+	g_assert (author != NULL);
+	author = gdata_author_new ("F. Barr؟", NULL, NULL);
+	g_assert_cmpstr (gdata_author_get_name (author), ==, "F. Barr؟");
+	g_assert (gdata_author_get_uri (author) == NULL);
+	g_assert (gdata_author_get_email_address (author) == NULL);
+
+	author = GDATA_AUTHOR (list->next->data);
+	g_assert (author != NULL);
+	g_assert_cmpstr (gdata_author_get_name (author), ==, "John Smith");
+	g_assert (gdata_author_get_uri (author) == NULL);
+	g_assert_cmpstr (gdata_author_get_email_address (author), ==, "smith.john@example.com");
+
+	author = GDATA_AUTHOR (list->next->next->data);
+	g_assert (author != NULL);
+	g_assert_cmpstr (gdata_author_get_name (author), ==, "Joe Bloggs");
+	g_assert_cmpstr (gdata_author_get_uri (author), ==, "http://example.com/");
+	g_assert_cmpstr (gdata_author_get_email_address (author), ==, "joe@example.com");
+
 	/* Check categories */
 	list = gdata_entry_get_categories (entry);
 	g_assert (list != NULL);

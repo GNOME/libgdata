@@ -82,6 +82,7 @@ void gdata_entry_add_link (GDataEntry *self, GDataLink *link);
 GDataLink *gdata_entry_look_up_link (GDataEntry *self, const gchar *rel) G_GNUC_PURE;
 GList *gdata_entry_look_up_links (GDataEntry *self, const gchar *rel) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_entry_add_author (GDataEntry *self, GDataAuthor *author);
+GList *gdata_entry_get_authors (GDataEntry *self) G_GNUC_PURE;
 const gchar *gdata_entry_get_rights (GDataEntry *self) G_GNUC_PURE;
 void gdata_entry_set_rights (GDataEntry *self, const gchar *rights);
 

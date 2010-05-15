@@ -147,6 +147,7 @@ gdata_entry_get_content
 gdata_entry_set_content
 gdata_entry_get_published
 gdata_entry_get_updated
+gdata_entry_get_authors
 gdata_entry_add_author
 gdata_entry_add_category
 gdata_entry_get_categories

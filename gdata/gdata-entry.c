@@ -672,6 +672,23 @@ gdata_entry_get_categories (GDataEntry *self)
 }
 
 /**
+ * gdata_entry_get_authors:
+ * @self: a #GDataEntry
+ *
+ * Gets a list of the #GDataAuthor<!-- -->s for this entry.
+ *
+ * Return value: a #GList of #GDataAuthor<!-- -->s
+ *
+ * Since: 0.7.0
+ **/
+GList *
+gdata_entry_get_authors (GDataEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
+	return self->priv->authors;
+}
+
+/**
  * gdata_entry_get_content:
  * @self: a #GDataEntry
  *
