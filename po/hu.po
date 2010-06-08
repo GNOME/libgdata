@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-24 14:27+0100\n"
-"PO-Revision-Date: 2010-03-24 14:28+0100\n"
+"POT-Creation-Date: 2010-06-08 15:26+0200\n"
+"PO-Revision-Date: 2010-06-08 15:25+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome at fsf dot hu>\n"
 "MIME-Version: 1.0\n"
@@ -17,22 +17,22 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../gdata/gdata-access-handler.c:178
+#: ../gdata/gdata-access-handler.c:170
 msgid "The rule has already been inserted."
 msgstr "A szabály már be van szúrva."
 
-#: ../gdata/gdata-access-handler.c:380
+#: ../gdata/gdata-access-handler.c:350
 msgid "The owner's rule may not be deleted."
 msgstr "A tulajdonos szabálya nem törölhető."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:181 ../gdata/gdata-parsable.c:192
+#: ../gdata/gdata-parsable.c:186 ../gdata/gdata-parsable.c:197
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Hiba az XML feldolgozásakor: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:194
+#: ../gdata/gdata-parsable.c:199
 msgid "Empty document."
 msgstr "Üres dokumentum."
 
@@ -40,17 +40,17 @@ msgstr "Üres dokumentum."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:65
+#: ../gdata/gdata-parser.c:66
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Egy %s elemből hiányzik a szükséges tartalom."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")), and the second parameter is
-#. * the erroneous value (which was not in ISO 8601 format).
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:81
+#: ../gdata/gdata-parser.c:82
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "Egy %s elem tartalma („%s”) nem ISO 8601 formátumú."
@@ -60,7 +60,7 @@ msgstr "Egy %s elem tartalma („%s”) nem ISO 8601 formátumú."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:101
+#: ../gdata/gdata-parser.c:102
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "Egy %s elem %s tulajdonságának tartalma („%s”) ismeretlen."
@@ -70,7 +70,7 @@ msgstr "Egy %s elem %s tulajdonságának tartalma („%s”) ismeretlen."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:119
+#: ../gdata/gdata-parser.c:120
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Egy %s elem tartalma („%s”) ismeretlen."
@@ -80,16 +80,31 @@ msgstr "Egy %s elem tartalma („%s”) ismeretlen."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:139
+#: ../gdata/gdata-parser.c:140
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Egy %s elem szükséges tulajdonsága (%s) nincs jelen."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"Értékek találhatók egy %3$s elem %1$s és %2$s tulajdonságaihoz, de csak az "
+"egyik engedélyezett."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:156
+#: ../gdata/gdata-parser.c:182
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Egy szükséges elem („%s”) nincs jelen."
@@ -98,18 +113,28 @@ msgstr "Egy szükséges elem („%s”) nincs jelen."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:171
+#: ../gdata/gdata-parser.c:197
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Egy egyke elem (%s) megkettőzve."
 
-#: ../gdata/gdata-service.c:338 ../gdata/gdata-service.c:781
-#: ../gdata/services/youtube/gdata-youtube-service.c:203
+#: ../gdata/gdata-service.c:364
+#: ../gdata/services/youtube/gdata-youtube-service.c:202
 msgid "The server returned a malformed response."
 msgstr "A kiszolgáló rosszul formált választ adott vissza."
 
+#: ../gdata/gdata-service.c:397
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "Nem lehet kapcsolódni a szolgáltatás kiszolgálójához."
+
+#: ../gdata/gdata-service.c:402
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "Nem lehet kapcsolódni a proxykiszolgálóhoz."
+
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
+#: ../gdata/gdata-service.c:408
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -117,222 +142,236 @@ msgstr ""
 "paraméter: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:375
+#: ../gdata/gdata-service.c:414
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Hitelesítés szükséges: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:419
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "A kért erőforrás nem található: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:425
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "A bejegyzés módosítva lett letöltése óta: %s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:399
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:439
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "%u hibakód hitelesítés közben: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:445
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "%u hibakód lekérdezés közben: %s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:451
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "%u hibakód bejegyzés beszúrása közben: %s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:409
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:457
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "%u hibakód bejegyzés frissítése közben: %s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:414
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:463
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "%u hibakód bejegyzés törlése közben: %s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:419
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:469
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "%u hibakód letöltés közben: %s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:424
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:475
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "%u hibakód feltöltés közben: %s"
 
-#: ../gdata/gdata-service.c:669
+#: ../gdata/gdata-service.c:600
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "A bejelentkezéshez ki kell tölteni a Captchat."
 
-#: ../gdata/gdata-service.c:693
+#: ../gdata/gdata-service.c:624
 msgid "Your username or password were incorrect."
 msgstr "A felhasználónév vagy jelszó helytelen."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:712
+#: ../gdata/gdata-service.c:643
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "A fiók e-mail címe nincs ellenőrizve. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:717
+#: ../gdata/gdata-service.c:648
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Nem fogadta el a szolgáltatás feltételeit. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:722
+#: ../gdata/gdata-service.c:653
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "A fiókot törölték. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:727
+#: ../gdata/gdata-service.c:658
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "A fiókot letiltották. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:732
+#: ../gdata/gdata-service.c:663
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "A fiók hozzáférését ehhez a szolgáltatáshoz letiltották. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:737
+#: ../gdata/gdata-service.c:668
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Ez a szolgáltatás pillanatnyilag nem érhető el. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:851
+#: ../gdata/gdata-service.c:939
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Érvénytelen átirányítási URI: %s"
 
-#: ../gdata/gdata-service.c:1269
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:393
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:550
-#: ../gdata/services/youtube/gdata-youtube-service.c:791
+#: ../gdata/gdata-service.c:1529
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: ../gdata/services/youtube/gdata-youtube-service.c:661
 msgid "The entry has already been inserted."
 msgstr "A bejegyzés már be van szúrva."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">"),
-#. * and the second parameter is the erroneous value (which was not in hexadecimal RGB format).
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:329
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:317
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Egy %s elem tartalma („%s”) nem hexadecimális RGB formátumú."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:109
-#: ../gdata/services/calendar/gdata-calendar-service.c:149
+#: ../gdata/services/calendar/gdata-calendar-service.c:110
+#: ../gdata/services/calendar/gdata-calendar-service.c:155
 msgid "You must be authenticated to query all calendars."
 msgstr "Az összes naptár lekérdezéséhez be kell jelentkeznie."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:186
-#: ../gdata/services/calendar/gdata-calendar-service.c:226
-#: ../gdata/services/calendar/gdata-calendar-service.c:262
+#: ../gdata/services/calendar/gdata-calendar-service.c:197
+#: ../gdata/services/calendar/gdata-calendar-service.c:242
+#: ../gdata/services/calendar/gdata-calendar-service.c:284
 msgid "You must be authenticated to query your own calendars."
 msgstr "A saját naptárjainak lekérdezéséhez be kell jelentkeznie."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:271
+#: ../gdata/services/calendar/gdata-calendar-service.c:293
 msgid "The calendar did not have a content source."
 msgstr "A naptár nem tartalmazott tartalomforrást."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:110
-#: ../gdata/services/contacts/gdata-contacts-service.c:151
+#: ../gdata/services/contacts/gdata-contacts-service.c:114
+#: ../gdata/services/contacts/gdata-contacts-service.c:160
 msgid "You must be authenticated to query contacts."
 msgstr "A névjegyek lekérdezéséhez be kell jelentkeznie."
 
-#: ../gdata/services/documents/gdata-documents-entry.c:626
+#: ../gdata/services/documents/gdata-documents-entry.c:622
 msgid "You must be authenticated to download documents."
 msgstr "Dokumentumok letöltéséhez be kell jelentkeznie."
 
-#: ../gdata/services/documents/gdata-documents-service.c:194
-#: ../gdata/services/documents/gdata-documents-service.c:306
+#: ../gdata/services/documents/gdata-documents-service.c:199
+#: ../gdata/services/documents/gdata-documents-service.c:250
 msgid "You must be authenticated to query documents."
 msgstr "Dokumentumok lekéréséhez be kell jelentkeznie."
 
-#: ../gdata/services/documents/gdata-documents-service.c:400
+#: ../gdata/services/documents/gdata-documents-service.c:344
 msgid "The supplied document had an invalid content type."
 msgstr "A megadott dokumentum tartalomtípusa érvénytelen."
 
-#: ../gdata/services/documents/gdata-documents-service.c:486
+#: ../gdata/services/documents/gdata-documents-service.c:431
 msgid "You must be authenticated to upload documents."
 msgstr "Dokumentumok feltöltéséhez be kell jelentkeznie."
 
-#: ../gdata/services/documents/gdata-documents-service.c:492
+#: ../gdata/services/documents/gdata-documents-service.c:437
 msgid "The document has already been uploaded."
 msgstr "A dokumentum már fel lett töltve."
 
-#: ../gdata/services/documents/gdata-documents-service.c:542
+#: ../gdata/services/documents/gdata-documents-service.c:488
 msgid "You must be authenticated to update documents."
 msgstr "Dokumentumok feltöltéséhez be kell jelentkeznie."
 
-#: ../gdata/services/documents/gdata-documents-service.c:590
-#: ../gdata/services/documents/gdata-documents-service.c:686
+#: ../gdata/services/documents/gdata-documents-service.c:536
+#: ../gdata/services/documents/gdata-documents-service.c:610
 msgid "You must be authenticated to move documents."
 msgstr "Dokumentumok áthelyezéséhez be kell jelentkeznie."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:136
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:186
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
 "Felhasználó lekérdezéséhez meg kell adnia egy felhasználónevet vagy be kell "
 "jelentkeznie."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:185
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:239
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:240
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:295
 msgid "Query parameter not allowed for albums."
 msgstr "A lekérdezés paramétere nem engedélyezett albumokhoz."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:192
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:247
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:303
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Az összes album lekérdezéséhez meg kell adnia egy felhasználónevet vagy be "
 "kell jelentkeznie."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:288
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:350
 msgid "The album did not have a feed link."
 msgstr "Az album nem tartalmazott forráshivatkozást."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:399
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:556
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:461
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:618
 msgid "You must be authenticated to upload a file."
 msgstr "Fájl feltöltéséhez be kell jelentkeznie."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:618
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:680
 msgid "The album has already been inserted."
 msgstr "Az album már be van szúrva."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:686
 msgid "You must be authenticated to insert an album."
 msgstr "Album beszúrásához be kell jelentkeznie."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:304
+#: ../gdata/services/youtube/gdata-youtube-service.c:301
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Ez a szolgáltatás pillanatnyilag nem érhető el."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:309
+#: ../gdata/services/youtube/gdata-youtube-service.c:306
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Ehhez be kell jelentkeznie."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:314
+#: ../gdata/services/youtube/gdata-youtube-service.c:311
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -341,33 +380,35 @@ msgstr ""
 "A közelmúltban túl sok API kérést hajtott végre. Várjon pár percet és "
 "próbálja újra."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:317
+#: ../gdata/services/youtube/gdata-youtube-service.c:314
 #, c-format
-msgid "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "Túllépte bejegyzéskvótáját. Töröljön néhány bejegyzést és próbálja újra."
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Túllépte bejegyzéskvótáját. Töröljön néhány bejegyzést és próbálja újra."
 
-#. Translators: the first parameter is an error code, which is a coded string. The second parameter
-#. * is an error domain, which is another coded string. The third parameter is the location of the
-#. * error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:324
-#: ../gdata/services/youtube/gdata-youtube-service.c:330
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:321
+#: ../gdata/services/youtube/gdata-youtube-service.c:327
 #, c-format
-msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
 "Ismeretlen hibakód („%s”) érkezett a tartományból („%s”) a következő "
 "hellyel: „%s”."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:348
+#: ../gdata/services/youtube/gdata-youtube-service.c:345
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "Ismeretlen és értelmezhetetlen hiba érkezett."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:703
-#: ../gdata/services/youtube/gdata-youtube-service.c:744
+#: ../gdata/services/youtube/gdata-youtube-service.c:567
+#: ../gdata/services/youtube/gdata-youtube-service.c:614
 msgid "The video did not have a related videos <link>."
 msgstr "A videóhoz nem tartoznak kapcsolódó videók <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:797
+#: ../gdata/services/youtube/gdata-youtube-service.c:667
 msgid "You must be authenticated to upload a video."
 msgstr "Videó feltöltéséhez be kell jelentkeznie."
-
