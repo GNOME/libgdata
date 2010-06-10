@@ -8,10 +8,10 @@ GDATA_MARSHAL_FILES = \
 	gdata/gdata-marshal.c	\
 	gdata/gdata-marshal.h
 
-gdata/gdata-marshal.h: $(top_srcdir)/gdata/gdata-marshal.list Makefile
-	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal $(top_srcdir)/gdata/gdata-marshal.list --header > $@)
-gdata/gdata-marshal.c: gdata/gdata-marshal.h Makefile
-	$(AM_V_GEN)($(GLIB_GENMARSHAL) --prefix=gdata_marshal $(top_srcdir)/gdata/gdata-marshal.list --header --body > $@)
+gdata/gdata-marshal.h: $(top_srcdir)/gdata/gdata-marshal.list
+	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=gdata_marshal --header $< > $@
+gdata/gdata-marshal.c: $(top_srcdir)/gdata/gdata-marshal.list
+	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=gdata_marshal --header --body $< > $@
 
 EXTRA_DIST = $(top_srcdir)/gdata/gdata-marshal.list
 CLEANFILES = $(GDATA_MARSHAL_FILES)
@@ -408,7 +408,7 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
-EXTRA_DIST = introspection.m4
+EXTRA_DIST += introspection.m4
 endif
 
 # gcov
