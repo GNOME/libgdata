@@ -833,3 +833,5 @@ gdata_contacts_contact_get_languages
 gdata_contacts_contact_remove_all_languages
 gdata_service_get_timeout
 gdata_service_set_timeout
+gdata_service_get_locale
+gdata_service_set_locale

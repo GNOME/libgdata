@@ -34,6 +34,8 @@ gdata_service_get_proxy_uri
 gdata_service_set_proxy_uri
 gdata_service_get_timeout
 gdata_service_set_timeout
+gdata_service_get_locale
+gdata_service_set_locale
 <SUBSECTION Standard>
 GDATA_SERVICE
 GDATA_IS_SERVICE

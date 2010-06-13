@@ -234,6 +234,9 @@ const gchar *gdata_service_get_client_id (GDataService *self) G_GNUC_PURE;
 const gchar *gdata_service_get_username (GDataService *self) G_GNUC_PURE;
 const gchar *gdata_service_get_password (GDataService *self) G_GNUC_PURE;
 
+const gchar *gdata_service_get_locale (GDataService *self) G_GNUC_PURE;
+void gdata_service_set_locale (GDataService *self, const gchar *locale);
+
 G_END_DECLS
 
 #endif /* !GDATA_SERVICE_H */

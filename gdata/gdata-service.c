@@ -79,6 +79,7 @@ struct _GDataServicePrivate {
 	gchar *auth_token;
 	gchar *client_id;
 	gboolean authenticated;
+	gchar *locale;
 };
 
 enum {
@@ -87,7 +88,8 @@ enum {
 	PROP_PASSWORD,
 	PROP_AUTHENTICATED,
 	PROP_PROXY_URI,
-	PROP_TIMEOUT
+	PROP_TIMEOUT,
+	PROP_LOCALE
 };
 
 enum {
@@ -197,6 +199,25 @@ gdata_service_class_init (GDataServiceClass *klass)
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
+	 * GDataService:locale:
+	 *
+	 * The locale to use for network requests, in Unix locale format. (e.g. "en_GB", "cs", "de_DE".) Use %NULL for the default "C" locale
+	 * (typically "en_US").
+	 *
+	 * Typically, this locale will be used by the server-side software to localise results, such as by translating category names, or by choosing
+	 * geographically relevant search results. This will vary from service to service.
+	 *
+	 * The server-side behaviour is undefined if it doesn't support a given locale.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LOCALE,
+	                                 g_param_spec_string ("locale",
+	                                                      "Locale", "The locale to use for network requests, in Unix locale format.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * GDataService::captcha-challenge:
 	 * @service: the #GDataService which received the challenge
 	 * @uri: the URI of the CAPTCHA image to be used
@@ -280,6 +301,7 @@ gdata_service_finalize (GObject *object)
 	g_free (priv->password);
 	g_free (priv->auth_token);
 	g_free (priv->client_id);
+	g_free (priv->locale);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_service_parent_class)->finalize (object);
@@ -309,6 +331,9 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 		case PROP_TIMEOUT:
 			g_value_set_uint (value, gdata_service_get_timeout (GDATA_SERVICE (object)));
 			break;
+		case PROP_LOCALE:
+			g_value_set_string (value, priv->locale);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -330,6 +355,9 @@ gdata_service_set_property (GObject *object, guint property_id, const GValue *va
 			break;
 		case PROP_TIMEOUT:
 			gdata_service_set_timeout (GDATA_SERVICE (object), g_value_get_uint (value));
+			break;
+		case PROP_LOCALE:
+			gdata_service_set_locale (GDATA_SERVICE (object), g_value_get_string (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -381,6 +409,10 @@ real_append_query_headers (GDataService *self, SoupMessage *message)
 
 	/* Set the GData-Version header to tell it we want to use the v2 API */
 	soup_message_headers_append (message->request_headers, "GData-Version", GDATA_SERVICE_GET_CLASS (self)->api_version);
+
+	/* Set the locale, if it's been set for the service */
+	if (self->priv->locale != NULL)
+		soup_message_headers_append (message->request_headers, "Accept-Language", self->priv->locale);
 }
 
 static void
@@ -2102,4 +2134,43 @@ _gdata_service_get_log_level (void)
 	}
 
 	return level;
+}
+
+/**
+ * gdata_service_get_locale:
+ * @self: a #GDataService
+ *
+ * Returns the locale currently being used for network requests, or %NULL if the locale is the default.
+ *
+ * Return value: the current locale
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_service_get_locale (GDataService *self)
+{
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+	return self->priv->locale;
+}
+
+/**
+ * gdata_service_set_locale:
+ * @self: a #GDataService
+ * @locale: the new locale in Unix locale format, or %NULL for the default locale
+ *
+ * Set the locale used for network requests to @locale, given in standard Unix locale format. See #GDataService:locale for more details.
+ *
+ * Note that while it's possible to change the locale after sending network requests, it is unsupported, as the server-side software may behave
+ * unexpectedly. The only supported use of this function is after creation of a service, but before any network requests are made.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_service_set_locale (GDataService *self, const gchar *locale)
+{
+	g_return_if_fail (GDATA_IS_SERVICE (self));
+
+	g_free (self->priv->locale);
+	self->priv->locale = g_strdup (locale);
+	g_object_notify (G_OBJECT (self), "locale");
 }

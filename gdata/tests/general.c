@@ -703,6 +703,27 @@ test_service_network_error (void)
 }
 
 static void
+test_service_locale (void)
+{
+	GDataService *service;
+	gchar *locale;
+
+	/* This is a little hacky, but it should work */
+	service = g_object_new (GDATA_TYPE_SERVICE, "client-id", CLIENT_ID, NULL);
+
+	/* Just test setting and getting the locale */
+	g_assert (gdata_service_get_locale (service) == NULL);
+	gdata_service_set_locale (service, "en_GB");
+	g_assert_cmpstr (gdata_service_get_locale (service), ==, "en_GB");
+
+	g_object_get (service, "locale", &locale, NULL);
+	g_assert_cmpstr (locale, ==, "en_GB");
+	g_free (locale);
+
+	g_object_unref (service);
+}
+
+static void
 test_access_rule_get_xml (void)
 {
 	GDataAccessRule *rule, *rule2;
@@ -3029,6 +3050,7 @@ main (int argc, char *argv[])
 	gdata_test_init (&argc, &argv);
 
 	g_test_add_func ("/service/network_error", test_service_network_error);
+	g_test_add_func ("/service/locale", test_service_locale);
 
 	g_test_add_func ("/entry/get_xml", test_entry_get_xml);
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);
