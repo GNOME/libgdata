@@ -537,7 +537,7 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 		return NULL;
 	}
 
-	/* TODO: ETag support */
+	/* NOTE: adding a document to a folder doesn't have server-side ETag support (throws "noPostConcurrency" error) */
 	folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
 	g_assert (folder_id != NULL);
 	uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
