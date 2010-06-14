@@ -644,17 +644,17 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
 			/* gphoto:access */
-			xmlChar *access = xmlNodeListGetString (doc, node->children, TRUE);
-			if (xmlStrcmp (access, (xmlChar*) "public") == 0) {
+			xmlChar *access_level = xmlNodeListGetString (doc, node->children, TRUE);
+			if (xmlStrcmp (access_level, (xmlChar*) "public") == 0) {
 				gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PUBLIC);
-			} else if (xmlStrcmp (access, (xmlChar*) "private") == 0) {
+			} else if (xmlStrcmp (access_level, (xmlChar*) "private") == 0) {
 				gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PRIVATE);
 			} else {
-				gdata_parser_error_unknown_content (node, (gchar*) access, error);
-				xmlFree (access);
+				gdata_parser_error_unknown_content (node, (gchar*) access_level, error);
+				xmlFree (access_level);
 				return FALSE;
 			}
-			xmlFree (access);
+			xmlFree (access_level);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
 			/* gphoto:timestamp */
 			xmlChar *timestamp_str;

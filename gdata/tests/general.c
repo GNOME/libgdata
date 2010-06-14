@@ -29,7 +29,7 @@ test_entry_get_xml (void)
 	GTimeVal updated, published, updated2, published2, *updated3, *published3;
 	GDataEntry *entry, *entry2;
 	GDataCategory *category;
-	GDataLink *link;
+	GDataLink *_link; /* stupid unistd.h */
 	GDataAuthor *author;
 	gchar *xml, *title, *summary, *id, *etag, *content, *rights;
 	gboolean is_inserted;
@@ -69,26 +69,26 @@ test_entry_get_xml (void)
 	g_object_unref (category);
 
 	/* Links */
-	link = gdata_link_new ("http://test.com/", GDATA_LINK_SELF);
-	gdata_link_set_content_type (link, "application/atom+xml");
-	gdata_entry_add_link (entry, link);
-	g_object_unref (link);
-	link = gdata_link_new ("http://example.com/", NULL);
-	gdata_entry_add_link (entry, link);
-	g_object_unref (link);
-	link = gdata_link_new ("http://test.mn/", GDATA_LINK_RELATED);
-	gdata_link_set_content_type (link, "text/html");
-	gdata_link_set_language (link, "mn");
-	gdata_link_set_title (link, "A treatise on Mongolian test websites & other stuff.");
-	gdata_link_set_length (link, 5010);
-	gdata_entry_add_link (entry, link);
-	g_object_unref (link);
-	link = gdata_link_new ("http://example.com/", "http://foobar.link");
-	gdata_entry_add_link (entry, link);
-	g_object_unref (link);
-	link = gdata_link_new ("http://example2.com/", "http://foobar.link");
-	gdata_entry_add_link (entry, link);
-	g_object_unref (link);
+	_link = gdata_link_new ("http://test.com/", GDATA_LINK_SELF);
+	gdata_link_set_content_type (_link, "application/atom+xml");
+	gdata_entry_add_link (entry, _link);
+	g_object_unref (_link);
+	_link = gdata_link_new ("http://example.com/", NULL);
+	gdata_entry_add_link (entry, _link);
+	g_object_unref (_link);
+	_link = gdata_link_new ("http://test.mn/", GDATA_LINK_RELATED);
+	gdata_link_set_content_type (_link, "text/html");
+	gdata_link_set_language (_link, "mn");
+	gdata_link_set_title (_link, "A treatise on Mongolian test websites & other stuff.");
+	gdata_link_set_length (_link, 5010);
+	gdata_entry_add_link (entry, _link);
+	g_object_unref (_link);
+	_link = gdata_link_new ("http://example.com/", "http://foobar.link");
+	gdata_entry_add_link (entry, _link);
+	g_object_unref (_link);
+	_link = gdata_link_new ("http://example2.com/", "http://foobar.link");
+	gdata_entry_add_link (entry, _link);
+	g_object_unref (_link);
 
 	/* Authors */
 	author = gdata_author_new ("Joe Bloggs", "http://example.com/", "joe@example.com");
@@ -143,28 +143,28 @@ test_entry_get_xml (void)
 	g_assert_cmpuint (published.tv_usec, ==, published2.tv_usec);
 
 	/* Check links */
-	link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
-	g_assert (link != NULL);
-	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://test.com/");
-	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, GDATA_LINK_SELF);
-	g_assert_cmpstr (gdata_link_get_content_type (link), ==, "application/atom+xml");
+	_link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
+	g_assert (_link != NULL);
+	g_assert_cmpstr (gdata_link_get_uri (_link), ==, "http://test.com/");
+	g_assert_cmpstr (gdata_link_get_relation_type (_link), ==, GDATA_LINK_SELF);
+	g_assert_cmpstr (gdata_link_get_content_type (_link), ==, "application/atom+xml");
 
-	link = gdata_entry_look_up_link (entry, "http://link.not.exist");
-	g_assert (link == NULL);
+	_link = gdata_entry_look_up_link (entry, "http://link.not.exist");
+	g_assert (_link == NULL);
 
 	list = gdata_entry_look_up_links (entry, "http://foobar.link");
 	g_assert (list != NULL);
 	g_assert_cmpint (g_list_length (list), ==, 2);
 
-	link = GDATA_LINK (list->data);
-	g_assert (link != NULL);
-	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://example2.com/");
-	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, "http://foobar.link");
+	_link = GDATA_LINK (list->data);
+	g_assert (_link != NULL);
+	g_assert_cmpstr (gdata_link_get_uri (_link), ==, "http://example2.com/");
+	g_assert_cmpstr (gdata_link_get_relation_type (_link), ==, "http://foobar.link");
 
-	link = GDATA_LINK (list->next->data);
-	g_assert (link != NULL);
-	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://example.com/");
-	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, "http://foobar.link");
+	_link = GDATA_LINK (list->next->data);
+	g_assert (_link != NULL);
+	g_assert_cmpstr (gdata_link_get_uri (_link), ==, "http://example.com/");
+	g_assert_cmpstr (gdata_link_get_relation_type (_link), ==, "http://foobar.link");
 
 	g_list_free (list);
 
@@ -329,7 +329,7 @@ test_feed_parse_xml (void)
 {
 	GDataFeed *feed;
 	GDataEntry *entry;
-	GDataLink *link;
+	GDataLink *_link; /* stupid unistd.h */
 	GList *list;
 	gchar *title, *subtitle, *id, *etag, *logo, *icon, *rights;
 	GTimeVal *updated, updated2;
@@ -454,20 +454,20 @@ test_feed_parse_xml (void)
 	g_assert (GDATA_IS_LINK (list->next->next->data));
 	g_assert (GDATA_IS_LINK (list->next->next->next->data));
 
-	link = gdata_feed_look_up_link (feed, GDATA_LINK_ALTERNATE);
-	g_assert (GDATA_IS_LINK (link));
+	_link = gdata_feed_look_up_link (feed, GDATA_LINK_ALTERNATE);
+	g_assert (GDATA_IS_LINK (_link));
 
-	link = gdata_feed_look_up_link (feed, "this doesn't exist");
-	g_assert (link == NULL);
+	_link = gdata_feed_look_up_link (feed, "this doesn't exist");
+	g_assert (_link == NULL);
 
-	link = gdata_feed_look_up_link (feed, "http://schemas.google.com/g/2005#feed");
-	g_assert (GDATA_IS_LINK (link));
+	_link = gdata_feed_look_up_link (feed, "http://schemas.google.com/g/2005#feed");
+	g_assert (GDATA_IS_LINK (_link));
 
-	link = gdata_feed_look_up_link (feed, "http://schemas.google.com/g/2005#post");
-	g_assert (GDATA_IS_LINK (link));
+	_link = gdata_feed_look_up_link (feed, "http://schemas.google.com/g/2005#post");
+	g_assert (GDATA_IS_LINK (_link));
 
-	link = gdata_feed_look_up_link (feed, GDATA_LINK_SELF);
-	g_assert (GDATA_IS_LINK (link));
+	_link = gdata_feed_look_up_link (feed, GDATA_LINK_SELF);
+	g_assert (GDATA_IS_LINK (_link));
 
 	/* Check the authors */
 	list = gdata_feed_get_authors (feed);
@@ -1197,48 +1197,48 @@ test_atom_generator_error_handling (void)
 static void
 test_atom_link (void)
 {
-	GDataLink *link, *link2;
+	GDataLink *link1, *link2;
 	gchar *xml, *uri, *relation_type, *content_type, *language, *title;
 	gint length;
 	GError *error = NULL;
 
-	link = GDATA_LINK (gdata_parsable_new_from_xml (GDATA_TYPE_LINK,
+	link1 = GDATA_LINK (gdata_parsable_new_from_xml (GDATA_TYPE_LINK,
 		"<link href='http://example.com/' rel='http://test.com#link-type' type='text/plain' hreflang='de' "
 			"title='All About Angle Brackets: &lt;, &gt;' length='2000'/>", -1, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_LINK (link));
+	g_assert (GDATA_IS_LINK (link1));
 	g_clear_error (&error);
 
 	/* Check the properties */
-	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://example.com/");
-	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, "http://test.com#link-type");
-	g_assert_cmpstr (gdata_link_get_content_type (link), ==, "text/plain");
-	g_assert_cmpstr (gdata_link_get_language (link), ==, "de");
-	g_assert_cmpstr (gdata_link_get_title (link), ==, "All About Angle Brackets: <, >");
-	g_assert_cmpint (gdata_link_get_length (link), ==, 2000);
+	g_assert_cmpstr (gdata_link_get_uri (link1), ==, "http://example.com/");
+	g_assert_cmpstr (gdata_link_get_relation_type (link1), ==, "http://test.com#link-type");
+	g_assert_cmpstr (gdata_link_get_content_type (link1), ==, "text/plain");
+	g_assert_cmpstr (gdata_link_get_language (link1), ==, "de");
+	g_assert_cmpstr (gdata_link_get_title (link1), ==, "All About Angle Brackets: <, >");
+	g_assert_cmpint (gdata_link_get_length (link1), ==, 2000);
 
 	/* Compare it against another identical link */
 	link2 = gdata_link_new ("http://example.com/", "http://test.com#link-type");
-	g_assert_cmpint (gdata_link_compare (link, link2), ==, 0);
+	g_assert_cmpint (gdata_link_compare (link1, link2), ==, 0);
 	gdata_link_set_content_type (link2, "text/plain");
 	gdata_link_set_language (link2, "de");
 	gdata_link_set_title (link2, "All About Angle Brackets: <, >");
 	gdata_link_set_length (link2, 2000);
-	g_assert_cmpint (gdata_link_compare (link, link2), ==, 0);
+	g_assert_cmpint (gdata_link_compare (link1, link2), ==, 0);
 
 	/* Try with a dissimilar link */
 	gdata_link_set_uri (link2, "http://gnome.org/");
-	g_assert_cmpint (gdata_link_compare (link, link2), !=, 0);
+	g_assert_cmpint (gdata_link_compare (link1, link2), !=, 0);
 	g_object_unref (link2);
 
 	/* More comparisons */
-	g_assert_cmpint (gdata_link_compare (link, NULL), ==, 1);
-	g_assert_cmpint (gdata_link_compare (NULL, link), ==, -1);
+	g_assert_cmpint (gdata_link_compare (link1, NULL), ==, 1);
+	g_assert_cmpint (gdata_link_compare (NULL, link1), ==, -1);
 	g_assert_cmpint (gdata_link_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_link_compare (link, link), ==, 0);
+	g_assert_cmpint (gdata_link_compare (link1, link1), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (link));
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (link1));
 	g_assert_cmpstr (xml, ==,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<link xmlns='http://www.w3.org/2005/Atom' href='http://example.com/' title='All About Angle Brackets: &lt;, &gt;' "
@@ -1246,7 +1246,7 @@ test_atom_link (void)
 	g_free (xml);
 
 	/* Set some of the properties */
-	g_object_set (G_OBJECT (link),
+	g_object_set (G_OBJECT (link1),
 	              "uri", "http://another-example.com/",
 	              "relation-type", "http://test.com#link-type2",
 	              "content-type", "text/html",
@@ -1256,7 +1256,7 @@ test_atom_link (void)
 	              NULL);
 
 	/* Check the properties */
-	g_object_get (G_OBJECT (link),
+	g_object_get (G_OBJECT (link1),
 	              "uri", &uri,
 	              "relation-type", &relation_type,
 	              "content-type", &content_type,
@@ -1277,43 +1277,43 @@ test_atom_link (void)
 	g_free (content_type);
 	g_free (language);
 	g_free (title);
-	g_object_unref (link);
+	g_object_unref (link1);
 
 	/* Now parse a link with less information available */
-	link = GDATA_LINK (gdata_parsable_new_from_xml (GDATA_TYPE_LINK,
+	link1 = GDATA_LINK (gdata_parsable_new_from_xml (GDATA_TYPE_LINK,
 		"<link href='http://shizzle.com'>Test Content<foobar/></link>", -1, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_LINK (link));
+	g_assert (GDATA_IS_LINK (link1));
 	g_clear_error (&error);
 
 	/* Check the properties */
-	g_assert_cmpstr (gdata_link_get_uri (link), ==, "http://shizzle.com");
-	g_assert_cmpstr (gdata_link_get_relation_type (link), ==, "http://www.iana.org/assignments/relation/alternate");
-	g_assert (gdata_link_get_content_type (link) == NULL);
-	g_assert (gdata_link_get_language (link) == NULL);
-	g_assert (gdata_link_get_title (link) == NULL);
-	g_assert (gdata_link_get_length (link) == -1);
+	g_assert_cmpstr (gdata_link_get_uri (link1), ==, "http://shizzle.com");
+	g_assert_cmpstr (gdata_link_get_relation_type (link1), ==, "http://www.iana.org/assignments/relation/alternate");
+	g_assert (gdata_link_get_content_type (link1) == NULL);
+	g_assert (gdata_link_get_language (link1) == NULL);
+	g_assert (gdata_link_get_title (link1) == NULL);
+	g_assert (gdata_link_get_length (link1) == -1);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (link));
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (link1));
 	g_assert_cmpstr (xml, ==,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<link xmlns='http://www.w3.org/2005/Atom' href='http://shizzle.com' rel='http://www.iana.org/assignments/relation/alternate'>"
 				"Test Content<foobar/></link>");
 	g_free (xml);
-	g_object_unref (link);
+	g_object_unref (link1);
 }
 
 static void
 test_atom_link_error_handling (void)
 {
-	GDataLink *link;
+	GDataLink *_link; /* stupid unistd.h */
 	GError *error = NULL;
 
-#define TEST_XML_ERROR_HANDLING(x) link = GDATA_LINK (gdata_parsable_new_from_xml (GDATA_TYPE_LINK,\
+#define TEST_XML_ERROR_HANDLING(x) _link = GDATA_LINK (gdata_parsable_new_from_xml (GDATA_TYPE_LINK,\
 		"<link " x "/>", -1, &error));\
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
-	g_assert (link == NULL);\
+	g_assert (_link == NULL);\
 	g_clear_error (&error)
 
 	/* href */
