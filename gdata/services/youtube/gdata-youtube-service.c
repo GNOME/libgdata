@@ -28,6 +28,36 @@
  *
  * For more details of YouTube's GData API, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html">
  * online documentation</ulink>.
+ *
+ * <example>
+ * 	<title>Getting a Localized List of YouTube Categories</title>
+ * 	<programlisting>
+ *	GDataYouTubeService *service;
+ *	GDataAPPCategories *app_categories;
+ *	GList *categories, *i;
+ *
+ *	/<!-- -->* Create a service and set its locale to Italian, which localizes the categories to Italian *<!-- -->/
+ *	service = create_youtube_service ();
+ *	gdata_service_set_locale (GDATA_SERVICE (service), "it");
+ *
+ *	/<!-- -->* Query the server for the current list of YouTube categories (in Italian) *<!-- -->/
+ *	app_categories = gdata_youtube_service_get_categories (service, NULL, NULL);
+ *	categories = gdata_app_categories_get_categories (app_categories);
+ *
+ *	/<!-- -->* Iterate through the categories *<!-- -->/
+ *	for (i = categories; i != NULL; i = i->next) {
+ *		GDataYouTubeCategory *category = GDATA_YOUTUBE_CATEGORY (i->data);
+ *
+ *		if (gdata_youtube_category_is_deprecated (category) == FALSE && gdata_youtube_category_is_browsable (category, "IT") == TRUE) {
+ *			/<!-- -->* Do something with the category here, as it's not deprecated, and is browsable in the given region *<!-- -->/
+ *			add_to_ui (gdata_category_get_term (GDATA_CATEGORY (category)), gdata_category_get_label (GDATA_CATEGORY (category)));
+ *		}
+ *	}
+ *
+ *	g_object_unref (app_categories);
+ *	g_object_unref (service);
+ * 	</programlisting>
+ * </example>
  **/
 
 #include <config.h>
@@ -42,6 +72,7 @@
 #include "gdata-parser.h"
 #include "atom/gdata-link.h"
 #include "gdata-upload-stream.h"
+#include "gdata-youtube-category.h"
 
 /* Standards reference here: http://code.google.com/apis/youtube/2.0/reference.html */
 
@@ -745,4 +776,123 @@ gdata_youtube_service_get_youtube_user (GDataYouTubeService *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	return self->priv->youtube_user;
+}
+
+/**
+ * gdata_youtube_service_get_categories:
+ * @self: a #GDataYouTubeService
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Gets a list of the categories currently in use on YouTube. The returned #GDataAPPCategories contains a list of #GDataYouTubeCategory<!-- -->s which
+ * enumerate the current YouTube categories.
+ *
+ * The category labels (#GDataCategory:label) are localised based on the value of #GDataService:locale.
+ *
+ * Return value: a #GDataAPPCategories, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.7.0
+ **/
+GDataAPPCategories *
+gdata_youtube_service_get_categories (GDataYouTubeService *self, GCancellable *cancellable, GError **error)
+{
+	SoupMessage *message;
+	GDataAPPCategories *categories;
+
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* Download the category list. Note that this is (service) locale-dependent. */
+	message = _gdata_service_query (GDATA_SERVICE (self), "http://gdata.youtube.com/schemas/2007/categories.cat", NULL, cancellable, error);
+	if (message == NULL)
+		return NULL;
+
+	g_assert (message->response_body->data != NULL);
+	categories = GDATA_APP_CATEGORIES (_gdata_parsable_new_from_xml (GDATA_TYPE_APP_CATEGORIES, message->response_body->data,
+	                                                                 message->response_body->length,
+	                                                                 GSIZE_TO_POINTER (GDATA_TYPE_YOUTUBE_CATEGORY), error));
+	g_object_unref (message);
+
+	return categories;
+}
+
+static void
+get_categories_thread (GSimpleAsyncResult *result, GDataYouTubeService *service, GCancellable *cancellable)
+{
+	GDataAPPCategories *categories;
+	GError *error = NULL;
+
+	/* Get the categories and return */
+	categories = gdata_youtube_service_get_categories (service, cancellable, &error);
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+	}
+
+	g_simple_async_result_set_op_res_gpointer (result, categories, (GDestroyNotify) g_object_unref);
+}
+
+/**
+ * gdata_youtube_service_get_categories_async:
+ * @self: a #GDataYouTubeService
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is finished
+ * @user_data: data to pass to the @callback function
+ *
+ * Gets a list of the categories currently in use on YouTube. @self is reffed when this function is called, so can safely be unreffed after this
+ * function returns.
+ *
+ * For more details, see gdata_youtube_service_get_categories(), which is the synchronous version of this function.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_youtube_service_get_categories_finish() to get the results of the
+ * operation.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_youtube_service_get_categories_async (GDataYouTubeService *self, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+
+	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_youtube_service_get_categories_async);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_categories_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_youtube_service_get_categories_finish:
+ * @self: a #GDataYouTubeService
+ * @async_result: a #GAsyncResult
+ * @error: a #GError, or %NULL
+ *
+ * Finishes an asynchronous request for a list of categories on YouTube, as started with gdata_youtube_service_get_categories_async().
+ *
+ * Return value: a #GDataAPPCategories, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.7.0
+ **/
+GDataAPPCategories *
+gdata_youtube_service_get_categories_finish (GDataYouTubeService *self, GAsyncResult *async_result, GError **error)
+{
+	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	GDataAPPCategories *categories;
+
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_youtube_service_get_categories_async);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE)
+		return NULL;
+
+	categories = g_simple_async_result_get_op_res_gpointer (result);
+	if (categories != NULL)
+		return g_object_ref (categories);
+	return NULL;
 }

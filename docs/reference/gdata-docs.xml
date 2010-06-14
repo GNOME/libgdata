@@ -53,6 +53,11 @@
 		</chapter>
 
 		<chapter>
+			<title>Atom Publishing Protocol API</title>
+			<xi:include href="xml/gdata-app-categories.xml"/>
+		</chapter>
+
+		<chapter>
 			<title>GData API</title>
 			<xi:include href="xml/gdata-gd-email-address.xml"/>
 			<xi:include href="xml/gdata-gd-im-address.xml"/>
@@ -87,6 +92,7 @@
 
 		<chapter>
 			<title>YouTube API</title>
+			<xi:include href="xml/gdata-youtube-category.xml"/>
 			<xi:include href="xml/gdata-youtube-content.xml"/>
 			<xi:include href="xml/gdata-youtube-credit.xml"/>
 			<xi:include href="xml/gdata-youtube-state.xml"/>

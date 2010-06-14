@@ -41,6 +41,9 @@
 #include <gdata/atom/gdata-generator.h>
 #include <gdata/atom/gdata-link.h>
 
+/* APP */
+#include <gdata/app/gdata-app-categories.h>
+
 /* GData */
 #include <gdata/gd/gdata-gd-email-address.h>
 #include <gdata/gd/gdata-gd-im-address.h>
@@ -79,6 +82,7 @@
 #include <gdata/services/youtube/gdata-youtube-credit.h>
 #include <gdata/services/youtube/gdata-youtube-state.h>
 #include <gdata/services/youtube/gdata-youtube-enums.h>
+#include <gdata/services/youtube/gdata-youtube-category.h>
 
 /* Google Calendar */
 #include <gdata/services/calendar/gdata-calendar-service.h>

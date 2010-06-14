@@ -546,6 +546,60 @@ test_parsing_yt_access_control (gconstpointer service)
 	g_object_unref (video);
 }
 
+static void
+test_parsing_yt_category (gconstpointer service)
+{
+	GDataYouTubeCategory *category;
+	gboolean assignable, deprecated;
+	GError *error = NULL;
+
+	/* Test a non-deprecated category */
+	category = GDATA_YOUTUBE_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_CATEGORY,
+		"<category xmlns='http://www.w3.org/2005/Atom' xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+			"scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'>"
+			"<yt:assignable/>"
+			"<yt:browsable regions='CZ AU HK'/>"
+		"</category>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_YOUTUBE_CATEGORY (category));
+	g_clear_error (&error);
+
+	/* Test the category's properties */
+	g_assert (gdata_youtube_category_is_assignable (category) == TRUE);
+	g_assert (gdata_youtube_category_is_browsable (category, "CZ") == TRUE);
+	g_assert (gdata_youtube_category_is_browsable (category, "AU") == TRUE);
+	g_assert (gdata_youtube_category_is_browsable (category, "HK") == TRUE);
+	g_assert (gdata_youtube_category_is_browsable (category, "GB") == FALSE);
+	g_assert (gdata_youtube_category_is_deprecated (category) == FALSE);
+
+	/* Test the properties the other way */
+	g_object_get (category, "is-assignable", &assignable, "is-deprecated", &deprecated, NULL);
+	g_assert (assignable == TRUE);
+	g_assert (deprecated == FALSE);
+
+	g_object_unref (category);
+
+	/* Test a deprecated category */
+	category = GDATA_YOUTUBE_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_CATEGORY,
+		"<category xmlns='http://www.w3.org/2005/Atom' xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+			"scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'>"
+			"<yt:deprecated/>"
+		"</category>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_YOUTUBE_CATEGORY (category));
+	g_clear_error (&error);
+
+	/* Test the category's properties */
+	g_assert (gdata_youtube_category_is_assignable (category) == FALSE);
+	g_assert (gdata_youtube_category_is_browsable (category, "CZ") == FALSE);
+	g_assert (gdata_youtube_category_is_browsable (category, "AU") == FALSE);
+	g_assert (gdata_youtube_category_is_browsable (category, "HK") == FALSE);
+	g_assert (gdata_youtube_category_is_browsable (category, "GB") == FALSE);
+	g_assert (gdata_youtube_category_is_deprecated (category) == TRUE);
+
+	g_object_unref (category);
+}
+
 /*static void
 test_parsing_comments_feed_link (void)
 {
@@ -786,6 +840,83 @@ test_parsing_video_id_from_uri (void)
 	g_assert (video_id == NULL);
 }
 
+static void
+test_categories (gconstpointer service)
+{
+	GDataAPPCategories *app_categories;
+	GList *categories;
+	GError *error = NULL;
+	gchar *category_label, *old_locale;
+
+	app_categories = gdata_youtube_service_get_categories (GDATA_YOUTUBE_SERVICE (service), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_APP_CATEGORIES (app_categories));
+	g_clear_error (&error);
+
+	categories = gdata_app_categories_get_categories (app_categories);
+	g_assert_cmpint (g_list_length (categories), >, 0);
+	g_assert (GDATA_IS_YOUTUBE_CATEGORY (categories->data));
+
+	/* Save a label for comparison against a different locale */
+	category_label = g_strdup (gdata_category_get_label (GDATA_CATEGORY (categories->data)));
+
+	g_object_unref (app_categories);
+
+	/* Test with a different locale */
+	old_locale = g_strdup (gdata_service_get_locale (GDATA_SERVICE (service)));
+	gdata_service_set_locale (GDATA_SERVICE (service), "it");
+
+	app_categories = gdata_youtube_service_get_categories (GDATA_YOUTUBE_SERVICE (service), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_APP_CATEGORIES (app_categories));
+	g_clear_error (&error);
+
+	categories = gdata_app_categories_get_categories (app_categories);
+	g_assert_cmpint (g_list_length (categories), >, 0);
+	g_assert (GDATA_IS_YOUTUBE_CATEGORY (categories->data));
+
+	/* Compare the labels */
+	g_assert_cmpstr (category_label, !=, gdata_category_get_label (GDATA_CATEGORY (categories->data)));
+
+	g_object_unref (app_categories);
+	g_free (category_label);
+
+	/* Reset the locale */
+	gdata_service_set_locale (GDATA_SERVICE (service), old_locale);
+	g_free (old_locale);
+}
+
+static void
+test_categories_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GDataAPPCategories *app_categories;
+	GList *categories;
+	GError *error = NULL;
+
+	app_categories = gdata_youtube_service_get_categories_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_APP_CATEGORIES (app_categories));
+	g_clear_error (&error);
+
+	categories = gdata_app_categories_get_categories (app_categories);
+	g_assert_cmpint (g_list_length (categories), >, 0);
+	g_assert (GDATA_IS_YOUTUBE_CATEGORY (categories->data));
+
+	g_main_loop_quit (main_loop);
+	g_object_unref (app_categories);
+}
+
+static void
+test_categories_async (gconstpointer service)
+{
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_youtube_service_get_categories_async (GDATA_YOUTUBE_SERVICE (service), NULL, (GAsyncReadyCallback) test_categories_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -812,12 +943,15 @@ main (int argc, char *argv[])
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
 	g_test_add_data_func ("/youtube/parsing/yt:recorded", service, test_parsing_yt_recorded);
 	g_test_add_data_func ("/youtube/parsing/yt:accessControl", service, test_parsing_yt_access_control);
+	g_test_add_data_func ("/youtube/parsing/yt:category", service, test_parsing_yt_category);
 	g_test_add_func ("/youtube/query/uri", test_query_uri);
 	g_test_add_func ("/youtube/query/etag", test_query_etag);
 	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 	if (g_test_slow () == TRUE)
 		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);
 	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
+	g_test_add_data_func ("/youtube/categories", service, test_categories);
+	g_test_add_data_func ("/youtube/categories/async", service, test_categories_async);
 
 	retval = g_test_run ();
 	g_object_unref (service);

@@ -26,6 +26,7 @@
 
 #include <gdata/gdata-service.h>
 #include <gdata/services/youtube/gdata-youtube-video.h>
+#include <gdata/app/gdata-app-categories.h>
 
 G_BEGIN_DECLS
 
@@ -135,6 +136,13 @@ GDataYouTubeVideo *gdata_youtube_service_upload_video (GDataYouTubeService *self
 
 const gchar *gdata_youtube_service_get_developer_key (GDataYouTubeService *self) G_GNUC_PURE;
 const gchar *gdata_youtube_service_get_youtube_user (GDataYouTubeService *self) G_GNUC_PURE;
+
+GDataAPPCategories *gdata_youtube_service_get_categories (GDataYouTubeService *self, GCancellable *cancellable,
+                                                          GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_youtube_service_get_categories_async (GDataYouTubeService *self, GCancellable *cancellable, GAsyncReadyCallback callback,
+                                                 gpointer user_data);
+GDataAPPCategories *gdata_youtube_service_get_categories_finish (GDataYouTubeService *self, GAsyncResult *async_result,
+                                                                 GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

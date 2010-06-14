@@ -186,6 +186,9 @@ gdata_youtube_service_query_related_async
 gdata_youtube_service_query_standard_feed
 gdata_youtube_service_query_standard_feed_async
 gdata_youtube_service_upload_video
+gdata_youtube_service_get_categories
+gdata_youtube_service_get_categories_async
+gdata_youtube_service_get_categories_finish
 gdata_youtube_service_get_developer_key
 gdata_youtube_service_get_youtube_user
 <SUBSECTION Standard>
@@ -2000,4 +2003,43 @@ GDATA_IS_GCONTACT_LANGUAGE_CLASS
 GDATA_TYPE_GCONTACT_LANGUAGE
 <SUBSECTION Private>
 GDataGContactLanguagePrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-youtube-category</FILE>
+<TITLE>GDataYouTubeCategory</TITLE>
+GDataYouTubeCategory
+GDataYouTubeCategoryClass
+gdata_youtube_category_is_assignable
+gdata_youtube_category_is_browsable
+gdata_youtube_category_is_deprecated
+<SUBSECTION Standard>
+gdata_youtube_category_get_type
+GDATA_YOUTUBE_CATEGORY
+GDATA_YOUTUBE_CATEGORY_CLASS
+GDATA_YOUTUBE_CATEGORY_GET_CLASS
+GDATA_IS_YOUTUBE_CATEGORY
+GDATA_IS_YOUTUBE_CATEGORY_CLASS
+GDATA_TYPE_YOUTUBE_CATEGORY
+<SUBSECTION Private>
+GDataYouTubeCategoryPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-app-categories</FILE>
+<TITLE>GDataAPPCategories</TITLE>
+GDataAPPCategories
+GDataAPPCategoriesClass
+gdata_app_categories_get_categories
+gdata_app_categories_is_fixed
+<SUBSECTION Standard>
+gdata_app_categories_get_type
+GDATA_APP_CATEGORIES
+GDATA_APP_CATEGORIES_CLASS
+GDATA_APP_CATEGORIES_GET_CLASS
+GDATA_IS_APP_CATEGORIES
+GDATA_IS_APP_CATEGORIES_CLASS
+GDATA_TYPE_APP_CATEGORIES
+<SUBSECTION Private>
+GDataAPPCategoriesPrivate
 </SECTION>

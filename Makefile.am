@@ -175,6 +175,10 @@ gdataatominclude_HEADERS = \
 	gdata/atom/gdata-generator.h	\
 	gdata/atom/gdata-link.h
 
+gdataappincludedir = $(gdataincludedir)/app
+gdataappinclude_HEADERS = \
+	gdata/app/gdata-app-categories.h
+
 gdatagdincludedir = $(gdataincludedir)/gd
 gdatagdinclude_HEADERS = \
 	gdata/gd/gdata-gd-email-address.h	\
@@ -256,7 +260,8 @@ gdata_youtube_headers = \
 	gdata/services/youtube/gdata-youtube-content.h	\
 	gdata/services/youtube/gdata-youtube-credit.h	\
 	gdata/services/youtube/gdata-youtube-query.h	\
-	gdata/services/youtube/gdata-youtube-state.h
+	gdata/services/youtube/gdata-youtube-state.h	\
+	gdata/services/youtube/gdata-youtube-category.h
 private_headers += \
 	gdata/services/youtube/gdata-youtube-group.h	\
 	gdata/services/youtube/gdata-youtube-control.h
@@ -285,6 +290,8 @@ gdata_libgdata_la_SOURCES = \
 	gdata/atom/gdata-category.c	\
 	gdata/atom/gdata-generator.c	\
 	gdata/atom/gdata-link.c		\
+	\
+	gdata/app/gdata-app-categories.c	\
 	\
 	gdata/exif/gdata-exif-tags.c	\
 	\
@@ -348,7 +355,8 @@ gdata_libgdata_la_SOURCES = \
 	gdata/services/youtube/gdata-youtube-query.c		\
 	gdata/services/youtube/gdata-youtube-group.c		\
 	gdata/services/youtube/gdata-youtube-state.c		\
-	gdata/services/youtube/gdata-youtube-control.c
+	gdata/services/youtube/gdata-youtube-control.c		\
+	gdata/services/youtube/gdata-youtube-category.c
 
 # All but the first two -I flags here are to cope with compiling the enum files in a srcdir!=builddir environment
 gdata_libgdata_la_CPPFLAGS = \
@@ -397,10 +405,11 @@ gdata/GData-$(GDATA_API_VERSION).gir: Makefile gdata/libgdata.la
 	--library=gdata/libgdata.la $(_gir_libtool) --output $@				\
 	-I$(top_srcdir) -I$(top_srcdir)/gdata						\
 	$(addprefix $(srcdir)/,$(gdatainclude_HEADERS) $(gdataatominclude_HEADERS)	\
-	$(gdatagdinclude_HEADERS) $(gdatagcontactinclude_HEADERS)			\
-	$(gdatamediainclude_HEADERS) $(gdatacalendarinclude_HEADERS)			\
-	$(gdatacontactsinclude_HEADERS) $(gdatadocumentsinclude_HEADERS)		\
-	$(gdatapicasawebinclude_HEADERS) $(gdatayoutubeinclude_HEADERS)))
+	$(gdataappinclude_HEADERS) $(gdatagdinclude_HEADERS)				\
+	$(gdatagcontactinclude_HEADERS) $(gdatamediainclude_HEADERS)			\
+	$(gdatacalendarinclude_HEADERS) $(gdatacontactsinclude_HEADERS)			\
+	$(gdatadocumentsinclude_HEADERS) $(gdatapicasawebinclude_HEADERS)		\
+	$(gdatayoutubeinclude_HEADERS)))
 BUILT_GIRSOURCES = gdata/GData-$(GDATA_API_VERSION).gir
 
 girdir = $(datadir)/gir-1.0
