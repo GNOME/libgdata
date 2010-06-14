@@ -1280,19 +1280,22 @@ gdata_service_query_single_entry (GDataService *self, const gchar *entry_id, GDa
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Query for just the specified entry */
-	klass = GDATA_ENTRY_CLASS (g_type_class_peek_static (entry_type));
+	klass = GDATA_ENTRY_CLASS (g_type_class_ref (entry_type));
 	g_assert (klass->get_entry_uri != NULL);
 
 	entry_uri = klass->get_entry_uri (entry_id);
 	message = _gdata_service_query (GDATA_SERVICE (self), entry_uri, query, cancellable, error);
 	g_free (entry_uri);
 
-	if (message == NULL)
+	if (message == NULL) {
+		g_type_class_unref (klass);
 		return NULL;
+	}
 
 	g_assert (message->response_body->data != NULL);
 	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (entry_type, message->response_body->data, message->response_body->length, error));
 	g_object_unref (message);
+	g_type_class_unref (klass);
 
 	return entry;
 }
