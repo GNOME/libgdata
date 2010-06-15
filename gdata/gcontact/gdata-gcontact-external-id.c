@@ -35,7 +35,9 @@
 #include "gdata-gcontact-external-id.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_gcontact_external_id_comparable_init (GDataComparableIface *iface);
 static void gdata_gcontact_external_id_finalize (GObject *object);
 static void gdata_gcontact_external_id_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gcontact_external_id_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -55,7 +57,8 @@ enum {
 	PROP_LABEL
 };
 
-G_DEFINE_TYPE (GDataGContactExternalID, gdata_gcontact_external_id, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGContactExternalID, gdata_gcontact_external_id, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gcontact_external_id_comparable_init))
 
 static void
 gdata_gcontact_external_id_class_init (GDataGContactExternalIDClass *klass)
@@ -123,6 +126,22 @@ gdata_gcontact_external_id_class_init (GDataGContactExternalIDClass *klass)
 	                                                      "Label", "A free-form string that identifies the type of external ID.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	GDataGContactExternalIDPrivate *a = ((GDataGContactExternalID*) self)->priv, *b = ((GDataGContactExternalID*) other)->priv;
+
+	if (g_strcmp0 (a->value, b->value) == 0 && g_strcmp0 (a->relation_type, b->relation_type) == 0 && g_strcmp0 (a->label, b->label) == 0)
+		return 0;
+	return 1;
+}
+
+static void
+gdata_gcontact_external_id_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -266,44 +285,6 @@ gdata_gcontact_external_id_new (const gchar *value, const gchar *relation_type, 
 	                      (relation_type == NULL && label != NULL && *label != '\0'), NULL);
 
 	return g_object_new (GDATA_TYPE_GCONTACT_EXTERNAL_ID, "value", value, "relation-type", relation_type, "label", label, NULL);
-}
-
-/**
- * gdata_gcontact_external_id_compare:
- * @a: a #GDataGContactExternalID, or %NULL
- * @b: another #GDataGContactExternalID, or %NULL
- *
- * Compares the two external IDs in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @value, @relation_type and @label properties of
- * the #GDataGContactExternalID<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.7.0
- **/
-gint
-gdata_gcontact_external_id_compare (const GDataGContactExternalID *a, const GDataGContactExternalID *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GCONTACT_EXTERNAL_ID (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GCONTACT_EXTERNAL_ID (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-
-	if (g_strcmp0 (a->priv->value, b->priv->value) == 0 &&
-	    g_strcmp0 (a->priv->relation_type, b->priv->relation_type) == 0 &&
-	    g_strcmp0 (a->priv->label, b->priv->label) == 0)
-		return 0;
-	return 1;
 }
 
 /**

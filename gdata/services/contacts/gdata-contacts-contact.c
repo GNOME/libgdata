@@ -48,6 +48,7 @@
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "gdata-private.h"
+#include "gdata-comparable.h"
 
 /* The maximum number of extended properties the server allows us. See
  * http://code.google.com/apis/contacts/docs/2.0/reference.html#ProjectionsAndExtended.
@@ -1622,7 +1623,7 @@ gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEma
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_GD_EMAIL_ADDRESS (email_address));
 
-	if (g_list_find_custom (self->priv->email_addresses, email_address, (GCompareFunc) gdata_gd_email_address_compare) == NULL)
+	if (g_list_find_custom (self->priv->email_addresses, email_address, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->email_addresses = g_list_append (self->priv->email_addresses, g_object_ref (email_address));
 }
 
@@ -1711,7 +1712,7 @@ gdata_contacts_contact_add_im_address (GDataContactsContact *self, GDataGDIMAddr
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_GD_IM_ADDRESS (im_address));
 
-	if (g_list_find_custom (self->priv->im_addresses, im_address, (GCompareFunc) gdata_gd_im_address_compare) == NULL)
+	if (g_list_find_custom (self->priv->im_addresses, im_address, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->im_addresses = g_list_append (self->priv->im_addresses, g_object_ref (im_address));
 }
 
@@ -1800,7 +1801,7 @@ gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhon
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_GD_PHONE_NUMBER (phone_number));
 
-	if (g_list_find_custom (self->priv->phone_numbers, phone_number, (GCompareFunc) gdata_gd_phone_number_compare) == NULL)
+	if (g_list_find_custom (self->priv->phone_numbers, phone_number, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->phone_numbers = g_list_append (self->priv->phone_numbers, g_object_ref (phone_number));
 }
 
@@ -1889,7 +1890,7 @@ gdata_contacts_contact_add_postal_address (GDataContactsContact *self, GDataGDPo
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (postal_address));
 
-	if (g_list_find_custom (self->priv->postal_addresses, postal_address, (GCompareFunc) gdata_gd_postal_address_compare) == NULL)
+	if (g_list_find_custom (self->priv->postal_addresses, postal_address, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->postal_addresses = g_list_append (self->priv->postal_addresses, g_object_ref (postal_address));
 }
 
@@ -1978,7 +1979,7 @@ gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrga
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (organization != NULL);
 
-	if (g_list_find_custom (self->priv->organizations, organization, (GCompareFunc) gdata_gd_organization_compare) == NULL)
+	if (g_list_find_custom (self->priv->organizations, organization, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->organizations = g_list_append (self->priv->organizations, g_object_ref (organization));
 }
 
@@ -2183,7 +2184,7 @@ gdata_contacts_contact_add_website (GDataContactsContact *self, GDataGContactWeb
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_GCONTACT_WEBSITE (website));
 
-	if (g_list_find_custom (self->priv->websites, website, (GCompareFunc) gdata_gcontact_website_compare) == NULL)
+	if (g_list_find_custom (self->priv->websites, website, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->websites = g_list_append (self->priv->websites, g_object_ref (website));
 }
 
@@ -2329,7 +2330,7 @@ gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGContactCa
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_GCONTACT_CALENDAR (calendar));
 
-	if (g_list_find_custom (self->priv->calendars, calendar, (GCompareFunc) gdata_gcontact_calendar_compare) == NULL)
+	if (g_list_find_custom (self->priv->calendars, calendar, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->calendars = g_list_append (self->priv->calendars, g_object_ref (calendar));
 }
 
@@ -2414,7 +2415,7 @@ gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContac
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_GCONTACT_EXTERNAL_ID (external_id));
 
-	if (g_list_find_custom (self->priv->external_ids, external_id, (GCompareFunc) gdata_gcontact_external_id_compare) == NULL)
+	if (g_list_find_custom (self->priv->external_ids, external_id, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->external_ids = g_list_append (self->priv->external_ids, g_object_ref (external_id));
 }
 
@@ -2534,7 +2535,7 @@ gdata_contacts_contact_add_language (GDataContactsContact *self, GDataGContactLa
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_GCONTACT_LANGUAGE (language));
 
-	if (g_list_find_custom (self->priv->languages, language, (GCompareFunc) gdata_gcontact_language_compare) == NULL)
+	if (g_list_find_custom (self->priv->languages, language, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->languages = g_list_append (self->priv->languages, g_object_ref (language));
 }
 

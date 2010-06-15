@@ -244,7 +244,6 @@ GType gdata_gd_phone_number_get_type (void) G_GNUC_CONST;
 
 GDataGDPhoneNumber *gdata_gd_phone_number_new (const gchar *number, const gchar *relation_type, const gchar *label, const gchar *uri,
                                                gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_phone_number_compare (const GDataGDPhoneNumber *a, const GDataGDPhoneNumber *b);
 
 const gchar *gdata_gd_phone_number_get_number (GDataGDPhoneNumber *self) G_GNUC_PURE;
 void gdata_gd_phone_number_set_number (GDataGDPhoneNumber *self, const gchar *number);

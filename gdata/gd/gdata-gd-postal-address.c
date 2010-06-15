@@ -37,7 +37,9 @@
 #include "gdata-gd-postal-address.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_gd_postal_address_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_postal_address_finalize (GObject *object);
 static void gdata_gd_postal_address_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_postal_address_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -87,7 +89,8 @@ enum {
 	PROP_COUNTRY_CODE
 };
 
-G_DEFINE_TYPE (GDataGDPostalAddress, gdata_gd_postal_address, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGDPostalAddress, gdata_gd_postal_address, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_postal_address_comparable_init))
 
 static void
 gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
@@ -388,6 +391,23 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	GDataGDPostalAddressPrivate *a = ((GDataGDPostalAddress*) self)->priv, *b = ((GDataGDPostalAddress*) other)->priv;
+
+	if (g_strcmp0 (a->street, b->street) == 0 && g_strcmp0 (a->po_box, b->po_box) == 0 &&
+	    g_strcmp0 (a->city, b->city) == 0 && g_strcmp0 (a->postcode, b->postcode) == 0)
+		return 0;
+	return 1;
+}
+
+static void
+gdata_gd_postal_address_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
+}
+
 static void
 gdata_gd_postal_address_init (GDataGDPostalAddress *self)
 {
@@ -660,42 +680,6 @@ gdata_gd_postal_address_new (const gchar *relation_type, const gchar *label, gbo
 {
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_POSTAL_ADDRESS, "relation-type", relation_type, "label", label, "is-primary", is_primary, NULL);
-}
-
-/**
- * gdata_gd_postal_address_compare:
- * @a: a #GDataGDPostalAddress, or %NULL
- * @b: another #GDataGDPostalAddress, or %NULL
- *
- * Compares the two postal addresses in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @street, @po_box, @city and @postcode properties of
- * the #GDataGDPostalAddress<!-- -->es.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_gd_postal_address_compare (const GDataGDPostalAddress *a, const GDataGDPostalAddress *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GD_POSTAL_ADDRESS (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GD_POSTAL_ADDRESS (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-	if (g_strcmp0 (a->priv->street, b->priv->street) == 0 && g_strcmp0 (a->priv->po_box, b->priv->po_box) == 0 &&
-	    g_strcmp0 (a->priv->city, b->priv->city) == 0 && g_strcmp0 (a->priv->postcode, b->priv->postcode) == 0)
-		return 0;
-	return 1;
 }
 
 /**

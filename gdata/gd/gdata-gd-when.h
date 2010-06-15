@@ -145,7 +145,6 @@ typedef struct {
 GType gdata_gd_when_get_type (void) G_GNUC_CONST;
 
 GDataGDWhen *gdata_gd_when_new (const GTimeVal *start_time, const GTimeVal *end_time, gboolean is_date) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_when_compare (const GDataGDWhen *a, const GDataGDWhen *b) G_GNUC_PURE;
 
 void gdata_gd_when_get_start_time (GDataGDWhen *self, GTimeVal *start_time);
 void gdata_gd_when_set_start_time (GDataGDWhen *self, const GTimeVal *start_time);

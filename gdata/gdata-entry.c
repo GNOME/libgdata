@@ -38,6 +38,7 @@
 #include "gdata-types.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
+#include "gdata-comparable.h"
 #include "atom/gdata-category.h"
 #include "atom/gdata-link.h"
 #include "atom/gdata-author.h"
@@ -650,7 +651,7 @@ gdata_entry_add_category (GDataEntry *self, GDataCategory *category)
 	g_return_if_fail (GDATA_IS_ENTRY (self));
 	g_return_if_fail (GDATA_IS_CATEGORY (category));
 
-	if (g_list_find_custom (self->priv->categories, category, (GCompareFunc) gdata_category_compare) == NULL)
+	if (g_list_find_custom (self->priv->categories, category, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->categories = g_list_prepend (self->priv->categories, g_object_ref (category));
 }
 
@@ -736,7 +737,7 @@ gdata_entry_add_link (GDataEntry *self, GDataLink *link)
 	g_return_if_fail (GDATA_IS_ENTRY (self));
 	g_return_if_fail (GDATA_IS_LINK (link));
 
-	if (g_list_find_custom (self->priv->links, link, (GCompareFunc) gdata_link_compare) == NULL)
+	if (g_list_find_custom (self->priv->links, link, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->links = g_list_prepend (self->priv->links, g_object_ref (link));
 }
 
@@ -821,7 +822,7 @@ gdata_entry_add_author (GDataEntry *self, GDataAuthor *author)
 	g_return_if_fail (GDATA_IS_ENTRY (self));
 	g_return_if_fail (GDATA_IS_AUTHOR (author));
 
-	if (g_list_find_custom (self->priv->authors, author, (GCompareFunc) gdata_author_compare) == NULL)
+	if (g_list_find_custom (self->priv->authors, author, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->authors = g_list_prepend (self->priv->authors, g_object_ref (author));
 }
 

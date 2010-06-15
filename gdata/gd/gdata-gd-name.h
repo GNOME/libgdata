@@ -63,7 +63,6 @@ typedef struct {
 GType gdata_gd_name_get_type (void) G_GNUC_CONST;
 
 GDataGDName *gdata_gd_name_new (const gchar *given_name, const gchar *family_name) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_name_compare (const GDataGDName *a, const GDataGDName *b) G_GNUC_PURE;
 
 const gchar *gdata_gd_name_get_given_name (GDataGDName *self) G_GNUC_PURE;
 void gdata_gd_name_set_given_name (GDataGDName *self, const gchar *given_name);

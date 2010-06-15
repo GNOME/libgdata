@@ -35,7 +35,9 @@
 #include "gdata-category.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_category_comparable_init (GDataComparableIface *iface);
 static void gdata_category_finalize (GObject *object);
 static void gdata_category_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_category_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -54,7 +56,8 @@ enum {
 	PROP_LABEL
 };
 
-G_DEFINE_TYPE (GDataCategory, gdata_category, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataCategory, gdata_category, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_category_comparable_init))
 
 static void
 gdata_category_class_init (GDataCategoryClass *klass)
@@ -122,6 +125,18 @@ gdata_category_class_init (GDataCategoryClass *klass)
 	                                                      "Label", "A human-readable label for display in end-user applications.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	return g_strcmp0 (((GDataCategory*) self)->priv->term, ((GDataCategory*) other)->priv->term);
+}
+
+static void
+gdata_category_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -236,38 +251,6 @@ gdata_category_new (const gchar *term, const gchar *scheme, const gchar *label)
 {
 	g_return_val_if_fail (term != NULL && *term != '\0', NULL);
 	return g_object_new (GDATA_TYPE_CATEGORY, "term", term, "scheme", scheme, "label", label, NULL);
-}
-
-/**
- * gdata_category_compare:
- * @a: a #GDataCategory, or %NULL
- * @b: another #GDataCategory, or %NULL
- *
- * Compares the two categories in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @term property of the #GDataCategory<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_category_compare (const GDataCategory *a, const GDataCategory *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_CATEGORY (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_CATEGORY (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-	return g_strcmp0 (a->priv->term, b->priv->term);
 }
 
 /**

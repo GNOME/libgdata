@@ -38,7 +38,9 @@
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
 #include "gdata-types.h"
+#include "gdata-comparable.h"
 
+static void gdata_gd_when_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_when_dispose (GObject *object);
 static void gdata_gd_when_finalize (GObject *object);
 static void gdata_gd_when_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -65,7 +67,8 @@ enum {
 	PROP_VALUE_STRING
 };
 
-G_DEFINE_TYPE (GDataGDWhen, gdata_gd_when, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGDWhen, gdata_gd_when, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_when_comparable_init))
 
 static void
 gdata_gd_when_class_init (GDataGDWhenClass *klass)
@@ -153,6 +156,29 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	                                                      "Value string", "A simple string value used to name this when.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	gint64 start_diff, end_diff;
+	GDataGDWhenPrivate *a = ((GDataGDWhen*) self)->priv, *b = ((GDataGDWhen*) other)->priv;
+
+	if (a->is_date != b->is_date)
+		return CLAMP (b->is_date - a->is_date, -1, 1);
+
+	start_diff = (b->start_time.tv_sec - a->start_time.tv_sec) * 1000000 + (b->start_time.tv_usec - a->start_time.tv_usec);
+	end_diff = (b->end_time.tv_sec - a->end_time.tv_sec) * 1000000 + (b->end_time.tv_usec - a->end_time.tv_usec);
+
+	if (start_diff == 0)
+		return CLAMP (end_diff, -1, 1);
+	return CLAMP (start_diff, -1, 1);
+}
+
+static void
+gdata_gd_when_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -379,50 +405,6 @@ gdata_gd_when_new (const GTimeVal *start_time, const GTimeVal *end_time, gboolea
 }
 
 /**
- * gdata_gd_when_compare:
- * @a: a #GDataGDWhen, or %NULL
- * @b: another #GDataGDWhen, or %NULL
- *
- * Compares the two times in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @start_time, @end_time and @is_date properties of the #GDataGDWhen<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_gd_when_compare (const GDataGDWhen *a, const GDataGDWhen *b)
-{
-	gint64 start_diff, end_diff;
-
-	g_return_val_if_fail (a == NULL || GDATA_IS_GD_WHEN (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GD_WHEN (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-	if (a->priv->is_date != b->priv->is_date)
-		return CLAMP (b->priv->is_date - a->priv->is_date, -1, 1);
-
-	start_diff = (b->priv->start_time.tv_sec - a->priv->start_time.tv_sec) * 1000000 +
-	             (b->priv->start_time.tv_usec - a->priv->start_time.tv_usec);
-	end_diff = (b->priv->end_time.tv_sec - a->priv->end_time.tv_sec) * 1000000 +
-	           (b->priv->end_time.tv_usec - a->priv->end_time.tv_usec);
-
-	if (start_diff == 0)
-		return CLAMP (end_diff, -1, 1);
-	return CLAMP (start_diff, -1, 1);
-}
-
-/**
  * gdata_gd_when_get_start_time:
  * @self: a #GDataGDWhen
  * @start_time: return location for the start time
@@ -608,6 +590,6 @@ gdata_gd_when_add_reminder (GDataGDWhen *self, GDataGDReminder *reminder)
 	g_return_if_fail (GDATA_IS_GD_WHEN (self));
 	g_return_if_fail (GDATA_IS_GD_REMINDER (reminder));
 
-	if (g_list_find_custom (self->priv->reminders, reminder, (GCompareFunc) gdata_gd_reminder_compare) == NULL)
+	if (g_list_find_custom (self->priv->reminders, reminder, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->reminders = g_list_append (self->priv->reminders, g_object_ref (reminder));
 }

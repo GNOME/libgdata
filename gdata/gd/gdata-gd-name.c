@@ -45,7 +45,9 @@
 #include "gdata-gd-name.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_gd_name_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_name_finalize (GObject *object);
 static void gdata_gd_name_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_name_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -71,7 +73,8 @@ enum {
 	PROP_FULL_NAME
 };
 
-G_DEFINE_TYPE (GDataGDName, gdata_gd_name, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGDName, gdata_gd_name, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_name_comparable_init))
 
 static void
 gdata_gd_name_class_init (GDataGDNameClass *klass)
@@ -187,6 +190,23 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	                                                      "Full name", "An unstructured representation of the person's full name.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	GDataGDNamePrivate *a = ((GDataGDName*) self)->priv, *b = ((GDataGDName*) other)->priv;
+
+	if (g_strcmp0 (a->given_name, b->given_name) == 0 && g_strcmp0 (a->additional_name, b->additional_name) == 0 &&
+	    g_strcmp0 (a->family_name, b->family_name) == 0 && g_strcmp0 (a->prefix, b->prefix) == 0)
+		return 0;
+	return 1;
+}
+
+static void
+gdata_gd_name_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -335,42 +355,6 @@ gdata_gd_name_new (const gchar *given_name, const gchar *family_name)
 	g_return_val_if_fail (given_name == NULL || *given_name != '\0', NULL);
 	g_return_val_if_fail (family_name == NULL || *family_name != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_NAME, "given-name", given_name, "family-name", family_name, NULL);
-}
-
-/**
- * gdata_gd_name_compare:
- * @a: a #GDataGDName, or %NULL
- * @b: another #GDataGDName, or %NULL
- *
- * Compares the two names in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @given_name, @additional_name and @family_name properties of the
- * #GDataGDName<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.5.0
- **/
-gint
-gdata_gd_name_compare (const GDataGDName *a, const GDataGDName *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GD_NAME (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GD_NAME (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-	if (g_strcmp0 (a->priv->given_name, b->priv->given_name) == 0 && g_strcmp0 (a->priv->additional_name, b->priv->additional_name) == 0 &&
-	    g_strcmp0 (a->priv->family_name, b->priv->family_name) == 0 && g_strcmp0 (a->priv->prefix, b->priv->prefix) == 0)
-		return 0;
-	return 1;
 }
 
 /**

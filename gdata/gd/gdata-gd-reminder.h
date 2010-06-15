@@ -91,7 +91,6 @@ GType gdata_gd_reminder_get_type (void) G_GNUC_CONST;
 
 GDataGDReminder *gdata_gd_reminder_new (const gchar *method, const GTimeVal *absolute_time,
                                         gint relative_time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_reminder_compare (const GDataGDReminder *a, const GDataGDReminder *b) G_GNUC_PURE;
 
 const gchar *gdata_gd_reminder_get_method (GDataGDReminder *self) G_GNUC_PURE;
 void gdata_gd_reminder_set_method (GDataGDReminder *self, const gchar *method);

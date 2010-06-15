@@ -833,6 +833,18 @@ test_access_rule_error_handling (void)
 }
 
 static void
+test_comparable (void)
+{
+	GDataComparable *category = GDATA_COMPARABLE (gdata_category_new ("term", "http://scheme", "label"));
+
+	/* Test the NULL comparisons */
+	g_assert_cmpint (gdata_comparable_compare (category, NULL), ==, 1);
+	g_assert_cmpint (gdata_comparable_compare (NULL, category), ==, -1);
+	g_assert_cmpint (gdata_comparable_compare (NULL, NULL), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (category, category), ==, 0);
+}
+
+static void
 test_color_parsing (void)
 {
 	GDataColor color;
@@ -921,19 +933,13 @@ test_atom_author (void)
 
 	/* Compare it against another identical author */
 	author2 = gdata_author_new ("John Smöth", "http://example.com/", "john@example.com");
-	g_assert_cmpint (gdata_author_compare (author, author2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (author), GDATA_COMPARABLE (author2)), ==, 0);
 	g_object_unref (author2);
 
 	/* …and a different author */
 	author2 = gdata_author_new ("Brian Blessed", NULL, NULL);
-	g_assert_cmpint (gdata_author_compare (author, author2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (author), GDATA_COMPARABLE (author2)), !=, 0);
 	g_object_unref (author2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_author_compare (author, NULL), ==, 1);
-	g_assert_cmpint (gdata_author_compare (NULL, author), ==, -1);
-	g_assert_cmpint (gdata_author_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_author_compare (author, author), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (author));
@@ -1027,19 +1033,13 @@ test_atom_category (void)
 
 	/* Compare it against another identical category */
 	category2 = gdata_category_new ("jokes", "http://foobar.com#categories", "Jokes & Trivia");
-	g_assert_cmpint (gdata_category_compare (category, category2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (category), GDATA_COMPARABLE (category2)), ==, 0);
 	g_object_unref (category2);
 
 	/* …and a different category */
 	category2 = gdata_category_new ("sports", "http://foobar.com#categories", NULL);
-	g_assert_cmpint (gdata_category_compare (category, category2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (category), GDATA_COMPARABLE (category2)), !=, 0);
 	g_object_unref (category2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_category_compare (category, NULL), ==, 1);
-	g_assert_cmpint (gdata_category_compare (NULL, category), ==, -1);
-	g_assert_cmpint (gdata_category_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_category_compare (category, category), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
@@ -1129,7 +1129,7 @@ test_atom_generator (void)
 	/* Compare it against another identical generator */
 	generator2 = GDATA_GENERATOR (gdata_parsable_new_from_xml (GDATA_TYPE_GENERATOR,
 		"<generator uri='http://example.com/' version='15'>Bach &amp; Son's Generator</generator>", -1, NULL));
-	g_assert_cmpint (gdata_generator_compare (generator, generator2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (generator), GDATA_COMPARABLE (generator2)), ==, 0);
 	g_object_unref (generator2);
 
 	/* …and a different generator */
@@ -1137,14 +1137,8 @@ test_atom_generator (void)
 		"<generator>Different generator</generator>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_GENERATOR (generator));
-	g_assert_cmpint (gdata_generator_compare (generator, generator2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (generator), GDATA_COMPARABLE (generator2)), !=, 0);
 	g_object_unref (generator2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_generator_compare (generator, NULL), ==, 1);
-	g_assert_cmpint (gdata_generator_compare (NULL, generator), ==, -1);
-	g_assert_cmpint (gdata_generator_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_generator_compare (generator, generator), ==, 0);
 
 	/* Check the properties */
 	g_assert_cmpstr (gdata_generator_get_name (generator), ==, "Bach & Son's Generator");
@@ -1219,23 +1213,17 @@ test_atom_link (void)
 
 	/* Compare it against another identical link */
 	link2 = gdata_link_new ("http://example.com/", "http://test.com#link-type");
-	g_assert_cmpint (gdata_link_compare (link1, link2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (link1), GDATA_COMPARABLE (link2)), ==, 0);
 	gdata_link_set_content_type (link2, "text/plain");
 	gdata_link_set_language (link2, "de");
 	gdata_link_set_title (link2, "All About Angle Brackets: <, >");
 	gdata_link_set_length (link2, 2000);
-	g_assert_cmpint (gdata_link_compare (link1, link2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (link1), GDATA_COMPARABLE (link2)), ==, 0);
 
 	/* Try with a dissimilar link */
 	gdata_link_set_uri (link2, "http://gnome.org/");
-	g_assert_cmpint (gdata_link_compare (link1, link2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (link1), GDATA_COMPARABLE (link2)), !=, 0);
 	g_object_unref (link2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_link_compare (link1, NULL), ==, 1);
-	g_assert_cmpint (gdata_link_compare (NULL, link1), ==, -1);
-	g_assert_cmpint (gdata_link_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_link_compare (link1, link1), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (link1));
@@ -1404,18 +1392,12 @@ test_gd_email_address (void)
 	/* Compare it against another identical address */
 	email2 = gdata_gd_email_address_new ("fubar@gmail.com", GDATA_GD_EMAIL_ADDRESS_HOME, "Personal & Private", TRUE);
 	gdata_gd_email_address_set_display_name (email2, "<John Smith>");
-	g_assert_cmpint (gdata_gd_email_address_compare (email, email2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (email), GDATA_COMPARABLE (email2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gd_email_address_set_address (email2, "test@example.com");
-	g_assert_cmpint (gdata_gd_email_address_compare (email, email2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (email), GDATA_COMPARABLE (email2)), !=, 0);
 	g_object_unref (email2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_email_address_compare (email, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_email_address_compare (NULL, email), ==, -1);
-	g_assert_cmpint (gdata_gd_email_address_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_email_address_compare (email, email), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (email));
@@ -1474,18 +1456,12 @@ test_gd_im_address (void)
 
 	/* Compare it against another identical address */
 	im2 = gdata_gd_im_address_new ("foo@bar.msn.com", GDATA_GD_IM_PROTOCOL_LIVE_MESSENGER, GDATA_GD_IM_ADDRESS_HOME, NULL, TRUE);
-	g_assert_cmpint (gdata_gd_im_address_compare (im, im2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (im), GDATA_COMPARABLE (im2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gd_im_address_set_protocol (im2, GDATA_GD_IM_PROTOCOL_GOOGLE_TALK);
-	g_assert_cmpint (gdata_gd_im_address_compare (im, im2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (im), GDATA_COMPARABLE (im2)), !=, 0);
 	g_object_unref (im2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_im_address_compare (im, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_im_address_compare (NULL, im), ==, -1);
-	g_assert_cmpint (gdata_gd_im_address_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_im_address_compare (im, im), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (im));
@@ -1554,18 +1530,12 @@ test_gd_name (void)
 	gdata_gd_name_set_additional_name (name2, "Charles");
 	gdata_gd_name_set_prefix (name2, "Mr");
 	gdata_gd_name_set_suffix (name2, "ABC");
-	g_assert_cmpint (gdata_gd_name_compare (name, name2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (name), GDATA_COMPARABLE (name2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gd_name_set_prefix (name2, "Mrs");
-	g_assert_cmpint (gdata_gd_name_compare (name, name2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (name), GDATA_COMPARABLE (name2)), !=, 0);
 	g_object_unref (name2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_name_compare (name, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_name_compare (NULL, name), ==, -1);
-	g_assert_cmpint (gdata_gd_name_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_name_compare (name, name), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (name));
@@ -1646,18 +1616,12 @@ test_gd_organization (void)
 	org2 = gdata_gd_organization_new ("Google, Inc.", "<Angle Bracketeer>", GDATA_GD_ORGANIZATION_WORK, "Work & Occupation", TRUE);
 	gdata_gd_organization_set_department (org2, "Finance");
 	gdata_gd_organization_set_location (org2, location);
-	g_assert_cmpint (gdata_gd_organization_compare (org, org2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (org), GDATA_COMPARABLE (org2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gd_organization_set_title (org2, "Demoted!");
-	g_assert_cmpint (gdata_gd_organization_compare (org, org2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (org), GDATA_COMPARABLE (org2)), !=, 0);
 	g_object_unref (org2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_organization_compare (org, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_organization_compare (NULL, org), ==, -1);
-	g_assert_cmpint (gdata_gd_organization_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_organization_compare (org, org), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (org));
@@ -1726,18 +1690,12 @@ test_gd_phone_number (void)
 	/* Compare it against another identical number */
 	phone2 = gdata_gd_phone_number_new ("+1 206 555 1212", GDATA_GD_PHONE_NUMBER_MOBILE, "Personal & business calls only",
 					    "tel:+12065551212", FALSE);
-	g_assert_cmpint (gdata_gd_phone_number_compare (phone, phone2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone), GDATA_COMPARABLE (phone2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gd_phone_number_set_number (phone2, "+1 206 555 1212 666");
-	g_assert_cmpint (gdata_gd_phone_number_compare (phone, phone2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone), GDATA_COMPARABLE (phone2)), !=, 0);
 	g_object_unref (phone2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_phone_number_compare (phone, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_phone_number_compare (NULL, phone), ==, -1);
-	g_assert_cmpint (gdata_gd_phone_number_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_phone_number_compare (phone, phone), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (phone));
@@ -1808,18 +1766,12 @@ test_gd_postal_address (void)
 	gdata_gd_postal_address_set_street (postal2, "500 West 45th Street");
 	gdata_gd_postal_address_set_city (postal2, "New York");
 	gdata_gd_postal_address_set_postcode (postal2, "NY 10036");
-	g_assert_cmpint (gdata_gd_postal_address_compare (postal, postal2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (postal), GDATA_COMPARABLE (postal2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gd_postal_address_set_city (postal2, "Atlas Mountains");
-	g_assert_cmpint (gdata_gd_postal_address_compare (postal, postal2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (postal), GDATA_COMPARABLE (postal2)), !=, 0);
 	g_object_unref (postal2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_postal_address_compare (postal, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_postal_address_compare (NULL, postal), ==, -1);
-	g_assert_cmpint (gdata_gd_postal_address_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_postal_address_compare (postal, postal), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (postal));
@@ -1903,7 +1855,7 @@ test_gd_reminder (void)
 
 	/* Compare to another reminder */
 	reminder2 = gdata_gd_reminder_new (NULL, NULL, 15 * 60);
-	g_assert_cmpint (gdata_gd_reminder_compare (reminder, reminder2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (reminder), GDATA_COMPARABLE (reminder2)), ==, 0);
 	g_object_unref (reminder2);
 	g_object_unref (reminder);
 
@@ -1913,12 +1865,6 @@ test_gd_reminder (void)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_GD_REMINDER (reminder));
 	g_clear_error (&error);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_reminder_compare (reminder, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_reminder_compare (NULL, reminder), ==, -1);
-	g_assert_cmpint (gdata_gd_reminder_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_reminder_compare (reminder, reminder), ==, 0);
 
 	/* Check the properties */
 	g_assert (gdata_gd_reminder_get_method (reminder) == NULL);
@@ -1942,7 +1888,7 @@ test_gd_reminder (void)
 
 	/* Compare to another reminder */
 	reminder2 = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, &time_val, -1);
-	g_assert_cmpint (gdata_gd_reminder_compare (reminder, reminder2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (reminder), GDATA_COMPARABLE (reminder2)), ==, 0);
 	g_object_unref (reminder2);
 
 	/* Check the outputted XML */
@@ -1985,19 +1931,13 @@ test_gd_when (void)
 
 	/* Compare it against another identical time */
 	when2 = gdata_gd_when_new (&time_val, &time_val2, FALSE);
-	g_assert_cmpint (gdata_gd_when_compare (when, when2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when), GDATA_COMPARABLE (when2)), ==, 0);
 
 	/* …and a different one */
 	time_val2.tv_usec = 100;
 	gdata_gd_when_set_end_time (when2, &time_val2);
-	g_assert_cmpint (gdata_gd_when_compare (when, when2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when), GDATA_COMPARABLE (when2)), !=, 0);
 	g_object_unref (when2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_when_compare (when, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_when_compare (NULL, when), ==, -1);
-	g_assert_cmpint (gdata_gd_when_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_when_compare (when, when), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (when));
@@ -2075,18 +2015,12 @@ test_gd_where (void)
 
 	/* Compare it against another identical place */
 	where2 = gdata_gd_where_new (GDATA_GD_WHERE_EVENT_ALTERNATE, "Metropolis", "New York Location <videoconference>");
-	g_assert_cmpint (gdata_gd_where_compare (where, where2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (where), GDATA_COMPARABLE (where2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gd_where_set_label (where2, "Atlas Mountains");
-	g_assert_cmpint (gdata_gd_where_compare (where, where2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (where), GDATA_COMPARABLE (where2)), !=, 0);
 	g_object_unref (where2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_where_compare (where, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_where_compare (NULL, where), ==, -1);
-	g_assert_cmpint (gdata_gd_where_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_where_compare (where, where), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (where));
@@ -2141,18 +2075,12 @@ test_gd_who (void)
 
 	/* Compare it against another identical person */
 	who2 = gdata_gd_who_new ("http://schemas.google.com/g/2005#message.to", "Elizabeth", "liz@example.com");
-	g_assert_cmpint (gdata_gd_who_compare (who, who2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (who), GDATA_COMPARABLE (who2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gd_who_set_email_address (who2, "john@example.com");
-	g_assert_cmpint (gdata_gd_who_compare (who, who2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (who), GDATA_COMPARABLE (who2)), !=, 0);
 	g_object_unref (who2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gd_who_compare (who, NULL), ==, 1);
-	g_assert_cmpint (gdata_gd_who_compare (NULL, who), ==, -1);
-	g_assert_cmpint (gdata_gd_who_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gd_who_compare (who, who), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (who));
@@ -2511,18 +2439,12 @@ test_gcontact_calendar (void)
 
 	/* Compare it against another identical calendar */
 	calendar2 = gdata_gcontact_calendar_new ("http://calendar.com/", GDATA_GCONTACT_CALENDAR_WORK, NULL, TRUE);
-	g_assert_cmpint (gdata_gcontact_calendar_compare (calendar, calendar2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (calendar), GDATA_COMPARABLE (calendar2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gcontact_calendar_set_uri (calendar2, "http://calendar.somewhereelse.com/");
-	g_assert_cmpint (gdata_gcontact_calendar_compare (calendar, calendar2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (calendar), GDATA_COMPARABLE (calendar2)), !=, 0);
 	g_object_unref (calendar2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gcontact_calendar_compare (calendar, NULL), ==, 1);
-	g_assert_cmpint (gdata_gcontact_calendar_compare (NULL, calendar), ==, -1);
-	g_assert_cmpint (gdata_gcontact_calendar_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gcontact_calendar_compare (calendar, calendar), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (calendar));
@@ -2701,18 +2623,12 @@ test_gcontact_external_id (void)
 
 	/* Compare it against another identical external ID */
 	id2 = gdata_gcontact_external_id_new ("5", GDATA_GCONTACT_EXTERNAL_ID_ACCOUNT, NULL);
-	g_assert_cmpint (gdata_gcontact_external_id_compare (id, id2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (id), GDATA_COMPARABLE (id2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gcontact_external_id_set_value (id2, "http://identifying.uri");
-	g_assert_cmpint (gdata_gcontact_external_id_compare (id, id2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (id), GDATA_COMPARABLE (id2)), !=, 0);
 	g_object_unref (id2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gcontact_external_id_compare (id, NULL), ==, 1);
-	g_assert_cmpint (gdata_gcontact_external_id_compare (NULL, id), ==, -1);
-	g_assert_cmpint (gdata_gcontact_external_id_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gcontact_external_id_compare (id, id), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (id));
@@ -2859,18 +2775,12 @@ test_gcontact_language (void)
 
 	/* Compare it against another identical language */
 	language2 = gdata_gcontact_language_new ("en-GB", NULL);
-	g_assert_cmpint (gdata_gcontact_language_compare (language, language2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (language), GDATA_COMPARABLE (language2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gcontact_language_set_code (language2, "sv");
-	g_assert_cmpint (gdata_gcontact_language_compare (language, language2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (language), GDATA_COMPARABLE (language2)), !=, 0);
 	g_object_unref (language2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gcontact_language_compare (language, NULL), ==, 1);
-	g_assert_cmpint (gdata_gcontact_language_compare (NULL, language), ==, -1);
-	g_assert_cmpint (gdata_gcontact_language_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gcontact_language_compare (language, language), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (language));
@@ -3024,18 +2934,12 @@ test_gcontact_website (void)
 
 	/* Compare it against another identical website */
 	website2 = gdata_gcontact_website_new ("http://example.com/", GDATA_GCONTACT_WEBSITE_WORK, "<Markup> blog", TRUE);
-	g_assert_cmpint (gdata_gcontact_website_compare (website, website2), ==, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (website), GDATA_COMPARABLE (website2)), ==, 0);
 
 	/* …and a different one */
 	gdata_gcontact_website_set_uri (website2, "http://somewhereelse.com/");
-	g_assert_cmpint (gdata_gcontact_website_compare (website, website2), !=, 0);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (website), GDATA_COMPARABLE (website2)), !=, 0);
 	g_object_unref (website2);
-
-	/* More comparisons */
-	g_assert_cmpint (gdata_gcontact_website_compare (website, NULL), ==, 1);
-	g_assert_cmpint (gdata_gcontact_website_compare (NULL, website), ==, -1);
-	g_assert_cmpint (gdata_gcontact_website_compare (NULL, NULL), ==, 0);
-	g_assert_cmpint (gdata_gcontact_website_compare (website, website), ==, 0);
 
 	/* Check the outputted XML is the same */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (website));
@@ -3113,6 +3017,8 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/access-rule/get_xml", test_access_rule_get_xml);
 	g_test_add_func ("/access-rule/error_handling", test_access_rule_error_handling);
+
+	g_test_add_func ("/comparable", test_comparable);
 
 	g_test_add_func ("/color/parsing", test_color_parsing);
 	g_test_add_func ("/color/output", test_color_output);

@@ -155,7 +155,8 @@ gdata_headers = \
 	gdata/gdata-access-rule.h	\
 	gdata/gdata-parsable.h		\
 	gdata/gdata-download-stream.h	\
-	gdata/gdata-upload-stream.h
+	gdata/gdata-upload-stream.h	\
+	gdata/gdata-comparable.h
 # The following headers are private, and shouldn't be installed:
 private_headers = \
 	gdata/gdata-private.h		\
@@ -285,6 +286,7 @@ gdata_libgdata_la_SOURCES = \
 	gdata/gdata-download-stream.c	\
 	gdata/gdata-upload-stream.c	\
 	gdata/gdata-buffer.c		\
+	gdata/gdata-comparable.c	\
 	\
 	gdata/atom/gdata-author.c	\
 	gdata/atom/gdata-category.c	\

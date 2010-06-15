@@ -35,7 +35,9 @@
 #include "gdata-gd-where.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_gd_where_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_where_finalize (GObject *object);
 static void gdata_gd_where_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_where_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -57,7 +59,8 @@ enum {
 	PROP_LABEL
 };
 
-G_DEFINE_TYPE (GDataGDWhere, gdata_gd_where, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGDWhere, gdata_gd_where, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_where_comparable_init))
 
 static void
 gdata_gd_where_class_init (GDataGDWhereClass *klass)
@@ -127,6 +130,22 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	                                                      "Label", "Specifies a user-readable label to distinguish this location from others.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	GDataGDWherePrivate *a = ((GDataGDWhere*) self)->priv, *b = ((GDataGDWhere*) other)->priv;
+
+	if (g_strcmp0 (a->value_string, b->value_string) == 0 && g_strcmp0 (a->label, b->label) == 0)
+		return 0;
+	return 1;
+}
+
+static void
+gdata_gd_where_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -270,41 +289,6 @@ gdata_gd_where_new (const gchar *relation_type, const gchar *value_string, const
 {
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_WHERE, "relation-type", relation_type, "value-string", value_string, "label", label, NULL);
-}
-
-/**
- * gdata_gd_where_compare:
- * @a: a #GDataGDWhere, or %NULL
- * @b: another #GDataGDWhere, or %NULL
- *
- * Compares the two places in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @label and @value_string properties of the #GDataGDWhere<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_gd_where_compare (const GDataGDWhere *a, const GDataGDWhere *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GD_WHERE (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GD_WHERE (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-
-	if (g_strcmp0 (a->priv->value_string, b->priv->value_string) == 0 && g_strcmp0 (a->priv->label, b->priv->label) == 0)
-		return 0;
-	return 1;
 }
 
 /**

@@ -172,7 +172,6 @@ GType gdata_gd_im_address_get_type (void) G_GNUC_CONST;
 
 GDataGDIMAddress *gdata_gd_im_address_new (const gchar *address, const gchar *protocol, const gchar *relation_type, const gchar *label,
                                            gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_im_address_compare (const GDataGDIMAddress *a, const GDataGDIMAddress *b) G_GNUC_PURE;
 
 const gchar *gdata_gd_im_address_get_address (GDataGDIMAddress *self) G_GNUC_PURE;
 void gdata_gd_im_address_set_address (GDataGDIMAddress *self, const gchar *address);

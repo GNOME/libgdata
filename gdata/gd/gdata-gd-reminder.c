@@ -36,7 +36,9 @@
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
 #include "gdata-types.h"
+#include "gdata-comparable.h"
 
+static void gdata_gd_reminder_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_reminder_finalize (GObject *object);
 static void gdata_gd_reminder_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_reminder_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -57,7 +59,8 @@ enum {
 	PROP_RELATIVE_TIME
 };
 
-G_DEFINE_TYPE (GDataGDReminder, gdata_gd_reminder, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGDReminder, gdata_gd_reminder, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_reminder_comparable_init))
 
 static void
 gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
@@ -140,6 +143,35 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	                                                   "Relative time", "Time at which the reminder should be issued, in minutes.",
 	                                                   -1, G_MAXINT, -1,
 	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	gint method_cmp;
+	GDataGDReminder *a = (GDataGDReminder*) self, *b = (GDataGDReminder*) other;
+
+	if (gdata_gd_reminder_is_absolute_time (a) != gdata_gd_reminder_is_absolute_time (b))
+		return 1;
+
+	method_cmp = g_strcmp0 (a->priv->method, b->priv->method);
+	if (gdata_gd_reminder_is_absolute_time (a) == TRUE) {
+		if (method_cmp == 0 &&
+		    a->priv->absolute_time.tv_sec == b->priv->absolute_time.tv_sec &&
+		    a->priv->absolute_time.tv_usec == b->priv->absolute_time.tv_usec)
+			return 0;
+	} else {
+		if (method_cmp == 0 && a->priv->relative_time == b->priv->relative_time)
+			return 0;
+	}
+
+	return method_cmp;
+}
+
+static void
+gdata_gd_reminder_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -299,55 +331,6 @@ gdata_gd_reminder_new (const gchar *method, const GTimeVal *absolute_time, gint 
 	g_return_val_if_fail (absolute_time == NULL || relative_time == -1, NULL);
 	g_return_val_if_fail (relative_time >= -1, NULL);
 	return g_object_new (GDATA_TYPE_GD_REMINDER, "absolute-time", absolute_time, "relative-time", relative_time, "method", method, NULL);
-}
-
-/**
- * gdata_gd_reminder_compare:
- * @a: a #GDataGDReminder, or %NULL
- * @b: another #GDataGDReminder, or %NULL
- *
- * Compares the two reminders in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis all the properties of the #GDataGDReminder<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_gd_reminder_compare (const GDataGDReminder *a, const GDataGDReminder *b)
-{
-	gint method_cmp;
-
-	g_return_val_if_fail (a == NULL || GDATA_IS_GD_REMINDER (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GD_REMINDER (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-
-	if (gdata_gd_reminder_is_absolute_time ((GDataGDReminder*) a) != gdata_gd_reminder_is_absolute_time ((GDataGDReminder*) b))
-		return 1;
-
-	method_cmp = g_strcmp0 (a->priv->method, b->priv->method);
-	if (gdata_gd_reminder_is_absolute_time ((GDataGDReminder*) a) == TRUE) {
-		if (method_cmp == 0 &&
-		    a->priv->absolute_time.tv_sec == b->priv->absolute_time.tv_sec &&
-		    a->priv->absolute_time.tv_usec == b->priv->absolute_time.tv_usec)
-			return 0;
-	} else {
-		if (method_cmp == 0 && a->priv->relative_time == b->priv->relative_time)
-			return 0;
-	}
-
-	return method_cmp;
 }
 
 /**

@@ -35,7 +35,9 @@
 #include "gdata-gd-im-address.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_gd_im_address_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_im_address_finalize (GObject *object);
 static void gdata_gd_im_address_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_im_address_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -59,7 +61,8 @@ enum {
 	PROP_IS_PRIMARY
 };
 
-G_DEFINE_TYPE (GDataGDIMAddress, gdata_gd_im_address, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGDIMAddress, gdata_gd_im_address, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_im_address_comparable_init))
 
 static void
 gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
@@ -158,6 +161,22 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	                                                       "Primary?", "Indicates which IM address out of a group is primary.",
 	                                                       FALSE,
 	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	GDataGDIMAddressPrivate *a = ((GDataGDIMAddress*) self)->priv, *b = ((GDataGDIMAddress*) other)->priv;
+
+	if (g_strcmp0 (a->address, b->address) == 0 && g_strcmp0 (a->protocol, b->protocol) == 0)
+		return 0;
+	return 1;
+}
+
+static void
+gdata_gd_im_address_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -319,41 +338,6 @@ gdata_gd_im_address_new (const gchar *address, const gchar *protocol, const gcha
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_IM_ADDRESS, "address", address, "protocol", protocol, "relation-type", relation_type,
 	                     "label", label, "is-primary", is_primary, NULL);
-}
-
-/**
- * gdata_gd_im_address_compare:
- * @a: a #GDataGDIMAddress, or %NULL
- * @b: another #GDataGDIMAddress, or %NULL
- *
- * Compares the two IM addresses in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @address and @protocol properties of the #GDataGDIMAddress<!-- -->es.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_gd_im_address_compare (const GDataGDIMAddress *a, const GDataGDIMAddress *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GD_IM_ADDRESS (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GD_IM_ADDRESS (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-
-	if (g_strcmp0 (a->priv->address, b->priv->address) == 0 && g_strcmp0 (a->priv->protocol, b->priv->protocol) == 0)
-		return 0;
-	return 1;
 }
 
 /**

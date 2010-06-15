@@ -35,7 +35,9 @@
 #include "gdata-gcontact-language.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_gcontact_language_comparable_init (GDataComparableIface *iface);
 static void gdata_gcontact_language_finalize (GObject *object);
 static void gdata_gcontact_language_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gcontact_language_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -53,7 +55,8 @@ enum {
 	PROP_LABEL
 };
 
-G_DEFINE_TYPE (GDataGContactLanguage, gdata_gcontact_language, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGContactLanguage, gdata_gcontact_language, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gcontact_language_comparable_init))
 
 static void
 gdata_gcontact_language_class_init (GDataGContactLanguageClass *klass)
@@ -104,6 +107,22 @@ gdata_gcontact_language_class_init (GDataGContactLanguageClass *klass)
 	                                                      "Label", "A free-form string that identifies the language.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	GDataGContactLanguagePrivate *a = ((GDataGContactLanguage*) self)->priv, *b = ((GDataGContactLanguage*) other)->priv;
+
+	if (g_strcmp0 (a->code, b->code) == 0 && g_strcmp0 (a->label, b->label) == 0)
+		return 0;
+	return 1;
+}
+
+static void
+gdata_gcontact_language_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -225,41 +244,6 @@ gdata_gcontact_language_new (const gchar *code, const gchar *label)
 {
 	g_return_val_if_fail ((code != NULL && *code != '\0' && label == NULL) || (code == NULL && label != NULL && *label != '\0'), NULL);
 	return g_object_new (GDATA_TYPE_GCONTACT_LANGUAGE, "code", code, "label", label, NULL);
-}
-
-/**
- * gdata_gcontact_language_compare:
- * @a: a #GDataGContactLanguage, or %NULL
- * @b: another #GDataGContactLanguage, or %NULL
- *
- * Compares the two languages in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @code and @label properties of the #GDataGContactLanguage<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.7.0
- **/
-gint
-gdata_gcontact_language_compare (const GDataGContactLanguage *a, const GDataGContactLanguage *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GCONTACT_LANGUAGE (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GCONTACT_LANGUAGE (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-
-	if (g_strcmp0 (a->priv->code, b->priv->code) == 0 && g_strcmp0 (a->priv->label, b->priv->label) == 0)
-		return 0;
-	return 1;
 }
 
 /**

@@ -90,7 +90,6 @@ typedef struct {
 GType gdata_gd_where_get_type (void) G_GNUC_CONST;
 
 GDataGDWhere *gdata_gd_where_new (const gchar *relation_type, const gchar *value_string, const gchar *label) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gd_where_compare (const GDataGDWhere *a, const GDataGDWhere *b) G_GNUC_PURE;
 
 const gchar *gdata_gd_where_get_relation_type (GDataGDWhere *self) G_GNUC_PURE;
 void gdata_gd_where_set_relation_type (GDataGDWhere *self, const gchar *relation_type);

@@ -60,8 +60,6 @@ typedef struct {
 
 GType gdata_generator_get_type (void) G_GNUC_CONST;
 
-gint gdata_generator_compare (const GDataGenerator *a, const GDataGenerator *b) G_GNUC_PURE;
-
 const gchar *gdata_generator_get_name (GDataGenerator *self) G_GNUC_PURE;
 const gchar *gdata_generator_get_uri (GDataGenerator *self) G_GNUC_PURE;
 const gchar *gdata_generator_get_version (GDataGenerator *self) G_GNUC_PURE;

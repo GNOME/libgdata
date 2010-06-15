@@ -33,7 +33,9 @@
 #include "gdata-generator.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_generator_comparable_init (GDataComparableIface *iface);
 static void gdata_generator_finalize (GObject *object);
 static void gdata_generator_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
@@ -51,7 +53,8 @@ enum {
 	PROP_VERSION
 };
 
-G_DEFINE_TYPE (GDataGenerator, gdata_generator, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGenerator, gdata_generator, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_generator_comparable_init))
 
 static void
 gdata_generator_class_init (GDataGeneratorClass *klass)
@@ -118,6 +121,18 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 	                                                      "Version", "Indicates the version of the generating agent.",
 	                                                      NULL,
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	return g_strcmp0 (((GDataGenerator*) self)->priv->name, ((GDataGenerator*) other)->priv->name);
+}
+
+static void
+gdata_generator_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -188,38 +203,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		return TRUE;
 
 	return GDATA_PARSABLE_CLASS (gdata_generator_parent_class)->parse_xml (parsable, doc, node, user_data, error);
-}
-
-/**
- * gdata_generator_compare:
- * @a: a #GDataGenerator, or %NULL
- * @b: another #GDataGenerator, or %NULL
- *
- * Compares the two generators in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @name property of the #GDataGenerator<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_generator_compare (const GDataGenerator *a, const GDataGenerator *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GENERATOR (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GENERATOR (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-	return g_strcmp0 (a->priv->name, b->priv->name);
 }
 
 /**

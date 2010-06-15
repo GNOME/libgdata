@@ -40,6 +40,7 @@
 #include "gdata-service.h"
 #include "gdata-parser.h"
 #include "gdata-types.h"
+#include "gdata-comparable.h"
 
 static void gdata_calendar_event_dispose (GObject *object);
 static void gdata_calendar_event_finalize (GObject *object);
@@ -977,7 +978,7 @@ gdata_calendar_event_add_person (GDataCalendarEvent *self, GDataGDWho *who)
 	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (self));
 	g_return_if_fail (GDATA_IS_GD_WHO (who));
 
-	if (g_list_find_custom (self->priv->people, who, (GCompareFunc) gdata_gd_who_compare) == NULL)
+	if (g_list_find_custom (self->priv->people, who, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->people = g_list_append (self->priv->people, g_object_ref (who));
 }
 
@@ -1013,7 +1014,7 @@ gdata_calendar_event_add_place (GDataCalendarEvent *self, GDataGDWhere *where)
 	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (self));
 	g_return_if_fail (GDATA_IS_GD_WHERE (where));
 
-	if (g_list_find_custom (self->priv->places, where, (GCompareFunc) gdata_gd_where_compare) == NULL)
+	if (g_list_find_custom (self->priv->places, where, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->places = g_list_append (self->priv->places, g_object_ref (where));
 }
 
@@ -1051,7 +1052,7 @@ gdata_calendar_event_add_time (GDataCalendarEvent *self, GDataGDWhen *when)
 	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (self));
 	g_return_if_fail (GDATA_IS_GD_WHEN (when));
 
-	if (g_list_find_custom (self->priv->times, when, (GCompareFunc) gdata_gd_when_compare) == NULL)
+	if (g_list_find_custom (self->priv->times, when, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->times = g_list_append (self->priv->times, g_object_ref (when));
 }
 

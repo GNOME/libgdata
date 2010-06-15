@@ -36,7 +36,9 @@
 #include "gdata-gd-phone-number.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_gd_phone_number_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_phone_number_finalize (GObject *object);
 static void gdata_gd_phone_number_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_phone_number_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -62,7 +64,8 @@ enum {
 	PROP_IS_PRIMARY
 };
 
-G_DEFINE_TYPE (GDataGDPhoneNumber, gdata_gd_phone_number, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGDPhoneNumber, gdata_gd_phone_number, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_phone_number_comparable_init))
 
 static void
 gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
@@ -163,6 +166,18 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	                                                       "Primary?", "Indicates which phone number out of a group is primary.",
 	                                                       FALSE,
 	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	return g_strcmp0 (((GDataGDPhoneNumber*) self)->priv->number, ((GDataGDPhoneNumber*) other)->priv->number);
+}
+
+static void
+gdata_gd_phone_number_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -339,38 +354,6 @@ gdata_gd_phone_number_new (const gchar *number, const gchar *relation_type, cons
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_PHONE_NUMBER, "number", number, "uri", uri, "relation-type", relation_type,
 	                     "label", label, "is-primary", is_primary, NULL);
-}
-
-/**
- * gdata_gd_phone_number_compare:
- * @a: a #GDataGDPhoneNumber, or %NULL
- * @b: another #GDataGDPhoneNumber, or %NULL
- *
- * Compares the two phone numbers in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @number property of the #GDataGDPhoneNumber<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_gd_phone_number_compare (const GDataGDPhoneNumber *a, const GDataGDPhoneNumber *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GD_PHONE_NUMBER (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GD_PHONE_NUMBER (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-	return g_strcmp0 (a->priv->number, b->priv->number);
 }
 
 /**

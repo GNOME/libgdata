@@ -729,7 +729,6 @@ GDataCalendarFeedPrivate
 GDataCategory
 GDataCategoryClass
 gdata_category_new
-gdata_category_compare
 gdata_category_get_term
 gdata_category_set_term
 gdata_category_get_scheme
@@ -754,7 +753,6 @@ GDataCategoryPrivate
 GDataLink
 GDataLinkClass
 gdata_link_new
-gdata_link_compare
 gdata_link_get_uri
 gdata_link_set_uri
 gdata_link_get_relation_type
@@ -792,7 +790,6 @@ GDataLinkPrivate
 GDataAuthor
 GDataAuthorClass
 gdata_author_new
-gdata_author_compare
 gdata_author_get_name
 gdata_author_set_name
 gdata_author_get_uri
@@ -816,7 +813,6 @@ GDataAuthorPrivate
 <TITLE>GDataGenerator</TITLE>
 GDataGenerator
 GDataGeneratorClass
-gdata_generator_compare
 gdata_generator_get_name
 gdata_generator_get_uri
 gdata_generator_get_version
@@ -840,7 +836,6 @@ GDATA_GD_ORGANIZATION_OTHER
 GDataGDOrganization
 GDataGDOrganizationClass
 gdata_gd_organization_new
-gdata_gd_organization_compare
 gdata_gd_organization_get_name
 gdata_gd_organization_set_name
 gdata_gd_organization_get_title
@@ -886,7 +881,6 @@ GDATA_GD_EVENT_TRANSPARENCY_TRANSPARENT
 GDataGDWhen
 GDataGDWhenClass
 gdata_gd_when_new
-gdata_gd_when_compare
 gdata_gd_when_get_start_time
 gdata_gd_when_set_start_time
 gdata_gd_when_get_end_time
@@ -919,7 +913,6 @@ GDATA_GD_WHO_EVENT_SPEAKER
 GDataGDWho
 GDataGDWhoClass
 gdata_gd_who_new
-gdata_gd_who_compare
 gdata_gd_who_get_relation_type
 gdata_gd_who_set_relation_type
 gdata_gd_who_get_value_string
@@ -947,7 +940,6 @@ GDATA_GD_WHERE_EVENT_PARKING
 GDataGDWhere
 GDataGDWhereClass
 gdata_gd_where_new
-gdata_gd_where_compare
 gdata_gd_where_get_relation_type
 gdata_gd_where_set_relation_type
 gdata_gd_where_get_value_string
@@ -975,7 +967,6 @@ GDATA_GD_EMAIL_ADDRESS_WORK
 GDataGDEmailAddress
 GDataGDEmailAddressClass
 gdata_gd_email_address_new
-gdata_gd_email_address_compare
 gdata_gd_email_address_get_address
 gdata_gd_email_address_set_address
 gdata_gd_email_address_get_relation_type
@@ -1016,7 +1007,6 @@ GDATA_GD_IM_PROTOCOL_JABBER
 GDataGDIMAddress
 GDataGDIMAddressClass
 gdata_gd_im_address_new
-gdata_gd_im_address_compare
 gdata_gd_im_address_get_address
 gdata_gd_im_address_set_address
 gdata_gd_im_address_get_protocol
@@ -1054,7 +1044,6 @@ GDATA_GD_MAIL_CLASS_PARCELS
 GDataGDPostalAddress
 GDataGDPostalAddressClass
 gdata_gd_postal_address_new
-gdata_gd_postal_address_compare
 gdata_gd_postal_address_get_address
 gdata_gd_postal_address_set_address
 gdata_gd_postal_address_get_relation_type
@@ -1126,7 +1115,6 @@ GDATA_GD_PHONE_NUMBER_WORK_PAGER
 GDataGDPhoneNumber
 GDataGDPhoneNumberClass
 gdata_gd_phone_number_new
-gdata_gd_phone_number_compare
 gdata_gd_phone_number_get_number
 gdata_gd_phone_number_set_number
 gdata_gd_phone_number_get_uri
@@ -1158,7 +1146,6 @@ GDATA_GD_REMINDER_SMS
 GDataGDReminder
 GDataGDReminderClass
 gdata_gd_reminder_new
-gdata_gd_reminder_compare
 gdata_gd_reminder_get_method
 gdata_gd_reminder_set_method
 gdata_gd_reminder_get_absolute_time
@@ -1773,7 +1760,6 @@ GDataUploadStreamPrivate
 GDataGDName
 GDataGDNameClass
 gdata_gd_name_new
-gdata_gd_name_compare
 gdata_gd_name_get_given_name
 gdata_gd_name_set_given_name
 gdata_gd_name_get_additional_name
@@ -1876,7 +1862,6 @@ GDATA_GCONTACT_WEBSITE_FTP
 GDataGContactWebsite
 GDataGContactWebsiteClass
 gdata_gcontact_website_new
-gdata_gcontact_website_compare
 gdata_gcontact_website_get_uri
 gdata_gcontact_website_set_uri
 gdata_gcontact_website_get_relation_type
@@ -1932,7 +1917,6 @@ GDATA_GCONTACT_CALENDAR_FREE_BUSY
 GDataGContactCalendar
 GDataGContactCalendarClass
 gdata_gcontact_calendar_new
-gdata_gcontact_calendar_compare
 gdata_gcontact_calendar_get_uri
 gdata_gcontact_calendar_set_uri
 gdata_gcontact_calendar_get_relation_type
@@ -1963,7 +1947,6 @@ GDATA_GCONTACT_EXTERNAL_ID_ORGANIZATION
 GDataGContactExternalID
 GDataGContactExternalIDClass
 gdata_gcontact_external_id_new
-gdata_gcontact_external_id_compare
 gdata_gcontact_external_id_get_value
 gdata_gcontact_external_id_set_value
 gdata_gcontact_external_id_get_relation_type
@@ -1988,7 +1971,6 @@ GDataGContactExternalIDPrivate
 GDataGContactLanguage
 GDataGContactLanguageClass
 gdata_gcontact_language_new
-gdata_gcontact_language_compare
 gdata_gcontact_language_get_code
 gdata_gcontact_language_set_code
 gdata_gcontact_language_get_label
@@ -2042,4 +2024,19 @@ GDATA_IS_APP_CATEGORIES_CLASS
 GDATA_TYPE_APP_CATEGORIES
 <SUBSECTION Private>
 GDataAPPCategoriesPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-comparable</FILE>
+<TITLE>GDataComparable</TITLE>
+GDataComparable
+GDataComparableIface
+gdata_comparable_compare
+<SUBSECTION Standard>
+gdata_comparable_get_type
+GDATA_COMPARABLE
+GDATA_COMPARABLE_CLASS
+GDATA_COMPARABLE_GET_IFACE
+GDATA_IS_COMPARABLE
+GDATA_TYPE_COMPARABLE
 </SECTION>

@@ -35,7 +35,9 @@
 #include "gdata-gd-who.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_gd_who_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_who_finalize (GObject *object);
 static void gdata_gd_who_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_who_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -57,7 +59,8 @@ enum {
 	PROP_EMAIL_ADDRESS
 };
 
-G_DEFINE_TYPE (GDataGDWho, gdata_gd_who, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataGDWho, gdata_gd_who, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_who_comparable_init))
 
 static void
 gdata_gd_who_class_init (GDataGDWhoClass *klass)
@@ -127,6 +130,22 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	                                                      "E-mail address", "The e-mail address of the person represented by the #GDataGDWho.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	GDataGDWhoPrivate *a = ((GDataGDWho*) self)->priv, *b = ((GDataGDWho*) other)->priv;
+
+	if (g_strcmp0 (a->value_string, b->value_string) == 0 && g_strcmp0 (a->email_address, b->email_address) == 0)
+		return 0;
+	return 1;
+}
+
+static void
+gdata_gd_who_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -276,41 +295,6 @@ gdata_gd_who_new (const gchar *relation_type, const gchar *value_string, const g
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 	g_return_val_if_fail (email_address == NULL || *email_address != '\0', NULL);
 	return g_object_new (GDATA_TYPE_GD_WHO, "relation-type", relation_type, "value-string", value_string, "email-address", email_address, NULL);
-}
-
-/**
- * gdata_gd_who_compare:
- * @a: a #GDataGDWho, or %NULL
- * @b: another #GDataGDWho, or %NULL
- *
- * Compares the two people in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @email and @value_string properties of the #GDataGDWho<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_gd_who_compare (const GDataGDWho *a, const GDataGDWho *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_GD_WHO (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_GD_WHO (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-
-	if (g_strcmp0 (a->priv->value_string, b->priv->value_string) == 0 && g_strcmp0 (a->priv->email_address, b->priv->email_address) == 0)
-		return 0;
-	return 1;
 }
 
 /**

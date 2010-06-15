@@ -32,6 +32,7 @@
 #include <gdata/gdata-parsable.h>
 #include <gdata/gdata-download-stream.h>
 #include <gdata/gdata-upload-stream.h>
+#include <gdata/gdata-comparable.h>
 
 /* Namespaces */
 

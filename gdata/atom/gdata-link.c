@@ -36,7 +36,9 @@
 #include "gdata-link.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_link_comparable_init (GDataComparableIface *iface);
 static void gdata_link_finalize (GObject *object);
 static void gdata_link_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_link_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -61,7 +63,8 @@ enum {
 	PROP_LENGTH
 };
 
-G_DEFINE_TYPE (GDataLink, gdata_link, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataLink, gdata_link, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_link_comparable_init))
 
 static void
 gdata_link_class_init (GDataLinkClass *klass)
@@ -175,6 +178,22 @@ gdata_link_class_init (GDataLinkClass *klass)
 	                                                   "Length", "Indicates an advisory length of the linked content in octets.",
 	                                                   -1, G_MAXINT, -1,
 	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	GDataLinkPrivate *a = ((GDataLink*) self)->priv, *b = ((GDataLink*) other)->priv;
+
+	if (g_strcmp0 (a->uri, b->uri) == 0 && g_strcmp0 (a->relation_type, b->relation_type) == 0)
+		return 0;
+	return 1;
+}
+
+static void
+gdata_link_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -352,40 +371,6 @@ gdata_link_new (const gchar *uri, const gchar *relation_type)
 	g_return_val_if_fail (relation_type == NULL || *relation_type != '\0', NULL);
 
 	return g_object_new (GDATA_TYPE_LINK, "uri", uri, "relation-type", relation_type, NULL);
-}
-
-/**
- * gdata_link_compare:
- * @a: a #GDataLink, or %NULL
- * @b: another #GDataLink, or %NULL
- *
- * Compares the two links in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @uri property of the #GDataLink<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_link_compare (const GDataLink *a, const GDataLink *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_LINK (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_LINK (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-	if (g_strcmp0 (a->priv->uri, b->priv->uri) == 0 && g_strcmp0 (a->priv->relation_type, b->priv->relation_type) == 0)
-		return 0;
-	return 1;
 }
 
 /**

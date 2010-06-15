@@ -35,7 +35,9 @@
 #include "gdata-author.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+#include "gdata-comparable.h"
 
+static void gdata_author_comparable_init (GDataComparableIface *iface);
 static void gdata_author_finalize (GObject *object);
 static void gdata_author_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_author_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -55,7 +57,8 @@ enum {
 	PROP_EMAIL_ADDRESS
 };
 
-G_DEFINE_TYPE (GDataAuthor, gdata_author, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_CODE (GDataAuthor, gdata_author, GDATA_TYPE_PARSABLE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_author_comparable_init))
 
 static void
 gdata_author_class_init (GDataAuthorClass *klass)
@@ -121,6 +124,18 @@ gdata_author_class_init (GDataAuthorClass *klass)
 	                                                      "E-mail address", "An e-mail address associated with the person.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gint
+compare_with (GDataComparable *self, GDataComparable *other)
+{
+	return g_strcmp0 (((GDataAuthor*) self)->priv->name, ((GDataAuthor*) other)->priv->name);
+}
+
+static void
+gdata_author_comparable_init (GDataComparableIface *iface)
+{
+	iface->compare_with = compare_with;
 }
 
 static void
@@ -244,38 +259,6 @@ gdata_author_new (const gchar *name, const gchar *uri, const gchar *email_addres
 {
 	g_return_val_if_fail (name != NULL && *name != '\0', NULL);
 	return g_object_new (GDATA_TYPE_AUTHOR, "name", name, "uri", uri, "email-address", email_address, NULL);
-}
-
-/**
- * gdata_author_compare:
- * @a: a #GDataAuthor, or %NULL
- * @b: another #GDataAuthor, or %NULL
- *
- * Compares the two authors in a strcmp() fashion. %NULL values are handled gracefully, with
- * <code class="literal">0</code> returned if both @a and @b are %NULL, <code class="literal">-1</code> if @a is %NULL
- * and <code class="literal">1</code> if @b is %NULL.
- *
- * The comparison of non-%NULL values is done on the basis of the @name property of the #GDataAuthor<!-- -->s.
- *
- * Return value: <code class="literal">0</code> if @a equals @b, <code class="literal">-1</code> or <code class="literal">1</code> as
- * appropriate otherwise
- *
- * Since: 0.4.0
- **/
-gint
-gdata_author_compare (const GDataAuthor *a, const GDataAuthor *b)
-{
-	g_return_val_if_fail (a == NULL || GDATA_IS_AUTHOR (a), 0);
-	g_return_val_if_fail (b == NULL || GDATA_IS_AUTHOR (b), 0);
-
-	if (a == NULL && b != NULL)
-		return -1;
-	else if (a != NULL && b == NULL)
-		return 1;
-
-	if (a == b)
-		return 0;
-	return g_strcmp0 (a->priv->name, b->priv->name);
 }
 
 /**

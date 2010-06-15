@@ -100,7 +100,6 @@ GType gdata_gcontact_calendar_get_type (void) G_GNUC_CONST;
 
 GDataGContactCalendar *gdata_gcontact_calendar_new (const gchar *uri, const gchar *relation_type,
                                                     const gchar *label, gboolean is_primary) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gint gdata_gcontact_calendar_compare (const GDataGContactCalendar *a, const GDataGContactCalendar *b) G_GNUC_PURE;
 
 const gchar *gdata_gcontact_calendar_get_uri (GDataGContactCalendar *self) G_GNUC_PURE;
 void gdata_gcontact_calendar_set_uri (GDataGContactCalendar *self, const gchar *uri);
