@@ -156,6 +156,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	parsable_class->get_namespaces = get_namespaces;
 
 	entry_class->get_entry_uri = get_entry_uri;
+	entry_class->kind_term = "http://gdata.youtube.com/schemas/2007#video";
 
 	/**
 	 * GDataYouTubeVideo:view-count:

@@ -69,6 +69,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataAccessRulePrivate));
 
@@ -79,6 +80,8 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+
+	entry_class->kind_term = "http://schemas.google.com/acl/2007#accessRule";
 
 	/**
 	 * GDataAccessRule:role:
@@ -254,13 +257,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	GDataCategory *category;
 	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (parsable)->priv;
-
-	/* Ensure we have the correct category/kind */
-	category = gdata_category_new ("http://schemas.google.com/acl/2007#accessRule", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (GDATA_ENTRY (parsable), category);
-	g_object_unref (category);
 
 	/* So it's valid Atom, set the title if one doesn't already exist */
 	if (gdata_entry_get_title (GDATA_ENTRY (parsable)) == NULL)

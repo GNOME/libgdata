@@ -34,7 +34,7 @@ check_kind (GDataEntry *entry)
 	for (list = gdata_entry_get_categories (entry); list != NULL; list = list->next) {
 		GDataCategory *category = GDATA_CATEGORY (list->data);
 
-		if (strcmp (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
+		if (g_strcmp0 (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
 			g_assert_cmpstr (gdata_category_get_term (category), ==, "http://schemas.google.com/contact/2008#contact");
 			has_kind = TRUE;
 		}

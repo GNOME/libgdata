@@ -53,6 +53,8 @@ typedef struct {
  * GDataEntryClass:
  * @parent: the parent class
  * @get_entry_uri: a function to build the entry URI for the entry, given its entry ID; free the URI with g_free()
+ * @kind_term: the term for this entry's kind category (see the
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#Introduction">documentation on kinds</ulink>)
  *
  * The class structure for the #GDataEntry type.
  **/
@@ -60,6 +62,7 @@ typedef struct {
 	GDataParsableClass parent;
 
 	gchar *(*get_entry_uri) (const gchar *id); /* G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC */
+	const gchar *kind_term;
 } GDataEntryClass;
 
 GType gdata_entry_get_type (void) G_GNUC_CONST;

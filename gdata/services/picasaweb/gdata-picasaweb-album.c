@@ -150,6 +150,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataPicasaWebAlbumPrivate));
 
@@ -161,6 +162,8 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+
+	entry_class->kind_term = "http://schemas.google.com/photos/2007#album";
 
 	/**
 	 * GDataPicasaWebAlbum:album-id

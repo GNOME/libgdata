@@ -182,6 +182,7 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	parsable_class->get_namespaces = get_namespaces;
 
 	entry_class->get_entry_uri = get_entry_uri;
+	entry_class->kind_term = "http://schemas.google.com/photos/2007#photo";
 
 	/**
 	 * GDataPicasaWebFile:file-id:

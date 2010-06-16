@@ -43,6 +43,7 @@
 #include "atom/gdata-link.h"
 #include "atom/gdata-author.h"
 
+static void gdata_entry_constructed (GObject *object);
 static void gdata_entry_dispose (GObject *object);
 static void gdata_entry_finalize (GObject *object);
 static void gdata_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -91,6 +92,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataEntryPrivate));
 
+	gobject_class->constructed = gdata_entry_constructed;
 	gobject_class->get_property = gdata_entry_get_property;
 	gobject_class->set_property = gdata_entry_set_property;
 	gobject_class->dispose = gdata_entry_dispose;
@@ -242,6 +244,25 @@ static void
 gdata_entry_init (GDataEntry *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ENTRY, GDataEntryPrivate);
+}
+
+static void
+gdata_entry_constructed (GObject *object)
+{
+	GDataEntryClass *klass = GDATA_ENTRY_GET_CLASS (object);
+	GObjectClass *parent_class = G_OBJECT_CLASS (gdata_entry_parent_class);
+
+	/* This can't be done in *_init() because the class properties haven't been properly set then */
+	if (klass->kind_term != NULL) {
+		/* Ensure we have the correct category/kind */
+		GDataCategory *category = gdata_category_new (klass->kind_term, "http://schemas.google.com/g/2005#kind", NULL);
+		gdata_entry_add_category (GDATA_ENTRY (object), category);
+		g_object_unref (category);
+	}
+
+	/* Chain up to the parent class */
+	if (parent_class->constructed != NULL)
+		parent_class->constructed (object);
 }
 
 static void
@@ -651,6 +672,17 @@ gdata_entry_add_category (GDataEntry *self, GDataCategory *category)
 	g_return_if_fail (GDATA_IS_ENTRY (self));
 	g_return_if_fail (GDATA_IS_CATEGORY (category));
 
+	/* Check to see if it's a kind category and if it matches the entry's predetermined kind */
+	if (g_strcmp0 (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
+		GDataEntryClass *klass = GDATA_ENTRY_GET_CLASS (self);
+
+		if (klass->kind_term != NULL && g_strcmp0 (gdata_category_get_term (category), klass->kind_term) != 0) {
+			g_warning ("Adding a kind category term, '%s', to an entry of kind '%s'.",
+			           gdata_category_get_term (category), klass->kind_term);
+		}
+	}
+
+	/* Add the category if we don't already have it */
 	if (g_list_find_custom (self->priv->categories, category, (GCompareFunc) gdata_comparable_compare) == NULL)
 		self->priv->categories = g_list_prepend (self->priv->categories, g_object_ref (category));
 }

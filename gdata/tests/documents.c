@@ -165,16 +165,12 @@ static void
 test_upload_metadata (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
-	GDataCategory *category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_spreadsheet_new (NULL));
-	category = gdata_category_new ("http://schemas.google.com/docs/2007#spreadsheet", "http://schemas.google.com/g/2005#kind", "spreadsheet");
-
 	gdata_entry_set_title (GDATA_ENTRY (document), "myNewSpreadsheet");
-	gdata_entry_add_category (GDATA_ENTRY (document), category);
 
 	/* Insert the document */
 	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (document), NULL, NULL, NULL, &error);
@@ -191,7 +187,6 @@ test_upload_metadata_file (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GFile *document_file;
-	GDataCategory *category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -199,9 +194,7 @@ test_upload_metadata_file (gconstpointer service)
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
-	category = gdata_category_new ("http://schemas.google.com/docs/2007#document", "http://schemas.google.com/g/2005#kind", "document");
 	gdata_entry_set_title (GDATA_ENTRY (document), "upload_metadata_file");
-	gdata_entry_add_category (GDATA_ENTRY (document), category);
 
 	/* Insert the document */
 	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, document_file, NULL, NULL, &error);
@@ -220,13 +213,11 @@ test_upload_file_get_entry (gconstpointer service)
 	GDataDocumentsEntry *new_document;
 	GDataEntry *new_presentation;
 	GFile *document_file;
-	GDataCategory *category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
-	category = gdata_category_new ("http://schemas.google.com/docs/2007#presentation", "http://schemas.google.com/g/2005#kind", "presentation");
 
 	/* Insert the document */
 	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, document_file, NULL, NULL, &error);
@@ -251,21 +242,16 @@ test_add_remove_file_from_folder (gconstpointer service)
 	GDataDocumentsEntry *document, *new_document, *new_document2;
 	GDataDocumentsFolder *folder, *new_folder;
 	GFile *document_file;
-	GDataCategory *folder_category, *document_category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
 	folder = gdata_documents_folder_new (NULL);
-	folder_category = gdata_category_new ("http://schemas.google.com/docs/2007#folder", "http://schemas.google.com/g/2005#kind", "folder");
 	gdata_entry_set_title (GDATA_ENTRY (folder), "add_remove_from_folder_folder");
-	gdata_entry_add_category (GDATA_ENTRY (folder), folder_category);
 
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_presentation_new (NULL));
-	document_category = gdata_category_new ("http://schemas.google.com/docs/2007#presentation", "http://schemas.google.com/g/2005#kind", "presentation");
 	gdata_entry_set_title (GDATA_ENTRY (document), "add_remove_from_folder_presentation");
-	gdata_entry_add_category (GDATA_ENTRY (document), document_category);
 
 	/* Insert the folder */
 	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (folder), NULL, NULL, NULL, &error));
@@ -297,7 +283,6 @@ test_add_file_folder_and_move (gconstpointer service)
 	GDataDocumentsEntry *document, *new_document, *new_document2;
 	GDataDocumentsFolder *folder, *new_folder;
 	GFile *document_file;
-	GDataCategory *folder_category, *document_category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -305,14 +290,10 @@ test_add_file_folder_and_move (gconstpointer service)
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
 
 	folder = gdata_documents_folder_new (NULL);
-	folder_category = gdata_category_new ("http://schemas.google.com/docs/2007#folder", "http://schemas.google.com/g/2005#kind", "folder");
 	gdata_entry_set_title (GDATA_ENTRY (folder), "add_file_folder_move_folder");
-	gdata_entry_add_category (GDATA_ENTRY (folder), folder_category);
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
-	document_category = gdata_category_new ("http://schemas.google.com/docs/2007#document", "http://schemas.google.com/g/2005#kind", "document");
 	gdata_entry_set_title (GDATA_ENTRY (document), "add_file_folder_move_text");
-	gdata_entry_add_category (GDATA_ENTRY (document), document_category);
 
 	/* Insert the folder */
 	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (folder), NULL, NULL, NULL, &error));
@@ -343,7 +324,6 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 	GDataDocumentsEntry *document, *new_document;
 	GDataDocumentsFolder *folder, *new_folder;
 	GFile *document_file;
-	GDataCategory *folder_category, *document_category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -351,14 +331,10 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
 
 	folder = gdata_documents_folder_new (NULL);
-	folder_category = gdata_category_new ("http://schemas.google.com/docs/2007#folder", "http://schemas.google.com/g/2005#kind", "folder");
 	gdata_entry_set_title (GDATA_ENTRY (folder), "upload_file_metadata_in_new_folder_folder");
-	gdata_entry_add_category (GDATA_ENTRY (folder), folder_category);
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
-	document_category = gdata_category_new ("http://schemas.google.com/docs/2007#document", "http://schemas.google.com/g/2005#kind", "document");
 	gdata_entry_set_title (GDATA_ENTRY (document), "upload_file_metadata_in_new_folder_text");
-	gdata_entry_add_category (GDATA_ENTRY (document), document_category);
 
 	/* Insert the folder */
 	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (folder), NULL, NULL, NULL, &error));
@@ -383,15 +359,12 @@ static void
 test_update_metadata (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *updated_document;
-	GDataCategory *category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
-	category = gdata_category_new ("http://schemas.google.com/docs/2007#document", "http://schemas.google.com/g/2005#kind", "document");
 	gdata_entry_set_title (GDATA_ENTRY (document), "update_metadata_first_title");
-	gdata_entry_add_category (GDATA_ENTRY (document), category);
 
 	/* Insert the document */
 	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, NULL, NULL, NULL, &error);
@@ -417,7 +390,6 @@ test_update_metadata_file (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *updated_document;
 	GFile *document_file, *updated_document_file;
-	GDataCategory *category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -426,9 +398,7 @@ test_update_metadata_file (gconstpointer service)
 	updated_document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated.odt");
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
-	category = gdata_category_new ("http://schemas.google.com/docs/2007#document", "http://schemas.google.com/g/2005#kind", "document");
 	gdata_entry_set_title (GDATA_ENTRY (document), "update_metadata_file_first_title");
-	gdata_entry_add_category (GDATA_ENTRY (document), category);
 
 	/* Insert the documents metadata*/
 	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, NULL, NULL, NULL, &error);
@@ -555,16 +525,12 @@ test_new_document_with_collaborator (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GDataAccessRule *access_rule, *new_access_rule;
-	GDataCategory *category;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_spreadsheet_new (NULL));
-	category = gdata_category_new ("http://schemas.google.com/docs/2007#spreadsheet", "http://schemas.google.com/g/2005#kind", "spreadsheet");
-
 	gdata_entry_set_title (GDATA_ENTRY (document), "new_with_collaborator");
-	gdata_entry_add_category (GDATA_ENTRY (document), category);
 
 	/* Insert the document */
 	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (document), NULL, NULL, NULL, &error);

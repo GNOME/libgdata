@@ -364,16 +364,10 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 static GOutputStream *
 get_file_output_stream (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry, GFile *file_data, GError **error)
 {
-	GDataCategory *category;
 	GFileInfo *file_info = NULL;
 	const gchar *slug = NULL, *content_type = NULL, *user_id = NULL, *album_id = NULL;
 	GOutputStream *output_stream;
 	gchar *upload_uri;
-
-	/* Add the "photo" kind if the entry is missing it. If it already has the kind category, no duplicate is added. */
-	category = gdata_category_new ("http://schemas.google.com/photos/2007#photo", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (GDATA_ENTRY (file_entry), category);
-	g_object_unref (category);
 
 	/* PicasaWeb allows you to post to a default Dropbox */
 	album_id = (album != NULL) ? gdata_entry_get_id (GDATA_ENTRY (album)) : "default";
@@ -668,8 +662,6 @@ error:
 GDataPicasaWebAlbum *
 gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GCancellable *cancellable, GError **error)
 {
-	GDataCategory *album_kind;
-
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (album), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
@@ -686,12 +678,6 @@ gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWe
 		                     _("You must be authenticated to insert an album."));
 		return NULL;
 	}
-
-	/* PicasaWeb needs to know that this is an album, so we're adding the category when we insert it to make sure it's there.
-	   gdata_entry_add_category() checks if it already exists for us. */
-	album_kind = gdata_category_new ("http://schemas.google.com/photos/2007#album", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (GDATA_ENTRY (album), album_kind);
-	g_object_unref (album_kind);
 
 	return GDATA_PICASAWEB_ALBUM (gdata_service_insert_entry (GDATA_SERVICE (self), "http://picasaweb.google.com/data/feed/api/user/default",
 	                                                          GDATA_ENTRY (album), cancellable, error));

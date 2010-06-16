@@ -60,7 +60,10 @@ static void
 gdata_documents_presentation_class_init (GDataDocumentsPresentationClass *klass)
 {
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
+
 	parsable_class->get_xml = get_xml;
+	entry_class->kind_term = "http://schemas.google.com/docs/2007#presentation";
 }
 
 static void

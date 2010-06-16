@@ -673,7 +673,6 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 {
 	/* TODO: Async variant */
 	GDataYouTubeVideo *new_entry;
-	GDataCategory *category;
 	GOutputStream *output_stream;
 	GInputStream *input_stream;
 	const gchar *slug, *content_type, *response_body;
@@ -698,11 +697,6 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 		                     _("You must be authenticated to upload a video."));
 		return NULL;
 	}
-
-	/* Add the "video" kind if the entry is missing it. If it already has the kind category, no duplicate is added. */
-	category = gdata_category_new ("http://gdata.youtube.com/schemas/2007#video", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (GDATA_ENTRY (video), category);
-	g_object_unref (category);
 
 	file_info = g_file_query_info (video_file, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
 	if (file_info == NULL)

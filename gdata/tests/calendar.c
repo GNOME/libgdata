@@ -228,7 +228,6 @@ static void
 test_insert_simple (gconstpointer service)
 {
 	GDataCalendarEvent *event, *new_event;
-	GDataCategory *category;
 	GDataGDWhere *where;
 	GDataGDWho *who;
 	GDataGDWhen *when;
@@ -240,9 +239,6 @@ test_insert_simple (gconstpointer service)
 
 	gdata_entry_set_title (GDATA_ENTRY (event), "Tennis with Beth");
 	gdata_entry_set_content (GDATA_ENTRY (event), "Meet for a quick lesson.");
-	category = gdata_category_new ("http://schemas.google.com/g/2005#event", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (GDATA_ENTRY (event), category);
-	g_object_unref (category);
 	gdata_calendar_event_set_transparency (event, GDATA_GD_EVENT_TRANSPARENCY_OPAQUE);
 	gdata_calendar_event_set_status (event, GDATA_GD_EVENT_STATUS_CONFIRMED);
 	where = gdata_gd_where_new (NULL, "Rolling Lawn Courts", NULL);

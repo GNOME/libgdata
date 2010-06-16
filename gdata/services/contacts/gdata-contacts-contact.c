@@ -144,6 +144,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	parsable_class->get_namespaces = get_namespaces;
 
 	entry_class->get_entry_uri = get_entry_uri;
+	entry_class->kind_term = "http://schemas.google.com/contact/2008#contact";
 
 	/**
 	 * GDataContactsContact:edited:
@@ -407,8 +408,6 @@ notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *
 static void
 gdata_contacts_contact_init (GDataContactsContact *self)
 {
-	GDataCategory *category;
-
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContactPrivate);
 	self->priv->extended_properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->user_defined_fields = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -423,11 +422,6 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 
 	/* Initialise the contact's birthday to a sane but invalid date */
 	g_date_clear (&(self->priv->birthday), 1);
-
-	/* Add the "contact" kind category */
-	category = gdata_category_new ("http://schemas.google.com/contact/2008#contact", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (GDATA_ENTRY (self), category);
-	g_object_unref (category);
 }
 
 static void
