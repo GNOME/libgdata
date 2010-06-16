@@ -756,27 +756,27 @@ gdata_entry_set_content (GDataEntry *self, const gchar *content)
 /**
  * gdata_entry_add_link:
  * @self: a #GDataEntry
- * @link: a #GDataLink to add
+ * @_link: a #GDataLink to add
  *
- * Adds @link to the list of links in the given #GDataEntry and increments its reference count.
+ * Adds @_link to the list of links in the given #GDataEntry and increments its reference count.
  *
  * Duplicate links will not be added to the list.
  **/
 void
-gdata_entry_add_link (GDataEntry *self, GDataLink *link)
+gdata_entry_add_link (GDataEntry *self, GDataLink *_link)
 {
 	/* TODO: More link API */
 	g_return_if_fail (GDATA_IS_ENTRY (self));
-	g_return_if_fail (GDATA_IS_LINK (link));
+	g_return_if_fail (GDATA_IS_LINK (_link));
 
-	if (g_list_find_custom (self->priv->links, link, (GCompareFunc) gdata_comparable_compare) == NULL)
-		self->priv->links = g_list_prepend (self->priv->links, g_object_ref (link));
+	if (g_list_find_custom (self->priv->links, _link, (GCompareFunc) gdata_comparable_compare) == NULL)
+		self->priv->links = g_list_prepend (self->priv->links, g_object_ref (_link));
 }
 
 static gint
-link_compare_cb (const GDataLink *link, const gchar *rel)
+link_compare_cb (const GDataLink *_link, const gchar *rel)
 {
-	return strcmp (gdata_link_get_relation_type ((GDataLink*) link), rel);
+	return strcmp (gdata_link_get_relation_type ((GDataLink*) _link), rel);
 }
 
 /**

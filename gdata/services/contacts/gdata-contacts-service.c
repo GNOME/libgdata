@@ -223,7 +223,7 @@ gdata_contacts_service_update_contact (GDataContactsService *self, GDataContacts
 {
 	/* TODO: Async variant */
 	const gchar *uri;
-	GDataLink *link;
+	GDataLink *_link;
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (contact), NULL);
@@ -232,9 +232,9 @@ gdata_contacts_service_update_contact (GDataContactsService *self, GDataContacts
 
 	/* Can't trust the edit URI the contact gives us, as it has the wrong projection; it uses the base projection, which
 	 * doesn't allow for extended attributes to be set (for some weird reason). */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (contact), GDATA_LINK_EDIT);
-	g_assert (link != NULL);
-	uri = gdata_link_get_uri (link);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (contact), GDATA_LINK_EDIT);
+	g_assert (_link != NULL);
+	uri = gdata_link_get_uri (_link);
 	g_assert (uri != NULL);
 	uri = strstr (uri, "/base/");
 	if (uri != NULL)

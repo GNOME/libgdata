@@ -85,7 +85,7 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataFeed *feed;
-	GDataLink *link;
+	GDataLink *_link;
 	SoupMessage *message;
 	guint status;
 
@@ -97,9 +97,9 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 
 	/* Get the ACL URI */
 	/* TODO: ETag support */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/acl/2007#accessControlList");
-	g_assert (link != NULL);
-	message = _gdata_service_build_message (service, SOUP_METHOD_GET, gdata_link_get_uri (link), NULL, FALSE);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/acl/2007#accessControlList");
+	g_assert (_link != NULL);
+	message = _gdata_service_build_message (service, SOUP_METHOD_GET, gdata_link_get_uri (_link), NULL, FALSE);
 
 	/* Send the message */
 	status = _gdata_service_send_message (service, message, cancellable, error);
@@ -154,7 +154,7 @@ GDataAccessRule *
 gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *service, GDataAccessRule *rule, GCancellable *cancellable, GError **error)
 {
 	GDataAccessRule *updated_rule;
-	GDataLink *link;
+	GDataLink *_link;
 	SoupMessage *message;
 	gchar *upload_data;
 	guint status;
@@ -173,9 +173,9 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 
 	/* Get the ACL URI */
 	/* TODO: ETag support */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/acl/2007#accessControlList");
-	g_assert (link != NULL);
-	message = _gdata_service_build_message (service, SOUP_METHOD_POST, gdata_link_get_uri (link), NULL, FALSE);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/acl/2007#accessControlList");
+	g_assert (_link != NULL);
+	message = _gdata_service_build_message (service, SOUP_METHOD_POST, gdata_link_get_uri (_link), NULL, FALSE);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
@@ -210,24 +210,24 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 static SoupMessage *
 build_message (GDataAccessHandler *access_handler, GDataService *service, GDataAccessRule *rule, const gchar *method)
 {
-	GDataLink *link;
+	GDataLink *_link;
 	SoupMessage *message;
 	GString *uri_string;
 	gchar *uri;
 	const gchar *scope_type, *scope_value;
 
 	/* Get the edit URI */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (rule), GDATA_LINK_EDIT);
-	if (link != NULL)
-		return _gdata_service_build_message (service, method, gdata_link_get_uri (link), NULL, FALSE);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (rule), GDATA_LINK_EDIT);
+	if (_link != NULL)
+		return _gdata_service_build_message (service, method, gdata_link_get_uri (_link), NULL, FALSE);
 
 	/* Try building the URI instead */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (access_handler), "http://schemas.google.com/acl/2007#accessControlList");
-	g_assert (link != NULL);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (access_handler), "http://schemas.google.com/acl/2007#accessControlList");
+	g_assert (_link != NULL);
 	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
 
-	uri_string = g_string_sized_new (strlen (gdata_link_get_uri (link)) + 30);
-	g_string_append_printf (uri_string, "%s/", gdata_link_get_uri (link));
+	uri_string = g_string_sized_new (strlen (gdata_link_get_uri (_link)) + 30);
+	g_string_append_printf (uri_string, "%s/", gdata_link_get_uri (_link));
 	g_string_append_uri_escaped (uri_string, scope_type, NULL, FALSE);
 	if (scope_value != NULL) {
 		g_string_append (uri_string, "%3A");

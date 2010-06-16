@@ -2870,7 +2870,7 @@ gchar *
 gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
                                   GCancellable *cancellable, GError **error)
 {
-	GDataLink *link;
+	GDataLink *_link;
 	SoupMessage *message;
 	guint status;
 	gchar *data;
@@ -2888,9 +2888,9 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 
 	/* Get the photo URI */
 	/* TODO: ETag support */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
-	g_assert (link != NULL);
-	message = _gdata_service_build_message (GDATA_SERVICE (service), SOUP_METHOD_GET, gdata_link_get_uri (link), NULL, FALSE);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
+	g_assert (_link != NULL);
+	message = _gdata_service_build_message (GDATA_SERVICE (service), SOUP_METHOD_GET, gdata_link_get_uri (_link), NULL, FALSE);
 
 	/* Send the message */
 	status = _gdata_service_send_message (GDATA_SERVICE (service), message, cancellable, error);
@@ -2949,7 +2949,7 @@ gboolean
 gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const gchar *data, gsize length,
                                   GCancellable *cancellable, GError **error)
 {
-	GDataLink *link;
+	GDataLink *_link;
 	SoupMessage *message;
 	guint status;
 	gboolean adding_photo = FALSE, deleting_photo = FALSE;
@@ -2966,10 +2966,10 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 		deleting_photo = TRUE;
 
 	/* Get the photo URI */
-	link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
-	g_assert (link != NULL);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
+	g_assert (_link != NULL);
 	message = _gdata_service_build_message (GDATA_SERVICE (service), (deleting_photo == TRUE) ? SOUP_METHOD_DELETE : SOUP_METHOD_PUT,
-	                                        gdata_link_get_uri (link), self->priv->photo_etag, TRUE);
+	                                        gdata_link_get_uri (_link), self->priv->photo_etag, TRUE);
 
 	/* Append the data */
 	if (deleting_photo == FALSE)

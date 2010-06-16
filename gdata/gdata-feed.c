@@ -643,9 +643,9 @@ gdata_feed_get_links (GDataFeed *self)
 }
 
 static gint
-link_compare_cb (const GDataLink *link, const gchar *rel)
+link_compare_cb (const GDataLink *_link, const gchar *rel)
 {
-	return strcmp (gdata_link_get_relation_type ((GDataLink*) link), rel);
+	return strcmp (gdata_link_get_relation_type ((GDataLink*) _link), rel);
 }
 
 /**
@@ -674,9 +674,9 @@ gdata_feed_look_up_link (GDataFeed *self, const gchar *rel)
 }
 
 static void
-_gdata_feed_add_link (GDataFeed *self, GDataLink *link)
+_gdata_feed_add_link (GDataFeed *self, GDataLink *_link)
 {
-	self->priv->links = g_list_prepend (self->priv->links, g_object_ref (link));
+	self->priv->links = g_list_prepend (self->priv->links, g_object_ref (_link));
 }
 
 /**

@@ -343,14 +343,14 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (album != NULL) {
-		GDataLink *link = gdata_entry_look_up_link (GDATA_ENTRY (album), "http://schemas.google.com/g/2005#feed");
-		if (link == NULL) {
+		GDataLink *_link = gdata_entry_look_up_link (GDATA_ENTRY (album), "http://schemas.google.com/g/2005#feed");
+		if (_link == NULL) {
 			/* Error */
 			g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
 			                     _("The album did not have a feed link."));
 			return NULL;
 		}
-		uri = gdata_link_get_uri (link);
+		uri = gdata_link_get_uri (_link);
 	} else {
 		/* Default URI */
 		uri = "http://picasaweb.google.com/data/feed/api/user/default/albumid/default";

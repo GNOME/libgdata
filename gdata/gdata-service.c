@@ -1228,14 +1228,14 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 
 	/* Update the query with the next and previous URIs from the feed */
 	if (query != NULL && feed != NULL) {
-		GDataLink *link;
+		GDataLink *_link;
 
-		link = gdata_feed_look_up_link (feed, "next");
-		if (link != NULL)
-			_gdata_query_set_next_uri (query, gdata_link_get_uri (link));
-		link = gdata_feed_look_up_link (feed, "previous");
-		if (link != NULL)
-			_gdata_query_set_previous_uri (query, gdata_link_get_uri (link));
+		_link = gdata_feed_look_up_link (feed, "next");
+		if (_link != NULL)
+			_gdata_query_set_next_uri (query, gdata_link_get_uri (_link));
+		_link = gdata_feed_look_up_link (feed, "previous");
+		if (_link != NULL)
+			_gdata_query_set_previous_uri (query, gdata_link_get_uri (_link));
 	}
 
 	return feed;
@@ -1709,7 +1709,7 @@ GDataEntry *
 gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
 	GDataEntry *updated_entry;
-	GDataLink *link;
+	GDataLink *_link;
 	SoupMessage *message;
 	gchar *upload_data;
 	guint status;
@@ -1720,9 +1720,9 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* Get the edit URI */
-	link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
-	g_assert (link != NULL);
-	message = _gdata_service_build_message (self, SOUP_METHOD_PUT, gdata_link_get_uri (link), gdata_entry_get_etag (entry), TRUE);
+	_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
+	g_assert (_link != NULL);
+	message = _gdata_service_build_message (self, SOUP_METHOD_PUT, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
@@ -1858,7 +1858,7 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
 gboolean
 gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
-	GDataLink *link;
+	GDataLink *_link;
 	SoupMessage *message;
 	guint status;
 
@@ -1868,9 +1868,9 @@ gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* Get the edit URI */
-	link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
-	g_assert (link != NULL);
-	message = _gdata_service_build_message (self, SOUP_METHOD_DELETE, gdata_link_get_uri (link), gdata_entry_get_etag (entry), TRUE);
+	_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
+	g_assert (_link != NULL);
+	message = _gdata_service_build_message (self, SOUP_METHOD_DELETE, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
 
 	/* Send the message */
 	status = _gdata_service_send_message (self, message, cancellable, error);
