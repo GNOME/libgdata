@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-02 22:54+0200\n"
-"PO-Revision-Date: 2009-06-02 23:16+0200\n"
+"POT-Creation-Date: 2010-06-26 13:20+0200\n"
+"PO-Revision-Date: 2010-06-19 18:15+0200\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,228 +16,410 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
 
-#: ../gdata/gdata-access-handler.c:176
+#: ../gdata/gdata-access-handler.c:170
 msgid "The rule has already been inserted."
-msgstr "La regla ja està inserida."
+msgstr "La regla ja fou inserida."
 
-#: ../gdata/gdata-access-handler.c:378
+#: ../gdata/gdata-access-handler.c:350
 msgid "The owner's rule may not be deleted."
-msgstr "La regla del propietari no es pot suprimir."
+msgstr "No es pot suprimir la regla del propietari."
 
-#: ../gdata/gdata-parsable.c:128 ../gdata/gdata-parsable.c:139
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:186 ../gdata/gdata-parsable.c:197
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "S'ha produït un error en analitzar l'XML: %s"
 
-#: ../gdata/gdata-parsable.c:140
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: ../gdata/gdata-parsable.c:199
 msgid "Empty document."
 msgstr "Document buit."
 
-#: ../gdata/gdata-parser.c:42
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#: ../gdata/gdata-parser.c:66
 #, c-format
-msgid "A <%s> element was missing required content."
-msgstr "A un element <%s> l'hi falta el contingut necessari."
+msgid "A %s element was missing required content."
+msgstr "A un element %s l'hi falta el contingut necessari."
 
-#: ../gdata/gdata-parser.c:58
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:82
 #, c-format
-msgid "A <%s>'s <%s> element content (\"%s\") was not in ISO 8601 format."
+msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgstr "El contingut d'un element %s («%s») no estava en el format ISO 8601."
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#: ../gdata/gdata-parser.c:102
+#, c-format
+msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgstr "Es desconeixia el valor de la propietat %s de l'element %s («%s»)."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#: ../gdata/gdata-parser.c:120
+#, c-format
+msgid "The content of a %s element (\"%s\") was unknown."
+msgstr "Es desconeixia el contingut de l'element %s («%s»)."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: ../gdata/gdata-parser.c:140
+#, c-format
+msgid "A required property of a %s element (%s) was not present."
+msgstr "No existia una propietat necessària d'un element %s (%s)."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
 msgstr ""
-"El contingut d'un <%s> de l'element <%s> («%s») no estava en el format ISO 8601."
+"Hi ha valors per a l'element %3$s a les propietats %1$s i %2$s, tot i que "
+"només se'n permet una d'elles."
 
-#: ../gdata/gdata-parser.c:70
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#: ../gdata/gdata-parser.c:182
 #, c-format
-msgid "Unhandled <%s:%s> element as a child of <%s>."
-msgstr "L'element <%s:%s> no és gestionat com a fill de <%s>."
+msgid "A required element (%s) was not present."
+msgstr "No exisita un element necessari (%s)."
 
-#: ../gdata/gdata-parser.c:83
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#: ../gdata/gdata-parser.c:197
 #, c-format
-msgid "Unknown value \"%s\" of a <%s> @%s property."
-msgstr "Valor desconegut «%s» d'un <%s> a la propietat @%s."
+msgid "A singleton element (%s) was duplicated."
+msgstr "Un element únic (%s) estava duplicat."
 
-#: ../gdata/gdata-parser.c:95
-#, c-format
-msgid "A required @%s property of a <%s> was not present."
-msgstr "Una propietat @%s necessària d'un <%s> no estava present."
-
-#: ../gdata/gdata-parser.c:106
-#, c-format
-msgid "A required <%s> element as a child of <%s> was not present."
-msgstr "Un element <%s> necessari com a fill d'un <%s> no estava present."
-
-#: ../gdata/gdata-parser.c:117
-#, c-format
-msgid "A <%s> element as a child of <%s> was duplicated."
-msgstr "Un element <%s> com a fill d'un <%s> estava duplicat."
-
-#: ../gdata/gdata-service.c:308 ../gdata/gdata-service.c:724
-#: ../gdata/services/youtube/gdata-youtube-service.c:201
+#: ../gdata/gdata-service.c:392
+#: ../gdata/services/youtube/gdata-youtube-service.c:233
 msgid "The server returned a malformed response."
 msgstr "El servidor ha retornat una resposta mal formada."
 
-#: ../gdata/gdata-service.c:339
+#: ../gdata/gdata-service.c:429
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "No es pot connectar al servidor del servei."
+
+#: ../gdata/gdata-service.c:434
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "No es pot connectar al servidor intermediari."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:440
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"URI de petició o capçalera no vàlida, o paràmetre no estàndard no "
-"compatible: %s"
+"L'URI de petició o la capçalera no són vàlids, o era un paràmetre no "
+"estàndard i no compatible: %s"
 
-#: ../gdata/gdata-service.c:344
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:446
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Cal autenticació: %s"
 
-#: ../gdata/gdata-service.c:348
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:451
 #, c-format
 msgid "The requested resource was not found: %s"
-msgstr "No s'ha trobat la font sol·licitada: %s"
+msgstr "No s'ha trobat el recurs sol·licitat: %s"
 
-#: ../gdata/gdata-service.c:352
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:457
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr "S'ha modificat l'entrada des de que es va baixar: %s"
+msgstr "S'ha modificat l'entrada des que es va baixar: %s"
 
-#: ../gdata/gdata-service.c:364
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:471
 #, c-format
-msgid "Error code %u when inserting an entry: %s"
-msgstr "Codi d'error %u en inserir una entrada: %s"
+msgid "Error code %u when authenticating: %s"
+msgstr "Codi d'error %u en autenticar: %s"
 
-#: ../gdata/gdata-service.c:368
-#, c-format
-msgid "Error code %u when updating an entry: %s"
-msgstr "Codi d'error %u en actualitzar una entrada: %s"
-
-#: ../gdata/gdata-service.c:372
-#, c-format
-msgid "Error code %u when deleting an entry: %s"
-msgstr "Codi d'error %u en suprimir una entrada: %s"
-
-#: ../gdata/gdata-service.c:376
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:477
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Codi d'error %u en consultar: %s"
 
-#: ../gdata/gdata-service.c:618
-msgid "A CAPTCHA must be filled out to log in."
-msgstr "S'ha d'emplenar un CAPTCHA per a entrar."
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:483
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Codi d'error %u en inserir una entrada: %s"
 
-#: ../gdata/gdata-service.c:642
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:489
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Codi d'error %u en actualitzar una entrada: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:495
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Codi d'error %u en suprimir una entrada: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:501
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "Codi d'error %u en baixar: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:507
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Codi d'error %u en pujar: %s"
+
+#: ../gdata/gdata-service.c:632
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "S'ha d'emplenar un CAPTCHA per entrar."
+
+#: ../gdata/gdata-service.c:656
 msgid "Your username or password were incorrect."
 msgstr "El nom d'usuari o la contrasenya eren incorrectes."
 
-#: ../gdata/gdata-service.c:660
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:675
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "No s'ha verificat la vostra adreça de correu electrònica. (%s)"
+msgstr "No s'ha verificat la vostra adreça de correu electrònic. (%s)"
 
-#: ../gdata/gdata-service.c:664
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:680
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "No heu acceptat els termes i les condicions del servei. (%s)"
 
-#: ../gdata/gdata-service.c:668
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:685
 #, c-format
 msgid "This account has been deleted. (%s)"
-msgstr "Aquesta compte està suprimit. (%s)"
+msgstr "Aquest compte s'ha suprimit. (%s)"
 
-#: ../gdata/gdata-service.c:672
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:690
 #, c-format
 msgid "This account has been disabled. (%s)"
-msgstr "Aquesta compte està inhabilitat. (%s)"
+msgstr "Aquest compte s'ha inhabilitat. (%s)"
 
-#: ../gdata/gdata-service.c:676
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:695
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
-msgstr "S'ha inhabilitat l'accés a aquest servei amb aquest compte. (%s)"
+msgstr "S'ha inhabilitat l'accés a aquest servei des d'aquest compte. (%s)"
 
-#: ../gdata/gdata-service.c:680
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:700
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Aquest servei no està disponible actualment. (%s)"
 
-#: ../gdata/gdata-service.c:793
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:971
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "URI de redireccionament no vàlida: %s"
+msgstr "URI de redireccionament no vàlid: %s"
 
-#: ../gdata/gdata-service.c:1191
-#: ../gdata/services/youtube/gdata-youtube-service.c:628
+#: ../gdata/gdata-service.c:1564
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:606
+#: ../gdata/services/youtube/gdata-youtube-service.c:691
 msgid "The entry has already been inserted."
-msgstr "Ja està inserida aquesta entrada."
+msgstr "Aquesta entrada ja fou inserida."
 
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:354
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:320
 #, c-format
-msgid ""
-"A <%s>'s <%s> element content (\"%s\") was not in hexadecimal RGB format."
+msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
-"El contingut d'un <%s> de l'element <%s> («%s») no estava en format RGB "
-"hexadecimal."
+"El contingut de l'element %s («%s») no estava en format RGB hexadecimal."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:106
-#: ../gdata/services/calendar/gdata-calendar-service.c:140
+#: ../gdata/services/calendar/gdata-calendar-service.c:110
+#: ../gdata/services/calendar/gdata-calendar-service.c:155
 msgid "You must be authenticated to query all calendars."
-msgstr "Heu d'estar autenticat per a consultar tots els calendaris."
+msgstr "Heu d'estar autenticat per consultar tots els calendaris."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:172
-#: ../gdata/services/calendar/gdata-calendar-service.c:206
-#: ../gdata/services/calendar/gdata-calendar-service.c:240
+#: ../gdata/services/calendar/gdata-calendar-service.c:197
+#: ../gdata/services/calendar/gdata-calendar-service.c:242
+#: ../gdata/services/calendar/gdata-calendar-service.c:284
 msgid "You must be authenticated to query your own calendars."
-msgstr "Heu d'estar autenticat per a consultar els vostres calendaris."
+msgstr "Heu d'estar autenticat per consultar els vostres calendaris."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:249
+#: ../gdata/services/calendar/gdata-calendar-service.c:293
 msgid "The calendar did not have a content source."
 msgstr "El calendari no tenia una font de contingut."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:104
-#: ../gdata/services/contacts/gdata-contacts-service.c:139
+#: ../gdata/services/contacts/gdata-contacts-service.c:114
+#: ../gdata/services/contacts/gdata-contacts-service.c:160
 msgid "You must be authenticated to query contacts."
-msgstr "Heu d'estar autenticat per a consultar els contactes."
+msgstr "Heu d'estar autenticat per consultar els contactes."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:307
+#: ../gdata/services/documents/gdata-documents-entry.c:622
+msgid "You must be authenticated to download documents."
+msgstr "Heu d'estar autenticat per baixar documents."
+
+#: ../gdata/services/documents/gdata-documents-service.c:199
+#: ../gdata/services/documents/gdata-documents-service.c:250
+msgid "You must be authenticated to query documents."
+msgstr "Heu d'estar autenticat per consultar els documents."
+
+#: ../gdata/services/documents/gdata-documents-service.c:344
+msgid "The supplied document had an invalid content type."
+msgstr "El tipus de document rebut tenia un tipus de contingut no vàlid."
+
+#: ../gdata/services/documents/gdata-documents-service.c:431
+msgid "You must be authenticated to upload documents."
+msgstr "Heu d'estar autenticat per pujar documents."
+
+#: ../gdata/services/documents/gdata-documents-service.c:437
+msgid "The document has already been uploaded."
+msgstr "Aquest document ja s'ha pujat."
+
+#: ../gdata/services/documents/gdata-documents-service.c:488
+msgid "You must be authenticated to update documents."
+msgstr "Heu d'estar autenticat per actualitzar documents."
+
+#: ../gdata/services/documents/gdata-documents-service.c:536
+#: ../gdata/services/documents/gdata-documents-service.c:610
+msgid "You must be authenticated to move documents."
+msgstr "Heu d'estar autenticat per moure documents."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:186
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"Heu d'especificar un nom d'usuari o estar autenticat per consultar un "
+"usuari.."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:240
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:295
+msgid "Query parameter not allowed for albums."
+msgstr "El paràmetre de consulta no és vàlid per als àlbums."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:247
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:303
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr ""
+"Heu d'especificar un nom d'usuari o estar autenticat per consultar tots els "
+"àlbums."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:350
+msgid "The album did not have a feed link."
+msgstr "L'àlbum no tenia cap enllaç de canal."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
+msgid "You must be authenticated to upload a file."
+msgstr "Heu d'estar autenticat per pujar un fitxer."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:672
+msgid "The album has already been inserted."
+msgstr "Ja s'ha inserit l'àlbum."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:678
+msgid "You must be authenticated to insert an album."
+msgstr "Heu d'estar autenticat per inserir un àlbum."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:332
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Aquest servei no està disponible actualment."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:312
+#: ../gdata/services/youtube/gdata-youtube-service.c:337
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "Heu d'estar autenticat per a fer-ho."
+msgstr "Heu d'estar autenticat per fer-ho."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:317
+#: ../gdata/services/youtube/gdata-youtube-service.c:342
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr ""
-"Heu realitzat masses crides a l'API últimament. Espereu uns minuts i torneu-"
+"Heu realitzat massa crides a l'API últimament. Espereu uns minuts i torneu-"
 "ho a intentar."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:320
+#: ../gdata/services/youtube/gdata-youtube-service.c:345
 #, c-format
 msgid ""
-"You have exceeded your entry quota with the entry \"%s\". Please delete some "
-"entries and try again."
+"You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
-"Heu excedit la vostra quota d'entrades amb l'entrada «%s». Suprimiu algunes "
-"entrades i torneu-ho a intentar."
+"Heu excedit la vostra quota d'entrades. Suprimiu-ne algunes i torneu-ho a "
+"intentar."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:325
-#: ../gdata/services/youtube/gdata-youtube-service.c:331
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:352
+#: ../gdata/services/youtube/gdata-youtube-service.c:358
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr "S'ha rebut un codi d'error desconegut «%s» al domini «%s» amb la ubicació «%s»."
+msgstr ""
+"S'ha rebut un codi d'error desconegut «%s» al domini «%s» amb la ubicació «%s»."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:541
-#: ../gdata/services/youtube/gdata-youtube-service.c:582
+#: ../gdata/services/youtube/gdata-youtube-service.c:376
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr "S'ha rebut un error desconegut i que no es pot analitzar."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:598
+#: ../gdata/services/youtube/gdata-youtube-service.c:645
 msgid "The video did not have a related videos <link>."
 msgstr "El vídeo no tenia vídeos relacionats <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:634
+#: ../gdata/services/youtube/gdata-youtube-service.c:697
 msgid "You must be authenticated to upload a video."
-msgstr "Heu d'estar autenticat per a pujar un vídeo."
+msgstr "Heu d'estar autenticat per pujar un vídeo."
 
-#: ../gdata/services/youtube/gdata-youtube-video.c:810
-#, c-format
-msgid "The @time property (\"%s\") of a <media:thumbnail> could not be parsed."
-msgstr ""
-"No s'ha pogut analitzar la propietat @time («%s») d'un <media:thumbnail>."
+#~ msgid "Unhandled <%s:%s> element as a child of <%s>."
+#~ msgstr "L'element <%s:%s> no és gestionat com a fill de <%s>."
+
+#~ msgid "Unknown value \"%s\" of a <%s> @%s property."
+#~ msgstr "Valor desconegut «%s» d'un <%s> a la propietat @%s."
+
+#~ msgid ""
+#~ "The @time property (\"%s\") of a <media:thumbnail> could not be parsed."
+#~ msgstr ""
+#~ "No s'ha pogut analitzar la propietat @time («%s») d'un <media:thumbnail>."
