@@ -119,6 +119,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		/* Call the progress callback in the main thread */
 		_gdata_feed_call_progress_callback (GDATA_FEED (self), user_data, entry);
 		_gdata_feed_add_entry (GDATA_FEED (self), entry);
+		g_object_unref (entry);
 
 		return TRUE;
 	}

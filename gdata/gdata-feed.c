@@ -443,6 +443,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (data != NULL)
 				_gdata_feed_call_progress_callback (self, data, entry);
 			_gdata_feed_add_entry (self, entry);
+			g_object_unref (entry);
 		} else if (gdata_parser_string_from_element (node, "title", P_NO_DUPES, &(self->priv->title), &success, error) == TRUE ||
 		           gdata_parser_string_from_element (node, "subtitle", P_NO_DUPES, &(self->priv->subtitle), &success, error) == TRUE ||
 		           gdata_parser_string_from_element (node, "id", P_NO_DUPES, &(self->priv->id), &success, error) == TRUE ||
@@ -892,7 +893,7 @@ _gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry)
 {
 	g_return_if_fail (GDATA_IS_FEED (self));
 	g_return_if_fail (GDATA_IS_ENTRY (entry));
-	self->priv->entries = g_list_prepend (self->priv->entries, entry);
+	self->priv->entries = g_list_prepend (self->priv->entries, g_object_ref (entry));
 }
 
 gpointer
