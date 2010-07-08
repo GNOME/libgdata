@@ -332,6 +332,10 @@ static void
 real_parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase, const gchar *response_body,
 			   gint length, GError **error)
 {
+	/* We prefer to include the @response_body in the error message, but if it's empty, fall back to the @reason_phrase */
+	if (response_body == NULL || *response_body == '\0')
+		response_body = reason_phrase;
+
 	/* See: http://code.google.com/apis/gdata/docs/2.0/reference.html#HTTPStatusCodes */
 	switch (status) {
 		case SOUP_STATUS_CANT_RESOLVE:
