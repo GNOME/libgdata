@@ -39,11 +39,13 @@
 #include <string.h>
 
 #include "gdata-contacts-service.h"
+#include "gdata-batchable.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
 #include "gdata-query.h"
 
-G_DEFINE_TYPE (GDataContactsService, gdata_contacts_service, GDATA_TYPE_SERVICE)
+G_DEFINE_TYPE_WITH_CODE (GDataContactsService, gdata_contacts_service, GDATA_TYPE_SERVICE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
 static void
 gdata_contacts_service_class_init (GDataContactsServiceClass *klass)

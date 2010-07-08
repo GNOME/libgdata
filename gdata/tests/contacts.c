@@ -1229,6 +1229,225 @@ test_photo_delete (gconstpointer service)
 	g_object_unref (contact);
 }
 
+static void
+test_batch (gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	GDataService *service2;
+	GDataContactsContact *contact, *contact2, *contact3;
+	GDataEntry *inserted_entry, *inserted_entry2, *inserted_entry3;
+	GDataLink *self_link;
+	gchar *feed_uri;
+	guint op_id, op_id2, op_id3;
+	GError *error = NULL, *entry_error = NULL;
+
+	/* Here we hardcode the feed URI, but it should really be extracted from a contacts feed, as the GDATA_LINK_BATCH link */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+
+	/* Check the properties of the operation */
+	g_assert (gdata_batch_operation_get_service (operation) == service);
+	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, "http://www.google.com/m8/feeds/contacts/default/full/batch");
+
+	g_object_get (operation,
+	              "service", &service2,
+	              "feed-uri", &feed_uri,
+	              NULL);
+
+	g_assert (service2 == service);
+	g_assert_cmpstr (feed_uri, ==, "http://www.google.com/m8/feeds/contacts/default/full/batch");
+
+	g_object_unref (service2);
+	g_free (feed_uri);
+
+	/* Run a singleton batch operation to insert a new entry */
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (contact), "Fooish Bar");
+
+	gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (contact), &inserted_entry, NULL);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (contact);
+
+	/* Run another batch operation to insert another entry and query the previous one */
+	contact2 = gdata_contacts_contact_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (contact2), "Brian");
+
+	/* The contacts API is weird in that you can't do a GET on a contact's ID URI — you have to use their self link URI instead */
+	self_link = gdata_entry_look_up_link (inserted_entry, GDATA_LINK_SELF);
+
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	op_id = gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (contact2), &inserted_entry2, NULL);
+	op_id2 = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_CONTACTS_CONTACT, inserted_entry, NULL,
+	                                           NULL);
+	g_assert_cmpuint (op_id, !=, op_id2);
+
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (contact2);
+
+	/* Run another batch operation to delete the first entry and a fictitious one to test error handling, and update the second entry */
+	gdata_entry_set_title (inserted_entry2, "Toby");
+	contact3 = gdata_contacts_contact_new ("foobar");
+
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	op_id = gdata_test_batch_operation_deletion (operation, inserted_entry, NULL);
+	op_id2 = gdata_test_batch_operation_deletion (operation, GDATA_ENTRY (contact3), &entry_error);
+	op_id3 = gdata_test_batch_operation_update (operation, inserted_entry2, &inserted_entry3, NULL);
+	g_assert_cmpuint (op_id, !=, op_id2);
+	g_assert_cmpuint (op_id, !=, op_id3);
+	g_assert_cmpuint (op_id2, !=, op_id3);
+
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
+
+	g_clear_error (&error);
+	g_clear_error (&entry_error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry);
+	g_object_unref (contact3);
+
+	/* Run another batch operation to update the second entry with the wrong ETag (i.e. pass the old version of the entry to the batch operation
+	 * to test error handling */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT);
+
+	g_clear_error (&error);
+	g_clear_error (&entry_error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry2);
+
+	/* Run a final batch operation to delete the second entry */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry3);
+}
+
+typedef struct {
+	GDataContactsContact *new_contact;
+} BatchAsyncData;
+
+static void
+setup_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GDataContactsContact *contact;
+	GError *error = NULL;
+
+	/* Insert a new contact which we can query asyncly */
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (contact), "Fooish Bar");
+
+	data->new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (data->new_contact));
+	g_clear_error (&error);
+
+	g_object_unref (contact);
+}
+
+static void
+test_batch_async_cb (GDataBatchOperation *operation, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GError *error = NULL;
+
+	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == TRUE);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+}
+
+static void
+test_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	GDataLink *self_link;
+	guint op_id;
+	GMainLoop *main_loop;
+
+	/* Run an async query operation on the contact */
+	self_link = gdata_entry_look_up_link (GDATA_ENTRY (data->new_contact), GDATA_LINK_SELF);
+
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	op_id = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_CONTACTS_CONTACT,
+	                                          GDATA_ENTRY (data->new_contact), NULL, NULL);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_batch_operation_run_async (operation, NULL, (GAsyncReadyCallback) test_batch_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+}
+
+static void
+test_batch_async_cancellation_cb (GDataBatchOperation *operation, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GError *error = NULL;
+
+	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == FALSE);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+}
+
+static void
+test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	GDataLink *self_link;
+	guint op_id;
+	GMainLoop *main_loop;
+	GCancellable *cancellable;
+
+	/* Run an async query operation on the contact */
+	self_link = gdata_entry_look_up_link (GDATA_ENTRY (data->new_contact), GDATA_LINK_SELF);
+
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	op_id = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_CONTACTS_CONTACT,
+	                                          GDATA_ENTRY (data->new_contact), NULL, NULL);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+	cancellable = g_cancellable_new ();
+
+	gdata_batch_operation_run_async (operation, cancellable, (GAsyncReadyCallback) test_batch_async_cancellation_cb, main_loop);
+	g_cancellable_cancel (cancellable); /* this should cancel the operation before it even starts, as we haven't run the main loop yet */
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+	g_object_unref (cancellable);
+}
+
+static void
+teardown_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GError *error = NULL;
+
+	/* Delete the contact */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (data->new_contact), NULL, &error) == TRUE);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_object_unref (data->new_contact);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -1255,6 +1474,10 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/contacts/photo/add", service, test_photo_add);
 	g_test_add_data_func ("/contacts/photo/get", service, test_photo_get);
 	g_test_add_data_func ("/contacts/photo/delete", service, test_photo_delete);
+	g_test_add_data_func ("/contacts/batch", service, test_batch);
+	g_test_add ("/contacts/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
+	g_test_add ("/contacts/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
+	            teardown_batch_async);
 
 	retval = g_test_run ();
 	g_object_unref (service);
