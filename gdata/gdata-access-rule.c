@@ -141,10 +141,34 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
+static void notify_role_cb (GDataAccessRule *self, GParamSpec *pspec, gpointer user_data);
+
+static void
+notify_title_cb (GDataAccessRule *self, GParamSpec *pspec, gpointer user_data)
+{
+	/* Update GDataAccessRule:role */
+	g_signal_handlers_block_by_func (self, notify_role_cb, self);
+	gdata_access_rule_set_role (self, gdata_entry_get_title (GDATA_ENTRY (self)));
+	g_signal_handlers_unblock_by_func (self, notify_role_cb, self);
+}
+
+static void
+notify_role_cb (GDataAccessRule *self, GParamSpec *pspec, gpointer user_data)
+{
+	/* Update GDataEntry:title */
+	g_signal_handlers_block_by_func (self, notify_title_cb, self);
+	gdata_entry_set_title (GDATA_ENTRY (self), gdata_access_rule_get_role (self));
+	g_signal_handlers_unblock_by_func (self, notify_title_cb, self);
+}
+
 static void
 gdata_access_rule_init (GDataAccessRule *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ACCESS_RULE, GDataAccessRulePrivate);
+
+	/* Listen to change notifications for the entry's title, since it's linked to GDataAccessRule:role */
+	g_signal_connect (self, "notify::title", (GCallback) notify_title_cb, self);
+	g_signal_connect (self, "notify::role", (GCallback) notify_role_cb, self);
 }
 
 static void
@@ -258,10 +282,6 @@ static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (parsable)->priv;
-
-	/* So it's valid Atom, set the title if one doesn't already exist */
-	if (gdata_entry_get_title (GDATA_ENTRY (parsable)) == NULL)
-		gdata_entry_set_title (GDATA_ENTRY (parsable), priv->role);
 
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->get_xml (parsable, xml_string);

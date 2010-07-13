@@ -801,6 +801,12 @@ test_access_rule_get_xml (void)
 	g_free (scope_type3);
 	g_free (scope_value3);
 
+	/* Test that the GDataAccessRule:role and GDataEntry:title properties are linked */
+	gdata_entry_set_title (rule, "Another role");
+	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, "Another role");
+	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE);
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (rule)), ==, "none");
+
 	g_object_unref (rule);
 	g_object_unref (rule2);
 }
