@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&component=general\n"
 "POT-Creation-Date: 2010-07-13 21:27+0000\n"
-"PO-Revision-Date: 2010-07-14 08:32+0100\n"
+"PO-Revision-Date: 2010-07-14 19:21+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Pravilo je že vstavljeno."
 
 #: ../gdata/gdata-access-handler.c:350
 msgid "The owner's rule may not be deleted."
-msgstr "Pravil lastnika ni mogoče izbrisati."
+msgstr "Pravila lastnika ni mogoče izbrisati."
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:186
