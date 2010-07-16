@@ -672,7 +672,7 @@ gdata_contacts_contact_add_im_address (GDataContactsContact *self, GDataGDIMAddr
  *
  * Gets a list of the IM addresses owned by the contact.
  *
- * Return value: a #GList of #GDataGDIMAddress<!-- -->es, or %NULL
+ * Return value: (element-type GData.GDIMAddress) (transfer none): a #GList of #GDataGDIMAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -761,7 +761,7 @@ gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhon
  *
  * Gets a list of the phone numbers owned by the contact.
  *
- * Return value: a #GList of #GDataGDPhoneNumber<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDPhoneNumber) (transfer none): a #GList of #GDataGDPhoneNumber<!-- -->s, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -850,7 +850,7 @@ gdata_contacts_contact_add_postal_address (GDataContactsContact *self, GDataGDPo
  *
  * Gets a list of the postal addresses owned by the contact.
  *
- * Return value: a #GList of #GDataGDPostalAddress<!-- -->es, or %NULL
+ * Return value: (element-type GData.GDPostalAddress) (transfer none): a #GList of #GDataGDPostalAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1146,7 +1146,7 @@ get_groups_cb (const gchar *href, gpointer deleted, GList **groups)
  *
  * Gets a list of the groups to which the contact belongs.
  *
- * Return value: a #GList of constant group ID URIs, or %NULL; free with g_list_free()
+ * Return value: (element-type utf8) (transfer container): a #GList of constant group ID URIs, or %NULL; free with g_list_free()
  *
  * Since: 0.2.0
  **/

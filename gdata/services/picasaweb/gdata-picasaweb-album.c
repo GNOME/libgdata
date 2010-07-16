@@ -1159,7 +1159,7 @@ gdata_picasaweb_album_set_tags (GDataPicasaWebAlbum *self, const gchar *tags)
  *
  * Returns a list of media content, such as the cover image for the album.
  *
- * Return value: a #GList of #GDataMediaContent items
+ * Return value: (element-type GData.MediaContent) (transfer none): a #GList of #GDataMediaContent items
  *
  * Since: 0.4.0
  **/
@@ -1176,7 +1176,7 @@ gdata_picasaweb_album_get_contents (GDataPicasaWebAlbum *self)
  *
  * Returns a list of thumbnails, often at different sizes, for this album.
  *
- * Return value: a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
+ * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
  *
  * Since: 0.4.0
  **/

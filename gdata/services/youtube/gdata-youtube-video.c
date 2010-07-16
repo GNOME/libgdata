@@ -1145,7 +1145,7 @@ gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type)
  *
  * Gets a list of the thumbnails available for the video.
  *
- * Return value: a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
+ * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
  **/
 GList *
 gdata_youtube_video_get_thumbnails (GDataYouTubeVideo *self)

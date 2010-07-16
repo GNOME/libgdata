@@ -584,7 +584,7 @@ gdata_gd_when_set_value_string (GDataGDWhen *self, const gchar *value_string)
  *
  * Returns a list of the #GDataGDReminder<!-- -->s which are associated with this #GDataGDWhen.
  *
- * Return value: a #GList of #GDataGDReminder<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDReminder) (transfer none): a #GList of #GDataGDReminder<!-- -->s, or %NULL
  *
  * Since: 0.4.0
  **/

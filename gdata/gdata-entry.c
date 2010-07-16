@@ -702,7 +702,7 @@ gdata_entry_add_category (GDataEntry *self, GDataCategory *category)
  *
  * Gets a list of the #GDataCategory<!-- -->s containing this entry.
  *
- * Return value: a #GList of #GDataCategory<!-- -->s
+ * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategory<!-- -->s
  *
  * Since: 0.2.0
  **/
@@ -809,7 +809,8 @@ gdata_entry_look_up_link (GDataEntry *self, const gchar *rel)
  *
  * If you will only use the first link found, consider calling gdata_entry_look_up_link() instead.
  *
- * Return value: a #GList of #GDataLink<!-- -->s, or %NULL if none were found; free the list with g_list_free()
+ * Return value: (element-type GData.Link) (transfer container): a #GList of #GDataLink<!-- -->s, or %NULL if none were found; free the list with
+ * g_list_free()
  *
  * Since: 0.4.0
  **/

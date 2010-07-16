@@ -455,7 +455,7 @@ gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type)
  *
  * Returns a list of #GDataMediaContent<!-- -->s, giving the content enclosed by the group.
  *
- * Return value: a #GList of #GDataMediaContent<!-- -->s,  or %NULL
+ * Return value: (element-type GData.MediaContent) (transfer none): a #GList of #GDataMediaContent<!-- -->s,  or %NULL
  **/
 GList *
 gdata_media_group_get_contents (GDataMediaGroup *self)
@@ -534,7 +534,7 @@ gdata_media_group_is_restricted_in_country (GDataMediaGroup *self, const gchar *
  *
  * Gets a list of the thumbnails available for the group.
  *
- * Return value: a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
+ * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
  **/
 GList *
 gdata_media_group_get_thumbnails (GDataMediaGroup *self)

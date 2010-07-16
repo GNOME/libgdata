@@ -1578,7 +1578,7 @@ gdata_picasaweb_file_set_caption (GDataPicasaWebFile *self, const gchar *caption
  *
  * Returns a list of media content, e.g. the actual photo or video.
  *
- * Return value: a #GList of #GDataMediaContent items
+ * Return value: (element-type GData.MediaContent) (transfer none): a #GList of #GDataMediaContent items
  *
  * Since: 0.4.0
  **/
@@ -1599,7 +1599,7 @@ gdata_picasaweb_file_get_contents (GDataPicasaWebFile *self)
  * not be larger than the actual image, so thumbnails may be smaller
  * than the widths listed above.
  *
- * Return value: a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
+ * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
  *
  * Since: 0.4.0
  **/

@@ -605,7 +605,7 @@ _gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType 
  *
  * Returns a list of the entries contained in this feed.
  *
- * Return value: a #GList of #GDataEntry<!-- -->s
+ * Return value: (element-type GData.Entry) (transfer none): a #GList of #GDataEntry<!-- -->s
  **/
 GList *
 gdata_feed_get_entries (GDataFeed *self)
@@ -651,7 +651,7 @@ gdata_feed_look_up_entry (GDataFeed *self, const gchar *id)
  *
  * Returns a list of the categories listed in this feed.
  *
- * Return value: a #GList of #GDataCategory<!-- -->s
+ * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategory<!-- -->s
  **/
 GList *
 gdata_feed_get_categories (GDataFeed *self)
@@ -666,7 +666,7 @@ gdata_feed_get_categories (GDataFeed *self)
  *
  * Returns a list of the links listed in this feed.
  *
- * Return value: a #GList of #GDataLink<!-- -->s
+ * Return value: (element-type GData.Link) (transfer none): a #GList of #GDataLink<!-- -->s
  **/
 GList *
 gdata_feed_get_links (GDataFeed *self)
@@ -712,7 +712,7 @@ gdata_feed_look_up_link (GDataFeed *self, const gchar *rel)
  *
  * Returns a list of the authors listed in this feed.
  *
- * Return value: a #GList of #GDataAuthor<!-- -->s
+ * Return value: (element-type GData.Author) (transfer none): a #GList of #GDataAuthor<!-- -->s
  **/
 GList *
 gdata_feed_get_authors (GDataFeed *self)
