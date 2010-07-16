@@ -155,6 +155,8 @@ The short explanation of a commit should always be prefixed by a tag to describe
 
  - [tests] — for changes to the test code in gdata/tests which are not specific to a service or namespace.
 
+ - [introspection] — for introspection annotations and build changes.
+
  - [calendar] — for the Google Calendar code in gdata/services/calendar.
 
  - [contacts] — for the Google Contacts code in gdata/services/contacts.
