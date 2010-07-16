@@ -412,7 +412,7 @@ gdata/GData-$(GDATA_API_VERSION).gir: Makefile gdata/libgdata.la
 	--namespace GData --nsversion=$(GDATA_API_VERSION)				\
 	--c-include="gdata/gdata.h" --include=libxml2-2.0 --include=Soup-2.4		\
 	--library=gdata/libgdata.la $(_gir_libtool) --output $@				\
-	-I$(top_srcdir) -I$(top_srcdir)/gdata						\
+	-I$(top_srcdir) -I$(top_srcdir)/gdata $(GDATA_CFLAGS)				\
 	$(addprefix $(srcdir)/,$(gdatainclude_HEADERS) $(gdataatominclude_HEADERS)	\
 	$(gdataappinclude_HEADERS) $(gdatagdinclude_HEADERS)				\
 	$(gdatagcontactinclude_HEADERS) $(gdatamediainclude_HEADERS)			\
