@@ -208,14 +208,16 @@ gdata_youtube_category_is_assignable (GDataYouTubeCategory *self)
 gboolean
 gdata_youtube_category_is_browsable (GDataYouTubeCategory *self, const gchar *region)
 {
-	const gchar **i;
-
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_CATEGORY (self), FALSE);
 	g_return_val_if_fail (region != NULL && *region != '\0', FALSE);
 
-	for (i = self->priv->browsable_regions; i != NULL && *i != NULL; i++) {
-		if (strcmp (*i, region) == 0)
-			return TRUE;
+	if (self->priv->browsable_regions != NULL) {
+		guint i;
+
+		for (i = 0; self->priv->browsable_regions[i] != NULL; i++) {
+			if (strcmp (self->priv->browsable_regions[i], region) == 0)
+				return TRUE;
+		}
 	}
 
 	return FALSE;
