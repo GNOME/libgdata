@@ -201,7 +201,7 @@ post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
  *
  * Returns a list of the categories in this category list.
  *
- * Return value: a #GList of #GDataCategory<!-- -->s
+ * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategory<!-- -->s
  *
  * Since: 0.7.0
  **/

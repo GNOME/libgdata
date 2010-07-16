@@ -511,7 +511,8 @@ gdata_documents_query_set_title (GDataDocumentsQuery *self, const gchar *title, 
  *
  * Gets a list of #GDataGDEmailAddress<!-- -->es of the document collaborators whose documents will be queried.
  *
- * Return value: a list of #GDataGDEmailAddress<!-- -->es of the collaborators concerned by the query, or %NULL
+ * Return value: (element-type GData.GDEmailAddress) (transfer none): a list of #GDataGDEmailAddress<!-- -->es of the collaborators concerned by the
+ * query, or %NULL
  *
  * Since: 0.4.0
  **/
@@ -528,7 +529,8 @@ gdata_documents_query_get_collaborator_addresses (GDataDocumentsQuery *self)
  *
  * Gets a list of #GDataGDEmailAddress<!-- -->es of the document readers whose documents will be queried.
  *
- * Return value: a list of #GDataGDEmailAddress<!-- -->es of the readers concerned by the query, or %NULL
+ * Return value: (element-type GData.GDEmailAddress) (transfer none): a list of #GDataGDEmailAddress<!-- -->es of the readers concerned by the query,
+ * or %NULL
  *
  * Since: 0.4.0
  **/

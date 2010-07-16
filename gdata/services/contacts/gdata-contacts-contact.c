@@ -1659,7 +1659,7 @@ gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEma
  *
  * Gets a list of the e-mail addresses owned by the contact.
  *
- * Return value: a #GList of #GDataGDEmailAddress<!-- -->es, or %NULL
+ * Return value: (element-type GData.GDEMailAddress) (transfer none): a #GList of #GDataGDEmailAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1748,7 +1748,7 @@ gdata_contacts_contact_add_im_address (GDataContactsContact *self, GDataGDIMAddr
  *
  * Gets a list of the IM addresses owned by the contact.
  *
- * Return value: a #GList of #GDataGDIMAddress<!-- -->es, or %NULL
+ * Return value: (element-type GData.GDIMAddress) (transfer none): a #GList of #GDataGDIMAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1837,7 +1837,7 @@ gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhon
  *
  * Gets a list of the phone numbers owned by the contact.
  *
- * Return value: a #GList of #GDataGDPhoneNumber<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDPhoneNumber) (transfer none): a #GList of #GDataGDPhoneNumber<!-- -->s, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1926,7 +1926,7 @@ gdata_contacts_contact_add_postal_address (GDataContactsContact *self, GDataGDPo
  *
  * Gets a list of the postal addresses owned by the contact.
  *
- * Return value: a #GList of #GDataGDPostalAddress<!-- -->es, or %NULL
+ * Return value: (element-type GData.GDPostalAddress) (transfer none): a #GList of #GDataGDPostalAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -2015,7 +2015,7 @@ gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrga
  *
  * Gets a list of the organizations to which the contact belongs.
  *
- * Return value: a #GList of #GDataGDOrganization<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDOrganization) (transfer none): a #GList of #GDataGDOrganization<!-- -->s, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -2099,7 +2099,7 @@ gdata_contacts_contact_add_jot (GDataContactsContact *self, GDataGContactJot *jo
  *
  * Gets a list of the jots attached to the contact.
  *
- * Return value: a #GList of #GDataGContactJot<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactJot) (transfer none): a #GList of #GDataGContactJot<!-- -->s, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2159,7 +2159,7 @@ gdata_contacts_contact_add_relation (GDataContactsContact *self, GDataGContactRe
  *
  * Gets a list of the relations of the contact.
  *
- * Return value: a #GList of #GDataGContactRelation<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactRelation) (transfer none): a #GList of #GDataGContactRelation<!-- -->s, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2220,7 +2220,7 @@ gdata_contacts_contact_add_website (GDataContactsContact *self, GDataGContactWeb
  *
  * Gets a list of the websites of the contact.
  *
- * Return value: a #GList of #GDataGContactWebsite<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactWebsite) (transfer none): a #GList of #GDataGContactWebsite<!-- -->s, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2305,7 +2305,7 @@ gdata_contacts_contact_add_event (GDataContactsContact *self, GDataGContactEvent
  *
  * Gets a list of the events of the contact.
  *
- * Return value: a #GList of #GDataGContactEvent<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactEvent) (transfer none): a #GList of #GDataGContactEvent<!-- -->s, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2366,7 +2366,7 @@ gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGContactCa
  *
  * Gets a list of the calendars of the contact.
  *
- * Return value: a #GList of #GDataGContactCalendar<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactCalendar) (transfer none): a #GList of #GDataGContactCalendar<!-- -->s, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2451,7 +2451,7 @@ gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContac
  *
  * Gets a list of the external IDs of the contact.
  *
- * Return value: a #GList of #GDataGContactExternalID<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactExternalID) (transfer none): a #GList of #GDataGContactExternalID<!-- -->s, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2511,7 +2511,7 @@ gdata_contacts_contact_add_hobby (GDataContactsContact *self, const gchar *hobby
  *
  * Gets a list of the hobbies of the contact.
  *
- * Return value: a #GList of hobby strings, or %NULL
+ * Return value: (element-type utf8) (transfer none): a #GList of hobby strings, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2571,7 +2571,7 @@ gdata_contacts_contact_add_language (GDataContactsContact *self, GDataGContactLa
  *
  * Gets a list of the languages of the contact.
  *
- * Return value: a #GList of #GDataGContactLanguage<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactLanguage) (transfer none): a #GList of #GDataGContactLanguage<!-- -->s, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2818,7 +2818,7 @@ get_groups_cb (const gchar *href, gpointer deleted, GList **groups)
  *
  * Gets a list of the groups to which the contact belongs.
  *
- * Return value: a #GList of constant group ID URIs, or %NULL; free with g_list_free()
+ * Return value: (element-type utf8) (transfer container): a #GList of constant group ID URIs, or %NULL; free with g_list_free()
  *
  * Since: 0.2.0
  **/
