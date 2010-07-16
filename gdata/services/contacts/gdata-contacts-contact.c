@@ -615,6 +615,24 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
+	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE && xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
+		/* We have to override <id> parsing to fix the projection. Modify it in-place so that the parser in GDataEntry will pick up
+		 * the changes. This fixes bugs caused by referring to contacts by the base projection, rather than the full projection;
+		 * such as http://code.google.com/p/gdata-issues/issues/detail?id=2129. */
+		gchar *base;
+		gchar *id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+
+		if (id != NULL) {
+			base = strstr (id, "/base/");
+			if (base != NULL) {
+				memcpy (base, "/full/", 6);
+				xmlNodeSetContent (node, (xmlChar*) id);
+			}
+		}
+
+		xmlFree (id);
+
+		return GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
 		if (gdata_parser_object_from_element_setter (node, "email", P_REQUIRED, GDATA_TYPE_GD_EMAIL_ADDRESS,
 		                                             gdata_contacts_contact_add_email_address, self, &success, error) == TRUE ||
@@ -1009,7 +1027,21 @@ get_entry_uri (const gchar *id)
 GDataContactsContact *
 gdata_contacts_contact_new (const gchar *id)
 {
-	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (g_object_new (GDATA_TYPE_CONTACTS_CONTACT, "id", id, NULL));
+	GDataContactsContact *contact;
+	gchar *base, *_id;
+
+	_id = g_strdup (id);
+
+	/* Fix the ID to refer to the full projection, rather than the base projection. */
+	if (_id != NULL) {
+		base = strstr (_id, "/base/");
+		if (base != NULL)
+			memcpy (base, "/full/", 6);
+	}
+
+	contact = GDATA_CONTACTS_CONTACT (g_object_new (GDATA_TYPE_CONTACTS_CONTACT, "id", _id, NULL));
+
+	g_free (_id);
 
 	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 	 * setting it from parse_xml() to fail (duplicate element). */

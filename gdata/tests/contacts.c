@@ -1448,6 +1448,37 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 	g_object_unref (data->new_contact);
 }
 
+static void
+test_id (void)
+{
+	GDataContactsContact *contact;
+	GError *error = NULL;
+
+	/* Check that IDs are changed to the full projection when creating a new contact… */
+	contact = gdata_contacts_contact_new ("http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/base/1b46cdd20bfbee3b");
+	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (contact)), ==,
+	                 "http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b");
+	g_object_unref (contact);
+
+	/* …and when creating one from XML. */
+	contact = GDATA_CONTACTS_CONTACT (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT,
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+			"xmlns:gd='http://schemas.google.com/g/2005'>"
+			"<id>http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/base/1b46cdd20bfbee3b</id>"
+			"<updated>2009-04-25T15:21:53.688Z</updated>"
+			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
+			"<title>Foobar</title>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	g_clear_error (&error);
+
+	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (contact)), ==,
+	                 "http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b");
+
+	g_object_unref (contact);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -1478,6 +1509,7 @@ main (int argc, char *argv[])
 	g_test_add ("/contacts/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
 	g_test_add ("/contacts/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
 	            teardown_batch_async);
+	g_test_add_func ("/contacts/id", test_id);
 
 	retval = g_test_run ();
 	g_object_unref (service);
