@@ -4,36 +4,37 @@
 # weitao <weitao1979@gmail.com>, 2009.
 # YunQiang Su <wzssyqa@gmail.com>, 2010.
 #   QAed by Eleanor Chen <chenyueg@gmail.com>, 2010
+# Yinghua Wang <wantinghard@gmail.com>, 2010
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-02-08 21:17+0000\n"
-"PO-Revision-Date: 2010-02-16 09:55+0800\n"
+"POT-Creation-Date: 2010-07-14 17:21+0000\n"
+"PO-Revision-Date: 2010-07-19 00:56+0800\n"
 "Last-Translator: Eleanor Chen <chenyueg@gmail.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gdata/gdata-access-handler.c:176
+#: ../gdata/gdata-access-handler.c:170
 msgid "The rule has already been inserted."
 msgstr "这个规则已经被插入。"
 
-#: ../gdata/gdata-access-handler.c:378
+#: ../gdata/gdata-access-handler.c:350
 msgid "The owner's rule may not be deleted."
 msgstr "拥有者的规则不可以被删除。"
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:177 ../gdata/gdata-parsable.c:188
+#: ../gdata/gdata-parsable.c:186 ../gdata/gdata-parsable.c:197
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "解析 XML 错误：%s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:190
+#: ../gdata/gdata-parsable.c:199
 msgid "Empty document."
 msgstr "空的文档。"
 
@@ -41,17 +42,17 @@ msgstr "空的文档。"
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:65
+#: ../gdata/gdata-parser.c:66
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "某个 %s 元素丢失了要求的内容。"
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")), and the second parameter is
-#. * the erroneous value (which was not in ISO 8601 format).
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:81
+#: ../gdata/gdata-parser.c:82
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "某个 %s 元素 (\"%s\") 的内容不是以 ISO 8601 格式的。"
@@ -61,7 +62,7 @@ msgstr "某个 %s 元素 (\"%s\") 的内容不是以 ISO 8601 格式的。"
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:101
+#: ../gdata/gdata-parser.c:102
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "某个 %s 元素 (\"%s\") 的 %s 属性的值未知。"
@@ -71,7 +72,7 @@ msgstr "某个 %s 元素 (\"%s\") 的 %s 属性的值未知。"
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:119
+#: ../gdata/gdata-parser.c:120
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "某个 %s 元素 (\"%s\") 的内容未知。"
@@ -81,16 +82,29 @@ msgstr "某个 %s 元素 (\"%s\") 的内容未知。"
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:139
+#: ../gdata/gdata-parser.c:140
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "某个 %s 元素 (%s) 必需的属性不存在。"
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr "%3$s 元素的 %1$s 和 %2$s 属性只在不同时有效的情况下值才有意义。"
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:156
+#: ../gdata/gdata-parser.c:182
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "一个必需的元素 (%s) 不存在。"
@@ -99,262 +113,298 @@ msgstr "一个必需的元素 (%s) 不存在。"
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:171
+#: ../gdata/gdata-parser.c:197
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "一个单独元素 (%s) 重复了。"
 
-#: ../gdata/gdata-service.c:309 ../gdata/gdata-service.c:751
-#: ../gdata/services/youtube/gdata-youtube-service.c:203
+#: ../gdata/gdata-service.c:392
+#: ../gdata/services/youtube/gdata-youtube-service.c:233
 msgid "The server returned a malformed response."
 msgstr "服务器返回了错误的回应。"
 
+#: ../gdata/gdata-service.c:433
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "无法连接到该服务的服务器。"
+
+#: ../gdata/gdata-service.c:438
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "无法连接到代理服务器。"
+
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:340
+#: ../gdata/gdata-service.c:444
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "无效的请求 URI 或头，或不支持的非标准参数：%s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:346
+#: ../gdata/gdata-service.c:450
 #, c-format
 msgid "Authentication required: %s"
 msgstr "要求认证：%s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:351
+#: ../gdata/gdata-service.c:455
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "要求的资源未找到：%s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:356
+#: ../gdata/gdata-service.c:461
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "下载之后，此条目更改过：%s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:475
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "认证时的错误代码 %u：%s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:481
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "请求时的错误代码 %u：%s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:487
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "插入条目时的错误代码 %u：%s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:379
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:493
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "更新条目时的错误代码 %u：%s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:384
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:499
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "删除条目时的错误代码 %u：%s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:389
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:505
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "下载时的错误代码 %u：%s"
 
-#. Translators: the first parameter is an HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:394
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:511
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "上传时的错误代码 %u：%s"
 
-#: ../gdata/gdata-service.c:639
-msgid "A CAPTCHA must be filled out to log in."
-msgstr ""
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:517
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "在进行批处理操作时的错误代码 %u：%s"
 
-#: ../gdata/gdata-service.c:663
+#: ../gdata/gdata-service.c:642
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "要登录，必须填写验证码。"
+
+#: ../gdata/gdata-service.c:666
 msgid "Your username or password were incorrect."
 msgstr "您的用户名和口令错误。"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:682
+#: ../gdata/gdata-service.c:685
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "您账户的电子邮件地址尚未验证。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:687
+#: ../gdata/gdata-service.c:690
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "您尚未同意服务条款和条件。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:692
+#: ../gdata/gdata-service.c:695
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "此账户已被删除。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:697
+#: ../gdata/gdata-service.c:700
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "此账户已被禁用。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:702
+#: ../gdata/gdata-service.c:705
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "此账户被禁止访问此服务。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:707
+#: ../gdata/gdata-service.c:710
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "此服务此时不可用。(%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:821
+#: ../gdata/gdata-service.c:981
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "无效的重定向：%s"
 
-#: ../gdata/gdata-service.c:1239
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:389
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:546
-#: ../gdata/services/youtube/gdata-youtube-service.c:787
+#: ../gdata/gdata-service.c:1574
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:606
+#: ../gdata/services/youtube/gdata-youtube-service.c:691
 msgid "The entry has already been inserted."
 msgstr "此条目已经被插入。"
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">"),
-#. * and the second parameter is the erroneous value (which was not in hexadecimal RGB format).
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:329
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:320
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "某个 %s 元素 (\"%s\") 的内容不是以十六进制 RGB 格式。"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:109
-#: ../gdata/services/calendar/gdata-calendar-service.c:149
+#: ../gdata/services/calendar/gdata-calendar-service.c:110
+#: ../gdata/services/calendar/gdata-calendar-service.c:155
 msgid "You must be authenticated to query all calendars."
 msgstr "要查询所有的日历您必须通过认证。"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:186
-#: ../gdata/services/calendar/gdata-calendar-service.c:226
-#: ../gdata/services/calendar/gdata-calendar-service.c:262
+#: ../gdata/services/calendar/gdata-calendar-service.c:197
+#: ../gdata/services/calendar/gdata-calendar-service.c:242
+#: ../gdata/services/calendar/gdata-calendar-service.c:284
 msgid "You must be authenticated to query your own calendars."
 msgstr "要查询您自己的日历您必须通过认证。"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:271
+#: ../gdata/services/calendar/gdata-calendar-service.c:293
 msgid "The calendar did not have a content source."
 msgstr "日历不包括内容源。"
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:108
-#: ../gdata/services/contacts/gdata-contacts-service.c:149
+#: ../gdata/services/contacts/gdata-contacts-service.c:116
+#: ../gdata/services/contacts/gdata-contacts-service.c:162
 msgid "You must be authenticated to query contacts."
 msgstr "要查询联系人您必须通过认证。"
 
-#: ../gdata/services/documents/gdata-documents-entry.c:618
+#: ../gdata/services/documents/gdata-documents-entry.c:622
 msgid "You must be authenticated to download documents."
 msgstr "要下载文档您必须通过认证。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:191
-#: ../gdata/services/documents/gdata-documents-service.c:303
+#: ../gdata/services/documents/gdata-documents-service.c:199
+#: ../gdata/services/documents/gdata-documents-service.c:250
 msgid "You must be authenticated to query documents."
 msgstr "要查询文档您必须通过认证。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:397
+#: ../gdata/services/documents/gdata-documents-service.c:344
 msgid "The supplied document had an invalid content type."
 msgstr "提交的文档包含无效的内容类型。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:483
+#: ../gdata/services/documents/gdata-documents-service.c:431
 msgid "You must be authenticated to upload documents."
 msgstr "要上传文档您必须通过认证。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:489
+#: ../gdata/services/documents/gdata-documents-service.c:437
 msgid "The document has already been uploaded."
 msgstr "这个文档已经被上传了。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:539
+#: ../gdata/services/documents/gdata-documents-service.c:488
 msgid "You must be authenticated to update documents."
 msgstr "要更新文档您必须通过认证。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:587
-#: ../gdata/services/documents/gdata-documents-service.c:683
+#: ../gdata/services/documents/gdata-documents-service.c:536
+#: ../gdata/services/documents/gdata-documents-service.c:610
 msgid "You must be authenticated to move documents."
 msgstr "要移动文档您必须通过认证。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:186
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "您必须指定一个用户名或者通过认证才能查询一个用户。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:181
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:235
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:240
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:295
 msgid "Query parameter not allowed for albums."
 msgstr "查询参数不允许专辑。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:188
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:243
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:247
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:303
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "您必须指定一个用户名或者通过认证来查询所有专辑。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:284
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:350
 msgid "The album did not have a feed link."
 msgstr "专辑没有反馈链接。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:395
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:552
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
 msgid "You must be authenticated to upload a file."
 msgstr "您必须通过认证才能上传一个文件。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:672
 msgid "The album has already been inserted."
 msgstr "专辑已经插入。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:620
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:678
 msgid "You must be authenticated to insert an album."
 msgstr "您必须通过认证才能插入专辑。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:304
+#: ../gdata/services/youtube/gdata-youtube-service.c:332
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "服务当前不可用。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:309
+#: ../gdata/services/youtube/gdata-youtube-service.c:337
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "您必须通过认证才能这样做。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:314
+#: ../gdata/services/youtube/gdata-youtube-service.c:342
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr "您最近已经产生了太多 API 呼叫。请等待几分钟，然后再重新尝试。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:317
+#: ../gdata/services/youtube/gdata-youtube-service.c:345
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr "您已经超过了您的条目数限额。请先删除一些条目然后重新尝试。"
 
-#. Translators: the first parameter is an error code, which is a coded string. The second parameter
-#. * is an error domain, which is another coded string. The third parameter is the location of the
-#. * error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:324
-#: ../gdata/services/youtube/gdata-youtube-service.c:330
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:352
+#: ../gdata/services/youtube/gdata-youtube-service.c:358
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "接收到域 \"%2$s\" 中未知的错误代码 \"%1$s\"，并带有位置 \"%3$s\"。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:699
-#: ../gdata/services/youtube/gdata-youtube-service.c:740
+#: ../gdata/services/youtube/gdata-youtube-service.c:376
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr "接收到未知的不可解析错误。"
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:598
+#: ../gdata/services/youtube/gdata-youtube-service.c:645
 msgid "The video did not have a related videos <link>."
 msgstr "此视频没有相关的视频 <link>。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:793
+#: ../gdata/services/youtube/gdata-youtube-service.c:697
 msgid "You must be authenticated to upload a video."
 msgstr "您必须通过认证才能上传视频。"
