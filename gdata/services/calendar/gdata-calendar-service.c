@@ -85,7 +85,7 @@ gdata_calendar_service_new (const gchar *client_id)
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the service to return a list of all calendars from the authenticated account which match the given
@@ -124,9 +124,9 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Queries the service to return a list of all calendars from the authenticated account which match the given
  * @query. @self and @query are all reffed when this function is called, so can safely be unreffed after
@@ -162,7 +162,7 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the service to return a list of calendars from the authenticated account which match the given
@@ -201,9 +201,9 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Queries the service to return a list of calendars from the authenticated account which match the given
  * @query, and the authenticated user owns. @self and @query are all reffed when this function is called,
@@ -240,7 +240,7 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the service to return a list of events in the given @calendar, which match @query.

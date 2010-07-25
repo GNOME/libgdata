@@ -910,9 +910,9 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Queries the service's @feed_uri feed to build a #GDataFeed. @self, @feed_uri and
  * @query are all reffed/copied when this function is called, so can safely be freed after this function returns.
@@ -1038,7 +1038,7 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the service's @feed_uri feed to build a #GDataFeed.
@@ -1152,8 +1152,8 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @upload_uri: the URI to which the upload should be sent
  * @entry: the #GDataEntry to insert
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when insertion is finished
- * @user_data: data to pass to the @callback function
+ * @callback: a #GAsyncReadyCallback to call when insertion is finished, or %NULL
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Inserts @entry by uploading it to the online service at @upload_uri. @self, @upload_uri and
  * @entry are all reffed/copied when this function is called, so can safely be freed after this function returns.
@@ -1337,8 +1337,8 @@ update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @self: a #GDataService
  * @entry: the #GDataEntry to update
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the update is finished
- * @user_data: data to pass to the @callback function
+ * @callback: a #GAsyncReadyCallback to call when the update is finished, or %NULL
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Updates @entry by PUTting it to its <literal>edit</literal> link's URI. @self and
  * @entry are both reffed when this function is called, so can safely be unreffed after this function returns.
@@ -1514,8 +1514,8 @@ delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @self: a #GDataService
  * @entry: the #GDataEntry to delete
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when deletion is finished
- * @user_data: data to pass to the @callback function
+ * @callback: a #GAsyncReadyCallback to call when deletion is finished, or %NULL
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Deletes @entry from the server. @self and @entry are both reffed when this function is called,
  * so can safely be unreffed after this function returns.
