@@ -189,4 +189,6 @@
 			<xi:include href="xml/api-index-0.7.0.xml"><xi:fallback/></xi:include>
 		</index>
 	</part>
+
+	<xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
 </book>
