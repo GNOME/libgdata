@@ -375,7 +375,7 @@ operation_free (BatchOperation *op)
  * @id: the ID of the entry being queried for
  * @entry_type: the type of the entry which will be returned
  * @callback: a #GDataBatchOperationCallback to call when the query is finished, or %NULL
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Add a query to the #GDataBatchOperation, to be executed when the operation is run. The query will return a #GDataEntry (of subclass type
  * @entry_type) representing the given entry @id. The ID is of the same format as that returned by gdata_entry_get_id().
@@ -424,7 +424,7 @@ gdata_batch_operation_add_query (GDataBatchOperation *self, const gchar *id, GTy
  * @self: a #GDataBatchOperation
  * @entry: the #GDataEntry to insert
  * @callback: a #GDataBatchOperationCallback to call when the insertion is finished, or %NULL
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Add an entry to the #GDataBatchOperation, to be inserted on the server when the operation is run. The insertion will return the inserted version
  * of @entry. @entry is reffed by the function, so may be freed after it returns.
@@ -451,7 +451,7 @@ gdata_batch_operation_add_insertion (GDataBatchOperation *self, GDataEntry *entr
  * @self: a #GDataBatchOperation
  * @entry: the #GDataEntry to update
  * @callback: a #GDataBatchOperationCallback to call when the update is finished, or %NULL
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Add an entry to the #GDataBatchOperation, to be updated on the server when the operation is run. The update will return the updated version of
  * @entry. @entry is reffed by the function, so may be freed after it returns.
@@ -481,7 +481,7 @@ gdata_batch_operation_add_update (GDataBatchOperation *self, GDataEntry *entry, 
  * @self: a #GDataBatchOperation
  * @entry: the #GDataEntry to delete
  * @callback: a #GDataBatchOperationCallback to call when the deletion is finished, or %NULL
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Add an entry to the #GDataBatchOperation, to be deleted on the server when the operation is run. @entry is reffed by the function, so may be freed
  * after it returns.
@@ -634,7 +634,7 @@ run_thread (GSimpleAsyncResult *result, GDataBatchOperation *operation, GCancell
  * @self: a #GDataBatchOperation
  * @cancellable: a #GCancellable, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the batch operation is finished, or %NULL
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Run the #GDataBatchOperation asynchronously. This will send all the operations in the batch operation to the server, and call their respective
  * callbacks asynchronously (i.e. in idle functions in the main thread, usually after gdata_batch_operation_run_async() has returned) as the

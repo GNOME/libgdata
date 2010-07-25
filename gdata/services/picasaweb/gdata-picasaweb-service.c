@@ -207,7 +207,7 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
  * @username: the username of the user whose albums you wish to retrieve, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the service to return a list of all albums belonging to the specified @username which match the given
@@ -263,9 +263,9 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
  * @username: the username of the user whose albums you wish to retrieve, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Queries the service to return a list of all albums belonging to the specified @username which match the given
  * @query. @self, @query and @username are all reffed/copied when this function is called, so can safely be unreffed/freed after
@@ -317,7 +317,7 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the specified @album for a list of the files which match the given @query. If @album is %NULL and a user is
@@ -571,7 +571,7 @@ upload_file_async_cb (GOutputStream *output_stream, GAsyncResult *result, Upload
  * @file_data: the actual file to upload
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Uploads a file (photo or video) to the given PicasaWeb @album
  * asynchronously, using the @actual_file from disk and the metadata

@@ -441,7 +441,7 @@ standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the service's standard @feed_type feed to build a #GDataFeed.
@@ -472,9 +472,9 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Queries the service's standard @feed_type feed to build a #GDataFeed. @self and
  * @query are both reffed when this function is called, so can safely be freed after this function returns.
@@ -504,7 +504,7 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the service for videos matching the parameters set on the #GDataQuery. This searches site-wide, and imposes no other restrictions or
@@ -534,9 +534,9 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Queries the service for videos matching the parameters set on the #GDataQuery. This searches site-wide, and imposes no other restrictions or
  * parameters on the query. @self and @query are both reffed when this function is called, so can safely be freed after this function returns.
@@ -567,7 +567,7 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
  * Queries the service for videos related to @video. The algorithm determining which videos are related is on the server side.
@@ -611,9 +611,9 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
  * @query: a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Queries the service for videos related to @video. The algorithm determining which videos are related is on the server side.
  * @self and @query are both reffed when this function is called, so can safely be freed after this function returns.
@@ -832,7 +832,7 @@ get_categories_thread (GSimpleAsyncResult *result, GDataYouTubeService *service,
  * @self: a #GDataYouTubeService
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is finished
- * @user_data: data to pass to the @callback function
+ * @user_data: (closure): data to pass to the @callback function
  *
  * Gets a list of the categories currently in use on YouTube. @self is reffed when this function is called, so can safely be unreffed after this
  * function returns.
