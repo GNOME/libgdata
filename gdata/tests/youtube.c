@@ -25,7 +25,6 @@
 
 #define DEVELOPER_KEY "AI39si7Me3Q7zYs6hmkFvpRBD2nrkVjYYsUO5lh_3HdOkGRc9g6Z4nzxZatk_aAo2EsA21k7vrda0OO6oFg2rnhMedZXPyXoEw"
 #define YT_USERNAME "GDataTest"
-#define YT_PASSWORD "gdata"
 
 static void
 test_authentication (void)
@@ -43,15 +42,15 @@ test_authentication (void)
 	g_assert_cmpstr (gdata_youtube_service_get_developer_key (GDATA_YOUTUBE_SERVICE (service)), ==, DEVELOPER_KEY);
 
 	/* Log in */
-	retval = gdata_service_authenticate (service, YT_USERNAME, YT_PASSWORD, NULL, &error);
+	retval = gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
 
 	/* Check all is as it should be */
 	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, YT_USERNAME "@gmail.com");
-	g_assert_cmpstr (gdata_service_get_password (service), ==, YT_PASSWORD);
+	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
+	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
 	g_assert_cmpstr (gdata_youtube_service_get_youtube_user (GDATA_YOUTUBE_SERVICE (service)), ==, YT_USERNAME);
 
 	g_object_unref (service);
@@ -72,8 +71,8 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 
 	/* Check all is as it should be */
 	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, YT_USERNAME "@gmail.com");
-	g_assert_cmpstr (gdata_service_get_password (service), ==, YT_PASSWORD);
+	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
+	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
 	g_assert_cmpstr (gdata_youtube_service_get_youtube_user (GDATA_YOUTUBE_SERVICE (service)), ==, YT_USERNAME);
 }
 
@@ -90,7 +89,7 @@ test_authentication_async (void)
 	g_assert (GDATA_IS_SERVICE (service));
 
 	main_loop = g_main_loop_new (NULL, TRUE);
-	gdata_service_authenticate_async (service, YT_USERNAME, YT_PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+	gdata_service_authenticate_async (service, USERNAME, PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
@@ -926,7 +925,7 @@ main (int argc, char *argv[])
 	gdata_test_init (&argc, &argv);
 
 	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
-	gdata_service_authenticate (service, YT_USERNAME, YT_PASSWORD, NULL, NULL);
+	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
 
 	g_test_add_func ("/youtube/authentication", test_authentication);
 	if (g_test_thorough () == TRUE)
