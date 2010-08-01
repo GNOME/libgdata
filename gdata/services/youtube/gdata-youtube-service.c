@@ -73,6 +73,7 @@
 #include "atom/gdata-link.h"
 #include "gdata-upload-stream.h"
 #include "gdata-youtube-category.h"
+#include "gdata-batchable.h"
 
 /* Standards reference here: http://code.google.com/apis/youtube/2.0/reference.html */
 
@@ -100,7 +101,7 @@ enum {
 	PROP_YOUTUBE_USER
 };
 
-G_DEFINE_TYPE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE)
+G_DEFINE_TYPE_WITH_CODE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
 static void
 gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
