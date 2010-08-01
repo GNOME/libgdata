@@ -689,6 +689,12 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 			             /* Translators: the parameter is a URI for further information. */
 			             _("You have not agreed to the service's terms and conditions. (%s)"), uri);
 			goto login_error;
+		} else if (strncmp (error_start, "AccountMigrated", error_end - error_start) == 0) {
+			/* This is non-standard, and used by YouTube since it's got messed-up accounts */
+			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_ACCOUNT_MIGRATED,
+			             /* Translators: the parameter is a URI for further information. */
+			             _("This account has been migrated. Please log in online to receive your new username and password. (%s)"), uri);
+			goto login_error;
 		} else if (strncmp (error_start, "AccountDeleted", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_ACCOUNT_DELETED,
 			             /* Translators: the parameter is a URI for further information. */

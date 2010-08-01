@@ -97,6 +97,8 @@ typedef enum {
  * @GDATA_AUTHENTICATION_ERROR_ACCOUNT_DELETED: The user account has been deleted.
  * @GDATA_AUTHENTICATION_ERROR_ACCOUNT_DISABLED: The user account has been disabled.
  * @GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED: The user's access to the specified service has been disabled. (The user account may still be valid.)
+ * @GDATA_AUTHENTICATION_ERROR_ACCOUNT_MIGRATED: The user's account login details have been migrated to a new system. (This is used for the transition
+ * from the old YouTube login details to the new ones.)
  *
  * Error codes for #GDataService authentication operations. See the
  * <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Errors">Google accounts documentation</ulink> for
@@ -109,7 +111,8 @@ typedef enum {
 	GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED,
 	GDATA_AUTHENTICATION_ERROR_ACCOUNT_DELETED,
 	GDATA_AUTHENTICATION_ERROR_ACCOUNT_DISABLED,
-	GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED
+	GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED,
+	GDATA_AUTHENTICATION_ERROR_ACCOUNT_MIGRATED
 } GDataAuthenticationError;
 
 /**
