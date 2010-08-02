@@ -627,7 +627,7 @@ entry_compare_cb (const GDataEntry *entry, const gchar *id)
  *
  * Returns the entry in the feed with the given @id, if found.
  *
- * Return value: the #GDataEntry, or %NULL
+ * Return value: (transfer none): the #GDataEntry, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -688,7 +688,7 @@ link_compare_cb (const GDataLink *link, const gchar *rel)
  *
  * Looks up a link by #GDataLink:relation-type value from the list of links in the feed.
  *
- * Return value: a #GDataLink, or %NULL if one was not found
+ * Return value: (transfer none): a #GDataLink, or %NULL if one was not found
  *
  * Since: 0.1.1
  **/
@@ -836,7 +836,7 @@ gdata_feed_get_icon (GDataFeed *self)
  *
  * Returns details about the software which generated the feed.
  *
- * Return value: a #GDataGenerator, or %NULL
+ * Return value: (transfer none): a #GDataGenerator, or %NULL
  **/
 GDataGenerator *
 gdata_feed_get_generator (GDataFeed *self)
