@@ -54,8 +54,8 @@ gdata_comparable_get_type (void)
 
 /**
  * gdata_comparable_compare:
- * @self: a #GDataComparable, or %NULL
- * @other: another #GDataComparable of the same type, or %NULL
+ * @self: (allow-none): a #GDataComparable, or %NULL
+ * @other: (allow-none): another #GDataComparable of the same type, or %NULL
  *
  * Compares the two objects, returning <code class="literal">-1</code> if @self is "less than" @other by some metric, <code class="literal">0</code>
  * if they're equal, or <code class="literal">1</code> if @self is "greater than" @other.
