@@ -315,7 +315,7 @@ run_callback_cb (BatchOperation *op)
  * _gdata_batch_operation_run_callback:
  * @self: a #GDataBatchOperation
  * @op: the #BatchOperation which has been finished
- * @entry: the entry representing the operation's result, or %NULL
+ * @entry: (allow-none): the entry representing the operation's result, or %NULL
  * @error: the error from the operation, or %NULL
  *
  * Run the callback for @op to notify the user code that the operation's result has been received and processed. Either @entry or @error should be
