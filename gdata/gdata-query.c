@@ -471,7 +471,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 /**
  * gdata_query_new:
- * @q: a query string
+ * @q: (allow-none): a query string, or %NULL
  *
  * Creates a new #GDataQuery with its #GDataQuery:q property set to @q.
  *
@@ -485,7 +485,7 @@ gdata_query_new (const gchar *q)
 
 /**
  * gdata_query_new_with_limits:
- * @q: a query string
+ * @q: (allow-none): a query string, or %NULL
  * @start_index: a one-based start index for the results, or <code class="literal">0</code>
  * @max_results: the maximum number of results to return, or <code class="literal">0</code>
  *
@@ -563,7 +563,7 @@ gdata_query_get_q (GDataQuery *self)
 /**
  * gdata_query_set_q:
  * @self: a #GDataQuery
- * @q: a new query string, or %NULL
+ * @q: (allow-none): a new query string, or %NULL
  *
  * Sets the #GDataQuery:q property of the #GDataQuery to the new query string, @q.
  *
@@ -600,7 +600,7 @@ gdata_query_get_categories (GDataQuery *self)
 /**
  * gdata_query_set_categories:
  * @self: a #GDataQuery
- * @categories: the new category string, or %NULL
+ * @categories: (allow-none): the new category string, or %NULL
  *
  * Sets the #GDataQuery:categories property of the #GDataQuery to the new category string, @categories.
  *
@@ -637,7 +637,7 @@ gdata_query_get_author (GDataQuery *self)
 /**
  * gdata_query_set_author:
  * @self: a #GDataQuery
- * @author: the new author string, or %NULL
+ * @author: (allow-none): the new author string, or %NULL
  *
  * Sets the #GDataQuery:author property of the #GDataQuery to the new author string, @author.
  *
@@ -675,7 +675,7 @@ gdata_query_get_updated_min (GDataQuery *self, GTimeVal *updated_min)
 /**
  * gdata_query_set_updated_min:
  * @self: a #GDataQuery
- * @updated_min: the new minimum update time, or %NULL
+ * @updated_min: (allow-none): the new minimum update time, or %NULL
  *
  * Sets the #GDataQuery:updated-min property of the #GDataQuery to the new minimum update time, @updated_min.
  *
@@ -718,7 +718,7 @@ gdata_query_get_updated_max (GDataQuery *self, GTimeVal *updated_max)
 /**
  * gdata_query_set_updated_max:
  * @self: a #GDataQuery
- * @updated_max: the new maximum update time, or %NULL
+ * @updated_max: (allow-none): the new maximum update time, or %NULL
  *
  * Sets the #GDataQuery:updated-max property of the #GDataQuery to the new maximum update time, @updated_max.
  *
@@ -761,7 +761,7 @@ gdata_query_get_published_min (GDataQuery *self, GTimeVal *published_min)
 /**
  * gdata_query_set_published_min:
  * @self: a #GDataQuery
- * @published_min: the new minimum publish time, or %NULL
+ * @published_min: (allow-none): the new minimum publish time, or %NULL
  *
  * Sets the #GDataQuery:published-min property of the #GDataQuery to the new minimum publish time, @published_min.
  *
@@ -804,7 +804,7 @@ gdata_query_get_published_max (GDataQuery *self, GTimeVal *published_max)
 /**
  * gdata_query_set_published_max:
  * @self: a #GDataQuery
- * @published_max: the new maximum publish time, or %NULL
+ * @published_max: (allow-none): the new maximum publish time, or %NULL
  *
  * Sets the #GDataQuery:published-max property of the #GDataQuery to the new maximum publish time, @published_max.
  *
@@ -958,7 +958,7 @@ gdata_query_get_etag (GDataQuery *self)
 /**
  * gdata_query_set_etag:
  * @self: a #GDataQuery
- * @etag: the new ETag
+ * @etag: (allow-none): the new ETag, or %NULL
  *
  * Sets the #GDataQuery:etag property of the #GDataQuery to the new ETag, @etag.
  *
