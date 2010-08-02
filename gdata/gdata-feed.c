@@ -786,7 +786,7 @@ gdata_feed_get_etag (GDataFeed *self)
 /**
  * gdata_feed_get_updated:
  * @self: a #GDataFeed
- * @updated: a #GTimeVal
+ * @updated: (out caller-allocates): a #GTimeVal
  *
  * Puts the time the feed was last updated into @updated.
  **/

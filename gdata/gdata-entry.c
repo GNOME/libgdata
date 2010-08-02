@@ -650,7 +650,7 @@ gdata_entry_get_etag (GDataEntry *self)
 /**
  * gdata_entry_get_updated:
  * @self: a #GDataEntry
- * @updated: a #GTimeVal
+ * @updated: (out caller-allocates): a #GTimeVal
  *
  * Puts the time the entry was last updated into @updated.
  **/
@@ -665,7 +665,7 @@ gdata_entry_get_updated (GDataEntry *self, GTimeVal *updated)
 /**
  * gdata_entry_get_published:
  * @self: a #GDataEntry
- * @published: a #GTimeVal
+ * @published: (out caller-allocates): a #GTimeVal
  *
  * Puts the time the entry was originally published into @published.
  **/

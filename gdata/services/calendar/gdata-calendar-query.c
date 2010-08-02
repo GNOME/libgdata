@@ -488,7 +488,7 @@ gdata_calendar_query_set_order_by (GDataCalendarQuery *self, const gchar *order_
 /**
  * gdata_calendar_query_get_recurrence_expansion_start:
  * @self: a #GDataCalendarQuery
- * @start: a #GTimeVal
+ * @start: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataCalendarQuery:recurrence-expansion-start property and puts it
  * in @start. If the property is unset, both fields in the #GTimeVal will be set to <code class="literal">0</code>.
@@ -532,7 +532,7 @@ gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, G
 /**
  * gdata_calendar_query_get_recurrence_expansion_end:
  * @self: a #GDataCalendarQuery
- * @end: a #GTimeVal
+ * @end: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataCalendarQuery:recurrence-expansion-end property and puts it
  * in @end. If the property is unset, both fields in the #GTimeVal will be set to <code class="literal">0</code>.
@@ -646,7 +646,7 @@ gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort
 /**
  * gdata_calendar_query_get_start_min:
  * @self: a #GDataCalendarQuery
- * @start_min: a #GTimeVal
+ * @start_min: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataCalendarQuery:start-min property and puts it
  * in @start_min. If the property is unset, both fields in the #GTimeVal will be set to <code class="literal">0</code>.
@@ -690,7 +690,7 @@ gdata_calendar_query_set_start_min (GDataCalendarQuery *self, GTimeVal *start_mi
 /**
  * gdata_calendar_query_get_start_max:
  * @self: a #GDataCalendarQuery
- * @start_max: a #GTimeVal
+ * @start_max: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataCalendarQuery:start-max property and puts it
  * in @start_max. If the property is unset, both fields in the #GTimeVal will be set to <code class="literal">0</code>.

@@ -388,7 +388,7 @@ gdata_gd_reminder_set_method (GDataGDReminder *self, const gchar *method)
 /**
  * gdata_gd_reminder_get_absolute_time:
  * @self: a #GDataGDReminder
- * @absolute_time: return location for the absolute time
+ * @absolute_time: (out caller-allocates): return location for the absolute time
  *
  * Gets the #GDataGDReminder:absolute-time property and returns it in @absolute_time. If the
  * property is unset, both fields of @start_time are set to <code class="literal">0</code>.

@@ -429,7 +429,7 @@ gdata_gd_when_compare (const GDataGDWhen *a, const GDataGDWhen *b)
 /**
  * gdata_gd_when_get_start_time:
  * @self: a #GDataGDWhen
- * @start_time: return location for the start time
+ * @start_time: (out caller-allocates): return location for the start time
  *
  * Gets the #GDataGDWhen:start-time property and returns it in @start_time.
  *
@@ -465,7 +465,7 @@ gdata_gd_when_set_start_time (GDataGDWhen *self, GTimeVal *start_time)
 /**
  * gdata_gd_when_get_end_time:
  * @self: a #GDataGDWhen
- * @end_time: return location for the end time
+ * @end_time: (out caller-allocates): return location for the end time
  *
  * Gets the #GDataGDWhen:end-time property and returns it in @end_time.
  *

@@ -1202,7 +1202,7 @@ gdata_youtube_video_set_is_private (GDataYouTubeVideo *self, gboolean is_private
 /**
  * gdata_youtube_video_get_uploaded:
  * @self: a #GDataYouTubeVideo
- * @uploaded: a #GTimeVal
+ * @uploaded: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataYouTubeVideo:uploaded property and puts it in @uploaded. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
@@ -1280,7 +1280,7 @@ gdata_youtube_video_get_state (GDataYouTubeVideo *self)
 /**
  * gdata_youtube_video_get_recorded:
  * @self: a #GDataYouTubeVideo
- * @recorded: a #GTimeVal
+ * @recorded: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataYouTubeVideo:recorded property and puts it in @recorded. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.

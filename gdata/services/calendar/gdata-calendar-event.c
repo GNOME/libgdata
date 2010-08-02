@@ -678,7 +678,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_calendar_event_get_edited:
  * @self: a #GDataCalendarEvent
- * @edited: a #GTimeVal
+ * @edited: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataCalendarEvent:edited property and puts it in @edited. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
@@ -1095,8 +1095,8 @@ gdata_calendar_event_get_times (GDataCalendarEvent *self)
 /**
  * gdata_calendar_event_get_primary_time:
  * @self: a #GDataCalendarEvent
- * @start_time: a #GTimeVal for the start time, or %NULL
- * @end_time: a #GTimeVal for the end time, or %NULL
+ * @start_time: (out caller-allocates): a #GTimeVal for the start time, or %NULL
+ * @end_time: (out caller-allocates): a #GTimeVal for the end time, or %NULL
  * @when: a #GDataGDWhen for the primary time structure, or %NULL
  *
  * Gets the first time period associated with the event, conveniently returning just its start and

@@ -494,7 +494,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_contacts_contact_get_edited:
  * @self: a #GDataContactsContact
- * @edited: a #GTimeVal
+ * @edited: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataContactsContact:edited property and puts it in @edited. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
