@@ -227,7 +227,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * program should display this to the user, and return their response (the text displayed in the
 	 * image). There is no timeout imposed by the library for the response.
 	 *
-	 * Return value: the text in the CAPTCHA image
+	 * Return value: a newly allocated string containing the text in the CAPTCHA image
 	 **/
 	service_signals[SIGNAL_CAPTCHA_CHALLENGE] = g_signal_new ("captcha-challenge",
 	                                                          G_TYPE_FROM_CLASS (klass),
@@ -893,9 +893,9 @@ gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_resul
  * Other #GDataAuthenticationError errors can be returned for other conditions.
  *
  * If the service requires a CAPTCHA to be completed, the #GDataService::captcha-challenge signal will be emitted. The return value from
- * a signal handler for the signal should be the text from the image. If the text is %NULL or empty, authentication will fail with a
- * %GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED error. Otherwise, authentication will be automatically and transparently restarted with
- * the new CAPTCHA details.
+ * a signal handler for the signal should be a newly allocated string containing the text from the image. If the text is %NULL or empty,
+ * authentication will fail with a %GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED error. Otherwise, authentication will be automatically and
+ * transparently restarted with the new CAPTCHA details.
  *
  * A %GDATA_SERVICE_ERROR_PROTOCOL_ERROR will be returned if the server's responses were invalid. Subclasses of #GDataService can override
  * parsing the authentication response, and may return their own error codes. See their documentation for more details.
@@ -1051,10 +1051,10 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
  * gdata_service_query_async:
  * @self: a #GDataService
  * @feed_uri: the feed URI to query, including the host name and protocol
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
  * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_callback: (scope async): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -1185,7 +1185,7 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
  * gdata_service_query:
  * @self: a #GDataService
  * @feed_uri: the feed URI to query, including the host name and protocol
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
@@ -1261,7 +1261,7 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
  * gdata_service_query_single_entry:
  * @self: a #GDataService
  * @entry_id: the entry ID of the desired entry
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry to build from the XML
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
@@ -1352,7 +1352,7 @@ query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GC
  * gdata_service_query_single_entry_async:
  * @self: a #GDataService
  * @entry_id: the entry ID of the desired entry
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry to build from the XML
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the query is finished
@@ -1922,7 +1922,7 @@ notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *self)
  *
  * Gets the proxy URI on the #GDataService's #SoupSession.
  *
- * Return value: the proxy URI, or %NULL
+ * Return value: (transfer none): the proxy URI, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1942,7 +1942,7 @@ gdata_service_get_proxy_uri (GDataService *self)
 /**
  * gdata_service_set_proxy_uri:
  * @self: a #GDataService
- * @proxy_uri: the proxy URI, or %NULL
+ * @proxy_uri: (allow-none): the proxy URI, or %NULL
  *
  * Sets the proxy URI on the #SoupSession used internally by the given #GDataService.
  * This forces all requests through the given proxy.
@@ -2175,7 +2175,7 @@ gdata_service_get_locale (GDataService *self)
 /**
  * gdata_service_set_locale:
  * @self: a #GDataService
- * @locale: the new locale in Unix locale format, or %NULL for the default locale
+ * @locale: (allow-none): the new locale in Unix locale format, or %NULL for the default locale
  *
  * Set the locale used for network requests to @locale, given in standard Unix locale format. See #GDataService:locale for more details.
  *
