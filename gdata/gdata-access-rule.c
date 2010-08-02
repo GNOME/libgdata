@@ -359,8 +359,8 @@ gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gch
 /**
  * gdata_access_rule_get_scope:
  * @self: a #GDataAccessRule
- * @type: return location for the scope type, or %NULL
- * @value: return location for the scope value, or %NULL
+ * @type: (out callee-allocates) (transfer none): return location for the scope type, or %NULL
+ * @value: (out callee-allocates) (transfer none): return location for the scope value, or %NULL
  *
  * Gets the #GDataAccessRule:scope-type and #GDataAccessRule:scope-value properties.
  *
