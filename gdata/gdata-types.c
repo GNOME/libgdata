@@ -78,7 +78,7 @@ gdata_color_get_type (void)
 /**
  * gdata_color_from_hexadecimal:
  * @hexadecimal: a hexadecimal color string
- * @color: a #GDataColor
+ * @color: (out caller-allocates): a #GDataColor
  *
  * Parses @hexadecimal and returns a #GDataColor describing it in @color.
  *
