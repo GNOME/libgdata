@@ -546,7 +546,7 @@ create_network_thread (GDataUploadStream *self, GError **error)
  * @service: a #GDataService
  * @method: the HTTP method to use
  * @upload_uri: the URI to upload
- * @entry: the entry to upload as metadata, or %NULL
+ * @entry: (allow-none): the entry to upload as metadata, or %NULL
  * @slug: the file's slug (filename)
  * @content_type: the content type of the file being uploaded
  *
@@ -626,7 +626,7 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
 /**
  * gdata_upload_stream_get_response:
  * @self: a #GDataUploadStream
- * @length: return location for the length of the response, or %NULL
+ * @length: (allow-none) (out caller-allocates): return location for the length of the response, or %NULL
  *
  * Returns the server's response to the upload operation performed by the #GDataUploadStream. If the operation
  * is still underway, or the server's response hasn't been received yet, %NULL is returned and @length is set to <code class="literal">-1</code>.
@@ -678,7 +678,7 @@ gdata_upload_stream_get_response (GDataUploadStream *self, gssize *length)
  *
  * Gets the service used to authenticate the upload, as passed to gdata_upload_stream_new().
  *
- * Return value: the #GDataService used to authenticate the upload
+ * Return value: (transfer none): the #GDataService used to authenticate the upload
  *
  * Since: 0.5.0
  **/
@@ -712,7 +712,7 @@ gdata_upload_stream_get_upload_uri (GDataUploadStream *self)
  *
  * Gets the entry being used to upload metadata, if one was passed to gdata_upload_stream_new().
  *
- * Return value: the entry used for metadata, or %NULL
+ * Return value: (transfer none): the entry used for metadata, or %NULL
  *
  * Since: 0.5.0
  **/
