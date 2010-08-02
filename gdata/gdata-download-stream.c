@@ -498,7 +498,7 @@ gdata_download_stream_new (GDataService *service, const gchar *download_uri)
  *
  * Gets the service used to authenticate the download, as passed to gdata_download_stream_new().
  *
- * Return value: the #GDataService used to authenticate the download
+ * Return value: (transfer none): the #GDataService used to authenticate the download
  *
  * Since: 0.5.0
  **/
