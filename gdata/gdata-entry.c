@@ -553,7 +553,7 @@ get_entry_uri (const gchar *id)
 
 /**
  * gdata_entry_new:
- * @id: the entry's ID, or %NULL
+ * @id: (allow-none): the entry's ID, or %NULL
  *
  * Creates a new #GDataEntry with the given ID and default properties.
  *
@@ -583,7 +583,7 @@ gdata_entry_get_title (GDataEntry *self)
 /**
  * gdata_entry_set_title:
  * @self: a #GDataEntry
- * @title: the new entry title, or %NULL
+ * @title: (allow-none): the new entry title, or %NULL
  *
  * Sets the title of the entry.
  **/
@@ -617,7 +617,7 @@ gdata_entry_get_summary (GDataEntry *self)
 /**
  * gdata_entry_set_summary:
  * @self: a #GDataEntry
- * @summary: the new entry summary, or %NULL
+ * @summary: (allow-none): the new entry summary, or %NULL
  *
  * Sets the summary of the entry.
  *
@@ -796,7 +796,7 @@ gdata_entry_get_content (GDataEntry *self)
 /**
  * gdata_entry_set_content:
  * @self: a #GDataEntry
- * @content: the new content for the entry, or %NULL
+ * @content: (allow-none): the new content for the entry, or %NULL
  *
  * Sets the entry's content to @content.
  **/
@@ -846,7 +846,7 @@ link_compare_cb (const GDataLink *_link, const gchar *rel)
  *
  * In the rare event of requiring a list of links with the same @rel value, use gdata_entry_look_up_links().
  *
- * Return value: a #GDataLink, or %NULL if one was not found
+ * Return value: (transfer none): a #GDataLink, or %NULL if one was not found
  *
  * Since: 0.1.1
  **/
@@ -955,7 +955,7 @@ gdata_entry_get_rights (GDataEntry *self)
 /**
  * gdata_entry_set_rights:
  * @self: a #GDataEntry
- * @rights: the new rights, or %NULL
+ * @rights: (allow-none): the new rights, or %NULL
  *
  * Sets the rights for this entry.
  *
