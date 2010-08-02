@@ -231,7 +231,7 @@ gdata_batch_operation_finalize (GObject *object)
  *
  * Gets the #GDataBatchOperation:service property.
  *
- * Return value: the batch operation's attached service
+ * Return value: (transfer none): the batch operation's attached service
  *
  * Since: 0.7.0
  **/
@@ -374,7 +374,7 @@ operation_free (BatchOperation *op)
  * @self: a #GDataBatchOperation
  * @id: the ID of the entry being queried for
  * @entry_type: the type of the entry which will be returned
- * @callback: a #GDataBatchOperationCallback to call when the query is finished, or %NULL
+ * @callback: (scope async): a #GDataBatchOperationCallback to call when the query is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
  * Add a query to the #GDataBatchOperation, to be executed when the operation is run. The query will return a #GDataEntry (of subclass type
@@ -423,7 +423,7 @@ gdata_batch_operation_add_query (GDataBatchOperation *self, const gchar *id, GTy
  * gdata_batch_operation_add_insertion:
  * @self: a #GDataBatchOperation
  * @entry: the #GDataEntry to insert
- * @callback: a #GDataBatchOperationCallback to call when the insertion is finished, or %NULL
+ * @callback: (scope async): a #GDataBatchOperationCallback to call when the insertion is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
  * Add an entry to the #GDataBatchOperation, to be inserted on the server when the operation is run. The insertion will return the inserted version
@@ -450,7 +450,7 @@ gdata_batch_operation_add_insertion (GDataBatchOperation *self, GDataEntry *entr
  * gdata_batch_operation_add_update:
  * @self: a #GDataBatchOperation
  * @entry: the #GDataEntry to update
- * @callback: a #GDataBatchOperationCallback to call when the update is finished, or %NULL
+ * @callback: (scope async): a #GDataBatchOperationCallback to call when the update is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
  * Add an entry to the #GDataBatchOperation, to be updated on the server when the operation is run. The update will return the updated version of
@@ -480,7 +480,7 @@ gdata_batch_operation_add_update (GDataBatchOperation *self, GDataEntry *entry, 
  * gdata_batch_operation_add_deletion:
  * @self: a #GDataBatchOperation
  * @entry: the #GDataEntry to delete
- * @callback: a #GDataBatchOperationCallback to call when the deletion is finished, or %NULL
+ * @callback: (scope async): a #GDataBatchOperationCallback to call when the deletion is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
  * Add an entry to the #GDataBatchOperation, to be deleted on the server when the operation is run. @entry is reffed by the function, so may be freed
