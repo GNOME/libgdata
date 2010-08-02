@@ -407,7 +407,7 @@ gdata_gd_when_new (const GTimeVal *start_time, const GTimeVal *end_time, gboolea
 /**
  * gdata_gd_when_get_start_time:
  * @self: a #GDataGDWhen
- * @start_time: return location for the start time
+ * @start_time: (out caller-allocates): return location for the start time
  *
  * Gets the #GDataGDWhen:start-time property and returns it in @start_time.
  *
@@ -443,7 +443,7 @@ gdata_gd_when_set_start_time (GDataGDWhen *self, const GTimeVal *start_time)
 /**
  * gdata_gd_when_get_end_time:
  * @self: a #GDataGDWhen
- * @end_time: return location for the end time
+ * @end_time: (out caller-allocates): return location for the end time
  *
  * Gets the #GDataGDWhen:end-time property and returns it in @end_time.
  *

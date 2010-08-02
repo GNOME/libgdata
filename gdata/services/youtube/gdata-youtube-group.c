@@ -194,7 +194,7 @@ gdata_youtube_group_set_is_private (GDataYouTubeGroup *self, gboolean is_private
 /**
  * gdata_youtube_group_get_uploaded:
  * @self: a #GDataYouTubeGroup
- * @uploaded: a #GTimeVal
+ * @uploaded: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataYouTubeGroup:uploaded property and puts it in @uploaded. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.

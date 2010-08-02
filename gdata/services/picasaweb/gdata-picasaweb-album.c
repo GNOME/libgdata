@@ -900,7 +900,7 @@ gdata_picasaweb_album_get_nickname (GDataPicasaWebAlbum *self)
 /**
  * gdata_picasaweb_album_get_edited:
  * @self: a #GDataPicasaWebAlbum
- * @edited: a #GTimeVal
+ * @edited: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataPicasaWebAlbum:edited property and puts it in @edited. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
@@ -991,7 +991,7 @@ gdata_picasaweb_album_set_visibility (GDataPicasaWebAlbum *self, GDataPicasaWebV
 /**
  * gdata_picasaweb_album_get_timestamp:
  * @self: a #GDataPicasaWebAlbum
- * @timestamp: a #GTimeVal
+ * @timestamp: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataPicasaWebAlbum:timestamp property and puts it in
  * @timestamp. This value usually holds either the date that best

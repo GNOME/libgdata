@@ -1127,7 +1127,7 @@ gdata_picasaweb_file_get_id (GDataPicasaWebFile *self)
 /**
  * gdata_picasaweb_file_get_edited:
  * @self: a #GDataPicasaWebFile
- * @edited: a #GTimeVal
+ * @edited: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataPicasaWebFile:edited property and puts it in @edited. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
@@ -1360,7 +1360,7 @@ gdata_picasaweb_file_set_checksum (GDataPicasaWebFile *self, const gchar *checks
 /**
  * gdata_picasaweb_file_get_timestamp:
  * @self: a #GDataPicasaWebFile
- * @timestamp: a #GTimeVal
+ * @timestamp: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataPicasaWebFile:timestamp property and puts it in @timestamp. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.

@@ -327,7 +327,7 @@ gdata_exif_tags_get_model (GDataExifTags *self)
 /**
  * gdata_exif_tags_get_time:
  * @self: a #GDataExifTags
- * @_time: a #GTimeVal
+ * @_time: (out caller-allocates): a #GTimeVal
  *
  * Gets the #GDataExifTags:time property and puts it in @_time. If the property is unset,
  * both fields in the #GTimeVal will be set to <code class="literal">0</code>.

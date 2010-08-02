@@ -364,7 +364,7 @@ gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, G
  * @element: the element to check against
  * @element_name: the name of the element to parse
  * @options: a bitwise combination of parsing options from #GDataParserOptions, or %P_NONE
- * @output: the return location for the parsed time value
+ * @output: (out caller-allocates): the return location for the parsed time value
  * @success: the return location for a value which is %TRUE if the time val was parsed successfully, %FALSE if an error was encountered,
  * and undefined if @element didn't match @element_name
  * @error: a #GError, or %NULL
