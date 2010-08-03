@@ -387,7 +387,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gd_when_new:
  * @start_time: when the event starts or (for zero-duration events) when it occurs
- * @end_time: when the event ends, or %NULL
+ * @end_time: (allow-none): when the event ends, or %NULL
  * @is_date: %TRUE if @start_time and @end_time specify dates rather than times, %FALSE otherwise
  *
  * Creates a new #GDataGDWhen. More information is available in the <ulink type="http"
@@ -462,7 +462,7 @@ gdata_gd_when_get_end_time (GDataGDWhen *self, GTimeVal *end_time)
 /**
  * gdata_gd_when_set_end_time:
  * @self: a #GDataGDWhen
- * @end_time: the new end time, or %NULL
+ * @end_time: (allow-none): the new end time, or %NULL
  *
  * Sets the #GDataGDWhen:end-time property to @end_time.
  *
@@ -538,7 +538,7 @@ gdata_gd_when_get_value_string (GDataGDWhen *self)
 /**
  * gdata_gd_when_set_value_string:
  * @self: a #GDataGDWhen
- * @value_string: the new value string, or %NULL
+ * @value_string: (allow-none): the new value string, or %NULL
  *
  * Sets the #GDataGDWhen:value-string property to @value_string.
  *
