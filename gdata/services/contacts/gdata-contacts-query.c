@@ -237,7 +237,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 /**
  * gdata_contacts_query_new:
- * @q: a query string, or %NULL
+ * @q: (allow-none): a query string, or %NULL
  *
  * Creates a new #GDataContactsQuery with its #GDataQuery:q property set to @q.
  *
@@ -253,7 +253,7 @@ gdata_contacts_query_new (const gchar *q)
 
 /**
  * gdata_contacts_query_new_with_limits:
- * @q: a query string, or %NULL
+ * @q: (allow-none): a query string, or %NULL
  * @start_index: a one-based start index for the results, or <code class="literal">0</code>
  * @max_results: the maximum number of results to return, or <code class="literal">0</code>
  *
@@ -294,7 +294,7 @@ gdata_contacts_query_get_order_by (GDataContactsQuery *self)
 /**
  * gdata_contacts_query_set_order_by:
  * @self: a #GDataContactsQuery
- * @order_by: a new order by string, or %NULL
+ * @order_by: (allow-none): a new order by string, or %NULL
  *
  * Sets the #GDataContactsQuery:order-by property of the #GDataContactsQuery to the new order by string, @order_by.
  *
@@ -372,7 +372,7 @@ gdata_contacts_query_get_sort_order (GDataContactsQuery *self)
 /**
  * gdata_contacts_query_set_sort_order:
  * @self: a #GDataContactsQuery
- * @sort_order: a new sort order string, or %NULL
+ * @sort_order: (allow-none): a new sort order string, or %NULL
  *
  * Sets the #GDataContactsQuery:sort-order property of the #GDataContactsQuery to the new sort order string, @sort_order.
  *
@@ -413,7 +413,7 @@ gdata_contacts_query_get_group (GDataContactsQuery *self)
 /**
  * gdata_contacts_query_set_group:
  * @self: a #GDataContactsQuery
- * @group: a new group ID URI, or %NULL
+ * @group: (allow-none): a new group ID URI, or %NULL
  *
  * Sets the #GDataContactsQuery:group property of the #GDataContactsQuery to the new group ID URI, @group.
  *
