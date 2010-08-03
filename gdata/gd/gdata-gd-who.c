@@ -257,9 +257,9 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_gd_who_new:
- * @relation_type: the relationship between the item and this person, or %NULL
- * @value_string: a string to represent the person, or %NULL
- * @email_address: the person's e-mail address, or %NULL
+ * @relation_type: (allow-none): the relationship between the item and this person, or %NULL
+ * @value_string: (allow-none): a string to represent the person, or %NULL
+ * @email_address: (allow-none): the person's e-mail address, or %NULL
  *
  * Creates a new #GDataGDWho. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
@@ -330,7 +330,7 @@ gdata_gd_who_get_relation_type (GDataGDWho *self)
 /**
  * gdata_gd_who_set_relation_type:
  * @self: a #GDataGDWho
- * @relation_type: the new relation type
+ * @relation_type: (allow-none): the new relation type, or %NULL
  *
  * Sets the #GDataGDWho:relation-type property to @relation_type.
  *
@@ -369,7 +369,7 @@ gdata_gd_who_get_value_string (GDataGDWho *self)
 /**
  * gdata_gd_who_set_value_string:
  * @self: a #GDataGDWho
- * @value_string: the new value string, or %NULL
+ * @value_string: (allow-none): the new value string, or %NULL
  *
  * Sets the #GDataGDWho:value-string property to @value_string.
  *
@@ -407,7 +407,7 @@ gdata_gd_who_get_email_address (GDataGDWho *self)
 /**
  * gdata_gd_who_set_email_address:
  * @self: a #GDataGDWho
- * @email_address: the new e-mail address, or %NULL
+ * @email_address: (allow-none): the new e-mail address, or %NULL
  *
  * Sets the #GDataGDWho:email-address property to @email_address.
  *
