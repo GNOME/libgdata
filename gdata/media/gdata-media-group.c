@@ -297,7 +297,7 @@ gdata_media_group_get_title (GDataMediaGroup *self)
 /**
  * gdata_media_group_set_title:
  * @self: a #GDataMediaGroup
- * @title: the group's new title, or %NULL
+ * @title: (allow-none): the group's new title, or %NULL
  *
  * Sets the #GDataMediaGroup:title property to @title.
  *
@@ -333,7 +333,7 @@ gdata_media_group_get_description (GDataMediaGroup *self)
 /**
  * gdata_media_group_set_description:
  * @self: a #GDataMediaGroup
- * @description: the group's new description, or %NULL
+ * @description: (allow-none): the group's new description, or %NULL
  *
  * Sets the #GDataMediaGroup:description property to @description.
  *
@@ -369,7 +369,7 @@ gdata_media_group_get_keywords (GDataMediaGroup *self)
 /**
  * gdata_media_group_set_keywords:
  * @self: a #GDataMediaGroup
- * @keywords: the group's new keywords, or %NULL
+ * @keywords: (allow-none): the group's new keywords, or %NULL
  *
  * Sets the #GDataMediaGroup:keywords property to @keywords.
  *
@@ -403,7 +403,7 @@ gdata_media_group_get_category (GDataMediaGroup *self)
 /**
  * gdata_media_group_set_category:
  * @self: a #GDataMediaGroup
- * @category: a new #GDataMediaCategory, or %NULL
+ * @category: (allow-none): a new #GDataMediaCategory, or %NULL
  *
  * Sets the #GDataMediaGroup:category property to @category, and increments its reference count.
  **/
@@ -432,7 +432,7 @@ content_compare_cb (const GDataMediaContent *content, const gchar *type)
  * Looks up a #GDataMediaContent from the group with the given MIME type. The group's list of contents is
  * a list of URIs to various formats of the group content itself, such as the SWF URI or RTSP stream for a video.
  *
- * Return value: a #GDataMediaContent matching @type, or %NULL
+ * Return value: (transfer none): a #GDataMediaContent matching @type, or %NULL
  **/
 GDataMediaContent *
 gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type)
