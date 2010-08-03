@@ -227,8 +227,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_gcontact_language_new:
- * @code: the language code, or %NULL
- * @label: a free-form label for the language, or %NULL
+ * @code: (allow-none): the language code, or %NULL
+ * @label: (allow-none): a free-form label for the language, or %NULL
  *
  * Creates a new #GDataGContactLanguage. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcLanguage">gContact specification</ulink>.
@@ -266,7 +266,7 @@ gdata_gcontact_language_get_code (GDataGContactLanguage *self)
 /**
  * gdata_gcontact_language_set_code:
  * @self: a #GDataGContactLanguage
- * @code: the new code for the language, or %NULL
+ * @code: (allow-none): the new code for the language, or %NULL
  *
  * Sets the #GDataGContactLanguage:code property to @code.
  *
@@ -306,7 +306,7 @@ gdata_gcontact_language_get_label (GDataGContactLanguage *self)
 /**
  * gdata_gcontact_language_set_label:
  * @self: a #GDataGContactLanguage
- * @label: the new free-form label for the language, or %NULL
+ * @label: (allow-none): the new free-form label for the language, or %NULL
  *
  * Sets the #GDataGContactLanguage:label property to @label.
  *
