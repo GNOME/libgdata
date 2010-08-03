@@ -265,8 +265,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gcontact_relation_new:
  * @name: the name of the relation
- * @relation_type: the type of relation, or %NULL
- * @label: a free-form label for the type of relation, or %NULL
+ * @relation_type: (allow-none): the type of relation, or %NULL
+ * @label: (allow-none): a free-form label for the type of relation, or %NULL
  *
  * Creates a new #GDataGContactRelation. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcRelation">gContact specification</ulink>.
@@ -307,7 +307,7 @@ gdata_gcontact_relation_get_name (GDataGContactRelation *self)
 /**
  * gdata_gcontact_relation_set_name:
  * @self: a #GDataGContactRelation
- * @name: the new name for the relation
+ * @name: (allow-none): the new name for the relation
  *
  * Sets the #GDataGContactRelation:name property to @name.
  *
@@ -344,7 +344,7 @@ gdata_gcontact_relation_get_relation_type (GDataGContactRelation *self)
 /**
  * gdata_gcontact_relation_set_relation_type:
  * @self: a #GDataGContactRelation
- * @relation_type: the new type for the relation, or %NULL
+ * @relation_type: (allow-none): the new type for the relation, or %NULL
  *
  * Sets the #GDataGContactRelation:relation-type property to @relation_type,
  * such as %GDATA_GCONTACT_RELATION_MANAGER or %GDATA_GCONTACT_RELATION_CHILD.
@@ -385,7 +385,7 @@ gdata_gcontact_relation_get_label (GDataGContactRelation *self)
 /**
  * gdata_gcontact_relation_set_label:
  * @self: a #GDataGContactRelation
- * @label: the new free-form type for the relation, or %NULL
+ * @label: (allow-none): the new free-form type for the relation, or %NULL
  *
  * Sets the #GDataGContactRelation:label property to @label.
  *
