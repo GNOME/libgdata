@@ -1016,7 +1016,7 @@ get_entry_uri (const gchar *id)
 
 /**
  * gdata_contacts_contact_new:
- * @id: the contact's ID, or %NULL
+ * @id: (allow-none): the contact's ID, or %NULL
  *
  * Creates a new #GDataContactsContact with the given ID and default properties.
  *
@@ -1074,7 +1074,7 @@ gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *edited)
  *
  * Gets the #GDataContactsContact:name property.
  *
- * Return value: the contact's name, or %NULL
+ * Return value: (transfer none): the contact's name, or %NULL
  *
  * Since: 0.5.0
  **/
@@ -1131,7 +1131,7 @@ gdata_contacts_contact_get_nickname (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_nickname:
  * @self: a #GDataContactsContact
- * @nickname: the new nickname, or %NULL
+ * @nickname: (allow-none): the new nickname, or %NULL
  *
  * Sets the #GDataContactsContact:nickname property to @nickname.
  *
@@ -1176,7 +1176,7 @@ gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday
 /**
  * gdata_contacts_contact_set_birthday:
  * @self: a #GDataContactsContact
- * @birthday: the new birthday, or %NULL
+ * @birthday: (allow-none): the new birthday, or %NULL
  * @birthday_has_year: %TRUE if @birthday's year is relevant, %FALSE otherwise
  *
  * Sets the #GDataContactsContact:birthday property to @birthday and the #GDataContactsContact:birthday-has-year property to @birthday_has_year.
@@ -1225,7 +1225,7 @@ gdata_contacts_contact_get_billing_information (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_billing_information:
  * @self: a #GDataContactsContact
- * @billing_information: the new billing information for the contact, or %NULL
+ * @billing_information: (allow-none): the new billing information for the contact, or %NULL
  *
  * Sets the #GDataContactsContact:billing-information property to @billing_information.
  *
@@ -1264,7 +1264,7 @@ gdata_contacts_contact_get_directory_server (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_directory_server:
  * @self: a #GDataContactsContact
- * @directory_server: the new name or address of a directory server associated with the contact, or %NULL
+ * @directory_server: (allow-none): the new name or address of a directory server associated with the contact, or %NULL
  *
  * Sets the #GDataContactsContact:directory-server property to @directory_server.
  *
@@ -1303,7 +1303,7 @@ gdata_contacts_contact_get_gender (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_gender:
  * @self: a #GDataContactsContact
- * @gender: the new gender of the contact, or %NULL
+ * @gender: (allow-none): the new gender of the contact, or %NULL
  *
  * Sets the #GDataContactsContact:gender property to @gender.
  *
@@ -1342,7 +1342,7 @@ gdata_contacts_contact_get_initials (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_initials:
  * @self: a #GDataContactsContact
- * @initials: the new initials of the contact, or %NULL
+ * @initials: (allow-none): the new initials of the contact, or %NULL
  *
  * Sets the #GDataContactsContact:initials property to @initials.
  *
@@ -1380,7 +1380,7 @@ gdata_contacts_contact_get_maiden_name (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_maiden_name:
  * @self: a #GDataContactsContact
- * @maiden_name: the new maiden name of the contact, or %NULL
+ * @maiden_name: (allow-none): the new maiden name of the contact, or %NULL
  *
  * Sets the #GDataContactsContact:maiden-name property to @maiden_name.
  *
@@ -1418,7 +1418,7 @@ gdata_contacts_contact_get_mileage (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_mileage:
  * @self: a #GDataContactsContact
- * @mileage: the new mileage associated with the contact, or %NULL
+ * @mileage: (allow-none): the new mileage associated with the contact, or %NULL
  *
  * Sets the #GDataContactsContact:mileage property to @mileage.
  *
@@ -1456,7 +1456,7 @@ gdata_contacts_contact_get_occupation (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_occupation:
  * @self: a #GDataContactsContact
- * @occupation: the contact's new occupation, or %NULL
+ * @occupation: (allow-none): the contact's new occupation, or %NULL
  *
  * Sets the #GDataContactsContact:occupation property to @occupation.
  *
@@ -1494,7 +1494,7 @@ gdata_contacts_contact_get_priority (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_priority:
  * @self: a #GDataContactsContact
- * @priority: the contact's new priority, or %NULL
+ * @priority: (allow-none): the contact's new priority, or %NULL
  *
  * Sets the #GDataContactsContact:priority property to @priority.
  *
@@ -1533,7 +1533,7 @@ gdata_contacts_contact_get_sensitivity (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_sensitivity:
  * @self: a #GDataContactsContact
- * @sensitivity: the contact's new sensitivity, or %NULL
+ * @sensitivity: (allow-none): the contact's new sensitivity, or %NULL
  *
  * Sets the #GDataContactsContact:sensitivity property to @sensitivity.
  *
@@ -1572,7 +1572,7 @@ gdata_contacts_contact_get_short_name (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_short_name:
  * @self: a #GDataContactsContact
- * @short_name: the contact's new short name, or %NULL
+ * @short_name: (allow-none): the contact's new short name, or %NULL
  *
  * Sets the #GDataContactsContact:short-name property to @short_name.
  *
@@ -1610,7 +1610,7 @@ gdata_contacts_contact_get_subject (GDataContactsContact *self)
 /**
  * gdata_contacts_contact_set_subject:
  * @self: a #GDataContactsContact
- * @subject: the contact's new subject, or %NULL
+ * @subject: (allow-none): the contact's new subject, or %NULL
  *
  * Sets the #GDataContactsContact:subject property to @subject.
  *
@@ -1676,7 +1676,7 @@ gdata_contacts_contact_get_email_addresses (GDataContactsContact *self)
  *
  * Gets the contact's primary e-mail address, if one exists.
  *
- * Return value: a #GDataGDEmailAddress, or %NULL
+ * Return value: (transfer none): a #GDataGDEmailAddress, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1765,7 +1765,7 @@ gdata_contacts_contact_get_im_addresses (GDataContactsContact *self)
  *
  * Gets the contact's primary IM address, if one exists.
  *
- * Return value: a #GDataGDIMAddress, or %NULL
+ * Return value: (transfer none): a #GDataGDIMAddress, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1854,7 +1854,7 @@ gdata_contacts_contact_get_phone_numbers (GDataContactsContact *self)
  *
  * Gets the contact's primary phone number, if one exists.
  *
- * Return value: a #GDataGDPhoneNumber, or %NULL
+ * Return value: (transfer none): a #GDataGDPhoneNumber, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1943,7 +1943,7 @@ gdata_contacts_contact_get_postal_addresses (GDataContactsContact *self)
  *
  * Gets the contact's primary postal address, if one exists.
  *
- * Return value: a #GDataGDPostalAddress, or %NULL
+ * Return value: (transfer none): a #GDataGDPostalAddress, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -2032,7 +2032,7 @@ gdata_contacts_contact_get_organizations (GDataContactsContact *self)
  *
  * Gets the contact's primary organization, if one exists.
  *
- * Return value: a #GDataGDOrganization, or %NULL
+ * Return value: (transfer none): a #GDataGDOrganization, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -2237,7 +2237,7 @@ gdata_contacts_contact_get_websites (GDataContactsContact *self)
  *
  * Gets the contact's primary website, if one exists.
  *
- * Return value: a #GDataGContactWebsite, or %NULL
+ * Return value: (transfer none): a #GDataGContactWebsite, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2383,7 +2383,7 @@ gdata_contacts_contact_get_calendars (GDataContactsContact *self)
  *
  * Gets the contact's primary calendar, if one exists.
  *
- * Return value: a #GDataGContactCalendar, or %NULL
+ * Return value: (transfer none): a #GDataGContactCalendar, or %NULL
  *
  * Since: 0.7.0
  **/
@@ -2630,7 +2630,7 @@ gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const 
  *
  * Gets the full list of extended properties of the contact; a hash table mapping property name to value.
  *
- * Return value: a #GHashTable of extended properties
+ * Return value: (transfer none): a #GHashTable of extended properties
  *
  * Since: 0.4.0
  **/
@@ -2645,7 +2645,7 @@ gdata_contacts_contact_get_extended_properties (GDataContactsContact *self)
  * gdata_contacts_contact_set_extended_property:
  * @self: a #GDataContactsContact
  * @name: the property name; an arbitrary, unique string
- * @value: the property value, or %NULL
+ * @value: (allow-none): the property value, or %NULL
  *
  * Sets the value of a contact's extended property. Extended property names are unique (but of the client's choosing),
  * and reusing the same property name will result in the old value of that property being overwritten.
@@ -2712,7 +2712,7 @@ gdata_contacts_contact_get_user_defined_field (GDataContactsContact *self, const
  *
  * Gets the full list of user-defined fields of the contact; a hash table mapping field name to value.
  *
- * Return value: a #GHashTable of user-defined fields
+ * Return value: (transfer none): a #GHashTable of user-defined fields
  *
  * Since: 0.7.0
  **/
@@ -2727,7 +2727,7 @@ gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self)
  * gdata_contacts_contact_set_user_defined_field:
  * @self: a #GDataContactsContact
  * @name: the field name; an arbitrary, case-sensitive, unique string
- * @value: the field value, or %NULL
+ * @value: (allow-none): the field value, or %NULL
  *
  * Sets the value of a contact's user-defined field. User-defined field names are unique (but of the client's choosing),
  * and reusing the same field name will result in the old value of that field being overwritten.
@@ -2880,8 +2880,8 @@ gdata_contacts_contact_has_photo (GDataContactsContact *self)
  * gdata_contacts_contact_get_photo:
  * @self: a #GDataContactsContact
  * @service: a #GDataContactsService
- * @length: return location for the image length, in bytes
- * @content_type: return location for the image's content type, or %NULL; free with g_free()
+ * @length: (out caller-allocates): return location for the image length, in bytes
+ * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the image's content type, or %NULL; free with g_free()
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -2961,7 +2961,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  * gdata_contacts_contact_set_photo:
  * @self: a #GDataContactsContact
  * @service: a #GDataService
- * @data: the image data, or %NULL
+ * @data: (allow-none): the image data, or %NULL
  * @length: the image length, in bytes
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
