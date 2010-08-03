@@ -78,7 +78,7 @@ gdata_calendar_service_new (const gchar *client_id)
 /**
  * gdata_calendar_service_query_all_calendars:
  * @self: a #GDataCalendarService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -122,7 +122,7 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
 /**
  * gdata_calendar_service_query_all_calendars_async:
  * @self: a #GDataCalendarService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -165,7 +165,7 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
 /**
  * gdata_calendar_service_query_own_calendars:
  * @self: a #GDataCalendarService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -209,7 +209,7 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
 /**
  * gdata_calendar_service_query_own_calendars_async:
  * @self: a #GDataCalendarService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -253,7 +253,7 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
  * gdata_calendar_service_query_events:
  * @self: a #GDataCalendarService
  * @calendar: a #GDataCalendarCalendar
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
