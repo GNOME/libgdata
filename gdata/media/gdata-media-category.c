@@ -254,8 +254,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_media_category_new:
  * @category: a category describing the content
- * @scheme: a URI identifying the categorisation scheme, or %NULL
- * @label: a human-readable name for the category, or %NULL
+ * @scheme: (allow-none): a URI identifying the categorisation scheme, or %NULL
+ * @label: (allow-none): a human-readable name for the category, or %NULL
  *
  * Creates a new #GDataMediaCategory. More information is available in the <ulink type="http"
  * url="http://search.yahoo.com/mrss/">Media RSS specification</ulink>.
@@ -327,7 +327,7 @@ gdata_media_category_get_scheme (GDataMediaCategory *self)
 /**
  * gdata_media_category_set_scheme:
  * @self: a #GDataMediaCategory
- * @scheme: the category's new scheme, or %NULL
+ * @scheme: (allow-none): the category's new scheme, or %NULL
  *
  * Sets the #GDataMediaCategory:scheme property to @scheme.
  *
@@ -369,7 +369,7 @@ gdata_media_category_get_label (GDataMediaCategory *self)
 /**
  * gdata_media_category_set_label:
  * @self: a #GDataMediaCategory
- * @label: the category's new label, or %NULL
+ * @label: (allow-none): the category's new label, or %NULL
  *
  * Sets the #GDataMediaCategory:label property to @label.
  *
