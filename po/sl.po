@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-07-13 21:27+0000\n"
-"PO-Revision-Date: 2010-07-14 19:21+0100\n"
+"POT-Creation-Date: 2010-08-03 08:54+0000\n"
+"PO-Revision-Date: 2010-08-03 12:43+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Pravilo je že vstavljeno."
 
 #: ../gdata/gdata-access-handler.c:350
 msgid "The owner's rule may not be deleted."
-msgstr "Pravila lastnika ni mogoče izbrisati."
+msgstr "Pravil lastnika ni mogoče izbrisati."
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:186
@@ -119,7 +119,7 @@ msgid "A singleton element (%s) was duplicated."
 msgstr "Enkratni predmet (%s) je podvojen."
 
 #: ../gdata/gdata-service.c:392
-#: ../gdata/services/youtube/gdata-youtube-service.c:233
+#: ../gdata/services/youtube/gdata-youtube-service.c:234
 msgid "The server returned a malformed response."
 msgstr "Strežnik je vrnil izmaličen odgovor."
 
@@ -234,39 +234,45 @@ msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Za nadaljevanje se morate strinjati z določili in s pogoji storitve. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:695
+#: ../gdata/gdata-service.c:696
+#, c-format
+msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
+msgstr "Račun je premaknjen. S prijavo preko povezave, je mogoče pridobiti novo uporabniško ime in geslo. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:701
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Račun je bil izbrisan. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:700
+#: ../gdata/gdata-service.c:706
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Račun je onemogočen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:705
+#: ../gdata/gdata-service.c:711
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Dostop računa do storitve je onemogočen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:710
+#: ../gdata/gdata-service.c:716
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Storitev trenutno ni na voljo. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:981
+#: ../gdata/gdata-service.c:987
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neveljaven preusmeritveni naslov URI: %s"
 
-#: ../gdata/gdata-service.c:1574
+#: ../gdata/gdata-service.c:1580
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:606
-#: ../gdata/services/youtube/gdata-youtube-service.c:691
+#: ../gdata/services/youtube/gdata-youtube-service.c:692
 msgid "The entry has already been inserted."
 msgstr "Vnos je že vstavljen."
 
@@ -362,22 +368,22 @@ msgstr "Album je že vstavljen."
 msgid "You must be authenticated to insert an album."
 msgstr "Le pooblaščene osebe imajo dovoljenje za vstavljanje albuma."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:332
+#: ../gdata/services/youtube/gdata-youtube-service.c:333
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Storitev trenutno ni na voljo."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:337
+#: ../gdata/services/youtube/gdata-youtube-service.c:338
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Le pooblaščene osebe imajo dovoljenje za to dejanje."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:342
+#: ../gdata/services/youtube/gdata-youtube-service.c:343
 #, c-format
 msgid "You have made too many API calls recently. Please wait a few minutes and try again."
 msgstr "Preveč je API klicev. Počakajte nekaj minut in poskusite znova."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:345
+#: ../gdata/services/youtube/gdata-youtube-service.c:346
 #, c-format
 msgid "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr "Prekoračili ste dovoljeni delež. Izbrišite nekaj vnosov in poskusite znova."
@@ -385,23 +391,23 @@ msgstr "Prekoračili ste dovoljeni delež. Izbrišite nekaj vnosov in poskusite 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
 #. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:352
-#: ../gdata/services/youtube/gdata-youtube-service.c:358
+#: ../gdata/services/youtube/gdata-youtube-service.c:353
+#: ../gdata/services/youtube/gdata-youtube-service.c:359
 #, c-format
 msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Neznana napaka kode \"%s\" v domeni \"%s\" prejeti z mesta \"%s\"."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:376
+#: ../gdata/services/youtube/gdata-youtube-service.c:377
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "Prejeta neznana in nerazčlenljiva napaka."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:598
-#: ../gdata/services/youtube/gdata-youtube-service.c:645
+#: ../gdata/services/youtube/gdata-youtube-service.c:599
+#: ../gdata/services/youtube/gdata-youtube-service.c:646
 msgid "The video did not have a related videos <link>."
 msgstr "Posnetek nima <povezave> do sorodnih posnetkov."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:697
+#: ../gdata/services/youtube/gdata-youtube-service.c:698
 msgid "You must be authenticated to upload a video."
 msgstr "Le pooblaščene osebe imajo dovoljenje za pošiljanje video posnetkov."
 
