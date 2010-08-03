@@ -1152,7 +1152,7 @@ gdata_contacts_contact_set_nickname (GDataContactsContact *self, const gchar *ni
 /**
  * gdata_contacts_contact_get_birthday:
  * @self: a #GDataContactsContact
- * @birthday: return location for the birthday, or %NULL
+ * @birthday: (allow-none) (out caller-allocates): return location for the birthday, or %NULL
  *
  * Gets the #GDataContactsContact:birthday and #GDataContactsContact:birthday-has-year properties. If @birthday is non-%NULL,
  * #GDataContactsContact:birthday is returned in it. The function returns the value of #GDataContactsContact:birthday-has-year,

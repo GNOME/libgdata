@@ -331,7 +331,7 @@ gdata_gcontact_event_new (const GDate *date, const gchar *relation_type, const g
 /**
  * gdata_gcontact_event_get_date:
  * @self: a #GDataGContactEvent
- * @date: return location for the date of the event
+ * @date: (out caller-allocates): return location for the date of the event
  *
  * Gets the #GDataGContactEvent:date property.
  *
