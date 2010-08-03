@@ -265,8 +265,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gcontact_external_id_new:
  * @value: the value of the external ID
- * @relation_type: the type of external ID, or %NULL
- * @label: a free-form label for the external ID, or %NULL
+ * @relation_type: (allow-none): the type of external ID, or %NULL
+ * @label: (allow-none): a free-form label for the external ID, or %NULL
  *
  * Creates a new #GDataGContactExternalID. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcExternalId">gContact specification</ulink>.
@@ -344,7 +344,7 @@ gdata_gcontact_external_id_get_relation_type (GDataGContactExternalID *self)
 /**
  * gdata_gcontact_external_id_set_relation_type:
  * @self: a #GDataGContactExternalID
- * @relation_type: the new type for the external ID, or %NULL
+ * @relation_type: (allow-none): the new type for the external ID, or %NULL
  *
  * Sets the #GDataGContactExternalID:relation-type property to @relation_type,
  * such as %GDATA_GCONTACT_EXTERNAL_ID_NETWORK or %GDATA_GCONTACT_EXTERNAL_ID_ACCOUNT.
@@ -385,7 +385,7 @@ gdata_gcontact_external_id_get_label (GDataGContactExternalID *self)
 /**
  * gdata_gcontact_external_id_set_label:
  * @self: a #GDataGContactExternalID
- * @label: the new free-form label for the external ID, or %NULL
+ * @label: (allow-none): the new free-form label for the external ID, or %NULL
  *
  * Sets the #GDataGContactExternalID:label property to @label.
  *
