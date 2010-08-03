@@ -306,8 +306,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gcontact_event_new:
  * @date: the date of the event
- * @relation_type: the relationship between the event and its owner, or %NULL
- * @label: a human-readable label for the event, or %NULL
+ * @relation_type: (allow-none): the relationship between the event and its owner, or %NULL
+ * @label: (allow-none): a human-readable label for the event, or %NULL
  *
  * Creates a new #GDataGContactEvent. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcEvent">gContact specification</ulink>.
@@ -384,7 +384,7 @@ gdata_gcontact_event_get_relation_type (GDataGContactEvent *self)
 /**
  * gdata_gcontact_event_set_relation_type:
  * @self: a #GDataGContactEvent
- * @relation_type: the new relation type for the event, or %NULL
+ * @relation_type: (allow-none): the new relation type for the event, or %NULL
  *
  * Sets the #GDataGContactEvent:relation-type property to @relation_type
  * such as %GDATA_GCONTACT_EVENT_ANNIVERSARY or %GDATA_GCONTACT_EVENT_OTHER.
@@ -425,7 +425,7 @@ gdata_gcontact_event_get_label (GDataGContactEvent *self)
 /**
  * gdata_gcontact_event_set_label:
  * @self: a #GDataGContactEvent
- * @label: the new label for the event, or %NULL
+ * @label: (allow-none): the new label for the event, or %NULL
  *
  * Sets the #GDataGContactEvent:label property to @label.
  *
