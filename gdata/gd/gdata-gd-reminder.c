@@ -283,8 +283,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_gd_reminder_new:
- * @method: the notification method the reminder should use, or %NULL
- * @absolute_time: the absolute time for the reminder, or %NULL
+ * @method: (allow-none): the notification method the reminder should use, or %NULL
+ * @absolute_time: (allow-none): the absolute time for the reminder, or %NULL
  * @relative_time: the relative time for the reminder, in minutes, or <code class="literal">-1</code>
  *
  * Creates a new #GDataGDReminder. More information is available in the <ulink type="http"
@@ -367,7 +367,7 @@ gdata_gd_reminder_get_method (GDataGDReminder *self)
 /**
  * gdata_gd_reminder_set_method:
  * @self: a #GDataGDReminder
- * @method: the new method, or %NULL
+ * @method: (allow-none): the new method, or %NULL
  *
  * Sets the #GDataGDReminder:method property to @method.
  *
@@ -406,7 +406,7 @@ gdata_gd_reminder_get_absolute_time (GDataGDReminder *self, GTimeVal *absolute_t
 /**
  * gdata_gd_reminder_set_absolute_time:
  * @self: a #GDataGDReminder
- * @absolute_time: the new absolute time, or %NULL
+ * @absolute_time: (allow-none): the new absolute time, or %NULL
  *
  * Sets the #GDataGDReminder:absolute-time property to @absolute_time.
  *
