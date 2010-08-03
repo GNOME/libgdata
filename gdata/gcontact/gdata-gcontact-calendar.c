@@ -300,8 +300,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gcontact_calendar_new:
  * @uri: the URI of the calendar
- * @relation_type: the type of calendar, or %NULL
- * @label: a free-form label for the calendar, or %NULL
+ * @relation_type: (allow-none): the type of calendar, or %NULL
+ * @label: (allow-none): a free-form label for the calendar, or %NULL
  * @is_primary: %TRUE if this calendar is its owner's primary calendar, %FALSE otherwise
  *
  * Creates a new #GDataGContactCalendar. More information is available in the <ulink type="http"
@@ -381,7 +381,7 @@ gdata_gcontact_calendar_get_relation_type (GDataGContactCalendar *self)
 /**
  * gdata_gcontact_calendar_set_relation_type:
  * @self: a #GDataGContactCalendar
- * @relation_type: the new type for the calendar, or %NULL
+ * @relation_type: (allow-none): the new type for the calendar, or %NULL
  *
  * Sets the #GDataGContactCalendar:relation-type property to @relation_type,
  * such as %GDATA_GCONTACT_CALENDAR_HOME or %GDATA_GCONTACT_CALENDAR_FREE_BUSY.
@@ -422,7 +422,7 @@ gdata_gcontact_calendar_get_label (GDataGContactCalendar *self)
 /**
  * gdata_gcontact_calendar_set_label:
  * @self: a #GDataGContactCalendar
- * @label: the new free-form label for the calendar, or %NULL
+ * @label: (allow-none): the new free-form label for the calendar, or %NULL
  *
  * Sets the #GDataGContactCalendar:label property to @label.
  *
