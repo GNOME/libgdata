@@ -310,9 +310,9 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gd_im_address_new:
  * @address: the IM address
- * @protocol: a URI identifying the IM protocol, or %NULL
- * @relation_type: the relationship between the IM address and its owner, or %NULL
- * @label: a human-readable label for the IM address, or %NULL
+ * @protocol: (allow-none): a URI identifying the IM protocol, or %NULL
+ * @relation_type: (allow-none): the relationship between the IM address and its owner, or %NULL
+ * @label: (allow-none): a human-readable label for the IM address, or %NULL
  * @is_primary: %TRUE if this IM address is its owner's primary address, %FALSE otherwise
  *
  * Creates a new #GDataGDIMAddress. More information is available in the <ulink type="http"
@@ -420,7 +420,7 @@ gdata_gd_im_address_get_protocol (GDataGDIMAddress *self)
 /**
  * gdata_gd_im_address_set_protocol:
  * @self: a #GDataGDIMAddress
- * @protocol: the new IM protocol
+ * @protocol: (allow-none): the new IM protocol, or %NULL
  *
  * Sets the #GDataGDIMAddress:protocol property to @protocol.
  *
@@ -430,7 +430,7 @@ void
 gdata_gd_im_address_set_protocol (GDataGDIMAddress *self, const gchar *protocol)
 {
 	g_return_if_fail (GDATA_IS_GD_IM_ADDRESS (self));
-	g_return_if_fail (protocol != NULL && *protocol != '\0');
+	g_return_if_fail (protocol == NULL || *protocol != '\0');
 
 	g_free (self->priv->protocol);
 	self->priv->protocol = g_strdup (protocol);
@@ -457,7 +457,7 @@ gdata_gd_im_address_get_relation_type (GDataGDIMAddress *self)
 /**
  * gdata_gd_im_address_set_relation_type:
  * @self: a #GDataGDIMAddress
- * @relation_type: the new relation type for the im_address, or %NULL
+ * @relation_type: (allow-none): the new relation type for the im_address, or %NULL
  *
  * Sets the #GDataGDIMAddress:relation-type property to @relation_type.
  *
@@ -496,7 +496,7 @@ gdata_gd_im_address_get_label (GDataGDIMAddress *self)
 /**
  * gdata_gd_im_address_set_label:
  * @self: a #GDataGDIMAddress
- * @label: the new label for the IM address, or %NULL
+ * @label: (allow-none): the new label for the IM address, or %NULL
  *
  * Sets the #GDataGDIMAddress:label property to @label.
  *
