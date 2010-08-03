@@ -462,10 +462,10 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_gd_organization_new:
- * @name: the name of the organization, or %NULL
- * @title: the owner's title within the organization, or %NULL
- * @relation_type: the relationship between the organization and its owner, or %NULL
- * @label: a human-readable label for the organization, or %NULL
+ * @name: (allow-none): the name of the organization, or %NULL
+ * @title: (allow-none): the owner's title within the organization, or %NULL
+ * @relation_type: (allow-none): the relationship between the organization and its owner, or %NULL
+ * @label: (allow-none): a human-readable label for the organization, or %NULL
  * @is_primary: %TRUE if this organization is its owner's primary organization, %FALSE otherwise
  *
  * Creates a new #GDataGDOrganization. More information is available in the <ulink type="http"
@@ -503,7 +503,7 @@ gdata_gd_organization_get_name (GDataGDOrganization *self)
 /**
  * gdata_gd_organization_set_name:
  * @self: a #GDataGDOrganization
- * @name: the new name for the organization
+ * @name: (allow-none): the new name for the organization, or %NULL
  *
  * Sets the #GDataGDOrganization:name property to @name.
  *
@@ -541,7 +541,7 @@ gdata_gd_organization_get_title (GDataGDOrganization *self)
 /**
  * gdata_gd_organization_set_title:
  * @self: a #GDataGDOrganization
- * @title: the new title for the organization, or %NULL
+ * @title: (allow-none): the new title for the organization, or %NULL
  *
  * Sets the #GDataGDOrganization:title property to @title.
  *
@@ -579,7 +579,7 @@ gdata_gd_organization_get_relation_type (GDataGDOrganization *self)
 /**
  * gdata_gd_organization_set_relation_type:
  * @self: a #GDataGDOrganization
- * @relation_type: the new relation type for the organization, or %NULL
+ * @relation_type: (allow-none): the new relation type for the organization, or %NULL
  *
  * Sets the #GDataGDOrganization:relation-type property to @relation_type.
  *
@@ -618,7 +618,7 @@ gdata_gd_organization_get_label (GDataGDOrganization *self)
 /**
  * gdata_gd_organization_set_label:
  * @self: a #GDataGDOrganization
- * @label: the new label for the organization, or %NULL
+ * @label: (allow-none): the new label for the organization, or %NULL
  *
  * Sets the #GDataGDOrganization:label property to @label.
  *
@@ -691,7 +691,7 @@ gdata_gd_organization_get_department (GDataGDOrganization *self)
 /**
  * gdata_gd_organization_set_department:
  * @self: a #GDataGDOrganization
- * @department: the new department for the person working in the organization
+ * @department: (allow-none): the new department for the person working in the organization, or %NULL
  *
  * Sets the #GDataGDOrganization:department property to @department.
  *
@@ -729,7 +729,7 @@ gdata_gd_organization_get_job_description (GDataGDOrganization *self)
 /**
  * gdata_gd_organization_set_job_description:
  * @self: a #GDataGDOrganization
- * @job_description: the new job description for the person in the organization
+ * @job_description: (allow-none): the new job description for the person in the organization, or %NULL
  *
  * Sets the #GDataGDOrganization:job-description property to @job_description.
  *
@@ -767,7 +767,7 @@ gdata_gd_organization_get_symbol (GDataGDOrganization *self)
 /**
  * gdata_gd_organization_set_symbol:
  * @self: a #GDataGDOrganization
- * @symbol: the new stock symbol for the organization
+ * @symbol: (allow-none): the new stock symbol for the organization, or %NULL
  *
  * Sets the #GDataGDOrganization:symbol property to @symbol.
  *
@@ -791,7 +791,7 @@ gdata_gd_organization_set_symbol (GDataGDOrganization *self, const gchar *symbol
  *
  * Gets the #GDataGDOrganization:location property.
  *
- * Return value: the organization's location, or %NULL
+ * Return value: (transfer none): the organization's location, or %NULL
  *
  * Since: 0.6.0
  **/
@@ -805,7 +805,7 @@ gdata_gd_organization_get_location (GDataGDOrganization *self)
 /**
  * gdata_gd_organization_set_location:
  * @self: a #GDataGDOrganization
- * @location: the new location for the organization, or %NULL
+ * @location: (allow-none): the new location for the organization, or %NULL
  *
  * Sets the #GDataGDOrganization:location property to @location.
  *
