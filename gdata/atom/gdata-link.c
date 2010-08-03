@@ -357,7 +357,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 /**
  * gdata_link_new:
  * @uri: the link's IRI
- * @relation_type: the relationship of the link to the current document, or %NULL
+ * @relation_type: (allow-none): the relationship of the link to the current document, or %NULL
  *
  * Creates a new #GDataLink. More information is available in the <ulink type="http"
  * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
@@ -435,7 +435,7 @@ gdata_link_get_relation_type (GDataLink *self)
 /**
  * gdata_link_set_relation_type:
  * @self: a #GDataLink
- * @relation_type: the new relation type for the link, or %NULL
+ * @relation_type: (allow-none): the new relation type for the link, or %NULL
  *
  * Sets the #GDataLink:relation-type property to @relation_type. If @relation_type is one of the standard Atom relation types,
  * use one of the defined relation type values, instead of a static string. e.g. %GDATA_LINK_EDIT or %GDATA_LINK_SELF.
@@ -485,7 +485,7 @@ gdata_link_get_content_type (GDataLink *self)
 /**
  * gdata_link_set_content_type:
  * @self: a #GDataLink
- * @content_type: the new content type for the link, or %NULL
+ * @content_type: (allow-none): the new content type for the link, or %NULL
  *
  * Sets the #GDataLink:content-type property to @content_type.
  *
@@ -524,7 +524,7 @@ gdata_link_get_language (GDataLink *self)
 /**
  * gdata_link_set_language:
  * @self: a #GDataLink
- * @language: the new language for the link, or %NULL
+ * @language: (allow-none): the new language for the link, or %NULL
  *
  * Sets the #GDataLink:language property to @language.
  *
@@ -563,7 +563,7 @@ gdata_link_get_title (GDataLink *self)
 /**
  * gdata_link_set_title:
  * @self: a #GDataLink
- * @title: the new title for the link, or %NULL
+ * @title: (allow-none): the new title for the link, or %NULL
  *
  * Sets the #GDataLink:title property to @title.
  *
