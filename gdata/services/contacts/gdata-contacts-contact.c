@@ -515,7 +515,7 @@ gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *edited)
  *
  * Gets the #GDataContactsContact:name property.
  *
- * Return value: the contact's name, or %NULL
+ * Return value: (transfer none): the contact's name, or %NULL
  *
  * Since: 0.5.0
  **/
@@ -778,7 +778,7 @@ gdata_contacts_contact_get_phone_numbers (GDataContactsContact *self)
  *
  * Gets the contact's primary phone number, if one exists.
  *
- * Return value: a #GDataGDPhoneNumber, or %NULL
+ * Return value: (transfer none): a #GDataGDPhoneNumber, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -1023,7 +1023,7 @@ gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const 
  *
  * Gets the full list of extended properties of the contact; a hash table mapping property name to value.
  *
- * Return value: a #GHashTable of extended properties
+ * Return value: (transfer none): a #GHashTable of extended properties
  *
  * Since: 0.4.0
  **/
@@ -1038,7 +1038,7 @@ gdata_contacts_contact_get_extended_properties (GDataContactsContact *self)
  * gdata_contacts_contact_set_extended_property:
  * @self: a #GDataContactsContact
  * @name: the property name; an arbitrary, unique string
- * @value: the property value, or %NULL
+ * @value: (allow-none): the property value, or %NULL
  *
  * Sets the value of a contact's extended property. Extended property names are unique (but of the client's choosing),
  * and reusing the same property name will result in the old value of that property being overwritten.
@@ -1208,8 +1208,8 @@ gdata_contacts_contact_has_photo (GDataContactsContact *self)
  * gdata_contacts_contact_get_photo:
  * @self: a #GDataContactsContact
  * @service: a #GDataContactsService
- * @length: return location for the image length, in bytes
- * @content_type: return location for the image's content type, or %NULL; free with g_free()
+ * @length: (out caller-allocates): return location for the image length, in bytes
+ * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the image's content type, or %NULL; free with g_free()
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -1297,7 +1297,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  * gdata_contacts_contact_set_photo:
  * @self: a #GDataContactsContact
  * @service: a #GDataService
- * @data: the image data, or %NULL
+ * @data: (allow-none): the image data, or %NULL
  * @length: the image length, in bytes, or <code class="literal">0</code>
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
