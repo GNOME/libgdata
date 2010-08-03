@@ -418,7 +418,7 @@ gdata_calendar_calendar_get_timezone (GDataCalendarCalendar *self)
 /**
  * gdata_calendar_calendar_set_timezone:
  * @self: a #GDataCalendarCalendar
- * @_timezone: a new timezone, or %NULL
+ * @_timezone: (allow-none): a new timezone, or %NULL
  *
  * Sets the #GDataCalendarCalendar:timezone property to the new timezone, @_timezone.
  *
@@ -487,7 +487,7 @@ gdata_calendar_calendar_set_is_hidden (GDataCalendarCalendar *self, gboolean is_
 /**
  * gdata_calendar_calendar_get_color:
  * @self: a #GDataCalendarCalendar
- * @color: a #GDataColor
+ * @color: (out caller-allocates): a #GDataColor
  *
  * Gets the #GDataCalendarCalendar:color property and puts it in @color.
  **/
