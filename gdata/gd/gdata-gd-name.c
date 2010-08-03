@@ -333,8 +333,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_gd_name_new:
- * @given_name: the person's given name, or %NULL
- * @family_name: the person's family name, or %NULL
+ * @given_name: (allow-none): the person's given name, or %NULL
+ * @family_name: (allow-none): the person's family name, or %NULL
  *
  * Creates a new #GDataGDName. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdName">GData specification</ulink>.
@@ -402,7 +402,7 @@ gdata_gd_name_get_given_name (GDataGDName *self)
 /**
  * gdata_gd_name_set_given_name:
  * @self: a #GDataGDName
- * @given_name: the new given name, or %NULL
+ * @given_name: (allow-none): the new given name, or %NULL
  *
  * Sets the #GDataGDName:given-name property to @given_name.
  *
@@ -439,7 +439,7 @@ gdata_gd_name_get_additional_name (GDataGDName *self)
 /**
  * gdata_gd_name_set_additional_name:
  * @self: a #GDataGDName
- * @additional_name: the new additional name, or %NULL
+ * @additional_name: (allow-none): the new additional name, or %NULL
  *
  * Sets the #GDataGDName:additional-name property to @additional_name.
  *
@@ -476,7 +476,7 @@ gdata_gd_name_get_family_name (GDataGDName *self)
 /**
  * gdata_gd_name_set_family_name:
  * @self: a #GDataGDName
- * @family_name: the new family name, or %NULL
+ * @family_name: (allow-none): the new family name, or %NULL
  *
  * Sets the #GDataGDName:family-name property to @family_name.
  *
@@ -513,7 +513,7 @@ gdata_gd_name_get_prefix (GDataGDName *self)
 /**
  * gdata_gd_name_set_prefix:
  * @self: a #GDataGDName
- * @prefix: the new prefix, or %NULL
+ * @prefix: (allow-none): the new prefix, or %NULL
  *
  * Sets the #GDataGDName:prefix property to @prefix.
  *
@@ -550,7 +550,7 @@ gdata_gd_name_get_suffix (GDataGDName *self)
 /**
  * gdata_gd_name_set_suffix:
  * @self: a #GDataGDName
- * @suffix: the new suffix, or %NULL
+ * @suffix: (allow-none): the new suffix, or %NULL
  *
  * Sets the #GDataGDName:suffix property to @suffix.
  *
@@ -587,7 +587,7 @@ gdata_gd_name_get_full_name (GDataGDName *self)
 /**
  * gdata_gd_name_set_full_name:
  * @self: a #GDataGDName
- * @full_name: the new full name, or %NULL
+ * @full_name: (allow-none): the new full name, or %NULL
  *
  * Sets the #GDataGDName:full-name property to @full_name.
  *
