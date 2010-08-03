@@ -289,7 +289,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * gdata_gcontact_website_new:
  * @uri: the website URI
  * @relation_type: the relationship between the website and its owner
- * @label: a human-readable label for the website, or %NULL
+ * @label: (allow-none): a human-readable label for the website, or %NULL
  * @is_primary: %TRUE if this website is its owner's primary website, %FALSE otherwise
  *
  * Creates a new #GDataGContactWebsite. More information is available in the <ulink type="http"
@@ -402,7 +402,7 @@ gdata_gcontact_website_get_label (GDataGContactWebsite *self)
 /**
  * gdata_gcontact_website_set_label:
  * @self: a #GDataGContactWebsite
- * @label: the new label for the website, or %NULL
+ * @label: (allow-none): the new label for the website, or %NULL
  *
  * Sets the #GDataGContactWebsite:label property to @label.
  *
