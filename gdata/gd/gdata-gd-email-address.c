@@ -306,8 +306,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gd_email_address_new:
  * @address: the e-mail address
- * @relation_type: the relationship between the e-mail address and its owner, or %NULL
- * @label: a human-readable label for the e-mail address, or %NULL
+ * @relation_type: (allow-none): the relationship between the e-mail address and its owner, or %NULL
+ * @label: (allow-none): a human-readable label for the e-mail address, or %NULL
  * @is_primary: %TRUE if this e-mail address is its owner's primary address, %FALSE otherwise
  *
  * Creates a new #GDataGDEmailAddress. More information is available in the <ulink type="http"
@@ -412,7 +412,7 @@ gdata_gd_email_address_get_relation_type (GDataGDEmailAddress *self)
 /**
  * gdata_gd_email_address_set_relation_type:
  * @self: a #GDataGDEmailAddress
- * @relation_type: the new relation type for the email_address, or %NULL
+ * @relation_type: (allow-none): the new relation type for the email_address, or %NULL
  *
  * Sets the #GDataGDEmailAddress:relation-type property to @relation_type.
  *
@@ -451,7 +451,7 @@ gdata_gd_email_address_get_label (GDataGDEmailAddress *self)
 /**
  * gdata_gd_email_address_set_label:
  * @self: a #GDataGDEmailAddress
- * @label: the new label for the e-mail address, or %NULL
+ * @label: (allow-none): the new label for the e-mail address, or %NULL
  *
  * Sets the #GDataGDEmailAddress:label property to @label.
  *
@@ -524,7 +524,7 @@ gdata_gd_email_address_get_display_name (GDataGDEmailAddress *self)
 /**
  * gdata_gd_email_address_set_display_name:
  * @self: a #GDataGDEmailAddress
- * @display_name: the new display name, or %NULL
+ * @display_name: (allow-none): the new display name, or %NULL
  *
  * Sets the #GDataGDEmailAddress:display-name property to @display_name.
  *
