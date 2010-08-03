@@ -221,8 +221,8 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 /**
  * gdata_category_new:
  * @term: a category identifier
- * @scheme: an IRI to define the categorisation scheme, or %NULL
- * @label: a human-readable label for the category, or %NULL
+ * @scheme: (allow-none): an IRI to define the categorisation scheme, or %NULL
+ * @label: (allow-none): a human-readable label for the category, or %NULL
  *
  * Creates a new #GDataCategory. More information is available in the <ulink type="http"
  * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.category">Atom specification</ulink>.
@@ -322,7 +322,7 @@ gdata_category_get_scheme (GDataCategory *self)
 /**
  * gdata_category_set_scheme:
  * @self: a #GDataCategory
- * @scheme: the new scheme for the category, or %NULL
+ * @scheme: (allow-none): the new scheme for the category, or %NULL
  *
  * Sets the #GDataCategory:scheme property to @scheme.
  *
@@ -360,7 +360,7 @@ gdata_category_get_label (GDataCategory *self)
 /**
  * gdata_category_set_label:
  * @self: a #GDataCategory
- * @label: the new label for the category, or %NULL
+ * @label: (allow-none): the new label for the category, or %NULL
  *
  * Sets the #GDataCategory:label property to @label.
  *
