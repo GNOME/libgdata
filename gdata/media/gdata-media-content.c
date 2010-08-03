@@ -538,7 +538,7 @@ gdata_media_content_get_width (GDataMediaContent *self)
  * gdata_media_content_download:
  * @self: a #GDataMediaContent
  * @service: the #GDataService
- * @default_filename: an optional default filename used if the user selects a directory as the destination
+ * @default_filename: a default filename used if the user selects a directory as the destination
  * @target_dest_file: the destination file or directory to download to
  * @replace_file_if_exists: whether to replace already existing files at the download location
  * @cancellable: optional #GCancellable object, or %NULL

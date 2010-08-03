@@ -215,7 +215,7 @@ parse_time (const gchar *time_string)
 	return (gint64) ((seconds + minutes * 60 + hours * 3600) * 1000);
 }
 
-/**
+/*
  * gdata_media_thumbnail_build_time:
  * @_time: a number of milliseconds since the start of a media stream
  *
@@ -365,7 +365,7 @@ gdata_media_thumbnail_get_time (GDataMediaThumbnail *self)
  * gdata_media_thumbnail_download:
  * @self: a #GDataMediaThumbnail
  * @service: the #GDataService
- * @default_filename: an optional default filename used if the user selects a directory as the destination
+ * @default_filename: a default filename used if the user selects a directory as the destination
  * @target_dest_file: the destination file or directory to download to
  * @replace_file_if_exists: whether to replace already existing files at the download location
  * @cancellable: optional #GCancellable object, or %NULL
