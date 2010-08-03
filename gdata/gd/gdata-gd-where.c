@@ -271,9 +271,9 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_gd_where_new:
- * @relation_type: the relationship between the item and this place, or %NULL
- * @value_string: a string to represent the place, or %NULL
- * @label: a human-readable label for the place, or %NULL
+ * @relation_type: (allow-none): the relationship between the item and this place, or %NULL
+ * @value_string: (allow-none): a string to represent the place, or %NULL
+ * @label: (allow-none): a human-readable label for the place, or %NULL
  *
  * Creates a new #GDataGDWhere. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
@@ -311,7 +311,7 @@ gdata_gd_where_get_relation_type (GDataGDWhere *self)
 /**
  * gdata_gd_where_set_relation_type:
  * @self: a #GDataGDWhere
- * @relation_type: the new relation type
+ * @relation_type: (allow-none): the new relation type, or %NULL
  *
  * Sets the #GDataGDWhere:relation-type property to @relation_type.
  *
@@ -350,7 +350,7 @@ gdata_gd_where_get_value_string (GDataGDWhere *self)
 /**
  * gdata_gd_where_set_value_string:
  * @self: a #GDataGDWhere
- * @value_string: the new value string, or %NULL
+ * @value_string: (allow-none): the new value string, or %NULL
  *
  * Sets the #GDataGDWhere:value-string property to @value_string.
  *
@@ -388,7 +388,7 @@ gdata_gd_where_get_label (GDataGDWhere *self)
 /**
  * gdata_gd_where_set_label:
  * @self: a #GDataGDWhere
- * @label: the new label, or %NULL
+ * @label: (allow-none): the new label, or %NULL
  *
  * Sets the #GDataGDWhere:label property to @label.
  *
