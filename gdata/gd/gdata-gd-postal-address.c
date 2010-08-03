@@ -659,8 +659,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_gd_postal_address_new:
- * @relation_type: the relationship between the address and its owner, or %NULL
- * @label: a human-readable label for the address, or %NULL
+ * @relation_type: (allow-none): the relationship between the address and its owner, or %NULL
+ * @label: (allow-none): a human-readable label for the address, or %NULL
  * @is_primary: %TRUE if this phone number is its owner's primary number, %FALSE otherwise
  *
  * Creates a new #GDataGDPostalAddress. More information is available in the <ulink type="http"
@@ -730,7 +730,7 @@ gdata_gd_postal_address_get_address (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_address:
  * @self: a #GDataGDPostalAddress
- * @address: the new postal address
+ * @address: (allow-none): the new postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:address property to @address.
  *
@@ -740,7 +740,6 @@ void
 gdata_gd_postal_address_set_address (GDataGDPostalAddress *self, const gchar *address)
 {
 	g_return_if_fail (GDATA_IS_GD_POSTAL_ADDRESS (self));
-	g_return_if_fail (address != NULL && *address != '\0');
 
 	/* Trim leading and trailing whitespace from the address.
 	 * See here: http://code.google.com/apis/gdata/docs/1.0/elements.html#gdPostalAddress */
@@ -769,7 +768,7 @@ gdata_gd_postal_address_get_relation_type (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_relation_type:
  * @self: a #GDataGDPostalAddress
- * @relation_type: the new relation type for the postal_address, or %NULL
+ * @relation_type: (allow-none): the new relation type for the postal_address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:relation-type property to @relation_type.
  *
@@ -808,7 +807,7 @@ gdata_gd_postal_address_get_label (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_label:
  * @self: a #GDataGDPostalAddress
- * @label: the new label for the postal address, or %NULL
+ * @label: (allow-none): the new label for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:label property to @label.
  *
@@ -881,7 +880,7 @@ gdata_gd_postal_address_get_mail_class (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_mail_class:
  * @self: a #GDataGDPostalAddress
- * @mail_class: the new mail class for the postal address, or %NULL
+ * @mail_class: (allow-none): the new mail class for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:mail-class property to @mail_class.
  *
@@ -920,7 +919,7 @@ gdata_gd_postal_address_get_usage (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_usage:
  * @self: a #GDataGDPostalAddress
- * @usage: the new usage for the postal address, or %NULL
+ * @usage: (allow-none): the new usage for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:usage property to @usage.
  *
@@ -959,7 +958,7 @@ gdata_gd_postal_address_get_agent (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_agent:
  * @self: a #GDataGDPostalAddress
- * @agent: the new agent for the postal address, or %NULL
+ * @agent: (allow-none): the new agent for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:agent property to @agent.
  *
@@ -998,7 +997,7 @@ gdata_gd_postal_address_get_house_name (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_house_name:
  * @self: a #GDataGDPostalAddress
- * @house_name: the new house name for the postal address, or %NULL
+ * @house_name: (allow-none): the new house name for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:house-name property to @house_name.
  *
@@ -1037,7 +1036,7 @@ gdata_gd_postal_address_get_street (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_street:
  * @self: a #GDataGDPostalAddress
- * @street: the new street for the postal address, or %NULL
+ * @street: (allow-none): the new street for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:street property to @street.
  *
@@ -1076,7 +1075,7 @@ gdata_gd_postal_address_get_po_box (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_po_box:
  * @self: a #GDataGDPostalAddress
- * @po_box: the new P.O. box for the postal address, or %NULL
+ * @po_box: (allow-none): the new P.O. box for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:po-box property to @po_box.
  *
@@ -1115,7 +1114,7 @@ gdata_gd_postal_address_get_neighborhood (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_neighborhood:
  * @self: a #GDataGDPostalAddress
- * @neighborhood: the new neighborhood for the postal address, or %NULL
+ * @neighborhood: (allow-none): the new neighborhood for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:neighborhood property to @neighborhood.
  *
@@ -1154,7 +1153,7 @@ gdata_gd_postal_address_get_city (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_city:
  * @self: a #GDataGDPostalAddress
- * @city: the new city for the postal address, or %NULL
+ * @city: (allow-none): the new city for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:city property to @city.
  *
@@ -1193,7 +1192,7 @@ gdata_gd_postal_address_get_subregion (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_subregion:
  * @self: a #GDataGDPostalAddress
- * @subregion: the new subregion for the postal address, or %NULL
+ * @subregion: (allow-none): the new subregion for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:subregion property to @subregion.
  *
@@ -1232,7 +1231,7 @@ gdata_gd_postal_address_get_region (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_region:
  * @self: a #GDataGDPostalAddress
- * @region: the new region for the postal address, or %NULL
+ * @region: (allow-none): the new region for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:region property to @region.
  *
@@ -1271,7 +1270,7 @@ gdata_gd_postal_address_get_postcode (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_postcode:
  * @self: a #GDataGDPostalAddress
- * @postcode: the new postcode for the postal address, or %NULL
+ * @postcode: (allow-none): the new postcode for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:postcode property to @postcode.
  *
@@ -1327,8 +1326,8 @@ gdata_gd_postal_address_get_country_code (GDataGDPostalAddress *self)
 /**
  * gdata_gd_postal_address_set_country:
  * @self: a #GDataGDPostalAddress
- * @country: the new country for the postal address, or %NULL
- * @country_code: the new country code for the postal address, or %NULL
+ * @country: (allow-none): the new country for the postal address, or %NULL
+ * @country_code: (allow-none): the new country code for the postal address, or %NULL
  *
  * Sets the #GDataGDPostalAddress:country property to @country, and #GDataGDPostalAddress:country-code to @country_code.
  *
