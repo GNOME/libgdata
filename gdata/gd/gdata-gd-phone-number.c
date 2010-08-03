@@ -334,9 +334,9 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gd_phone_number_new:
  * @number: the phone number, in human-readable format
- * @relation_type: the relationship between the phone number and its owner, or %NULL
- * @label: a human-readable label for the phone number, or %NULL
- * @uri: a "tel URI" to represent the number formally (see
+ * @relation_type: (allow-none): the relationship between the phone number and its owner, or %NULL
+ * @label: (allow-none): a human-readable label for the phone number, or %NULL
+ * @uri: (allow-none): a "tel URI" to represent the number formally (see
  * <ulink type="http" url="http://www.ietf.org/rfc/rfc3966.txt">RFC 3966</ulink>), or %NULL
  * @is_primary: %TRUE if this phone number is its owner's primary number, %FALSE otherwise
  *
@@ -415,7 +415,7 @@ gdata_gd_phone_number_get_uri (GDataGDPhoneNumber *self)
 /**
  * gdata_gd_phone_number_set_uri:
  * @self: a #GDataGDPhoneNumber
- * @uri: the new URI for the phone number, or %NULL
+ * @uri: (allow-none): the new URI for the phone number, or %NULL
  *
  * Sets the #GDataGDPhoneNumber:uri property to @uri.
  *
@@ -453,7 +453,7 @@ gdata_gd_phone_number_get_relation_type (GDataGDPhoneNumber *self)
 /**
  * gdata_gd_phone_number_set_relation_type:
  * @self: a #GDataGDPhoneNumber
- * @relation_type: the new relation type for the phone number, or %NULL
+ * @relation_type: (allow-none): the new relation type for the phone number, or %NULL
  *
  * Sets the #GDataGDPhoneNumber:relation-type property to @relation_type.
  *
@@ -492,7 +492,7 @@ gdata_gd_phone_number_get_label (GDataGDPhoneNumber *self)
 /**
  * gdata_gd_phone_number_set_label:
  * @self: a #GDataGDPhoneNumber
- * @label: the new label for the phone number, or %NULL
+ * @label: (allow-none): the new label for the phone number, or %NULL
  *
  * Sets the #GDataGDPhoneNumber:label property to @label.
  *
