@@ -84,7 +84,7 @@ gdata_contacts_service_new (const gchar *client_id)
 /**
  * gdata_contacts_service_query_contacts:
  * @self: a #GDataContactsService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -128,7 +128,7 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
 /**
  * gdata_contacts_service_query_contacts_async:
  * @self: a #GDataContactsService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
