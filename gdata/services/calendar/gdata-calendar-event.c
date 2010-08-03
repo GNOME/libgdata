@@ -641,7 +641,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_calendar_event_new:
- * @id: the event's ID, or %NULL
+ * @id: (allow-none): the event's ID, or %NULL
  *
  * Creates a new #GDataCalendarEvent with the given ID and default properties.
  *
@@ -695,7 +695,7 @@ gdata_calendar_event_get_status (GDataCalendarEvent *self)
 /**
  * gdata_calendar_event_set_status:
  * @self: a #GDataCalendarEvent
- * @status: a new event status, or %NULL
+ * @status: (allow-none): a new event status, or %NULL
  *
  * Sets the #GDataCalendarEvent:status property to the new status, @status.
  *
@@ -731,7 +731,7 @@ gdata_calendar_event_get_visibility (GDataCalendarEvent *self)
 /**
  * gdata_calendar_event_set_visibility:
  * @self: a #GDataCalendarEvent
- * @visibility: a new event visibility, or %NULL
+ * @visibility: (allow-none): a new event visibility, or %NULL
  *
  * Sets the #GDataCalendarEvent:visibility property to the new visibility, @visibility.
  *
@@ -765,7 +765,7 @@ gdata_calendar_event_get_transparency (GDataCalendarEvent *self)
 /**
  * gdata_calendar_event_set_transparency:
  * @self: a #GDataCalendarEvent
- * @transparency: a new event transparency, or %NULL
+ * @transparency: (allow-none): a new event transparency, or %NULL
  *
  * Sets the #GDataCalendarEvent:transparency property to the new transparency, @transparency.
  *
@@ -799,7 +799,7 @@ gdata_calendar_event_get_uid (GDataCalendarEvent *self)
 /**
  * gdata_calendar_event_set_uid:
  * @self: a #GDataCalendarEvent
- * @uid: a new event UID, or %NULL
+ * @uid: (allow-none): a new event UID, or %NULL
  *
  * Sets the #GDataCalendarEvent:uid property to the new UID, @uid.
  *
@@ -1081,7 +1081,7 @@ gdata_calendar_event_get_times (GDataCalendarEvent *self)
  * @self: a #GDataCalendarEvent
  * @start_time: (out caller-allocates): a #GTimeVal for the start time, or %NULL
  * @end_time: (out caller-allocates): a #GTimeVal for the end time, or %NULL
- * @when: a #GDataGDWhen for the primary time structure, or %NULL
+ * @when: (out callee-allocates) (transfer none): a #GDataGDWhen for the primary time structure, or %NULL
  *
  * Gets the first time period associated with the event, conveniently returning just its start and
  * end times if required.
@@ -1134,7 +1134,7 @@ gdata_calendar_event_get_recurrence (GDataCalendarEvent *self)
 /**
  * gdata_calendar_event_set_recurrence:
  * @self: a #GDataCalendarEvent
- * @recurrence: a new event recurrence, or %NULL
+ * @recurrence: (allow-none): a new event recurrence, or %NULL
  *
  * Sets the #GDataCalendarEvent:recurrence property to the new recurrence, @recurrence.
  *
@@ -1155,8 +1155,8 @@ gdata_calendar_event_set_recurrence (GDataCalendarEvent *self, const gchar *recu
 /**
  * gdata_calendar_event_get_original_event_details:
  * @self: a #GDataCalendarEvent
- * @event_id: return location for the original event's ID, or %NULL
- * @event_uri: return location for the original event's URI, or %NULL
+ * @event_id: (out callee-allocates) (transfer full): return location for the original event's ID, or %NULL
+ * @event_uri: (out callee-allocates) (transfer full): return location for the original event's URI, or %NULL
  *
  * Gets details of the original event, if this event is an exception to a recurring event. The original
  * event's ID and the URI of the event's XML are returned in @event_id and @event_uri, respectively.
