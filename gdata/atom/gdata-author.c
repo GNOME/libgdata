@@ -246,8 +246,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 /**
  * gdata_author_new:
  * @name: the author's name
- * @uri: an IRI describing the author, or %NULL
- * @email_address: the author's e-mail address, or %NULL
+ * @uri: (allow-none): an IRI describing the author, or %NULL
+ * @email_address: (allow-none): the author's e-mail address, or %NULL
  *
  * Creates a new #GDataAuthor. More information is available in the <ulink type="http"
  * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.author">Atom specification</ulink>.
@@ -318,7 +318,7 @@ gdata_author_get_uri (GDataAuthor *self)
 /**
  * gdata_author_set_uri:
  * @self: a #GDataAuthor
- * @uri: the new URI for the author, or %NULL
+ * @uri: (allow-none): the new URI for the author, or %NULL
  *
  * Sets the #GDataAuthor:uri property to @uri.
  *
@@ -356,7 +356,7 @@ gdata_author_get_email_address (GDataAuthor *self)
 /**
  * gdata_author_set_email_address:
  * @self: a #GDataAuthor
- * @email_address: the new e-mail address for the author, or %NULL
+ * @email_address: (allow-none): the new e-mail address for the author, or %NULL
  *
  * Sets the #GDataAuthor:email-address property to @email_address.
  *
