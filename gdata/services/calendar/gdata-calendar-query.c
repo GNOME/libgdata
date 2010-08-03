@@ -381,7 +381,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 /**
  * gdata_calendar_query_new:
- * @q: a query string
+ * @q: (allow-none): a query string, or %NULL
  *
  * Creates a new #GDataCalendarQuery with its #GDataQuery:q property set to @q.
  *
@@ -395,9 +395,9 @@ gdata_calendar_query_new (const gchar *q)
 
 /**
  * gdata_calendar_query_new_with_limits:
- * @q: a query string, or %NULL
- * @start_min: a starting time for the event period, or %NULL
- * @start_max: an ending time for the event period, or %NULL
+ * @q: (allow-none): a query string, or %NULL
+ * @start_min: (allow-none): a starting time for the event period, or %NULL
+ * @start_max: (allow-none): an ending time for the event period, or %NULL
  *
  * Creates a new #GDataCalendarQuery with its #GDataQuery:q property set to @q, and the time limits @start_min and @start_max
  * applied.
@@ -465,7 +465,7 @@ gdata_calendar_query_get_order_by (GDataCalendarQuery *self)
 /**
  * gdata_calendar_query_set_order_by:
  * @self: a #GDataCalendarQuery
- * @order_by: a new order by string, or %NULL
+ * @order_by: (allow-none): a new order by string, or %NULL
  *
  * Sets the #GDataCalendarQuery:order-by property of the #GDataCalendarQuery to the new order by string, @order_by.
  *
@@ -503,7 +503,7 @@ gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self, G
 /**
  * gdata_calendar_query_set_recurrence_expansion_start:
  * @self: a #GDataCalendarQuery
- * @start: a new start time
+ * @start: (allow-none): a new start time, or %NULL
  *
  * Sets the #GDataCalendarQuery:recurrence-expansion-start property of the #GDataCalendarQuery
  * to the new time/date, @start.
@@ -547,7 +547,7 @@ gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self, GTi
 /**
  * gdata_calendar_query_set_recurrence_expansion_end:
  * @self: a #GDataCalendarQuery
- * @end: a new end time
+ * @end: (allow-none): a new end time, or %NULL
  *
  * Sets the #GDataCalendarQuery:recurrence-expansion-end property of the #GDataCalendarQuery
  * to the new time/date, @end.
@@ -623,7 +623,7 @@ gdata_calendar_query_get_sort_order (GDataCalendarQuery *self)
 /**
  * gdata_calendar_query_set_sort_order:
  * @self: a #GDataCalendarQuery
- * @sort_order: a new sort order string, or %NULL
+ * @sort_order: (allow-none): a new sort order string, or %NULL
  *
  * Sets the #GDataCalendarQuery:sort-order property of the #GDataCalendarQuery to the new sort order string, @sort_order.
  *
@@ -661,7 +661,7 @@ gdata_calendar_query_get_start_min (GDataCalendarQuery *self, GTimeVal *start_mi
 /**
  * gdata_calendar_query_set_start_min:
  * @self: a #GDataCalendarQuery
- * @start_min: a new minimum start time
+ * @start_min: (allow-none): a new minimum start time, or %NULL
  *
  * Sets the #GDataCalendarQuery:start-min property of the #GDataCalendarQuery
  * to the new time/date, @start_min.
@@ -705,7 +705,7 @@ gdata_calendar_query_get_start_max (GDataCalendarQuery *self, GTimeVal *start_ma
 /**
  * gdata_calendar_query_set_start_max:
  * @self: a #GDataCalendarQuery
- * @start_max: a new maximum start time
+ * @start_max: (allow-none): a new maximum start time, or %NULL
  *
  * Sets the #GDataCalendarQuery:start-max property of the #GDataCalendarQuery
  * to the new time/date, @start_max.
@@ -750,7 +750,7 @@ gdata_calendar_query_get_timezone (GDataCalendarQuery *self)
 /**
  * gdata_calendar_query_set_timezone:
  * @self: a #GDataCalendarQuery
- * @_timezone: a new timezone string, or %NULL
+ * @_timezone: (allow-none): a new timezone string, or %NULL
  *
  * Sets the #GDataCalendarQuery:timezone property of the #GDataCalendarQuery to the new timezone string, @timezone.
  *
