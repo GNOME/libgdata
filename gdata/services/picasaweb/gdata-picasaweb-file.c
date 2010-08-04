@@ -1047,7 +1047,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_picasaweb_file_new:
- * @id: the file's ID, or %NULL
+ * @id: (allow-none): the file's ID, or %NULL
  *
  * Creates a new #GDataPicasaWebFile with the given ID and default properties.
  *
@@ -1270,7 +1270,7 @@ gdata_picasaweb_file_get_client (GDataPicasaWebFile *self)
 /**
  * gdata_picasaweb_file_set_client:
  * @self: a #GDataPicasaWebFile
- * @client: the name of the software which created or modified the photo, or %NULL
+ * @client: (allow-none): the name of the software which created or modified the photo, or %NULL
  *
  * Sets the #GDataPicasaWebFile:client property to @client.
  *
@@ -1308,7 +1308,7 @@ gdata_picasaweb_file_get_checksum (GDataPicasaWebFile *self)
 /**
  * gdata_picasaweb_file_set_checksum:
  * @self: a #GDataPicasaWebFile
- * @checksum: the new checksum for this file, or %NULL
+ * @checksum: (allow-none): the new checksum for this file, or %NULL
  *
  * Sets the #GDataPicasaWebFile:checksum property to @checksum.
  *
@@ -1347,7 +1347,7 @@ gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self, GTimeVal *timestam
 /**
  * gdata_picasaweb_file_set_timestamp:
  * @self: a #GDataPicasaWebFile
- * @timestamp: a #GTimeVal, or %NULL
+ * @timestamp: (allow-none): a #GTimeVal, or %NULL
  *
  * Sets the #GDataPicasaWebFile:timestamp property from values supplied by @timestamp. If @timestamp is %NULL,
  * the property will be unset.
@@ -1496,7 +1496,7 @@ gdata_picasaweb_file_get_tags (GDataPicasaWebFile *self)
 /**
  * gdata_picasaweb_file_set_tags:
  * @self: a #GDataPicasaWebFile
- * @tags: a new comma-separated list of tags, or %NULL
+ * @tags: (allow-none): a new comma-separated list of tags, or %NULL
  *
  * Sets the #GDataPicasaWebFile:tags property to @tags.
  *
@@ -1554,7 +1554,7 @@ gdata_picasaweb_file_get_caption (GDataPicasaWebFile *self)
 /**
  * gdata_picasaweb_file_set_caption:
  * @self: a #GDataPicasaWebFile
- * @caption: the file's new caption, or %NULL
+ * @caption: (allow-none): the file's new caption, or %NULL
  *
  * Sets the #GDataPicasaWebFile:caption property to @caption.
  *
@@ -1766,8 +1766,8 @@ gdata_picasaweb_file_get_model (GDataPicasaWebFile *self)
 /**
  * gdata_picasaweb_file_get_coordinates:
  * @self: a #GDataPicasaWebFile
- * @latitude: return location for the latitude, or %NULL
- * @longitude: return location for the longitude, or %NULL
+ * @latitude: (out caller-allocates) (allow-none): return location for the latitude, or %NULL
+ * @longitude: (out caller-allocates) (allow-none): return location for the longitude, or %NULL
  *
  * Gets the #GDataPicasaWebFile:latitude and #GDataPicasaWebFile:longitude properties, setting the out parameters to them.
  * If either latitude or longitude is %NULL, that parameter will not be set. If the coordinates are unset,
