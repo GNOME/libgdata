@@ -87,7 +87,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 /**
  * gdata_documents_presentation_new:
- * @id: the entry's ID (not the document ID of the presentation), or %NULL
+ * @id: (allow-none): the entry's ID (not the document ID of the presentation), or %NULL
  *
  * Creates a new #GDataDocumentsPresentation with the given entry ID (#GDataEntry:id).
  *
@@ -111,7 +111,7 @@ gdata_documents_presentation_new (const gchar *id)
  * gdata_documents_presentation_download_document:
  * @self: a #GDataDocumentsPresentation
  * @service: a #GDataDocumentsService
- * @content_type: return location for the document's content type, or %NULL; free with g_free()
+ * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the document's content type, or %NULL; free with g_free()
  * @export_format: the format in which the presentation should be exported
  * @destination_file: the #GFile into which the presentation file should be saved
  * @replace_file_if_exists: %TRUE if the file should be replaced if it already exists, %FALSE otherwise
