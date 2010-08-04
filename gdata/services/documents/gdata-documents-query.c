@@ -295,7 +295,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 /**
  * gdata_documents_query_new:
- * @q: a query string
+ * @q: (allow-none): a query string, or %NULL
  *
  * Creates a new #GDataDocumentsQuery with its #GDataQuery:q property set to @q.
  *
@@ -311,9 +311,9 @@ gdata_documents_query_new (const gchar *q)
 
 /**
  * gdata_documents_query_new_with_limits:
- * @q: a query string
- * @start_index: a one-based start index for the results
- * @max_results: the maximum number of results to return
+ * @q: (allow-none): a query string, or %NULL
+ * @start_index: a one-based start index for the results, or <code class="literal">0</code>
+ * @max_results: the maximum number of results to return, or <code class="literal">0</code>
  *
  * Creates a new #GDataDocumentsQuery with its #GDataQuery:q property set to @q, and the limits @start_index and @max_results
  * applied.
@@ -426,7 +426,7 @@ gdata_documents_query_get_folder_id (GDataDocumentsQuery *self)
 /**
  * gdata_documents_query_set_folder_id:
  * @self: a #GDataDocumentsQuery
- * @folder_id: the ID of the folder to be queried, or %NULL
+ * @folder_id: (allow-none): the ID of the folder to be queried, or %NULL
  *
  * Sets the #GDataDocumentsQuery:folder-id property to @folder_id.
  *
@@ -484,7 +484,7 @@ gdata_documents_query_get_exact_title (GDataDocumentsQuery *self)
 /**
  * gdata_documents_query_set_title:
  * @self: a #GDataDocumentsQuery
- * @title: the title (or title fragment) to query for, or %NULL
+ * @title: (allow-none): the title (or title fragment) to query for, or %NULL
  * @exact_title: %TRUE if the query should match the exact @title, %FALSE otherwise
  *
  * Sets the #GDataDocumentsQuery:title property to @title.
