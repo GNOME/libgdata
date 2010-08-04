@@ -538,7 +538,7 @@ gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self)
  *
  * Gets the #GDataDocumentsEntry:last-modified-by property.
  *
- * Return value: the author who last modified the document
+ * Return value: (transfer none): the author who last modified the document
  *
  * Since: 0.4.0
  **/
@@ -576,7 +576,7 @@ notify_content_type_cb (GDataDownloadStream *download_stream, GParamSpec *pspec,
  * _gdata_documents_entry_download_document:
  * @self: a #GDataDocumentsEntry
  * @service: an authenticated #GDataDocumentsService
- * @content_type: return location for the document's content type, or %NULL; free with g_free()
+ * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the document's content type, or %NULL; free with g_free()
  * @download_uri: the URI to download the document
  * @destination_file: the #GFile into which the document file should be saved
  * @file_extension: the extension with which to save the downloaded file
