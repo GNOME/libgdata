@@ -510,7 +510,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 /**
  * gdata_youtube_query_new:
- * @q: a query string, or %NULL
+ * @q: (allow-none): a query string, or %NULL
  *
  * Creates a new #GDataYouTubeQuery with its #GDataQuery:q property set to @q.
  *
@@ -564,10 +564,11 @@ gdata_youtube_query_set_format (GDataYouTubeQuery *self, GDataYouTubeFormat form
 /**
  * gdata_youtube_query_get_location:
  * @self: a #GDataYouTubeQuery
- * @latitude: a location in which to return the latitude, or %NULL
- * @longitude: a location in which to return the longitude, or %NULL
- * @radius: a location in which to return the location radius, or %NULL
- * @has_location: a location in which to return %TRUE if the query is searching for videos with a specific location, %FALSE otherwise, or %NULL
+ * @latitude: (out caller-allocates) (allow-none): a location in which to return the latitude, or %NULL
+ * @longitude: (out caller-allocates) (allow-none): a location in which to return the longitude, or %NULL
+ * @radius: (out caller-allocates) (allow-none): a location in which to return the location radius, or %NULL
+ * @has_location: (out caller-allocates) (allow-none): a location in which to return %TRUE if the query is searching for videos with a specific
+ * location, %FALSE otherwise, or %NULL
  *
  * Gets the location-based properties of the #GDataYouTubeQuery<!-- -->: #GDataYouTubeQuery:latitude, #GDataYouTubeQuery:longitude,
  * #GDataYouTubeQuery:location-radius and #GDataYouTubeQuery:has-location.
@@ -643,7 +644,7 @@ gdata_youtube_query_get_language (GDataYouTubeQuery *self)
 /**
  * gdata_youtube_query_set_language:
  * @self: a #GDataYouTubeQuery
- * @language: a new language name, or %NULL
+ * @language: (allow-none): a new language name, or %NULL
  *
  * Sets the #GDataYouTubeQuery:language property of the #GDataYouTubeQuery to the new language, @language.
  *
@@ -683,7 +684,7 @@ gdata_youtube_query_get_order_by (GDataYouTubeQuery *self)
 /**
  * gdata_youtube_query_set_order_by:
  * @self: a #GDataYouTubeQuery
- * @order_by: a new order by string, or %NULL
+ * @order_by: (allow-none): a new order by string, or %NULL
  *
  * Sets the #GDataYouTubeQuery:order-by property of the #GDataYouTubeQuery to the new order by string, @order_by.
  *
@@ -724,7 +725,7 @@ gdata_youtube_query_get_restriction (GDataYouTubeQuery *self)
 /**
  * gdata_youtube_query_set_restriction:
  * @self: a #GDataYouTubeQuery
- * @restriction: a new restriction string, or %NULL
+ * @restriction: (allow-none): a new restriction string, or %NULL
  *
  * Sets the #GDataYouTubeQuery:restriction property of the #GDataYouTubeQuery to the new restriction string, @restriction.
  *
