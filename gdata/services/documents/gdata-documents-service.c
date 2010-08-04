@@ -165,7 +165,7 @@ gdata_documents_service_new (const gchar *client_id)
 /**
  * gdata_documents_service_query_documents:
  * @self: a #GDataDocumentsService
- * @query: a #GDataDocumentsQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataDocumentsQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -216,7 +216,7 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 /**
  * gdata_documents_service_query_documents_async:
  * @self: a #GDataDocumentsService
- * @query: a #GDataDocumentsQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataDocumentsQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: data to pass to the @progress_callback function
@@ -388,9 +388,9 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 /**
  * gdata_documents_service_upload_document:
  * @self: an authenticated #GDataDocumentsService
- * @document: the #GDataDocumentsEntry to insert, or %NULL
- * @document_file: the document to upload, or %NULL
- * @folder: the folder to which the document should be uploaded, or %NULL
+ * @document: (allow-none): the #GDataDocumentsEntry to insert, or %NULL
+ * @document_file: (allow-none): the document to upload, or %NULL
+ * @folder: (allow-none): the folder to which the document should be uploaded, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -455,7 +455,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * gdata_documents_service_update_document:
  * @self: a #GDataDocumentsService
  * @document: the #GDataDocumentsEntry to update
- * @document_file: the local document file containing the new data, or %NULL
+ * @document_file: (allow-none): the local document file containing the new data, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -577,8 +577,8 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 /**
  * gdata_documents_service_remove_document_from_folder:
  * @self: a #GDataDocumentsService
- * @document : the #GDataDocumentsEntry to remove
- * @folder : the #GDataDocumentsFolder from wich we should remove @document
+ * @document: the #GDataDocumentsEntry to remove
+ * @folder: the #GDataDocumentsFolder from which we should remove @document
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -663,7 +663,7 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 
 /**
  * gdata_documents_service_get_upload_uri:
- * @folder: the #GDataDocumentsFolder into which to upload the document, or %NULL
+ * @folder: (allow-none): the #GDataDocumentsFolder into which to upload the document, or %NULL
  *
  * Gets the upload URI for documents for the service.
  *
