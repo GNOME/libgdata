@@ -132,7 +132,7 @@ gdata_picasaweb_service_new (const gchar *client_id)
 /*
  * create_uri:
  * @self: a #GDataPicasaWebService
- * @username: the username to use, or %NULL to use the currently logged in user
+ * @username: (allow-none): the username to use, or %NULL to use the currently logged in user
  * @type: the type of object to access: "entry" for a user, or "feed" for an album
  *
  * Builds a URI to use when querying for albums or a user.
@@ -159,7 +159,7 @@ create_uri (GDataPicasaWebService *self, const gchar *username, const gchar *typ
 /**
  * gdata_picasaweb_service_get_user
  * @self: a #GDataPicasaWebService
- * @username: the username of the user whose information you wish to retrieve, or %NULL for the currently authenticated user.
+ * @username: (allow-none): the username of the user whose information you wish to retrieve, or %NULL for the currently authenticated user.
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -203,8 +203,8 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
 /**
  * gdata_picasaweb_service_query_all_albums:
  * @self: a #GDataPicasaWebService
- * @query: a #GDataQuery with the query parameters, or %NULL
- * @username: the username of the user whose albums you wish to retrieve, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
+ * @username: (allow-none): the username of the user whose albums you wish to retrieve, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -259,8 +259,8 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
 /**
  * gdata_picasaweb_service_query_all_albums_async:
  * @self: a #GDataPicasaWebService
- * @query: a #GDataQuery with the query parameters, or %NULL
- * @username: the username of the user whose albums you wish to retrieve, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
+ * @username: (allow-none): the username of the user whose albums you wish to retrieve, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -313,8 +313,8 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 /**
  * gdata_picasaweb_service_query_files:
  * @self: a #GDataPicasaWebService
- * @album: a #GDataPicasaWebAlbum from which to retrieve the files, or %NULL
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @album: (allow-none): a #GDataPicasaWebAlbum from which to retrieve the files, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -409,7 +409,7 @@ parse_spliced_stream (GOutputStream *output_stream, GError **error)
 /**
  * gdata_picasaweb_service_upload_file:
  * @self: a #GDataPicasaWebService
- * @album: a #GDataPicasaWebAlbum into which to insert the file, or %NULL
+ * @album: (allow-none): a #GDataPicasaWebAlbum into which to insert the file, or %NULL
  * @file_entry: a #GDataPicasaWebFile to insert
  * @file_data: the actual file to upload
  * @cancellable: optional #GCancellable object, or %NULL
@@ -566,7 +566,7 @@ upload_file_async_cb (GOutputStream *output_stream, GAsyncResult *result, Upload
 /**
  * gdata_picasaweb_service_upload_file_async:
  * @self: a #GDataPicasaWebService
- * @album: a #GDataPicasaWebAlbum into which to insert the file, or %NULL
+ * @album: (allow-none): a #GDataPicasaWebAlbum into which to insert the file, or %NULL
  * @file_entry: a #GDataPicasaWebFile to insert
  * @file_data: the actual file to upload
  * @cancellable: optional #GCancellable object, or %NULL
