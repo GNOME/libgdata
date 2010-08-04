@@ -85,7 +85,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 /**
  * gdata_documents_spreadsheet_new:
- * @id: the entry's ID (not the document ID of the spreadsheet), or %NULL
+ * @id: (allow-none): the entry's ID (not the document ID of the spreadsheet), or %NULL
  *
  * Creates a new #GDataDocumentsSpreadsheet with the given entry ID (#GDataEntry:id).
  *
@@ -103,9 +103,9 @@ gdata_documents_spreadsheet_new (const gchar *id)
  * gdata_documents_spreadsheet_download_document:
  * @self: a #GDataDocumentsSpreadsheet
  * @service: a #GDataDocumentsService
- * @content_type: return location for the document's content type, or %NULL; free with g_free()
+ * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the document's content type, or %NULL; free with g_free()
  * @export_format: the format in which the spreadsheet should be exported
- * @gid: the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
+ * @gid: (default -1): the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
  * @destination_file: the #GFile into which the spreadsheet file should be saved
  * @replace_file_if_exists: %TRUE if the file should be replaced if it already exists, %FALSE otherwise
  * @cancellable: optional #GCancellable object, or %NULL
@@ -167,7 +167,7 @@ gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, 
  * gdata_documents_spreadsheet_get_download_uri:
  * @self: a #GDataDocumentsSpreadsheet
  * @export_format: the format in which the spreadsheet should be exported when downloaded
- * @gid: the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
+ * @gid: (default -1): the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
  *
  * Builds and returns the download URI for the given #GDataDocumentsSpreadsheet in the desired format. Note that directly downloading
  * the document using this URI isn't possible, as authentication is required. You should instead use gdata_download_stream_new() with
