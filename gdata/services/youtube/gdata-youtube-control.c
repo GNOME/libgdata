@@ -173,7 +173,7 @@ gdata_youtube_control_set_is_draft (GDataYouTubeControl *self, gboolean is_draft
  * For more information, see the <ulink type="http"
  * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
  *
- * Return value: a #GDataYouTubeState showing the state of the video, or %NULL
+ * Return value: (transfer none): a #GDataYouTubeState showing the state of the video, or %NULL
  **/
 GDataYouTubeState *
 gdata_youtube_control_get_state (GDataYouTubeControl *self)
