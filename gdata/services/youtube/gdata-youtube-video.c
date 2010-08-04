@@ -875,7 +875,7 @@ get_entry_uri (const gchar *id)
 
 /**
  * gdata_youtube_video_new:
- * @id: the video's ID, or %NULL
+ * @id: (allow-none): the video's ID, or %NULL
  *
  * Creates a new #GDataYouTubeVideo with the given ID and default properties.
  *
@@ -939,7 +939,7 @@ gdata_youtube_video_get_location (GDataYouTubeVideo *self)
 /**
  * gdata_youtube_video_set_location:
  * @self: a #GDataYouTubeVideo
- * @location: a new location, or %NULL
+ * @location: (allow-none): a new location, or %NULL
  *
  * Sets the #GDataYouTubeVideo:location property to the new location string, @location.
  *
@@ -1005,10 +1005,10 @@ gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, const gchar *ac
 /**
  * gdata_youtube_video_get_rating:
  * @self: a #GDataYouTubeVideo
- * @min: return location for the minimum rating value, or %NULL
- * @max: return location for the maximum rating value, or %NULL
- * @count: return location for the number of ratings, or %NULL
- * @average: return location for the average rating value, or %NULL
+ * @min: (out caller-allocates) (allow-none): return location for the minimum rating value, or %NULL
+ * @max: (out caller-allocates) (allow-none): return location for the maximum rating value, or %NULL
+ * @count: (out caller-allocates) (allow-none): return location for the number of ratings, or %NULL
+ * @average: (out caller-allocates) (allow-none): return location for the average rating value, or %NULL
  *
  * Gets various properties of the ratings on the video.
  **/
@@ -1032,7 +1032,7 @@ gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max,
  *
  * Gets the #GDataYouTubeVideo:keywords property.
  *
- * Return value: a %NULL-terminated array of words associated with the video
+ * Return value: (array zero-terminated=1): a %NULL-terminated array of words associated with the video
  **/
 const gchar * const *
 gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
@@ -1044,7 +1044,7 @@ gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
 /**
  * gdata_youtube_video_set_keywords:
  * @self: a #GDataYouTubeVideo
- * @keywords: a new %NULL-terminated array of keywords
+ * @keywords: (array zero-terminated=1): a new %NULL-terminated array of keywords
  *
  * Sets the #GDataYouTubeVideo:keywords property to the new keyword list, @keywords.
  *
@@ -1103,7 +1103,7 @@ gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gch
  *
  * Gets the #GDataYouTubeVideo:category property.
  *
- * Return value: a #GDataMediaCategory giving the video's single and mandatory category
+ * Return value: (transfer none): a #GDataMediaCategory giving the video's single and mandatory category
  **/
 GDataMediaCategory *
 gdata_youtube_video_get_category (GDataYouTubeVideo *self)
@@ -1138,7 +1138,7 @@ gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *c
  *
  * Gets the #GDataYouTubeVideo:credit property.
  *
- * Return value: a #GDataMediaCredit giving information on whom to credit for the video, or %NULL
+ * Return value: (transfer none): a #GDataMediaCredit giving information on whom to credit for the video, or %NULL
  **/
 GDataYouTubeCredit *
 gdata_youtube_video_get_credit (GDataYouTubeVideo *self)
@@ -1165,7 +1165,7 @@ gdata_youtube_video_get_description (GDataYouTubeVideo *self)
 /**
  * gdata_youtube_video_set_description:
  * @self: a #GDataYouTubeVideo
- * @description: the video's new description
+ * @description: (allow-none): the video's new description, or %NULL
  *
  * Sets the #GDataYouTubeVideo:description property to the new description, @description.
  *
@@ -1188,7 +1188,7 @@ gdata_youtube_video_set_description (GDataYouTubeVideo *self, const gchar *descr
  * Looks up a #GDataYouTubeContent from the video with the given MIME type. The video's list of contents is
  * a list of URIs to various formats of the video itself, such as its SWF URI or RTSP stream.
  *
- * Return value: a #GDataYouTubeContent matching @type, or %NULL
+ * Return value: (transfer none): a #GDataYouTubeContent matching @type, or %NULL
  **/
 GDataYouTubeContent *
 gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type)
@@ -1329,7 +1329,7 @@ gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft)
  * For more information, see the <ulink type="http"
  * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
  *
- * Return value: a #GDataYouTubeState showing the state of the video, or %NULL
+ * Return value: (transfer none): a #GDataYouTubeState showing the state of the video, or %NULL
  **/
 GDataYouTubeState *
 gdata_youtube_video_get_state (GDataYouTubeVideo *self)
@@ -1359,7 +1359,7 @@ gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
 /**
  * gdata_youtube_video_set_recorded:
  * @self: a #GDataYouTubeVideo
- * @recorded: the video's new recorded time
+ * @recorded: (allow-none): the video's new recorded time, or %NULL
  *
  * Sets the #GDataYouTubeVideo:recorded property to the new recorded time, @recorded.
  *
@@ -1466,7 +1466,7 @@ gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self)
 /**
  * gdata_youtube_video_set_aspect_ratio:
  * @self: a #GDataYouTubeVideo
- * @aspect_ratio: the aspect ratio property, or %NULL
+ * @aspect_ratio: (allow-none): the aspect ratio property, or %NULL
  *
  * Sets the #GDataYouTubeVideo:aspect-ratio property to specify the video's aspect ratio.
  * If @aspect_ratio is %NULL, the property will be unset.
