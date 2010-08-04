@@ -203,6 +203,7 @@ void
 gdata_youtube_group_get_uploaded (GDataYouTubeGroup *self, GTimeVal *uploaded)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_GROUP (self));
+	g_return_if_fail (uploaded != NULL);
 	*uploaded = self->priv->uploaded;
 }
 
