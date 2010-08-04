@@ -78,7 +78,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 /**
  * gdata_documents_folder_new:
- * @id: the entry's ID (not the document ID of the folder), or %NULL
+ * @id: (allow-none): the entry's ID (not the document ID of the folder), or %NULL
  *
  * Creates a new #GDataDocumentsFolder with the given entry ID (#GDataEntry:id).
  *
