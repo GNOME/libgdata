@@ -799,7 +799,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 /**
  * gdata_picasaweb_album_new:
- * @id: the album's entry ID, or %NULL
+ * @id: (allow-none): the album's entry ID, or %NULL
  *
  * Creates a new #GDataPicasaWebAlbum with the given ID and default properties. @id is the ID which would be returned by gdata_entry_get_id(),
  * not gdata_picasaweb_album_get_id().
@@ -920,7 +920,7 @@ gdata_picasaweb_album_get_location (GDataPicasaWebAlbum *self)
 /**
  * gdata_picasaweb_album_set_location:
  * @self: a #GDataPicasaWebAlbum
- * @location: the new album location
+ * @location: (allow-none): the new album location, or %NULL
  *
  * Sets the #GDataPicasaWebAlbum:location property to @location.
  *
@@ -994,7 +994,7 @@ gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self, GTimeVal *timest
 /**
  * gdata_picasaweb_album_set_timestamp:
  * @self: a #GDataPicasaWebAlbum
- * @timestamp: a #GTimeVal, or %NULL
+ * @timestamp: (allow-none): a #GTimeVal, or %NULL
  *
  * Sets the #GDataPicasaWebAlbum:timestamp property from values supplied by @timestamp.
  *
@@ -1136,7 +1136,7 @@ gdata_picasaweb_album_get_tags (GDataPicasaWebAlbum *self)
 /**
  * gdata_picasaweb_album_set_tags:
  * @self: a #GDataPicasaWebAlbum
- * @tags: the new comma-separated list of tags, or %NULL
+ * @tags: (allow-none): the new comma-separated list of tags, or %NULL
  *
  * Sets the #GDataPicasaWebAlbum:tags property to @tags.
  *
@@ -1190,8 +1190,8 @@ gdata_picasaweb_album_get_thumbnails (GDataPicasaWebAlbum *self)
 /**
  * gdata_picasaweb_album_get_coordinates:
  * @self: a #GDataPicasaWebAlbum
- * @latitude: return location for the latitude, or %NULL
- * @longitude: return location for the longitude, or %NULL
+ * @latitude: (out caller-allocates) (allow-none): return location for the latitude, or %NULL
+ * @longitude: (out caller-allocates) (allow-none): return location for the longitude, or %NULL
  *
  * Gets the #GDataPicasaWebAlbum:latitude and #GDataPicasaWebAlbum:longitude properties,
  * setting the out parameters to them. If either latitude or longitude is %NULL, that parameter will not be set.
