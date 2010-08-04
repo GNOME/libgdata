@@ -89,7 +89,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 /**
  * gdata_documents_text_new:
- * @id: the entry's ID (not the document ID of the text document), or %NULL
+ * @id: (allow-none): the entry's ID (not the document ID of the text document), or %NULL
  *
  * Creates a new #GDataDocumentsText with the given entry ID (#GDataEntry:id).
  *
@@ -113,7 +113,7 @@ gdata_documents_text_new (const gchar *id)
  * gdata_documents_text_download_document:
  * @self: a #GDataDocumentsText
  * @service: a #GDataDocumentsService
- * @content_type: return location for the document's content type, or %NULL; free with g_free()
+ * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the document's content type, or %NULL; free with g_free()
  * @export_format: the format in which the text document should be exported
  * @destination_file: the #GFile into which the text file should be saved
  * @replace_file_if_exists: %TRUE if the file should be replaced if it already exists, %FALSE otherwise
