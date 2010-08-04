@@ -410,7 +410,7 @@ standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
  * gdata_youtube_service_query_standard_feed:
  * @self: a #GDataYouTubeService
  * @feed_type: the feed type to query, from #GDataYouTubeStandardFeedType
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -436,7 +436,7 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
  * gdata_youtube_service_query_standard_feed_async:
  * @self: a #GDataService
  * @feed_type: the feed type to query, from #GDataYouTubeStandardFeedType
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -463,7 +463,7 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
 /**
  * gdata_youtube_service_query_videos:
  * @self: a #GDataYouTubeService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -488,7 +488,7 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
 /**
  * gdata_youtube_service_query_videos_async:
  * @self: a #GDataService
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -675,7 +675,7 @@ gdata_youtube_service_query_single_video_finish (GDataYouTubeService *self, GAsy
  * gdata_youtube_service_query_related:
  * @self: a #GDataYouTubeService
  * @video: a #GDataYouTubeVideo for which to find related videos
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -713,7 +713,7 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
  * gdata_youtube_service_query_related_async:
  * @self: a #GDataService
  * @video: a #GDataYouTubeVideo for which to find related videos
- * @query: a #GDataQuery with the query parameters, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
