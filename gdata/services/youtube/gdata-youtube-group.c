@@ -242,7 +242,7 @@ gdata_youtube_group_get_aspect_ratio (GDataYouTubeGroup *self)
 /**
  * gdata_youtube_group_set_aspect_ratio:
  * @self: a #GDataYouTubeGroup
- * @aspect_ratio: the aspect ratio property, or %NULL
+ * @aspect_ratio: (allow-none): the aspect ratio property, or %NULL
  *
  * Sets the #GDataYouTubeGroup:aspect-ratio property to decide the video aspect ratio.
  * If @aspect_ratio is %NULL, the property will be unset.
