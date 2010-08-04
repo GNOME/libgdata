@@ -296,7 +296,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 /**
  * gdata_picasaweb_query_new:
- * @q: a query string
+ * @q: (allow-none): a query string, or %NULL
  *
  * Creates a new #GDataPicasaWebQuery with its #GDataQuery:q property set to @q.
  *
@@ -314,7 +314,7 @@ gdata_picasaweb_query_new (const gchar *q)
 
 /**
  * gdata_picasaweb_query_new_with_limits:
- * @q: a query string, or %NULL
+ * @q: (allow-none): a query string, or %NULL
  * @start_index: the index of the first result to include, or <code class="literal">0</code>
  * @max_results: the maximum number of results to include, or <code class="literal">0</code>
  *
@@ -397,7 +397,7 @@ gdata_picasaweb_query_get_thumbnail_size (GDataPicasaWebQuery *self)
 /**
  * gdata_picasaweb_query_set_thumbnail_size:
  * @self: a #GDataPicasaWebQuery
- * @thumbnail_size: a comma-separated list of thumbnail sizes to retrieve, or %NULL
+ * @thumbnail_size: (allow-none): a comma-separated list of thumbnail sizes to retrieve, or %NULL
  *
  * Sets the #GDataPicasaWebQuery:thumbnail-size property to @thumbnail_size.
  *
@@ -438,7 +438,7 @@ gdata_picasaweb_query_get_image_size (GDataPicasaWebQuery *self)
 /**
  * gdata_picasaweb_query_set_image_size:
  * @self: a #GDataPicasaWebQuery
- * @image_size: the desired size of the image to be retrieved, or %NULL
+ * @image_size: (allow-none): the desired size of the image to be retrieved, or %NULL
  *
  * Sets the #GDataPicasaWebQuery:image-size property to @image_size.
  * Valid sizes are described in the
@@ -481,7 +481,7 @@ gdata_picasaweb_query_get_tag (GDataPicasaWebQuery *self)
 /**
  * gdata_picasaweb_query_set_tag:
  * @self: a #GDataPicasaWebQuery
- * @tag: a tag which retrieved objects must have, or %NULL
+ * @tag: (allow-none): a tag which retrieved objects must have, or %NULL
  *
  * Sets the #GDataPicasaWebQuery:tag property to @tag.
  *
@@ -505,10 +505,10 @@ gdata_picasaweb_query_set_tag (GDataPicasaWebQuery *self, const gchar *tag)
 /**
  * gdata_picasaweb_query_get_bounding_box:
  * @self: a #GDataPicasaWebQuery
- * @north: return location for the latitude of the top of the box, or %NULL
- * @east: return location for the longitude of the right of the box, or %NULL
- * @south: return location for the latitude of the south of the box, or %NULL
- * @west: return location for the longitude of the left of the box, or %NULL
+ * @north: (out caller-allocates) (allow-none): return location for the latitude of the top of the box, or %NULL
+ * @east: (out caller-allocates) (allow-none): return location for the longitude of the right of the box, or %NULL
+ * @south: (out caller-allocates) (allow-none): return location for the latitude of the south of the box, or %NULL
+ * @west: (out caller-allocates) (allow-none): return location for the longitude of the left of the box, or %NULL
  *
  * Gets the latitudes and longitudes of a bounding box, inside which all the results must lie.
  *
@@ -581,7 +581,7 @@ gdata_picasaweb_query_get_location (GDataPicasaWebQuery *self)
 /**
  * gdata_picasaweb_query_set_location:
  * @self: a #GDataPicasaWebQuery
- * @location: a location which returned objects must be near, or %NULL
+ * @location: (allow-none): a location which returned objects must be near, or %NULL
  *
  * Sets the #GDataPicasaWebQuery:location property to @location.
  *
