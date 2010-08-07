@@ -724,34 +724,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
 			self->priv->rating.count = num_raters_uint;
 			self->priv->rating.average = average_double;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
-			/* gd:comments */
-			xmlChar *rel, *href, *count_hint, *read_only;
-			xmlNode *child_node;
-			guint count_hint_uint;
-
-			/* This is actually the child of the <comments> element */
-			child_node = node->children;
-
-			count_hint = xmlGetProp (child_node, (xmlChar*) "countHint");
-			if (count_hint == NULL)
-				count_hint_uint = 0;
-			else
-				count_hint_uint = strtoul ((gchar*) count_hint, NULL, 10);
-			xmlFree (count_hint);
-
-			read_only = xmlGetProp (child_node, (xmlChar*) "readOnly");
-			rel = xmlGetProp (child_node, (xmlChar*) "rel");
-			href = xmlGetProp (child_node, (xmlChar*) "href");
-
-			/* TODO */
-			/*gdata_gd_feed_link_free (self->priv->comments_feed_link);
-			self->priv->comments_feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint,
-										 ((xmlStrcmp (read_only, (xmlChar*) "true") == 0) ? TRUE : FALSE));*/
-
-			xmlFree (rel);
-			xmlFree (href);
-			xmlFree (read_only);
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
