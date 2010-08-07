@@ -384,7 +384,7 @@ gdata_documents_entry_get_edited (GDataDocumentsEntry *self, GTimeVal *edited)
 {
 	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
 	g_return_if_fail (edited != NULL);
-	edited = &(self->priv->edited);
+	*edited = self->priv->edited;
 }
 
 /**
