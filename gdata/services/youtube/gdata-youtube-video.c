@@ -79,6 +79,7 @@
 #include "gdata-youtube-control.h"
 #include "gdata-youtube-enums.h"
 
+static GObject *gdata_youtube_video_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_youtube_video_dispose (GObject *object);
 static void gdata_youtube_video_finalize (GObject *object);
 static void gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -145,6 +146,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataYouTubeVideoPrivate));
 
+	gobject_class->constructor = gdata_youtube_video_constructor;
 	gobject_class->get_property = gdata_youtube_video_get_property;
 	gobject_class->set_property = gdata_youtube_video_set_property;
 	gobject_class->dispose = gdata_youtube_video_dispose;
@@ -463,6 +465,24 @@ gdata_youtube_video_init (GDataYouTubeVideo *self)
 	 * and propagate them to media:group/media:title accordingly. Since the media group isn't publically accessible, we don't need to
 	 * listen for notifications from it. */
 	g_signal_connect (GDATA_ENTRY (self), "notify::title", G_CALLBACK (notify_title_cb), NULL);
+}
+
+static GObject *
+gdata_youtube_video_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_youtube_video_parent_class)->constructor (type, n_construct_params, construct_params);
+
+	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
+	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
+		GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (object)->priv;
+		priv->media_group = g_object_new (GDATA_TYPE_YOUTUBE_GROUP, NULL);
+		priv->youtube_control = g_object_new (GDATA_TYPE_YOUTUBE_CONTROL, NULL);
+	}
+
+	return object;
 }
 
 static void
@@ -856,11 +876,7 @@ get_entry_uri (const gchar *id)
 GDataYouTubeVideo *
 gdata_youtube_video_new (const gchar *id)
 {
-	GDataYouTubeVideo *video = g_object_new (GDATA_TYPE_YOUTUBE_VIDEO, "id", id, NULL);
-	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
-	video->priv->media_group = g_object_new (GDATA_TYPE_YOUTUBE_GROUP, NULL);
-	video->priv->youtube_control = g_object_new (GDATA_TYPE_YOUTUBE_CONTROL, NULL);
-	return video;
+	return g_object_new (GDATA_TYPE_YOUTUBE_VIDEO, "id", id, NULL);
 }
 
 /**
