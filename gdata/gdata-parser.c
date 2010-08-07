@@ -518,9 +518,9 @@ gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_
  * If @element matches @element_name and all of the checks specified by @options pass, %TRUE will be returned, @error will be unset and
  * @success will be set to %TRUE.
  *
- * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_object_from_element_setter() can be chained
+ * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_object_from_element() can be chained
  * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
- * a given @element. If any of the calls to gdata_parser_object_from_element_setter() return %TRUE, the value of @success can be examined.
+ * a given @element. If any of the calls to gdata_parser_object_from_element() return %TRUE, the value of @success can be examined.
  *
  * @_object is a #gpointer to avoid casts having to be put into calls to gdata_parser_object_from_element(). It is actually of type #GDataParsable
  * and must not be %NULL. No check is implemented against this condition (for efficiency reasons), so calling code must be correct.
