@@ -41,6 +41,7 @@
 #include "gdata-types.h"
 #include "gdata-private.h"
 
+static GObject *gdata_access_rule_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_access_rule_finalize (GObject *object);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
@@ -73,6 +74,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataAccessRulePrivate));
 
+	gobject_class->constructor = gdata_access_rule_constructor;
 	gobject_class->finalize = gdata_access_rule_finalize;
 	gobject_class->get_property = gdata_access_rule_get_property;
 	gobject_class->set_property = gdata_access_rule_set_property;
@@ -169,6 +171,30 @@ gdata_access_rule_init (GDataAccessRule *self)
 	/* Listen to change notifications for the entry's title, since it's linked to GDataAccessRule:role */
 	g_signal_connect (self, "notify::title", (GCallback) notify_title_cb, self);
 	g_signal_connect (self, "notify::role", (GCallback) notify_role_cb, self);
+}
+
+static GObject *
+gdata_access_rule_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_access_rule_parent_class)->constructor (type, n_construct_params, construct_params);
+
+	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
+	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
+		GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (object)->priv;
+
+		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+		 * setting it from parse_xml() to fail (duplicate element). */
+		g_get_current_time (&(priv->edited));
+
+		/* Set up the role and scope type */
+		priv->role = g_strdup (GDATA_ACCESS_ROLE_NONE);
+		priv->scope_type = g_strdup (GDATA_ACCESS_SCOPE_DEFAULT);
+	}
+
+	return object;
 }
 
 static void
@@ -321,17 +347,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 GDataAccessRule *
 gdata_access_rule_new (const gchar *id)
 {
-	GDataAccessRule *rule = GDATA_ACCESS_RULE (g_object_new (GDATA_TYPE_ACCESS_RULE, "id", id, NULL));
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(rule->priv->edited));
-
-	/* Set up the role and scope type */
-	rule->priv->role = g_strdup (GDATA_ACCESS_ROLE_NONE);
-	rule->priv->scope_type = g_strdup (GDATA_ACCESS_SCOPE_DEFAULT);
-
-	return rule;
+	return GDATA_ACCESS_RULE (g_object_new (GDATA_TYPE_ACCESS_RULE, "id", id, NULL));
 }
 
 /**
