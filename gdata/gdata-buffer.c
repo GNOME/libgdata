@@ -135,7 +135,8 @@ gdata_buffer_push_data (GDataBuffer *self, const guint8 *data, gsize length)
 	chunk->next = NULL;
 
 	/* Copy the data to the chunk */
-	memcpy (chunk->data, data, length);
+	if (G_LIKELY (data != NULL))
+		memcpy (chunk->data, data, length);
 
 	/* Add it to the buffer's tail */
 	if (self->tail != NULL)
