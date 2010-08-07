@@ -47,12 +47,19 @@ gdata_parser_error_quark (void)
 	return g_quark_from_static_string ("gdata-parser-error-quark");
 }
 
+static void gdata_parsable_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
+static void gdata_parsable_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void gdata_parsable_finalize (GObject *object);
 static gboolean real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 
 struct _GDataParsablePrivate {
 	GString *extra_xml;
 	GHashTable *extra_namespaces;
+	gboolean constructed_from_xml;
+};
+
+enum {
+	PROP_CONSTRUCTED_FROM_XML = 1,
 };
 
 G_DEFINE_ABSTRACT_TYPE (GDataParsable, gdata_parsable, G_TYPE_OBJECT)
@@ -63,16 +70,68 @@ gdata_parsable_class_init (GDataParsableClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataParsablePrivate));
+
+	gobject_class->get_property = gdata_parsable_get_property;
+	gobject_class->set_property = gdata_parsable_set_property;
 	gobject_class->finalize = gdata_parsable_finalize;
 	klass->parse_xml = real_parse_xml;
+
+	/**
+	 * GDataParsable:constructed-from-xml:
+	 *
+	 * Specifies whether the object was constructed by parsing XML or manually.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_CONSTRUCTED_FROM_XML,
+	                                 g_param_spec_boolean ("constructed-from-xml",
+	                                                       "Constructed from XML?",
+	                                                       "Specifies whether the object was constructed by parsing XML or manually.",
+	                                                       FALSE,
+	                                                       G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
 gdata_parsable_init (GDataParsable *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PARSABLE, GDataParsablePrivate);
+
 	self->priv->extra_xml = g_string_new ("");
 	self->priv->extra_namespaces = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	self->priv->constructed_from_xml = FALSE;
+}
+
+
+static void
+gdata_parsable_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+{
+	GDataParsablePrivate *priv = GDATA_PARSABLE (object)->priv;
+
+	switch (property_id) {
+		case PROP_CONSTRUCTED_FROM_XML:
+			g_value_set_boolean (value, priv->constructed_from_xml);
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
+}
+
+static void
+gdata_parsable_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+{
+	GDataParsablePrivate *priv = GDATA_PARSABLE (object)->priv;
+
+	switch (property_id) {
+		case PROP_CONSTRUCTED_FROM_XML:
+			priv->constructed_from_xml = g_value_get_boolean (value);
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
 }
 
 static void
@@ -217,7 +276,7 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
 	g_return_val_if_fail (node != NULL, NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	parsable = g_object_new (parsable_type, NULL);
+	parsable = g_object_new (parsable_type, "constructed-from-xml", TRUE, NULL);
 
 	klass = GDATA_PARSABLE_GET_CLASS (parsable);
 	if (klass->parse_xml == NULL) {
@@ -376,4 +435,21 @@ _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean decl
 		g_string_append_printf (xml_string, "</%s:%s>", klass->element_namespace, klass->element_name);
 	else
 		g_string_append_printf (xml_string, "</%s>", klass->element_name);
+}
+
+/*
+ * _gdata_parsable_is_constructed_from_xml:
+ * @self: a #GDataParsable
+ *
+ * Returns the value of #GDataParsable:constructed-from-xml.
+ *
+ * Return value: %TRUE if the #GDataParsable was constructed from XML, %FALSE otherwise
+ *
+ * Since: 0.7.0
+ */
+gboolean
+_gdata_parsable_is_constructed_from_xml (GDataParsable *self)
+{
+	g_return_val_if_fail (GDATA_IS_PARSABLE (self), FALSE);
+	return self->priv->constructed_from_xml;
 }

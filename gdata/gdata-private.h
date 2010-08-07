@@ -65,6 +65,7 @@ G_GNUC_INTERNAL GDataParsable *_gdata_parsable_new_from_xml_node (GType parsable
                                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL void _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean declare_namespaces);
 G_GNUC_INTERNAL void _gdata_parsable_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
+G_GNUC_INTERNAL gboolean _gdata_parsable_is_constructed_from_xml (GDataParsable *self);
 
 #include "gdata-feed.h"
 G_GNUC_INTERNAL GDataFeed *_gdata_feed_new (const gchar *title, const gchar *id, GTimeVal *updated) G_GNUC_WARN_UNUSED_RESULT;
