@@ -214,8 +214,10 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
 	parsable = g_object_new (parsable_type, NULL);
 
 	klass = GDATA_PARSABLE_GET_CLASS (parsable);
-	if (klass->parse_xml == NULL)
+	if (klass->parse_xml == NULL) {
+		g_object_unref (parsable);
 		return NULL;
+	}
 
 	g_assert (klass->element_name != NULL);
 	/* TODO: See gdata-documents-entry.c:260 for an example of where the code below doesn't work */
