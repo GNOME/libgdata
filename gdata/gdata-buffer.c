@@ -290,7 +290,6 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	if (G_LIKELY (length_remaining > 0)) {
 		/* Copy the requested data to the output */
 		memcpy (data, chunk->data, length_remaining);
-		data += length_remaining;
 		self->head_read_offset = length_remaining;
 	}
 
