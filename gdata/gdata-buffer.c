@@ -288,6 +288,8 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	/* If the requested length is still > 0, it must be < chunk->length, and chunk must != NULL (if it does, the cached total_length has
 	 * been corrupted somewhere). */
 	if (G_LIKELY (length_remaining > 0)) {
+		g_assert (chunk != NULL);
+
 		/* Copy the requested data to the output */
 		memcpy (data, chunk->data, length_remaining);
 		self->head_read_offset = length_remaining;
