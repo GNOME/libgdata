@@ -450,32 +450,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_object_from_element_setter (node, "where", P_REQUIRED, GDATA_TYPE_GD_WHERE,
 		                                             gdata_calendar_event_add_place, self, &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
-			/* gd:comments */
-			xmlChar *rel, *href, *count_hint;
-			xmlNode *child_node;
-			guint count_hint_uint;
-			/*GDataGDFeedLink *feed_link;*/
-
-			/* This is actually the child of the <comments> element */
-			child_node = node->children;
-
-			count_hint = xmlGetProp (child_node, (xmlChar*) "countHint");
-			if (count_hint == NULL)
-				count_hint_uint = 0;
-			else
-				count_hint_uint = strtoul ((gchar*) count_hint, NULL, 10);
-			xmlFree (count_hint);
-
-			rel = xmlGetProp (child_node, (xmlChar*) "rel");
-			href = xmlGetProp (child_node, (xmlChar*) "href");
-
-			/* TODO */
-			/*feed_link = gdata_gd_feed_link_new ((gchar*) href, (gchar*) rel, count_hint_uint);*/
-			/*gdata_calendar_event_set_comments_feed_link (self, feed_link);*/
-
-			xmlFree (rel);
-			xmlFree (href);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "eventStatus") == 0) {
 			/* gd:eventStatus */
 			xmlChar *value = xmlGetProp (node, (xmlChar*) "value");
