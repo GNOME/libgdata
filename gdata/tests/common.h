@@ -30,7 +30,9 @@ G_BEGIN_DECLS
 #define DOCUMENTS_USERNAME "libgdata.documents@gmail.com"
 #define PASSWORD "gdata-libgdata"
 
-void gdata_test_init (int *argc, char ***argv);
+void gdata_test_init (int argc, char **argv);
+
+gboolean gdata_test_internet (void);
 
 guint gdata_test_batch_operation_query (GDataBatchOperation *operation, const gchar *id, GType entry_type,
                                         GDataEntry *entry, GDataEntry **returned_entry, GError **error);

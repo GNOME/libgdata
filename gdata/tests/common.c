@@ -20,19 +20,67 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "common.h"
 
+/* %TRUE if there's no Internet connection, so we should only run local tests */
+static gboolean no_internet = FALSE;
+
 void
-gdata_test_init (int *argc, char ***argv)
+gdata_test_init (int argc, char **argv)
 {
+	gint i;
+
 	g_type_init ();
 	g_thread_init (NULL);
-	g_test_init (argc, argv, NULL);
+
+	/* Parse the --no-internet option */
+	for (i = 1; i < argc; i++) {
+		if (strcmp ("--no-internet", argv[i]) == 0 || strcmp ("-n", argv[i]) == 0) {
+			no_internet = TRUE;
+			argv[i] = (char*) "";
+		} else if (strcmp ("-?", argv[i]) == 0 || strcmp ("--help", argv[i]) == 0 || strcmp ("-h" , argv[i]) == 0) {
+			/* We have to override --help in order to document --no-internet */
+			printf ("Usage:\n"
+			          "  %s [OPTION...]\n\n"
+			          "Help Options:\n"
+			          "  -?, --help                     Show help options\n"
+			          "Test Options:\n"
+			          "  -l                             List test cases available in a test executable\n"
+			          "  -seed=RANDOMSEED               Provide a random seed to reproduce test\n"
+			          "                                 runs using random numbers\n"
+			          "  --verbose                      Run tests verbosely\n"
+			          "  -q, --quiet                    Run tests quietly\n"
+			          "  -p TESTPATH                    Execute all tests matching TESTPATH\n"
+			          "  -m {perf|slow|thorough|quick}  Execute tests according modes\n"
+			          "  --debug-log                    Debug test logging output\n"
+			          "  -n, --no-internet              Only execute tests which don't require Internet connectivity\n",
+			          argv[0]);
+			exit (0);
+		}
+	}
+
+	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
 
 	/* Enable full debugging */
 	g_setenv ("LIBGDATA_DEBUG", "3", FALSE);
+}
+
+/*
+ * gdata_test_internet:
+ *
+ * Returns whether tests which require Internet access should be run.
+ *
+ * Return value: %TRUE if Internet-requiring tests should be run, %FALSE otherwise
+ *
+ * Since: 0.7.0
+ */
+gboolean
+gdata_test_internet (void)
+{
+	return (no_internet == FALSE) ? TRUE : FALSE;
 }
 
 typedef struct {

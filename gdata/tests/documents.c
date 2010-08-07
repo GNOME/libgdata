@@ -586,7 +586,7 @@ main (int argc, char *argv[])
 	GDataService *service;
 	gint retval;
 
-	gdata_test_init (&argc, &argv);
+	gdata_test_init (argc, argv);
 
 	service = GDATA_SERVICE (gdata_documents_service_new (CLIENT_ID));
 	gdata_service_authenticate (service, DOCUMENTS_USERNAME, PASSWORD, NULL, NULL);

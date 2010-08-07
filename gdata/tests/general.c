@@ -3005,7 +3005,7 @@ test_gcontact_website_error_handling (void)
 int
 main (int argc, char *argv[])
 {
-	gdata_test_init (&argc, &argv);
+	gdata_test_init (argc, argv);
 
 	g_test_add_func ("/service/network_error", test_service_network_error);
 	g_test_add_func ("/service/locale", test_service_locale);

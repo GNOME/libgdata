@@ -736,7 +736,7 @@ main (int argc, char *argv[])
 	gint retval;
 	GDataService *service;
 
-	gdata_test_init (&argc, &argv);
+	gdata_test_init (argc, argv);
 
 	service = GDATA_SERVICE (gdata_calendar_service_new (CLIENT_ID));
 	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
