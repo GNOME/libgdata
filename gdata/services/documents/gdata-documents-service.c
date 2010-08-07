@@ -300,7 +300,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 	const gchar *slug = NULL, *content_type = NULL, *response_body;
 	gssize response_length;
 	GFileInfo *file_info = NULL;
-	GType new_document_type;
+	GType new_document_type = G_TYPE_INVALID;
 	GError *child_error = NULL;
 
 	/* Get some information about the file we're uploading */
@@ -320,35 +320,36 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 		 * Bug filed with Google: http://code.google.com/p/gdata-issues/issues/detail?id=1127 */
 		if (strcmp (content_type, "application/vnd.oasis.opendocument.spreadsheet") == 0)
 			content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
+
+		if (document == NULL) {
+			/* Get the document type of the document which is being uploaded */
+			if (strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
+			    strcmp (content_type, "text/tab-separated-values") == 0 ||
+			    strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
+			    strcmp (content_type, "application/vnd.ms-excel") == 0) {
+				new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
+			} else if (strcmp (content_type, "application/msword") == 0 ||
+			           strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
+			           strcmp (content_type, "application/rtf") == 0 ||
+			           strcmp (content_type, "text/html") == 0 ||
+			           strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
+			           strcmp (content_type, "text/plain") == 0) {
+				new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
+			} else if (strcmp (content_type, "application/vnd.ms-powerpoint") == 0) {
+				new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
+			} else {
+				g_set_error_literal (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
+				                     _("The supplied document had an invalid content type."));
+				if (file_info != NULL)
+					g_object_unref (file_info);
+				return NULL;
+			}
+		}
 	}
 
 	/* Determine the type of the document we're uploading */
-	if (document == NULL) {
-		/* We get the document type of the document which is being uploaded */
-		if (strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
-		    strcmp (content_type, "text/tab-separated-values") == 0 ||
-		    strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
-		    strcmp (content_type, "application/vnd.ms-excel") == 0) {
-			new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
-		} else if (strcmp (content_type, "application/msword") == 0 ||
-		           strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
-		           strcmp (content_type, "application/rtf") == 0 ||
-		           strcmp (content_type, "text/html") == 0 ||
-		           strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
-		           strcmp (content_type, "text/plain") == 0) {
-			new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
-		} else if (strcmp (content_type, "application/vnd.ms-powerpoint") == 0) {
-			new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
-		} else {
-			g_set_error_literal (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
-			                     _("The supplied document had an invalid content type."));
-			if (file_info != NULL)
-				g_object_unref (file_info);
-			return NULL;
-		}
-	} else {
+	if (document != NULL)
 		new_document_type = G_OBJECT_TYPE (document);
-	}
 
 	/* We need streaming file I/O: GDataUploadStream */
 	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), method, upload_uri, GDATA_ENTRY (document), slug, content_type);
