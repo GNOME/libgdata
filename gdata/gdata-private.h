@@ -45,57 +45,57 @@ typedef enum {
 } GDataLogLevel;
 
 #include "gdata-service.h"
-SoupSession *_gdata_service_get_session (GDataService *self) G_GNUC_PURE;
-void _gdata_service_set_authenticated (GDataService *self, gboolean authenticated);
-SoupMessage *_gdata_service_build_message (GDataService *self, const gchar *method, const gchar *uri, const gchar *etag, gboolean etag_if_match);
-guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancellable *cancellable, GError **error);
-SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
-                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-const gchar *_gdata_service_get_scheme (void) G_GNUC_CONST;
-GDataLogLevel _gdata_service_get_log_level (void) G_GNUC_CONST;
+G_GNUC_INTERNAL SoupSession *_gdata_service_get_session (GDataService *self) G_GNUC_PURE;
+G_GNUC_INTERNAL void _gdata_service_set_authenticated (GDataService *self, gboolean authenticated);
+G_GNUC_INTERNAL SoupMessage *_gdata_service_build_message (GDataService *self, const gchar *method, const gchar *uri, const gchar *etag, gboolean etag_if_match);
+G_GNUC_INTERNAL guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancellable *cancellable, GError **error);
+G_GNUC_INTERNAL SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
+                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL const gchar *_gdata_service_get_scheme (void) G_GNUC_CONST;
+G_GNUC_INTERNAL GDataLogLevel _gdata_service_get_log_level (void) G_GNUC_CONST;
 
 #include "gdata-query.h"
-void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
-void _gdata_query_set_previous_uri (GDataQuery *self, const gchar *previous_uri);
+G_GNUC_INTERNAL void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
+G_GNUC_INTERNAL void _gdata_query_set_previous_uri (GDataQuery *self, const gchar *previous_uri);
 
 #include "gdata-parsable.h"
-GDataParsable *_gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, gpointer user_data,
-                                             GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-GDataParsable *_gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *node, gpointer user_data,
-                                                  GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-void _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean declare_namespaces);
-void _gdata_parsable_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
+G_GNUC_INTERNAL GDataParsable *_gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, gpointer user_data,
+                                                             GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL GDataParsable *_gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *node, gpointer user_data,
+                                                                  GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL void _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean declare_namespaces);
+G_GNUC_INTERNAL void _gdata_parsable_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 
 #include "gdata-feed.h"
-GDataFeed *_gdata_feed_new (const gchar *title, const gchar *id, GTimeVal *updated) G_GNUC_WARN_UNUSED_RESULT;
-GDataFeed *_gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,
-                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-                                     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-void _gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry);
-gpointer _gdata_feed_parse_data_new (GType entry_type, GDataQueryProgressCallback progress_callback, gpointer progress_user_data);
-void _gdata_feed_parse_data_free (gpointer data);
-void _gdata_feed_call_progress_callback (GDataFeed *self, gpointer user_data, GDataEntry *entry);
+G_GNUC_INTERNAL GDataFeed *_gdata_feed_new (const gchar *title, const gchar *id, GTimeVal *updated) G_GNUC_WARN_UNUSED_RESULT;
+G_GNUC_INTERNAL GDataFeed *_gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,
+                                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL void _gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry);
+G_GNUC_INTERNAL gpointer _gdata_feed_parse_data_new (GType entry_type, GDataQueryProgressCallback progress_callback, gpointer progress_user_data);
+G_GNUC_INTERNAL void _gdata_feed_parse_data_free (gpointer data);
+G_GNUC_INTERNAL void _gdata_feed_call_progress_callback (GDataFeed *self, gpointer user_data, GDataEntry *entry);
 
 #include "gdata-entry.h"
 #include "gdata-batch-operation.h"
-void _gdata_entry_set_updated (GDataEntry *self, GTimeVal *updated);
-void _gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type);
+G_GNUC_INTERNAL void _gdata_entry_set_updated (GDataEntry *self, GTimeVal *updated);
+G_GNUC_INTERNAL void _gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type);
 
 #include "gdata/services/documents/gdata-documents-entry.h"
-GFile *_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *download_uri,
-                                                 GFile *destination_directory, const gchar *file_extension, gboolean replace_file_if_exists,
-                                                 GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-void _gdata_documents_entry_init_edited (GDataDocumentsEntry *self);
+G_GNUC_INTERNAL GFile *_gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataService *service, gchar **content_type, const gchar *download_uri,
+                                                                 GFile *destination_directory, const gchar *file_extension, gboolean replace_file_if_exists,
+                                                                 GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL void _gdata_documents_entry_init_edited (GDataDocumentsEntry *self);
 
 #include "gdata/services/documents/gdata-documents-service.h"
 
-GDataService *_gdata_documents_service_get_spreadsheet_service (GDataDocumentsService *self) G_GNUC_PURE;
+G_GNUC_INTERNAL GDataService *_gdata_documents_service_get_spreadsheet_service (GDataDocumentsService *self) G_GNUC_PURE;
 
 #include "gdata-parser.h"
 
-GFileOutputStream *_gdata_download_stream_find_destination (const gchar *default_filename, GFile *target_dest_file, GFile **actual_dest_file,
-                                                            gboolean replace_file_if_exists,
-                                                            GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL GFileOutputStream *_gdata_download_stream_find_destination (const gchar *default_filename, GFile *target_dest_file, GFile **actual_dest_file,
+                                                                            gboolean replace_file_if_exists,
+                                                                            GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

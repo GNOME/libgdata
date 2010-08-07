@@ -36,8 +36,8 @@ typedef struct {
 	GDataEntry *entry; /* used for anything except queries, and to store the results of all operations */
 } BatchOperation;
 
-BatchOperation *_gdata_batch_operation_get_operation (GDataBatchOperation *self, guint id) G_GNUC_PURE;
-void _gdata_batch_operation_run_callback (GDataBatchOperation *self, BatchOperation *op, GDataEntry *entry, GError *error);
+G_GNUC_INTERNAL BatchOperation *_gdata_batch_operation_get_operation (GDataBatchOperation *self, guint id) G_GNUC_PURE;
+G_GNUC_INTERNAL void _gdata_batch_operation_run_callback (GDataBatchOperation *self, BatchOperation *op, GDataEntry *entry, GError *error);
 
 G_END_DECLS
 
