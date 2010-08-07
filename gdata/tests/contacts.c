@@ -689,7 +689,7 @@ test_query_properties (void)
 }
 
 static void
-test_parser_minimal (gconstpointer service)
+test_parser_minimal (void)
 {
 	GDataContactsContact *contact;
 	GDate birthday;
@@ -751,7 +751,7 @@ test_parser_minimal (gconstpointer service)
 }
 
 static void
-test_parser_normal (gconstpointer service)
+test_parser_normal (void)
 {
 	GDataContactsContact *contact;
 	GDate date;
@@ -972,7 +972,7 @@ test_parser_normal (gconstpointer service)
 }
 
 static void
-test_parser_error_handling (gconstpointer service)
+test_parser_error_handling (void)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
@@ -1482,37 +1482,47 @@ test_id (void)
 int
 main (int argc, char *argv[])
 {
-	GDataService *service;
 	gint retval;
+	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
-	service = GDATA_SERVICE (gdata_contacts_service_new (CLIENT_ID));
-	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
+	if (gdata_test_internet () == TRUE) {
+		service = GDATA_SERVICE (gdata_contacts_service_new (CLIENT_ID));
+		gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
 
-	g_test_add_func ("/contacts/authentication", test_authentication);
-	g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
-	g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
-	if (g_test_thorough () == TRUE)
+		g_test_add_func ("/contacts/authentication", test_authentication);
+
+		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
+
+		g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
 		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
+
+		g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
+		g_test_add_data_func ("/contacts/photo/add", service, test_photo_add);
+		g_test_add_data_func ("/contacts/photo/get", service, test_photo_get);
+		g_test_add_data_func ("/contacts/photo/delete", service, test_photo_delete);
+
+		g_test_add_data_func ("/contacts/batch", service, test_batch);
+		g_test_add ("/contacts/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
+		g_test_add ("/contacts/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
+		            teardown_batch_async);
+	}
+
 	g_test_add_func ("/contacts/query/uri", test_query_uri);
 	g_test_add_func ("/contacts/query/etag", test_query_etag);
 	g_test_add_func ("/contacts/query/properties", test_query_properties);
-	g_test_add_data_func ("/contacts/parser/minimal", service, test_parser_minimal);
-	g_test_add_data_func ("/contacts/parser/normal", service, test_parser_normal);
-	g_test_add_data_func ("/contacts/parser/error_handling", service, test_parser_error_handling);
-	g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
-	g_test_add_data_func ("/contacts/photo/add", service, test_photo_add);
-	g_test_add_data_func ("/contacts/photo/get", service, test_photo_get);
-	g_test_add_data_func ("/contacts/photo/delete", service, test_photo_delete);
-	g_test_add_data_func ("/contacts/batch", service, test_batch);
-	g_test_add ("/contacts/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
-	g_test_add ("/contacts/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
-	            teardown_batch_async);
+
+	g_test_add_func ("/contacts/parser/minimal", test_parser_minimal);
+	g_test_add_func ("/contacts/parser/normal", test_parser_normal);
+	g_test_add_func ("/contacts/parser/error_handling", test_parser_error_handling);
+
 	g_test_add_func ("/contacts/id", test_id);
 
 	retval = g_test_run ();
-	g_object_unref (service);
+
+	if (service != NULL)
+		g_object_unref (service);
 
 	return retval;
 }

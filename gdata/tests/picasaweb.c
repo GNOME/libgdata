@@ -1274,7 +1274,7 @@ test_query_all_albums_async (gconstpointer service)
 }
 
 static void
-test_album_new (gconstpointer service)
+test_album_new (void)
 {
 	GDataPicasaWebAlbum *album;
 	gchar *xml, *parsed_time_str;
@@ -1358,41 +1358,49 @@ test_query_etag (void)
 int
 main (int argc, char *argv[])
 {
-	GDataService *service;
 	gint retval;
+	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
-	service = GDATA_SERVICE (gdata_picasaweb_service_new (CLIENT_ID));
-	gdata_service_authenticate (service, PW_USERNAME, PASSWORD, NULL, NULL);
+	if (gdata_test_internet () == TRUE) {
+		service = GDATA_SERVICE (gdata_picasaweb_service_new (CLIENT_ID));
+		gdata_service_authenticate (service, PW_USERNAME, PASSWORD, NULL, NULL);
 
-	g_test_add_func ("/picasaweb/authentication", test_authentication);
-	if (g_test_thorough () == TRUE)
+		g_test_add_func ("/picasaweb/authentication", test_authentication);
 		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);
-	g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
-	if (g_test_thorough () == TRUE)
+
+		g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
 		g_test_add_data_func ("/picasaweb/upload/photo_async", service, test_upload_async);
-	g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
-	g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
-	if (g_test_thorough () == TRUE)
+
+		g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
+		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
 		g_test_add_data_func ("/picasaweb/query/all_albums_async", service, test_query_all_albums_async);
-	g_test_add_data_func ("/picasaweb/query/new_with_limits", service, test_query_new_with_limits);
-	g_test_add_data_func ("/picasaweb/query/album_feed", service, test_album_feed);
-	g_test_add_data_func ("/picasaweb/query/album_feed_entry", service, test_album_feed_entry);
-	g_test_add_data_func ("/picasaweb/query/album", service, test_album);
-	g_test_add_data_func ("/picasaweb/insert/album", service, test_insert_album);
-	g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
-	g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
-	g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
-	g_test_add_data_func ("/picasaweb/query/photo_single", service, test_photo_single);
-	g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
-	g_test_add_data_func ("/picasaweb/download/photo", service, test_download);
-	g_test_add_data_func ("/picasaweb/download/thumbnails", service, test_download_thumbnails);
-	g_test_add_data_func ("/picasaweb/album/new", service, test_album_new);
+		g_test_add_data_func ("/picasaweb/query/new_with_limits", service, test_query_new_with_limits);
+		g_test_add_data_func ("/picasaweb/query/album_feed", service, test_album_feed);
+		g_test_add_data_func ("/picasaweb/query/album_feed_entry", service, test_album_feed_entry);
+		g_test_add_data_func ("/picasaweb/query/album", service, test_album);
+
+		g_test_add_data_func ("/picasaweb/insert/album", service, test_insert_album);
+
+		g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
+		g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
+		g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
+		g_test_add_data_func ("/picasaweb/query/photo_single", service, test_photo_single);
+
+		g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
+
+		g_test_add_data_func ("/picasaweb/download/photo", service, test_download);
+		g_test_add_data_func ("/picasaweb/download/thumbnails", service, test_download_thumbnails);
+	}
+
+	g_test_add_func ("/picasaweb/album/new", test_album_new);
 	g_test_add_func ("/picasaweb/query/etag", test_query_etag);
 
 	retval = g_test_run ();
-	g_object_unref (service);
+
+	if (service != NULL)
+		g_object_unref (service);
 
 	return retval;
 }

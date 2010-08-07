@@ -291,7 +291,7 @@ test_insert_simple (gconstpointer service)
 }
 
 static void
-test_xml_dates (gconstpointer service)
+test_xml_dates (void)
 {
 	GDataCalendarEvent *event;
 	GList *times, *i;
@@ -385,7 +385,7 @@ test_xml_dates (gconstpointer service)
 }
 
 static void
-test_xml_recurrence (gconstpointer service)
+test_xml_recurrence (void)
 {
 	GDataCalendarEvent *event;
 	GError *error = NULL;
@@ -734,38 +734,41 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
-	GDataService *service;
+	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
-	service = GDATA_SERVICE (gdata_calendar_service_new (CLIENT_ID));
-	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
+	if (gdata_test_internet () == TRUE) {
+		service = GDATA_SERVICE (gdata_calendar_service_new (CLIENT_ID));
+		gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
 
-	g_test_add_func ("/calendar/authentication", test_authentication);
-	if (g_test_thorough () == TRUE)
+		g_test_add_func ("/calendar/authentication", test_authentication);
 		g_test_add_func ("/calendar/authentication_async", test_authentication_async);
-	g_test_add_data_func ("/calendar/query/all_calendars", service, test_query_all_calendars);
-	if (g_test_thorough () == TRUE)
+
+		g_test_add_data_func ("/calendar/query/all_calendars", service, test_query_all_calendars);
 		g_test_add_data_func ("/calendar/query/all_calendars_async", service, test_query_all_calendars_async);
-	g_test_add_data_func ("/calendar/query/own_calendars", service, test_query_own_calendars);
-	if (g_test_thorough () == TRUE)
+		g_test_add_data_func ("/calendar/query/own_calendars", service, test_query_own_calendars);
 		g_test_add_data_func ("/calendar/query/own_calendars_async", service, test_query_own_calendars_async);
-	g_test_add_data_func ("/calendar/query/events", service, test_query_events);
-	if (g_test_slow () == TRUE)
+		g_test_add_data_func ("/calendar/query/events", service, test_query_events);
+
 		g_test_add_data_func ("/calendar/insert/simple", service, test_insert_simple);
-	g_test_add_data_func ("/calendar/xml/dates", service, test_xml_dates);
-	g_test_add_data_func ("/calendar/xml/recurrence", service, test_xml_recurrence);
-	g_test_add_func ("/calendar/query/uri", test_query_uri);
-	g_test_add_func ("/calendar/query/etag", test_query_etag);
-	g_test_add_data_func ("/calendar/acls/get_rules", service, test_acls_get_rules);
-	if (g_test_slow () == TRUE) {
+
+		g_test_add_data_func ("/calendar/acls/get_rules", service, test_acls_get_rules);
 		g_test_add_data_func ("/calendar/acls/insert_rule", service, test_acls_insert_rule);
 		g_test_add_data_func ("/calendar/acls/update_rule", service, test_acls_update_rule);
 		g_test_add_data_func ("/calendar/acls/delete_rule", service, test_acls_delete_rule);
 	}
 
+	g_test_add_func ("/calendar/xml/dates", test_xml_dates);
+	g_test_add_func ("/calendar/xml/recurrence", test_xml_recurrence);
+
+	g_test_add_func ("/calendar/query/uri", test_query_uri);
+	g_test_add_func ("/calendar/query/etag", test_query_etag);
+
 	retval = g_test_run ();
-	g_object_unref (service);
+
+	if (service != NULL)
+		g_object_unref (service);
 
 	return retval;
 }

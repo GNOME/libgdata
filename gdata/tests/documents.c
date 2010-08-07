@@ -583,43 +583,47 @@ test_query_etag (void)
 int
 main (int argc, char *argv[])
 {
-	GDataService *service;
 	gint retval;
+	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
-	service = GDATA_SERVICE (gdata_documents_service_new (CLIENT_ID));
-	gdata_service_authenticate (service, DOCUMENTS_USERNAME, PASSWORD, NULL, NULL);
+	if (gdata_test_internet () == TRUE) {
+		service = GDATA_SERVICE (gdata_documents_service_new (CLIENT_ID));
+		gdata_service_authenticate (service, DOCUMENTS_USERNAME, PASSWORD, NULL, NULL);
 
-	g_test_add_func ("/documents/authentication", test_authentication);
+		g_test_add_func ("/documents/authentication", test_authentication);
 
-	g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);
+		g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);
 
-	g_test_add_data_func ("/documents/upload/only_file_get_entry", service, test_upload_file_get_entry);
-	g_test_add_data_func ("/documents/upload/metadata_file", service, test_upload_metadata_file);
-	g_test_add_data_func ("/documents/upload/only_metadata", service, test_upload_metadata);
-	g_test_add_data_func ("/documents/upload/metadata_file_in_new_folder", service, test_upload_file_metadata_in_new_folder);
-	g_test_add_data_func ("/documents/download/download_all_documents", service, test_download_all_documents);
-	g_test_add_data_func ("/documents/update/only_metadata", service, test_update_metadata);
-	g_test_add_data_func ("/documents/update/only_file", service, test_update_file);
-	g_test_add_data_func ("/documents/update/metadata_file", service, test_update_metadata_file);
+		g_test_add_data_func ("/documents/upload/only_file_get_entry", service, test_upload_file_get_entry);
+		g_test_add_data_func ("/documents/upload/metadata_file", service, test_upload_metadata_file);
+		g_test_add_data_func ("/documents/upload/only_metadata", service, test_upload_metadata);
+		g_test_add_data_func ("/documents/upload/metadata_file_in_new_folder", service, test_upload_file_metadata_in_new_folder);
 
-	g_test_add_data_func ("/documents/access_rules/add_document_with_a_collaborator", service, test_new_document_with_collaborator);
+		g_test_add_data_func ("/documents/download/download_all_documents", service, test_download_all_documents);
 
-	g_test_add_data_func ("/documents/query/all_documents_with_folder", service, test_query_all_documents_with_folder);
-	g_test_add_data_func ("/documents/query/all_documents", service, test_query_all_documents);
-	if (g_test_thorough () == TRUE)
+		g_test_add_data_func ("/documents/update/only_metadata", service, test_update_metadata);
+		g_test_add_data_func ("/documents/update/only_file", service, test_update_file);
+		g_test_add_data_func ("/documents/update/metadata_file", service, test_update_metadata_file);
+
+		g_test_add_data_func ("/documents/access_rules/add_document_with_a_collaborator", service, test_new_document_with_collaborator);
+
+		g_test_add_data_func ("/documents/query/all_documents_with_folder", service, test_query_all_documents_with_folder);
+		g_test_add_data_func ("/documents/query/all_documents", service, test_query_all_documents);
 		g_test_add_data_func ("/documents/query/all_documents_async", service, test_query_all_documents_async);
 
-	g_test_add_data_func ("/documents/move/move_to_folder", service, test_add_file_folder_and_move);
-	g_test_add_data_func ("/documents/move/remove_from_folder", service, test_add_remove_file_from_folder);
-	/*g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);*/
+		g_test_add_data_func ("/documents/move/move_to_folder", service, test_add_file_folder_and_move);
+		g_test_add_data_func ("/documents/move/remove_from_folder", service, test_add_remove_file_from_folder);
+		/*g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);*/
+	}
 
 	g_test_add_func ("/documents/query/etag", test_query_etag);
 
 	retval = g_test_run ();
 
-	g_object_unref (service);
+	if (service != NULL)
+		g_object_unref (service);
 
 	return retval;
 }

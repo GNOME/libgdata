@@ -319,7 +319,7 @@ test_upload_simple (gconstpointer service)
 }
 
 static void
-test_parsing_app_control (gconstpointer service)
+test_parsing_app_control (void)
 {
 	GDataYouTubeVideo *video;
 	GDataYouTubeState *state;
@@ -371,7 +371,7 @@ test_parsing_app_control (gconstpointer service)
 }
 
 static void
-test_parsing_yt_recorded (gconstpointer service)
+test_parsing_yt_recorded (void)
 {
 	GDataYouTubeVideo *video;
 	GTimeVal recorded;
@@ -453,7 +453,7 @@ test_parsing_yt_recorded (gconstpointer service)
 }
 
 static void
-test_parsing_yt_access_control (gconstpointer service)
+test_parsing_yt_access_control (void)
 {
 	GDataYouTubeVideo *video;
 	gchar *xml;
@@ -546,7 +546,7 @@ test_parsing_yt_access_control (gconstpointer service)
 }
 
 static void
-test_parsing_yt_category (gconstpointer service)
+test_parsing_yt_category (void)
 {
 	GDataYouTubeCategory *category;
 	gboolean assignable, deprecated;
@@ -1080,43 +1080,49 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
-	GDataService *service;
+	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
-	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
-	gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
+	if (gdata_test_internet () == TRUE) {
+		service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
+		gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
 
-	g_test_add_func ("/youtube/authentication", test_authentication);
-	if (g_test_thorough () == TRUE)
+		g_test_add_func ("/youtube/authentication", test_authentication);
 		g_test_add_func ("/youtube/authentication_async", test_authentication_async);
-	g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
-	if (g_test_thorough () == TRUE)
+
+		g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
 		g_test_add_data_func ("/youtube/query/standard_feed_async", service, test_query_standard_feed_async);
-	g_test_add_data_func ("/youtube/query/related", service, test_query_related);
-	if (g_test_thorough () == TRUE)
+		g_test_add_data_func ("/youtube/query/related", service, test_query_related);
 		g_test_add_data_func ("/youtube/query/related_async", service, test_query_related_async);
-	if (g_test_slow () == TRUE)
+
 		g_test_add_data_func ("/youtube/upload/simple", service, test_upload_simple);
-	g_test_add_data_func ("/youtube/parsing/app:control", service, test_parsing_app_control);
+
+		g_test_add_data_func ("/youtube/query/single", service, test_query_single);
+		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);
+
+		g_test_add_data_func ("/youtube/categories", service, test_categories);
+		g_test_add_data_func ("/youtube/categories/async", service, test_categories_async);
+
+		g_test_add ("/youtube/batch", BatchData, service, setup_batch, test_batch, teardown_batch);
+		g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);
+		g_test_add ("/youtube/batch/async/cancellation", BatchData, service, setup_batch, test_batch_async_cancellation, teardown_batch);
+	}
+
+	g_test_add_func ("/youtube/parsing/app:control", test_parsing_app_control);
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
-	g_test_add_data_func ("/youtube/parsing/yt:recorded", service, test_parsing_yt_recorded);
-	g_test_add_data_func ("/youtube/parsing/yt:accessControl", service, test_parsing_yt_access_control);
-	g_test_add_data_func ("/youtube/parsing/yt:category", service, test_parsing_yt_category);
+	g_test_add_func ("/youtube/parsing/yt:recorded", test_parsing_yt_recorded);
+	g_test_add_func ("/youtube/parsing/yt:accessControl", test_parsing_yt_access_control);
+	g_test_add_func ("/youtube/parsing/yt:category", test_parsing_yt_category);
+	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
+
 	g_test_add_func ("/youtube/query/uri", test_query_uri);
 	g_test_add_func ("/youtube/query/etag", test_query_etag);
-	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
-	if (g_test_slow () == TRUE)
-		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);
-	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
-	g_test_add_data_func ("/youtube/categories", service, test_categories);
-	g_test_add_data_func ("/youtube/categories/async", service, test_categories_async);
-	g_test_add ("/youtube/batch", BatchData, service, setup_batch, test_batch, teardown_batch);
-	g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);
-	g_test_add ("/youtube/batch/async/cancellation", BatchData, service, setup_batch, test_batch_async_cancellation, teardown_batch);
 
 	retval = g_test_run ();
-	g_object_unref (service);
+
+	if (service != NULL)
+		g_object_unref (service);
 
 	return retval;
 }
