@@ -10,7 +10,7 @@ GDATA_MARSHAL_FILES = \
 
 gdata/gdata-marshal.h: $(top_srcdir)/gdata/gdata-marshal.list
 	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=gdata_marshal --header $< > $@
-gdata/gdata-marshal.c: $(top_srcdir)/gdata/gdata-marshal.list
+gdata/gdata-marshal.c: $(top_srcdir)/gdata/gdata-marshal.list gdata/gdata-marshal.h
 	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=gdata_marshal --header --body $< > $@
 
 EXTRA_DIST = $(top_srcdir)/gdata/gdata-marshal.list
