@@ -842,3 +842,4 @@ gdata_batch_operation_run_finish
 gdata_batch_operation_type_get_type
 gdata_batchable_get_type
 gdata_batchable_create_operation
+gdata_upload_stream_get_method

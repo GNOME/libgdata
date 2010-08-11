@@ -1739,6 +1739,7 @@ GDataUploadStreamClass
 gdata_upload_stream_new
 gdata_upload_stream_get_response
 gdata_upload_stream_get_service
+gdata_upload_stream_get_method
 gdata_upload_stream_get_upload_uri
 gdata_upload_stream_get_entry
 gdata_upload_stream_get_slug

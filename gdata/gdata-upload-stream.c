@@ -67,6 +67,7 @@
 
 #define BOUNDARY_STRING "0003Z5W789deadbeefRTE456KlemsnoZV"
 
+static GObject *gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_upload_stream_dispose (GObject *object);
 static void gdata_upload_stream_finalize (GObject *object);
 static void gdata_upload_stream_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -78,6 +79,7 @@ static gboolean gdata_upload_stream_close (GOutputStream *stream, GCancellable *
 static void create_network_thread (GDataUploadStream *self, GError **error);
 
 struct _GDataUploadStreamPrivate {
+	gchar *method;
 	gchar *upload_uri;
 	GDataService *service;
 	GDataEntry *entry;
@@ -104,7 +106,8 @@ enum {
 	PROP_UPLOAD_URI,
 	PROP_ENTRY,
 	PROP_SLUG,
-	PROP_CONTENT_TYPE
+	PROP_CONTENT_TYPE,
+	PROP_METHOD
 };
 
 G_DEFINE_TYPE (GDataUploadStream, gdata_upload_stream, G_TYPE_OUTPUT_STREAM)
@@ -117,6 +120,7 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataUploadStreamPrivate));
 
+	gobject_class->constructor = gdata_upload_stream_constructor;
 	gobject_class->dispose = gdata_upload_stream_dispose;
 	gobject_class->finalize = gdata_upload_stream_finalize;
 	gobject_class->get_property = gdata_upload_stream_get_property;
@@ -138,6 +142,19 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	                                 g_param_spec_object ("service",
 	                                                      "Service", "The service which is used to authenticate the upload.",
 	                                                      GDATA_TYPE_SERVICE,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataUploadStream:method:
+	 *
+	 * The HTTP request method to use when uploading the file.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_METHOD,
+	                                 g_param_spec_string ("method",
+	                                                      "Method", "The HTTP request method to use when uploading the file.",
+	                                                      NULL,
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -204,6 +221,49 @@ gdata_upload_stream_init (GDataUploadStream *self)
 	g_static_mutex_init (&(self->priv->response_mutex));
 }
 
+static GObject *
+gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GDataUploadStreamPrivate *priv;
+	GDataServiceClass *klass;
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_upload_stream_parent_class)->constructor (type, n_construct_params, construct_params);
+	priv = GDATA_UPLOAD_STREAM (object)->priv;
+
+	/* Build the message */
+	priv->message = soup_message_new (priv->method, priv->upload_uri);
+
+	/* Make sure the headers are set */
+	klass = GDATA_SERVICE_GET_CLASS (priv->service);
+	if (klass->append_query_headers != NULL)
+		klass->append_query_headers (priv->service, priv->message);
+
+	if (priv->slug != NULL)
+		soup_message_headers_append (priv->message->request_headers, "Slug", priv->slug);
+
+	/* We don't want to accumulate chunks */
+	soup_message_body_set_accumulate (priv->message->request_body, FALSE);
+	soup_message_headers_set_encoding (priv->message->request_headers, SOUP_ENCODING_CHUNKED);
+
+	/* The Content-Type should be multipart/related if we're also uploading the metadata (entry != NULL),
+	 * and the given content_type otherwise.
+	 * Note that the Content-Length header is set when we first start writing to the network. */
+	if (priv->entry != NULL)
+		soup_message_headers_set_content_type (priv->message->request_headers, "multipart/related; boundary=" BOUNDARY_STRING, NULL);
+	else
+		soup_message_headers_set_content_type (priv->message->request_headers, priv->content_type, NULL);
+
+	/* If the entry exists and has an ETag, we assume we're updating the entry, so we can set the If-Match header */
+	if (priv->entry != NULL && gdata_entry_get_etag (priv->entry) != NULL)
+		soup_message_headers_append (priv->message->request_headers, "If-Match", gdata_entry_get_etag (priv->entry));
+
+	/* Uploading doesn't actually start until the first call to write() */
+
+	return object;
+}
+
 static void
 gdata_upload_stream_dispose (GObject *object)
 {
@@ -242,6 +302,7 @@ gdata_upload_stream_finalize (GObject *object)
 	g_static_mutex_free (&(priv->write_mutex));
 	gdata_buffer_free (priv->buffer);
 	g_free (priv->upload_uri);
+	g_free (priv->method);
 	g_free (priv->slug);
 	g_free (priv->content_type);
 
@@ -257,6 +318,9 @@ gdata_upload_stream_get_property (GObject *object, guint property_id, GValue *va
 	switch (property_id) {
 		case PROP_SERVICE:
 			g_value_set_object (value, priv->service);
+			break;
+		case PROP_METHOD:
+			g_value_set_string (value, priv->method);
 			break;
 		case PROP_UPLOAD_URI:
 			g_value_set_string (value, priv->upload_uri);
@@ -286,6 +350,9 @@ gdata_upload_stream_set_property (GObject *object, guint property_id, const GVal
 		case PROP_SERVICE:
 			priv->service = g_value_dup_object (value);
 			priv->session = _gdata_service_get_session (priv->service);
+			break;
+		case PROP_METHOD:
+			priv->method = g_value_dup_string (value);
 			break;
 		case PROP_UPLOAD_URI:
 			priv->upload_uri = g_value_dup_string (value);
@@ -575,10 +642,6 @@ GOutputStream *
 gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar *upload_uri, GDataEntry *entry,
 			 const gchar *slug, const gchar *content_type)
 {
-	GDataServiceClass *klass;
-	GDataUploadStream *upload_stream;
-	SoupMessage *message;
-
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (method != NULL, NULL);
 	g_return_val_if_fail (upload_uri != NULL, NULL);
@@ -586,41 +649,9 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
 	g_return_val_if_fail (slug != NULL, NULL);
 	g_return_val_if_fail (content_type != NULL, NULL);
 
-	/* Build the message */
-	message = soup_message_new (method, upload_uri);
-
-	/* Make sure the headers are set */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (service), message);
-
-	if (slug != NULL)
-		soup_message_headers_append (message->request_headers, "Slug", slug);
-
-	/* We don't want to accumulate chunks */
-	soup_message_body_set_accumulate (message->request_body, FALSE);
-	soup_message_headers_set_encoding (message->request_headers, SOUP_ENCODING_CHUNKED);
-
-	/* The Content-Type should be multipart/related if we're also uploading the metadata (entry != NULL),
-	 * and the given content_type otherwise.
-	 * Note that the Content-Length header is set when we first start writing to the network. */
-	if (entry != NULL)
-		soup_message_headers_set_content_type (message->request_headers, "multipart/related; boundary=" BOUNDARY_STRING, NULL);
-	else
-		soup_message_headers_set_content_type (message->request_headers, content_type, NULL);
-
-	/* If the entry exists and has an ETag, we assume we're updating the entry, so we can set the If-Match header */
-	if (entry != NULL && gdata_entry_get_etag (entry) != NULL)
-		soup_message_headers_append (message->request_headers, "If-Match", gdata_entry_get_etag (entry));
-
 	/* Create the upload stream */
-	upload_stream = g_object_new (GDATA_TYPE_UPLOAD_STREAM, "upload-uri", upload_uri, "service", service, "entry", entry,
-	                              "slug", slug, "content-type", content_type, NULL);
-	upload_stream->priv->message = message;
-
-	/* Uploading doesn't actually start until the first call to write() */
-
-	return G_OUTPUT_STREAM (upload_stream);
+	return G_OUTPUT_STREAM (g_object_new (GDATA_TYPE_UPLOAD_STREAM, "method", method, "upload-uri", upload_uri, "service", service,
+	                                      "entry", entry, "slug", slug, "content-type", content_type, NULL));
 }
 
 /**
@@ -687,6 +718,23 @@ gdata_upload_stream_get_service (GDataUploadStream *self)
 {
 	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (self), NULL);
 	return self->priv->service;
+}
+
+/**
+ * gdata_upload_stream_get_method:
+ * @self: a #GDataUploadStream
+ *
+ * Gets the HTTP request method being used to upload the file, as passed to gdata_upload_stream_new().
+ *
+ * Return value: the HTTP request method in use
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_upload_stream_get_method (GDataUploadStream *self)
+{
+	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (self), NULL);
+	return self->priv->method;
 }
 
 /**
