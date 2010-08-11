@@ -45,6 +45,7 @@
 #include "gdata-private.h"
 
 static void gdata_download_stream_seekable_iface_init (GSeekableIface *seekable_iface);
+static GObject *gdata_download_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_download_stream_dispose (GObject *object);
 static void gdata_download_stream_finalize (GObject *object);
 static void gdata_download_stream_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -95,6 +96,7 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataDownloadStreamPrivate));
 
+	gobject_class->constructor = gdata_download_stream_constructor;
 	gobject_class->dispose = gdata_download_stream_dispose;
 	gobject_class->finalize = gdata_download_stream_finalize;
 	gobject_class->get_property = gdata_download_stream_get_property;
@@ -175,6 +177,33 @@ gdata_download_stream_init (GDataDownloadStream *self)
 	self->priv->content_length = -1;
 	self->priv->buffer = gdata_buffer_new ();
 	g_static_mutex_init (&(self->priv->content_mutex));
+}
+
+static GObject *
+gdata_download_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GDataDownloadStreamPrivate *priv;
+	GDataServiceClass *klass;
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_download_stream_parent_class)->constructor (type, n_construct_params, construct_params);
+	priv = GDATA_DOWNLOAD_STREAM (object)->priv;
+
+	/* Build the message */
+	priv->message = soup_message_new (SOUP_METHOD_GET, priv->download_uri);
+
+	/* Make sure the headers are set */
+	klass = GDATA_SERVICE_GET_CLASS (priv->service);
+	if (klass->append_query_headers != NULL)
+		klass->append_query_headers (priv->service, priv->message);
+
+	/* We don't want to accumulate chunks */
+	soup_message_body_set_accumulate (priv->message->request_body, FALSE);
+
+	/* Downloading doesn't actually start until the first call to read() */
+
+	return object;
 }
 
 static void
@@ -465,30 +494,10 @@ create_network_thread (GDataDownloadStream *self, GError **error)
 GInputStream *
 gdata_download_stream_new (GDataService *service, const gchar *download_uri)
 {
-	GDataServiceClass *klass;
-	GDataDownloadStream *download_stream;
-	SoupMessage *message;
-
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (download_uri != NULL, NULL);
 
-	/* Build the message */
-	message = soup_message_new (SOUP_METHOD_GET, download_uri);
-
-	/* Make sure the headers are set */
-	klass = GDATA_SERVICE_GET_CLASS (service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (GDATA_SERVICE (service), message);
-
-	/* We don't want to accumulate chunks */
-	soup_message_body_set_accumulate (message->request_body, FALSE);
-
-	download_stream = g_object_new (GDATA_TYPE_DOWNLOAD_STREAM, "download-uri", download_uri, "service", service, NULL);
-	download_stream->priv->message = message;
-
-	/* Downloading doesn't actually start until the first call to read() */
-
-	return G_INPUT_STREAM (download_stream);
+	return G_INPUT_STREAM (g_object_new (GDATA_TYPE_DOWNLOAD_STREAM, "download-uri", download_uri, "service", service, NULL));
 }
 
 /**
