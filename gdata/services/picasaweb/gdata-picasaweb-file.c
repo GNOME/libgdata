@@ -95,6 +95,7 @@
 #include "exif/gdata-exif-tags.h"
 #include "georss/gdata-georss-where.h"
 
+static GObject *gdata_picasaweb_file_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_picasaweb_file_dispose (GObject *object);
 static void gdata_picasaweb_file_finalize (GObject *object);
 static void gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -172,6 +173,7 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataPicasaWebFilePrivate));
 
+	gobject_class->constructor = gdata_picasaweb_file_constructor;
 	gobject_class->get_property = gdata_picasaweb_file_get_property;
 	gobject_class->set_property = gdata_picasaweb_file_set_property;
 	gobject_class->dispose = gdata_picasaweb_file_dispose;
@@ -681,6 +683,26 @@ gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 	g_signal_connect (self, "notify::summary", G_CALLBACK (notify_summary_cb), NULL);
 }
 
+static GObject *
+gdata_picasaweb_file_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_picasaweb_file_parent_class)->constructor (type, n_construct_params, construct_params);
+
+	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
+		GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (object)->priv;
+
+		/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
+		 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
+		g_get_current_time (&(priv->timestamp));
+		g_get_current_time (&(priv->edited));
+	}
+
+	return object;
+}
+
 static void
 gdata_picasaweb_file_dispose (GObject *object)
 {
@@ -1082,7 +1104,6 @@ GDataPicasaWebFile *
 gdata_picasaweb_file_new (const gchar *id)
 {
 	const gchar *file_id = NULL, *i;
-	GDataPicasaWebFile *file;
 
 	if (id != NULL) {
 		file_id = g_strrstr (id, "/");
@@ -1097,14 +1118,7 @@ gdata_picasaweb_file_new (const gchar *id)
 		}
 	}
 
-	file = GDATA_PICASAWEB_FILE (g_object_new (GDATA_TYPE_PICASAWEB_FILE, "id", id, "file-id", file_id, NULL));
-
-	/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
-	 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(file->priv->timestamp));
-	g_get_current_time (&(file->priv->edited));
-
-	return file;
+	return GDATA_PICASAWEB_FILE (g_object_new (GDATA_TYPE_PICASAWEB_FILE, "id", id, "file-id", file_id, NULL));
 }
 
 /**

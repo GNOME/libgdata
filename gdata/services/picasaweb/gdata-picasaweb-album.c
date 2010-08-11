@@ -97,6 +97,7 @@
 #include "gdata-picasaweb-enums.h"
 #include "georss/gdata-georss-where.h"
 
+static GObject *gdata_picasaweb_album_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_picasaweb_album_dispose (GObject *object);
 static void gdata_picasaweb_album_finalize (GObject *object);
 static void gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -154,6 +155,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataPicasaWebAlbumPrivate));
 
+	gobject_class->constructor = gdata_picasaweb_album_constructor;
 	gobject_class->get_property = gdata_picasaweb_album_get_property;
 	gobject_class->set_property = gdata_picasaweb_album_set_property;
 	gobject_class->dispose = gdata_picasaweb_album_dispose;
@@ -489,6 +491,26 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 	g_signal_connect (self, "notify::visibility", G_CALLBACK (notify_visibility_cb), NULL);
 }
 
+static GObject *
+gdata_picasaweb_album_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_picasaweb_album_parent_class)->constructor (type, n_construct_params, construct_params);
+
+	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
+		GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM (object)->priv;
+
+		/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
+		 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
+		g_get_current_time (&(priv->timestamp));
+		g_get_current_time (&(priv->edited));
+	}
+
+	return object;
+}
+
 static void
 gdata_picasaweb_album_dispose (GObject *object)
 {
@@ -821,7 +843,6 @@ GDataPicasaWebAlbum *
 gdata_picasaweb_album_new (const gchar *id)
 {
 	const gchar *album_id = NULL, *i;
-	GDataPicasaWebAlbum *album;
 
 	if (id != NULL) {
 		album_id = g_strrstr (id, "/");
@@ -836,14 +857,7 @@ gdata_picasaweb_album_new (const gchar *id)
 		}
 	}
 
-	album = GDATA_PICASAWEB_ALBUM (g_object_new (GDATA_TYPE_PICASAWEB_ALBUM, "id", id, "album-id", album_id, NULL));
-
-	/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
-	 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(album->priv->timestamp));
-	g_get_current_time (&(album->priv->edited));
-
-	return album;
+	return GDATA_PICASAWEB_ALBUM (g_object_new (GDATA_TYPE_PICASAWEB_ALBUM, "id", id, "album-id", album_id, NULL));
 }
 
 /**
