@@ -56,6 +56,7 @@
  * and gdata_contacts_contact_set_extended_property(). */
 #define MAX_N_EXTENDED_PROPERTIES 10
 
+static GObject *gdata_contacts_contact_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_contacts_contact_dispose (GObject *object);
 static void gdata_contacts_contact_finalize (GObject *object);
 static void gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -134,6 +135,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataContactsContactPrivate));
 
+	gobject_class->constructor = gdata_contacts_contact_constructor;
 	gobject_class->get_property = gdata_contacts_contact_get_property;
 	gobject_class->set_property = gdata_contacts_contact_set_property;
 	gobject_class->dispose = gdata_contacts_contact_dispose;
@@ -422,6 +424,49 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 
 	/* Initialise the contact's birthday to a sane but invalid date */
 	g_date_clear (&(self->priv->birthday), 1);
+}
+
+static GObject *
+gdata_contacts_contact_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GObject *object;
+	guint i;
+
+	/* Find the "id" property and ensure it's sane */
+	for (i = 0; i < n_construct_params; i++) {
+		GParamSpec *pspec = construct_params[i].pspec;
+		GValue *value = construct_params[i].value;
+
+		if (strcmp (g_param_spec_get_name (pspec), "id") == 0) {
+			gchar *base, *id;
+
+			id = g_value_dup_string (value);
+
+			/* Fix the ID to refer to the full projection, rather than the base projection. */
+			if (id != NULL) {
+				base = strstr (id, "/base/");
+				if (base != NULL)
+					memcpy (base, "/full/", 6);
+			}
+
+			g_value_take_string (value, id);
+
+			break;
+		}
+	}
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->constructor (type, n_construct_params, construct_params);
+
+	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
+		GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (object)->priv;
+
+		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+		 * setting it from parse_xml() to fail (duplicate element). */
+		g_get_current_time (&(priv->edited));
+	}
+
+	return object;
 }
 
 static void
@@ -1027,27 +1072,7 @@ get_entry_uri (const gchar *id)
 GDataContactsContact *
 gdata_contacts_contact_new (const gchar *id)
 {
-	GDataContactsContact *contact;
-	gchar *base, *_id;
-
-	_id = g_strdup (id);
-
-	/* Fix the ID to refer to the full projection, rather than the base projection. */
-	if (_id != NULL) {
-		base = strstr (_id, "/base/");
-		if (base != NULL)
-			memcpy (base, "/full/", 6);
-	}
-
-	contact = GDATA_CONTACTS_CONTACT (g_object_new (GDATA_TYPE_CONTACTS_CONTACT, "id", _id, NULL));
-
-	g_free (_id);
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(contact->priv->edited));
-
-	return contact;
+	return GDATA_CONTACTS_CONTACT (g_object_new (GDATA_TYPE_CONTACTS_CONTACT, "id", id, NULL));
 }
 
 /**
