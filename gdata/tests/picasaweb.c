@@ -647,7 +647,7 @@ test_photo (gconstpointer service)
 
 	gdata_picasaweb_file_get_edited (photo, &_time);
 	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-10-17T08:52:18.885000Z");
+	g_assert_cmpstr (str, ==, "2010-05-13T20:45:13.603000Z");
 	g_free (str);
 
 	/* tests */
@@ -783,7 +783,7 @@ test_photo_feed_entry (gconstpointer service)
 
 	gdata_entry_get_updated (photo_entry, &_time);
 	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-10-17T08:52:18.885000Z");
+	g_assert_cmpstr (str, ==, "2010-05-13T20:45:13.603000Z");
 	g_free (str);
 
 	gdata_entry_get_published (photo_entry, &_time);
