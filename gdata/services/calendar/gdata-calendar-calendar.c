@@ -47,6 +47,7 @@
 #include "gdata-access-handler.h"
 
 static void gdata_calendar_calendar_access_handler_init (GDataAccessHandlerIface *iface);
+static GObject *gdata_calendar_calendar_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_calendar_calendar_finalize (GObject *object);
 static void gdata_calendar_calendar_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_calendar_calendar_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -87,6 +88,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataCalendarCalendarPrivate));
 
+	gobject_class->constructor = gdata_calendar_calendar_constructor;
 	gobject_class->set_property = gdata_calendar_calendar_set_property;
 	gobject_class->get_property = gdata_calendar_calendar_get_property;
 	gobject_class->finalize = gdata_calendar_calendar_finalize;
@@ -200,6 +202,25 @@ static void
 gdata_calendar_calendar_init (GDataCalendarCalendar *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_CALENDAR, GDataCalendarCalendarPrivate);
+}
+
+static GObject *
+gdata_calendar_calendar_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_calendar_calendar_parent_class)->constructor (type, n_construct_params, construct_params);
+
+	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
+		GDataCalendarCalendarPrivate *priv = GDATA_CALENDAR_CALENDAR (object)->priv;
+
+		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+		 * setting it from parse_xml() to fail (duplicate element). */
+		g_get_current_time (&(priv->edited));
+	}
+
+	return object;
 }
 
 static void
@@ -394,13 +415,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 GDataCalendarCalendar *
 gdata_calendar_calendar_new (const gchar *id)
 {
-	GDataCalendarCalendar *calendar = GDATA_CALENDAR_CALENDAR (g_object_new (GDATA_TYPE_CALENDAR_CALENDAR, "id", id, NULL));
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(calendar->priv->edited));
-
-	return calendar;
+	return GDATA_CALENDAR_CALENDAR (g_object_new (GDATA_TYPE_CALENDAR_CALENDAR, "id", id, NULL));
 }
 
 /**

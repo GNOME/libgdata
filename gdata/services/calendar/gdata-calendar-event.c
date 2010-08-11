@@ -42,6 +42,7 @@
 #include "gdata-types.h"
 #include "gdata-comparable.h"
 
+static GObject *gdata_calendar_event_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_calendar_event_dispose (GObject *object);
 static void gdata_calendar_event_finalize (GObject *object);
 static void gdata_calendar_event_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -97,6 +98,7 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataCalendarEventPrivate));
 
+	gobject_class->constructor = gdata_calendar_event_constructor;
 	gobject_class->get_property = gdata_calendar_event_get_property;
 	gobject_class->set_property = gdata_calendar_event_set_property;
 	gobject_class->dispose = gdata_calendar_event_dispose;
@@ -292,6 +294,25 @@ static void
 gdata_calendar_event_init (GDataCalendarEvent *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_EVENT, GDataCalendarEventPrivate);
+}
+
+static GObject *
+gdata_calendar_event_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+{
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_calendar_event_parent_class)->constructor (type, n_construct_params, construct_params);
+
+	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
+		GDataCalendarEventPrivate *priv = GDATA_CALENDAR_EVENT (object)->priv;
+
+		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
+		 * setting it from parse_xml() to fail (duplicate element). */
+		g_get_current_time (&(priv->edited));
+	}
+
+	return object;
 }
 
 static void
@@ -624,13 +645,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 GDataCalendarEvent *
 gdata_calendar_event_new (const gchar *id)
 {
-	GDataCalendarEvent *event = GDATA_CALENDAR_EVENT (g_object_new (GDATA_TYPE_CALENDAR_EVENT, "id", id, NULL));
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	g_get_current_time (&(event->priv->edited));
-
-	return event;
+	return GDATA_CALENDAR_EVENT (g_object_new (GDATA_TYPE_CALENDAR_EVENT, "id", id, NULL));
 }
 
 /**
