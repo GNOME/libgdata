@@ -50,6 +50,7 @@
 #include "gdata-download-stream.h"
 
 static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface);
+static GObject *gdata_documents_entry_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_documents_entry_finalize (GObject *object);
 static void gdata_entry_dispose (GObject *object);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -87,6 +88,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataDocumentsEntryPrivate));
 
+	gobject_class->constructor = gdata_documents_entry_constructor;
 	gobject_class->get_property = gdata_documents_entry_get_property;
 	gobject_class->set_property = gdata_documents_entry_set_property;
 	gobject_class->finalize = gdata_documents_entry_finalize;
@@ -198,21 +200,24 @@ gdata_documents_entry_init (GDataDocumentsEntry *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate);
 }
 
-/*
- * _gdata_documents_entry_init_edited:
- * @self: a #GDataDocumentsEntry
- *
- * Initialises the #GDataDocumentsEntry:edited property of @self to the current time. This is designed
- * to be called from the public constructors of classes which derive #GDataDocumentsEntry; it can't be
- * put in the init function of #GDataDocumentsEntry, as it would then be called even for entries parsed
- * from XML from the server, which would break duplicate element detection for the app:edited element.
- *
- * Since: 0.7.0
- */
-void
-_gdata_documents_entry_init_edited (GDataDocumentsEntry *self)
+static GObject *
+gdata_documents_entry_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
 {
-	g_get_current_time (&(self->priv->edited));
+	GObject *object;
+
+	/* Chain up to the parent class */
+	object = G_OBJECT_CLASS (gdata_documents_entry_parent_class)->constructor (type, n_construct_params, construct_params);
+
+	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
+	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
+		GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
+
+		/* This can't be put in the init function of #GDataDocumentsEntry, as it would then be called even for entries parsed from XML from
+		 * the server, which would break duplicate element detection for the app:edited element. */
+		g_get_current_time (&(priv->edited));
+	}
+
+	return object;
 }
 
 static void

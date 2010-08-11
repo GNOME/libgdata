@@ -98,13 +98,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 GDataDocumentsSpreadsheet *
 gdata_documents_spreadsheet_new (const gchar *id)
 {
-	GDataDocumentsSpreadsheet *spreadsheet = GDATA_DOCUMENTS_SPREADSHEET (g_object_new (GDATA_TYPE_DOCUMENTS_SPREADSHEET, "id", id, NULL));
-
-	/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
-	 * setting it from parse_xml() to fail (duplicate element). */
-	_gdata_documents_entry_init_edited (GDATA_DOCUMENTS_ENTRY (spreadsheet));
-
-	return spreadsheet;
+	return GDATA_DOCUMENTS_SPREADSHEET (g_object_new (GDATA_TYPE_DOCUMENTS_SPREADSHEET, "id", id, NULL));
 }
 
 /**
