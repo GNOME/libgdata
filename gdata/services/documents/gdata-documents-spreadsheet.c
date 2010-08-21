@@ -45,15 +45,6 @@
 
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 
-static const struct { const gchar *extension; const gchar *fmcmd; } export_formats[] = {
-	{ "xls", "4" }, /* GDATA_DOCUMENTS_SPREADSHEET_XLS */
-	{ "csv", "5" }, /* GDATA_DOCUMENTS_SPREADSHEET_CSV */
-	{ "pdf", "12" }, /* GDATA_DOCUMENTS_SPREADSHEET_PDF */
-	{ "ods", "13" }, /* GDATA_DOCUMENTS_SPREADSHEET_ODS */
-	{ "tsv", "23" }, /* GDATA_DOCUMENTS_SPREADSHEET_TSV */
-	{ "html", "102" } /* GDATA_DOCUMENTS_SPREADSHEET_HTML */
-};
-
 G_DEFINE_TYPE (GDataDocumentsSpreadsheet, gdata_documents_spreadsheet, GDATA_TYPE_DOCUMENTS_ENTRY)
 
 static void
@@ -134,25 +125,20 @@ gdata_documents_spreadsheet_new (const gchar *id)
  **/
 GFile *
 gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, GDataDocumentsService *service, gchar **content_type,
-                                               GDataDocumentsSpreadsheetFormat export_format, gint gid, GFile *destination_file,
+                                               const gchar *export_format, gint gid, GFile *destination_file,
                                                gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
 	gchar *link_href;
-	const gchar *extension;
 	GDataService *spreadsheet_service;
 
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SPREADSHEET (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (service), NULL);
-	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
+	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
 	g_return_val_if_fail (gid >= -1, NULL);
-	g_return_val_if_fail ((export_format != GDATA_DOCUMENTS_SPREADSHEET_CSV && export_format != GDATA_DOCUMENTS_SPREADSHEET_TSV) ||
-	                      gid != -1, NULL);
 	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	extension = export_formats[export_format].extension;
 
 	/* Get the spreadsheet service */
 	spreadsheet_service = _gdata_documents_service_get_spreadsheet_service (service);
@@ -160,7 +146,7 @@ gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, 
 	/* Download the document */
 	link_href = gdata_documents_spreadsheet_get_download_uri (self, export_format, gid);
 	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), spreadsheet_service, content_type,
-	                                                             link_href, destination_file, extension, replace_file_if_exists,
+	                                                             link_href, destination_file, export_format, replace_file_if_exists,
 	                                                             cancellable, error);
 	g_free (link_href);
 
@@ -177,35 +163,32 @@ gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, 
  * the document using this URI isn't possible, as authentication is required. You should instead use gdata_download_stream_new() with
  * the URI, and use the resulting #GInputStream.
  *
- * When requesting a %GDATA_DOCUMENTS_SPREADSHEET_CSV or %GDATA_DOCUMENTS_SPREADSHEET_TSV file you must specify an additional
- * parameter called @gid which indicates which grid, or sheet, you wish to get (the index is <code class="literal">0</code>-based, so
- * GID <code class="literal">1</code> actually refers to the second sheet on a given spreadsheet).
+ * When requesting a <code class="literal">"csv"</code>, <code class="literal">"tsv"</code>, <code class="literal">"pdf"</code> or
+ * <code class="literal">"html"</code> file you may specify an additional parameter called @gid which indicates which grid, or sheet, you wish to get
+ * (the index is <code class="literal">0</code>-based, so GID <code class="literal">1</code> actually refers to the second sheet on a given
+ * spreadsheet).
  *
  * Return value: the download URI; free with g_free()
  *
  * Since: 0.5.0
  **/
 gchar *
-gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, GDataDocumentsSpreadsheetFormat export_format, gint gid)
+gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, const gchar *export_format, gint gid)
 {
-	const gchar *document_id, *fmcmd;
+	const gchar *document_id;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SPREADSHEET (self), NULL);
-	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
+	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
 	g_return_val_if_fail (gid >= -1, NULL);
-	g_return_val_if_fail ((export_format != GDATA_DOCUMENTS_SPREADSHEET_CSV && export_format != GDATA_DOCUMENTS_SPREADSHEET_TSV) ||
-	                      gid != -1, NULL);
 
 	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (self));
 	g_assert (document_id != NULL);
 
-	fmcmd = export_formats[export_format].fmcmd;
-
 	if (gid != -1) {
-		return g_strdup_printf ("%s://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&fmcmd=%s&gid=%d",
-		                        _gdata_service_get_scheme (), document_id, fmcmd, gid);
+		return g_strdup_printf ("%s://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s&gid=%d",
+		                        _gdata_service_get_scheme (), document_id, export_format, gid);
 	} else {
-		return g_strdup_printf ("%s://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&fmcmd=%s",
-		                        _gdata_service_get_scheme (), document_id, fmcmd);
+		return g_strdup_printf ("%s://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s",
+		                        _gdata_service_get_scheme (), document_id, export_format);
 	}
 }

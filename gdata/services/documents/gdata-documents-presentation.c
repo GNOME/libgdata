@@ -46,14 +46,6 @@
 
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 
-static const gchar *export_formats[] = {
-	"pdf", /* GDATA_DOCUMENTS_PRESENTATION_PDF */
-	"png", /* GDATA_DOCUMENTS_PRESENTATION_PNG */
-	"ppt", /* GDATA_DOCUMENTS_PRESENTATION_PPT */
-	"swf", /* GDATA_DOCUMENTS_PRESENTATION_SWF */
-	"txt" /* GDATA_DOCUMENTS_PRESENTATION_TXT */
-};
-
 G_DEFINE_TYPE (GDataDocumentsPresentation, gdata_documents_presentation, GDATA_TYPE_DOCUMENTS_ENTRY)
 
 static void
@@ -129,7 +121,7 @@ gdata_documents_presentation_new (const gchar *id)
  **/
 GFile *
 gdata_documents_presentation_download_document (GDataDocumentsPresentation *self, GDataDocumentsService *service, gchar **content_type,
-                                                GDataDocumentsPresentationFormat export_format, GFile *destination_file,
+                                                const gchar *export_format, GFile *destination_file,
                                                 gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
 {
 	gchar *link_href;
@@ -138,13 +130,13 @@ gdata_documents_presentation_download_document (GDataDocumentsPresentation *self
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (service), NULL);
 	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
-	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
+	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Call the common download method on the parent class */
 	link_href = gdata_documents_presentation_get_download_uri (self, export_format);
 	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), GDATA_SERVICE (service), content_type, link_href,
-	                                                             destination_file, export_formats[export_format], replace_file_if_exists,
+	                                                             destination_file, export_format, replace_file_if_exists,
 	                                                             cancellable, error);
 	g_free (link_href);
 
@@ -165,16 +157,16 @@ gdata_documents_presentation_download_document (GDataDocumentsPresentation *self
  * Since: 0.5.0
  **/
 gchar *
-gdata_documents_presentation_get_download_uri (GDataDocumentsPresentation *self, GDataDocumentsPresentationFormat export_format)
+gdata_documents_presentation_get_download_uri (GDataDocumentsPresentation *self, const gchar *export_format)
 {
 	const gchar *document_id;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_PRESENTATION (self), NULL);
-	g_return_val_if_fail (export_format < G_N_ELEMENTS (export_formats), NULL);
+	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
 
 	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (self));
 	g_assert (document_id != NULL);
 
 	return g_strdup_printf ("%s://docs.google.com/feeds/download/presentations/Export?exportFormat=%s&docID=%s",
-	                        _gdata_service_get_scheme (), export_formats[export_format], document_id);
+	                        _gdata_service_get_scheme (), export_format, document_id);
 }

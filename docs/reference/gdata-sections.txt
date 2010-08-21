@@ -1581,9 +1581,13 @@ GDataDocumentsFolderPrivate
 <SECTION>
 <FILE>gdata-documents-presentation</FILE>
 <TITLE>GDataDocumentsPresentation</TITLE>
+GDATA_DOCUMENTS_PRESENTATION_PDF
+GDATA_DOCUMENTS_PRESENTATION_PNG
+GDATA_DOCUMENTS_PRESENTATION_PPT
+GDATA_DOCUMENTS_PRESENTATION_SWF
+GDATA_DOCUMENTS_PRESENTATION_TXT
 GDataDocumentsPresentation
 GDataDocumentsPresentationClass
-GDataDocumentsPresentationFormat
 gdata_documents_presentation_new
 gdata_documents_presentation_download_document
 gdata_documents_presentation_get_download_uri
@@ -1594,9 +1598,7 @@ GDATA_DOCUMENTS_PRESENTATION_CLASS
 GDATA_DOCUMENTS_PRESENTATION_GET_CLASS
 GDATA_IS_DOCUMENTS_PRESENTATION
 GDATA_IS_DOCUMENTS_PRESENTATION_CLASS
-GDATA_TYPE_DATA_DOCUMENTS_PRESENTATION_FORMAT
 GDATA_TYPE_DOCUMENTS_PRESENTATION
-gdata_documents_presentation_format_get_type
 <SUBSECTION Private>
 GDataDocumentsPresentationPrivate
 </SECTION>
@@ -1636,9 +1638,14 @@ GDataDocumentsQueryPrivate
 <SECTION>
 <FILE>gdata-documents-spreadsheet</FILE>
 <TITLE>GDataDocumentsSpreadsheet</TITLE>
+GDATA_DOCUMENTS_SPREADSHEET_CSV
+GDATA_DOCUMENTS_SPREADSHEET_HTML
+GDATA_DOCUMENTS_SPREADSHEET_ODS
+GDATA_DOCUMENTS_SPREADSHEET_PDF
+GDATA_DOCUMENTS_SPREADSHEET_TSV
+GDATA_DOCUMENTS_SPREADSHEET_XLS
 GDataDocumentsSpreadsheet
 GDataDocumentsSpreadsheetClass
-GDataDocumentsSpreadsheetFormat
 gdata_documents_spreadsheet_new
 gdata_documents_spreadsheet_download_document
 gdata_documents_spreadsheet_get_download_uri
@@ -1649,9 +1656,7 @@ GDATA_DOCUMENTS_SPREADSHEET_CLASS
 GDATA_DOCUMENTS_SPREADSHEET_GET_CLASS
 GDATA_IS_DOCUMENTS_SPREADSHEET
 GDATA_IS_DOCUMENTS_SPREADSHEET_CLASS
-GDATA_TYPE_DATA_DOCUMENTS_SPREADSHEET_FORMAT
 GDATA_TYPE_DOCUMENTS_SPREADSHEET
-gdata_documents_spreadsheet_format_get_type
 <SUBSECTION Private>
 GDataDocumentsSpreadsheetPrivate
 </SECTION>
@@ -1659,9 +1664,16 @@ GDataDocumentsSpreadsheetPrivate
 <SECTION>
 <FILE>gdata-documents-text</FILE>
 <TITLE>GDataDocumentsText</TITLE>
+GDATA_DOCUMENTS_TEXT_DOC
+GDATA_DOCUMENTS_TEXT_HTML
+GDATA_DOCUMENTS_TEXT_ODT
+GDATA_DOCUMENTS_TEXT_PDF
+GDATA_DOCUMENTS_TEXT_PNG
+GDATA_DOCUMENTS_TEXT_RTF
+GDATA_DOCUMENTS_TEXT_TXT
+GDATA_DOCUMENTS_TEXT_ZIP
 GDataDocumentsText
 GDataDocumentsTextClass
-GDataDocumentsTextFormat
 gdata_documents_text_new
 gdata_documents_text_download_document
 gdata_documents_text_get_download_uri
@@ -1672,9 +1684,7 @@ GDATA_DOCUMENTS_TEXT_CLASS
 GDATA_DOCUMENTS_TEXT_GET_CLASS
 GDATA_IS_DOCUMENTS_TEXT
 GDATA_IS_DOCUMENTS_TEXT_CLASS
-GDATA_TYPE_DATA_DOCUMENTS_TEXT_FORMAT
 GDATA_TYPE_DOCUMENTS_TEXT
-gdata_documents_text_format_get_type
 <SUBSECTION Private>
 GDataDocumentsTextPrivate
 </SECTION>

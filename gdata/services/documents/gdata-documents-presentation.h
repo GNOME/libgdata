@@ -28,6 +28,71 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_DOCUMENTS_PRESENTATION_PDF:
+ *
+ * The export format for Portable Document Format (PDF).
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_PRESENTATION_PDF "pdf"
+
+/**
+ * GDATA_DOCUMENTS_PRESENTATION_PNG:
+ *
+ * The export format for Portable Network Graphics (PNG) image format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_PRESENTATION_PNG "png"
+
+/**
+ * GDATA_DOCUMENTS_PRESENTATION_PPT:
+ *
+ * The export format for Microsoft PowerPoint (PPT) format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_PRESENTATION_PPT "ppt"
+
+/**
+ * GDATA_DOCUMENTS_PRESENTATION_SWF:
+ *
+ * The export format for Adobe Flash (SWF) format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_PRESENTATION_SWF "swf"
+
+/**
+ * GDATA_DOCUMENTS_PRESENTATION_TXT:
+ *
+ * The export format for plain text format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_PRESENTATION_TXT "txt"
+
 #define GDATA_TYPE_DOCUMENTS_PRESENTATION		(gdata_documents_presentation_get_type ())
 #define GDATA_DOCUMENTS_PRESENTATION(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_DOCUMENTS_PRESENTATION, \
                                                          GDataDocumentsPresentation))
@@ -39,26 +104,6 @@ G_BEGIN_DECLS
                                                          GDataDocumentsPresentationClass))
 
 typedef struct _GDataDocumentsPresentationPrivate	GDataDocumentsPresentationPrivate;
-
-/**
- * GDataDocumentsPresentationFormat:
- * @GDATA_DOCUMENTS_PRESENTATION_PDF: the document in PDF format
- * @GDATA_DOCUMENTS_PRESENTATION_PNG: the document in PNG image format
- * @GDATA_DOCUMENTS_PRESENTATION_PPT: the document in Microsoft PowerPoint PPT format
- * @GDATA_DOCUMENTS_PRESENTATION_SWF: the document in Adobe Flash SWF format
- * @GDATA_DOCUMENTS_PRESENTATION_TXT: the document in text format
- *
- * The different available download formats for presentations.
- *
- * Since: 0.4.0
- **/
-typedef enum {
-	GDATA_DOCUMENTS_PRESENTATION_PDF = 0,
-	GDATA_DOCUMENTS_PRESENTATION_PNG,
-	GDATA_DOCUMENTS_PRESENTATION_PPT,
-	GDATA_DOCUMENTS_PRESENTATION_SWF,
-	GDATA_DOCUMENTS_PRESENTATION_TXT
-} GDataDocumentsPresentationFormat;
 
 /**
  * GDataDocumentsPresentation:
@@ -90,11 +135,11 @@ GDataDocumentsPresentation *gdata_documents_presentation_new (const gchar *id) G
 
 #include <gdata/services/documents/gdata-documents-service.h>
 GFile *gdata_documents_presentation_download_document (GDataDocumentsPresentation *self, GDataDocumentsService *service, gchar **content_type,
-                                                       GDataDocumentsPresentationFormat export_format, GFile *destination_file,
+                                                       const gchar *export_format, GFile *destination_file,
                                                        gboolean replace_file_if_exists, GCancellable *cancellable,
                                                        GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_documents_presentation_get_download_uri (GDataDocumentsPresentation *self,
-                                                      GDataDocumentsPresentationFormat export_format) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                      const gchar *export_format) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

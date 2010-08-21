@@ -28,6 +28,110 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_DOCUMENTS_TEXT_DOC:
+ *
+ * The export format for Microsoft Word (DOC) format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_TEXT_DOC "doc"
+
+/**
+ * GDATA_DOCUMENTS_TEXT_HTML:
+ *
+ * The export format for HyperText Markup Language (HTML) format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_TEXT_HTML "html"
+
+/**
+ * GDATA_DOCUMENTS_TEXT_ODT:
+ *
+ * The export format for OpenDocument Text (ODT) format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_TEXT_ODT "odt"
+
+/**
+ * GDATA_DOCUMENTS_TEXT_PDF:
+ *
+ * The export format for Portable Document Format (PDF).
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_TEXT_PDF "pdf"
+
+/**
+ * GDATA_DOCUMENTS_TEXT_PNG:
+ *
+ * The export format for Portable Network Graphics (PNG) image format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_TEXT_PNG "png"
+
+/**
+ * GDATA_DOCUMENTS_TEXT_RTF:
+ *
+ * The export format for Rich Text Format (RTF).
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_TEXT_RTF "rtf"
+
+/**
+ * GDATA_DOCUMENTS_TEXT_TXT:
+ *
+ * The export format for plain text format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_TEXT_TXT "txt"
+
+/**
+ * GDATA_DOCUMENTS_TEXT_ZIP:
+ *
+ * The export format for a ZIP archive containing images and exported HTML.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_DOCUMENTS_TEXT_ZIP "zip"
+
 #define GDATA_TYPE_DOCUMENTS_TEXT		(gdata_documents_text_get_type ())
 #define GDATA_DOCUMENTS_TEXT(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_DOCUMENTS_TEXT, GDataDocumentsText))
 #define GDATA_DOCUMENTS_TEXT_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_DOCUMENTS_TEXT, GDataDocumentsTextClass))
@@ -36,32 +140,6 @@ G_BEGIN_DECLS
 #define GDATA_DOCUMENTS_TEXT_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), GDATA_TYPE_DOCUMENTS_TEXT, GDataDocumentsTextClass))
 
 typedef struct _GDataDocumentsTextPrivate	GDataDocumentsTextPrivate;
-
-/**
- * GDataDocumentsTextFormat:
- * @GDATA_DOCUMENTS_TEXT_DOC: Microsoft Word (DOC) format
- * @GDATA_DOCUMENTS_TEXT_HTML: HyperText Markup Language (HTML) format
- * @GDATA_DOCUMENTS_TEXT_ODT: OpenDocument Text (ODT) format
- * @GDATA_DOCUMENTS_TEXT_PDF: Portable Document Format (PDF)
- * @GDATA_DOCUMENTS_TEXT_PNG: Portable Network Graphics (PNG) image format
- * @GDATA_DOCUMENTS_TEXT_RTF: Rich Text Format (RTF)
- * @GDATA_DOCUMENTS_TEXT_TXT: plain text format
- * @GDATA_DOCUMENTS_TEXT_ZIP: ZIP archive containing images and exported HTML
- *
- * The different available download formats for text documents.
- *
- * Since: 0.4.0
- **/
-typedef enum {
-	GDATA_DOCUMENTS_TEXT_DOC = 0,
-	GDATA_DOCUMENTS_TEXT_HTML,
-	GDATA_DOCUMENTS_TEXT_ODT,
-	GDATA_DOCUMENTS_TEXT_PDF,
-	GDATA_DOCUMENTS_TEXT_PNG,
-	GDATA_DOCUMENTS_TEXT_RTF,
-	GDATA_DOCUMENTS_TEXT_TXT,
-	GDATA_DOCUMENTS_TEXT_ZIP,
-} GDataDocumentsTextFormat;
 
 /**
  * GDataDocumentsText:
@@ -94,11 +172,10 @@ GDataDocumentsText *gdata_documents_text_new (const gchar *id) G_GNUC_WARN_UNUSE
 #include <gdata/services/documents/gdata-documents-service.h>
 
 GFile *gdata_documents_text_download_document (GDataDocumentsText *self, GDataDocumentsService *service, gchar **content_type,
-                                               GDataDocumentsTextFormat export_format, GFile *destination_file,
+                                               const gchar *export_format, GFile *destination_file,
                                                gboolean replace_file_if_exists, GCancellable *cancellable,
                                                GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gchar *gdata_documents_text_get_download_uri (GDataDocumentsText *self,
-                                              GDataDocumentsTextFormat export_format) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+gchar *gdata_documents_text_get_download_uri (GDataDocumentsText *self, const gchar *export_format) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 
