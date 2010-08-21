@@ -76,8 +76,8 @@ enum {
 	PROP_WRITERS_CAN_INVITE
 };
 
-G_DEFINE_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
-                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_documents_entry_access_handler_init))
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
+                                  G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_documents_entry_access_handler_init))
 
 static void
 gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
