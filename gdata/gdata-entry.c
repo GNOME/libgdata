@@ -206,7 +206,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 *
 	 * The content of the entry.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.published">
+	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.content">
 	 * Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT,
