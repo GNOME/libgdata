@@ -82,13 +82,6 @@ G_GNUC_INTERNAL void _gdata_feed_call_progress_callback (GDataFeed *self, gpoint
 G_GNUC_INTERNAL void _gdata_entry_set_updated (GDataEntry *self, GTimeVal *updated);
 G_GNUC_INTERNAL void _gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type);
 
-#include "gdata/services/documents/gdata-documents-document.h"
-G_GNUC_INTERNAL GFile *_gdata_documents_document_download_document (GDataDocumentsDocument *self, GDataService *service, gchar **content_type,
-                                                                    const gchar *download_uri, GFile *destination_directory,
-                                                                    const gchar *file_extension, gboolean replace_file_if_exists,
-                                                                    GCancellable *cancellable,
-                                                                    GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-
 #include "gdata/services/documents/gdata-documents-service.h"
 
 G_GNUC_INTERNAL GDataService *_gdata_documents_service_get_spreadsheet_service (GDataDocumentsService *self) G_GNUC_PURE;

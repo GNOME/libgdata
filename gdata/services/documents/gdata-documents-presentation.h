@@ -24,7 +24,6 @@
 #include <glib-object.h>
 
 #include <gdata/services/documents/gdata-documents-document.h>
-#include <gdata/gdata-types.h>
 
 G_BEGIN_DECLS
 
@@ -132,14 +131,6 @@ typedef struct {
 GType gdata_documents_presentation_get_type (void) G_GNUC_CONST;
 
 GDataDocumentsPresentation *gdata_documents_presentation_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-
-#include <gdata/services/documents/gdata-documents-service.h>
-GFile *gdata_documents_presentation_download_document (GDataDocumentsPresentation *self, GDataDocumentsService *service, gchar **content_type,
-                                                       const gchar *export_format, GFile *destination_file,
-                                                       gboolean replace_file_if_exists, GCancellable *cancellable,
-                                                       GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gchar *gdata_documents_presentation_get_download_uri (GDataDocumentsPresentation *self,
-                                                      const gchar *export_format) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

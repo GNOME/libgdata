@@ -1585,6 +1585,8 @@ GDataDocumentsFolderPrivate
 <TITLE>GDataDocumentsDocument</TITLE>
 GDataDocumentsDocument
 GDataDocumentsDocumentClass
+gdata_documents_document_download
+gdata_documents_document_get_download_uri
 <SUBSECTION Standard>
 gdata_documents_document_get_type
 GDATA_DOCUMENTS_DOCUMENT
@@ -1608,8 +1610,6 @@ GDATA_DOCUMENTS_PRESENTATION_TXT
 GDataDocumentsPresentation
 GDataDocumentsPresentationClass
 gdata_documents_presentation_new
-gdata_documents_presentation_download_document
-gdata_documents_presentation_get_download_uri
 <SUBSECTION Standard>
 gdata_documents_presentation_get_type
 GDATA_DOCUMENTS_PRESENTATION
@@ -1666,7 +1666,6 @@ GDATA_DOCUMENTS_SPREADSHEET_XLS
 GDataDocumentsSpreadsheet
 GDataDocumentsSpreadsheetClass
 gdata_documents_spreadsheet_new
-gdata_documents_spreadsheet_download_document
 gdata_documents_spreadsheet_get_download_uri
 <SUBSECTION Standard>
 gdata_documents_spreadsheet_get_type
@@ -1694,8 +1693,6 @@ GDATA_DOCUMENTS_TEXT_ZIP
 GDataDocumentsText
 GDataDocumentsTextClass
 gdata_documents_text_new
-gdata_documents_text_download_document
-gdata_documents_text_get_download_uri
 <SUBSECTION Standard>
 gdata_documents_text_get_type
 GDATA_DOCUMENTS_TEXT

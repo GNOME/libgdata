@@ -39,8 +39,6 @@
 #include <string.h>
 
 #include "gdata-documents-spreadsheet.h"
-#include "gdata-parser.h"
-#include "gdata-types.h"
 #include "gdata-private.h"
 
 static void get_xml (GDataParsable *parsable, GString *xml_string);
@@ -90,67 +88,6 @@ GDataDocumentsSpreadsheet *
 gdata_documents_spreadsheet_new (const gchar *id)
 {
 	return GDATA_DOCUMENTS_SPREADSHEET (g_object_new (GDATA_TYPE_DOCUMENTS_SPREADSHEET, "id", id, NULL));
-}
-
-/**
- * gdata_documents_spreadsheet_download_document:
- * @self: a #GDataDocumentsSpreadsheet
- * @service: a #GDataDocumentsService
- * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the document's content type, or %NULL; free with g_free()
- * @export_format: the format in which the spreadsheet should be exported
- * @gid: (default -1): the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
- * @destination_file: the #GFile into which the spreadsheet file should be saved
- * @replace_file_if_exists: %TRUE if the file should be replaced if it already exists, %FALSE otherwise
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: a #GError, or %NULL
- *
- * Downloads and returns the spreadsheet file represented by the #GDataDocumentsSpreadsheet. If the document doesn't exist,
- * %NULL is returned, but no error is set in @error. TODO: What?
- *
- * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
- * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
- *
- * When requesting a %GDATA_DOCUMENTS_SPREADSHEET_CSV or %GDATA_DOCUMENTS_SPREADSHEET_TSV file you must specify an additional
- * parameter called @gid which indicates which grid, or sheet, you wish to get (the index is <code class="literal">0</code>-based, so
- * GID <code class="literal">1</code> actually refers to the second sheet on a given spreadsheet).
- *
- * If @destination_file is a directory, then the file will be downloaded in this directory with the #GDataEntry:title with 
- * the apropriate extension as name.
- *
- * If there is an error getting the document, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
- *
- * Return value: the document's data, or %NULL; unref with g_object_unref()
- *
- * Since: 0.4.0
- **/
-GFile *
-gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, GDataDocumentsService *service, gchar **content_type,
-                                               const gchar *export_format, gint gid, GFile *destination_file,
-                                               gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
-{
-	gchar *link_href;
-	GDataService *spreadsheet_service;
-
-	/* TODO: async version */
-	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SPREADSHEET (self), NULL);
-	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (service), NULL);
-	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
-	g_return_val_if_fail (gid >= -1, NULL);
-	g_return_val_if_fail (G_IS_FILE (destination_file), NULL);
-	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	/* Get the spreadsheet service */
-	spreadsheet_service = _gdata_documents_service_get_spreadsheet_service (service);
-
-	/* Download the document */
-	link_href = gdata_documents_spreadsheet_get_download_uri (self, export_format, gid);
-	destination_file = _gdata_documents_document_download_document (GDATA_DOCUMENTS_DOCUMENT (self), spreadsheet_service, content_type,
-	                                                                link_href, destination_file, export_format, replace_file_if_exists,
-	                                                                cancellable, error);
-	g_free (link_href);
-
-	return destination_file;
 }
 
 /**

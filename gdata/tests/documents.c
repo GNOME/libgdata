@@ -468,17 +468,16 @@ test_download_all_documents (gconstpointer service)
 	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
 		if (GDATA_IS_DOCUMENTS_PRESENTATION (i->data)) {
 			destination_file = g_file_new_for_path ("/tmp");
-			destination_file = gdata_documents_presentation_download_document (GDATA_DOCUMENTS_PRESENTATION (i->data), GDATA_DOCUMENTS_SERVICE (service),
-											   &content_type, GDATA_DOCUMENTS_PRESENTATION_PPT, destination_file,
-											   TRUE, NULL, &error);
-
+			destination_file = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
+			                                                      &content_type, GDATA_DOCUMENTS_PRESENTATION_PPT, destination_file,
+			                                                      TRUE, NULL, &error);
 		} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (i->data)) {
 			destination_file_name = g_strdup_printf ("/tmp/%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (i->data)), "ods");
 			destination_file = g_file_new_for_path (destination_file_name);
 			g_free (destination_file_name);
-			destination_file = gdata_documents_spreadsheet_download_document (i->data, GDATA_DOCUMENTS_SERVICE (service),
-											  &content_type, GDATA_DOCUMENTS_SPREADSHEET_ODS, -1, destination_file,
-											  TRUE, NULL, &error);
+			destination_file = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
+			                                                      &content_type, GDATA_DOCUMENTS_SPREADSHEET_ODS, destination_file,
+			                                                      TRUE, NULL, &error);
 			g_assert_no_error (error);
 
 			destination_display_name = g_string_new (gdata_entry_get_title (GDATA_ENTRY(i->data)));
@@ -496,8 +495,9 @@ test_download_all_documents (gconstpointer service)
 			destination_file_name = g_strdup_printf ("/tmp/%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (i->data)), "odt");
 			destination_file = g_file_new_for_path (destination_file_name);
 			g_free (destination_file_name);
-			destination_file = gdata_documents_text_download_document (i->data, GDATA_DOCUMENTS_SERVICE (service), &content_type, GDATA_DOCUMENTS_TEXT_ODT,
-										   destination_file, TRUE, NULL, &error);
+			destination_file = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
+			                                                      &content_type, GDATA_DOCUMENTS_TEXT_ODT, destination_file, TRUE, NULL,
+			                                                      &error);
 			g_assert_no_error (error);
 
 			destination_display_name = g_string_new (gdata_entry_get_title (GDATA_ENTRY(i->data)));
