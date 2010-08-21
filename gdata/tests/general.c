@@ -31,7 +31,7 @@ test_entry_get_xml (void)
 	GDataCategory *category;
 	GDataLink *_link; /* stupid unistd.h */
 	GDataAuthor *author;
-	gchar *xml, *title, *summary, *id, *etag, *content, *rights;
+	gchar *xml, *title, *summary, *id, *etag, *content, *content_uri, *rights;
 	gboolean is_inserted;
 	GList *list;
 	GError *error = NULL;
@@ -49,6 +49,7 @@ test_entry_get_xml (void)
 	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "First testing title & escaping");
 	g_assert_cmpstr (gdata_entry_get_summary (entry), ==, "Test summary & escaping.");
 	g_assert_cmpstr (gdata_entry_get_content (entry), ==, "Test <markup> & escaping.");
+	g_assert (gdata_entry_get_content_uri (entry) == NULL);
 	g_assert_cmpstr (gdata_entry_get_rights (entry), ==, "Philip Withnall <philip@tecnocode.co.uk>");
 
 	/* Set the properties more conventionally */
@@ -56,6 +57,26 @@ test_entry_get_xml (void)
 	gdata_entry_set_summary (entry, NULL);
 	gdata_entry_set_content (entry, "This is some sample content testing, amongst other things, <markup> & odd characters‽");
 	gdata_entry_set_rights (entry, NULL);
+
+	/* Content URI */
+	g_object_set (G_OBJECT (entry), "content-uri", "http://foo.com/", NULL);
+
+	g_assert (gdata_entry_get_content (entry) == NULL);
+	g_assert_cmpstr (gdata_entry_get_content_uri (entry), ==, "http://foo.com/");
+
+	gdata_entry_set_content_uri (entry, "http://bar.com/");
+
+	/* Check the generated XML's OK */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+	g_assert_cmpstr (xml, ==,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
+			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
+				 "<title type='text'>Testing title &amp; escaping</title>"
+				 "<content type='text/plain' src='http://bar.com/'/>"
+			 "</entry>");
+
+	/* Reset the content */
+	gdata_entry_set_content (entry, "This is some sample content testing, amongst other things, <markup> & odd characters‽");
 
 	/* Categories */
 	category = gdata_category_new ("test", NULL, NULL);
@@ -131,6 +152,7 @@ test_entry_get_xml (void)
 	g_assert_cmpstr (gdata_entry_get_title (entry), ==, gdata_entry_get_title (entry2));
 	g_assert_cmpstr (gdata_entry_get_id (entry), ==, gdata_entry_get_id (entry2)); /* should both be NULL */
 	g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (entry2));
+	g_assert_cmpstr (gdata_entry_get_content_uri (entry), ==, gdata_entry_get_content_uri (entry2)); /* should both be NULL */
 
 	gdata_entry_get_updated (entry, &updated);
 	gdata_entry_get_updated (entry2, &updated2);
@@ -225,6 +247,7 @@ test_entry_get_xml (void)
 	              "updated", &updated3,
 	              "published", &published3,
 	              "content", &content,
+	              "content-uri", &content_uri,
 	              "is-inserted", &is_inserted,
 	              "rights", &rights,
 	              NULL);
@@ -238,6 +261,7 @@ test_entry_get_xml (void)
 	g_assert_cmpint (published3->tv_sec, ==, published.tv_sec);
 	g_assert_cmpint (published3->tv_usec, ==, published.tv_usec);
 	g_assert_cmpstr (content, ==, gdata_entry_get_content (entry));
+	g_assert_cmpstr (content_uri, ==, gdata_entry_get_content_uri (entry));
 	g_assert (is_inserted == FALSE);
 	g_assert_cmpstr (rights, ==, gdata_entry_get_rights (entry));
 
@@ -248,7 +272,22 @@ test_entry_get_xml (void)
 	g_free (updated3);
 	g_free (published3);
 	g_free (content);
+	g_free (content_uri);
 	g_free (rights);
+
+	/* Set the content URI and check that */
+	gdata_entry_set_content_uri (entry, "http://baz.net/");
+
+	g_object_get (G_OBJECT (entry),
+	              "content", &content,
+	              "content-uri", &content_uri,
+	              NULL);
+
+	g_assert_cmpstr (content, ==, gdata_entry_get_content (entry));
+	g_assert_cmpstr (content_uri, ==, gdata_entry_get_content_uri (entry));
+
+	g_free (content);
+	g_free (content_uri);
 
 	g_object_unref (entry);
 	g_object_unref (entry2);

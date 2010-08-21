@@ -147,6 +147,8 @@ gdata_entry_get_id
 gdata_entry_get_etag
 gdata_entry_get_content
 gdata_entry_set_content
+gdata_entry_get_content_uri
+gdata_entry_set_content_uri
 gdata_entry_get_published
 gdata_entry_get_updated
 gdata_entry_get_authors

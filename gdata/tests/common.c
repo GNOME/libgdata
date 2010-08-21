@@ -138,6 +138,7 @@ test_batch_operation_query_cb (guint operation_id, GDataBatchOperationType opera
 			g_assert_cmpstr (gdata_entry_get_title (entry), ==, gdata_entry_get_title (data->entry));
 			g_assert_cmpstr (gdata_entry_get_summary (entry), ==, gdata_entry_get_summary (data->entry));
 			g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (data->entry));
+			g_assert_cmpstr (gdata_entry_get_content_uri (entry), ==, gdata_entry_get_content_uri (data->entry));
 			g_assert_cmpstr (gdata_entry_get_rights (entry), ==, gdata_entry_get_rights (data->entry));
 		}
 
@@ -201,6 +202,7 @@ test_batch_operation_insertion_update_cb (guint operation_id, GDataBatchOperatio
 		g_assert_cmpstr (gdata_entry_get_title (entry), ==, gdata_entry_get_title (data->entry));
 		g_assert_cmpstr (gdata_entry_get_summary (entry), ==, gdata_entry_get_summary (data->entry));
 		g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (data->entry));
+		g_assert_cmpstr (gdata_entry_get_content_uri (entry), ==, gdata_entry_get_content_uri (data->entry));
 		g_assert_cmpstr (gdata_entry_get_rights (entry), ==, gdata_entry_get_rights (data->entry));
 
 		/* Copy the inserted entry for the calling test code to prod later */

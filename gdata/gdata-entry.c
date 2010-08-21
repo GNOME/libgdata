@@ -65,6 +65,7 @@ struct _GDataEntryPrivate {
 	GTimeVal published;
 	GList *categories; /* GDataCategory */
 	gchar *content;
+	gboolean content_is_uri;
 	GList *links; /* GDataLink */
 	GList *authors; /* GDataAuthor */
 	gchar *rights;
@@ -83,7 +84,8 @@ enum {
 	PROP_PUBLISHED,
 	PROP_CONTENT,
 	PROP_IS_INSERTED,
-	PROP_RIGHTS
+	PROP_RIGHTS,
+	PROP_CONTENT_URI
 };
 
 G_DEFINE_TYPE (GDataEntry, gdata_entry, GDATA_TYPE_PARSABLE)
@@ -204,7 +206,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	/**
 	 * GDataEntry:content:
 	 *
-	 * The content of the entry.
+	 * The content of the entry. This is mutually exclusive with #GDataEntry:content.
 	 *
 	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.content">
 	 * Atom specification</ulink>.
@@ -212,6 +214,22 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	g_object_class_install_property (gobject_class, PROP_CONTENT,
 	                                 g_param_spec_string ("content",
 	                                                      "Content", "The content of the entry.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataEntry:content-uri:
+	 *
+	 * A URI pointing to the location of the content of the entry. This is mutually exclusive with #GDataEntry:content.
+	 *
+	 * For more information, see the
+	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.content">Atom specification</ulink>.
+	 *
+	 * Since: 0.7.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_CONTENT_URI,
+	                                 g_param_spec_string ("content-uri",
+	                                                      "Content URI", "A URI pointing to the location of the content of the entry.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -337,7 +355,10 @@ gdata_entry_get_property (GObject *object, guint property_id, GValue *value, GPa
 			g_value_set_boxed (value, &(priv->published));
 			break;
 		case PROP_CONTENT:
-			g_value_set_string (value, priv->content);
+			g_value_set_string (value, (priv->content_is_uri == FALSE) ? priv->content : NULL);
+			break;
+		case PROP_CONTENT_URI:
+			g_value_set_string (value, (priv->content_is_uri == TRUE) ? priv->content : NULL);
 			break;
 		case PROP_IS_INSERTED:
 			g_value_set_boolean (value, gdata_entry_is_inserted (GDATA_ENTRY (object)));
@@ -374,6 +395,9 @@ gdata_entry_set_property (GObject *object, guint property_id, const GValue *valu
 			break;
 		case PROP_CONTENT:
 			gdata_entry_set_content (self, g_value_get_string (value));
+			break;
+		case PROP_CONTENT_URI:
+			gdata_entry_set_content_uri (self, g_value_get_string (value));
 			break;
 		case PROP_RIGHTS:
 			gdata_entry_set_rights (self, g_value_get_string (value));
@@ -416,10 +440,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
 			/* atom:content */
-			xmlChar *content = xmlNodeListGetString (doc, node->children, TRUE);
-			if (content == NULL)
-				content = xmlGetProp (node, (xmlChar*) "src");
-			priv->content = (gchar*) content;
+			priv->content = (gchar*) xmlGetProp (node, (xmlChar*) "src");
+			priv->content_is_uri = TRUE;
+
+			if (priv->content == NULL) {
+				priv->content = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+				priv->content_is_uri = FALSE;
+			}
 
 			return TRUE;
 		}
@@ -496,8 +523,12 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->rights != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<rights>", priv->rights, "</rights>");
 
-	if (priv->content != NULL)
-		gdata_parser_string_append_escaped (xml_string, "<content type='text'>", priv->content, "</content>");
+	if (priv->content != NULL) {
+		if (priv->content_is_uri == TRUE)
+			gdata_parser_string_append_escaped (xml_string, "<content type='text/plain' src='", priv->content, "'/>");
+		else
+			gdata_parser_string_append_escaped (xml_string, "<content type='text'>", priv->content, "</content>");
+	}
 
 	for (categories = priv->categories; categories != NULL; categories = categories->next)
 		_gdata_parsable_get_xml (GDATA_PARSABLE (categories->data), xml_string, FALSE);
@@ -782,7 +813,8 @@ gdata_entry_get_authors (GDataEntry *self)
  * gdata_entry_get_content:
  * @self: a #GDataEntry
  *
- * Returns the textual content in this entry.
+ * Returns the textual content in this entry. If the content in this entry is pointed to by a URI, %NULL will be returned; the content URI will be
+ * returned by gdata_entry_get_content_uri().
  *
  * Return value: the entry's content, or %NULL
  **/
@@ -790,7 +822,7 @@ const gchar *
 gdata_entry_get_content (GDataEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
-	return self->priv->content;
+	return (self->priv->content_is_uri == FALSE) ? self->priv->content : NULL;
 }
 
 /**
@@ -798,7 +830,7 @@ gdata_entry_get_content (GDataEntry *self)
  * @self: a #GDataEntry
  * @content: (allow-none): the new content for the entry, or %NULL
  *
- * Sets the entry's content to @content.
+ * Sets the entry's content to @content. This unsets #GDataEntry:content-uri.
  **/
 void
 gdata_entry_set_content (GDataEntry *self, const gchar *content)
@@ -807,7 +839,54 @@ gdata_entry_set_content (GDataEntry *self, const gchar *content)
 
 	g_free (self->priv->content);
 	self->priv->content = g_strdup (content);
+	self->priv->content_is_uri = FALSE;
+
+	g_object_freeze_notify (G_OBJECT (self));
 	g_object_notify (G_OBJECT (self), "content");
+	g_object_notify (G_OBJECT (self), "content-uri");
+	g_object_thaw_notify (G_OBJECT (self));
+}
+
+/**
+ * gdata_entry_get_content_uri:
+ * @self: a #GDataEntry
+ *
+ * Returns a URI pointing to the content of this entry. If the content in this entry is stored directly, %NULL will be returned; the content will be
+ * returned by gdata_entry_get_content().
+ *
+ * Return value: a URI pointing to the entry's content, or %NULL
+ *
+ * Since: 0.7.0
+ **/
+const gchar *
+gdata_entry_get_content_uri (GDataEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
+	return (self->priv->content_is_uri == TRUE) ? self->priv->content : NULL;
+}
+
+/**
+ * gdata_entry_set_content_uri:
+ * @self: a #GDataEntry
+ * @content_uri: (allow-none): the new URI pointing to the content for the entry, or %NULL
+ *
+ * Sets the URI pointing to the entry's content to @content. This unsets #GDataEntry:content.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_entry_set_content_uri (GDataEntry *self, const gchar *content_uri)
+{
+	g_return_if_fail (GDATA_IS_ENTRY (self));
+
+	g_free (self->priv->content);
+	self->priv->content = g_strdup (content_uri);
+	self->priv->content_is_uri = TRUE;
+
+	g_object_freeze_notify (G_OBJECT (self));
+	g_object_notify (G_OBJECT (self), "content");
+	g_object_notify (G_OBJECT (self), "content-uri");
+	g_object_thaw_notify (G_OBJECT (self));
 }
 
 /**

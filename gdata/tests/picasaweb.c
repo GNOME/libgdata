@@ -810,7 +810,8 @@ test_photo_feed_entry (gconstpointer service)
 	g_assert_cmpstr (str, ==, "2009-04-26T06:55:20Z");
 	g_free (str);
 
-	g_assert_cmpstr (gdata_entry_get_content (photo_entry), ==,
+	g_assert (gdata_entry_get_content (photo_entry) == NULL);
+	g_assert_cmpstr (gdata_entry_get_content_uri (photo_entry), ==,
 			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
 	g_assert_cmpstr (gdata_parsable_get_xml (GDATA_PARSABLE (photo_entry)), !=, NULL);
 	g_assert_cmpuint (strlen (gdata_parsable_get_xml (GDATA_PARSABLE (photo_entry))), >, 0);
