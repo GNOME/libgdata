@@ -23,7 +23,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gdata/services/documents/gdata-documents-entry.h>
+#include <gdata/services/documents/gdata-documents-document.h>
 #include <gdata/gdata-types.h>
 
 G_BEGIN_DECLS
@@ -126,7 +126,7 @@ typedef struct _GDataDocumentsSpreadsheetPrivate	GDataDocumentsSpreadsheetPrivat
  * Since: 0.4.0
  **/
 typedef struct {
-	GDataDocumentsEntry parent;
+	GDataDocumentsDocument parent;
 	GDataDocumentsSpreadsheetPrivate *priv;
 } GDataDocumentsSpreadsheet;
 
@@ -139,7 +139,7 @@ typedef struct {
  **/
 typedef struct {
 	/*< private >*/
-	GDataDocumentsEntryClass parent;
+	GDataDocumentsDocumentClass parent;
 } GDataDocumentsSpreadsheetClass;
 
 GType gdata_documents_spreadsheet_get_type (void) G_GNUC_CONST;

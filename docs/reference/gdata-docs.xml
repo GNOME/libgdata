@@ -137,6 +137,7 @@
 			<xi:include href="xml/gdata-documents-feed.xml"/>
 			<xi:include href="xml/gdata-documents-query.xml"/>
 			<xi:include href="xml/gdata-documents-entry.xml"/>
+			<xi:include href="xml/gdata-documents-document.xml"/>
 			<xi:include href="xml/gdata-documents-folder.xml"/>
 			<xi:include href="xml/gdata-documents-presentation.xml"/>
 			<xi:include href="xml/gdata-documents-spreadsheet.xml"/>

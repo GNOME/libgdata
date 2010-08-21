@@ -238,6 +238,7 @@ gdata_documents_headers = \
 	gdata/services/documents/gdata-documents-feed.h		\
 	gdata/services/documents/gdata-documents-entry.h	\
 	gdata/services/documents/gdata-documents-query.h	\
+	gdata/services/documents/gdata-documents-document.h	\
 	gdata/services/documents/gdata-documents-text.h		\
 	gdata/services/documents/gdata-documents-presentation.h	\
 	gdata/services/documents/gdata-documents-folder.h	\
@@ -341,6 +342,7 @@ gdata_sources = \
 	gdata/services/documents/gdata-documents-service.c	\
 	gdata/services/documents/gdata-documents-feed.c		\
 	gdata/services/documents/gdata-documents-entry.c	\
+	gdata/services/documents/gdata-documents-document.c	\
 	gdata/services/documents/gdata-documents-text.c		\
 	gdata/services/documents/gdata-documents-presentation.c	\
 	gdata/services/documents/gdata-documents-spreadsheet.c	\

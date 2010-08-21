@@ -1581,6 +1581,23 @@ GDataDocumentsFolderPrivate
 </SECTION>
 
 <SECTION>
+<FILE>gdata-documents-document</FILE>
+<TITLE>GDataDocumentsDocument</TITLE>
+GDataDocumentsDocument
+GDataDocumentsDocumentClass
+<SUBSECTION Standard>
+gdata_documents_document_get_type
+GDATA_DOCUMENTS_DOCUMENT
+GDATA_DOCUMENTS_DOCUMENT_CLASS
+GDATA_DOCUMENTS_DOCUMENT_GET_CLASS
+GDATA_IS_DOCUMENTS_DOCUMENT
+GDATA_IS_DOCUMENTS_DOCUMENT_CLASS
+GDATA_TYPE_DOCUMENTS_DOCUMENT
+<SUBSECTION Private>
+GDataDocumentsDocumentPrivate
+</SECTION>
+
+<SECTION>
 <FILE>gdata-documents-presentation</FILE>
 <TITLE>GDataDocumentsPresentation</TITLE>
 GDATA_DOCUMENTS_PRESENTATION_PDF

@@ -24,7 +24,7 @@
  * @stability: Unstable
  * @include: gdata/services/documents/gdata-documents-spreadsheet.h
  *
- * #GDataDocumentsSpreadsheet is a subclass of #GDataDocumentsEntry to represent a spreadsheet from Google Documents.
+ * #GDataDocumentsSpreadsheet is a subclass of #GDataDocumentsDocument to represent a spreadsheet from Google Documents.
  *
  * For more details of Google Documents' GData API, see the
  * <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
@@ -45,7 +45,7 @@
 
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 
-G_DEFINE_TYPE (GDataDocumentsSpreadsheet, gdata_documents_spreadsheet, GDATA_TYPE_DOCUMENTS_ENTRY)
+G_DEFINE_TYPE (GDataDocumentsSpreadsheet, gdata_documents_spreadsheet, GDATA_TYPE_DOCUMENTS_DOCUMENT)
 
 static void
 gdata_documents_spreadsheet_class_init (GDataDocumentsSpreadsheetClass *klass)
@@ -145,9 +145,9 @@ gdata_documents_spreadsheet_download_document (GDataDocumentsSpreadsheet *self, 
 
 	/* Download the document */
 	link_href = gdata_documents_spreadsheet_get_download_uri (self, export_format, gid);
-	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), spreadsheet_service, content_type,
-	                                                             link_href, destination_file, export_format, replace_file_if_exists,
-	                                                             cancellable, error);
+	destination_file = _gdata_documents_document_download_document (GDATA_DOCUMENTS_DOCUMENT (self), spreadsheet_service, content_type,
+	                                                                link_href, destination_file, export_format, replace_file_if_exists,
+	                                                                cancellable, error);
 	g_free (link_href);
 
 	return destination_file;

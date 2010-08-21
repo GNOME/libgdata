@@ -24,7 +24,7 @@
  * @stability: Unstable
  * @include: gdata/services/documents/gdata-documents-presentation.h
  *
- * #GDataDocumentsPresentation is a subclass of #GDataDocumentsEntry to represent a Google Documents presentation.
+ * #GDataDocumentsPresentation is a subclass of #GDataDocumentsDocument to represent a Google Documents presentation.
  *
  * For more details of Google Documents' GData API, see the
  * <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
@@ -46,7 +46,7 @@
 
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 
-G_DEFINE_TYPE (GDataDocumentsPresentation, gdata_documents_presentation, GDATA_TYPE_DOCUMENTS_ENTRY)
+G_DEFINE_TYPE (GDataDocumentsPresentation, gdata_documents_presentation, GDATA_TYPE_DOCUMENTS_DOCUMENT)
 
 static void
 gdata_documents_presentation_class_init (GDataDocumentsPresentationClass *klass)
@@ -135,9 +135,9 @@ gdata_documents_presentation_download_document (GDataDocumentsPresentation *self
 
 	/* Call the common download method on the parent class */
 	link_href = gdata_documents_presentation_get_download_uri (self, export_format);
-	destination_file = _gdata_documents_entry_download_document (GDATA_DOCUMENTS_ENTRY (self), GDATA_SERVICE (service), content_type, link_href,
-	                                                             destination_file, export_format, replace_file_if_exists,
-	                                                             cancellable, error);
+	destination_file = _gdata_documents_document_download_document (GDATA_DOCUMENTS_DOCUMENT (self), GDATA_SERVICE (service), content_type,
+	                                                                link_href, destination_file, export_format, replace_file_if_exists,
+	                                                                cancellable, error);
 	g_free (link_href);
 
 	return destination_file;

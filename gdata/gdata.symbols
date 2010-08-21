@@ -845,3 +845,4 @@ gdata_batch_operation_type_get_type
 gdata_batchable_get_type
 gdata_batchable_create_operation
 gdata_upload_stream_get_method
+gdata_documents_document_get_type
