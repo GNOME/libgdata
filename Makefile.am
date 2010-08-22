@@ -436,29 +436,34 @@ check-headers:
 	done; exit "$$any_missing"
 
 # Introspection
+-include $(INTROSPECTION_MAKEFILE)
+INTROSPECTION_GIRS =
+INTROSPECTION_SCANNER_ARGS = --warn-all
+INTROSPECTION_COMPILER_ARGS =
+DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
+EXTRA_DIST += introspection.m4
+
 if HAVE_INTROSPECTION
-_gir_libtool = $(if $(LIBTOOL),--libtool="$(LIBTOOL)") # bgo#610273
-gdata/GData-$(GDATA_API_VERSION).gir: Makefile gdata/libgdata.la
-	$(AM_V_GEN)($(INTROSPECTION_SCANNER)						\
-	--namespace GData --nsversion=$(GDATA_API_VERSION) --warn-all			\
-	--c-include=$(main_header) --include=libxml2-2.0 --include=Soup-2.4		\
-	--library=gdata/libgdata.la $(_gir_libtool) --quiet --output $@			\
-	-I$(top_srcdir) -I$(top_srcdir)/gdata $(GDATA_CFLAGS)				\
-	$(addprefix $(srcdir)/,$(public_headers) $(gdata_sources)))
-BUILT_GIRSOURCES = gdata/GData-$(GDATA_API_VERSION).gir
+gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir: gdata/libgdata.la
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_INCLUDES = GObject-2.0 libxml2-2.0 Soup-2.4
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_CFLAGS = $(GDATA_CFLAGS)
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_LIBS = gdata/libgdata.la
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_FILES = $(addprefix $(srcdir)/,$(gdata_sources) $(public_headers))
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_NAMESPACE = GData
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_SCANNERFLAGS = \
+	--nsversion=$(GDATA_API_VERSION) \
+	--symbol-prefix=gdata \
+	--c-include="gdata/gdata.h"
+
+INTROSPECTION_GIRS += gdata/GData-$(GDATA_API_VERSION).gir
 
 girdir = $(datadir)/gir-1.0
-gir_DATA = $(BUILT_GIRSOURCES)
+gir_DATA = $(INTROSPECTION_GIRS)
 
-typelibsdir = $(libdir)/girepository-1.0/
-typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+typelibdir = $(libdir)/girepository-1.0
+typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
-%.typelib: %.gir
-	$(AM_V_GEN)($(INTROSPECTION_COMPILER) --includedir=$(top_srcdir)/gdata --includedir=. $(INTROSPECTION_COMPILER_ARGS) $< -o $@)
-
-CLEANFILES += \
-	$(gir_DATA)	\
-	$(typelibs_DATA)
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
 EXTRA_DIST += introspection.m4
