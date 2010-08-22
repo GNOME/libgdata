@@ -229,8 +229,8 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 *
 	 * The ownership rights pertaining to the entire feed.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.rights">
-	 * Atom specification</ulink>.
+	 * For more information, see the <ulink type="http"
+	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.rights">Atom specification</ulink>.
 	 *
 	 * Since: 0.7.0
 	 **/

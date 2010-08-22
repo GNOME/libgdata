@@ -119,8 +119,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 *
 	 * A human-readable title for the entry.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.title">
-	 * Atom specification</ulink>.
+	 * For more information, see the <ulink type="http"
+	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.title">Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TITLE,
 	                                 g_param_spec_string ("title",
@@ -133,8 +133,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 *
 	 * A short summary, abstract, or excerpt of the entry.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.summary">
-	 * Atom specification</ulink>.
+	 * For more information, see the <ulink type="http"
+	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.summary">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
 	 **/
@@ -149,7 +149,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 *
 	 * A permanent, universally unique identifier for the entry, in IRI form.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.id">
+	 * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.id">
 	 * Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ID,
@@ -164,7 +164,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * An identifier for a particular version of the entry. This changes every time the entry on the server changes, and can be used
 	 * for conditional retrieval and locking.
 	 *
-	 * For more information, see the <ulink type="http://code.google.com/apis/gdata/docs/2.0/reference.html#ResourceVersioning">
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/reference.html#ResourceVersioning">
 	 * GData specification</ulink>.
 	 *
 	 * Since: 0.2.0
@@ -180,8 +180,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 *
 	 * The date and time when the entry was most recently updated significantly.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.updated">
-	 * Atom specification</ulink>.
+	 * For more information, see the <ulink type="http"
+	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.updated">Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED,
 	                                 g_param_spec_boxed ("updated",
@@ -194,8 +194,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 *
 	 * The date and time the entry was first published or made available.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.published">
-	 * Atom specification</ulink>.
+	 * For more information, see the <ulink type="http"
+	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.published">Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PUBLISHED,
 	                                 g_param_spec_boxed ("published",
@@ -208,8 +208,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 *
 	 * The content of the entry. This is mutually exclusive with #GDataEntry:content.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.content">
-	 * Atom specification</ulink>.
+	 * For more information, see the <ulink type="http"
+	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.content">Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT,
 	                                 g_param_spec_string ("content",
@@ -250,8 +250,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 *
 	 * The ownership rights pertaining to the entry.
 	 *
-	 * For more information, see the <ulink type="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.rights">
-	 * Atom specification</ulink>.
+	 * For more information, see the <ulink type="http"
+	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.rights">Atom specification</ulink>.
 	 *
 	 * Since: 0.5.0
 	 **/

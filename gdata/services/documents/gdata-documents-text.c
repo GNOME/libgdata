@@ -27,7 +27,7 @@
  * #GDataDocumentsText is a subclass of #GDataDocumentsDocument to represent a text document from Google Documents.
  *
  * For more details of Google Documents' GData API, see the
- * <ulink type="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
+ * <ulink type="http" url="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
  * Since: 0.4.0
  **/
