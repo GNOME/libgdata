@@ -31,10 +31,6 @@ SCAN_OPTIONS=--rebuild-types
 # e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
 MKDB_OPTIONS=--sgml-mode --output-format=xml --name-space=gdata
 
-# Extra options to supply to gtkdoc-mktmpl
-# e.g. MKTMPL_OPTIONS=--only-section-tmpl
-MKTMPL_OPTIONS=
-
 # Extra options to supply to gtkdoc-fixref. Not normally needed.
 # e.g. FIXXREF_OPTIONS=--extra-dir=../gdk-pixbuf/html --extra-dir=../gdk/html
 FIXXREF_OPTIONS=
@@ -97,20 +93,15 @@ include $(top_srcdir)/gtk-doc.make
 # --rebuild-types
 SCANOBJ_FILES += $(DOC_MODULE).types
 
-# This should also be dealt with elsewhere, but we can't call gtkdocize
-# with --flavour=no-tmpl because of gnome-autogen.sh being out of our
-# control. Grrr.
 distclean-local: distclean-docs
 distclean-docs:
 	cd $(srcdir) && \
-	  rm -rf xml tmpl $(REPORT_FILES) \
+	  rm -rf xml $(REPORT_FILES) \
 	         $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt
 
 maintainer-clean-local: maintainer-clean-docs
 maintainer-clean-docs: clean
-	cd $(srcdir) && rm -rf xml tmpl html
-
-GITIGNOREFILES = tmpl/
+	cd $(srcdir) && rm -rf xml html
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
