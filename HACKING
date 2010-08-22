@@ -137,34 +137,35 @@ message guidelines (http://live.gnome.org/Git/CommitMessages), with the exceptio
 should simply be the bug's title, as copied from Bugzilla (e.g. "Bug 579885 – Add code examples to documentation"). The long explanation should then
 be used to give details of the changes. If the bug's title is not relevant, it should be changed before committing the changes.
 
-The short explanation of a commit should always be prefixed by a tag to describe the part of the library it touches. The following tags are valid:
+Unless the short explanation of a commit is a bug title, it should always be prefixed by a tag to describe the part of the library it touches, using
+the following format "tag: Short explanation". The following tags are valid:
 
- - [core] — for the core code in the gdata directory, such as GDataEntry.
+ - core: for the core code in the gdata directory, such as GDataEntry.
 
- - [atom] — for the Atom-namespaced code in the gdata/atom directory.
+ - atom: for the Atom-namespaced code in the gdata/atom directory.
 
- - [gcontact] — for the gContact-namespaced code in the gdata/gcontact directory.
+ - gcontact: for the gContact-namespaced code in the gdata/gcontact directory.
 
- - [gd] — for the GData-namespaced code in the gdata/gd directory.
+ - gd: for the GData-namespaced code in the gdata/gd directory.
 
- - [media] — for the Media RSS-namespaced code in the gdata/media directory.
+ - media: for the Media RSS-namespaced code in the gdata/media directory.
 
- - [build] — for build changes and releases.
+ - build: for build changes and releases.
 
- - [docs] — for documentation changes which are not specific to a service, such as updates to the docs directory, NEWS, README, this file, etc.
+ - docs: for documentation changes which are not specific to a service, such as updates to the docs directory, NEWS, README, this file, etc.
 
- - [tests] — for changes to the test code in gdata/tests which are not specific to a service or namespace.
+ - tests: for changes to the test code in gdata/tests which are not specific to a service or namespace.
 
- - [introspection] — for introspection annotations and build changes.
+ - introspection: for introspection annotations and build changes.
 
- - [calendar] — for the Google Calendar code in gdata/services/calendar.
+ - calendar: for the Google Calendar code in gdata/services/calendar.
 
- - [contacts] — for the Google Contacts code in gdata/services/contacts.
+ - contacts: for the Google Contacts code in gdata/services/contacts.
 
- - [documents] — for the Google Documents code in gdata/services/documents.
+ - documents: for the Google Documents code in gdata/services/documents.
 
- - [picasaweb] — for the PicasaWeb code in gdata/services/picasaweb.
+ - picasaweb: for the PicasaWeb code in gdata/services/picasaweb.
 
- - [youtube] — for the YouTube code in gdata/services/youtube.
+ - youtube: for the YouTube code in gdata/services/youtube.
 
 The only commits which should not have a tag are translation commits, touching only the po directory.
