@@ -4,17 +4,16 @@
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
-PKG_NAME="gdata"
+PKG_NAME=libgdata
 REQUIRED_M4MACROS=introspection.m4
 
 (test -f $srcdir/configure.ac) || {
-    echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
-    echo " top-level $PKG_NAME directory"
+    echo "**Error**: Directory "\`$srcdir\'" does not look like the top-level $PKG_NAME directory"
     exit 1
 }
 
 which gnome-autogen.sh || {
-	echo "You need to install gnome-common from the GNOME SVN"
+	echo "You need to install gnome-common from GNOME Git"
 	exit 1
 }
 
