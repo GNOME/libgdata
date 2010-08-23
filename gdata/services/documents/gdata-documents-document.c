@@ -106,7 +106,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 	gchar *default_filename, *download_uri;
 	GFileOutputStream *dest_stream;
 	GInputStream *src_stream;
-	GFile *output_file;
+	GFile *output_file = NULL;
 	GError *child_error = NULL;
 
 	/* TODO: async version */
