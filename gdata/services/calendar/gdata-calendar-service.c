@@ -286,11 +286,11 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 	}
 
 	/* Use the calendar's content src */
-	uri = gdata_entry_get_content (GDATA_ENTRY (calendar));
+	uri = gdata_entry_get_content_uri (GDATA_ENTRY (calendar));
 	if (uri == NULL) {
 		/* Erroring out is probably the safest thing to do */
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		                     _("The calendar did not have a content source."));
+		                     _("The calendar did not have a content URI."));
 		return NULL;
 	}
 
