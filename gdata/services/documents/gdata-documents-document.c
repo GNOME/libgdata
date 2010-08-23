@@ -38,6 +38,7 @@
 
 #include "gdata-documents-document.h"
 #include "gdata-documents-entry.h"
+#include "gdata-documents-spreadsheet.h"
 #include "gdata-download-stream.h"
 #include "gdata-private.h"
 #include "gdata-service.h"
@@ -104,6 +105,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 {
 	const gchar *document_title;
 	gchar *default_filename, *download_uri;
+	GDataService *_service;
 	GFileOutputStream *dest_stream;
 	GInputStream *src_stream;
 	GFile *output_file = NULL;
@@ -117,8 +119,15 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
+	/* Horrible hack to force use of the spreadsheet service if the document we're downloading is a spreadsheet. This is necessary because it's
+	 * in a different authentication domain. */
+	if (GDATA_IS_DOCUMENTS_SPREADSHEET (self))
+		_service = _gdata_documents_service_get_spreadsheet_service (service);
+	else
+		_service = GDATA_SERVICE (service);
+
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (service)) == FALSE) {
+	if (gdata_service_is_authenticated (_service) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to download documents."));
 		return NULL;
@@ -140,7 +149,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 	g_assert (download_uri != NULL);
 
 	/* Synchronously splice the data from the download stream to the file stream (network -> disk) */
-	src_stream = gdata_download_stream_new (GDATA_SERVICE (service), download_uri);
+	src_stream = gdata_download_stream_new (_service, download_uri);
 	g_signal_connect (src_stream, "notify::content-type", (GCallback) notify_content_type_cb, content_type);
 	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
 	                        cancellable, &child_error);
