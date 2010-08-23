@@ -290,6 +290,7 @@ test_upload_simple (gconstpointer service)
 				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
 				"xmlns:app='http://www.w3.org/2007/app'>"
 				"<title type='text'>Bad Wedding Toast</title>"
+				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
 				"<media:group>"
 					"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>People</media:category>"
 					"<media:title type='plain'>Bad Wedding Toast</media:title>"
