@@ -33,6 +33,7 @@
 #include <glib/gi18n-lib.h>
 #include <libsoup/soup.h>
 #include <string.h>
+#include <stdarg.h>
 
 #ifdef HAVE_GNOME
 #include <libsoup/soup-gnome-features.h>
@@ -2105,6 +2106,86 @@ _gdata_service_get_scheme (void)
 	if (force_http)
 		return "http";
 	return "https";
+}
+
+/*
+ * _gdata_service_build_uri:
+ * @force_http: %TRUE to force the outputted URI to use HTTP, %FALSE to use the scheme returned by _gdata_service_get_scheme()
+ * @format: a standard printf() format string
+ * @...: the arguments to insert in the output
+ *
+ * Builds a URI from the given @format string, replacing each <code class="literal">%%s</code> format placeholder with a URI-escaped version of the
+ * corresponding argument, and each <code class="literal">%%p</code> format placeholder with a non-escaped version of the corresponding argument. No
+ * other printf() format placeholders are supported at the moment except <code class="literal">%%d</code>, which prints a signed integer; and
+ * <code class="literal">%%</code>, which prints a literal percent symbol.
+ *
+ * The returned URI is guaranteed to use the scheme returned by _gdata_service_get_scheme(), unless the @force_http argument is %TRUE; in that case,
+ * the returned URI is guaranteed to use HTTP. The format string, once all the arguments have been inserted into it, must include a service, but it
+ * doesn't matter which one.
+ *
+ * Return value: a newly allocated URI string; free with g_free()
+ */
+gchar *
+_gdata_service_build_uri (gboolean force_http, const gchar *format, ...)
+{
+	const gchar *p, *scheme;
+	gchar *built_uri;
+	GString *uri;
+	va_list args;
+
+	g_return_val_if_fail (format != NULL, NULL);
+
+	/* Allocate a GString to build the URI in with at least as much space as the format string */
+	uri = g_string_sized_new (strlen (format));
+
+	/* Build the URI */
+	va_start (args, format);
+
+	for (p = format; *p != '\0'; p++) {
+		if (*p != '%') {
+			g_string_append_c (uri, *p);
+			continue;
+		}
+
+		switch(*++p) {
+			case 's':
+				g_string_append_uri_escaped (uri, va_arg (args, gchar*), NULL, TRUE);
+				break;
+			case 'p':
+				g_string_append (uri, va_arg (args, gchar*));
+				break;
+			case 'd':
+				g_string_append_printf (uri, "%d", va_arg (args, gint));
+				break;
+			case '%':
+				g_string_append_c (uri, '%');
+				break;
+			default:
+				g_error ("Unrecognized format placeholder '%%%c' in format '%s'. This is a programmer error.", *p, format);
+				break;
+		}
+	}
+
+	va_end (args);
+
+	built_uri = g_string_free (uri, FALSE);
+	scheme = (force_http == FALSE) ? _gdata_service_get_scheme () : "http";
+
+	/* Ensure we're using the correct scheme (HTTP or HTTPS) */
+	if (g_str_has_prefix (built_uri, scheme) == FALSE) {
+		gchar *fixed_uri, **pieces;
+
+		pieces = g_strsplit (built_uri, ":", 2);
+		g_assert (pieces[0] != NULL && pieces[1] != NULL && pieces[2] == NULL);
+
+		fixed_uri = g_strdup_printf ("%s:%s", scheme, pieces[1]);
+
+		g_strfreev (pieces);
+
+		return fixed_uri;
+	}
+
+	return built_uri;
 }
 
 /*

@@ -185,29 +185,8 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 gchar *
 gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const gchar *export_format)
 {
-	const gchar *content_uri, *scheme;
-
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (self), NULL);
 	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
 
-	content_uri = gdata_entry_get_content_uri (GDATA_ENTRY (self));
-	scheme = _gdata_service_get_scheme ();
-
-	g_assert (content_uri != NULL);
-
-	/* Ensure we're using the correct scheme (HTTP or HTTPS) */
-	if (g_str_has_prefix (content_uri, scheme) == FALSE) {
-		gchar *download_uri, **pieces;
-
-		pieces = g_strsplit (content_uri, ":", 2);
-		g_assert (pieces[0] != NULL && pieces[1] != NULL && pieces[2] == NULL);
-
-		download_uri = g_strdup_printf ("%s:%s&exportFormat=%s", scheme, pieces[1], export_format);
-
-		g_strfreev (pieces);
-
-		return download_uri;
-	}
-
-	return g_strdup_printf ("%s&exportFormat=%s", content_uri, export_format);
+	return _gdata_service_build_uri (FALSE, "%p&exportFormat=%s", gdata_entry_get_content_uri (GDATA_ENTRY (self)), export_format);
 }

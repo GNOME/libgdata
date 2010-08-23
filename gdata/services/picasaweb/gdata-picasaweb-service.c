@@ -153,7 +153,7 @@ create_uri (GDataPicasaWebService *self, const gchar *username, const gchar *typ
 		username = "default";
 	}
 
-	return g_strdup_printf ("http://picasaweb.google.com/data/%s/api/user/%s", type, username);
+	return _gdata_service_build_uri (TRUE, "http://picasaweb.google.com/data/%s/api/user/%s", type, username);
 }
 
 /**
@@ -381,7 +381,7 @@ get_file_output_stream (GDataPicasaWebService *self, GDataPicasaWebAlbum *album,
 	content_type = g_file_info_get_content_type (file_info);
 
 	/* Build the upload URI and upload stream */
-	upload_uri = g_strdup_printf ("http://picasaweb.google.com/data/feed/api/user/%s/albumid/%s", user_id, album_id);
+	upload_uri = _gdata_service_build_uri (TRUE, "http://picasaweb.google.com/data/feed/api/user/%s/albumid/%s", user_id, album_id);
 	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST, upload_uri, GDATA_ENTRY (file_entry), slug, content_type);
 	g_free (upload_uri);
 	g_object_unref (file_info);

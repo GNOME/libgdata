@@ -196,9 +196,7 @@ gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContacts
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	uri = g_strdup_printf ("%s://www.google.com/m8/feeds/contacts/%s/full",
-	                       _gdata_service_get_scheme (),
-	                       gdata_service_get_username (GDATA_SERVICE (self)));
+	uri = _gdata_service_build_uri (FALSE, "http://www.google.com/m8/feeds/contacts/%s/full", gdata_service_get_username (GDATA_SERVICE (self)));
 	entry = gdata_service_insert_entry (GDATA_SERVICE (self), uri, GDATA_ENTRY (contact), cancellable, error);
 	g_free (uri);
 

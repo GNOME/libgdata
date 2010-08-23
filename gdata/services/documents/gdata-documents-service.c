@@ -619,17 +619,17 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 	g_assert (document_id != NULL);
 
 	if (GDATA_IS_DOCUMENTS_PRESENTATION (document)) {
-		uri = g_strdup_printf ("%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s",
-		                       _gdata_service_get_scheme (), folder_id, document_id);
+		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s",
+		                                folder_id, document_id);
 	} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (document)) {
-		uri = g_strdup_printf ("%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s",
-		                       _gdata_service_get_scheme (), folder_id, document_id);
+		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s",
+		                                folder_id, document_id);
 	} else if (GDATA_IS_DOCUMENTS_TEXT (document)) {
-		uri = g_strdup_printf ("%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s",
-		                       _gdata_service_get_scheme (), folder_id, document_id);
+		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s",
+		                                folder_id, document_id);
 	} else if (GDATA_IS_DOCUMENTS_FOLDER (document)) {
-		uri = g_strdup_printf ("%s://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s",
-		                       _gdata_service_get_scheme (), folder_id, document_id);
+		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s",
+		                                folder_id, document_id);
 	} else {
 		g_assert_not_reached ();
 	}

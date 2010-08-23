@@ -122,10 +122,12 @@ gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, c
 	g_assert (document_id != NULL);
 
 	if (gid != -1) {
-		return g_strdup_printf ("%s://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s&gid=%d",
-		                        _gdata_service_get_scheme (), document_id, export_format, gid);
+		return _gdata_service_build_uri (FALSE,
+		                                 "http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s&gid=%d",
+		                                 document_id, export_format, gid);
 	} else {
-		return g_strdup_printf ("%s://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s",
-		                        _gdata_service_get_scheme (), document_id, export_format);
+		return _gdata_service_build_uri (FALSE,
+		                                 "http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s",
+		                                 document_id, export_format);
 	}
 }
