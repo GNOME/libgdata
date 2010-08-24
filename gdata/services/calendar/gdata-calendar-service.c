@@ -327,8 +327,7 @@ gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEv
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	uri = _gdata_service_build_uri (FALSE, "http://www.google.com/calendar/feeds/%s/private/full",
-		                        gdata_service_get_username (GDATA_SERVICE (self)));
+	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/private/full", NULL);
 	entry = gdata_service_insert_entry (GDATA_SERVICE (self), uri, GDATA_ENTRY (event), cancellable, error);
 	g_free (uri);
 
