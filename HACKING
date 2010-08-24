@@ -116,6 +116,10 @@ Adding public API
  - New services should be implemented in libgdata itself, not by applications which use libgdata. See the documentation section on "New Services" in
    the "GData Overview" section.
 
+ - New API must never be added in a micro release. API additions can only be made in a major or minor release; this is to prevent the LT version of
+   one minor version's micro releases exceeding the LT version of the next minor version as almost happened between versions 0.6.3 and 0.7.0.
+   See http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html for information about libtool's versioning system.
+
 Choosing function names
 =======================
 

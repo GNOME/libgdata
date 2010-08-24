@@ -35,15 +35,14 @@ GLIB_REQS=2.19.0
 GIO_REQS=2.17.3
 SOUP_REQS=2.26.1
 
-# Before making a release, the GDATA_LT_VERSION string should be modified.
-# The string is of the form C:R:A.
-# - If interfaces have been changed or added, but binary compatibility has
-#   been preserved, change to C+1:0:A+1
-# - If binary compatibility has been broken (eg removed or changed interfaces)
-#   change to C+1:0:0
-# - If the interface is the same as the previous version, change to C:R+1:A
-# Note that versioning started at 2:0:0 to ensure no conflicts with e-d-s' libgdata
-# library, whose maximum version was 1:0:0
+# Before making a release, the GDATA_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:
+#
+#  1. If the library source code has changed at all since the last update, then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
+#  2. If any interfaces have been added, removed, or changed since the last update, increment current, and set revision to 0.
+#  3. If any interfaces have been added since the last public release, then increment age.
+#  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
+#
+# Note that versioning started at 2:0:0 to ensure no conflicts with e-d-s' libgdata library, whose maximum version was 1:0:0
 GDATA_LT_VERSION=7:0:0
 AC_SUBST(GDATA_LT_VERSION)
 
