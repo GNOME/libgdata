@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-23 23:45+0200\n"
-"PO-Revision-Date: 2010-04-04 01:31+0200\n"
+"POT-Creation-Date: 2010-08-24 09:41+0200\n"
+"PO-Revision-Date: 2010-08-24 00:13+0100\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -137,8 +137,8 @@ msgstr "Kan ikke forbinde til proxy-serveren."
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"Ugyldig forespørgsels-URI eller -teksthoved, eller uunderstøttet parameter "
-"der ikke er standard: %s"
+"Ugyldig forespørgselsadresse eller -teksthoved, eller uunderstøttet "
+"parameter der ikke er standard: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-service.c:451
@@ -210,9 +210,9 @@ msgstr "Fejlkode %u under oplægning: %s"
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:518
-#, fuzzy, c-format
+#, c-format
 msgid "Error code %u when running a batch operation: %s"
-msgstr "Fejlkode %u under godkendelse: %s"
+msgstr "Fejlkode %u under kørsel af batchoperation: %s"
 
 #: ../gdata/gdata-service.c:643
 msgid "A CAPTCHA must be filled out to log in."
@@ -241,6 +241,8 @@ msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
+"Denne konto er blevet migreret. Log venligst ind online for at modtage dit "
+"nye brugernavn og adgangskode. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-service.c:702
@@ -270,7 +272,7 @@ msgstr "Denne tjeneste er ikke tilgængelig i øjeblikket. (%s)"
 #: ../gdata/gdata-service.c:988
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "Ugyldig omdirigerings-URI: %s"
+msgstr "Ugyldig omdirigeringsadresse: %s"
 
 #: ../gdata/gdata-service.c:1581
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
@@ -302,9 +304,8 @@ msgid "You must be authenticated to query your own calendars."
 msgstr "Du skal godkendes for at forespørge dine egne kalendere."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:293
-#, fuzzy
 msgid "The calendar did not have a content URI."
-msgstr "Kalenderen havde ikke nogen indholdskilde."
+msgstr "Kalenderen havde ikke nogen indholdsadresse."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:116
 #: ../gdata/services/contacts/gdata-contacts-service.c:162
