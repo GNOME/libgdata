@@ -37,6 +37,7 @@
 #include <string.h>
 
 #include "gdata-calendar-service.h"
+#include "gdata-batchable.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
 #include "gdata-query.h"
@@ -44,7 +45,7 @@
 
 /* Standards reference here: http://code.google.com/apis/calendar/docs/2.0/reference.html */
 
-G_DEFINE_TYPE (GDataCalendarService, gdata_calendar_service, GDATA_TYPE_SERVICE)
+G_DEFINE_TYPE_WITH_CODE (GDataCalendarService, gdata_calendar_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
 static void
 gdata_calendar_service_class_init (GDataCalendarServiceClass *klass)

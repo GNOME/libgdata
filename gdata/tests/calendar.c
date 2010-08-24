@@ -730,6 +730,218 @@ test_acls_delete_rule (gconstpointer service)
 	g_object_unref (rule);
 }
 
+static void
+test_batch (gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	GDataService *service2;
+	GDataCalendarCalendar *calendar;
+	GDataCalendarEvent *event, *event2, *event3;
+	GDataEntry *inserted_entry, *inserted_entry2, *inserted_entry3;
+	gchar *feed_uri;
+	guint op_id, op_id2, op_id3;
+	GError *error = NULL, *entry_error = NULL;
+
+	calendar = get_calendar (service, &error);
+
+	/* Here we hardcode the feed URI, but it should really be extracted from an event feed, as the GDATA_LINK_BATCH link */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+
+	/* Check the properties of the operation */
+	g_assert (gdata_batch_operation_get_service (operation) == service);
+	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, "https://www.google.com/calendar/feeds/default/private/full/batch");
+
+	g_object_get (operation,
+	              "service", &service2,
+	              "feed-uri", &feed_uri,
+	              NULL);
+
+	g_assert (service2 == service);
+	g_assert_cmpstr (feed_uri, ==, "https://www.google.com/calendar/feeds/default/private/full/batch");
+
+	g_object_unref (service2);
+	g_free (feed_uri);
+
+	/* Run a singleton batch operation to insert a new entry */
+	event = gdata_calendar_event_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (event), "Fooish Bar");
+
+	gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (event), &inserted_entry, NULL);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (event);
+
+	/* Run another batch operation to insert another entry and query the previous one */
+	event2 = gdata_calendar_event_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (event2), "Cow Lunch");
+
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	op_id = gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (event2), &inserted_entry2, NULL);
+	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_CALENDAR_EVENT, inserted_entry, NULL,
+	                                           NULL);
+	g_assert_cmpuint (op_id, !=, op_id2);
+
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (event2);
+
+	/* Run another batch operation to delete the first entry and a fictitious one to test error handling, and update the second entry */
+	gdata_entry_set_title (inserted_entry2, "Toby");
+	event3 = gdata_calendar_event_new ("foobar");
+
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	op_id = gdata_test_batch_operation_deletion (operation, inserted_entry, NULL);
+	op_id2 = gdata_test_batch_operation_deletion (operation, GDATA_ENTRY (event3), &entry_error);
+	op_id3 = gdata_test_batch_operation_update (operation, inserted_entry2, &inserted_entry3, NULL);
+	g_assert_cmpuint (op_id, !=, op_id2);
+	g_assert_cmpuint (op_id, !=, op_id3);
+	g_assert_cmpuint (op_id2, !=, op_id3);
+
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
+
+	g_clear_error (&error);
+	g_clear_error (&entry_error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry);
+	g_object_unref (event3);
+
+	/* Run another batch operation to update the second entry with the wrong ETag (i.e. pass the old version of the entry to the batch operation
+	 * to test error handling */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT);
+
+	g_clear_error (&error);
+	g_clear_error (&entry_error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry2);
+
+	/* Run a final batch operation to delete the second entry */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry3);
+}
+
+typedef struct {
+	GDataCalendarEvent *new_event;
+} BatchAsyncData;
+
+static void
+setup_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GDataCalendarEvent *event;
+	GError *error = NULL;
+
+	/* Insert a new event which we can query asyncly */
+	event = gdata_calendar_event_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (event), "Party 'Til You Puke");
+
+	data->new_event = gdata_calendar_service_insert_event (GDATA_CALENDAR_SERVICE (service), event, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CALENDAR_EVENT (data->new_event));
+	g_clear_error (&error);
+
+	g_object_unref (event);
+}
+
+static void
+test_batch_async_cb (GDataBatchOperation *operation, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GError *error = NULL;
+
+	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == TRUE);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+}
+
+static void
+test_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	guint op_id;
+	GMainLoop *main_loop;
+
+	/* Run an async query operation on the event */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
+	                                          GDATA_ENTRY (data->new_event), NULL, NULL);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_batch_operation_run_async (operation, NULL, (GAsyncReadyCallback) test_batch_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+}
+
+static void
+test_batch_async_cancellation_cb (GDataBatchOperation *operation, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GError *error = NULL;
+
+	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == FALSE);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+}
+
+static void
+test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	guint op_id;
+	GMainLoop *main_loop;
+	GCancellable *cancellable;
+
+	/* Run an async query operation on the event */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
+	                                          GDATA_ENTRY (data->new_event), NULL, NULL);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+	cancellable = g_cancellable_new ();
+
+	gdata_batch_operation_run_async (operation, cancellable, (GAsyncReadyCallback) test_batch_async_cancellation_cb, main_loop);
+	g_cancellable_cancel (cancellable); /* this should cancel the operation before it even starts, as we haven't run the main loop yet */
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+	g_object_unref (cancellable);
+}
+
+static void
+teardown_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GError *error = NULL;
+
+	/* Delete the event */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (data->new_event), NULL, &error) == TRUE);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_object_unref (data->new_event);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -757,6 +969,11 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/calendar/acls/insert_rule", service, test_acls_insert_rule);
 		g_test_add_data_func ("/calendar/acls/update_rule", service, test_acls_update_rule);
 		g_test_add_data_func ("/calendar/acls/delete_rule", service, test_acls_delete_rule);
+
+		g_test_add_data_func ("/calendar/batch", service, test_batch);
+		g_test_add ("/calendar/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
+		g_test_add ("/calendar/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
+		            teardown_batch_async);
 	}
 
 	g_test_add_func ("/calendar/xml/dates", test_xml_dates);
