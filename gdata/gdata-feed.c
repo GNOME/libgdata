@@ -570,10 +570,12 @@ static void
 get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 {
 	GDataFeedPrivate *priv = GDATA_FEED (parsable)->priv;
+	GList *i;
 
-	/* Assume that all the entries in the feed have identical namespaces, so we just call get_namespaces() for the first one */
-	if (priv->entries != NULL)
-		GDATA_PARSABLE_GET_CLASS (priv->entries->data)->get_namespaces (GDATA_PARSABLE (priv->entries->data), namespaces);
+	/* We can't assume that all the entries in the feed have identical namespaces, so we have to call get_namespaces() for all of them.
+	 * GDataBatchFeeds, for example, can easily contain entries with differing sets of namespaces. */
+	for (i = priv->entries; i != NULL; i = i->next)
+		GDATA_PARSABLE_GET_CLASS (i->data)->get_namespaces (GDATA_PARSABLE (i->data), namespaces);
 }
 
 /*
