@@ -366,6 +366,20 @@ gdata_sources = \
 	gdata/services/youtube/gdata-youtube-control.c		\
 	gdata/services/youtube/gdata-youtube-category.c
 
+main_header = gdata/gdata.h
+public_headers = \
+	$(gdatainclude_HEADERS)			\
+	$(gdataatominclude_HEADERS)		\
+	$(gdataappinclude_HEADERS)		\
+	$(gdatagdinclude_HEADERS)		\
+	$(gdatagcontactinclude_HEADERS)		\
+	$(gdatamediainclude_HEADERS)		\
+	$(gdatacalendarinclude_HEADERS)		\
+	$(gdatacontactsinclude_HEADERS)		\
+	$(gdatadocumentsinclude_HEADERS)	\
+	$(gdatapicasawebinclude_HEADERS)	\
+	$(gdatayoutubeinclude_HEADERS)
+
 gdata_libgdata_la_SOURCES = \
 	$(GDATA_MARSHAL_FILES)		\
 	$(GDATA_ENUM_FILES)		\
@@ -409,21 +423,28 @@ gdata_libgdata_la_LDFLAGS = \
 
 EXTRA_DIST += gdata/gdata.symbols
 
+# Check if gdata.h includes all the public headers
+check-local: check-headers
+check-headers:
+	@any_missing=0; for header_file in $(public_headers); do \
+		if test "x$$header_file" != "x$(main_header)"; then \
+			if ! grep "#include <$$header_file>" $(main_header) >/dev/null; then \
+				echo "$(main_header) doesn't appear to include \"$$header_file\""; \
+				any_missing=1; \
+			fi; \
+		fi; \
+	done; exit "$$any_missing"
+
 # Introspection
 if HAVE_INTROSPECTION
 _gir_libtool = $(if $(LIBTOOL),--libtool="$(LIBTOOL)") # bgo#610273
 gdata/GData-$(GDATA_API_VERSION).gir: Makefile gdata/libgdata.la
 	$(AM_V_GEN)($(INTROSPECTION_SCANNER)						\
 	--namespace GData --nsversion=$(GDATA_API_VERSION) --warn-all			\
-	--c-include="gdata/gdata.h" --include=libxml2-2.0 --include=Soup-2.4		\
+	--c-include=$(main_header) --include=libxml2-2.0 --include=Soup-2.4		\
 	--library=gdata/libgdata.la $(_gir_libtool) --quiet --output $@			\
 	-I$(top_srcdir) -I$(top_srcdir)/gdata $(GDATA_CFLAGS)				\
-	$(addprefix $(srcdir)/,$(gdatainclude_HEADERS) $(gdataatominclude_HEADERS)	\
-	$(gdataappinclude_HEADERS) $(gdatagdinclude_HEADERS)				\
-	$(gdatagcontactinclude_HEADERS) $(gdatamediainclude_HEADERS)			\
-	$(gdatacalendarinclude_HEADERS) $(gdatacontactsinclude_HEADERS)			\
-	$(gdatadocumentsinclude_HEADERS) $(gdatapicasawebinclude_HEADERS)		\
-	$(gdatayoutubeinclude_HEADERS) $(gdata_sources)))
+	$(addprefix $(srcdir)/,$(public_headers) $(gdata_sources)))
 BUILT_GIRSOURCES = gdata/GData-$(GDATA_API_VERSION).gir
 
 girdir = $(datadir)/gir-1.0
