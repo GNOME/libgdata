@@ -117,7 +117,7 @@ check-xml-includes:
 	@any_missing=0; find $(srcdir) -name "*.xml" | while read x; do \
 		xml_file="$${x#./}"; \
 		if test "x$$xml_file" != "x$(DOC_MAIN_SGML_FILE)"; then \
-			if grep "\"$$xml_file\"" $(DOC_MAIN_SGML_FILE) >/dev/null; then :; else \
+			if ! grep "\"$$xml_file\"" $(DOC_MAIN_SGML_FILE) >/dev/null; then \
 				echo "$(DOC_MAIN_SGML_FILE) doesn't appear to include \"$$xml_file\""; \
 				any_missing=1; \
 			fi; \
