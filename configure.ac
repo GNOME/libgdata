@@ -1,4 +1,4 @@
-AC_PREREQ(2.63)
+AC_PREREQ(2.65)
 
 # Release version
 m4_define(gdata_version_major, 0)
@@ -10,8 +10,7 @@ m4_define(gdata_version_micro, 0)
 m4_define(gdata_api_version_major, 0)
 m4_define(gdata_api_version_minor, 0)
 
-AC_INIT([libgdata],[gdata_version_major.gdata_version_minor.gdata_version_micro],[https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata],
-        [libgdata],[http://live.gnome.org/libgdata])
+AC_INIT([libgdata],[gdata_version_major.gdata_version_minor.gdata_version_micro],[https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata],[libgdata],[http://live.gnome.org/libgdata])
 
 AC_CONFIG_SRCDIR([gdata/gdata.h])
 AC_CONFIG_HEADERS([config.h])
@@ -109,10 +108,8 @@ AM_CONDITIONAL(GCOV_ENABLED, test x$enable_gcov = xyes)
 AC_MSG_RESULT($enable_gcov)
 
 # General GNOME macros
-GNOME_COMMON_INIT
 GNOME_DEBUG_CHECK
 GNOME_COMPILE_WARNINGS([maximum])
-GNOME_CXX_WARNINGS
 GNOME_MAINTAINER_MODE_DEFINES
 
 GOBJECT_INTROSPECTION_CHECK([0.6.7])
