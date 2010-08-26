@@ -1236,7 +1236,6 @@ test_batch (gconstpointer service)
 	GDataService *service2;
 	GDataContactsContact *contact, *contact2, *contact3;
 	GDataEntry *inserted_entry, *inserted_entry2, *inserted_entry3;
-	GDataLink *self_link;
 	gchar *feed_uri;
 	guint op_id, op_id2, op_id3;
 	GError *error = NULL, *entry_error = NULL;
@@ -1275,12 +1274,9 @@ test_batch (gconstpointer service)
 	contact2 = gdata_contacts_contact_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (contact2), "Brian");
 
-	/* The contacts API is weird in that you can't do a GET on a contact's ID URI — you have to use their self link URI instead */
-	self_link = gdata_entry_look_up_link (inserted_entry, GDATA_LINK_SELF);
-
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
 	op_id = gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (contact2), &inserted_entry2, NULL);
-	op_id2 = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_CONTACTS_CONTACT, inserted_entry, NULL,
+	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_CONTACTS_CONTACT, inserted_entry, NULL,
 	                                           NULL);
 	g_assert_cmpuint (op_id, !=, op_id2);
 
@@ -1377,15 +1373,12 @@ static void
 test_batch_async (BatchAsyncData *data, gconstpointer service)
 {
 	GDataBatchOperation *operation;
-	GDataLink *self_link;
 	guint op_id;
 	GMainLoop *main_loop;
 
 	/* Run an async query operation on the contact */
-	self_link = gdata_entry_look_up_link (GDATA_ENTRY (data->new_contact), GDATA_LINK_SELF);
-
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
-	op_id = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_CONTACTS_CONTACT,
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_contact)), GDATA_TYPE_CONTACTS_CONTACT,
 	                                          GDATA_ENTRY (data->new_contact), NULL, NULL);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
@@ -1412,16 +1405,13 @@ static void
 test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 {
 	GDataBatchOperation *operation;
-	GDataLink *self_link;
 	guint op_id;
 	GMainLoop *main_loop;
 	GCancellable *cancellable;
 
 	/* Run an async query operation on the contact */
-	self_link = gdata_entry_look_up_link (GDATA_ENTRY (data->new_contact), GDATA_LINK_SELF);
-
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
-	op_id = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_CONTACTS_CONTACT,
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_contact)), GDATA_TYPE_CONTACTS_CONTACT,
 	                                          GDATA_ENTRY (data->new_contact), NULL, NULL);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
