@@ -580,6 +580,251 @@ test_query_etag (void)
 	g_object_unref (query);
 }
 
+static void
+test_batch (gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	GDataService *service2;
+	GDataDocumentsText *doc, *doc2, *doc3;
+	GDataEntry *inserted_entry, *inserted_entry_updated, *inserted_entry2, *inserted_entry2_updated, *inserted_entry3;
+	gchar *feed_uri;
+	guint op_id, op_id2, op_id3;
+	GError *error = NULL, *entry_error = NULL;
+
+	/* Here we hardcode the feed URI, but it should really be extracted from a document feed, as the GDATA_LINK_BATCH link */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+
+	/* Check the properties of the operation */
+	g_assert (gdata_batch_operation_get_service (operation) == service);
+	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, "https://docs.google.com/feeds/documents/private/full/batch");
+
+	g_object_get (operation,
+	              "service", &service2,
+	              "feed-uri", &feed_uri,
+	              NULL);
+
+	g_assert (service2 == service);
+	g_assert_cmpstr (feed_uri, ==, "https://docs.google.com/feeds/documents/private/full/batch");
+
+	g_object_unref (service2);
+	g_free (feed_uri);
+
+	/* Run a singleton batch operation to insert a new entry */
+	doc = gdata_documents_text_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (doc), "My First Document");
+
+	gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (doc), &inserted_entry, NULL);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (doc);
+
+	/* Run another batch operation to insert another entry and query the previous one */
+	doc2 = gdata_documents_text_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (doc2), "I'm a poet and I didn't know it");
+
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	op_id = gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (doc2), &inserted_entry2, NULL);
+	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry, NULL,
+	                                           NULL);
+	g_assert_cmpuint (op_id, !=, op_id2);
+
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (doc2);
+
+	/* Run another batch operation to query one of the entries we just created, since it seems that the ETags for documents change for no
+	 * apparent reason when you're not looking. */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry,
+	                                  &inserted_entry_updated, NULL);
+
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry);
+
+	/* Run another batch operation to query the other entry we just created. It would be sensible to batch this query together with the previous
+	 * one, seeing as we're testing _batch_ functionality. Funnily enough, the combination of two idempotent operations changes the ETags and
+	 * makes the whole effort worthless. */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry2), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry2,
+	                                  &inserted_entry2_updated, NULL);
+
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+
+	/* Run another batch operation to delete the first entry and a fictitious one to test error handling, and update the second entry */
+	gdata_entry_set_title (inserted_entry2_updated, "War & Peace");
+	doc3 = gdata_documents_text_new ("foobar");
+
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	op_id = gdata_test_batch_operation_deletion (operation, inserted_entry_updated, NULL);
+	op_id2 = gdata_test_batch_operation_deletion (operation, GDATA_ENTRY (doc3), &entry_error);
+	op_id3 = gdata_test_batch_operation_update (operation, inserted_entry2_updated, &inserted_entry3, NULL);
+	g_assert_cmpuint (op_id, !=, op_id2);
+	g_assert_cmpuint (op_id, !=, op_id3);
+	g_assert_cmpuint (op_id2, !=, op_id3);
+
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
+
+	g_clear_error (&error);
+	g_clear_error (&entry_error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry_updated);
+	g_object_unref (inserted_entry2_updated);
+	g_object_unref (doc3);
+
+	/* Run another batch operation to update the second entry with the wrong ETag (i.e. pass the old version of the entry to the batch operation
+	 * to test error handling */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT);
+
+	g_clear_error (&error);
+	g_clear_error (&entry_error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry2);
+
+	/* Run a final batch operation to delete the second entry */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
+	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+
+	g_clear_error (&error);
+	g_object_unref (operation);
+	g_object_unref (inserted_entry3);
+}
+
+typedef struct {
+	GDataDocumentsEntry *new_doc;
+} BatchAsyncData;
+
+static void
+setup_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GDataDocumentsText *doc;
+	GError *error = NULL;
+
+	/* Insert a new document which we can query asyncly */
+	doc = gdata_documents_text_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (doc), "A View from the Bridge");
+
+	data->new_doc = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (doc), NULL, NULL, NULL,
+	                                                         &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->new_doc));
+	g_clear_error (&error);
+
+	g_object_unref (doc);
+}
+
+static void
+test_batch_async_cb (GDataBatchOperation *operation, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GError *error = NULL;
+
+	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == TRUE);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+}
+
+static void
+test_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	guint op_id;
+	GMainLoop *main_loop;
+
+	/* Run an async query operation on the document */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), GDATA_TYPE_DOCUMENTS_TEXT,
+	                                          GDATA_ENTRY (data->new_doc), NULL, NULL);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_batch_operation_run_async (operation, NULL, (GAsyncReadyCallback) test_batch_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+}
+
+static void
+test_batch_async_cancellation_cb (GDataBatchOperation *operation, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GError *error = NULL;
+
+	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == FALSE);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+}
+
+static void
+test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
+{
+	GDataBatchOperation *operation;
+	guint op_id;
+	GMainLoop *main_loop;
+	GCancellable *cancellable;
+
+	/* Run an async query operation on the document */
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), GDATA_TYPE_DOCUMENTS_TEXT,
+	                                          GDATA_ENTRY (data->new_doc), NULL, NULL);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+	cancellable = g_cancellable_new ();
+
+	gdata_batch_operation_run_async (operation, cancellable, (GAsyncReadyCallback) test_batch_async_cancellation_cb, main_loop);
+	g_cancellable_cancel (cancellable); /* this should cancel the operation before it even starts, as we haven't run the main loop yet */
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+	g_object_unref (cancellable);
+}
+
+static void
+teardown_batch_async (BatchAsyncData *data, gconstpointer service)
+{
+	GDataEntry *document;
+	GError *error = NULL;
+
+	/* Re-query the document in case its ETag has changed */
+	document = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), NULL,
+	                                             GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	/* Delete the document */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), document, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_object_unref (data->new_doc);
+	g_object_unref (document);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -616,6 +861,11 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/documents/move/move_to_folder", service, test_add_file_folder_and_move);
 		g_test_add_data_func ("/documents/move/remove_from_folder", service, test_add_remove_file_from_folder);
 		/*g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);*/
+
+		g_test_add_data_func ("/documents/batch", service, test_batch);
+		g_test_add ("/documents/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
+		g_test_add ("/documents/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
+		            teardown_batch_async);
 	}
 
 	g_test_add_func ("/documents/query/etag", test_query_etag);

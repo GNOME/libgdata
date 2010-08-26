@@ -47,6 +47,7 @@
 #include "gdata-documents-spreadsheet.h"
 #include "gdata-documents-text.h"
 #include "gdata-documents-presentation.h"
+#include "gdata-batchable.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
 #include "gdata-upload-stream.h"
@@ -72,7 +73,7 @@ enum {
 	PROP_SPREADSHEET_SERVICE = 1
 };
 
-G_DEFINE_TYPE (GDataDocumentsService, gdata_documents_service, GDATA_TYPE_SERVICE)
+G_DEFINE_TYPE_WITH_CODE (GDataDocumentsService, gdata_documents_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
 static void
 gdata_documents_service_class_init (GDataDocumentsServiceClass *klass)

@@ -202,8 +202,12 @@ test_batch_operation_insertion_update_cb (guint operation_id, GDataBatchOperatio
 		g_assert_cmpstr (gdata_entry_get_title (entry), ==, gdata_entry_get_title (data->entry));
 		g_assert_cmpstr (gdata_entry_get_summary (entry), ==, gdata_entry_get_summary (data->entry));
 		g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (data->entry));
-		g_assert_cmpstr (gdata_entry_get_content_uri (entry), ==, gdata_entry_get_content_uri (data->entry));
 		g_assert_cmpstr (gdata_entry_get_rights (entry), ==, gdata_entry_get_rights (data->entry));
+
+		/* Only test for differences in content URI if we had one to begin with, since the inserted entry could feasibly generate and return
+		 * new content. */
+		if (gdata_entry_get_content_uri (data->entry) != NULL)
+			g_assert_cmpstr (gdata_entry_get_content_uri (entry), ==, gdata_entry_get_content_uri (data->entry));
 
 		/* Copy the inserted entry for the calling test code to prod later */
 		if (data->returned_entry != NULL)
