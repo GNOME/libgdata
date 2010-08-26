@@ -81,6 +81,13 @@ fi
 AC_SUBST(GNOME_CFLAGS)
 AC_SUBST(GNOME_LIBS)
 
+# Various necessary functions and headers
+AC_CHECK_FUNCS([strchr])
+AC_CHECK_FUNCS([strstr])
+AC_CHECK_FUNCS([strtol])
+AC_CHECK_FUNCS([strtoul])
+AC_CHECK_HEADERS([sys/time.h])
+
 # Internationalisation support
 GETTEXT_PACKAGE=gdata
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define to the Gettext package name])
