@@ -36,18 +36,16 @@
  *	GDataBatchOperation *operation;
  *	GDataContactsContact *contact;
  *	GDataService *service;
- *	GDataLink *self_link;
  *
  *	service = create_contacts_service ();
  *	contact = create_new_contact ();
- *	self_link = gdata_entry_look_up_link (other_contact, GDATA_LINK_SELF);
  *	batch_link = gdata_feed_look_up_link (contacts_feed, GDATA_LINK_BATCH);
  *
  *	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_link_get_uri (batch_link));
  *
  *	/<!-- -->* Add to the operation to insert a new contact and query for another one *<!-- -->/
  *	op_id = gdata_batch_operation_add_insertion (operation, GDATA_ENTRY (contact), insertion_cb, user_data);
- *	op_id2 = gdata_batch_operation_add_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_CONTACTS_CONTACT, query_cb, user_data);
+ *	op_id2 = gdata_batch_operation_add_query (operation, gdata_entry_get_id (other_contact), GDATA_TYPE_CONTACTS_CONTACT, query_cb, user_data);
  *
  *	g_object_unref (contact);
  *	g_object_unref (service);
@@ -513,17 +511,26 @@ run_cb (gpointer key, BatchOperation *op, GDataFeed *feed)
 	if (op->type == GDATA_BATCH_OPERATION_QUERY) {
 		/* Queries are weird; build a new throwaway entry, and add it to the feed */
 		GDataEntry *entry;
+		GDataEntryClass *klass;
+		gchar *entry_uri;
 		GTimeVal updated;
 
 		g_get_current_time (&updated);
 
-		entry = gdata_entry_new (op->query_id);
+		klass = g_type_class_ref (op->entry_type);
+		g_assert (klass->get_entry_uri != NULL);
+
+		entry_uri = klass->get_entry_uri (op->query_id);
+		entry = gdata_entry_new (entry_uri);
+		g_free (entry_uri);
+
 		gdata_entry_set_title (entry, "Batch operation query");
 		_gdata_entry_set_updated (entry, &updated);
 
 		_gdata_entry_set_batch_data (entry, op->id, op->type);
 		_gdata_feed_add_entry (feed, entry);
 
+		g_type_class_unref (klass);
 		g_object_unref (entry);
 	} else {
 		/* Everything else just dumps the entry's XML in the request */

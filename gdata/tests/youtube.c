@@ -950,7 +950,6 @@ test_batch (BatchData *data, gconstpointer service)
 {
 	GDataBatchOperation *operation;
 	GDataService *service2;
-	GDataLink *self_link;
 	gchar *feed_uri;
 	guint op_id, op_id2;
 	GError *error = NULL;
@@ -975,8 +974,7 @@ test_batch (BatchData *data, gconstpointer service)
 	g_free (feed_uri);
 
 	/* Run a singleton batch operation to query one of the entries */
-	self_link = gdata_entry_look_up_link (data->new_video, GDATA_LINK_SELF);
-	gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, NULL);
+	gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, NULL);
 
 	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -986,9 +984,10 @@ test_batch (BatchData *data, gconstpointer service)
 
 	/* Run another batch operation to query the two entries */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://gdata.youtube.com/feeds/api/videos/batch");
-	op_id = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, NULL);
-	self_link = gdata_entry_look_up_link (data->new_video2, GDATA_LINK_SELF);
-	op_id2 = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video2, NULL, NULL);
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL,
+	                                          NULL);
+	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video2), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video2, NULL,
+	                                           NULL);
 	g_assert_cmpuint (op_id, !=, op_id2);
 
 	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
@@ -1014,15 +1013,13 @@ static void
 test_batch_async (BatchData *data, gconstpointer service)
 {
 	GDataBatchOperation *operation;
-	GDataLink *self_link;
 	guint op_id;
 	GMainLoop *main_loop;
 
 	/* Run an async query operation on the video */
-	self_link = gdata_entry_look_up_link (data->new_video, GDATA_LINK_SELF);
-
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://gdata.youtube.com/feeds/api/videos/batch");
-	op_id = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, NULL);
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL,
+	                                          NULL);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -1048,16 +1045,14 @@ static void
 test_batch_async_cancellation (BatchData *data, gconstpointer service)
 {
 	GDataBatchOperation *operation;
-	GDataLink *self_link;
 	guint op_id;
 	GMainLoop *main_loop;
 	GCancellable *cancellable;
 
 	/* Run an async query operation on the video */
-	self_link = gdata_entry_look_up_link (data->new_video, GDATA_LINK_SELF);
-
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://gdata.youtube.com/feeds/api/videos/batch");
-	op_id = gdata_test_batch_operation_query (operation, gdata_link_get_uri (self_link), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, NULL);
+	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL,
+	                                          NULL);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 	cancellable = g_cancellable_new ();
