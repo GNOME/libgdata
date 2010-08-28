@@ -213,7 +213,7 @@ msgstr "Codul de eroare %u a intervenit în timpul încărcării: %s"
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:518
-#, fuzzy, c-format
+#, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr ""
 "Codul de eroare %u a intervenit în timpul rulării unei operații pe loturi: %s"
@@ -361,7 +361,6 @@ msgstr ""
 "a interoga toate albumele."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:350
-#, fuzzy
 msgid "The album did not have a feed link."
 msgstr "Albumul nu a avut o legătură către un flux."
 
