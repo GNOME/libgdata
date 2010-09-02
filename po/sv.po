@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-05 17:34+0200\n"
-"PO-Revision-Date: 2010-08-06 14:53+0100\n"
+"POT-Creation-Date: 2010-09-03 00:32+0200\n"
+"PO-Revision-Date: 2010-09-03 00:33+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -24,14 +24,14 @@ msgid "The owner's rule may not be deleted."
 msgstr "Ägarens regel får inte tas bort."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:186
-#: ../gdata/gdata-parsable.c:197
+#: ../gdata/gdata-parsable.c:245
+#: ../gdata/gdata-parsable.c:256
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Fel vid tolkning av XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:199
+#: ../gdata/gdata-parsable.c:258
 msgid "Empty document."
 msgstr "Tomt dokument."
 
@@ -113,158 +113,158 @@ msgstr "Ett nödvändigt element (%s) hittades inte."
 msgid "A singleton element (%s) was duplicated."
 msgstr "Ett singleton-element (%s) var duplicerat."
 
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:393
 #: ../gdata/services/youtube/gdata-youtube-service.c:234
 msgid "The server returned a malformed response."
 msgstr "Servern returnerade ett felformulerat svar."
 
-#: ../gdata/gdata-service.c:433
+#: ../gdata/gdata-service.c:434
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Kan inte ansluta till tjänstens server."
 
-#: ../gdata/gdata-service.c:438
+#: ../gdata/gdata-service.c:439
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Kan inte ansluta till proxyservern."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:444
+#: ../gdata/gdata-service.c:445
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "Ogiltig URI-begäran eller rubrik, eller icke-standardparameter som inte stöds: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:450
+#: ../gdata/gdata-service.c:451
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Autentisering krävs: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:455
+#: ../gdata/gdata-service.c:456
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Den begärda resursen kunde inte hittas: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:461
+#: ../gdata/gdata-service.c:462
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Objektet har ändrats sedan den hämtades: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:475
+#: ../gdata/gdata-service.c:476
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Felkod %u vid autentisering: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:481
+#: ../gdata/gdata-service.c:482
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Felkod %u vid fråga: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:487
+#: ../gdata/gdata-service.c:488
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Felkod %u vid infogning av ett objekt: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:493
+#: ../gdata/gdata-service.c:494
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Felkod %u vid uppdatering av ett objekt: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:499
+#: ../gdata/gdata-service.c:500
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Felkod %u vid borttagning av ett objekt: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:505
+#: ../gdata/gdata-service.c:506
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Felkod %u vid hämtning: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:511
+#: ../gdata/gdata-service.c:512
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Felkod %u vid sändning: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:517
+#: ../gdata/gdata-service.c:518
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Felkod %u vid körning av en satsoperation: %s"
 
-#: ../gdata/gdata-service.c:642
+#: ../gdata/gdata-service.c:643
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "En CAPTCHA måste fyllas i för att logga in."
 
-#: ../gdata/gdata-service.c:666
+#: ../gdata/gdata-service.c:667
 msgid "Your username or password were incorrect."
 msgstr "Ditt användarnamn eller lösenord var felaktigt."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:685
+#: ../gdata/gdata-service.c:686
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "E-postadressen för ditt konto har ännu inte verifierats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:690
+#: ../gdata/gdata-service.c:691
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Du har inte godkänt tjänstens villkor. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:696
+#: ../gdata/gdata-service.c:697
 #, c-format
 msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
 msgstr "Detta konto har migrerats. Logga in på nätet för att få ditt nya användarnamn och lösenord. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:701
+#: ../gdata/gdata-service.c:702
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Detta konto har tagits bort. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:706
+#: ../gdata/gdata-service.c:707
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Detta konto har inaktiverats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:711
+#: ../gdata/gdata-service.c:712
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Åtkomsten för detta konto till denna tjänst har inaktiverats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:716
+#: ../gdata/gdata-service.c:717
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Denna tjänst är inte tillgänglig för tillfället. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:987
+#: ../gdata/gdata-service.c:988
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ogiltig URI för omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1580
+#: ../gdata/gdata-service.c:1581
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:606
 #: ../gdata/services/youtube/gdata-youtube-service.c:692
@@ -277,58 +277,54 @@ msgstr "Objektet har redan infogats."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:320
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:341
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Innehållet för ett %s-element (\"%s\") var inte i hexadecimalt RGB-format."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:110
-#: ../gdata/services/calendar/gdata-calendar-service.c:155
+#: ../gdata/services/calendar/gdata-calendar-service.c:111
+#: ../gdata/services/calendar/gdata-calendar-service.c:156
 msgid "You must be authenticated to query all calendars."
 msgstr "Du måste vara autentiserad för att söka i alla kalendrar."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:197
-#: ../gdata/services/calendar/gdata-calendar-service.c:242
-#: ../gdata/services/calendar/gdata-calendar-service.c:284
+#: ../gdata/services/calendar/gdata-calendar-service.c:198
+#: ../gdata/services/calendar/gdata-calendar-service.c:243
+#: ../gdata/services/calendar/gdata-calendar-service.c:285
 msgid "You must be authenticated to query your own calendars."
 msgstr "Du måste vara autentiserad för att söka i dina egna kalendrar."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:293
-msgid "The calendar did not have a content source."
-msgstr "Kalendern saknade en innehållskälla."
+#: ../gdata/services/calendar/gdata-calendar-service.c:294
+msgid "The calendar did not have a content URI."
+msgstr "Kalendern saknade en innehålls-URI."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:116
 #: ../gdata/services/contacts/gdata-contacts-service.c:162
 msgid "You must be authenticated to query contacts."
 msgstr "Du måste vara autentiserad för att fråga efter kontakter."
 
-#: ../gdata/services/documents/gdata-documents-entry.c:622
-msgid "You must be authenticated to download documents."
-msgstr "Du måste vara autentiserad för att hämta dokument."
-
-#: ../gdata/services/documents/gdata-documents-service.c:199
-#: ../gdata/services/documents/gdata-documents-service.c:250
+#: ../gdata/services/documents/gdata-documents-service.c:200
+#: ../gdata/services/documents/gdata-documents-service.c:251
 msgid "You must be authenticated to query documents."
 msgstr "Du måste vara autentiserad för att fråga efter dokument."
 
-#: ../gdata/services/documents/gdata-documents-service.c:344
+#: ../gdata/services/documents/gdata-documents-service.c:343
 msgid "The supplied document had an invalid content type."
 msgstr "Det angivna dokumentet hade en ogiltig innehållstyp."
 
-#: ../gdata/services/documents/gdata-documents-service.c:431
+#: ../gdata/services/documents/gdata-documents-service.c:433
 msgid "You must be authenticated to upload documents."
 msgstr "Du måste vara autentiserad för att skicka upp dokument."
 
-#: ../gdata/services/documents/gdata-documents-service.c:437
+#: ../gdata/services/documents/gdata-documents-service.c:439
 msgid "The document has already been uploaded."
 msgstr "Dokumentet har redan skickats upp."
 
-#: ../gdata/services/documents/gdata-documents-service.c:488
+#: ../gdata/services/documents/gdata-documents-service.c:490
 msgid "You must be authenticated to update documents."
 msgstr "Du måste vara autentiserad för att uppdatera dokument."
 
-#: ../gdata/services/documents/gdata-documents-service.c:536
-#: ../gdata/services/documents/gdata-documents-service.c:610
+#: ../gdata/services/documents/gdata-documents-service.c:538
+#: ../gdata/services/documents/gdata-documents-service.c:612
 msgid "You must be authenticated to move documents."
 msgstr "Du måste vara autentiserad för att flytta dokument."
 
@@ -405,4 +401,7 @@ msgstr "Videoklippet hade inga relaterade videoklipp <link>."
 #: ../gdata/services/youtube/gdata-youtube-service.c:698
 msgid "You must be authenticated to upload a video."
 msgstr "Du måste vara autentiserad för att skicka upp en video."
+
+#~ msgid "You must be authenticated to download documents."
+#~ msgstr "Du måste vara autentiserad för att hämta dokument."
 
