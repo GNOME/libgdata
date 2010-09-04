@@ -917,7 +917,15 @@ get_user_defined_field_xml_cb (const gchar *name, const gchar *value, GString *x
 static void
 get_group_xml_cb (const gchar *href, gpointer deleted, GString *xml_string)
 {
-	g_string_append_printf (xml_string, "<gContact:groupMembershipInfo href='%s'/>", href);
+	gchar *full_pos, *uri = g_strdup (href);
+
+	/* The service API sometimes stubbornly insists on using the "full" view instead of the "base" view, which we have
+	 * to fix, or it complains about an invalid group ID. */
+	full_pos = strstr (uri, "/full/");
+	if (full_pos != NULL)
+		memcpy ((char*) full_pos, "/base/", 6);
+
+	g_string_append_printf (xml_string, "<gContact:groupMembershipInfo href='%s'/>", uri);
 }
 
 static void
