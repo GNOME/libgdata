@@ -1093,7 +1093,7 @@ gdata_contacts_contact_add_group (GDataContactsContact *self, const gchar *href)
 {
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (href != NULL);
-	g_hash_table_insert (self->priv->groups, (gchar*) href, GUINT_TO_POINTER (FALSE));
+	g_hash_table_insert (self->priv->groups, g_strdup (href), GUINT_TO_POINTER (FALSE));
 }
 
 /**
