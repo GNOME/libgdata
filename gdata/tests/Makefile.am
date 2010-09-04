@@ -3,7 +3,7 @@ include $(top_srcdir)/gtester.mk
 INCLUDES = \
 	-I$(top_srcdir)/				\
 	-I$(top_srcdir)/gdata				\
-	$(GDK_CFLAGS)					\
+	$(GDK_PIXBUF_CFLAGS)				\
 	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\""\
 	-DG_LOG_DOMAIN=\"libgdata\"			\
 	$(DISABLE_DEPRECATED)				\
@@ -12,7 +12,7 @@ INCLUDES = \
 
 LIBS = \
 	$(top_builddir)/gdata/libgdata.la	\
-	$(GDK_LIBS)				\
+	$(GDK_PIXBUF_LIBS)			\
 	$(GDATA_LIBS)
 
 noinst_PROGRAMS = $(TEST_PROGS)

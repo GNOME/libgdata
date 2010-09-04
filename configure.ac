@@ -60,13 +60,13 @@ AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
 # Optional dependencies
-PKG_CHECK_MODULES(GDK, gdk-2.0, have_gdk=yes, have_gdk=no)
-if test "x$have_gdk" = "xyes"; then
-	AC_DEFINE(HAVE_GDK, 1, [Defined if GDK+ is installed])
+PKG_CHECK_MODULES(GDK_PIXBUF, gdk-pixbuf-2.0, have_gdk_pixbuf=yes, have_gdk_pixbuf=no)
+if test "x$have_gdk_pixbuf" = "xyes"; then
+	AC_DEFINE(HAVE_GDK_PIXBUF, 1, [Defined if gdk-pixbuf is installed])
 fi
 
-AC_SUBST(GDK_CFLAGS)
-AC_SUBST(GDK_LIBS)
+AC_SUBST(GDK_PIXBUF_CFLAGS)
+AC_SUBST(GDK_PIXBUF_LIBS)
 
 # GNOME support, which pulls in libsoup-gnome-2.4 to provide transparent proxy support
 AC_MSG_CHECKING(whether to build with GNOME support)

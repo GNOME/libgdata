@@ -24,7 +24,7 @@
 #include <config.h>
 
 /* For the thumbnail size tests in test_download_thumbnails() */
-#ifdef HAVE_GDK
+#ifdef HAVE_GDK_PIXBUF
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #endif
 
@@ -360,16 +360,16 @@ test_download_thumbnails (gconstpointer _service)
 
 	/* test getting all thumbnails and that they're all the correct size */
 	for (node = thumbnails; node != NULL; node = node->next) {
-#ifdef HAVE_GDK
+#ifdef HAVE_GDK_PIXBUF
 		GdkPixbuf *pixbuf;
-#endif /* HAVE_GDK */
+#endif /* HAVE_GDK_PIXBUF */
 
 		thumbnail = GDATA_MEDIA_THUMBNAIL (node->data);
 		actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
 		g_assert_no_error (error);
 		g_assert (g_file_query_exists (actual_file, NULL));
 
-#ifdef HAVE_GDK
+#ifdef HAVE_GDK_PIXBUF
 		file_path = g_file_get_path (actual_file);
 		pixbuf = gdk_pixbuf_new_from_file (file_path, &error);
 		g_assert_no_error (error);
@@ -379,7 +379,7 @@ test_download_thumbnails (gconstpointer _service)
 		g_assert_cmpint (abs (gdk_pixbuf_get_width (pixbuf) - (gint)gdata_media_thumbnail_get_width (thumbnail)) , <=, 1);
 		g_assert_cmpint (abs (gdk_pixbuf_get_height (pixbuf) - (gint)gdata_media_thumbnail_get_height (thumbnail)) , <=, 1);
 		g_object_unref (pixbuf);
-#endif /* HAVE_GDK */
+#endif /* HAVE_GDK_PIXBUF */
 
 		g_file_delete (actual_file, NULL, &error);
 		g_assert (g_file_query_exists (actual_file, NULL) == FALSE);
