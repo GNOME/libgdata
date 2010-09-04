@@ -840,8 +840,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				return gdata_parser_error_required_property_missing (node, "href", error);
 
 			/* Has it been deleted? */
-			if (gdata_parser_boolean_from_property (node, "deleted", &deleted_bool, 0, error) == FALSE)
+			if (gdata_parser_boolean_from_property (node, "deleted", &deleted_bool, 0, error) == FALSE) {
+				xmlFree (href);
 				return FALSE;
+			}
 
 			/* Insert it into the hash table */
 			g_hash_table_insert (self->priv->groups, (gchar*) href, GUINT_TO_POINTER (deleted_bool));
