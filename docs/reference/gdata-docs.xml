@@ -129,6 +129,7 @@
 			<xi:include href="xml/gdata-contacts-service.xml"/>
 			<xi:include href="xml/gdata-contacts-query.xml"/>
 			<xi:include href="xml/gdata-contacts-contact.xml"/>
+			<xi:include href="xml/gdata-contacts-group.xml"/>
 		</chapter>
 
 		<chapter>

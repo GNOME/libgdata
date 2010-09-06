@@ -2108,3 +2108,31 @@ GDATA_BATCHABLE_GET_IFACE
 GDATA_IS_BATCHABLE
 GDATA_TYPE_BATCHABLE
 </SECTION>
+
+<SECTION>
+<FILE>gdata-contacts-group</FILE>
+<TITLE>GDataContactsGroup</TITLE>
+GDATA_CONTACTS_GROUP_CONTACTS
+GDATA_CONTACTS_GROUP_FRIENDS
+GDATA_CONTACTS_GROUP_FAMILY
+GDATA_CONTACTS_GROUP_COWORKERS
+GDataContactsGroup
+GDataContactsGroupClass
+gdata_contacts_group_new
+gdata_contacts_group_get_edited
+gdata_contacts_group_is_deleted
+gdata_contacts_group_get_system_group_id
+gdata_contacts_group_get_extended_property
+gdata_contacts_group_get_extended_properties
+gdata_contacts_group_set_extended_property
+<SUBSECTION Standard>
+GDATA_CONTACTS_GROUP
+GDATA_IS_CONTACTS_GROUP
+GDATA_TYPE_CONTACTS_GROUP
+gdata_contacts_group_get_type
+GDATA_CONTACTS_GROUP_GET_CLASS
+GDATA_CONTACTS_GROUP_CLASS
+GDATA_IS_CONTACTS_GROUP_CLASS
+<SUBSECTION Private>
+GDataContactsGroupPrivate
+</SECTION>

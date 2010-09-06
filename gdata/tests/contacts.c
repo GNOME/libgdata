@@ -25,7 +25,7 @@
 #include "common.h"
 
 static void
-check_kind (GDataEntry *entry)
+check_kind (GDataEntry *entry, const gchar *expected_kind)
 {
 	GList *list;
 	gboolean has_kind = FALSE;
@@ -35,7 +35,7 @@ check_kind (GDataEntry *entry)
 		GDataCategory *category = GDATA_CATEGORY (list->data);
 
 		if (g_strcmp0 (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
-			g_assert_cmpstr (gdata_category_get_term (category), ==, "http://schemas.google.com/contact/2008#contact");
+			g_assert_cmpstr (gdata_category_get_term (category), ==, expected_kind);
 			has_kind = TRUE;
 		}
 	}
@@ -61,7 +61,7 @@ get_contact (gconstpointer service)
 	g_assert (entries != NULL);
 	entry = entries->data;
 	g_assert (GDATA_IS_CONTACTS_CONTACT (entry));
-	check_kind (entry);
+	check_kind (entry, "http://schemas.google.com/contact/2008#contact");
 
 	g_object_ref (entry);
 	g_object_unref (feed);
@@ -177,7 +177,7 @@ test_insert_simple (gconstpointer service)
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact));
+	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
 
 	/* Set and check the name (to check if the title of the entry is updated) */
 	gdata_entry_set_title (GDATA_ENTRY (contact), "Elizabeth Bennet");
@@ -396,7 +396,7 @@ test_insert_simple (gconstpointer service)
 	new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
-	check_kind (GDATA_ENTRY (new_contact));
+	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
 	g_clear_error (&error);
 
 	/* Check its edited date */
@@ -587,7 +587,7 @@ test_update_simple (gconstpointer service)
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact));
+	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
 
 	/* Update the contact's name and add an extended property */
 	gdata_entry_set_title (GDATA_ENTRY (contact), "John Wilson");
@@ -597,7 +597,7 @@ test_update_simple (gconstpointer service)
 	new_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (contact), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
-	check_kind (GDATA_ENTRY (new_contact));
+	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
 	g_clear_error (&error);
 
 	/* Check a few properties */
@@ -744,7 +744,7 @@ test_parser_minimal (void)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact));
+	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
 	g_clear_error (&error);
 
 	/* Check the contact's properties */
@@ -845,7 +845,7 @@ test_parser_normal (void)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact));
+	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
 	g_clear_error (&error);
 
 	/* TODO: Check the other properties */
@@ -1138,6 +1138,118 @@ test_parser_error_handling (void)
 }
 
 static void
+test_groups_parser_normal (void)
+{
+	GDataContactsGroup *group;
+	GHashTable *properties;
+	GError *error = NULL;
+
+	group = GDATA_CONTACTS_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_GROUP,
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gContact='http://schemas.google.com/contact/2008' "
+		       "gd:etag='&quot;Rno4ezVSLyp7ImA9WxdTEUgNRQU.&quot;'>"
+			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/>"
+			"<id>http://www.google.com/feeds/groups/jo%40gmail.com/base/1234</id>"
+			"<published>2005-01-18T21:00:00Z</published>"
+			"<updated>2006-01-01T00:00:00Z</updated>"
+			"<app:edited xmlns:app='http://www.w3.org/2007/app'>2006-01-01T00:00:00Z</app:edited>"
+			"<title>Salsa class members</title>"
+			"<content/>"
+			"<link rel='self' type='application/atom+xml' href='http://www.google.com/m8/feeds/groups/jo%40gmail.com/full/1234'/>"
+			"<link rel='edit' type='application/atom+xml' href='http://www.google.com/m8/feeds/groups/jo%40gmail.com/full/1234'/>"
+			"<gd:extendedProperty name='more info'>Some text.</gd:extendedProperty>"
+			"<gd:extendedProperty name='extra info'>"
+				"<xml>Foobar.</xml>"
+			"</gd:extendedProperty>"
+			"<gd:deleted/>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_GROUP (group));
+	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+	g_clear_error (&error);
+
+	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, 1136073600);
+	g_assert (gdata_contacts_group_is_deleted (group) == TRUE);
+	g_assert (gdata_contacts_group_get_system_group_id (group) == NULL);
+
+	g_assert_cmpstr (gdata_contacts_group_get_extended_property (group, "more info"), ==, "Some text.");
+	g_assert_cmpstr (gdata_contacts_group_get_extended_property (group, "extra info"), ==, "<xml>Foobar.</xml>");
+
+	properties = gdata_contacts_group_get_extended_properties (group);
+	g_assert_cmpint (g_hash_table_size (properties), ==, 2);
+
+	g_object_unref (group);
+}
+
+static void
+test_groups_parser_system (void)
+{
+	GDataContactsGroup *group;
+	GError *error = NULL;
+
+	group = GDATA_CONTACTS_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_GROUP,
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gContact='http://schemas.google.com/contact/2008' "
+		       "gd:etag='&quot;Rno4ezVSLyp7ImA9WxdTEUgNRQU.&quot;'>"
+			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/>"
+			"<id>http://www.google.com/feeds/groups/jo%40gmail.com/base/1234</id>"
+			"<published>2005-01-18T21:00:00Z</published>"
+			"<updated>2006-01-01T00:00:00Z</updated>"
+			"<app:edited xmlns:app='http://www.w3.org/2007/app'>2006-01-01T00:00:00Z</app:edited>"
+			"<title>Salsa class members</title>"
+			"<content/>"
+			"<link rel='self' type='application/atom+xml' href='http://www.google.com/m8/feeds/groups/jo%40gmail.com/full/1234'/>"
+			"<link rel='edit' type='application/atom+xml' href='http://www.google.com/m8/feeds/groups/jo%40gmail.com/full/1234'/>"
+			"<gContact:systemGroup id='Contacts'/>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_GROUP (group));
+	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+	g_clear_error (&error);
+
+	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, 1136073600);
+	g_assert (gdata_contacts_group_is_deleted (group) == FALSE);
+	g_assert_cmpstr (gdata_contacts_group_get_system_group_id (group), ==, GDATA_CONTACTS_GROUP_CONTACTS);
+
+	g_object_unref (group);
+}
+
+static void
+test_groups_parser_error_handling (void)
+{
+	GDataContactsGroup *group;
+	GError *error = NULL;
+
+#define TEST_XML_ERROR_HANDLING(x) \
+	group = GDATA_CONTACTS_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_GROUP,\
+		"<entry xmlns='http://www.w3.org/2005/Atom' "\
+		       "xmlns:gd='http://schemas.google.com/g/2005' "\
+		       "xmlns:gContact='http://schemas.google.com/contact/2008'>"\
+			x\
+		"</entry>", -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (group == NULL);\
+	g_clear_error (&error)
+
+	/* app:edited */
+	TEST_XML_ERROR_HANDLING ("<app:edited xmlns:app='http://www.w3.org/2007/app'>this shouldn't parse</app:edited>");
+
+	/* gd:deleted */
+	TEST_XML_ERROR_HANDLING ("<gd:deleted/><gd:deleted/>");
+
+	/* gd:extendedProperty */
+	TEST_XML_ERROR_HANDLING ("<gd:extendedProperty/>");
+
+	/* gContact:systemGroup */
+	TEST_XML_ERROR_HANDLING ("<gContact:systemGroup/>");
+	TEST_XML_ERROR_HANDLING ("<gContact:systemGroup id='foo'/><gContact:systemGroup id='duplicated'/>");
+
+#undef TEST_XML_ERROR_HANDLING
+}
+
+static void
 test_photo_has_photo (gconstpointer service)
 {
 	GDataContactsContact *contact;
@@ -1157,7 +1269,7 @@ test_photo_has_photo (gconstpointer service)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact));
+	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
 	g_clear_error (&error);
 
 	/* Check for no photo */
@@ -1185,7 +1297,7 @@ test_photo_has_photo (gconstpointer service)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact));
+	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
 	g_clear_error (&error);
 
 	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
@@ -1538,6 +1650,10 @@ main (int argc, char *argv[])
 	g_test_add_func ("/contacts/parser/minimal", test_parser_minimal);
 	g_test_add_func ("/contacts/parser/normal", test_parser_normal);
 	g_test_add_func ("/contacts/parser/error_handling", test_parser_error_handling);
+
+	g_test_add_func ("/contacts/groups/parser/normal", test_groups_parser_normal);
+	g_test_add_func ("/contacts/groups/parser/system", test_groups_parser_system);
+	g_test_add_func ("/contacts/groups/parser/error_handling", test_groups_parser_error_handling);
 
 	g_test_add_func ("/contacts/id", test_id);
 

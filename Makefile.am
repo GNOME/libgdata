@@ -230,6 +230,7 @@ gdatacontactsincludedir = $(gdataincludedir)/services/contacts
 gdatacontactsinclude_HEADERS = \
 	gdata/services/contacts/gdata-contacts-service.h	\
 	gdata/services/contacts/gdata-contacts-contact.h	\
+	gdata/services/contacts/gdata-contacts-group.h		\
 	gdata/services/contacts/gdata-contacts-query.h
 
 gdatadocumentsincludedir = $(gdataincludedir)/services/documents
@@ -337,6 +338,7 @@ gdata_sources = \
 	\
 	gdata/services/contacts/gdata-contacts-service.c	\
 	gdata/services/contacts/gdata-contacts-contact.c	\
+	gdata/services/contacts/gdata-contacts-group.c		\
 	gdata/services/contacts/gdata-contacts-query.c		\
 	\
 	gdata/services/documents/gdata-documents-service.c	\
