@@ -75,8 +75,6 @@ void gdata_contacts_service_query_contacts_async (GDataContactsService *self, GD
 
 GDataContactsContact *gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContactsContact *contact,
                                                              GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-GDataContactsContact *gdata_contacts_service_update_contact (GDataContactsService *self, GDataContactsContact *contact,
-                                                             GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

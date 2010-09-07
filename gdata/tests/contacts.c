@@ -595,7 +595,7 @@ test_update_simple (gconstpointer service)
 	g_assert (gdata_contacts_contact_set_extended_property (contact, "contact-test", "value"));
 
 	/* Update the contact */
-	new_contact = gdata_contacts_service_update_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
+	new_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (contact), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
 	check_kind (GDATA_ENTRY (new_contact));
