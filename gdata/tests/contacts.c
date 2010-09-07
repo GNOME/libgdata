@@ -579,6 +579,38 @@ test_insert_simple (gconstpointer service)
 }
 
 static void
+test_update_simple (gconstpointer service)
+{
+	GDataContactsContact *contact, *new_contact;
+	GError *error = NULL;
+
+	contact = get_contact (service);
+
+	/* Check the kind is present and correct */
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	check_kind (GDATA_ENTRY (contact));
+
+	/* Update the contact's name and add an extended property */
+	gdata_entry_set_title (GDATA_ENTRY (contact), "John Wilson");
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "contact-test", "value"));
+
+	/* Update the contact */
+	new_contact = gdata_contacts_service_update_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
+	check_kind (GDATA_ENTRY (new_contact));
+	g_clear_error (&error);
+
+	/* Check a few properties */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_contact)), ==, "John Wilson");
+	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "contact-test"), ==, "value");
+	g_assert (gdata_contacts_contact_is_deleted (new_contact) == FALSE);
+
+	g_object_unref (contact);
+	g_object_unref (new_contact);
+}
+
+static void
 test_query_uri (void)
 {
 	gchar *query_uri;
@@ -1484,6 +1516,7 @@ main (int argc, char *argv[])
 		g_test_add_func ("/contacts/authentication", test_authentication);
 
 		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
+		g_test_add_data_func ("/contacts/update/simple", service, test_update_simple);
 
 		g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
 		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
