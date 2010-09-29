@@ -47,7 +47,7 @@ gdata_g_time_val_get_type (void)
 	static GType type_id = 0;
 
 	if (type_id == 0) {
-		type_id = g_boxed_type_register_static (g_intern_static_string ("GTimeVal"),
+		type_id = g_boxed_type_register_static (g_intern_static_string ("GDataTimeVal"),
 		                                        (GBoxedCopyFunc) gdata_g_time_val_copy,
 		                                        (GBoxedFreeFunc) g_free);
 	}
