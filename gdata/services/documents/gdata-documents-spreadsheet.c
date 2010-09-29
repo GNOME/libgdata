@@ -94,7 +94,7 @@ gdata_documents_spreadsheet_new (const gchar *id)
  * gdata_documents_spreadsheet_get_download_uri:
  * @self: a #GDataDocumentsSpreadsheet
  * @export_format: the format in which the spreadsheet should be exported when downloaded
- * @gid: (default -1): the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
+ * @gid: the <code class="literal">0</code>-based sheet ID to download, or <code class="literal">-1</code>
  *
  * Builds and returns the download URI for the given #GDataDocumentsSpreadsheet in the desired format. Note that directly downloading
  * the document using this URI isn't possible, as authentication is required. You should instead use gdata_download_stream_new() with
