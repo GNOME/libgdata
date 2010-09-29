@@ -34,9 +34,9 @@ gdata/gdata-enums.h: $(gdata_headers) Makefile
 			--fhead "#ifndef GDATA_ENUMS_H\n#define GDATA_ENUMS_H\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
-			--ftail "G_END_DECLS\n\n#endif /* !GDATA_ENUMS_H */" $(addprefix $(srcdir)/,$(gdata_headers)) > $@.tmp \
-	&& sed "s/g_data/gdata/" $@.tmp > $@ \
-	&& rm -f $@.tmp)
+			--ftail "G_END_DECLS\n\n#endif /* !GDATA_ENUMS_H */" $(addprefix $(srcdir)/,$(gdata_headers)) > gdata/gdata-enums.h.tmp \
+	&& sed "s/g_data/gdata/" gdata/gdata-enums.h.tmp > gdata/gdata-enums.h \
+	&& rm -f gdata/gdata-enums.h.tmp)
 
 gdata/gdata-enums.c: $(gdata_headers) Makefile gdata/gdata-enums.h
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -45,9 +45,9 @@ gdata/gdata-enums.c: $(gdata_headers) Makefile gdata/gdata-enums.h
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(addprefix $(srcdir)/,$(gdata_headers)) > $@.tmp \
-	&& sed "s/g_data/gdata/" $@.tmp > $@ \
-	&& rm -f $@.tmp)
+		$(addprefix $(srcdir)/,$(gdata_headers)) > gdata/gdata-enums.c.tmp \
+	&& sed "s/g_data/gdata/" gdata/gdata-enums.c.tmp > gdata/gdata-enums.c \
+	&& rm -f gdata/gdata-enums.c.tmp)
 
 gdata/media/gdata-media-enums.h: $(gdata_media_headers) Makefile
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -55,11 +55,11 @@ gdata/media/gdata-media-enums.h: $(gdata_media_headers) Makefile
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* !GDATA_MEDIA_ENUMS_H */" \
-		$(addprefix $(srcdir)/,$(gdata_media_headers)) > $@.tmp \
-	&& sed "s/g_data/gdata/" $@.tmp > $@.tmp2 \
-	&& sed "s/GDATA_TYPE_DATA/GDATA_TYPE/" $@.tmp2 > $@ \
-	&& rm -f $@.tmp \
-	&& rm -f $@.tmp2)
+		$(addprefix $(srcdir)/,$(gdata_media_headers)) > gdata/media/gdata-media-enums.h.tmp \
+	&& sed "s/g_data/gdata/" gdata/media/gdata-media-enums.h.tmp > gdata/media/gdata-media-enums.h.tmp2 \
+	&& sed "s/GDATA_TYPE_DATA/GDATA_TYPE/" gdata/media/gdata-media-enums.h.tmp2 > gdata/media/gdata-media-enums.h \
+	&& rm -f gdata/media/gdata-media-enums.h.tmp \
+	&& rm -f gdata/media/gdata-media-enums.h.tmp2)
 
 gdata/media/gdata-media-enums.c: $(gdata_media_headers) Makefile gdata/media/gdata-media-enums.h
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -68,9 +68,9 @@ gdata/media/gdata-media-enums.c: $(gdata_media_headers) Makefile gdata/media/gda
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(addprefix $(srcdir)/,$(gdata_media_headers)) > $@.tmp \
-	&& sed "s/g_data/gdata/" $@.tmp > $@ \
-	&& rm -f $@.tmp)
+		$(addprefix $(srcdir)/,$(gdata_media_headers)) > gdata/media/gdata-media-enums.c.tmp \
+	&& sed "s/g_data/gdata/" gdata/media/gdata-media-enums.c.tmp > gdata/media/gdata-media-enums.c \
+	&& rm -f gdata/media/gdata-media-enums.c.tmp)
 
 gdata/services/documents/gdata-documents-enums.h: $(gdata_documents_headers) Makefile
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -78,9 +78,9 @@ gdata/services/documents/gdata-documents-enums.h: $(gdata_documents_headers) Mak
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* !GDATA_DOCUMENTS_ENUMS_H */" \
-		$(addprefix $(srcdir)/,$(gdata_documents_headers)) > $@.tmp \
-	&& sed "s/g_data/gdata/" $@.tmp > $@ \
-	&& rm -f $@.tmp)
+		$(addprefix $(srcdir)/,$(gdata_documents_headers)) > gdata/services/documents/gdata-documents-enums.h.tmp \
+	&& sed "s/g_data/gdata/" gdata/services/documents/gdata-documents-enums.h.tmp > gdata/services/documents/gdata-documents-enums.h \
+	&& rm -f gdata/services/documents/gdata-documents-enums.h.tmp)
 
 gdata/services/documents/gdata-documents-enums.c: $(gdata_documents_headers) Makefile gdata/services/documents/gdata-documents-enums.h
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -89,9 +89,9 @@ gdata/services/documents/gdata-documents-enums.c: $(gdata_documents_headers) Mak
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(addprefix $(srcdir)/,$(gdata_documents_headers)) > $@.tmp \
-	&& sed "s/g_data/gdata/" $@.tmp > $@ \
-	&& rm -f $@.tmp)
+		$(addprefix $(srcdir)/,$(gdata_documents_headers)) > gdata/services/documents/gdata-documents-enums.c.tmp \
+	&& sed "s/g_data/gdata/" gdata/services/documents/gdata-documents-enums.c.tmp > gdata/services/documents/gdata-documents-enums.c \
+	&& rm -f gdata/services/documents/gdata-documents-enums.c.tmp)
 
 gdata/services/picasaweb/gdata-picasaweb-enums.h: $(gdata_picasaweb_headers) Makefile
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -99,11 +99,11 @@ gdata/services/picasaweb/gdata-picasaweb-enums.h: $(gdata_picasaweb_headers) Mak
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* !GDATA_PICASAWEB_ENUMS_H */" \
-		$(addprefix $(srcdir)/,$(gdata_picasaweb_headers)) > $@.tmp \
-	&& sed "s/g_data_picasa_web/gdata_picasaweb/" $@.tmp > $@.tmp2 \
-	&& sed "s/GDATA_TYPE_DATA_PICASA_WEB/GDATA_TYPE_PICASAWEB/" $@.tmp2 > $@ \
-	&& rm -f $@.tmp \
-	&& rm -f $@.tmp2)
+		$(addprefix $(srcdir)/,$(gdata_picasaweb_headers)) > gdata/services/picasaweb/gdata-picasaweb-enums.h.tmp \
+	&& sed "s/g_data_picasa_web/gdata_picasaweb/" gdata/services/picasaweb/gdata-picasaweb-enums.h.tmp > gdata/services/picasaweb/gdata-picasaweb-enums.h.tmp2 \
+	&& sed "s/GDATA_TYPE_DATA_PICASA_WEB/GDATA_TYPE_PICASAWEB/" gdata/services/picasaweb/gdata-picasaweb-enums.h.tmp2 > gdata/services/picasaweb/gdata-picasaweb-enums.h \
+	&& rm -f gdata/services/picasaweb/gdata-picasaweb-enums.h.tmp \
+	&& rm -f gdata/services/picasaweb/gdata-picasaweb-enums.h.tmp2)
 
 gdata/services/picasaweb/gdata-picasaweb-enums.c: $(gdata_picasaweb_headers) Makefile gdata/services/picasaweb/gdata-picasaweb-enums.h
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -112,9 +112,9 @@ gdata/services/picasaweb/gdata-picasaweb-enums.c: $(gdata_picasaweb_headers) Mak
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(addprefix $(srcdir)/,$(gdata_picasaweb_headers)) > $@.tmp \
-	&& sed "s/g_data_picasa_web/gdata_picasaweb/" $@.tmp > $@ \
-	&& rm -f $@.tmp)
+		$(addprefix $(srcdir)/,$(gdata_picasaweb_headers)) > gdata/services/picasaweb/gdata-picasaweb-enums.c.tmp \
+	&& sed "s/g_data_picasa_web/gdata_picasaweb/" gdata/services/picasaweb/gdata-picasaweb-enums.c.tmp > gdata/services/picasaweb/gdata-picasaweb-enums.c \
+	&& rm -f gdata/services/picasaweb/gdata-picasaweb-enums.c.tmp)
 
 gdata/services/youtube/gdata-youtube-enums.h: $(gdata_youtube_headers) Makefile
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -122,11 +122,11 @@ gdata/services/youtube/gdata-youtube-enums.h: $(gdata_youtube_headers) Makefile
 			--fprod "/* enumerations from \"@filename@\" */\n" \
 			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* !GDATA_YOUTUBE_ENUMS_H */" \
-		$(addprefix $(srcdir)/,$(gdata_youtube_headers)) > $@.tmp \
-	&& sed "s/g_data_you_tube/gdata_youtube/" $@.tmp > $@.tmp2 \
-	&& sed "s/GDATA_TYPE_DATA_YOU_TUBE/GDATA_TYPE_YOUTUBE/" $@.tmp2 > $@ \
-	&& rm -f $@.tmp \
-	&& rm -f $@.tmp2)
+		$(addprefix $(srcdir)/,$(gdata_youtube_headers)) > gdata/services/youtube/gdata-youtube-enums.h.tmp \
+	&& sed "s/g_data_you_tube/gdata_youtube/" gdata/services/youtube/gdata-youtube-enums.h.tmp > gdata/services/youtube/gdata-youtube-enums.h.tmp2 \
+	&& sed "s/GDATA_TYPE_DATA_YOU_TUBE/GDATA_TYPE_YOUTUBE/" gdata/services/youtube/gdata-youtube-enums.h.tmp2 > gdata/services/youtube/gdata-youtube-enums.h \
+	&& rm -f gdata/services/youtube/gdata-youtube-enums.h.tmp \
+	&& rm -f gdata/services/youtube/gdata-youtube-enums.h.tmp2)
 
 gdata/services/youtube/gdata-youtube-enums.c: $(gdata_youtube_headers) Makefile gdata/services/youtube/gdata-youtube-enums.h
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -135,9 +135,9 @@ gdata/services/youtube/gdata-youtube-enums.c: $(gdata_youtube_headers) Makefile 
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		$(addprefix $(srcdir)/,$(gdata_youtube_headers)) > $@.tmp \
-	&& sed "s/g_data_you_tube/gdata_youtube/" $@.tmp > $@ \
-	&& rm -f $@.tmp)
+		$(addprefix $(srcdir)/,$(gdata_youtube_headers)) > gdata/services/youtube/gdata-youtube-enums.c.tmp \
+	&& sed "s/g_data_you_tube/gdata_youtube/" gdata/services/youtube/gdata-youtube-enums.c.tmp > gdata/services/youtube/gdata-youtube-enums.c \
+	&& rm -f gdata/services/youtube/gdata-youtube-enums.c.tmp)
 
 CLEANFILES += $(GDATA_ENUM_FILES)
 
