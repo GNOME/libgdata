@@ -76,7 +76,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
  *
  * Creates a new #GDataDocumentsText with the given entry ID (#GDataEntry:id).
  *
- * Return value: a new #GDataDocumentsText, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a new #GDataDocumentsText, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/

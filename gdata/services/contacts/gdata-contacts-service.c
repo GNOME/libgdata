@@ -94,7 +94,7 @@ gdata_contacts_service_new (const gchar *client_id)
  *
  * For more details, see gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
  * Since: 0.2.0
  **/
@@ -180,7 +180,7 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
  *
  * For more details, see gdata_service_insert_entry().
  *
- * Return value: an updated #GDataContactsContact, or %NULL
+ * Return value: (transfer full): an updated #GDataContactsContact, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
  **/

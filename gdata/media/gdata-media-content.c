@@ -550,7 +550,7 @@ gdata_media_content_get_width (GDataMediaContent *self)
  * downloaded into this directory with the default filename specified
  * in @default_filename.
  *
- * Return value: the content's data, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): the content's data, or %NULL; unref with g_object_unref()
  *
  * Since: 0.6.0
  **/

@@ -1020,7 +1020,7 @@ gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max,
  *
  * Gets the #GDataYouTubeVideo:keywords property.
  *
- * Return value: (array zero-terminated=1): a %NULL-terminated array of words associated with the video
+ * Return value: (array zero-terminated=1) (transfer none): a %NULL-terminated array of words associated with the video
  **/
 const gchar * const *
 gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)

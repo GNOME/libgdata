@@ -95,7 +95,7 @@ notify_content_type_cb (GDataDownloadStream *download_stream, GParamSpec *pspec,
  *
  * If there is an error getting the document, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
- * Return value: a #GFile pointing to the downloaded document, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GFile pointing to the downloaded document, or %NULL; unref with g_object_unref()
  *
  * Since: 0.7.0
  **/

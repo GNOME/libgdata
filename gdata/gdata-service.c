@@ -1103,7 +1103,7 @@ gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery
  *
  * Finishes an asynchronous query operation started with gdata_service_query_async().
  *
- * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results, or %NULL; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GError **error)
@@ -1210,7 +1210,7 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
  * If the #GDataQuery's ETag is set and it finds a match on the server, %NULL will be returned, but @error will remain unset. Otherwise,
  * @query's ETag will be updated with the ETag from the returned feed, if available.
  *
- * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results, or %NULL; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type,
@@ -1276,7 +1276,7 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
  * bandwidth. If the server does not return anything for this reason, gdata_service_query_single_entry() will return
  * %NULL, but will not set an error in @error.
  *
- * Return value: a #GDataEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.7.0
  **/
@@ -1403,7 +1403,7 @@ gdata_service_query_single_entry_async (GDataService *self, const gchar *entry_i
  *
  * Finishes an asynchronous query operation for a single entry, as started with gdata_service_query_single_entry_async().
  *
- * Return value: a #GDataEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.7.0
  **/
@@ -1511,7 +1511,7 @@ gdata_service_insert_entry_async (GDataService *self, const gchar *upload_uri, G
  *
  * Finishes an asynchronous entry insertion operation started with gdata_service_insert_entry_async().
  *
- * Return value: an updated #GDataEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.3.0
  **/
@@ -1560,7 +1560,7 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
  * If there is an error inserting the entry, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned. Currently, subclasses
  * <emphasis>cannot</emphasis> cannot override this or provide more specific errors.
  *
- * Return value: an updated #GDataEntry, or %NULL
+ * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
  **/
 GDataEntry *
 gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEntry *entry, GCancellable *cancellable, GError **error)
@@ -1673,7 +1673,7 @@ gdata_service_update_entry_async (GDataService *self, GDataEntry *entry, GCancel
  *
  * Finishes an asynchronous entry update operation started with gdata_service_update_entry_async().
  *
- * Return value: an updated #GDataEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.3.0
  **/
@@ -1718,7 +1718,7 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
  * If there is an error updating the entry, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned. Currently, subclasses
  * <emphasis>cannot</emphasis> cannot override this or provide more specific errors.
  *
- * Return value: an updated #GDataEntry, or %NULL
+ * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
  **/

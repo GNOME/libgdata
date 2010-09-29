@@ -59,7 +59,7 @@ gdata_batchable_get_type (void)
  * Creates a new #GDataBatchOperation for the given #GDataBatchable service, and with the given @feed_uri. @feed_uri is normally the %GDATA_LINK_BATCH
  * link URI in the appropriate #GDataFeed from the service.
  *
- * Return value: a new #GDataBatchOperation; unref with g_object_unref()
+ * Return value: (transfer full): a new #GDataBatchOperation; unref with g_object_unref()
  *
  * Since: 0.7.0
  **/

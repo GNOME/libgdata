@@ -449,7 +449,7 @@ standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
  *
  * Parameters and errors are as for gdata_service_query().
  *
- * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results, or %NULL; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTubeStandardFeedType feed_type, GDataQuery *query,
@@ -513,7 +513,7 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
  *
  * Parameters and errors are as for gdata_service_query().
  *
- * Return value: a #GDataFeed of query results, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results, or %NULL; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query,
@@ -576,7 +576,7 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
  * If @video does not have a link with rel value <literal>http://gdata.youtube.com/schemas/2007#video.related</literal>, a
  * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be thrown. Parameters and other errors are as for gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVideo *video, GDataQuery *query,
@@ -667,7 +667,7 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
  * If there is a problem reading @video_file, an error from g_file_load_contents() or g_file_query_info() will be returned. Other errors from
  * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
  *
- * Return value: the inserted #GDataYouTubeVideo with updated properties from @video; unref with g_object_unref()
+ * Return value: (transfer full): the inserted #GDataYouTubeVideo with updated properties from @video; unref with g_object_unref()
  **/
 GDataYouTubeVideo *
 gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, GFile *video_file, GCancellable *cancellable, GError **error)
@@ -784,7 +784,7 @@ gdata_youtube_service_get_youtube_user (GDataYouTubeService *self)
  *
  * The category labels (#GDataCategory:label) are localised based on the value of #GDataService:locale.
  *
- * Return value: a #GDataAPPCategories, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataAPPCategories, or %NULL; unref with g_object_unref()
  *
  * Since: 0.7.0
  **/
@@ -867,7 +867,7 @@ gdata_youtube_service_get_categories_async (GDataYouTubeService *self, GCancella
  *
  * Finishes an asynchronous request for a list of categories on YouTube, as started with gdata_youtube_service_get_categories_async().
  *
- * Return value: a #GDataAPPCategories, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataAPPCategories, or %NULL; unref with g_object_unref()
  *
  * Since: 0.7.0
  **/

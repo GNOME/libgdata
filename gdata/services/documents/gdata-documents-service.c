@@ -177,7 +177,7 @@ gdata_documents_service_new (const gchar *client_id)
  *
  * For more details, see gdata_service_query().
  *
- * Return value: a #GDataDocumentsFeed of query results; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataDocumentsFeed of query results; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
@@ -409,7 +409,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
  * If there is a problem reading @document_file, an error from g_file_load_contents() or g_file_query_info() will be returned. Other errors from
  * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
  *
- * Return value: an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
@@ -469,7 +469,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  *
  * For more details, see gdata_service_insert_entry().
  *
- * Return value: an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
@@ -513,7 +513,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
  *
  * Errors from #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
  *
- * Return value: an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
@@ -588,7 +588,7 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
  *
  * Errors from #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
  *
- * Return value: an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/

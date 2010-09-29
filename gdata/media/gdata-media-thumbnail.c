@@ -377,7 +377,7 @@ gdata_media_thumbnail_get_time (GDataMediaThumbnail *self)
  * downloaded into this directory with the default filename specified
  * in @default_filename.
  *
- * Return value: the thumbnail's data, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): the thumbnail's data, or %NULL; unref with g_object_unref()
  *
  * Since: 0.6.0
  **/
