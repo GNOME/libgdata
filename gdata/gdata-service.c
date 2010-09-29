@@ -1037,7 +1037,7 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
  * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *

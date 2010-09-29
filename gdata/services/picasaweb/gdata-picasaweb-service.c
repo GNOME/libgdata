@@ -156,7 +156,7 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @username: (allow-none): the username of the user whose albums you wish to retrieve, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -263,7 +263,7 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
  * @album: (allow-none): a #GDataPicasaWebAlbum from which to retrieve the files, or %NULL
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *

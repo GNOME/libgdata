@@ -168,7 +168,7 @@ gdata_documents_service_get_property (GObject *object, guint property_id, GValue
  * @self: a #GDataDocumentsService
  * @query: (allow-none): a #GDataDocumentsQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
