@@ -433,7 +433,7 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
 }
 
 /**
- * gdata_youtube_service_query_standard_feed_async:
+ * gdata_youtube_service_query_standard_feed_async: (skip)
  * @self: a #GDataService
  * @feed_type: the feed type to query, from #GDataYouTubeStandardFeedType
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
@@ -486,7 +486,7 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
 }
 
 /**
- * gdata_youtube_service_query_videos_async:
+ * gdata_youtube_service_query_videos_async: (skip)
  * @self: a #GDataService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
@@ -710,7 +710,7 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
 }
 
 /**
- * gdata_youtube_service_query_related_async:
+ * gdata_youtube_service_query_related_async: (skip)
  * @self: a #GDataService
  * @video: a #GDataYouTubeVideo for which to find related videos
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL

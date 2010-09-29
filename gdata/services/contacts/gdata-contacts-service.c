@@ -120,7 +120,7 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
 }
 
 /**
- * gdata_contacts_service_query_contacts_async:
+ * gdata_contacts_service_query_contacts_async: (skip)
  * @self: a #GDataContactsService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
