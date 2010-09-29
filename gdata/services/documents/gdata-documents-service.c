@@ -215,7 +215,7 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 }
 
 /**
- * gdata_documents_service_query_documents_async:
+ * gdata_documents_service_query_documents_async: (skip)
  * @self: a #GDataDocumentsService
  * @query: (allow-none): a #GDataDocumentsQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL

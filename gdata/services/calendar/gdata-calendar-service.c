@@ -121,7 +121,7 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
 }
 
 /**
- * gdata_calendar_service_query_all_calendars_async:
+ * gdata_calendar_service_query_all_calendars_async: (skip)
  * @self: a #GDataCalendarService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
@@ -208,7 +208,7 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
 }
 
 /**
- * gdata_calendar_service_query_own_calendars_async:
+ * gdata_calendar_service_query_own_calendars_async: (skip)
  * @self: a #GDataCalendarService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL

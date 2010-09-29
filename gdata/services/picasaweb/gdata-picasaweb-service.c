@@ -257,7 +257,7 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
 }
 
 /**
- * gdata_picasaweb_service_query_all_albums_async:
+ * gdata_picasaweb_service_query_all_albums_async: (skip)
  * @self: a #GDataPicasaWebService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @username: (allow-none): the username of the user whose albums you wish to retrieve, or %NULL
