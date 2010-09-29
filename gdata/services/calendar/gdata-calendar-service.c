@@ -94,7 +94,7 @@ gdata_calendar_service_new (const gchar *client_id)
  *
  * For more details, see gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
@@ -171,7 +171,7 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
  *
  * For more details, see gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
@@ -247,7 +247,7 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
  *
  * For more details, see gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  **/
 GDataFeed *
 gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCalendar *calendar, GDataQuery *query, GCancellable *cancellable,
@@ -288,7 +288,7 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
  *
  * For more details, see gdata_service_insert_entry().
  *
- * Return value: an updated #GDataCalendarEvent, or %NULL
+ * Return value: (transfer full): an updated #GDataCalendarEvent, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
  **/

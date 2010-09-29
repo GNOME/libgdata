@@ -126,7 +126,7 @@ gdata_documents_spreadsheet_new (const gchar *id)
  *
  * If there is an error getting the document, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
- * Return value: the document's data, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): the document's data, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/

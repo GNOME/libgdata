@@ -591,7 +591,7 @@ gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEma
  *
  * Gets a list of the e-mail addresses owned by the contact.
  *
- * Return value: a #GList of #GDataGDEmailAddress<!-- -->es, or %NULL
+ * Return value: (element-type GData.GDEmailAddress) (transfer none): a #GList of #GDataGDEmailAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -608,7 +608,7 @@ gdata_contacts_contact_get_email_addresses (GDataContactsContact *self)
  *
  * Gets the contact's primary e-mail address, if one exists.
  *
- * Return value: a #GDataGDEmailAddress, or %NULL
+ * Return value: (transfer none): a #GDataGDEmailAddress, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -697,7 +697,7 @@ gdata_contacts_contact_get_im_addresses (GDataContactsContact *self)
  *
  * Gets the contact's primary IM address, if one exists.
  *
- * Return value: a #GDataGDIMAddress, or %NULL
+ * Return value: (transfer none): a #GDataGDIMAddress, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -875,7 +875,7 @@ gdata_contacts_contact_get_postal_addresses (GDataContactsContact *self)
  *
  * Gets the contact's primary postal address, if one exists.
  *
- * Return value: a #GDataGDPostalAddress, or %NULL
+ * Return value: (transfer none): a #GDataGDPostalAddress, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -947,7 +947,7 @@ gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrga
  *
  * Gets a list of the organizations to which the contact belongs.
  *
- * Return value: a #GList of #GDataGDOrganization<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDOrganization) (transfer none): a #GList of #GDataGDOrganization<!-- -->s, or %NULL
  *
  * Since: 0.2.0
  **/
@@ -964,7 +964,7 @@ gdata_contacts_contact_get_organizations (GDataContactsContact *self)
  *
  * Gets the contact's primary organization, if one exists.
  *
- * Return value: a #GDataGDOrganization, or %NULL
+ * Return value: (transfer none): a #GDataGDOrganization, or %NULL
  *
  * Since: 0.2.0
  **/

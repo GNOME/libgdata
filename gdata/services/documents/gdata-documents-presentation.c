@@ -121,7 +121,7 @@ gdata_documents_presentation_new (const gchar *id)
  * If @destination_file is a directory, then the file will be downloaded in this directory with the #GDataEntry:title with 
  * the apropriate extension as name.
  *
- * Return value: the document's data, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): the document's data, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/

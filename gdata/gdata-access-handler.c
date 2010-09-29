@@ -76,7 +76,7 @@ gdata_access_handler_get_type (void)
  * For each rule in the response feed, @progress_callback will be called in the main thread. If there was an error parsing the XML response,
  * a #GDataParserError will be returned.
  *
- * Return value: a #GDataFeed of access control rules, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of access control rules, or %NULL; unref with g_object_unref()
  *
  * Since: 0.3.0
  **/
@@ -155,7 +155,7 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
  *
  * If there is an error inserting the rule, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
- * Return value: an updated #GDataAccessRule, or %NULL
+ * Return value: (transfer full): an updated #GDataAccessRule, or %NULL; unref with g_object_unref()
  *
  * Since: 0.3.0
  **/
@@ -277,7 +277,7 @@ get_soup_message (GDataAccessHandler *access_handler, GDataAccessRule *rule, con
  *
  * If there is an error updating the rule, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
- * Return value: an updated #GDataAccessRule, or %NULL
+ * Return value: (transfer full): an updated #GDataAccessRule, or %NULL; unref with g_object_unref()
  *
  * Since: 0.3.0
  **/

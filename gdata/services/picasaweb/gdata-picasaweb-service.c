@@ -109,7 +109,7 @@ gdata_picasaweb_service_new (const gchar *client_id)
 }
 
 /**
- * gdata_picasaweb_service_get_user
+ * gdata_picasaweb_service_get_user:
  * @self: a #GDataPicasaWebService
  * @username: (allow-none): the username of the user whose information you wish to retrieve, or %NULL for the currently authenticated user.
  * @cancellable: optional #GCancellable object, or %NULL
@@ -117,7 +117,7 @@ gdata_picasaweb_service_new (const gchar *client_id)
  *
  * Queries the service to return the user specified by @username.
  *
- * Return value: a #GDataPicasaWebUser; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataPicasaWebUser; unref with g_object_unref()
  *
  * Since: 0.6.0
  **/
@@ -168,7 +168,7 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
  *
  * For more details, see gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
@@ -272,7 +272,7 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
  *
  * For more details, see gdata_service_query().
  *
- * Return value: a #GDataFeed of query results; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
@@ -371,7 +371,7 @@ parse_spliced_stream (GOutputStream *output_stream, GError **error)
  * If there is a problem reading @file_data, an error from g_output_stream_splice() or g_file_query_info() will be returned. Other errors from
  * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
  *
- * Return value: the inserted #GDataPicasaWebFile with updated properties from @file_entry; unref with g_object_unref()
+ * Return value: (transfer full): the inserted #GDataPicasaWebFile with updated properties from @file_entry; unref with g_object_unref()
  *
  * Since: 0.4.0
  **/
@@ -450,7 +450,7 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
  * no user is authenticated with the service when trying to upload it,
  * %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be set.
  *
- * Return value: the inserted #GDataPicasaWebFile; unref with
+ * Return value: (transfer full): the inserted #GDataPicasaWebFile; unref with
  * g_object_unref()
  *
  * Since: 0.6.0
@@ -601,7 +601,7 @@ gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPic
  * Inserts a new album described by @album. A user must be
  * authenticated to use this function.
  *
- * Return value: the inserted #GDataPicasaWebAlbum; unref with
+ * Return value: (transfer full): the inserted #GDataPicasaWebAlbum; unref with
  * g_object_unref()
  *
  * Since: 0.6.0
