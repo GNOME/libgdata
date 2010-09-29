@@ -61,7 +61,7 @@ gdata_access_handler_get_type (void)
  * @self: a #GDataAccessHandler
  * @service: a #GDataService
  * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when a rule is loaded, or %NULL
+ * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when a rule is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
