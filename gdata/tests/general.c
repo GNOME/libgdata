@@ -2067,6 +2067,27 @@ test_gd_when (void)
 }
 
 static void
+test_gd_when_escaping (void)
+{
+	GDataGDWhen *when;
+	gchar *xml;
+	GTimeVal start_time;
+
+	g_time_val_from_iso8601 ("2005-06-07T01:00:00Z", &start_time);
+	when = gdata_gd_when_new (&start_time, NULL, FALSE);
+	gdata_gd_when_set_value_string (when, "Value string & stuff!");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (when));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                          "startTime='2005-06-07T01:00:00Z' valueString='Value string &amp; stuff!'/>");
+	g_free (xml);
+	g_object_unref (when);
+}
+
+static void
 test_gd_where (void)
 {
 	GDataGDWhere *where, *where2;
@@ -2542,6 +2563,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/reminder", test_gd_reminder);
 	g_test_add_func ("/gd/reminder/escaping", test_gd_reminder_escaping);
 	g_test_add_func ("/gd/when", test_gd_when);
+	g_test_add_func ("/gd/when/escaping", test_gd_when_escaping);
 	g_test_add_func ("/gd/where", test_gd_where);
 	g_test_add_func ("/gd/who", test_gd_who);
 
