@@ -307,9 +307,9 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataGDPhoneNumberPrivate *priv = GDATA_GD_PHONE_NUMBER (parsable)->priv;
 
 	if (priv->uri != NULL)
-		g_string_append_printf (xml_string, " uri='%s'", priv->uri);
+		gdata_parser_string_append_escaped (xml_string, " uri='", priv->uri, "'");
 	if (priv->relation_type != NULL)
-		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
+		gdata_parser_string_append_escaped (xml_string, " rel='", priv->relation_type, "'");
 	if (priv->label != NULL)
 		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
 
