@@ -1479,6 +1479,28 @@ test_gd_email_address (void)
 }
 
 static void
+test_gd_email_address_escaping (void)
+{
+	GDataGDEmailAddress *email;
+	gchar *xml;
+
+	g_test_bug ("630350");
+
+	email = gdata_gd_email_address_new ("Fubar <fubar@gmail.com>", GDATA_GD_EMAIL_ADDRESS_HOME "?foo&bar", "Personal & Private", TRUE);
+	gdata_gd_email_address_set_display_name (email, "<John Smith>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (email));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:email xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                           "address='Fubar &lt;fubar@gmail.com&gt;' rel='http://schemas.google.com/g/2005#home?foo&amp;bar' "
+	                           "label='Personal &amp; Private' displayName='&lt;John Smith&gt;' primary='true'/>");
+	g_free (xml);
+	g_object_unref (email);
+}
+
+static void
 test_gd_im_address (void)
 {
 	GDataGDIMAddress *im, *im2;
@@ -3080,6 +3102,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/app/categories", test_app_categories);
 
 	g_test_add_func ("/gd/email_address", test_gd_email_address);
+	g_test_add_func ("/gd/email_address/escaping", test_gd_email_address_escaping);
 	g_test_add_func ("/gd/im_address", test_gd_im_address);
 	g_test_add_func ("/gd/name", test_gd_name);
 	g_test_add_func ("/gd/organization", test_gd_organization);
