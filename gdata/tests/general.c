@@ -1882,6 +1882,7 @@ test_gd_postal_address (void)
 			"<gd:street>500 West 45th Street</gd:street>"
 			"<gd:city>New York</gd:city>"
 			"<gd:postcode>NY 10036</gd:postcode>"
+			"<gd:country code='US'>United States</gd:country>"
 		"</gd:structuredPostalAddress>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_GD_POSTAL_ADDRESS (postal));
@@ -1893,6 +1894,8 @@ test_gd_postal_address (void)
 	g_assert_cmpstr (gdata_gd_postal_address_get_postcode (postal), ==, "NY 10036");
 	g_assert_cmpstr (gdata_gd_postal_address_get_relation_type (postal), ==, GDATA_GD_POSTAL_ADDRESS_HOME);
 	g_assert_cmpstr (gdata_gd_postal_address_get_label (postal), ==, "Home & Safe House");
+	g_assert_cmpstr (gdata_gd_postal_address_get_country (postal), ==, "United States");
+	g_assert_cmpstr (gdata_gd_postal_address_get_country_code (postal), ==, "US");
 	g_assert (gdata_gd_postal_address_is_primary (postal) == TRUE);
 
 	/* Compare it against another identical address */
@@ -1900,6 +1903,7 @@ test_gd_postal_address (void)
 	gdata_gd_postal_address_set_street (postal2, "500 West 45th Street");
 	gdata_gd_postal_address_set_city (postal2, "New York");
 	gdata_gd_postal_address_set_postcode (postal2, "NY 10036");
+	gdata_gd_postal_address_set_country (postal2, "United States", "US");
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (postal), GDATA_COMPARABLE (postal2)), ==, 0);
 
 	/* …and a different one */
@@ -1916,6 +1920,7 @@ test_gd_postal_address (void)
 				"<gd:street>500 West 45th Street</gd:street>"
 				"<gd:city>New York</gd:city>"
 				"<gd:postcode>NY 10036</gd:postcode>"
+				"<gd:country code='US'>United States</gd:country>"
 			 "</gd:structuredPostalAddress>");
 	g_free (xml);
 
@@ -1986,7 +1991,7 @@ test_gd_postal_address_escaping (void)
 	                         "<gd:subregion>Subregion &lt;5&gt;</gd:subregion>"
 	                         "<gd:region>&lt;region&gt;</gd:region>"
 	                         "<gd:postcode>Postcode &amp; stuff</gd:postcode>"
-	                         "<gd:country>&lt;foo&gt;</gd:country>"
+	                         "<gd:country code='&lt;bar&gt;'>&lt;foo&gt;</gd:country>"
 	                         "<gd:formattedAddress>&lt;address&gt;</gd:formattedAddress>"
 	                 "</gd:structuredPostalAddress>");
 	g_free (xml);

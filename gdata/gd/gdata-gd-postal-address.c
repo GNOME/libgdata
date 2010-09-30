@@ -594,22 +594,28 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	gboolean success;
 	GDataGDPostalAddressPrivate *priv = GDATA_GD_POSTAL_ADDRESS (parsable)->priv;
 
-	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE && (
-	     gdata_parser_string_from_element (node, "agent", P_NO_DUPES, &(priv->agent), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "housename", P_NO_DUPES, &(priv->house_name), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "pobox", P_NO_DUPES, &(priv->po_box), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "street", P_NO_DUPES, &(priv->street), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "neighborhood", P_NO_DUPES, &(priv->neighborhood), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "city", P_NO_DUPES, &(priv->city), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "subregion", P_NO_DUPES, &(priv->subregion), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "region", P_NO_DUPES, &(priv->region), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "postcode", P_NO_DUPES, &(priv->postcode), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "country", P_NO_DUPES, &(priv->country), &success, error) == TRUE ||
-	     gdata_parser_string_from_element (node, "formattedAddress", P_NO_DUPES, &(priv->formatted_address), &success, error) == TRUE)) {
-		return success;
-	} else {
-		return GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
+		if (gdata_parser_string_from_element (node, "agent", P_NO_DUPES, &(priv->agent), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "housename", P_NO_DUPES, &(priv->house_name), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "pobox", P_NO_DUPES, &(priv->po_box), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "street", P_NO_DUPES, &(priv->street), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "neighborhood", P_NO_DUPES, &(priv->neighborhood), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "city", P_NO_DUPES, &(priv->city), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "subregion", P_NO_DUPES, &(priv->subregion), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "region", P_NO_DUPES, &(priv->region), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "postcode", P_NO_DUPES, &(priv->postcode), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "formattedAddress", P_NO_DUPES, &(priv->formatted_address), &success, error) == TRUE) {
+			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "country") == 0) {
+			/* gd:country */
+			priv->country_code = (gchar*) xmlGetProp (node, (xmlChar*) "code");
+			priv->country = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+
+			return TRUE;
+		}
 	}
+
+	return GDATA_PARSABLE_CLASS (gdata_gd_postal_address_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 }
 
 static void
@@ -650,7 +656,15 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	OUTPUT_STRING_ELEMENT ("subregion", subregion)
 	OUTPUT_STRING_ELEMENT ("region", region)
 	OUTPUT_STRING_ELEMENT ("postcode", postcode)
-	OUTPUT_STRING_ELEMENT ("country", country)
+
+	if (priv->country != NULL) {
+		if (priv->country_code != NULL)
+			gdata_parser_string_append_escaped (xml_string, "<gd:country code='", priv->country_code, "'>");
+		else
+			g_string_append (xml_string, "<gd:country>");
+		gdata_parser_string_append_escaped (xml_string, NULL, priv->country, "</gd:country>");
+	}
+
 	OUTPUT_STRING_ELEMENT ("formattedAddress", formatted_address)
 
 #undef OUTPUT_STRING_ELEMENT
