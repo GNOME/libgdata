@@ -2233,6 +2233,26 @@ test_gd_who (void)
 }
 
 static void
+test_gd_who_escaping (void)
+{
+	GDataGDWho *who;
+	gchar *xml;
+
+	who = gdata_gd_who_new ("http://schemas.google.com/g/2005#event.attendee?foo&bar", "Value string & stuff!",
+	                        "John Smith <john.smith@gmail.com>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (who));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:who xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                         "email='John Smith &lt;john.smith@gmail.com&gt;' rel='http://schemas.google.com/g/2005#event.attendee?foo&amp;bar' "
+	                         "valueString='Value string &amp; stuff!'/>");
+	g_free (xml);
+	g_object_unref (who);
+}
+
+static void
 test_media_category (void)
 {
 	GDataMediaCategory *category;
@@ -2586,6 +2606,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/where", test_gd_where);
 	g_test_add_func ("/gd/where/escaping", test_gd_where_escaping);
 	g_test_add_func ("/gd/who", test_gd_who);
+	g_test_add_func ("/gd/who/escaping", test_gd_who_escaping);
 
 	g_test_add_func ("/media/category", test_media_category);
 	g_test_add_func ("/media/content", test_media_content);
