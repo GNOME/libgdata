@@ -253,9 +253,9 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataGDWhoPrivate *priv = GDATA_GD_WHO (parsable)->priv;
 
 	if (priv->email_address != NULL)
-		g_string_append_printf (xml_string, " email='%s'", priv->email_address);
+		gdata_parser_string_append_escaped (xml_string, " email='", priv->email_address, "'");
 	if (priv->relation_type != NULL)
-		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
+		gdata_parser_string_append_escaped (xml_string, " rel='", priv->relation_type, "'");
 	if (priv->value_string != NULL)
 		gdata_parser_string_append_escaped (xml_string, " valueString='", priv->value_string, "'");
 }
