@@ -1720,6 +1720,26 @@ test_gd_phone_number (void)
 }
 
 static void
+test_gd_phone_number_escaping (void)
+{
+	GDataGDPhoneNumber *phone;
+	gchar *xml;
+
+	phone = gdata_gd_phone_number_new ("0123456789 <54>", "http://schemas.google.com/g/2005#work_mobile?foo&bar", "Personal & Private",
+	                                   "tel:+012345678954?foo&bar", TRUE);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (phone));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:phoneNumber xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                                 "uri='tel:+012345678954?foo&amp;bar' rel='http://schemas.google.com/g/2005#work_mobile?foo&amp;bar' "
+	                                 "label='Personal &amp; Private' primary='true'>0123456789 &lt;54&gt;</gd:phoneNumber>");
+	g_free (xml);
+	g_object_unref (phone);
+}
+
+static void
 test_gd_postal_address (void)
 {
 	GDataGDPostalAddress *postal, *postal2;
@@ -2453,6 +2473,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/organization", test_gd_organization);
 	g_test_add_func ("/gd/organization/escaping", test_gd_organization_escaping);
 	g_test_add_func ("/gd/phone_number", test_gd_phone_number);
+	g_test_add_func ("/gd/phone_number/escaping", test_gd_phone_number_escaping);
 	g_test_add_func ("/gd/postal_address", test_gd_postal_address);
 	g_test_add_func ("/gd/reminder", test_gd_reminder);
 	g_test_add_func ("/gd/when", test_gd_when);
