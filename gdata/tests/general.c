@@ -2273,6 +2273,25 @@ test_gd_where (void)
 }
 
 static void
+test_gd_where_escaping (void)
+{
+	GDataGDWhere *where;
+	gchar *xml;
+
+	where = gdata_gd_where_new (GDATA_GD_WHERE_EVENT "?foo&bar", "Value string & stuff!", "<label>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (where));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:where xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                           "label='&lt;label&gt;' rel='http://schemas.google.com/g/2005#event?foo&amp;bar' "
+	                           "valueString='Value string &amp; stuff!'/>");
+	g_free (xml);
+	g_object_unref (where);
+}
+
+static void
 test_gd_who (void)
 {
 	GDataGDWho *who, *who2;
@@ -3268,6 +3287,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/when", test_gd_when);
 	g_test_add_func ("/gd/when/escaping", test_gd_when_escaping);
 	g_test_add_func ("/gd/where", test_gd_where);
+	g_test_add_func ("/gd/where/escaping", test_gd_where_escaping);
 	g_test_add_func ("/gd/who", test_gd_who);
 
 	g_test_add_func ("/media/category", test_media_category);
