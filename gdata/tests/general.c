@@ -2081,6 +2081,24 @@ test_gd_reminder (void)
 }
 
 static void
+test_gd_reminder_escaping (void)
+{
+	GDataGDReminder *reminder;
+	gchar *xml;
+
+	reminder = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT "?foo&bar", NULL, 15);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (reminder));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:reminder xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                              "minutes='15' method='alert?foo&amp;bar'/>");
+	g_free (xml);
+	g_object_unref (reminder);
+}
+
+static void
 test_gd_when (void)
 {
 	GDataGDWhen *when, *when2;
@@ -3225,6 +3243,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/postal_address", test_gd_postal_address);
 	g_test_add_func ("/gd/postal_address/escaping", test_gd_postal_address_escaping);
 	g_test_add_func ("/gd/reminder", test_gd_reminder);
+	g_test_add_func ("/gd/reminder/escaping", test_gd_reminder_escaping);
 	g_test_add_func ("/gd/when", test_gd_when);
 	g_test_add_func ("/gd/where", test_gd_where);
 	g_test_add_func ("/gd/who", test_gd_who);

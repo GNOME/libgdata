@@ -303,7 +303,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	}
 
 	if (priv->method != NULL)
-		g_string_append_printf (xml_string, " method='%s'", priv->method);
+		gdata_parser_string_append_escaped (xml_string, " method='", priv->method, "'");
 }
 
 static void
