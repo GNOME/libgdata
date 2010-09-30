@@ -1422,6 +1422,26 @@ test_gd_im_address (void)
 }
 
 static void
+test_gd_im_address_escaping (void)
+{
+	GDataGDIMAddress *im;
+	gchar *xml;
+
+	im = gdata_gd_im_address_new ("Fubar <fubar@gmail.com>", "http://schemas.google.com/g/2005#GOOGLE_TALK?foo&bar",
+	                              "http://schemas.google.com/g/2005#home?foo&bar", "Personal & Private", TRUE);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (im));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:im xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                        "address='Fubar &lt;fubar@gmail.com&gt;' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK?foo&amp;bar' "
+	                        "rel='http://schemas.google.com/g/2005#home?foo&amp;bar' label='Personal &amp; Private' primary='true'/>");
+	g_free (xml);
+	g_object_unref (im);
+}
+
+static void
 test_gd_name (void)
 {
 	GDataGDName *name, *name2;
@@ -2400,6 +2420,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/email_address", test_gd_email_address);
 	g_test_add_func ("/gd/email_address/escaping", test_gd_email_address_escaping);
 	g_test_add_func ("/gd/im_address", test_gd_im_address);
+	g_test_add_func ("/gd/im_address/escaping", test_gd_im_address_escaping);
 	g_test_add_func ("/gd/name", test_gd_name);
 	g_test_add_func ("/gd/organization", test_gd_organization);
 	g_test_add_func ("/gd/phone_number", test_gd_phone_number);
