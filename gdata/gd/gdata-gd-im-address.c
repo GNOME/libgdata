@@ -293,13 +293,12 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataGDIMAddressPrivate *priv = GDATA_GD_IM_ADDRESS (parsable)->priv;
 
+	gdata_parser_string_append_escaped (xml_string, " address='", priv->address, "'");
 	if (priv->protocol != NULL)
-		g_string_append_printf (xml_string, " address='%s' protocol='%s'", priv->address, priv->protocol);
-	else
-		g_string_append_printf (xml_string, " address='%s'", priv->address);
+		gdata_parser_string_append_escaped (xml_string, " protocol='", priv->protocol, "'");
 
 	if (priv->relation_type != NULL)
-		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
+		gdata_parser_string_append_escaped (xml_string, " rel='", priv->relation_type, "'");
 	if (priv->label != NULL)
 		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
 
