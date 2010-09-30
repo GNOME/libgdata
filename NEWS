@@ -1,3 +1,14 @@
+Overview of changes from libgdata 0.6.4 to libgdata 0.6.5
+=========================================================
+
+Major changes:
+* Fixed the introspection build with gobject-introspection >= 0.9.7 and bumped our dependency to match
+* Added a lot of missing introspection annotations
+* Fixed a few small leaks
+
+Bugs fixed:
+* Bug 630756 — 0.6.4 fails to build with newer version of gobject-introspection (git)
+
 Overview of changes from libgdata 0.6.3 to libgdata 0.6.4
 =========================================================
 
