@@ -1823,6 +1823,51 @@ test_gd_postal_address (void)
 }
 
 static void
+test_gd_postal_address_escaping (void)
+{
+	GDataGDPostalAddress *address;
+	gchar *xml;
+
+	address = gdata_gd_postal_address_new ("http://schemas.google.com/g/2005#work?foo&bar", "Personal & Private", TRUE);
+	gdata_gd_postal_address_set_address (address, "<address>");
+	gdata_gd_postal_address_set_mail_class (address, "http://schemas.google.com/g/2005#both?foo&bar");
+	gdata_gd_postal_address_set_usage (address, "http://schemas.google.com/g/2005#general?foo&bar");
+	gdata_gd_postal_address_set_agent (address, "<agent>");
+	gdata_gd_postal_address_set_house_name (address, "House & House");
+	gdata_gd_postal_address_set_street (address, "Church & Main Street");
+	gdata_gd_postal_address_set_po_box (address, "<515>");
+	gdata_gd_postal_address_set_neighborhood (address, "<neighbourhood>");
+	gdata_gd_postal_address_set_city (address, "City <17>");
+	gdata_gd_postal_address_set_subregion (address, "Subregion <5>");
+	gdata_gd_postal_address_set_region (address, "<region>");
+	gdata_gd_postal_address_set_postcode (address, "Postcode & stuff");
+	gdata_gd_postal_address_set_country (address, "<foo>", "<bar>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (address));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:structuredPostalAddress xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                                             "rel='http://schemas.google.com/g/2005#work?foo&amp;bar' label='Personal &amp; Private' "
+	                                             "mailClass='http://schemas.google.com/g/2005#both?foo&amp;bar' "
+	                                             "usage='http://schemas.google.com/g/2005#general?foo&amp;bar' primary='true'>"
+	                         "<gd:agent>&lt;agent&gt;</gd:agent>"
+	                         "<gd:housename>House &amp; House</gd:housename>"
+	                         "<gd:street>Church &amp; Main Street</gd:street>"
+	                         "<gd:pobox>&lt;515&gt;</gd:pobox>"
+	                         "<gd:neighborhood>&lt;neighbourhood&gt;</gd:neighborhood>"
+	                         "<gd:city>City &lt;17&gt;</gd:city>"
+	                         "<gd:subregion>Subregion &lt;5&gt;</gd:subregion>"
+	                         "<gd:region>&lt;region&gt;</gd:region>"
+	                         "<gd:postcode>Postcode &amp; stuff</gd:postcode>"
+	                         "<gd:country>&lt;foo&gt;</gd:country>"
+	                         "<gd:formattedAddress>&lt;address&gt;</gd:formattedAddress>"
+	                 "</gd:structuredPostalAddress>");
+	g_free (xml);
+	g_object_unref (address);
+}
+
+static void
 test_gd_reminder (void)
 {
 	GDataGDReminder *reminder, *reminder2;
@@ -2475,6 +2520,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/phone_number", test_gd_phone_number);
 	g_test_add_func ("/gd/phone_number/escaping", test_gd_phone_number_escaping);
 	g_test_add_func ("/gd/postal_address", test_gd_postal_address);
+	g_test_add_func ("/gd/postal_address/escaping", test_gd_postal_address_escaping);
 	g_test_add_func ("/gd/reminder", test_gd_reminder);
 	g_test_add_func ("/gd/when", test_gd_when);
 	g_test_add_func ("/gd/where", test_gd_where);
