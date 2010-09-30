@@ -365,7 +365,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	}
 
 	if (priv->value_string != NULL)
-		g_string_append_printf (xml_string, " valueString='%s'", priv->value_string);
+		gdata_parser_string_append_escaped (xml_string, " valueString='", priv->value_string, "'");
 }
 
 static void
