@@ -1754,6 +1754,33 @@ test_gd_organization (void)
 }
 
 static void
+test_gd_organization_escaping (void)
+{
+	GDataGDOrganization *org;
+	gchar *xml;
+
+	org = gdata_gd_organization_new ("Steptoe & Son", "Title & Stuff", GDATA_GD_ORGANIZATION_WORK "?foo&bar", "Personal & Private", TRUE);
+	gdata_gd_organization_set_department (org, "Department & Stuff");
+	gdata_gd_organization_set_job_description (org, "Escaping <brackets>.");
+	gdata_gd_organization_set_symbol (org, "<&>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (org));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gd:organization xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                                  "rel='http://schemas.google.com/g/2005#work?foo&amp;bar' label='Personal &amp; Private' primary='true'>"
+	                         "<gd:orgName>Steptoe &amp; Son</gd:orgName>"
+	                         "<gd:orgTitle>Title &amp; Stuff</gd:orgTitle>"
+	                         "<gd:orgDepartment>Department &amp; Stuff</gd:orgDepartment>"
+	                         "<gd:orgJobDescription>Escaping &lt;brackets&gt;.</gd:orgJobDescription>"
+	                         "<gd:orgSymbol>&lt;&amp;&gt;</gd:orgSymbol>"
+	                 "</gd:organization>");
+	g_free (xml);
+	g_object_unref (org);
+}
+
+static void
 test_gd_phone_number (void)
 {
 	GDataGDPhoneNumber *phone, *phone2;
@@ -3127,6 +3154,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/im_address/escaping", test_gd_im_address_escaping);
 	g_test_add_func ("/gd/name", test_gd_name);
 	g_test_add_func ("/gd/organization", test_gd_organization);
+	g_test_add_func ("/gd/organization/escaping", test_gd_organization_escaping);
 	g_test_add_func ("/gd/phone_number", test_gd_phone_number);
 	g_test_add_func ("/gd/postal_address", test_gd_postal_address);
 	g_test_add_func ("/gd/reminder", test_gd_reminder);
