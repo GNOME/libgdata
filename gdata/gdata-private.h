@@ -70,7 +70,7 @@ G_GNUC_INTERNAL void _gdata_parsable_string_append_escaped (GString *xml_string,
 G_GNUC_INTERNAL gboolean _gdata_parsable_is_constructed_from_xml (GDataParsable *self);
 
 #include "gdata-feed.h"
-G_GNUC_INTERNAL GDataFeed *_gdata_feed_new (const gchar *title, const gchar *id, GTimeVal *updated) G_GNUC_WARN_UNUSED_RESULT;
+G_GNUC_INTERNAL GDataFeed *_gdata_feed_new (const gchar *title, const gchar *id, gint64 updated) G_GNUC_WARN_UNUSED_RESULT;
 G_GNUC_INTERNAL GDataFeed *_gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,
                                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
@@ -81,7 +81,7 @@ G_GNUC_INTERNAL void _gdata_feed_call_progress_callback (GDataFeed *self, gpoint
 
 #include "gdata-entry.h"
 #include "gdata-batch-operation.h"
-G_GNUC_INTERNAL void _gdata_entry_set_updated (GDataEntry *self, GTimeVal *updated);
+G_GNUC_INTERNAL void _gdata_entry_set_updated (GDataEntry *self, gint64 updated);
 G_GNUC_INTERNAL void _gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type);
 
 #include "gdata/services/documents/gdata-documents-service.h"

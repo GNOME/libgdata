@@ -201,33 +201,61 @@ gdata_parser_error_duplicate_element (xmlNode *element, GError **error)
 }
 
 gboolean
-gdata_parser_time_val_from_date (const gchar *date, GTimeVal *_time)
+gdata_parser_int64_from_date (const gchar *date, gint64 *_time)
 {
 	gchar *iso8601_date;
 	gboolean success;
+	GTimeVal time_val;
 
 	if (strlen (date) != 10 && strlen (date) != 8)
 		return FALSE;
 
 	/* Note: This doesn't need translating, as it's outputting an ISO 8601 time string */
 	iso8601_date = g_strdup_printf ("%sT00:00:00Z", date);
-	success = g_time_val_from_iso8601 (iso8601_date, _time);
+	success = g_time_val_from_iso8601 (iso8601_date, &time_val);
 	g_free (iso8601_date);
+
+	if (success == TRUE)
+		*_time = time_val.tv_sec;
 
 	return success;
 }
 
 gchar *
-gdata_parser_date_from_time_val (const GTimeVal *_time)
+gdata_parser_date_from_int64 (gint64 _time)
 {
 	time_t secs;
 	struct tm *tm;
 
-	secs = _time->tv_sec;
+	secs = _time;
 	tm = gmtime (&secs);
 
 	/* Note: This doesn't need translating, as it's outputting an ISO 8601 date string */
 	return g_strdup_printf ("%04d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
+}
+
+gchar *
+gdata_parser_int64_to_iso8601 (gint64 _time)
+{
+	GTimeVal time_val;
+
+	time_val.tv_sec = _time;
+	time_val.tv_usec = 0;
+
+	return g_time_val_to_iso8601 (&time_val);
+}
+
+gboolean
+gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time)
+{
+	GTimeVal time_val;
+
+	if (g_time_val_from_iso8601 (date, &time_val) == TRUE) {
+		*_time = time_val.tv_sec;
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 /*
@@ -370,7 +398,7 @@ gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, G
  * @error: a #GError, or %NULL
  *
  * Gets the time value of @element if its name is @element_name, subject to various checks specified by @options. It expects the text content
- * of @element to be a date or time value in ISO 8601 format.
+ * of @element to be a date or time value in ISO 8601 format. The returned time value will be a UNIX timestamp (seconds since the epoch).
  *
  * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
  *
@@ -389,17 +417,18 @@ gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, G
  * Since: 0.7.0
  */
 gboolean
-gdata_parser_time_val_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
-                                    GTimeVal *output, gboolean *success, GError **error)
+gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+                                 gint64 *output, gboolean *success, GError **error)
 {
 	xmlChar *text;
+	GTimeVal time_val;
 
 	/* Check it's the right element */
 	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
 		return FALSE;
 
 	/* Check if the output time val has already been set */
-	if (options & P_NO_DUPES && (output->tv_sec != 0 || output->tv_usec != 0)) {
+	if (options & P_NO_DUPES && *output != -1) {
 		*success = gdata_parser_error_duplicate_element (element, error);
 		return TRUE;
 	}
@@ -413,11 +442,13 @@ gdata_parser_time_val_from_element (xmlNode *element, const gchar *element_name,
 	}
 
 	/* Attempt to parse the string as a GTimeVal */
-	if (g_time_val_from_iso8601 ((gchar*) text, output) == FALSE) {
+	if (g_time_val_from_iso8601 ((gchar*) text, &time_val) == FALSE) {
 		*success = gdata_parser_error_not_iso8601_format (element, (gchar*) text, error);
 		xmlFree (text);
 		return TRUE;
 	}
+
+	*output = time_val.tv_sec;
 
 	/* Success! */
 	xmlFree (text);

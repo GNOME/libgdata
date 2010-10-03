@@ -59,8 +59,8 @@ static void gdata_documents_entry_set_property (GObject *object, guint property_
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 
 struct _GDataDocumentsEntryPrivate {
-	GTimeVal edited;
-	GTimeVal last_viewed;
+	gint64 edited;
+	gint64 last_viewed;
 	gchar *document_id;
 	gboolean writers_can_invite;
 	gboolean is_deleted;
@@ -108,9 +108,9 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_boxed ("edited",
+	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the document was edited.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -121,9 +121,9 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LAST_VIEWED,
-	                                 g_param_spec_boxed ("last-viewed",
+	                                 g_param_spec_int64 ("last-viewed",
 	                                                     "Last viewed", "The last time the document was viewed.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -197,6 +197,8 @@ static void
 gdata_documents_entry_init (GDataDocumentsEntry *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate);
+	self->priv->edited = -1;
+	self->priv->last_viewed = -1;
 }
 
 static GObject *
@@ -210,10 +212,12 @@ gdata_documents_entry_constructor (GType type, guint n_construct_params, GObject
 	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
+		GTimeVal time_val;
 
 		/* This can't be put in the init function of #GDataDocumentsEntry, as it would then be called even for entries parsed from XML from
 		 * the server, which would break duplicate element detection for the app:edited element. */
-		g_get_current_time (&(priv->edited));
+		g_get_current_time (&time_val);
+		priv->edited = time_val.tv_sec;
 	}
 
 	return object;
@@ -259,10 +263,10 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_boolean (value, priv->is_deleted);
 			break;
 		case PROP_EDITED:
-			g_value_set_boxed (value, &(priv->edited));
+			g_value_set_int64 (value, priv->edited);
 			break;
 		case PROP_LAST_VIEWED:
-			g_value_set_boxed (value, &(priv->last_viewed));
+			g_value_set_int64 (value, priv->last_viewed);
 			break;
 		case PROP_LAST_MODIFIED_BY:
 			g_value_set_object (value, priv->last_modified_by);
@@ -297,11 +301,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
-		if (gdata_parser_time_val_from_element (node, "lastViewed", P_REQUIRED | P_NO_DUPES,
-		                                        &(self->priv->last_viewed), &success, error) == TRUE ||
+		if (gdata_parser_int64_from_element (node, "lastViewed", P_REQUIRED | P_NO_DUPES,
+		                                     &(self->priv->last_viewed), &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
 		                                             gdata_entry_add_link, self,  &success, error) == TRUE ||
 		    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
@@ -376,37 +380,35 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_documents_entry_get_edited:
  * @self: a #GDataDocumentsEntry
- * @edited: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataDocumentsEntry:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataDocumentsEntry:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the document was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
-void
-gdata_documents_entry_get_edited (GDataDocumentsEntry *self, GTimeVal *edited)
+gint64
+gdata_documents_entry_get_edited (GDataDocumentsEntry *self)
 {
-	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
-	g_return_if_fail (edited != NULL);
-	*edited = self->priv->edited;
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), -1);
+	return self->priv->edited;
 }
 
 /**
  * gdata_documents_entry_get_last_viewed:
  * @self: a #GDataDocumentsEntry
- * @last_viewed: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataDocumentsEntry:last-viewed property and puts it in @last_viewed. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataDocumentsEntry:last-viewed property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the document was last viewed, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
-void
-gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self, GTimeVal *last_viewed)
+gint64
+gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self)
 {
-	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
-	g_return_if_fail (last_viewed != NULL);
-	*last_viewed = self->priv->last_viewed;
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), -1);
+	return self->priv->last_viewed;
 }
 
 /**

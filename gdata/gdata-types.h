@@ -24,9 +24,6 @@
 
 G_BEGIN_DECLS
 
-#define GDATA_TYPE_G_TIME_VAL (gdata_g_time_val_get_type ())
-GType gdata_g_time_val_get_type (void) G_GNUC_CONST;
-
 /**
  * GDataColor:
  * @red: red color intensity, from 0–255

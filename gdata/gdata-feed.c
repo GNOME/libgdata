@@ -63,7 +63,7 @@ struct _GDataFeedPrivate {
 	gchar *subtitle;
 	gchar *id;
 	gchar *etag;
-	GTimeVal updated;
+	gint64 updated;
 	GList *categories; /* GDataCategory */
 	gchar *logo;
 	gchar *icon;
@@ -176,9 +176,9 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * atom:updated</ulink>
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED,
-	                                 g_param_spec_boxed ("updated",
+	                                 g_param_spec_int64 ("updated",
 	                                                     "Updated", "The time the feed was last updated.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     0, G_MAXINT64, 0,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -295,6 +295,7 @@ static void
 gdata_feed_init (GDataFeed *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FEED, GDataFeedPrivate);
+	self->priv->updated = -1;
 }
 
 static void
@@ -370,7 +371,7 @@ gdata_feed_get_property (GObject *object, guint property_id, GValue *value, GPar
 			g_value_set_string (value, priv->etag);
 			break;
 		case PROP_UPDATED:
-			g_value_set_boxed (value, &(priv->updated));
+			g_value_set_int64 (value, priv->updated);
 			break;
 		case PROP_LOGO:
 			g_value_set_string (value, priv->logo);
@@ -461,8 +462,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                                    _gdata_feed_add_author, self, &success, error) == TRUE ||
 		           gdata_parser_object_from_element (node, "generator", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GENERATOR,
 		                                             &(self->priv->generator), &success, error) == TRUE ||
-		           gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES,
-		                                               &(self->priv->updated), &success, error) == TRUE ||
+		           gdata_parser_int64_from_element (node, "updated", P_REQUIRED | P_NO_DUPES,
+		                                            &(self->priv->updated), &success, error) == TRUE ||
 		           gdata_parser_string_from_element (node, "rights", P_NONE, &(self->priv->rights), &success, error) == TRUE) {
 			return success;
 		} else {
@@ -534,7 +535,7 @@ post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
 		return gdata_parser_error_required_element_missing ("title", "feed", error);
 	if (priv->id == NULL)
 		return gdata_parser_error_required_element_missing ("id", "feed", error);
-	if (priv->updated.tv_sec == 0 && priv->updated.tv_usec == 0)
+	if (priv->updated == -1)
 		return gdata_parser_error_required_element_missing ("updated", "feed", error);
 
 	/* Reverse our lists of stuff */
@@ -557,7 +558,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	gdata_parser_string_append_escaped (xml_string, "<title type='text'>", priv->title, "</title>");
 	g_string_append_printf (xml_string, "<id>%s</id>", priv->id);
 
-	updated = g_time_val_to_iso8601 (&(priv->updated));
+	updated = gdata_parser_int64_to_iso8601 (priv->updated);
 	g_string_append_printf (xml_string, "<updated>%s</updated>", updated);
 	g_free (updated);
 
@@ -591,19 +592,18 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Since: 0.6.0
  */
 GDataFeed *
-_gdata_feed_new (const gchar *title, const gchar *id, GTimeVal *updated)
+_gdata_feed_new (const gchar *title, const gchar *id, gint64 updated)
 {
 	GDataFeed *feed;
 
 	g_return_val_if_fail (title != NULL, NULL);
 	g_return_val_if_fail (id != NULL, NULL);
-	g_return_val_if_fail (updated != NULL, NULL);
+	g_return_val_if_fail (updated >= 0, NULL);
 
 	feed = g_object_new (GDATA_TYPE_FEED, NULL);
 	feed->priv->title = g_strdup (title);
 	feed->priv->id = g_strdup (id);
-	feed->priv->updated.tv_sec = updated->tv_sec;
-	feed->priv->updated.tv_usec = updated->tv_usec;
+	feed->priv->updated = updated;
 
 	return feed;
 }
@@ -832,16 +832,16 @@ gdata_feed_get_etag (GDataFeed *self)
 /**
  * gdata_feed_get_updated:
  * @self: a #GDataFeed
- * @updated: (out caller-allocates): a #GTimeVal
  *
- * Puts the time the feed was last updated into @updated.
+ * Gets the time the feed was last updated.
+ *
+ * Return value: the UNIX timestamp for the time the feed was last updated
  **/
-void
-gdata_feed_get_updated (GDataFeed *self, GTimeVal *updated)
+gint64
+gdata_feed_get_updated (GDataFeed *self)
 {
-	g_return_if_fail (GDATA_IS_FEED (self));
-	g_return_if_fail (updated != NULL);
-	*updated = self->priv->updated;
+	g_return_val_if_fail (GDATA_IS_FEED (self), -1);
+	return self->priv->updated;
 }
 
 /**

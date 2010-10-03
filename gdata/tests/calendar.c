@@ -249,7 +249,7 @@ test_insert_simple (gconstpointer service)
 	g_object_unref (who);
 	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &start_time);
 	g_time_val_from_iso8601 ("2009-04-17T17:00:00.000Z", &end_time);
-	when = gdata_gd_when_new (&start_time, &end_time, FALSE);
+	when = gdata_gd_when_new (start_time.tv_sec, end_time.tv_sec, FALSE);
 	gdata_calendar_event_add_time (event, when);
 	g_object_unref (when);
 
@@ -296,7 +296,7 @@ test_xml_dates (void)
 	GDataCalendarEvent *event;
 	GList *times, *i;
 	GDataGDWhen *when;
-	GTimeVal time_val;
+	gint64 _time;
 	gchar *xml;
 	GError *error = NULL;
 
@@ -323,12 +323,10 @@ test_xml_dates (void)
 	when = GDATA_GD_WHEN (i->data);
 	g_assert (i->next != NULL);
 	g_assert (gdata_gd_when_is_date (when) == TRUE);
-	gdata_gd_when_get_start_time (when, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 1239926400);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
-	gdata_gd_when_get_end_time (when, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 0);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
+	_time = gdata_gd_when_get_start_time (when);
+	g_assert_cmpint (_time, ==, 1239926400);
+	_time = gdata_gd_when_get_end_time (when);
+	g_assert_cmpint (_time, ==, -1);
 	g_assert (gdata_gd_when_get_value_string (when) == NULL);
 	g_assert (gdata_gd_when_get_reminders (when) == NULL);
 
@@ -337,12 +335,10 @@ test_xml_dates (void)
 	when = GDATA_GD_WHEN (i->data);
 	g_assert (i->next != NULL);
 	g_assert (gdata_gd_when_is_date (when) == FALSE);
-	gdata_gd_when_get_start_time (when, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 1239926400 + 54000);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
-	gdata_gd_when_get_end_time (when, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 0);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
+	_time = gdata_gd_when_get_start_time (when);
+	g_assert_cmpint (_time, ==, 1239926400 + 54000);
+	_time = gdata_gd_when_get_end_time (when);
+	g_assert_cmpint (_time, ==, -1);
 	g_assert (gdata_gd_when_get_value_string (when) == NULL);
 	g_assert (gdata_gd_when_get_reminders (when) == NULL);
 
@@ -351,12 +347,10 @@ test_xml_dates (void)
 	when = GDATA_GD_WHEN (i->data);
 	g_assert (i->next == NULL);
 	g_assert (gdata_gd_when_is_date (when) == TRUE);
-	gdata_gd_when_get_start_time (when, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 1239926400 + 864000);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
-	gdata_gd_when_get_end_time (when, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 1241568000);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
+	_time = gdata_gd_when_get_start_time (when);
+	g_assert_cmpint (_time, ==, 1239926400 + 864000);
+	_time = gdata_gd_when_get_end_time (when);
+	g_assert_cmpint (_time, ==, 1241568000);
 	g_assert (gdata_gd_when_get_value_string (when) == NULL);
 	g_assert (gdata_gd_when_get_reminders (when) == NULL);
 
@@ -449,7 +443,8 @@ test_xml_recurrence (void)
 static void
 test_query_uri (void)
 {
-	GTimeVal time_val, time_val2;
+	gint64 _time;
+	GTimeVal time_val;
 	gchar *query_uri;
 	GDataCalendarQuery *query = gdata_calendar_query_new ("q");
 
@@ -460,16 +455,14 @@ test_query_uri (void)
 	g_assert_cmpstr (gdata_calendar_query_get_order_by (query), ==, "starttime");
 
 	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &time_val);
-	gdata_calendar_query_set_recurrence_expansion_start (query, &time_val);
-	gdata_calendar_query_get_recurrence_expansion_start (query, &time_val2);
-	g_assert_cmpint (time_val.tv_sec, ==, time_val2.tv_sec);
-	g_assert_cmpint (time_val.tv_usec, ==, time_val2.tv_usec);
+	gdata_calendar_query_set_recurrence_expansion_start (query, time_val.tv_sec);
+	_time = gdata_calendar_query_get_recurrence_expansion_start (query);
+	g_assert_cmpint (_time, ==, time_val.tv_sec);
 
 	g_time_val_from_iso8601 ("2010-04-17T15:00:00.000Z", &time_val);
-	gdata_calendar_query_set_recurrence_expansion_end (query, &time_val);
-	gdata_calendar_query_get_recurrence_expansion_end (query, &time_val2);
-	g_assert_cmpint (time_val.tv_sec, ==, time_val2.tv_sec);
-	g_assert_cmpint (time_val.tv_usec, ==, time_val2.tv_usec);
+	gdata_calendar_query_set_recurrence_expansion_end (query, time_val.tv_sec);
+	_time = gdata_calendar_query_get_recurrence_expansion_end (query);
+	g_assert_cmpint (_time, ==, time_val.tv_sec);
 
 	gdata_calendar_query_set_single_events (query, TRUE);
 	g_assert (gdata_calendar_query_get_single_events (query) == TRUE);
@@ -478,16 +471,14 @@ test_query_uri (void)
 	g_assert_cmpstr (gdata_calendar_query_get_sort_order (query), ==, "descending");
 
 	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &time_val);
-	gdata_calendar_query_set_start_min (query, &time_val);
-	gdata_calendar_query_get_start_min (query, &time_val2);
-	g_assert_cmpint (time_val.tv_sec, ==, time_val2.tv_sec);
-	g_assert_cmpint (time_val.tv_usec, ==, time_val2.tv_usec);
+	gdata_calendar_query_set_start_min (query, time_val.tv_sec);
+	_time = gdata_calendar_query_get_start_min (query);
+	g_assert_cmpint (_time, ==, time_val.tv_sec);
 
 	g_time_val_from_iso8601 ("2010-04-17T15:00:00.000Z", &time_val);
-	gdata_calendar_query_set_start_max (query, &time_val);
-	gdata_calendar_query_get_start_max (query, &time_val2);
-	g_assert_cmpint (time_val.tv_sec, ==, time_val2.tv_sec);
-	g_assert_cmpint (time_val.tv_usec, ==, time_val2.tv_usec);
+	gdata_calendar_query_set_start_max (query, time_val.tv_sec);
+	_time = gdata_calendar_query_get_start_max (query);
+	g_assert_cmpint (_time, ==, time_val.tv_sec);
 
 	gdata_calendar_query_set_timezone (query, "America/Los Angeles");
 	g_assert_cmpstr (gdata_calendar_query_get_timezone (query), ==, "America/Los_Angeles");
@@ -532,12 +523,12 @@ test_query_etag (void)
 
 	CHECK_ETAG (gdata_calendar_query_set_future_events (query, FALSE))
 	CHECK_ETAG (gdata_calendar_query_set_order_by (query, "shizzle"))
-	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_start (query, NULL))
-	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_end (query, NULL))
+	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_start (query, -1))
+	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_end (query, -1))
 	CHECK_ETAG (gdata_calendar_query_set_single_events (query, FALSE))
 	CHECK_ETAG (gdata_calendar_query_set_sort_order (query, "shizzle"))
-	CHECK_ETAG (gdata_calendar_query_set_start_min (query, NULL))
-	CHECK_ETAG (gdata_calendar_query_set_start_max (query, NULL))
+	CHECK_ETAG (gdata_calendar_query_set_start_min (query, -1))
+	CHECK_ETAG (gdata_calendar_query_set_start_max (query, -1))
 	CHECK_ETAG (gdata_calendar_query_set_timezone (query, "about now"))
 
 #undef CHECK_ETAG
@@ -575,7 +566,7 @@ test_acls_insert_rule (gconstpointer service)
 	GDataCategory *category;
 	GList *categories;
 	gchar *xml;
-	GTimeVal edited;
+	gint64 edited;
 	GError *error = NULL;
 
 	calendar = get_calendar (service, &error);
@@ -615,8 +606,8 @@ test_acls_insert_rule (gconstpointer service)
 	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
-	gdata_access_rule_get_edited (new_rule, &edited);
-	g_assert_cmpuint (edited.tv_sec, >, 0);
+	edited = gdata_access_rule_get_edited (new_rule);
+	g_assert_cmpuint (edited, >, 0);
 
 	/* Check it only has the one category and that it's correct */
 	categories = gdata_entry_get_categories (GDATA_ENTRY (new_rule));
@@ -641,7 +632,7 @@ test_acls_update_rule (gconstpointer service)
 	GDataAccessRule *rule = NULL, *new_rule;
 	const gchar *scope_type, *scope_value;
 	GList *rules;
-	GTimeVal edited;
+	gint64 edited;
 	GError *error = NULL;
 
 	calendar = get_calendar (service, &error);
@@ -681,8 +672,8 @@ test_acls_update_rule (gconstpointer service)
 	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
-	gdata_access_rule_get_edited (new_rule, &edited);
-	g_assert_cmpuint (edited.tv_sec, >, 0);
+	edited = gdata_access_rule_get_edited (new_rule);
+	g_assert_cmpuint (edited, >, 0);
 
 	g_object_unref (new_rule);
 	g_object_unref (calendar);

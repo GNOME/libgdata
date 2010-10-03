@@ -33,7 +33,7 @@
  * 	<programlisting>
  * 	GDataYouTubeVideo *video;
  * 	const gchar *video_id, *title, *player_uri, *description, *video_uri = NULL;
- * 	GTimeVal updated, published;
+ * 	gint64 updated, published;
  * 	GDataMediaContent *content;
  * 	GList *thumbnails;
  *
@@ -43,8 +43,8 @@
  * 	title = gdata_entry_get_title (GDATA_ENTRY (video)); /<!-- -->* e.g. "Korpiklaani Vodka (official video 2009)" *<!-- -->/
  * 	player_uri = gdata_youtube_video_get_player_uri (video); /<!-- -->* e.g. "http://www.youtube.com/watch?v=ZTUVgYoeN_b" *<!-- -->/
  * 	description = gdata_youtube_video_get_description (video); /<!-- -->* e.g. "Vodka is the first single from the album..." *<!-- -->/
- * 	gdata_entry_get_published (GDATA_ENTRY (video), &published); /<!-- -->* Date and time the video was originally published *<!-- -->/
- * 	gdata_entry_get_updated (GDATA_ENTRY (video), &updated); /<!-- -->* When the video was most recently updated by the author *<!-- -->/
+ * 	published = gdata_entry_get_published (GDATA_ENTRY (video)); /<!-- -->* Date and time the video was originally published *<!-- -->/
+ * 	updated = gdata_entry_get_updated (GDATA_ENTRY (video)); /<!-- -->* When the video was most recently updated by the author *<!-- -->/
  *
  * 	/<!-- -->* Retrieve a specific encoding of the video in GDataMediaContent format *<!-- -->/
  * 	content = gdata_youtube_video_look_up_content (video, "video/3gpp");
@@ -109,7 +109,7 @@ struct _GDataYouTubeVideoPrivate {
 
 	/* Other properties */
 	GDataYouTubeControl *youtube_control;
-	GTimeVal recorded;
+	gint64 recorded;
 };
 
 enum {
@@ -365,9 +365,9 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:uploaded">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPLOADED,
-	                                 g_param_spec_boxed ("uploaded",
+	                                 g_param_spec_int64 ("uploaded",
 	                                                     "Uploaded", "Specifies the time the video was originally uploaded to YouTube.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -424,9 +424,9 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RECORDED,
-	                                 g_param_spec_boxed ("recorded",
+	                                 g_param_spec_int64 ("recorded",
 	                                                     "Recorded", "Specifies the time the video was originally recorded.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -459,6 +459,7 @@ static void
 gdata_youtube_video_init (GDataYouTubeVideo *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoPrivate);
+	self->priv->recorded = -1;
 	self->priv->access_controls = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 
 	/* The video's title is duplicated between atom:title and media:group/media:title, so listen for change notifications on atom:title
@@ -562,11 +563,9 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_IS_PRIVATE:
 			g_value_set_boolean (value, gdata_youtube_group_is_private (GDATA_YOUTUBE_GROUP (priv->media_group)));
 			break;
-		case PROP_UPLOADED: {
-			GTimeVal uploaded;
-			gdata_youtube_group_get_uploaded (GDATA_YOUTUBE_GROUP (priv->media_group), &uploaded);
-			g_value_set_boxed (value, &(uploaded));
-			break; }
+		case PROP_UPLOADED:
+			g_value_set_int64 (value, gdata_youtube_group_get_uploaded (GDATA_YOUTUBE_GROUP (priv->media_group)));
+			break;
 		case PROP_VIDEO_ID:
 			g_value_set_string (value, gdata_youtube_group_get_video_id (GDATA_YOUTUBE_GROUP (priv->media_group)));
 			break;
@@ -577,7 +576,7 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 			g_value_set_object (value, gdata_youtube_control_get_state (priv->youtube_control));
 			break;
 		case PROP_RECORDED:
-			g_value_set_boxed (value, &(priv->recorded));
+			g_value_set_int64 (value, priv->recorded);
 			break;
 		case PROP_ASPECT_RATIO:
 			g_value_set_string (value, gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (priv->media_group)));
@@ -614,7 +613,7 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 			gdata_youtube_video_set_is_draft (self, g_value_get_boolean (value));
 			break;
 		case PROP_RECORDED:
-			gdata_youtube_video_set_recorded (self, g_value_get_boxed (value));
+			gdata_youtube_video_set_recorded (self, g_value_get_int64 (value));
 			break;
 		case PROP_ASPECT_RATIO:
 			gdata_youtube_video_set_aspect_ratio (self, g_value_get_string (value));
@@ -694,17 +693,17 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		} else if (xmlStrcmp (node->name, (xmlChar*) "recorded") == 0) {
 			/* yt:recorded */
 			xmlChar *recorded;
-			GTimeVal recorded_timeval;
+			gint64 recorded_int64;
 
 			recorded = xmlNodeListGetString (doc, node->children, TRUE);
-			if (gdata_parser_time_val_from_date ((gchar*) recorded, &recorded_timeval) == FALSE) {
+			if (gdata_parser_int64_from_date ((gchar*) recorded, &recorded_int64) == FALSE) {
 				/* Error */
 				gdata_parser_error_not_iso8601_format (node, (gchar*) recorded, error);
 				xmlFree (recorded);
 				return FALSE;
 			}
 			xmlFree (recorded);
-			gdata_youtube_video_set_recorded (self, &recorded_timeval);
+			gdata_youtube_video_set_recorded (self, recorded_int64);
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
@@ -806,8 +805,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->location != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<yt:location>", priv->location, "</yt:location>");
 
-	if (priv->recorded.tv_sec != 0 || priv->recorded.tv_usec != 0) {
-		gchar *recorded = gdata_parser_date_from_time_val (&(priv->recorded));
+	if (priv->recorded != -1) {
+		gchar *recorded = gdata_parser_date_from_int64 (priv->recorded);
 		g_string_append_printf (xml_string, "<yt:recorded>%s</yt:recorded>", recorded);
 		g_free (recorded);
 	}
@@ -1250,17 +1249,16 @@ gdata_youtube_video_set_is_private (GDataYouTubeVideo *self, gboolean is_private
 /**
  * gdata_youtube_video_get_uploaded:
  * @self: a #GDataYouTubeVideo
- * @uploaded: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataYouTubeVideo:uploaded property and puts it in @uploaded. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataYouTubeVideo:uploaded property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the video was uploaded, or <code class="literal">-1</code>
  **/
-void
-gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self, GTimeVal *uploaded)
+gint64
+gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self)
 {
-	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	g_return_if_fail (uploaded != NULL);
-	gdata_youtube_group_get_uploaded (GDATA_YOUTUBE_GROUP (self->priv->media_group), uploaded);
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), -1);
+	return gdata_youtube_group_get_uploaded (GDATA_YOUTUBE_GROUP (self->priv->media_group));
 }
 
 /**
@@ -1329,42 +1327,39 @@ gdata_youtube_video_get_state (GDataYouTubeVideo *self)
 /**
  * gdata_youtube_video_get_recorded:
  * @self: a #GDataYouTubeVideo
- * @recorded: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataYouTubeVideo:recorded property and puts it in @recorded. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataYouTubeVideo:recorded property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the video was recorded, or <code class="literal">-1</code>
  *
  * Since: 0.3.0
  **/
-void
-gdata_youtube_video_get_recorded (GDataYouTubeVideo *self, GTimeVal *recorded)
+gint64
+gdata_youtube_video_get_recorded (GDataYouTubeVideo *self)
 {
-	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	g_return_if_fail (recorded != NULL);
-	*recorded = self->priv->recorded;
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), -1);
+	return self->priv->recorded;
 }
 
 /**
  * gdata_youtube_video_set_recorded:
  * @self: a #GDataYouTubeVideo
- * @recorded: (allow-none): the video's new recorded time, or %NULL
+ * @recorded: the video's new recorded time, or <code class="literal">-1</code>
  *
  * Sets the #GDataYouTubeVideo:recorded property to the new recorded time, @recorded.
  *
- * Set @recorded to %NULL to unset the video's recorded time.
+ * Set @recorded to <code class="literal">-1</code> to unset the video's recorded time.
  *
  * Since: 0.3.0
  **/
 void
-gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, const GTimeVal *recorded)
+gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, gint64 recorded)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	if (recorded == NULL) {
-		self->priv->recorded.tv_sec = 0;
-		self->priv->recorded.tv_usec = 0;
-	} else {
-		self->priv->recorded = *recorded;
-	}
+	g_return_if_fail (recorded >= -1);
+
+	self->priv->recorded = recorded;
+	g_object_notify (G_OBJECT (self), "recorded");
 }
 
 /**

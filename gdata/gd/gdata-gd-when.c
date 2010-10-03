@@ -53,8 +53,8 @@ static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataGDWhenPrivate {
-	GTimeVal start_time;
-	GTimeVal end_time;
+	gint64 start_time;
+	gint64 end_time;
 	gboolean is_date;
 	gchar *value_string;
 	GList *reminders;
@@ -103,9 +103,9 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_TIME,
-	                                 g_param_spec_boxed ("start-time",
+	                                 g_param_spec_int64 ("start-time",
 	                                                     "Start time", "The name of the when.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     0, G_MAXINT64, 0,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -119,9 +119,9 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_END_TIME,
-	                                 g_param_spec_boxed ("end-time",
+	                                 g_param_spec_int64 ("end-time",
 	                                                     "End time", "The title of a person within the when.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -167,8 +167,8 @@ compare_with (GDataComparable *self, GDataComparable *other)
 	if (a->is_date != b->is_date)
 		return CLAMP (b->is_date - a->is_date, -1, 1);
 
-	start_diff = (b->start_time.tv_sec - a->start_time.tv_sec) * 1000000 + (b->start_time.tv_usec - a->start_time.tv_usec);
-	end_diff = (b->end_time.tv_sec - a->end_time.tv_sec) * 1000000 + (b->end_time.tv_usec - a->end_time.tv_usec);
+	start_diff = b->start_time - a->start_time;
+	end_diff = b->end_time - a->end_time;
 
 	if (start_diff == 0)
 		return CLAMP (end_diff, -1, 1);
@@ -185,6 +185,7 @@ static void
 gdata_gd_when_init (GDataGDWhen *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_WHEN, GDataGDWhenPrivate);
+	self->priv->end_time = -1;
 }
 
 static void
@@ -220,10 +221,10 @@ gdata_gd_when_get_property (GObject *object, guint property_id, GValue *value, G
 
 	switch (property_id) {
 		case PROP_START_TIME:
-			g_value_set_boxed (value, &(priv->start_time));
+			g_value_set_int64 (value, priv->start_time);
 			break;
 		case PROP_END_TIME:
-			g_value_set_boxed (value, &(priv->end_time));
+			g_value_set_int64 (value, priv->end_time);
 			break;
 		case PROP_IS_DATE:
 			g_value_set_boolean (value, priv->is_date);
@@ -245,10 +246,10 @@ gdata_gd_when_set_property (GObject *object, guint property_id, const GValue *va
 
 	switch (property_id) {
 		case PROP_START_TIME:
-			gdata_gd_when_set_start_time (self, g_value_get_boxed (value));
+			gdata_gd_when_set_start_time (self, g_value_get_int64 (value));
 			break;
 		case PROP_END_TIME:
-			gdata_gd_when_set_end_time (self, g_value_get_boxed (value));
+			gdata_gd_when_set_end_time (self, g_value_get_int64 (value));
 			break;
 		case PROP_IS_DATE:
 			gdata_gd_when_set_is_date (self, g_value_get_boolean (value));
@@ -268,14 +269,14 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 {
 	GDataGDWhenPrivate *priv = GDATA_GD_WHEN (parsable)->priv;
 	xmlChar *start_time, *end_time;
-	GTimeVal start_time_timeval, end_time_timeval;
+	gint64 start_time_int64, end_time_int64;
 	gboolean is_date = FALSE;
 
 	/* Start time */
 	start_time = xmlGetProp (root_node, (xmlChar*) "startTime");
-	if (gdata_parser_time_val_from_date ((gchar*) start_time, &start_time_timeval) == TRUE) {
+	if (gdata_parser_int64_from_date ((gchar*) start_time, &start_time_int64) == TRUE) {
 		is_date = TRUE;
-	} else if (g_time_val_from_iso8601 ((gchar*) start_time, &start_time_timeval) == FALSE) {
+	} else if (gdata_parser_int64_from_iso8601 ((gchar*) start_time, &start_time_int64) == FALSE) {
 		/* Error */
 		gdata_parser_error_not_iso8601_format (root_node, (gchar*) start_time, error);
 		xmlFree (start_time);
@@ -289,9 +290,9 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		gboolean success;
 
 		if (is_date == TRUE)
-			success = gdata_parser_time_val_from_date ((gchar*) end_time, &end_time_timeval);
+			success = gdata_parser_int64_from_date ((gchar*) end_time, &end_time_int64);
 		else
-			success = g_time_val_from_iso8601 ((gchar*) end_time, &end_time_timeval);
+			success = gdata_parser_int64_from_iso8601 ((gchar*) end_time, &end_time_int64);
 
 		if (success == FALSE) {
 			/* Error */
@@ -302,11 +303,11 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		xmlFree (end_time);
 	} else {
 		/* Give a default */
-		end_time_timeval.tv_sec = end_time_timeval.tv_usec = 0;
+		end_time_int64 = -1;
 	}
 
-	priv->start_time = start_time_timeval;
-	priv->end_time = end_time_timeval;
+	priv->start_time = start_time_int64;
+	priv->end_time = end_time_int64;
 	priv->is_date = is_date;
 	priv->value_string = (gchar*) xmlGetProp (root_node, (xmlChar*) "valueString");
 
@@ -345,20 +346,20 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	gchar *start_time;
 
 	if (priv->is_date == TRUE)
-		start_time = gdata_parser_date_from_time_val (&(priv->start_time));
+		start_time = gdata_parser_date_from_int64 (priv->start_time);
 	else
-		start_time = g_time_val_to_iso8601 (&(priv->start_time));
+		start_time = gdata_parser_int64_to_iso8601 (priv->start_time);
 
 	g_string_append_printf (xml_string, " startTime='%s'", start_time);
 	g_free (start_time);
 
-	if (priv->end_time.tv_sec != 0 || priv->end_time.tv_usec != 0) {
+	if (priv->end_time != -1) {
 		gchar *end_time;
 
 		if (priv->is_date == TRUE)
-			end_time = gdata_parser_date_from_time_val (&(priv->end_time));
+			end_time = gdata_parser_date_from_int64 (priv->end_time);
 		else
-			end_time = g_time_val_to_iso8601 (&(priv->end_time));
+			end_time = gdata_parser_int64_to_iso8601 (priv->end_time);
 
 		g_string_append_printf (xml_string, " endTime='%s'", end_time);
 		g_free (end_time);
@@ -387,7 +388,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gd_when_new:
  * @start_time: when the event starts or (for zero-duration events) when it occurs
- * @end_time: (allow-none): when the event ends, or %NULL
+ * @end_time: when the event ends, or <code class="literal">-1</code>
  * @is_date: %TRUE if @start_time and @end_time specify dates rather than times, %FALSE otherwise
  *
  * Creates a new #GDataGDWhen. More information is available in the <ulink type="http"
@@ -398,27 +399,29 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Since: 0.2.0
  **/
 GDataGDWhen *
-gdata_gd_when_new (const GTimeVal *start_time, const GTimeVal *end_time, gboolean is_date)
+gdata_gd_when_new (gint64 start_time, gint64 end_time, gboolean is_date)
 {
-	g_return_val_if_fail (start_time != NULL, NULL);
+	g_return_val_if_fail (start_time >= 0, NULL);
+	g_return_val_if_fail (end_time >= -1, NULL);
+
 	return g_object_new (GDATA_TYPE_GD_WHEN, "start-time", start_time, "end-time", end_time, "is-date", is_date, NULL);
 }
 
 /**
  * gdata_gd_when_get_start_time:
  * @self: a #GDataGDWhen
- * @start_time: (out caller-allocates): return location for the start time
  *
- * Gets the #GDataGDWhen:start-time property and returns it in @start_time.
+ * Gets the #GDataGDWhen:start-time property.
+ *
+ * Return value: the UNIX timestamp for the start time of the event
  *
  * Since: 0.4.0
  **/
-void
-gdata_gd_when_get_start_time (GDataGDWhen *self, GTimeVal *start_time)
+gint64
+gdata_gd_when_get_start_time (GDataGDWhen *self)
 {
-	g_return_if_fail (GDATA_IS_GD_WHEN (self));
-	g_return_if_fail (start_time != NULL);
-	*start_time = self->priv->start_time;
+	g_return_val_if_fail (GDATA_IS_GD_WHEN (self), -1);
+	return self->priv->start_time;
 }
 
 /**
@@ -431,55 +434,50 @@ gdata_gd_when_get_start_time (GDataGDWhen *self, GTimeVal *start_time)
  * Since: 0.4.0
  **/
 void
-gdata_gd_when_set_start_time (GDataGDWhen *self, const GTimeVal *start_time)
+gdata_gd_when_set_start_time (GDataGDWhen *self, gint64 start_time)
 {
 	g_return_if_fail (GDATA_IS_GD_WHEN (self));
-	g_return_if_fail (start_time != NULL);
+	g_return_if_fail (start_time >= 0);
 
-	self->priv->start_time = *start_time;
+	self->priv->start_time = start_time;
 	g_object_notify (G_OBJECT (self), "start-time");
 }
 
 /**
  * gdata_gd_when_get_end_time:
  * @self: a #GDataGDWhen
- * @end_time: (out caller-allocates): return location for the end time
  *
- * Gets the #GDataGDWhen:end-time property and returns it in @end_time.
+ * Gets the #GDataGDWhen:end-time property.
  *
- * If the end time is unset, both fields of the #GTimeVal will be <code class="literal">0</code>.
+ * If the end time is unset, <code class="literal">-1</code> will be returned.
  *
  * Since: 0.4.0
  **/
-void
-gdata_gd_when_get_end_time (GDataGDWhen *self, GTimeVal *end_time)
+gint64
+gdata_gd_when_get_end_time (GDataGDWhen *self)
 {
-	g_return_if_fail (GDATA_IS_GD_WHEN (self));
-	g_return_if_fail (end_time != NULL);
-	*end_time = self->priv->end_time;
+	g_return_val_if_fail (GDATA_IS_GD_WHEN (self), -1);
+	return self->priv->end_time;
 }
 
 /**
  * gdata_gd_when_set_end_time:
  * @self: a #GDataGDWhen
- * @end_time: (allow-none): the new end time, or %NULL
+ * @end_time: the new end time, or <code class="literal">-1</code>
  *
  * Sets the #GDataGDWhen:end-time property to @end_time.
  *
- * Set @end_time to %NULL to unset the property.
+ * Set @end_time to <code class="literal">-1</code> to unset the property.
  *
  * Since: 0.4.0
  **/
 void
-gdata_gd_when_set_end_time (GDataGDWhen *self, const GTimeVal *end_time)
+gdata_gd_when_set_end_time (GDataGDWhen *self, gint64 end_time)
 {
 	g_return_if_fail (GDATA_IS_GD_WHEN (self));
+	g_return_if_fail (end_time >= -1);
 
-	if (end_time != NULL)
-		self->priv->end_time = *end_time;
-	else
-		self->priv->end_time.tv_sec = self->priv->end_time.tv_usec = 0;
-
+	self->priv->end_time = end_time;
 	g_object_notify (G_OBJECT (self), "end-time");
 }
 

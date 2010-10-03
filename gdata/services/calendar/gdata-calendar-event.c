@@ -52,7 +52,7 @@ static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, 
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataCalendarEventPrivate {
-	GTimeVal edited;
+	gint64 edited;
 	gchar *status;
 	gchar *visibility;
 	gchar *transparency;
@@ -119,9 +119,9 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_boxed ("edited",
+	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the event was edited.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -294,6 +294,7 @@ static void
 gdata_calendar_event_init (GDataCalendarEvent *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_EVENT, GDataCalendarEventPrivate);
+	self->priv->edited = -1;
 }
 
 static GObject *
@@ -306,10 +307,12 @@ gdata_calendar_event_constructor (GType type, guint n_construct_params, GObjectC
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataCalendarEventPrivate *priv = GDATA_CALENDAR_EVENT (object)->priv;
+		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 		 * setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&(priv->edited));
+		g_get_current_time (&time_val);
+		priv->edited = time_val.tv_sec;
 	}
 
 	return object;
@@ -366,7 +369,7 @@ gdata_calendar_event_get_property (GObject *object, guint property_id, GValue *v
 
 	switch (property_id) {
 		case PROP_EDITED:
-			g_value_set_boxed (value, &(priv->edited));
+			g_value_set_int64 (value, priv->edited);
 			break;
 		case PROP_STATUS:
 			g_value_set_string (value, priv->status);
@@ -461,7 +464,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	GDataCalendarEvent *self = GDATA_CALENDAR_EVENT (parsable);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
 		if (gdata_parser_object_from_element_setter (node, "when", P_REQUIRED, GDATA_TYPE_GD_WHEN,
@@ -651,17 +654,16 @@ gdata_calendar_event_new (const gchar *id)
 /**
  * gdata_calendar_event_get_edited:
  * @self: a #GDataCalendarEvent
- * @edited: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataCalendarEvent:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataCalendarEvent:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the event was last edited, or <code class="literal">-1</code>
  **/
-void
-gdata_calendar_event_get_edited (GDataCalendarEvent *self, GTimeVal *edited)
+gint64
+gdata_calendar_event_get_edited (GDataCalendarEvent *self)
 {
-	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (self));
-	g_return_if_fail (edited != NULL);
-	*edited = self->priv->edited;
+	g_return_val_if_fail (GDATA_IS_CALENDAR_EVENT (self), -1);
+	return self->priv->edited;
 }
 
 /**
@@ -1068,8 +1070,8 @@ gdata_calendar_event_get_times (GDataCalendarEvent *self)
 /**
  * gdata_calendar_event_get_primary_time:
  * @self: a #GDataCalendarEvent
- * @start_time: (out caller-allocates): a #GTimeVal for the start time, or %NULL
- * @end_time: (out caller-allocates): a #GTimeVal for the end time, or %NULL
+ * @start_time: (out caller-allocates): a #gint64 for the start time, or %NULL
+ * @end_time: (out caller-allocates): a #gint64 for the end time, or %NULL
  * @when: (out callee-allocates) (transfer none): a #GDataGDWhen for the primary time structure, or %NULL
  *
  * Gets the first time period associated with the event, conveniently returning just its start and
@@ -1083,7 +1085,7 @@ gdata_calendar_event_get_times (GDataCalendarEvent *self)
  * Since: 0.2.0
  **/
 gboolean
-gdata_calendar_event_get_primary_time (GDataCalendarEvent *self, GTimeVal *start_time, GTimeVal *end_time, GDataGDWhen **when)
+gdata_calendar_event_get_primary_time (GDataCalendarEvent *self, gint64 *start_time, gint64 *end_time, GDataGDWhen **when)
 {
 	GDataGDWhen *primary_when;
 
@@ -1094,9 +1096,9 @@ gdata_calendar_event_get_primary_time (GDataCalendarEvent *self, GTimeVal *start
 
 	primary_when = GDATA_GD_WHEN (self->priv->times->data);
 	if (start_time != NULL)
-		gdata_gd_when_get_start_time (primary_when, start_time);
+		*start_time = gdata_gd_when_get_start_time (primary_when);
 	if (end_time != NULL)
-		gdata_gd_when_get_end_time (primary_when, end_time);
+		*end_time = gdata_gd_when_get_end_time (primary_when);
 	if (when != NULL)
 		*when = primary_when;
 

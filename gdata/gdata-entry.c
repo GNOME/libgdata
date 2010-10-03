@@ -61,8 +61,8 @@ struct _GDataEntryPrivate {
 	gchar *summary;
 	gchar *id;
 	gchar *etag;
-	GTimeVal updated;
-	GTimeVal published;
+	gint64 updated;
+	gint64 published;
 	GList *categories; /* GDataCategory */
 	gchar *content;
 	gboolean content_is_uri;
@@ -184,9 +184,9 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.updated">Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED,
-	                                 g_param_spec_boxed ("updated",
+	                                 g_param_spec_int64 ("updated",
 	                                                     "Updated", "The date and time when the entry was most recently updated significantly.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -198,9 +198,9 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.published">Atom specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PUBLISHED,
-	                                 g_param_spec_boxed ("published",
+	                                 g_param_spec_int64 ("published",
 	                                                     "Published", "The date and time the entry was first published or made available.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -266,6 +266,8 @@ static void
 gdata_entry_init (GDataEntry *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ENTRY, GDataEntryPrivate);
+	self->priv->updated = -1;
+	self->priv->published = -1;
 }
 
 static void
@@ -349,10 +351,10 @@ gdata_entry_get_property (GObject *object, guint property_id, GValue *value, GPa
 			g_value_set_string (value, priv->etag);
 			break;
 		case PROP_UPDATED:
-			g_value_set_boxed (value, &(priv->updated));
+			g_value_set_int64 (value, priv->updated);
 			break;
 		case PROP_PUBLISHED:
-			g_value_set_boxed (value, &(priv->published));
+			g_value_set_int64 (value, priv->published);
 			break;
 		case PROP_CONTENT:
 			g_value_set_string (value, (priv->content_is_uri == FALSE) ? priv->content : NULL);
@@ -429,8 +431,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES, &(priv->id), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "summary", P_NONE, &(priv->summary), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "rights", P_NONE, &(priv->rights), &success, error) == TRUE ||
-		    gdata_parser_time_val_from_element (node, "updated", P_REQUIRED | P_NO_DUPES, &(priv->updated), &success, error) == TRUE ||
-		    gdata_parser_time_val_from_element (node, "published", P_REQUIRED | P_NO_DUPES, &(priv->published), &success, error) == TRUE ||
+		    gdata_parser_int64_from_element (node, "updated", P_REQUIRED | P_NO_DUPES, &(priv->updated), &success, error) == TRUE ||
+		    gdata_parser_int64_from_element (node, "published", P_REQUIRED | P_NO_DUPES, &(priv->published), &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
 		                                             gdata_entry_add_category, parsable, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,
@@ -505,14 +507,14 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->id != NULL)
 		g_string_append_printf (xml_string, "<id>%s</id>", priv->id);
 
-	if (priv->updated.tv_sec != 0 || priv->updated.tv_usec != 0) {
-		gchar *updated = g_time_val_to_iso8601 (&(priv->updated));
+	if (priv->updated != -1) {
+		gchar *updated = gdata_parser_int64_to_iso8601 (priv->updated);
 		g_string_append_printf (xml_string, "<updated>%s</updated>", updated);
 		g_free (updated);
 	}
 
-	if (priv->published.tv_sec != 0 || priv->published.tv_usec != 0) {
-		gchar *published = g_time_val_to_iso8601 (&(priv->published));
+	if (priv->published != -1) {
+		gchar *published = gdata_parser_int64_to_iso8601 (priv->published);
 		g_string_append_printf (xml_string, "<published>%s</published>", published);
 		g_free (published);
 	}
@@ -700,16 +702,16 @@ gdata_entry_get_etag (GDataEntry *self)
 /**
  * gdata_entry_get_updated:
  * @self: a #GDataEntry
- * @updated: (out caller-allocates): a #GTimeVal
  *
- * Puts the time the entry was last updated into @updated.
+ * Gets the time the entry was last updated.
+ *
+ * Return value: the UNIX timestamp for the last update of the entry
  **/
-void
-gdata_entry_get_updated (GDataEntry *self, GTimeVal *updated)
+gint64
+gdata_entry_get_updated (GDataEntry *self)
 {
-	g_return_if_fail (GDATA_IS_ENTRY (self));
-	g_return_if_fail (updated != NULL);
-	*updated = self->priv->updated;
+	g_return_val_if_fail (GDATA_IS_ENTRY (self), -1);
+	return self->priv->updated;
 }
 
 /*
@@ -722,27 +724,25 @@ gdata_entry_get_updated (GDataEntry *self, GTimeVal *updated)
  * Since: 0.6.0
  */
 void
-_gdata_entry_set_updated (GDataEntry *self, GTimeVal *updated)
+_gdata_entry_set_updated (GDataEntry *self, gint64 updated)
 {
 	g_return_if_fail (GDATA_IS_ENTRY (self));
-	g_return_if_fail (updated != NULL);
-
-	self->priv->updated = *updated;
+	self->priv->updated = updated;
 }
 
 /**
  * gdata_entry_get_published:
  * @self: a #GDataEntry
- * @published: (out caller-allocates): a #GTimeVal
  *
- * Puts the time the entry was originally published into @published.
+ * Gets the time the entry was originally published.
+ *
+ * Return value: the UNIX timestamp for the original publish time of the entry
  **/
-void
-gdata_entry_get_published (GDataEntry *self, GTimeVal *published)
+gint64
+gdata_entry_get_published (GDataEntry *self)
 {
-	g_return_if_fail (GDATA_IS_ENTRY (self));
-	g_return_if_fail (published != NULL);
-	*published = self->priv->published;
+	g_return_val_if_fail (GDATA_IS_ENTRY (self), -1);
+	return self->priv->published;
 }
 
 /**
@@ -1008,8 +1008,7 @@ gdata_entry_is_inserted (GDataEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), FALSE);
 
-	if (self->priv->id != NULL ||
-	    self->priv->updated.tv_sec != 0 || self->priv->updated.tv_usec != 0)
+	if (self->priv->id != NULL || self->priv->updated != -1)
 		return TRUE;
 	return FALSE;
 }

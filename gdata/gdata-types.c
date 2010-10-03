@@ -36,26 +36,6 @@
 #include "gdata-types.h"
 
 static gpointer
-gdata_g_time_val_copy (gpointer time_val)
-{
-	return g_memdup (time_val, sizeof (GTimeVal));
-}
-
-GType
-gdata_g_time_val_get_type (void)
-{
-	static GType type_id = 0;
-
-	if (type_id == 0) {
-		type_id = g_boxed_type_register_static (g_intern_static_string ("GDataTimeVal"),
-		                                        (GBoxedCopyFunc) gdata_g_time_val_copy,
-		                                        (GBoxedFreeFunc) g_free);
-	}
-
-	return type_id;
-}
-
-static gpointer
 gdata_color_copy (gpointer color)
 {
 	return g_memdup (color, sizeof (GDataColor));

@@ -83,13 +83,13 @@ GDataPicasaWebAlbum *gdata_picasaweb_album_new (const gchar *id) G_GNUC_WARN_UNU
 const gchar *gdata_picasaweb_album_get_id (GDataPicasaWebAlbum *self) G_GNUC_PURE;
 const gchar *gdata_picasaweb_album_get_user (GDataPicasaWebAlbum *self) G_GNUC_PURE;
 const gchar *gdata_picasaweb_album_get_nickname (GDataPicasaWebAlbum *self) G_GNUC_PURE;
-void gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self, GTimeVal *edited);
+gint64 gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self);
 const gchar *gdata_picasaweb_album_get_location (GDataPicasaWebAlbum *self) G_GNUC_PURE;
 void gdata_picasaweb_album_set_location (GDataPicasaWebAlbum *self, const gchar *location);
 GDataPicasaWebVisibility gdata_picasaweb_album_get_visibility (GDataPicasaWebAlbum *self) G_GNUC_PURE;
 void gdata_picasaweb_album_set_visibility (GDataPicasaWebAlbum *self, GDataPicasaWebVisibility visibility);
-void gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self, GTimeVal *timestamp);
-void gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, const GTimeVal *timestamp);
+gint64 gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self);
+void gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, gint64 timestamp);
 guint gdata_picasaweb_album_get_num_photos (GDataPicasaWebAlbum *self) G_GNUC_PURE;
 guint gdata_picasaweb_album_get_num_photos_remaining (GDataPicasaWebAlbum *self) G_GNUC_PURE;
 glong gdata_picasaweb_album_get_bytes_used (GDataPicasaWebAlbum *self) G_GNUC_PURE;

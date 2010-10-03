@@ -96,8 +96,8 @@ gchar *gdata_documents_entry_get_path (GDataDocumentsEntry *self) G_GNUC_WARN_UN
 
 const gchar *gdata_documents_entry_get_document_id (GDataDocumentsEntry *self) G_GNUC_PURE;
 
-void gdata_documents_entry_get_edited (GDataDocumentsEntry *self, GTimeVal *edited);
-void gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self, GTimeVal *last_viewed);
+gint64 gdata_documents_entry_get_edited (GDataDocumentsEntry *self);
+gint64 gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self);
 
 void gdata_documents_entry_set_writers_can_invite (GDataDocumentsEntry *self, gboolean writers_can_invite);
 gboolean gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self) G_GNUC_PURE;

@@ -158,7 +158,7 @@ GType gdata_contacts_contact_get_type (void) G_GNUC_CONST;
 
 GDataContactsContact *gdata_contacts_contact_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-void gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *edited);
+gint64 gdata_contacts_contact_get_edited (GDataContactsContact *self);
 gboolean gdata_contacts_contact_is_deleted (GDataContactsContact *self) G_GNUC_PURE;
 
 GDataGDName *gdata_contacts_contact_get_name (GDataContactsContact *self) G_GNUC_PURE;

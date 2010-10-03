@@ -35,8 +35,10 @@ gboolean gdata_parser_error_mutexed_properties (xmlNode *element, const gchar *p
 gboolean gdata_parser_error_required_element_missing (const gchar *element_name, const gchar *parent_element_name, GError **error);
 gboolean gdata_parser_error_duplicate_element (xmlNode *element, GError **error);
 
-gboolean gdata_parser_time_val_from_date (const gchar *date, GTimeVal *_time);
-gchar *gdata_parser_date_from_time_val (const GTimeVal *_time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+gboolean gdata_parser_int64_from_date (const gchar *date, gint64 *_time);
+gchar *gdata_parser_date_from_int64 (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+gchar *gdata_parser_int64_to_iso8601 (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+gboolean gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time);
 
 /*
  * GDataParserOptions:
@@ -69,8 +71,8 @@ gboolean gdata_parser_is_namespace (xmlNode *element, const gchar *namespace_uri
 
 gboolean gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
                                            gchar **output, gboolean *success, GError **error);
-gboolean gdata_parser_time_val_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
-                                             GTimeVal *output, gboolean *success, GError **error);
+gboolean gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+                                          gint64 *output, gboolean *success, GError **error);
 gboolean gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
                                                   gpointer /* GDataParserSetterFunc */ _setter, gpointer /* GDataParsable * */ _parent_parsable,
                                                   gboolean *success, GError **error);

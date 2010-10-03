@@ -58,10 +58,10 @@ struct _GDataQueryPrivate {
 	gchar *q;
 	gchar *categories;
 	gchar *author;
-	GTimeVal updated_min;
-	GTimeVal updated_max;
-	GTimeVal published_min;
-	GTimeVal published_max;
+	gint64 updated_min;
+	gint64 updated_max;
+	gint64 published_min;
+	gint64 published_max;
 	gint start_index;
 	gboolean is_strict;
 	gint max_results;
@@ -175,9 +175,9 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Lower bound on the entry update date, inclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED_MIN,
-	                                 g_param_spec_boxed ("updated-min",
+	                                 g_param_spec_int64 ("updated-min",
 	                                                     "Minimum update date", "Minimum date for updates on returned entries.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -186,9 +186,9 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Upper bound on the entry update date, exclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPDATED_MAX,
-	                                 g_param_spec_boxed ("updated-max",
+	                                 g_param_spec_int64 ("updated-max",
 	                                                     "Maximum update date", "Maximum date for updates on returned entries.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -197,9 +197,9 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Lower bound on the entry publish date, inclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PUBLISHED_MIN,
-	                                 g_param_spec_boxed ("published-min",
+	                                 g_param_spec_int64 ("published-min",
 	                                                     "Minimum publish date", "Minimum date for returned entries to be published.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -208,9 +208,9 @@ gdata_query_class_init (GDataQueryClass *klass)
 	 * Upper bound on the entry publish date, exclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PUBLISHED_MAX,
-	                                 g_param_spec_boxed ("published-max",
+	                                 g_param_spec_int64 ("published-max",
 	                                                     "Maximum publish date", "Maximum date for returned entries to be published.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -277,6 +277,10 @@ static void
 gdata_query_init (GDataQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_QUERY, GDataQueryPrivate);
+	self->priv->updated_min = -1;
+	self->priv->updated_max = -1;
+	self->priv->published_min = -1;
+	self->priv->published_max = -1;
 }
 
 static void
@@ -311,16 +315,16 @@ gdata_query_get_property (GObject *object, guint property_id, GValue *value, GPa
 			g_value_set_string (value, priv->author);
 			break;
 		case PROP_UPDATED_MIN:
-			g_value_set_boxed (value, &(priv->updated_min));
+			g_value_set_int64 (value, priv->updated_min);
 			break;
 		case PROP_UPDATED_MAX:
-			g_value_set_boxed (value, &(priv->updated_max));
+			g_value_set_int64 (value, priv->updated_max);
 			break;
 		case PROP_PUBLISHED_MIN:
-			g_value_set_boxed (value, &(priv->published_min));
+			g_value_set_int64 (value, priv->published_min);
 			break;
 		case PROP_PUBLISHED_MAX:
-			g_value_set_boxed (value, &(priv->published_max));
+			g_value_set_int64 (value, priv->published_max);
 			break;
 		case PROP_START_INDEX:
 			g_value_set_uint (value, priv->start_index);
@@ -357,16 +361,16 @@ gdata_query_set_property (GObject *object, guint property_id, const GValue *valu
 			gdata_query_set_author (self, g_value_get_string (value));
 			break;
 		case PROP_UPDATED_MIN:
-			gdata_query_set_updated_min (self, g_value_get_boxed (value));
+			gdata_query_set_updated_min (self, g_value_get_int64 (value));
 			break;
 		case PROP_UPDATED_MAX:
-			gdata_query_set_updated_max (self, g_value_get_boxed (value));
+			gdata_query_set_updated_max (self, g_value_get_int64 (value));
 			break;
 		case PROP_PUBLISHED_MIN:
-			gdata_query_set_published_min (self, g_value_get_boxed (value));
+			gdata_query_set_published_min (self, g_value_get_int64 (value));
 			break;
 		case PROP_PUBLISHED_MAX:
-			gdata_query_set_published_max (self, g_value_get_boxed (value));
+			gdata_query_set_published_max (self, g_value_get_int64 (value));
 			break;
 		case PROP_START_INDEX:
 			gdata_query_set_start_index (self, g_value_get_uint (value));
@@ -413,42 +417,42 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		g_string_append_uri_escaped (query_uri, priv->author, NULL, FALSE);
 	}
 
-	if (priv->updated_min.tv_sec != 0 || priv->updated_min.tv_usec != 0) {
+	if (priv->updated_min != -1) {
 		gchar *updated_min;
 
 		APPEND_SEP
 		g_string_append (query_uri, "updated-min=");
-		updated_min = g_time_val_to_iso8601 (&(priv->updated_min));
+		updated_min = gdata_parser_int64_to_iso8601 (priv->updated_min);
 		g_string_append (query_uri, updated_min);
 		g_free (updated_min);
 	}
 
-	if (priv->updated_max.tv_sec != 0 || priv->updated_max.tv_usec != 0) {
+	if (priv->updated_max != -1) {
 		gchar *updated_max;
 
 		APPEND_SEP
 		g_string_append (query_uri, "updated-max=");
-		updated_max = g_time_val_to_iso8601 (&(priv->updated_max));
+		updated_max = gdata_parser_int64_to_iso8601 (priv->updated_max);
 		g_string_append (query_uri, updated_max);
 		g_free (updated_max);
 	}
 
-	if (priv->published_min.tv_sec != 0 || priv->published_min.tv_usec != 0) {
+	if (priv->published_min != -1) {
 		gchar *published_min;
 
 		APPEND_SEP
 		g_string_append (query_uri, "published-min=");
-		published_min = g_time_val_to_iso8601 (&(priv->published_min));
+		published_min = gdata_parser_int64_to_iso8601 (priv->published_min);
 		g_string_append (query_uri, published_min);
 		g_free (published_min);
 	}
 
-	if (priv->published_max.tv_sec != 0 || priv->published_max.tv_usec != 0) {
+	if (priv->published_max != -1) {
 		gchar *published_max;
 
 		APPEND_SEP
 		g_string_append (query_uri, "published-max=");
-		published_max = g_time_val_to_iso8601 (&(priv->published_max));
+		published_max = gdata_parser_int64_to_iso8601 (priv->published_max);
 		g_string_append (query_uri, published_max);
 		g_free (published_max);
 	}
@@ -659,40 +663,34 @@ gdata_query_set_author (GDataQuery *self, const gchar *author)
 /**
  * gdata_query_get_updated_min:
  * @self: a #GDataQuery
- * @updated_min: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataQuery:updated-min property and puts it in @updated_min. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataQuery:updated-min property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the updated-min property, or <code class="literal">-1</code>
  **/
-void
-gdata_query_get_updated_min (GDataQuery *self, GTimeVal *updated_min)
+gint64
+gdata_query_get_updated_min (GDataQuery *self)
 {
-	g_return_if_fail (GDATA_IS_QUERY (self));
-	g_return_if_fail (updated_min != NULL);
-	*updated_min = self->priv->updated_min;
+	g_return_val_if_fail (GDATA_IS_QUERY (self), -1);
+	return self->priv->updated_min;
 }
 
 /**
  * gdata_query_set_updated_min:
  * @self: a #GDataQuery
- * @updated_min: (allow-none): the new minimum update time, or %NULL
+ * @updated_min: the new minimum update time, or <code class="literal">-1</code>
  *
  * Sets the #GDataQuery:updated-min property of the #GDataQuery to the new minimum update time, @updated_min.
  *
- * Set @updated_min to %NULL to unset the property in the query URI.
+ * Set @updated_min to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
-gdata_query_set_updated_min (GDataQuery *self, const GTimeVal *updated_min)
+gdata_query_set_updated_min (GDataQuery *self, gint64 updated_min)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
+	g_return_if_fail (updated_min >= -1);
 
-	if (updated_min == NULL) {
-		self->priv->updated_min.tv_sec = 0;
-		self->priv->updated_min.tv_usec = 0;
-	} else {
-		self->priv->updated_min = *updated_min;
-	}
-
+	self->priv->updated_min = updated_min;
 	g_object_notify (G_OBJECT (self), "updated-min");
 
 	/* Our current ETag will no longer be relevant */
@@ -702,40 +700,34 @@ gdata_query_set_updated_min (GDataQuery *self, const GTimeVal *updated_min)
 /**
  * gdata_query_get_updated_max:
  * @self: a #GDataQuery
- * @updated_max: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataQuery:updated-max property and puts it in @updated_max. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataQuery:updated-max property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the updated-max property, or <code class="literal">-1</code>
  **/
-void
-gdata_query_get_updated_max (GDataQuery *self, GTimeVal *updated_max)
+gint64
+gdata_query_get_updated_max (GDataQuery *self)
 {
-	g_return_if_fail (GDATA_IS_QUERY (self));
-	g_return_if_fail (updated_max != NULL);
-	*updated_max = self->priv->updated_max;
+	g_return_val_if_fail (GDATA_IS_QUERY (self), -1);
+	return self->priv->updated_max;
 }
 
 /**
  * gdata_query_set_updated_max:
  * @self: a #GDataQuery
- * @updated_max: (allow-none): the new maximum update time, or %NULL
+ * @updated_max: the new maximum update time, or <code class="literal">-1</code>
  *
  * Sets the #GDataQuery:updated-max property of the #GDataQuery to the new maximum update time, @updated_max.
  *
- * Set @updated_max to %NULL to unset the property in the query URI.
+ * Set @updated_max to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
-gdata_query_set_updated_max (GDataQuery *self, const GTimeVal *updated_max)
+gdata_query_set_updated_max (GDataQuery *self, gint64 updated_max)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
+	g_return_if_fail (updated_max >= -1);
 
-	if (updated_max == NULL) {
-		self->priv->updated_max.tv_sec = 0;
-		self->priv->updated_max.tv_usec = 0;
-	} else {
-		self->priv->updated_max = *updated_max;
-	}
-
+	self->priv->updated_max = updated_max;
 	g_object_notify (G_OBJECT (self), "updated-max");
 
 	/* Our current ETag will no longer be relevant */
@@ -745,40 +737,34 @@ gdata_query_set_updated_max (GDataQuery *self, const GTimeVal *updated_max)
 /**
  * gdata_query_get_published_min:
  * @self: a #GDataQuery
- * @published_min: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataQuery:published-min property and puts it in @published_min. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataQuery:published-min property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the published-min property, or <code class="literal">-1</code>
  **/
-void
-gdata_query_get_published_min (GDataQuery *self, GTimeVal *published_min)
+gint64
+gdata_query_get_published_min (GDataQuery *self)
 {
-	g_return_if_fail (GDATA_IS_QUERY (self));
-	g_return_if_fail (published_min != NULL);
-	*published_min = self->priv->published_min;
+	g_return_val_if_fail (GDATA_IS_QUERY (self), -1);
+	return self->priv->published_min;
 }
 
 /**
  * gdata_query_set_published_min:
  * @self: a #GDataQuery
- * @published_min: (allow-none): the new minimum publish time, or %NULL
+ * @published_min: the new minimum publish time, or <code class="literal">-1</code>
  *
  * Sets the #GDataQuery:published-min property of the #GDataQuery to the new minimum publish time, @published_min.
  *
- * Set @published_min to %NULL to unset the property in the query URI.
+ * Set @published_min to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
-gdata_query_set_published_min (GDataQuery *self, const GTimeVal *published_min)
+gdata_query_set_published_min (GDataQuery *self, gint64 published_min)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
+	g_return_if_fail (published_min >= -1);
 
-	if (published_min == NULL) {
-		self->priv->published_min.tv_sec = 0;
-		self->priv->published_min.tv_usec = 0;
-	} else {
-		self->priv->published_min = *published_min;
-	}
-
+	self->priv->published_min = published_min;
 	g_object_notify (G_OBJECT (self), "published-min");
 
 	/* Our current ETag will no longer be relevant */
@@ -788,40 +774,34 @@ gdata_query_set_published_min (GDataQuery *self, const GTimeVal *published_min)
 /**
  * gdata_query_get_published_max:
  * @self: a #GDataQuery
- * @published_max: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataQuery:published-max property and puts it in @published_max. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataQuery:published-max property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the published-max property, or <code class="literal">-1</code>
  **/
-void
-gdata_query_get_published_max (GDataQuery *self, GTimeVal *published_max)
+gint64
+gdata_query_get_published_max (GDataQuery *self)
 {
-	g_return_if_fail (GDATA_IS_QUERY (self));
-	g_return_if_fail (published_max != NULL);
-	*published_max = self->priv->published_max;
+	g_return_val_if_fail (GDATA_IS_QUERY (self), -1);
+	return self->priv->published_max;
 }
 
 /**
  * gdata_query_set_published_max:
  * @self: a #GDataQuery
- * @published_max: (allow-none): the new maximum publish time, or %NULL
+ * @published_max: the new maximum publish time, or <code class="literal">-1</code>
  *
  * Sets the #GDataQuery:published-max property of the #GDataQuery to the new maximum publish time, @published_max.
  *
- * Set @published_max to %NULL to unset the property in the query URI.
+ * Set @published_max to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
-gdata_query_set_published_max (GDataQuery *self, const GTimeVal *published_max)
+gdata_query_set_published_max (GDataQuery *self, gint64 published_max)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
+	g_return_if_fail (published_max >= -1);
 
-	if (published_max == NULL) {
-		self->priv->published_max.tv_sec = 0;
-		self->priv->published_max.tv_usec = 0;
-	} else {
-		self->priv->published_max = *published_max;
-	}
-
+	self->priv->published_max = published_max;
 	g_object_notify (G_OBJECT (self), "published-max");
 
 	/* Our current ETag will no longer be relevant */

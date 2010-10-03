@@ -103,7 +103,7 @@ GType gdata_picasaweb_file_get_type (void) G_GNUC_CONST;
 GDataPicasaWebFile *gdata_picasaweb_file_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_picasaweb_file_get_id (GDataPicasaWebFile *self) G_GNUC_PURE;
-void gdata_picasaweb_file_get_edited (GDataPicasaWebFile *self, GTimeVal *edited);
+gint64 gdata_picasaweb_file_get_edited (GDataPicasaWebFile *self);
 const gchar *gdata_picasaweb_file_get_version (GDataPicasaWebFile *self) G_GNUC_PURE;
 gdouble gdata_picasaweb_file_get_position (GDataPicasaWebFile *self) G_GNUC_PURE;
 void gdata_picasaweb_file_set_position (GDataPicasaWebFile *self, gdouble position);
@@ -117,8 +117,8 @@ const gchar *gdata_picasaweb_file_get_client (GDataPicasaWebFile *self) G_GNUC_P
 void gdata_picasaweb_file_set_client (GDataPicasaWebFile *self, const gchar *client);
 const gchar *gdata_picasaweb_file_get_checksum (GDataPicasaWebFile *self) G_GNUC_PURE;
 void gdata_picasaweb_file_set_checksum (GDataPicasaWebFile *self, const gchar *checksum);
-void gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self, GTimeVal *timestamp);
-void gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, const GTimeVal *timestamp);
+gint64 gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self);
+void gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, gint64 timestamp);
 gboolean gdata_picasaweb_file_is_commenting_enabled (GDataPicasaWebFile *self) G_GNUC_PURE;
 void gdata_picasaweb_file_set_is_commenting_enabled (GDataPicasaWebFile *self, gboolean is_commenting_enabled);
 guint gdata_picasaweb_file_get_comment_count (GDataPicasaWebFile *self) G_GNUC_PURE;

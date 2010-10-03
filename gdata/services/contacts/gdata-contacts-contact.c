@@ -67,7 +67,7 @@ static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
 struct _GDataContactsContactPrivate {
-	GTimeVal edited;
+	gint64 edited;
 	GDataGDName *name;
 	GList *email_addresses; /* GDataGDEmailAddress */
 	GList *im_addresses; /* GDataGDIMAddress */
@@ -159,9 +159,9 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Since: 0.2.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_boxed ("edited",
+	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the contact was edited.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -414,6 +414,7 @@ gdata_contacts_contact_init (GDataContactsContact *self)
 	self->priv->extended_properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->user_defined_fields = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->groups = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	self->priv->edited = -1;
 
 	/* Create a default name, so the name's properties can be set for a blank contact */
 	self->priv->name = gdata_gd_name_new (NULL, NULL);
@@ -460,10 +461,12 @@ gdata_contacts_contact_constructor (GType type, guint n_construct_params, GObjec
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (object)->priv;
+		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 		 * setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&(priv->edited));
+		g_get_current_time (&time_val);
+		priv->edited = time_val.tv_sec;
 	}
 
 	return object;
@@ -533,7 +536,7 @@ gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue 
 
 	switch (property_id) {
 		case PROP_EDITED:
-			g_value_set_boxed (value, &(priv->edited));
+			g_value_set_int64 (value, priv->edited);
 			break;
 		case PROP_DELETED:
 			g_value_set_boolean (value, priv->deleted);
@@ -658,7 +661,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	GDataContactsContact *self = GDATA_CONTACTS_CONTACT (parsable);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE && xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
 		/* We have to override <id> parsing to fix the projection. Modify it in-place so that the parser in GDataEntry will pick up
@@ -1088,19 +1091,18 @@ gdata_contacts_contact_new (const gchar *id)
 /**
  * gdata_contacts_contact_get_edited:
  * @self: a #GDataContactsContact
- * @edited: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataContactsContact:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataContactsContact:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the contact was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.2.0
  **/
-void
-gdata_contacts_contact_get_edited (GDataContactsContact *self, GTimeVal *edited)
+gint64
+gdata_contacts_contact_get_edited (GDataContactsContact *self)
 {
-	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
-	g_return_if_fail (edited != NULL);
-	*edited = self->priv->edited;
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), -1);
+	return self->priv->edited;
 }
 
 /**

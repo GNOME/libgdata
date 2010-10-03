@@ -37,6 +37,7 @@
 
 #include "gdata-calendar-query.h"
 #include "gdata-query.h"
+#include "gdata-parser.h"
 
 static void gdata_calendar_query_finalize (GObject *object);
 static void gdata_calendar_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -46,12 +47,12 @@ static void get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *que
 struct _GDataCalendarQueryPrivate {
 	gboolean future_events;
 	gchar *order_by; /* TODO: enum? #defined values? */
-	GTimeVal recurrence_expansion_start;
-	GTimeVal recurrence_expansion_end;
+	gint64 recurrence_expansion_start;
+	gint64 recurrence_expansion_end;
 	gboolean single_events;
 	gchar *sort_order; /* TODO: enum? */
-	GTimeVal start_min;
-	GTimeVal start_max;
+	gint64 start_min;
+	gint64 start_max;
 	gchar *timezone;
 };
 
@@ -114,9 +115,9 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * Specifies the beginning of the time period to expand recurring events for, inclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RECURRENCE_EXPANSION_START,
-	                                 g_param_spec_boxed ("recurrence-expansion-start",
+	                                 g_param_spec_int64 ("recurrence-expansion-start",
 	                                                     "Recurrence expansion start", "Specifies start of period to expand recurrences for.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -125,9 +126,9 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * Specifies the end of the time period to expand recurring events for, exclusive.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RECURRENCE_EXPANSION_END,
-	                                 g_param_spec_boxed ("recurrence-expansion-end",
+	                                 g_param_spec_int64 ("recurrence-expansion-end",
 	                                                     "Recurrence expansion end", "Specifies end of period to expand recurrences for.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -164,9 +165,9 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * If not specified, the default #GDataCalendarQuery:start-min is <literal>1970-01-01</literal>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_MIN,
-	                                 g_param_spec_boxed ("start-min",
+	                                 g_param_spec_int64 ("start-min",
 	                                                     "Start min", "A timespan such that only events within the timespan are returned.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -180,9 +181,9 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * If not specified, the default #GDataCalendarQuery:start-max is <literal>2031-01-01</literal>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_START_MAX,
-	                                 g_param_spec_boxed ("start-max",
+	                                 g_param_spec_int64 ("start-max",
 	                                                     "Start max", "A timespan such that only events within the timespan are returned.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -203,6 +204,10 @@ static void
 gdata_calendar_query_init (GDataCalendarQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_QUERY, GDataCalendarQueryPrivate);
+	self->priv->recurrence_expansion_start = -1;
+	self->priv->recurrence_expansion_end = -1;
+	self->priv->start_min = -1;
+	self->priv->start_max = -1;
 }
 
 static void
@@ -231,10 +236,10 @@ gdata_calendar_query_get_property (GObject *object, guint property_id, GValue *v
 			g_value_set_string (value, priv->order_by);
 			break;
 		case PROP_RECURRENCE_EXPANSION_START:
-			g_value_set_boxed (value, &(priv->recurrence_expansion_start));
+			g_value_set_int64 (value, priv->recurrence_expansion_start);
 			break;
 		case PROP_RECURRENCE_EXPANSION_END:
-			g_value_set_boxed (value, &(priv->recurrence_expansion_end));
+			g_value_set_int64 (value, priv->recurrence_expansion_end);
 			break;
 		case PROP_SINGLE_EVENTS:
 			g_value_set_boolean (value, priv->single_events);
@@ -243,10 +248,10 @@ gdata_calendar_query_get_property (GObject *object, guint property_id, GValue *v
 			g_value_set_string (value, priv->sort_order);
 			break;
 		case PROP_START_MIN:
-			g_value_set_boxed (value, &(priv->start_min));
+			g_value_set_int64 (value, priv->start_min);
 			break;
 		case PROP_START_MAX:
-			g_value_set_boxed (value, &(priv->start_max));
+			g_value_set_int64 (value, priv->start_max);
 			break;
 		case PROP_TIMEZONE:
 			g_value_set_string (value, priv->timezone);
@@ -271,10 +276,10 @@ gdata_calendar_query_set_property (GObject *object, guint property_id, const GVa
 			gdata_calendar_query_set_order_by (self, g_value_get_string (value));
 			break;
 		case PROP_RECURRENCE_EXPANSION_START:
-			gdata_calendar_query_set_recurrence_expansion_start (self, g_value_get_boxed (value));
+			gdata_calendar_query_set_recurrence_expansion_start (self, g_value_get_int64 (value));
 			break;
 		case PROP_RECURRENCE_EXPANSION_END:
-			gdata_calendar_query_set_recurrence_expansion_end (self, g_value_get_boxed (value));
+			gdata_calendar_query_set_recurrence_expansion_end (self, g_value_get_int64 (value));
 			break;
 		case PROP_SINGLE_EVENTS:
 			gdata_calendar_query_set_single_events (self, g_value_get_boolean (value));
@@ -283,10 +288,10 @@ gdata_calendar_query_set_property (GObject *object, guint property_id, const GVa
 			gdata_calendar_query_set_sort_order (self, g_value_get_string (value));
 			break;
 		case PROP_START_MIN:
-			gdata_calendar_query_set_start_min (self, g_value_get_boxed (value));
+			gdata_calendar_query_set_start_min (self, g_value_get_int64 (value));
 			break;
 		case PROP_START_MAX:
-			gdata_calendar_query_set_start_max (self, g_value_get_boxed (value));
+			gdata_calendar_query_set_start_max (self, g_value_get_int64 (value));
 			break;
 		case PROP_TIMEZONE:
 			gdata_calendar_query_set_timezone (self, g_value_get_string (value));
@@ -320,22 +325,22 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		g_string_append_uri_escaped (query_uri, priv->order_by, NULL, FALSE);
 	}
 
-	if (priv->recurrence_expansion_start.tv_sec != 0 || priv->recurrence_expansion_start.tv_usec != 0) {
+	if (priv->recurrence_expansion_start != -1) {
 		gchar *recurrence_expansion_start;
 
 		APPEND_SEP
 		g_string_append (query_uri, "recurrence-expansion-start=");
-		recurrence_expansion_start = g_time_val_to_iso8601 (&(priv->recurrence_expansion_start));
+		recurrence_expansion_start = gdata_parser_int64_to_iso8601 (priv->recurrence_expansion_start);
 		g_string_append (query_uri, recurrence_expansion_start);
 		g_free (recurrence_expansion_start);
 	}
 
-	if (priv->recurrence_expansion_end.tv_sec != 0 || priv->recurrence_expansion_end.tv_usec != 0) {
+	if (priv->recurrence_expansion_end != -1) {
 		gchar *recurrence_expansion_end;
 
 		APPEND_SEP
 		g_string_append (query_uri, "recurrence-expansion-end=");
-		recurrence_expansion_end = g_time_val_to_iso8601 (&(priv->recurrence_expansion_end));
+		recurrence_expansion_end = gdata_parser_int64_to_iso8601 (priv->recurrence_expansion_end);
 		g_string_append (query_uri, recurrence_expansion_end);
 		g_free (recurrence_expansion_end);
 	}
@@ -352,22 +357,22 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		g_string_append_uri_escaped (query_uri, priv->sort_order, NULL, FALSE);
 	}
 
-	if (priv->start_min.tv_sec != 0 || priv->start_min.tv_usec != 0) {
+	if (priv->start_min != -1) {
 		gchar *start_min;
 
 		APPEND_SEP
 		g_string_append (query_uri, "start-min=");
-		start_min = g_time_val_to_iso8601 (&(priv->start_min));
+		start_min = gdata_parser_int64_to_iso8601 (priv->start_min);
 		g_string_append (query_uri, start_min);
 		g_free (start_min);
 	}
 
-	if (priv->start_max.tv_sec != 0 || priv->start_max.tv_usec != 0) {
+	if (priv->start_max != -1) {
 		gchar *start_max;
 
 		APPEND_SEP
 		g_string_append (query_uri, "start-max=");
-		start_max = g_time_val_to_iso8601 (&(priv->start_max));
+		start_max = gdata_parser_int64_to_iso8601 (priv->start_max);
 		g_string_append (query_uri, start_max);
 		g_free (start_max);
 	}
@@ -405,7 +410,7 @@ gdata_calendar_query_new (const gchar *q)
  * Return value: a new #GDataCalendarQuery
  **/
 GDataCalendarQuery *
-gdata_calendar_query_new_with_limits (const gchar *q, const GTimeVal *start_min, const GTimeVal *start_max)
+gdata_calendar_query_new_with_limits (const gchar *q, gint64 start_min, gint64 start_max)
 {
 	return g_object_new (GDATA_TYPE_CALENDAR_QUERY,
 	                     "q", q,
@@ -487,41 +492,35 @@ gdata_calendar_query_set_order_by (GDataCalendarQuery *self, const gchar *order_
 /**
  * gdata_calendar_query_get_recurrence_expansion_start:
  * @self: a #GDataCalendarQuery
- * @start: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataCalendarQuery:recurrence-expansion-start property and puts it
- * in @start. If the property is unset, both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataCalendarQuery:recurrence-expansion-start property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the recurrence-expansion-start property, or <code class="literal">-1</code>
  **/
-void
-gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self, GTimeVal *start)
+gint64
+gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self)
 {
-	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
-	g_return_if_fail (start != NULL);
-	*start = self->priv->recurrence_expansion_start;
+	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), -1);
+	return self->priv->recurrence_expansion_start;
 }
 
 /**
  * gdata_calendar_query_set_recurrence_expansion_start:
  * @self: a #GDataCalendarQuery
- * @start: (allow-none): a new start time, or %NULL
+ * @start: a new start time, or <code class="literal">-1</code>
  *
  * Sets the #GDataCalendarQuery:recurrence-expansion-start property of the #GDataCalendarQuery
  * to the new time/date, @start.
  *
- * Set @start to %NULL to unset the property in the query URI.
+ * Set @start to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
-gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, const GTimeVal *start)
+gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, gint64 start)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
+	g_return_if_fail (start >= -1);
 
-	if (start == NULL) {
-		self->priv->recurrence_expansion_start.tv_sec = 0;
-		self->priv->recurrence_expansion_start.tv_usec = 0;
-	} else {
-		self->priv->recurrence_expansion_start = *start;
-	}
-
+	self->priv->recurrence_expansion_start = start;
 	g_object_notify (G_OBJECT (self), "recurrence-expansion-start");
 
 	/* Our current ETag will no longer be relevant */
@@ -531,41 +530,35 @@ gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, c
 /**
  * gdata_calendar_query_get_recurrence_expansion_end:
  * @self: a #GDataCalendarQuery
- * @end: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataCalendarQuery:recurrence-expansion-end property and puts it
- * in @end. If the property is unset, both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataCalendarQuery:recurrence-expansion-end property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the recurrence-expansion-end property, or <code class="literal">-1</code>
  **/
-void
-gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self, GTimeVal *end)
+gint64
+gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self)
 {
-	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
-	g_return_if_fail (end != NULL);
-	*end = self->priv->recurrence_expansion_end;
+	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), -1	);
+	return self->priv->recurrence_expansion_end;
 }
 
 /**
  * gdata_calendar_query_set_recurrence_expansion_end:
  * @self: a #GDataCalendarQuery
- * @end: (allow-none): a new end time, or %NULL
+ * @end: a new end time, or <code class="literal">-1</code>
  *
  * Sets the #GDataCalendarQuery:recurrence-expansion-end property of the #GDataCalendarQuery
  * to the new time/date, @end.
  *
- * Set @end to %NULL to unset the property in the query URI.
+ * Set @end to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
-gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, const GTimeVal *end)
+gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, gint64 end)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
+	g_return_if_fail (end >= -1);
 
-	if (end == NULL) {
-		self->priv->recurrence_expansion_end.tv_sec = 0;
-		self->priv->recurrence_expansion_end.tv_usec = 0;
-	} else {
-		self->priv->recurrence_expansion_end = *end;
-	}
-
+	self->priv->recurrence_expansion_end = end;
 	g_object_notify (G_OBJECT (self), "recurrence-expansion-end");
 
 	/* Our current ETag will no longer be relevant */
@@ -645,41 +638,35 @@ gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort
 /**
  * gdata_calendar_query_get_start_min:
  * @self: a #GDataCalendarQuery
- * @start_min: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataCalendarQuery:start-min property and puts it
- * in @start_min. If the property is unset, both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataCalendarQuery:start-min property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the start-min property, or <code class="literal">-1</code>
  **/
-void
-gdata_calendar_query_get_start_min (GDataCalendarQuery *self, GTimeVal *start_min)
+gint64
+gdata_calendar_query_get_start_min (GDataCalendarQuery *self)
 {
-	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
-	g_return_if_fail (start_min != NULL);
-	*start_min = self->priv->start_min;
+	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), -1);
+	return self->priv->start_min;
 }
 
 /**
  * gdata_calendar_query_set_start_min:
  * @self: a #GDataCalendarQuery
- * @start_min: (allow-none): a new minimum start time, or %NULL
+ * @start_min: a new minimum start time, or <code class="literal">-1</code>
  *
  * Sets the #GDataCalendarQuery:start-min property of the #GDataCalendarQuery
  * to the new time/date, @start_min.
  *
- * Set @start_min to %NULL to unset the property in the query URI.
+ * Set @start_min to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
-gdata_calendar_query_set_start_min (GDataCalendarQuery *self, const GTimeVal *start_min)
+gdata_calendar_query_set_start_min (GDataCalendarQuery *self, gint64 start_min)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
+	g_return_if_fail (start_min >= -1);
 
-	if (start_min == NULL) {
-		self->priv->start_min.tv_sec = 0;
-		self->priv->start_min.tv_usec = 0;
-	} else {
-		self->priv->start_min = *start_min;
-	}
-
+	self->priv->start_min = start_min;
 	g_object_notify (G_OBJECT (self), "start-min");
 
 	/* Our current ETag will no longer be relevant */
@@ -689,41 +676,35 @@ gdata_calendar_query_set_start_min (GDataCalendarQuery *self, const GTimeVal *st
 /**
  * gdata_calendar_query_get_start_max:
  * @self: a #GDataCalendarQuery
- * @start_max: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataCalendarQuery:start-max property and puts it
- * in @start_max. If the property is unset, both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataCalendarQuery:start-max property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the start-max property, or <code class="literal">-1</code>
  **/
-void
-gdata_calendar_query_get_start_max (GDataCalendarQuery *self, GTimeVal *start_max)
+gint64
+gdata_calendar_query_get_start_max (GDataCalendarQuery *self)
 {
-	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
-	g_return_if_fail (start_max != NULL);
-	*start_max = self->priv->start_max;
+	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), -1);
+	return self->priv->start_max;
 }
 
 /**
  * gdata_calendar_query_set_start_max:
  * @self: a #GDataCalendarQuery
- * @start_max: (allow-none): a new maximum start time, or %NULL
+ * @start_max: a new maximum start time, or <code class="literal">-1</code>
  *
  * Sets the #GDataCalendarQuery:start-max property of the #GDataCalendarQuery
  * to the new time/date, @start_max.
  *
- * Set @start_max to %NULL to unset the property in the query URI.
+ * Set @start_max to <code class="literal">-1</code> to unset the property in the query URI.
  **/
 void
-gdata_calendar_query_set_start_max (GDataCalendarQuery *self, const GTimeVal *start_max)
+gdata_calendar_query_set_start_max (GDataCalendarQuery *self, gint64 start_max)
 {
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
+	g_return_if_fail (start_max >= -1);
 
-	if (start_max == NULL) {
-		self->priv->start_max.tv_sec = 0;
-		self->priv->start_max.tv_usec = 0;
-	} else {
-		self->priv->start_max = *start_max;
-	}
-
+	self->priv->start_max = start_max;
 	g_object_notify (G_OBJECT (self), "start-max");
 
 	/* Our current ETag will no longer be relevant */

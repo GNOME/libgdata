@@ -71,7 +71,7 @@ const gchar *gdata_exif_tags_get_image_unique_id (GDataExifTags *self) G_GNUC_PU
 gint gdata_exif_tags_get_iso (GDataExifTags *self) G_GNUC_PURE;
 const gchar *gdata_exif_tags_get_make (GDataExifTags *self) G_GNUC_PURE;
 const gchar *gdata_exif_tags_get_model (GDataExifTags *self) G_GNUC_PURE;
-void gdata_exif_tags_get_time (GDataExifTags *self, GTimeVal *time);
+gint64 gdata_exif_tags_get_time (GDataExifTags *self);
 
 G_END_DECLS
 

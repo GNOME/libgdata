@@ -105,7 +105,7 @@ const gchar *gdata_access_rule_get_role (GDataAccessRule *self) G_GNUC_PURE;
 void gdata_access_rule_set_role (GDataAccessRule *self, const gchar *role);
 void gdata_access_rule_get_scope (GDataAccessRule *self, const gchar **type, const gchar **value);
 void gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gchar *value);
-void gdata_access_rule_get_edited (GDataAccessRule *self, GTimeVal *edited);
+gint64 gdata_access_rule_get_edited (GDataAccessRule *self);
 
 G_END_DECLS
 

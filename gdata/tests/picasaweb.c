@@ -33,7 +33,7 @@
 
 #define PW_USERNAME "libgdata.picasaweb@gmail.com"
 /* the following two properties will change if a new album is added */
-#define NUM_ALBUMS 3
+#define NUM_ALBUMS 5
 #define TEST_ALBUM_INDEX 2
 
 static void
@@ -212,7 +212,7 @@ test_upload_async (gconstpointer service)
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
 	parsed_time_str = g_match_info_fetch (match_info, 1);
 	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
-	g_assert_cmpuint (abs (delta), <, 100);
+	g_assert_cmpuint (abs (delta), <, 1000);
 
 	g_free (parsed_time_str);
 	g_free (xml);
@@ -586,7 +586,7 @@ test_upload_simple (gconstpointer service)
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
 	parsed_time_str = g_match_info_fetch (match_info, 1);
 	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
-	g_assert_cmpuint (abs (delta), <, 100);
+	g_assert_cmpuint (abs (delta), <, 1000);
 
 	g_free (parsed_time_str);
 	g_free (xml);
@@ -633,9 +633,6 @@ test_photo (gconstpointer service)
 	GList *list;
 	GDataMediaContent *content;
 	GDataMediaThumbnail *thumbnail;
-	GTimeVal _time;
-	gchar *str;
-	gchar *timestamp;
 	const gchar * const *tags;
 	gdouble latitude;
 	gdouble longitude;
@@ -661,10 +658,7 @@ test_photo (gconstpointer service)
 	photo_entry = GDATA_ENTRY (g_list_nth_data (files, 0));
 	photo = GDATA_PICASAWEB_FILE (photo_entry);
 
-	gdata_picasaweb_file_get_edited (photo, &_time);
-	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2010-05-13T20:45:13.603000Z");
-	g_free (str);
+	g_assert_cmpint (gdata_picasaweb_file_get_edited (photo), ==, 1273783513);
 
 	/* tests */
 
@@ -677,11 +671,7 @@ test_photo (gconstpointer service)
 	g_assert_cmpuint (gdata_picasaweb_file_get_size (photo), ==, 1124730);
 	/* TODO: file wasn't uploaded with client assigned; g_assert_cmpstr (gdata_picasaweb_file_get_client (photo), ==, ??); */
 	/* TODO: file wasn't uploaded with checksum assigned; g_assert_cmpstr (gdata_picasaweb_file_get_checksum (photo), ==, ??); */
-
-	gdata_picasaweb_file_get_timestamp (photo, &_time);
-	timestamp = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (timestamp, ==, "2008-12-06T18:32:10Z");
-
+	g_assert_cmpint (gdata_picasaweb_file_get_timestamp (photo), ==, 1228588330000);
 	g_assert_cmpstr (gdata_picasaweb_file_get_video_status (photo), ==, NULL);
 	/* TODO: not a good test of video status; want to upload a video for it */
 	g_assert_cmpuint (gdata_picasaweb_file_is_commenting_enabled (photo), ==, TRUE);
@@ -755,8 +745,6 @@ test_photo (gconstpointer service)
 	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 288);
 	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 216);
 	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
-
-	g_free (timestamp);
 }
 
 static void
@@ -770,8 +758,6 @@ test_photo_feed_entry (gconstpointer service)
 	GList *albums;
 	GList *files;
 	GDataEntry *photo_entry;
-	gchar *str;
-	GTimeVal _time;
 
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -799,17 +785,8 @@ test_photo_feed_entry (gconstpointer service)
 	g_assert_cmpstr (gdata_picasaweb_file_get_id (GDATA_PICASAWEB_FILE (photo_entry)), ==, "5328890138794566386");
 	g_assert_cmpstr (gdata_entry_get_id (photo_entry), ==, "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
 	g_assert_cmpstr (gdata_entry_get_etag (photo_entry), !=, NULL);
-
-	gdata_entry_get_updated (photo_entry, &_time);
-	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2010-05-13T20:45:13.603000Z");
-	g_free (str);
-
-	gdata_entry_get_published (photo_entry, &_time);
-	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-04-26T06:55:20Z");
-	g_free (str);
-
+	g_assert_cmpint (gdata_entry_get_updated (photo_entry), ==, 1273783513);
+	g_assert_cmpint (gdata_entry_get_published (photo_entry), ==, 1240728920);
 	g_assert (gdata_entry_get_content (photo_entry) == NULL);
 	g_assert_cmpstr (gdata_entry_get_content_uri (photo_entry), ==,
 			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
@@ -880,8 +857,7 @@ test_album (gconstpointer service)
 	GDataFeed *album_feed;
 	GDataPicasaWebAlbum *album;
 	GList *albums, *contents, *thumbnails;
-	GTimeVal _time;
-	gchar *str, *original_rights;
+	gchar *original_rights;
 	gdouble latitude, longitude, original_latitude, original_longitude;
 	GDataMediaContent *content;
 	GDataMediaThumbnail *thumbnail;
@@ -902,20 +878,10 @@ test_album (gconstpointer service)
 	/* Check album-specific API */
 	g_assert_cmpstr (gdata_picasaweb_album_get_user (album), ==, "libgdata.picasaweb");
 	g_assert_cmpstr (gdata_picasaweb_album_get_nickname (album), ==, "libgdata.picasaweb");
-
-	gdata_picasaweb_album_get_edited (album, &_time);
-	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-04-26T06:57:03.474000Z");
-	g_free (str);
-
+	g_assert_cmpint (gdata_picasaweb_album_get_edited (album), ==, 1240729023);
 	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
 	g_assert_cmpstr (gdata_picasaweb_album_get_location (album), ==, "Venice");
-
-	gdata_picasaweb_album_get_timestamp (album, &_time);
-	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-04-26T07:00:00Z");
-	g_free (str);
-
+	g_assert_cmpint (gdata_picasaweb_album_get_timestamp (album), ==, 1240729200000);
 	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos (album), ==, 1);
 	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos_remaining (album), >, 0); /* about 999 remaining, testing weakly to avoid having to update regularly */
 	g_assert_cmpuint (gdata_picasaweb_album_get_bytes_used (album), ==, 1124730);
@@ -1005,8 +971,7 @@ test_album_feed_entry (gconstpointer service)
 	GError *error = NULL;
 	GDataEntry *entry;
 	GList *albums;
-	gchar *str, *xml;
-	GTimeVal _time;
+	gchar *xml;
 
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -1028,16 +993,8 @@ test_album_feed_entry (gconstpointer service)
 	g_assert_cmpstr (gdata_entry_get_id (entry), ==, "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249");
 	g_assert_cmpstr (gdata_entry_get_etag (entry), !=, NULL);
 	g_assert_cmpstr (gdata_entry_get_rights (entry), ==, "public");
-
-	gdata_entry_get_updated (entry, &_time);
-	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-04-26T06:57:03.474000Z");
-	g_free (str);
-
-	gdata_entry_get_published (entry, &_time);
-	str = g_time_val_to_iso8601 (&_time);
-	g_assert_cmpstr (str, ==, "2009-04-26T07:00:00Z");
-	g_free (str);
+	g_assert_cmpint (gdata_entry_get_updated (entry), ==, 1240729023);
+	g_assert_cmpint (gdata_entry_get_published (entry), ==, 1240729200);
 
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	g_assert_cmpstr (xml, !=, NULL);
@@ -1076,7 +1033,6 @@ test_insert_album (gconstpointer service)
 	GDataPicasaWebAlbum *album;
 	GDataPicasaWebAlbum *inserted_album;
 	GTimeVal timestamp;
-	gchar *timestr;
 	GError *error;
 
 	GDataFeed *album_feed;
@@ -1094,7 +1050,7 @@ test_insert_album (gconstpointer service)
 	gdata_picasaweb_album_set_location (album, "Winnipeg, MN");
 
 	g_time_val_from_iso8601 ("2002-10-14T09:58:59.643554Z", &timestamp);
-	gdata_picasaweb_album_set_timestamp (album, &timestamp);
+	gdata_picasaweb_album_set_timestamp (album, timestamp.tv_sec * 1000);
 
 	inserted_album = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, &error);
 	g_assert_no_error (error);
@@ -1104,11 +1060,7 @@ test_insert_album (gconstpointer service)
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (inserted_album)), ==, "Thanksgiving photos");
 	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (inserted_album)), ==, "Family photos of the feast!");
 	g_assert_cmpstr (gdata_picasaweb_album_get_location (inserted_album), ==, "Winnipeg, MN");
-
-	gdata_picasaweb_album_get_timestamp (inserted_album, &timestamp);
-	timestr = g_time_val_to_iso8601 (&timestamp);
-	g_assert_cmpstr (timestr, ==, "2002-10-14T09:58:59Z");
-	g_free (timestr);
+	g_assert_cmpint (gdata_picasaweb_album_get_timestamp (inserted_album), ==, 1034589539000);
 
 	/* Test that album is actually on server */
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
@@ -1319,7 +1271,7 @@ test_album_new (void)
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
 	parsed_time_str = g_match_info_fetch (match_info, 1);
 	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
-	g_assert_cmpuint (abs (delta), <, 100);
+	g_assert_cmpuint (abs (delta), <, 1000);
 
 	g_free (parsed_time_str);
 	g_free (xml);

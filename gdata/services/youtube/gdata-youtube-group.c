@@ -47,7 +47,7 @@ static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 struct _GDataYouTubeGroupPrivate {
 	guint duration;
 	gboolean is_private;
-	GTimeVal uploaded;
+	gint64 uploaded;
 	gchar *video_id;
 	gchar *aspect_ratio;
 };
@@ -73,6 +73,7 @@ static void
 gdata_youtube_group_init (GDataYouTubeGroup *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_GROUP, GDataYouTubeGroupPrivate);
+	self->priv->uploaded = -1;
 }
 
 static void
@@ -102,8 +103,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (gdata_parser_string_from_element (node, "videoid", P_NO_DUPES, &(self->priv->video_id), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "aspectRatio", P_REQUIRED | P_NO_DUPES,
 		                                      &(self->priv->aspect_ratio), &success, error) == TRUE ||
-		    gdata_parser_time_val_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES,
-		                                        &(self->priv->uploaded), &success, error) == TRUE) {
+		    gdata_parser_int64_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES,
+		                                     &(self->priv->uploaded), &success, error) == TRUE) {
 			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "duration") == 0) {
 			/* yt:duration */
@@ -194,17 +195,16 @@ gdata_youtube_group_set_is_private (GDataYouTubeGroup *self, gboolean is_private
 /**
  * gdata_youtube_group_get_uploaded:
  * @self: a #GDataYouTubeGroup
- * @uploaded: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataYouTubeGroup:uploaded property and puts it in @uploaded. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataYouTubeGroup:uploaded property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the group was uploaded, or <code class="literal">-1</code>
  **/
-void
-gdata_youtube_group_get_uploaded (GDataYouTubeGroup *self, GTimeVal *uploaded)
+gint64
+gdata_youtube_group_get_uploaded (GDataYouTubeGroup *self)
 {
-	g_return_if_fail (GDATA_IS_YOUTUBE_GROUP (self));
-	g_return_if_fail (uploaded != NULL);
-	*uploaded = self->priv->uploaded;
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_GROUP (self), -1);
+	return self->priv->uploaded;
 }
 
 /**

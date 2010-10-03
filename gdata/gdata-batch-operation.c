@@ -525,7 +525,7 @@ run_cb (gpointer key, BatchOperation *op, GDataFeed *feed)
 		g_free (entry_uri);
 
 		gdata_entry_set_title (entry, "Batch operation query");
-		_gdata_entry_set_updated (entry, &updated);
+		_gdata_entry_set_updated (entry, updated.tv_sec);
 
 		_gdata_entry_set_batch_data (entry, op->id, op->type);
 		_gdata_feed_add_entry (feed, entry);
@@ -578,7 +578,7 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 
 	/* Build the request */
 	g_get_current_time (&updated);
-	feed = _gdata_feed_new ("Batch operation feed", "batch1", &updated);
+	feed = _gdata_feed_new ("Batch operation feed", "batch1", updated.tv_sec);
 	g_hash_table_foreach (priv->operations, (GHFunc) run_cb, feed);
 
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (feed));

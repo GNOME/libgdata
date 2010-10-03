@@ -375,7 +375,7 @@ static void
 test_parsing_yt_recorded (void)
 {
 	GDataYouTubeVideo *video;
-	GTimeVal recorded;
+	gint64 recorded;
 	gchar *xml;
 	GError *error = NULL;
 
@@ -408,13 +408,12 @@ test_parsing_yt_recorded (void)
 	g_clear_error (&error);
 
 	/* Test the recorded date */
-	gdata_youtube_video_get_recorded (video, &recorded);
-	g_assert_cmpint (recorded.tv_sec, ==, 1059868800);
-	g_assert_cmpint (recorded.tv_usec, ==, 0);
+	recorded = gdata_youtube_video_get_recorded (video);
+	g_assert_cmpint (recorded, ==, 1059868800);
 
 	/* Update the state and see if the XML's written out OK */
-	recorded.tv_sec = 1128229200;
-	gdata_youtube_video_set_recorded (video, &recorded);
+	recorded = 1128229200;
+	gdata_youtube_video_set_recorded (video, recorded);
 
 	/* Check the XML */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));

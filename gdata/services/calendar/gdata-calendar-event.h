@@ -64,7 +64,7 @@ GType gdata_calendar_event_get_type (void) G_GNUC_CONST;
 
 GDataCalendarEvent *gdata_calendar_event_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-void gdata_calendar_event_get_edited (GDataCalendarEvent *self, GTimeVal *edited);
+gint64 gdata_calendar_event_get_edited (GDataCalendarEvent *self);
 const gchar *gdata_calendar_event_get_status (GDataCalendarEvent *self) G_GNUC_PURE;
 void gdata_calendar_event_set_status (GDataCalendarEvent *self, const gchar *status);
 const gchar *gdata_calendar_event_get_visibility (GDataCalendarEvent *self) G_GNUC_PURE;
@@ -89,7 +89,7 @@ void gdata_calendar_event_add_place (GDataCalendarEvent *self, GDataGDWhere *whe
 GList *gdata_calendar_event_get_places (GDataCalendarEvent *self) G_GNUC_PURE;
 void gdata_calendar_event_add_time (GDataCalendarEvent *self, GDataGDWhen *when);
 GList *gdata_calendar_event_get_times (GDataCalendarEvent *self) G_GNUC_PURE;
-gboolean gdata_calendar_event_get_primary_time (GDataCalendarEvent *self, GTimeVal *start_time, GTimeVal *end_time, GDataGDWhen **when);
+gboolean gdata_calendar_event_get_primary_time (GDataCalendarEvent *self, gint64 *start_time, gint64 *end_time, GDataGDWhen **when);
 const gchar *gdata_calendar_event_get_recurrence (GDataCalendarEvent *self) G_GNUC_PURE;
 void gdata_calendar_event_set_recurrence (GDataCalendarEvent *self, const gchar *recurrence);
 void gdata_calendar_event_get_original_event_details (GDataCalendarEvent *self, gchar **event_id, gchar **event_uri);

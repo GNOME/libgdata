@@ -73,7 +73,7 @@ const gchar *gdata_feed_get_title (GDataFeed *self) G_GNUC_PURE;
 const gchar *gdata_feed_get_subtitle (GDataFeed *self) G_GNUC_PURE;
 const gchar *gdata_feed_get_id (GDataFeed *self) G_GNUC_PURE;
 const gchar *gdata_feed_get_etag (GDataFeed *self) G_GNUC_PURE;
-void gdata_feed_get_updated (GDataFeed *self, GTimeVal *updated);
+gint64 gdata_feed_get_updated (GDataFeed *self);
 const gchar *gdata_feed_get_logo (GDataFeed *self) G_GNUC_PURE;
 GDataGenerator *gdata_feed_get_generator (GDataFeed *self) G_GNUC_PURE;
 const gchar *gdata_feed_get_rights (GDataFeed *self) G_GNUC_PURE;

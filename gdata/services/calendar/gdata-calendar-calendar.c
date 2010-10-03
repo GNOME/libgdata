@@ -63,7 +63,7 @@ struct _GDataCalendarCalendarPrivate {
 	gboolean is_selected;
 	gchar *access_level;
 
-	GTimeVal edited;
+	gint64 edited;
 };
 
 enum {
@@ -180,9 +180,9 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_boxed ("edited",
+	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the calendar was edited.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
@@ -202,6 +202,7 @@ static void
 gdata_calendar_calendar_init (GDataCalendarCalendar *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_CALENDAR, GDataCalendarCalendarPrivate);
+	self->priv->edited = -1;
 }
 
 static GObject *
@@ -214,10 +215,12 @@ gdata_calendar_calendar_constructor (GType type, guint n_construct_params, GObje
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataCalendarCalendarPrivate *priv = GDATA_CALENDAR_CALENDAR (object)->priv;
+		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 		 * setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&(priv->edited));
+		g_get_current_time (&time_val);
+		priv->edited = time_val.tv_sec;
 	}
 
 	return object;
@@ -260,7 +263,7 @@ gdata_calendar_calendar_get_property (GObject *object, guint property_id, GValue
 			g_value_set_string (value, priv->access_level);
 			break;
 		case PROP_EDITED:
-			g_value_set_boxed (value, &(priv->edited));
+			g_value_set_int64 (value, priv->edited);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -301,7 +304,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	GDataCalendarCalendar *self = GDATA_CALENDAR_CALENDAR (parsable);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/gCal/2005") == TRUE) {
 		if (xmlStrcmp (node->name, (xmlChar*) "timezone") == 0) {
@@ -585,15 +588,14 @@ gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self)
 /**
  * gdata_calendar_calendar_get_edited:
  * @self: a #GDataCalendarCalendar
- * @edited: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataCalendarCalendar:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataCalendarCalendar:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the calendar was last edited, or <code class="literal">-1</code>
  **/
-void
-gdata_calendar_calendar_get_edited (GDataCalendarCalendar *self, GTimeVal *edited)
+gint64
+gdata_calendar_calendar_get_edited (GDataCalendarCalendar *self)
 {
-	g_return_if_fail (GDATA_IS_CALENDAR_CALENDAR (self));
-	g_return_if_fail (edited != NULL);
-	*edited = self->priv->edited;
+	g_return_val_if_fail (GDATA_IS_CALENDAR_CALENDAR (self), -1);
+	return self->priv->edited;
 }

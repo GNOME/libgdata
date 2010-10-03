@@ -43,7 +43,7 @@
  *		GDataPicasaWebAlbum *album;
  *		guint num_photos;
  *		const gchar *owner_nickname, *title, *summary;
- *		GTimeVal timeval;
+ *		gint64 timestamp;
  *		GList *thumbnails;
  *
  *		album = GDATA_PICASAWEB_ALBUM (album_entries->data);
@@ -53,8 +53,8 @@
  *		owner_nickname = gdata_picasaweb_album_get_nickname (album);
  *		title = gdata_entry_get_title (GDATA_ENTRY (album));
  *		summary = gdata_entry_get_summary (GDATA_ENTRY (album));
- *		/<!-- -->* Get the day the album was shot on or, if not set, when it was uploaded *<!-- -->/
- *		gdata_picasaweb_album_get_timestamp (album, &timeval);
+ *		/<!-- -->* Get the day the album was shot on or, if not set, when it was uploaded. This is in milliseconds since the epoch. *<!-- -->/
+ *		timestamp = gdata_picasaweb_album_get_timestamp (album);
  *
  *		for (thumbnails = gdata_picasaweb_album_get_thumbnails (album); thumbnails != NULL; thumbnails = thumbnails->next) {
  *			GDataMediaThumbnail *thumbnail;
@@ -110,10 +110,10 @@ struct _GDataPicasaWebAlbumPrivate {
 	gchar *album_id;
 	gchar *user;
 	gchar *nickname;
-	GTimeVal edited;
+	gint64 edited;
 	gchar *location;
 	GDataPicasaWebVisibility visibility;
-	GTimeVal timestamp;
+	gint64 timestamp; /* in milliseconds! */
 	guint num_photos;
 	guint num_photos_remaining;
 	glong bytes_used;
@@ -228,9 +228,9 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_boxed ("edited",
+	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The time this album was last edited.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -268,7 +268,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	/**
 	 * GDataPicasaWebAlbum:timestamp
 	 *
-	 * The timestamp of when the album occurred, settable by the user.
+	 * The timestamp of when the album occurred, settable by the user. This a UNIX timestamp in milliseconds (not seconds) since the epoch.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_timestamp">
 	 * gphoto specification</ulink>.
@@ -276,9 +276,9 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMESTAMP,
-	                                 g_param_spec_boxed ("timestamp",
+	                                 g_param_spec_int64 ("timestamp",
 	                                                     "Timestamp", "The timestamp of when the album occurred, settable by the user.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* TODO: Change to photo-count? */
@@ -478,6 +478,8 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 	self->priv->visibility = GDATA_PICASAWEB_PRIVATE;
+	self->priv->edited = -1;
+	self->priv->timestamp = -1;
 
 	/* Connect to the notify::title signal from GDataEntry so our media:group title can be kept in sync
 	 * (the title of an album is duplicated in atom:title and media:group/media:title) */
@@ -501,11 +503,13 @@ gdata_picasaweb_album_constructor (GType type, guint n_construct_params, GObject
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM (object)->priv;
+		GTimeVal time_val;
 
 		/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
 		 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&(priv->timestamp));
-		g_get_current_time (&(priv->edited));
+		g_get_current_time (&time_val);
+		priv->timestamp = time_val.tv_sec * 1000;
+		priv->edited = time_val.tv_sec;
 	}
 
 	return object;
@@ -558,7 +562,7 @@ gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_string (value, priv->nickname);
 			break;
 		case PROP_EDITED:
-			g_value_set_boxed (value, &(priv->edited));
+			g_value_set_int64 (value, priv->edited);
 			break;
 		case PROP_LOCATION:
 			g_value_set_string (value, priv->location);
@@ -567,7 +571,7 @@ gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_enum (value, priv->visibility);
 			break;
 		case PROP_TIMESTAMP:
-			g_value_set_boxed (value, &(priv->timestamp));
+			g_value_set_int64 (value, priv->timestamp);
 			break;
 		case PROP_NUM_PHOTOS:
 			g_value_set_uint (value, priv->num_photos);
@@ -618,7 +622,7 @@ gdata_picasaweb_album_set_property (GObject *object, guint property_id, const GV
 			gdata_picasaweb_album_set_visibility (self, g_value_get_enum (value));
 			break;
 		case PROP_TIMESTAMP:
-			gdata_picasaweb_album_set_timestamp (self, g_value_get_boxed (value));
+			gdata_picasaweb_album_set_timestamp (self, g_value_get_int64 (value));
 			break;
 		case PROP_IS_COMMENTING_ENABLED:
 			gdata_picasaweb_album_set_is_commenting_enabled (self, g_value_get_boolean (value));
@@ -650,7 +654,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	/* TODO: media:group should also be P_NO_DUPES, but we can't, as priv->media_group has to be pre-populated
 	 * in order for things like gdata_picasaweb_album_get_tags() to work. */
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
 	           gdata_parser_object_from_element (node, "group", P_REQUIRED, GDATA_TYPE_MEDIA_GROUP,
@@ -684,16 +688,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			/* gphoto:timestamp */
 			xmlChar *timestamp_str;
 			guint64 milliseconds;
-			GTimeVal timestamp;
 
 			timestamp_str = xmlNodeListGetString (doc, node->children, TRUE);
 			milliseconds = g_ascii_strtoull ((gchar*) timestamp_str, NULL, 10);
 			xmlFree (timestamp_str);
 
-			timestamp.tv_sec = (glong) (milliseconds / 1000);
-			timestamp.tv_usec = (glong) ((milliseconds % 1000) * 1000);
-
-			gdata_picasaweb_album_set_timestamp (self, &timestamp);
+			gdata_picasaweb_album_set_timestamp (self, (gint64) milliseconds);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "numphotos") == 0) {
 			/* gphoto:numphotos */
 			xmlChar *num_photos = xmlNodeListGetString (doc, node->children, TRUE);
@@ -781,10 +781,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 			g_assert_not_reached ();
 	}
 
-	if (priv->timestamp.tv_sec != 0 || priv->timestamp.tv_usec != 0) {
+	if (priv->timestamp != -1) {
 		/* in milliseconds */
-		g_string_append_printf (xml_string, "<gphoto:timestamp>%" G_GUINT64_FORMAT "</gphoto:timestamp>",
-		                        ((guint64) priv->timestamp.tv_sec) * 1000 + priv->timestamp.tv_usec / 1000);
+		g_string_append_printf (xml_string, "<gphoto:timestamp>%" G_GINT64_FORMAT "</gphoto:timestamp>", priv->timestamp);
 	}
 
 	if (priv->is_commenting_enabled == FALSE)
@@ -914,19 +913,18 @@ gdata_picasaweb_album_get_nickname (GDataPicasaWebAlbum *self)
 /**
  * gdata_picasaweb_album_get_edited:
  * @self: a #GDataPicasaWebAlbum
- * @edited: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataPicasaWebAlbum:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataPicasaWebAlbum:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the album was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
-void
-gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self, GTimeVal *edited)
+gint64
+gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self)
 {
-	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
-	g_return_if_fail (edited != NULL);
-	*edited = self->priv->edited;
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (self), -1);
+	return self->priv->edited;
 }
 
 /**
@@ -1005,43 +1003,40 @@ gdata_picasaweb_album_set_visibility (GDataPicasaWebAlbum *self, GDataPicasaWebV
 /**
  * gdata_picasaweb_album_get_timestamp:
  * @self: a #GDataPicasaWebAlbum
- * @timestamp: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataPicasaWebAlbum:timestamp property and puts it in
- * @timestamp. This value usually holds either the date that best
- * corresponds to the album of photos, or to the day it was uploaded.
- * If the property is unset, both fields in the #GTimeVal will be set
- * to <code class="literal">0</code>.
+ * Gets the #GDataPicasaWebAlbum:timestamp property. This value usually holds either the date that best corresponds to the album of photos, or to the
+ * day it was uploaded. It's a UNIX timestamp in milliseconds (not seconds) since the epoch. If the property is unset, <code class="literal">-1</code>
+ * will be returned.
+ *
+ * Return value: the UNIX timestamp for the timestamp property in milliseconds, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
-void
-gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self, GTimeVal *timestamp)
+gint64
+gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self)
 {
-	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
-	g_return_if_fail (timestamp != NULL);
-	*timestamp = self->priv->timestamp;
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_ALBUM (self), -1);
+	return self->priv->timestamp;
 }
 
 /**
  * gdata_picasaweb_album_set_timestamp:
  * @self: a #GDataPicasaWebAlbum
- * @timestamp: (allow-none): a #GTimeVal, or %NULL
+ * @timestamp: a UNIX timestamp, or <code class="literal">-1</code>
  *
- * Sets the #GDataPicasaWebAlbum:timestamp property from values supplied by @timestamp.
+ * Sets the #GDataPicasaWebAlbum:timestamp property from @timestamp. This should be a UNIX timestamp in milliseconds (not seconds) since the epoch.
  *
- * Set @timestamp to %NULL to unset the property.
+ * Set @timestamp to <code class="literal">-1</code> to unset the property.
  *
  * Since: 0.4.0
  **/
 void
-gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, const GTimeVal *timestamp)
+gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, gint64 timestamp)
 {
 	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (self));
-	if (timestamp == NULL)
-		self->priv->timestamp.tv_sec = self->priv->timestamp.tv_usec = 0;
-	else
-		self->priv->timestamp = *timestamp;
+	g_return_if_fail (timestamp >= -1);
+
+	self->priv->timestamp = timestamp;
 	g_object_notify (G_OBJECT (self), "timestamp");
 }
 

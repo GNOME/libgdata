@@ -62,7 +62,7 @@ struct _GDataExifTagsPrivate {
 	gint iso;
 	gchar *make;
 	gchar *model;
-	GTimeVal _time;
+	gint64 _time; /* in milliseconds! */
 };
 
 G_DEFINE_TYPE (GDataExifTags, gdata_exif_tags, GDATA_TYPE_PARSABLE)
@@ -87,6 +87,7 @@ static void
 gdata_exif_tags_init (GDataExifTags *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_EXIF_TAGS, GDataExifTagsPrivate);
+	self->priv->_time = -1;
 }
 
 static void
@@ -156,8 +157,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		milliseconds = g_ascii_strtoull ((gchar*) time_str, NULL, 10);
 		xmlFree (time_str);
 
-		self->priv->_time.tv_sec = (glong) (milliseconds / 1000);
-		self->priv->_time.tv_usec = (glong) ((milliseconds % 1000) * 1000);
+		self->priv->_time = (gint64) milliseconds;
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_exif_tags_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
@@ -327,17 +327,17 @@ gdata_exif_tags_get_model (GDataExifTags *self)
 /**
  * gdata_exif_tags_get_time:
  * @self: a #GDataExifTags
- * @_time: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataExifTags:time property and puts it in @_time. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataExifTags:time property as a number of milliseconds since the epoch. If the property is unset, <code class="literal">-1</code> will
+ * be returned.
+ *
+ * Return value: the UNIX timestamp for the time property in milliseconds, or <code class="literal">-1</code>
  *
  * Since: 0.5.0
  **/
-void
-gdata_exif_tags_get_time (GDataExifTags *self, GTimeVal *_time)
+gint64
+gdata_exif_tags_get_time (GDataExifTags *self)
 {
-	g_return_if_fail (GDATA_IS_EXIF_TAGS (self));
-	g_return_if_fail (_time != NULL);
-	*_time = self->priv->_time;
+	g_return_val_if_fail (GDATA_IS_EXIF_TAGS (self), -1);
+	return self->priv->_time;
 }

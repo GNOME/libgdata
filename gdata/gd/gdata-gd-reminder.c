@@ -48,7 +48,7 @@ static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataGDReminderPrivate {
 	gchar *method;
-	GTimeVal absolute_time;
+	gint64 absolute_time;
 	gint relative_time;
 };
 
@@ -107,9 +107,9 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ABSOLUTE_TIME,
-	                                 g_param_spec_boxed ("absolute-time",
+	                                 g_param_spec_int64 ("absolute-time",
 	                                                     "Absolute time", "Absolute time at which the reminder should be issued.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -156,9 +156,7 @@ compare_with (GDataComparable *self, GDataComparable *other)
 
 	method_cmp = g_strcmp0 (a->priv->method, b->priv->method);
 	if (gdata_gd_reminder_is_absolute_time (a) == TRUE) {
-		if (method_cmp == 0 &&
-		    a->priv->absolute_time.tv_sec == b->priv->absolute_time.tv_sec &&
-		    a->priv->absolute_time.tv_usec == b->priv->absolute_time.tv_usec)
+		if (method_cmp == 0 && a->priv->absolute_time == b->priv->absolute_time)
 			return 0;
 	} else {
 		if (method_cmp == 0 && a->priv->relative_time == b->priv->relative_time)
@@ -178,6 +176,7 @@ static void
 gdata_gd_reminder_init (GDataGDReminder *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_REMINDER, GDataGDReminderPrivate);
+	self->priv->absolute_time = -1;
 }
 
 static void
@@ -201,7 +200,7 @@ gdata_gd_reminder_get_property (GObject *object, guint property_id, GValue *valu
 			g_value_set_string (value, priv->method);
 			break;
 		case PROP_ABSOLUTE_TIME:
-			g_value_set_boxed (value, &(priv->absolute_time));
+			g_value_set_int64 (value, priv->absolute_time);
 			break;
 		case PROP_IS_ABSOLUTE_TIME:
 			g_value_set_boolean (value, gdata_gd_reminder_is_absolute_time (GDATA_GD_REMINDER (object)));
@@ -226,7 +225,7 @@ gdata_gd_reminder_set_property (GObject *object, guint property_id, const GValue
 			gdata_gd_reminder_set_method (self, g_value_get_string (value));
 			break;
 		case PROP_ABSOLUTE_TIME:
-			gdata_gd_reminder_set_absolute_time (self, g_value_get_boxed (value));
+			gdata_gd_reminder_set_absolute_time (self, g_value_get_int64 (value));
 			break;
 		case PROP_RELATIVE_TIME:
 			gdata_gd_reminder_set_relative_time (self, g_value_get_int (value));
@@ -243,7 +242,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 {
 	GDataGDReminderPrivate *priv = GDATA_GD_REMINDER (parsable)->priv;
 	xmlChar *absolute_time, *relative_time;
-	GTimeVal absolute_time_timeval;
+	gint64 absolute_time_int64;
 	gint relative_time_int = -1;
 	gboolean is_absolute_time = FALSE;
 
@@ -251,7 +250,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	absolute_time = xmlGetProp (root_node, (xmlChar*) "absoluteTime");
 	if (absolute_time != NULL) {
 		is_absolute_time = TRUE;
-		if (g_time_val_from_iso8601 ((gchar*) absolute_time, &absolute_time_timeval) == FALSE) {
+		if (gdata_parser_int64_from_iso8601 ((gchar*) absolute_time, &absolute_time_int64) == FALSE) {
 			/* Error */
 			gdata_parser_error_not_iso8601_format (root_node, (gchar*) absolute_time, error);
 			xmlFree (absolute_time);
@@ -277,10 +276,10 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	xmlFree (relative_time);
 
 	if (is_absolute_time == TRUE) {
-		priv->absolute_time = absolute_time_timeval;
+		priv->absolute_time = absolute_time_int64;
 		priv->relative_time = -1;
 	} else {
-		priv->absolute_time.tv_sec = priv->absolute_time.tv_usec = 0;
+		priv->absolute_time = -1;
 		priv->relative_time = relative_time_int;
 	}
 
@@ -295,7 +294,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataGDReminderPrivate *priv = GDATA_GD_REMINDER (parsable)->priv;
 
 	if (priv->relative_time == -1) {
-		gchar *absolute_time = g_time_val_to_iso8601 (&(priv->absolute_time));
+		gchar *absolute_time = gdata_parser_int64_to_iso8601 (priv->absolute_time);
 		g_string_append_printf (xml_string, " absoluteTime='%s'", absolute_time);
 		g_free (absolute_time);
 	} else {
@@ -315,7 +314,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gd_reminder_new:
  * @method: (allow-none): the notification method the reminder should use, or %NULL
- * @absolute_time: (allow-none): the absolute time for the reminder, or %NULL
+ * @absolute_time: the absolute time for the reminder, or <code class="literal">-1</code>
  * @relative_time: the relative time for the reminder, in minutes, or <code class="literal">-1</code>
  *
  * Creates a new #GDataGDReminder. More information is available in the <ulink type="http"
@@ -326,9 +325,10 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Since: 0.2.0
  **/
 GDataGDReminder *
-gdata_gd_reminder_new (const gchar *method, const GTimeVal *absolute_time, gint relative_time)
+gdata_gd_reminder_new (const gchar *method, gint64 absolute_time, gint relative_time)
 {
-	g_return_val_if_fail (absolute_time == NULL || relative_time == -1, NULL);
+	g_return_val_if_fail (absolute_time == -1 || relative_time == -1, NULL);
+	g_return_val_if_fail (absolute_time >= -1, NULL);
 	g_return_val_if_fail (relative_time >= -1, NULL);
 	return g_object_new (GDATA_TYPE_GD_REMINDER, "absolute-time", absolute_time, "relative-time", relative_time, "method", method, NULL);
 }
@@ -374,41 +374,38 @@ gdata_gd_reminder_set_method (GDataGDReminder *self, const gchar *method)
 /**
  * gdata_gd_reminder_get_absolute_time:
  * @self: a #GDataGDReminder
- * @absolute_time: (out caller-allocates): return location for the absolute time
  *
- * Gets the #GDataGDReminder:absolute-time property and returns it in @absolute_time. If the
- * property is unset, both fields of @start_time are set to <code class="literal">0</code>.
+ * Gets the #GDataGDReminder:absolute-time property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp of the absolute time for the reminder, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
-void
-gdata_gd_reminder_get_absolute_time (GDataGDReminder *self, GTimeVal *absolute_time)
+gint64
+gdata_gd_reminder_get_absolute_time (GDataGDReminder *self)
 {
-	g_return_if_fail (GDATA_IS_GD_REMINDER (self));
-	g_return_if_fail (absolute_time != NULL);
-	*absolute_time = self->priv->absolute_time;
+	g_return_val_if_fail (GDATA_IS_GD_REMINDER (self), -1);
+	return self->priv->absolute_time;
 }
 
 /**
  * gdata_gd_reminder_set_absolute_time:
  * @self: a #GDataGDReminder
- * @absolute_time: (allow-none): the new absolute time, or %NULL
+ * @absolute_time: the new absolute time, or <code class="literal">-1</code>
  *
  * Sets the #GDataGDReminder:absolute-time property to @absolute_time.
  *
- * Set @absolute_time to %NULL to unset the property.
+ * Set @absolute_time to <code class="literal">-1</code> to unset the property.
  *
  * Since: 0.4.0
  **/
 void
-gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, const GTimeVal *absolute_time)
+gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, gint64 absolute_time)
 {
 	g_return_if_fail (GDATA_IS_GD_REMINDER (self));
+	g_return_if_fail (absolute_time >= -1);
 
-	if (absolute_time == NULL)
-		self->priv->absolute_time.tv_sec = self->priv->absolute_time.tv_usec = 0;
-	else
-		self->priv->absolute_time = *absolute_time;
+	self->priv->absolute_time = absolute_time;
 	g_object_notify (G_OBJECT (self), "absolute-time");
 }
 

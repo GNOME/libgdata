@@ -26,7 +26,7 @@
 static void
 test_entry_get_xml (void)
 {
-	GTimeVal updated, published, updated2, published2, *updated3, *published3;
+	gint64 updated, published, updated2, published2, updated3, published3;
 	GDataEntry *entry, *entry2;
 	GDataCategory *category;
 	GDataLink *_link; /* stupid unistd.h */
@@ -154,15 +154,13 @@ test_entry_get_xml (void)
 	g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (entry2));
 	g_assert_cmpstr (gdata_entry_get_content_uri (entry), ==, gdata_entry_get_content_uri (entry2)); /* should both be NULL */
 
-	gdata_entry_get_updated (entry, &updated);
-	gdata_entry_get_updated (entry2, &updated2);
-	g_assert_cmpuint (updated.tv_sec, ==, updated2.tv_sec);
-	g_assert_cmpuint (updated.tv_usec, ==, updated2.tv_usec);
+	updated = gdata_entry_get_updated (entry);
+	updated2 = gdata_entry_get_updated (entry2);
+	g_assert_cmpuint (updated, ==, updated2);
 
-	gdata_entry_get_published (entry, &published);
-	gdata_entry_get_published (entry2, &published2);
-	g_assert_cmpuint (published.tv_sec, ==, published2.tv_sec);
-	g_assert_cmpuint (published.tv_usec, ==, published2.tv_usec);
+	published = gdata_entry_get_published (entry);
+	published2 = gdata_entry_get_published (entry2);
+	g_assert_cmpuint (published, ==, published2);
 
 	/* Check links */
 	_link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
@@ -256,10 +254,8 @@ test_entry_get_xml (void)
 	g_assert_cmpstr (summary, ==, gdata_entry_get_summary (entry));
 	g_assert_cmpstr (id, ==, gdata_entry_get_id (entry));
 	g_assert_cmpstr (etag, ==, gdata_entry_get_etag (entry));
-	g_assert_cmpint (updated3->tv_sec, ==, updated.tv_sec);
-	g_assert_cmpint (updated3->tv_usec, ==, updated.tv_usec);
-	g_assert_cmpint (published3->tv_sec, ==, published.tv_sec);
-	g_assert_cmpint (published3->tv_usec, ==, published.tv_usec);
+	g_assert_cmpint (updated3, ==, updated);
+	g_assert_cmpint (published3, ==, published);
 	g_assert_cmpstr (content, ==, gdata_entry_get_content (entry));
 	g_assert_cmpstr (content_uri, ==, gdata_entry_get_content_uri (entry));
 	g_assert (is_inserted == FALSE);
@@ -269,8 +265,6 @@ test_entry_get_xml (void)
 	g_free (summary);
 	g_free (id);
 	g_free (etag);
-	g_free (updated3);
-	g_free (published3);
 	g_free (content);
 	g_free (content_uri);
 	g_free (rights);
@@ -304,8 +298,8 @@ test_entry_parse_xml (void)
 	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY,
 		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:ns='http://example.com/'>"
 			"<title type='text'>Testing unhandled XML</title>"
-			"<updated>2009-01-25T14:07:37.880860Z</updated>"
-			"<published>2009-01-23T14:06:37.880860Z</published>"
+			"<updated>2009-01-25T14:07:37Z</updated>"
+			"<published>2009-01-23T14:06:37Z</published>"
 			"<content type='text'>Here we test unhandled XML elements.</content>"
 			"<foobar>Test!</foobar>"
 			"<barfoo shizzle='zing'/>"
@@ -321,8 +315,8 @@ test_entry_parse_xml (void)
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' xmlns:ns='http://example.com/'>"
 				"<title type='text'>Testing unhandled XML</title>"
-				"<updated>2009-01-25T14:07:37.880860Z</updated>"
-				"<published>2009-01-23T14:06:37.880860Z</published>"
+				"<updated>2009-01-25T14:07:37Z</updated>"
+				"<published>2009-01-23T14:06:37Z</published>"
 				"<content type='text'>Here we test unhandled XML elements.</content>"
 				"<foobar>Test!</foobar>"
 				"<barfoo shizzle=\"zing\"/>"
@@ -371,7 +365,7 @@ test_feed_parse_xml (void)
 	GDataLink *_link; /* stupid unistd.h */
 	GList *list;
 	gchar *title, *subtitle, *id, *etag, *logo, *icon, *rights;
-	GTimeVal *updated, updated2;
+	gint64 updated, updated2;
 	GDataGenerator *generator;
 	guint items_per_page, start_index, total_results;
 	GError *error = NULL;
@@ -442,8 +436,7 @@ test_feed_parse_xml (void)
 	g_assert_cmpstr (id, ==, "http://example.com/id");
 	g_assert_cmpstr (etag, ==, "W/\"D08FQn8-eil7ImA9WxZbFEw.\"");
 
-	g_assert_cmpint (updated->tv_sec, ==, 1235570857);
-	g_assert_cmpint (updated->tv_usec, ==, 880860);
+	g_assert_cmpint (updated, ==, 1235570857);
 
 	g_assert_cmpstr (logo, ==, "http://example.com/logo.png");
 	g_assert_cmpstr (icon, ==, "http://example.com/icon.png");
@@ -462,7 +455,6 @@ test_feed_parse_xml (void)
 	g_free (subtitle);
 	g_free (id);
 	g_free (etag);
-	g_free (updated);
 	g_free (logo);
 	g_free (icon);
 	g_free (rights);
@@ -520,9 +512,8 @@ test_feed_parse_xml (void)
 	g_assert_cmpstr (gdata_feed_get_id (feed), ==, "http://example.com/id");
 	g_assert_cmpstr (gdata_feed_get_etag (feed), ==, "W/\"D08FQn8-eil7ImA9WxZbFEw.\"");
 
-	gdata_feed_get_updated (feed, &updated2);
-	g_assert_cmpint (updated2.tv_sec, ==, 1235570857);
-	g_assert_cmpint (updated2.tv_usec, ==, 880860);
+	updated2 = gdata_feed_get_updated (feed);
+	g_assert_cmpint (updated2, ==, 1235570857);
 
 	g_assert_cmpstr (gdata_feed_get_logo (feed), ==, "http://example.com/logo.png");
 	g_assert_cmpstr (gdata_feed_get_icon (feed), ==, "http://example.com/icon.png");
@@ -699,10 +690,10 @@ test_query_etag (void)
 	CHECK_ETAG (gdata_query_set_q (query, "q"))
 	CHECK_ETAG (gdata_query_set_categories (query, "shizzle,foobar"))
 	CHECK_ETAG (gdata_query_set_author (query, "John Smith"))
-	CHECK_ETAG (gdata_query_set_updated_min (query, NULL))
-	CHECK_ETAG (gdata_query_set_updated_max (query, NULL))
-	CHECK_ETAG (gdata_query_set_published_min (query, NULL))
-	CHECK_ETAG (gdata_query_set_published_max (query, NULL))
+	CHECK_ETAG (gdata_query_set_updated_min (query, -1))
+	CHECK_ETAG (gdata_query_set_updated_max (query, -1))
+	CHECK_ETAG (gdata_query_set_published_min (query, -1))
+	CHECK_ETAG (gdata_query_set_published_max (query, -1))
 	CHECK_ETAG (gdata_query_set_start_index (query, 5))
 	CHECK_ETAG (gdata_query_set_is_strict (query, TRUE))
 	CHECK_ETAG (gdata_query_set_max_results (query, 1000))
@@ -767,7 +758,7 @@ test_access_rule_get_xml (void)
 {
 	GDataAccessRule *rule, *rule2;
 	gchar *xml, *role, *scope_type3, *scope_value3;
-	GTimeVal edited, *edited2;
+	gint64 edited, edited2;
 	const gchar *scope_type, *scope_value, *scope_type2, *scope_value2;
 	GError *error = NULL;
 
@@ -784,8 +775,8 @@ test_access_rule_get_xml (void)
 	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, "A scope type");
 	g_assert_cmpstr (scope_value, ==, "A scope value");
-	gdata_access_rule_get_edited (rule, &edited);
-	g_assert_cmpuint (edited.tv_sec, >, 0); /* current time */
+	edited = gdata_access_rule_get_edited (rule);
+	g_assert_cmpuint (edited, >, 0); /* current time */
 
 	/* Set the properties more conventionally */
 	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE);
@@ -817,9 +808,8 @@ test_access_rule_get_xml (void)
 	gdata_access_rule_get_scope (rule2, &scope_type2, &scope_value2);
 	g_assert_cmpstr (scope_type, ==, scope_type2);
 	g_assert_cmpstr (scope_value, ==, scope_value2);
-	gdata_access_rule_get_edited (rule2, &edited);
-	g_assert_cmpuint (edited.tv_sec, ==, 0); /* unspecified in XML */
-	g_assert_cmpuint (edited.tv_usec, ==, 0);
+	edited = gdata_access_rule_get_edited (rule2);
+	g_assert_cmpuint (edited, ==, -1); /* unspecified in XML */
 
 	/* Check properties a different way */
 	g_object_get (G_OBJECT (rule2),
@@ -832,10 +822,8 @@ test_access_rule_get_xml (void)
 	g_assert_cmpstr (role, ==, gdata_access_rule_get_role (rule));
 	g_assert_cmpstr (scope_type, ==, scope_type3);
 	g_assert_cmpstr (scope_value, ==, scope_value3);
-	g_assert_cmpuint (edited2->tv_sec, ==, 0);
-	g_assert_cmpuint (edited2->tv_usec, ==, 0);
+	g_assert_cmpuint (edited2, ==, -1);
 
-	g_free (edited2);
 	g_free (role);
 	g_free (scope_type3);
 	g_free (scope_value3);
@@ -2003,7 +1991,7 @@ test_gd_reminder (void)
 {
 	GDataGDReminder *reminder, *reminder2;
 	gchar *xml;
-	GTimeVal time_val;
+	gint64 _time;
 	GError *error = NULL;
 
 	reminder = GDATA_GD_REMINDER (gdata_parsable_new_from_xml (GDATA_TYPE_GD_REMINDER,
@@ -2038,7 +2026,7 @@ test_gd_reminder (void)
 	g_assert_cmpint (gdata_gd_reminder_get_relative_time (reminder), ==, 15 * 60);
 
 	/* Compare to another reminder */
-	reminder2 = gdata_gd_reminder_new (NULL, NULL, 15 * 60);
+	reminder2 = gdata_gd_reminder_new (NULL, -1, 15 * 60);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (reminder), GDATA_COMPARABLE (reminder2)), ==, 0);
 	g_object_unref (reminder2);
 	g_object_unref (reminder);
@@ -2066,12 +2054,11 @@ test_gd_reminder (void)
 	/* Check the properties */
 	g_assert_cmpstr (gdata_gd_reminder_get_method (reminder), ==, GDATA_GD_REMINDER_ALERT);
 	g_assert (gdata_gd_reminder_is_absolute_time (reminder) == TRUE);
-	gdata_gd_reminder_get_absolute_time (reminder, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 1118105700);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
+	_time = gdata_gd_reminder_get_absolute_time (reminder);
+	g_assert_cmpint (_time, ==, 1118105700);
 
 	/* Compare to another reminder */
-	reminder2 = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, &time_val, -1);
+	reminder2 = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, _time, -1);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (reminder), GDATA_COMPARABLE (reminder2)), ==, 0);
 	g_object_unref (reminder2);
 
@@ -2091,7 +2078,7 @@ test_gd_reminder_escaping (void)
 	GDataGDReminder *reminder;
 	gchar *xml;
 
-	reminder = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT "?foo&bar", NULL, 15);
+	reminder = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT "?foo&bar", -1, 15);
 
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (reminder));
@@ -2110,7 +2097,7 @@ test_gd_when (void)
 	GDataGDReminder *reminder;
 	gchar *xml;
 	GList *reminders;
-	GTimeVal time_val, time_val2;
+	gint64 _time, _time2;
 	GError *error = NULL;
 
 	when = GDATA_GD_WHEN (gdata_parsable_new_from_xml (GDATA_TYPE_GD_WHEN,
@@ -2121,23 +2108,21 @@ test_gd_when (void)
 	g_clear_error (&error);
 
 	/* Check the properties */
-	gdata_gd_when_get_start_time (when, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 1118106000);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
-	gdata_gd_when_get_end_time (when, &time_val2);
-	g_assert_cmpint (time_val2.tv_sec, ==, 1118109600);
-	g_assert_cmpint (time_val2.tv_usec, ==, 0);
+	_time = gdata_gd_when_get_start_time (when);
+	g_assert_cmpint (_time, ==, 1118106000);
+	_time2 = gdata_gd_when_get_end_time (when);
+	g_assert_cmpint (_time2, ==, 1118109600);
 	g_assert (gdata_gd_when_is_date (when) == FALSE);
 	g_assert (gdata_gd_when_get_value_string (when) == NULL);
 	g_assert (gdata_gd_when_get_reminders (when) == NULL);
 
 	/* Compare it against another identical time */
-	when2 = gdata_gd_when_new (&time_val, &time_val2, FALSE);
+	when2 = gdata_gd_when_new (_time, _time2, FALSE);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when), GDATA_COMPARABLE (when2)), ==, 0);
 
 	/* …and a different one */
-	time_val2.tv_usec = 100;
-	gdata_gd_when_set_end_time (when2, &time_val2);
+	_time2 = 100;
+	gdata_gd_when_set_end_time (when2, _time2);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when), GDATA_COMPARABLE (when2)), !=, 0);
 	g_object_unref (when2);
 
@@ -2161,12 +2146,10 @@ test_gd_when (void)
 	g_clear_error (&error);
 
 	/* Check the properties */
-	gdata_gd_when_get_start_time (when, &time_val);
-	g_assert_cmpint (time_val.tv_sec, ==, 1118016000);
-	g_assert_cmpint (time_val.tv_usec, ==, 0);
-	gdata_gd_when_get_end_time (when, &time_val2);
-	g_assert_cmpint (time_val2.tv_sec, ==, 1118188800);
-	g_assert_cmpint (time_val2.tv_usec, ==, 0);
+	_time = gdata_gd_when_get_start_time (when);
+	g_assert_cmpint (_time, ==, 1118016000);
+	_time2 = gdata_gd_when_get_end_time (when);
+	g_assert_cmpint (_time2, ==, 1118188800);
 	g_assert (gdata_gd_when_is_date (when) == TRUE);
 	g_assert_cmpstr (gdata_gd_when_get_value_string (when), ==, "This weekend");
 
@@ -2178,7 +2161,7 @@ test_gd_when (void)
 	g_assert_cmpint (gdata_gd_reminder_get_relative_time (GDATA_GD_REMINDER (reminders->data)), ==, 15);
 
 	/* Add another reminder */
-	reminder = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, &time_val, -1);
+	reminder = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, _time, -1);
 	gdata_gd_when_add_reminder (when, reminder);
 	g_object_unref (reminder);
 
@@ -2204,7 +2187,7 @@ test_gd_when_escaping (void)
 	GTimeVal start_time;
 
 	g_time_val_from_iso8601 ("2005-06-07T01:00:00Z", &start_time);
-	when = gdata_gd_when_new (&start_time, NULL, FALSE);
+	when = gdata_gd_when_new (start_time.tv_sec, -1, FALSE);
 	gdata_gd_when_set_value_string (when, "Value string & stuff!");
 
 	/* Check the outputted XML is escaped properly */

@@ -53,7 +53,7 @@ struct _GDataAccessRulePrivate {
 	gchar *role;
 	gchar *scope_type;
 	gchar *scope_value;
-	GTimeVal edited;
+	gint64 edited;
 };
 
 enum {
@@ -137,9 +137,9 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * Since: 0.7.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_boxed ("edited",
+	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the access rule was edited.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
@@ -167,6 +167,7 @@ static void
 gdata_access_rule_init (GDataAccessRule *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ACCESS_RULE, GDataAccessRulePrivate);
+	self->priv->edited = -1;
 
 	/* Listen to change notifications for the entry's title, since it's linked to GDataAccessRule:role */
 	g_signal_connect (self, "notify::title", (GCallback) notify_title_cb, self);
@@ -184,10 +185,12 @@ gdata_access_rule_constructor (GType type, guint n_construct_params, GObjectCons
 	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (object)->priv;
+		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 		 * setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&(priv->edited));
+		g_get_current_time (&time_val);
+		priv->edited = time_val.tv_sec;
 
 		/* Set up the role and scope type */
 		priv->role = g_strdup (GDATA_ACCESS_ROLE_NONE);
@@ -226,7 +229,7 @@ gdata_access_rule_get_property (GObject *object, guint property_id, GValue *valu
 			g_value_set_string (value, priv->scope_value);
 			break;
 		case PROP_EDITED:
-			g_value_set_boxed (value, &(priv->edited));
+			g_value_set_int64 (value, priv->edited);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -268,7 +271,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	GDataAccessRule *self = GDATA_ACCESS_RULE (parsable);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/acl/2007") == TRUE) {
 		if (xmlStrcmp (node->name, (xmlChar*) "role") == 0) {
@@ -447,17 +450,16 @@ gdata_access_rule_get_scope (GDataAccessRule *self, const gchar **type, const gc
 /**
  * gdata_access_rule_get_edited:
  * @self: a #GDataAccessRule
- * @edited: (out caller-allocates): return location for the edited time
  *
- * Gets the #GDataAccessRule:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataAccessRule:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the access rule was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.7.0
  **/
-void
-gdata_access_rule_get_edited (GDataAccessRule *self, GTimeVal *edited)
+gint64
+gdata_access_rule_get_edited (GDataAccessRule *self)
 {
-	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));
-	g_return_if_fail (edited != NULL);
-	*edited = self->priv->edited;
+	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (self), -1);
+	return self->priv->edited;
 }

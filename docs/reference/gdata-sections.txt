@@ -585,9 +585,7 @@ gdata_color_from_hexadecimal
 gdata_color_to_hexadecimal
 <SUBSECTION Standard>
 GDATA_TYPE_COLOR
-GDATA_TYPE_G_TIME_VAL
 gdata_color_get_type
-gdata_g_time_val_get_type
 </SECTION>
 
 <SECTION>

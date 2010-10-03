@@ -89,14 +89,13 @@ typedef struct {
 
 GType gdata_gd_reminder_get_type (void) G_GNUC_CONST;
 
-GDataGDReminder *gdata_gd_reminder_new (const gchar *method, const GTimeVal *absolute_time,
-                                        gint relative_time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataGDReminder *gdata_gd_reminder_new (const gchar *method, gint64 absolute_time, gint relative_time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_gd_reminder_get_method (GDataGDReminder *self) G_GNUC_PURE;
 void gdata_gd_reminder_set_method (GDataGDReminder *self, const gchar *method);
 
-void gdata_gd_reminder_get_absolute_time (GDataGDReminder *self, GTimeVal *absolute_time);
-void gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, const GTimeVal *absolute_time);
+gint64 gdata_gd_reminder_get_absolute_time (GDataGDReminder *self);
+void gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, gint64 absolute_time);
 gboolean gdata_gd_reminder_is_absolute_time (GDataGDReminder *self);
 
 gint gdata_gd_reminder_get_relative_time (GDataGDReminder *self) G_GNUC_PURE;

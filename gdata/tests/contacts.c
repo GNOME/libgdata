@@ -167,12 +167,13 @@ test_insert_simple (gconstpointer service)
 	GList *list;
 	GDate date, *date2;
 	GHashTable *properties;
-	GTimeVal *edited, creation_time;
+	GTimeVal current_time;
+	gint64 edited, creation_time;
 	gboolean deleted, has_photo, birthday_has_year;
 	GError *error = NULL;
 
 	contact = gdata_contacts_contact_new (NULL);
-	g_get_current_time (&creation_time);
+	g_get_current_time (&current_time);
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -298,8 +299,7 @@ test_insert_simple (gconstpointer service)
 	              "subject", &subject,
 	              NULL);
 
-	g_assert_cmpint (edited->tv_sec, ==, creation_time.tv_sec);
-	/*g_assert_cmpint (edited->tv_usec, ==, creation_time.tv_usec); --- testing to the nearest microsecond is too precise, and always fails */
+	g_assert_cmpint (edited, ==, current_time.tv_sec);
 	g_assert (deleted == FALSE);
 	g_assert (has_photo == FALSE);
 	g_assert (name2 == name);
@@ -400,8 +400,8 @@ test_insert_simple (gconstpointer service)
 	g_clear_error (&error);
 
 	/* Check its edited date */
-	gdata_contacts_contact_get_edited (new_contact, &creation_time);
-	g_assert_cmpint (creation_time.tv_sec, >=, edited->tv_sec);
+	creation_time = gdata_contacts_contact_get_edited (new_contact);
+	g_assert_cmpint (creation_time, >=, edited);
 
 	/* Various properties */
 	g_assert_cmpstr (gdata_contacts_contact_get_nickname (new_contact), ==, "Big J");
@@ -573,7 +573,6 @@ test_insert_simple (gconstpointer service)
 	gdata_contacts_contact_remove_all_hobbies (new_contact);
 	g_assert (gdata_contacts_contact_get_hobbies (new_contact) == NULL);
 
-	g_free (edited);
 	g_object_unref (contact);
 	g_object_unref (new_contact);
 }

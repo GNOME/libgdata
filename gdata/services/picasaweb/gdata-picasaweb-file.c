@@ -43,7 +43,7 @@
  *		GDataPicasaWebFile *photo;
  *		guint height, width;
  *		gsize file_size;
- *		GTimeVal timestamp;
+ *		gint64 timestamp;
  *		const gchar *title, *summary;
  *		GList *contents;
  *
@@ -53,7 +53,7 @@
  *		height = gdata_picasaweb_file_get_height (photo);
  *		width = gdata_picasaweb_file_get_width (photo);
  *		file_size = gdata_picasaweb_file_get_size (photo);
- *		gdata_picasaweb_file_get_timestamp (photo, &timestamp);
+ *		timestamp = gdata_picasaweb_file_get_timestamp (photo);
  *		title = gdata_entry_get_title (GDATA_ENTRY (photo));
  *		summary = gdata_entry_get_summary (GDATA_ENTRY (photo));
  *
@@ -107,7 +107,7 @@ static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
 struct _GDataPicasaWebFilePrivate {
 	gchar *file_id;
-	GTimeVal edited;
+	gint64 edited;
 	gchar *version;
 	gdouble position;
 	gchar *album_id;
@@ -116,7 +116,7 @@ struct _GDataPicasaWebFilePrivate {
 	gsize size;
 	gchar *client;
 	gchar *checksum;
-	GTimeVal timestamp;
+	gint64 timestamp; /* in milliseconds! */
 	gboolean is_commenting_enabled;
 	guint comment_count;
 	guint rotation;
@@ -360,15 +360,15 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_boxed ("edited",
+	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The time this file was last edited.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:timestamp:
 	 *
-	 * The time the file was purportedly taken.
+	 * The time the file was purportedly taken. This a UNIX timestamp in milliseconds (not seconds) since the epoch.
 	 *
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_timestamp">
 	 * gphoto specification</ulink>.
@@ -376,9 +376,9 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMESTAMP,
-	                                 g_param_spec_boxed ("timestamp",
+	                                 g_param_spec_int64 ("timestamp",
 	                                                     "Timestamp", "The time the file was purportedly taken.",
-	                                                     GDATA_TYPE_G_TIME_VAL,
+	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -676,6 +676,8 @@ gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 	self->priv->exif_tags = g_object_new (GDATA_TYPE_EXIF_TAGS, NULL);
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 	self->priv->is_commenting_enabled = TRUE;
+	self->priv->edited = -1;
+	self->priv->timestamp = -1;
 
 	/* We need to keep atom:title (the canonical title for the file) in sync with media:group/media:title */
 	g_signal_connect (self, "notify::title", G_CALLBACK (notify_title_cb), NULL);
@@ -693,11 +695,13 @@ gdata_picasaweb_file_constructor (GType type, guint n_construct_params, GObjectC
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (object)->priv;
+		GTimeVal time_val;
 
 		/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
 		 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&(priv->timestamp));
-		g_get_current_time (&(priv->edited));
+		g_get_current_time (&time_val);
+		priv->timestamp = time_val.tv_sec * 1000;
+		priv->edited = time_val.tv_sec;
 	}
 
 	return object;
@@ -750,7 +754,7 @@ gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *v
 			g_value_set_string (value, priv->file_id);
 			break;
 		case PROP_EDITED:
-			g_value_set_boxed (value, &(priv->edited));
+			g_value_set_int64 (value, priv->edited);
 			break;
 		case PROP_VERSION:
 			g_value_set_string (value, priv->version);
@@ -777,7 +781,7 @@ gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *v
 			g_value_set_string (value, priv->checksum);
 			break;
 		case PROP_TIMESTAMP:
-			g_value_set_boxed (value, &(priv->timestamp));
+			g_value_set_int64 (value, priv->timestamp);
 			break;
 		case PROP_IS_COMMENTING_ENABLED:
 			g_value_set_boolean (value, priv->is_commenting_enabled);
@@ -871,7 +875,7 @@ gdata_picasaweb_file_set_property (GObject *object, guint property_id, const GVa
 			gdata_picasaweb_file_set_checksum (self, g_value_get_string (value));
 			break;
 		case PROP_TIMESTAMP:
-			gdata_picasaweb_file_set_timestamp (self, g_value_get_boxed (value));
+			gdata_picasaweb_file_set_timestamp (self, g_value_get_int64 (value));
 			break;
 		case PROP_IS_COMMENTING_ENABLED: /* TODO I don't think we can change this on a per file basis */
 			gdata_picasaweb_file_set_is_commenting_enabled (self, g_value_get_boolean (value));
@@ -909,7 +913,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	/* TODO: media:group should also be P_NO_DUPES, but we can't, as priv->media_group has to be pre-populated
 	 * in order for things like gdata_picasaweb_file_set_description() to work. */
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_time_val_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
 	           gdata_parser_object_from_element (node, "group", P_REQUIRED, GDATA_TYPE_MEDIA_GROUP,
@@ -956,16 +960,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			/* gphoto:timestamp */
 			xmlChar *timestamp_str;
 			guint64 milliseconds;
-			GTimeVal timestamp;
 
 			timestamp_str = xmlNodeListGetString (doc, node->children, TRUE);
 			milliseconds = g_ascii_strtoull ((gchar*) timestamp_str, NULL, 10);
 			xmlFree (timestamp_str);
 
-			timestamp.tv_sec = (glong) (milliseconds / 1000);
-			timestamp.tv_usec = (glong) ((milliseconds % 1000) * 1000);
-
-			gdata_picasaweb_file_set_timestamp (self, &timestamp);
+			gdata_picasaweb_file_set_timestamp (self, (gint64) milliseconds);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "commentingEnabled") == 0) {
 			/* gphoto:commentingEnabled */
 			xmlChar *is_commenting_enabled = xmlNodeListGetString (doc, node->children, TRUE);
@@ -1026,10 +1026,9 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->checksum != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:checksum>", priv->checksum, "</gphoto:checksum>");
 
-	if (priv->timestamp.tv_sec != 0 || priv->timestamp.tv_usec != 0) {
+	if (priv->timestamp != -1) {
 		/* timestamp is in milliseconds */
-		g_string_append_printf (xml_string, "<gphoto:timestamp>%" G_GUINT64_FORMAT "</gphoto:timestamp>",
-		                        ((guint64) priv->timestamp.tv_sec) * 1000 + priv->timestamp.tv_usec / 1000);
+		g_string_append_printf (xml_string, "<gphoto:timestamp>%" G_GINT64_FORMAT "</gphoto:timestamp>", priv->timestamp);
 	}
 
 	if (priv->is_commenting_enabled == TRUE)
@@ -1141,19 +1140,18 @@ gdata_picasaweb_file_get_id (GDataPicasaWebFile *self)
 /**
  * gdata_picasaweb_file_get_edited:
  * @self: a #GDataPicasaWebFile
- * @edited: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataPicasaWebFile:edited property and puts it in @edited. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataPicasaWebFile:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the time the file was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
-void
-gdata_picasaweb_file_get_edited (GDataPicasaWebFile *self, GTimeVal *edited)
+gint64
+gdata_picasaweb_file_get_edited (GDataPicasaWebFile *self)
 {
-	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
-	g_return_if_fail (edited != NULL);
-	*edited = self->priv->edited;
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), -1);
+	return self->priv->edited;
 }
 
 /**
@@ -1374,33 +1372,33 @@ gdata_picasaweb_file_set_checksum (GDataPicasaWebFile *self, const gchar *checks
 /**
  * gdata_picasaweb_file_get_timestamp:
  * @self: a #GDataPicasaWebFile
- * @timestamp: (out caller-allocates): a #GTimeVal
  *
- * Gets the #GDataPicasaWebFile:timestamp property and puts it in @timestamp. If the property is unset,
- * both fields in the #GTimeVal will be set to <code class="literal">0</code>.
+ * Gets the #GDataPicasaWebFile:timestamp property. It's a UNIX timestamp in milliseconds (not seconds) since the epoch. If the property is unset,
+ * <code class="literal">-1</code> will be returned.
+ *
+ * Return value: the UNIX timestamp for the timestamp property in milliseconds, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
  **/
-void
-gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self, GTimeVal *timestamp)
+gint64
+gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self)
 {
-	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
-	g_return_if_fail (timestamp != NULL);
-	*timestamp = self->priv->timestamp;
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), -1);
+	return self->priv->timestamp;
 }
 
 /**
  * gdata_picasaweb_file_set_timestamp:
  * @self: a #GDataPicasaWebFile
- * @timestamp: (allow-none): a #GTimeVal, or %NULL
+ * @timestamp: a UNIX timestamp, or <code class="literal">-1</code>
  *
- * Sets the #GDataPicasaWebFile:timestamp property from values supplied by @timestamp. If @timestamp is %NULL,
- * the property will be unset.
+ * Sets the #GDataPicasaWebFile:timestamp property from @timestamp. This should be a UNIX timestamp in milliseconds (not seconds) since the epoch. If
+ * @timestamp is <code class="literal">-1</code>, the property will be unset.
  *
  * Since: 0.4.0
  **/
 void
-gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, const GTimeVal *timestamp)
+gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, gint64 timestamp)
 {
 	/* RHSTODO: I think the timestamp value is just being
 	   over-ridden by the file's actual EXIF time value; unless
@@ -1408,10 +1406,9 @@ gdata_picasaweb_file_set_timestamp (GDataPicasaWebFile *self, const GTimeVal *ti
 	/* RHSTODO: improve testing of setters in tests/picasa.c */
 
 	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
-	if (timestamp == NULL)
-		self->priv->timestamp.tv_sec = self->priv->timestamp.tv_usec = 0;
-	else
-		self->priv->timestamp = *timestamp;
+	g_return_if_fail (timestamp >= -1);
+
+	self->priv->timestamp = timestamp;
 	g_object_notify (G_OBJECT (self), "timestamp");
 }
 
