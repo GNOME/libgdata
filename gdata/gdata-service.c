@@ -903,13 +903,13 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
 }
 
 /**
- * gdata_service_query_async:
+ * gdata_service_query_async: (skip)
  * @self: a #GDataService
  * @feed_uri: the feed URI to query, including the host name and protocol
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
  * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope async): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
