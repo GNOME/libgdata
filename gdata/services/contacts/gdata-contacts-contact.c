@@ -1696,7 +1696,7 @@ gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEma
  *
  * Gets a list of the e-mail addresses owned by the contact.
  *
- * Return value: (element-type GData.GDEMailAddress) (transfer none): a #GList of #GDataGDEmailAddress<!-- -->es, or %NULL
+ * Return value: (element-type GData.GDEmailAddress) (transfer none): a #GList of #GDataGDEmailAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
  **/
