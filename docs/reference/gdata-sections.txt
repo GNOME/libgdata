@@ -646,9 +646,6 @@ GDATA_LINK_ACCESS_CONTROL_LIST
 GDataAccessHandler
 GDataAccessHandlerIface
 gdata_access_handler_get_rules
-gdata_access_handler_insert_rule
-gdata_access_handler_update_rule
-gdata_access_handler_delete_rule
 <SUBSECTION Standard>
 gdata_access_handler_get_type
 GDATA_ACCESS_HANDLER

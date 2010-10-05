@@ -525,6 +525,7 @@ test_new_document_with_collaborator (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GDataAccessRule *access_rule, *new_access_rule;
+	GDataLink *_link;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -543,7 +544,11 @@ test_new_document_with_collaborator (gconstpointer service)
 	gdata_access_rule_set_scope (access_rule, GDATA_ACCESS_SCOPE_USER, "libgdata.test@gmail.com");
 
 	/* Set access rules */
-	new_access_rule = gdata_access_handler_insert_rule (GDATA_ACCESS_HANDLER (new_document), GDATA_SERVICE (service), access_rule, NULL, &error);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (new_document), GDATA_LINK_ACCESS_CONTROL_LIST);
+	g_assert (_link != NULL);
+
+	new_access_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_link_get_uri (_link),
+	                                                                 GDATA_ENTRY (access_rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_access_rule));
 

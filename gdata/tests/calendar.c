@@ -564,6 +564,7 @@ test_acls_insert_rule (gconstpointer service)
 	GDataAccessRule *rule, *new_rule;
 	const gchar *scope_type, *scope_value;
 	GDataCategory *category;
+	GDataLink *_link;
 	GList *categories;
 	gchar *xml;
 	gint64 edited;
@@ -596,7 +597,11 @@ test_acls_insert_rule (gconstpointer service)
 	g_free (xml);
 
 	/* Insert the rule */
-	new_rule = gdata_access_handler_insert_rule (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), rule, NULL, &error);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
+	g_assert (_link != NULL);
+
+	new_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_link_get_uri (_link), GDATA_ENTRY (rule),
+	                                                          NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
@@ -661,7 +666,7 @@ test_acls_update_rule (gconstpointer service)
 	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
 
 	/* Send the update to the server */
-	new_rule = gdata_access_handler_update_rule (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), rule, NULL, &error);
+	new_rule = GDATA_ACCESS_RULE (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
@@ -713,7 +718,7 @@ test_acls_delete_rule (gconstpointer service)
 	g_object_unref (feed);
 
 	/* Delete the rule */
-	success = gdata_access_handler_delete_rule (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), rule, NULL, &error);
+	success = gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (rule), NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success == TRUE);
 	g_clear_error (&error);
