@@ -29,6 +29,18 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_LINK_ACCESS_CONTROL_LIST:
+ *
+ * The relation type URI of the access control list location for this resource.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/calendar/data/2.0/developers_guide_protocol.html#SharingACalendar">ACL specification</ulink>.
+ *
+ * Since: 0.7.0
+ **/
+#define GDATA_LINK_ACCESS_CONTROL_LIST "http://schemas.google.com/acl/2007#accessControlList"
+
 #define GDATA_TYPE_ACCESS_HANDLER		(gdata_access_handler_get_type ())
 #define GDATA_ACCESS_HANDLER(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_ACCESS_HANDLER, GDataAccessHandler))
 #define GDATA_ACCESS_HANDLER_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_ACCESS_HANDLER, GDataAccessHandlerIface))

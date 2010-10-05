@@ -97,7 +97,7 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 
 	/* Get the ACL URI */
 	/* TODO: ETag support */
-	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/acl/2007#accessControlList");
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 	message = _gdata_service_build_message (service, SOUP_METHOD_GET, gdata_link_get_uri (_link), NULL, FALSE);
 
@@ -173,7 +173,7 @@ gdata_access_handler_insert_rule (GDataAccessHandler *self, GDataService *servic
 
 	/* Get the ACL URI */
 	/* TODO: ETag support */
-	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/acl/2007#accessControlList");
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 	message = _gdata_service_build_message (service, SOUP_METHOD_POST, gdata_link_get_uri (_link), NULL, FALSE);
 
@@ -222,7 +222,7 @@ build_message (GDataAccessHandler *access_handler, GDataService *service, GDataA
 		return _gdata_service_build_message (service, method, gdata_link_get_uri (_link), NULL, FALSE);
 
 	/* Try building the URI instead */
-	_link = gdata_entry_look_up_link (GDATA_ENTRY (access_handler), "http://schemas.google.com/acl/2007#accessControlList");
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (access_handler), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
 
