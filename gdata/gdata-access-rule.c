@@ -60,7 +60,8 @@ enum {
 	PROP_ROLE = 1,
 	PROP_SCOPE_TYPE,
 	PROP_SCOPE_VALUE,
-	PROP_EDITED
+	PROP_EDITED,
+	PROP_ETAG
 };
 
 G_DEFINE_TYPE (GDataAccessRule, gdata_access_rule, GDATA_TYPE_ENTRY)
@@ -141,6 +142,10 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	                                                     "Edited", "The last time the access rule was edited.",
 	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/* Override the ETag property since ETags don't seem to be supported for ACL entries. TODO: Investigate this further (might only be
+	 * unsupported for Google Calendar). */
+	g_object_class_override_property (gobject_class, PROP_ETAG, "etag");
 }
 
 static void notify_role_cb (GDataAccessRule *self, GParamSpec *pspec, gpointer user_data);
@@ -231,6 +236,10 @@ gdata_access_rule_get_property (GObject *object, guint property_id, GValue *valu
 		case PROP_EDITED:
 			g_value_set_int64 (value, priv->edited);
 			break;
+		case PROP_ETAG:
+			/* Never return an ETag */
+			g_value_set_string (value, NULL);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -256,6 +265,9 @@ gdata_access_rule_set_property (GObject *object, guint property_id, const GValue
 			g_free (self->priv->scope_value);
 			self->priv->scope_value = g_value_dup_string (value);
 			g_object_notify (object, "scope-value");
+			break;
+		case PROP_ETAG:
+			/* Never set an ETag (note that this doesn't stop it being set in GDataEntry due to XML parsing) */
 			break;
 		default:
 			/* We don't have any other property... */

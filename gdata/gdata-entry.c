@@ -492,7 +492,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataEntryPrivate *priv = GDATA_ENTRY (parsable)->priv;
 
 	/* Add the entry's ETag, if available */
-	if (priv->etag != NULL)
+	if (gdata_entry_get_etag (GDATA_ENTRY (parsable)) != NULL)
 		g_string_append_printf (xml_string, " gd:etag='%s'", priv->etag);
 }
 
@@ -695,8 +695,19 @@ gdata_entry_get_id (GDataEntry *self)
 const gchar *
 gdata_entry_get_etag (GDataEntry *self)
 {
+	gchar *etag;
+
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
-	return self->priv->etag;
+
+	/* We have to check if the property's set since GDataAccessRule overrides it and sets it to always be NULL (since ACL entries don't support
+	 * ETags, for some reason). */
+	g_object_get (G_OBJECT (self), "etag", &etag, NULL);
+	if (etag != NULL) {
+		g_free (etag);
+		return self->priv->etag;
+	}
+
+	return NULL;
 }
 
 /**
