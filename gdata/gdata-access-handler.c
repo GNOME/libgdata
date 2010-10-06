@@ -87,36 +87,18 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 	GDataFeed *feed;
 	GDataLink *_link;
 	SoupMessage *message;
-	guint status;
 
 	/* TODO: async version */
-	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
+	g_return_val_if_fail (GDATA_IS_ACCESS_HANDLER (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	/* Get the ACL URI */
-	/* TODO: ETag support */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
-	message = _gdata_service_build_message (service, SOUP_METHOD_GET, gdata_link_get_uri (_link), NULL, FALSE);
-
-	/* Send the message */
-	status = _gdata_service_send_message (service, message, cancellable, error);
-
-	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
-		/* Redirect error or cancelled */
-		g_object_unref (message);
+	message = _gdata_service_query (service, gdata_link_get_uri (_link), NULL, cancellable, error);
+	if (message == NULL)
 		return NULL;
-	} else if (status != SOUP_STATUS_OK) {
-		/* Error */
-		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (service);
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (service, GDATA_OPERATION_QUERY, status, message->reason_phrase, message->response_body->data,
-		                             message->response_body->length, error);
-		g_object_unref (message);
-		return NULL;
-	}
 
 	g_assert (message->response_body->data != NULL);
 	feed = _gdata_feed_new_from_xml (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_ACCESS_RULE,
