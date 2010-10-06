@@ -56,6 +56,84 @@ gdata_access_handler_get_type (void)
 	return access_handler_type;
 }
 
+typedef struct {
+	GDataService *service;
+	GDataQueryProgressCallback progress_callback;
+	gpointer progress_user_data;
+	GDataFeed *feed;
+} GetRulesAsyncData;
+
+static void
+get_rules_async_data_free (GetRulesAsyncData *self)
+{
+	if (self->service != NULL)
+		g_object_unref (self->service);
+	if (self->feed != NULL)
+		g_object_unref (self->feed);
+
+	g_slice_free (GetRulesAsyncData, self);
+}
+
+static void
+get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler, GCancellable *cancellable)
+{
+	GError *error = NULL;
+	GetRulesAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+
+	/* Execute the query and return */
+	data->feed = gdata_access_handler_get_rules (access_handler, data->service, cancellable, data->progress_callback, data->progress_user_data,
+	                                             &error);
+	if (data->feed == NULL && error != NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+	}
+}
+
+/**
+ * gdata_access_handler_get_rules_async: (skip)
+ * @self: a #GDataAccessHandler
+ * @service: a #GDataService
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @progress_callback: a #GDataQueryProgressCallback to call when a rule is loaded, or %NULL
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @callback: a #GAsyncReadyCallback to call when the query is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Retrieves a #GDataFeed containing all the access rules which apply to the given #GDataAccessHandler. Only the owner of a #GDataAccessHandler may
+ * view its rule feed. @self and @service are both reffed when this function is called, so can safely be unreffed after this function returns.
+ *
+ * For more details, see gdata_access_handler_get_rules(), which is the synchronous version of this function, and gdata_service_query_async(), which
+ * is the base asynchronous query function.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_service_query_finish()
+ * to get the results of the operation.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
+                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                      GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+	GetRulesAsyncData *data;
+
+	g_return_if_fail (GDATA_IS_ACCESS_HANDLER (self));
+	g_return_if_fail (GDATA_IS_SERVICE (service));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	data = g_slice_new (GetRulesAsyncData);
+	data->service = g_object_ref (service);
+	data->progress_callback = progress_callback;
+	data->progress_user_data = progress_user_data;
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
+	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) get_rules_async_data_free);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_rules_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
 /**
  * gdata_access_handler_get_rules:
  * @self: a #GDataAccessHandler
@@ -88,7 +166,6 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 	GDataLink *_link;
 	SoupMessage *message;
 
-	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_ACCESS_HANDLER (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);

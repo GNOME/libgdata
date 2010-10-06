@@ -305,6 +305,7 @@ gdata_contacts_contact_get_photo
 gdata_contacts_contact_set_photo
 gdata_access_handler_get_type
 gdata_access_handler_get_rules
+gdata_access_handler_get_rules_async
 gdata_access_rule_get_type
 gdata_access_rule_new
 gdata_access_rule_get_role

@@ -76,6 +76,9 @@ GType gdata_access_handler_get_type (void) G_GNUC_CONST;
 GDataFeed *gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
                                            GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                            GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
+                                           GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                           GAsyncReadyCallback callback, gpointer user_data);
 
 G_END_DECLS
 
