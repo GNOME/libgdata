@@ -532,7 +532,18 @@ MAINTAINERCLEANFILES += \
 	mkinstalldirs	\
 	omf.make	\
 	gtk-doc.make	\
-	`find "$(srcdir)" -type f -name Makefile.in -print`
+	`find "$(srcdir)" -type f -name Makefile.in -print` \
+	ABOUT-NLS \
+	config.rpath \
+	po/Makevars.template \
+	po/Rules-quot \
+	po/boldquot.sed \
+	po/en@boldquot.header \
+	po/en@quot.header \
+	po/insert-header.sin \
+	po/quot.sed \
+	po/remove-potcdate.sin \
+	$(NULL)
 
 DISTCHECK_CONFIGURE_FLAGS += --enable-gtk-doc
 

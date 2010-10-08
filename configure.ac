@@ -96,7 +96,8 @@ AC_CHECK_HEADERS([sys/time.h])
 GETTEXT_PACKAGE=gdata
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define to the Gettext package name])
 AC_SUBST(GETTEXT_PACKAGE)
-AM_GLIB_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
 IT_PROG_INTLTOOL([0.40.0])
 
 # Code testing coverage with gcov
