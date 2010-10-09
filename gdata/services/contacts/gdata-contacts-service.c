@@ -187,7 +187,6 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
 GDataContactsContact *
 gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContactsContact *contact, GCancellable *cancellable, GError **error)
 {
-	/* TODO: Async variant */
 	gchar *uri;
 	GDataEntry *entry;
 
@@ -201,4 +200,38 @@ gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContacts
 	g_free (uri);
 
 	return GDATA_CONTACTS_CONTACT (entry);
+}
+
+/**
+ * gdata_contacts_service_insert_contact_async:
+ * @self: a #GDataContactsService
+ * @contact: the #GDataContactsContact to insert
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when insertion is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Inserts @contact by uploading it to the online contacts service. @self and @contact are both reffed when this function is called, so can safely be
+ * unreffed after this function returns.
+ *
+ * @callback should call gdata_service_insert_entry_finish() to obtain a #GDataContactsContact representing the inserted contact and to check for
+ * possible errors.
+ *
+ * For more details, see gdata_contacts_service_insert_contact(), which is the synchronous version of this function,
+ * and gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataContactsContact *contact, GCancellable *cancellable,
+                                             GAsyncReadyCallback callback, gpointer user_data)
+{
+	gchar *uri;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_SERVICE (self));
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (contact));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/contacts/default/full", NULL);
+	gdata_service_insert_entry_async (GDATA_SERVICE (self), uri, GDATA_ENTRY (contact), cancellable, callback, user_data);
+	g_free (uri);
 }
