@@ -1,3 +1,96 @@
+Overview of changes from libgdata 0.6.0 to libgdata 0.7.0
+=========================================================
+
+Major changes:
+* Improved and updated introspection support and annotations for gobject-introspection >= 0.9.7 (which we now depend on)
+* Added more code examples to documentation
+* Added support for service localisation using gdata_service_set_locale()
+* Added support for listing video categories from YouTube
+* Tidied up object comparison using a new GDataComparable interface instead of lots of *_compare() methods
+* Added batch operation support and implemented it for the Contacts, YouTube, Calendar and Documents services
+* Fixed ID projection issues with Contact entries
+* Added support for alerting the user of account migration with GDATA_AUTHENTICATION_ERROR_ACCOUNT_MIGRATED
+* Added support for a --no-internet option to the tests, so that more of the test suite can be run automatically without an internet connection
+* Split handling of entries with inline content from external content (using the new gdata_entry_get_content_uri())
+* Rearranged Documents classes so that instantiable entries are now subclasses of a new GDataDocumentsDocument, which handles downloading of document
+  files
+* Use gtk-doc's no-tmpl flavour, bumping our gtk-doc requirement to 1.14
+* Tightened up URI escaping
+* Switched to depending on only gdk-pixbuf instead of the whole of GDK, since we only (optionally) use GdkPixbuf for the test suite
+* Tightened up attribute escaping
+* Switched from GTimeVal to gint64 for representing UNIX timestamps
+* Switched to using upstream gettext instead of glib-gettext
+* Added support for manipulating Contact groups
+
+API changes:
+* Added gdata_entry_get_authors
+* Added gdata_service_get_locale, gdata_service_set_locale
+* Added GDataYouTubeCategory, GDataAPPCategories
+* Added gdata_youtube_service_get_categories, gdata_youtube_service_get_categories_async, gdata_youtube_service_get_categories_finish
+* Added GDataComparable
+* Removed *_compare() functions in favour of implementing the GDataComparable interface
+* Added GDataEntryClass->kind_term
+* Added GDataBatchable, GDataBatchOperation
+* Added GDATA_AUTHENTICATION_ERROR_ACCOUNT_MIGRATED
+* Added GDATA_DOCUMENTS_PRESENTATION_PDF, GDATA_DOCUMENTS_PRESENTATION_PNG, GDATA_DOCUMENTS_PRESENTATION_PPT, GDATA_DOCUMENTS_PRESENTATION_SWF
+  GDATA_DOCUMENTS_PRESENTATION_TXT, GDATA_DOCUMENTS_SPREADSHEET_CSV, GDATA_DOCUMENTS_SPREADSHEET_HTML, GDATA_DOCUMENTS_SPREADSHEET_ODS,
+  GDATA_DOCUMENTS_SPREADSHEET_PDF, GDATA_DOCUMENTS_SPREADSHEET_TSV, GDATA_DOCUMENTS_SPREADSHEET_XLS, GDATA_DOCUMENTS_TEXT_DOC,
+  GDATA_DOCUMENTS_TEXT_HTML, GDATA_DOCUMENTS_TEXT_ODT, GDATA_DOCUMENTS_TEXT_PDF, GDATA_DOCUMENTS_TEXT_PNG, GDATA_DOCUMENTS_TEXT_RTF,
+  GDATA_DOCUMENTS_TEXT_TXT, GDATA_DOCUMENTS_TEXT_ZIP
+* Removed GDataDocumentsPresentationFormat, GDataDocumentsSpreadsheetFormat, GDataDocumentsTextFormat and made the appropriate changes to the relevant
+  Documents functions which took them
+* Added gdata_entry_get_content_uri, gdata_entry_set_content_uri and changed the behaviour of gdata_entry_get_content as appropriate
+* Added GDataDocumentsDocument as a subclass of GDataDocumentsEntry and the parent of GDataDocumentsPresentation, GDataDocumentsSpreadsheet and
+  GDataDocumentsText
+* Added gdata_documents_document_download, gdata_documents_document_get_download_uri
+* Removed gdata_documents_presentation_download_document, gdata_documents_presentation_get_download_uri,
+  gdata_documents_spreadsheet_download_document, gdata_documents_text_download_document, gdata_documents_text_get_download_uri (moved to
+  GDataDocumentsDocument)
+* Made GDataDocumentsEntry abstract
+* Removed gdata_contacts_service_update_contact (use gdata_service_update_entry instead)
+* Removed GDataTimeVal (boxed type)
+* Removed GTimeVal from the public API, in favour of gint64
+* Added GDATA_LINK_ACCESS_CONTROL_LIST
+* Removed gdata_access_handler_insert_rule (use gdata_service_insert_entry instead), gdata_access_handler_update_rule (use gdata_service_update_entry
+  instead), gdata_access_handler_delete_rule (use gdata_service_delete_entry instead)
+* Added gdata_access_handler_get_rules_async
+* Added gdata_contacts_service_insert_contact_async
+* Added GDataContactsGroup
+* Added gdata_contacts_service_query_groups, gdata_contacts_service_query_groups_async, gdata_contacts_service_insert_group,
+  gdata_contacts_service_insert_group_async
+
+Bugs fixed:
+* Bug 616222 — libgdata fails to build from a remote directory
+* Bug 579885 — Add code examples to documentation
+* Bug 618584 — Implement gdata_entry_get_authors()
+* Bug 615721 — Support listing video categories
+* Bug 618586 — gdata_service_query_single_entry() encounters NULL type class
+* Bug 579169 — Add batch processing support
+* Bug 624142 — Add batch operation support to Calendar service
+* Bug 624141 — Add batch operation support to Documents service
+* Bug 630350 — Email address cannot contain name
+
+Updated translations:
+* ca (Gil Forcada)
+* cs (Marek Cernocky)
+* da (Kris Thomsen)
+* de (Mario Blättermann, Christian Kirbach)
+* en_GB (Philip Withnall)
+* es (Jorge González)
+* fr (Claude Paroz)
+* gl (Fran Diéguez)
+* hu (Gabor Kelemen)
+* id (Andika Triwidada)
+* it (Milo Casagrande)
+* lt (Aurimas Černius)
+* pl (Piotr Drąg)
+* pt (António Lima)
+* pt_BR (Djavan Fagundes)
+* ro (Daniel Șerbănescu, Lucian Adrian Grijincu)
+* sl (Matej Urbančič)
+* sv (Daniel Nylander)
+* zh_CN (Yinghua Wang, Eleanor Chen, YunQiang Su)
+
 Overview of changes from libgdata 0.5.0 to libgdata 0.6.0
 =========================================================
 
