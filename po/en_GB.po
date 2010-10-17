@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-27 09:19+0100\n"
+"POT-Creation-Date: 2010-10-17 14:54+0100\n"
 "PO-Revision-Date: 2009-04-17 12:36+0000\n"
 "Last-Translator: Philip Withnall <philip@tecnocode.co.uk>\n"
 "Language-Team: British English <en@li.org>\n"
@@ -14,14 +14,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../gdata/gdata-access-handler.c:170
-msgid "The rule has already been inserted."
-msgstr "The rule has already been inserted."
-
-#: ../gdata/gdata-access-handler.c:350
-msgid "The owner's rule may not be deleted."
-msgstr "The owner's rule may not be deleted."
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -285,7 +277,7 @@ msgstr "The entry has already been inserted."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:341
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:344
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
@@ -310,6 +302,19 @@ msgstr "The calendar did not have a content URI."
 #: ../gdata/services/contacts/gdata-contacts-service.c:162
 msgid "You must be authenticated to query contacts."
 msgstr "You must be authenticated to query contacts."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:271
+#: ../gdata/services/contacts/gdata-contacts-service.c:317
+msgid "You must be authenticated to query contact groups."
+msgstr "You must be authenticated to query contact groups."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:353
+msgid "The group has already been inserted."
+msgstr "The group has already been inserted."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:359
+msgid "You must be authenticated to insert a group."
+msgstr "You must be authenticated to insert a group."
 
 #: ../gdata/services/documents/gdata-documents-service.c:200
 #: ../gdata/services/documents/gdata-documents-service.c:251
@@ -418,6 +423,9 @@ msgstr "The video did not have a related videos <link>."
 #: ../gdata/services/youtube/gdata-youtube-service.c:698
 msgid "You must be authenticated to upload a video."
 msgstr "You must be authenticated to upload a video."
+
+#~ msgid "The owner's rule may not be deleted."
+#~ msgstr "The owner's rule may not be deleted."
 
 #~ msgid "You must be authenticated to download documents."
 #~ msgstr "You must be authenticated to download documents."
