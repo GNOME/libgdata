@@ -430,7 +430,7 @@ check-local: check-headers
 check-headers:
 	@any_missing=0; for header_file in $(public_headers); do \
 		if test "x$$header_file" != "x$(main_header)"; then \
-			if ! grep "#include <$$header_file>" $(main_header) >/dev/null; then \
+			if ! grep "#include <$$header_file>" $(top_srcdir)/$(main_header) >/dev/null; then \
 				echo "$(main_header) doesn't appear to include \"$$header_file\""; \
 				any_missing=1; \
 			fi; \
