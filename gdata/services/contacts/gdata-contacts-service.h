@@ -78,6 +78,20 @@ GDataContactsContact *gdata_contacts_service_insert_contact (GDataContactsServic
 void gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataContactsContact *contact, GCancellable *cancellable,
                                                   GAsyncReadyCallback callback, gpointer user_data);
 
+#include <gdata/services/contacts/gdata-contacts-group.h>
+
+GDataFeed *gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
+                                                GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
+                                                GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                GAsyncReadyCallback callback, gpointer user_data);
+
+GDataContactsGroup *gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGroup *group,
+                                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_contacts_service_insert_group_async (GDataContactsService *self, GDataContactsGroup *group, GCancellable *cancellable,
+                                                GAsyncReadyCallback callback, gpointer user_data);
+
 G_END_DECLS
 
 #endif /* !GDATA_CONTACTS_SERVICE_H */

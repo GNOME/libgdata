@@ -132,7 +132,7 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
  * @cancellable: optional #GCancellable object, or %NULL
  * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
- * @callback: a #GAsyncReadyCallback to call when authentication is finished
+ * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
  *
  * Queries the service to return a list of contacts matching the given @query. @self and
@@ -234,4 +234,169 @@ gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataCo
 	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/contacts/default/full", NULL);
 	gdata_service_insert_entry_async (GDATA_SERVICE (self), uri, GDATA_ENTRY (contact), cancellable, callback, user_data);
 	g_free (uri);
+}
+
+/**
+ * gdata_contacts_service_query_groups:
+ * @self: a #GDataContactsService
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @error: a #GError, or %NULL
+ *
+ * Queries the service to return a list of groups matching the given @query.
+ *
+ * For more details, see gdata_service_query().
+ *
+ * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
+ *
+ * Since: 0.7.0
+ **/
+GDataFeed *
+gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
+                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+{
+	GDataFeed *feed;
+	gchar *request_uri;
+
+	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* Ensure we're authenticated first */
+	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                     _("You must be authenticated to query contact groups."));
+		return NULL;
+	}
+
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/groups/default/full", NULL);
+	feed = gdata_service_query (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query),
+	                            GDATA_TYPE_CONTACTS_GROUP, cancellable, progress_callback, progress_user_data, error);
+	g_free (request_uri);
+
+	return feed;
+}
+
+/**
+ * gdata_contacts_service_query_groups_async: (skip)
+ * @self: a #GDataContactsService
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @callback: a #GAsyncReadyCallback to call when the query is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Queries the service to return a list of groups matching the given @query. @self and @query are all reffed when this function is called, so can
+ * safely be unreffed after this function returns.
+ *
+ * For more details, see gdata_contacts_service_query_groups(), which is the synchronous version of this function, and gdata_service_query_async(),
+ * which is the base asynchronous query function.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
+                                           GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                           GAsyncReadyCallback callback, gpointer user_data)
+{
+	gchar *request_uri;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	/* Ensure we're authenticated first */
+	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                                     _("You must be authenticated to query contact groups."));
+		return;
+	}
+
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/groups/default/full", NULL);
+	gdata_service_query_async (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query),
+	                           GDATA_TYPE_CONTACTS_GROUP, cancellable, progress_callback, progress_user_data, callback, user_data);
+	g_free (request_uri);
+}
+
+/**
+ * gdata_contacts_service_insert_group:
+ * @self: a #GDataContactsService
+ * @group: a #GDataContactsGroup to create on the server
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Inserts a new contact group described by @group. The user must be authenticated to use this function.
+ *
+ * Return value: (transfer full): the inserted #GDataContactsGroup; unref with g_object_unref()
+ *
+ * Since: 0.7.0
+ **/
+GDataContactsGroup *
+gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGroup *group, GCancellable *cancellable, GError **error)
+{
+	gchar *request_uri;
+	GDataEntry *new_group;
+
+	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_CONTACTS_GROUP (group), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	if (gdata_entry_is_inserted (GDATA_ENTRY (group)) == TRUE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
+		                     _("The group has already been inserted."));
+		return NULL;
+	}
+
+	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                     _("You must be authenticated to insert a group."));
+		return NULL;
+	}
+
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/groups/default/full", NULL);
+	new_group = gdata_service_insert_entry (GDATA_SERVICE (self), request_uri, GDATA_ENTRY (group), cancellable, error);
+	g_free (request_uri);
+
+	return GDATA_CONTACTS_GROUP (new_group);
+}
+
+/**
+ * gdata_contacts_service_insert_group_async:
+ * @self: a #GDataContactsService
+ * @group: the #GDataContactsGroup to insert
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when insertion is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Inserts a new contact group described by @group. The user must be authenticated to use this function. @self and @group are both reffed when this
+ * function is called, so can safely be unreffed after this function returns.
+ *
+ * @callback should call gdata_service_insert_entry_finish() to obtain a #GDataContactsGroup representing the inserted group and to check for possible
+ * errors.
+ *
+ * For more details, see gdata_contacts_service_insert_group(), which is the synchronous version of this function, and
+ * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_service_insert_group_async (GDataContactsService *self, GDataContactsGroup *group, GCancellable *cancellable,
+                                           GAsyncReadyCallback callback, gpointer user_data)
+{
+	gchar *request_uri;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_SERVICE (self));
+	g_return_if_fail (GDATA_IS_CONTACTS_GROUP (group));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/groups/default/full", NULL);
+	gdata_service_insert_entry_async (GDATA_SERVICE (self), request_uri, GDATA_ENTRY (group), cancellable, callback, user_data);
+	g_free (request_uri);
 }
