@@ -27,6 +27,9 @@
  * #GDataAccessRule is a subclass of #GDataEntry to represent a generic access rule from an access control list (ACL).
  * It is returned by the ACL methods implemented in the #GDataAccessHandler interface.
  *
+ * Access rules should be inserted to the %GDATA_LINK_ACCESS_CONTROL_LIST URI of the feed or entry they should be applied to. This will return a
+ * %GDATA_SERVICE_ERROR_CONFLICT error if a rule already exists on that feed or entry for that scope type and value.
+ *
  * Since: 0.3.0
  **/
 
