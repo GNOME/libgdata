@@ -709,7 +709,9 @@ static void
 test_service_network_error (void)
 {
 	GDataService *service;
+#if 0
 	SoupURI *proxy_uri;
+#endif
 	GError *error = NULL;
 
 	/* This is a little hacky, but it should work */
@@ -720,6 +722,9 @@ test_service_network_error (void)
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR);
 	g_clear_error (&error);
 
+	/* TODO: We have to disable this test, as libsoup 2.30.2 < x <= 2.32.0 doesn't return SOUP_STATUS_CANT_RESOLVE_PROXY properly any more.
+	 * Filed as bgo#632354. */
+#if 0
 	/* Try one with a bad proxy set */
 	proxy_uri = soup_uri_new ("http://thisshouldalsonotexist.localhost/proxy");
 	gdata_service_set_proxy_uri (service, proxy_uri);
@@ -728,6 +733,7 @@ test_service_network_error (void)
 	g_assert (gdata_service_query (service, "http://google.com", NULL, GDATA_TYPE_ENTRY, NULL, NULL, NULL, &error) == NULL);
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROXY_ERROR);
 	g_clear_error (&error);
+#endif
 
 	g_object_unref (service);
 }
