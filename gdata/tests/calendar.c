@@ -812,7 +812,8 @@ test_batch (gconstpointer service)
 
 	/* Run another batch operation to update the second entry with the wrong ETag (i.e. pass the old version of the entry to the batch operation
 	 * to test error handling */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	/* Turns out that we can't run this test, because the Calendar service sucks with ETags and doesn't error. */
+	/*operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
 	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
 	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -821,7 +822,7 @@ test_batch (gconstpointer service)
 
 	g_clear_error (&error);
 	g_clear_error (&entry_error);
-	g_object_unref (operation);
+	g_object_unref (operation);*/
 	g_object_unref (inserted_entry2);
 
 	/* Run a final batch operation to delete the second entry */
