@@ -2,31 +2,24 @@
 # Copyright (C) 2009-2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
 #
-# Laurent Coudeur <laurentc@iol.ie>, 2009
-# Claude Paroz <claude@2xlibre.net>, 2009-2010
-# Nicolas Repentin <nicolas@shivaserv.fr>, 2009
-# Julien Hardelin <jhardlin{AT}wanadoo{POINT}fr, 2010
-#
+# Laurent Coudeur <laurentc@iol.ie>, 2009.
+# Claude Paroz <claude@2xlibre.net>, 2009-2010.
+# Nicolas Repentin <nicolas@shivaserv.fr>, 2009.
+# Julien Hardelin <jhardlin{AT}wanadoo{POINT}fr, 2010.
+# Bruno Brouard <annoa.b@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-08-23 21:09+0000\n"
-"PO-Revision-Date: 2010-08-29 19:59+0200\n"
-"Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
+"cgi?product=libgdata&component=general\n"
+"POT-Creation-Date: 2010-10-17 14:46+0000\n"
+"PO-Revision-Date: 2010-10-23 19:46+0200\n"
+"Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../gdata/gdata-access-handler.c:170
-msgid "The rule has already been inserted."
-msgstr "La règle a déjà été insérée."
-
-#: ../gdata/gdata-access-handler.c:350
-msgid "The owner's rule may not be deleted."
-msgstr "La règle du propriétaire ne peut pas être supprimée."
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -215,7 +208,6 @@ msgstr "Code d'erreur %u lors de l'envoi : %s"
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:518
 #, c-format
-#| msgid "Error code %u when authenticating: %s"
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Code d'erreur %u lors du lancement d'un lot d'opérations : %s"
 
@@ -246,8 +238,8 @@ msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"Ce compte a été migré. Veuillez vous connecter en ligne pour recevoir "
-"votre nouveau nom d'utilisateur et votre nouveau mot de passe (%s)."
+"Ce compte a été migré. Veuillez vous connecter en ligne pour recevoir votre "
+"nouveau nom d'utilisateur et votre nouveau mot de passe (%s)."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-service.c:702
@@ -292,24 +284,24 @@ msgstr "L'entrée a déjà été insérée."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:341
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:344
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
 "Le contenu (« %s ») de l'élément %s n'est pas dans le format RVB hexadécimal."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:110
-#: ../gdata/services/calendar/gdata-calendar-service.c:155
+#: ../gdata/services/calendar/gdata-calendar-service.c:111
+#: ../gdata/services/calendar/gdata-calendar-service.c:156
 msgid "You must be authenticated to query all calendars."
 msgstr "Vous devez vous authentifier pour interroger tous les calendriers."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:197
-#: ../gdata/services/calendar/gdata-calendar-service.c:242
-#: ../gdata/services/calendar/gdata-calendar-service.c:284
+#: ../gdata/services/calendar/gdata-calendar-service.c:198
+#: ../gdata/services/calendar/gdata-calendar-service.c:243
+#: ../gdata/services/calendar/gdata-calendar-service.c:285
 msgid "You must be authenticated to query your own calendars."
 msgstr "Vous devez vous authentifier pour interroger vos propres calendriers."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:293
+#: ../gdata/services/calendar/gdata-calendar-service.c:294
 msgid "The calendar did not have a content URI."
 msgstr "Le calendrier ne possède pas d'URI de contenu."
 
@@ -318,29 +310,46 @@ msgstr "Le calendrier ne possède pas d'URI de contenu."
 msgid "You must be authenticated to query contacts."
 msgstr "Vous devez vous authentifier pour interroger des contacts."
 
-#: ../gdata/services/documents/gdata-documents-service.c:199
-#: ../gdata/services/documents/gdata-documents-service.c:250
+#: ../gdata/services/contacts/gdata-contacts-service.c:271
+#: ../gdata/services/contacts/gdata-contacts-service.c:317
+msgid "You must be authenticated to query contact groups."
+msgstr "Vous devez vous authentifier pour interroger des groupes de contacts."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:353
+msgid "The group has already been inserted."
+msgstr "Le groupe a déjà été inséré."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:359
+msgid "You must be authenticated to insert a group."
+msgstr "Vous devez vous authentifier pour insérer un groupe."
+
+#: ../gdata/services/documents/gdata-documents-document.c:132
+msgid "You must be authenticated to download documents."
+msgstr "Vous devez vous authentifier pour télécharger des documents."
+
+#: ../gdata/services/documents/gdata-documents-service.c:200
+#: ../gdata/services/documents/gdata-documents-service.c:251
 msgid "You must be authenticated to query documents."
 msgstr "Vous devez vous authentifier pour interroger des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:342
+#: ../gdata/services/documents/gdata-documents-service.c:343
 msgid "The supplied document had an invalid content type."
 msgstr "Le document fourni avait un type de contenu non valide."
 
-#: ../gdata/services/documents/gdata-documents-service.c:432
+#: ../gdata/services/documents/gdata-documents-service.c:433
 msgid "You must be authenticated to upload documents."
 msgstr "Vous devez vous authentifier pour envoyer des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:438
+#: ../gdata/services/documents/gdata-documents-service.c:439
 msgid "The document has already been uploaded."
 msgstr "Le document a déjà été envoyé."
 
-#: ../gdata/services/documents/gdata-documents-service.c:489
+#: ../gdata/services/documents/gdata-documents-service.c:490
 msgid "You must be authenticated to update documents."
 msgstr "Vous devez vous authentifier pour mettre à jour des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:537
-#: ../gdata/services/documents/gdata-documents-service.c:611
+#: ../gdata/services/documents/gdata-documents-service.c:538
+#: ../gdata/services/documents/gdata-documents-service.c:612
 msgid "You must be authenticated to move documents."
 msgstr "Vous devez vous authentifier pour déplacer un document."
 
@@ -412,8 +421,7 @@ msgstr ""
 #: ../gdata/services/youtube/gdata-youtube-service.c:353
 #: ../gdata/services/youtube/gdata-youtube-service.c:359
 #, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
 "Code d'erreur inconnu « %s » dans le domaine « %s » reçu à l'emplacement « %s »."
 
@@ -431,5 +439,4 @@ msgstr "La vidéo n'a pas de vidéo connexe <link>."
 msgid "You must be authenticated to upload a video."
 msgstr "Vous devez vous authentifier pour envoyer une vidéo."
 
-#~ msgid "You must be authenticated to download documents."
-#~ msgstr "Vous devez vous authentifier pour télécharger des documents."
+
