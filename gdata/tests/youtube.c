@@ -320,6 +320,58 @@ test_upload_simple (gconstpointer service)
 }
 
 static void
+test_upload_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GDataYouTubeVideo *new_video;
+	GError *error = NULL;
+
+	new_video = gdata_youtube_service_upload_video_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_YOUTUBE_VIDEO (new_video));
+	g_clear_error (&error);
+
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_video)), ==, "Bad Wedding Toast");
+
+	g_main_loop_quit (main_loop);
+	g_object_unref (new_video);
+}
+
+static void
+test_upload_async (gconstpointer service)
+{
+	GDataYouTubeVideo *video;
+	GDataMediaCategory *category;
+	GFile *video_file;
+	const gchar * const tags[] = { "toast", "wedding", NULL };
+	GMainLoop *main_loop;
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	video = gdata_youtube_video_new (NULL);
+
+	gdata_entry_set_title (GDATA_ENTRY (video), "Bad Wedding Toast");
+	gdata_youtube_video_set_description (video, "I gave a bad toast at my friend's wedding.");
+	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
+	gdata_youtube_video_set_category (video, category);
+	g_object_unref (category);
+	gdata_youtube_video_set_keywords (video, tags);
+
+	/* TODO: fix the path */
+	video_file = g_file_new_for_path (TEST_FILE_DIR "sample.ogg");
+
+	/* Upload the video */
+	gdata_youtube_service_upload_video_async (GDATA_YOUTUBE_SERVICE (service), video, video_file, NULL,
+	                                          (GAsyncReadyCallback) test_upload_async_cb, main_loop);
+
+	g_object_unref (video);
+	g_object_unref (video_file);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+}
+
+
+static void
 test_parsing_app_control (void)
 {
 	GDataYouTubeVideo *video;
@@ -1092,6 +1144,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/youtube/query/related_async", service, test_query_related_async);
 
 		g_test_add_data_func ("/youtube/upload/simple", service, test_upload_simple);
+		g_test_add_data_func ("/youtube/upload/async", service, test_upload_async);
 
 		g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);

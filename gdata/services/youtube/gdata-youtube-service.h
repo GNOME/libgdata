@@ -133,6 +133,10 @@ void gdata_youtube_service_query_related_async (GDataYouTubeService *self, GData
 
 GDataYouTubeVideo *gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, GFile *video_file,
                                                        GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_youtube_service_upload_video_async (GDataYouTubeService *self, GDataYouTubeVideo *video_entry, GFile *video_data,
+                                               GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+GDataYouTubeVideo *gdata_youtube_service_upload_video_finish (GDataYouTubeService *self, GAsyncResult *result,
+                                                              GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_youtube_service_get_developer_key (GDataYouTubeService *self) G_GNUC_PURE;
 const gchar *gdata_youtube_service_get_youtube_user (GDataYouTubeService *self) G_GNUC_PURE;
