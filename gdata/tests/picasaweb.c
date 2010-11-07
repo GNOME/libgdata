@@ -1085,6 +1085,51 @@ test_insert_album (gconstpointer service)
 }
 
 static void
+test_insert_album_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GDataEntry *entry;
+	GError *error = NULL;
+
+	entry = gdata_service_insert_entry_finish (service, async_result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (entry));
+	g_clear_error (&error);
+
+	/* Test the album was uploaded correctly */
+	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "Asynchronous album!");
+
+	/* Delete the album, just to be tidy */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), entry, NULL, &error) == TRUE);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+	g_object_unref (entry);
+}
+
+static void
+test_insert_album_async (gconstpointer service)
+{
+	GDataPicasaWebAlbum *album;
+	GMainLoop *main_loop;
+
+	album = gdata_picasaweb_album_new (NULL);
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
+
+	/* Set various properties */
+	gdata_entry_set_title (GDATA_ENTRY (album), "Asynchronous album!");
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_picasaweb_service_insert_album_async (GDATA_PICASAWEB_SERVICE (service), album, NULL, (GAsyncReadyCallback) test_insert_album_async_cb,
+	                                            main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+	g_object_unref (album);
+}
+
+static void
 test_query_all_albums (gconstpointer service)
 {
 	GDataFeed *album_feed, *photo_feed;
@@ -1335,6 +1380,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/album", service, test_album);
 
 		g_test_add_data_func ("/picasaweb/insert/album", service, test_insert_album);
+		g_test_add_data_func ("/picasaweb/insert/album/async", service, test_insert_album_async);
 
 		g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
 		g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);

@@ -93,6 +93,8 @@ GDataPicasaWebFile *gdata_picasaweb_service_upload_file_finish (GDataPicasaWebSe
 
 GDataPicasaWebAlbum *gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GCancellable *cancellable,
                                                            GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_picasaweb_service_insert_album_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GCancellable *cancellable,
+                                                 GAsyncReadyCallback callback, gpointer user_data);
 
 G_END_DECLS
 

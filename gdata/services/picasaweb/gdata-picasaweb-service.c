@@ -683,3 +683,33 @@ gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWe
 	                                                          GDATA_ENTRY (album), cancellable, error));
 }
 
+/**
+ * gdata_picasaweb_service_insert_album_async:
+ * @self: a #GDataPicasaWebService
+ * @album: a #GDataPicasaWebAlbum to create on the server
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when insertion is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Inserts a new album described by @album. The user must be authenticated to use this function. @self and @album are both reffed when this function
+ * is called, so can safely be unreffed after this function returns.
+ *
+ * @callback should call gdata_service_insert_entry_finish() to obtain a #GDataPicasaWebAlbum representing the inserted album and to check for
+ * possible errors.
+ *
+ * For more details, see gdata_picasaweb_service_insert_album(), which is the synchronous version of this function, and
+ * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
+ *
+ * Since: 0.8.0
+ **/
+void
+gdata_picasaweb_service_insert_album_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GCancellable *cancellable,
+                                            GAsyncReadyCallback callback, gpointer user_data)
+{
+	g_return_if_fail (GDATA_IS_PICASAWEB_SERVICE (self));
+	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (album));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	gdata_service_insert_entry_async (GDATA_SERVICE (self), "http://picasaweb.google.com/data/feed/api/user/default", GDATA_ENTRY (album),
+	                                  cancellable, callback, user_data);
+}
