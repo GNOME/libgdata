@@ -79,6 +79,9 @@ void gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self
 GDataFeed *gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataQuery *query,
                                                 GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                 GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataQuery *query, GCancellable *cancellable,
+                                                GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                GAsyncReadyCallback callback, gpointer user_data);
 
 #include <gdata/services/picasaweb/gdata-picasaweb-file.h>
 

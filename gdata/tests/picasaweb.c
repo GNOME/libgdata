@@ -852,6 +852,60 @@ test_photo_single (gconstpointer service)
 }
 
 static void
+test_photo_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GDataFeed *feed;
+	GError *error = NULL;
+
+	feed = gdata_service_query_finish (service, async_result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (feed));
+	g_clear_error (&error);
+
+	/* Tests */
+	g_assert_cmpstr (gdata_feed_get_title (feed), ==, "Test Album 1 - Venice - Public");
+	g_assert_cmpstr (gdata_feed_get_id (feed), ==, "http://picasaweb.google.com/data/feed/user/libgdata.picasaweb/albumid/5328889949261497249");
+	g_assert_cmpstr (gdata_feed_get_etag (feed), !=, NULL);
+	g_assert_cmpuint (gdata_feed_get_items_per_page (feed), ==, 1000);
+	g_assert_cmpuint (gdata_feed_get_start_index (feed), ==, 1);
+	g_assert_cmpuint (gdata_feed_get_total_results (feed), ==, 1);
+
+	g_main_loop_quit (main_loop);
+
+	g_object_unref (feed);
+}
+
+static void
+test_photo_async (gconstpointer service)
+{
+	GMainLoop *main_loop;
+	GDataFeed *album_feed;
+	GDataEntry *entry;
+	GDataPicasaWebAlbum *album;
+	GList *albums;
+	GError *error = NULL;
+
+	/* Find an album */
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (album_feed));
+	g_clear_error (&error);
+
+	albums = gdata_feed_get_entries (album_feed);
+	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
+	album = GDATA_PICASAWEB_ALBUM (entry);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL, NULL, NULL,
+	                                           (GAsyncReadyCallback) test_photo_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+	g_object_unref (album_feed);
+}
+
+static void
 test_album (gconstpointer service)
 {
 	GDataFeed *album_feed;
@@ -1386,6 +1440,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
 		g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
 		g_test_add_data_func ("/picasaweb/query/photo_single", service, test_photo_single);
+		g_test_add_data_func ("/picasaweb/query/photo/async", service, test_photo_async);
 
 		g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
 

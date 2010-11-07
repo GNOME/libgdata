@@ -310,6 +310,25 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 	g_free (uri);
 }
 
+static const gchar *
+get_query_files_uri (GDataPicasaWebAlbum *album, GError **error)
+{
+	if (album != NULL) {
+		GDataLink *_link = gdata_entry_look_up_link (GDATA_ENTRY (album), "http://schemas.google.com/g/2005#feed");
+		if (_link == NULL) {
+			/* Error */
+			g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+			                     _("The album did not have a feed link."));
+			return NULL;
+		}
+
+		return gdata_link_get_uri (_link);
+	} else {
+		/* Default URI */
+		return "http://picasaweb.google.com/data/feed/api/user/default/albumid/default";
+	}
+}
+
 /**
  * gdata_picasaweb_service_query_files:
  * @self: a #GDataPicasaWebService
@@ -342,23 +361,58 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (album != NULL) {
-		GDataLink *_link = gdata_entry_look_up_link (GDATA_ENTRY (album), "http://schemas.google.com/g/2005#feed");
-		if (_link == NULL) {
-			/* Error */
-			g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-			                     _("The album did not have a feed link."));
-			return NULL;
-		}
-		uri = gdata_link_get_uri (_link);
-	} else {
-		/* Default URI */
-		uri = "http://picasaweb.google.com/data/feed/api/user/default/albumid/default";
-	}
+	uri = get_query_files_uri (album, error);
+	if (uri == NULL)
+		return NULL;
 
 	/* Execute the query */
 	return gdata_service_query (GDATA_SERVICE (self), uri, GDATA_QUERY (query), GDATA_TYPE_PICASAWEB_FILE, cancellable,
 	                            progress_callback, progress_user_data, error);
+}
+
+/**
+ * gdata_picasaweb_service_query_files_async: (skip)
+ * @self: a #GDataPicasaWeb
+ * @album: (allow-none): a #GDataPicasaWebAlbum from which to retrieve the files, or %NULL
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @callback: a #GAsyncReadyCallback to call when the query is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Queries the specified @album for a list of the files which match the given @query. If @album is %NULL and a user is authenticated with the service,
+ * the user's default album will be queried. @self, @album and @query are all reffed when this function is called, so can safely be unreffed after
+ * this function returns.
+ *
+ * For more details, see gdata_picasaweb_service_query_files(), which is the synchronous version of this function, and gdata_service_query_async(),
+ * which is the base asynchronous query function.
+ *
+ * Since: 0.8.0
+ **/
+void
+gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataQuery *query, GCancellable *cancellable,
+                                           GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GAsyncReadyCallback callback,
+                                           gpointer user_data)
+{
+	const gchar *request_uri;
+	GError *child_error = NULL;
+
+	g_return_if_fail (GDATA_IS_PICASAWEB_SERVICE (self));
+	g_return_if_fail (album == NULL || GDATA_IS_PICASAWEB_ALBUM (album));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	request_uri = get_query_files_uri (album, &child_error);
+	if (request_uri == NULL) {
+		g_simple_async_report_gerror_in_idle (G_OBJECT (self), callback, user_data, child_error);
+		g_error_free (child_error);
+		return;
+	}
+
+	gdata_service_query_async (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query), GDATA_TYPE_PICASAWEB_FILE, cancellable, progress_callback,
+	                           progress_user_data, callback, user_data);
 }
 
 static GOutputStream *
