@@ -452,6 +452,7 @@ gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_CFLAGS = $(G
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_LIBS = gdata/libgdata.la
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_FILES = $(addprefix $(srcdir)/,$(gdata_sources) $(public_headers))
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_NAMESPACE = GData
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_EXPORT_PACKAGES = libgdata
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_SCANNERFLAGS = \
 	--nsversion=$(GDATA_API_VERSION) \
 	--symbol-prefix=gdata \
