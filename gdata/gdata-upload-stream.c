@@ -466,16 +466,42 @@ write:
 	return length_written;
 }
 
-static void
-close_cancelled_cb (GCancellable *cancellable, GDataUploadStream *self)
+typedef struct {
+	GCancellable *cancellable;
+	GDataUploadStream *upload_stream;
+} CloseData;
+
+static gboolean
+close_cancelled_idle_cb (CloseData *data)
 {
-	GDataUploadStreamPrivate *priv = self->priv;
+	GDataUploadStreamPrivate *priv = data->upload_stream->priv;
 
 	/* Set the error and signal that the close operation has finished */
 	g_static_mutex_lock (&(priv->response_mutex));
-	g_cancellable_set_error_if_cancelled (cancellable, &(priv->response_error));
+	g_cancellable_set_error_if_cancelled (data->cancellable, &(priv->response_error));
 	g_cond_signal (priv->finished_cond);
 	g_static_mutex_unlock (&(priv->response_mutex));
+
+	g_object_unref (data->upload_stream);
+	g_object_unref (data->cancellable);
+	g_slice_free (CloseData, data);
+
+	return FALSE;
+}
+
+static void
+close_cancelled_cb (GCancellable *cancellable, GDataUploadStream *self)
+{
+	CloseData *data = g_slice_new (CloseData);
+	data->cancellable = g_object_ref (cancellable);
+	data->upload_stream = g_object_ref (self);
+
+	/* We have to do the cancellation in an idle function so that it's guaranteed not to run in the same thread as gdata_upload_stream_close()
+	 * (assuming that gdata_upload_stream_close() isn't being run in the main thread, which would only be the case if the program was doing
+	 * synchronous I/O in the main thread — in which case they deserve the deadlock they'll get). This is necessary so that the call to
+	 * g_cancellable_connect() doesn't deadlock by attempting to re-acquire the response_mutex which is already held by
+	 * gdata_upload_stream_close(). */
+	g_idle_add ((GSourceFunc) close_cancelled_idle_cb, data);
 }
 
 /* It's guaranteed that we set the response_status and are done with *all* network activity before this returns.
