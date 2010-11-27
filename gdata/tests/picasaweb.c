@@ -619,6 +619,95 @@ test_upload_simple (gconstpointer service)
 }
 
 static void
+test_upload_cancellation_cb (GDataPicasaWebService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GDataPicasaWebFile *file;
+	GError *error = NULL;
+
+	file = gdata_picasaweb_service_upload_file_finish (service, async_result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_assert (file == NULL);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+}
+
+static gboolean
+test_upload_cancellation_cancel_cb (GCancellable *cancellable)
+{
+	g_cancellable_cancel (cancellable);
+	return FALSE;
+}
+
+static void
+test_upload_cancellation (gconstpointer service)
+{
+	GMainLoop *main_loop;
+	GCancellable *cancellable;
+	GDataPicasaWebFile *photo;
+	GFile *photo_file;
+	const gchar * const tags[] = { "foo", "bar", NULL };
+
+	/* Build the photo */
+	photo = gdata_picasaweb_file_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
+	gdata_picasaweb_file_set_caption (photo, "Summary");
+	gdata_picasaweb_file_set_tags (photo, tags);
+
+	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+
+	/* Create a main loop and an idle function which will cancel the upload */
+	main_loop = g_main_loop_new (NULL, TRUE);
+	cancellable = g_cancellable_new ();
+	g_idle_add ((GSourceFunc) test_upload_cancellation_cancel_cb, cancellable);
+
+	/* Upload the photo */
+	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, cancellable,
+	                                           (GAsyncReadyCallback) test_upload_cancellation_cb, main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (cancellable);
+	g_object_unref (photo);
+	g_object_unref (photo_file);
+}
+
+static void
+test_upload_cancellation2 (gconstpointer service)
+{
+	GMainLoop *main_loop;
+	GCancellable *cancellable;
+	GDataPicasaWebFile *photo;
+	GFile *photo_file;
+	const gchar * const tags[] = { "foo", "bar", NULL };
+
+	/* Build the photo */
+	photo = gdata_picasaweb_file_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
+	gdata_picasaweb_file_set_caption (photo, "Summary");
+	gdata_picasaweb_file_set_tags (photo, tags);
+
+	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+
+	/* Create a main loop and an idle function which will cancel the upload */
+	main_loop = g_main_loop_new (NULL, TRUE);
+	cancellable = g_cancellable_new ();
+	g_timeout_add (10, (GSourceFunc) test_upload_cancellation_cancel_cb, cancellable);
+
+	/* Upload the photo */
+	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, cancellable,
+	                                           (GAsyncReadyCallback) test_upload_cancellation_cb, main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (cancellable);
+	g_object_unref (photo);
+	g_object_unref (photo_file);
+}
+
+static void
 test_photo (gconstpointer service)
 {
 	GError *error = NULL;
@@ -1443,6 +1532,8 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/photo/async", service, test_photo_async);
 
 		g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
+		g_test_add_data_func ("/picasaweb/upload/photo/cancellation", service, test_upload_cancellation);
+		g_test_add_data_func ("/picasaweb/upload/photo/cancellation2", service, test_upload_cancellation2);
 
 		g_test_add_data_func ("/picasaweb/download/photo", service, test_download);
 		g_test_add_data_func ("/picasaweb/download/thumbnails", service, test_download_thumbnails);
