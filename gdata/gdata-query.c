@@ -64,7 +64,7 @@ struct _GDataQueryPrivate {
 	gint64 published_max;
 	gint start_index;
 	gboolean is_strict;
-	gint max_results;
+	guint max_results;
 
 	gchar *next_uri;
 	gchar *previous_uri;
