@@ -62,7 +62,7 @@ struct _GDataQueryPrivate {
 	gint64 updated_max;
 	gint64 published_min;
 	gint64 published_max;
-	gint start_index;
+	guint start_index;
 	gboolean is_strict;
 	guint max_results;
 
