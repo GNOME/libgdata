@@ -576,10 +576,12 @@ wrote_chunk_cb (SoupMessage *message, GDataUploadStream *self)
 	length = gdata_buffer_pop_data_limited (priv->buffer, buffer, CHUNK_SIZE, &reached_eof);
 	if (reached_eof == TRUE) {
 		/* We've reached the end of the stream, so append the footer (if appropriate) and stop */
-		if (priv->entry != NULL) {
+		g_static_mutex_lock (&(priv->response_mutex));
+		if (priv->entry != NULL && priv->response_error == NULL) {
 			const gchar *footer = "\n--" BOUNDARY_STRING "--";
 			soup_message_body_append (priv->message->request_body, SOUP_MEMORY_STATIC, footer, strlen (footer));
 		}
+		g_static_mutex_unlock (&(priv->response_mutex));
 
 		soup_message_body_complete (priv->message->request_body);
 	} else {
