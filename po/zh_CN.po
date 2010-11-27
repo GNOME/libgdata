@@ -11,22 +11,14 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-08-29 18:00+0000\n"
-"PO-Revision-Date: 2010-09-01 02:21+0800\n"
-"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
+"POT-Creation-Date: 2010-11-22 22:08+0000\n"
+"PO-Revision-Date: 2010-11-28 00:42+0800\n"
+"Last-Translator: Eleanor Chen <chenyueg@gmail.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
-
-#: ../gdata/gdata-access-handler.c:170
-msgid "The rule has already been inserted."
-msgstr "这个规则已经被插入。"
-
-#: ../gdata/gdata-access-handler.c:350
-msgid "The owner's rule may not be deleted."
-msgstr "拥有者的规则不可以被删除。"
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -273,9 +265,10 @@ msgid "Invalid redirect URI: %s"
 msgstr "无效的重定向：%s"
 
 #: ../gdata/gdata-service.c:1581
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:606
-#: ../gdata/services/youtube/gdata-youtube-service.c:692
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:503
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:660
+#: ../gdata/services/youtube/gdata-youtube-service.c:728
+#: ../gdata/services/youtube/gdata-youtube-service.c:874
 msgid "The entry has already been inserted."
 msgstr "此条目已经被插入。"
 
@@ -285,7 +278,7 @@ msgstr "此条目已经被插入。"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:341
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:344
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "某个 %s 元素(“%s”)的内容不是以十六进制 RGB 格式。"
@@ -308,7 +301,24 @@ msgstr "日历不包括内容 URI 。"
 #: ../gdata/services/contacts/gdata-contacts-service.c:116
 #: ../gdata/services/contacts/gdata-contacts-service.c:162
 msgid "You must be authenticated to query contacts."
-msgstr "要查询联系人您必须通过认证。"
+msgstr "您必须通过认证才能查询联系人。"
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:271
+#: ../gdata/services/contacts/gdata-contacts-service.c:317
+msgid "You must be authenticated to query contact groups."
+msgstr "您必须通过认证才能查询联系组。"
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:353
+msgid "The group has already been inserted."
+msgstr "该组已经被插入。"
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:359
+msgid "You must be authenticated to insert a group."
+msgstr "您必须通过认证才能插入组。"
+
+#: ../gdata/services/documents/gdata-documents-document.c:132
+msgid "You must be authenticated to download documents."
+msgstr "您必须通过认证才能下载文档。"
 
 #: ../gdata/services/documents/gdata-documents-service.c:200
 #: ../gdata/services/documents/gdata-documents-service.c:251
@@ -350,20 +360,20 @@ msgstr "查询参数不允许专辑。"
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "您必须指定一个用户名或者通过认证来查询所有专辑。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:350
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:321
 msgid "The album did not have a feed link."
 msgstr "专辑没有反馈链接。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:509
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:666
 msgid "You must be authenticated to upload a file."
 msgstr "您必须通过认证才能上传一个文件。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:672
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:726
 msgid "The album has already been inserted."
 msgstr "专辑已经插入。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:678
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:732
 msgid "You must be authenticated to insert an album."
 msgstr "您必须通过认证才能插入专辑。"
 
@@ -410,9 +420,10 @@ msgstr "接收到未知的不可解析错误。"
 msgid "The video did not have a related videos <link>."
 msgstr "此视频没有相关的视频 <link>。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:698
+#: ../gdata/services/youtube/gdata-youtube-service.c:734
+#: ../gdata/services/youtube/gdata-youtube-service.c:880
 msgid "You must be authenticated to upload a video."
 msgstr "您必须通过认证才能上传视频。"
 
-#~ msgid "You must be authenticated to download documents."
-#~ msgstr "要下载文档您必须通过认证。"
+#~ msgid "The owner's rule may not be deleted."
+#~ msgstr "拥有者的规则不可以被删除。"
