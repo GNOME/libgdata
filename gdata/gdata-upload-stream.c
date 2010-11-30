@@ -295,7 +295,8 @@ gdata_upload_stream_finalize (GObject *object)
 {
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (object)->priv;
 
-	g_thread_join (priv->network_thread);
+	if (priv->network_thread != NULL)
+		g_thread_join (priv->network_thread);
 	g_static_mutex_free (&(priv->response_mutex));
 	g_cond_free (priv->finished_cond);
 	g_cond_free (priv->write_cond);
@@ -378,6 +379,9 @@ write_cancelled_cb (GCancellable *cancellable, GDataUploadStream *self)
 {
 	GDataUploadStreamPrivate *priv = self->priv;
 
+	/* Tell libsoup to cancel the upload */
+	soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
+
 	/* Set the error and signal that the write operation has finished */
 	g_static_mutex_lock (&(priv->write_mutex));
 
@@ -401,6 +405,20 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 	/* Listen for cancellation events */
 	if (cancellable != NULL)
 		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) write_cancelled_cb, GDATA_UPLOAD_STREAM (stream), NULL);
+
+	/* Check for an error and return if necessary */
+	g_static_mutex_lock (&(priv->response_mutex));
+	if (priv->response_error != NULL) {
+		g_propagate_error (error, priv->response_error);
+		priv->response_error = NULL;
+		g_static_mutex_unlock (&(priv->response_mutex));
+
+		if (cancellable != NULL)
+			g_cancellable_disconnect (cancellable, cancelled_signal);
+
+		return -1;
+	}
+	g_static_mutex_unlock (&(priv->response_mutex));
 
 	/* Set write_finished so we know if the write operation has finished before we reach write_cond */
 	priv->write_finished = FALSE;
@@ -525,7 +543,10 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 			cancelled_signal = g_cancellable_connect (cancellable, (GCallback) close_cancelled_cb, GDATA_UPLOAD_STREAM (stream), NULL);
 
 		/* Wait for the signal that we've finished */
-		g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->response_mutex)));
+		if (g_cancellable_is_cancelled (cancellable))
+			priv->response_status = SOUP_STATUS_CANCELLED;
+		else if (priv->network_thread != NULL)
+			g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->response_mutex)));
 
 		/* Disconnect from the signal handler so we can't receive any more cancellation events before we handle errors*/
 		if (cancellable != NULL)

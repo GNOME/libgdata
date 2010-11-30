@@ -694,7 +694,7 @@ test_upload_cancellation2 (gconstpointer service)
 	/* Create a main loop and an idle function which will cancel the upload */
 	main_loop = g_main_loop_new (NULL, TRUE);
 	cancellable = g_cancellable_new ();
-	g_timeout_add (10, (GSourceFunc) test_upload_cancellation_cancel_cb, cancellable);
+	g_timeout_add (1, (GSourceFunc) test_upload_cancellation_cancel_cb, cancellable);
 
 	/* Upload the photo */
 	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, cancellable,
