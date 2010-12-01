@@ -71,6 +71,7 @@ static void notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *s
 struct _GDataServicePrivate {
 	SoupSession *session;
 
+	GStaticMutex authentication_mutex; /* mutex for username, password, auth_token and authenticated */
 	gchar *username;
 	gchar *password;
 	gchar *auth_token;
@@ -205,6 +206,9 @@ gdata_service_init (GDataService *self)
 	soup_session_add_feature_by_type (self->priv->session, SOUP_TYPE_GNOME_FEATURES_2_26);
 #endif /* HAVE_GNOME */
 
+	/* Set up the authentication mutex */
+	g_static_mutex_init (&(self->priv->authentication_mutex));
+
 	/* Proxy the SoupSession's proxy-uri property */
 	g_signal_connect (self->priv->session, "notify::proxy-uri", (GCallback) notify_proxy_uri_cb, self);
 }
@@ -231,6 +235,7 @@ gdata_service_finalize (GObject *object)
 	g_free (priv->password);
 	g_free (priv->auth_token);
 	g_free (priv->client_id);
+	g_static_mutex_free (&(priv->authentication_mutex));
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_service_parent_class)->finalize (object);
@@ -318,11 +323,13 @@ real_append_query_headers (GDataService *self, SoupMessage *message)
 	g_assert (message != NULL);
 
 	/* Set the authorisation header */
+	g_static_mutex_lock (&(self->priv->authentication_mutex));
 	if (self->priv->auth_token != NULL) {
 		authorisation_header = g_strdup_printf ("GoogleLogin auth=%s", self->priv->auth_token);
 		soup_message_headers_append (message->request_headers, "Authorization", authorisation_header);
 		g_free (authorisation_header);
 	}
+	g_static_mutex_unlock (&(self->priv->authentication_mutex));
 
 	/* Set the GData-Version header to tell it we want to use the v2 API */
 	soup_message_headers_append (message->request_headers, "GData-Version", GDATA_SERVICE_GET_CLASS (self)->api_version);
@@ -449,6 +456,8 @@ set_authentication_details_cb (AuthenticateAsyncData *data)
 	GObject *service = G_OBJECT (data->service);
 	GDataServicePrivate *priv = data->service->priv;
 
+	g_static_mutex_lock (&(priv->authentication_mutex));
+
 	g_free (priv->username);
 	/* Ensure the username is always a full e-mail address */
 	if (strchr (data->username, '@') == NULL)
@@ -465,6 +474,8 @@ set_authentication_details_cb (AuthenticateAsyncData *data)
 	g_object_notify (service, "password");
 	g_object_notify (service, "authenticated");
 	g_object_thaw_notify (service);
+
+	g_static_mutex_unlock (&(priv->authentication_mutex));
 
 	authenticate_async_data_free (data);
 
@@ -741,8 +752,13 @@ login_error:
 
 	g_assert (message->response_body->data != NULL);
 
+	g_static_mutex_lock (&(priv->authentication_mutex));
 	retval = klass->parse_authentication_response (self, status, message->response_body->data, message->response_body->length, error);
+	g_static_mutex_unlock (&(priv->authentication_mutex));
+
 	g_object_unref (message);
+
+	g_static_mutex_lock (&(priv->authentication_mutex));
 
 	g_object_freeze_notify (G_OBJECT (self));
 	priv->authenticated = retval;
@@ -767,6 +783,8 @@ login_error:
 	g_object_notify (G_OBJECT (self), "authenticated");
 	g_object_thaw_notify (G_OBJECT (self));
 
+	g_static_mutex_unlock (&(priv->authentication_mutex));
+
 	return retval;
 
 protocol_error:
@@ -776,8 +794,11 @@ protocol_error:
 
 general_error:
 	g_object_unref (message);
+
+	g_static_mutex_lock (&(priv->authentication_mutex));
 	priv->authenticated = FALSE;
 	g_object_notify (G_OBJECT (self), "authenticated");
+	g_static_mutex_unlock (&(priv->authentication_mutex));
 
 	return FALSE;
 }
@@ -1733,12 +1754,17 @@ gdata_service_get_client_id (GDataService *self)
  *
  * Returns the username of the currently-authenticated user, or %NULL if nobody is authenticated.
  *
+ * It is not safe to call this while an authentication operation is ongoing.
+ *
  * Return value: the username of the currently-authenticated user, or %NULL
  **/
 const gchar *
 gdata_service_get_username (GDataService *self)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+
+	/* There's little point protecting this with authentication_mutex, as the data's meaningless if accessed during an authentication operation,
+	 * and not being accessed concurrently otherwise. */
 	return self->priv->username;
 }
 
@@ -1748,12 +1774,17 @@ gdata_service_get_username (GDataService *self)
  *
  * Returns the password of the currently-authenticated user, or %NULL if nobody is authenticated.
  *
+ * It is not safe to call this while an authentication operation is ongoing.
+ *
  * Return value: the password of the currently-authenticated user, or %NULL
  **/
 const gchar *
 gdata_service_get_password (GDataService *self)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+
+	/* There's little point protecting this with authentication_mutex, as the data's meaningless if accessed during an authentication operation,
+	 * and not being accessed concurrently otherwise. */
 	return self->priv->password;
 }
 
