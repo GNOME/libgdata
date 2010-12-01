@@ -24,7 +24,6 @@
 #include "common.h"
 
 #define DEVELOPER_KEY "AI39si7Me3Q7zYs6hmkFvpRBD2nrkVjYYsUO5lh_3HdOkGRc9g6Z4nzxZatk_aAo2EsA21k7vrda0OO6oFg2rnhMedZXPyXoEw"
-#define YT_USERNAME "GDataTest"
 
 static void
 test_authentication (void)
@@ -51,7 +50,6 @@ test_authentication (void)
 	g_assert (gdata_service_is_authenticated (service) == TRUE);
 	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
 	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
-	g_assert_cmpstr (gdata_youtube_service_get_youtube_user (GDATA_YOUTUBE_SERVICE (service)), ==, YT_USERNAME);
 
 	g_object_unref (service);
 }
@@ -73,7 +71,6 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 	g_assert (gdata_service_is_authenticated (service) == TRUE);
 	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
 	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
-	g_assert_cmpstr (gdata_youtube_service_get_youtube_user (GDATA_YOUTUBE_SERVICE (service)), ==, YT_USERNAME);
 }
 
 static void

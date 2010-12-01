@@ -86,7 +86,6 @@ gdata_youtube_service_error_quark (void)
 static void gdata_youtube_service_finalize (GObject *object);
 static void gdata_youtube_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_youtube_service_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean parse_authentication_response (GDataService *self, guint status, const gchar *response_body, gint length, GError **error);
 static void append_query_headers (GDataService *self, SoupMessage *message);
 static void parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
                                   const gchar *response_body, gint length, GError **error);
@@ -116,8 +115,6 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 	gobject_class->finalize = gdata_youtube_service_finalize;
 
 	service_class->service_name = "youtube";
-	service_class->authentication_uri = "https://www.google.com/youtube/accounts/ClientLogin";
-	service_class->parse_authentication_response = parse_authentication_response;
 	service_class->append_query_headers = append_query_headers;
 	service_class->parse_error_response = parse_error_response;
 
@@ -199,40 +196,6 @@ gdata_youtube_service_set_property (GObject *object, guint property_id, const GV
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
 	}
-}
-
-static gboolean
-parse_authentication_response (GDataService *self, guint status, const gchar *response_body, gint length, GError **error)
-{
-	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE (self)->priv;
-	gchar *user_start, *user_end;
-
-	/* Chain up to the parent method first */
-	if (GDATA_SERVICE_CLASS (gdata_youtube_service_parent_class)->parse_authentication_response (self, status,
-		                                                                                     response_body, length, error) == FALSE) {
-		return FALSE;
-	}
-
-	/* Parse the response */
-	user_start = strstr (response_body, "YouTubeUser=");
-	if (user_start == NULL)
-		goto protocol_error;
-	user_start += strlen ("YouTubeUser=");
-
-	user_end = strstr (user_start, "\n");
-	if (user_end == NULL)
-		goto protocol_error;
-
-	priv->youtube_user = g_strndup (user_start, user_end - user_start);
-	if (priv->youtube_user == NULL || strlen (priv->youtube_user) == 0)
-		goto protocol_error;
-
-	return TRUE;
-
-protocol_error:
-	g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-	                     _("The server returned a malformed response."));
-	return FALSE;
 }
 
 static void
