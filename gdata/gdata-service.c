@@ -75,6 +75,7 @@ static void soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char
 struct _GDataServicePrivate {
 	SoupSession *session;
 
+	GStaticMutex authentication_mutex; /* mutex for username, password, auth_token and authenticated */
 	gchar *username;
 	gchar *password;
 	gchar *auth_token;
@@ -251,6 +252,9 @@ gdata_service_init (GDataService *self)
 	/* Debug log handling */
 	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, (GLogFunc) debug_handler, self);
 
+	/* Set up the authentication mutex */
+	g_static_mutex_init (&(self->priv->authentication_mutex));
+
 	/* Log all libsoup traffic if debugging's turned on */
 	if (_gdata_service_get_log_level () > GDATA_LOG_MESSAGES) {
 		SoupLoggerLogLevel level;
@@ -303,6 +307,7 @@ gdata_service_finalize (GObject *object)
 	g_free (priv->auth_token);
 	g_free (priv->client_id);
 	g_free (priv->locale);
+	g_static_mutex_free (&(priv->authentication_mutex));
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_service_parent_class)->finalize (object);
@@ -402,11 +407,13 @@ real_append_query_headers (GDataService *self, SoupMessage *message)
 	g_assert (message != NULL);
 
 	/* Set the authorisation header */
+	g_static_mutex_lock (&(self->priv->authentication_mutex));
 	if (self->priv->auth_token != NULL) {
 		authorisation_header = g_strdup_printf ("GoogleLogin auth=%s", self->priv->auth_token);
 		soup_message_headers_append (message->request_headers, "Authorization", authorisation_header);
 		g_free (authorisation_header);
 	}
+	g_static_mutex_unlock (&(self->priv->authentication_mutex));
 
 	/* Set the GData-Version header to tell it we want to use the v2 API */
 	soup_message_headers_append (message->request_headers, "GData-Version", GDATA_SERVICE_GET_CLASS (self)->api_version);
@@ -529,6 +536,8 @@ set_authentication_details (GDataService *self, const gchar *username, const gch
 	GObject *service = G_OBJECT (self);
 	GDataServicePrivate *priv = self->priv;
 
+	g_static_mutex_lock (&(priv->authentication_mutex));
+
 	g_object_freeze_notify (service);
 	priv->authenticated = authenticated;
 
@@ -551,6 +560,8 @@ set_authentication_details (GDataService *self, const gchar *username, const gch
 
 	g_object_notify (service, "authenticated");
 	g_object_thaw_notify (service);
+
+	g_static_mutex_unlock (&(priv->authentication_mutex));
 }
 
 static gboolean
@@ -730,7 +741,10 @@ login_error:
 
 	g_assert (message->response_body->data != NULL);
 
+	g_static_mutex_lock (&(priv->authentication_mutex));
 	retval = klass->parse_authentication_response (self, status, message->response_body->data, message->response_body->length, error);
+	g_static_mutex_unlock (&(priv->authentication_mutex));
+
 	g_object_unref (message);
 
 	return retval;
@@ -746,13 +760,8 @@ protocol_error:
 }
 
 typedef struct {
-	/* Input */
 	gchar *username;
 	gchar *password;
-
-	/* Output */
-	GDataService *service;
-	gboolean success;
 } AuthenticateAsyncData;
 
 static void
@@ -760,26 +769,15 @@ authenticate_async_data_free (AuthenticateAsyncData *self)
 {
 	g_free (self->username);
 	g_free (self->password);
-	if (self->service != NULL)
-		g_object_unref (self->service);
 
 	g_slice_free (AuthenticateAsyncData, self);
-}
-
-/* This is always called in the main thread via an idle function */
-static gboolean
-set_authentication_details_cb (AuthenticateAsyncData *data)
-{
-	set_authentication_details (data->service, data->username, data->password, data->success);
-	authenticate_async_data_free (data);
-
-	return FALSE;
 }
 
 static void
 authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
 {
 	GError *error = NULL;
+	gboolean success;
 	AuthenticateAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Check to see if it's been cancelled already */
@@ -791,16 +789,15 @@ authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 	}
 
 	/* Authenticate and return */
-	data->success = authenticate (service, data->username, data->password, NULL, NULL, cancellable, &error);
-	if (data->success == FALSE) {
+	success = authenticate (service, data->username, data->password, NULL, NULL, cancellable, &error);
+	if (success == FALSE) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
 	}
 
-	/* Update the authentication details held by the service in an idle function so that
-	 * the service is only ever modified in the main thread */
-	data->service = g_object_ref (service);
-	g_idle_add ((GSourceFunc) set_authentication_details_cb, data);
+	/* Update the authentication details held by the service (protected by a mutex) */
+	set_authentication_details (service, data->username, data->password, success);
+	g_simple_async_result_set_op_res_gboolean (result, success);
 }
 
 /**
@@ -835,10 +832,9 @@ gdata_service_authenticate_async (GDataService *self, const gchar *username, con
 	data = g_slice_new (AuthenticateAsyncData);
 	data->username = g_strdup (username);
 	data->password = g_strdup (password);
-	data->service = NULL; /* set in authenticate_thread() */
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_authenticate_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, NULL);
+	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) authenticate_async_data_free);
 	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) authenticate_thread, G_PRIORITY_DEFAULT, cancellable);
 	g_object_unref (result);
 }
@@ -857,7 +853,7 @@ gboolean
 gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
 	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	AuthenticateAsyncData *data;
+	gboolean success;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
@@ -868,11 +864,10 @@ gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_resul
 	if (g_simple_async_result_propagate_error (result, error) == TRUE)
 		return FALSE;
 
-	data = g_simple_async_result_get_op_res_gpointer (result);
-	if (data->success == TRUE)
-		return TRUE;
+	success = g_simple_async_result_get_op_res_gboolean (result);
+	g_assert (success == TRUE);
 
-	g_assert_not_reached ();
+	return success;
 }
 
 /**
@@ -2053,12 +2048,17 @@ gdata_service_get_client_id (GDataService *self)
  *
  * Returns the username of the currently-authenticated user, or %NULL if nobody is authenticated.
  *
+ * It is not safe to call this while an authentication operation is ongoing.
+ *
  * Return value: the username of the currently-authenticated user, or %NULL
  **/
 const gchar *
 gdata_service_get_username (GDataService *self)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+
+	/* There's little point protecting this with authentication_mutex, as the data's meaningless if accessed during an authentication operation,
+	 * and not being accessed concurrently otherwise. */
 	return self->priv->username;
 }
 
@@ -2068,12 +2068,17 @@ gdata_service_get_username (GDataService *self)
  *
  * Returns the password of the currently-authenticated user, or %NULL if nobody is authenticated.
  *
+ * It is not safe to call this while an authentication operation is ongoing.
+ *
  * Return value: the password of the currently-authenticated user, or %NULL
  **/
 const gchar *
 gdata_service_get_password (GDataService *self)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+
+	/* There's little point protecting this with authentication_mutex, as the data's meaningless if accessed during an authentication operation,
+	 * and not being accessed concurrently otherwise. */
 	return self->priv->password;
 }
 
