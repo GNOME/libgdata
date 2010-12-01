@@ -91,13 +91,11 @@ static void parse_error_response (GDataService *self, GDataOperationType operati
                                   const gchar *response_body, gint length, GError **error);
 
 struct _GDataYouTubeServicePrivate {
-	gchar *youtube_user;
 	gchar *developer_key;
 };
 
 enum {
-	PROP_DEVELOPER_KEY = 1,
-	PROP_YOUTUBE_USER
+	PROP_DEVELOPER_KEY = 1
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
@@ -131,18 +129,6 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 	                                                      "Developer key", "Your YouTube developer API key.",
 	                                                      NULL,
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataYouTubeService:youtube-user:
-	 *
-	 * The YouTube username of the authenticated user, or %NULL. This may differ from #GDataService:username, due to the work done when
-	 * YouTube was converted to use Google's centralised login system.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_YOUTUBE_USER,
-	                                 g_param_spec_string ("youtube-user",
-	                                                      "YouTube username", "The YouTube account username.",
-	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -156,7 +142,6 @@ gdata_youtube_service_finalize (GObject *object)
 {
 	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE (object)->priv;
 
-	g_free (priv->youtube_user);
 	g_free (priv->developer_key);
 
 	/* Chain up to the parent class */
@@ -171,9 +156,6 @@ gdata_youtube_service_get_property (GObject *object, guint property_id, GValue *
 	switch (property_id) {
 		case PROP_DEVELOPER_KEY:
 			g_value_set_string (value, priv->developer_key);
-			break;
-		case PROP_YOUTUBE_USER:
-			g_value_set_string (value, priv->youtube_user);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -888,21 +870,6 @@ gdata_youtube_service_get_developer_key (GDataYouTubeService *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	return self->priv->developer_key;
-}
-
-/**
- * gdata_youtube_service_get_youtube_user:
- * @self: a #GDataYouTubeService
- *
- * Gets the #GDataYouTubeService:youtube-user property from the #GDataYouTubeService.
- *
- * Return value: the YouTube username property
- **/
-const gchar *
-gdata_youtube_service_get_youtube_user (GDataYouTubeService *self)
-{
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
-	return self->priv->youtube_user;
 }
 
 /**

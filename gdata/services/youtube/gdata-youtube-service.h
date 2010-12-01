@@ -139,7 +139,6 @@ GDataYouTubeVideo *gdata_youtube_service_upload_video_finish (GDataYouTubeServic
                                                               GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_youtube_service_get_developer_key (GDataYouTubeService *self) G_GNUC_PURE;
-const gchar *gdata_youtube_service_get_youtube_user (GDataYouTubeService *self) G_GNUC_PURE;
 
 GDataAPPCategories *gdata_youtube_service_get_categories (GDataYouTubeService *self, GCancellable *cancellable,
                                                           GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
