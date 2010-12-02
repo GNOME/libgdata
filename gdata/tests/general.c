@@ -3066,6 +3066,37 @@ test_gcontact_external_id_error_handling (void)
 }
 
 static void
+test_gcontact_external_id_escaping (void)
+{
+	GDataGContactExternalID *id;
+	gchar *xml;
+
+	/* Test with rel */
+	id = gdata_gcontact_external_id_new ("<id>", "http://foo.com?foo&relation=bar", NULL);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (id));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:externalId xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"value='&lt;id&gt;' rel='http://foo.com?foo&amp;relation=bar'/>");
+	g_free (xml);
+	g_object_unref (id);
+
+	/* Test with label */
+	id = gdata_gcontact_external_id_new ("<id>", NULL, "Label & stuff");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (id));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:externalId xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"value='&lt;id&gt;' label='Label &amp; stuff'/>");
+	g_free (xml);
+	g_object_unref (id);
+}
+
+static void
 test_gcontact_jot (void)
 {
 	GDataGContactJot *jot, *jot2;
@@ -3454,6 +3485,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gcontact/event/escaping", test_gcontact_event_escaping);
 	g_test_add_func ("/gcontact/external_id", test_gcontact_external_id);
 	g_test_add_func ("/gcontact/external_id/error_handling", test_gcontact_external_id_error_handling);
+	g_test_add_func ("/gcontact/external_id/escaping", test_gcontact_external_id_escaping);
 	g_test_add_func ("/gcontact/jot", test_gcontact_jot);
 	g_test_add_func ("/gcontact/jot/error_handling", test_gcontact_jot_error_handling);
 	g_test_add_func ("/gcontact/language", test_gcontact_language);
