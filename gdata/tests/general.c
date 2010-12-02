@@ -3374,6 +3374,37 @@ test_gcontact_relation_error_handling (void)
 }
 
 static void
+test_gcontact_relation_escaping (void)
+{
+	GDataGContactRelation *relation;
+	gchar *xml;
+
+	/* Test with rel */
+	relation = gdata_gcontact_relation_new ("First & Last Name", "http://foo.com?foo&relation=bar", NULL);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (relation));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:relation xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"rel='http://foo.com?foo&amp;relation=bar'>First &amp; Last Name</gContact:relation>");
+	g_free (xml);
+	g_object_unref (relation);
+
+	/* Test with label */
+	relation = gdata_gcontact_relation_new ("First & Last Name", NULL, "Label & stuff");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (relation));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:relation xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"label='Label &amp; stuff'>First &amp; Last Name</gContact:relation>");
+	g_free (xml);
+	g_object_unref (relation);
+}
+
+static void
 test_gcontact_website (void)
 {
 	GDataGContactWebsite *website, *website2;
@@ -3543,6 +3574,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gcontact/language/escaping", test_gcontact_language_escaping);
 	g_test_add_func ("/gcontact/relation", test_gcontact_relation);
 	g_test_add_func ("/gcontact/relation/error_handling", test_gcontact_relation_error_handling);
+	g_test_add_func ("/gcontact/relation/escaping", test_gcontact_relation_escaping);
 	g_test_add_func ("/gcontact/website", test_gcontact_website);
 	g_test_add_func ("/gcontact/website/error_handling", test_gcontact_website_error_handling);
 
