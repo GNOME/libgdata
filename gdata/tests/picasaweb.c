@@ -1512,6 +1512,60 @@ test_album_escaping (void)
 }
 
 static void
+test_file_escaping (void)
+{
+	GDataPicasaWebFile *file;
+	gchar *xml;
+	GError *error = NULL;
+	const gchar * const tags[] = { "<tag1>", "tag2 & stuff, things", NULL };
+
+	/* We have to create the file this way so that the photo ID and version are set */
+	file = GDATA_PICASAWEB_FILE (gdata_parsable_new_from_xml (GDATA_TYPE_PICASAWEB_FILE,
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007'>"
+			"<title type='text'></title>"
+			"<category term='http://schemas.google.com/photos/2007#photo' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gphoto:id>&lt;id&gt;</gphoto:id>"
+			"<gphoto:imageVersion>&lt;version&gt;</gphoto:imageVersion>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_FILE (file));
+	g_clear_error (&error);
+
+	/* Set other properties */
+	gdata_picasaweb_file_set_album_id (file, "http://foo.com?foo&bar");
+	gdata_picasaweb_file_set_client (file, "GIMP & Co.");
+	gdata_picasaweb_file_set_checksum (file, "<checksum>");
+	gdata_picasaweb_file_set_tags (file, tags);
+	gdata_picasaweb_file_set_caption (file, "Caption & stuff.");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (file));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' "
+	                        "xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' "
+	                        "xmlns:exif='http://schemas.google.com/photos/exif/2007' xmlns:app='http://www.w3.org/2007/app' "
+	                        "xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml'>"
+				"<title type='text'></title>"
+				"<summary type='text'>Caption &amp; stuff.</summary>"
+				"<category term='http://schemas.google.com/photos/2007#photo' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<gphoto:id>&lt;id&gt;</gphoto:id>"
+				"<gphoto:version>&lt;version&gt;</gphoto:version>"
+				"<gphoto:position>0</gphoto:position>"
+				"<gphoto:albumid>http://foo.com?foo&amp;bar</gphoto:albumid>"
+				"<gphoto:client>GIMP &amp; Co.</gphoto:client>"
+				"<gphoto:checksum>&lt;checksum&gt;</gphoto:checksum>"
+				"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
+				"<media:group>"
+					"<media:description type='plain'>Caption &amp; stuff.</media:description>"
+					"<media:keywords>&lt;tag1&gt;,tag2 &amp; stuff%2C things</media:keywords>"
+				"</media:group>"
+	                 "</entry>");
+	g_free (xml);
+	g_object_unref (file);
+}
+
+static void
 test_query_etag (void)
 {
 	GDataPicasaWebQuery *query = gdata_picasaweb_query_new (NULL);
@@ -1584,6 +1638,7 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/picasaweb/album/new", test_album_new);
 	g_test_add_func ("/picasaweb/album/escaping", test_album_escaping);
+	g_test_add_func ("/picasaweb/file/escaping", test_file_escaping);
 
 	g_test_add_func ("/picasaweb/query/etag", test_query_etag);
 

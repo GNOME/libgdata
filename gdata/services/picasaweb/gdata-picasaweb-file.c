@@ -1009,16 +1009,16 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* Add all the PicasaWeb-specific XML */
 	if (priv->file_id != NULL)
-		g_string_append_printf (xml_string, "<gphoto:id>%s</gphoto:id>", priv->file_id);
+		gdata_parser_string_append_escaped (xml_string, "<gphoto:id>", priv->file_id, "</gphoto:id>");
 
 	if (priv->version != NULL)
-		g_string_append_printf (xml_string, "<gphoto:version>%s</gphoto:version>", priv->version);
+		gdata_parser_string_append_escaped (xml_string, "<gphoto:version>", priv->version, "</gphoto:version>");
 
 	g_string_append_printf (xml_string, "<gphoto:position>%s</gphoto:position>",
 	                        g_ascii_dtostr (ascii_double_str, sizeof (ascii_double_str), priv->position));
 
 	if (priv->album_id != NULL)
-		g_string_append_printf (xml_string, "<gphoto:albumid>%s</gphoto:albumid>", priv->album_id);
+		gdata_parser_string_append_escaped (xml_string, "<gphoto:albumid>", priv->album_id, "</gphoto:albumid>");
 
 	if (priv->client != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:client>", priv->client, "</gphoto:client>");
@@ -1051,7 +1051,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* TODO:
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
-	 * - Check things are escaped (or not) as appropriate
 	 */
 }
 
