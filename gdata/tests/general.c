@@ -1399,6 +1399,28 @@ test_atom_link_error_handling (void)
 }
 
 static void
+test_atom_link_escaping (void)
+{
+	GDataLink *_link;
+	gchar *xml;
+
+	_link = gdata_link_new ("http://foo.com?foo&bar", "http://foo.com?foo&relation=bar");
+	gdata_link_set_content_type (_link, "<content type>");
+	gdata_link_set_language (_link, "<language>");
+	gdata_link_set_title (_link, "Title & stuff");
+
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (_link));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<link xmlns='http://www.w3.org/2005/Atom' href='http://foo.com?foo&amp;bar' title='Title &amp; stuff' "
+				"rel='http://foo.com?foo&amp;relation=bar' type='&lt;content type&gt;' hreflang='&lt;language&gt;'/>");
+	g_free (xml);
+	g_object_unref (_link);
+}
+
+static void
 test_app_categories (void)
 {
 	GDataAPPCategories *categories;
@@ -3322,6 +3344,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/atom/generator/error_handling", test_atom_generator_error_handling);
 	g_test_add_func ("/atom/link", test_atom_link);
 	g_test_add_func ("/atom/link/error_handling", test_atom_link_error_handling);
+	g_test_add_func ("/atom/link/escaping", test_atom_link_escaping);
 
 	g_test_add_func ("/app/categories", test_app_categories);
 

@@ -345,11 +345,11 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->title != NULL)
 		gdata_parser_string_append_escaped (xml_string, " title='", priv->title, "'");
 	if (priv->relation_type != NULL)
-		g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
+		gdata_parser_string_append_escaped (xml_string, " rel='", priv->relation_type, "'");
 	if (priv->content_type != NULL)
-		g_string_append_printf (xml_string, " type='%s'", priv->content_type);
+		gdata_parser_string_append_escaped (xml_string, " type='", priv->content_type, "'");
 	if (priv->language != NULL)
-		g_string_append_printf (xml_string, " hreflang='%s'", priv->language);
+		gdata_parser_string_append_escaped (xml_string, " hreflang='", priv->language, "'");
 	if (priv->length != -1)
 		g_string_append_printf (xml_string, " length='%i'", priv->length);
 }
