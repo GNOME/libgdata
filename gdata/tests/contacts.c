@@ -846,6 +846,31 @@ test_contact_escaping (void)
 }
 
 static void
+test_group_escaping (void)
+{
+	GDataContactsGroup *group;
+	gchar *xml;
+
+	group = gdata_contacts_group_new (NULL);
+	gdata_contacts_group_set_extended_property (group, "extended & prop", "<unescaped>Value should be a pre-escaped XML blob.</unescaped>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (group));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                        "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
+				"<title type='text'></title>"
+				"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<gd:extendedProperty name='extended &amp; prop'>"
+					"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
+				"</gd:extendedProperty>"
+	                 "</entry>");
+	g_free (xml);
+	g_object_unref (group);
+}
+
+static void
 test_query_uri (void)
 {
 	gchar *query_uri;
@@ -1885,6 +1910,7 @@ main (int argc, char *argv[])
 	}
 
 	g_test_add_func ("/contacts/contact/escaping", test_contact_escaping);
+	g_test_add_func ("/contacts/group/escaping", test_group_escaping);
 
 	g_test_add_func ("/contacts/query/uri", test_query_uri);
 	g_test_add_func ("/contacts/query/etag", test_query_etag);

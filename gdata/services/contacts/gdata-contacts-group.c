@@ -354,8 +354,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 static void
 get_extended_property_xml_cb (const gchar *name, const gchar *value, GString *xml_string)
 {
-	/* TODO */
-	g_string_append_printf (xml_string, "<gd:extendedProperty name='%s'>%s</gd:extendedProperty>", name, value);
+	/* Note that the value *isn't* escaped (see http://code.google.com/apis/gdata/docs/2.0/elements.html#gdExtendedProperty) */
+	gdata_parser_string_append_escaped (xml_string, "<gd:extendedProperty name='", name, "'>");
+	g_string_append_printf (xml_string, "%s</gd:extendedProperty>", value);
 }
 
 static void
