@@ -2816,6 +2816,37 @@ test_gcontact_calendar_error_handling (void)
 }
 
 static void
+test_gcontact_calendar_escaping (void)
+{
+	GDataGContactCalendar *calendar;
+	gchar *xml;
+
+	/* Test with rel */
+	calendar = gdata_gcontact_calendar_new ("http://foo.com?foo&bar", "http://foo.com?foo&relation=bar", NULL, TRUE);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (calendar));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:calendarLink xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"href='http://foo.com?foo&amp;bar' rel='http://foo.com?foo&amp;relation=bar' primary='true'/>");
+	g_free (xml);
+	g_object_unref (calendar);
+
+	/* Test with label */
+	calendar = gdata_gcontact_calendar_new ("http://foo.com?foo&bar", NULL, "Label & stuff", FALSE);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (calendar));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:calendarLink xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"href='http://foo.com?foo&amp;bar' label='Label &amp; stuff' primary='false'/>");
+	g_free (xml);
+	g_object_unref (calendar);
+}
+
+static void
 test_gcontact_event (void)
 {
 	GDataGContactEvent *event, *event2;
@@ -3378,6 +3409,7 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/gcontact/calendar", test_gcontact_calendar);
 	g_test_add_func ("/gcontact/calendar/error_handling", test_gcontact_calendar_error_handling);
+	g_test_add_func ("/gcontact/calendar/escaping", test_gcontact_calendar_escaping);
 	g_test_add_func ("/gcontact/event", test_gcontact_event);
 	g_test_add_func ("/gcontact/event/error_handling", test_gcontact_event_error_handling);
 	g_test_add_func ("/gcontact/external_id", test_gcontact_external_id);
