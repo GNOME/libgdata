@@ -1053,6 +1053,27 @@ test_atom_author_error_handling (void)
 }
 
 static void
+test_atom_author_escaping (void)
+{
+	GDataAuthor *author;
+	gchar *xml;
+
+	author = gdata_author_new ("First & Last Name", "http://foo.com?foo&bar", "John Smith <john.smith@gmail.com>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (author));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<author xmlns='http://www.w3.org/2005/Atom'>"
+				"<name>First &amp; Last Name</name>"
+				"<uri>http://foo.com?foo&amp;bar</uri>"
+				"<email>John Smith &lt;john.smith@gmail.com&gt;</email>"
+	                 "</author>");
+	g_free (xml);
+	g_object_unref (author);
+}
+
+static void
 test_atom_category (void)
 {
 	GDataCategory *category, *category2;
@@ -3275,6 +3296,7 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/atom/author", test_atom_author);
 	g_test_add_func ("/atom/author/error_handling", test_atom_author_error_handling);
+	g_test_add_func ("/atom/author/escaping", test_atom_author_escaping);
 	g_test_add_func ("/atom/category", test_atom_category);
 	g_test_add_func ("/atom/category/error_handling", test_atom_category_error_handling);
 	g_test_add_func ("/atom/generator", test_atom_generator);
