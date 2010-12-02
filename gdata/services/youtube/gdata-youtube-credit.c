@@ -139,7 +139,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	GDATA_PARSABLE_CLASS (gdata_youtube_credit_parent_class)->pre_get_xml (parsable, xml_string);
 
 	if (priv->entity_type != NULL)
-		g_string_append_printf (xml_string, " type='%s'", priv->entity_type);
+		gdata_parser_string_append_escaped (xml_string, " type='", priv->entity_type, "'");
 }
 
 static void
