@@ -932,7 +932,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_string_from_element (node, "imageVersion", P_NONE, &(self->priv->version), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "albumid", P_NONE, &(self->priv->album_id), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "client", P_NONE, &(self->priv->client), &success, error) == TRUE ||
-		    gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->client), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->checksum), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES,
 		                                      &(self->priv->file_id), &success, error) == TRUE) {
 			return success;
