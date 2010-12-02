@@ -226,10 +226,10 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataCategoryPrivate *priv = GDATA_CATEGORY (parsable)->priv;
 
-	g_string_append_printf (xml_string, " term='%s'", priv->term);
+	gdata_parser_string_append_escaped (xml_string, " term='", priv->term, "'");
 
 	if (priv->scheme != NULL)
-		g_string_append_printf (xml_string, " scheme='%s'", priv->scheme);
+		gdata_parser_string_append_escaped (xml_string, " scheme='", priv->scheme, "'");
 
 	if (priv->label != NULL)
 		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");

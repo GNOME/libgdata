@@ -1174,6 +1174,24 @@ test_atom_category_error_handling (void)
 }
 
 static void
+test_atom_category_escaping (void)
+{
+	GDataCategory *category;
+	gchar *xml;
+
+	category = gdata_category_new ("<term>", "http://foo.com?foo&bar", "Label & Stuff");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<category xmlns='http://www.w3.org/2005/Atom' term='&lt;term&gt;' scheme='http://foo.com?foo&amp;bar' "
+				"label='Label &amp; Stuff'/>");
+	g_free (xml);
+	g_object_unref (category);
+}
+
+static void
 test_atom_generator (void)
 {
 	GDataGenerator *generator, *generator2;
@@ -3299,6 +3317,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/atom/author/escaping", test_atom_author_escaping);
 	g_test_add_func ("/atom/category", test_atom_category);
 	g_test_add_func ("/atom/category/error_handling", test_atom_category_error_handling);
+	g_test_add_func ("/atom/category/escaping", test_atom_category_escaping);
 	g_test_add_func ("/atom/generator", test_atom_generator);
 	g_test_add_func ("/atom/generator/error_handling", test_atom_generator_error_handling);
 	g_test_add_func ("/atom/link", test_atom_link);
