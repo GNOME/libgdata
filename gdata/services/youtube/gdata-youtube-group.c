@@ -256,5 +256,4 @@ gdata_youtube_group_set_aspect_ratio (GDataYouTubeGroup *self, const gchar *aspe
 
 	g_free (self->priv->aspect_ratio);
 	self->priv->aspect_ratio = g_strdup (aspect_ratio);
-	g_object_notify (G_OBJECT (self), "aspect-ratio");
 }
