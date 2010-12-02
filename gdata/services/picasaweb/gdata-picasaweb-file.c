@@ -109,7 +109,6 @@ struct _GDataPicasaWebFilePrivate {
 	gchar *file_id;
 	gint64 edited;
 	gchar *version;
-	gdouble position;
 	gchar *album_id;
 	guint width;
 	guint height;
@@ -132,7 +131,6 @@ struct _GDataPicasaWebFilePrivate {
 enum {
 	PROP_EDITED = 1,
 	PROP_VERSION,
-	PROP_POSITION,
 	PROP_ALBUM_ID,
 	PROP_WIDTH,
 	PROP_HEIGHT,
@@ -266,22 +264,6 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	                                                      "Video Status", "The status of the file, if it is a video.",
 	                                                      NULL,
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataPicasaWebFile:position:
-	 *
-	 * The ordinal position of the file within the album. Lower values mean the file will be closer to the start of the album.
-	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_position">
-	 * gphoto specification</ulink>.
-	 *
-	 * Since: 0.4.0
-	 **/
-	g_object_class_install_property (gobject_class, PROP_POSITION,
-	                                 g_param_spec_double ("position",
-	                                                      "Position", "The ordinal position of the file within the album.",
-	                                                      0.0, G_MAXFLOAT, 0.0,
-	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataPicasaWebFile:width:
@@ -740,9 +722,6 @@ gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *v
 		case PROP_VERSION:
 			g_value_set_string (value, priv->version);
 			break;
-		case PROP_POSITION:
-			g_value_set_double (value, priv->position);
-			break;
 		case PROP_ALBUM_ID:
 			g_value_set_string (value, priv->album_id);
 			break;
@@ -839,9 +818,6 @@ gdata_picasaweb_file_set_property (GObject *object, guint property_id, const GVa
 			g_free (self->priv->version);
 			self->priv->version = g_value_dup_string (value);
 			break;
-		case PROP_POSITION:
-			gdata_picasaweb_file_set_position (self, g_value_get_double (value));
-			break;
 		case PROP_ALBUM_ID:
 			/* TODO: do we allow this to change albums? I think that's how pictures are moved. */
 			gdata_picasaweb_file_set_album_id (self, g_value_get_string (value));
@@ -910,11 +886,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES,
 		                                      &(self->priv->file_id), &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "position") == 0) {
-			/* gphoto:position */
-			xmlChar *position_str = xmlNodeListGetString (doc, node->children, TRUE);
-			gdata_picasaweb_file_set_position (self, g_ascii_strtod ((gchar*) position_str, NULL));
-			xmlFree (position_str);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "width") == 0) {
 			/* gphoto:width */
 			xmlChar *width = xmlNodeListGetString (doc, node->children, TRUE);
@@ -976,7 +947,6 @@ static void
 get_xml (GDataParsable *parsable, GString *xml_string)
 {
 	GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (parsable)->priv;
-	gchar ascii_double_str[G_ASCII_DTOSTR_BUF_SIZE];
 
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_picasaweb_file_parent_class)->get_xml (parsable, xml_string);
@@ -987,9 +957,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->version != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:version>", priv->version, "</gphoto:version>");
-
-	g_string_append_printf (xml_string, "<gphoto:position>%s</gphoto:position>",
-	                        g_ascii_dtostr (ascii_double_str, sizeof (ascii_double_str), priv->position));
 
 	if (priv->album_id != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:albumid>", priv->album_id, "</gphoto:albumid>");
@@ -1139,40 +1106,6 @@ gdata_picasaweb_file_get_version (GDataPicasaWebFile *self)
 {
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
 	return self->priv->version;
-}
-
-/**
- * gdata_picasaweb_file_get_position:
- * @self: a #GDataPicasaWebFile
- *
- * Gets the #GDataPicasaWebFile:position property.
- *
- * Return value: the file's ordinal position in the album
- *
- * Since: 0.4.0
- **/
-gdouble
-gdata_picasaweb_file_get_position (GDataPicasaWebFile *self)
-{
-	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), 0.0);
-	return self->priv->position;
-}
-
-/**
- * gdata_picasaweb_file_set_position:
- * @self: a #GDataPicasaWebFile
- * @position: the file's new position in the album
- *
- * Sets the #GDataPicasaWebFile:position property.
- *
- * Since: 0.4.0
- **/
-void
-gdata_picasaweb_file_set_position (GDataPicasaWebFile *self, gdouble position)
-{
-	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
-	self->priv->position = position;
-	g_object_notify (G_OBJECT (self), "position");
 }
 
 /**

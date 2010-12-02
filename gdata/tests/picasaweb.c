@@ -184,7 +184,6 @@ test_upload_async (gconstpointer service)
 						"<summary type='text'>Async Photo Summary \\(%s\\)</summary>"
 						"<category term='http://schemas.google.com/photos/2007#photo' "
 							"scheme='http://schemas.google.com/g/2005#kind'/>"
-						"<gphoto:position>0</gphoto:position>"
 						"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
 						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
 						"<media:group>"
@@ -558,7 +557,6 @@ test_upload_simple (gconstpointer service)
 						"<summary type='text'>Photo Summary \\(%s\\)</summary>"
 						"<category term='http://schemas.google.com/photos/2007#photo' "
 							"scheme='http://schemas.google.com/g/2005#kind'/>"
-						"<gphoto:position>0</gphoto:position>"
 						"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
 						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
 						"<media:group>"
@@ -753,7 +751,6 @@ test_photo (gconstpointer service)
 
 	g_assert_cmpstr (gdata_picasaweb_file_get_caption (photo), ==, "Ginger cookie caption");
 	g_assert_cmpstr (gdata_picasaweb_file_get_version (photo), ==, "29"); /* 1240729023474000"); */ /* TODO check how constant this even is */
-	g_assert_cmpfloat (gdata_picasaweb_file_get_position (photo), ==, 0.0);
 	g_assert_cmpstr (gdata_picasaweb_file_get_album_id (photo), ==, "5328889949261497249");
 	g_assert_cmpuint (gdata_picasaweb_file_get_width (photo), ==, 2576);
 	g_assert_cmpuint (gdata_picasaweb_file_get_height (photo), ==, 1932);
@@ -1549,7 +1546,6 @@ test_file_escaping (void)
 				"<category term='http://schemas.google.com/photos/2007#photo' scheme='http://schemas.google.com/g/2005#kind'/>"
 				"<gphoto:id>&lt;id&gt;</gphoto:id>"
 				"<gphoto:version>&lt;version&gt;</gphoto:version>"
-				"<gphoto:position>0</gphoto:position>"
 				"<gphoto:albumid>http://foo.com?foo&amp;bar</gphoto:albumid>"
 				"<gphoto:checksum>&lt;checksum&gt;</gphoto:checksum>"
 				"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"

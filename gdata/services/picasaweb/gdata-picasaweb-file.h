@@ -105,8 +105,6 @@ GDataPicasaWebFile *gdata_picasaweb_file_new (const gchar *id) G_GNUC_WARN_UNUSE
 const gchar *gdata_picasaweb_file_get_id (GDataPicasaWebFile *self) G_GNUC_PURE;
 gint64 gdata_picasaweb_file_get_edited (GDataPicasaWebFile *self);
 const gchar *gdata_picasaweb_file_get_version (GDataPicasaWebFile *self) G_GNUC_PURE;
-gdouble gdata_picasaweb_file_get_position (GDataPicasaWebFile *self) G_GNUC_PURE;
-void gdata_picasaweb_file_set_position (GDataPicasaWebFile *self, gdouble position);
 const gchar *gdata_picasaweb_file_get_album_id (GDataPicasaWebFile *self) G_GNUC_PURE;
 /* TODO should we have a more obvious _move() API too? nah */
 void gdata_picasaweb_file_set_album_id (GDataPicasaWebFile *self, const gchar *album_id);
