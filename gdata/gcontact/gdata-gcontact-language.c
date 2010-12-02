@@ -212,7 +212,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataGContactLanguagePrivate *priv = GDATA_GCONTACT_LANGUAGE (parsable)->priv;
 
 	if (priv->code != NULL)
-		g_string_append_printf (xml_string, " code='%s'", priv->code);
+		gdata_parser_string_append_escaped (xml_string, " code='", priv->code, "'");
 	else if (priv->label != NULL)
 		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
 	else
