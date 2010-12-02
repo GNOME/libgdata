@@ -113,8 +113,6 @@ void gdata_picasaweb_file_set_album_id (GDataPicasaWebFile *self, const gchar *a
 guint gdata_picasaweb_file_get_width (GDataPicasaWebFile *self) G_GNUC_PURE;
 guint gdata_picasaweb_file_get_height (GDataPicasaWebFile *self) G_GNUC_PURE;
 gsize gdata_picasaweb_file_get_size (GDataPicasaWebFile *self) G_GNUC_PURE;
-const gchar *gdata_picasaweb_file_get_client (GDataPicasaWebFile *self) G_GNUC_PURE;
-void gdata_picasaweb_file_set_client (GDataPicasaWebFile *self, const gchar *client);
 const gchar *gdata_picasaweb_file_get_checksum (GDataPicasaWebFile *self) G_GNUC_PURE;
 void gdata_picasaweb_file_set_checksum (GDataPicasaWebFile *self, const gchar *checksum);
 gint64 gdata_picasaweb_file_get_timestamp (GDataPicasaWebFile *self);

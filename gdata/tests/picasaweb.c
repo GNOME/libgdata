@@ -758,7 +758,6 @@ test_photo (gconstpointer service)
 	g_assert_cmpuint (gdata_picasaweb_file_get_width (photo), ==, 2576);
 	g_assert_cmpuint (gdata_picasaweb_file_get_height (photo), ==, 1932);
 	g_assert_cmpuint (gdata_picasaweb_file_get_size (photo), ==, 1124730);
-	/* TODO: file wasn't uploaded with client assigned; g_assert_cmpstr (gdata_picasaweb_file_get_client (photo), ==, ??); */
 	/* TODO: file wasn't uploaded with checksum assigned; g_assert_cmpstr (gdata_picasaweb_file_get_checksum (photo), ==, ??); */
 	g_assert_cmpint (gdata_picasaweb_file_get_timestamp (photo), ==, 1228588330000);
 	g_assert_cmpstr (gdata_picasaweb_file_get_video_status (photo), ==, NULL);
@@ -1533,7 +1532,6 @@ test_file_escaping (void)
 
 	/* Set other properties */
 	gdata_picasaweb_file_set_album_id (file, "http://foo.com?foo&bar");
-	gdata_picasaweb_file_set_client (file, "GIMP & Co.");
 	gdata_picasaweb_file_set_checksum (file, "<checksum>");
 	gdata_picasaweb_file_set_tags (file, tags);
 	gdata_picasaweb_file_set_caption (file, "Caption & stuff.");
@@ -1553,7 +1551,6 @@ test_file_escaping (void)
 				"<gphoto:version>&lt;version&gt;</gphoto:version>"
 				"<gphoto:position>0</gphoto:position>"
 				"<gphoto:albumid>http://foo.com?foo&amp;bar</gphoto:albumid>"
-				"<gphoto:client>GIMP &amp; Co.</gphoto:client>"
 				"<gphoto:checksum>&lt;checksum&gt;</gphoto:checksum>"
 				"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
 				"<media:group>"

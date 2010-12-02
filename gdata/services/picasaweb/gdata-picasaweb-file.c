@@ -114,7 +114,6 @@ struct _GDataPicasaWebFilePrivate {
 	guint width;
 	guint height;
 	gsize size;
-	gchar *client;
 	gchar *checksum;
 	gint64 timestamp; /* in milliseconds! */
 	gboolean is_commenting_enabled;
@@ -138,7 +137,6 @@ enum {
 	PROP_WIDTH,
 	PROP_HEIGHT,
 	PROP_SIZE,
-	PROP_CLIENT,
 	PROP_CHECKSUM,
 	PROP_TIMESTAMP,
 	PROP_IS_COMMENTING_ENABLED,
@@ -234,22 +232,6 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	g_object_class_install_property (gobject_class, PROP_ALBUM_ID,
 	                                 g_param_spec_string ("album-id",
 	                                                      "Album ID", "The ID for the file's album.",
-	                                                      NULL,
-	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataPicasaWebFile:client:
-	 *
-	 * The name of the software which created or last modified the file.
-	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#gphoto_client">
-	 * gphoto specification</ulink>.
-	 *
-	 * Since: 0.4.0
-	 **/
-	g_object_class_install_property (gobject_class, PROP_CLIENT,
-	                                 g_param_spec_string ("client",
-	                                                      "Client", "The name of the software which created or last modified the file.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -736,7 +718,6 @@ gdata_picasaweb_file_finalize (GObject *object)
 	g_free (priv->file_id);
 	g_free (priv->version);
 	g_free (priv->album_id);
-	g_free (priv->client);
 	g_free (priv->checksum);
 	g_free (priv->video_status);
 
@@ -773,9 +754,6 @@ gdata_picasaweb_file_get_property (GObject *object, guint property_id, GValue *v
 			break;
 		case PROP_SIZE:
 			g_value_set_ulong (value, priv->size);
-			break;
-		case PROP_CLIENT:
-			g_value_set_string (value, priv->client);
 			break;
 		case PROP_CHECKSUM:
 			g_value_set_string (value, priv->checksum);
@@ -868,9 +846,6 @@ gdata_picasaweb_file_set_property (GObject *object, guint property_id, const GVa
 			/* TODO: do we allow this to change albums? I think that's how pictures are moved. */
 			gdata_picasaweb_file_set_album_id (self, g_value_get_string (value));
 			break;
-		case PROP_CLIENT:
-			gdata_picasaweb_file_set_client (self, g_value_get_string (value));
-			break;
 		case PROP_CHECKSUM:
 			gdata_picasaweb_file_set_checksum (self, g_value_get_string (value));
 			break;
@@ -931,7 +906,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (gdata_parser_string_from_element (node, "videostatus", P_NO_DUPES, &(self->priv->video_status), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "imageVersion", P_NONE, &(self->priv->version), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "albumid", P_NONE, &(self->priv->album_id), &success, error) == TRUE ||
-		    gdata_parser_string_from_element (node, "client", P_NONE, &(self->priv->client), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "checksum", P_NONE, &(self->priv->checksum), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES,
 		                                      &(self->priv->file_id), &success, error) == TRUE) {
@@ -1019,9 +993,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->album_id != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:albumid>", priv->album_id, "</gphoto:albumid>");
-
-	if (priv->client != NULL)
-		gdata_parser_string_append_escaped (xml_string, "<gphoto:client>", priv->client, "</gphoto:client>");
 
 	if (priv->checksum != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:checksum>", priv->checksum, "</gphoto:checksum>");
@@ -1290,44 +1261,6 @@ gdata_picasaweb_file_get_size (GDataPicasaWebFile *self)
 {
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), 0);
 	return self->priv->size;
-}
-
-/**
- * gdata_picasaweb_file_get_client:
- * @self: a #GDataPicasaWebFile
- *
- * Gets the #GDataPicasaWebFile:client property.
- *
- * Return value: the name of the software which created the photo, or %NULL
- *
- * Since: 0.4.0
- **/
-const gchar *
-gdata_picasaweb_file_get_client (GDataPicasaWebFile *self)
-{
-	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (self), NULL);
-	return self->priv->client;
-}
-
-/**
- * gdata_picasaweb_file_set_client:
- * @self: a #GDataPicasaWebFile
- * @client: (allow-none): the name of the software which created or modified the photo, or %NULL
- *
- * Sets the #GDataPicasaWebFile:client property to @client.
- *
- * Set @client to %NULL to unset the property.
- *
- * Since: 0.4.0
- **/
-void
-gdata_picasaweb_file_set_client (GDataPicasaWebFile *self, const gchar *client)
-{
-	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (self));
-
-	g_free (self->priv->client);
-	self->priv->client = g_strdup (client);
-	g_object_notify (G_OBJECT (self), "client");
 }
 
 /**
