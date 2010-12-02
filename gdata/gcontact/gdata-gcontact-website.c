@@ -268,7 +268,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataGContactWebsitePrivate *priv = GDATA_GCONTACT_WEBSITE (parsable)->priv;
 
 	gdata_parser_string_append_escaped (xml_string, " href='", priv->uri, "'");
-	g_string_append_printf (xml_string, " rel='%s'", priv->relation_type);
+	gdata_parser_string_append_escaped (xml_string, " rel='", priv->relation_type, "'");
 
 	if (priv->label != NULL)
 		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");

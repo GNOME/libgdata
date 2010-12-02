@@ -3488,6 +3488,25 @@ test_gcontact_website_error_handling (void)
 #undef TEST_XML_ERROR_HANDLING
 }
 
+static void
+test_gcontact_website_escaping (void)
+{
+	GDataGContactWebsite *website;
+	gchar *xml;
+
+	website = gdata_gcontact_website_new ("http://foo.com?foo&bar", "http://foo.com?foo&relation=bar", "Label & stuff", TRUE);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (website));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:website xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"href='http://foo.com?foo&amp;bar' rel='http://foo.com?foo&amp;relation=bar' label='Label &amp; stuff' "
+				"primary='true'/>");
+	g_free (xml);
+	g_object_unref (website);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -3577,6 +3596,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gcontact/relation/escaping", test_gcontact_relation_escaping);
 	g_test_add_func ("/gcontact/website", test_gcontact_website);
 	g_test_add_func ("/gcontact/website/error_handling", test_gcontact_website_error_handling);
+	g_test_add_func ("/gcontact/website/escaping", test_gcontact_website_escaping);
 
 	return g_test_run ();
 }
