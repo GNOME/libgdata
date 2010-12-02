@@ -467,6 +467,41 @@ test_calendar_escaping (void)
 }
 
 static void
+test_event_escaping (void)
+{
+	GDataCalendarEvent *event;
+	gchar *xml;
+
+	event = gdata_calendar_event_new (NULL);
+	gdata_calendar_event_set_status (event, "<status>");
+	gdata_calendar_event_set_visibility (event, "<visibility>");
+	gdata_calendar_event_set_transparency (event, "<transparency>");
+	gdata_calendar_event_set_uid (event, "<uid>");
+	gdata_calendar_event_set_recurrence (event, "<recurrence>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                        "xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:app='http://www.w3.org/2007/app'>"
+				"<title type='text'></title>"
+				"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<gd:eventStatus value='&lt;status&gt;'/>"
+				"<gd:visibility value='&lt;visibility&gt;'/>"
+				"<gd:transparency value='&lt;transparency&gt;'/>"
+				"<gCal:uid value='&lt;uid&gt;'/>"
+				"<gCal:guestsCanModify value='false'/>"
+				"<gCal:guestsCanInviteOthers value='false'/>"
+				"<gCal:guestsCanSeeGuests value='false'/>"
+				"<gCal:anyoneCanAddSelf value='false'/>"
+				"<gd:recurrence>&lt;recurrence&gt;</gd:recurrence>"
+	                 "</entry>");
+	g_free (xml);
+	g_object_unref (event);
+}
+
+static void
 test_query_uri (void)
 {
 	gint64 _time;
@@ -1003,6 +1038,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/calendar/xml/recurrence", test_xml_recurrence);
 
 	g_test_add_func ("/calendar/calendar/escaping", test_calendar_escaping);
+	g_test_add_func ("/calendar/event/escaping", test_event_escaping);
 
 	g_test_add_func ("/calendar/query/uri", test_query_uri);
 	g_test_add_func ("/calendar/query/etag", test_query_etag);

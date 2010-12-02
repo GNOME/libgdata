@@ -578,16 +578,16 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* TODO: gd:comments? */
 
 	if (priv->status != NULL)
-		g_string_append_printf (xml_string, "<gd:eventStatus value='%s'/>", priv->status);
+		gdata_parser_string_append_escaped (xml_string, "<gd:eventStatus value='", priv->status, "'/>");
 
 	if (priv->visibility != NULL)
-		g_string_append_printf (xml_string, "<gd:visibility value='%s'/>", priv->visibility);
+		gdata_parser_string_append_escaped (xml_string, "<gd:visibility value='", priv->visibility, "'/>");
 
 	if (priv->transparency != NULL)
-		g_string_append_printf (xml_string, "<gd:transparency value='%s'/>", priv->transparency);
+		gdata_parser_string_append_escaped (xml_string, "<gd:transparency value='", priv->transparency, "'/>");
 
 	if (priv->uid != NULL)
-		g_string_append_printf (xml_string, "<gCal:uid value='%s'/>", priv->uid);
+		gdata_parser_string_append_escaped (xml_string, "<gCal:uid value='", priv->uid, "'/>");
 
 	if (priv->sequence != 0)
 		g_string_append_printf (xml_string, "<gCal:sequence value='%u'/>", priv->sequence);
@@ -613,7 +613,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append (xml_string, "<gCal:anyoneCanAddSelf value='false'/>");
 
 	if (priv->recurrence != NULL)
-		g_string_append_printf (xml_string, "<gd:recurrence>%s</gd:recurrence>", priv->recurrence);
+		gdata_parser_string_append_escaped (xml_string, "<gd:recurrence>", priv->recurrence, "</gd:recurrence>");
 
 	get_child_xml (priv->times, xml_string);
 	get_child_xml (priv->people, xml_string);
@@ -622,7 +622,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* TODO:
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
-	 * - Check things are escaped (or not) as appropriate
 	 */
 }
 
