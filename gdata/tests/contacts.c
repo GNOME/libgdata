@@ -790,6 +790,62 @@ test_insert_group_async (gconstpointer service)
 }
 
 static void
+test_contact_escaping (void)
+{
+	GDataContactsContact *contact;
+	gchar *xml;
+
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Nickname & stuff");
+	gdata_contacts_contact_set_billing_information (contact, "Billing information & stuff");
+	gdata_contacts_contact_set_directory_server (contact, "http://foo.com?foo&bar");
+	gdata_contacts_contact_set_gender (contact, "Misc. & other");
+	gdata_contacts_contact_set_initials (contact, "<AB>");
+	gdata_contacts_contact_set_maiden_name (contact, "Maiden & name");
+	gdata_contacts_contact_set_mileage (contact, "Over the hills & far away");
+	gdata_contacts_contact_set_occupation (contact, "Occupation & stuff");
+	gdata_contacts_contact_set_priority (contact, "http://foo.com?foo&priority=bar");
+	gdata_contacts_contact_set_sensitivity (contact, "http://foo.com?foo&sensitivity=bar");
+	gdata_contacts_contact_set_short_name (contact, "Short name & stuff");
+	gdata_contacts_contact_set_subject (contact, "Subject & stuff");
+	gdata_contacts_contact_add_hobby (contact, "Escaping &s");
+	gdata_contacts_contact_set_extended_property (contact, "extended & prop", "<unescaped>Value should be a pre-escaped XML blob.</unescaped>");
+	gdata_contacts_contact_set_user_defined_field (contact, "User defined field & stuff", "Value & stuff");
+	gdata_contacts_contact_add_group (contact, "http://foo.com?foo&bar");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                        "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
+				"<title type='text'></title>"
+				"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<gd:name/>"
+				"<gd:extendedProperty name='extended &amp; prop'>"
+					"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
+				"</gd:extendedProperty>"
+				"<gContact:userDefinedField key='User defined field &amp; stuff' value='Value &amp; stuff'/>"
+				"<gContact:groupMembershipInfo href='http://foo.com?foo&amp;bar'/>"
+				"<gContact:hobby>Escaping &amp;s</gContact:hobby>"
+				"<gContact:nickname>Nickname &amp; stuff</gContact:nickname>"
+				"<gContact:billingInformation>Billing information &amp; stuff</gContact:billingInformation>"
+				"<gContact:directoryServer>http://foo.com?foo&amp;bar</gContact:directoryServer>"
+				"<gContact:gender value='Misc. &amp; other'/>"
+				"<gContact:initials>&lt;AB&gt;</gContact:initials>"
+				"<gContact:maidenName>Maiden &amp; name</gContact:maidenName>"
+				"<gContact:mileage>Over the hills &amp; far away</gContact:mileage>"
+				"<gContact:occupation>Occupation &amp; stuff</gContact:occupation>"
+				"<gContact:priority rel='http://foo.com?foo&amp;priority=bar'/>"
+				"<gContact:sensitivity rel='http://foo.com?foo&amp;sensitivity=bar'/>"
+				"<gContact:shortName>Short name &amp; stuff</gContact:shortName>"
+				"<gContact:subject>Subject &amp; stuff</gContact:subject>"
+	                 "</entry>");
+	g_free (xml);
+	g_object_unref (contact);
+}
+
+static void
 test_query_uri (void)
 {
 	gchar *query_uri;
@@ -1827,6 +1883,8 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/contacts/groups/insert", service, test_insert_group);
 		g_test_add_data_func ("/contacts/groups/insert_async", service, test_insert_group_async);
 	}
+
+	g_test_add_func ("/contacts/contact/escaping", test_contact_escaping);
 
 	g_test_add_func ("/contacts/query/uri", test_query_uri);
 	g_test_add_func ("/contacts/query/etag", test_query_etag);

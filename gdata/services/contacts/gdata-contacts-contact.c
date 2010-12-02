@@ -910,13 +910,16 @@ get_child_xml (GList *list, GString *xml_string)
 static void
 get_extended_property_xml_cb (const gchar *name, const gchar *value, GString *xml_string)
 {
-	g_string_append_printf (xml_string, "<gd:extendedProperty name='%s'>%s</gd:extendedProperty>", name, value);
+	/* Note that the value *isn't* escaped (see http://code.google.com/apis/gdata/docs/2.0/elements.html#gdExtendedProperty) */
+	gdata_parser_string_append_escaped (xml_string, "<gd:extendedProperty name='", name, "'>");
+	g_string_append_printf (xml_string, "%s</gd:extendedProperty>", value);
 }
 
 static void
 get_user_defined_field_xml_cb (const gchar *name, const gchar *value, GString *xml_string)
 {
-	g_string_append_printf (xml_string, "<gContact:userDefinedField key='%s' value='%s'/>", name, value);
+	gdata_parser_string_append_escaped (xml_string, "<gContact:userDefinedField key='", name, "' ");
+	gdata_parser_string_append_escaped (xml_string, "value='", value, "'/>");
 }
 
 static void
@@ -930,7 +933,7 @@ get_group_xml_cb (const gchar *href, gpointer deleted, GString *xml_string)
 	if (full_pos != NULL)
 		memcpy ((char*) full_pos, "/base/", 6);
 
-	g_string_append_printf (xml_string, "<gContact:groupMembershipInfo href='%s'/>", uri);
+	gdata_parser_string_append_escaped (xml_string, "<gContact:groupMembershipInfo href='", uri, "'/>");
 }
 
 static void
@@ -1042,7 +1045,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* TODO:
 	 * - Finish supporting all tags
-	 * - Check things are escaped (or not) as appropriate
 	 */
 }
 
