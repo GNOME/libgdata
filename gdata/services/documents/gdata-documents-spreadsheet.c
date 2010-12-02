@@ -39,6 +39,7 @@
 #include <string.h>
 
 #include "gdata-documents-spreadsheet.h"
+#include "gdata-parser.h"
 #include "gdata-private.h"
 
 static void get_xml (GDataParsable *parsable, GString *xml_string);
@@ -71,7 +72,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (parsable));
 	if (document_id != NULL)
-		g_string_append_printf (xml_string, "<gd:resourceId>spreadsheet:%s</gd:resourceId>", document_id);
+		gdata_parser_string_append_escaped (xml_string, "<gd:resourceId>spreadsheet:", document_id, "</gd:resourceId>");
 }
 
 /**
