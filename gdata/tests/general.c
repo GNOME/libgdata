@@ -3169,6 +3169,24 @@ test_gcontact_jot_error_handling (void)
 }
 
 static void
+test_gcontact_jot_escaping (void)
+{
+	GDataGContactJot *jot;
+	gchar *xml;
+
+	jot = gdata_gcontact_jot_new ("Content & stuff", "http://foo.com?foo&relation=bar");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (jot));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:jot xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+				"rel='http://foo.com?foo&amp;relation=bar'>Content &amp; stuff</gContact:jot>");
+	g_free (xml);
+	g_object_unref (jot);
+}
+
+static void
 test_gcontact_language (void)
 {
 	GDataGContactLanguage *language, *language2;
@@ -3488,6 +3506,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gcontact/external_id/escaping", test_gcontact_external_id_escaping);
 	g_test_add_func ("/gcontact/jot", test_gcontact_jot);
 	g_test_add_func ("/gcontact/jot/error_handling", test_gcontact_jot_error_handling);
+	g_test_add_func ("/gcontact/jot/escaping", test_gcontact_jot_escaping);
 	g_test_add_func ("/gcontact/language", test_gcontact_language);
 	g_test_add_func ("/gcontact/language/error_handling", test_gcontact_language_error_handling);
 	g_test_add_func ("/gcontact/relation", test_gcontact_relation);

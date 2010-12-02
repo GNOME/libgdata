@@ -197,7 +197,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 static void
 pre_get_xml (GDataParsable *parsable, GString *xml_string)
 {
-	g_string_append_printf (xml_string, " rel='%s'", GDATA_GCONTACT_JOT (parsable)->priv->relation_type);
+	gdata_parser_string_append_escaped (xml_string, " rel='", GDATA_GCONTACT_JOT (parsable)->priv->relation_type, "'");
 }
 
 static void
