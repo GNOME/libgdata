@@ -284,7 +284,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 			while ((comma = g_utf8_strchr (start, -1, ',')) != NULL) {
 				/* Copy the span */
 				gchar *span = g_strndup (start, comma - start);
-				g_string_append (xml_string, span);
+				gdata_parser_string_append_escaped (xml_string, NULL, span, NULL);
 				g_free (span);
 
 				/* Add an escaped comma */
@@ -295,7 +295,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 			}
 
 			/* Append the rest of the string (the entire string if there were no commas) */
-			g_string_append (xml_string, start);
+			gdata_parser_string_append_escaped (xml_string, NULL, start, NULL);
 		}
 
 		g_string_append (xml_string, "</media:keywords>");
