@@ -1469,6 +1469,49 @@ test_album_new (void)
 }
 
 static void
+test_album_escaping (void)
+{
+	GDataPicasaWebAlbum *album;
+	gchar *xml;
+	GError *error = NULL;
+	const gchar * const tags[] = { "<tag1>", "tag2 & stuff, things", NULL };
+
+	/* We have to create the album this way so that the album ID is set */
+	album = GDATA_PICASAWEB_ALBUM (gdata_parsable_new_from_xml (GDATA_TYPE_PICASAWEB_ALBUM,
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007'>"
+			"<title type='text'></title>"
+			"<category term='http://schemas.google.com/photos/2007#album' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gphoto:id>&lt;id&gt;</gphoto:id>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
+	g_clear_error (&error);
+
+	/* Set other properties */
+	gdata_picasaweb_album_set_location (album, "Everywhere & nowhere");
+	gdata_picasaweb_album_set_tags (album, tags);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (album));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' "
+	                        "xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' "
+	                        "xmlns:gml='http://www.opengis.net/gml' xmlns:app='http://www.w3.org/2007/app' "
+	                        "xmlns:georss='http://www.georss.org/georss'>"
+				"<title type='text'></title>"
+				"<category term='http://schemas.google.com/photos/2007#album' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<gphoto:id>&lt;id&gt;</gphoto:id>"
+				"<gphoto:location>Everywhere &amp; nowhere</gphoto:location>"
+				"<gphoto:access>private</gphoto:access>"
+				"<gphoto:commentingEnabled>false</gphoto:commentingEnabled>"
+				"<media:group><media:keywords>&lt;tag1&gt;,tag2 &amp; stuff%2C things</media:keywords></media:group>"
+	                 "</entry>");
+	g_free (xml);
+	g_object_unref (album);
+}
+
+static void
 test_query_etag (void)
 {
 	GDataPicasaWebQuery *query = gdata_picasaweb_query_new (NULL);
@@ -1540,6 +1583,8 @@ main (int argc, char *argv[])
 	}
 
 	g_test_add_func ("/picasaweb/album/new", test_album_new);
+	g_test_add_func ("/picasaweb/album/escaping", test_album_escaping);
+
 	g_test_add_func ("/picasaweb/query/etag", test_query_etag);
 
 	retval = g_test_run ();

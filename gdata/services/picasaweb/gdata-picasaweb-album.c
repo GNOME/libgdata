@@ -765,7 +765,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* Add all the album-specific XML */
 	if (priv->album_id != NULL)
-		g_string_append_printf (xml_string, "<gphoto:id>%s</gphoto:id>", priv->album_id);
+		gdata_parser_string_append_escaped (xml_string, "<gphoto:id>", priv->album_id, "</gphoto:id>");
 
 	if (priv->location != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:location>", priv->location, "</gphoto:location>");
@@ -803,7 +803,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* TODO:
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
-	 * - Check things are escaped (or not) as appropriate
 	 * - add GML support
 	 */
 }
