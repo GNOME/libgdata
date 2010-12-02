@@ -441,6 +441,32 @@ test_xml_recurrence (void)
 }
 
 static void
+test_calendar_escaping (void)
+{
+	GDataCalendarCalendar *calendar;
+	gchar *xml;
+
+	calendar = gdata_calendar_calendar_new (NULL);
+	gdata_calendar_calendar_set_timezone (calendar, "<timezone>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (calendar));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+	                        "xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:app='http://www.w3.org/2007/app'>"
+				"<title type='text'></title>"
+				"<category term='http://schemas.google.com/gCal/2005#calendarmeta' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<gCal:timezone value='&lt;timezone&gt;'/>"
+				"<gCal:hidden value='false'/>"
+				"<gCal:color value='#000000'/>"
+				"<gCal:selected value='false'/>"
+	                 "</entry>");
+	g_free (xml);
+	g_object_unref (calendar);
+}
+
+static void
 test_query_uri (void)
 {
 	gint64 _time;
@@ -975,6 +1001,8 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/calendar/xml/dates", test_xml_dates);
 	g_test_add_func ("/calendar/xml/recurrence", test_xml_recurrence);
+
+	g_test_add_func ("/calendar/calendar/escaping", test_calendar_escaping);
 
 	g_test_add_func ("/calendar/query/uri", test_query_uri);
 	g_test_add_func ("/calendar/query/etag", test_query_etag);
