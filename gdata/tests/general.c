@@ -2477,6 +2477,24 @@ test_media_category (void)
 }
 
 static void
+test_media_category_escaping (void)
+{
+	GDataMediaCategory *category;
+	gchar *xml;
+
+	category = gdata_media_category_new ("<category>", "http://foo.com?foo&bar", "Label & stuff");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
+	                                 "scheme='http://foo.com?foo&amp;bar' label='Label &amp; stuff'>&lt;category&gt;</media:category>");
+	g_free (xml);
+	g_object_unref (category);
+}
+
+static void
 test_media_content (void)
 {
 	GDataMediaContent *content;
@@ -3569,6 +3587,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/who/escaping", test_gd_who_escaping);
 
 	g_test_add_func ("/media/category", test_media_category);
+	g_test_add_func ("/media/category/escaping", test_media_category_escaping);
 	g_test_add_func ("/media/content", test_media_content);
 	g_test_add_func ("/media/credit", test_media_credit);
 	/* g_test_add_func ("/media/group", test_media_group); */
