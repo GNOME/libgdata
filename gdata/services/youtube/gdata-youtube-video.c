@@ -788,7 +788,8 @@ access_control_cb (const gchar *action, gpointer value, GString *xml_string)
 			g_assert_not_reached ();
 	}
 
-	g_string_append_printf (xml_string, "<yt:accessControl action='%s' permission='%s'/>", action, permission_string);
+	gdata_parser_string_append_escaped (xml_string, "<yt:accessControl action='", action, "'");
+	g_string_append_printf (xml_string, " permission='%s'/>", permission_string);
 }
 
 static void
@@ -819,7 +820,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* TODO:
 	 * - georss:where
-	 * - Check things are escaped (or not) as appropriate
 	 */
 }
 

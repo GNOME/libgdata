@@ -699,6 +699,42 @@ test_parsing_comments_feed_link (void)
 }*/
 
 static void
+test_video_escaping (void)
+{
+	GDataYouTubeVideo *video;
+	gchar *xml;
+	const gchar * const keywords[] = { "<keyword1>", "keyword2 & stuff, things", NULL };
+
+	video = gdata_youtube_video_new (NULL);
+	gdata_youtube_video_set_location (video, "Here & there");
+	gdata_youtube_video_set_access_control (video, "<action>", GDATA_YOUTUBE_PERMISSION_ALLOWED);
+	gdata_youtube_video_set_keywords (video, keywords);
+	gdata_youtube_video_set_description (video, "Description & stuff.");
+	gdata_youtube_video_set_aspect_ratio (video, "4 & 3");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
+	                        "xmlns:gd='http://schemas.google.com/g/2005' "
+	                        "xmlns:yt='http://gdata.youtube.com/schemas/2007' xmlns:app='http://www.w3.org/2007/app'>"
+				"<title type='text'></title>"
+				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
+				"<media:group>"
+					"<media:description type='plain'>Description &amp; stuff.</media:description>"
+					"<media:keywords>&lt;keyword1&gt;,keyword2 &amp; stuff%2C things</media:keywords>"
+					"<yt:aspectratio>4 &amp; 3</yt:aspectratio>"
+				"</media:group>"
+				"<yt:location>Here &amp; there</yt:location>"
+				"<yt:accessControl action='&lt;action&gt;' permission='allowed'/>"
+				"<app:control><app:draft>no</app:draft></app:control>"
+	                 "</entry>");
+	g_free (xml);
+	g_object_unref (video);
+}
+
+static void
 test_query_uri (void)
 {
 	gdouble latitude, longitude, radius;
@@ -1160,6 +1196,8 @@ main (int argc, char *argv[])
 	g_test_add_func ("/youtube/parsing/yt:accessControl", test_parsing_yt_access_control);
 	g_test_add_func ("/youtube/parsing/yt:category", test_parsing_yt_category);
 	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
+
+	g_test_add_func ("/youtube/video/escaping", test_video_escaping);
 
 	g_test_add_func ("/youtube/query/uri", test_query_uri);
 	g_test_add_func ("/youtube/query/etag", test_query_etag);
