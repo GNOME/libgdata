@@ -2946,6 +2946,45 @@ test_gcontact_event_error_handling (void)
 }
 
 static void
+test_gcontact_event_escaping (void)
+{
+	GDataGContactEvent *event;
+	gchar *xml;
+	GDate date;
+
+	g_date_clear (&date, 1);
+	g_date_set_dmy (&date, 1, G_DATE_JANUARY, 2011);
+
+	/* Test with rel */
+	event = gdata_gcontact_event_new (&date, "http://foo.com?foo&relation=bar", NULL);
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:event xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+				"xmlns:gContact='http://schemas.google.com/contact/2008' rel='http://foo.com?foo&amp;relation=bar'>"
+				"<gd:when startTime='2011-01-01'/>"
+	                 "</gContact:event>");
+	g_free (xml);
+	g_object_unref (event);
+
+	/* Test with label */
+	event = gdata_gcontact_event_new (&date, NULL, "Label & stuff");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
+	g_assert_cmpstr (xml, ==,
+	                 "<?xml version='1.0' encoding='UTF-8'?>"
+	                 "<gContact:event xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+				"xmlns:gContact='http://schemas.google.com/contact/2008' label='Label &amp; stuff'>"
+				"<gd:when startTime='2011-01-01'/>"
+	                 "</gContact:event>");
+	g_free (xml);
+	g_object_unref (event);
+}
+
+static void
 test_gcontact_external_id (void)
 {
 	GDataGContactExternalID *id, *id2;
@@ -3412,6 +3451,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gcontact/calendar/escaping", test_gcontact_calendar_escaping);
 	g_test_add_func ("/gcontact/event", test_gcontact_event);
 	g_test_add_func ("/gcontact/event/error_handling", test_gcontact_event_error_handling);
+	g_test_add_func ("/gcontact/event/escaping", test_gcontact_event_escaping);
 	g_test_add_func ("/gcontact/external_id", test_gcontact_external_id);
 	g_test_add_func ("/gcontact/external_id/error_handling", test_gcontact_external_id_error_handling);
 	g_test_add_func ("/gcontact/jot", test_gcontact_jot);
