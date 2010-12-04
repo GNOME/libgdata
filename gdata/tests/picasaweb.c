@@ -1545,7 +1545,7 @@ test_file_escaping (void)
 				"<summary type='text'>Caption &amp; stuff.</summary>"
 				"<category term='http://schemas.google.com/photos/2007#photo' scheme='http://schemas.google.com/g/2005#kind'/>"
 				"<gphoto:id>&lt;id&gt;</gphoto:id>"
-				"<gphoto:version>&lt;version&gt;</gphoto:version>"
+				"<gphoto:imageVersion>&lt;version&gt;</gphoto:imageVersion>"
 				"<gphoto:albumid>http://foo.com?foo&amp;bar</gphoto:albumid>"
 				"<gphoto:checksum>&lt;checksum&gt;</gphoto:checksum>"
 				"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"

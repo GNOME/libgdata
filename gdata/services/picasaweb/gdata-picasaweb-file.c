@@ -956,7 +956,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:id>", priv->file_id, "</gphoto:id>");
 
 	if (priv->version != NULL)
-		gdata_parser_string_append_escaped (xml_string, "<gphoto:version>", priv->version, "</gphoto:version>");
+		gdata_parser_string_append_escaped (xml_string, "<gphoto:imageVersion>", priv->version, "</gphoto:imageVersion>");
 
 	if (priv->album_id != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gphoto:albumid>", priv->album_id, "</gphoto:albumid>");
