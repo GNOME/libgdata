@@ -23,6 +23,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gdata/gdata-download-stream.h>
 #include <gdata/services/documents/gdata-documents-entry.h>
 #include <gdata/services/documents/gdata-documents-service.h>
 
@@ -63,9 +64,8 @@ typedef struct {
 
 GType gdata_documents_document_get_type (void) G_GNUC_CONST;
 
-GFile *gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsService *service, gchar **content_type,
-                                          const gchar *export_format, GFile *destination_file, gboolean replace_file_if_exists,
-                                          GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataDownloadStream *gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsService *service, const gchar *export_format,
+                                                        GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const gchar *export_format) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
