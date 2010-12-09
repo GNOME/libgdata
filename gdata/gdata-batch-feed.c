@@ -145,8 +145,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (op->type != GDATA_BATCH_OPERATION_DELETION && entry == NULL)
 			goto error;
 
-		if (entry != NULL)
+		if (entry != NULL) {
 			_gdata_batch_operation_run_callback (operation, op, entry, NULL);
+			g_object_unref (entry);
+		}
 
 		g_free (status_reason);
 		xmlBufferFree (status_response);
