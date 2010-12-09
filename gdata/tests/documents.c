@@ -565,7 +565,7 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 static void
 test_update_metadata (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document, *updated_document;
+	GDataDocumentsEntry *document, *new_document, *new_document2, *updated_document;
 	gchar *upload_uri;
 	GError *error = NULL;
 
@@ -582,28 +582,38 @@ test_update_metadata (gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
 
+	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data when
+	 * creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before
+	 * trying this to allow the various Google servers to catch up with each other. */
+	g_usleep (5 * G_USEC_PER_SEC);
+	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                         GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error));
+
+	g_object_unref (new_document);
+
 	/* Change the title */
-	gdata_entry_set_title (GDATA_ENTRY (new_document), "update_metadata_updated_title");
+	gdata_entry_set_title (GDATA_ENTRY (new_document2), "update_metadata_updated_title");
 
 	/* Update the document */
-	updated_document = GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (new_document), NULL, &error));
+	updated_document = GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (new_document2), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (updated_document));
 
 	/* Check for success */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (updated_document)), ==, gdata_entry_get_title (GDATA_ENTRY (new_document)));
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), !=, gdata_entry_get_title (GDATA_ENTRY (document)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (updated_document)), ==, gdata_entry_get_title (GDATA_ENTRY (new_document2)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document2)), !=, gdata_entry_get_title (GDATA_ENTRY (document)));
 
 	g_clear_error (&error);
 	g_object_unref (document);
-	g_object_unref (new_document);
+	g_object_unref (new_document2);
 	g_object_unref (updated_document);
 }
 
 static void
 test_update_metadata_file (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document, *updated_document;
+	GDataDocumentsEntry *document, *new_document, *new_document2, *updated_document;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 	GFile *updated_document_file;
@@ -625,8 +635,18 @@ test_update_metadata_file (gconstpointer service)
 
 	g_object_unref (document);
 
+	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data when
+	 * creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before
+	 * trying this to allow the various Google servers to catch up with each other. */
+	g_usleep (5 * G_USEC_PER_SEC);
+	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                         GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error));
+
+	g_object_unref (new_document);
+
 	/* Change the title of the document */
-	gdata_entry_set_title (GDATA_ENTRY (new_document), "update_metadata_file_updated_title");
+	gdata_entry_set_title (GDATA_ENTRY (new_document2), "update_metadata_file_updated_title");
 
 	/* Prepare the file */
 	updated_document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated.odt");
@@ -636,7 +656,7 @@ test_update_metadata_file (gconstpointer service)
 	g_assert_no_error (error);
 
 	/* Prepare the upload stream */
-	upload_stream = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document,
+	upload_stream = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document2,
 	                                                         g_file_info_get_display_name (file_info), g_file_info_get_content_type (file_info),
 	                                                         &error);
 	g_assert_no_error (error);
@@ -664,17 +684,17 @@ test_update_metadata_file (gconstpointer service)
 	g_object_unref (file_stream);
 
 	/* Check for success */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (updated_document)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document2)), ==, gdata_entry_get_title (GDATA_ENTRY (updated_document)));
 
 	g_clear_error (&error);
 	g_object_unref (updated_document);
-	g_object_unref (new_document);
+	g_object_unref (new_document2);
 }
 
 static void
 test_update_file (gconstpointer service)
 {
-	GDataDocumentsEntry *new_document, *updated_document;
+	GDataDocumentsEntry *new_document, *new_document2, *updated_document;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 	GFile *document_file;
@@ -719,6 +739,16 @@ test_update_file (gconstpointer service)
 
 	g_object_unref (upload_stream);
 
+	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data when
+	 * creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before
+	 * trying this to allow the various Google servers to catch up with each other. */
+	g_usleep (5 * G_USEC_PER_SEC);
+	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                         GDATA_TYPE_DOCUMENTS_PRESENTATION, NULL, &error));
+
+	g_object_unref (new_document);
+
 	/* Update the document */
 
 	/* Get the file info for the updated document */
@@ -728,7 +758,7 @@ test_update_file (gconstpointer service)
 	g_assert_no_error (error);
 
 	/* Prepare the upload stream */
-	upload_stream = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document,
+	upload_stream = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document2,
 	                                                         g_file_info_get_display_name (file_info), g_file_info_get_content_type (file_info),
 	                                                         &error);
 	g_assert_no_error (error);
@@ -757,9 +787,9 @@ test_update_file (gconstpointer service)
 	g_object_unref (upload_stream);
 
 	/* Check for success */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (updated_document)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document2)), ==, gdata_entry_get_title (GDATA_ENTRY (updated_document)));
 
-	g_object_unref (new_document);
+	g_object_unref (new_document2);
 	g_object_unref (updated_document);
 }
 
