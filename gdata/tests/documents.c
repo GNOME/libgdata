@@ -48,6 +48,8 @@ test_authentication (void)
 	g_assert (gdata_service_is_authenticated (GDATA_SERVICE (service)) == TRUE);
 	g_assert_cmpstr (gdata_service_get_username (GDATA_SERVICE (service)), ==, DOCUMENTS_USERNAME);
 	g_assert_cmpstr (gdata_service_get_password (GDATA_SERVICE (service)), ==, PASSWORD);
+
+	g_object_unref (service);
 }
 
 static void
@@ -90,6 +92,7 @@ test_remove_all_documents_and_folders (gconstpointer service)
 		g_clear_error (&error);
 	}
 
+	g_object_unref (query);
 	g_object_unref (feed);
 }
 
@@ -111,6 +114,7 @@ test_query_all_documents_with_folder (gconstpointer service)
 
 	g_clear_error (&error);
 	g_object_unref (feed);
+	g_object_unref (query);
 }
 
 static void
