@@ -388,9 +388,9 @@ test_add_remove_file_from_folder (gconstpointer service)
 	g_assert (check_document_is_in_folder (new_document, new_folder) == TRUE);
 
 	/* Remove the document from the folder */
-	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_remove_document_from_folder (GDATA_DOCUMENTS_SERVICE (service),
-	                                                                                               GDATA_DOCUMENTS_ENTRY (new_document),
-	                                                                                               new_folder, NULL, &error));
+	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_remove_entry_from_folder (GDATA_DOCUMENTS_SERVICE (service),
+	                                                                                            GDATA_DOCUMENTS_ENTRY (new_document),
+	                                                                                            new_folder, NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document2));
 
@@ -476,9 +476,9 @@ test_add_file_folder_and_move (gconstpointer service)
 	g_assert (check_document_is_in_folder (new_document, new_folder) == FALSE);
 
 	/* Move the document from the folder */
-	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_move_document_to_folder (GDATA_DOCUMENTS_SERVICE (service),
-	                                                                                           GDATA_DOCUMENTS_ENTRY (new_document),
-	                                                                                           new_folder, NULL, &error));
+	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_add_entry_to_folder (GDATA_DOCUMENTS_SERVICE (service),
+	                                                                                       GDATA_DOCUMENTS_ENTRY (new_document),
+	                                                                                       new_folder, NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document2));
 

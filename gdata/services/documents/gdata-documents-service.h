@@ -99,12 +99,13 @@ GDataUploadStream *gdata_documents_service_update_document (GDataDocumentsServic
 GDataDocumentsDocument *gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadStream *upload_stream,
                                                                GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-GDataDocumentsEntry *gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *document,
-                                                                      GDataDocumentsFolder *folder, GCancellable *cancellable,
-                                                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-GDataDocumentsEntry *gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *document,
-                                                                          GDataDocumentsFolder *folder, GCancellable *cancellable,
-                                                                          GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataDocumentsEntry *gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry,
+                                                                  GDataDocumentsFolder *folder, GCancellable *cancellable,
+                                                                  GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataDocumentsEntry *gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry,
+                                                                       GDataDocumentsFolder *folder, GCancellable *cancellable,
+                                                                       GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
 gchar *gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS

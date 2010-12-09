@@ -476,41 +476,42 @@ gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadS
 }
 
 /**
- * gdata_documents_service_move_document_to_folder:
+ * gdata_documents_service_add_entry_to_folder:
  * @self: an authenticated #GDataDocumentsService
- * @document: the #GDataDocumentsEntry to move
- * @folder: the #GDataDocumentsFolder to move @document into
+ * @entry: the #GDataDocumentsEntry to move
+ * @folder: the #GDataDocumentsFolder to move @entry into
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Move the given @document to the specified @folder. If the document is already in another folder, it will be added to
- * the new folder, but will also remain in any previous folders.
+ * Add the given @entry to the specified @folder, and return an updated #GDataDocumentsEntry for @entry. If the @entry is already in another folder, it
+ * will be added to the new folder, but will also remain  in its other folders. Note that @entry can be either a #GDataDocumentsDocument or a
+ * #GDataDocumentsFolder.
  *
- * Errors from #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
+ * Errors from #GDataServiceError can be returned for exceptional conditions, as determined by the server.
  *
  * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
- * Since: 0.4.0
+ * Since: 0.8.0
  **/
 GDataDocumentsEntry *
-gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *document, GDataDocumentsFolder *folder,
-                                                 GCancellable *cancellable, GError **error)
+gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
+                                             GCancellable *cancellable, GError **error)
 {
-	GDataDocumentsEntry *new_document;
+	GDataDocumentsEntry *new_entry;
 	gchar *uri, *upload_data;
 	const gchar *folder_id;
 	SoupMessage *message;
 	guint status;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
-	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                     _("You must be authenticated to move documents."));
+		                     _("You must be authenticated to move documents and folders."));
 		return NULL;
 	}
 
@@ -522,7 +523,7 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 	g_free (uri);
 
 	/* Append the data */
-	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (document));
+	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
 
 	/* Send the message */
@@ -542,75 +543,76 @@ gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GD
 		return NULL;
 	}
 
-	/* Parse the XML; and update the document */
+	/* Parse the XML; and update the entry */
 	g_assert (message->response_body->data != NULL);
-	new_document = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (document), message->response_body->data,
-	                                                                   message->response_body->length, error));
+	new_entry = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data,
+	                                                                message->response_body->length, error));
 	g_object_unref (message);
 
-	return new_document;
+	return new_entry;
 }
 
 /**
- * gdata_documents_service_remove_document_from_folder:
+ * gdata_documents_service_remove_entry_from_folder:
  * @self: a #GDataDocumentsService
- * @document: the #GDataDocumentsEntry to remove
- * @folder: the #GDataDocumentsFolder from which we should remove @document
+ * @entry: the #GDataDocumentsEntry to remove
+ * @folder: the #GDataDocumentsFolder from which we should remove @entry
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Remove the #GDataDocumentsEntry @document from the GDataDocumentsFolder @folder, and updates the document entry @document.
+ * Remove the given @entry from @folder, and return an updated #GDataDocumentsEntry for @entry. @entry will remain a member of any other folders it's
+ * currently in. Note that @entry can be either a #GDataDocumentsDocument or a #GDataDocumentsFolder.
  *
- * Errors from #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
+ * Errors from #GDataServiceError can be returned for exceptional conditions, as determined by the server.
  *
  * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
- * Since: 0.4.0
+ * Since: 0.8.0
  **/
 GDataDocumentsEntry *
-gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *document, GDataDocumentsFolder *folder,
-                                                     GCancellable *cancellable, GError **error)
+gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
+                                                  GCancellable *cancellable, GError **error)
 {
-	const gchar *folder_id, *document_id;
+	const gchar *folder_id, *entry_id;
 	SoupMessage *message;
 	guint status;
 	gchar *uri;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
-	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                     _("You must be authenticated to move documents."));
+		                     _("You must be authenticated to move documents and folders."));
 		return NULL;
 	}
 
 	/* Get the document ID */
 	folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
-	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (document));
+	entry_id = gdata_documents_entry_get_document_id (entry);
 	g_assert (folder_id != NULL);
-	g_assert (document_id != NULL);
+	g_assert (entry_id != NULL);
 
-	if (GDATA_IS_DOCUMENTS_PRESENTATION (document)) {
+	if (GDATA_IS_DOCUMENTS_PRESENTATION (entry)) {
 		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s",
-		                                folder_id, document_id);
-	} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (document)) {
+		                                folder_id, entry_id);
+	} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (entry)) {
 		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s",
-		                                folder_id, document_id);
-	} else if (GDATA_IS_DOCUMENTS_TEXT (document)) {
+		                                folder_id, entry_id);
+	} else if (GDATA_IS_DOCUMENTS_TEXT (entry)) {
 		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s",
-		                                folder_id, document_id);
-	} else if (GDATA_IS_DOCUMENTS_FOLDER (document)) {
+		                                folder_id, entry_id);
+	} else if (GDATA_IS_DOCUMENTS_FOLDER (entry)) {
 		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s",
-		                                folder_id, document_id);
+		                                folder_id, entry_id);
 	} else {
 		g_assert_not_reached ();
 	}
 
-	message = _gdata_service_build_message (GDATA_SERVICE (self), SOUP_METHOD_DELETE, uri, gdata_entry_get_etag (GDATA_ENTRY (document)), TRUE);
+	message = _gdata_service_build_message (GDATA_SERVICE (self), SOUP_METHOD_DELETE, uri, gdata_entry_get_etag (GDATA_ENTRY (entry)), TRUE);
 	g_free (uri);
 
 	/* Send the message */
@@ -634,8 +636,8 @@ gdata_documents_service_remove_document_from_folder (GDataDocumentsService *self
 
 	/* Google's servers don't return an updated copy of the entry, so we have to query for it again.
 	 * See: http://code.google.com/p/gdata-issues/issues/detail?id=1380 */
-	return GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (self), gdata_entry_get_id (GDATA_ENTRY (document)), NULL,
-	                                                                G_OBJECT_TYPE (document), cancellable, error));
+	return GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (self), gdata_entry_get_id (GDATA_ENTRY (entry)), NULL,
+	                                                                G_OBJECT_TYPE (entry), cancellable, error));
 }
 
 /**
