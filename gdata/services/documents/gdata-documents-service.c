@@ -749,6 +749,116 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	                                                                G_OBJECT_TYPE (entry), cancellable, error));
 }
 
+typedef struct {
+	GDataDocumentsEntry *entry;
+	GDataDocumentsFolder *folder;
+} RemoveEntryFromFolderData;
+
+static void
+remove_entry_from_folder_data_free (RemoveEntryFromFolderData *data)
+{
+	g_object_unref (data->entry);
+	g_object_unref (data->folder);
+	g_slice_free (RemoveEntryFromFolderData, data);
+}
+
+static void
+remove_entry_from_folder_thread (GSimpleAsyncResult *result, GDataDocumentsService *service, GCancellable *cancellable)
+{
+	GDataDocumentsEntry *updated_entry;
+	RemoveEntryFromFolderData *data;
+	GError *error = NULL;
+
+	data = g_simple_async_result_get_op_res_gpointer (result);
+
+	/* Remove the entry from the folder and return */
+	updated_entry = gdata_documents_service_remove_entry_from_folder (service, data->entry, data->folder, cancellable, &error);
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+		return;
+	}
+
+	/* Return the updated entry */
+	g_simple_async_result_set_op_res_gpointer (result, updated_entry, (GDestroyNotify) g_object_unref);
+}
+
+/**
+ * gdata_documents_service_remove_entry_from_folder_async:
+ * @self: a #GDataDocumentsService
+ * @entry: the #GDataDocumentsEntry to remove from @folder
+ * @folder: the #GDataDocumentsFolder to remove @entry from
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the operation is finished, or %NULL
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Remove the given @entry from the specified @folder. @self, @entry and @folder are all reffed when this function is called, so can safely be unreffed
+ * after this function returns.
+ *
+ * For more details, see gdata_documents_service_remove_entry_from_folder(), which is the synchronous version of this function.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_documents_service_remove_entry_from_folder_finish() to get the
+ * results of the operation.
+ *
+ * Since: 0.8.0
+ **/
+void
+gdata_documents_service_remove_entry_from_folder_async (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
+                                                        GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+	RemoveEntryFromFolderData *data;
+
+	g_return_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self));
+	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry));
+	g_return_if_fail (GDATA_IS_DOCUMENTS_FOLDER (folder));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	data = g_slice_new (RemoveEntryFromFolderData);
+	data->entry = g_object_ref (entry);
+	data->folder = g_object_ref (folder);
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_documents_service_remove_entry_from_folder_async);
+	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) remove_entry_from_folder_data_free);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) remove_entry_from_folder_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_documents_service_remove_entry_from_folder_finish:
+ * @self: a #GDataDocumentsService
+ * @async_result: a #GAsyncResult
+ * @error: a #GError, or %NULL
+ *
+ * Finish an asynchronous operation to remove a #GDataDocumentsEntry from a folder started with
+ * gdata_documents_service_remove_entry_from_folder_async().
+ *
+ * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.8.0
+ **/
+GDataDocumentsEntry *
+gdata_documents_service_remove_entry_from_folder_finish (GDataDocumentsService *self, GAsyncResult *async_result, GError **error)
+{
+	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	GDataDocumentsEntry *entry;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_documents_service_remove_entry_from_folder_async);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE)
+		return NULL;
+
+	entry = g_simple_async_result_get_op_res_gpointer (result);
+	if (entry != NULL)
+		return g_object_ref (entry);
+
+	g_assert_not_reached ();
+}
+
 /**
  * gdata_documents_service_get_upload_uri:
  * @folder: (allow-none): the #GDataDocumentsFolder into which to upload the document, or %NULL

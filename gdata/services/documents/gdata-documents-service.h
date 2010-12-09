@@ -110,6 +110,10 @@ GDataDocumentsEntry *gdata_documents_service_add_entry_to_folder_finish (GDataDo
 GDataDocumentsEntry *gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry,
                                                                        GDataDocumentsFolder *folder, GCancellable *cancellable,
                                                                        GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_documents_service_remove_entry_from_folder_async (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
+                                                             GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+GDataDocumentsEntry *gdata_documents_service_remove_entry_from_folder_finish (GDataDocumentsService *self, GAsyncResult *async_result,
+                                                                              GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 gchar *gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
