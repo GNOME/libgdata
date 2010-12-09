@@ -47,6 +47,7 @@
 #include <gdata/services/documents/gdata-documents-text.h>
 #include <gdata/services/documents/gdata-documents-folder.h>
 
+static void gdata_documents_query_dispose (GObject *object);
 static void gdata_documents_query_finalize (GObject *object);
 static void gdata_documents_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_documents_query_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -82,6 +83,7 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 
 	gobject_class->get_property = gdata_documents_query_get_property;
 	gobject_class->set_property = gdata_documents_query_set_property;
+	gobject_class->dispose = gdata_documents_query_dispose;
 	gobject_class->finalize = gdata_documents_query_finalize;
 
 	query_class->get_query_uri = get_query_uri;
@@ -157,6 +159,25 @@ static void
 gdata_documents_query_init (GDataDocumentsQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_QUERY, GDataDocumentsQueryPrivate);
+}
+
+static void
+gdata_documents_query_dispose (GObject *object)
+{
+	GList *i;
+	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY (object)->priv;
+
+	for (i = priv->collaborator_addresses; i != NULL; i = i->next)
+		g_object_unref (i->data);
+	g_list_free (priv->collaborator_addresses);
+	priv->collaborator_addresses = NULL;
+
+	for (i = priv->reader_addresses; i != NULL; i = i->next)
+		g_object_unref (i->data);
+	g_list_free (priv->reader_addresses);
+	priv->reader_addresses = NULL;
+
+	G_OBJECT_CLASS (gdata_documents_query_parent_class)->dispose (object);
 }
 
 static void
