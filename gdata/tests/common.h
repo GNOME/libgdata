@@ -40,6 +40,9 @@ guint gdata_test_batch_operation_insertion (GDataBatchOperation *operation, GDat
 guint gdata_test_batch_operation_update (GDataBatchOperation *operation, GDataEntry *entry, GDataEntry **updated_entry, GError **error);
 guint gdata_test_batch_operation_deletion (GDataBatchOperation *operation, GDataEntry *entry, GError **error);
 
+gboolean gdata_test_batch_operation_run (GDataBatchOperation *operation, GCancellable *cancellable, GError **error);
+gboolean gdata_test_batch_operation_run_finish (GDataBatchOperation *operation, GAsyncResult *async_result, GError **error);
+
 G_END_DECLS
 
 #endif /* !GDATA_TEST_COMMON_H */

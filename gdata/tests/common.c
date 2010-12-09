@@ -84,6 +84,7 @@ gdata_test_internet (void)
 }
 
 typedef struct {
+	GDataBatchOperation *operation;
 	guint op_id;
 	GDataBatchOperationType operation_type;
 	GDataEntry *entry;
@@ -96,6 +97,8 @@ typedef struct {
 static void
 batch_operation_data_free (BatchOperationData *data)
 {
+	if (data->operation != NULL)
+		g_object_unref (data->operation);
 	if (data->entry != NULL)
 		g_object_unref (data->entry);
 	g_free (data->id);
@@ -109,6 +112,10 @@ static void
 test_batch_operation_query_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
 {
 	BatchOperationData *data = user_data;
+
+	/* Mark the callback as having been run */
+	g_object_set_data (G_OBJECT (data->operation), "test::called-callbacks",
+	                   GUINT_TO_POINTER (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (data->operation), "test::called-callbacks")) + 1));
 
 	/* Check that the @operation_type and @operation_id matches those stored in @data */
 	g_assert_cmpuint (operation_id, ==, data->op_id);
@@ -159,6 +166,7 @@ gdata_test_batch_operation_query (GDataBatchOperation *operation, const gchar *i
 	BatchOperationData *data;
 
 	data = g_slice_new (BatchOperationData);
+	data->operation = g_object_ref (operation);
 	data->op_id = 0;
 	data->operation_type = GDATA_BATCH_OPERATION_QUERY;
 	data->entry = g_object_ref (entry);
@@ -171,6 +179,10 @@ gdata_test_batch_operation_query (GDataBatchOperation *operation, const gchar *i
 
 	data->op_id = op_id;
 
+	/* We expect a callback to be called when the operation is run */
+	g_object_set_data (G_OBJECT (operation), "test::expected-callbacks",
+	                   GUINT_TO_POINTER (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (operation), "test::expected-callbacks")) + 1));
+
 	return op_id;
 }
 
@@ -179,6 +191,10 @@ test_batch_operation_insertion_update_cb (guint operation_id, GDataBatchOperatio
                                           gpointer user_data)
 {
 	BatchOperationData *data = user_data;
+
+	/* Mark the callback as having been run */
+	g_object_set_data (G_OBJECT (data->operation), "test::called-callbacks",
+	                   GUINT_TO_POINTER (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (data->operation), "test::called-callbacks")) + 1));
 
 	/* Check that the @operation_type and @operation_id matches those stored in @data */
 	g_assert_cmpuint (operation_id, ==, data->op_id);
@@ -225,6 +241,7 @@ gdata_test_batch_operation_insertion (GDataBatchOperation *operation, GDataEntry
 	BatchOperationData *data;
 
 	data = g_slice_new (BatchOperationData);
+	data->operation = g_object_ref (operation);
 	data->op_id = 0;
 	data->operation_type = GDATA_BATCH_OPERATION_INSERTION;
 	data->entry = g_object_ref (entry);
@@ -237,6 +254,10 @@ gdata_test_batch_operation_insertion (GDataBatchOperation *operation, GDataEntry
 
 	data->op_id = op_id;
 
+	/* We expect a callback to be called when the operation is run */
+	g_object_set_data (G_OBJECT (operation), "test::expected-callbacks",
+	                   GUINT_TO_POINTER (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (operation), "test::expected-callbacks")) + 1));
+
 	return op_id;
 }
 
@@ -247,6 +268,7 @@ gdata_test_batch_operation_update (GDataBatchOperation *operation, GDataEntry *e
 	BatchOperationData *data;
 
 	data = g_slice_new (BatchOperationData);
+	data->operation = g_object_ref (operation);
 	data->op_id = 0;
 	data->operation_type = GDATA_BATCH_OPERATION_UPDATE;
 	data->entry = g_object_ref (entry);
@@ -259,6 +281,10 @@ gdata_test_batch_operation_update (GDataBatchOperation *operation, GDataEntry *e
 
 	data->op_id = op_id;
 
+	/* We expect a callback to be called when the operation is run */
+	g_object_set_data (G_OBJECT (operation), "test::expected-callbacks",
+	                   GUINT_TO_POINTER (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (operation), "test::expected-callbacks")) + 1));
+
 	return op_id;
 }
 
@@ -266,6 +292,10 @@ static void
 test_batch_operation_deletion_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
 {
 	BatchOperationData *data = user_data;
+
+	/* Mark the callback as having been run */
+	g_object_set_data (G_OBJECT (data->operation), "test::called-callbacks",
+	                   GUINT_TO_POINTER (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (data->operation), "test::called-callbacks")) + 1));
 
 	/* Check that the @operation_type and @operation_id matches those stored in @data */
 	g_assert_cmpuint (operation_id, ==, data->op_id);
@@ -291,6 +321,7 @@ gdata_test_batch_operation_deletion (GDataBatchOperation *operation, GDataEntry 
 	BatchOperationData *data;
 
 	data = g_slice_new (BatchOperationData);
+	data->operation = g_object_ref (operation);
 	data->op_id = 0;
 	data->operation_type = GDATA_BATCH_OPERATION_DELETION;
 	data->entry = g_object_ref (entry);
@@ -303,5 +334,33 @@ gdata_test_batch_operation_deletion (GDataBatchOperation *operation, GDataEntry 
 
 	data->op_id = op_id;
 
+	/* We expect a callback to be called when the operation is run */
+	g_object_set_data (G_OBJECT (operation), "test::expected-callbacks",
+	                   GUINT_TO_POINTER (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (operation), "test::expected-callbacks")) + 1));
+
 	return op_id;
+}
+
+gboolean
+gdata_test_batch_operation_run (GDataBatchOperation *operation, GCancellable *cancellable, GError **error)
+{
+	gboolean success = gdata_batch_operation_run (operation, cancellable, error);
+
+	/* Assert that callbacks were called exactly once for each operation in the batch operation */
+	g_assert_cmpuint (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (operation), "test::expected-callbacks")), ==,
+	                  GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (operation), "test::called-callbacks")));
+
+	return success;
+}
+
+gboolean
+gdata_test_batch_operation_run_finish (GDataBatchOperation *operation, GAsyncResult *async_result, GError **error)
+{
+	gboolean success = gdata_batch_operation_run_finish (operation, async_result, error);
+
+	/* Assert that callbacks were called exactly once for each operation in the batch operation */
+	g_assert_cmpuint (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (operation), "test::expected-callbacks")), ==,
+	                  GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (operation), "test::called-callbacks")));
+
+	return success;
 }

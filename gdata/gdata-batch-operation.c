@@ -298,13 +298,16 @@ _gdata_batch_operation_get_operation (GDataBatchOperation *self, guint id)
 }
 
 /* Run a user-supplied callback for a #BatchOperation whose return value we've just processed. This is designed to be used in an idle handler, so
- * that the callback is run in the main thread. It should not be called if the user-supplied callback is %NULL. */
+ * that the callback is run in the main thread. It can be called if the user-supplied callback is %NULL (e.g. in the case that the callback's been
+ * called before). */
 static gboolean
 run_callback_cb (BatchOperation *op)
 {
-	/* We do allow op->callback to be unset, but in that case run_callback_cb() shouldn't be being called */
-	g_assert (op->callback != NULL);
-	op->callback (op->id, op->type, op->entry, op->error, op->user_data);
+	if (op->callback != NULL)
+		op->callback (op->id, op->type, op->entry, op->error, op->user_data);
+
+	/* Unset the callback so that it can't be called again */
+	op->callback = NULL;
 
 	return FALSE;
 }
@@ -549,6 +552,9 @@ run_cb (gpointer key, BatchOperation *op, GDataFeed *feed)
  * callbacks synchronously (i.e. before gdata_batch_operation_run() returns, and in the same thread that called gdata_batch_operation_run()) as the
  * server returns results for each operation.
  *
+ * The callbacks for all of the operations in the batch operation are always guaranteed to be called, even if the batch operation as a whole fails.
+ * Each callback will be called exactly once for each time gdata_batch_operation_run() is called.
+ *
  * The return value of the function indicates whether the overall batch operation was successful, and doesn't indicate the status of any of the
  * operations it comprises. gdata_batch_operation_run() could return %TRUE even if all of its operations failed.
  *
@@ -568,6 +574,10 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	GTimeVal updated;
 	gchar *upload_data;
 	guint status;
+	GHashTableIter iter;
+	gpointer op_id;
+	BatchOperation *op;
+	GError *child_error = NULL;
 
 	g_return_val_if_fail (GDATA_IS_BATCH_OPERATION (self), FALSE);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
@@ -590,33 +600,43 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	priv->has_run = TRUE;
 
 	/* Send the message */
-	status = _gdata_service_send_message (priv->service, message, cancellable, error);
+	status = _gdata_service_send_message (priv->service, message, cancellable, &child_error);
 
-	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
-		/* Redirect error or cancelled */
+	if (status != SOUP_STATUS_OK) {
+		/* Iff status is SOUP_STATUS_NONE or SOUP_STATUS_CANCELLED, child_error has already been set */
+		if (status != SOUP_STATUS_NONE && status != SOUP_STATUS_CANCELLED) {
+			/* Error */
+			GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (priv->service);
+			g_assert (klass->parse_error_response != NULL);
+			klass->parse_error_response (priv->service, GDATA_OPERATION_BATCH, status, message->reason_phrase, message->response_body->data,
+			                             message->response_body->length, &child_error);
+		}
 		g_object_unref (message);
-		return FALSE;
-	} else if (status != SOUP_STATUS_OK) {
-		/* Error */
-		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (priv->service);
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (priv->service, GDATA_OPERATION_BATCH, status, message->reason_phrase, message->response_body->data,
-		                             message->response_body->length, error);
-		g_object_unref (message);
-		return FALSE;
+
+		goto error;
 	}
 
 	/* Parse the XML; GDataBatchFeed will fire off the relevant callbacks */
 	g_assert (message->response_body->data != NULL);
 	feed = GDATA_FEED (_gdata_parsable_new_from_xml (GDATA_TYPE_BATCH_FEED, message->response_body->data, message->response_body->length,
-	                                                 self, error));
+	                                                 self, &child_error));
 	g_object_unref (message);
 
 	if (feed == NULL)
-		return FALSE;
+		goto error;
 	g_object_unref (feed);
 
 	return TRUE;
+
+error:
+	/* Call the callbacks for each of our operations to notify them of the error */
+	g_hash_table_iter_init (&iter, priv->operations);
+	while (g_hash_table_iter_next (&iter, &op_id, (gpointer*) &op) == TRUE)
+		_gdata_batch_operation_run_callback (self, op, NULL, g_error_copy (child_error));
+
+	g_propagate_error (error, child_error);
+
+	return FALSE;
 }
 
 static void
@@ -688,6 +708,8 @@ gdata_batch_operation_run_async (GDataBatchOperation *self, GCancellable *cancel
 gboolean
 gdata_batch_operation_run_finish (GDataBatchOperation *self, GAsyncResult *async_result, GError **error)
 {
+	GDataBatchOperationPrivate *priv = self->priv;
+	GError *child_error = NULL;
 	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
 
 	g_return_val_if_fail (GDATA_IS_BATCH_OPERATION (self), FALSE);
@@ -696,8 +718,29 @@ gdata_batch_operation_run_finish (GDataBatchOperation *self, GAsyncResult *async
 
 	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_batch_operation_run_async);
 
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
+	if (g_simple_async_result_propagate_error (result, &child_error) == TRUE) {
+		if (priv->has_run == FALSE) {
+			GHashTableIter iter;
+			gpointer op_id;
+			BatchOperation *op;
+
+			/* Temporarily mark the operation as synchronous so that the callbacks get dispatched in this thread */
+			priv->is_async = FALSE;
+
+			/* If has_run hasn't been set, the call to gdata_batch_operation_run() was never made in the thread, and so none of the
+			 * operations' callbacks have been called. Call the callbacks for each of our operations to notify them of the error.
+			 * If has_run has been set, gdata_batch_operation_run() has already done this for us. */
+			g_hash_table_iter_init (&iter, priv->operations);
+			while (g_hash_table_iter_next (&iter, &op_id, (gpointer*) &op) == TRUE)
+				_gdata_batch_operation_run_callback (self, op, NULL, g_error_copy (child_error));
+
+			priv->is_async = TRUE;
+		}
+
+		g_propagate_error (error, child_error);
+
 		return FALSE;
+	}
 
 	return g_simple_async_result_get_op_res_gboolean (result);
 }

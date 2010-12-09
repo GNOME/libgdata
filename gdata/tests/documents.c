@@ -1125,7 +1125,7 @@ test_batch (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (doc), "My First Document");
 
 	gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (doc), &inserted_entry, NULL);
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_clear_error (&error);
@@ -1142,7 +1142,7 @@ test_batch (gconstpointer service)
 	                                           NULL);
 	g_assert_cmpuint (op_id, !=, op_id2);
 
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_clear_error (&error);
@@ -1155,7 +1155,7 @@ test_batch (gconstpointer service)
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry,
 	                                  &inserted_entry_updated, NULL);
 
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_clear_error (&error);
@@ -1169,7 +1169,7 @@ test_batch (gconstpointer service)
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry2), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry2,
 	                                  &inserted_entry2_updated, NULL);
 
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_clear_error (&error);
@@ -1187,7 +1187,7 @@ test_batch (gconstpointer service)
 	g_assert_cmpuint (op_id, !=, op_id3);
 	g_assert_cmpuint (op_id2, !=, op_id3);
 
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
@@ -1203,7 +1203,7 @@ test_batch (gconstpointer service)
 	 * to test error handling */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
 	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT);
@@ -1216,7 +1216,7 @@ test_batch (gconstpointer service)
 	/* Run a final batch operation to delete the second entry */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
 	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_clear_error (&error);
@@ -1255,7 +1255,10 @@ test_batch_async_cb (GDataBatchOperation *operation, GAsyncResult *async_result,
 {
 	GError *error = NULL;
 
-	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == TRUE);
+	/* Clear all pending events (such as callbacks for the operations) */
+	while (g_main_context_iteration (NULL, FALSE) == TRUE);
+
+	g_assert (gdata_test_batch_operation_run_finish (operation, async_result, &error) == TRUE);
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
@@ -1288,7 +1291,10 @@ test_batch_async_cancellation_cb (GDataBatchOperation *operation, GAsyncResult *
 {
 	GError *error = NULL;
 
-	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == FALSE);
+	/* Clear all pending events (such as callbacks for the operations) */
+	while (g_main_context_iteration (NULL, FALSE) == TRUE);
+
+	g_assert (gdata_test_batch_operation_run_finish (operation, async_result, &error) == FALSE);
 	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
 	g_clear_error (&error);
 
@@ -1302,11 +1308,12 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	guint op_id;
 	GMainLoop *main_loop;
 	GCancellable *cancellable;
+	GError *error = NULL;
 
 	/* Run an async query operation on the document */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
 	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), GDATA_TYPE_DOCUMENTS_TEXT,
-	                                          GDATA_ENTRY (data->new_doc), NULL, NULL);
+	                                          GDATA_ENTRY (data->new_doc), NULL, &error);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 	cancellable = g_cancellable_new ();
@@ -1315,6 +1322,10 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_cancellable_cancel (cancellable); /* this should cancel the operation before it even starts, as we haven't run the main loop yet */
 
 	g_main_loop_run (main_loop);
+
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_clear_error (&error);
+
 	g_main_loop_unref (main_loop);
 	g_object_unref (cancellable);
 	g_object_unref (operation);
