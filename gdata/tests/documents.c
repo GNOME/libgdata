@@ -317,101 +317,13 @@ test_upload_file_get_entry (gconstpointer service)
 	g_object_unref (new_presentation);
 }
 
-static void
-test_add_remove_file_from_folder (gconstpointer service)
-{
-	GDataDocumentsDocument *document, *new_document, *new_document2;
-	GDataDocumentsFolder *folder, *new_folder;
-	GDataUploadStream *upload_stream;
-	GFile *document_file;
-	GFileInfo *file_info;
-	GFileInputStream *file_stream;
-	gchar *upload_uri;
-	GError *error = NULL;
-
-	g_assert (service != NULL);
-
-	folder = gdata_documents_folder_new (NULL);
-	gdata_entry_set_title (GDATA_ENTRY (folder), "add_remove_from_folder_folder");
-
-	/* Insert the folder */
-	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (folder), NULL, &error));
-	g_free (upload_uri);
-
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
-
-	/* Check for success */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_folder)), ==, gdata_entry_get_title (GDATA_ENTRY (folder)));
-
-	g_object_unref (folder);
-
-	/* Prepare the file */
-	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
-	document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_presentation_new (NULL));
-	gdata_entry_set_title (GDATA_ENTRY (document), "add_remove_from_folder_presentation");
-
-	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
-	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
-	g_assert_no_error (error);
-
-	/* Prepare the upload stream */
-	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
-	                                                         g_file_info_get_content_type (file_info), new_folder, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
-
-	g_object_unref (file_info);
-
-	/* Open the file */
-	file_stream = g_file_read (document_file, NULL, &error);
-	g_assert_no_error (error);
-
-	g_object_unref (document_file);
-
-	/* Upload the document into the new folder */
-	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
-	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
-	g_assert_no_error (error);
-
-	/* Finish the upload */
-	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
-
-	g_object_unref (upload_stream);
-	g_object_unref (file_stream);
-
-	/* Check the uploaded document is correct */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
-	g_assert (check_document_is_in_folder (new_document, new_folder) == TRUE);
-
-	/* Remove the document from the folder */
-	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_remove_entry_from_folder (GDATA_DOCUMENTS_SERVICE (service),
-	                                                                                            GDATA_DOCUMENTS_ENTRY (new_document),
-	                                                                                            new_folder, NULL, &error));
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document2));
-
-	/* Check it's still the same document */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document2)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
-	g_assert (check_document_is_in_folder (new_document2, new_folder) == FALSE);
-
-	g_clear_error (&error);
-	g_object_unref (document);
-	g_object_unref (new_document);
-	g_object_unref (new_document2);
-	g_object_unref (new_folder);
-}
-
 typedef struct {
 	GDataDocumentsFolder *folder;
 	GDataDocumentsDocument *document;
-} FoldersAddToFolderData;
+} FoldersData;
 
 static void
-setup_folders_add_to_folder (FoldersAddToFolderData *data, gconstpointer service)
+setup_folders (FoldersData *data, GDataDocumentsService *service, gboolean initially_in_folder)
 {
 	GDataDocumentsFolder *folder;
 	GDataDocumentsDocument *document;
@@ -446,8 +358,9 @@ setup_folders_add_to_folder (FoldersAddToFolderData *data, gconstpointer service
 	g_assert_no_error (error);
 
 	/* Prepare the upload stream */
-	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
-	                                                         g_file_info_get_content_type (file_info), NULL, &error);
+	upload_stream = gdata_documents_service_upload_document (service, document, g_file_info_get_display_name (file_info),
+	                                                         g_file_info_get_content_type (file_info),
+	                                                         (initially_in_folder == TRUE) ? data->folder : NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -460,13 +373,13 @@ setup_folders_add_to_folder (FoldersAddToFolderData *data, gconstpointer service
 
 	g_object_unref (document_file);
 
-	/* Upload the document (but not into the new folder; we'll move it there next) */
+	/* Upload the document */
 	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
 	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
 	g_assert_no_error (error);
 
 	/* Finish the upload */
-	data->document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
+	data->document = gdata_documents_service_finish_upload (service, upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->document));
 
@@ -475,7 +388,13 @@ setup_folders_add_to_folder (FoldersAddToFolderData *data, gconstpointer service
 }
 
 static void
-teardown_folders_add_to_folder (FoldersAddToFolderData *data, gconstpointer service)
+setup_folders_add_to_folder (FoldersData *data, gconstpointer service)
+{
+	setup_folders (data, GDATA_DOCUMENTS_SERVICE (service), FALSE);
+}
+
+static void
+teardown_folders_add_to_folder (FoldersData *data, gconstpointer service)
 {
 	GDataEntry *entry;
 
@@ -499,7 +418,7 @@ teardown_folders_add_to_folder (FoldersAddToFolderData *data, gconstpointer serv
 }
 
 static void
-test_folders_add_to_folder (FoldersAddToFolderData *data, gconstpointer service)
+test_folders_add_to_folder (FoldersData *data, gconstpointer service)
 {
 	GDataDocumentsDocument *new_document;
 	GError *error = NULL;
@@ -521,26 +440,26 @@ test_folders_add_to_folder (FoldersAddToFolderData *data, gconstpointer service)
 }
 
 typedef struct {
-	FoldersAddToFolderData data;
+	FoldersData data;
 	GMainLoop *main_loop;
-} FoldersAddToFolderAsyncData;
+} FoldersAsyncData;
 
 static void
-setup_folders_add_to_folder_async (FoldersAddToFolderAsyncData *data, gconstpointer service)
+setup_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
 {
-	setup_folders_add_to_folder ((FoldersAddToFolderData*) data, service);
+	setup_folders_add_to_folder ((FoldersData*) data, service);
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 }
 
 static void
-teardown_folders_add_to_folder_async (FoldersAddToFolderAsyncData *data, gconstpointer service)
+teardown_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
 {
 	g_main_loop_unref (data->main_loop);
-	teardown_folders_add_to_folder ((FoldersAddToFolderData*) data, service);
+	teardown_folders_add_to_folder ((FoldersData*) data, service);
 }
 
 static void
-test_folders_add_to_folder_async_cb (GDataDocumentsService *service, GAsyncResult *async_result, FoldersAddToFolderAsyncData *data)
+test_folders_add_to_folder_async_cb (GDataDocumentsService *service, GAsyncResult *async_result, FoldersAsyncData *data)
 {
 	GDataDocumentsEntry *entry;
 	GError *error = NULL;
@@ -560,7 +479,7 @@ test_folders_add_to_folder_async_cb (GDataDocumentsService *service, GAsyncResul
 }
 
 static void
-test_folders_add_to_folder_async (FoldersAddToFolderAsyncData *data, gconstpointer service)
+test_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
 {
 	/* Add the document to the folder asynchronously */
 	gdata_documents_service_add_entry_to_folder_async (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (data->data.document),
@@ -569,7 +488,7 @@ test_folders_add_to_folder_async (FoldersAddToFolderAsyncData *data, gconstpoint
 }
 
 static void
-test_folders_add_to_folder_cancellation_cb (GDataDocumentsService *service, GAsyncResult *async_result, FoldersAddToFolderAsyncData *data)
+test_folders_add_to_folder_cancellation_cb (GDataDocumentsService *service, GAsyncResult *async_result, FoldersAsyncData *data)
 {
 	GDataDocumentsEntry *entry;
 	GError *error = NULL;
@@ -590,7 +509,7 @@ test_folders_add_to_folder_cancellation_cancel_cb (GCancellable *cancellable)
 }
 
 static void
-test_folders_add_to_folder_cancellation (FoldersAddToFolderAsyncData *data, gconstpointer service)
+test_folders_add_to_folder_cancellation (FoldersAsyncData *data, gconstpointer service)
 {
 	GCancellable *cancellable = g_cancellable_new ();
 	g_timeout_add (1, (GSourceFunc) test_folders_add_to_folder_cancellation_cancel_cb, cancellable);
@@ -602,6 +521,40 @@ test_folders_add_to_folder_cancellation (FoldersAddToFolderAsyncData *data, gcon
 	g_main_loop_run (data->main_loop);
 
 	g_object_unref (cancellable);
+}
+
+static void
+setup_folders_remove_from_folder (FoldersData *data, gconstpointer service)
+{
+	setup_folders (data, GDATA_DOCUMENTS_SERVICE (service), TRUE);
+}
+
+static void
+teardown_folders_remove_from_folder (FoldersData *data, gconstpointer service)
+{
+	teardown_folders_add_to_folder (data, service);
+}
+
+static void
+test_folders_remove_from_folder (FoldersData *data, gconstpointer service)
+{
+	GDataDocumentsDocument *new_document;
+	GError *error = NULL;
+
+	g_assert (service != NULL);
+
+	/* Remove the document from the folder */
+	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_remove_entry_from_folder (GDATA_DOCUMENTS_SERVICE (service),
+	                                                                                           GDATA_DOCUMENTS_ENTRY (data->document),
+	                                                                                           data->folder, NULL, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
+
+	/* Check it's still the same document */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (data->document)));
+	g_assert (check_document_is_in_folder (new_document, data->folder) == FALSE);
+
+	g_object_unref (new_document);
 }
 
 static void
@@ -1333,14 +1286,14 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/documents/query/all_documents", service, test_query_all_documents);
 		g_test_add_data_func ("/documents/query/all_documents_async", service, test_query_all_documents_async);
 
-		g_test_add ("/documents/folders/add_to_folder", FoldersAddToFolderData, service, setup_folders_add_to_folder,
+		g_test_add ("/documents/folders/add_to_folder", FoldersData, service, setup_folders_add_to_folder,
 		            test_folders_add_to_folder, teardown_folders_add_to_folder);
-		g_test_add ("/documents/folders/add_to_folder/async", FoldersAddToFolderAsyncData, service, setup_folders_add_to_folder_async,
+		g_test_add ("/documents/folders/add_to_folder/async", FoldersAsyncData, service, setup_folders_add_to_folder_async,
 		            test_folders_add_to_folder_async, teardown_folders_add_to_folder_async);
-		g_test_add ("/documents/folders/add_to_folder/cancellation", FoldersAddToFolderAsyncData, service, setup_folders_add_to_folder_async,
+		g_test_add ("/documents/folders/add_to_folder/cancellation", FoldersAsyncData, service, setup_folders_add_to_folder_async,
 		            test_folders_add_to_folder_cancellation, teardown_folders_add_to_folder_async);
-		g_test_add_data_func ("/documents/move/remove_from_folder", service, test_add_remove_file_from_folder);
-		/*g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);*/
+		g_test_add ("/documents/folders/remove_from_folder", FoldersData, service, setup_folders_remove_from_folder,
+		            test_folders_remove_from_folder, teardown_folders_remove_from_folder);
 
 		g_test_add_data_func ("/documents/batch", service, test_batch);
 		g_test_add ("/documents/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
