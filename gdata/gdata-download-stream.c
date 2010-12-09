@@ -138,6 +138,10 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 *
 	 * The content type of the file being downloaded.
 	 *
+	 * Note that change notifications for this property (#GObject::notify emissions) may be emitted in threads other than the one which created
+	 * the #GDataDownloadStream. It is the client's responsibility to ensure that any notification signal handlers are either multi-thread safe
+	 * or marshal the notification to the thread which owns the #GDataDownloadStream as appropriate.
+	 *
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE,
@@ -150,6 +154,10 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * GDataDownloadStream:content-length:
 	 *
 	 * The length (in bytes) of the file being downloaded.
+	 *
+	 * Note that change notifications for this property (#GObject::notify emissions) may be emitted in threads other than the one which created
+	 * the #GDataDownloadStream. It is the client's responsibility to ensure that any notification signal handlers are either multi-thread safe
+	 * or marshal the notification to the thread which owns the #GDataDownloadStream as appropriate.
 	 *
 	 * Since: 0.5.0
 	 **/
@@ -408,19 +416,6 @@ gdata_download_stream_truncate (GSeekable *seekable, goffset offset, GCancellabl
 	return FALSE;
 }
 
-static gboolean
-notify_content_data_cb (GObject *download_stream)
-{
-	g_object_freeze_notify (download_stream);
-	g_object_notify (download_stream, "content-length");
-	g_object_notify (download_stream, "content-type");
-	g_object_thaw_notify (download_stream);
-
-	g_object_unref (download_stream);
-
-	return FALSE;
-}
-
 static void
 got_headers_cb (SoupMessage *message, GDataDownloadStream *self)
 {
@@ -434,8 +429,11 @@ got_headers_cb (SoupMessage *message, GDataDownloadStream *self)
 	self->priv->content_length = soup_message_headers_get_content_length (message->response_headers);
 	g_static_mutex_unlock (&(self->priv->content_mutex));
 
-	/* Emit the notifications for the Content-Length and -Type properties in the main thread */
-	g_idle_add ((GSourceFunc) notify_content_data_cb, g_object_ref (self));
+	/* Emit the notifications for the Content-Length and -Type properties */
+	g_object_freeze_notify (G_OBJECT (self));
+	g_object_notify (G_OBJECT (self), "content-length");
+	g_object_notify (G_OBJECT (self), "content-type");
+	g_object_thaw_notify (G_OBJECT (self));
 }
 
 static void
