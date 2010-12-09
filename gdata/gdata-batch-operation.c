@@ -507,41 +507,6 @@ gdata_batch_operation_add_deletion (GDataBatchOperation *self, GDataEntry *entry
 	return add_operation (self, GDATA_BATCH_OPERATION_DELETION, entry, callback, user_data);
 }
 
-/* Called for each BatchOperation in GDataBatchOperation->operations to add it to a request feed */
-static void
-run_cb (gpointer key, BatchOperation *op, GDataFeed *feed)
-{
-	if (op->type == GDATA_BATCH_OPERATION_QUERY) {
-		/* Queries are weird; build a new throwaway entry, and add it to the feed */
-		GDataEntry *entry;
-		GDataEntryClass *klass;
-		gchar *entry_uri;
-		GTimeVal updated;
-
-		g_get_current_time (&updated);
-
-		klass = g_type_class_ref (op->entry_type);
-		g_assert (klass->get_entry_uri != NULL);
-
-		entry_uri = klass->get_entry_uri (op->query_id);
-		entry = gdata_entry_new (entry_uri);
-		g_free (entry_uri);
-
-		gdata_entry_set_title (entry, "Batch operation query");
-		_gdata_entry_set_updated (entry, updated.tv_sec);
-
-		_gdata_entry_set_batch_data (entry, op->id, op->type);
-		_gdata_feed_add_entry (feed, entry);
-
-		g_type_class_unref (klass);
-		g_object_unref (entry);
-	} else {
-		/* Everything else just dumps the entry's XML in the request */
-		_gdata_entry_set_batch_data (op->entry, op->id, op->type);
-		_gdata_feed_add_entry (feed, op->entry);
-	}
-}
-
 /**
  * gdata_batch_operation_run:
  * @self: a #GDataBatchOperation
@@ -589,7 +554,36 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	/* Build the request */
 	g_get_current_time (&updated);
 	feed = _gdata_feed_new ("Batch operation feed", "batch1", updated.tv_sec);
-	g_hash_table_foreach (priv->operations, (GHFunc) run_cb, feed);
+
+	g_hash_table_iter_init (&iter, priv->operations);
+	while (g_hash_table_iter_next (&iter, &op_id, (gpointer*) &op) == TRUE) {
+		if (op->type == GDATA_BATCH_OPERATION_QUERY) {
+			/* Queries are weird; build a new throwaway entry, and add it to the feed */
+			GDataEntry *entry;
+			GDataEntryClass *klass;
+			gchar *entry_uri;
+
+			klass = g_type_class_ref (op->entry_type);
+			g_assert (klass->get_entry_uri != NULL);
+
+			entry_uri = klass->get_entry_uri (op->query_id);
+			entry = gdata_entry_new (entry_uri);
+			g_free (entry_uri);
+
+			gdata_entry_set_title (entry, "Batch operation query");
+			_gdata_entry_set_updated (entry, updated.tv_sec);
+
+			_gdata_entry_set_batch_data (entry, op->id, op->type);
+			_gdata_feed_add_entry (feed, entry);
+
+			g_type_class_unref (klass);
+			g_object_unref (entry);
+		} else {
+			/* Everything else just dumps the entry's XML in the request */
+			_gdata_entry_set_batch_data (op->entry, op->id, op->type);
+			_gdata_feed_add_entry (feed, op->entry);
+		}
+	}
 
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (feed));
 	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
