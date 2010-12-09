@@ -62,8 +62,6 @@ static void gdata_documents_service_dispose (GObject *object);
 static void gdata_documents_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self);
 static void notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self);
-static GDataDocumentsEntry *upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-                                                    const gchar *method, const gchar *upload_uri, GCancellable *cancellable, GError **error);
 
 struct _GDataDocumentsServicePrivate {
 	GDataService *spreadsheet_service;
@@ -291,141 +289,59 @@ notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self)
 	gdata_service_set_proxy_uri (GDATA_DOCUMENTS_SERVICE (self)->priv->spreadsheet_service, proxy_uri);
 }
 
-static GDataDocumentsEntry *
-upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file, const gchar *method,
-                        const gchar *upload_uri, GCancellable *cancellable, GError **error)
+static GDataUploadStream *
+upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, const gchar *slug, const gchar *content_type, const gchar *method,
+                        const gchar *upload_uri)
 {
-	GDataDocumentsEntry *new_entry;
-	GOutputStream *output_stream;
-	GInputStream *input_stream;
-	const gchar *slug = NULL, *content_type = NULL, *response_body;
-	gssize response_length;
-	GFileInfo *file_info = NULL;
-	GType new_document_type = G_TYPE_INVALID;
-	GError *child_error = NULL;
-
-	/* Get some information about the file we're uploading */
-	if (document_file != NULL) {
-		/* Get the slug and content type */
-		file_info = g_file_query_info (document_file, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
-		if (file_info == NULL)
-			return NULL;
-
-		slug = g_file_info_get_display_name (file_info);
-		content_type = g_file_info_get_content_type (file_info);
-
-		/* Corrects a bug on spreadsheet content types handling
-		 * The content type for ODF spreadsheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
-		 * but Google Documents' spreadsheet service is waiting for "application/x-vnd.oasis.opendocument.spreadsheet"
-		 * and nothing else.
-		 * Bug filed with Google: http://code.google.com/p/gdata-issues/issues/detail?id=1127 */
-		if (strcmp (content_type, "application/vnd.oasis.opendocument.spreadsheet") == 0)
-			content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
-
-		if (document == NULL) {
-			/* Get the document type of the document which is being uploaded */
-			if (strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
-			    strcmp (content_type, "text/tab-separated-values") == 0 ||
-			    strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
-			    strcmp (content_type, "application/vnd.ms-excel") == 0) {
-				new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
-			} else if (strcmp (content_type, "application/msword") == 0 ||
-			           strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
-			           strcmp (content_type, "application/rtf") == 0 ||
-			           strcmp (content_type, "text/html") == 0 ||
-			           strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
-			           strcmp (content_type, "text/plain") == 0) {
-				new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
-			} else if (strcmp (content_type, "application/vnd.ms-powerpoint") == 0) {
-				new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
-			} else {
-				g_set_error_literal (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
-				                     _("The supplied document had an invalid content type."));
-				if (file_info != NULL)
-					g_object_unref (file_info);
-				return NULL;
-			}
-		}
-	}
-
-	/* Determine the type of the document we're uploading */
-	if (document != NULL)
-		new_document_type = G_OBJECT_TYPE (document);
+	/* Corrects a bug on spreadsheet content types handling
+	 * The content type for ODF spreadsheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
+	 * but Google Documents' spreadsheet service is waiting for "application/x-vnd.oasis.opendocument.spreadsheet"
+	 * and nothing else.
+	 * Bug filed with Google: http://code.google.com/p/gdata-issues/issues/detail?id=1127 */
+	if (strcmp (content_type, "application/vnd.oasis.opendocument.spreadsheet") == 0)
+		content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
 
 	/* We need streaming file I/O: GDataUploadStream */
-	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), method, upload_uri, GDATA_ENTRY (document), slug, content_type);
-
-	if (file_info != NULL)
-		g_object_unref (file_info);
-	if (output_stream == NULL)
-		return NULL;
-
-	/* Open the document file for reading and pipe it to the upload stream */
-	input_stream = G_INPUT_STREAM (g_file_read (document_file, cancellable, error));
-	if (input_stream == NULL) {
-		g_object_unref (output_stream);
-		return NULL;
-	}
-
-	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-	                        cancellable, &child_error);
-
-	g_object_unref (input_stream);
-	if (child_error != NULL) {
-		g_object_unref (output_stream);
-		g_propagate_error (error, child_error);
-		return NULL;
-	}
-
-	/* Get and parse the response from the server */
-	response_body = gdata_upload_stream_get_response (GDATA_UPLOAD_STREAM (output_stream), &response_length);
-	g_assert (response_body != NULL && response_length > 0);
-
-	new_entry = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (new_document_type, response_body, (gint) response_length, error));
-	g_object_unref (output_stream);
-
-	return new_entry;
+	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), method, upload_uri, GDATA_ENTRY (document), slug, content_type));
 }
 
 /**
  * gdata_documents_service_upload_document:
  * @self: an authenticated #GDataDocumentsService
  * @document: (allow-none): the #GDataDocumentsEntry to insert, or %NULL
- * @document_file: (allow-none): the document to upload, or %NULL
+ * @slug: the filename to give to the uploaded document
+ * @content_type: the content type of the uploaded data
  * @folder: (allow-none): the folder to which the document should be uploaded, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Uploads a document to Google Documents, using the properties from @document and the document file pointed to by @document_file.
+ * Uploads a document to Google Documents, using the properties from @document and the document data written to the resulting #GDataUploadStream. If
+ * the document data does not need to be provided at the moment, just the metadata, use gdata_service_insert_entry() instead (e.g. in the case of
+ * creating a new, empty file to be edited at a later date).
  *
- * If @document is %NULL, only the document file will be uploaded. The new document entry will be named after the document file's name,
- * and will have default metadata.
+ * If @document is %NULL, only the document data will be uploaded. The new document entry will be named using @slug, and will have default metadata.
  *
- * If @document_file is %NULL, only the document metadata will be uploaded. A blank document file will be created with the name
- * <literal>new document</literal> and the specified metadata. @document and @document_file cannot both be %NULL, but can both have values.
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
+ * #GDataDocumentEntry for the document. This must be done, as @document isn't updated in-place.
  *
- * The updated @document_entry will be returned on success, containing updated metadata.
+ * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
- * If there is a problem reading @document_file, an error from g_file_load_contents() or g_file_query_info() will be returned. Other errors from
- * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
+ * Return value: (transfer full): a #GDataUploadStream to write the document data to, or %NULL; unref with g_object_unref()
  *
- * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
- *
- * Since: 0.4.0
+ * Since: 0.8.0
  **/
-GDataDocumentsEntry *
-gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-                                         GDataDocumentsFolder *folder, GCancellable *cancellable, GError **error)
+GDataUploadStream *
+gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsEntry *document, const gchar *slug, const gchar *content_type,
+                                         GDataDocumentsFolder *folder, GError **error)
 {
-	GDataDocumentsEntry *new_document;
+	GDataUploadStream *upload_stream;
 	gchar *upload_uri;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (document == NULL || GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
-	g_return_val_if_fail (document_file == NULL || G_IS_FILE (document_file), NULL);
-	g_return_val_if_fail (document != NULL || document_file != NULL, NULL);
+	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
+	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
 	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
-	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
@@ -441,48 +357,45 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 	}
 
 	upload_uri = gdata_documents_service_get_upload_uri (folder);
-
-	if (document_file == NULL) {
-		new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (self), upload_uri, GDATA_ENTRY (document),
-		                                                                  cancellable, error));
-	} else {
-		new_document = upload_update_document (self, document, document_file, SOUP_METHOD_POST, upload_uri, cancellable, error);
-	}
+	upload_stream = upload_update_document (self, document, slug, content_type, SOUP_METHOD_POST, upload_uri);
 	g_free (upload_uri);
 
-	return new_document;
+	return upload_stream;
 }
 
 /**
  * gdata_documents_service_update_document:
  * @self: a #GDataDocumentsService
  * @document: the #GDataDocumentsEntry to update
- * @document_file: (allow-none): the local document file containing the new data, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
+ * @slug: the filename to give to the uploaded document
+ * @content_type: the content type of the uploaded data
  * @error: a #GError, or %NULL
  *
- * Update the document using the properties from @document and the document file pointed to by @document_file. If the document file does not
- * need to be changed, @document_file can be %NULL.
+ * Update the document using the properties from @document and the document data written to the resulting #GDataUploadStream. If the document data does
+ * not need to be changed, just the metadata, use gdata_service_update_entry() instead.
  *
- * If there is a problem reading @document_file, an error from g_file_load_contents() or g_file_query_info() will be returned. Other errors from
- * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
+ * #GDataDocumentEntry for the document. This must be done, as @document isn't updated in-place.
  *
- * For more details, see gdata_service_insert_entry().
+ * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
- * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ * For more information, see gdata_service_update_entry().
  *
- * Since: 0.4.0
+ * Return value: (transfer full): a #GDataUploadStream to write the document data to; unref with g_object_unref()
+ *
+ * Since: 0.8.0
  **/
-GDataDocumentsEntry *
-gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-                                         GCancellable *cancellable, GError **error)
+GDataUploadStream *
+gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, const gchar *slug, const gchar *content_type,
+                                         GError **error)
 {
 	GDataLink *update_link;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
-	g_return_val_if_fail (document_file == NULL || G_IS_FILE (document_file), NULL);
-	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
+	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
@@ -491,13 +404,75 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 		return NULL;
 	}
 
-	if (document_file == NULL)
-		return GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (self), GDATA_ENTRY (document), cancellable, error));
-
 	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
 	g_assert (update_link != NULL);
 
-	return upload_update_document (self, document, document_file, SOUP_METHOD_PUT, gdata_link_get_uri (update_link), cancellable, error);
+	return upload_update_document (self, document, slug, content_type, SOUP_METHOD_PUT, gdata_link_get_uri (update_link));
+}
+
+/**
+ * gdata_documents_service_finish_upload:
+ * @self: a #GDataDocumentsService
+ * @upload_stream: the #GDataUploadStream from the operation
+ * @error: a #GError, or %NULL
+ *
+ * Finish off a document upload or update operation started by gdata_documents_service_upload_document() or gdata_documents_service_update_document(),
+ * parsing the result and returning the new or updated #GDataDocumentsEntry.
+ *
+ * If an error occurred during the upload or update operation, it will have been returned during the operation (e.g. by g_output_stream_splice() or one
+ * of the other stream methods). In such a case, %NULL will be returned but @error will remain unset. @error is only set in the case that the server
+ * indicates that the operation was successful, but an error is encountered in parsing the result sent by the server.
+ *
+ * In the case that no #GDataDocumentsEntry was passed (to gdata_documents_service_upload_document() or gdata_documents_service_update_document()) when
+ * starting the operation, %GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE will be thrown in @error if the content type of the uploaded data
+ * could not be mapped to a document type with which to interpret the response from the server.
+ *
+ * Return value: (transfer full): the new or updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.8.0
+ */
+GDataDocumentsEntry *
+gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadStream *upload_stream, GError **error)
+{
+	const gchar *response_body, *content_type;
+	gssize response_length;
+	GDataEntry *entry;
+	GType new_document_type = G_TYPE_INVALID;
+
+	/* Determine the type of the document we've uploaded */
+	entry = gdata_upload_stream_get_entry (upload_stream);
+	content_type = gdata_upload_stream_get_content_type (upload_stream);
+
+	if (entry != NULL) {
+		new_document_type = G_OBJECT_TYPE (entry);
+	} else if (strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
+	           strcmp (content_type, "text/tab-separated-values") == 0 ||
+	           strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
+	           strcmp (content_type, "application/vnd.ms-excel") == 0) {
+		new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
+	} else if (strcmp (content_type, "application/msword") == 0 ||
+	           strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
+	           strcmp (content_type, "application/rtf") == 0 ||
+	           strcmp (content_type, "text/html") == 0 ||
+	           strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
+	           strcmp (content_type, "text/plain") == 0) {
+		new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
+	} else if (strcmp (content_type, "application/vnd.ms-powerpoint") == 0) {
+		new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
+	}
+
+	if (g_type_is_a (new_document_type, GDATA_TYPE_ENTRY) == FALSE) {
+		g_set_error (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
+		             _("The content type of the supplied document ('%s') could not be recognized."), content_type);
+		return NULL;
+	}
+
+	/* Get and parse the response from the server */
+	response_body = gdata_upload_stream_get_response (upload_stream, &response_length);
+	if (response_body == NULL || response_length == 0)
+		return NULL;
+
+	return GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (new_document_type, response_body, (gint) response_length, error));
 }
 
 /**

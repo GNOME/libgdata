@@ -24,6 +24,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gdata/gdata-service.h>
+#include <gdata/gdata-upload-stream.h>
 #include <gdata/services/documents/gdata-documents-query.h>
 #include <gdata/services/documents/gdata-documents-feed.h>
 
@@ -89,11 +90,14 @@ void gdata_documents_service_query_documents_async (GDataDocumentsService *self,
 
 #include <gdata/services/documents/gdata-documents-folder.h>
 
-GDataDocumentsEntry *gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-                                                              GDataDocumentsFolder *folder, GCancellable *cancellable,
-                                                              GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-GDataDocumentsEntry *gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, GFile *document_file,
-                                                              GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataUploadStream *gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsEntry *document, const gchar *slug,
+                                                            const gchar *content_type, GDataDocumentsFolder *folder,
+                                                            GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataUploadStream *gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, const gchar *slug,
+                                                            const gchar *content_type, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataDocumentsEntry *gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadStream *upload_stream,
+                                                            GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
 GDataDocumentsEntry *gdata_documents_service_move_document_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *document,
                                                                       GDataDocumentsFolder *folder, GCancellable *cancellable,
                                                                       GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

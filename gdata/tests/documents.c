@@ -20,9 +20,29 @@
 
 #include <glib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "gdata.h"
 #include "common.h"
+
+static gboolean
+check_document_is_in_folder (GDataDocumentsEntry *document, GDataDocumentsFolder *folder)
+{
+	GList *categories;
+	gboolean found_folder_category = FALSE;
+
+	for (categories = gdata_entry_get_categories (GDATA_ENTRY (document)); categories != NULL; categories = categories->next) {
+		GDataCategory *category = GDATA_CATEGORY (categories->data);
+
+		if (strcmp (gdata_category_get_scheme (category), "http://schemas.google.com/docs/2007/folders/" DOCUMENTS_USERNAME) == 0 &&
+		    strcmp (gdata_category_get_term (category), gdata_entry_get_title (GDATA_ENTRY (folder))) == 0) {
+			g_assert (found_folder_category == FALSE);
+			found_folder_category = TRUE;
+		}
+	}
+
+	return found_folder_category;
+}
 
 static void
 test_authentication (void)
@@ -166,6 +186,7 @@ test_upload_metadata (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GError *error = NULL;
+	gchar *upload_uri;
 
 	g_assert (service != NULL);
 
@@ -173,7 +194,9 @@ test_upload_metadata (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (document), "myNewSpreadsheet");
 
 	/* Insert the document */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (document), NULL, NULL, NULL, &error);
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL, &error));
+	g_free (upload_uri);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (new_document));
 
@@ -187,21 +210,49 @@ test_upload_metadata_file (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GFile *document_file;
+	GFileInfo *file_info;
+	GDataUploadStream *upload_stream;
+	GFileInputStream *file_stream;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
+	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "upload_metadata_file");
 
-	/* Insert the document */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, document_file, NULL, NULL, &error);
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
+	                                                         g_file_info_get_content_type (file_info), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (document_file, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Upload the document */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Finish the upload */
+	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
 
+	/* Verify the uploaded document is the same as the original */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (document)), ==, gdata_entry_get_title (GDATA_ENTRY (new_document)));
+
 	g_clear_error (&error);
+	g_object_unref (upload_stream);
+	g_object_unref (file_stream);
 	g_object_unref (document_file);
 	g_object_unref (document);
 	g_object_unref (new_document);
@@ -212,17 +263,45 @@ test_upload_file_get_entry (gconstpointer service)
 {
 	GDataDocumentsEntry *new_document;
 	GDataEntry *new_presentation;
+	GDataUploadStream *upload_stream;
+	GFileInputStream *file_stream;
 	GFile *document_file;
+	GFileInfo *file_info;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
+	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
 
-	/* Insert the document */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, document_file, NULL, NULL, &error);
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, g_file_info_get_display_name (file_info),
+	                                                         g_file_info_get_content_type (file_info), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (document_file, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (document_file);
+
+	/* Upload the document */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Finish the upload */
+	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
+
+	g_object_unref (file_stream);
+	g_object_unref (upload_stream);
 
 	/* Get the entry on the server */
 	new_presentation = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
@@ -230,10 +309,12 @@ test_upload_file_get_entry (gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_presentation));
 
+	/* Verify that the entry is correct (mangled version of the file's display name) */
+	g_assert_cmpstr (gdata_entry_get_title (new_presentation), ==, "test");
+
 	g_clear_error (&error);
 	g_object_unref (new_document);
 	g_object_unref (new_presentation);
-	g_object_unref (document_file);
 }
 
 static void
@@ -241,7 +322,11 @@ test_add_remove_file_from_folder (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *new_document2;
 	GDataDocumentsFolder *folder, *new_folder;
+	GDataUploadStream *upload_stream;
 	GFile *document_file;
+	GFileInfo *file_info;
+	GFileInputStream *file_stream;
+	gchar *upload_uri;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -249,32 +334,73 @@ test_add_remove_file_from_folder (gconstpointer service)
 	folder = gdata_documents_folder_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (folder), "add_remove_from_folder_folder");
 
+	/* Insert the folder */
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (folder), NULL, &error));
+	g_free (upload_uri);
+
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
+
+	/* Check for success */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_folder)), ==, gdata_entry_get_title (GDATA_ENTRY (folder)));
+
+	g_object_unref (folder);
+
+	/* Prepare the file */
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_presentation_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "add_remove_from_folder_presentation");
 
-	/* Insert the folder */
-	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (folder), NULL, NULL, NULL, &error));
+	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
 
-	/* Insert the document in the new folder */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, document_file, new_folder, NULL, &error);
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
+	                                                         g_file_info_get_content_type (file_info), new_folder, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (document_file, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (document_file);
+
+	/* Upload the document into the new folder */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Finish the upload */
+	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
 
-	/*remove document from the folder*/
+	g_object_unref (upload_stream);
+	g_object_unref (file_stream);
+
+	/* Check the uploaded document is correct */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
+	g_assert (check_document_is_in_folder (new_document, new_folder) == TRUE);
+
+	/* Remove the document from the folder */
 	new_document2 = gdata_documents_service_remove_document_from_folder (GDATA_DOCUMENTS_SERVICE (service), new_document, new_folder, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document2));
+
+	/* Check it's still the same document */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document2)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
+	g_assert (check_document_is_in_folder (new_document2, new_folder) == FALSE);
 
 	g_clear_error (&error);
 	g_object_unref (document);
 	g_object_unref (new_document);
 	g_object_unref (new_document2);
-	g_object_unref (folder);
 	g_object_unref (new_folder);
-	g_object_unref (document_file);
 }
 
 static void
@@ -282,40 +408,85 @@ test_add_file_folder_and_move (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *new_document2;
 	GDataDocumentsFolder *folder, *new_folder;
+	GDataUploadStream *upload_stream;
+	GFileInputStream *file_stream;
 	GFile *document_file;
+	GFileInfo *file_info;
+	gchar *upload_uri;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
-
 	folder = gdata_documents_folder_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (folder), "add_file_folder_move_folder");
 
-	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
-	gdata_entry_set_title (GDATA_ENTRY (document), "add_file_folder_move_text");
-
 	/* Insert the folder */
-	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (folder), NULL, NULL, NULL, &error));
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (folder), NULL, &error));
+	g_free (upload_uri);
+
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
 
-	/* Insert the document in the new folder */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, document_file, NULL, NULL, &error);
+	/* Check for success */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_folder)), ==, gdata_entry_get_title (GDATA_ENTRY (folder)));
+
+	g_object_unref (folder);
+
+	/* Prepare the file */
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
+	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
+	gdata_entry_set_title (GDATA_ENTRY (document), "add_file_folder_move_text");
+
+	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
+	                                                         g_file_info_get_content_type (file_info), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (document_file, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (document_file);
+
+	/* Upload the document (but not into the new folder; we'll move it there next) */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Finish the upload */
+	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
+	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
 
-	/* Remove the document from the folder */
+	g_object_unref (upload_stream);
+	g_object_unref (file_stream);
+
+	/* Check it's still the same document */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
+	g_assert (check_document_is_in_folder (new_document, new_folder) == FALSE);
+
+	/* Move the document from the folder */
 	new_document2 = gdata_documents_service_move_document_to_folder (GDATA_DOCUMENTS_SERVICE (service), new_document, new_folder, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document2));
+
+	/* Check it's still the same document */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document2)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
+	g_assert (check_document_is_in_folder (new_document2, new_folder) == TRUE);
 
 	g_clear_error (&error);
 	g_object_unref (document);
 	g_object_unref (new_document);
 	g_object_unref (new_document2);
-	g_object_unref (folder);
 	g_object_unref (new_folder);
-	g_object_unref (document_file);
 }
 
 static void
@@ -323,42 +494,79 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document;
 	GDataDocumentsFolder *folder, *new_folder;
+	GDataUploadStream *upload_stream;
+	GFileInputStream *file_stream;
 	GFile *document_file;
+	GFileInfo *file_info;
+	gchar *upload_uri;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
-
 	folder = gdata_documents_folder_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (folder), "upload_file_metadata_in_new_folder_folder");
 
+	/* Insert the folder */
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (folder), NULL, &error));
+	g_free (upload_uri);
+
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
+
+	g_object_unref (folder);
+
+	/* Prepare the file */
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "upload_file_metadata_in_new_folder_text");
 
-	/* Insert the folder */
-	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (folder), NULL, NULL, NULL, &error));
+	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
-	g_clear_error (&error);
 
-	/* Insert the document in the new folder */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, document_file, new_folder, NULL, &error);
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
+	                                                         g_file_info_get_content_type (file_info), new_folder, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (document_file, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (document_file);
+
+	/* Upload the document into the new folder */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Finish the upload */
+	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
+
+	g_object_unref (upload_stream);
+	g_object_unref (file_stream);
+
+	/* Check for success */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
+	g_assert (check_document_is_in_folder (new_document, new_folder) == TRUE);
 
 	g_clear_error (&error);
 	g_object_unref (document);
 	g_object_unref (new_document);
-	g_object_unref (folder);
 	g_object_unref (new_folder);
-	g_object_unref (document_file);
 }
 
 static void
 test_update_metadata (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *updated_document;
+	gchar *upload_uri;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -367,17 +575,24 @@ test_update_metadata (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (document), "update_metadata_first_title");
 
 	/* Insert the document */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, NULL, NULL, NULL, &error);
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL, &error));
+	g_free (upload_uri);
+
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
 
 	/* Change the title */
-	gdata_entry_set_title (GDATA_ENTRY (document), "update_metadata_updated_title");
+	gdata_entry_set_title (GDATA_ENTRY (new_document), "update_metadata_updated_title");
 
 	/* Update the document */
-	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document, NULL, NULL, &error);
+	updated_document = GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (new_document), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (updated_document));
+
+	/* Check for success */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (updated_document)), ==, gdata_entry_get_title (GDATA_ENTRY (new_document)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), !=, gdata_entry_get_title (GDATA_ENTRY (document)));
 
 	g_clear_error (&error);
 	g_object_unref (document);
@@ -389,62 +604,161 @@ static void
 test_update_metadata_file (gconstpointer service)
 {
 	GDataDocumentsEntry *document, *new_document, *updated_document;
-	GFile *document_file, *updated_document_file;
+	GDataUploadStream *upload_stream;
+	GFileInputStream *file_stream;
+	GFile *updated_document_file;
+	GFileInfo *file_info;
+	gchar *upload_uri;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
-	updated_document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated.odt");
-
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "update_metadata_file_first_title");
 
-	/* Insert the documents metadata*/
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, NULL, NULL, NULL, &error);
+	/* Insert the document's metadata */
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL, &error));
+	g_free (upload_uri);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
+
+	g_object_unref (document);
 
 	/* Change the title of the document */
 	gdata_entry_set_title (GDATA_ENTRY (new_document), "update_metadata_file_updated_title");
 
-	/* Update the document */
-	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document, updated_document_file, NULL, &error);
+	/* Prepare the file */
+	updated_document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated.odt");
+
+	file_info = g_file_query_info (updated_document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document,
+	                                                         g_file_info_get_display_name (file_info), g_file_info_get_content_type (file_info),
+	                                                         &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (updated_document_file, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (updated_document_file);
+
+	/* Upload the updated document */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Finish the upload */
+	updated_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (updated_document));
 
+	g_object_unref (upload_stream);
+	g_object_unref (file_stream);
+
+	/* Check for success */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (updated_document)));
+
 	g_clear_error (&error);
-	g_object_unref (document);
-	g_object_unref (new_document);
 	g_object_unref (updated_document);
-	g_object_unref (document_file);
+	g_object_unref (new_document);
 }
 
 static void
 test_update_file (gconstpointer service)
 {
 	GDataDocumentsEntry *new_document, *updated_document;
-	GFile *document_file, *updated_document_file;
+	GDataUploadStream *upload_stream;
+	GFileInputStream *file_stream;
+	GFile *document_file;
+	GFileInfo *file_info;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
 
-	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
-	updated_document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated_file.ppt");
+	/* Upload the original file */
 
-	/* Insert the document */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, document_file, NULL, NULL, &error);
+	/* Get the file info */
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
+	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, g_file_info_get_display_name (file_info),
+	                                                         g_file_info_get_content_type (file_info), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (document_file, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (document_file);
+
+	/* Upload the document */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (file_stream);
+
+	/* Finish the upload */
+	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
 
+	g_object_unref (upload_stream);
+
 	/* Update the document */
-	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document, document_file, NULL, &error);
+
+	/* Get the file info for the updated document */
+	document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated_file.ppt");
+	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (updated_document));
-	g_clear_error (&error);
+
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document,
+	                                                         g_file_info_get_display_name (file_info), g_file_info_get_content_type (file_info),
+	                                                         &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (document_file, NULL, &error);
+	g_assert_no_error (error);
 
 	g_object_unref (document_file);
-	g_object_unref (updated_document_file);
+
+	/* Upload the document */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (file_stream);
+
+	/* Finish the upload */
+	updated_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (updated_document));
+
+	g_object_unref (upload_stream);
+
+	/* Check for success */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (updated_document)));
+
 	g_object_unref (new_document);
 	g_object_unref (updated_document);
 }
@@ -531,6 +845,7 @@ test_new_document_with_collaborator (gconstpointer service)
 	GDataDocumentsEntry *document, *new_document;
 	GDataAccessRule *access_rule, *new_access_rule;
 	GDataLink *_link;
+	gchar *upload_uri;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -539,7 +854,10 @@ test_new_document_with_collaborator (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (document), "new_with_collaborator");
 
 	/* Insert the document */
-	new_document = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (document), NULL, NULL, NULL, &error);
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL, &error));
+	g_free (upload_uri);
+
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (new_document));
 
@@ -731,14 +1049,17 @@ static void
 setup_batch_async (BatchAsyncData *data, gconstpointer service)
 {
 	GDataDocumentsText *doc;
+	gchar *upload_uri;
 	GError *error = NULL;
 
 	/* Insert a new document which we can query asyncly */
 	doc = gdata_documents_text_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (doc), "A View from the Bridge");
 
-	data->new_doc = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (doc), NULL, NULL, NULL,
-	                                                         &error);
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	data->new_doc = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (doc), NULL, &error));
+	g_free (upload_uri);
+
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->new_doc));
 	g_clear_error (&error);
