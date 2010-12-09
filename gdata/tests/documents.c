@@ -68,6 +68,8 @@ test_authentication (void)
 	g_assert (gdata_service_is_authenticated (GDATA_SERVICE (service)) == TRUE);
 	g_assert_cmpstr (gdata_service_get_username (GDATA_SERVICE (service)), ==, DOCUMENTS_USERNAME);
 	g_assert_cmpstr (gdata_service_get_password (GDATA_SERVICE (service)), ==, PASSWORD);
+
+	g_object_unref (service);
 }
 
 static void
@@ -110,6 +112,7 @@ test_remove_all_documents_and_folders (gconstpointer service)
 		g_clear_error (&error);
 	}
 
+	g_object_unref (query);
 	g_object_unref (feed);
 }
 
@@ -131,6 +134,7 @@ test_query_all_documents_with_folder (gconstpointer service)
 
 	g_clear_error (&error);
 	g_object_unref (feed);
+	g_object_unref (query);
 }
 
 static void
@@ -1273,9 +1277,10 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_batch_operation_run_async (operation, NULL, (GAsyncReadyCallback) test_batch_async_cb, main_loop);
-
 	g_main_loop_run (main_loop);
+
 	g_main_loop_unref (main_loop);
+	g_object_unref (operation);
 }
 
 static void
@@ -1312,6 +1317,7 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 	g_object_unref (cancellable);
+	g_object_unref (operation);
 }
 
 static void
