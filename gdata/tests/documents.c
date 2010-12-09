@@ -26,7 +26,7 @@
 #include "common.h"
 
 static gboolean
-check_document_is_in_folder (GDataDocumentsEntry *document, GDataDocumentsFolder *folder)
+check_document_is_in_folder (GDataDocumentsDocument *document, GDataDocumentsFolder *folder)
 {
 	GList *categories;
 	gboolean found_folder_category = FALSE;
@@ -208,7 +208,7 @@ test_upload_metadata (gconstpointer service)
 static void
 test_upload_metadata_file (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document;
+	GDataDocumentsDocument *document, *new_document;
 	GFile *document_file;
 	GFileInfo *file_info;
 	GDataUploadStream *upload_stream;
@@ -222,7 +222,7 @@ test_upload_metadata_file (gconstpointer service)
 	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
 	g_assert_no_error (error);
 
-	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
+	document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "upload_metadata_file");
 
 	/* Prepare the upload stream */
@@ -261,7 +261,7 @@ test_upload_metadata_file (gconstpointer service)
 static void
 test_upload_file_get_entry (gconstpointer service)
 {
-	GDataDocumentsEntry *new_document;
+	GDataDocumentsDocument *new_document;
 	GDataEntry *new_presentation;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
@@ -320,7 +320,7 @@ test_upload_file_get_entry (gconstpointer service)
 static void
 test_add_remove_file_from_folder (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document, *new_document2;
+	GDataDocumentsDocument *document, *new_document, *new_document2;
 	GDataDocumentsFolder *folder, *new_folder;
 	GDataUploadStream *upload_stream;
 	GFile *document_file;
@@ -349,7 +349,7 @@ test_add_remove_file_from_folder (gconstpointer service)
 
 	/* Prepare the file */
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
-	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_presentation_new (NULL));
+	document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_presentation_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "add_remove_from_folder_presentation");
 
 	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
@@ -388,7 +388,9 @@ test_add_remove_file_from_folder (gconstpointer service)
 	g_assert (check_document_is_in_folder (new_document, new_folder) == TRUE);
 
 	/* Remove the document from the folder */
-	new_document2 = gdata_documents_service_remove_document_from_folder (GDATA_DOCUMENTS_SERVICE (service), new_document, new_folder, NULL, &error);
+	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_remove_document_from_folder (GDATA_DOCUMENTS_SERVICE (service),
+	                                                                                               GDATA_DOCUMENTS_ENTRY (new_document),
+	                                                                                               new_folder, NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document2));
 
@@ -406,7 +408,7 @@ test_add_remove_file_from_folder (gconstpointer service)
 static void
 test_add_file_folder_and_move (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document, *new_document2;
+	GDataDocumentsDocument *document, *new_document, *new_document2;
 	GDataDocumentsFolder *folder, *new_folder;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
@@ -435,7 +437,7 @@ test_add_file_folder_and_move (gconstpointer service)
 
 	/* Prepare the file */
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
-	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
+	document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "add_file_folder_move_text");
 
 	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
@@ -474,7 +476,9 @@ test_add_file_folder_and_move (gconstpointer service)
 	g_assert (check_document_is_in_folder (new_document, new_folder) == FALSE);
 
 	/* Move the document from the folder */
-	new_document2 = gdata_documents_service_move_document_to_folder (GDATA_DOCUMENTS_SERVICE (service), new_document, new_folder, NULL, &error);
+	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_move_document_to_folder (GDATA_DOCUMENTS_SERVICE (service),
+	                                                                                           GDATA_DOCUMENTS_ENTRY (new_document),
+	                                                                                           new_folder, NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document2));
 
@@ -492,7 +496,7 @@ test_add_file_folder_and_move (gconstpointer service)
 static void
 test_upload_file_metadata_in_new_folder (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document;
+	GDataDocumentsDocument *document, *new_document;
 	GDataDocumentsFolder *folder, *new_folder;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
@@ -518,7 +522,7 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 
 	/* Prepare the file */
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
-	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
+	document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "upload_file_metadata_in_new_folder_text");
 
 	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
@@ -613,7 +617,7 @@ test_update_metadata (gconstpointer service)
 static void
 test_update_metadata_file (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document, *new_document2, *updated_document;
+	GDataDocumentsDocument *document, *new_document, *new_document2, *updated_document;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 	GFile *updated_document_file;
@@ -623,12 +627,13 @@ test_update_metadata_file (gconstpointer service)
 
 	g_assert (service != NULL);
 
-	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
+	document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "update_metadata_file_first_title");
 
 	/* Insert the document's metadata */
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL, &error));
+	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL,
+	                                                                     &error));
 	g_free (upload_uri);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
@@ -639,9 +644,9 @@ test_update_metadata_file (gconstpointer service)
 	 * creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before
 	 * trying this to allow the various Google servers to catch up with each other. */
 	g_usleep (5 * G_USEC_PER_SEC);
-	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
-	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
-	                                                                         GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error));
+	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                            gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                            GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error));
 
 	g_object_unref (new_document);
 
@@ -694,7 +699,7 @@ test_update_metadata_file (gconstpointer service)
 static void
 test_update_file (gconstpointer service)
 {
-	GDataDocumentsEntry *new_document, *new_document2, *updated_document;
+	GDataDocumentsDocument *new_document, *new_document2, *updated_document;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 	GFile *document_file;
@@ -743,9 +748,9 @@ test_update_file (gconstpointer service)
 	 * creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before
 	 * trying this to allow the various Google servers to catch up with each other. */
 	g_usleep (5 * G_USEC_PER_SEC);
-	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
-	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
-	                                                                         GDATA_TYPE_DOCUMENTS_PRESENTATION, NULL, &error));
+	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                            gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                            GDATA_TYPE_DOCUMENTS_PRESENTATION, NULL, &error));
 
 	g_object_unref (new_document);
 

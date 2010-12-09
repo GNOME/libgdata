@@ -290,8 +290,8 @@ notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self)
 }
 
 static GDataUploadStream *
-upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, const gchar *slug, const gchar *content_type, const gchar *method,
-                        const gchar *upload_uri)
+upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
+                        const gchar *method, const gchar *upload_uri)
 {
 	/* Corrects a bug on spreadsheet content types handling
 	 * The content type for ODF spreadsheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
@@ -308,7 +308,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
 /**
  * gdata_documents_service_upload_document:
  * @self: an authenticated #GDataDocumentsService
- * @document: (allow-none): the #GDataDocumentsEntry to insert, or %NULL
+ * @document: (allow-none): the #GDataDocumentsDocument to insert, or %NULL
  * @slug: the filename to give to the uploaded document
  * @content_type: the content type of the uploaded data
  * @folder: (allow-none): the folder to which the document should be uploaded, or %NULL
@@ -322,7 +322,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
  *
  * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
- * #GDataDocumentEntry for the document. This must be done, as @document isn't updated in-place.
+ * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
  *
  * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
@@ -331,14 +331,14 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsEntry *docume
  * Since: 0.8.0
  **/
 GDataUploadStream *
-gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsEntry *document, const gchar *slug, const gchar *content_type,
+gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
                                          GDataDocumentsFolder *folder, GError **error)
 {
 	GDataUploadStream *upload_stream;
 	gchar *upload_uri;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
-	g_return_val_if_fail (document == NULL || GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
+	g_return_val_if_fail (document == NULL || GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
 	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
 	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
 	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
@@ -366,7 +366,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 /**
  * gdata_documents_service_update_document:
  * @self: a #GDataDocumentsService
- * @document: the #GDataDocumentsEntry to update
+ * @document: the #GDataDocumentsDocument to update
  * @slug: the filename to give to the uploaded document
  * @content_type: the content type of the uploaded data
  * @error: a #GError, or %NULL
@@ -376,7 +376,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  *
  * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
- * #GDataDocumentEntry for the document. This must be done, as @document isn't updated in-place.
+ * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
  *
  * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
@@ -387,13 +387,13 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * Since: 0.8.0
  **/
 GDataUploadStream *
-gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsEntry *document, const gchar *slug, const gchar *content_type,
+gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
                                          GError **error)
 {
 	GDataLink *update_link;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
-	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (document), NULL);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
 	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
 	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -417,21 +417,21 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
  * @error: a #GError, or %NULL
  *
  * Finish off a document upload or update operation started by gdata_documents_service_upload_document() or gdata_documents_service_update_document(),
- * parsing the result and returning the new or updated #GDataDocumentsEntry.
+ * parsing the result and returning the new or updated #GDataDocumentsDocument.
  *
  * If an error occurred during the upload or update operation, it will have been returned during the operation (e.g. by g_output_stream_splice() or one
  * of the other stream methods). In such a case, %NULL will be returned but @error will remain unset. @error is only set in the case that the server
  * indicates that the operation was successful, but an error is encountered in parsing the result sent by the server.
  *
- * In the case that no #GDataDocumentsEntry was passed (to gdata_documents_service_upload_document() or gdata_documents_service_update_document()) when
- * starting the operation, %GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE will be thrown in @error if the content type of the uploaded data
+ * In the case that no #GDataDocumentsDocument was passed (to gdata_documents_service_upload_document() or gdata_documents_service_update_document())
+ * when starting the operation, %GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE will be thrown in @error if the content type of the uploaded data
  * could not be mapped to a document type with which to interpret the response from the server.
  *
- * Return value: (transfer full): the new or updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): the new or updated #GDataDocumentsDocument, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
  */
-GDataDocumentsEntry *
+GDataDocumentsDocument *
 gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadStream *upload_stream, GError **error)
 {
 	const gchar *response_body, *content_type;
@@ -461,7 +461,7 @@ gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadS
 		new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
 	}
 
-	if (g_type_is_a (new_document_type, GDATA_TYPE_ENTRY) == FALSE) {
+	if (g_type_is_a (new_document_type, GDATA_TYPE_DOCUMENTS_DOCUMENT) == FALSE) {
 		g_set_error (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
 		             _("The content type of the supplied document ('%s') could not be recognized."), content_type);
 		return NULL;
@@ -472,7 +472,7 @@ gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadS
 	if (response_body == NULL || response_length == 0)
 		return NULL;
 
-	return GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (new_document_type, response_body, (gint) response_length, error));
+	return GDATA_DOCUMENTS_DOCUMENT (gdata_parsable_new_from_xml (new_document_type, response_body, (gint) response_length, error));
 }
 
 /**
