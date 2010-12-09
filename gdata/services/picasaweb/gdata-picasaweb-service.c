@@ -372,7 +372,7 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 
 /**
  * gdata_picasaweb_service_query_files_async: (skip)
- * @self: a #GDataPicasaWeb
+ * @self: a #GDataPicasaWebService
  * @album: (allow-none): a #GDataPicasaWebAlbum from which to retrieve the files, or %NULL
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
