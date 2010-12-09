@@ -358,7 +358,7 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 static void
 test_update_metadata (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document, *updated_document;
+	GDataDocumentsEntry *document, *new_document, *new_document2, *updated_document;
 	GError *error = NULL;
 
 	g_assert (service != NULL);
@@ -371,24 +371,34 @@ test_update_metadata (gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
 
+	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data when
+	 * creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before
+	 * trying this to allow the various Google servers to catch up with each other. */
+	g_usleep (5 * G_USEC_PER_SEC);
+	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                         GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error));
+
+	g_object_unref (new_document);
+
 	/* Change the title */
-	gdata_entry_set_title (GDATA_ENTRY (document), "update_metadata_updated_title");
+	gdata_entry_set_title (GDATA_ENTRY (new_document2), "update_metadata_updated_title");
 
 	/* Update the document */
-	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document, NULL, NULL, &error);
+	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document2, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (updated_document));
 
 	g_clear_error (&error);
 	g_object_unref (document);
-	g_object_unref (new_document);
+	g_object_unref (new_document2);
 	g_object_unref (updated_document);
 }
 
 static void
 test_update_metadata_file (gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document, *updated_document;
+	GDataDocumentsEntry *document, *new_document, *new_document2, *updated_document;
 	GFile *document_file, *updated_document_file;
 	GError *error = NULL;
 
@@ -405,17 +415,27 @@ test_update_metadata_file (gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
 
+	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data when
+	 * creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before
+	 * trying this to allow the various Google servers to catch up with each other. */
+	g_usleep (5 * G_USEC_PER_SEC);
+	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                         GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error));
+
+	g_object_unref (new_document);
+
 	/* Change the title of the document */
-	gdata_entry_set_title (GDATA_ENTRY (new_document), "update_metadata_file_updated_title");
+	gdata_entry_set_title (GDATA_ENTRY (new_document2), "update_metadata_file_updated_title");
 
 	/* Update the document */
-	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document, updated_document_file, NULL, &error);
+	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document2, updated_document_file, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (updated_document));
 
 	g_clear_error (&error);
 	g_object_unref (document);
-	g_object_unref (new_document);
+	g_object_unref (new_document2);
 	g_object_unref (updated_document);
 	g_object_unref (document_file);
 }
@@ -423,7 +443,7 @@ test_update_metadata_file (gconstpointer service)
 static void
 test_update_file (gconstpointer service)
 {
-	GDataDocumentsEntry *new_document, *updated_document;
+	GDataDocumentsEntry *new_document, *new_document2, *updated_document;
 	GFile *document_file, *updated_document_file;
 	GError *error = NULL;
 
@@ -437,15 +457,25 @@ test_update_file (gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
 
+	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data when
+	 * creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before
+	 * trying this to allow the various Google servers to catch up with each other. */
+	g_usleep (5 * G_USEC_PER_SEC);
+	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                         GDATA_TYPE_DOCUMENTS_PRESENTATION, NULL, &error));
+
+	g_object_unref (new_document);
+
 	/* Update the document */
-	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document, document_file, NULL, &error);
+	updated_document = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document2, document_file, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (updated_document));
 	g_clear_error (&error);
 
 	g_object_unref (document_file);
 	g_object_unref (updated_document_file);
-	g_object_unref (new_document);
+	g_object_unref (new_document2);
 	g_object_unref (updated_document);
 }
 
