@@ -1177,10 +1177,8 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
-	/* Delete the document */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), document, NULL, &error) == TRUE);
-	g_assert_no_error (error);
-	g_clear_error (&error);
+	/* Delete the document (we don't care if this fails) */
+	gdata_service_delete_entry (GDATA_SERVICE (service), document, NULL, NULL);
 
 	g_object_unref (data->new_doc);
 	g_object_unref (document);
