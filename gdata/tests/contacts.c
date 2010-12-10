@@ -1707,9 +1707,10 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_batch_operation_run_async (operation, NULL, (GAsyncReadyCallback) test_batch_async_cb, main_loop);
-
 	g_main_loop_run (main_loop);
+
 	g_main_loop_unref (main_loop);
+	g_object_unref (operation);
 }
 
 static void
@@ -1746,6 +1747,7 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 	g_object_unref (cancellable);
+	g_object_unref (operation);
 }
 
 static void
