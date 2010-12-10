@@ -1579,7 +1579,7 @@ test_photo_add (gconstpointer service)
 
 	/* Add it to the contact */
 	contact = get_contact (service);
-	retval = gdata_contacts_contact_set_photo (contact, GDATA_SERVICE (service), data, length, "image/jpeg", NULL, &error);
+	retval = gdata_contacts_contact_set_photo (contact, GDATA_CONTACTS_SERVICE (service), data, length, "image/jpeg", NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 
@@ -1668,7 +1668,7 @@ test_photo_delete (gconstpointer service)
 	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
 
 	/* Remove the contact's photo */
-	g_assert (gdata_contacts_contact_set_photo (contact, GDATA_SERVICE (service), NULL, 0, NULL, NULL, &error) == TRUE);
+	g_assert (gdata_contacts_contact_set_photo (contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_assert (gdata_contacts_contact_has_photo (contact) == FALSE);

@@ -3125,7 +3125,7 @@ gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResul
 /**
  * gdata_contacts_contact_set_photo:
  * @self: a #GDataContactsContact
- * @service: a #GDataService
+ * @service: a #GDataContactsService
  * @data: (allow-none): the image data, or %NULL
  * @length: the image length, in bytes
  * @content_type: (allow-none): the content type of the image, or %NULL
@@ -3144,8 +3144,8 @@ gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResul
  * Since: 0.8.0
  **/
 gboolean
-gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const guint8 *data, gsize length, const gchar *content_type,
-                                  GCancellable *cancellable, GError **error)
+gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsService *service, const guint8 *data, gsize length,
+                                  const gchar *content_type, GCancellable *cancellable, GError **error)
 {
 	GDataLink *_link;
 	SoupMessage *message;
@@ -3154,7 +3154,7 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
-	g_return_val_if_fail (GDATA_IS_SERVICE (service), FALSE);
+	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (service), FALSE);
 	g_return_val_if_fail (data == NULL || content_type != NULL, FALSE);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -3175,7 +3175,7 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 		soup_message_set_request (message, content_type, SOUP_MEMORY_STATIC, (gchar*) data, length);
 
 	/* Send the message */
-	status = _gdata_service_send_message (service, message, cancellable, error);
+	status = _gdata_service_send_message (GDATA_SERVICE (service), message, cancellable, error);
 
 	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
 		/* Redirect error or cancelled */
@@ -3185,8 +3185,8 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 		/* Error */
 		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (service);
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (service, GDATA_OPERATION_UPLOAD, status, message->reason_phrase, message->response_body->data,
-		                             message->response_body->length, error);
+		klass->parse_error_response (GDATA_SERVICE (service), GDATA_OPERATION_UPLOAD, status, message->reason_phrase,
+		                             message->response_body->data, message->response_body->length, error);
 		g_object_unref (message);
 		return FALSE;
 	}

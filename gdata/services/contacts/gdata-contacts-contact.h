@@ -286,7 +286,7 @@ void gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataCo
 guint8 *gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResult *async_result, gsize *length, gchar **content_type,
                                                  GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-gboolean gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const guint8 *data, gsize length,
+gboolean gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsService *service, const guint8 *data, gsize length,
                                            const gchar *content_type, GCancellable *cancellable, GError **error);
 
 G_END_DECLS
