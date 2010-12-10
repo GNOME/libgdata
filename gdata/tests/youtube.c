@@ -258,115 +258,100 @@ test_query_related_async (gconstpointer service)
 	g_main_loop_unref (main_loop);
 }
 
-static void
-test_upload_simple (gconstpointer service)
-{
-	GDataYouTubeVideo *video, *new_video;
-	GDataMediaCategory *category;
+typedef struct {
+	GDataYouTubeVideo *video;
+	GDataYouTubeVideo *updated_video;
 	GFile *video_file;
-	gchar *xml;
+} UploadData;
+
+static void
+setup_upload (UploadData *data, gconstpointer service)
+{
+	GDataMediaCategory *category;
 	const gchar * const tags[] = { "toast", "wedding", NULL };
+
+	/* Create the metadata for the video being uploaded */
+	data->video = gdata_youtube_video_new (NULL);
+
+	gdata_entry_set_title (GDATA_ENTRY (data->video), "Bad Wedding Toast");
+	gdata_youtube_video_set_description (data->video, "I gave a bad toast at my friend's wedding.");
+	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
+	gdata_youtube_video_set_category (data->video, category);
+	g_object_unref (category);
+	gdata_youtube_video_set_keywords (data->video, tags);
+
+	/* Get a file to upload */
+	/* TODO: fix the path */
+	data->video_file = g_file_new_for_path (TEST_FILE_DIR "sample.ogg");
+}
+
+static void
+teardown_upload (UploadData *data, gconstpointer service)
+{
+	/* Delete the uploaded video, if possible */
+	if (data->updated_video != NULL) {
+		gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (data->updated_video), NULL, NULL);
+		g_object_unref (data->updated_video);
+	}
+
+	g_object_unref (data->video);
+	g_object_unref (data->video_file);
+}
+
+static void
+test_upload_simple (UploadData *data, gconstpointer service)
+{
 	GError *error = NULL;
 
-	video = gdata_youtube_video_new (NULL);
-
-	gdata_entry_set_title (GDATA_ENTRY (video), "Bad Wedding Toast");
-	gdata_youtube_video_set_description (video, "I gave a bad toast at my friend's wedding.");
-	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
-	gdata_youtube_video_set_category (video, category);
-	g_object_unref (category);
-	gdata_youtube_video_set_keywords (video, tags);
-
-	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
-	g_assert_cmpstr (xml, ==,
-			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:media='http://search.yahoo.com/mrss/' "
-				"xmlns:gd='http://schemas.google.com/g/2005' "
-				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-				"xmlns:app='http://www.w3.org/2007/app'>"
-				"<title type='text'>Bad Wedding Toast</title>"
-				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<media:group>"
-					"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>People</media:category>"
-					"<media:title type='plain'>Bad Wedding Toast</media:title>"
-					"<media:description type='plain'>I gave a bad toast at my friend&apos;s wedding.</media:description>"
-					"<media:keywords>toast,wedding</media:keywords>"
-				"</media:group>"
-				"<app:control>"
-					"<app:draft>no</app:draft>"
-				"</app:control>"
-			 "</entry>");
-	g_free (xml);
-
-	/* TODO: fix the path */
-	video_file = g_file_new_for_path (TEST_FILE_DIR "sample.ogg");
-
 	/* Upload the video */
-	new_video = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), video, video_file, NULL, &error);
+	data->updated_video = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->video, data->video_file, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_YOUTUBE_VIDEO (new_video));
-	g_clear_error (&error);
+	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->updated_video));
 
 	/* TODO: check entries and feed properties */
+}
 
-	g_object_unref (video);
-	g_object_unref (new_video);
-	g_object_unref (video_file);
+typedef struct {
+	UploadData data;
+	GMainLoop *main_loop;
+} UploadAsyncData;
+
+static void
+setup_upload_async (UploadAsyncData *data, gconstpointer service)
+{
+	setup_upload ((UploadData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, TRUE);
 }
 
 static void
-test_upload_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+teardown_upload_async (UploadAsyncData *data, gconstpointer service)
 {
-	GDataYouTubeVideo *new_video;
+	teardown_upload ((UploadData*) data, service);
+	g_main_loop_unref (data->main_loop);
+}
+
+static void
+test_upload_async_cb (GDataService *service, GAsyncResult *async_result, UploadAsyncData *data)
+{
 	GError *error = NULL;
 
-	new_video = gdata_youtube_service_upload_video_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
+	data->data.updated_video = gdata_youtube_service_upload_video_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_YOUTUBE_VIDEO (new_video));
-	g_clear_error (&error);
+	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->data.updated_video));
 
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_video)), ==, "Bad Wedding Toast");
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->data.updated_video)), ==, gdata_entry_get_title (GDATA_ENTRY (data->data.video)));
 
-	g_main_loop_quit (main_loop);
-	g_object_unref (new_video);
+	g_main_loop_quit (data->main_loop);
 }
 
 static void
-test_upload_async (gconstpointer service)
+test_upload_async (UploadAsyncData *data, gconstpointer service)
 {
-	GDataYouTubeVideo *video;
-	GDataMediaCategory *category;
-	GFile *video_file;
-	const gchar * const tags[] = { "toast", "wedding", NULL };
-	GMainLoop *main_loop;
-
-	main_loop = g_main_loop_new (NULL, TRUE);
-
-	video = gdata_youtube_video_new (NULL);
-
-	gdata_entry_set_title (GDATA_ENTRY (video), "Bad Wedding Toast");
-	gdata_youtube_video_set_description (video, "I gave a bad toast at my friend's wedding.");
-	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
-	gdata_youtube_video_set_category (video, category);
-	g_object_unref (category);
-	gdata_youtube_video_set_keywords (video, tags);
-
-	/* TODO: fix the path */
-	video_file = g_file_new_for_path (TEST_FILE_DIR "sample.ogg");
-
 	/* Upload the video */
-	gdata_youtube_service_upload_video_async (GDATA_YOUTUBE_SERVICE (service), video, video_file, NULL,
-	                                          (GAsyncReadyCallback) test_upload_async_cb, main_loop);
-
-	g_object_unref (video);
-	g_object_unref (video_file);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	gdata_youtube_service_upload_video_async (GDATA_YOUTUBE_SERVICE (service), data->data.video, data->data.video_file, NULL,
+	                                          (GAsyncReadyCallback) test_upload_async_cb, data);
+	g_main_loop_run (data->main_loop);
 }
-
 
 static void
 test_parsing_app_control (void)
@@ -1176,8 +1161,8 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/youtube/query/related", service, test_query_related);
 		g_test_add_data_func ("/youtube/query/related_async", service, test_query_related_async);
 
-		g_test_add_data_func ("/youtube/upload/simple", service, test_upload_simple);
-		g_test_add_data_func ("/youtube/upload/async", service, test_upload_async);
+		g_test_add ("/youtube/upload/simple", UploadData, service, setup_upload, test_upload_simple, teardown_upload);
+		g_test_add ("/youtube/upload/async", UploadAsyncData, service, setup_upload_async, test_upload_async, teardown_upload_async);
 
 		g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);
