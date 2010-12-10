@@ -2188,6 +2188,7 @@ _gdata_service_build_uri (gboolean force_http, const gchar *format, ...)
 		fixed_uri = g_strdup_printf ("%s:%s", scheme, pieces[1]);
 
 		g_strfreev (pieces);
+		g_free (built_uri);
 
 		return fixed_uri;
 	}
