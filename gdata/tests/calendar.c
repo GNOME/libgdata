@@ -72,6 +72,8 @@ test_authentication (void)
 	g_assert (gdata_service_is_authenticated (service) == TRUE);
 	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
 	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+
+	g_object_unref (service);
 }
 
 static void
@@ -445,6 +447,8 @@ test_xml_recurrence (gconstpointer service)
 	g_assert_cmpstr (id, ==, "g5928e82rrch95b25f8ud0dlsg");
 	g_assert_cmpstr (uri, ==, "http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/g5928e82rrch95b25f8ud0dlsg");
 
+	g_free (id);
+	g_free (uri);
 	g_object_unref (event);
 }
 
@@ -629,6 +633,7 @@ test_acls_insert_rule (gconstpointer service)
 
 	g_object_unref (rule);
 	g_object_unref (new_rule);
+	g_object_unref (calendar);
 }
 
 static void
@@ -723,6 +728,7 @@ test_acls_delete_rule (gconstpointer service)
 	g_clear_error (&error);
 
 	g_object_unref (rule);
+	g_object_unref (calendar);
 }
 
 int
