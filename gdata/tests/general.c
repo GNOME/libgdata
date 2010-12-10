@@ -265,6 +265,7 @@ test_entry_parse_xml (void)
 				"<ns:barfoo shizzle=\"zing\" fo=\"shizzle\">How about some characters‽</ns:barfoo>"
 			 "</entry>");
 	g_free (xml);
+	g_object_unref (entry);
 }
 
 static void
