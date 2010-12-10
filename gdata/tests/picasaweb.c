@@ -1148,15 +1148,23 @@ test_query_all_albums_async (gconstpointer service)
 }
 
 typedef struct {
+	GDataPicasaWebService *service;
 	GDataPicasaWebFile *photo;
 	GDataPicasaWebFile *updated_photo;
 	GFile *photo_file;
+	gchar *slug;
+	gchar *content_type;
+	GFileInputStream *file_stream;
 } UploadData;
 
 static void
 setup_upload (UploadData *data, gconstpointer service)
 {
+	GFileInfo *file_info;
 	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
+	GError *error = NULL;
+
+	data->service = g_object_ref ((gpointer) service);
 
 	/* Build the photo */
 	data->photo = gdata_picasaweb_file_new (NULL);
@@ -1167,6 +1175,22 @@ setup_upload (UploadData *data, gconstpointer service)
 
 	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
 	data->photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+
+	/* Get the file's info */
+	file_info = g_file_query_info (data->photo_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_INFO (file_info));
+
+	data->slug = g_strdup (g_file_info_get_display_name (file_info));
+	data->content_type = g_strdup (g_file_info_get_content_type (file_info));
+
+	g_object_unref (file_info);
+
+	/* Get an input stream for the file */
+	data->file_stream = g_file_read (data->photo_file, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_INPUT_STREAM (data->file_stream));
 }
 
 static void
@@ -1180,23 +1204,43 @@ teardown_upload (UploadData *data, gconstpointer service)
 
 	g_object_unref (data->photo);
 	g_object_unref (data->photo_file);
+	g_free (data->slug);
+	g_free (data->content_type);
+	g_object_unref (data->file_stream);
+	g_object_unref (data->service);
 }
 
 static void
 test_upload_default_album (UploadData *data, gconstpointer service)
 {
+	GDataUploadStream *upload_stream;
 	const gchar * const *tags, * const *tags2;
+	gssize transfer_size;
 	GError *error = NULL;
 
-	/* Upload the photo */
+	/* Prepare the upload stream */
 	/* TODO right now, it will just go to the default album, we want an uploading one :| */
-	data->updated_photo = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->photo, data->photo_file, NULL,
-	                                                           &error);
+	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->photo, data->slug, data->content_type,
+	                                                     &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	/* Upload the photo */
+	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->file_stream),
+	                                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
+
+	/* Finish off the upload */
+	data->updated_photo = gdata_picasaweb_service_finish_file_upload (GDATA_PICASAWEB_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_PICASAWEB_FILE (data->updated_photo));
-	g_clear_error (&error);
 
-	/* TODO: check entries and feed properties */
+	/* Check the photo's properties */
+	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->updated_photo)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->updated_photo)), ==, gdata_entry_get_title (GDATA_ENTRY (data->photo)));
+	g_assert_cmpstr (gdata_picasaweb_file_get_caption (data->updated_photo), ==, gdata_picasaweb_file_get_caption (data->photo));
+
 	tags = gdata_picasaweb_file_get_tags (data->photo);
 	tags2 = gdata_picasaweb_file_get_tags (data->updated_photo);
 	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, g_strv_length ((gchar**) tags));
@@ -1225,17 +1269,33 @@ teardown_upload_async (UploadAsyncData *data, gconstpointer service)
 }
 
 static void
-test_upload_default_album_async_cb (GDataPicasaWebService *service, GAsyncResult *result, UploadAsyncData *data)
+test_upload_default_album_async_cb (GOutputStream *stream, GAsyncResult *result, UploadAsyncData *data)
 {
+	const gchar * const *tags, * const *tags2;
+	gssize transfer_size;
 	GError *error = NULL;
 
-	data->data.updated_photo = gdata_picasaweb_service_upload_file_finish (service, result, &error);
+	/* Finish off the transfer */
+	transfer_size = g_output_stream_splice_finish (stream, result, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
+
+	/* Finish off the upload */
+	data->data.updated_photo = gdata_picasaweb_service_finish_file_upload (data->data.service, GDATA_UPLOAD_STREAM (stream), &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_PICASAWEB_FILE (data->data.updated_photo));
-	g_clear_error (&error);
-	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->data.updated_photo)));
 
+	/* Check the photo's properties */
+	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->data.updated_photo)));
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->data.updated_photo)), ==, gdata_entry_get_title (GDATA_ENTRY (data->data.photo)));
+	g_assert_cmpstr (gdata_picasaweb_file_get_caption (data->data.updated_photo), ==, gdata_picasaweb_file_get_caption (data->data.photo));
+
+	tags = gdata_picasaweb_file_get_tags (data->data.photo);
+	tags2 = gdata_picasaweb_file_get_tags (data->data.updated_photo);
+	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, g_strv_length ((gchar**) tags));
+	g_assert_cmpstr (tags2[0], ==, tags[0]);
+	g_assert_cmpstr (tags2[1], ==, tags[1]);
+	g_assert_cmpstr (tags2[2], ==, tags[2]);
 
 	g_main_loop_quit (data->main_loop);
 }
@@ -1243,21 +1303,40 @@ test_upload_default_album_async_cb (GDataPicasaWebService *service, GAsyncResult
 static void
 test_upload_default_album_async (UploadAsyncData *data, gconstpointer service)
 {
-	/* Upload the photo */
-	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.photo_file, NULL,
-	                                           (GAsyncReadyCallback) test_upload_default_album_async_cb, data);
+	GDataUploadStream *upload_stream;
+	GError *error = NULL;
+
+	/* Prepare the upload stream */
+	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
+	                                                     data->data.content_type, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	/* Upload the photo asynchronously */
+	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
+	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
+	                              (GAsyncReadyCallback) test_upload_default_album_async_cb, data);
 	g_main_loop_run (data->main_loop);
+
+	g_object_unref (upload_stream);
 }
 
 static void
-test_upload_default_album_cancellation_cb (GDataPicasaWebService *service, GAsyncResult *async_result, UploadAsyncData *data)
+test_upload_default_album_cancellation_cb (GOutputStream *stream, GAsyncResult *result, UploadAsyncData *data)
 {
+	gssize transfer_size;
 	GError *error = NULL;
 
-	data->data.updated_photo = gdata_picasaweb_service_upload_file_finish (service, async_result, &error);
+	/* Finish off the transfer */
+	transfer_size = g_output_stream_splice_finish (stream, result, &error);
 	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (data->data.updated_photo == NULL);
+	g_assert_cmpint (transfer_size, ==, -1);
 	g_clear_error (&error);
+
+	/* Finish off the upload */
+	data->data.updated_photo = gdata_picasaweb_service_finish_file_upload (data->data.service, GDATA_UPLOAD_STREAM (stream), &error);
+	g_assert_no_error (error);
+	g_assert (data->data.updated_photo == NULL);
 
 	g_main_loop_quit (data->main_loop);
 }
@@ -1272,34 +1351,54 @@ test_upload_default_album_cancellation_cancel_cb (GCancellable *cancellable)
 static void
 test_upload_default_album_cancellation (UploadAsyncData *data, gconstpointer service)
 {
+	GDataUploadStream *upload_stream;
 	GCancellable *cancellable;
+	GError *error = NULL;
 
 	/* Create an idle function which will cancel the upload */
 	cancellable = g_cancellable_new ();
 	g_idle_add ((GSourceFunc) test_upload_default_album_cancellation_cancel_cb, cancellable);
 
-	/* Upload the photo */
-	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.photo_file, cancellable,
-	                                           (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, data);
+	/* Prepare the upload stream */
+	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
+	                                                     data->data.content_type, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	/* Upload the photo asynchronously */
+	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
+	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, cancellable,
+	                              (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, data);
 	g_main_loop_run (data->main_loop);
 
+	g_object_unref (upload_stream);
 	g_object_unref (cancellable);
 }
 
 static void
 test_upload_default_album_cancellation2 (UploadAsyncData *data, gconstpointer service)
 {
+	GDataUploadStream *upload_stream;
 	GCancellable *cancellable;
+	GError *error = NULL;
 
-	/* Create an idle function which will cancel the upload */
+	/* Create a timeout function which will cancel the upload after 1ms */
 	cancellable = g_cancellable_new ();
 	g_timeout_add (1, (GSourceFunc) test_upload_default_album_cancellation_cancel_cb, cancellable);
 
-	/* Upload the photo */
-	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.photo_file, cancellable,
-	                                           (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, data);
+	/* Prepare the upload stream */
+	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
+	                                                     data->data.content_type, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	/* Upload the photo asynchronously */
+	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
+	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, cancellable,
+	                              (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, data);
 	g_main_loop_run (data->main_loop);
 
+	g_object_unref (upload_stream);
 	g_object_unref (cancellable);
 }
 

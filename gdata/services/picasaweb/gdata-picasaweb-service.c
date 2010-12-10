@@ -59,22 +59,46 @@
  * 	<title>Uploading a Photo or Video</title>
  * 	<programlisting>
  *	GDataPicasaWebFile *file_entry, *uploaded_file_entry;
+ *	GDataUploadStream *upload_stream;
  *	GFile *file_data;
+ *	GFileInfo *file_info;
+ *	GFileInputStream *file_stream;
  *
  *	/<!-- -->* Specify the GFile image on disk to upload *<!-- -->/
  *	file_data = g_file_new_for_path (path);
+ *
+ *	/<!-- -->* Get the file information for the file being uploaded. If another data source was being used for the upload, it would have to
+ *	 * provide an appropriate slug and content type. Note that this is a blocking operation. *<!-- -->/
+ *	file_info = g_file_query_info (file_data, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+ *	                               G_FILE_QUERY_INFO_NONE, NULL, NULL);
  *
  *	/<!-- -->* Create a GDataPicasaWebFile entry for the image, setting a title and caption/summary *<!-- -->/
  *	file_entry = gdata_picasaweb_file_new (NULL);
  *	gdata_entry_set_title (GDATA_ENTRY (file_entry), "Black Cat");
  *	gdata_entry_set_summary (GDATA_ENTRY (file_entry), "Photo of the world's most beautiful cat.");
  *
- *	/<!-- -->* Upload the file to the server. Note that this is a blocking operation. *<!-- -->/
- *	uploaded_file_entry = gdata_picasaweb_service_upload_file (service, album, file_entry, file_data, NULL, NULL);
- *
+ *	/<!-- -->* Create an upload stream for the file. This is non-blocking. *<!-- -->/
+ *	upload_stream = gdata_picasaweb_service_upload_file (service, album, file_entry, g_file_info_get_display_name (file_info),
+ *	                                                     g_file_info_get_content_type (file_info), NULL);
+ *	g_object_unref (file_info);
  *	g_object_unref (file_entry);
- *	g_object_unref (uploaded_file_entry);
+ *
+ *	/<!-- -->* Prepare a file stream for the file to be uploaded. This is a blocking operation. *<!-- -->/
+ *	file_stream = g_file_read (file_data, NULL, NULL);
  *	g_object_unref (file_data);
+ *
+ *	/<!-- -->* Upload the file to the server. Note that this is a blocking operation. *<!-- -->/
+ *	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+ *	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, NULL);
+ *
+ *	/<!-- -->* Parse the resulting updated entry. This is a non-blocking operation. *<!-- -->/
+ *	uploaded_file_entry = gdata_picasaweb_service_finish_file_upload (service, upload_stream, NULL);
+ *	g_object_unref (file_stream);
+ *	g_object_unref (upload_stream);
+ *
+ *	/<!-- -->* ... *<!-- -->/
+ *
+ *	g_object_unref (uploaded_file_entry);
  * 	</programlisting>
  * </example>
  *
@@ -415,87 +439,45 @@ gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPic
 	                           progress_user_data, callback, user_data);
 }
 
-static GOutputStream *
-get_file_output_stream (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry, GFile *file_data, GError **error)
-{
-	GFileInfo *file_info = NULL;
-	const gchar *slug = NULL, *content_type = NULL, *user_id = NULL, *album_id = NULL;
-	GOutputStream *output_stream;
-	gchar *upload_uri;
-
-	/* PicasaWeb allows you to post to a default Dropbox */
-	album_id = (album != NULL) ? gdata_entry_get_id (GDATA_ENTRY (album)) : "default";
-	user_id = gdata_service_get_username (GDATA_SERVICE (self));
-
-	file_info = g_file_query_info (file_data, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
-	if (file_info == NULL)
-		return NULL;
-
-	slug = g_file_info_get_display_name (file_info);
-	content_type = g_file_info_get_content_type (file_info);
-
-	/* Build the upload URI and upload stream */
-	upload_uri = _gdata_service_build_uri (TRUE, "http://picasaweb.google.com/data/feed/api/user/%s/albumid/%s", user_id, album_id);
-	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST, upload_uri, GDATA_ENTRY (file_entry), slug, content_type);
-	g_free (upload_uri);
-	g_object_unref (file_info);
-
-	return output_stream;
-}
-
-static GDataPicasaWebFile *
-parse_spliced_stream (GOutputStream *output_stream, GError **error)
-{
-	const gchar *response_body;
-	gssize response_length;
-	GDataPicasaWebFile *new_entry;
-
-	/* Get the response from the server */
-	response_body = gdata_upload_stream_get_response (GDATA_UPLOAD_STREAM (output_stream), &response_length);
-	g_assert (response_body != NULL && response_length > 0);
-
-	/* Parse the response to produce a GDataPicasaWebFile */
-	new_entry = GDATA_PICASAWEB_FILE (gdata_parsable_new_from_xml (GDATA_TYPE_PICASAWEB_FILE, response_body, (gint) response_length, error));
-
-	return new_entry;
-}
-
 /**
  * gdata_picasaweb_service_upload_file:
  * @self: a #GDataPicasaWebService
  * @album: (allow-none): a #GDataPicasaWebAlbum into which to insert the file, or %NULL
  * @file_entry: a #GDataPicasaWebFile to insert
- * @file_data: the actual file to upload
- * @cancellable: optional #GCancellable object, or %NULL
+ * @slug: the filename to give to the uploaded file
+ * @content_type: the content type of the uploaded data
  * @error: a #GError, or %NULL
  *
- * Uploads a file (photo or video) to the given PicasaWeb @album, using the @actual_file from disk and the metadata from @file. If @album is
- * %NULL, the file will be uploaded to the currently-authenticated user's "Drop Box" album. A user must be authenticated to use this function.
+ * Uploads a file (photo or video) to the given PicasaWeb @album, using the metadata from @file and the file data written to the resulting
+ * #GDataUploadStream. If @album is %NULL, the file will be uploaded to the currently-authenticated user's "Drop Box" album. A user must be
+ * authenticated to use this function.
  *
  * If @file has already been inserted, a %GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED error will be returned. If no user is authenticated
  * with the service, %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be returned.
  *
- * If there is a problem reading @file_data, an error from g_output_stream_splice() or g_file_query_info() will be returned. Other errors from
- * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * is closed (using g_output_stream_close()), gdata_picasaweb_service_finish_file_upload() should be called on it to parse and return the updated
+ * #GDataPicasaWebFile for the uploaded file. This must be done, as @file_entry isn't updated in-place.
  *
- * Return value: (transfer full): the inserted #GDataPicasaWebFile with updated properties from @file_entry; unref with g_object_unref()
+ * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
- * Since: 0.4.0
+ * Return value: (transfer full): a #GDataUploadStream to write the file data to, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.8.0
  **/
-GDataPicasaWebFile *
-gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry, GFile *file_data,
-                                     GCancellable *cancellable, GError **error)
+GDataUploadStream *
+gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry, const gchar *slug,
+                                     const gchar *content_type, GError **error)
 {
-	GOutputStream *output_stream;
-	GInputStream *input_stream;
-	GDataPicasaWebFile *new_entry;
-	GError *child_error = NULL;
+	const gchar *user_id = NULL, *album_id = NULL;
+	GDataUploadStream *upload_stream;
+	gchar *upload_uri;
 
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
 	g_return_val_if_fail (album == NULL || GDATA_IS_PICASAWEB_ALBUM (album), NULL);
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (file_entry), NULL);
-	g_return_val_if_fail (G_IS_FILE (file_data), NULL);
-	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
+	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (file_entry)) == TRUE) {
@@ -510,194 +492,52 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 		return NULL;
 	}
 
-	output_stream = get_file_output_stream (self, album, file_entry, file_data, error);
-	if (output_stream == NULL)
-		return NULL;
+	/* PicasaWeb allows you to post to a default Dropbox */
+	album_id = (album != NULL) ? gdata_entry_get_id (GDATA_ENTRY (album)) : "default";
+	user_id = gdata_service_get_username (GDATA_SERVICE (self));
 
-	/* Pipe the input file to the upload stream */
-	input_stream = G_INPUT_STREAM (g_file_read (file_data, cancellable, error));
-	if (input_stream == NULL) {
-		g_object_unref (output_stream);
-		return NULL;
-	}
+	/* Build the upload URI and upload stream */
+	upload_uri = _gdata_service_build_uri (TRUE, "http://picasaweb.google.com/data/feed/api/user/%s/albumid/%s", user_id, album_id);
+	upload_stream = GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST, upload_uri, GDATA_ENTRY (file_entry),
+	                                                              slug, content_type));
+	g_free (upload_uri);
 
-	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-	                        cancellable, &child_error);
-
-	g_object_unref (input_stream);
-	if (child_error != NULL) {
-		g_object_unref (output_stream);
-		g_propagate_error (error, child_error);
-		return NULL;
-	}
-
-	new_entry = parse_spliced_stream (output_stream, error);
-	g_object_unref (output_stream);
-
-	return new_entry;
+	return upload_stream;
 }
 
 /**
- * gdata_picasaweb_service_upload_file_finish:
+ * gdata_picasaweb_service_finish_file_upload:
  * @self: a #GDataPicasaWebService
- * @result: a #GSimpleAsyncResult
+ * @upload_stream: the #GDataUploadStream from the operation
  * @error: a #GError, or %NULL
  *
- * This should be called to obtain the result of a call to
- * gdata_picasaweb_service_upload_file_async() and to check for
- * errors.
+ * Finish off a file upload operation started by gdata_picasaweb_service_upload_file(), parsing the result and returning the new #GDataPicasaWebFile.
  *
- * If there is a problem reading the subect file's data, an error
- * from g_output_stream_splice() or g_file_query_info() will be
- * returned. Other errors from #GDataServiceError can be returned for
- * other exceptional conditions, as determined by the server.
+ * If an error occurred during the upload operation, it will have been returned during the operation (e.g. by g_output_stream_splice() or one
+ * of the other stream methods). In such a case, %NULL will be returned but @error will remain unset. @error is only set in the case that the server
+ * indicates that the operation was successful, but an error is encountered in parsing the result sent by the server.
  *
- * If the file to upload has already been inserted, a
- * %GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED error will be set. If
- * no user is authenticated with the service when trying to upload it,
- * %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be set.
+ * Return value: (transfer full): the new #GDataPicasaWebFile, or %NULL; unref with g_object_unref()
  *
- * Return value: (transfer full): the inserted #GDataPicasaWebFile; unref with
- * g_object_unref()
- *
- * Since: 0.6.0
+ * Since: 0.8.0
  */
 GDataPicasaWebFile *
-gdata_picasaweb_service_upload_file_finish (GDataPicasaWebService *self, GAsyncResult *result, GError **error)
+gdata_picasaweb_service_finish_file_upload (GDataPicasaWebService *self, GDataUploadStream *upload_stream, GError **error)
 {
+	const gchar *response_body;
+	gssize response_length;
+
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (upload_stream), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
+	/* Get the response from the server */
+	response_body = gdata_upload_stream_get_response (upload_stream, &response_length);
+	if (response_body == NULL || response_length == 0)
 		return NULL;
 
-	g_assert (gdata_picasaweb_service_upload_file_async == g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)));
-
-	return GDATA_PICASAWEB_FILE (g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result)));
-}
-
-typedef struct {
-	GDataPicasaWebService *service;
-	GAsyncReadyCallback callback;
-	gpointer user_data;
-} UploadFileAsyncData;
-
-static void
-upload_file_async_data_free (UploadFileAsyncData *data)
-{
-	g_object_unref (data->service);
-	g_slice_free (UploadFileAsyncData, data);
-}
-
-static void
-upload_file_async_cb (GOutputStream *output_stream, GAsyncResult *result, UploadFileAsyncData *data)
-{
-	GError *error = NULL;
-	GDataPicasaWebFile *file = NULL;
-	GSimpleAsyncResult *async_result;
-
-	g_output_stream_splice_finish (output_stream, result, &error);
-
-	/* If we're error free, parse the file from the stream */
-	if (error == NULL)
-		file = parse_spliced_stream (output_stream, &error);
-
-	if (error == NULL && file != NULL) {
-		async_result = g_simple_async_result_new (G_OBJECT (data->service), (GAsyncReadyCallback) data->callback,
-		                                          data->user_data, gdata_picasaweb_service_upload_file_async);
-	} else {
-		async_result = g_simple_async_result_new_from_error (G_OBJECT (data->service), (GAsyncReadyCallback) data->callback,
-		                                                     data->user_data, error);
-	}
-
-	g_simple_async_result_set_op_res_gpointer (async_result, file, NULL);
-
-	g_simple_async_result_complete (async_result);
-
-	upload_file_async_data_free (data);
-	g_object_unref (async_result);
-}
-
-/**
- * gdata_picasaweb_service_upload_file_async:
- * @self: a #GDataPicasaWebService
- * @album: (allow-none): a #GDataPicasaWebAlbum into which to insert the file, or %NULL
- * @file_entry: a #GDataPicasaWebFile to insert
- * @file_data: the actual file to upload
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: (closure): data to pass to the @callback function
- *
- * Uploads a file (photo or video) to the given PicasaWeb @album
- * asynchronously, using the @actual_file from disk and the metadata
- * from @file. If @album is %NULL, the file will be uploaded to the
- * currently-authenticated user's "Drop Box" album. A user must be
- * authenticated to use this function.
- *
- * @callback should call gdata_picasaweb_service_upload_file_finish()
- * to obtain a #GDataPicasaWebFile representing the uploaded file and
- * check for possible errors.
- *
- * Since: 0.6.0
- **/
-void
-gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
-                                           GFile *file_data, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
-{
-	GOutputStream *output_stream;
-	GInputStream *input_stream;
-	UploadFileAsyncData *data;
-	GSimpleAsyncResult *result;
-	GError *error = NULL;
-
-	g_return_if_fail (GDATA_IS_PICASAWEB_SERVICE (self));
-	g_return_if_fail (album == NULL || GDATA_IS_PICASAWEB_ALBUM (album));
-	g_return_if_fail (GDATA_IS_PICASAWEB_FILE (file_entry));
-	g_return_if_fail (G_IS_FILE (file_data));
-	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-
-	if (gdata_entry_is_inserted (GDATA_ENTRY (file_entry)) == TRUE) {
-		g_set_error_literal (&error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-		                     _("The entry has already been inserted."));
-		goto error;
-	}
-
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
-		g_set_error_literal (&error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                     _("You must be authenticated to upload a file."));
-		goto error;
-	}
-
-	/* Prepare and retrieve a #GDataOutputStream for the file and its data */
-	output_stream = get_file_output_stream (self, album, file_entry, file_data, &error);
-	if (output_stream == NULL)
-		goto error;
-
-	/* Pipe the input file to the upload stream */
-	input_stream = G_INPUT_STREAM (g_file_read (file_data, cancellable, &error));
-	if (input_stream == NULL) {
-		g_object_unref (output_stream);
-		goto error;
-	}
-
-	data = g_slice_new (UploadFileAsyncData);
-	data->service = g_object_ref (self);
-	data->callback = callback;
-	data->user_data = user_data;
-
-	/* Actually transfer the data */
-	g_output_stream_splice_async (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-	                              0, cancellable, (GAsyncReadyCallback) upload_file_async_cb, data);
-
-	g_object_unref (input_stream);
-	g_object_unref (output_stream);
-
-	return;
-
-error:
-	result = g_simple_async_result_new_from_error (G_OBJECT (self), callback, user_data, error);
-	g_simple_async_result_complete (result);
+	/* Parse the response to produce a GDataPicasaWebFile */
+	return GDATA_PICASAWEB_FILE (gdata_parsable_new_from_xml (GDATA_TYPE_PICASAWEB_FILE, response_body, (gint) response_length, error));
 }
 
 /**

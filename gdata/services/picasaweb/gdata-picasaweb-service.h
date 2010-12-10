@@ -25,6 +25,7 @@
 #include <glib-object.h>
 
 #include <gdata/gdata-service.h>
+#include <gdata/gdata-upload-stream.h>
 #include <gdata/services/picasaweb/gdata-picasaweb-album.h>
 #include <gdata/services/picasaweb/gdata-picasaweb-user.h>
 
@@ -85,13 +86,10 @@ void gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDa
 
 #include <gdata/services/picasaweb/gdata-picasaweb-file.h>
 
-GDataPicasaWebFile *gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
-                                                         GFile *file_data,
-                                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-
-void gdata_picasaweb_service_upload_file_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
-                                                GFile *file_data, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-GDataPicasaWebFile *gdata_picasaweb_service_upload_file_finish (GDataPicasaWebService *self, GAsyncResult *result,
+GDataUploadStream *gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
+                                                        const gchar *slug, const gchar *content_type,
+                                                        GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataPicasaWebFile *gdata_picasaweb_service_finish_file_upload (GDataPicasaWebService *self, GDataUploadStream *upload_stream,
                                                                 GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataPicasaWebAlbum *gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GCancellable *cancellable,
