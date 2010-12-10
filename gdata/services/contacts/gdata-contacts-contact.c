@@ -2939,14 +2939,14 @@ gdata_contacts_contact_has_photo (GDataContactsContact *self)
  *
  * Since: 0.4.0
  **/
-gchar *
+guint8 *
 gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
                                   GCancellable *cancellable, GError **error)
 {
 	GDataLink *_link;
 	SoupMessage *message;
 	guint status;
-	gchar *data;
+	guint8 *data;
 
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
@@ -3019,7 +3019,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  * Since: 0.4.0
  **/
 gboolean
-gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const gchar *data, gsize length,
+gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const guint8 *data, gsize length,
                                   GCancellable *cancellable, GError **error)
 {
 	GDataLink *_link;

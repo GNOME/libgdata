@@ -1569,13 +1569,13 @@ static void
 test_photo_add (gconstpointer service)
 {
 	GDataContactsContact *contact;
-	gchar *data;
+	guint8 *data;
 	gsize length;
 	gboolean retval;
 	GError *error = NULL;
 
 	/* Get the photo */
-	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", &data, &length, NULL) == TRUE);
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &data, &length, NULL) == TRUE);
 
 	/* Add it to the contact */
 	contact = get_contact (service);
@@ -1592,7 +1592,8 @@ static void
 test_photo_get (gconstpointer service)
 {
 	GDataContactsContact *contact;
-	gchar *data, *content_type = NULL;
+	guint8 *data;
+	gchar *content_type = NULL;
 	gsize length = 0;
 	GError *error = NULL;
 
