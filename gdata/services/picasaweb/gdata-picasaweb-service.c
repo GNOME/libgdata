@@ -603,18 +603,20 @@ upload_file_async_cb (GOutputStream *output_stream, GAsyncResult *result, Upload
 	if (error == NULL)
 		file = parse_spliced_stream (output_stream, &error);
 
-	if (error == NULL && file != NULL)
+	if (error == NULL && file != NULL) {
 		async_result = g_simple_async_result_new (G_OBJECT (data->service), (GAsyncReadyCallback) data->callback,
 		                                          data->user_data, gdata_picasaweb_service_upload_file_async);
-	else
+	} else {
 		async_result = g_simple_async_result_new_from_error (G_OBJECT (data->service), (GAsyncReadyCallback) data->callback,
 		                                                     data->user_data, error);
+	}
 
 	g_simple_async_result_set_op_res_gpointer (async_result, file, NULL);
 
 	g_simple_async_result_complete (async_result);
 
 	upload_file_async_data_free (data);
+	g_object_unref (async_result);
 }
 
 /**
