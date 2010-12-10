@@ -115,7 +115,6 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
 }
 
-
 static void
 test_authentication_async (void)
 {
@@ -134,106 +133,6 @@ test_authentication_async (void)
 	g_main_loop_unref (main_loop);
 
 	g_object_unref (service);
-}
-
-static void
-test_upload_async_cb (GDataPicasaWebService *service, GAsyncResult *result, GMainLoop *main_loop)
-{
-	GDataPicasaWebFile *photo_new;
-	GError *error = NULL;
-
-	photo_new = gdata_picasaweb_service_upload_file_finish (service, result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_PICASAWEB_FILE (photo_new));
-	g_clear_error (&error);
-	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (photo_new)));
-
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (photo_new)), ==, "Async Photo Entry Title");
-
-	g_main_loop_quit (main_loop);
-
-	g_object_unref (photo_new);
-}
-
-static void
-test_upload_async (gconstpointer service)
-{
-	GDataPicasaWebFile *photo;
-	GFile *photo_file;
-	GTimeVal timeval;
-	gchar *xml, *time_str, *summary, *expected_xml, *parsed_time_str;
-	GRegex *regex;
-	GMatchInfo *match_info;
-	guint64 delta;
-	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
-	g_get_current_time (&timeval);
-	time_str = g_time_val_to_iso8601 (&timeval);
-	summary = g_strdup_printf ("Async Photo Summary (%s)", time_str);
-
-	expected_xml = g_strdup_printf ("<entry "
-						"xmlns='http://www.w3.org/2005/Atom' "
-						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
-						"xmlns:media='http://search.yahoo.com/mrss/' "
-						"xmlns:gd='http://schemas.google.com/g/2005' "
-						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
-						"xmlns:app='http://www.w3.org/2007/app' "
-						"xmlns:georss='http://www.georss.org/georss' "
-						"xmlns:gml='http://www.opengis.net/gml'>"
-						"<title type='text'>Async Photo Entry Title</title>"
-						"<summary type='text'>Async Photo Summary \\(%s\\)</summary>"
-						"<category term='http://schemas.google.com/photos/2007#photo' "
-							"scheme='http://schemas.google.com/g/2005#kind'/>"
-						"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
-						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
-						"<media:group>"
-							"<media:title type='plain'>Async Photo Entry Title</media:title>"
-							"<media:description type='plain'>Async Photo Summary \\(%s\\)</media:description>"
-							"<media:keywords>foo,bar,%%2C%%2Cbaz%%2Cbaz</media:keywords>"
-						"</media:group>"
-					"</entry>", time_str, time_str);
-	g_free (time_str);
-
-	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
-	regex = g_regex_new (expected_xml, 0, 0, NULL);
-	g_free (expected_xml);
-
-	/* Build the photo */
-	photo = gdata_picasaweb_file_new (NULL);
-	gdata_entry_set_title (GDATA_ENTRY (photo), "Async Photo Entry Title");
-	gdata_picasaweb_file_set_caption (photo, summary);
-	gdata_picasaweb_file_set_tags (photo, tags);
-
-	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
-	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected_xml and building the XML
-	 * for the photo. */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
-	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
-	parsed_time_str = g_match_info_fetch (match_info, 1);
-	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
-	g_assert_cmpuint (abs (delta), <, 1000);
-
-	g_free (parsed_time_str);
-	g_free (xml);
-	g_regex_unref (regex);
-	g_match_info_free (match_info);
-
-	gdata_picasaweb_file_set_coordinates (photo, 17.127, -110.35);
-
-	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
-	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
-
-	/* Upload the photo */
-	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, NULL,
-						   (GAsyncReadyCallback) test_upload_async_cb, main_loop);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-
-	g_free (summary);
-	g_object_unref (photo);
-	g_object_unref (photo_file);
 }
 
 static void
@@ -525,185 +424,6 @@ test_download (gconstpointer _service)
 	g_object_unref (album_feed);
 	g_object_unref (dest_dir);
 	g_object_unref (dest_file);
-}
-
-static void
-test_upload_simple (gconstpointer service)
-{
-	GDataPicasaWebFile *photo, *photo_new;
-	GFile *photo_file;
-	GError *error = NULL;
-	GTimeVal timeval;
-	gchar *xml, *time_str, *summary, *expected_xml, *parsed_time_str;
-	GRegex *regex;
-	GMatchInfo *match_info;
-	guint64 delta;
-	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
-	const gchar * const *tags2;
-
-	g_get_current_time (&timeval);
-	time_str = g_time_val_to_iso8601 (&timeval);
-	summary = g_strdup_printf ("Photo Summary (%s)", time_str);
-
-	expected_xml = g_strdup_printf ("<entry "
-						"xmlns='http://www.w3.org/2005/Atom' "
-						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
-						"xmlns:media='http://search.yahoo.com/mrss/' "
-						"xmlns:gd='http://schemas.google.com/g/2005' "
-						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
-						"xmlns:app='http://www.w3.org/2007/app' "
-						"xmlns:georss='http://www.georss.org/georss' "
-						"xmlns:gml='http://www.opengis.net/gml'>"
-						"<title type='text'>Photo Entry Title</title>"
-						"<summary type='text'>Photo Summary \\(%s\\)</summary>"
-						"<category term='http://schemas.google.com/photos/2007#photo' "
-							"scheme='http://schemas.google.com/g/2005#kind'/>"
-						"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
-						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
-						"<media:group>"
-							"<media:title type='plain'>Photo Entry Title</media:title>"
-							"<media:description type='plain'>Photo Summary \\(%s\\)</media:description>"
-							"<media:keywords>foo,bar,%%2C%%2Cbaz%%2Cbaz</media:keywords>"
-						"</media:group>"
-					"</entry>", time_str, time_str);
-	g_free (time_str);
-
-	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
-	regex = g_regex_new (expected_xml, 0, 0, NULL);
-	g_free (expected_xml);
-
-	/* Build the photo */
-	photo = gdata_picasaweb_file_new (NULL);
-	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
-	gdata_picasaweb_file_set_caption (photo, summary);
-	gdata_picasaweb_file_set_tags (photo, tags);
-
-	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
-	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected_xml and building the XML
-	 * for the photo. */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
-	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
-	parsed_time_str = g_match_info_fetch (match_info, 1);
-	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
-	g_assert_cmpuint (abs (delta), <, 1000);
-
-	g_free (parsed_time_str);
-	g_free (xml);
-	g_regex_unref (regex);
-	g_match_info_free (match_info);
-
-	gdata_picasaweb_file_set_coordinates (photo, 17.127, -110.35);
-
-	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
-	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
-
-	/* Upload the photo */
-	/* TODO right now, it will just go to the default album, we want an uploading one :| */
-	photo_new = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_PICASAWEB_FILE (photo_new));
-	g_clear_error (&error);
-
-	/* TODO: check entries and feed properties */
-	tags2 = gdata_picasaweb_file_get_tags (photo_new);
-	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, 3);
-	g_assert_cmpstr (tags2[0], ==, tags[0]);
-	g_assert_cmpstr (tags2[1], ==, tags[1]);
-	g_assert_cmpstr (tags2[2], ==, tags[2]);
-
-	g_free (summary);
-	g_object_unref (photo);
-	g_object_unref (photo_new);
-	g_object_unref (photo_file);
-}
-
-static void
-test_upload_cancellation_cb (GDataPicasaWebService *service, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	GDataPicasaWebFile *file;
-	GError *error = NULL;
-
-	file = gdata_picasaweb_service_upload_file_finish (service, async_result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (file == NULL);
-	g_clear_error (&error);
-
-	g_main_loop_quit (main_loop);
-}
-
-static gboolean
-test_upload_cancellation_cancel_cb (GCancellable *cancellable)
-{
-	g_cancellable_cancel (cancellable);
-	return FALSE;
-}
-
-static void
-test_upload_cancellation (gconstpointer service)
-{
-	GMainLoop *main_loop;
-	GCancellable *cancellable;
-	GDataPicasaWebFile *photo;
-	GFile *photo_file;
-	const gchar * const tags[] = { "foo", "bar", NULL };
-
-	/* Build the photo */
-	photo = gdata_picasaweb_file_new (NULL);
-	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
-	gdata_picasaweb_file_set_caption (photo, "Summary");
-	gdata_picasaweb_file_set_tags (photo, tags);
-
-	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
-	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
-
-	/* Create a main loop and an idle function which will cancel the upload */
-	main_loop = g_main_loop_new (NULL, TRUE);
-	cancellable = g_cancellable_new ();
-	g_idle_add ((GSourceFunc) test_upload_cancellation_cancel_cb, cancellable);
-
-	/* Upload the photo */
-	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, cancellable,
-	                                           (GAsyncReadyCallback) test_upload_cancellation_cb, main_loop);
-	g_main_loop_run (main_loop);
-
-	g_main_loop_unref (main_loop);
-	g_object_unref (cancellable);
-	g_object_unref (photo);
-	g_object_unref (photo_file);
-}
-
-static void
-test_upload_cancellation2 (gconstpointer service)
-{
-	GMainLoop *main_loop;
-	GCancellable *cancellable;
-	GDataPicasaWebFile *photo;
-	GFile *photo_file;
-	const gchar * const tags[] = { "foo", "bar", NULL };
-
-	/* Build the photo */
-	photo = gdata_picasaweb_file_new (NULL);
-	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
-	gdata_picasaweb_file_set_caption (photo, "Summary");
-	gdata_picasaweb_file_set_tags (photo, tags);
-
-	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
-	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
-
-	/* Create a main loop and an idle function which will cancel the upload */
-	main_loop = g_main_loop_new (NULL, TRUE);
-	cancellable = g_cancellable_new ();
-	g_timeout_add (1, (GSourceFunc) test_upload_cancellation_cancel_cb, cancellable);
-
-	/* Upload the photo */
-	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, cancellable,
-	                                           (GAsyncReadyCallback) test_upload_cancellation_cb, main_loop);
-	g_main_loop_run (main_loop);
-
-	g_main_loop_unref (main_loop);
-	g_object_unref (cancellable);
-	g_object_unref (photo);
-	g_object_unref (photo_file);
 }
 
 static void
@@ -1428,6 +1148,285 @@ test_query_all_albums_async (gconstpointer service)
 }
 
 static void
+test_upload_default_album (gconstpointer service)
+{
+	GDataPicasaWebFile *photo, *photo_new;
+	GFile *photo_file;
+	GError *error = NULL;
+	GTimeVal timeval;
+	gchar *xml, *time_str, *summary, *expected_xml, *parsed_time_str;
+	GRegex *regex;
+	GMatchInfo *match_info;
+	guint64 delta;
+	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
+	const gchar * const *tags2;
+
+	g_get_current_time (&timeval);
+	time_str = g_time_val_to_iso8601 (&timeval);
+	summary = g_strdup_printf ("Photo Summary (%s)", time_str);
+
+	expected_xml = g_strdup_printf ("<entry "
+						"xmlns='http://www.w3.org/2005/Atom' "
+						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
+						"xmlns:media='http://search.yahoo.com/mrss/' "
+						"xmlns:gd='http://schemas.google.com/g/2005' "
+						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
+						"xmlns:app='http://www.w3.org/2007/app' "
+						"xmlns:georss='http://www.georss.org/georss' "
+						"xmlns:gml='http://www.opengis.net/gml'>"
+						"<title type='text'>Photo Entry Title</title>"
+						"<summary type='text'>Photo Summary \\(%s\\)</summary>"
+						"<category term='http://schemas.google.com/photos/2007#photo' "
+							"scheme='http://schemas.google.com/g/2005#kind'/>"
+						"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
+						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
+						"<media:group>"
+							"<media:title type='plain'>Photo Entry Title</media:title>"
+							"<media:description type='plain'>Photo Summary \\(%s\\)</media:description>"
+							"<media:keywords>foo,bar,%%2C%%2Cbaz%%2Cbaz</media:keywords>"
+						"</media:group>"
+					"</entry>", time_str, time_str);
+	g_free (time_str);
+
+	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
+	regex = g_regex_new (expected_xml, 0, 0, NULL);
+	g_free (expected_xml);
+
+	/* Build the photo */
+	photo = gdata_picasaweb_file_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
+	gdata_picasaweb_file_set_caption (photo, summary);
+	gdata_picasaweb_file_set_tags (photo, tags);
+
+	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
+	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected_xml and building the XML
+	 * for the photo. */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
+	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
+	parsed_time_str = g_match_info_fetch (match_info, 1);
+	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
+	g_assert_cmpuint (abs (delta), <, 1000);
+
+	g_free (parsed_time_str);
+	g_free (xml);
+	g_regex_unref (regex);
+	g_match_info_free (match_info);
+
+	gdata_picasaweb_file_set_coordinates (photo, 17.127, -110.35);
+
+	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+
+	/* Upload the photo */
+	/* TODO right now, it will just go to the default album, we want an uploading one :| */
+	photo_new = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_FILE (photo_new));
+	g_clear_error (&error);
+
+	/* TODO: check entries and feed properties */
+	tags2 = gdata_picasaweb_file_get_tags (photo_new);
+	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, 3);
+	g_assert_cmpstr (tags2[0], ==, tags[0]);
+	g_assert_cmpstr (tags2[1], ==, tags[1]);
+	g_assert_cmpstr (tags2[2], ==, tags[2]);
+
+	g_free (summary);
+	g_object_unref (photo);
+	g_object_unref (photo_new);
+	g_object_unref (photo_file);
+}
+
+static void
+test_upload_default_album_async_cb (GDataPicasaWebService *service, GAsyncResult *result, GMainLoop *main_loop)
+{
+	GDataPicasaWebFile *photo_new;
+	GError *error = NULL;
+
+	photo_new = gdata_picasaweb_service_upload_file_finish (service, result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_FILE (photo_new));
+	g_clear_error (&error);
+	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (photo_new)));
+
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (photo_new)), ==, "Async Photo Entry Title");
+
+	g_main_loop_quit (main_loop);
+
+	g_object_unref (photo_new);
+}
+
+static void
+test_upload_default_album_async (gconstpointer service)
+{
+	GDataPicasaWebFile *photo;
+	GFile *photo_file;
+	GTimeVal timeval;
+	gchar *xml, *time_str, *summary, *expected_xml, *parsed_time_str;
+	GRegex *regex;
+	GMatchInfo *match_info;
+	guint64 delta;
+	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
+	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
+
+	g_get_current_time (&timeval);
+	time_str = g_time_val_to_iso8601 (&timeval);
+	summary = g_strdup_printf ("Async Photo Summary (%s)", time_str);
+
+	expected_xml = g_strdup_printf ("<entry "
+						"xmlns='http://www.w3.org/2005/Atom' "
+						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
+						"xmlns:media='http://search.yahoo.com/mrss/' "
+						"xmlns:gd='http://schemas.google.com/g/2005' "
+						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
+						"xmlns:app='http://www.w3.org/2007/app' "
+						"xmlns:georss='http://www.georss.org/georss' "
+						"xmlns:gml='http://www.opengis.net/gml'>"
+						"<title type='text'>Async Photo Entry Title</title>"
+						"<summary type='text'>Async Photo Summary \\(%s\\)</summary>"
+						"<category term='http://schemas.google.com/photos/2007#photo' "
+							"scheme='http://schemas.google.com/g/2005#kind'/>"
+						"<gphoto:timestamp>([0-9]+)</gphoto:timestamp>"
+						"<gphoto:commentingEnabled>true</gphoto:commentingEnabled>"
+						"<media:group>"
+							"<media:title type='plain'>Async Photo Entry Title</media:title>"
+							"<media:description type='plain'>Async Photo Summary \\(%s\\)</media:description>"
+							"<media:keywords>foo,bar,%%2C%%2Cbaz%%2Cbaz</media:keywords>"
+						"</media:group>"
+					"</entry>", time_str, time_str);
+	g_free (time_str);
+
+	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
+	regex = g_regex_new (expected_xml, 0, 0, NULL);
+	g_free (expected_xml);
+
+	/* Build the photo */
+	photo = gdata_picasaweb_file_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (photo), "Async Photo Entry Title");
+	gdata_picasaweb_file_set_caption (photo, summary);
+	gdata_picasaweb_file_set_tags (photo, tags);
+
+	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
+	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected_xml and building the XML
+	 * for the photo. */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
+	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
+	parsed_time_str = g_match_info_fetch (match_info, 1);
+	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
+	g_assert_cmpuint (abs (delta), <, 1000);
+
+	g_free (parsed_time_str);
+	g_free (xml);
+	g_regex_unref (regex);
+	g_match_info_free (match_info);
+
+	gdata_picasaweb_file_set_coordinates (photo, 17.127, -110.35);
+
+	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+
+	/* Upload the photo */
+	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, NULL,
+						   (GAsyncReadyCallback) test_upload_default_album_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+
+	g_free (summary);
+	g_object_unref (photo);
+	g_object_unref (photo_file);
+}
+
+static void
+test_upload_default_album_cancellation_cb (GDataPicasaWebService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GDataPicasaWebFile *file;
+	GError *error = NULL;
+
+	file = gdata_picasaweb_service_upload_file_finish (service, async_result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_assert (file == NULL);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+}
+
+static gboolean
+test_upload_default_album_cancellation_cancel_cb (GCancellable *cancellable)
+{
+	g_cancellable_cancel (cancellable);
+	return FALSE;
+}
+
+static void
+test_upload_default_album_cancellation (gconstpointer service)
+{
+	GMainLoop *main_loop;
+	GCancellable *cancellable;
+	GDataPicasaWebFile *photo;
+	GFile *photo_file;
+	const gchar * const tags[] = { "foo", "bar", NULL };
+
+	/* Build the photo */
+	photo = gdata_picasaweb_file_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
+	gdata_picasaweb_file_set_caption (photo, "Summary");
+	gdata_picasaweb_file_set_tags (photo, tags);
+
+	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+
+	/* Create a main loop and an idle function which will cancel the upload */
+	main_loop = g_main_loop_new (NULL, TRUE);
+	cancellable = g_cancellable_new ();
+	g_idle_add ((GSourceFunc) test_upload_default_album_cancellation_cancel_cb, cancellable);
+
+	/* Upload the photo */
+	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, cancellable,
+	                                           (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (cancellable);
+	g_object_unref (photo);
+	g_object_unref (photo_file);
+}
+
+static void
+test_upload_default_album_cancellation2 (gconstpointer service)
+{
+	GMainLoop *main_loop;
+	GCancellable *cancellable;
+	GDataPicasaWebFile *photo;
+	GFile *photo_file;
+	const gchar * const tags[] = { "foo", "bar", NULL };
+
+	/* Build the photo */
+	photo = gdata_picasaweb_file_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (photo), "Photo Entry Title");
+	gdata_picasaweb_file_set_caption (photo, "Summary");
+	gdata_picasaweb_file_set_tags (photo, tags);
+
+	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+
+	/* Create a main loop and an idle function which will cancel the upload */
+	main_loop = g_main_loop_new (NULL, TRUE);
+	cancellable = g_cancellable_new ();
+	g_timeout_add (1, (GSourceFunc) test_upload_default_album_cancellation_cancel_cb, cancellable);
+
+	/* Upload the photo */
+	gdata_picasaweb_service_upload_file_async (GDATA_PICASAWEB_SERVICE (service), NULL, photo, photo_file, cancellable,
+	                                           (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (cancellable);
+	g_object_unref (photo);
+	g_object_unref (photo_file);
+}
+
+static void
 test_album_new (void)
 {
 	GDataPicasaWebAlbum *album;
@@ -1618,9 +1617,6 @@ main (int argc, char *argv[])
 		g_test_add_func ("/picasaweb/authentication", test_authentication);
 		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);
 
-		g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
-		g_test_add_data_func ("/picasaweb/upload/photo_async", service, test_upload_async);
-
 		g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
 		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
 		g_test_add_data_func ("/picasaweb/query/all_albums_async", service, test_query_all_albums_async);
@@ -1638,9 +1634,10 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/photo_single", service, test_photo_single);
 		g_test_add_data_func ("/picasaweb/query/photo/async", service, test_photo_async);
 
-		g_test_add_data_func ("/picasaweb/upload/photo", service, test_upload_simple);
-		g_test_add_data_func ("/picasaweb/upload/photo/cancellation", service, test_upload_cancellation);
-		g_test_add_data_func ("/picasaweb/upload/photo/cancellation2", service, test_upload_cancellation2);
+		g_test_add_data_func ("/picasaweb/upload/default_album", service, test_upload_default_album);
+		g_test_add_data_func ("/picasaweb/upload/default_album/async", service, test_upload_default_album_async);
+		g_test_add_data_func ("/picasaweb/upload/default_album/cancellation", service, test_upload_default_album_cancellation);
+		g_test_add_data_func ("/picasaweb/upload/default_album/cancellation2", service, test_upload_default_album_cancellation2);
 
 		g_test_add_data_func ("/picasaweb/download/photo", service, test_download);
 		g_test_add_data_func ("/picasaweb/download/thumbnails", service, test_download_thumbnails);
