@@ -359,6 +359,66 @@ test_entry_error_handling (void)
 }
 
 static void
+test_entry_escaping (void)
+{
+	GDataEntry *entry;
+	gchar *xml;
+	GError *error = NULL;
+
+	/* Since we can't construct a GDataEntry directly, we need to parse it from XML */
+	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom'>"
+			"<title type='text'>Escaped content &amp; stuff</title>"
+			"<id>http://foo.com/?foo&amp;bar</id>"
+			"<updated>2010-12-10T17:21:24Z</updated>"
+			"<published>2010-12-10T17:21:24Z</published>"
+			"<summary type='text'>Summary &amp; stuff</summary>"
+			"<rights>Free &amp; open source</rights>"
+			"<content type='text'>Content &amp; things.</content>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (entry));
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+	g_assert_cmpstr (xml, ==,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
+			"<title type='text'>Escaped content &amp; stuff</title>"
+			"<id>http://foo.com/?foo&amp;bar</id>"
+			"<updated>2010-12-10T17:21:24Z</updated>"
+			"<published>2010-12-10T17:21:24Z</published>"
+			"<summary type='text'>Summary &amp; stuff</summary>"
+			"<rights>Free &amp; open source</rights>"
+			"<content type='text'>Content &amp; things.</content>"
+		"</entry>");
+	g_free (xml);
+	g_object_unref (entry);
+
+	/* Repeat with content given by a URI */
+	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom'>"
+			"<title type='text'>Escaped content &amp; stuff</title>"
+			"<content type='text/plain' src='http://foo.com?foo&amp;bar'/>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (entry));
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+	g_assert_cmpstr (xml, ==,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
+			"<title type='text'>Escaped content &amp; stuff</title>"
+			"<content type='text/plain' src='http://foo.com?foo&amp;bar'/>"
+		"</entry>");
+	g_free (xml);
+	g_object_unref (entry);
+}
+
+static void
 test_feed_parse_xml (void)
 {
 	GDataFeed *feed;
@@ -3539,6 +3599,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/entry/get_xml", test_entry_get_xml);
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);
 	g_test_add_func ("/entry/error_handling", test_entry_error_handling);
+	g_test_add_func ("/entry/escaping", test_entry_escaping);
 
 	g_test_add_func ("/feed/parse_xml", test_feed_parse_xml);
 	g_test_add_func ("/feed/error_handling", test_feed_error_handling);

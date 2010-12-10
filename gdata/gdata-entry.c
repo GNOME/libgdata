@@ -493,7 +493,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* Add the entry's ETag, if available */
 	if (gdata_entry_get_etag (GDATA_ENTRY (parsable)) != NULL)
-		g_string_append_printf (xml_string, " gd:etag='%s'", priv->etag);
+		gdata_parser_string_append_escaped (xml_string, " gd:etag='", priv->etag, "'");
 }
 
 static void
@@ -505,7 +505,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	gdata_parser_string_append_escaped (xml_string, "<title type='text'>", priv->title, "</title>");
 
 	if (priv->id != NULL)
-		g_string_append_printf (xml_string, "<id>%s</id>", priv->id);
+		gdata_parser_string_append_escaped (xml_string, "<id>", priv->id, "</id>");
 
 	if (priv->updated != -1) {
 		gchar *updated = gdata_parser_int64_to_iso8601 (priv->updated);
