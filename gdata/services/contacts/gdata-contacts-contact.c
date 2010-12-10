@@ -934,6 +934,8 @@ get_group_xml_cb (const gchar *href, gpointer deleted, GString *xml_string)
 		memcpy ((char*) full_pos, "/base/", 6);
 
 	gdata_parser_string_append_escaped (xml_string, "<gContact:groupMembershipInfo href='", uri, "'/>");
+
+	g_free (uri);
 }
 
 static void
