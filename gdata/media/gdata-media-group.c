@@ -164,6 +164,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			}
 
 			self->priv->keywords = g_strsplit ((gchar*) text, ",", -1);
+			xmlFree (text);
 
 			for (i = 0; self->priv->keywords[i] != NULL; i++) {
 				gchar *comma, *start = self->priv->keywords[i];
