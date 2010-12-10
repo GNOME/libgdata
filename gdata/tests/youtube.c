@@ -259,16 +259,24 @@ test_query_related_async (gconstpointer service)
 }
 
 typedef struct {
+	GDataYouTubeService *service;
 	GDataYouTubeVideo *video;
 	GDataYouTubeVideo *updated_video;
 	GFile *video_file;
+	gchar *slug;
+	gchar *content_type;
+	GFileInputStream *file_stream;
 } UploadData;
 
 static void
 setup_upload (UploadData *data, gconstpointer service)
 {
 	GDataMediaCategory *category;
+	GFileInfo *file_info;
 	const gchar * const tags[] = { "toast", "wedding", NULL };
+	GError *error = NULL;
+
+	data->service = g_object_ref ((gpointer) service);
 
 	/* Create the metadata for the video being uploaded */
 	data->video = gdata_youtube_video_new (NULL);
@@ -283,6 +291,22 @@ setup_upload (UploadData *data, gconstpointer service)
 	/* Get a file to upload */
 	/* TODO: fix the path */
 	data->video_file = g_file_new_for_path (TEST_FILE_DIR "sample.ogg");
+
+	/* Get the file's info */
+	file_info = g_file_query_info (data->video_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_INFO (file_info));
+
+	data->slug = g_strdup (g_file_info_get_display_name (file_info));
+	data->content_type = g_strdup (g_file_info_get_content_type (file_info));
+
+	g_object_unref (file_info);
+
+	/* Get an input stream for the file */
+	data->file_stream = g_file_read (data->video_file, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_INPUT_STREAM (data->file_stream));
 }
 
 static void
@@ -296,19 +320,49 @@ teardown_upload (UploadData *data, gconstpointer service)
 
 	g_object_unref (data->video);
 	g_object_unref (data->video_file);
+	g_free (data->slug);
+	g_free (data->content_type);
+	g_object_unref (data->file_stream);
+	g_object_unref (data->service);
 }
 
 static void
 test_upload_simple (UploadData *data, gconstpointer service)
 {
+	GDataUploadStream *upload_stream;
+	const gchar * const *tags, * const *tags2;
+	gssize transfer_size;
 	GError *error = NULL;
 
+	/* Prepare the upload stream */
+	upload_stream = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->video, data->slug, data->content_type, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
 	/* Upload the video */
-	data->updated_video = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->video, data->video_file, NULL, &error);
+	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->file_stream),
+	                                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
+
+	/* Finish off the upload */
+	data->updated_video = gdata_youtube_service_finish_video_upload (GDATA_YOUTUBE_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->updated_video));
 
-	/* TODO: check entries and feed properties */
+	/* Check the video's properties */
+	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->updated_video)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->updated_video)), ==, gdata_entry_get_title (GDATA_ENTRY (data->video)));
+	g_assert_cmpstr (gdata_youtube_video_get_description (data->updated_video), ==, gdata_youtube_video_get_description (data->video));
+	g_assert_cmpstr (gdata_media_category_get_category (gdata_youtube_video_get_category (data->updated_video)), ==,
+	                 gdata_media_category_get_category (gdata_youtube_video_get_category (data->video)));
+
+	tags = gdata_youtube_video_get_keywords (data->video);
+	tags2 = gdata_youtube_video_get_keywords (data->updated_video);
+	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, g_strv_length ((gchar**) tags));
+	g_assert_cmpstr (tags2[0], ==, tags[0]);
+	g_assert_cmpstr (tags2[1], ==, tags[1]);
+	g_assert_cmpstr (tags2[2], ==, tags[2]);
 }
 
 typedef struct {
@@ -331,15 +385,35 @@ teardown_upload_async (UploadAsyncData *data, gconstpointer service)
 }
 
 static void
-test_upload_async_cb (GDataService *service, GAsyncResult *async_result, UploadAsyncData *data)
+test_upload_async_cb (GOutputStream *stream, GAsyncResult *result, UploadAsyncData *data)
 {
+	const gchar * const *tags, * const *tags2;
+	gssize transfer_size;
 	GError *error = NULL;
 
-	data->data.updated_video = gdata_youtube_service_upload_video_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
+	/* Finish off the transfer */
+	transfer_size = g_output_stream_splice_finish (stream, result, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
+
+	/* Finish off the upload */
+	data->data.updated_video = gdata_youtube_service_finish_video_upload (data->data.service, GDATA_UPLOAD_STREAM (stream), &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->data.updated_video));
 
+	/* Check the video's properties */
+	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->data.updated_video)));
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->data.updated_video)), ==, gdata_entry_get_title (GDATA_ENTRY (data->data.video)));
+	g_assert_cmpstr (gdata_youtube_video_get_description (data->data.updated_video), ==, gdata_youtube_video_get_description (data->data.video));
+	g_assert_cmpstr (gdata_media_category_get_category (gdata_youtube_video_get_category (data->data.updated_video)), ==,
+	                 gdata_media_category_get_category (gdata_youtube_video_get_category (data->data.video)));
+
+	tags = gdata_youtube_video_get_keywords (data->data.video);
+	tags2 = gdata_youtube_video_get_keywords (data->data.updated_video);
+	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, g_strv_length ((gchar**) tags));
+	g_assert_cmpstr (tags2[0], ==, tags[0]);
+	g_assert_cmpstr (tags2[1], ==, tags[1]);
+	g_assert_cmpstr (tags2[2], ==, tags[2]);
 
 	g_main_loop_quit (data->main_loop);
 }
@@ -347,10 +421,22 @@ test_upload_async_cb (GDataService *service, GAsyncResult *async_result, UploadA
 static void
 test_upload_async (UploadAsyncData *data, gconstpointer service)
 {
-	/* Upload the video */
-	gdata_youtube_service_upload_video_async (GDATA_YOUTUBE_SERVICE (service), data->data.video, data->data.video_file, NULL,
-	                                          (GAsyncReadyCallback) test_upload_async_cb, data);
+	GDataUploadStream *upload_stream;
+	GError *error = NULL;
+
+	/* Prepare the upload stream */
+	upload_stream = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->data.video, data->data.slug,
+	                                                    data->data.content_type, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	/* Upload the video asynchronously */
+	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
+	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
+	                              (GAsyncReadyCallback) test_upload_async_cb, data);
 	g_main_loop_run (data->main_loop);
+
+	g_object_unref (upload_stream);
 }
 
 static void

@@ -25,6 +25,7 @@
 #include <libsoup/soup.h>
 
 #include <gdata/gdata-service.h>
+#include <gdata/gdata-upload-stream.h>
 #include <gdata/services/youtube/gdata-youtube-video.h>
 #include <gdata/app/gdata-app-categories.h>
 
@@ -131,11 +132,9 @@ void gdata_youtube_service_query_related_async (GDataYouTubeService *self, GData
                                                 GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                 GAsyncReadyCallback callback, gpointer user_data);
 
-GDataYouTubeVideo *gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, GFile *video_file,
-                                                       GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-void gdata_youtube_service_upload_video_async (GDataYouTubeService *self, GDataYouTubeVideo *video_entry, GFile *video_data,
-                                               GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-GDataYouTubeVideo *gdata_youtube_service_upload_video_finish (GDataYouTubeService *self, GAsyncResult *result,
+GDataUploadStream *gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, const gchar *slug,
+                                                       const gchar *content_type, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataYouTubeVideo *gdata_youtube_service_finish_video_upload (GDataYouTubeService *self, GDataUploadStream *upload_stream,
                                                               GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_youtube_service_get_developer_key (GDataYouTubeService *self) G_GNUC_PURE;

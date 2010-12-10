@@ -596,76 +596,36 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
 	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
 
-static GOutputStream *
-get_file_output_stream (GDataYouTubeService *self, GDataYouTubeVideo *video_entry, GFile *video_data, GError **error)
-{
-	GFileInfo *file_info = NULL;
-	const gchar *slug = NULL, *content_type = NULL;
-	GOutputStream *output_stream;
-
-	file_info = g_file_query_info (video_data, "standard::display-name,standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, error);
-	if (file_info == NULL)
-		return NULL;
-
-	slug = g_file_info_get_display_name (file_info);
-	content_type = g_file_info_get_content_type (file_info);
-
-	/* Streaming upload support using GDataUploadStream; automatically handles the XML and multipart stuff for us */
-	output_stream = gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST,
-	                                         "http://uploads.gdata.youtube.com/feeds/api/users/default/uploads",
-	                                         GDATA_ENTRY (video_entry), slug, content_type);
-	g_object_unref (file_info);
-
-	return output_stream;
-}
-
-static GDataYouTubeVideo *
-parse_spliced_stream (GOutputStream *output_stream, GError **error)
-{
-	const gchar *response_body;
-	gssize response_length;
-	GDataYouTubeVideo *new_entry;
-
-	/* Get the response from the server */
-	response_body = gdata_upload_stream_get_response (GDATA_UPLOAD_STREAM (output_stream), &response_length);
-	g_assert (response_body != NULL && response_length > 0);
-
-	/* Parse the response to produce a GDataPicasaWebFile */
-	new_entry = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO, response_body, (gint) response_length, error));
-
-	return new_entry;
-}
-
 /**
  * gdata_youtube_service_upload_video:
  * @self: a #GDataYouTubeService
  * @video: a #GDataYouTubeVideo to insert
- * @video_file: the video file to upload
- * @cancellable: optional #GCancellable object, or %NULL
+ * @slug: the filename to give to the uploaded file
+ * @content_type: the content type of the uploaded data
  * @error: a #GError, or %NULL
  *
- * Uploads a video to YouTube, using the properties from @video and the video file pointed to by @video_file.
+ * Uploads a video to YouTube, using the properties from @video and the file data written to the resulting #GDataUploadStream.
  *
  * If @video has already been inserted, a %GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED error will be returned. If no user is authenticated
  * with the service, %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be returned.
  *
- * If there is a problem reading @video_file, an error from g_file_load_contents() or g_file_query_info() will be returned. Other errors from
- * #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * is closed (using g_output_stream_close()), gdata_youtube_service_finish_video_upload() should be called on it to parse and return the updated
+ * #GDataYouTubeVideo for the uploaded video. This must be done, as @video isn't updated in-place.
  *
- * Return value: (transfer full): the inserted #GDataYouTubeVideo with updated properties from @video; unref with g_object_unref()
+ * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
+ *
+ * Return value: (transfer full): a #GDataUploadStream to write the video data to, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.8.0
  **/
-GDataYouTubeVideo *
-gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, GFile *video_file, GCancellable *cancellable, GError **error)
+GDataUploadStream *
+gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, const gchar *slug, const gchar *content_type, GError **error)
 {
-	GDataYouTubeVideo *new_entry;
-	GOutputStream *output_stream;
-	GInputStream *input_stream;
-	GError *child_error = NULL;
-
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (video), NULL);
-	g_return_val_if_fail (G_IS_FILE (video_file), NULL);
-	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
+	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (video)) == TRUE) {
@@ -680,181 +640,45 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 		return NULL;
 	}
 
-	output_stream = get_file_output_stream (self, video, video_file, error);
-	if (output_stream == NULL)
-		return NULL;
-
-	/* Open the video file for reading */
-	input_stream = G_INPUT_STREAM (g_file_read (video_file, cancellable, error));
-	if (input_stream == NULL) {
-		g_object_unref (output_stream);
-		return NULL;
-	}
-
-	/* Splice the streams to upload the file and metadata */
-	g_output_stream_splice (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-	                        cancellable, &child_error);
-
-	g_object_unref (input_stream);
-	if (child_error != NULL) {
-		g_object_unref (output_stream);
-		g_propagate_error (error, child_error);
-		return NULL;
-	}
-
-	new_entry = parse_spliced_stream (output_stream, error);
-	g_object_unref (output_stream);
-
-	return new_entry;
+	/* Streaming upload support using GDataUploadStream; automatically handles the XML and multipart stuff for us */
+	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST,
+	                                                     "http://uploads.gdata.youtube.com/feeds/api/users/default/uploads",
+	                                                      GDATA_ENTRY (video), slug, content_type));
 }
 
 /**
- * gdata_youtube_service_upload_video_finish:
+ * gdata_youtube_service_finish_video_upload:
  * @self: a #GDataYouTubeService
- * @result: a #GSimpleAsyncResult
+ * @upload_stream: the #GDataUploadStream from the operation
  * @error: a #GError, or %NULL
  *
- * This should be called to obtain the result of a call to gdata_youtube_service_upload_video_async() and to check for errors.
+ * Finish off a video upload operation started by gdata_youtube_service_upload_video(), parsing the result and returning the new #GDataYouTubeVideo.
  *
- * If there is a problem reading the subect file's data, an error from g_output_stream_splice() or g_file_query_info() will be returned. Other errors
- * from #GDataServiceError can be returned for other exceptional conditions, as determined by the server.
+ * If an error occurred during the upload operation, it will have been returned during the operation (e.g. by g_output_stream_splice() or one
+ * of the other stream methods). In such a case, %NULL will be returned but @error will remain unset. @error is only set in the case that the server
+ * indicates that the operation was successful, but an error is encountered in parsing the result sent by the server.
  *
- * If the video to upload has already been inserted, a %GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED error will be set. If no user is authenticated with
- * the service when trying to upload it, %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be set.
- *
- * Return value: (transfer full): the inserted #GDataYouTubeVideo; unref with g_object_unref()
+ * Return value: (transfer full): the new #GDataYouTubeVideo, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
  */
 GDataYouTubeVideo *
-gdata_youtube_service_upload_video_finish (GDataYouTubeService *self, GAsyncResult *result, GError **error)
+gdata_youtube_service_finish_video_upload (GDataYouTubeService *self, GDataUploadStream *upload_stream, GError **error)
 {
+	const gchar *response_body;
+	gssize response_length;
+
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (upload_stream), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
+	/* Get the response from the server */
+	response_body = gdata_upload_stream_get_response (upload_stream, &response_length);
+	if (response_body == NULL || response_length == 0)
 		return NULL;
 
-	g_assert (gdata_youtube_service_upload_video_async == g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)));
-
-	return GDATA_YOUTUBE_VIDEO (g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result)));
-}
-
-typedef struct {
-	GDataYouTubeService *service;
-	GAsyncReadyCallback callback;
-	gpointer user_data;
-} UploadVideoAsyncData;
-
-static void
-upload_video_async_data_free (UploadVideoAsyncData *data)
-{
-	g_object_unref (data->service);
-	g_slice_free (UploadVideoAsyncData, data);
-}
-
-static void
-upload_video_async_cb (GOutputStream *output_stream, GAsyncResult *result, UploadVideoAsyncData *data)
-{
-	GError *error = NULL;
-	GDataYouTubeVideo *video = NULL;
-	GSimpleAsyncResult *async_result;
-
-	g_output_stream_splice_finish (output_stream, result, &error);
-
-	/* If we're error free, parse the file from the stream */
-	if (error == NULL)
-		video = parse_spliced_stream (output_stream, &error);
-
-	if (error == NULL && video != NULL) {
-		async_result = g_simple_async_result_new (G_OBJECT (data->service), (GAsyncReadyCallback) data->callback,
-		                                          data->user_data, gdata_youtube_service_upload_video_async);
-	} else {
-		async_result = g_simple_async_result_new_from_error (G_OBJECT (data->service), (GAsyncReadyCallback) data->callback,
-		                                                     data->user_data, error);
-	}
-
-	g_simple_async_result_set_op_res_gpointer (async_result, video, NULL);
-
-	g_simple_async_result_complete (async_result);
-
-	upload_video_async_data_free (data);
-}
-
-/**
- * gdata_youtube_service_upload_video_async:
- * @self: a #GDataYouTubeService
- * @video_entry: a #GDataYouTubeVideo to insert
- * @video_data: the actual file to upload
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the upload is finished
- * @user_data: (closure): data to pass to the @callback function
- *
- * Uploads a video to YouTube asynchronously, using the @video_data from disk and the metadata from @video_entry. A user must be authenticated to use
- * this function. Note that uploaded videos aren't publicly visible on YouTube immediately; they need to go through a moderation queue first.
- *
- * @callback should call gdata_youtube_service_upload_video_finish() to obtain a #GDataYouTubeVideo representing the uploaded video and check for
- * possible errors.
- *
- * Since: 0.8.0
- **/
-void
-gdata_youtube_service_upload_video_async (GDataYouTubeService *self, GDataYouTubeVideo *video_entry, GFile *video_data, GCancellable *cancellable,
-                                          GAsyncReadyCallback callback, gpointer user_data)
-{
-	GOutputStream *output_stream;
-	GInputStream *input_stream;
-	UploadVideoAsyncData *data;
-	GSimpleAsyncResult *result;
-	GError *error = NULL;
-
-	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
-	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (video_entry));
-	g_return_if_fail (G_IS_FILE (video_data));
-	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-
-	if (gdata_entry_is_inserted (GDATA_ENTRY (video_entry)) == TRUE) {
-		g_set_error_literal (&error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-		                     _("The entry has already been inserted."));
-		goto error;
-	}
-
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
-		g_set_error_literal (&error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                     _("You must be authenticated to upload a video."));
-		goto error;
-	}
-
-	/* Prepare and retrieve a #GDataOutputStream for the file and its data */
-	output_stream = get_file_output_stream (self, video_entry, video_data, &error);
-	if (output_stream == NULL)
-		goto error;
-
-	/* Pipe the input file to the upload stream */
-	input_stream = G_INPUT_STREAM (g_file_read (video_data, cancellable, &error));
-	if (input_stream == NULL) {
-		g_object_unref (output_stream);
-		goto error;
-	}
-
-	data = g_slice_new (UploadVideoAsyncData);
-	data->service = g_object_ref (self);
-	data->callback = callback;
-	data->user_data = user_data;
-
-	/* Actually transfer the data */
-	g_output_stream_splice_async (output_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-	                              0, cancellable, (GAsyncReadyCallback) upload_video_async_cb, data);
-
-	g_object_unref (input_stream);
-	g_object_unref (output_stream);
-
-	return;
-
-error:
-	result = g_simple_async_result_new_from_error (G_OBJECT (self), callback, user_data, error);
-	g_simple_async_result_complete (result);
+	/* Parse the response to produce a GDataYouTubeVideo */
+	return GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO, response_body, (gint) response_length, error));
 }
 
 /**
