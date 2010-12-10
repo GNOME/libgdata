@@ -74,6 +74,7 @@ test_entry_get_xml (void)
 				 "<title type='text'>Testing title &amp; escaping</title>"
 				 "<content type='text/plain' src='http://bar.com/'/>"
 			 "</entry>");
+	g_free (xml);
 
 	/* Reset the content */
 	gdata_entry_set_content (entry, "This is some sample content testing, amongst other things, <markup> & odd characters‽");
@@ -194,7 +195,6 @@ test_entry_get_xml (void)
 
 	author = GDATA_AUTHOR (list->data);
 	g_assert (author != NULL);
-	author = gdata_author_new ("F. Barr؟", NULL, NULL);
 	g_assert_cmpstr (gdata_author_get_name (author), ==, "F. Barr؟");
 	g_assert (gdata_author_get_uri (author) == NULL);
 	g_assert (gdata_author_get_email_address (author) == NULL);
@@ -323,6 +323,7 @@ test_entry_parse_xml (void)
 				"<ns:barfoo shizzle=\"zing\" fo=\"shizzle\">How about some characters‽</ns:barfoo>"
 			 "</entry>");
 	g_free (xml);
+	g_object_unref (entry);
 }
 
 static void
@@ -881,6 +882,8 @@ test_comparable (void)
 	g_assert_cmpint (gdata_comparable_compare (NULL, category), ==, -1);
 	g_assert_cmpint (gdata_comparable_compare (NULL, NULL), ==, 0);
 	g_assert_cmpint (gdata_comparable_compare (category, category), ==, 0);
+
+	g_object_unref (category);
 }
 
 static void
