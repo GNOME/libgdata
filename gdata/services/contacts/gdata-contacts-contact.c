@@ -3128,10 +3128,11 @@ gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResul
  * @service: a #GDataService
  * @data: (allow-none): the image data, or %NULL
  * @length: the image length, in bytes
+ * @content_type: (allow-none): the content type of the image, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Sets the contact's photo to @data or, if @data is %NULL, deletes the contact's photo.
+ * Sets the contact's photo to @data or, if @data is %NULL, deletes the contact's photo. @content_type must be specified if @data is non-%NULL.
  *
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
  * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
@@ -3143,7 +3144,7 @@ gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResul
  * Since: 0.8.0
  **/
 gboolean
-gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const guint8 *data, gsize length,
+gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const guint8 *data, gsize length, const gchar *content_type,
                                   GCancellable *cancellable, GError **error)
 {
 	GDataLink *_link;
@@ -3154,6 +3155,7 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), FALSE);
+	g_return_val_if_fail (data == NULL || content_type != NULL, FALSE);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -3170,7 +3172,7 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *serv
 
 	/* Append the data */
 	if (deleting_photo == FALSE)
-		soup_message_set_request (message, "image/*", SOUP_MEMORY_STATIC, (gchar*) data, length);
+		soup_message_set_request (message, content_type, SOUP_MEMORY_STATIC, (gchar*) data, length);
 
 	/* Send the message */
 	status = _gdata_service_send_message (service, message, cancellable, error);
