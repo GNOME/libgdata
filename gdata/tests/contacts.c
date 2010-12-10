@@ -1589,6 +1589,45 @@ test_photo_add (gconstpointer service)
 }
 
 static void
+test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+{
+	gboolean success;
+	GError *error = NULL;
+
+	success = gdata_contacts_contact_set_photo_finish (contact, result, &error);
+	g_assert_no_error (error);
+	g_assert (success == TRUE);
+
+	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+
+	g_main_loop_quit (main_loop);
+}
+
+static void
+test_photo_add_async (gconstpointer service)
+{
+	GDataContactsContact *contact;
+	guint8 *data;
+	gsize length;
+	GMainLoop *main_loop;
+
+	/* Get the photo */
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &data, &length, NULL) == TRUE);
+
+	contact = get_contact (service);
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	/* Add it to the contact asynchronously */
+	gdata_contacts_contact_set_photo_async (contact, GDATA_CONTACTS_SERVICE (service), data, length, "image/jpeg", NULL,
+	                                        (GAsyncReadyCallback) test_photo_add_async_cb, main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (contact);
+	g_free (data);
+}
+
+static void
 test_photo_get (gconstpointer service)
 {
 	GDataContactsContact *contact;
@@ -1674,6 +1713,41 @@ test_photo_delete (gconstpointer service)
 	g_assert (gdata_contacts_contact_has_photo (contact) == FALSE);
 
 	g_clear_error (&error);
+	g_object_unref (contact);
+}
+
+static void
+test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+{
+	gboolean success;
+	GError *error = NULL;
+
+	success = gdata_contacts_contact_set_photo_finish (contact, result, &error);
+	g_assert_no_error (error);
+	g_assert (success == TRUE);
+
+	g_assert (gdata_contacts_contact_has_photo (contact) == FALSE);
+
+	g_main_loop_quit (main_loop);
+}
+
+static void
+test_photo_delete_async (gconstpointer service)
+{
+	GDataContactsContact *contact;
+	GMainLoop *main_loop;
+
+	contact = get_contact (service);
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+
+	/* Delete it from the contact asynchronously */
+	gdata_contacts_contact_set_photo_async (contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL,
+	                                        (GAsyncReadyCallback) test_photo_delete_async_cb, main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
 	g_object_unref (contact);
 }
 
@@ -1955,6 +2029,8 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/contacts/photo/get", service, test_photo_get);
 		g_test_add_data_func ("/contacts/photo/get/async", service, test_photo_get_async);
 		g_test_add_data_func ("/contacts/photo/delete", service, test_photo_delete);
+		g_test_add_data_func ("/contacts/photo/add/async", service, test_photo_add_async);
+		g_test_add_data_func ("/contacts/photo/delete/async", service, test_photo_delete_async);
 
 		g_test_add_data_func ("/contacts/batch", service, test_batch);
 		g_test_add ("/contacts/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);

@@ -288,6 +288,9 @@ guint8 *gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAs
 
 gboolean gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsService *service, const guint8 *data, gsize length,
                                            const gchar *content_type, GCancellable *cancellable, GError **error);
+void gdata_contacts_contact_set_photo_async (GDataContactsContact *self, GDataContactsService *service, const guint8 *data, gsize length,
+                                             const gchar *content_type, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean gdata_contacts_contact_set_photo_finish (GDataContactsContact *self, GAsyncResult *async_result, GError **error);
 
 G_END_DECLS
 
