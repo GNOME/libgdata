@@ -72,6 +72,8 @@ test_authentication (void)
 	g_assert (gdata_service_is_authenticated (service) == TRUE);
 	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
 	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+
+	g_object_unref (service);
 }
 
 static void
@@ -437,6 +439,8 @@ test_xml_recurrence (void)
 	g_assert_cmpstr (id, ==, "g5928e82rrch95b25f8ud0dlsg");
 	g_assert_cmpstr (uri, ==, "http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/g5928e82rrch95b25f8ud0dlsg");
 
+	g_free (id);
+	g_free (uri);
 	g_object_unref (event);
 }
 
@@ -627,6 +631,7 @@ test_acls_insert_rule (gconstpointer service)
 
 	g_object_unref (rule);
 	g_object_unref (new_rule);
+	g_object_unref (calendar);
 }
 
 static void
@@ -724,6 +729,7 @@ test_acls_delete_rule (gconstpointer service)
 	g_clear_error (&error);
 
 	g_object_unref (rule);
+	g_object_unref (calendar);
 }
 
 static void
@@ -834,6 +840,7 @@ test_batch (gconstpointer service)
 	g_clear_error (&error);
 	g_object_unref (operation);
 	g_object_unref (inserted_entry3);
+	g_object_unref (calendar);
 }
 
 typedef struct {
@@ -885,9 +892,10 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_batch_operation_run_async (operation, NULL, (GAsyncReadyCallback) test_batch_async_cb, main_loop);
-
 	g_main_loop_run (main_loop);
+
 	g_main_loop_unref (main_loop);
+	g_object_unref (operation);
 }
 
 static void
@@ -924,6 +932,7 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 	g_object_unref (cancellable);
+	g_object_unref (operation);
 }
 
 static void
