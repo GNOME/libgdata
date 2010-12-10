@@ -1616,6 +1616,49 @@ test_photo_get (gconstpointer service)
 }
 
 static void
+test_photo_get_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+{
+	guint8 *data;
+	gsize length;
+	gchar *content_type;
+	GError *error = NULL;
+
+	/* Finish getting the photo */
+	data = gdata_contacts_contact_get_photo_finish (contact, result, &length, &content_type, &error);
+	g_assert_no_error (error);
+	g_assert (data != NULL);
+	g_assert (length != 0);
+	g_assert_cmpstr (content_type, ==, "image/jpeg");
+
+	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+
+	g_main_loop_quit (main_loop);
+
+	g_free (content_type);
+	g_free (data);
+}
+
+static void
+test_photo_get_async (gconstpointer service)
+{
+	GDataContactsContact *contact;
+	GMainLoop *main_loop;
+
+	contact = get_contact (service);
+	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	/* Get the photo from the network asynchronously */
+	gdata_contacts_contact_get_photo_async (contact, GDATA_CONTACTS_SERVICE (service), NULL, (GAsyncReadyCallback) test_photo_get_async_cb,
+	                                        main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (contact);
+}
+
+static void
 test_photo_delete (gconstpointer service)
 {
 	GDataContactsContact *contact;
@@ -1910,6 +1953,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
 		g_test_add_data_func ("/contacts/photo/add", service, test_photo_add);
 		g_test_add_data_func ("/contacts/photo/get", service, test_photo_get);
+		g_test_add_data_func ("/contacts/photo/get/async", service, test_photo_get_async);
 		g_test_add_data_func ("/contacts/photo/delete", service, test_photo_delete);
 
 		g_test_add_data_func ("/contacts/batch", service, test_batch);

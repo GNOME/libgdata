@@ -2937,7 +2937,7 @@ gdata_contacts_contact_has_photo (GDataContactsContact *self)
  *
  * Return value: the image data, or %NULL; free with g_free()
  *
- * Since: 0.4.0
+ * Since: 0.8.0
  **/
 guint8 *
 gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
@@ -2998,6 +2998,130 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	return data;
 }
 
+typedef struct {
+	guint8 *data;
+	gsize length;
+	gchar *content_type;
+} PhotoData;
+
+static void
+photo_data_free (PhotoData *data)
+{
+	g_free (data->data);
+	g_free (data->content_type);
+	g_slice_free (PhotoData, data);
+}
+
+static void
+get_photo_thread (GSimpleAsyncResult *result, GDataContactsContact *contact, GCancellable *cancellable)
+{
+	GDataContactsService *service;
+	PhotoData *data;
+	GError *error = NULL;
+
+	/* Input and output */
+	service = g_simple_async_result_get_op_res_gpointer (result);
+	data = g_slice_new0 (PhotoData);
+
+	/* Get the photo */
+	data->data = gdata_contacts_contact_get_photo (contact, service, &(data->length), &(data->content_type), cancellable, &error);
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+		return;
+	}
+
+	/* Replace the service with the photo struct */
+	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) photo_data_free);
+}
+
+/**
+ * gdata_contacts_contact_get_photo_async:
+ * @self: a #GDataContactsContact
+ * @service: a #GDataContactsService
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the photo has been retrieved, or %NULL
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Downloads and returns the contact's photo, if they have one, asynchronously. @self and @service are both reffed when this function is called, so
+ * can safely be unreffed after this function returns.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_contacts_contact_get_photo_finish() to get the results of the
+ * operation.
+ *
+ * For more details, see gdata_contacts_contact_get_photo(), which is the synchronous version of this function.
+ *
+ * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
+ * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned by gdata_contacts_contact_get_photo_finish().
+ *
+ * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned by gdata_contacts_contact_get_photo_finish().
+ *
+ * Since: 0.8.0
+ **/
+void
+gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataContactsService *service, GCancellable *cancellable,
+                                        GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+	g_return_if_fail (GDATA_IS_CONTACTS_SERVICE (service));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_contacts_contact_get_photo_async);
+	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (service), (GDestroyNotify) g_object_unref);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_photo_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_contacts_contact_get_photo_finish:
+ * @self: a #GDataContactsContact
+ * @async_result: a #GAsyncResult
+ * @length: (out caller-allocates): return location for the image length, in bytes
+ * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the image's content type, or %NULL; free with g_free()
+ * @error: a #GError, or %NULL
+ *
+ * Finishes an asynchronous contact photo retrieval operation started with gdata_contacts_contact_get_photo_async(). If the contact doesn't have a
+ * photo (i.e. gdata_contacts_contact_has_photo() returns %FALSE), %NULL is returned, but no error is set in @error.
+ *
+ * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
+ *
+ * Return value: the image data, or %NULL; free with g_free()
+ *
+ * Since: 0.8.0
+ **/
+guint8 *
+gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResult *async_result, gsize *length, gchar **content_type, GError **error)
+{
+	PhotoData *data;
+	guint8 *photo_data;
+	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (length != NULL, NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_contacts_contact_get_photo_async);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE)
+		return NULL;
+
+	/* Return the photo (steal the data from the PhotoData struct so we don't have to copy it again) */
+	data = g_simple_async_result_get_op_res_gpointer (result);
+	photo_data = data->data;
+	*length = data->length;
+	if (content_type != NULL)
+		*content_type = data->content_type;
+
+	data->data = NULL;
+	data->content_type = NULL;
+
+	return photo_data;
+}
+
 /**
  * gdata_contacts_contact_set_photo:
  * @self: a #GDataContactsContact
@@ -3016,7 +3140,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
  *
  * Return value: %TRUE on success, %FALSE otherwise
  *
- * Since: 0.4.0
+ * Since: 0.8.0
  **/
 gboolean
 gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataService *service, const guint8 *data, gsize length,
