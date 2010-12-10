@@ -37,38 +37,6 @@
 #define TEST_ALBUM_INDEX 2
 
 static void
-delete_directory (GFile *directory, GError **error)
-{
-	GFileEnumerator *enumerator;
-
-	enumerator = g_file_enumerate_children (directory, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, error);
-	if (enumerator == NULL)
-		return;
-
-	/* Delete all the files in the directory */
-	while (TRUE) {
-		GFileInfo *file_info;
-		GFile *file;
-
-		file_info = g_file_enumerator_next_file (enumerator, NULL, NULL);
-		if (file_info == NULL)
-			break;
-
-		file = g_file_get_child (directory, g_file_info_get_name (file_info));
-		g_object_unref (file_info);
-
-		g_file_delete (file, NULL, NULL);
-		g_object_unref (file);
-	}
-
-	g_file_enumerator_close (enumerator, NULL, error);
-	g_object_unref (enumerator);
-
-	/* Delete the directory itself */
-	g_file_delete (directory, NULL, error);
-}
-
-static void
 test_authentication (void)
 {
 	gboolean retval;
@@ -144,9 +112,12 @@ test_download_thumbnails (gconstpointer _service)
 	GDataPicasaWebAlbum *album;
 	GDataPicasaWebFile *photo;
 	GDataPicasaWebQuery *query;
-	GFile *dest_dir, *dest_file, *actual_file;
 	GDataMediaThumbnail *thumbnail;
-	gchar *file_path, *basename;
+	GDataDownloadStream *download_stream;
+	gchar *destination_file_name, *destination_file_path;
+	GFile *destination_file;
+	GFileOutputStream *file_stream;
+	gssize transfer_size;
 	GError *error = NULL;
 
 	/* Acquire album, photo to test */
@@ -170,130 +141,68 @@ test_download_thumbnails (gconstpointer _service)
 	g_assert (photo_entries != NULL);
 
 	photo = GDATA_PICASAWEB_FILE (photo_entries->data);
-
-	dest_dir = g_file_new_for_path ("/tmp/gdata.picasaweb.test.dir/");
-	dest_file = g_file_new_for_path ("/tmp/gdata.picasaweb.test.dir/test.jpg");
-
-	/* clean up any pre-existing test output  */
-	if (g_file_query_exists (dest_dir, NULL)) {
-		delete_directory (dest_dir, &error);
-		g_assert_no_error (error);
-	}
-
 	thumbnails = gdata_picasaweb_file_get_thumbnails (photo);
 	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
 
-	/* to a directory, non-existent, should succeed, file with "directory"'s name */
-	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_dir, FALSE, NULL, &error);
+	/* Download a single thumbnail to a file for testing (in case we weren't compiled with GdkPixbuf support) */
+	download_stream = gdata_media_thumbnail_download (thumbnail, service, &error);
 	g_assert_no_error (error);
-	g_assert (g_file_query_exists (actual_file, NULL));
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "gdata.picasaweb.test.dir");
-	g_free (basename);
-	g_object_unref (actual_file);
+	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
 
-	/* to a "directory", which doesn't actually exist (as a directory), should fail */
-	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_DIRECTORY);
-	g_clear_error (&error);
-	g_assert (actual_file == NULL);
+	/* Prepare a file to write the data to */
+	destination_file_name = g_strdup_printf ("%s_thumbnail_%ux%u.jpg", gdata_picasaweb_file_get_id (photo),
+	                                         gdata_media_thumbnail_get_width (thumbnail), gdata_media_thumbnail_get_height (thumbnail));
+	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
+	g_free (destination_file_name);
+	destination_file = g_file_new_for_path (destination_file_path);
+	g_free (destination_file_path);
 
-	/* create the directory so we can test on it and in it */
-	g_file_delete (dest_dir, NULL, &error);
+	/* Download the file */
+	file_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
 	g_assert_no_error (error);
-	g_file_make_directory (dest_dir, NULL, &error);
+	g_assert (G_IS_FILE_OUTPUT_STREAM (file_stream));
+
+	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),
+			                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
 	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
 
-	/* to a directory, existent, should succeed, making use of the default filename provided */
-	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_dir, FALSE, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (actual_file != NULL);
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "thumbnail.jpg");
-	g_free (basename);
-	g_object_unref (actual_file);
+	g_object_unref (file_stream);
+	g_object_unref (download_stream);
 
-	/* to a directory, existent, with inferred file destination already existent, without replace, should fail */
-	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_dir, FALSE, NULL, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
-	g_clear_error (&error);
-	g_assert (actual_file == NULL);
+	/* Delete the file (shouldn't cause the test to fail if this fails) */
+	g_file_delete (destination_file, NULL, NULL);
+	g_object_unref (destination_file);
 
-	/* to a directory, existent, with inferred file destination already existent, with replace, should succeed */
-	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_dir, TRUE, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (g_file_query_exists (actual_file, NULL));
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "thumbnail.jpg");
-	g_free (basename);
-	g_object_unref (actual_file);
-
-	/* to a path, non-existent, should succeed */
-	g_assert (g_file_query_exists (dest_file, NULL) == FALSE);
-	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (g_file_query_exists (actual_file, NULL));
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "test.jpg");
-	g_free (basename);
-	g_object_unref (actual_file);
-
-	/* to a path, existent, without replace, should fail */
-	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
-	g_clear_error (&error);
-	g_assert (actual_file == NULL);
-
-	/* to a path, existent, with replace, should succeed */
-	actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, TRUE, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (g_file_query_exists (actual_file, NULL));
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "test.jpg");
-	g_free (basename);
-	g_object_unref (actual_file);
-
-	/* clean up test file and thumbnail*/
-	g_file_delete (dest_file, NULL, &error);
-	g_assert_no_error (error);
-
-	/* test getting all thumbnails and that they're all the correct size */
-	for (node = thumbnails; node != NULL; node = node->next) {
 #ifdef HAVE_GDK_PIXBUF
+	/* Test downloading all thumbnails directly into GdkPixbufs, and check that they're all the correct size */
+	for (node = thumbnails; node != NULL; node = node->next) {
 		GdkPixbuf *pixbuf;
-#endif /* HAVE_GDK_PIXBUF */
 
 		thumbnail = GDATA_MEDIA_THUMBNAIL (node->data);
-		actual_file = gdata_media_thumbnail_download (thumbnail, service, "thumbnail.jpg", dest_file, FALSE, NULL, &error);
-		g_assert_no_error (error);
-		g_assert (g_file_query_exists (actual_file, NULL));
 
-#ifdef HAVE_GDK_PIXBUF
-		file_path = g_file_get_path (actual_file);
-		pixbuf = gdk_pixbuf_new_from_file (file_path, &error);
+		/* Prepare a download stream */
+		download_stream = gdata_media_thumbnail_download (thumbnail, service, &error);
 		g_assert_no_error (error);
-		g_free (file_path);
+		g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
+
+		/* Download into a new GdkPixbuf */
+		pixbuf = gdk_pixbuf_new_from_stream (G_INPUT_STREAM (download_stream), NULL, &error);
+		g_assert_no_error (error);
+		g_assert (GDK_IS_PIXBUF (pixbuf));
+
+		g_object_unref (download_stream);
 
 		/* PicasaWeb reported the height of a thumbnail as a pixel too large once, but otherwise correct */
-		g_assert_cmpint (abs (gdk_pixbuf_get_width (pixbuf) - (gint)gdata_media_thumbnail_get_width (thumbnail)) , <=, 1);
-		g_assert_cmpint (abs (gdk_pixbuf_get_height (pixbuf) - (gint)gdata_media_thumbnail_get_height (thumbnail)) , <=, 1);
+		g_assert_cmpint (abs (gdk_pixbuf_get_width (pixbuf) - (gint) gdata_media_thumbnail_get_width (thumbnail)) , <=, 1);
+		g_assert_cmpint (abs (gdk_pixbuf_get_height (pixbuf) - (gint) gdata_media_thumbnail_get_height (thumbnail)) , <=, 1);
+
 		g_object_unref (pixbuf);
-#endif /* HAVE_GDK_PIXBUF */
-
-		g_file_delete (actual_file, NULL, &error);
-		g_assert (g_file_query_exists (actual_file, NULL) == FALSE);
-		g_assert_no_error (error);
-		g_object_unref (actual_file);
 	}
-
-	/* clean up test directory again */
-	delete_directory (dest_dir, &error);
-	g_assert_no_error (error);
+#endif /* HAVE_GDK_PIXBUF */
 
 	g_object_unref (photo_feed);
 	g_object_unref (album_feed);
-	g_object_unref (dest_dir);
-	g_object_unref (dest_file);
 }
 
 static void

@@ -64,7 +64,7 @@ AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
 # Optional dependencies
-PKG_CHECK_MODULES(GDK_PIXBUF, gdk-pixbuf-2.0, have_gdk_pixbuf=yes, have_gdk_pixbuf=no)
+PKG_CHECK_MODULES(GDK_PIXBUF, gdk-pixbuf-2.0 >= 2.14, have_gdk_pixbuf=yes, have_gdk_pixbuf=no)
 if test "x$have_gdk_pixbuf" = "xyes"; then
 	AC_DEFINE(HAVE_GDK_PIXBUF, 1, [Defined if gdk-pixbuf is installed])
 fi

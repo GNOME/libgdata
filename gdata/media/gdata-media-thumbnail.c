@@ -365,57 +365,30 @@ gdata_media_thumbnail_get_time (GDataMediaThumbnail *self)
  * gdata_media_thumbnail_download:
  * @self: a #GDataMediaThumbnail
  * @service: the #GDataService
- * @default_filename: a default filename used if the user selects a directory as the destination
- * @target_dest_file: the destination file or directory to download to
- * @replace_file_if_exists: whether to replace already existing files at the download location
- * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Downloads and returns the thumbnail represented by @self.
+ * Downloads and returns a #GDataDownloadStream allowing the thumbnail data represented by @self to be read.
  *
- * If @target_dest_file is a directory, then the file will be
- * downloaded into this directory with the default filename specified
- * in @default_filename.
+ * To get the content type of the downloaded data, gdata_download_stream_get_content_type() can be called on the returned #GDataDownloadStream.
+ * Calling gdata_download_stream_get_content_length() on the stream will not return a meaningful result, however, as the stream is encoded in chunks,
+ * rather than by content length.
  *
- * Return value: (transfer full): the thumbnail's data, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full): a #GDataDownloadStream to download the thumbnail with, or %NULL; unref with g_object_unref()
  *
- * Since: 0.6.0
+ * Since: 0.8.0
  **/
-GFile *
-gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file,
-                                gboolean replace_file_if_exists, GCancellable *cancellable, GError **error)
+GDataDownloadStream *
+gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, GError **error)
 {
-	GFileOutputStream *dest_stream;
 	const gchar *src_uri;
-	GInputStream *src_stream;
-	GFile *actual_file = NULL;
-	GError *child_error = NULL;
 
 	g_return_val_if_fail (GDATA_IS_MEDIA_THUMBNAIL (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
-	g_return_val_if_fail (default_filename != NULL, NULL);
-	g_return_val_if_fail (G_IS_FILE (target_dest_file), NULL);
-	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	dest_stream = _gdata_download_stream_find_destination (default_filename, target_dest_file, &actual_file, replace_file_if_exists,
-	                                                       cancellable, error);
-	if (dest_stream == NULL)
-		return NULL;
+	/* We keep a GError in the argument list so that we can add authentication errors, etc., in future if necessary */
 
+	/* Get the download URI and create a stream for it */
 	src_uri = gdata_media_thumbnail_get_uri (self);
-
-	/* Synchronously splice the data from the download stream to the file stream (network -> disk) */
-	src_stream = gdata_download_stream_new (GDATA_SERVICE (service), src_uri);
-	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream,
-	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
-	g_object_unref (src_stream);
-	g_object_unref (dest_stream);
-	if (child_error != NULL) {
-		g_object_unref (actual_file);
-		g_propagate_error (error, child_error);
-		return NULL;
-	}
-
-	return actual_file;
+	return GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (service, src_uri));
 }

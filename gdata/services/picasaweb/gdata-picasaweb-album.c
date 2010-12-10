@@ -58,15 +58,18 @@
  *
  *		for (thumbnails = gdata_picasaweb_album_get_thumbnails (album); thumbnails != NULL; thumbnails = thumbnails->next) {
  *			GDataMediaThumbnail *thumbnail;
- *			GFile *new_file;
+ *			GDataDownloadStream *download_stream;
+ *			GdkPixbuf *pixbuf;
  *
  *			thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
- *			/<!-- -->* Do something fun with the thumbnails, like download and display them.
+ *			/<!-- -->* Do something fun with the thumbnails, like download and display them. We could just as easily download them into
+ *			 * files using g_file_create() and g_output_stream_splice(), rather than create GdkPixbuf<!-- -->s directly from them.
  *			 * Note that this is a blocking operation. *<!-- -->/
- *			new_file = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), default_filename, target_file, FALSE,
- *			                                           NULL, NULL);
+ *			download_stream = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), NULL);
+ *			pixbuf = gdk_pixbuf_new_from_stream (G_INPUT_STREAM (download_stream), NULL, NULL);
+ *			g_object_unref (download_stream);
  *			/<!-- -->* ... *<!-- -->/
- *			g_object_unref (new_file);
+ *			g_object_unref (pixbuf);
  *		}
  *
  *		/<!-- -->* Do something worthwhile with your album data *<!-- -->/
