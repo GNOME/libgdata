@@ -62,6 +62,7 @@ delete_directory (GFile *directory, GError **error)
 	}
 
 	g_file_enumerator_close (enumerator, NULL, error);
+	g_object_unref (enumerator);
 
 	/* Delete the directory itself */
 	g_file_delete (directory, NULL, error);
@@ -745,6 +746,9 @@ test_photo (gconstpointer service)
 	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 288);
 	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 216);
 	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
+
+	g_object_unref (album_feed);
+	g_object_unref (photo_feed);
 }
 
 static void
@@ -757,6 +761,7 @@ test_photo_feed_entry (gconstpointer service)
 	GDataPicasaWebAlbum *album;
 	GList *albums;
 	GList *files;
+	gchar *xml;
 	GDataEntry *photo_entry;
 
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
@@ -790,8 +795,14 @@ test_photo_feed_entry (gconstpointer service)
 	g_assert (gdata_entry_get_content (photo_entry) == NULL);
 	g_assert_cmpstr (gdata_entry_get_content_uri (photo_entry), ==,
 			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
-	g_assert_cmpstr (gdata_parsable_get_xml (GDATA_PARSABLE (photo_entry)), !=, NULL);
-	g_assert_cmpuint (strlen (gdata_parsable_get_xml (GDATA_PARSABLE (photo_entry))), >, 0);
+
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo_entry));
+	g_assert_cmpstr (xml, !=, NULL);
+	g_assert_cmpuint (strlen (xml), >, 0);
+	g_free (xml);
+
+	g_object_unref (album_feed);
+	g_object_unref (photo_feed);
 }
 
 static void
@@ -828,6 +839,9 @@ test_photo_feed (gconstpointer service)
 	g_assert_cmpuint (gdata_feed_get_items_per_page (photo_feed), ==, 1000);
 	g_assert_cmpuint (gdata_feed_get_start_index (photo_feed), ==, 1);
 	g_assert_cmpuint (gdata_feed_get_total_results (photo_feed), ==, 1);
+
+	g_object_unref (album_feed);
+	g_object_unref (photo_feed);
 }
 
 static void
@@ -1025,6 +1039,8 @@ test_album_feed (gconstpointer service)
 	g_assert_cmpuint (gdata_feed_get_items_per_page (album_feed), ==, 1000);
 	g_assert_cmpuint (gdata_feed_get_start_index (album_feed), ==, 1);
 	g_assert_cmpuint (gdata_feed_get_total_results (album_feed), ==, NUM_ALBUMS);
+
+	g_object_unref (album_feed);
 }
 
 static void
@@ -1100,6 +1116,7 @@ test_query_all_albums (gconstpointer service)
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER);
 	g_assert (album_feed == NULL);
 	g_clear_error (&error);
+	g_object_unref (query);
 
 	/* Now try a proper query */
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
