@@ -830,7 +830,7 @@ test_batch (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (event), "Fooish Bar");
 
 	gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (event), &inserted_entry, NULL);
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_clear_error (&error);
@@ -847,7 +847,7 @@ test_batch (gconstpointer service)
 	                                           NULL);
 	g_assert_cmpuint (op_id, !=, op_id2);
 
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_clear_error (&error);
@@ -866,7 +866,7 @@ test_batch (gconstpointer service)
 	g_assert_cmpuint (op_id, !=, op_id3);
 	g_assert_cmpuint (op_id2, !=, op_id3);
 
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
@@ -882,7 +882,7 @@ test_batch (gconstpointer service)
 	/* Turns out that we can't run this test, because the Calendar service sucks with ETags and doesn't error. */
 	/*operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
 	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_assert_error (entry_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_CONFLICT);
@@ -895,7 +895,7 @@ test_batch (gconstpointer service)
 	/* Run a final batch operation to delete the second entry */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
 	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
+	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
 	g_clear_error (&error);
@@ -931,7 +931,10 @@ test_batch_async_cb (GDataBatchOperation *operation, GAsyncResult *async_result,
 {
 	GError *error = NULL;
 
-	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == TRUE);
+	/* Clear all pending events (such as callbacks for the operations) */
+	while (g_main_context_iteration (NULL, FALSE) == TRUE);
+
+	g_assert (gdata_test_batch_operation_run_finish (operation, async_result, &error) == TRUE);
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
@@ -964,7 +967,10 @@ test_batch_async_cancellation_cb (GDataBatchOperation *operation, GAsyncResult *
 {
 	GError *error = NULL;
 
-	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == FALSE);
+	/* Clear all pending events (such as callbacks for the operations) */
+	while (g_main_context_iteration (NULL, FALSE) == TRUE);
+
+	g_assert (gdata_test_batch_operation_run_finish (operation, async_result, &error) == FALSE);
 	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
 	g_clear_error (&error);
 
