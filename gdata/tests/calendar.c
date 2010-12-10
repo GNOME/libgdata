@@ -970,11 +970,12 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	guint op_id;
 	GMainLoop *main_loop;
 	GCancellable *cancellable;
+	GError *error = NULL;
 
 	/* Run an async query operation on the event */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
 	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
-	                                          GDATA_ENTRY (data->new_event), NULL, NULL);
+	                                          GDATA_ENTRY (data->new_event), NULL, &error);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 	cancellable = g_cancellable_new ();
@@ -983,6 +984,10 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_cancellable_cancel (cancellable); /* this should cancel the operation before it even starts, as we haven't run the main loop yet */
 
 	g_main_loop_run (main_loop);
+
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_clear_error (&error);
+
 	g_main_loop_unref (main_loop);
 	g_object_unref (cancellable);
 }
