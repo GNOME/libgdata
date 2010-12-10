@@ -60,12 +60,20 @@
  *		/<!-- -->* Obtain the image data at various sizes *<!-- -->/
  *		for (contents = gdata_picasaweb_file_get_contents (photo); contents != NULL; contents = contents->next) {
  *			GDataMediaContent *content;
+ *			GDataDownloadStream *download_stream;
+ *			GFileOutputStream *file_stream;
  *			GFile *new_file;
  *
  *			content = GDATA_MEDIA_CONTENT (contents->data);
- *			/<!-- -->* Do something fun with the actual images, like download and display them.
+ *			/<!-- -->* Do something fun with the actual images, like download them to a file.
  *			 * Note that this is a blocking operation. *<!-- -->/
- *			new_file = gdata_media_content_download (content, GDATA_SERVICE (service), default_filename, target_file, FALSE, NULL, NULL);
+ *			download_stream = gdata_media_content_download (content, GDATA_SERVICE (service), NULL);
+ *			new_file = g_file_new_for_path (file_path);
+ *			file_stream = g_file_create (new_file, G_FILE_CREATE_NONE, NULL, NULL);
+ *			g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),
+ *			                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, NULL);
+ *			g_object_unref (file_stream);
+ *			g_object_unref (download_stream);
  *			/<!-- -->* ... *<!-- -->/
  *			g_object_unref (new_file);
  *		}

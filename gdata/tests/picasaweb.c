@@ -305,9 +305,12 @@ test_download (gconstpointer _service)
 	GDataPicasaWebAlbum *album;
 	GDataPicasaWebFile *photo;
 	GDataPicasaWebQuery *query;
-	GDataMediaContent* content;
-	GFile *dest_dir, *dest_file, *actual_file;
-	gchar *basename;
+	GDataMediaContent *content;
+	GDataDownloadStream *download_stream;
+	gchar *destination_file_name, *destination_file_path;
+	GFile *destination_file;
+	GFileOutputStream *file_stream;
+	gssize transfer_size;
 	GError *error = NULL;
 
 	/*** Acquire a photo to test ***/
@@ -331,99 +334,41 @@ test_download (gconstpointer _service)
 	g_assert (photo_entries != NULL);
 
 	photo = GDATA_PICASAWEB_FILE (photo_entries->data);
-
-	dest_dir = g_file_new_for_path ("/tmp/gdata.picasaweb.test.dir/");
-	dest_file = g_file_new_for_path ("/tmp/gdata.picasaweb.test.dir/test.jpg");
-
-	/* clean up any pre-existing test output  */
-	if (g_file_query_exists (dest_dir, NULL)) {
-		delete_directory (dest_dir, &error);
-		g_assert_no_error (error);
-	}
-
 	media_contents = gdata_picasaweb_file_get_contents (photo);
 	g_assert_cmpint (g_list_length (media_contents), ==, 1);
 	content = GDATA_MEDIA_CONTENT (media_contents->data);
 
-	/* to a directory, non-existent, should succeed, file with "directory"'s name */
-	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_dir, FALSE, NULL, &error);
+	/* Prepare a download stream */
+	download_stream = gdata_media_content_download (content, service, &error);
 	g_assert_no_error (error);
-	g_assert (g_file_query_exists (actual_file, NULL));
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "gdata.picasaweb.test.dir");
-	g_free (basename);
-	g_object_unref (actual_file);
+	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
 
-	/* to a file in a "directory", which already exists as a file, should fail */
-	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_file, FALSE, NULL, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_DIRECTORY);
-	g_clear_error (&error);
-	g_assert (actual_file == NULL);
+	/* Prepare a file to write the data to */
+	destination_file_name = g_strdup_printf ("%s.jpg", gdata_picasaweb_file_get_id (photo));
+	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
+	g_free (destination_file_name);
+	destination_file = g_file_new_for_path (destination_file_path);
+	g_free (destination_file_path);
 
-	/* create the directory so we can test on it and in it */
-	g_file_delete (dest_dir, NULL, &error);
+	/* Download the file */
+	file_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
 	g_assert_no_error (error);
-	g_file_make_directory (dest_dir, NULL, &error);
+	g_assert (G_IS_FILE_OUTPUT_STREAM (file_stream));
+
+	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),
+	                                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
 	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
 
-	/* to a directory, existent, should succeed, using default filename */
-	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_dir, FALSE, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (actual_file != NULL);
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "default.jpg");
-	g_free (basename);
-	g_object_unref (actual_file);
-	/* TODO: test that it exists with default filename? */
+	g_object_unref (file_stream);
+	g_object_unref (download_stream);
 
-	/* to a directory, existent, should fail trying to use the default filename, which already exists */
-	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_dir, FALSE, NULL, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
-	g_clear_error (&error);
-	g_assert (actual_file == NULL);
-
-	/* to a directory, existent, should succeed with default filename, replacing what already exists */
-	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_dir, TRUE, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (g_file_query_exists (actual_file, NULL));
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "default.jpg");
-	g_free (basename);
-	g_object_unref (actual_file);
-
-	/* to a path, non-existent, should succeed */
-	g_assert (g_file_query_exists (dest_file, NULL) == FALSE);
-	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_file, FALSE, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (g_file_query_exists (actual_file, NULL));
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "test.jpg");
-	g_free (basename);
-	g_object_unref (actual_file);
-
-	/* to a path, existent, without replace, should fail */
-	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_file, FALSE, NULL, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_EXISTS);
-	g_clear_error (&error);
-	g_assert (actual_file == NULL);
-
-	/* to a path, existent, with replace, should succeed */
-	actual_file = gdata_media_content_download (content, service, "default.jpg", dest_file, TRUE, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (g_file_query_exists (actual_file, NULL));
-	basename = g_file_get_basename (actual_file);
-	g_assert_cmpstr (basename, ==, "test.jpg");
-	g_free (basename);
-	g_object_unref (actual_file);
-
-	/* clean up test directory */
-	delete_directory (dest_dir, &error);
-	g_assert_no_error (error);
+	/* Delete the file (shouldn't cause the test to fail if this fails) */
+	g_file_delete (destination_file, NULL, NULL);
+	g_object_unref (destination_file);
 
 	g_object_unref (photo_feed);
 	g_object_unref (album_feed);
-	g_object_unref (dest_dir);
-	g_object_unref (dest_file);
 }
 
 static void

@@ -23,6 +23,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gdata/gdata-download-stream.h>
 #include <gdata/gdata-parsable.h>
 #include <gdata/gdata-service.h>
 
@@ -107,9 +108,8 @@ gint64 gdata_media_content_get_duration (GDataMediaContent *self) G_GNUC_PURE;
 guint gdata_media_content_get_height (GDataMediaContent *self) G_GNUC_PURE;
 guint gdata_media_content_get_width (GDataMediaContent *self) G_GNUC_PURE;
 
-GFile *gdata_media_content_download (GDataMediaContent *self, GDataService *service, const gchar *default_filename, GFile *target_dest_file,
-                                     gboolean replace_file_if_exists,
-                                     GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataDownloadStream *gdata_media_content_download (GDataMediaContent *self, GDataService *service,
+                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 
