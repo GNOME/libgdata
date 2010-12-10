@@ -446,7 +446,7 @@ got_chunk_cb (SoupMessage *message, SoupBuffer *buffer, GDataDownloadStream *sel
 		return;
 
 	/* Push the data onto the buffer immediately */
-	gdata_buffer_push_data (self->priv->buffer, g_memdup (buffer->data, buffer->length), buffer->length);
+	gdata_buffer_push_data (self->priv->buffer, (const guint8*) buffer->data, buffer->length);
 }
 
 static void
