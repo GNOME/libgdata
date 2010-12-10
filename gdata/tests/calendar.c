@@ -327,6 +327,63 @@ test_insert_simple (gconstpointer service)
 }
 
 static void
+test_insert_simple_async_cb (GDataService *service, GAsyncResult *result, GMainLoop *main_loop)
+{
+	GDataEntry *event;
+	GError *error = NULL;
+
+	event = gdata_service_insert_entry_finish (service, result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CALENDAR_EVENT (event));
+
+	/* Check the event is correct */
+	g_assert_cmpstr (gdata_entry_get_title (event), ==, "Tennis with Beth");
+
+	g_main_loop_quit (main_loop);
+
+	g_object_unref (event);
+}
+
+static void
+test_insert_simple_async (gconstpointer service)
+{
+	GDataCalendarEvent *event;
+	GDataGDWhere *where;
+	GDataGDWho *who;
+	GDataGDWhen *when;
+	GTimeVal start_time, end_time;
+	GMainLoop *main_loop;
+
+	event = gdata_calendar_event_new (NULL);
+
+	gdata_entry_set_title (GDATA_ENTRY (event), "Tennis with Beth");
+	gdata_entry_set_content (GDATA_ENTRY (event), "Meet for a quick lesson.");
+	gdata_calendar_event_set_transparency (event, GDATA_GD_EVENT_TRANSPARENCY_OPAQUE);
+	gdata_calendar_event_set_status (event, GDATA_GD_EVENT_STATUS_CONFIRMED);
+	where = gdata_gd_where_new (NULL, "Rolling Lawn Courts", NULL);
+	gdata_calendar_event_add_place (event, where);
+	g_object_unref (where);
+	who = gdata_gd_who_new (GDATA_GD_WHO_EVENT_ORGANIZER, "John Smith‽", "john.smith@example.com");
+	gdata_calendar_event_add_person (event, who);
+	g_object_unref (who);
+	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &start_time);
+	g_time_val_from_iso8601 ("2009-04-17T17:00:00.000Z", &end_time);
+	when = gdata_gd_when_new (start_time.tv_sec, end_time.tv_sec, FALSE);
+	gdata_calendar_event_add_time (event, when);
+	g_object_unref (when);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	/* Insert the event */
+	gdata_calendar_service_insert_event_async (GDATA_CALENDAR_SERVICE (service), event, NULL, (GAsyncReadyCallback) test_insert_simple_async_cb,
+	                                           main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (event);
+}
+
+static void
 test_xml_dates (void)
 {
 	GDataCalendarEvent *event;
@@ -1077,6 +1134,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/calendar/query/events_async", service, test_query_events_async);
 
 		g_test_add_data_func ("/calendar/insert/simple", service, test_insert_simple);
+		g_test_add_data_func ("/calendar/insert/simple/async", service, test_insert_simple_async);
 
 		g_test_add_data_func ("/calendar/acls/get_rules", service, test_acls_get_rules);
 		g_test_add_data_func ("/calendar/acls/insert_rule", service, test_acls_insert_rule);

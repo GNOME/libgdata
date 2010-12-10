@@ -86,6 +86,8 @@ void gdata_calendar_service_query_events_async (GDataCalendarService *self, GDat
 
 GDataCalendarEvent *gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEvent *event,
                                                          GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable,
+                                                GAsyncReadyCallback callback, gpointer user_data);
 
 G_END_DECLS
 

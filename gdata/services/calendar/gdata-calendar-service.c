@@ -373,7 +373,6 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
 GDataCalendarEvent *
 gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable, GError **error)
 {
-	/* TODO: Async variant */
 	/* TODO: How do we choose which calendar? */
 	gchar *uri;
 	GDataEntry *entry;
@@ -388,4 +387,38 @@ gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEv
 	g_free (uri);
 
 	return GDATA_CALENDAR_EVENT (entry);
+}
+
+/**
+ * gdata_calendar_service_insert_event_async:
+ * @self: a #GDataCalendarService
+ * @event: the #GDataCalendarEvent to insert
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when insertion is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Inserts @event by uploading it to the online calendar service. @self and @event are both reffed when this function is called, so can safely be
+ * unreffed after this function returns.
+ *
+ * @callback should call gdata_service_insert_entry_finish() to obtain a #GDataCalendarEvent representing the inserted event and to check for possible
+ * errors.
+ *
+ * For more details, see gdata_calendar_service_insert_event(), which is the synchronous version of this function, and
+ * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
+ *
+ * Since: 0.8.0
+ **/
+void
+gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable,
+                                           GAsyncReadyCallback callback, gpointer user_data)
+{
+	gchar *uri;
+
+	g_return_if_fail (GDATA_IS_CALENDAR_SERVICE (self));
+	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (event));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/private/full", NULL);
+	gdata_service_insert_entry_async (GDATA_SERVICE (self), uri, GDATA_ENTRY (event), cancellable, callback, user_data);
+	g_free (uri);
 }
