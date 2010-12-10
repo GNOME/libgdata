@@ -270,7 +270,7 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 		}
 
 		/* Create an error message, but only for the first error */
-		if (*error == NULL) {
+		if (error == NULL || *error == NULL) {
 			/* See http://code.google.com/apis/youtube/2.0/developers_guide_protocol.html#Error_responses */
 			if (xmlStrcmp (domain, (xmlChar*) "yt:service") == 0 && xmlStrcmp (code, (xmlChar*) "disabled_in_maintenance_mode") == 0) {
 				/* Service disabled */
@@ -318,7 +318,7 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 
 check_error:
 	/* Ensure we're actually set an error message */
-	if (*error == NULL)
+	if (error != NULL && *error == NULL)
 		g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, _("Unknown and unparsable error received."));
 
 	return;
