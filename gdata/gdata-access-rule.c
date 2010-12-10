@@ -330,16 +330,19 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->get_xml (parsable, xml_string);
 
-	if (priv->role != NULL)
+	if (priv->role != NULL) {
 		/* gAcl:role */
-		g_string_append_printf (xml_string, "<gAcl:role value='%s'/>", priv->role);
+		gdata_parser_string_append_escaped (xml_string, "<gAcl:role value='", priv->role, "'/>");
+	}
 
-	if (priv->scope_value != NULL){
+	if (priv->scope_value != NULL) {
 		/* gAcl:scope */
-		if (priv->scope_type != NULL)
-			g_string_append_printf (xml_string, "<gAcl:scope type='%s' value='%s'/>", priv->scope_type, priv->scope_value);
-		else
-			g_string_append_printf (xml_string, "<gAcl:scope value='%s'/>", priv->scope_value);
+		if (priv->scope_type != NULL) {
+			gdata_parser_string_append_escaped (xml_string, "<gAcl:scope type='", priv->scope_type, "'");
+			gdata_parser_string_append_escaped (xml_string, " value='", priv->scope_value, "'/>");
+		} else {
+			gdata_parser_string_append_escaped (xml_string, "<gAcl:scope value='", priv->scope_value, "'/>");
+		}
 	}
 }
 

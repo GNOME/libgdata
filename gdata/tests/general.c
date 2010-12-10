@@ -933,6 +933,31 @@ test_access_rule_error_handling (void)
 }
 
 static void
+test_access_rule_escaping (void)
+{
+	GDataAccessRule *rule;
+	gchar *xml;
+
+	rule = gdata_access_rule_new (NULL);
+	gdata_access_rule_set_role (rule, "<role>");
+	gdata_access_rule_set_scope (rule, "<scope>", "<value>");
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
+	g_assert_cmpstr (xml, ==,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>&lt;role&gt;</title>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='&lt;role&gt;'/>"
+			"<gAcl:scope type='&lt;scope&gt;' value='&lt;value&gt;'/>"
+		"</entry>");
+	g_free (xml);
+	g_object_unref (rule);
+}
+
+static void
 test_comparable (void)
 {
 	GDataComparable *category = GDATA_COMPARABLE (gdata_category_new ("term", "http://scheme", "label"));
@@ -3610,6 +3635,7 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/access-rule/get_xml", test_access_rule_get_xml);
 	g_test_add_func ("/access-rule/error_handling", test_access_rule_error_handling);
+	g_test_add_func ("/access-rule/escaping", test_access_rule_escaping);
 
 	g_test_add_func ("/comparable", test_comparable);
 
