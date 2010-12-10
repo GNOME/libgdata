@@ -615,6 +615,7 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 	GInputStream *src_stream;
 	GFile *actual_file = NULL;
 	GError *child_error = NULL;
+	gulong content_type_signal = 0;
 
 	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
@@ -646,8 +647,13 @@ _gdata_documents_entry_download_document (GDataDocumentsEntry *self, GDataServic
 	src_stream = gdata_download_stream_new (GDATA_SERVICE (service), src_uri);
 	if (content_type != NULL)
 		g_signal_connect (src_stream, "notify::content-type", (GCallback) notify_content_type_cb, content_type);
+
 	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream,
 				G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, &child_error);
+
+	if (content_type_signal != 0)
+		g_signal_handler_disconnect (src_stream, content_type_signal);
+
 	g_object_unref (src_stream);
 	g_object_unref (dest_stream);
 	if (child_error != NULL) {
