@@ -668,6 +668,37 @@ test_feed_error_handling (void)
 }
 
 static void
+test_feed_escaping (void)
+{
+	GDataFeed *feed;
+	gchar *xml;
+	GError *error = NULL;
+
+	/* Since we can't construct a GDataEntry directly, we need to parse it from XML */
+	feed = GDATA_FEED (gdata_parsable_new_from_xml (GDATA_TYPE_FEED,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<feed xmlns='http://www.w3.org/2005/Atom'>"
+			"<id>http://foo.com?foo&amp;bar</id>"
+			"<updated>2010-12-10T17:49:15Z</updated>"
+			"<title type='text'>Test feed &amp; stuff.</title>"
+		"</feed>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (feed));
+
+	/* Check the outputted XML is escaped properly */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (feed));
+	g_assert_cmpstr (xml, ==,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<feed xmlns='http://www.w3.org/2005/Atom'>"
+			"<title type='text'>Test feed &amp; stuff.</title>"
+			"<id>http://foo.com?foo&amp;bar</id>"
+			"<updated>2010-12-10T17:49:15Z</updated>"
+		"</feed>");
+	g_free (xml);
+	g_object_unref (feed);
+}
+
+static void
 test_query_categories (void)
 {
 	GDataQuery *query;
@@ -3628,6 +3659,7 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/feed/parse_xml", test_feed_parse_xml);
 	g_test_add_func ("/feed/error_handling", test_feed_error_handling);
+	g_test_add_func ("/feed/escaping", test_feed_escaping);
 
 	g_test_add_func ("/query/categories", test_query_categories);
 	g_test_add_func ("/query/unicode", test_query_unicode);

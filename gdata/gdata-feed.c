@@ -556,7 +556,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	/* NOTE: Only the required elements are implemented at the moment */
 	gdata_parser_string_append_escaped (xml_string, "<title type='text'>", priv->title, "</title>");
-	g_string_append_printf (xml_string, "<id>%s</id>", priv->id);
+	gdata_parser_string_append_escaped (xml_string, "<id>", priv->id, "</id>");
 
 	updated = gdata_parser_int64_to_iso8601 (priv->updated);
 	g_string_append_printf (xml_string, "<updated>%s</updated>", updated);
