@@ -270,7 +270,6 @@ GDataFeed *
 gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCalendar *calendar, GDataQuery *query, GCancellable *cancellable,
                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
-	/* TODO: Async variant */
 	const gchar *uri;
 
 	g_return_val_if_fail (GDATA_IS_CALENDAR_SERVICE (self), NULL);
@@ -298,6 +297,62 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 	/* Execute the query */
 	return gdata_service_query (GDATA_SERVICE (self), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable,
 	                            progress_callback, progress_user_data, error);
+}
+
+/**
+ * gdata_calendar_service_query_events_async: (skip)
+ * @self: a #GDataCalendarService
+ * @calendar: a #GDataCalendarCalendar
+ * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @callback: a #GAsyncReadyCallback to call when the query is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Queries the service to return a list of events in the given @calendar, which match @query. @self, @calendar and @query are all reffed when this
+ * function is called, so can safely be unreffed after this function returns.
+ *
+ * Get the results of the query using gdata_service_query_finish() in the @callback.
+ *
+ * For more details, see gdata_calendar_service_query_events(), which is the synchronous version of this function, and gdata_service_query_async(),
+ * which is the base asynchronous query function.
+ *
+ * Since: 0.8.0
+ **/
+void
+gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCalendarCalendar *calendar, GDataQuery *query, GCancellable *cancellable,
+                                           GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                           GAsyncReadyCallback callback, gpointer user_data)
+{
+	const gchar *uri;
+
+	g_return_if_fail (GDATA_IS_CALENDAR_SERVICE (self));
+	g_return_if_fail (GDATA_IS_CALENDAR_CALENDAR (calendar));
+	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	/* Ensure we're authenticated first */
+	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
+		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                                     _("You must be authenticated to query your own calendars."));
+		return;
+	}
+
+	/* Use the calendar's content src */
+	uri = gdata_entry_get_content_uri (GDATA_ENTRY (calendar));
+	if (uri == NULL) {
+		/* Erroring out is probably the safest thing to do */
+		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+		                                     _("The calendar did not have a content URI."));
+		return;
+	}
+
+	/* Execute the query */
+	gdata_service_query_async (GDATA_SERVICE (self), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable, progress_callback, progress_user_data,
+	                           callback, user_data);
 }
 
 /**

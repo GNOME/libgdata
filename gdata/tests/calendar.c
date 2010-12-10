@@ -227,6 +227,40 @@ test_query_events (gconstpointer service)
 }
 
 static void
+test_query_events_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	GDataFeed *feed;
+	GError *error = NULL;
+
+	feed = gdata_service_query_finish (service, async_result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CALENDAR_FEED (feed));
+
+	/* TODO: Tests? */
+	g_main_loop_quit (main_loop);
+
+	g_object_unref (feed);
+}
+
+static void
+test_query_events_async (gconstpointer service)
+{
+	GDataCalendarCalendar *calendar;
+	GMainLoop *main_loop;
+	GError *error = NULL;
+
+	calendar = get_calendar (service, &error);
+	main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_calendar_service_query_events_async (GDATA_CALENDAR_SERVICE (service), calendar, NULL, NULL, NULL, NULL,
+	                                           (GAsyncReadyCallback) test_query_events_async_cb, main_loop);
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (calendar);
+}
+
+static void
 test_insert_simple (gconstpointer service)
 {
 	GDataCalendarEvent *event, *new_event;
@@ -1040,6 +1074,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/calendar/query/own_calendars", service, test_query_own_calendars);
 		g_test_add_data_func ("/calendar/query/own_calendars_async", service, test_query_own_calendars_async);
 		g_test_add_data_func ("/calendar/query/events", service, test_query_events);
+		g_test_add_data_func ("/calendar/query/events_async", service, test_query_events_async);
 
 		g_test_add_data_func ("/calendar/insert/simple", service, test_insert_simple);
 
