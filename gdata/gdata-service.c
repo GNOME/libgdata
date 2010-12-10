@@ -277,6 +277,8 @@ gdata_service_init (GDataService *self)
 		soup_logger_set_printer (logger, (SoupLoggerPrinter) soup_log_printer, self, NULL);
 
 		soup_session_add_feature (self->priv->session, SOUP_SESSION_FEATURE (logger));
+
+		g_object_unref (logger);
 	}
 
 	/* Proxy the SoupSession's proxy-uri and timeout properties */
