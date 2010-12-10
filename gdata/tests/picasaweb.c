@@ -1160,7 +1160,7 @@ test_album_feed (gconstpointer service)
 	/* TODO find out why subtitle == null when returned: no subtitle for feed? printf("feed subtitle: %s\n", gdata_feed_get_subtitle(feed)); */
 	g_assert_cmpstr (gdata_feed_get_id (album_feed), ==, "http://picasaweb.google.com/data/feed/user/libgdata.picasaweb");
 	g_assert_cmpstr (gdata_feed_get_etag (album_feed), !=, NULL); /* this varies as albums change, like when a new image is uploaded in our test! */
-	g_assert_cmpstr (gdata_feed_get_icon (album_feed), ==, "http://lh6.ggpht.com/_1kdcGyvOb8c/AAAA9mDag3s/AAAAAAAAAAA/Jq-NWYWKFao/s64-c/libgdata.picasaweb.jpg");
+	g_assert_cmpstr (gdata_feed_get_icon (album_feed), ==, "http://lh3.ggpht.com/_1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAAAAA/jNhBfdaNdD4/s64-c/libgdata.picasaweb.jpg");
 	g_assert_cmpuint (gdata_feed_get_items_per_page (album_feed), ==, 1000);
 	g_assert_cmpuint (gdata_feed_get_start_index (album_feed), ==, 1);
 	g_assert_cmpuint (gdata_feed_get_total_results (album_feed), ==, NUM_ALBUMS);
@@ -1321,7 +1321,7 @@ test_query_user (gconstpointer service)
 	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 1073741824); /* 1GiB: it'll be a beautiful day when this assert gets tripped */
 	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), >, 0);
 	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), >, 0); /* now it's 1000, testing this weakly to avoid having to regularly update it */
-	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), ==, "http://lh6.ggpht.com/_1kdcGyvOb8c/AAAA9mDag3s/AAAAAAAAAAA/Jq-NWYWKFao/s64-c/libgdata.picasaweb.jpg");
+	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), ==, "http://lh3.ggpht.com/_1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAAAAA/jNhBfdaNdD4/s64-c/libgdata.picasaweb.jpg");
 
 	g_object_unref (user);
 }
