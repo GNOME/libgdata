@@ -181,8 +181,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	if (priv->is_private == TRUE)
 		g_string_append (xml_string, "<yt:private/>");
-	if (priv->aspect_ratio != NULL)
-		gdata_parser_string_append_escaped (xml_string, "<yt:aspectratio>", priv->aspect_ratio, "</yt:aspectratio>");
+	if (priv->aspect_ratio == GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN)
+		g_string_append (xml_string, "<yt:aspectratio>widescreen</yt:aspectratio>");
 }
 
 static void
