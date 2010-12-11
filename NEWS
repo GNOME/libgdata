@@ -1,3 +1,16 @@
+Overview of changes from libgdata 0.7.0 to libgdata 0.7.1
+=========================================================
+
+Major changes:
+* Added information about the exported libraries to the GIR, helping Vala bindings
+* Fixed asynchronous authentication success notification
+* Various small fixes to the core, YouTube and Documents services
+* Fixed many small and large memory leaks
+
+Bugs fixed:
+* Bug 635335 — GIR missing exported packages information
+* Bug 635736 — Asynchronous authentication tests broken
+
 Overview of changes from libgdata 0.6.0 to libgdata 0.7.0
 =========================================================
 
