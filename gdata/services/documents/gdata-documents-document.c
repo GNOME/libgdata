@@ -152,7 +152,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 	/* Synchronously splice the data from the download stream to the file stream (network -> disk) */
 	src_stream = gdata_download_stream_new (_service, download_uri);
 	if (content_type != NULL)
-		g_signal_connect (src_stream, "notify::content-type", (GCallback) notify_content_type_cb, content_type);
+		content_type_signal = g_signal_connect (src_stream, "notify::content-type", (GCallback) notify_content_type_cb, content_type);
 
 	g_output_stream_splice (G_OUTPUT_STREAM (dest_stream), src_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
 	                        cancellable, &child_error);
