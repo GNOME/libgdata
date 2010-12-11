@@ -272,8 +272,7 @@ test_entry_get_xml (void)
 	g_object_unref (author);
 
 	/* Check the generated XML's OK */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (entry,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
 				 "<title type='text'>Testing title &amp; escaping</title>"
 				 "<content type='text'>This is some sample content testing, amongst other things, &lt;markup&gt; &amp; odd characters\342\200\275</content>"
@@ -291,6 +290,7 @@ test_entry_get_xml (void)
 			 "</entry>");
 
 	/* Check again by re-parsing the XML to a GDataEntry */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	entry2 = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY, xml, -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ENTRY (entry2));
@@ -404,7 +404,6 @@ static void
 test_entry_parse_xml (void)
 {
 	GDataEntry *entry;
-	gchar *xml;
 	GError *error = NULL;
 
 	/* Create an entry from XML with unhandled elements */
@@ -423,8 +422,7 @@ test_entry_parse_xml (void)
 	g_clear_error (&error);
 
 	/* Now check the outputted XML from the entry still has the unhandled elements */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (entry,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' xmlns:ns='http://example.com/'>"
 				"<title type='text'>Testing unhandled XML</title>"
 				"<updated>2009-01-25T14:07:37.880860Z</updated>"
@@ -434,7 +432,6 @@ test_entry_parse_xml (void)
 				"<barfoo shizzle=\"zing\"/>"
 				"<ns:barfoo shizzle=\"zing\" fo=\"shizzle\">How about some characters‽</ns:barfoo>"
 			 "</entry>");
-	g_free (xml);
 	g_object_unref (entry);
 }
 
@@ -871,8 +868,7 @@ test_access_rule_get_xml (void)
 	gdata_access_rule_set_scope (rule, "user", "foo@example.com");
 
 	/* Check the generated XML's OK */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (rule,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 "xmlns:gd='http://schemas.google.com/g/2005' "
 			 "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
@@ -884,6 +880,7 @@ test_access_rule_get_xml (void)
 			 "</entry>");
 
 	/* Check again by re-parsing the XML to a GDataAccessRule */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
 	rule2 = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (GDATA_TYPE_ACCESS_RULE, xml, -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (rule2));
@@ -1007,7 +1004,7 @@ static void
 test_atom_author (void)
 {
 	GDataAuthor *author, *author2;
-	gchar *xml, *name, *uri, *email_address;
+	gchar *name, *uri, *email_address;
 	GError *error = NULL;
 
 	author = GDATA_AUTHOR (gdata_parsable_new_from_xml (GDATA_TYPE_AUTHOR,
@@ -1042,14 +1039,12 @@ test_atom_author (void)
 	g_assert_cmpint (gdata_author_compare (author, author), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (author));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (author,
 			 "<author xmlns='http://www.w3.org/2005/Atom'>"
 				"<name>John Smöth</name>"
 				"<uri>http://example.com/</uri>"
 				"<email>john@example.com</email>"
 			 "</author>");
-	g_free (xml);
 
 	/* Check the properties */
 	g_object_get (G_OBJECT (author),
@@ -1116,7 +1111,7 @@ static void
 test_atom_category (void)
 {
 	GDataCategory *category, *category2;
-	gchar *xml, *term, *scheme, *label;
+	gchar *term, *scheme, *label;
 	GError *error = NULL;
 
 	category = GDATA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_CATEGORY,
@@ -1147,11 +1142,9 @@ test_atom_category (void)
 	g_assert_cmpint (gdata_category_compare (category, category), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (category,
 			 "<category xmlns='http://www.w3.org/2005/Atom' "
 				"term='jokes' scheme='http://foobar.com#categories' label='Jokes &amp; Trivia'/>");
-	g_free (xml);
 
 	/* Check the properties */
 	g_object_get (G_OBJECT (category),
@@ -1193,13 +1186,11 @@ test_atom_category (void)
 	g_clear_error (&error);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (category,
 			 "<category xmlns='http://www.w3.org/2005/Atom' term='documentary'>"
 				"<foobar/>"
 				"<shizzle/>"
 			 "</category>");
-	g_free (xml);
 	g_object_unref (category);
 }
 
@@ -1301,7 +1292,7 @@ static void
 test_atom_link (void)
 {
 	GDataLink *link, *link2;
-	gchar *xml, *uri, *relation_type, *content_type, *language, *title;
+	gchar *uri, *relation_type, *content_type, *language, *title;
 	gint length;
 	GError *error = NULL;
 
@@ -1341,11 +1332,9 @@ test_atom_link (void)
 	g_assert_cmpint (gdata_link_compare (link, link), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (link));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (link,
 			 "<link xmlns='http://www.w3.org/2005/Atom' href='http://example.com/' title='All About Angle Brackets: &lt;, &gt;' "
 				"rel='http://test.com#link-type' type='text/plain' hreflang='de' length='2000'/>");
-	g_free (xml);
 
 	/* Set some of the properties */
 	g_object_set (G_OBJECT (link),
@@ -1397,11 +1386,9 @@ test_atom_link (void)
 	g_assert (gdata_link_get_length (link) == -1);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (link));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (link,
 			 "<link xmlns='http://www.w3.org/2005/Atom' href='http://shizzle.com' rel='http://www.iana.org/assignments/relation/alternate'>"
 				"Test Content<foobar/></link>");
-	g_free (xml);
 	g_object_unref (link);
 }
 
@@ -1437,7 +1424,6 @@ static void
 test_gd_email_address (void)
 {
 	GDataGDEmailAddress *email, *email2;
-	gchar *xml;
 	GError *error = NULL;
 
 	email = GDATA_GD_EMAIL_ADDRESS (gdata_parsable_new_from_xml (GDATA_TYPE_GD_EMAIL_ADDRESS,
@@ -1471,12 +1457,10 @@ test_gd_email_address (void)
 	g_assert_cmpint (gdata_gd_email_address_compare (email, email), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (email));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (email,
 			 "<gd:email xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' address='fubar@gmail.com' "
 				"rel='http://schemas.google.com/g/2005#home' label='Personal &amp; Private' displayName='&lt;John Smith&gt;' "
 				"primary='true'/>");
-	g_free (xml);
 	g_object_unref (email);
 
 	/* Now parse an address with less information available */
@@ -1494,11 +1478,9 @@ test_gd_email_address (void)
 	g_assert (gdata_gd_email_address_is_primary (email) == FALSE);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (email));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (email,
 			 "<gd:email xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' address='test@example.com' "
 				"primary='false'/>");
-	g_free (xml);
 	g_object_unref (email);
 }
 
@@ -1506,7 +1488,6 @@ static void
 test_gd_email_address_escaping (void)
 {
 	GDataGDEmailAddress *email;
-	gchar *xml;
 
 	g_test_bug ("630350");
 
@@ -1514,12 +1495,10 @@ test_gd_email_address_escaping (void)
 	gdata_gd_email_address_set_display_name (email, "<John Smith>");
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (email));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (email,
 	                 "<gd:email xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                           "address='Fubar &lt;fubar@gmail.com&gt;' rel='http://schemas.google.com/g/2005#home?foo&amp;bar' "
 	                           "label='Personal &amp; Private' displayName='&lt;John Smith&gt;' primary='true'/>");
-	g_free (xml);
 	g_object_unref (email);
 }
 
@@ -1527,7 +1506,6 @@ static void
 test_gd_im_address (void)
 {
 	GDataGDIMAddress *im, *im2;
-	gchar *xml;
 	GError *error = NULL;
 
 	im = GDATA_GD_IM_ADDRESS (gdata_parsable_new_from_xml (GDATA_TYPE_GD_IM_ADDRESS,
@@ -1560,12 +1538,10 @@ test_gd_im_address (void)
 	g_assert_cmpint (gdata_gd_im_address_compare (im, im), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (im));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (im,
 			 "<gd:im xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 				"address='foo@bar.msn.com' protocol='http://schemas.google.com/g/2005#MSN' "
 				"rel='http://schemas.google.com/g/2005#home' primary='true'/>");
-	g_free (xml);
 	g_object_unref (im);
 
 	/* Now parse an address with less information available */
@@ -1583,11 +1559,9 @@ test_gd_im_address (void)
 	g_assert (gdata_gd_im_address_is_primary (im) == FALSE);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (im));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (im,
 			 "<gd:im xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' address='foo@baz.example.com' "
 				"label='Other &amp; Miscellaneous' primary='false'/>");
-	g_free (xml);
 	g_object_unref (im);
 }
 
@@ -1595,18 +1569,15 @@ static void
 test_gd_im_address_escaping (void)
 {
 	GDataGDIMAddress *im;
-	gchar *xml;
 
 	im = gdata_gd_im_address_new ("Fubar <fubar@gmail.com>", "http://schemas.google.com/g/2005#GOOGLE_TALK?foo&bar",
 	                              "http://schemas.google.com/g/2005#home?foo&bar", "Personal & Private", TRUE);
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (im));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (im,
 	                 "<gd:im xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                        "address='Fubar &lt;fubar@gmail.com&gt;' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK?foo&amp;bar' "
 	                        "rel='http://schemas.google.com/g/2005#home?foo&amp;bar' label='Personal &amp; Private' primary='true'/>");
-	g_free (xml);
 	g_object_unref (im);
 }
 
@@ -1614,7 +1585,6 @@ static void
 test_gd_name (void)
 {
 	GDataGDName *name, *name2;
-	gchar *xml;
 	GError *error = NULL;
 
 	name = GDATA_GD_NAME (gdata_parsable_new_from_xml (GDATA_TYPE_GD_NAME,
@@ -1657,8 +1627,7 @@ test_gd_name (void)
 	g_assert_cmpint (gdata_gd_name_compare (name, name), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (name));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (name,
 			 "<gd:name xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
 				"<gd:givenName>Brian</gd:givenName>"
 				"<gd:additionalName>Charles</gd:additionalName>"
@@ -1667,7 +1636,6 @@ test_gd_name (void)
 				"<gd:nameSuffix>ABC</gd:nameSuffix>"
 				"<gd:fullName>Mr Brian Charles Blessed, ABC</gd:fullName>"
 			 "</gd:name>");
-	g_free (xml);
 	g_object_unref (name);
 
 	/* Now parse an address with less information available */
@@ -1686,12 +1654,10 @@ test_gd_name (void)
 	g_assert (gdata_gd_name_get_full_name (name) == NULL);
 
 	/* Check the outputted XML is still correct */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (name));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (name,
 			 "<gd:name xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
 				"<gd:givenName>Bob</gd:givenName>"
 			 "</gd:name>");
-	g_free (xml);
 	g_object_unref (name);
 }
 
@@ -1700,7 +1666,6 @@ test_gd_organization (void)
 {
 	GDataGDOrganization *org, *org2;
 	GDataGDWhere *location;
-	gchar *xml;
 	GError *error = NULL;
 
 	org = GDATA_GD_ORGANIZATION (gdata_parsable_new_from_xml (GDATA_TYPE_GD_ORGANIZATION,
@@ -1747,8 +1712,7 @@ test_gd_organization (void)
 	g_assert_cmpint (gdata_gd_organization_compare (org, org), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (org));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (org,
 			 "<gd:organization xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 				"rel='http://schemas.google.com/g/2005#work' label='Work &amp; Occupation' primary='true'>"
 				"<gd:orgName>Google, Inc.</gd:orgName>"
@@ -1758,7 +1722,6 @@ test_gd_organization (void)
 				"<gd:orgSymbol>FOO</gd:orgSymbol>"
 				"<gd:where valueString='Test location'/>"
 			 "</gd:organization>");
-	g_free (xml);
 	g_object_unref (org);
 
 	/* Now parse an organization with less information available */
@@ -1780,10 +1743,8 @@ test_gd_organization (void)
 	g_assert (gdata_gd_organization_get_location (org) == NULL);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (org));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (org,
 			 "<gd:organization xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' primary='false'/>");
-	g_free (xml);
 	g_object_unref (org);
 }
 
@@ -1791,7 +1752,6 @@ static void
 test_gd_organization_escaping (void)
 {
 	GDataGDOrganization *org;
-	gchar *xml;
 
 	org = gdata_gd_organization_new ("Steptoe & Son", "Title & Stuff", "http://schemas.google.com/g/2005#work?foo&bar", "Personal & Private",
 	                                 TRUE);
@@ -1800,8 +1760,7 @@ test_gd_organization_escaping (void)
 	gdata_gd_organization_set_symbol (org, "<&>");
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (org));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (org,
 	                 "<gd:organization xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                                  "rel='http://schemas.google.com/g/2005#work?foo&amp;bar' label='Personal &amp; Private' primary='true'>"
 	                         "<gd:orgName>Steptoe &amp; Son</gd:orgName>"
@@ -1810,7 +1769,6 @@ test_gd_organization_escaping (void)
 	                         "<gd:orgJobDescription>Escaping &lt;brackets&gt;.</gd:orgJobDescription>"
 	                         "<gd:orgSymbol>&lt;&amp;&gt;</gd:orgSymbol>"
 	                 "</gd:organization>");
-	g_free (xml);
 	g_object_unref (org);
 }
 
@@ -1818,7 +1776,6 @@ static void
 test_gd_phone_number (void)
 {
 	GDataGDPhoneNumber *phone, *phone2;
-	gchar *xml;
 	GError *error = NULL;
 
 	phone = GDATA_GD_PHONE_NUMBER (gdata_parsable_new_from_xml (GDATA_TYPE_GD_PHONE_NUMBER,
@@ -1852,12 +1809,10 @@ test_gd_phone_number (void)
 	g_assert_cmpint (gdata_gd_phone_number_compare (phone, phone), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (phone));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (phone,
 			 "<gd:phoneNumber xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 				"uri='tel:+12065551212' rel='http://schemas.google.com/g/2005#mobile' label='Personal &amp; business calls only' "
 				"primary='false'>+1 206 555 1212</gd:phoneNumber>");
-	g_free (xml);
 
 	/* Check we trim whitespace properly, and respect Unicode characters */
 	gdata_gd_phone_number_set_number (phone, "  	 0123456 (789) ëxt 300  ");
@@ -1879,11 +1834,9 @@ test_gd_phone_number (void)
 	g_assert (gdata_gd_phone_number_is_primary (phone) == FALSE);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (phone));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (phone,
 			 "<gd:phoneNumber xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:gd='http://schemas.google.com/g/2005' primary='false'>(425) 555-8080 ext. 72585</gd:phoneNumber>");
-	g_free (xml);
 	g_object_unref (phone);
 }
 
@@ -1891,18 +1844,15 @@ static void
 test_gd_phone_number_escaping (void)
 {
 	GDataGDPhoneNumber *phone;
-	gchar *xml;
 
 	phone = gdata_gd_phone_number_new ("0123456789 <54>", "http://schemas.google.com/g/2005#work_mobile?foo&bar", "Personal & Private",
 	                                   "tel:+012345678954?foo&bar", TRUE);
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (phone));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (phone,
 	                 "<gd:phoneNumber xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                                 "uri='tel:+012345678954?foo&amp;bar' rel='http://schemas.google.com/g/2005#work_mobile?foo&amp;bar' "
 	                                 "label='Personal &amp; Private' primary='true'>0123456789 &lt;54&gt;</gd:phoneNumber>");
-	g_free (xml);
 	g_object_unref (phone);
 }
 
@@ -1910,7 +1860,6 @@ static void
 test_gd_postal_address (void)
 {
 	GDataGDPostalAddress *postal, *postal2;
-	gchar *xml;
 	GError *error = NULL;
 
 	postal = GDATA_GD_POSTAL_ADDRESS (gdata_parsable_new_from_xml (GDATA_TYPE_GD_POSTAL_ADDRESS,
@@ -1951,15 +1900,13 @@ test_gd_postal_address (void)
 	g_assert_cmpint (gdata_gd_postal_address_compare (postal, postal), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (postal));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (postal,
 			 "<gd:structuredPostalAddress xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 				"rel='http://schemas.google.com/g/2005#home' label='Home &amp; Safe House' primary='true'>"
 				"<gd:street>500 West 45th Street</gd:street>"
 				"<gd:city>New York</gd:city>"
 				"<gd:postcode>NY 10036</gd:postcode>"
 			 "</gd:structuredPostalAddress>");
-	g_free (xml);
 
 	/* Check we trim whitespace properly, and respect Unicode characters */
 	gdata_gd_postal_address_set_address (postal, "  	 Schöne Grüße Straße\nGermany  ");
@@ -1981,11 +1928,9 @@ test_gd_postal_address (void)
 	g_assert (gdata_gd_postal_address_is_primary (postal) == FALSE);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (postal));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (postal,
 			 "<gd:structuredPostalAddress xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' primary='false'>"
 				 "<gd:street>f</gd:street></gd:structuredPostalAddress>");
-	g_free (xml);
 	g_object_unref (postal);
 }
 
@@ -1993,7 +1938,6 @@ static void
 test_gd_postal_address_escaping (void)
 {
 	GDataGDPostalAddress *address;
-	gchar *xml;
 
 	address = gdata_gd_postal_address_new ("http://schemas.google.com/g/2005#work?foo&bar", "Personal & Private", TRUE);
 	gdata_gd_postal_address_set_address (address, "<address>");
@@ -2011,8 +1955,7 @@ test_gd_postal_address_escaping (void)
 	gdata_gd_postal_address_set_country (address, "<foo>", "<bar>");
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (address));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (address,
 	                 "<gd:structuredPostalAddress xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                                             "rel='http://schemas.google.com/g/2005#work?foo&amp;bar' label='Personal &amp; Private' "
 	                                             "mailClass='http://schemas.google.com/g/2005#both?foo&amp;bar' "
@@ -2029,7 +1972,6 @@ test_gd_postal_address_escaping (void)
 	                         "<gd:country>&lt;foo&gt;</gd:country>"
 	                         "<gd:formattedAddress>&lt;address&gt;</gd:formattedAddress>"
 	                 "</gd:structuredPostalAddress>");
-	g_free (xml);
 	g_object_unref (address);
 }
 
@@ -2037,7 +1979,6 @@ static void
 test_gd_reminder (void)
 {
 	GDataGDReminder *reminder, *reminder2;
-	gchar *xml;
 	GTimeVal time_val;
 	GError *error = NULL;
 
@@ -2053,10 +1994,8 @@ test_gd_reminder (void)
 	g_assert_cmpint (gdata_gd_reminder_get_relative_time (reminder), ==, 15 * 24 * 60);
 
 	/* Check the outputted XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (reminder));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (reminder,
 			 "<gd:reminder xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' minutes='21600'/>");
-	g_free (xml);
 	g_object_unref (reminder);
 
 	/* Try again with a different property */
@@ -2116,11 +2055,9 @@ test_gd_reminder (void)
 	g_object_unref (reminder2);
 
 	/* Check the outputted XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (reminder));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (reminder,
 			 "<gd:reminder xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 				"absoluteTime='2005-06-07T00:55:00Z' method='alert'/>");
-	g_free (xml);
 	g_object_unref (reminder);
 }
 
@@ -2128,16 +2065,13 @@ static void
 test_gd_reminder_escaping (void)
 {
 	GDataGDReminder *reminder;
-	gchar *xml;
 
 	reminder = gdata_gd_reminder_new ("alert?foo&bar", NULL, 15);
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (reminder));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (reminder,
 	                 "<gd:reminder xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                              "minutes='15' method='alert?foo&amp;bar'/>");
-	g_free (xml);
 	g_object_unref (reminder);
 }
 
@@ -2145,7 +2079,6 @@ static void
 test_gd_when (void)
 {
 	GDataGDWhen *when, *when2;
-	gchar *xml;
 	GList *reminders;
 	GTimeVal time_val, time_val2;
 	GError *error = NULL;
@@ -2185,11 +2118,9 @@ test_gd_when (void)
 	g_assert_cmpint (gdata_gd_when_compare (when, when), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (when));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (when,
 			 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' startTime='2005-06-07T01:00:00Z' "
 				"endTime='2005-06-07T02:00:00Z'/>");
-	g_free (xml);
 	g_object_unref (when);
 
 	/* Now parse a time with different information */
@@ -2220,14 +2151,12 @@ test_gd_when (void)
 	g_assert_cmpint (gdata_gd_reminder_get_relative_time (GDATA_GD_REMINDER (reminders->data)), ==, 15);
 
 	/* Check the outputted XML is correct */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (when));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (when,
 			 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' startTime='2005-06-06' "
 				"endTime='2005-06-08' valueString='This weekend'>"
 				"<gd:reminder minutes='15'/>"
 				"<foobar/>"
 			 "</gd:when>");
-	g_free (xml);
 	g_object_unref (when);
 }
 
@@ -2235,7 +2164,6 @@ static void
 test_gd_when_escaping (void)
 {
 	GDataGDWhen *when;
-	gchar *xml;
 	GTimeVal start_time;
 
 	g_time_val_from_iso8601 ("2005-06-07T01:00:00Z", &start_time);
@@ -2243,11 +2171,9 @@ test_gd_when_escaping (void)
 	gdata_gd_when_set_value_string (when, "Value string & stuff!");
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (when));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (when,
 	                 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                          "startTime='2005-06-07T01:00:00Z' valueString='Value string &amp; stuff!'/>");
-	g_free (xml);
 	g_object_unref (when);
 }
 
@@ -2255,7 +2181,6 @@ static void
 test_gd_where (void)
 {
 	GDataGDWhere *where, *where2;
-	gchar *xml;
 	GError *error = NULL;
 
 	where = GDATA_GD_WHERE (gdata_parsable_new_from_xml (GDATA_TYPE_GD_WHERE,
@@ -2286,12 +2211,10 @@ test_gd_where (void)
 	g_assert_cmpint (gdata_gd_where_compare (where, where), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (where));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (where,
 			 "<gd:where xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 				"label='New York Location &lt;videoconference&gt;' rel='http://schemas.google.com/g/2005#event.alternate' "
 				"valueString='Metropolis'/>");
-	g_free (xml);
 	g_object_unref (where);
 
 	/* Now parse a place with less information available */
@@ -2307,11 +2230,9 @@ test_gd_where (void)
 	g_assert (gdata_gd_where_get_label (where) == NULL);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (where));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (where,
 			 "<gd:where xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 				"valueString='Google Cafeteria &lt;Building 40&gt;'/>");
-	g_free (xml);
 	g_object_unref (where);
 }
 
@@ -2319,17 +2240,14 @@ static void
 test_gd_where_escaping (void)
 {
 	GDataGDWhere *where;
-	gchar *xml;
 
 	where = gdata_gd_where_new ("http://schemas.google.com/g/2005#event?foo&bar", "Value string & stuff!", "<label>");
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (where));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (where,
 	                 "<gd:where xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                           "label='&lt;label&gt;' rel='http://schemas.google.com/g/2005#event?foo&amp;bar' "
 	                           "valueString='Value string &amp; stuff!'/>");
-	g_free (xml);
 	g_object_unref (where);
 }
 
@@ -2337,7 +2255,6 @@ static void
 test_gd_who (void)
 {
 	GDataGDWho *who, *who2;
-	gchar *xml;
 	GError *error = NULL;
 
 	who = GDATA_GD_WHO (gdata_parsable_new_from_xml (GDATA_TYPE_GD_WHO,
@@ -2368,11 +2285,9 @@ test_gd_who (void)
 	g_assert_cmpint (gdata_gd_who_compare (who, who), ==, 0);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (who));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (who,
 			 "<gd:who xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' email='liz@example.com' "
 				"rel='http://schemas.google.com/g/2005#message.to' valueString='Elizabeth'/>");
-	g_free (xml);
 	g_object_unref (who);
 
 	/* Now parse a place with less information available */
@@ -2388,10 +2303,8 @@ test_gd_who (void)
 	g_assert (gdata_gd_who_get_email_address (who) == NULL);
 
 	/* Check the outputted XML contains the unknown XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (who));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (who,
 			 "<gd:who xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'/>");
-	g_free (xml);
 	g_object_unref (who);
 }
 
@@ -2399,18 +2312,15 @@ static void
 test_gd_who_escaping (void)
 {
 	GDataGDWho *who;
-	gchar *xml;
 
 	who = gdata_gd_who_new ("http://schemas.google.com/g/2005#event.attendee?foo&bar", "Value string & stuff!",
 	                        "John Smith <john.smith@gmail.com>");
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (who));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (who,
 	                 "<gd:who xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                         "email='John Smith &lt;john.smith@gmail.com&gt;' rel='http://schemas.google.com/g/2005#event.attendee?foo&amp;bar' "
 	                         "valueString='Value string &amp; stuff!'/>");
-	g_free (xml);
 	g_object_unref (who);
 }
 
@@ -2418,7 +2328,6 @@ static void
 test_media_category (void)
 {
 	GDataMediaCategory *category;
-	gchar *xml;
 	GError *error = NULL;
 
 	category = GDATA_MEDIA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CATEGORY,
@@ -2435,13 +2344,11 @@ test_media_category (void)
 	g_assert_cmpstr (gdata_media_category_get_label (category), ==, "Ace Ventura - Pet & Detective");
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (category,
 			 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
 				"scheme='http://dmoz.org' "
 				"label='Ace Ventura - Pet &amp; Detective'>Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective"
 				"</media:category>");
-	g_free (xml);
 	g_object_unref (category);
 
 	/* Now parse one with less information available */
@@ -2457,11 +2364,9 @@ test_media_category (void)
 	g_assert (gdata_media_category_get_label (category) == NULL);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (category));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (category,
 			 "<media:category xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
 				"scheme='http://video.search.yahoo.com/mrss/category_schema'>foo</media:category>");
-	g_free (xml);
 	g_object_unref (category);
 }
 
@@ -2557,7 +2462,6 @@ test_media_group (void)
 {
 	GDataMediaGroup *group;
 	GList *contents, *thumbnails;
-	gchar *xml;
 	GError *error = NULL;
 
 	group = GDATA_MEDIA_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_GROUP,
@@ -2606,8 +2510,7 @@ test_media_group (void)
 	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnails->next->data));
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (group));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (group,
 			 "<media:group xmlns:media='http://search.yahoo.com/mrss/'>"
 				"<media:title>Foobar — shizzle!</media:title>"
 				"<media:description>This is a description, isn't it‽</media:description>"
@@ -2624,7 +2527,6 @@ test_media_group (void)
 				"<media:thumbnail url='http://www.foo.com/keyframe.jpg' width='75' height='50' time='12:05:01.123'/>"
 				"<media:thumbnail url='http://www.foo.com/keyframe0.jpg' time='00:00:00'/>"
 			 "</media:group>");
-	g_free (xml);
 
 	/* Check setting things works */
 	gdata_media_group_set_title (group, "Test title");
@@ -2670,9 +2572,8 @@ test_media_group (void)
 	g_assert (gdata_media_group_get_thumbnails (group) == NULL);
 
 	/* Check the outputted XML is the same */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (group));
-	g_assert_cmpstr (xml, ==, "<media:group xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/'></media:group>");
-	g_free (xml);
+	gdata_test_assert_xml (group,
+	                          "<media:group xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/'></media:group>");
 	g_object_unref (group);
 }
 #endif

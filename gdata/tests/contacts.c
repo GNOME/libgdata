@@ -159,7 +159,6 @@ test_insert_simple (gconstpointer service)
 	GDataGDPhoneNumber *phone_number1, *phone_number2;
 	GDataGDIMAddress *im_address;
 	GDataGDPostalAddress *postal_address;
-	gchar *xml;
 	GList *list;
 	GHashTable *properties;
 	GTimeVal *edited, creation_time;
@@ -234,8 +233,7 @@ test_insert_simple (gconstpointer service)
 	g_object_unref (name2);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (contact,
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
 				"xmlns:app='http://www.w3.org/2007/app' "
@@ -259,7 +257,6 @@ test_insert_simple (gconstpointer service)
 				"</gd:structuredPostalAddress>"
 				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
 			 "</entry>");
-	g_free (xml);
 
 	/* Insert the contact */
 	new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
