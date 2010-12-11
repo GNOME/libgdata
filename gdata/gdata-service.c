@@ -598,15 +598,13 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 	soup_message_set_request (message, "application/x-www-form-urlencoded", SOUP_MEMORY_TAKE, request_body, strlen (request_body));
 
 	/* Send the message */
-	status = soup_session_send_message (priv->session, message);
+	status = _gdata_service_send_message (self, message, cancellable, error);
 
-	/* Check for cancellation */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
+	if (status == SOUP_STATUS_CANCELLED) {
+		/* Cancelled (the error has already been set) */
 		g_object_unref (message);
 		return FALSE;
-	}
-
-	if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK) {
 		const gchar *response_body = message->response_body->data;
 		gchar *error_start, *error_end, *uri_start, *uri_end, *uri = NULL;
 
@@ -1130,7 +1128,6 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
 {
 	SoupMessage *message;
 	guint status;
-	gulong cancel_signal = 0;
 	const gchar *etag = NULL;
 
 	/* Append the ETag header if possible */
@@ -1147,23 +1144,10 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
 	}
 
 	/* TODO: Document that cancellation only applies to network activity; not to the processing done afterwards */
+	status = _gdata_service_send_message (self, message, cancellable, error);
 
-	/* Send the message */
-	if (cancellable != NULL)
-		cancel_signal = g_cancellable_connect (cancellable, (GCallback) message_cancel_cb, message, NULL);
-
-	status = soup_session_send_message (self->priv->session, message);
-
-	if (cancel_signal != 0)
-		g_cancellable_disconnect (cancellable, cancel_signal);
-
-	if (status == SOUP_STATUS_NOT_MODIFIED) {
-		/* Not modified; ETag has worked */
-		g_object_unref (message);
-		return NULL;
-	} else if (status == SOUP_STATUS_CANCELLED) {
-		/* Cancelled */
-		g_assert (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE);
+	if (status == SOUP_STATUS_NOT_MODIFIED || status == SOUP_STATUS_CANCELLED) {
+		/* Not modified (ETag has worked), or cancelled (in which case the error has been set) */
 		g_object_unref (message);
 		return NULL;
 	} else if (status != SOUP_STATUS_OK) {
