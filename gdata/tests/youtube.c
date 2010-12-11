@@ -1053,6 +1053,7 @@ test_batch_async_cancellation (BatchData *data, gconstpointer service)
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 	g_object_unref (cancellable);
+	g_object_unref (operation);
 }
 
 static void
