@@ -16,7 +16,7 @@ LIBS = \
 
 noinst_PROGRAMS = $(TEST_PROGS)
 
-TEST_SRCS = common.h
+TEST_SRCS = common.c common.h
 
 TEST_PROGS			+= general
 general_SOURCES			 = general.c $(TEST_SRCS)

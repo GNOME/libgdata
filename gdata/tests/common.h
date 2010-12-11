@@ -17,6 +17,9 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <glib.h>
+#include <gdata/gdata.h>
+
 #ifndef GDATA_TEST_COMMON_H
 #define GDATA_TEST_COMMON_H
 
@@ -26,6 +29,15 @@ G_BEGIN_DECLS
 #define USERNAME "libgdata.test@gmail.com"
 #define DOCUMENTS_USERNAME "libgdata.documents@gmail.com"
 #define PASSWORD "gdata-libgdata"
+
+gboolean gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboolean print_error);
+
+/* Convenience macro */
+#define gdata_test_assert_xml(Parsable, XML) \
+	G_STMT_START { \
+		gboolean _test_success = gdata_test_compare_xml (GDATA_PARSABLE (Parsable), XML, TRUE); \
+		g_assert (_test_success == TRUE); \
+	} G_STMT_END
 
 G_END_DECLS
 
