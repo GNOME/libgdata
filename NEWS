@@ -1,3 +1,17 @@
+Overview of changes from libgdata 0.6.5 to libgdata 0.6.6
+=========================================================
+
+Major changes:
+* Fixed attribute escaping for several elements
+* Fixed asynchronous authentication success notification
+* Various small fixes to the core, YouTube and Documents services
+* Fixed many small and large memory leaks
+* Fixed the XML comparisons in the test suite re. changes to GHashTable in GLib master
+
+Bugs fixed:
+* Bug 630350 — Email address cannot contain name
+* Bug 635736 — Asynchronous authentication tests broken
+
 Overview of changes from libgdata 0.6.4 to libgdata 0.6.5
 =========================================================
 
