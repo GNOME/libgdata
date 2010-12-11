@@ -496,7 +496,6 @@ test_parsing_yt_recorded (void)
 {
 	GDataYouTubeVideo *video;
 	gint64 recorded;
-	gchar *xml;
 	GError *error = NULL;
 
 	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
@@ -536,8 +535,7 @@ test_parsing_yt_recorded (void)
 	gdata_youtube_video_set_recorded (video, recorded);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (video,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
@@ -565,7 +563,6 @@ test_parsing_yt_recorded (void)
 					"<app:draft>no</app:draft>"
 				"</app:control>"
 			 "</entry>");
-	g_free (xml);
 
 	/* TODO: more tests on entry properties */
 
@@ -576,7 +573,6 @@ static void
 test_parsing_yt_access_control (void)
 {
 	GDataYouTubeVideo *video;
-	gchar *xml;
 	GError *error = NULL;
 
 	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
@@ -625,8 +621,7 @@ test_parsing_yt_access_control (void)
 	gdata_youtube_video_set_access_control (video, GDATA_YOUTUBE_ACTION_EMBED, GDATA_YOUTUBE_PERMISSION_DENIED);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (video,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
@@ -660,7 +655,6 @@ test_parsing_yt_access_control (void)
 					"<app:draft>no</app:draft>"
 				"</app:control>"
 			 "</entry>");
-	g_free (xml);
 
 	g_object_unref (video);
 }
@@ -773,7 +767,6 @@ static void
 test_video_escaping (void)
 {
 	GDataYouTubeVideo *video;
-	gchar *xml;
 	const gchar * const keywords[] = { "<keyword1>", "keyword2 & stuff, things", NULL };
 
 	video = gdata_youtube_video_new (NULL);
@@ -784,8 +777,7 @@ test_video_escaping (void)
 	gdata_youtube_video_set_aspect_ratio (video, "4 & 3");
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (video,
 	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
 	                        "xmlns:gd='http://schemas.google.com/g/2005' "
@@ -801,7 +793,6 @@ test_video_escaping (void)
 				"<yt:accessControl action='&lt;action&gt;' permission='allowed'/>"
 				"<app:control><app:draft>no</app:draft></app:control>"
 	                 "</entry>");
-	g_free (xml);
 	g_object_unref (video);
 }
 

@@ -1271,14 +1271,15 @@ test_album_new (void)
 	/* Get the current time */
 	g_get_current_time (&timeval);
 
-	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
-	regex = g_regex_new ("<entry xmlns='http://www.w3.org/2005/Atom' "
-				    "xmlns:gphoto='http://schemas.google.com/photos/2007' "
-				    "xmlns:media='http://search.yahoo.com/mrss/' "
-				    "xmlns:gd='http://schemas.google.com/g/2005' "
-				    "xmlns:gml='http://www.opengis.net/gml' "
-				    "xmlns:app='http://www.w3.org/2007/app' "
-				    "xmlns:georss='http://www.georss.org/georss'>"
+	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be. Note that we also assign any order to the
+	 * namespace definitions, since due to a change in GLib's hashing algorithm, they could be in different orders with different GLib versions. */
+	regex = g_regex_new ("<entry (xmlns='http://www.w3.org/2005/Atom' ?|"
+				     "xmlns:gphoto='http://schemas.google.com/photos/2007' ?|"
+				     "xmlns:media='http://search.yahoo.com/mrss/' ?|"
+				     "xmlns:gd='http://schemas.google.com/g/2005' ?|"
+				     "xmlns:gml='http://www.opengis.net/gml' ?|"
+				     "xmlns:app='http://www.w3.org/2007/app' ?|"
+				     "xmlns:georss='http://www.georss.org/georss' ?){7}>"
 					"<title type='text'></title>"
 					"<id>http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249</id>"
 					"<category term='http://schemas.google.com/photos/2007#album' "
@@ -1299,7 +1300,7 @@ test_album_new (void)
 	 * for the photo. */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (album));
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
-	parsed_time_str = g_match_info_fetch (match_info, 1);
+	parsed_time_str = g_match_info_fetch (match_info, 2);
 	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
 	g_assert_cmpuint (abs (delta), <, 1000);
 
@@ -1314,7 +1315,6 @@ static void
 test_album_escaping (void)
 {
 	GDataPicasaWebAlbum *album;
-	gchar *xml;
 	GError *error = NULL;
 	const gchar * const tags[] = { "<tag1>", "tag2 & stuff, things", NULL };
 
@@ -1334,8 +1334,7 @@ test_album_escaping (void)
 	gdata_picasaweb_album_set_tags (album, tags);
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (album));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (album,
 	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' "
 	                        "xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' "
@@ -1349,7 +1348,6 @@ test_album_escaping (void)
 				"<gphoto:commentingEnabled>false</gphoto:commentingEnabled>"
 				"<media:group><media:keywords>&lt;tag1&gt;,tag2 &amp; stuff%2C things</media:keywords></media:group>"
 	                 "</entry>");
-	g_free (xml);
 	g_object_unref (album);
 }
 
@@ -1357,7 +1355,6 @@ static void
 test_file_escaping (void)
 {
 	GDataPicasaWebFile *file;
-	gchar *xml;
 	GError *error = NULL;
 	const gchar * const tags[] = { "<tag1>", "tag2 & stuff, things", NULL };
 
@@ -1380,8 +1377,7 @@ test_file_escaping (void)
 	gdata_picasaweb_file_set_caption (file, "Caption & stuff.");
 
 	/* Check the outputted XML is escaped properly */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (file));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (file,
 	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' "
 	                        "xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' "
@@ -1400,7 +1396,6 @@ test_file_escaping (void)
 					"<media:keywords>&lt;tag1&gt;,tag2 &amp; stuff%2C things</media:keywords>"
 				"</media:group>"
 	                 "</entry>");
-	g_free (xml);
 	g_object_unref (file);
 }
 
