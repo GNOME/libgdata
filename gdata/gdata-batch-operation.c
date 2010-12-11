@@ -681,6 +681,11 @@ gdata_batch_operation_run_async (GDataBatchOperation *self, GCancellable *cancel
 	self->priv->is_async = TRUE;
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_batch_operation_run_async);
+
+	/* Disable handling of cancellation so that g_simple_async_result_run_in_thread() doesn't return immediately without calling run_thread() if
+	 * cancellable has already been cancelled by this point. */
+	g_simple_async_result_set_handle_cancellation (result, FALSE);
+
 	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) run_thread, G_PRIORITY_DEFAULT, cancellable);
 	g_object_unref (result);
 }
