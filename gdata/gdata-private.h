@@ -90,10 +90,6 @@ G_GNUC_INTERNAL GDataService *_gdata_documents_service_get_spreadsheet_service (
 
 #include "gdata-parser.h"
 
-G_GNUC_INTERNAL GFileOutputStream *_gdata_download_stream_find_destination (const gchar *default_filename, GFile *target_dest_file, GFile **actual_dest_file,
-                                                                            gboolean replace_file_if_exists,
-                                                                            GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-
 G_END_DECLS
 
 #endif /* !GDATA_PRIVATE_H */
