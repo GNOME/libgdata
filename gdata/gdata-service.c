@@ -908,8 +908,8 @@ gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_resul
  * @error: a #GError, or %NULL
  *
  * Authenticates the #GDataService with the online service using @username and @password; i.e. logs into the service with the given
- * user account. @username should be a full e-mail address (e.g. <literal>john.smith@gmail.com</literal>). If a full e-mail address is
- * not given, @username will have <literal>@gmail.com</literal> appended to create an e-mail address
+ * user account. @username should be a full e-mail address (e.g. <literal>john.smith\@gmail.com</literal>). If a full e-mail address is
+ * not given, @username will have <literal>\@gmail.com</literal> appended to create an e-mail address
  *
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
  * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
