@@ -1346,7 +1346,6 @@ test_gd_email_address_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (email));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:email xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                           "address='Fubar &lt;fubar@gmail.com&gt;' rel='http://schemas.google.com/g/2005#home?foo&amp;bar' "
 	                           "label='Personal &amp; Private' displayName='&lt;John Smith&gt;' primary='true'/>");
@@ -1434,7 +1433,6 @@ test_gd_im_address_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (im));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:im xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                        "address='Fubar &lt;fubar@gmail.com&gt;' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK?foo&amp;bar' "
 	                        "rel='http://schemas.google.com/g/2005#home?foo&amp;bar' label='Personal &amp; Private' primary='true'/>");
@@ -1634,7 +1632,6 @@ test_gd_organization_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (org));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:organization xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                                  "rel='http://schemas.google.com/g/2005#work?foo&amp;bar' label='Personal &amp; Private' primary='true'>"
 	                         "<gd:orgName>Steptoe &amp; Son</gd:orgName>"
@@ -1732,7 +1729,6 @@ test_gd_phone_number_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (phone));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:phoneNumber xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                                 "uri='tel:+012345678954?foo&amp;bar' rel='http://schemas.google.com/g/2005#work_mobile?foo&amp;bar' "
 	                                 "label='Personal &amp; Private' primary='true'>0123456789 &lt;54&gt;</gd:phoneNumber>");
@@ -1847,7 +1843,6 @@ test_gd_postal_address_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (address));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:structuredPostalAddress xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                                             "rel='http://schemas.google.com/g/2005#work?foo&amp;bar' label='Personal &amp; Private' "
 	                                             "mailClass='http://schemas.google.com/g/2005#both?foo&amp;bar' "
@@ -1970,7 +1965,6 @@ test_gd_reminder_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (reminder));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:reminder xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                              "minutes='15' method='alert?foo&amp;bar'/>");
 	g_free (xml);
@@ -2081,7 +2075,6 @@ test_gd_when_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (when));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                          "startTime='2005-06-07T01:00:00Z' valueString='Value string &amp; stuff!'/>");
 	g_free (xml);
@@ -2163,7 +2156,6 @@ test_gd_where_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (where));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:where xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                           "label='&lt;label&gt;' rel='http://schemas.google.com/g/2005#event?foo&amp;bar' "
 	                           "valueString='Value string &amp; stuff!'/>");
@@ -2245,7 +2237,6 @@ test_gd_who_escaping (void)
 	/* Check the outputted XML is escaped properly */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (who));
 	g_assert_cmpstr (xml, ==,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:who xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
 	                         "email='John Smith &lt;john.smith@gmail.com&gt;' rel='http://schemas.google.com/g/2005#event.attendee?foo&amp;bar' "
 	                         "valueString='Value string &amp; stuff!'/>");
