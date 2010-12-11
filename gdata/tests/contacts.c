@@ -162,7 +162,7 @@ test_insert_simple (gconstpointer service)
 	GDataGContactCalendar *calendar;
 	GDataGContactExternalID *external_id;
 	GDataGContactLanguage *language;
-	gchar *xml, *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
+	gchar *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
 	gchar *priority, *sensitivity, *short_name, *subject;
 	GList *list;
 	GDate date, *date2;
@@ -336,8 +336,7 @@ test_insert_simple (gconstpointer service)
 	g_free (subject);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (contact));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (contact,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:gd='http://schemas.google.com/g/2005' "
@@ -390,7 +389,6 @@ test_insert_simple (gconstpointer service)
 				"<gContact:shortName>Jon</gContact:shortName>"
 				"<gContact:subject>Charity work</gContact:subject>"
 			 "</entry>");
-	g_free (xml);
 
 	/* Insert the contact */
 	new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
@@ -663,7 +661,7 @@ test_insert_group (gconstpointer service)
 	GHashTable *properties;
 	gint64 edited;
 	gboolean deleted;
-	gchar *system_group_id, *xml;
+	gchar *system_group_id;
 	GError *error = NULL;
 
 	group = gdata_contacts_group_new (NULL);
@@ -701,8 +699,7 @@ test_insert_group (gconstpointer service)
 	g_free (system_group_id);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (group));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (group,
 		"<?xml version='1.0' encoding='UTF-8'?>"
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
 		       "xmlns:gd='http://schemas.google.com/g/2005' "
@@ -713,7 +710,6 @@ test_insert_group (gconstpointer service)
 			"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
 			"<gd:extendedProperty name='foobar'>barfoo</gd:extendedProperty>"
 		"</entry>");
-	g_free (xml);
 
 	/* Insert the group */
 	new_group = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, &error);

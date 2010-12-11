@@ -172,15 +172,15 @@ test_upload_async (gconstpointer service)
 	time_str = g_time_val_to_iso8601 (&timeval);
 	summary = g_strdup_printf ("Async Photo Summary (%s)", time_str);
 
-	expected_xml = g_strdup_printf ("<entry "
-						"xmlns='http://www.w3.org/2005/Atom' "
-						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
-						"xmlns:media='http://search.yahoo.com/mrss/' "
-						"xmlns:gd='http://schemas.google.com/g/2005' "
-						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
-						"xmlns:app='http://www.w3.org/2007/app' "
-						"xmlns:georss='http://www.georss.org/georss' "
-						"xmlns:gml='http://www.opengis.net/gml'>"
+	expected_xml = g_strdup_printf ("<entry ("
+						"xmlns='http://www.w3.org/2005/Atom' ?|"
+						"xmlns:gphoto='http://schemas.google.com/photos/2007' ?|"
+						"xmlns:media='http://search.yahoo.com/mrss/' ?|"
+						"xmlns:gd='http://schemas.google.com/g/2005' ?|"
+						"xmlns:exif='http://schemas.google.com/photos/exif/2007' ?|"
+						"xmlns:app='http://www.w3.org/2007/app' ?|"
+						"xmlns:georss='http://www.georss.org/georss' ?|"
+						"xmlns:gml='http://www.opengis.net/gml' ?){8}>"
 						"<title type='text'>Async Photo Entry Title</title>"
 						"<summary type='text'>Async Photo Summary \\(%s\\)</summary>"
 						"<category term='http://schemas.google.com/photos/2007#photo' "
@@ -211,7 +211,7 @@ test_upload_async (gconstpointer service)
 	 * for the photo. */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
-	parsed_time_str = g_match_info_fetch (match_info, 1);
+	parsed_time_str = g_match_info_fetch (match_info, 2);
 	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
 	g_assert_cmpuint (abs (delta), <, 1000);
 
@@ -546,15 +546,15 @@ test_upload_simple (gconstpointer service)
 	time_str = g_time_val_to_iso8601 (&timeval);
 	summary = g_strdup_printf ("Photo Summary (%s)", time_str);
 
-	expected_xml = g_strdup_printf ("<entry "
-						"xmlns='http://www.w3.org/2005/Atom' "
-						"xmlns:gphoto='http://schemas.google.com/photos/2007' "
-						"xmlns:media='http://search.yahoo.com/mrss/' "
-						"xmlns:gd='http://schemas.google.com/g/2005' "
-						"xmlns:exif='http://schemas.google.com/photos/exif/2007' "
-						"xmlns:app='http://www.w3.org/2007/app' "
-						"xmlns:georss='http://www.georss.org/georss' "
-						"xmlns:gml='http://www.opengis.net/gml'>"
+	expected_xml = g_strdup_printf ("<entry ("
+						"xmlns='http://www.w3.org/2005/Atom' ?|"
+						"xmlns:gphoto='http://schemas.google.com/photos/2007' ?|"
+						"xmlns:media='http://search.yahoo.com/mrss/' ?|"
+						"xmlns:gd='http://schemas.google.com/g/2005' ?|"
+						"xmlns:exif='http://schemas.google.com/photos/exif/2007' ?|"
+						"xmlns:app='http://www.w3.org/2007/app' ?|"
+						"xmlns:georss='http://www.georss.org/georss' ?|"
+						"xmlns:gml='http://www.opengis.net/gml' ?){8}>"
 						"<title type='text'>Photo Entry Title</title>"
 						"<summary type='text'>Photo Summary \\(%s\\)</summary>"
 						"<category term='http://schemas.google.com/photos/2007#photo' "
@@ -585,7 +585,7 @@ test_upload_simple (gconstpointer service)
 	 * for the photo. */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo));
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
-	parsed_time_str = g_match_info_fetch (match_info, 1);
+	parsed_time_str = g_match_info_fetch (match_info, 2);
 	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
 	g_assert_cmpuint (abs (delta), <, 1000);
 
@@ -1258,14 +1258,15 @@ test_album_new (void)
 	/* Get the current time */
 	g_get_current_time (&timeval);
 
-	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be */
-	regex = g_regex_new ("<entry xmlns='http://www.w3.org/2005/Atom' "
-				    "xmlns:gphoto='http://schemas.google.com/photos/2007' "
-				    "xmlns:media='http://search.yahoo.com/mrss/' "
-				    "xmlns:gd='http://schemas.google.com/g/2005' "
-				    "xmlns:gml='http://www.opengis.net/gml' "
-				    "xmlns:app='http://www.w3.org/2007/app' "
-				    "xmlns:georss='http://www.georss.org/georss'>"
+	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be. Note that we also assign any order to the
+	 * namespace definitions, since due to a change in GLib's hashing algorithm, they could be in different orders with different GLib versions. */
+	regex = g_regex_new ("<entry (xmlns='http://www.w3.org/2005/Atom' ?|"
+				     "xmlns:gphoto='http://schemas.google.com/photos/2007' ?|"
+				     "xmlns:media='http://search.yahoo.com/mrss/' ?|"
+				     "xmlns:gd='http://schemas.google.com/g/2005' ?|"
+				     "xmlns:gml='http://www.opengis.net/gml' ?|"
+				     "xmlns:app='http://www.w3.org/2007/app' ?|"
+				     "xmlns:georss='http://www.georss.org/georss' ?){7}>"
 					"<title type='text'></title>"
 					"<id>http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249</id>"
 					"<category term='http://schemas.google.com/photos/2007#album' "
@@ -1286,7 +1287,7 @@ test_album_new (void)
 	 * for the photo. */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (album));
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
-	parsed_time_str = g_match_info_fetch (match_info, 1);
+	parsed_time_str = g_match_info_fetch (match_info, 2);
 	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
 	g_assert_cmpuint (abs (delta), <, 1000);
 

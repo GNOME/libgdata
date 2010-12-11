@@ -267,7 +267,6 @@ test_upload_simple (gconstpointer service)
 	GDataYouTubeVideo *video, *new_video;
 	GDataMediaCategory *category;
 	GFile *video_file;
-	gchar *xml;
 	const gchar * const tags[] = { "toast", "wedding", NULL };
 	GError *error = NULL;
 
@@ -281,8 +280,7 @@ test_upload_simple (gconstpointer service)
 	gdata_youtube_video_set_keywords (video, tags);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (video,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
@@ -301,7 +299,6 @@ test_upload_simple (gconstpointer service)
 					"<app:draft>no</app:draft>"
 				"</app:control>"
 			 "</entry>");
-	g_free (xml);
 
 	/* TODO: fix the path */
 	video_file = g_file_new_for_path (TEST_FILE_DIR "sample.ogg");
@@ -376,7 +373,6 @@ test_parsing_yt_recorded (void)
 {
 	GDataYouTubeVideo *video;
 	gint64 recorded;
-	gchar *xml;
 	GError *error = NULL;
 
 	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
@@ -416,8 +412,7 @@ test_parsing_yt_recorded (void)
 	gdata_youtube_video_set_recorded (video, recorded);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (video,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
@@ -445,7 +440,6 @@ test_parsing_yt_recorded (void)
 					"<app:draft>no</app:draft>"
 				"</app:control>"
 			 "</entry>");
-	g_free (xml);
 
 	/* TODO: more tests on entry properties */
 
@@ -456,7 +450,6 @@ static void
 test_parsing_yt_access_control (void)
 {
 	GDataYouTubeVideo *video;
-	gchar *xml;
 	GError *error = NULL;
 
 	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
@@ -505,8 +498,7 @@ test_parsing_yt_access_control (void)
 	gdata_youtube_video_set_access_control (video, GDATA_YOUTUBE_ACTION_EMBED, GDATA_YOUTUBE_PERMISSION_DENIED);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (video));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (video,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 				"xmlns:media='http://search.yahoo.com/mrss/' "
@@ -540,7 +532,6 @@ test_parsing_yt_access_control (void)
 					"<app:draft>no</app:draft>"
 				"</app:control>"
 			 "</entry>");
-	g_free (xml);
 
 	g_object_unref (video);
 }

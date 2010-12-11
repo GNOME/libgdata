@@ -234,7 +234,6 @@ test_insert_simple (gconstpointer service)
 	GDataGDWho *who;
 	GDataGDWhen *when;
 	GTimeVal start_time, end_time;
-	gchar *xml;
 	GError *error = NULL;
 
 	event = gdata_calendar_event_new (NULL);
@@ -256,8 +255,7 @@ test_insert_simple (gconstpointer service)
 	g_object_unref (when);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (event,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 	"xmlns:gd='http://schemas.google.com/g/2005' "
@@ -278,7 +276,6 @@ test_insert_simple (gconstpointer service)
 			 		"valueString='John Smith\342\200\275'/>"
 			 	"<gd:where valueString='Rolling Lawn Courts'/>"
 			 "</entry>");
-	g_free (xml);
 
 	/* Insert the event */
 	new_event = gdata_calendar_service_insert_event (GDATA_CALENDAR_SERVICE (service), event, NULL, &error);
@@ -299,7 +296,6 @@ test_xml_dates (void)
 	GList *times, *i;
 	GDataGDWhen *when;
 	gint64 _time;
-	gchar *xml;
 	GError *error = NULL;
 
 	event = GDATA_CALENDAR_EVENT (gdata_parsable_new_from_xml (GDATA_TYPE_CALENDAR_EVENT,
@@ -357,8 +353,7 @@ test_xml_dates (void)
 	g_assert (gdata_gd_when_get_reminders (when) == NULL);
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (event));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (event,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 	"xmlns:gd='http://schemas.google.com/g/2005' "
@@ -375,7 +370,6 @@ test_xml_dates (void)
 			 	"<gd:when startTime='2009-04-17T15:00:00Z'/>"
 			 	"<gd:when startTime='2009-04-27' endTime='2009-05-06'/>"
 			 "</entry>");
-	g_free (xml);
 
 	g_object_unref (event);
 }
@@ -570,7 +564,6 @@ test_acls_insert_rule (gconstpointer service)
 	GDataCategory *category;
 	GDataLink *_link;
 	GList *categories;
-	gchar *xml;
 	gint64 edited;
 	GError *error = NULL;
 
@@ -587,8 +580,7 @@ test_acls_insert_rule (gconstpointer service)
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
 
 	/* Check the XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
-	g_assert_cmpstr (xml, ==,
+	gdata_test_assert_xml (rule,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' "
 			 	"xmlns:gd='http://schemas.google.com/g/2005' "
@@ -598,7 +590,6 @@ test_acls_insert_rule (gconstpointer service)
 				"<gAcl:role value='http://schemas.google.com/gCal/2005#editor'/>"
 				"<gAcl:scope type='user' value='darcy@gmail.com'/>"
 			 "</entry>");
-	g_free (xml);
 
 	/* Insert the rule */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
