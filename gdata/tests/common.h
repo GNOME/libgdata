@@ -40,6 +40,15 @@ guint gdata_test_batch_operation_insertion (GDataBatchOperation *operation, GDat
 guint gdata_test_batch_operation_update (GDataBatchOperation *operation, GDataEntry *entry, GDataEntry **updated_entry, GError **error);
 guint gdata_test_batch_operation_deletion (GDataBatchOperation *operation, GDataEntry *entry, GError **error);
 
+gboolean gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboolean print_error);
+
+/* Convenience macro */
+#define gdata_test_assert_xml(Parsable, XML) \
+	G_STMT_START { \
+		gboolean _test_success = gdata_test_compare_xml (GDATA_PARSABLE (Parsable), XML, TRUE); \
+		g_assert (_test_success == TRUE); \
+	} G_STMT_END
+
 G_END_DECLS
 
 #endif /* !GDATA_TEST_COMMON_H */

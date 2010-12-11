@@ -24,6 +24,176 @@
 #include "common.h"
 
 static void
+test_xml_comparison (void)
+{
+	GDataAccessRule *rule;
+
+	/* Since we've written the XML comparison function used across all the test suites, it's necessary to test that it actually works before we
+	 * blindly assert that its results are correct. */
+	rule = gdata_access_rule_new ("an-id");
+	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE);
+	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "foo@example.com");
+
+	/* Check a valid comparison */
+	gdata_test_assert_xml (rule,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>");
+
+	/* Check a valid comparison with namespaces swapped */
+	gdata_test_assert_xml (rule,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007' "
+		       "xmlns:gd='http://schemas.google.com/g/2005'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>");
+
+	/* Check a valid comparison with elements swapped */
+	gdata_test_assert_xml (rule,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<id>an-id</id>"
+			"<title type='text'>none</title>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>");
+
+	/* Missing namespace (still valid XML, just not what's expected) */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	/* Extra namespace */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007' "
+		       "xmlns:foo='http://foo.com/'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	/* Missing element */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	/* Extra element */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<foo>bar</foo>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	/* Incorrect namespace on element */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<gAcl:title type='text'>none</gAcl:title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	/* Mis-valued content */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>an-other-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	/* Missing attribute */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	/* Extra attribute */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none' other-value='foo'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	/* Mis-valued attribute */
+	g_assert (gdata_test_compare_xml (GDATA_PARSABLE (rule),
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='other'/>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", FALSE) == FALSE);
+
+	g_object_unref (rule);
+}
+
+static void
 test_entry_get_xml (void)
 {
 	gint64 updated, published, updated2, published2, updated3, published3;
@@ -3253,6 +3423,8 @@ int
 main (int argc, char *argv[])
 {
 	gdata_test_init (argc, argv);
+
+	g_test_add_func ("/tests/xml_comparison", test_xml_comparison);
 
 	g_test_add_func ("/service/network_error", test_service_network_error);
 	g_test_add_func ("/service/locale", test_service_locale);
