@@ -459,7 +459,7 @@ compare_xml_nodes (xmlNode *node1, xmlNode *node2)
 		/* Compare various simple properties */
 		if (attr1->type != attr2->type ||
 		    xmlStrcmp (attr1->name, attr2->name) != 0 ||
-		    attr1->ns != attr2->ns ||
+		    compare_xml_namespaces (attr1->ns, attr2->ns) == FALSE ||
 		    attr1->atype != attr2->atype) {
 			return FALSE;
 		}
