@@ -121,9 +121,11 @@
 		<chapter>
 			<title>Google PicasaWeb API</title>
 			<xi:include href="xml/gdata-picasaweb-service.xml"/>
+			<xi:include href="xml/gdata-picasaweb-feed.xml"/>
 			<xi:include href="xml/gdata-picasaweb-query.xml"/>
 			<xi:include href="xml/gdata-picasaweb-album.xml"/>
 			<xi:include href="xml/gdata-picasaweb-file.xml"/>
+			<xi:include href="xml/gdata-picasaweb-user.xml"/>
 		</chapter>
 	</part>
 
