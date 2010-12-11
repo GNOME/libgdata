@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-10-17 14:49+0000\n"
-"PO-Revision-Date: 2010-10-17 19:46+0100\n"
+"POT-Creation-Date: 2010-12-11 18:32+0000\n"
+"PO-Revision-Date: 2010-12-11 20:01+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -111,161 +111,159 @@ msgstr "Zahtevan predmet (%s) ni prisoten."
 msgid "A singleton element (%s) was duplicated."
 msgstr "Enkratni predmet (%s) je podvojen."
 
-#: ../gdata/gdata-service.c:393
-#: ../gdata/services/youtube/gdata-youtube-service.c:234
+#: ../gdata/gdata-service.c:400
 msgid "The server returned a malformed response."
 msgstr "Strežnik je vrnil izmaličen odgovor."
 
-#: ../gdata/gdata-service.c:434
+#: ../gdata/gdata-service.c:443
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Ni se mogoče povezati s strežnikom storitev."
 
-#: ../gdata/gdata-service.c:439
+#: ../gdata/gdata-service.c:448
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Ni se mogoče povezati s posredniškim strežnikom."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:445
+#: ../gdata/gdata-service.c:454
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "Neveljavna zahteva naslova URI, glave ali pa neobičajen parameter ni podprt: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:451
+#: ../gdata/gdata-service.c:460
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Zahtevana je overitev: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:456
+#: ../gdata/gdata-service.c:465
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Zahtevanega vira ni mogoče najti: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:462
+#: ../gdata/gdata-service.c:471
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Vnos je bil spremenjen odkar je bil prejet: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:476
+#: ../gdata/gdata-service.c:485
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Koda napake %u med overitvijo: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:482
+#: ../gdata/gdata-service.c:491
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Koda napake %u med poizvedovanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:488
+#: ../gdata/gdata-service.c:497
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Koda napake %u med vstavljanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:494
+#: ../gdata/gdata-service.c:503
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Koda napake %u med posodabljanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:500
+#: ../gdata/gdata-service.c:509
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Koda napake %u med brisanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:506
+#: ../gdata/gdata-service.c:515
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Koda napake %u med prejemanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:512
+#: ../gdata/gdata-service.c:521
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Koda napake %u med pošiljanjem vnosa: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:518
+#: ../gdata/gdata-service.c:527
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Koda napake %u med izvajanjem paketnih ukazov: %s"
 
-#: ../gdata/gdata-service.c:643
+#: ../gdata/gdata-service.c:653
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Vnosno polje vprašanja CAPTCHA mora biti izpolnjeno pred prijavo."
 
-#: ../gdata/gdata-service.c:667
+#: ../gdata/gdata-service.c:677
 msgid "Your username or password were incorrect."
 msgstr "Uporabniško ime ali geslo ni vpisano pravilno."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:686
+#: ../gdata/gdata-service.c:696
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Vaš elektronski naslov ni overjen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:691
+#: ../gdata/gdata-service.c:701
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "Za nadaljevanje se morate strinjati z določili in s pogoji storitve. (%s)"
+msgstr "Za nadaljevanje je treba potrditi strinjanje z določili in s pogoji storitve. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:697
+#: ../gdata/gdata-service.c:707
 #, c-format
 msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
 msgstr "Račun je premaknjen. S prijavo preko povezave, je mogoče pridobiti novo uporabniško ime in geslo. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:702
+#: ../gdata/gdata-service.c:712
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Račun je bil izbrisan. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:707
+#: ../gdata/gdata-service.c:717
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Račun je onemogočen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:712
+#: ../gdata/gdata-service.c:722
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Dostop računa do storitve je onemogočen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:717
+#: ../gdata/gdata-service.c:727
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Storitev trenutno ni na voljo. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:988
+#: ../gdata/gdata-service.c:1044
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neveljaven preusmeritveni naslov URI: %s"
 
-#: ../gdata/gdata-service.c:1581
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:606
-#: ../gdata/services/youtube/gdata-youtube-service.c:692
+#: ../gdata/gdata-service.c:1614
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:485
+#: ../gdata/services/youtube/gdata-youtube-service.c:633
 msgid "The entry has already been inserted."
 msgstr "Vnos je že vstavljen."
 
@@ -283,27 +281,29 @@ msgstr "Vsebina predmeta %s (\"%s\") ni v osmiškem RGB zapisu."
 #: ../gdata/services/calendar/gdata-calendar-service.c:111
 #: ../gdata/services/calendar/gdata-calendar-service.c:156
 msgid "You must be authenticated to query all calendars."
-msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje vseh koledarjev."
+msgstr "Za poizvedovanje vseh koledarjev  imajo dovoljenje le pooblaščene osebe."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:198
 #: ../gdata/services/calendar/gdata-calendar-service.c:243
-#: ../gdata/services/calendar/gdata-calendar-service.c:285
+#: ../gdata/services/calendar/gdata-calendar-service.c:284
+#: ../gdata/services/calendar/gdata-calendar-service.c:340
 msgid "You must be authenticated to query your own calendars."
-msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje koledarjev."
+msgstr "Za poizvedovanje koledarjev imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:294
+#: ../gdata/services/calendar/gdata-calendar-service.c:293
+#: ../gdata/services/calendar/gdata-calendar-service.c:349
 msgid "The calendar did not have a content URI."
 msgstr "Koledar nima naslova URI vsebine."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:116
 #: ../gdata/services/contacts/gdata-contacts-service.c:162
 msgid "You must be authenticated to query contacts."
-msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje stikov."
+msgstr "Za poizvedovanje stikov imajo dovoljenje le pooblaščene osebe."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:271
 #: ../gdata/services/contacts/gdata-contacts-service.c:317
 msgid "You must be authenticated to query contact groups."
-msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje skupin stikov."
+msgstr "Za poizvedovanje skupin stikov imajo dovoljenje le pooblaščene osebe."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:353
 msgid "The group has already been inserted."
@@ -311,85 +311,85 @@ msgstr "Skupina je že vstavljena."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:359
 msgid "You must be authenticated to insert a group."
-msgstr "Le pooblaščene osebe imajo dovoljenje za vstavljanje skupine."
+msgstr "Za vstavljanje skupin imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-document.c:132
+#: ../gdata/services/documents/gdata-documents-document.c:112
 msgid "You must be authenticated to download documents."
-msgstr "Le pooblaščene osebe imajo dovoljenje za prejemanje dokumentov."
+msgstr "Za prejemanje dokumentov imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-service.c:200
-#: ../gdata/services/documents/gdata-documents-service.c:251
+#: ../gdata/services/documents/gdata-documents-service.c:198
+#: ../gdata/services/documents/gdata-documents-service.c:249
 msgid "You must be authenticated to query documents."
-msgstr "Le pooblaščene osebe imajo dovoljenje za poizvedovanje dokumentov."
+msgstr "Za poizvedovanje dokumentov imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-service.c:343
-msgid "The supplied document had an invalid content type."
-msgstr "Ponujeni dokument ima neveljavno vrsto vsebine."
-
-#: ../gdata/services/documents/gdata-documents-service.c:433
+#: ../gdata/services/documents/gdata-documents-service.c:349
 msgid "You must be authenticated to upload documents."
-msgstr "Le pooblaščene osebe imajo dovoljenje za pošiljanje dokumentov."
+msgstr "Za pošiljanje dokumentov imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-service.c:439
+#: ../gdata/services/documents/gdata-documents-service.c:355
 msgid "The document has already been uploaded."
 msgstr "Dokument je že poslan."
 
-#: ../gdata/services/documents/gdata-documents-service.c:490
+#: ../gdata/services/documents/gdata-documents-service.c:403
 msgid "You must be authenticated to update documents."
-msgstr "Le pooblaščene osebe imajo dovoljenje za posodabljanje dokumentov."
+msgstr "Za posodabljanje dokumentov imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-service.c:538
-#: ../gdata/services/documents/gdata-documents-service.c:612
-msgid "You must be authenticated to move documents."
-msgstr "Le pooblaščene osebe imajo dovoljenje za premikanje dokumentov."
+#: ../gdata/services/documents/gdata-documents-service.c:466
+#, c-format
+msgid "The content type of the supplied document ('%s') could not be recognized."
+msgstr "Vsebinske vrste dokumenta ('%s') ni mogoče določiti."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:186
+#: ../gdata/services/documents/gdata-documents-service.c:514
+#: ../gdata/services/documents/gdata-documents-service.c:698
+msgid "You must be authenticated to move documents and folders."
+msgstr "Za premikanje dokumentov in map imajo dovoljenje le pooblaščene osebe."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "Vpisati morate uporabniško ime ali pa morate biti pooblaščeni za poizvedovanje med stiki."
+msgstr "Vpisati je treba uporabniško ime ali pa je treba biti pooblaščen za poizvedovanje med stiki."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:240
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:295
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
 msgid "Query parameter not allowed for albums."
 msgstr "Parametri poizvedbe niso dovoljeni za albume."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:247
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:303
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Vpisati morate uporabniško ime ali pa morate biti pooblaščeni za poizvedovanje med vsemi albumi."
+msgstr "Vpisati je treba uporabniško ime ali pa je treba biti pooblaščen za poizvedovanje med vsemi albumi."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:350
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
 msgid "The album did not have a feed link."
 msgstr "Album nima povezave vira."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:491
 msgid "You must be authenticated to upload a file."
-msgstr "Le pooblaščene osebe imajo dovoljenje za pošiljanje datotek."
+msgstr "Za pošiljanje datotek imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:672
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:568
 msgid "The album has already been inserted."
 msgstr "Album je že vstavljen."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:678
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:574
 msgid "You must be authenticated to insert an album."
-msgstr "Le pooblaščene osebe imajo dovoljenje za vstavljanje albuma."
+msgstr "Za vstavljanje albuma imajo dovoljenje le pooblaščene osebe.."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:333
+#: ../gdata/services/youtube/gdata-youtube-service.c:278
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Storitev trenutno ni na voljo."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:338
+#: ../gdata/services/youtube/gdata-youtube-service.c:283
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "Le pooblaščene osebe imajo dovoljenje za to dejanje."
+msgstr "Za to dejanje imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:343
+#: ../gdata/services/youtube/gdata-youtube-service.c:288
 #, c-format
 msgid "You have made too many API calls recently. Please wait a few minutes and try again."
 msgstr "Preveč je API klicev. Počakajte nekaj minut in poskusite znova."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:346
+#: ../gdata/services/youtube/gdata-youtube-service.c:291
 #, c-format
 msgid "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr "Prekoračili ste dovoljeni delež. Izbrišite nekaj vnosov in poskusite znova."
@@ -397,26 +397,28 @@ msgstr "Prekoračili ste dovoljeni delež. Izbrišite nekaj vnosov in poskusite 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
 #. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:353
-#: ../gdata/services/youtube/gdata-youtube-service.c:359
+#: ../gdata/services/youtube/gdata-youtube-service.c:298
+#: ../gdata/services/youtube/gdata-youtube-service.c:304
 #, c-format
 msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Neznana napaka kode \"%s\" v domeni \"%s\" prejeti z mesta \"%s\"."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:377
+#: ../gdata/services/youtube/gdata-youtube-service.c:322
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "Prejeta neznana in nerazčlenljiva napaka."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:599
-#: ../gdata/services/youtube/gdata-youtube-service.c:646
+#: ../gdata/services/youtube/gdata-youtube-service.c:544
+#: ../gdata/services/youtube/gdata-youtube-service.c:591
 msgid "The video did not have a related videos <link>."
 msgstr "Posnetek nima <povezave> do sorodnih posnetkov."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:698
+#: ../gdata/services/youtube/gdata-youtube-service.c:639
 msgid "You must be authenticated to upload a video."
-msgstr "Le pooblaščene osebe imajo dovoljenje za pošiljanje video posnetkov."
+msgstr "Za pošiljanje video posnetkov imajo dovoljenje le pooblaščene osebe.."
 
+#~ msgid "The supplied document had an invalid content type."
+#~ msgstr "Ponujeni dokument ima neveljavno vrsto vsebine."
 #~ msgid "The owner's rule may not be deleted."
 #~ msgstr "Pravil lastnika ni mogoče izbrisati."
 
