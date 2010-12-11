@@ -26,6 +26,36 @@
  * #GDataService represents a GData API service, typically a website using the GData API, such as YouTube or Google Calendar. One
  * #GDataService instance is required to issue queries to the service, handle insertions, updates and deletions, and generally
  * communicate with the online service.
+ *
+ * <example>
+ * 	<title>Authenticating Asynchronously</title>
+ * 	<programlisting>
+ *	GDataSomeService *service;
+ *
+ *	/<!-- -->* Create a service object and authenticate with the service's server asynchronously *<!-- -->/
+ *	service = gdata_some_service_new ("companyName-applicationName-versionID");
+ *	gdata_service_authenticate_async (GDATA_SERVICE (service), username, password, cancellable, (GAsyncReadyCallback) authenticate_cb, user_data);
+ *
+ *	static void
+ *	authenticate_cb (GDataSomeService *service, GAsyncResult *async_result, gpointer user_data)
+ *	{
+ *		GError *error = NULL;
+ *
+ *		if (gdata_service_authenticate_finish (GDATA_SERVICE (service), async_result, &error) == FALSE) {
+ *			/<!-- -->* Notify the user of all errors except cancellation errors *<!-- -->/
+ *			if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+ *				g_error ("Authentication failed: %s", error->message);
+ *			g_error_free (error);
+ *			return;
+ *		}
+ *
+ *		/<!-- -->* (The client is now authenticated. It can now proceed to execute queries on the service object which require the user
+ *		 * to be authenticated. *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (service);
+ *	</programlisting>
+ * </example>
  **/
 
 #include <config.h>
