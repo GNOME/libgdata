@@ -79,9 +79,9 @@ struct _GDataQueryPrivate {
 	GTimeVal updated_max;
 	GTimeVal published_min;
 	GTimeVal published_max;
-	guint start_index;
+	gint start_index;
 	gboolean is_strict;
-	guint max_results;
+	gint max_results;
 	gchar *entry_id;
 
 	gchar *next_uri;
