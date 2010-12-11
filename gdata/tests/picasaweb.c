@@ -33,7 +33,7 @@
 
 #define PW_USERNAME "libgdata.picasaweb@gmail.com"
 /* the following two properties will change if a new album is added */
-#define NUM_ALBUMS 3
+#define NUM_ALBUMS 5
 #define TEST_ALBUM_INDEX 2
 
 static void
