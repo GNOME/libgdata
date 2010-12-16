@@ -163,8 +163,10 @@ static void
 pop_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 {
 	/* Signal the pop_data function that it should stop blocking and cancel */
+	g_static_mutex_lock (&(data->buffer->mutex));
 	*(data->cancelled) = TRUE;
 	g_cond_signal (data->buffer->cond);
+	g_static_mutex_unlock (&(data->buffer->mutex));
 }
 
 /**
@@ -198,6 +200,8 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 {
 	GDataBufferChunk *chunk;
 	gsize return_length = 0, length_remaining;
+	gulong cancelled_signal = 0;
+	gboolean cancelled = FALSE;
 
 	g_return_val_if_fail (self != NULL, 0);
 	g_return_val_if_fail (data != NULL, 0);
@@ -212,6 +216,18 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	 *  - length_requested is a fraction of multiple chunks: remove whole chunks, return length_requested, set head_read_offset
 	 *    for remaining fraction */
 
+	/* Set up a handler so we can stop if we're cancelled. This must be done before we lock @self->mutex, or deadlock could occur if the
+	 * cancellable has already been cancelled — g_cancellable_connect() would call pop_cancelled_cb() directly, and it would attempt to lock
+	 * @self->mutex again. */
+	if (cancellable != NULL) {
+		CancelledData cancelled_data;
+
+		cancelled_data.buffer = self;
+		cancelled_data.cancelled = &cancelled;
+
+		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) pop_cancelled_cb, &cancelled_data, NULL);
+	}
+
 	g_static_mutex_lock (&(self->mutex));
 
 	/* Set reached_eof */
@@ -222,22 +238,11 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 		/* Return data up to the EOF */
 		return_length = self->total_length;
 	} else if (length_requested > self->total_length) {
-		gulong cancelled_signal = 0;
-		gboolean cancelled = FALSE;
-
-		/* Set up a handler so we can stop if we're cancelled */
-		if (cancellable != NULL) {
-			CancelledData cancelled_data;
-
-			cancelled_data.buffer = self;
-			cancelled_data.cancelled = &cancelled;
-
-			cancelled_signal = g_cancellable_connect (cancellable, (GCallback) pop_cancelled_cb, &cancelled_data, NULL);
-		}
-
 		/* Block until more data is available */
 		while (length_requested > self->total_length) {
-			g_cond_wait (self->cond, g_static_mutex_get_mutex (&(self->mutex)));
+			/* If we've already been cancelled, don't wait on @self->cond, since it'll never be signalled again. */
+			if (cancelled == FALSE)
+				g_cond_wait (self->cond, g_static_mutex_get_mutex (&(self->mutex)));
 
 			/* If the g_cond_wait() returned because it was signalled from the GCancellable callback (rather than from
 			 * data being pushed into the buffer), stop blocking for data and make do with what we have so far. */
@@ -248,19 +253,13 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 				return_length = length_requested;
 			}
 		}
-
-		/* Disconnect from the cancelled signal */
-		if (cancellable != NULL)
-			g_cancellable_disconnect (cancellable, cancelled_signal);
 	} else {
 		return_length = length_requested;
 	}
 
 	/* Return if we haven't got any data to pop (i.e. if we were cancelled before even one chunk arrived) */
-	if (return_length == 0) {
-		g_static_mutex_unlock (&(self->mutex));
-		return 0;
-	}
+	if (return_length == 0)
+		goto done;
 
 	/* Otherwise, get on with things */
 	length_remaining = return_length;
@@ -300,7 +299,13 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 		self->tail = NULL;
 	self->total_length -= return_length;
 
+done:
 	g_static_mutex_unlock (&(self->mutex));
+
+	/* Disconnect from the cancelled signal. Note that this has to be done without @self->mutex held, or deadlock can occur.
+	 * (g_cancellable_disconnect() waits for any in-progress signal handler call to finish, which can't happen until the mutex is released.) */
+	if (cancelled_signal != 0)
+		g_cancellable_disconnect (cancellable, cancelled_signal);
 
 	return return_length;
 }
