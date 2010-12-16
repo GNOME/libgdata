@@ -232,7 +232,7 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 
 	/* Set reached_eof */
 	if (reached_eof != NULL)
-		*reached_eof = self->reached_eof;
+		*reached_eof = self->reached_eof && length_requested >= self->total_length;
 
 	if (self->reached_eof == TRUE && length_requested > self->total_length) {
 		/* Return data up to the EOF */
