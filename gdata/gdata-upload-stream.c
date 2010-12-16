@@ -415,7 +415,7 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 		priv->response_error = NULL;
 		g_static_mutex_unlock (&(priv->response_mutex));
 
-		if (cancellable != NULL)
+		if (cancelled_signal != 0)
 			g_cancellable_disconnect (cancellable, cancelled_signal);
 
 		return -1;
@@ -423,7 +423,9 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 	g_static_mutex_unlock (&(priv->response_mutex));
 
 	/* Set write_finished so we know if the write operation has finished before we reach write_cond */
+	g_static_mutex_lock (&(priv->write_mutex));
 	priv->write_finished = FALSE;
+	g_static_mutex_unlock (&(priv->write_mutex));
 
 	/* Handle the more common case of the network thread already having been created first */
 	if (priv->network_thread != NULL) {
@@ -456,7 +458,7 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 	/* Create the thread and let the writing commence! */
 	create_network_thread (GDATA_UPLOAD_STREAM (stream), error);
 	if (priv->network_thread == NULL) {
-		if (cancellable != NULL)
+		if (cancelled_signal != 0)
 			g_cancellable_disconnect (cancellable, cancelled_signal);
 		return -1;
 	}
@@ -470,10 +472,6 @@ write:
 
 	g_static_mutex_lock (&(priv->response_mutex));
 
-	/* Disconnect from the cancelled signal so we can't receive any more cancel events before we handle errors */
-	if (cancellable != NULL)
-		g_cancellable_disconnect (cancellable, cancelled_signal);
-
 	/* Check for an error and return if necessary */
 	if (priv->response_error != NULL) {
 		g_propagate_error (error, priv->response_error);
@@ -482,6 +480,11 @@ write:
 	}
 
 	g_static_mutex_unlock (&(priv->response_mutex));
+
+	/* Disconnect from the cancelled signal. Note that we have to do this with @response_mutex not held, as g_cancellable_disconnect() blocks
+	 * until any outstanding cancellation callbacks return, and they will block on @response_mutex. */
+	if (cancelled_signal != 0)
+		g_cancellable_disconnect (cancellable, cancelled_signal);
 
 	return length_written;
 }
