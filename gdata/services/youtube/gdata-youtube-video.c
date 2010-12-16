@@ -78,6 +78,7 @@
 #include "gdata-types.h"
 #include "gdata-youtube-control.h"
 #include "gdata-youtube-enums.h"
+#include "georss/gdata-georss-where.h"
 
 static GObject *gdata_youtube_video_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_youtube_video_dispose (GObject *object);
@@ -107,6 +108,9 @@ struct _GDataYouTubeVideoPrivate {
 	/* media:group */
 	GDataMediaGroup *media_group; /* is actually a GDataYouTubeGroup */
 
+	/* georss:where */
+	GDataGeoRSSWhere *georss_where;
+
 	/* Other properties */
 	GDataYouTubeControl *youtube_control;
 	gint64 recorded;
@@ -132,7 +136,9 @@ enum {
 	PROP_IS_DRAFT,
 	PROP_STATE,
 	PROP_RECORDED,
-	PROP_ASPECT_RATIO
+	PROP_ASPECT_RATIO,
+	PROP_LATITUDE,
+	PROP_LONGITUDE
 };
 
 G_DEFINE_TYPE (GDataYouTubeVideo, gdata_youtube_video, GDATA_TYPE_ENTRY)
@@ -445,6 +451,40 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	                                                      "Aspect Ratio", "The aspect ratio of the video.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataYouTubeVideo:latitude:
+	 *
+	 * The location as a latitude coordinate associated with this video. Valid latitudes range from <code class="literal">-90.0</code>
+	 * to <code class="literal">90.0</code> inclusive.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#GeoRSS_elements_reference">
+	 * GeoRSS specification</ulink>.
+	 *
+	 * Since: 0.8.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LATITUDE,
+	                                 g_param_spec_double ("latitude",
+	                                                      "Latitude", "The location as a latitude coordinate associated with this video.",
+	                                                      -90.0, 90.0, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataYouTubeVideo:longitude:
+	 *
+	 * The location as a longitude coordinate associated with this video. Valid longitudes range from <code class="literal">-180.0</code>
+	 * to <code class="literal">180.0</code> inclusive.
+	 *
+	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#GeoRSS_elements_reference">
+	 * GeoRSS specification</ulink>.
+	 *
+	 * Since: 0.8.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
+	                                 g_param_spec_double ("longitude",
+	                                                      "Longitude", "The location as a longitude coordinate associated with this video.",
+	                                                      -180.0, 180.0, 0.0,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -461,6 +501,7 @@ gdata_youtube_video_init (GDataYouTubeVideo *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoPrivate);
 	self->priv->recorded = -1;
 	self->priv->access_controls = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
+	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 
 	/* The video's title is duplicated between atom:title and media:group/media:title, so listen for change notifications on atom:title
 	 * and propagate them to media:group/media:title accordingly. Since the media group isn't publically accessible, we don't need to
@@ -494,6 +535,10 @@ gdata_youtube_video_dispose (GObject *object)
 	if (priv->media_group != NULL)
 		g_object_unref (priv->media_group);
 	priv->media_group = NULL;
+
+	if (priv->georss_where != NULL)
+		g_object_unref (priv->georss_where);
+	priv->georss_where = NULL;
 
 	if (priv->youtube_control != NULL)
 		g_object_unref (priv->youtube_control);
@@ -581,6 +626,12 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_ASPECT_RATIO:
 			g_value_set_string (value, gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (priv->media_group)));
 			break;
+		case PROP_LATITUDE:
+			g_value_set_double (value, gdata_georss_where_get_latitude (priv->georss_where));
+			break;
+		case PROP_LONGITUDE:
+			g_value_set_double (value, gdata_georss_where_get_longitude (priv->georss_where));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -618,6 +669,14 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 		case PROP_ASPECT_RATIO:
 			gdata_youtube_video_set_aspect_ratio (self, g_value_get_string (value));
 			break;
+		case PROP_LATITUDE:
+			gdata_youtube_video_set_coordinates (self, g_value_get_double (value),
+			                                     gdata_georss_where_get_longitude (self->priv->georss_where));
+			break;
+		case PROP_LONGITUDE:
+			gdata_youtube_video_set_coordinates (self, gdata_georss_where_get_latitude (self->priv->georss_where),
+			                                     g_value_get_double (value));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -638,6 +697,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	           gdata_parser_object_from_element (node, "control", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_CONTROL,
 	                                             &(self->priv->youtube_control), &success, error) == TRUE) {
+		return success;
+	} else if (gdata_parser_is_namespace (node, "http://www.georss.org/georss") == TRUE &&
+	           gdata_parser_object_from_element (node, "where", P_REQUIRED, GDATA_TYPE_GEORSS_WHERE,
+	                                             &(self->priv->georss_where), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
 		if (gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
@@ -818,9 +881,11 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* app:control */
 	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->youtube_control), xml_string, FALSE);
 
-	/* TODO:
-	 * - georss:where
-	 */
+	/* georss:where */
+	if (priv->georss_where != NULL && gdata_georss_where_get_latitude (priv->georss_where) != G_MAXDOUBLE &&
+	    gdata_georss_where_get_longitude (priv->georss_where) != G_MAXDOUBLE) {
+		_gdata_parsable_get_xml (GDATA_PARSABLE (priv->georss_where), xml_string, FALSE);
+	}
 }
 
 static void
@@ -833,9 +898,10 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 
 	g_hash_table_insert (namespaces, (gchar*) "yt", (gchar*) "http://gdata.youtube.com/schemas/2007");
 
-	/* Add the media:group and app:control namespaces */
+	/* Add the media:group, app:control and georss:where namespaces */
 	GDATA_PARSABLE_GET_CLASS (priv->media_group)->get_namespaces (GDATA_PARSABLE (priv->media_group), namespaces);
 	GDATA_PARSABLE_GET_CLASS (priv->youtube_control)->get_namespaces (GDATA_PARSABLE (priv->youtube_control), namespaces);
+	GDATA_PARSABLE_GET_CLASS (priv->georss_where)->get_namespaces (GDATA_PARSABLE (priv->georss_where), namespaces);
 }
 
 static gchar *
@@ -1462,4 +1528,50 @@ gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, const gchar *aspe
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 	gdata_youtube_group_set_aspect_ratio (GDATA_YOUTUBE_GROUP (self->priv->media_group), aspect_ratio);
 	g_object_notify (G_OBJECT (self), "aspect-ratio");
+}
+
+/**
+ * gdata_youtube_video_get_coordinates:
+ * @self: a #GDataYouTubeVideo
+ * @latitude: (out caller-allocates) (allow-none): return location for the latitude, or %NULL
+ * @longitude: (out caller-allocates) (allow-none): return location for the longitude, or %NULL
+ *
+ * Gets the #GDataYouTubeVideo:latitude and #GDataYouTubeVideo:longitude properties, setting the out parameters to them. If either latitude or
+ * longitude is %NULL, that parameter will not be set. If the coordinates are unset, @latitude and @longitude will be set to %G_MAXDOUBLE.
+ *
+ * Since: 0.8.0
+ **/
+void
+gdata_youtube_video_get_coordinates (GDataYouTubeVideo *self, gdouble *latitude, gdouble *longitude)
+{
+	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
+
+	if (latitude != NULL)
+		*latitude = gdata_georss_where_get_latitude (self->priv->georss_where);
+	if (longitude != NULL)
+		*longitude = gdata_georss_where_get_longitude (self->priv->georss_where);
+}
+
+/**
+ * gdata_youtube_video_set_coordinates:
+ * @self: a #GDataYouTubeVideo
+ * @latitude: the video's new latitude coordinate, or %G_MAXDOUBLE
+ * @longitude: the video's new longitude coordinate, or %G_MAXDOUBLE
+ *
+ * Sets the #GDataYouTubeVideo:latitude and #GDataYouTubeVideo:longitude properties to @latitude and @longitude respectively.
+ *
+ * Since: 0.8.0
+ **/
+void
+gdata_youtube_video_set_coordinates (GDataYouTubeVideo *self, gdouble latitude, gdouble longitude)
+{
+	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
+
+	gdata_georss_where_set_latitude (self->priv->georss_where, latitude);
+	gdata_georss_where_set_longitude (self->priv->georss_where, longitude);
+
+	g_object_freeze_notify (G_OBJECT (self));
+	g_object_notify (G_OBJECT (self), "latitude");
+	g_object_notify (G_OBJECT (self), "longitude");
+	g_object_thaw_notify (G_OBJECT (self));
 }

@@ -542,6 +542,8 @@ test_parsing_yt_recorded (void)
 				"xmlns:gd='http://schemas.google.com/g/2005' "
 				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
 				"xmlns:app='http://www.w3.org/2007/app' "
+				"xmlns:georss='http://www.georss.org/georss' "
+				"xmlns:gml='http://www.opengis.net/gml' "
 				"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
 				"<title type='text'>Judas Priest - Painkiller</title>"
 				"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
@@ -628,6 +630,8 @@ test_parsing_yt_access_control (void)
 				"xmlns:gd='http://schemas.google.com/g/2005' "
 				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
 				"xmlns:app='http://www.w3.org/2007/app' "
+				"xmlns:georss='http://www.georss.org/georss' "
+				"xmlns:gml='http://www.opengis.net/gml' "
 				"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
 				"<title type='text'>Judas Priest - Painkiller</title>"
 				"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
@@ -764,6 +768,133 @@ test_parsing_comments_feed_link (void)
 }*/
 
 static void
+test_parsing_georss_where (void)
+{
+	GDataYouTubeVideo *video;
+	gdouble latitude, longitude;
+	GError *error = NULL;
+
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:media='http://search.yahoo.com/mrss/' "
+		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:georss='http://www.georss.org/georss' "
+		       "xmlns:gml='http://www.opengis.net/gml'>"
+			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
+			"<published>2006-05-16T14:06:37.000Z</published>"
+			"<updated>2009-03-23T12:46:58.000Z</updated>"
+			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
+			"<title>Some video somewhere</title>"
+			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.youtube.com/watch?v=JAagedeKdcQ'/>"
+			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo'/>"
+			"<author>"
+				"<name>Foo</name>"
+				"<uri>http://gdata.youtube.com/feeds/api/users/Foo</uri>"
+			"</author>"
+			"<media:group>"
+				"<media:title type='plain'>Some video somewhere</media:title>"
+				"<media:credit role='uploader' scheme='urn:youtube'>Foo</media:credit>"
+				"<media:category label='Music' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Music</media:category>"
+			"</media:group>"
+			"<georss:where>"
+				"<gml:Point>"
+					"<gml:pos>41.14556884765625 -8.63525390625</gml:pos>"
+				"</gml:Point>"
+			"</georss:where>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
+	g_clear_error (&error);
+
+	/* Test the coordinates */
+	gdata_youtube_video_get_coordinates (video, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, 41.14556884765625);
+	g_assert_cmpfloat (longitude, ==, -8.63525390625);
+
+	/* Update them and see if they're set OK and the XML's written out OK */
+	gdata_youtube_video_set_coordinates (video, 5.5, 6.5);
+
+	g_object_get (G_OBJECT (video),
+	              "latitude", &latitude,
+	              "longitude", &longitude,
+	              NULL);
+
+	g_assert_cmpfloat (latitude, ==, 5.5);
+	g_assert_cmpfloat (longitude, ==, 6.5);
+
+	/* Check the XML */
+	gdata_test_assert_xml (video,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:app='http://www.w3.org/2007/app' "
+		       "xmlns:media='http://search.yahoo.com/mrss/' "
+		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:georss='http://www.georss.org/georss' "
+		       "xmlns:gml='http://www.opengis.net/gml'>"
+			"<title type='text'>Some video somewhere</title>"
+			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
+			"<updated>2009-03-23T12:46:58Z</updated>"
+			"<published>2006-05-16T14:06:37Z</published>"
+			"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<link href='http://www.youtube.com/watch?v=JAagedeKdcQ' rel='http://www.iana.org/assignments/relation/alternate' type='text/html'/>"
+			"<link href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
+			"<author>"
+				"<name>Foo</name>"
+				"<uri>http://gdata.youtube.com/feeds/api/users/Foo</uri>"
+			"</author>"
+			"<media:group>"
+				"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
+				"<media:title type='plain'>Some video somewhere</media:title>"
+			"</media:group>"
+			"<app:control><app:draft>no</app:draft></app:control>"
+			"<georss:where>"
+				"<gml:Point>"
+					"<gml:pos>5.5 6.5</gml:pos>"
+				"</gml:Point>"
+			"</georss:where>"
+		"</entry>");
+
+	/* Unset the properties and ensure they're removed from the XML */
+	gdata_youtube_video_set_coordinates (video, G_MAXDOUBLE, G_MAXDOUBLE);
+
+	gdata_youtube_video_get_coordinates (video, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, G_MAXDOUBLE);
+	g_assert_cmpfloat (longitude, ==, G_MAXDOUBLE);
+
+	/* Check the XML */
+	gdata_test_assert_xml (video,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:app='http://www.w3.org/2007/app' "
+		       "xmlns:media='http://search.yahoo.com/mrss/' "
+		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:georss='http://www.georss.org/georss' "
+		       "xmlns:gml='http://www.opengis.net/gml'>"
+			"<title type='text'>Some video somewhere</title>"
+			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
+			"<updated>2009-03-23T12:46:58Z</updated>"
+			"<published>2006-05-16T14:06:37Z</published>"
+			"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<link href='http://www.youtube.com/watch?v=JAagedeKdcQ' rel='http://www.iana.org/assignments/relation/alternate' type='text/html'/>"
+			"<link href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
+			"<author>"
+				"<name>Foo</name>"
+				"<uri>http://gdata.youtube.com/feeds/api/users/Foo</uri>"
+			"</author>"
+			"<media:group>"
+				"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
+				"<media:title type='plain'>Some video somewhere</media:title>"
+			"</media:group>"
+			"<app:control><app:draft>no</app:draft></app:control>"
+		"</entry>");
+
+	g_object_unref (video);
+}
+
+static void
 test_video_escaping (void)
 {
 	GDataYouTubeVideo *video;
@@ -781,7 +912,8 @@ test_video_escaping (void)
 	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
 	                        "xmlns:gd='http://schemas.google.com/g/2005' "
-	                        "xmlns:yt='http://gdata.youtube.com/schemas/2007' xmlns:app='http://www.w3.org/2007/app'>"
+	                        "xmlns:yt='http://gdata.youtube.com/schemas/2007' xmlns:app='http://www.w3.org/2007/app' "
+	                        "xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml'>"
 				"<title type='text'></title>"
 				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
 				"<media:group>"
@@ -1264,6 +1396,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/youtube/parsing/yt:accessControl", test_parsing_yt_access_control);
 	g_test_add_func ("/youtube/parsing/yt:category", test_parsing_yt_category);
 	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
+	g_test_add_func ("/youtube/parsing/georss:where", test_parsing_georss_where);
 
 	g_test_add_func ("/youtube/video/escaping", test_video_escaping);
 

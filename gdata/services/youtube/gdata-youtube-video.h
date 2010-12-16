@@ -179,6 +179,8 @@ gint64 gdata_youtube_video_get_recorded (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, gint64 recorded);
 const gchar *gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self) G_GNUC_PURE;
 void gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, const gchar *aspect_ratio);
+void gdata_youtube_video_get_coordinates (GDataYouTubeVideo *self, gdouble *latitude, gdouble *longitude);
+void gdata_youtube_video_set_coordinates (GDataYouTubeVideo *self, gdouble latitude, gdouble longitude);
 
 gchar *gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
