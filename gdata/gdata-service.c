@@ -997,8 +997,8 @@ message_request_queued_cb (SoupSession *session, SoupMessage *message, MessageDa
  * has started, we wait until the message has been queued by the session, then cancel the network activity and return as soon as possible.
  *
  * If cancellation has been handled, @error is guaranteed to be set to %G_IO_ERROR_CANCELLED. Otherwise, @error is guaranteed to be unset. */
-static void
-_gdata_service_actually_send_message (GDataService *self, SoupMessage *message, GCancellable *cancellable, GError **error)
+void
+_gdata_service_actually_send_message (SoupSession *session, SoupMessage *message, GCancellable *cancellable, GError **error)
 {
 	MessageData *data;
 	gulong cancel_signal = 0, request_queued_signal = 0;
@@ -1007,11 +1007,11 @@ _gdata_service_actually_send_message (GDataService *self, SoupMessage *message, 
 	if (cancellable != NULL) {
 		data = g_slice_new (MessageData);
 		g_static_mutex_init (&(data->mutex));
-		data->session = g_object_ref (self->priv->session);
+		data->session = g_object_ref (session);
 		data->message = g_object_ref (message);
 
 		cancel_signal = g_cancellable_connect (cancellable, (GCallback) message_cancel_cb, data, (GDestroyNotify) message_data_free);
-		request_queued_signal = g_signal_connect (self->priv->session, "request-queued", (GCallback) message_request_queued_cb, data);
+		request_queued_signal = g_signal_connect (session, "request-queued", (GCallback) message_request_queued_cb, data);
 
 		/* We lock this mutex until the message has been queued by the session (i.e. it's unlocked in the request-queued callback), and require
 		 * the mutex to be held to cancel the message. Consequently, if the message is cancelled (in another thread) any time between this lock
@@ -1025,11 +1025,11 @@ _gdata_service_actually_send_message (GDataService *self, SoupMessage *message, 
 	/* Only send the message if it hasn't already been cancelled. There is no race condition here for the above reasons: if the cancellable has
 	 * been cancelled, it's because it was cancelled before we called g_cancellable_connect(). */
 	if (cancellable == NULL || g_cancellable_is_cancelled (cancellable) == FALSE)
-		soup_session_send_message (self->priv->session, message);
+		soup_session_send_message (session, message);
 
 	/* Clean up the cancellation code */
 	if (cancellable != NULL)
-		g_signal_handler_disconnect (self->priv->session, request_queued_signal);
+		g_signal_handler_disconnect (session, request_queued_signal);
 
 	if (cancel_signal != 0)
 		g_cancellable_disconnect (cancellable, cancel_signal);
@@ -1052,7 +1052,7 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancella
 	 */
 
 	soup_message_set_flags (message, SOUP_MESSAGE_NO_REDIRECT);
-	_gdata_service_actually_send_message (self, message, cancellable, error);
+	_gdata_service_actually_send_message (self->priv->session, message, cancellable, error);
 	soup_message_set_flags (message, 0);
 
 	/* Handle redirections specially so we don't lose our custom headers when making the second request */
@@ -1077,7 +1077,7 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancella
 		soup_uri_free (new_uri);
 
 		/* Send the message again */
-		_gdata_service_actually_send_message (self, message, cancellable, error);
+		_gdata_service_actually_send_message (self->priv->session, message, cancellable, error);
 	}
 
 	return message->status_code;
