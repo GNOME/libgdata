@@ -69,7 +69,9 @@ struct _GDataDownloadStreamPrivate {
 	SoupMessage *message;
 	GDataBuffer *buffer;
 	goffset offset; /* seek offset */
+
 	GThread *network_thread;
+	GCancellable *cancellable;
 
 	gboolean finished;
 	GCond *finished_cond;
@@ -227,8 +229,12 @@ gdata_download_stream_dispose (GObject *object)
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (object)->priv;
 
-	if (priv->network_thread != NULL)
-		g_thread_join (priv->network_thread);
+	/* Block on closing the stream */
+	g_input_stream_close (G_INPUT_STREAM (object), NULL, NULL);
+
+	if (priv->cancellable != NULL)
+		g_object_unref (priv->cancellable);
+	priv->cancellable = NULL;
 
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
@@ -354,9 +360,9 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 
 	g_static_mutex_lock (&(priv->finished_mutex));
 
-	/* If the operation has started but hasn't already finished, cancel the SoupMessage and wait for it to finish before returning */
+	/* If the operation has started but hasn't already finished, cancel the network thread and wait for it to finish before returning */
 	if (priv->network_thread != NULL && priv->finished == FALSE) {
-		soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
+		g_cancellable_cancel (priv->cancellable);
 		g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->finished_mutex)));
 	}
 
@@ -399,12 +405,9 @@ gdata_download_stream_seek (GSeekable *seekable, goffset offset, GSeekType type,
 		return FALSE;
 
 	/* Cancel the current network thread if it exists */
-	if (priv->network_thread != NULL) {
-		soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
-		soup_message_io_cleanup (priv->message);
-
-		g_thread_join (priv->network_thread);
-	}
+	if (gdata_download_stream_close (G_INPUT_STREAM (seekable), NULL, error) == FALSE)
+		goto done;
+	soup_message_io_cleanup (priv->message);
 
 	switch (type) {
 		case G_SEEK_CUR:
@@ -427,6 +430,7 @@ gdata_download_stream_seek (GSeekable *seekable, goffset offset, GSeekType type,
 	/* Launch a new thread with the modified message */
 	create_network_thread (GDATA_DOWNLOAD_STREAM (seekable), error);
 
+done:
 	g_input_stream_clear_pending (G_INPUT_STREAM (seekable));
 
 	if (priv->network_thread == NULL)
@@ -497,12 +501,16 @@ finished_cb (SoupMessage *message, GDataDownloadStream *self)
 static gpointer
 download_thread (GDataDownloadStream *self)
 {
-	/* Connect to the got-headers signal so we can notify clients of the values of content-type and content-length */
-	g_signal_connect (self->priv->message, "got-headers", (GCallback) got_headers_cb, self);
-	g_signal_connect (self->priv->message, "got-chunk", (GCallback) got_chunk_cb, self);
-	g_signal_connect (self->priv->message, "finished", (GCallback) finished_cb, self);
+	GDataDownloadStreamPrivate *priv = self->priv;
 
-	soup_session_send_message (self->priv->session, self->priv->message);
+	g_assert (priv->cancellable != NULL);
+
+	/* Connect to the got-headers signal so we can notify clients of the values of content-type and content-length */
+	g_signal_connect (priv->message, "got-headers", (GCallback) got_headers_cb, self);
+	g_signal_connect (priv->message, "got-chunk", (GCallback) got_chunk_cb, self);
+	g_signal_connect (priv->message, "finished", (GCallback) finished_cb, self);
+
+	_gdata_service_actually_send_message (priv->session, priv->message, priv->cancellable, NULL);
 
 	return NULL;
 }
@@ -510,7 +518,20 @@ download_thread (GDataDownloadStream *self)
 static void
 create_network_thread (GDataDownloadStream *self, GError **error)
 {
-	self->priv->network_thread = g_thread_create ((GThreadFunc) download_thread, self, TRUE, error);
+	GDataDownloadStreamPrivate *priv = self->priv;
+	GError *child_error = NULL;
+
+	g_assert (priv->cancellable == NULL);
+	g_assert (priv->network_thread == NULL);
+
+	priv->cancellable = g_cancellable_new ();
+	priv->network_thread = g_thread_create ((GThreadFunc) download_thread, self, TRUE, &child_error);
+
+	if (child_error != NULL) {
+		g_object_unref (priv->cancellable);
+		priv->cancellable = NULL;
+		g_propagate_error (error, child_error);
+	}
 }
 
 /**
