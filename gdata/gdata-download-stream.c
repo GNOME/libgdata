@@ -227,6 +227,9 @@ gdata_download_stream_dispose (GObject *object)
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (object)->priv;
 
+	if (priv->network_thread != NULL)
+		g_thread_join (priv->network_thread);
+
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
 	priv->service = NULL;
@@ -243,8 +246,6 @@ static void
 gdata_download_stream_finalize (GObject *object)
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (object)->priv;
-
-	g_thread_join (priv->network_thread);
 
 	g_cond_free (priv->finished_cond);
 	g_static_mutex_free (&(priv->finished_mutex));
@@ -397,8 +398,13 @@ gdata_download_stream_seek (GSeekable *seekable, goffset offset, GSeekType type,
 	if (g_input_stream_set_pending (G_INPUT_STREAM (seekable), error) == FALSE)
 		return FALSE;
 
-	soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
-	soup_message_io_cleanup (priv->message);
+	/* Cancel the current network thread if it exists */
+	if (priv->network_thread != NULL) {
+		soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
+		soup_message_io_cleanup (priv->message);
+
+		g_thread_join (priv->network_thread);
+	}
 
 	switch (type) {
 		case G_SEEK_CUR:
@@ -418,13 +424,13 @@ gdata_download_stream_seek (GSeekable *seekable, goffset offset, GSeekType type,
 	soup_message_headers_append (priv->message->request_headers, "Range", range);
 	g_free (range);
 
-	/* Wait for the thread to quit, then launch another one with the modified message */
-	g_thread_join (priv->network_thread);
+	/* Launch a new thread with the modified message */
 	create_network_thread (GDATA_DOWNLOAD_STREAM (seekable), error);
-	if (priv->network_thread == NULL)
-		return FALSE;
 
 	g_input_stream_clear_pending (G_INPUT_STREAM (seekable));
+
+	if (priv->network_thread == NULL)
+		return FALSE;
 
 	return TRUE;
 }
