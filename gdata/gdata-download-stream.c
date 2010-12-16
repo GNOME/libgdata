@@ -68,9 +68,12 @@ struct _GDataDownloadStreamPrivate {
 	SoupSession *session;
 	SoupMessage *message;
 	GDataBuffer *buffer;
-	gboolean finished;
 	goffset offset; /* seek offset */
 	GThread *network_thread;
+
+	gboolean finished;
+	GCond *finished_cond;
+	GStaticMutex finished_mutex; /* mutex for ->finished, protected by ->finished_cond */
 
 	/* Cached data from the SoupMessage */
 	gchar *content_type;
@@ -184,6 +187,11 @@ gdata_download_stream_init (GDataDownloadStream *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOWNLOAD_STREAM, GDataDownloadStreamPrivate);
 	self->priv->content_length = -1;
 	self->priv->buffer = gdata_buffer_new ();
+
+	self->priv->finished = FALSE;
+	self->priv->finished_cond = g_cond_new ();
+	g_static_mutex_init (&(self->priv->finished_mutex));
+
 	g_static_mutex_init (&(self->priv->content_mutex));
 }
 
@@ -237,6 +245,10 @@ gdata_download_stream_finalize (GObject *object)
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (object)->priv;
 
 	g_thread_join (priv->network_thread);
+
+	g_cond_free (priv->finished_cond);
+	g_static_mutex_free (&(priv->finished_mutex));
+
 	g_static_mutex_free (&(priv->content_mutex));
 	gdata_buffer_free (priv->buffer);
 	g_free (priv->download_uri);
@@ -339,8 +351,15 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (stream)->priv;
 
-	if (priv->finished == FALSE)
+	g_static_mutex_lock (&(priv->finished_mutex));
+
+	/* If the operation has started but hasn't already finished, cancel the SoupMessage and wait for it to finish before returning */
+	if (priv->network_thread != NULL && priv->finished == FALSE) {
 		soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
+		g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->finished_mutex)));
+	}
+
+	g_static_mutex_unlock (&(priv->finished_mutex));
 
 	return TRUE;
 }
@@ -457,10 +476,16 @@ got_chunk_cb (SoupMessage *message, SoupBuffer *buffer, GDataDownloadStream *sel
 static void
 finished_cb (SoupMessage *message, GDataDownloadStream *self)
 {
-	self->priv->finished = TRUE;
+	GDataDownloadStreamPrivate *priv = self->priv;
 
 	/* Mark the buffer as having reached EOF */
-	gdata_buffer_push_data (self->priv->buffer, NULL, 0);
+	gdata_buffer_push_data (priv->buffer, NULL, 0);
+
+	/* Mark the download as finished */
+	g_static_mutex_lock (&(priv->finished_mutex));
+	priv->finished = TRUE;
+	g_cond_signal (priv->finished_cond);
+	g_static_mutex_unlock (&(priv->finished_mutex));
 }
 
 static gpointer
