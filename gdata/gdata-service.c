@@ -1259,7 +1259,10 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
  * Queries the service's @feed_uri feed to build a #GDataFeed.
  *
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
- * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
+ * If the operation was cancelled before or during network activity, the error %G_IO_ERROR_CANCELLED will be returned. Cancellation has no effect
+ * after network activity has finished, however, and the query will return successfully (or return an error sent by the server) if it is first
+ * cancelled after network activity has finished. See the <link linkend="cancellable-support">overview of cancellation</link> for
+ * more details.
  *
  * A %GDATA_SERVICE_ERROR_PROTOCOL_ERROR will be returned if the server indicates there is a problem with the query, but subclasses may override
  * this and return their own errors. See their documentation for more details.

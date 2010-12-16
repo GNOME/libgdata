@@ -144,7 +144,7 @@
 				itself, rather than their application.</para>
 		</refsect2>
 
-		<refsect2>
+		<refsect2 id="cancellable-support">
 			<title>Cancellable Support</title>
 			<para>As libgdata is a network library, it has to be able to deal with operations which take a long (and indeterminate) amount
 				of time due to network latencies. As well as providing asynchronous operation support, every such operation in libgdata
