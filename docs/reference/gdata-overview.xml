@@ -166,6 +166,14 @@
 			<para>This may be useful in situations where the user is cancelling an operation due to it taking too long; the application
 				using libgdata may want to make use of the result of the operation, even if it has previously tried to cancel the
 				operation after network activity finished.</para>
+			<para>The behaviour of cancellation in libgdata can be represented as follows:
+				<figure>
+					<mediaobject>
+						<imageobject><imagedata fileref="cancellation.png" format="PNG" align="center"/></imageobject>
+					</mediaobject>
+					<textobject><phrase>The behaviour of cancellation in libgdata.</phrase></textobject>
+				</figure>
+			</para>
 		</refsect2>
 	</refsect1>
 </refentry>
