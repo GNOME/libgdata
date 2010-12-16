@@ -812,16 +812,10 @@ authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 	gboolean success;
 	AuthenticateAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
-	/* Check to see if it's been cancelled already */
-	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		authenticate_async_data_free (data);
-		return;
-	}
-
 	/* Authenticate and return */
 	success = authenticate (service, data->username, data->password, NULL, NULL, cancellable, &error);
+	g_simple_async_result_set_op_res_gboolean (result, success);
+
 	if (success == FALSE) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -829,7 +823,6 @@ authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 
 	/* Update the authentication details held by the service (protected by a mutex) */
 	set_authentication_details (service, data->username, data->password, success);
-	g_simple_async_result_set_op_res_gboolean (result, success);
 }
 
 /**
