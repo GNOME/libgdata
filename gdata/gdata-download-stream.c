@@ -82,6 +82,7 @@ struct _GDataDownloadStreamPrivate {
 
 	GThread *network_thread;
 	GCancellable *cancellable;
+	GCancellable *network_cancellable; /* see the comment in gdata_download_stream_constructor() about the relationship between these two */
 
 	gboolean finished;
 	GCond *finished_cond;
@@ -229,6 +230,12 @@ gdata_download_stream_init (GDataDownloadStream *self)
 	g_static_mutex_init (&(self->priv->content_mutex));
 }
 
+static void
+cancellable_cancel_cb (GCancellable *cancellable, GCancellable *network_cancellable)
+{
+	g_cancellable_cancel (network_cancellable);
+}
+
 static GObject *
 gdata_download_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
 {
@@ -240,9 +247,16 @@ gdata_download_stream_constructor (GType type, guint n_construct_params, GObject
 	object = G_OBJECT_CLASS (gdata_download_stream_parent_class)->constructor (type, n_construct_params, construct_params);
 	priv = GDATA_DOWNLOAD_STREAM (object)->priv;
 
+	/* Create a #GCancellable for the network. Cancellation of ->cancellable is chained to this one, so that if ->cancellable is cancelled,
+	 * ->network_cancellable is also cancelled. However, if ->network_cancellable is cancelled, the cancellation doesn't propagate back upwards
+	 * to ->cancellable. This allows closing the stream part-way through a download to be implemented by cancelling ->network_cancellable, without
+	 * causing ->cancellable to be unnecessarily cancelled (which would be a nasty side-effect of closing the stream early otherwise). */
+	priv->network_cancellable = g_cancellable_new ();
+
 	/* Create a #GCancellable for the entire download operation if one wasn't specified for #GDataDownloadStream:cancellable during construction */
 	if (priv->cancellable == NULL)
 		priv->cancellable = g_cancellable_new ();
+	g_cancellable_connect (priv->cancellable, (GCallback) cancellable_cancel_cb, priv->network_cancellable, NULL);
 
 	/* Build the message */
 	priv->message = soup_message_new (SOUP_METHOD_GET, priv->download_uri);
@@ -271,6 +285,10 @@ gdata_download_stream_dispose (GObject *object)
 	if (priv->cancellable != NULL)
 		g_object_unref (priv->cancellable);
 	priv->cancellable = NULL;
+
+	if (priv->network_cancellable != NULL)
+		g_object_unref (priv->network_cancellable);
+	priv->network_cancellable = NULL;
 
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
@@ -396,22 +414,94 @@ gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCa
 	return length_read;
 }
 
+typedef struct {
+	GDataDownloadStream *download_stream;
+	gboolean *cancelled;
+} CancelledData;
+
+static void
+close_cancelled_cb (GCancellable *cancellable, CancelledData *data)
+{
+	GDataDownloadStreamPrivate *priv = data->download_stream->priv;
+
+	g_static_mutex_lock (&(priv->finished_mutex));
+	*(data->cancelled) = TRUE;
+	g_cond_signal (priv->finished_cond);
+	g_static_mutex_unlock (&(priv->finished_mutex));
+}
+
+/* If g_input_stream_close() has already been called once on this stream, g_input_stream_is_closed() is set to %TRUE, and all future calls to
+ * g_input_stream_close() will immediately return, i.e. gdata_download_stream_close() is guaranteed to only ever run once (even if the first call was
+ * cancelled or returned an error).
+ *
+ * If the network thread hasn't yet been started (i.e. gdata_download_stream_read() hasn't been called at all yet), %TRUE will be returned immediately.
+ *
+ * If the global cancellable, ->cancellable, or @cancellable are cancelled before the call to gdata_download_stream_close(),
+ * gdata_download_stream_close() should return immediately with %G_IO_ERROR_CANCELLED. If they're cancelled during the call,
+ * gdata_download_stream_close() should stop waiting for any outstanding network activity to finish and return %G_IO_ERROR_CANCELLED (though the
+ * operation to finish off network activity and close the stream will still continue).
+ *
+ * If the call to gdata_download_stream_close() is not cancelled by any #GCancellable, it will cancel the ongoing network activity, and wait until
+ * the operation has been cleaned up before returning success. */
 static gboolean
 gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GError **error)
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (stream)->priv;
+	gulong cancelled_signal = 0, global_cancelled_signal = 0;
+	gboolean cancelled = FALSE;
+	gboolean success = TRUE;
+	CancelledData data;
+	GError *child_error = NULL;
+
+	/* If the operation was never started, return successfully immediately */
+	if (priv->network_thread == NULL)
+		return TRUE;
+
+	/* Allow cancellation */
+	data.download_stream = GDATA_DOWNLOAD_STREAM (stream);
+	data.cancelled = &cancelled;
+
+	global_cancelled_signal = g_cancellable_connect (priv->cancellable, (GCallback) close_cancelled_cb, &data, NULL);
+
+	if (cancellable != NULL)
+		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) close_cancelled_cb, &data, NULL);
 
 	g_static_mutex_lock (&(priv->finished_mutex));
 
 	/* If the operation has started but hasn't already finished, cancel the network thread and wait for it to finish before returning */
-	if (priv->network_thread != NULL && priv->finished == FALSE) {
-		g_cancellable_cancel (priv->cancellable);
-		g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->finished_mutex)));
+	if (priv->finished == FALSE) {
+		g_cancellable_cancel (priv->network_cancellable);
+
+		/* Allow the close() call to be cancelled by cancelling either @cancellable or ->cancellable. Note that this won't prevent the stream
+		 * from continuing to be closed in the background — it'll just stop waiting on the operation to finish being cancelled. */
+		if (cancelled == FALSE)
+			g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->finished_mutex)));
+	}
+
+	/* Error handling */
+	if (priv->finished == FALSE && cancelled == TRUE) {
+		/* Cancelled? If ->finished is TRUE, the network activity finished before the gdata_download_stream_close() operation was cancelled,
+		 * so we don't need to return an error. */
+		g_assert (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == TRUE ||
+		          g_cancellable_set_error_if_cancelled (priv->cancellable, &child_error) == TRUE);
+		success = FALSE;
 	}
 
 	g_static_mutex_unlock (&(priv->finished_mutex));
 
-	return TRUE;
+	/* Disconnect from the signal handlers. Note that we have to do this without @finished_mutex held, as g_cancellable_disconnect() blocks
+	 * until any outstanding cancellation callbacks return, and they will block on @finished_mutex. */
+	if (cancelled_signal != 0)
+		g_cancellable_disconnect (cancellable, cancelled_signal);
+	if (global_cancelled_signal != 0)
+		g_cancellable_disconnect (priv->cancellable, global_cancelled_signal);
+
+	g_assert ((success == TRUE && child_error == NULL) || (success == FALSE && child_error != NULL));
+
+	if (child_error != NULL)
+		g_propagate_error (error, child_error);
+
+	return success;
 }
 
 static goffset
@@ -546,14 +636,14 @@ download_thread (GDataDownloadStream *self)
 {
 	GDataDownloadStreamPrivate *priv = self->priv;
 
-	g_assert (priv->cancellable != NULL);
+	g_assert (priv->network_cancellable != NULL);
 
 	/* Connect to the got-headers signal so we can notify clients of the values of content-type and content-length */
 	g_signal_connect (priv->message, "got-headers", (GCallback) got_headers_cb, self);
 	g_signal_connect (priv->message, "got-chunk", (GCallback) got_chunk_cb, self);
 	g_signal_connect (priv->message, "finished", (GCallback) finished_cb, self);
 
-	_gdata_service_actually_send_message (priv->session, priv->message, priv->cancellable, NULL);
+	_gdata_service_actually_send_message (priv->session, priv->message, priv->network_cancellable, NULL);
 
 	return NULL;
 }
