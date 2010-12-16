@@ -571,7 +571,6 @@ set_authentication_details (GDataService *self, const gchar *username, const gch
 	g_static_mutex_lock (&(priv->authentication_mutex));
 
 	g_object_freeze_notify (service);
-	priv->authenticated = authenticated;
 
 	if (authenticated == TRUE) {
 		/* Update several properties the service holds */
@@ -590,7 +589,11 @@ set_authentication_details (GDataService *self, const gchar *username, const gch
 		g_object_notify (service, "password");
 	}
 
-	g_object_notify (service, "authenticated");
+	if (priv->authenticated != authenticated) {
+		priv->authenticated = authenticated;
+		g_object_notify (service, "authenticated");
+	}
+
 	g_object_thaw_notify (service);
 
 	g_static_mutex_unlock (&(priv->authentication_mutex));
