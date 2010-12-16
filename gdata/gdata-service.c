@@ -988,7 +988,8 @@ message_cancel_cb (GCancellable *cancellable, MessageData *data)
 static void
 message_request_queued_cb (SoupSession *session, SoupMessage *message, MessageData *data)
 {
-	g_static_mutex_unlock (&(data->mutex));
+	if (message == data->message)
+		g_static_mutex_unlock (&(data->mutex));
 }
 
 /* Synchronously send @message via @service, handling asynchronous cancellation as best we can. If @cancellable has been cancelled before we start
