@@ -558,7 +558,7 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 	return success;
 }
 
-/* In the network thread context, called after a chunk has been written.
+/* In the network thread context, called just after writing the headers, or just after writing a chunk, to write the next chunk to libsoup.
  * We don't let it return until we've finished pushing all the data into the buffer.
  * This is due to http://bugzilla.gnome.org/show_bug.cgi?id=522147, which means that
  * we can't use soup_session_(un)?pause_message() with a SoupSessionSync.
@@ -567,27 +567,21 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
  * Obviously this means that our memory usage will increase, and we'll eventually end
  * up storing the entire request body in memory, but that's unavoidable at this point. */
 static void
-wrote_chunk_cb (SoupMessage *message, GDataUploadStream *self)
+write_next_chunk (GDataUploadStream *self, SoupMessage *message)
 {
 	#define CHUNK_SIZE 8192 /* 8KiB */
 
 	GDataUploadStreamPrivate *priv = self->priv;
 	gsize length;
 	gboolean reached_eof = FALSE;
-	guint8 buffer[CHUNK_SIZE];
+	guint8 next_buffer[CHUNK_SIZE];
 
-	/* Signal the main thread that the chunk has been written */
-	g_static_mutex_lock (&(priv->write_mutex));
-	priv->write_finished = TRUE;
-	g_cond_signal (priv->write_cond);
-	g_static_mutex_unlock (&(priv->write_mutex));
-
-	/* We've written one chunk; now let's append another to the body so it can join in the fun.
+	/* Append the next chunk to the message body so it can join in the fun.
 	 * Note that this call isn't blocking, and can return less than the CHUNK_SIZE. This is because
 	 * we could deadlock if we block on getting CHUNK_SIZE bytes at the end of the stream. write() could
 	 * easily be called with fewer bytes, but has no way to notify us that we've reached the end of the
 	 * stream, so we'd happily block on receiving more bytes which weren't forthcoming. */
-	length = gdata_buffer_pop_data_limited (priv->buffer, buffer, CHUNK_SIZE, &reached_eof);
+	length = gdata_buffer_pop_data_limited (priv->buffer, next_buffer, CHUNK_SIZE, &reached_eof);
 	if (reached_eof == TRUE) {
 		/* We've reached the end of the stream, so append the footer (if appropriate) and stop */
 		g_static_mutex_lock (&(priv->response_mutex));
@@ -599,10 +593,39 @@ wrote_chunk_cb (SoupMessage *message, GDataUploadStream *self)
 
 		soup_message_body_complete (priv->message->request_body);
 	} else {
-		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_COPY, buffer, length);
+		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_COPY, next_buffer, length);
 	}
 
 	soup_session_unpause_message (priv->session, priv->message);
+}
+
+static void
+wrote_headers_cb (SoupMessage *message, GDataUploadStream *self)
+{
+	GDataUploadStreamPrivate *priv = self->priv;
+
+	/* Signal the main thread that the headers have been written */
+	g_static_mutex_lock (&(priv->write_mutex));
+	g_cond_signal (priv->write_cond);
+	g_static_mutex_unlock (&(priv->write_mutex));
+
+	/* Send the first chunk to libsoup */
+	write_next_chunk (self, message);
+}
+
+static void
+wrote_body_data_cb (SoupMessage *message, SoupBuffer *buffer, GDataUploadStream *self)
+{
+	GDataUploadStreamPrivate *priv = self->priv;
+
+	/* Signal the main thread that the chunk has been written */
+	g_static_mutex_lock (&(priv->write_mutex));
+	priv->write_finished = TRUE;
+	g_cond_signal (priv->write_cond);
+	g_static_mutex_unlock (&(priv->write_mutex));
+
+	/* Send the next chunk to libsoup */
+	write_next_chunk (self, message);
 }
 
 static gpointer
@@ -612,8 +635,8 @@ upload_thread (GDataUploadStream *self)
 	guint status;
 
 	/* Connect to the wrote-* signals so we can prepare the next chunk for transmission */
-	g_signal_connect (priv->message, "wrote-headers", (GCallback) wrote_chunk_cb, self);
-	g_signal_connect (priv->message, "wrote-chunk", (GCallback) wrote_chunk_cb, self);
+	g_signal_connect (priv->message, "wrote-headers", (GCallback) wrote_headers_cb, self);
+	g_signal_connect (priv->message, "wrote-body-data", (GCallback) wrote_body_data_cb, self);
 
 	status = soup_session_send_message (priv->session, priv->message);
 
