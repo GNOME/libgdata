@@ -300,20 +300,24 @@ gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCa
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (stream)->priv;
 	gssize length_read;
+	GError *child_error = NULL;
 
 	/* We're lazy about starting the network operation so we don't end up with a massive buffer */
 	if (priv->network_thread == NULL) {
 		create_network_thread (GDATA_DOWNLOAD_STREAM (stream), error);
 		if (priv->network_thread == NULL)
-			return 0;
+			return -1;
 	}
 
-	/* Read the data off the buffer */
+	/* Read the data off the buffer. If the operation is cancelled, it'll probably still return a positive number of bytes read — if it does, we
+	 * can return without error. Iff it returns a non-positive number of bytes should we return an error. */
 	length_read = (gssize) gdata_buffer_pop_data (priv->buffer, buffer, count, NULL, cancellable);
 
-	if (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE) {
+	if (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == TRUE && length_read < 1) {
 		/* Handle cancellation */
-		return length_read;
+		g_propagate_error (error, child_error);
+
+		return -1;
 	} else if (SOUP_STATUS_IS_SUCCESSFUL (priv->message->status_code) == FALSE) {
 		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (priv->service);
 
@@ -321,8 +325,11 @@ gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCa
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (priv->service, GDATA_OPERATION_DOWNLOAD, priv->message->status_code, priv->message->reason_phrase,
 		                             NULL, 0, error);
-		return 0;
+
+		return -1;
 	}
+
+	g_clear_error (&child_error);
 
 	return length_read;
 }
