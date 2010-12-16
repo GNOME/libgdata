@@ -274,6 +274,10 @@ gdata_upload_stream_dispose (GObject *object)
 	if (g_output_stream_is_closed (G_OUTPUT_STREAM (object)) == FALSE)
 		g_output_stream_close (G_OUTPUT_STREAM (object), NULL, NULL);
 
+	/* Wait for any outstanding operations to finish */
+	if (priv->network_thread != NULL)
+		g_thread_join (priv->network_thread);
+
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
 	priv->service = NULL;
@@ -295,8 +299,6 @@ gdata_upload_stream_finalize (GObject *object)
 {
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (object)->priv;
 
-	if (priv->network_thread != NULL)
-		g_thread_join (priv->network_thread);
 	g_static_mutex_free (&(priv->response_mutex));
 	g_cond_free (priv->finished_cond);
 	g_cond_free (priv->write_cond);
