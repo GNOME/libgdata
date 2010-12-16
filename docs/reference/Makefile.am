@@ -112,7 +112,11 @@ GITIGNOREFILES = tmpl/
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
-EXTRA_DIST += version.xml.in structure.dia
+EXTRA_DIST += \
+	version.xml.in \
+	structure.dia \
+	data-flow.dia \
+	$(NULL)
 
 if ENABLE_GTK_DOC
 TESTS_ENVIRONMENT = cd $(srcdir) && 
