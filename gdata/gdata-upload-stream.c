@@ -490,41 +490,20 @@ write:
 }
 
 typedef struct {
-	GCancellable *cancellable;
 	GDataUploadStream *upload_stream;
-} CloseData;
+	gboolean *cancelled;
+} CancelledData;
 
-static gboolean
-close_cancelled_idle_cb (CloseData *data)
+static void
+close_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 {
 	GDataUploadStreamPrivate *priv = data->upload_stream->priv;
 
-	/* Set the error and signal that the close operation has finished */
+	/* Signal the gdata_upload_stream_close() function that it should stop blocking and cancel */
 	g_static_mutex_lock (&(priv->response_mutex));
-	g_cancellable_set_error_if_cancelled (data->cancellable, &(priv->response_error));
+	*(data->cancelled) = TRUE;
 	g_cond_signal (priv->finished_cond);
 	g_static_mutex_unlock (&(priv->response_mutex));
-
-	g_object_unref (data->upload_stream);
-	g_object_unref (data->cancellable);
-	g_slice_free (CloseData, data);
-
-	return FALSE;
-}
-
-static void
-close_cancelled_cb (GCancellable *cancellable, GDataUploadStream *self)
-{
-	CloseData *data = g_slice_new (CloseData);
-	data->cancellable = g_object_ref (cancellable);
-	data->upload_stream = g_object_ref (self);
-
-	/* We have to do the cancellation in an idle function so that it's guaranteed not to run in the same thread as gdata_upload_stream_close()
-	 * (assuming that gdata_upload_stream_close() isn't being run in the main thread, which would only be the case if the program was doing
-	 * synchronous I/O in the main thread — in which case they deserve the deadlock they'll get). This is necessary so that the call to
-	 * g_cancellable_connect() doesn't deadlock by attempting to re-acquire the response_mutex which is already held by
-	 * gdata_upload_stream_close(). */
-	g_idle_add ((GSourceFunc) close_cancelled_idle_cb, data);
 }
 
 /* It's guaranteed that we set the response_status and are done with *all* network activity before this returns.
@@ -534,31 +513,36 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 {
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (stream)->priv;
 	gboolean success = TRUE;
+	gboolean cancelled = FALSE;
+	gulong cancelled_signal = 0;
+
+	/* Allow cancellation */
+	if (cancellable != NULL) {
+		CancelledData data;
+
+		data.upload_stream = GDATA_UPLOAD_STREAM (stream);
+		data.cancelled = &cancelled;
+
+		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) close_cancelled_cb, &data, NULL);
+	}
 
 	g_static_mutex_lock (&(priv->response_mutex));
 
+	/* If an operation is still in progress, and no response has been received yet… */
 	if (priv->response_status == 0) {
-		gulong cancelled_signal = 0;
-
 		/* Mark the buffer as having reached EOF, and the write operation will close in its own time */
 		gdata_buffer_push_data (priv->buffer, NULL, 0);
 
-		/* Allow cancellation */
-		if (cancellable != NULL)
-			cancelled_signal = g_cancellable_connect (cancellable, (GCallback) close_cancelled_cb, GDATA_UPLOAD_STREAM (stream), NULL);
-
 		/* Wait for the signal that we've finished */
-		if (g_cancellable_is_cancelled (cancellable))
-			priv->response_status = SOUP_STATUS_CANCELLED;
-		else if (priv->network_thread != NULL)
+		if (priv->network_thread != NULL && cancelled == FALSE)
 			g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->response_mutex)));
 
-		/* Disconnect from the signal handler so we can't receive any more cancellation events before we handle errors*/
-		if (cancellable != NULL)
-			g_cancellable_disconnect (cancellable, cancelled_signal);
+		/* Set a suitable response status and error iff we were cancelled */
+		if (cancelled == TRUE && g_cancellable_set_error_if_cancelled (cancellable, &(priv->response_error)) == TRUE)
+			priv->response_status = SOUP_STATUS_CANCELLED;
 	}
 
-	/* Report any errors which have been set by the network thread */
+	/* Report any errors which have been set by the network thread or due to cancellation */
 	if (priv->response_error != NULL) {
 		g_propagate_error (error, priv->response_error);
 		priv->response_error = NULL;
@@ -566,6 +550,11 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 	}
 
 	g_static_mutex_unlock (&(priv->response_mutex));
+
+	/* Disconnect from the signal handler. Note that we have to do this with @response_mutex not held, as g_cancellable_disconnect() blocks
+	 * until any outstanding cancellation callbacks return, and they will block on @response_mutex. */
+	if (cancelled_signal != 0)
+		g_cancellable_disconnect (cancellable, cancelled_signal);
 
 	return success;
 }
