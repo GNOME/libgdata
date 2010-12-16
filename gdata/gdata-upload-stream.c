@@ -371,24 +371,24 @@ gdata_upload_stream_set_property (GObject *object, guint property_id, const GVal
 	}
 }
 
+typedef struct {
+	GDataUploadStream *upload_stream;
+	gboolean *cancelled;
+} CancelledData;
+
 static void
-write_cancelled_cb (GCancellable *cancellable, GDataUploadStream *self)
+write_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 {
-	GDataUploadStreamPrivate *priv = self->priv;
+	GDataUploadStreamPrivate *priv = data->upload_stream->priv;
 
 	/* Tell libsoup to cancel the upload */
 	soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
 
 	/* Set the error and signal that the write operation has finished */
 	g_static_mutex_lock (&(priv->write_mutex));
-
-	g_static_mutex_lock (&(priv->response_mutex));
-	g_cancellable_set_error_if_cancelled (cancellable, &(priv->response_error));
-	g_static_mutex_unlock (&(priv->response_mutex));
-
+	*(data->cancelled) = TRUE;
 	priv->write_finished = TRUE;
 	g_cond_signal (priv->write_cond);
-
 	g_static_mutex_unlock (&(priv->write_mutex));
 }
 
@@ -398,28 +398,34 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (stream)->priv;
 	gsize length_written = count;
 	gulong cancelled_signal = 0;
+	gboolean cancelled = FALSE;
 
 	/* Listen for cancellation events */
-	if (cancellable != NULL)
-		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) write_cancelled_cb, GDATA_UPLOAD_STREAM (stream), NULL);
+	if (cancellable != NULL) {
+		CancelledData data;
+
+		data.upload_stream = GDATA_UPLOAD_STREAM (stream);
+		data.cancelled = &cancelled;
+
+		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) write_cancelled_cb, &data, NULL);
+	}
 
 	/* Check for an error and return if necessary */
-	g_static_mutex_lock (&(priv->response_mutex));
-	if (priv->response_error != NULL) {
-		g_propagate_error (error, priv->response_error);
-		priv->response_error = NULL;
-		g_static_mutex_unlock (&(priv->response_mutex));
+	g_static_mutex_lock (&(priv->write_mutex));
+
+	if (cancelled == TRUE) {
+		g_assert (cancellable != NULL && g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE);
+		g_static_mutex_unlock (&(priv->write_mutex));
 
 		if (cancelled_signal != 0)
 			g_cancellable_disconnect (cancellable, cancelled_signal);
 
 		return -1;
 	}
-	g_static_mutex_unlock (&(priv->response_mutex));
 
 	/* Set write_finished so we know if the write operation has finished before we reach write_cond */
-	g_static_mutex_lock (&(priv->write_mutex));
 	priv->write_finished = FALSE;
+
 	g_static_mutex_unlock (&(priv->write_mutex));
 
 	/* Handle the more common case of the network thread already having been created first */
@@ -461,7 +467,7 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 write:
 	/* Wait for it to be written */
 	g_static_mutex_lock (&(priv->write_mutex));
-	if (priv->write_finished == FALSE)
+	if (priv->write_finished == FALSE && cancelled == FALSE)
 		g_cond_wait (priv->write_cond, g_static_mutex_get_mutex (&(priv->write_mutex)));
 	g_static_mutex_unlock (&(priv->write_mutex));
 
@@ -471,6 +477,9 @@ write:
 	if (priv->response_error != NULL) {
 		g_propagate_error (error, priv->response_error);
 		priv->response_error = NULL;
+		length_written = -1;
+	} else if (cancelled == TRUE) {
+		g_assert (cancellable != NULL && g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE);
 		length_written = -1;
 	}
 
@@ -483,11 +492,6 @@ write:
 
 	return length_written;
 }
-
-typedef struct {
-	GDataUploadStream *upload_stream;
-	gboolean *cancelled;
-} CancelledData;
 
 static void
 close_cancelled_cb (GCancellable *cancellable, CancelledData *data)
