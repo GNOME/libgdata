@@ -62,6 +62,16 @@ static gboolean gdata_download_stream_truncate (GSeekable *seekable, goffset off
 
 static void create_network_thread (GDataDownloadStream *self, GError **error);
 
+/*
+ * The GDataDownloadStream can be in one of several states:
+ *  1. Pre-network activity. This is the state that the stream is created in. @network_thread and @cancellable are both %NULL, and @finished is %FALSE.
+ *     The stream will remain in this state until gdata_download_stream_read() or gdata_download_stream_seek() are called for the first time.
+ *  2. Network activity. This state is entered when gdata_download_stream_read() or gdata_download_stream_seek() are called for the first time.
+ *     @network_thread and @cancellable are created, while @finished remains %FALSE.
+ *  3. Post-network activity. This state is reached once the download thread finishes downloading, either due to having downloaded everything, or due
+ *     to being cancelled by gdata_download_stream_close(). @network_thread is non-%NULL, but meaningless; @cancellable is still a valid #GCancellable
+ *     instance; and @finished is set to %TRUE. At the same time, @finished_cond is signalled. The stream remains in this state until it's destroyed.
+ */
 struct _GDataDownloadStreamPrivate {
 	gchar *download_uri;
 	GDataService *service;
