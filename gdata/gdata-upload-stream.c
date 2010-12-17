@@ -89,6 +89,7 @@ struct _GDataUploadStreamPrivate {
 	SoupMessage *message;
 	GDataBuffer *buffer;
 
+	GCancellable *cancellable;
 	GThread *network_thread;
 
 	GStaticMutex write_mutex; /* mutex for write operations (specifically, write_finished) */
@@ -274,6 +275,10 @@ gdata_upload_stream_dispose (GObject *object)
 	/* Close the stream before unreffing things like priv->service, which stops crashes like bgo#602156 if the stream is unreffed in the middle
 	 * of network operations */
 	g_output_stream_close (G_OUTPUT_STREAM (object), NULL, NULL);
+
+	if (priv->cancellable != NULL)
+		g_object_unref (priv->cancellable);
+	priv->cancellable = NULL;
 
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
@@ -668,13 +673,14 @@ static gpointer
 upload_thread (GDataUploadStream *self)
 {
 	GDataUploadStreamPrivate *priv = self->priv;
-	guint status;
+
+	g_assert (priv->cancellable != NULL);
 
 	/* Connect to the wrote-* signals so we can prepare the next chunk for transmission */
 	g_signal_connect (priv->message, "wrote-headers", (GCallback) wrote_headers_cb, self);
 	g_signal_connect (priv->message, "wrote-body-data", (GCallback) wrote_body_data_cb, self);
 
-	status = soup_session_send_message (priv->session, priv->message);
+	_gdata_service_actually_send_message (priv->session, priv->message, priv->cancellable, NULL);
 
 	/* Signal write_cond, just in case we errored out and finished sending in the middle of a write */
 	g_static_mutex_lock (&(priv->response_mutex));
@@ -684,18 +690,18 @@ upload_thread (GDataUploadStream *self)
 	g_static_mutex_unlock (&(priv->write_mutex));
 
 	/* Deal with the response if it was unsuccessful */
-	if (SOUP_STATUS_IS_SUCCESSFUL (status) == FALSE) {
+	if (SOUP_STATUS_IS_SUCCESSFUL (priv->message->status_code) == FALSE) {
 		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (priv->service);
 
 		/* Error! Store it in the structure, and it'll be returned by the next function in the main thread
 		 * which can give an error response.*/
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (priv->service, GDATA_OPERATION_UPLOAD, status, priv->message->reason_phrase,
+		klass->parse_error_response (priv->service, GDATA_OPERATION_UPLOAD, priv->message->status_code, priv->message->reason_phrase,
 		                             priv->message->response_body->data, priv->message->response_body->length, &(priv->response_error));
 	}
 
 	/* Signal the main thread that the response is ready (good or bad) */
-	priv->response_status = status;
+	priv->response_status = priv->message->status_code;
 	g_cond_signal (priv->finished_cond);
 
 	g_static_mutex_unlock (&(priv->response_mutex));
@@ -706,7 +712,20 @@ upload_thread (GDataUploadStream *self)
 static void
 create_network_thread (GDataUploadStream *self, GError **error)
 {
-	self->priv->network_thread = g_thread_create ((GThreadFunc) upload_thread, self, TRUE, error);
+	GDataUploadStreamPrivate *priv = self->priv;
+	GError *child_error = NULL;
+
+	g_assert (priv->cancellable == NULL);
+	g_assert (priv->network_thread == NULL);
+
+	priv->cancellable = g_cancellable_new ();
+	priv->network_thread = g_thread_create ((GThreadFunc) upload_thread, self, TRUE, &child_error);
+
+	if (child_error != NULL) {
+		g_object_unref (priv->cancellable);
+		priv->cancellable = NULL;
+		g_propagate_error (error, child_error);
+	}
 }
 
 /**
