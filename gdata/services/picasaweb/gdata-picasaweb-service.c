@@ -499,7 +499,7 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 	/* Build the upload URI and upload stream */
 	upload_uri = _gdata_service_build_uri (TRUE, "http://picasaweb.google.com/data/feed/api/user/%s/albumid/%s", user_id, album_id);
 	upload_stream = GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST, upload_uri, GDATA_ENTRY (file_entry),
-	                                                              slug, content_type));
+	                                                              slug, content_type, NULL));
 	g_free (upload_uri);
 
 	return upload_stream;

@@ -110,7 +110,8 @@ enum {
 	PROP_ENTRY,
 	PROP_SLUG,
 	PROP_CONTENT_TYPE,
-	PROP_METHOD
+	PROP_METHOD,
+	PROP_CANCELLABLE
 };
 
 G_DEFINE_TYPE (GDataUploadStream, gdata_upload_stream, G_TYPE_OUTPUT_STREAM)
@@ -211,6 +212,27 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	                                                      "Content type", "The content type of the file being uploaded.",
 	                                                      NULL,
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataUploadStream:cancellable:
+	 *
+	 * An optional cancellable used to cancel the entire upload operation. If a #GCancellable instance isn't provided for this property at
+	 * construction time (i.e. to gdata_upload_stream_new()), one will be created internally and can be retrieved using
+	 * gdata_upload_stream_get_cancellable() and used to cancel the upload operation with g_cancellable_cancel() just as if it was passed to
+	 * gdata_upload_stream_new().
+	 *
+	 * If the upload operation is cancelled using this #GCancellable, any ongoing network activity will be stopped, and any pending or future calls
+	 * to #GOutputStream API on the #GDataUploadStream will return %G_IO_ERROR_CANCELLED. Note that the #GCancellable objects which can be passed
+	 * to individual #GOutputStream operations will not cancel the upload operation proper if cancelled — they will merely cancel that API call.
+	 * The only way to cancel the upload operation completely is using #GDataUploadStream:cancellable.
+	 *
+	 * Since: 0.8.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_CANCELLABLE,
+	                                 g_param_spec_object ("cancellable",
+	                                                      "Cancellable", "An optional cancellable used to cancel the entire upload operation.",
+	                                                      G_TYPE_CANCELLABLE,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -234,6 +256,10 @@ gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectCo
 	/* Chain up to the parent class */
 	object = G_OBJECT_CLASS (gdata_upload_stream_parent_class)->constructor (type, n_construct_params, construct_params);
 	priv = GDATA_UPLOAD_STREAM (object)->priv;
+
+	/* Create a #GCancellable for the entire upload operation if one wasn't specified for #GDataUploadStream:cancellable during construction */
+	if (priv->cancellable == NULL)
+		priv->cancellable = g_cancellable_new ();
 
 	/* Build the message */
 	priv->message = soup_message_new (priv->method, priv->upload_uri);
@@ -339,6 +365,9 @@ gdata_upload_stream_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_CONTENT_TYPE:
 			g_value_set_string (value, priv->content_type);
 			break;
+		case PROP_CANCELLABLE:
+			g_value_set_object (value, priv->cancellable);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -370,6 +399,10 @@ gdata_upload_stream_set_property (GObject *object, guint property_id, const GVal
 			break;
 		case PROP_CONTENT_TYPE:
 			priv->content_type = g_value_dup_string (value);
+			break;
+		case PROP_CANCELLABLE:
+			/* Construction only */
+			priv->cancellable = g_value_dup_object (value);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -715,19 +748,9 @@ static void
 create_network_thread (GDataUploadStream *self, GError **error)
 {
 	GDataUploadStreamPrivate *priv = self->priv;
-	GError *child_error = NULL;
 
-	g_assert (priv->cancellable == NULL);
 	g_assert (priv->network_thread == NULL);
-
-	priv->cancellable = g_cancellable_new ();
-	priv->network_thread = g_thread_create ((GThreadFunc) upload_thread, self, TRUE, &child_error);
-
-	if (child_error != NULL) {
-		g_object_unref (priv->cancellable);
-		priv->cancellable = NULL;
-		g_propagate_error (error, child_error);
-	}
+	priv->network_thread = g_thread_create ((GThreadFunc) upload_thread, self, TRUE, error);
 }
 
 /**
@@ -738,6 +761,7 @@ create_network_thread (GDataUploadStream *self, GError **error)
  * @entry: (allow-none): the entry to upload as metadata, or %NULL
  * @slug: the file's slug (filename)
  * @content_type: the content type of the file being uploaded
+ * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
  *
  * Creates a new #GDataUploadStream, allowing a file to be uploaded from a GData service using standard #GOutputStream API.
  *
@@ -754,15 +778,21 @@ create_network_thread (GDataUploadStream *self, GError **error)
  * As well as the standard GIO errors, calls to the #GOutputStream API on a #GDataUploadStream can also return any relevant specific error from
  * #GDataServiceError, or %GDATA_SERVICE_ERROR_PROTOCOL_ERROR in the general case.
  *
+ * If a #GCancellable is provided in @cancellable, the upload operation may be cancelled at any time from another thread using g_cancellable_cancel().
+ * In this case, any ongoing network activity will be stopped, and any pending or future calls to #GOutputStream API on the #GDataUploadStream will
+ * return %G_IO_ERROR_CANCELLED. Note that the #GCancellable objects which can be passed to individual #GOutputStream operations will not cancel the
+ * upload operation proper if cancelled — they will merely cancel that API call. The only way to cancel the upload operation completely is using this
+ * @cancellable.
+ *
  * Note that network communication won't begin until the first call to g_output_stream_write() on the #GDataUploadStream.
  *
  * Return value: a new #GOutputStream, or %NULL; unref with g_object_unref()
  *
- * Since: 0.5.0
+ * Since: 0.8.0
  **/
 GOutputStream *
 gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar *upload_uri, GDataEntry *entry,
-			 const gchar *slug, const gchar *content_type)
+                         const gchar *slug, const gchar *content_type, GCancellable *cancellable)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (method != NULL, NULL);
@@ -770,10 +800,11 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
 	g_return_val_if_fail (entry == NULL || GDATA_IS_ENTRY (entry), NULL);
 	g_return_val_if_fail (slug != NULL, NULL);
 	g_return_val_if_fail (content_type != NULL, NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 
 	/* Create the upload stream */
 	return G_OUTPUT_STREAM (g_object_new (GDATA_TYPE_UPLOAD_STREAM, "method", method, "upload-uri", upload_uri, "service", service,
-	                                      "entry", entry, "slug", slug, "content-type", content_type, NULL));
+	                                      "entry", entry, "slug", slug, "content-type", content_type, "cancellable", cancellable, NULL));
 }
 
 /**
@@ -925,4 +956,22 @@ gdata_upload_stream_get_content_type (GDataUploadStream *self)
 {
 	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (self), NULL);
 	return self->priv->content_type;
+}
+
+/**
+ * gdata_upload_stream_get_cancellable:
+ * @self: a #GDataUploadStream
+ *
+ * Gets the #GCancellable for the entire upload operation, #GDataUploadStream:cancellable.
+ *
+ * Return value: (transfer none): the #GCancellable for the entire upload operation
+ *
+ * Since: 0.8.0
+ **/
+GCancellable *
+gdata_upload_stream_get_cancellable (GDataUploadStream *self)
+{
+	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (self), NULL);
+	g_assert (self->priv->cancellable != NULL);
+	return self->priv->cancellable;
 }

@@ -643,7 +643,7 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 	/* Streaming upload support using GDataUploadStream; automatically handles the XML and multipart stuff for us */
 	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST,
 	                                                     "http://uploads.gdata.youtube.com/feeds/api/users/default/uploads",
-	                                                      GDATA_ENTRY (video), slug, content_type));
+	                                                      GDATA_ENTRY (video), slug, content_type, NULL));
 }
 
 /**

@@ -302,7 +302,8 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
 		content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
 
 	/* We need streaming file I/O: GDataUploadStream */
-	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), method, upload_uri, GDATA_ENTRY (document), slug, content_type));
+	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), method, upload_uri, GDATA_ENTRY (document), slug, content_type,
+	                                                     NULL));
 }
 
 /**
