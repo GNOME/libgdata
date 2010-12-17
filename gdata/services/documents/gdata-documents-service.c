@@ -291,7 +291,7 @@ notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self)
 
 static GDataUploadStream *
 upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
-                        const gchar *method, const gchar *upload_uri)
+                        const gchar *method, const gchar *upload_uri, GCancellable *cancellable)
 {
 	/* Corrects a bug on spreadsheet content types handling
 	 * The content type for ODF spreadsheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
@@ -303,7 +303,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
 
 	/* We need streaming file I/O: GDataUploadStream */
 	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), method, upload_uri, GDATA_ENTRY (document), slug, content_type,
-	                                                     NULL));
+	                                                     cancellable));
 }
 
 /**
@@ -313,6 +313,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
  * @slug: the filename to give to the uploaded document
  * @content_type: the content type of the uploaded data
  * @folder: (allow-none): the folder to which the document should be uploaded, or %NULL
+ * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
  * @error: a #GError, or %NULL
  *
  * Uploads a document to Google Documents, using the properties from @document and the document data written to the resulting #GDataUploadStream. If
@@ -325,6 +326,10 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
  * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
  *
+ * In order to cancel the upload, a #GCancellable passed in to @cancellable must be cancelled using g_cancellable_cancel(). Cancelling the individual
+ * #GOutputStream operations on the #GDataUploadStream will not cancel the entire upload; merely the write or close operation in question. See the
+ * #GDataUploadStream:cancellable for more details.
+ *
  * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
  * Return value: (transfer full): a #GDataUploadStream to write the document data to, or %NULL; unref with g_object_unref()
@@ -333,7 +338,7 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
  **/
 GDataUploadStream *
 gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
-                                         GDataDocumentsFolder *folder, GError **error)
+                                         GDataDocumentsFolder *folder, GCancellable *cancellable, GError **error)
 {
 	GDataUploadStream *upload_stream;
 	gchar *upload_uri;
@@ -343,6 +348,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
 	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
 	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
@@ -358,7 +364,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 	}
 
 	upload_uri = gdata_documents_service_get_upload_uri (folder);
-	upload_stream = upload_update_document (self, document, slug, content_type, SOUP_METHOD_POST, upload_uri);
+	upload_stream = upload_update_document (self, document, slug, content_type, SOUP_METHOD_POST, upload_uri, cancellable);
 	g_free (upload_uri);
 
 	return upload_stream;
@@ -370,6 +376,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * @document: the #GDataDocumentsDocument to update
  * @slug: the filename to give to the uploaded document
  * @content_type: the content type of the uploaded data
+ * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
  * @error: a #GError, or %NULL
  *
  * Update the document using the properties from @document and the document data written to the resulting #GDataUploadStream. If the document data does
@@ -378,6 +385,10 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
  * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
+ *
+ * In order to cancel the update, a #GCancellable passed in to @cancellable must be cancelled using g_cancellable_cancel(). Cancelling the individual
+ * #GOutputStream operations on the #GDataUploadStream will not cancel the entire update; merely the write or close operation in question. See the
+ * #GDataUploadStream:cancellable for more details.
  *
  * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
@@ -389,7 +400,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  **/
 GDataUploadStream *
 gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
-                                         GError **error)
+                                         GCancellable *cancellable, GError **error)
 {
 	GDataLink *update_link;
 
@@ -397,6 +408,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
 	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
 	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
@@ -408,7 +420,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
 	g_assert (update_link != NULL);
 
-	return upload_update_document (self, document, slug, content_type, SOUP_METHOD_PUT, gdata_link_get_uri (update_link));
+	return upload_update_document (self, document, slug, content_type, SOUP_METHOD_PUT, gdata_link_get_uri (update_link), cancellable);
 }
 
 /**

@@ -231,7 +231,7 @@ test_upload_metadata_file (gconstpointer service)
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
-	                                                         g_file_info_get_content_type (file_info), NULL, &error);
+	                                                         g_file_info_get_content_type (file_info), NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -282,7 +282,7 @@ test_upload_file_get_entry (gconstpointer service)
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, g_file_info_get_display_name (file_info),
-	                                                         g_file_info_get_content_type (file_info), NULL, &error);
+	                                                         g_file_info_get_content_type (file_info), NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -364,7 +364,7 @@ setup_folders (FoldersData *data, GDataDocumentsService *service, gboolean initi
 	/* Prepare the upload stream */
 	upload_stream = gdata_documents_service_upload_document (service, document, g_file_info_get_display_name (file_info),
 	                                                         g_file_info_get_content_type (file_info),
-	                                                         (initially_in_folder == TRUE) ? data->folder : NULL, &error);
+	                                                         (initially_in_folder == TRUE) ? data->folder : NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -679,7 +679,7 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
-	                                                         g_file_info_get_content_type (file_info), new_folder, &error);
+	                                                         g_file_info_get_content_type (file_info), new_folder, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -811,7 +811,7 @@ test_update_metadata_file (gconstpointer service)
 	/* Prepare the upload stream */
 	upload_stream = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document2,
 	                                                         g_file_info_get_display_name (file_info), g_file_info_get_content_type (file_info),
-	                                                         &error);
+	                                                         NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -866,7 +866,7 @@ test_update_file (gconstpointer service)
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), NULL, g_file_info_get_display_name (file_info),
-	                                                         g_file_info_get_content_type (file_info), NULL, &error);
+	                                                         g_file_info_get_content_type (file_info), NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -913,7 +913,7 @@ test_update_file (gconstpointer service)
 	/* Prepare the upload stream */
 	upload_stream = gdata_documents_service_update_document (GDATA_DOCUMENTS_SERVICE (service), new_document2,
 	                                                         g_file_info_get_display_name (file_info), g_file_info_get_content_type (file_info),
-	                                                         &error);
+	                                                         NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 

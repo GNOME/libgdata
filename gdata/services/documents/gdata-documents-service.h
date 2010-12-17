@@ -93,9 +93,10 @@ void gdata_documents_service_query_documents_async (GDataDocumentsService *self,
 
 GDataUploadStream *gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
                                                             const gchar *content_type, GDataDocumentsFolder *folder,
-                                                            GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                            GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataUploadStream *gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
-                                                            const gchar *content_type, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                            const gchar *content_type, GCancellable *cancellable,
+                                                            GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataDocumentsDocument *gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadStream *upload_stream,
                                                                GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
