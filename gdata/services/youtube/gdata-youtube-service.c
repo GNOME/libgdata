@@ -602,6 +602,7 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
  * @video: a #GDataYouTubeVideo to insert
  * @slug: the filename to give to the uploaded file
  * @content_type: the content type of the uploaded data
+ * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
  * @error: a #GError, or %NULL
  *
  * Uploads a video to YouTube, using the properties from @video and the file data written to the resulting #GDataUploadStream.
@@ -613,6 +614,10 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
  * is closed (using g_output_stream_close()), gdata_youtube_service_finish_video_upload() should be called on it to parse and return the updated
  * #GDataYouTubeVideo for the uploaded video. This must be done, as @video isn't updated in-place.
  *
+ * In order to cancel the upload, a #GCancellable passed in to @cancellable must be cancelled using g_cancellable_cancel(). Cancelling the individual
+ * #GOutputStream operations on the #GDataUploadStream will not cancel the entire upload; merely the write or close operation in question. See the
+ * #GDataUploadStream:cancellable for more details.
+ *
  * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
  * Return value: (transfer full): a #GDataUploadStream to write the video data to, or %NULL; unref with g_object_unref()
@@ -620,12 +625,14 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
  * Since: 0.8.0
  **/
 GDataUploadStream *
-gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, const gchar *slug, const gchar *content_type, GError **error)
+gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, const gchar *slug, const gchar *content_type,
+                                    GCancellable *cancellable, GError **error)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (video), NULL);
 	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
 	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (video)) == TRUE) {
@@ -643,7 +650,7 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 	/* Streaming upload support using GDataUploadStream; automatically handles the XML and multipart stuff for us */
 	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST,
 	                                                     "http://uploads.gdata.youtube.com/feeds/api/users/default/uploads",
-	                                                      GDATA_ENTRY (video), slug, content_type, NULL));
+	                                                      GDATA_ENTRY (video), slug, content_type, cancellable));
 }
 
 /**

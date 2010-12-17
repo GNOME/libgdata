@@ -335,7 +335,8 @@ test_upload_simple (UploadData *data, gconstpointer service)
 	GError *error = NULL;
 
 	/* Prepare the upload stream */
-	upload_stream = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->video, data->slug, data->content_type, &error);
+	upload_stream = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->video, data->slug, data->content_type, NULL,
+	                                                    &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -426,7 +427,7 @@ test_upload_async (UploadAsyncData *data, gconstpointer service)
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->data.video, data->data.slug,
-	                                                    data->data.content_type, &error);
+	                                                    data->data.content_type, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
