@@ -1075,7 +1075,7 @@ test_upload_default_album (UploadData *data, gconstpointer service)
 	/* Prepare the upload stream */
 	/* TODO right now, it will just go to the default album, we want an uploading one :| */
 	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->photo, data->slug, data->content_type,
-	                                                     &error);
+	                                                     NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -1162,7 +1162,7 @@ test_upload_default_album_async (UploadAsyncData *data, gconstpointer service)
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
-	                                                     data->data.content_type, &error);
+	                                                     data->data.content_type, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -1215,13 +1215,13 @@ test_upload_default_album_cancellation (UploadAsyncData *data, gconstpointer ser
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
-	                                                     data->data.content_type, &error);
+	                                                     data->data.content_type, cancellable, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
 	/* Upload the photo asynchronously */
 	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
-	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, cancellable,
+	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
 	                              (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, data);
 	g_main_loop_run (data->main_loop);
 
@@ -1242,13 +1242,13 @@ test_upload_default_album_cancellation2 (UploadAsyncData *data, gconstpointer se
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
-	                                                     data->data.content_type, &error);
+	                                                     data->data.content_type, cancellable, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
 	/* Upload the photo asynchronously */
 	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
-	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, cancellable,
+	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
 	                              (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, data);
 	g_main_loop_run (data->main_loop);
 

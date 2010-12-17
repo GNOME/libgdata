@@ -79,7 +79,7 @@
  *
  *	/<!-- -->* Create an upload stream for the file. This is non-blocking. *<!-- -->/
  *	upload_stream = gdata_picasaweb_service_upload_file (service, album, file_entry, g_file_info_get_display_name (file_info),
- *	                                                     g_file_info_get_content_type (file_info), NULL);
+ *	                                                     g_file_info_get_content_type (file_info), NULL, NULL);
  *	g_object_unref (file_info);
  *	g_object_unref (file_entry);
  *
@@ -446,6 +446,7 @@ gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPic
  * @file_entry: a #GDataPicasaWebFile to insert
  * @slug: the filename to give to the uploaded file
  * @content_type: the content type of the uploaded data
+ * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
  * @error: a #GError, or %NULL
  *
  * Uploads a file (photo or video) to the given PicasaWeb @album, using the metadata from @file and the file data written to the resulting
@@ -459,6 +460,10 @@ gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPic
  * is closed (using g_output_stream_close()), gdata_picasaweb_service_finish_file_upload() should be called on it to parse and return the updated
  * #GDataPicasaWebFile for the uploaded file. This must be done, as @file_entry isn't updated in-place.
  *
+ * In order to cancel the upload, a #GCancellable passed in to @cancellable must be cancelled using g_cancellable_cancel(). Cancelling the individual
+ * #GOutputStream operations on the #GDataUploadStream will not cancel the entire upload; merely the write or close operation in question. See the
+ * #GDataUploadStream:cancellable for more details.
+ *
  * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
  *
  * Return value: (transfer full): a #GDataUploadStream to write the file data to, or %NULL; unref with g_object_unref()
@@ -467,7 +472,7 @@ gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPic
  **/
 GDataUploadStream *
 gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry, const gchar *slug,
-                                     const gchar *content_type, GError **error)
+                                     const gchar *content_type, GCancellable *cancellable, GError **error)
 {
 	const gchar *user_id = NULL, *album_id = NULL;
 	GDataUploadStream *upload_stream;
@@ -478,6 +483,7 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_FILE (file_entry), NULL);
 	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
 	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	if (gdata_entry_is_inserted (GDATA_ENTRY (file_entry)) == TRUE) {
@@ -499,7 +505,7 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 	/* Build the upload URI and upload stream */
 	upload_uri = _gdata_service_build_uri (TRUE, "http://picasaweb.google.com/data/feed/api/user/%s/albumid/%s", user_id, album_id);
 	upload_stream = GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST, upload_uri, GDATA_ENTRY (file_entry),
-	                                                              slug, content_type, NULL));
+	                                                              slug, content_type, cancellable));
 	g_free (upload_uri);
 
 	return upload_stream;

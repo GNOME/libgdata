@@ -87,7 +87,7 @@ void gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDa
 #include <gdata/services/picasaweb/gdata-picasaweb-file.h>
 
 GDataUploadStream *gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry,
-                                                        const gchar *slug, const gchar *content_type,
+                                                        const gchar *slug, const gchar *content_type, GCancellable *cancellable,
                                                         GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataPicasaWebFile *gdata_picasaweb_service_finish_file_upload (GDataPicasaWebService *self, GDataUploadStream *upload_stream,
                                                                 GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
