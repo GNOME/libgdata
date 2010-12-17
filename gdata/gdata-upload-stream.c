@@ -553,25 +553,45 @@ close_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 	g_static_mutex_unlock (&(priv->response_mutex));
 }
 
-/* It's guaranteed that we set the response_status and are done with *all* network activity before this returns.
- * This means that it's safe to call gdata_upload_stream_get_response() once a call to close() has returned. */
+/* It's guaranteed that we have set ->response_status and ->response_error and are done with *all* network activity before this returns, unless it's
+ * cancelled. This means that it's safe to call gdata_upload_stream_get_response() once a call to close() has returned without being cancelled.
+ *
+ * If g_output_stream_close() has already been called once on this stream, g_output_stream_is_closed() is set to %TRUE, and all future calls to
+ * g_output_stream_close() will immediately return, i.e. gdata_upload_stream_close() is guaranteed to only ever run once (even if the first call was
+ * cancelled or returned an error).
+ *
+ * If the network thread hasn't yet been started (i.e. gdata_upload_stream_write() hasn't been called at all yet), %TRUE will be returned immediately.
+ *
+ * If the global cancellable, ->cancellable, or @cancellable are cancelled before the call to gdata_upload_stream_close(), gdata_upload_stream_close()
+ * should return immediately with %G_IO_ERROR_CANCELLED. If they're cancelled during the call, gdata_upload_stream_close() should stop waiting for
+ * any outstanding data to be flushed to the network and return %G_IO_ERROR_CANCELLED (though the operation to finish off network activity and close
+ * the stream will still continue).
+ *
+ * If the call to gdata_upload_stream_close() is not cancelled by any #GCancellable, it will wait until all the data has been flushed to the network
+ * and a response has been received. At this point, ->response_status and ->response_error have been set (and won't ever change) and we can return
+ * either success or an error code. */
 static gboolean
 gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GError **error)
 {
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (stream)->priv;
 	gboolean success = TRUE;
 	gboolean cancelled = FALSE;
-	gulong cancelled_signal = 0;
+	gulong cancelled_signal = 0, global_cancelled_signal = 0;
+	CancelledData data;
+	GError *child_error = NULL;
+
+	/* If the operation was never started, return successfully immediately */
+	if (priv->network_thread == NULL)
+		return TRUE;
 
 	/* Allow cancellation */
-	if (cancellable != NULL) {
-		CancelledData data;
+	data.upload_stream = GDATA_UPLOAD_STREAM (stream);
+	data.cancelled = &cancelled;
 
-		data.upload_stream = GDATA_UPLOAD_STREAM (stream);
-		data.cancelled = &cancelled;
+	global_cancelled_signal = g_cancellable_connect (priv->cancellable, (GCallback) close_cancelled_cb, &data, NULL);
 
+	if (cancellable != NULL)
 		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) close_cancelled_cb, &data, NULL);
-	}
 
 	g_static_mutex_lock (&(priv->response_mutex));
 
@@ -580,18 +600,24 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 		/* Mark the buffer as having reached EOF, and the write operation will close in its own time */
 		gdata_buffer_push_data (priv->buffer, NULL, 0);
 
-		/* Wait for the signal that we've finished */
-		if (priv->network_thread != NULL && cancelled == FALSE)
+		/* Wait for the signal that we've finished. Cancelling the call to gdata_upload_stream_close() will cause this wait to be aborted,
+		 * but won't actually prevent the stream being closed (i.e. all it means is that the stream isn't guaranteed to have been closed by
+		 * the time gdata_upload_stream_close() returns — whereas normally it would be). */
+		if (cancelled == FALSE)
 			g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->response_mutex)));
-
-		/* Set a suitable response status and error iff we were cancelled */
-		if (cancelled == TRUE && g_cancellable_set_error_if_cancelled (cancellable, &(priv->response_error)) == TRUE)
-			priv->response_status = SOUP_STATUS_CANCELLED;
 	}
 
-	/* Report any errors which have been set by the network thread or due to cancellation */
-	if (priv->response_error != NULL) {
-		g_propagate_error (error, priv->response_error);
+	/* Error handling */
+	if (priv->response_status == 0 && cancelled == TRUE) {
+		/* Cancelled? If response_status is non-zero, the network activity finished before the gdata_upload_stream_close() operation was
+		 * cancelled, so we don't need to return an error. */
+		g_assert (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == TRUE ||
+		          g_cancellable_set_error_if_cancelled (priv->cancellable, &child_error) == TRUE);
+		priv->response_status = SOUP_STATUS_CANCELLED;
+		success = FALSE;
+	} else if (priv->response_error != NULL) {
+		/* Report any errors which have been set by the network thread */
+		g_propagate_error (&child_error, priv->response_error);
 		priv->response_error = NULL;
 		success = FALSE;
 	}
@@ -602,6 +628,14 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 	 * until any outstanding cancellation callbacks return, and they will block on @response_mutex. */
 	if (cancelled_signal != 0)
 		g_cancellable_disconnect (cancellable, cancelled_signal);
+	if (global_cancelled_signal != 0)
+		g_cancellable_disconnect (priv->cancellable, global_cancelled_signal);
+
+	g_assert ((success == TRUE && child_error == NULL) || (success == FALSE && child_error != NULL));
+	g_assert (priv->response_status != 0);
+
+	if (child_error != NULL)
+		g_propagate_error (error, child_error);
 
 	return success;
 }
