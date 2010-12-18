@@ -248,7 +248,7 @@ test_download (gconstpointer _service)
 	content = GDATA_MEDIA_CONTENT (media_contents->data);
 
 	/* Prepare a download stream */
-	download_stream = gdata_media_content_download (content, service, &error);
+	download_stream = gdata_media_content_download (content, service, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
 

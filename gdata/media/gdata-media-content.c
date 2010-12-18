@@ -538,6 +538,7 @@ gdata_media_content_get_width (GDataMediaContent *self)
  * gdata_media_content_download:
  * @self: a #GDataMediaContent
  * @service: the #GDataService
+ * @cancellable: (allow-none): a #GCancellable for the entire download stream, or %NULL
  * @error: a #GError, or %NULL
  *
  * Downloads and returns a #GDataDownloadStream allowing the content represented by @self to be read.
@@ -546,22 +547,27 @@ gdata_media_content_get_width (GDataMediaContent *self)
  * Calling gdata_download_stream_get_content_length() on the stream will not return a meaningful result, however, as the stream is encoded in chunks,
  * rather than by content length.
  *
+ * In order to cancel the download, a #GCancellable passed in to @cancellable must be cancelled using g_cancellable_cancel(). Cancelling the individual
+ * #GInputStream operations on the #GDataDownloadStream will not cancel the entire download; merely the read or close operation in question. See the
+ * #GDataDownloadStream:cancellable for more details.
+ *
  * Return value: (transfer full): a #GDataDownloadStream to download the content with, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
  **/
 GDataDownloadStream *
-gdata_media_content_download (GDataMediaContent *self, GDataService *service, GError **error)
+gdata_media_content_download (GDataMediaContent *self, GDataService *service, GCancellable *cancellable, GError **error)
 {
 	const gchar *src_uri;
 
 	g_return_val_if_fail (GDATA_IS_MEDIA_CONTENT (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* We keep a GError in the argument list so that we can add authentication errors, etc., in future if necessary */
 
 	/* Get the download URI and create a stream for it */
 	src_uri = gdata_media_content_get_uri (self);
-	return GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (service, src_uri, NULL));
+	return GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (service, src_uri, cancellable));
 }

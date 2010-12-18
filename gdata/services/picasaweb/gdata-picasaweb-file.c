@@ -67,7 +67,7 @@
  *			content = GDATA_MEDIA_CONTENT (contents->data);
  *			/<!-- -->* Do something fun with the actual images, like download them to a file.
  *			 * Note that this is a blocking operation. *<!-- -->/
- *			download_stream = gdata_media_content_download (content, GDATA_SERVICE (service), NULL);
+ *			download_stream = gdata_media_content_download (content, GDATA_SERVICE (service), NULL, NULL);
  *			new_file = g_file_new_for_path (file_path);
  *			file_stream = g_file_create (new_file, G_FILE_CREATE_NONE, NULL, NULL);
  *			g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),

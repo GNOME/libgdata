@@ -108,7 +108,7 @@ gint64 gdata_media_content_get_duration (GDataMediaContent *self) G_GNUC_PURE;
 guint gdata_media_content_get_height (GDataMediaContent *self) G_GNUC_PURE;
 guint gdata_media_content_get_width (GDataMediaContent *self) G_GNUC_PURE;
 
-GDataDownloadStream *gdata_media_content_download (GDataMediaContent *self, GDataService *service,
+GDataDownloadStream *gdata_media_content_download (GDataMediaContent *self, GDataService *service, GCancellable *cancellable,
                                                    GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
