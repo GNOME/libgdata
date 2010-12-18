@@ -743,6 +743,10 @@ write_next_chunk (GDataUploadStream *self, SoupMessage *message)
 	priv->network_bytes_outstanding += length;
 	g_static_mutex_unlock (&(priv->write_mutex));
 
+	/* Append whatever data was returned */
+	if (length > 0)
+		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_COPY, next_buffer, length);
+
 	if (reached_eof == TRUE) {
 		/* We've reached the end of the stream, so append the footer (if appropriate) and stop */
 		g_static_mutex_lock (&(priv->response_mutex));
@@ -763,8 +767,6 @@ write_next_chunk (GDataUploadStream *self, SoupMessage *message)
 		g_static_mutex_lock (&(priv->write_mutex));
 		g_assert (priv->message_bytes_outstanding == 0);
 		g_static_mutex_unlock (&(priv->write_mutex));
-	} else {
-		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_COPY, next_buffer, length);
 	}
 
 	soup_session_unpause_message (priv->session, priv->message);
