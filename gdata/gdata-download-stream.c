@@ -375,16 +375,40 @@ gdata_download_stream_set_property (GObject *object, guint property_id, const GV
 	}
 }
 
+static void
+read_cancelled_cb (GCancellable *cancellable, GCancellable *child_cancellable)
+{
+	g_cancellable_cancel (child_cancellable);
+}
+
 static gssize
 gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCancellable *cancellable, GError **error)
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (stream)->priv;
 	gssize length_read = -1;
 	gboolean reached_eof = FALSE;
+	gulong cancelled_signal = 0, global_cancelled_signal = 0;
+	GCancellable *child_cancellable;
 	GError *child_error = NULL;
+
+	/* Listen for cancellation from either @cancellable or @priv->cancellable. We have to multiplex cancellation signals from the two sources
+	 * into a single #GCancellabel, @child_cancellable. */
+	child_cancellable = g_cancellable_new ();
+
+	global_cancelled_signal = g_cancellable_connect (priv->cancellable, (GCallback) read_cancelled_cb, child_cancellable, NULL);
+
+	if (cancellable != NULL)
+		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) read_cancelled_cb, child_cancellable, NULL);
 
 	/* We're lazy about starting the network operation so we don't end up with a massive buffer */
 	if (priv->network_thread == NULL) {
+		/* Handle early cancellation so that we don't create the network thread unnecessarily */
+		if (g_cancellable_set_error_if_cancelled (child_cancellable, &child_error) == TRUE) {
+			length_read = -1;
+			goto done;
+		}
+
+		/* Create the network thread */
 		create_network_thread (GDATA_DOWNLOAD_STREAM (stream), &child_error);
 		if (priv->network_thread == NULL) {
 			length_read = -1;
@@ -394,9 +418,9 @@ gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCa
 
 	/* Read the data off the buffer. If the operation is cancelled, it'll probably still return a positive number of bytes read — if it does, we
 	 * can return without error. Iff it returns a non-positive number of bytes should we return an error. */
-	length_read = (gssize) gdata_buffer_pop_data (priv->buffer, buffer, count, &reached_eof, cancellable);
+	length_read = (gssize) gdata_buffer_pop_data (priv->buffer, buffer, count, &reached_eof, child_cancellable);
 
-	if (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == TRUE && length_read < 1) {
+	if (length_read < 1 && g_cancellable_set_error_if_cancelled (child_cancellable, &child_error) == TRUE) {
 		/* Handle cancellation */
 		length_read = -1;
 
@@ -414,6 +438,14 @@ gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCa
 	}
 
 done:
+	/* Disconnect from the cancelled signals. */
+	if (cancelled_signal != 0)
+		g_cancellable_disconnect (cancellable, cancelled_signal);
+	if (global_cancelled_signal != 0)
+		g_cancellable_disconnect (priv->cancellable, global_cancelled_signal);
+
+	g_object_unref (child_cancellable);
+
 	g_assert ((reached_eof == FALSE && length_read > 0 && length_read <= (gssize) count && child_error == NULL) ||
 	          (reached_eof == TRUE && length_read >= 0 && length_read <= (gssize) count && child_error == NULL) ||
 	          (length_read == -1 && child_error != NULL));
