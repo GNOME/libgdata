@@ -379,37 +379,47 @@ static gssize
 gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCancellable *cancellable, GError **error)
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (stream)->priv;
-	gssize length_read;
+	gssize length_read = -1;
+	gboolean reached_eof = FALSE;
 	GError *child_error = NULL;
 
 	/* We're lazy about starting the network operation so we don't end up with a massive buffer */
 	if (priv->network_thread == NULL) {
-		create_network_thread (GDATA_DOWNLOAD_STREAM (stream), error);
-		if (priv->network_thread == NULL)
-			return -1;
+		create_network_thread (GDATA_DOWNLOAD_STREAM (stream), &child_error);
+		if (priv->network_thread == NULL) {
+			length_read = -1;
+			goto done;
+		}
 	}
 
 	/* Read the data off the buffer. If the operation is cancelled, it'll probably still return a positive number of bytes read — if it does, we
 	 * can return without error. Iff it returns a non-positive number of bytes should we return an error. */
-	length_read = (gssize) gdata_buffer_pop_data (priv->buffer, buffer, count, NULL, cancellable);
+	length_read = (gssize) gdata_buffer_pop_data (priv->buffer, buffer, count, &reached_eof, cancellable);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == TRUE && length_read < 1) {
 		/* Handle cancellation */
-		g_propagate_error (error, child_error);
+		length_read = -1;
 
-		return -1;
+		goto done;
 	} else if (SOUP_STATUS_IS_SUCCESSFUL (priv->message->status_code) == FALSE) {
 		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (priv->service);
 
 		/* Set an appropriate error */
 		g_assert (klass->parse_error_response != NULL);
 		klass->parse_error_response (priv->service, GDATA_OPERATION_DOWNLOAD, priv->message->status_code, priv->message->reason_phrase,
-		                             NULL, 0, error);
+		                             NULL, 0, &child_error);
+		length_read = -1;
 
-		return -1;
+		goto done;
 	}
 
-	g_clear_error (&child_error);
+done:
+	g_assert ((reached_eof == FALSE && length_read > 0 && length_read <= (gssize) count && child_error == NULL) ||
+	          (reached_eof == TRUE && length_read >= 0 && length_read <= (gssize) count && child_error == NULL) ||
+	          (length_read == -1 && child_error != NULL));
+
+	if (child_error != NULL)
+		g_propagate_error (error, child_error);
 
 	return length_read;
 }
