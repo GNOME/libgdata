@@ -66,7 +66,7 @@ GType gdata_documents_document_get_type (void) G_GNUC_CONST;
 #include <gdata/services/documents/gdata-documents-service.h>
 
 GDataDownloadStream *gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsService *service, const gchar *export_format,
-                                                        GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+                                                        GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const gchar *export_format) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS

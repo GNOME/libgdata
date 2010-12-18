@@ -969,17 +969,17 @@ test_download_all_documents (gconstpointer service)
 			/* Presentation */
 			destination_file_extension = "odp";
 			download_stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
-			                                                     GDATA_DOCUMENTS_PRESENTATION_PPT, &error);
+			                                                     GDATA_DOCUMENTS_PRESENTATION_PPT, NULL, &error);
 		} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (i->data)) {
 			/* Spreadsheet */
 			destination_file_extension = "ods";
 			download_stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
-			                                                     GDATA_DOCUMENTS_SPREADSHEET_ODS, &error);
+			                                                     GDATA_DOCUMENTS_SPREADSHEET_ODS, NULL, &error);
 		} else if (GDATA_IS_DOCUMENTS_TEXT (i->data)) {
 			/* Text document */
 			destination_file_extension = "odt";
 			download_stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
-			                                                     GDATA_DOCUMENTS_TEXT_ODT, &error);
+			                                                     GDATA_DOCUMENTS_TEXT_ODT, NULL, &error);
 		} else {
 			/* Error! */
 			g_assert_not_reached ();

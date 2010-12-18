@@ -62,6 +62,7 @@ gdata_documents_document_init (GDataDocumentsDocument *self)
  * @self: a #GDataDocumentsDocument
  * @service: a #GDataDocumentsService
  * @export_format: the format in which the document should be exported
+ * @cancellable: (allow-none): a #GCancellable for the entire download stream, or %NULL
  * @error: a #GError, or %NULL
  *
  * Downloads and returns the document file represented by the #GDataDocumentsDocument. If the document doesn't exist, %NULL is returned, but no error
@@ -79,6 +80,10 @@ gdata_documents_document_init (GDataDocumentsDocument *self)
  * Calling gdata_download_stream_get_content_length() on the stream will not return a meaningful result, however, as the stream is encoded in chunks,
  * rather than by content length.
  *
+ * In order to cancel the download, a #GCancellable passed in to @cancellable must be cancelled using g_cancellable_cancel(). Cancelling the individual
+ * #GInputStream operations on the #GDataDownloadStream will not cancel the entire download; merely the read or close operation in question. See the
+ * #GDataDownloadStream:cancellable for more details.
+ *
  * If @service isn't authenticated, a %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be returned.
  *
  * If there is an error getting the document, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
@@ -88,7 +93,8 @@ gdata_documents_document_init (GDataDocumentsDocument *self)
  * Since: 0.8.0
  **/
 GDataDownloadStream *
-gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsService *service, const gchar *export_format, GError **error)
+gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsService *service, const gchar *export_format, GCancellable *cancellable,
+                                   GError **error)
 {
 	gchar *download_uri;
 	GDataService *_service;
@@ -97,6 +103,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Horrible hack to force use of the spreadsheet service if the document we're downloading is a spreadsheet. This is necessary because it's
@@ -115,7 +122,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 
 	/* Get the download URI and create a stream for it */
 	download_uri = gdata_documents_document_get_download_uri (self, export_format);
-	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (_service, download_uri, NULL));
+	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (_service, download_uri, cancellable));
 	g_free (download_uri);
 
 	return download_stream;
