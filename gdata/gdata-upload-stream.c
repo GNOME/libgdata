@@ -437,7 +437,7 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (stream)->priv;
 	gssize length_written = -1;
 	gulong cancelled_signal = 0, global_cancelled_signal = 0;
-	gboolean cancelled = FALSE;
+	gboolean cancelled = FALSE; /* must only be touched with ->write_mutex held */
 	gsize old_network_bytes_written;
 	CancelledData data;
 
@@ -509,14 +509,12 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 	}
 
 write:
-	/* Wait for it to be written */
 	g_static_mutex_lock (&(priv->write_mutex));
+
+	/* Wait for it to be written */
 	while (priv->network_bytes_written - old_network_bytes_written < count && cancelled == FALSE)
 		g_cond_wait (priv->write_cond, g_static_mutex_get_mutex (&(priv->write_mutex)));
 	length_written = MIN (count, priv->network_bytes_written - old_network_bytes_written);
-	g_static_mutex_unlock (&(priv->write_mutex));
-
-	g_static_mutex_lock (&(priv->response_mutex));
 
 	/* Check for an error and return if necessary */
 	if (cancelled == TRUE && length_written < 1) {
@@ -525,11 +523,11 @@ write:
 		length_written = -1;
 	}
 
-	g_static_mutex_unlock (&(priv->response_mutex));
+	g_static_mutex_unlock (&(priv->write_mutex));
 
 done:
-	/* Disconnect from the cancelled signals. Note that we have to do this with @response_mutex not held, as g_cancellable_disconnect() blocks
-	 * until any outstanding cancellation callbacks return, and they will block on @response_mutex. */
+	/* Disconnect from the cancelled signals. Note that we have to do this with @write_mutex not held, as g_cancellable_disconnect() blocks
+	 * until any outstanding cancellation callbacks return, and they will block on @write_mutex. */
 	if (cancelled_signal != 0)
 		g_cancellable_disconnect (cancellable, cancelled_signal);
 	if (global_cancelled_signal != 0)
@@ -562,7 +560,7 @@ gdata_upload_stream_flush (GOutputStream *stream, GCancellable *cancellable, GEr
 {
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (stream)->priv;
 	gulong cancelled_signal = 0, global_cancelled_signal = 0;
-	gboolean cancelled = FALSE;
+	gboolean cancelled = FALSE; /* must only be touched with ->write_mutex held */
 	gboolean success = TRUE;
 	CancelledData data;
 
@@ -635,7 +633,7 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 {
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (stream)->priv;
 	gboolean success = TRUE;
-	gboolean cancelled = FALSE;
+	gboolean cancelled = FALSE; /* must only be touched with ->response_mutex held */
 	gulong cancelled_signal = 0, global_cancelled_signal = 0;
 	CancelledData data;
 	GError *child_error = NULL;
@@ -682,6 +680,8 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 		success = FALSE;
 	}
 
+	g_assert (priv->response_status != SOUP_STATUS_NONE && (SOUP_STATUS_IS_SUCCESSFUL (priv->response_status) || child_error != NULL));
+
 	g_static_mutex_unlock (&(priv->response_mutex));
 
 	/* Disconnect from the signal handler. Note that we have to do this with @response_mutex not held, as g_cancellable_disconnect() blocks
@@ -692,7 +692,6 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 		g_cancellable_disconnect (priv->cancellable, global_cancelled_signal);
 
 	g_assert ((success == TRUE && child_error == NULL) || (success == FALSE && child_error != NULL));
-	g_assert (priv->response_status != SOUP_STATUS_NONE && (SOUP_STATUS_IS_SUCCESSFUL (priv->response_status) || child_error != NULL));
 
 	if (child_error != NULL)
 		g_propagate_error (error, child_error);
@@ -747,23 +746,21 @@ write_next_chunk (GDataUploadStream *self, SoupMessage *message)
 	if (reached_eof == TRUE) {
 		/* We've reached the end of the stream, so append the footer (if appropriate) and stop */
 		g_static_mutex_lock (&(priv->response_mutex));
+		g_static_mutex_lock (&(priv->write_mutex));
+
 		if (priv->entry != NULL) {
 			const gchar *footer = "\n--" BOUNDARY_STRING "--";
 			gsize footer_length = strlen (footer);
 
 			soup_message_body_append (priv->message->request_body, SOUP_MEMORY_STATIC, footer, footer_length);
-
-			g_static_mutex_lock (&(priv->write_mutex));
 			priv->network_bytes_outstanding += footer_length;
-			g_static_mutex_unlock (&(priv->write_mutex));
 		}
-		g_static_mutex_unlock (&(priv->response_mutex));
 
 		soup_message_body_complete (priv->message->request_body);
-
-		g_static_mutex_lock (&(priv->write_mutex));
 		g_assert (priv->message_bytes_outstanding == 0);
+
 		g_static_mutex_unlock (&(priv->write_mutex));
+		g_static_mutex_unlock (&(priv->response_mutex));
 	}
 
 	soup_session_unpause_message (priv->session, priv->message);
