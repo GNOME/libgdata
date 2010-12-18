@@ -99,9 +99,9 @@ struct _GDataUploadStreamPrivate {
 	gsize network_bytes_written; /* the number of bytes which have been written to the network (signalled by write_cond) */
 	GCond *write_cond; /* signalled when a chunk has been written (protected by write_mutex) */
 
-	guint response_status; /* set once we finish receiving the response (0 otherwise) (protected by response_mutex) */
+	guint response_status; /* set once we finish receiving the response (SOUP_STATUS_NONE otherwise) (protected by response_mutex) */
 	GCond *finished_cond; /* signalled when sending the message (and receiving the response) is finished (protected by response_mutex) */
-	GError *response_error; /* error asynchronously set by the network thread, and picked up by the main thread when appropriate*/
+	GError *response_error; /* error asynchronously set by the network thread, and picked up by the main thread when appropriate */
 	GStaticMutex response_mutex; /* mutex for ->response_error, ->response_status and ->finished_cond */
 };
 
@@ -334,6 +334,7 @@ gdata_upload_stream_finalize (GObject *object)
 	g_cond_free (priv->write_cond);
 	g_static_mutex_free (&(priv->write_mutex));
 	gdata_buffer_free (priv->buffer);
+	g_clear_error (&(priv->response_error));
 	g_free (priv->upload_uri);
 	g_free (priv->method);
 	g_free (priv->slug);
@@ -518,11 +519,7 @@ write:
 	g_static_mutex_lock (&(priv->response_mutex));
 
 	/* Check for an error and return if necessary */
-	if (priv->response_error != NULL) {
-		g_propagate_error (error, priv->response_error);
-		priv->response_error = NULL;
-		length_written = -1;
-	} else if (cancelled == TRUE && length_written < 1) {
+	if (cancelled == TRUE && length_written < 1) {
 		g_assert (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE ||
 		          g_cancellable_set_error_if_cancelled (priv->cancellable, error) == TRUE);
 		length_written = -1;
@@ -659,7 +656,7 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 	g_static_mutex_lock (&(priv->response_mutex));
 
 	/* If an operation is still in progress, and no response has been received yet… */
-	if (priv->response_status == 0) {
+	if (priv->response_status == SOUP_STATUS_NONE) {
 		/* Mark the buffer as having reached EOF, and the write operation will close in its own time */
 		gdata_buffer_push_data (priv->buffer, NULL, 0);
 
@@ -671,7 +668,7 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 	}
 
 	/* Error handling */
-	if (priv->response_status == 0 && cancelled == TRUE) {
+	if (priv->response_status == SOUP_STATUS_NONE && cancelled == TRUE) {
 		/* Cancelled? If response_status is non-zero, the network activity finished before the gdata_upload_stream_close() operation was
 		 * cancelled, so we don't need to return an error. */
 		g_assert (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == TRUE ||
@@ -695,7 +692,7 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 		g_cancellable_disconnect (priv->cancellable, global_cancelled_signal);
 
 	g_assert ((success == TRUE && child_error == NULL) || (success == FALSE && child_error != NULL));
-	g_assert (priv->response_status != 0);
+	g_assert (priv->response_status != SOUP_STATUS_NONE && (SOUP_STATUS_IS_SUCCESSFUL (priv->response_status) || child_error != NULL));
 
 	if (child_error != NULL)
 		g_propagate_error (error, child_error);
@@ -750,7 +747,7 @@ write_next_chunk (GDataUploadStream *self, SoupMessage *message)
 	if (reached_eof == TRUE) {
 		/* We've reached the end of the stream, so append the footer (if appropriate) and stop */
 		g_static_mutex_lock (&(priv->response_mutex));
-		if (priv->entry != NULL && priv->response_error == NULL) {
+		if (priv->entry != NULL) {
 			const gchar *footer = "\n--" BOUNDARY_STRING "--";
 			gsize footer_length = strlen (footer);
 
@@ -822,6 +819,9 @@ upload_thread (GDataUploadStream *self)
 	if (priv->message_bytes_outstanding > 0 || priv->network_bytes_outstanding > 0)
 		g_cond_signal (priv->write_cond);
 	g_static_mutex_unlock (&(priv->write_mutex));
+
+	g_assert (priv->response_status == SOUP_STATUS_NONE);
+	g_assert (priv->response_error == NULL);
 
 	/* Deal with the response if it was unsuccessful */
 	if (SOUP_STATUS_IS_SUCCESSFUL (priv->message->status_code) == FALSE) {
@@ -916,9 +916,13 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
  *
  * If there was an error during the upload operation (but it is complete), %NULL is returned, and @length is set to <code class="literal">0</code>.
  *
- * While it is safe to call this function from any thread at any time during the network operation, the only way to
- * guarantee that the response has been set before calling this function is to have closed the #GDataUploadStream. Once
- * the stream has been closed, all network communication is guaranteed to have finished.
+ * While it is safe to call this function from any thread at any time during the network operation, the only way to guarantee that the response has
+ * been set before calling this function is to have closed the #GDataUploadStream by calling gdata_output_stream_close() on it, without cancelling
+ * the close operation. Once the stream has been closed, all network communication is guaranteed to have finished. Note that if a call to
+ * g_output_stream_close() is cancelled, g_output_stream_is_closed() will immediately start to return %TRUE, even if the #GDataUploadStream is still
+ * attempting to flush the network buffers asynchronously — consequently, gdata_upload_stream_get_response() may still return %NULL and a @length of
+ * <code class="literal">-1</code>. The only reliable way to determine if the stream has been fully closed in this situation is to check the results
+ * of gdata_upload_stream_get_response(), rather than g_output_stream_is_closed().
  *
  * Return value: the server's response to the upload, or %NULL
  *
