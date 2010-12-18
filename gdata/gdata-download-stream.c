@@ -66,8 +66,11 @@ static void create_network_thread (GDataDownloadStream *self, GError **error);
  * The GDataDownloadStream can be in one of several states:
  *  1. Pre-network activity. This is the state that the stream is created in. @network_thread and @cancellable are both %NULL, and @finished is %FALSE.
  *     The stream will remain in this state until gdata_download_stream_read() or gdata_download_stream_seek() are called for the first time.
+ *     @content_type and @content_length are at their default values (NULL and -1, respectively).
  *  2. Network activity. This state is entered when gdata_download_stream_read() or gdata_download_stream_seek() are called for the first time.
  *     @network_thread and @cancellable are created, while @finished remains %FALSE.
+ *     As soon as the headers are downloaded, which is guaranteed to be before the first call to gdata_download_stream_read() returns, @content_type
+ *     and @content_length are set from the headers. From this point onwards, they are immutable.
  *  3. Post-network activity. This state is reached once the download thread finishes downloading, either due to having downloaded everything, or due
  *     to being cancelled by gdata_download_stream_close(). @network_thread is non-%NULL, but meaningless; @cancellable is still a valid #GCancellable
  *     instance; and @finished is set to %TRUE. At the same time, @finished_cond is signalled. The stream remains in this state until it's destroyed.
@@ -220,13 +223,14 @@ static void
 gdata_download_stream_init (GDataDownloadStream *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOWNLOAD_STREAM, GDataDownloadStreamPrivate);
-	self->priv->content_length = -1;
 	self->priv->buffer = gdata_buffer_new ();
 
 	self->priv->finished = FALSE;
 	self->priv->finished_cond = g_cond_new ();
 	g_static_mutex_init (&(self->priv->finished_mutex));
 
+	self->priv->content_type = NULL;
+	self->priv->content_length = -1;
 	g_static_mutex_init (&(self->priv->content_mutex));
 }
 
@@ -490,7 +494,7 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (stream)->priv;
 	gulong cancelled_signal = 0, global_cancelled_signal = 0;
-	gboolean cancelled = FALSE;
+	gboolean cancelled = FALSE; /* must only be touched with ->finished_mutex held */
 	gboolean success = TRUE;
 	CancelledData data;
 	GError *child_error = NULL;
@@ -782,8 +786,16 @@ gdata_download_stream_get_download_uri (GDataDownloadStream *self)
 const gchar *
 gdata_download_stream_get_content_type (GDataDownloadStream *self)
 {
+	const gchar *content_type;
+
 	g_return_val_if_fail (GDATA_IS_DOWNLOAD_STREAM (self), NULL);
-	return self->priv->content_type;
+
+	g_static_mutex_lock (&(self->priv->content_mutex));
+	content_type = self->priv->content_type;
+	g_static_mutex_unlock (&(self->priv->content_mutex));
+
+	/* It's safe to return this, even though we're not taking a copy of it, as it's immutable once set. */
+	return content_type;
 }
 
 /**
@@ -800,8 +812,17 @@ gdata_download_stream_get_content_type (GDataDownloadStream *self)
 gssize
 gdata_download_stream_get_content_length (GDataDownloadStream *self)
 {
+	gssize content_length;
+
 	g_return_val_if_fail (GDATA_IS_DOWNLOAD_STREAM (self), -1);
-	return self->priv->content_length;
+
+	g_static_mutex_lock (&(self->priv->content_mutex));
+	content_length = self->priv->content_length;
+	g_static_mutex_unlock (&(self->priv->content_mutex));
+
+	g_assert (content_length >= -1);
+
+	return content_length;
 }
 
 /**
