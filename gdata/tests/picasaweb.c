@@ -145,7 +145,7 @@ test_download_thumbnails (gconstpointer _service)
 	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
 
 	/* Download a single thumbnail to a file for testing (in case we weren't compiled with GdkPixbuf support) */
-	download_stream = gdata_media_thumbnail_download (thumbnail, service, &error);
+	download_stream = gdata_media_thumbnail_download (thumbnail, service, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
 
@@ -182,7 +182,7 @@ test_download_thumbnails (gconstpointer _service)
 		thumbnail = GDATA_MEDIA_THUMBNAIL (node->data);
 
 		/* Prepare a download stream */
-		download_stream = gdata_media_thumbnail_download (thumbnail, service, &error);
+		download_stream = gdata_media_thumbnail_download (thumbnail, service, NULL, &error);
 		g_assert_no_error (error);
 		g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
 

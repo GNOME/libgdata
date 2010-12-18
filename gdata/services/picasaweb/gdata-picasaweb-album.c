@@ -65,7 +65,7 @@
  *			/<!-- -->* Do something fun with the thumbnails, like download and display them. We could just as easily download them into
  *			 * files using g_file_create() and g_output_stream_splice(), rather than create GdkPixbuf<!-- -->s directly from them.
  *			 * Note that this is a blocking operation. *<!-- -->/
- *			download_stream = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), NULL);
+ *			download_stream = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), NULL, NULL);
  *			pixbuf = gdk_pixbuf_new_from_stream (G_INPUT_STREAM (download_stream), NULL, NULL);
  *			g_object_unref (download_stream);
  *			/<!-- -->* ... *<!-- -->/

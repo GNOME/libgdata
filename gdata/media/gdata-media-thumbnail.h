@@ -67,7 +67,7 @@ guint gdata_media_thumbnail_get_height (GDataMediaThumbnail *self) G_GNUC_PURE;
 guint gdata_media_thumbnail_get_width (GDataMediaThumbnail *self) G_GNUC_PURE;
 gint64 gdata_media_thumbnail_get_time (GDataMediaThumbnail *self) G_GNUC_PURE;
 
-GDataDownloadStream *gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service,
+GDataDownloadStream *gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, GCancellable *cancellable,
                                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
