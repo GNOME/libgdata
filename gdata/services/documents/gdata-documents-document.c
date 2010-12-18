@@ -115,7 +115,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 
 	/* Get the download URI and create a stream for it */
 	download_uri = gdata_documents_document_get_download_uri (self, export_format);
-	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (_service, download_uri));
+	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (_service, download_uri, NULL));
 	g_free (download_uri);
 
 	return download_stream;

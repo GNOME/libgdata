@@ -563,5 +563,5 @@ gdata_media_content_download (GDataMediaContent *self, GDataService *service, GE
 
 	/* Get the download URI and create a stream for it */
 	src_uri = gdata_media_content_get_uri (self);
-	return GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (service, src_uri));
+	return GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (service, src_uri, NULL));
 }

@@ -97,7 +97,8 @@ enum {
 	PROP_SERVICE = 1,
 	PROP_DOWNLOAD_URI,
 	PROP_CONTENT_TYPE,
-	PROP_CONTENT_LENGTH
+	PROP_CONTENT_LENGTH,
+	PROP_CANCELLABLE
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataDownloadStream, gdata_download_stream, G_TYPE_INPUT_STREAM,
@@ -181,6 +182,27 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	                                                    "Content length", "The length (in bytes) of the file being downloaded.",
 	                                                    -1, G_MAXSSIZE, -1,
 	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDownloadStream:cancellable:
+	 *
+	 * An optional cancellable used to cancel the entire download operation. If a #GCancellable instance isn't provided for this property at
+	 * construction time (i.e. to gdata_download_stream_new()), one will be created internally and can be retrieved using
+	 * gdata_download_stream_get_cancellable() and used to cancel the download operation with g_cancellable_cancel() just as if it was passed to
+	 * gdata_download_stream_new().
+	 *
+	 * If the download operation is cancelled using this #GCancellable, any ongoing network activity will be stopped, and any pending or future
+	 * calls to #GInputStream API on the #GDataDownloadStream will return %G_IO_ERROR_CANCELLED. Note that the #GCancellable objects which can be
+	 * passed to individual #GInputStream operations will not cancel the download operation proper if cancelled — they will merely cancel that API
+	 * call. The only way to cancel the download operation completely is using #GDataDownloadStream:cancellable.
+	 *
+	 * Since: 0.8.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_CANCELLABLE,
+	                                 g_param_spec_object ("cancellable",
+	                                                      "Cancellable", "An optional cancellable used to cancel the entire download operation.",
+	                                                      G_TYPE_CANCELLABLE,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -217,6 +239,10 @@ gdata_download_stream_constructor (GType type, guint n_construct_params, GObject
 	/* Chain up to the parent class */
 	object = G_OBJECT_CLASS (gdata_download_stream_parent_class)->constructor (type, n_construct_params, construct_params);
 	priv = GDATA_DOWNLOAD_STREAM (object)->priv;
+
+	/* Create a #GCancellable for the entire download operation if one wasn't specified for #GDataDownloadStream:cancellable during construction */
+	if (priv->cancellable == NULL)
+		priv->cancellable = g_cancellable_new ();
 
 	/* Build the message */
 	priv->message = soup_message_new (SOUP_METHOD_GET, priv->download_uri);
@@ -297,6 +323,9 @@ gdata_download_stream_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_long (value, priv->content_length);
 			g_static_mutex_unlock (&(priv->content_mutex));
 			break;
+		case PROP_CANCELLABLE:
+			g_value_set_object (value, priv->cancellable);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -316,6 +345,10 @@ gdata_download_stream_set_property (GObject *object, guint property_id, const GV
 			break;
 		case PROP_DOWNLOAD_URI:
 			priv->download_uri = g_value_dup_string (value);
+			break;
+		case PROP_CANCELLABLE:
+			/* Construction only */
+			priv->cancellable = g_value_dup_object (value);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -529,42 +562,44 @@ static void
 create_network_thread (GDataDownloadStream *self, GError **error)
 {
 	GDataDownloadStreamPrivate *priv = self->priv;
-	GError *child_error = NULL;
 
-	g_assert (priv->cancellable == NULL);
 	g_assert (priv->network_thread == NULL);
-
-	priv->cancellable = g_cancellable_new ();
-	priv->network_thread = g_thread_create ((GThreadFunc) download_thread, self, TRUE, &child_error);
-
-	if (child_error != NULL) {
-		g_object_unref (priv->cancellable);
-		priv->cancellable = NULL;
-		g_propagate_error (error, child_error);
-	}
+	priv->network_thread = g_thread_create ((GThreadFunc) download_thread, self, TRUE, error);
 }
 
 /**
  * gdata_download_stream_new:
  * @service: a #GDataService
  * @download_uri: the URI to download
+ * @cancellable: (allow-none): a #GCancellable for the entire download stream, or %NULL
  *
  * Creates a new #GDataDownloadStream, allowing a file to be downloaded from a GData service using standard #GInputStream API.
  *
  * As well as the standard GIO errors, calls to the #GInputStream API on a #GDataDownloadStream can also return any relevant specific error from
  * #GDataServiceError, or %GDATA_SERVICE_ERROR_PROTOCOL_ERROR in the general case.
  *
+ * If a #GCancellable is provided in @cancellable, the download operation may be cancelled at any time from another thread using g_cancellable_cancel().
+ * In this case, any ongoing network activity will be stopped, and any pending or future calls to #GInputStream API on the #GDataDownloadStream will
+ * return %G_IO_ERROR_CANCELLED. Note that the #GCancellable objects which can be passed to individual #GInputStream operations will not cancel the
+ * download operation proper if cancelled — they will merely cancel that API call. The only way to cancel the download operation completely is using
+ * this @cancellable.
+ *
  * Return value: a new #GInputStream, or %NULL; unref with g_object_unref()
  *
- * Since: 0.5.0
+ * Since: 0.8.0
  **/
 GInputStream *
-gdata_download_stream_new (GDataService *service, const gchar *download_uri)
+gdata_download_stream_new (GDataService *service, const gchar *download_uri, GCancellable *cancellable)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (download_uri != NULL, NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 
-	return G_INPUT_STREAM (g_object_new (GDATA_TYPE_DOWNLOAD_STREAM, "download-uri", download_uri, "service", service, NULL));
+	return G_INPUT_STREAM (g_object_new (GDATA_TYPE_DOWNLOAD_STREAM,
+	                                     "download-uri", download_uri,
+	                                     "service", service,
+	                                     "cancellable", cancellable,
+	                                     NULL));
 }
 
 /**
@@ -635,4 +670,22 @@ gdata_download_stream_get_content_length (GDataDownloadStream *self)
 {
 	g_return_val_if_fail (GDATA_IS_DOWNLOAD_STREAM (self), -1);
 	return self->priv->content_length;
+}
+
+/**
+ * gdata_download_stream_get_cancellable:
+ * @self: a #GDataDownloadStream
+ *
+ * Gets the #GCancellable for the entire download operation, #GDataDownloadStream:cancellable.
+ *
+ * Return value: (transfer none): the #GCancellable for the entire download operation
+ *
+ * Since: 0.8.0
+ **/
+GCancellable *
+gdata_download_stream_get_cancellable (GDataDownloadStream *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOWNLOAD_STREAM (self), NULL);
+	g_assert (self->priv->cancellable != NULL);
+	return self->priv->cancellable;
 }
