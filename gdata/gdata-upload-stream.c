@@ -100,6 +100,7 @@ struct _GDataUploadStreamPrivate {
 	gsize network_bytes_written; /* the number of bytes which have been written to the network (signalled by write_cond) */
 	GCond *write_cond; /* signalled when a chunk has been written (protected by write_mutex) */
 
+	gboolean finished; /* set once the upload thread has finished (protected by response_mutex) */
 	guint response_status; /* set once we finish receiving the response (SOUP_STATUS_NONE otherwise) (protected by response_mutex) */
 	GCond *finished_cond; /* signalled when sending the message (and receiving the response) is finished (protected by response_mutex) */
 	GError *response_error; /* error asynchronously set by the network thread, and picked up by the main thread when appropriate */
@@ -663,8 +664,20 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 
 	g_static_mutex_lock (&(priv->response_mutex));
 
-	/* If an operation is still in progress, and no response has been received yet… */
-	if (priv->response_status == SOUP_STATUS_NONE) {
+	/* If an operation is still in progress, the upload thread hasn't finished yet… */
+	if (priv->finished == FALSE) {
+		/* We've reached the end of the stream, so append the footer if the entire operation hasn't been cancelled. */
+		if (priv->entry != NULL && g_cancellable_is_cancelled (priv->cancellable) == FALSE) {
+			const gchar *footer = "\n--" BOUNDARY_STRING "--";
+			gsize footer_length = strlen (footer);
+
+			gdata_buffer_push_data (priv->buffer, (const guint8*) footer, footer_length);
+
+			g_static_mutex_lock (&(priv->write_mutex));
+			priv->message_bytes_outstanding += footer_length;
+			g_static_mutex_unlock (&(priv->write_mutex));
+		}
+
 		/* Mark the buffer as having reached EOF, and the write operation will close in its own time */
 		gdata_buffer_push_data (priv->buffer, NULL, 0);
 
@@ -675,19 +688,29 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 			g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->response_mutex)));
 	}
 
+	g_assert (priv->response_status == SOUP_STATUS_NONE);
+	g_assert (priv->response_error == NULL);
+
 	/* Error handling */
-	if (priv->response_status == SOUP_STATUS_NONE && cancelled == TRUE) {
-		/* Cancelled? If response_status is non-zero, the network activity finished before the gdata_upload_stream_close() operation was
-		 * cancelled, so we don't need to return an error. */
+	if (priv->finished == FALSE && cancelled == TRUE) {
+		/* Cancelled? If ->finished == TRUE, the network activity finished before the gdata_upload_stream_close() operation was cancelled, so
+		 * we don't need to return an error. */
 		g_assert (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == TRUE ||
 		          g_cancellable_set_error_if_cancelled (priv->cancellable, &child_error) == TRUE);
 		priv->response_status = SOUP_STATUS_CANCELLED;
 		success = FALSE;
-	} else if (priv->response_error != NULL) {
-		/* Report any errors which have been set by the network thread */
-		g_propagate_error (&child_error, priv->response_error);
-		priv->response_error = NULL;
+	} else if (SOUP_STATUS_IS_SUCCESSFUL (priv->message->status_code) == FALSE) {
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (priv->service);
+
+		/* Parse the error */
+		g_assert (klass->parse_error_response != NULL);
+		klass->parse_error_response (priv->service, GDATA_OPERATION_UPLOAD, priv->message->status_code, priv->message->reason_phrase,
+		                             priv->message->response_body->data, priv->message->response_body->length, &child_error);
+		priv->response_status = priv->message->status_code;
 		success = FALSE;
+	} else {
+		/* Success! Set the response status */
+		priv->response_status = priv->message->status_code;
 	}
 
 	g_assert (priv->response_status != SOUP_STATUS_NONE && (SOUP_STATUS_IS_SUCCESSFUL (priv->response_status) || child_error != NULL));
@@ -753,24 +776,13 @@ write_next_chunk (GDataUploadStream *self, SoupMessage *message)
 	if (length > 0)
 		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_COPY, next_buffer, length);
 
+	/* Finish off the request body if we've reached EOF (i.e. the stream has been closed) */
 	if (reached_eof == TRUE) {
-		/* We've reached the end of the stream, so append the footer (if appropriate) and stop */
-		g_static_mutex_lock (&(priv->response_mutex));
 		g_static_mutex_lock (&(priv->write_mutex));
-
-		if (priv->entry != NULL) {
-			const gchar *footer = "\n--" BOUNDARY_STRING "--";
-			gsize footer_length = strlen (footer);
-
-			soup_message_body_append (priv->message->request_body, SOUP_MEMORY_STATIC, footer, footer_length);
-			priv->network_bytes_outstanding += footer_length;
-		}
+		g_assert (priv->message_bytes_outstanding == 0);
+		g_static_mutex_unlock (&(priv->write_mutex));
 
 		soup_message_body_complete (priv->message->request_body);
-		g_assert (priv->message_bytes_outstanding == 0);
-
-		g_static_mutex_unlock (&(priv->write_mutex));
-		g_static_mutex_unlock (&(priv->response_mutex));
 	}
 
 	soup_session_unpause_message (priv->session, priv->message);
@@ -812,6 +824,8 @@ upload_thread (GDataUploadStream *self)
 {
 	GDataUploadStreamPrivate *priv = self->priv;
 
+	g_object_ref (self);
+
 	g_assert (priv->cancellable != NULL);
 
 	/* Connect to the wrote-* signals so we can prepare the next chunk for transmission */
@@ -827,25 +841,12 @@ upload_thread (GDataUploadStream *self)
 		g_cond_signal (priv->write_cond);
 	g_static_mutex_unlock (&(priv->write_mutex));
 
-	g_assert (priv->response_status == SOUP_STATUS_NONE);
-	g_assert (priv->response_error == NULL);
-
-	/* Deal with the response if it was unsuccessful */
-	if (SOUP_STATUS_IS_SUCCESSFUL (priv->message->status_code) == FALSE) {
-		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (priv->service);
-
-		/* Error! Store it in the structure, and it'll be returned by the next function in the main thread
-		 * which can give an error response.*/
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (priv->service, GDATA_OPERATION_UPLOAD, priv->message->status_code, priv->message->reason_phrase,
-		                             priv->message->response_body->data, priv->message->response_body->length, &(priv->response_error));
-	}
-
-	/* Signal the main thread that the response is ready (good or bad) */
-	priv->response_status = priv->message->status_code;
+	/* Signal that the operation has finished */
+	priv->finished = TRUE;
 	g_cond_signal (priv->finished_cond);
-
 	g_static_mutex_unlock (&(priv->response_mutex));
+
+	g_object_unref (self);
 
 	return NULL;
 }
