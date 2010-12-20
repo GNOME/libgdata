@@ -1226,7 +1226,7 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
 		message = _gdata_service_build_message (self, SOUP_METHOD_GET, feed_uri, etag, FALSE);
 	}
 
-	/* TODO: Document that cancellation only applies to network activity; not to the processing done afterwards */
+	/* Note that cancellation only applies to network activity; not to the processing done afterwards */
 	status = _gdata_service_send_message (self, message, cancellable, error);
 
 	if (status == SOUP_STATUS_NOT_MODIFIED || status == SOUP_STATUS_CANCELLED) {
@@ -1619,7 +1619,10 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
  * The service will return an updated version of the entry, which is the return value of this function on success.
  *
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
- * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
+ * If the operation was cancelled before or during network activity, the error %G_IO_ERROR_CANCELLED will be returned. Cancellation has no effect
+ * after network activity has finished, however, and the insertion will return successfully (or return an error sent by the server) if it is first
+ * cancelled after network activity has finished. See the <link linkend="cancellable-support">overview of cancellation</link> for
+ * more details.
  *
  * If the entry is marked as already having been inserted a %GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED error will be returned immediately
  * (there will be no network requests).
@@ -1780,7 +1783,10 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
  * The service will return an updated version of the entry, which is the return value of this function on success.
  *
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
- * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
+ * If the operation was cancelled before or during network activity, the error %G_IO_ERROR_CANCELLED will be returned. Cancellation has no effect
+ * after network activity has finished, however, and the update will return successfully (or return an error sent by the server) if it is first
+ * cancelled after network activity has finished. See the <link linkend="cancellable-support">overview of cancellation</link> for
+ * more details.
  *
  * If there is an error updating the entry, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned. Currently, subclasses
  * <emphasis>cannot</emphasis> cannot override this or provide more specific errors.
@@ -1930,7 +1936,10 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
  * protocol.
  *
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
- * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
+ * If the operation was cancelled before or during network activity, the error %G_IO_ERROR_CANCELLED will be returned. Cancellation has no effect
+ * after network activity has finished, however, and the deletion will return successfully (or return an error sent by the server) if it is first
+ * cancelled after network activity has finished. See the <link linkend="cancellable-support">overview of cancellation</link> for
+ * more details.
  *
  * If there is an error deleting the entry, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned. Currently, subclasses
  * <emphasis>cannot</emphasis> cannot override this or provide more specific errors.
