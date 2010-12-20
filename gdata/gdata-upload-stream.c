@@ -27,14 +27,112 @@
  *
  * Once a #GDataUploadStream is instantiated with gdata_upload_stream_new(), the standard #GOutputStream API can be used on the stream to upload
  * the file. Network communication may not actually begin until the first call to g_output_stream_write(), so having a #GDataUploadStream around is no
- * guarantee that the file is being uploaded.
+ * guarantee that data is being uploaded.
  *
- * Uploads of a file, or a file with associated metadata (a #GDataEntry) may take place, but if you want to simply upload a single #GDataEntry,
- * use gdata_service_insert_entry() instead. #GDataUploadStream is for large streaming uploads.
+ * Uploads of a file, or a file with associated metadata (a #GDataEntry) should use #GDataUploadStream, but if you want to simply upload a single
+ * #GDataEntry, use gdata_service_insert_entry() instead. #GDataUploadStream is for large streaming uploads.
  *
  * Once an upload is complete, the server's response can be retrieved from the #GDataUploadStream using gdata_upload_stream_get_response(). In order
  * for network communication to be guaranteed to have stopped (and thus the response definitely available), g_output_stream_close() must be called
  * on the #GDataUploadStream first. Otherwise, gdata_upload_stream_get_response() may return saying that the operation is still in progress.
+ *
+ * If the server returns an error instead of a success response, the error will be returned by g_output_stream_close() as a #GDataServiceError.
+ *
+ * The entire upload operation can be cancelled using the #GCancellable instance provided to gdata_upload_stream_new(), or returned by
+ * gdata_upload_stream_get_cancellable(). Cancelling this at any time will cause all future #GOutputStream method calls to return
+ * %G_IO_ERROR_CANCELLED. If any #GOutputStream methods are in the process of being called, they will be cancelled and return %G_IO_ERROR_CANCELLED as
+ * soon as possible.
+ *
+ * Note that cancelling an individual method call (such as a call to g_output_stream_write()) using the #GCancellable parameter of the method will not
+ * cancel the upload as a whole — just that particular method call. In the case of g_output_stream_write(), this will cause it to return the number of
+ * bytes it has successfully written up to the point of cancellation (up to the requested number of bytes), or return a %G_IO_ERROR_CANCELLED if it
+ * had not managed to write any bytes to the network by that point. This is also the behaviour of g_output_stream_write() when the upload operation as
+ * a whole is cancelled.
+ *
+ * In the case of g_output_stream_close(), the call will return immediately if network activity hasn't yet started. If it has, the network activity
+ * will be cancelled, regardless of whether the call to g_output_stream_close() is cancelled. Cancelling a pending call to g_output_stream_close()
+ * (either using the method's #GCancellable, or by cancelling the upload stream as a whole) will cause it to stop waiting for the network activity to
+ * finish, and return %G_IO_ERROR_CANCELLED immediately. Network activity will continue to be shut down in the background.
+ *
+ * Any outstanding data is guaranteed to be written to the network successfully even if a call to g_output_stream_close() is cancelled. However, if
+ * the upload stream as a whole is cancelled using #GDataUploadStream:cancellable, no more data will be sent over the network, and the network
+ * connection will be closed immediately. i.e. #GDataUploadStream will do its best to instruct the server to cancel the upload and any associated
+ * server-side changes of state.
+ *
+ * If the server returns an error message (for example, if the user is not correctly authenticated or doesn't have suitable permissions to upload
+ * from the given URI), it will be returned as a #GDataServiceError by g_output_stream_close().
+ *
+ * <example>
+ * 	<title>Uploading from a File</title>
+ * 	<programlisting>
+ *	GDataService *service;
+ *	GCancellable *cancellable;
+ *	GInputStream *input_stream;
+ *	GOutputStream *upload_stream;
+ *	GFile *file;
+ *	GFileInfo *file_info;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Get the file to upload *<!-- -->/
+ *	file = get_file_to_upload ();
+ *	file_info = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+ *	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+ *
+ *	if (file_info == NULL) {
+ *		g_error ("Error getting file info: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (file);
+ *		return;
+ *	}
+ *
+ *	input_stream = g_file_read (file, NULL, &error);
+ *	g_object_unref (file);
+ *
+ *	if (input_stream == NULL) {
+ *		g_error ("Error getting file input stream: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (file_info);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Create the upload stream *<!-- -->/
+ *	service = create_my_service ();
+ *	cancellable = g_cancellable_new (); /<!-- -->* cancel this to cancel the entire upload operation *<!-- -->/
+ *	upload_stream = gdata_upload_stream_new (service, SOUP_METHOD_POST, upload_uri, NULL, g_file_info_get_display_name (file_info),
+ *	                                         g_file_info_get_content_type (file_info), cancellable);
+ *	g_object_unref (file_info);
+ *
+ *	/<!-- -->* Perform the upload asynchronously *<!-- -->/
+ *	g_output_stream_splice_async (upload_stream, input_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+ *	                              G_PRIORITY_DEFAULT, NULL, (GAsyncReadyCallback) upload_splice_cb, NULL);
+ *
+ *	g_object_unref (upload_stream);
+ *	g_object_unref (input_stream);
+ *	g_object_unref (cancellable);
+ *	g_object_unref (service);
+ *
+ *	static void
+ *	upload_splice_cb (GOutputStream *upload_stream, GAsyncResult *result, gpointer user_data)
+ *	{
+ *		gssize length;
+ *		GError *error = NULL;
+ *
+ *		g_output_stream_splice_finish (upload_stream, result, &error);
+ *
+ *		if (error != NULL && g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) == FALSE)) {
+ *			/<!-- -->* Error upload the file; potentially an I/O error (GIOError), or an error response from the server
+ *			 * (GDataServiceError). *<!-- -->/
+ *			g_error ("Error uploading file: %s", error->message);
+ *			g_error_free (error);
+ *		}
+ *
+ *		/<!-- -->* If the upload was successful, carry on to parse the result. Note that this will normally be handled by methods like
+ *		 * gdata_youtube_service_finish_video_upload(), gdata_picasaweb_service_finish_file_upload() and
+ *		 * gdata_documents_service_finish_upload() *<!-- -->/
+ *		parse_server_result (gdata_upload_stream_get_response (GDATA_UPLOAD_STREAM (upload_stream), &length), length);
+ *	}
+ * 	</programlisting>
+ * </example>
  *
  * Since: 0.5.0
  **/
@@ -48,9 +146,13 @@
  * off the buffer, up to its chunk size, which is a non-blocking operation.
  *
  * The write() and close() operations on the output stream are synchronised with the network thread, so that the write() call only returns once the
- * network thread has written a chunk (although we don't guarantee that it's the same chunk which was passed to the write() function), and the
- * close() call only returns once all network activity has finished (including receiving the response from the server). Async versions of these calls
- * are provided by GOutputStream.
+ * network thread has written at least as many bytes as were passed to the write() call, and the close() call only returns once all network activity
+ * has finished (including receiving the response from the server). Async versions of these calls are provided by GOutputStream.
+ *
+ * The number of bytes in the various buffers are recorded using:
+ *  • message_bytes_outstanding: the number of bytes in the GDataBuffer which are waiting to be written to the SoupMessageBody
+ *  • network_bytes_outstanding: the number of bytes which have been written to the SoupMessageBody, and are waiting to be written to the network
+ *  • network_bytes_written: the total number of bytes which have been successfully written to the network
  *
  * Mutex locking order:
  *  1. response_mutex
@@ -168,13 +270,13 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	/**
 	 * GDataUploadStream:upload-uri:
 	 *
-	 * The URI of the file to upload.
+	 * The URI to upload the data and metadata to.
 	 *
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPLOAD_URI,
 	                                 g_param_spec_string ("upload-uri",
-	                                                      "Upload URI", "The URI of the file to upload.",
+	                                                      "Upload URI", "The URI to upload the data and metadata to.",
 	                                                      NULL,
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -194,7 +296,7 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	/**
 	 * GDataUploadStream:slug:
 	 *
-	 * The slug of the file being uploaded.
+	 * The slug of the file being uploaded. This is usually the display name of the file (i.e. as returned by g_file_info_get_display_name()).
 	 *
 	 * Since: 0.5.0
 	 **/
@@ -207,7 +309,7 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	/**
 	 * GDataUploadStream:content-type:
 	 *
-	 * The content type of the file being uploaded.
+	 * The content type of the file being uploaded (i.e. as returned by g_file_info_get_content_type()).
 	 *
 	 * Since: 0.5.0
 	 **/
