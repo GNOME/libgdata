@@ -142,7 +142,6 @@ void gdata_picasaweb_file_set_coordinates (GDataPicasaWebFile *self, gdouble lat
 
 /* TODO implement is video */
 /* TODO implement get comments */
-/* TODO implement get location */
 
 G_END_DECLS
 

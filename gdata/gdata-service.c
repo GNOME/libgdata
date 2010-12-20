@@ -962,7 +962,7 @@ _gdata_service_build_message (GDataService *self, const gchar *method, const gch
 }
 
 typedef struct {
-	GStaticMutex mutex; /* mutex TODO */
+	GStaticMutex mutex; /* mutex to prevent cancellation before the message has been added to the session's message queue */
 	SoupSession *session;
 	SoupMessage *message;
 } MessageData;

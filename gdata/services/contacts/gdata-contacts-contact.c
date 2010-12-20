@@ -2948,7 +2948,6 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	guint status;
 	guint8 *data;
 
-	/* TODO: async version */
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (service), NULL);
 	g_return_val_if_fail (length != NULL, NULL);

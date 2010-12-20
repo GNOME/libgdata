@@ -376,7 +376,6 @@ GDataFeed *
 gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataQuery *query, GCancellable *cancellable,
                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
-	/* TODO: Async variant */
 	const gchar *uri;
 
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);

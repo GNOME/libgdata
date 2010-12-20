@@ -46,9 +46,9 @@ static void gdata_contacts_query_set_property (GObject *object, guint property_i
 static void get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboolean *params_started);
 
 struct _GDataContactsQueryPrivate {
-	gchar *order_by; /* TODO: enum? #defined values? */
+	gchar *order_by; /* TODO: #defined values */
 	gboolean show_deleted;
-	gchar *sort_order; /* TODO: enum? */
+	gchar *sort_order; /* TODO: #defined values */
 	gchar *group;
 };
 

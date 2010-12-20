@@ -46,11 +46,11 @@ static void get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *que
 
 struct _GDataCalendarQueryPrivate {
 	gboolean future_events;
-	gchar *order_by; /* TODO: enum? #defined values? */
+	gchar *order_by; /* TODO: #defined values */
 	gint64 recurrence_expansion_start;
 	gint64 recurrence_expansion_end;
 	gboolean single_events;
-	gchar *sort_order; /* TODO: enum? */
+	gchar *sort_order; /* TODO: #defined values */
 	gint64 start_min;
 	gint64 start_max;
 	gchar *timezone;

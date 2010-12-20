@@ -806,7 +806,6 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* TODO:
 	 * - Finish supporting all tags
 	 * - Check all tags here are valid for insertions and updates
-	 * - add GML support
 	 */
 }
 
