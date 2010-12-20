@@ -1023,9 +1023,14 @@ _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message
 	}
 
 	/* Only send the message if it hasn't already been cancelled. There is no race condition here for the above reasons: if the cancellable has
-	 * been cancelled, it's because it was cancelled before we called g_cancellable_connect(). */
+	 * been cancelled, it's because it was cancelled before we called g_cancellable_connect().
+	 *
+	 * Otherwise, manually set the message's status code to SOUP_STATUS_CANCELLED, as the message was cancelled before even being queued to be
+	 * sent. */
 	if (cancellable == NULL || g_cancellable_is_cancelled (cancellable) == FALSE)
 		soup_session_send_message (session, message);
+	else
+		soup_message_set_status (message, SOUP_STATUS_CANCELLED);
 
 	/* Clean up the cancellation code */
 	if (cancellable != NULL)
@@ -1035,9 +1040,8 @@ _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message
 		g_cancellable_disconnect (cancellable, cancel_signal);
 
 	/* Set the cancellation error if applicable */
-	if (message->status_code == SOUP_STATUS_NONE)
-		g_assert (cancellable == NULL || g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE);
-	else if (message->status_code == SOUP_STATUS_CANCELLED)
+	g_assert (message->status_code != SOUP_STATUS_NONE);
+	if (message->status_code == SOUP_STATUS_CANCELLED)
 		g_assert (cancellable != NULL && g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE);
 }
 
