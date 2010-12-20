@@ -59,6 +59,7 @@
 
 #include <config.h>
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <string.h>
 
 #include "gdata-upload-stream.h"
@@ -614,9 +615,9 @@ close_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 /* It's guaranteed that we have set ->response_status and ->response_error and are done with *all* network activity before this returns, unless it's
  * cancelled. This means that it's safe to call gdata_upload_stream_get_response() once a call to close() has returned without being cancelled.
  *
- * If g_output_stream_close() has already been called once on this stream, g_output_stream_is_closed() is set to %TRUE, and all future calls to
- * g_output_stream_close() will immediately return, i.e. gdata_upload_stream_close() is guaranteed to only ever run once (even if the first call was
- * cancelled or returned an error).
+ * Even though calling g_output_stream_close() multiple times on this stream is guaranteed to call gdata_upload_stream_close() at most once, other
+ * GIO methods (notably g_output_stream_splice()) can call gdata_upload_stream_close() directly. Consequently, we need to be careful to be idempotent
+ * after the first call.
  *
  * If the network thread hasn't yet been started (i.e. gdata_upload_stream_write() hasn't been called at all yet), %TRUE will be returned immediately.
  *
@@ -641,6 +642,15 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 	/* If the operation was never started, return successfully immediately */
 	if (priv->network_thread == NULL)
 		return TRUE;
+
+	/* If we've already closed the stream, return G_IO_ERROR_CLOSED */
+	g_static_mutex_lock (&(priv->response_mutex));
+	if (priv->response_status != SOUP_STATUS_NONE) {
+		g_static_mutex_unlock (&(priv->response_mutex));
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CLOSED, _("Stream is already closed"));
+		return FALSE;
+	}
+	g_static_mutex_unlock (&(priv->response_mutex));
 
 	/* Allow cancellation */
 	data.upload_stream = GDATA_UPLOAD_STREAM (stream);

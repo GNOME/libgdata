@@ -39,6 +39,7 @@
 
 #include <config.h>
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
 #include "gdata-download-stream.h"
 #include "gdata-buffer.h"
@@ -476,9 +477,9 @@ close_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 	g_static_mutex_unlock (&(priv->finished_mutex));
 }
 
-/* If g_input_stream_close() has already been called once on this stream, g_input_stream_is_closed() is set to %TRUE, and all future calls to
- * g_input_stream_close() will immediately return, i.e. gdata_download_stream_close() is guaranteed to only ever run once (even if the first call was
- * cancelled or returned an error).
+/* Even though calling g_input_stream_close() multiple times on this stream is guaranteed to call gdata_download_stream_close() at most once, other
+ * GIO methods (notably g_output_stream_splice()) can call gdata_download_stream_close() directly. Consequently, we need to be careful to be idempotent
+ * after the first call.
  *
  * If the network thread hasn't yet been started (i.e. gdata_download_stream_read() hasn't been called at all yet), %TRUE will be returned immediately.
  *
@@ -502,6 +503,15 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 	/* If the operation was never started, return successfully immediately */
 	if (priv->network_thread == NULL)
 		return TRUE;
+
+	/* If we've already closed the stream, return G_IO_ERROR_CLOSED */
+	g_static_mutex_lock (&(priv->finished_mutex));
+	if (priv->finished == FALSE) {
+		g_static_mutex_unlock (&(priv->finished_mutex));
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CLOSED, _("Stream is already closed"));
+		return FALSE;
+	}
+	g_static_mutex_unlock (&(priv->finished_mutex));
 
 	/* Allow cancellation */
 	data.download_stream = GDATA_DOWNLOAD_STREAM (stream);
