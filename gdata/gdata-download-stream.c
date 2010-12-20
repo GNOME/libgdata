@@ -34,6 +34,64 @@
  * #GObject::notify <code type="literal">content-type</code> and <code type="literal">content-length</code> details to be notified as
  * soon as the data is available.
  *
+ * The entire download operation can be cancelled using the #GCancellable instance provided to gdata_download_stream_new(), or returned by
+ * gdata_download_stream_get_cancellable(). Cancelling this at any time will cause all future #GInputStream method calls to return
+ * %G_IO_ERROR_CANCELLED. If any #GInputStream methods are in the process of being called, they will be cancelled and return %G_IO_ERROR_CANCELLED as
+ * soon as possible.
+ *
+ * Note that cancelling an individual method call (such as a call to g_input_stream_read()) using the #GCancellable parameter of the method will not
+ * cancel the download as a whole — just that particular method call. In the case of g_input_stream_read(), this will cause it to successfully return
+ * any data that it has in memory at the moment (up to the requested number of bytes), or return a %G_IO_ERROR_CANCELLED if it was blocking on receiving
+ * data from the network. This is also the behaviour of g_input_stream_read() when the download operation as a whole is cancelled.
+ *
+ * In the case of g_input_stream_close(), the call will return immediately if network activity hasn't yet started. If it has, the network activity will
+ * be cancelled, regardless of whether the call to g_input_stream_close() is cancelled. Cancelling a pending call to g_input_stream_close() (either
+ * using the method's #GCancellable, or by cancelling the download stream as a whole) will cause it to stop waiting for the network activity to finish,
+ * and return %G_IO_ERROR_CANCELLED immediately. Network activity will continue to be shut down in the background.
+ *
+ * If the server returns an error message (for example, if the user is not correctly authenticated or doesn't have suitable permissions to download
+ * from the given URI), it will be returned as a #GDataServiceError by the first call to g_input_stream_read().
+ *
+ * <example>
+ * 	<title>Downloading to a File</title>
+ * 	<programlisting>
+ *	GDataService *service;
+ *	GCancellable *cancellable;
+ *	GInputStream *download_stream;
+ *	GOutputStream *output_stream;
+ *
+ *	/<!-- -->* Create the download stream *<!-- -->/
+ *	service = create_my_service ();
+ *	cancellable = g_cancellable_new (); /<!-- -->* cancel this to cancel the entire download operation *<!-- -->/
+ *	download_stream = gdata_download_stream_new (service, download_uri, cancellable);
+ *	output_stream = create_file_and_return_output_stream ();
+ *
+ *	/<!-- -->* Perform the download asynchronously *<!-- -->/
+ *	g_output_stream_splice_async (output_stream, download_stream, G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+ *	                              G_PRIORITY_DEFAULT, NULL, (GAsyncReadyCallback) download_splice_cb, NULL);
+ *
+ *	g_object_unref (output_stream);
+ *	g_object_unref (download_stream);
+ *	g_object_unref (cancellable);
+ *	g_object_unref (service);
+ *
+ *	static void
+ *	download_splice_cb (GOutputStream *output_stream, GAsyncResult *result, gpointer user_data)
+ *	{
+ *		GError *error = NULL;
+ *
+ *		g_output_stream_splice_finish (output_stream, result, &error);
+ *
+ *		if (error != NULL && g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) == FALSE)) {
+ *			/<!-- -->* Error downloading the file; potentially an I/O error (GIOError), or an error response from the server
+ *			 * (GDataServiceError). You might want to delete the newly created file because of the error. *<!-- -->/
+ *			g_error ("Error downloading file: %s", error->message);
+ *			g_error_free (error);
+ *		}
+ *	}
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.5.0
  **/
 
@@ -157,7 +215,8 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	/**
 	 * GDataDownloadStream:content-type:
 	 *
-	 * The content type of the file being downloaded.
+	 * The content type of the file being downloaded. This will initially be %NULL, and will be populated as soon as the appropriate header is
+	 * received from the server. Its value will never change after this.
 	 *
 	 * Note that change notifications for this property (#GObject::notify emissions) may be emitted in threads other than the one which created
 	 * the #GDataDownloadStream. It is the client's responsibility to ensure that any notification signal handlers are either multi-thread safe
@@ -174,7 +233,8 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	/**
 	 * GDataDownloadStream:content-length:
 	 *
-	 * The length (in bytes) of the file being downloaded.
+	 * The length (in bytes) of the file being downloaded. This will initially be <code class="literal">-1</code>, and will be populated as soon as
+	 * the appropriate header is received from the server. Its value will never change after this.
 	 *
 	 * Note that change notifications for this property (#GObject::notify emissions) may be emitted in threads other than the one which created
 	 * the #GDataDownloadStream. It is the client's responsibility to ensure that any notification signal handlers are either multi-thread safe
