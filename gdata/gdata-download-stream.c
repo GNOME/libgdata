@@ -672,10 +672,20 @@ got_chunk_cb (SoupMessage *message, SoupBuffer *buffer, GDataDownloadStream *sel
 	gdata_buffer_push_data (self->priv->buffer, (const guint8*) buffer->data, buffer->length);
 }
 
-static void
-finished_cb (SoupMessage *message, GDataDownloadStream *self)
+static gpointer
+download_thread (GDataDownloadStream *self)
 {
 	GDataDownloadStreamPrivate *priv = self->priv;
+
+	g_object_ref (self);
+
+	g_assert (priv->network_cancellable != NULL);
+
+	/* Connect to the got-headers signal so we can notify clients of the values of content-type and content-length */
+	g_signal_connect (priv->message, "got-headers", (GCallback) got_headers_cb, self);
+	g_signal_connect (priv->message, "got-chunk", (GCallback) got_chunk_cb, self);
+
+	_gdata_service_actually_send_message (priv->session, priv->message, priv->network_cancellable, NULL);
 
 	/* Mark the buffer as having reached EOF */
 	gdata_buffer_push_data (priv->buffer, NULL, 0);
@@ -685,21 +695,8 @@ finished_cb (SoupMessage *message, GDataDownloadStream *self)
 	priv->finished = TRUE;
 	g_cond_signal (priv->finished_cond);
 	g_static_mutex_unlock (&(priv->finished_mutex));
-}
 
-static gpointer
-download_thread (GDataDownloadStream *self)
-{
-	GDataDownloadStreamPrivate *priv = self->priv;
-
-	g_assert (priv->network_cancellable != NULL);
-
-	/* Connect to the got-headers signal so we can notify clients of the values of content-type and content-length */
-	g_signal_connect (priv->message, "got-headers", (GCallback) got_headers_cb, self);
-	g_signal_connect (priv->message, "got-chunk", (GCallback) got_chunk_cb, self);
-	g_signal_connect (priv->message, "finished", (GCallback) finished_cb, self);
-
-	_gdata_service_actually_send_message (priv->session, priv->message, priv->network_cancellable, NULL);
+	g_object_unref (self);
 
 	return NULL;
 }
