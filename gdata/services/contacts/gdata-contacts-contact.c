@@ -2829,9 +2829,12 @@ gdata_contacts_contact_remove_group (GDataContactsContact *self, const gchar *hr
  * @self: a #GDataContactsContact
  * @href: the group's ID URI
  *
- * Returns whether the contact has recently been removed from the given group. This
+ * Returns whether the contact has recently been removed from the given group on the server. This
  * will always return %FALSE unless #GDataContactsQuery:show-deleted has been set to
  * %TRUE for the query which returned the contact.
+ *
+ * If you've just removed a contact from a group locally using gdata_contacts_contact_remove_group(), %FALSE will still be returned by this function,
+ * as the change hasn't been sent to the server.
  *
  * Return value: %TRUE if the contact has recently been removed from the group, %FALSE otherwise
  *
