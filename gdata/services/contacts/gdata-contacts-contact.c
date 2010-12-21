@@ -1147,12 +1147,6 @@ gdata_contacts_contact_is_group_deleted (GDataContactsContact *self, const gchar
 	return GPOINTER_TO_UINT (g_hash_table_lookup (self->priv->groups, href));
 }
 
-static void
-get_groups_cb (const gchar *href, gpointer deleted, GList **groups)
-{
-	*groups = g_list_prepend (*groups, (gchar*) href);
-}
-
 /**
  * gdata_contacts_contact_get_groups:
  * @self: a #GDataContactsContact
@@ -1166,11 +1160,20 @@ get_groups_cb (const gchar *href, gpointer deleted, GList **groups)
 GList *
 gdata_contacts_contact_get_groups (GDataContactsContact *self)
 {
+	GHashTableIter iter;
+	const gchar *href;
+	gpointer value;
 	GList *groups = NULL;
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 
-	g_hash_table_foreach (self->priv->groups, (GHFunc) get_groups_cb, &groups);
+	g_hash_table_iter_init (&iter, self->priv->groups);
+	while (g_hash_table_iter_next (&iter, (gpointer*) &href, &value) == TRUE) {
+		/* Add the group to the list as long as it hasn't been deleted */
+		if (GPOINTER_TO_UINT (value) == FALSE)
+			groups = g_list_prepend (groups, (gpointer) href);
+	}
+
 	return g_list_reverse (groups);
 }
 
