@@ -1760,6 +1760,51 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 }
 
 static void
+test_groups_membership (void)
+{
+	GDataContactsContact *contact;
+	GList *groups;
+
+	/* Create a new contact with no groups */
+	contact = gdata_contacts_contact_new (NULL);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	g_assert (gdata_contacts_contact_get_groups (contact) == NULL);
+	g_assert (gdata_contacts_contact_is_group_deleted (contact, "http://notagroup.com/") == FALSE);
+
+	/* Add a group */
+	gdata_contacts_contact_add_group (contact, "http://foo.com/group1");
+	g_assert (gdata_contacts_contact_is_group_deleted (contact, "http://foo.com/group1") == FALSE);
+
+	groups = gdata_contacts_contact_get_groups (contact);
+	g_assert_cmpint (g_list_length (groups), ==, 1);
+	g_assert_cmpstr (groups->data, ==, "http://foo.com/group1");
+
+	/* Add another group */
+	gdata_contacts_contact_add_group (contact, "http://foo.com/group2");
+	g_assert (gdata_contacts_contact_is_group_deleted (contact, "http://foo.com/group1") == FALSE);
+	g_assert (gdata_contacts_contact_is_group_deleted (contact, "http://foo.com/group2") == FALSE);
+
+	groups = gdata_contacts_contact_get_groups (contact);
+	g_assert_cmpint (g_list_length (groups), ==, 2);
+	if (strcmp (groups->data, "http://foo.com/group1") == 0)
+		g_assert_cmpstr (groups->next->data, ==, "http://foo.com/group2");
+	else if (strcmp (groups->data, "http://foo.com/group2") == 0)
+		g_assert_cmpstr (groups->next->data, ==, "http://foo.com/group1");
+	else
+		g_assert_not_reached ();
+
+	/* Remove the first group */
+	gdata_contacts_contact_remove_group (contact, "http://foo.com/group1");
+	g_assert (gdata_contacts_contact_is_group_deleted (contact, "http://foo.com/group1") == FALSE); /* hasn't been propagated to the server */
+
+	groups = gdata_contacts_contact_get_groups (contact);
+	g_assert_cmpint (g_list_length (groups), ==, 1);
+	g_assert_cmpstr (groups->data, ==, "http://foo.com/group2");
+
+	g_object_unref (contact);
+}
+
+static void
 test_id (void)
 {
 	GDataContactsContact *contact;
@@ -1837,6 +1882,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/contacts/groups/parser/normal", test_groups_parser_normal);
 	g_test_add_func ("/contacts/groups/parser/system", test_groups_parser_system);
 	g_test_add_func ("/contacts/groups/parser/error_handling", test_groups_parser_error_handling);
+	g_test_add_func ("/contacts/groups/membership", test_groups_membership);
 
 	g_test_add_func ("/contacts/id", test_id);
 
