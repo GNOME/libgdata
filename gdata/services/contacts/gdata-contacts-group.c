@@ -37,6 +37,58 @@
  * gdata_contacts_group_get_extended_property(), are provided as a method of storing client-specific data which shouldn't be seen or be editable
  * by the user, such as IDs and cache times.
  *
+ * <example>
+ * 	<title>Adding a New Group</title>
+ * 	<programlisting>
+ *	GDataContactsService *service;
+ *	GDataContactsGroup *group, *updated_group;
+ *	GDataContactsContact *contact, *updated_contact;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and return a contact to add to the new group. *<!-- -->/
+ *	service = create_contacts_service ();
+ *	contact = query_user_for_contact (service);
+ *
+ *	/<!-- -->* Create the new group *<!-- -->/
+ *	group = gdata_contacts_group_new (NULL);
+ *	gdata_entry_set_title (GDATA_ENTRY (group), "Group Name");
+ *
+ *	/<!-- -->* Insert the group on the server *<!-- -->/
+ *	updated_group = gdata_contacts_service_insert_group (service, group, NULL, &error);
+ *
+ *	g_object_unref (group);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error adding a group: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (contact);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Add the contact to the new group. *<!-- -->/
+ *	gdata_contacts_contact_add_group (contact, gdata_entry_get_id (GDATA_ENTRY (updated_group)));
+ *
+ *	g_object_unref (updated_group);
+ *
+ *	/<!-- -->* Update the contact on the server *<!-- -->/
+ *	updated_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (contact), NULL, &error));
+ *
+ *	g_object_unref (contact);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error updating contact: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the updated contact, such as update them in the UI, or store their ID for future use. *<!-- -->/
+ *
+ *	g_object_unref (updated_contact);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.7.0
  **/
 
