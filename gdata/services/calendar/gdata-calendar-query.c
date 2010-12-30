@@ -28,6 +28,51 @@
  *
  * For more information on the custom GData query parameters supported by #GDataCalendarQuery, see the <ulink type="http"
  * url="http://code.google.com/apis/calendar/docs/2.0/reference.html#Parameters">online documentation</ulink>.
+ *
+ * <example>
+ * 	<title>Querying for Events</title>
+ * 	<programlisting>
+ *	GDataCalendarService *service;
+ *	GDataCalendarCalendar *calendar;
+ *	GDataCalendarQuery *query;
+ *	GDataFeed *feed;
+ *	GTimeVal current_time;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and find a calendar to query in *<!-- -->/
+ *	service = create_calendar_service ();
+ *	calendar = get_calendar (service);
+ *
+ *	/<!-- -->* Create the query to use. We're going to query for events within the next week which match the search term "party",
+ *	 * ordered by last modification time (descending). *<!-- -->/
+ *	g_get_current_time (&current_time);
+ *	query = gdata_calendar_query_new_with_limits ("party", current_time.tv_sec, current_time.tv_sec + 7 * 24 * 60 * 60);
+ *	gdata_calendar_query_set_order_by (query, "lastmodified");
+ *	gdata_calendar_query_set_sort_order (query, "descending");
+ *
+ *	/<!-- -->* Execute the query *<!-- -->/
+ *	feed = gdata_calendar_service_query_events (service, calendar, query, NULL, NULL, NULL, &error);
+ *
+ *	g_object_unref (query);
+ *	g_object_unref (calendar);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error querying for events: %s", error->message);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Iterate through the returned events and do something with them *<!-- -->/
+ *	for (i = gdata_feed_get_entries (feed); i != NULL; i = i->next) {
+ *		GDataCalendarEvent *event = GDATA_CALENDAR_EVENT (i->data);
+ *
+ *		/<!-- -->* Do something with the event here, such as insert it into a UI *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (feed);
+ * 	</programlisting>
+ * </example>
  **/
 
 #include <config.h>
