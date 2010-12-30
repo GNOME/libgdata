@@ -35,6 +35,70 @@
  * gdata_contacts_contact_get_user_defined_field(), store fields defined by the user, and editable by them in the interface (both the interface of
  * the appliation using libgdata, and the Google Contacts web interface).
  *
+ * <example>
+ * 	<title>Getting a Contact's Photo</title>
+ * 	<programlisting>
+ *	GDataContactsService *service;
+ *	GDataContactsContact *contact;
+ *	guint8 *data;
+ *	gchar *content_type = NULL;
+ *	gsize length = 0;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and return the contact whose photo we're getting. *<!-- -->/
+ *	service = create_contacts_service ();
+ *	contact = query_user_for_contact (service);
+ *
+ *	/<!-- -->* Get the photo. This should almost always be done asynchronously. *<!-- -->/
+ *	data = gdata_contacts_contact_get_photo (contact, service, &length, &content_type, NULL, &error);
+ *
+ *	g_object_unref (contact);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting a contact's photo: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the photo, stored in data, length and content_type. *<!-- -->/
+ *
+ *	g_free (content_type);
+ *	g_free (data);
+ * 	</programlisting>
+ * </example>
+ *
+ * <example>
+ * 	<title>Setting a Contact's Photo</title>
+ * 	<programlisting>
+ *	GDataContactsService *service;
+ *	GDataContactsContact *contact;
+ *	guint8 *data;
+ *	gchar *content_type = NULL;
+ *	gsize length = 0;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and return the contact whose photo we're getting, as well as the details of the new photo. *<!-- -->/
+ *	service = create_contacts_service ();
+ *	contact = query_user_for_contact (service);
+ *	data = query_user_for_new_photo (contact, &content_type, &length);
+ *
+ *	/<!-- -->* Set the photo. This should almost always be done asynchronously. To delete the photo, just pass NULL as the photo data. *<!-- -->/
+ *	gdata_contacts_contact_set_photo (contact, service, data, length, content_type, NULL, &error);
+ *
+ *	g_free (data);
+ *	g_free (content_type);
+ *	g_object_unref (contact);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error setting a contact's photo: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.2.0
  **/
 
