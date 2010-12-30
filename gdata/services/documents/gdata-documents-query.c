@@ -30,6 +30,53 @@
  * For more information on the custom GData query parameters supported by #GDataDocumentsQuery, see the <ulink type="http"
  * url="http://code.google.com/apis/documents/docs/2.0/reference.html#Parameters">online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Querying for Documents</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsQuery *query;
+ *	GDataFeed *feed;
+ *	GTimeVal current_time;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_documents_service ();
+ *
+ *	/<!-- -->* Create the query to use. We're going to query for the last 10 documents modified by example@gmail.com in the past week, including
+ *	 * deleted documents. *<!-- -->/
+ *	query = gdata_documents_query_new_with_limits (NULL, 0, 10);
+ *
+ *	gdata_documents_query_add_collaborator (query, "example@gmail.com");
+ *	gdata_documents_query_set_show_deleted (query, TRUE);
+ *
+ *	g_get_current_time (&current_time);
+ *	gdata_query_set_updated_min (GDATA_QUERY (query), current_time.tv_sec - 7 * 24 * 60 * 60);
+ *	gdata_query_set_updated_max (GDATA_QUERY (query), current_time.tv_sec);
+ *
+ *	/<!-- -->* Execute the query *<!-- -->/
+ *	feed = gdata_documents_service_query_documents (service, query, NULL, NULL, NULL, &error);
+ *
+ *	g_object_unref (query);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error querying for documents: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Iterate through the returned documents and do something with them *<!-- -->/
+ *	for (i = gdata_feed_get_entries (feed); i != NULL; i = i->next) {
+ *		GDataDocumentsDocument *document = GDATA_DOCUMENTS_DOCUMENT (i->data);
+ *
+ *		/<!-- -->* Do something with the document here, such as insert it into a UI *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (feed);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.4.0
  **/
 
