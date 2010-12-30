@@ -27,6 +27,58 @@
  *
  * For more details of Google Calendar's GData API, see the <ulink type="http" url="http://code.google.com/apis/calendar/docs/2.0/reference.html">
  * online documentation</ulink>.
+ *
+ * <example>
+ * 	<title>Adding a New Event to the Default Calendar</title>
+ * 	<programlisting>
+ *	GDataCalendarService *service;
+ *	GDataCalendarEvent *event, *new_event;
+ *	GDataGDWhere *where;
+ *	GDataGDWho *who;
+ *	GDataGDWhen *when;
+ *	GTimeVal current_time;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_calendar_service ();
+ *
+ *	/<!-- -->* Create the new event *<!-- -->/
+ *	event = gdata_calendar_event_new (NULL);
+ *
+ *	gdata_entry_set_title (GDATA_ENTRY (event), "Event Title");
+ *	gdata_entry_set_content (GDATA_ENTRY (event), "Event description. This should be a few sentences long.");
+ *	gdata_calendar_event_set_status (event, GDATA_GD_EVENT_STATUS_CONFIRMED);
+ *
+ *	where = gdata_gd_where_new (NULL, "Description of the location", NULL);
+ *	gdata_calendar_event_add_place (event, where);
+ *	g_object_unref (where);
+ *
+ *	who = gdata_gd_who_new (GDATA_GD_WHO_EVENT_ORGANIZER, "John Smith", "john.smith@gmail.com");
+ *	gdata_calendar_event_add_person (event, who);
+ *	g_object_unref (who);
+ *
+ *	g_get_current_time (&current_time);
+ *	when = gdata_gd_when_new (current_time.tv_sec, current_time.tv_sec + 3600, FALSE);
+ *	gdata_calendar_event_add_time (event, when);
+ *	g_object_unref (when);
+ *
+ *	/<!-- -->* Insert the event in the calendar *<!-- -->/
+ *	new_event = gdata_calendar_service_insert_event (service, event, NULL, &error);
+ *
+ *	g_object_unref (event);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error inserting event: %s", error->message);
+ *		g_error_free (error);
+ *		return NULL;
+ *	}
+ *
+ *	/<!-- -->* Do something with the new_event here, such as return it to the user or store its ID for later usage *<!-- -->/
+ *
+ *	g_object_unref (new_event);
+ * 	</programlisting>
+ * </example>
  **/
 
 #include <config.h>
