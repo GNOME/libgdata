@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-17 14:54+0100\n"
+"POT-Creation-Date: 2010-12-30 15:35+0000\n"
 "PO-Revision-Date: 2009-04-17 12:36+0000\n"
 "Last-Translator: Philip Withnall <philip@tecnocode.co.uk>\n"
 "Language-Team: British English <en@li.org>\n"
@@ -14,6 +14,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
+msgid "Stream is already closed"
+msgstr "Stream is already closed"
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -108,124 +112,123 @@ msgstr "A required element (%s) was not present."
 msgid "A singleton element (%s) was duplicated."
 msgstr "A singleton element (%s) was duplicated."
 
-#: ../gdata/gdata-service.c:393
-#: ../gdata/services/youtube/gdata-youtube-service.c:234
+#: ../gdata/gdata-service.c:430
 msgid "The server returned a malformed response."
 msgstr "The server returned a malformed response."
 
-#: ../gdata/gdata-service.c:434
+#: ../gdata/gdata-service.c:473
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Cannot connect to the service's server."
 
-#: ../gdata/gdata-service.c:439
+#: ../gdata/gdata-service.c:478
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Cannot connect to the proxy server."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:445
+#: ../gdata/gdata-service.c:484
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
 "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:451
+#: ../gdata/gdata-service.c:490
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Authentication required: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:456
+#: ../gdata/gdata-service.c:495
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "The requested resource was not found: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:462
+#: ../gdata/gdata-service.c:501
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "The entry has been modified since it was downloaded: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:476
+#: ../gdata/gdata-service.c:515
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Error code %u when authenticating: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:482
+#: ../gdata/gdata-service.c:521
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Error code %u when querying: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:488
+#: ../gdata/gdata-service.c:527
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Error code %u when inserting an entry: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:494
+#: ../gdata/gdata-service.c:533
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Error code %u when updating an entry: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:500
+#: ../gdata/gdata-service.c:539
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Error code %u when deleting an entry: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:506
+#: ../gdata/gdata-service.c:545
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Error code %u when downloading: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:512
+#: ../gdata/gdata-service.c:551
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Error code %u when uploading: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:518
+#: ../gdata/gdata-service.c:557
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Error code %u when running a batch operation: %s"
 
-#: ../gdata/gdata-service.c:643
+#: ../gdata/gdata-service.c:686
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "A CAPTCHA must be filled out to log in."
 
-#: ../gdata/gdata-service.c:667
+#: ../gdata/gdata-service.c:710
 msgid "Your username or password were incorrect."
 msgstr "Your username or password were incorrect."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:686
+#: ../gdata/gdata-service.c:729
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Your account's e-mail address has not been verified. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:691
+#: ../gdata/gdata-service.c:734
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "You have not agreed to the service's terms and conditions. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:697
+#: ../gdata/gdata-service.c:740
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -235,39 +238,38 @@ msgstr ""
 "username and password. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:702
+#: ../gdata/gdata-service.c:745
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "This account has been deleted. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:707
+#: ../gdata/gdata-service.c:750
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "This account has been disabled. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:712
+#: ../gdata/gdata-service.c:755
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "This account's access to this service has been disabled. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:717
+#: ../gdata/gdata-service.c:760
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "This service is not available at the moment. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:988
+#: ../gdata/gdata-service.c:1065
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Invalid redirect URI: %s"
 
-#: ../gdata/gdata-service.c:1581
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:606
-#: ../gdata/services/youtube/gdata-youtube-service.c:692
+#: ../gdata/gdata-service.c:1641
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
+#: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
 msgstr "The entry has already been inserted."
 
@@ -277,113 +279,121 @@ msgstr "The entry has already been inserted."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:344
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
 "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:111
-#: ../gdata/services/calendar/gdata-calendar-service.c:156
+#: ../gdata/services/calendar/gdata-calendar-service.c:281
+#: ../gdata/services/calendar/gdata-calendar-service.c:326
 msgid "You must be authenticated to query all calendars."
 msgstr "You must be authenticated to query all calendars."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:198
-#: ../gdata/services/calendar/gdata-calendar-service.c:243
-#: ../gdata/services/calendar/gdata-calendar-service.c:285
+#: ../gdata/services/calendar/gdata-calendar-service.c:368
+#: ../gdata/services/calendar/gdata-calendar-service.c:413
+#: ../gdata/services/calendar/gdata-calendar-service.c:454
+#: ../gdata/services/calendar/gdata-calendar-service.c:510
 msgid "You must be authenticated to query your own calendars."
 msgstr "You must be authenticated to query your own calendars."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:294
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:519
 msgid "The calendar did not have a content URI."
 msgstr "The calendar did not have a content URI."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:116
-#: ../gdata/services/contacts/gdata-contacts-service.c:162
+#: ../gdata/services/contacts/gdata-contacts-service.c:229
+#: ../gdata/services/contacts/gdata-contacts-service.c:275
 msgid "You must be authenticated to query contacts."
 msgstr "You must be authenticated to query contacts."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:271
-#: ../gdata/services/contacts/gdata-contacts-service.c:317
+#: ../gdata/services/contacts/gdata-contacts-service.c:384
+#: ../gdata/services/contacts/gdata-contacts-service.c:430
 msgid "You must be authenticated to query contact groups."
 msgstr "You must be authenticated to query contact groups."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:353
+#: ../gdata/services/contacts/gdata-contacts-service.c:466
 msgid "The group has already been inserted."
 msgstr "The group has already been inserted."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:359
+#: ../gdata/services/contacts/gdata-contacts-service.c:472
 msgid "You must be authenticated to insert a group."
 msgstr "You must be authenticated to insert a group."
 
-#: ../gdata/services/documents/gdata-documents-service.c:200
-#: ../gdata/services/documents/gdata-documents-service.c:251
+#: ../gdata/services/documents/gdata-documents-document.c:274
+msgid "You must be authenticated to download documents."
+msgstr "You must be authenticated to download documents."
+
+#: ../gdata/services/documents/gdata-documents-service.c:369
+#: ../gdata/services/documents/gdata-documents-service.c:420
 msgid "You must be authenticated to query documents."
 msgstr "You must be authenticated to query documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:343
-msgid "The supplied document had an invalid content type."
-msgstr "The supplied document had an invalid content type."
-
-#: ../gdata/services/documents/gdata-documents-service.c:433
+#: ../gdata/services/documents/gdata-documents-service.c:527
 msgid "You must be authenticated to upload documents."
 msgstr "You must be authenticated to upload documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:439
+#: ../gdata/services/documents/gdata-documents-service.c:533
 msgid "The document has already been uploaded."
 msgstr "The document has already been uploaded."
 
-#: ../gdata/services/documents/gdata-documents-service.c:490
+#: ../gdata/services/documents/gdata-documents-service.c:587
 msgid "You must be authenticated to update documents."
 msgstr "You must be authenticated to update documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:538
-#: ../gdata/services/documents/gdata-documents-service.c:612
-msgid "You must be authenticated to move documents."
-msgstr "You must be authenticated to move documents."
+#: ../gdata/services/documents/gdata-documents-service.c:650
+#, c-format
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
+msgstr ""
+"The content type of the supplied document ('%s') could not be recognised."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:186
+#: ../gdata/services/documents/gdata-documents-service.c:698
+#: ../gdata/services/documents/gdata-documents-service.c:882
+msgid "You must be authenticated to move documents and folders."
+msgstr "You must be authenticated to move documents and folders."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "You must specify a username or be authenticated to query a user."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:240
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:295
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
 msgid "Query parameter not allowed for albums."
 msgstr "Query parameter not allowed for albums."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:247
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:303
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "You must specify a username or be authenticated to query all albums."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:350
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
 msgid "The album did not have a feed link."
 msgstr "The album did not have a feed link."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
 msgid "You must be authenticated to upload a file."
 msgstr "You must be authenticated to upload a file."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:672
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
 msgid "The album has already been inserted."
 msgstr "The album has already been inserted."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:678
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
 msgid "You must be authenticated to insert an album."
 msgstr "You must be authenticated to insert an album."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:333
+#: ../gdata/services/youtube/gdata-youtube-service.c:416
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "This service is not available at the moment."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:338
+#: ../gdata/services/youtube/gdata-youtube-service.c:421
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "You must be authenticated to do this."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:343
+#: ../gdata/services/youtube/gdata-youtube-service.c:426
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -392,7 +402,7 @@ msgstr ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:346
+#: ../gdata/services/youtube/gdata-youtube-service.c:429
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -402,33 +412,33 @@ msgstr ""
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
 #. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:353
-#: ../gdata/services/youtube/gdata-youtube-service.c:359
+#: ../gdata/services/youtube/gdata-youtube-service.c:436
+#: ../gdata/services/youtube/gdata-youtube-service.c:442
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:377
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "Unknown and unparsable error received."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:599
-#: ../gdata/services/youtube/gdata-youtube-service.c:646
+#: ../gdata/services/youtube/gdata-youtube-service.c:682
+#: ../gdata/services/youtube/gdata-youtube-service.c:729
 msgid "The video did not have a related videos <link>."
 msgstr "The video did not have a related videos <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:698
+#: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "You must be authenticated to upload a video."
 msgstr "You must be authenticated to upload a video."
 
+#~ msgid "The supplied document had an invalid content type."
+#~ msgstr "The supplied document had an invalid content type."
+
 #~ msgid "The owner's rule may not be deleted."
 #~ msgstr "The owner's rule may not be deleted."
-
-#~ msgid "You must be authenticated to download documents."
-#~ msgstr "You must be authenticated to download documents."
 
 #~ msgid "Unhandled <%s:%s> element as a child of <%s>."
 #~ msgstr "Unhandled <%s:%s> element as a child of <%s>."
