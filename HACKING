@@ -116,9 +116,10 @@ Adding public API
  - New services should be implemented in libgdata itself, not by applications which use libgdata. See the documentation section on "New Services" in
    the "GData Overview" section.
 
- - New API must never be added in a micro release. API additions can only be made in a major or minor release; this is to prevent the LT version of
-   one minor version's micro releases exceeding the LT version of the next minor version as almost happened between versions 0.6.3 and 0.7.0.
-   See http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html for information about libtool's versioning system.
+ - New API must never be added in a stable micro release. API additions can only be made in a major or minor release; this is to prevent the LT version
+   of one minor version's micro releases exceeding the LT version of the next minor version as almost happened between versions 0.6.3 and 0.7.0.
+   See http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html for information about libtool's versioning system. See also the
+   “Versioning” section below.
 
 Choosing function names
 =======================
@@ -173,3 +174,12 @@ the following format "tag: Short explanation". The following tags are valid:
  - youtube: for the YouTube code in gdata/services/youtube.
 
 The only commits which should not have a tag are translation commits, touching only the po directory.
+
+Versioning
+==========
+
+Starting with version 0.9.0, libgdata has adopted an even–odd/stable–unstable versioning policy, where odd minor version numbers are unstable releases,
+released periodically (with increasing micro version numbers) and leading to a stable release with the next even minor version number. API breaks are
+allowed in micro releases with an odd minor version number, but not in micro releases with an even minor version number.
+
+It is encouraged to make a new micro release of an odd minor series after each large API addition or break.
