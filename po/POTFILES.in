@@ -2,11 +2,13 @@
 # Please keep this file sorted alphabetically.
 [encoding: UTF-8]
 gdata/gdata-access-handler.c
+gdata/gdata-download-stream.c
 gdata/gdata-entry.c
 gdata/gdata-feed.c
 gdata/gdata-parsable.c
 gdata/gdata-parser.c
 gdata/gdata-service.c
+gdata/gdata-upload-stream.c
 gdata/services/calendar/gdata-calendar-calendar.c
 gdata/services/calendar/gdata-calendar-event.c
 gdata/services/calendar/gdata-calendar-service.c
