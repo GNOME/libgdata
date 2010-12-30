@@ -1,3 +1,85 @@
+Overview of changes from libgdata 0.7.0 to libgdata 0.8.0
+=========================================================
+
+Major changes:
+* Added async counterparts to all remaining blocking methods
+* Added various cancellation tests to the test suite
+* Many fixes and improvements for cancellation of various operations
+* Fixed many race conditions in authentication and cancellation of operations
+* Removed the separate youtube-user property for YouTube authentication
+* Fixed attribute escaping across all of libgdata
+* Removed some deprecated PicasaWeb properties (file clients and positions)
+* Switched to stream-based downloading for all download operations
+* Tidied up (i.e. broke) the Documents service API a lot
+* Tidied up a few test cases and made them idempotent
+* Fixed several minor and major memory leaks
+* Ensured that batch operations' callbacks are always called, even if the entire batch operation errors out
+* Bumped our gdk-pixbuf dependency to 2.14
+* Fixed all the XML comparison tests in light of an invalid assumption we made about hash table ordering being broken
+* Added GeoRSS support to YouTube videos
+* Overhauled download and upload streams, fixing many race conditions and deadlocks and adding some test cases
+* Added support for flushing GDataUploadStream instances
+* Added many code examples to the documentation and expanded a few other bits of the documentation
+
+API changes:
+* Added gdata_picasaweb_service_insert_album_async()
+* Added gdata_picasaweb_service_query_files_async()
+* Removed GDataYouTubeService:youtube-user, gdata_youtube_service_get_youtube_user()
+* Removed GDataPicasaWebFile:client, gdata_picasaweb_file_get_client(), gdata_picasaweb_file_set_client()
+* Removed GDataPicasaWebFile:position, gdata_picasaweb_file_get_position(), gdata_picasaweb_file_set_position()
+* Changed gdata_documents_document_download() to be stream-based
+* Changed gdata_documents_service_upload_document(), gdata_documents_service_update_document() to be stream-based
+* Added gdata_documents_service_finish_upload()
+* Renamed gdata_documents_service_move_document_to_folder() to gdata_documents_service_add_entry_to_folder()
+* Renamed gdata_documents_service_remove_document_from_folder() to gdata_documents_service_remove_entry_from_folder()
+* Added gdata_documents_service_add_entry_to_folder_async(), gdata_documents_service_add_entry_to_folder_finish()
+* Added gdata_documents_service_from_entry_from_folder_async(), gdata_documents_service_from_entry_from_folder_finish()
+* Changed GDataDownloadStream::content-length, GDataDownloadStream::content-type to be emitted in the download thread rather than the main thread
+* Changed gdata_picasaweb_service_upload_file() to be stream-based
+* Removed gdata_picasaweb_service_upload_file_async(), gdata_picasaweb_service_upload_file_finish()
+* Added gdata_picasaweb_service_finish_file_upload()
+* Changed gdata_media_content_download() to be stream-based
+* Changed gdata_media_thumbnail_download() to be stream-based
+* Changed gdata_youtube_service_upload_video() to be stream-based
+* Added gdata_youtube_service_finish_video_upload()
+* Added gdata_calendar_service_query_events_async()
+* Added gdata_calendar_service_insert_event_async()
+* Changed gdata_contacts_contact_get_photo(), gdata_contacts_contact_set_photo() to use guint8 instead of gchar for image data
+* Added gdata_contacts_contact_get_photo_async(), gdata_contacts_contact_get_photo_finish()
+* Changed gdata_contacts_contact_set_photo() to require a content type to be passed in
+* Added gdata_contacts_contact_set_photo_async(), gdata_contacts_contact_set_photo_finish()
+* Added GDataYouTubeVideo:latitude, GDataYouTubeVideo:longitude, gdata_youtube_video_get_coordinates(), gdata_youtube_video_set_coordinates()
+* Changed gdata_upload_stream_new() to take a GCancellable
+* Added GDataUploadStream:cancellable, gdata_upload_stream_get_cancellable()
+* Changed gdata_download_stream_new() to take a GCancellable
+* Added GDataDownloadStream:cancellable, gdata_download_stream_get_cancellable()
+
+Bugs fixed:
+* Bug 607620 — Cancelled uploads appear partially complete in PicasaWeb
+* Bug 635959 — Proper cancellation support for GDataUploadStream
+* Bug 635736 — Asynchronous authentication tests broken
+* Bug 634033 — Use standard login URI for YouTube
+* Bug 635335 — GIR missing exported packages information
+* Bug 631033 — Fix escaping and add tests
+* Bug 633363 — Add missing *_async() methods
+* Bug 594814 — Handle GeoRSS for YouTube videos
+* Bug 637036 — Overhaul cancellation support
+* Bug 579885 — Add code examples to documentation
+
+Updated translations:
+* ca@valencia (Joan Duran)
+* cs (Marek Černocký)
+* da (Kris Thomsen)
+* de (Mario Blättermann)
+* en_GB (Philip Withnall)
+* es (Jorge González)
+* eu (Iñaki Larrañaga Murgoitio)
+* fr (Bruno Brouard)
+* hu (Gabor Kelemen)
+* sl (Matej Urbančič)
+* sv (Daniel Nylander)
+* zh_CN (Eleanor Chen)
+
 Overview of changes from libgdata 0.6.0 to libgdata 0.7.0
 =========================================================
 
