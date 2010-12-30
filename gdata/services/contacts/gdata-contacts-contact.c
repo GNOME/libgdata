@@ -99,6 +99,50 @@
  * 	</programlisting>
  * </example>
  *
+ * <example>
+ * 	<title>Updating a Contact's Details</title>
+ * 	<programlisting>
+ *	GDataContactsService *service;
+ *	GDataContactsContact *contact, *updated_contact;
+ *	GDataGDEmailAddress *email_address;
+ *	GDataGDIMAddress *im_address;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and return the contact whose details we're updating. *<!-- -->/
+ *	service = create_contacts_service ();
+ *	contact = query_user_for_contact (service);
+ *
+ *	/<!-- -->* Update the contact's details. We set their nickname to "Fat Tony", add a new e-mail address, and replace all their existing IM
+ *	 * addresses with a single new one. *<!-- -->/
+ *	gdata_contacts_contact_set_nickname (contact, "Fat Tony");
+ *
+ *	email_address = gdata_gd_email_address_new ("tony@gmail.com", GDATA_GD_EMAIL_ADDRESS_HOME, NULL, FALSE);
+ *	gdata_contacts_contact_add_email_address (contact, email_address);
+ *	g_object_unref (email_address);
+ *
+ *	gdata_contacts_contact_remove_all_im_addresses (contact);
+ *	im_address = gdata_gd_im_address_new ("tony.work@gmail.com", GDATA_GD_IM_PROTOCOL_GOOGLE_TALK, GDATA_GD_IM_ADDRESS_WORK, NULL, TRUE);
+ *	gdata_contacts_contact_add_im_address (contact, im_address);
+ *	g_object_unref (im_address);
+ *
+ *	/<!-- -->* Send the updated contact to the server *<!-- -->/
+ *	updated_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (contact), NULL, &error));
+ *
+ *	g_object_unref (contact);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error updating a contact's details: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the updated contact, such as update them in the UI, or store their ID for future use. *<!-- -->/
+ *
+ *	g_object_unref (updated_contact);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.2.0
  **/
 
