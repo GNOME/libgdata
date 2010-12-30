@@ -1027,7 +1027,7 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
  * If there was an error during the upload operation (but it is complete), %NULL is returned, and @length is set to <code class="literal">0</code>.
  *
  * While it is safe to call this function from any thread at any time during the network operation, the only way to guarantee that the response has
- * been set before calling this function is to have closed the #GDataUploadStream by calling gdata_output_stream_close() on it, without cancelling
+ * been set before calling this function is to have closed the #GDataUploadStream by calling g_output_stream_close() on it, without cancelling
  * the close operation. Once the stream has been closed, all network communication is guaranteed to have finished. Note that if a call to
  * g_output_stream_close() is cancelled, g_output_stream_is_closed() will immediately start to return %TRUE, even if the #GDataUploadStream is still
  * attempting to flush the network buffers asynchronously — consequently, gdata_upload_stream_get_response() may still return %NULL and a @length of
