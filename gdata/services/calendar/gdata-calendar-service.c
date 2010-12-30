@@ -125,6 +125,77 @@
  *	g_object_unref (acl_link);
  * 	</programlisting>
  * </example>
+ *
+ * The Calendar service can be manipulated using batch operations, too. See the
+ * <ulink type="http" url="http://code.google.com/apis/calendar/data/2.0/developers_guide_protocol.html#Batch">online documentation on batch
+ * operations</ulink> for more information.
+ *
+ * <example>
+ * 	<title>Performing a Batch Operation on a Calendar</title>
+ * 	<programlisting>
+ *	GDataCalendarService *service;
+ *	GDataCalendarCalendar *calendar;
+ *	GDataBatchOperation *operation;
+ *	GDataLink *batch_link;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and retrieve a calendar to work on *<!-- -->/
+ *	service = create_calendar_service ();
+ *	calendar = get_calendar (service);
+ *
+ *	/<!-- -->* Create the batch operation *<!-- -->/
+ *	batch_link = gdata_entry_look_up_link (GDATA_ENTRY (calendar), GDATA_LINK_BATCH);
+ *	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_link_get_uri (batch_link));
+ *
+ *	g_object_unref (calendar);
+ *
+ *	gdata_batch_operation_add_query (operation, event_entry_id_to_query, GDATA_TYPE_CALENDAR_EVENT,
+ *	                                 (GDataBatchOperationCallback) batch_query_cb, user_data);
+ *	gdata_batch_operation_add_insertion (operation, new_entry, (GDataBatchOperationCallback) batch_insertion_cb, user_data);
+ *	gdata_batch_operation_add_update (operation, old_entry, (GDataBatchOperationCallback) batch_update_cb, user_data);
+ *	gdata_batch_operation_add_deletion (operation, entry_to_delete, (GDataBatchOperationCallback) batch_deletion_cb, user_data);
+ *
+ *	/<!-- -->* Run the batch operation and handle the results in the various callbacks *<!-- -->/
+ *	gdata_test_batch_operation_run (operation, NULL, &error);
+ *
+ *	g_object_unref (operation);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error running batch operation: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	static void
+ *	batch_query_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+ *	{
+ *		/<!-- -->* operation_type == GDATA_BATCH_OPERATION_QUERY *<!-- -->/
+ *		/<!-- -->* Reference and do something with the returned entry. *<!-- -->/
+ *	}
+ *
+ *	static void
+ *	batch_insertion_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+ *	{
+ *		/<!-- -->* operation_type == GDATA_BATCH_OPERATION_INSERTION *<!-- -->/
+ *		/<!-- -->* Reference and do something with the returned entry. *<!-- -->/
+ *	}
+ *
+ *	static void
+ *	batch_update_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+ *	{
+ *		/<!-- -->* operation_type == GDATA_BATCH_OPERATION_UPDATE *<!-- -->/
+ *		/<!-- -->* Reference and do something with the returned entry. *<!-- -->/
+ *	}
+ *
+ *	static void
+ *	batch_deletion_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+ *	{
+ *		/<!-- -->* operation_type == GDATA_BATCH_OPERATION_DELETION, entry == NULL *<!-- -->/
+ *	}
+ * 	</programlisting>
+ * </example>
  **/
 
 #include <config.h>
