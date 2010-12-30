@@ -29,6 +29,49 @@
  * For more details of Google Contacts' GData API, see the <ulink type="http" url="http://code.google.com/apis/contacts/docs/2.0/reference.html">
  * online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Querying for Groups</title>
+ * 	<programlisting>
+ *	GDataContactsService *service;
+ *	GDataFeed *feed;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_contacts_service ();
+ *
+ *	/<!-- -->* Query for groups *<!-- -->/
+ *	feed = gdata_contacts_service_query_groups (service, NULL, NULL, NULL, NULL, &error);
+ *
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error querying for groups: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Iterate through the returned groups and do something with them *<!-- -->/
+ *	for (i = gdata_feed_get_entries (feed); i != NULL; i = i->next) {
+ *		const gchar *system_group_id, *group_name;
+ *		gboolean is_system_group;
+ *		GDataContactsGroup *group = GDATA_CONTACTS_GROUP (i->data);
+ *
+ *		/<!-- -->* Determine whether the group's a system group. If so, you should use the system group ID to provide your application's own
+ *		 * translations of the group name, as it's not translated. *<!-- -->/
+ *		system_group_id = gdata_contacts_group_get_system_group_id (group);
+ *		is_system_group = (system_group_id != NULL) ? TRUE : FALSE;
+ *		group_name = (is_system_group == TRUE) ? get_group_name_for_system_group_id (system_group_id)
+ *		                                       : gdata_entry_get_title (GDATA_ENTRY (group));
+ *
+ *		/<!-- -->* Do something with the group here, such as insert it into a UI. Note that system groups are not allowed to be deleted,
+ *		 * so you may want to make certain parts of your UI insensitive accordingly if the group is a system group. *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (feed);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.2.0
  **/
 
