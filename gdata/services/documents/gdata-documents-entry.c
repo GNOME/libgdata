@@ -33,6 +33,58 @@
  * For more details of Google Documents' GData API, see the
  * <ulink type="http" url="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Moving an Entry Between Folders</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsEntry *entry, *intermediate_entry, *updated_entry;
+ *	GDataDocumentsFolder *old_folder, *new_folder;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_documents_service ();
+ *
+ *	/<!-- -->* Get the entry, the folder it's being moved out of, and the folder it's being moved into. The entry can either be a document or
+ *	 * another folder, allowing hierarchies of folders to be constructed. *<!-- -->/
+ *	entry = query_user_for_entry (service);
+ *	old_folder = query_user_for_old_folder (service);
+ *	new_folder = query_user_for_new_folder (service);
+ *
+ *	/<!-- -->* Add the entry to the new folder *<!-- -->/
+ *	intermediate_entry = gdata_documents_service_add_entry_to_folder (service, entry, new_folder, NULL, &error);
+ *
+ *	g_object_unref (entry);
+ *	g_object_unref (new_folder);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error adding entry to new folder: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (old_folder);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Remove the entry from the old folder *<!-- -->/
+ *	updated_entry = gdata_documents_service_remove_entry_from_folder (service, intermediate_entry, old_folder, NULL, &error);
+ *
+ *	g_object_unref (intermediate_entry);
+ *	g_object_unref (old_folder);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		/<!-- -->* Note that you might want to attempt to remove the intermediate_entry from the new_folder in this error case, so that
+ *		 * the operation is aborted cleanly. *<!-- -->/
+ *		g_error ("Error removing entry from previous folder: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the updated entry *<!-- -->/
+ *
+ *	g_object_unref (updated_entry);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.4.0
  **/
 
