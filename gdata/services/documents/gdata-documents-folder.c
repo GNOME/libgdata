@@ -29,6 +29,41 @@
  * For more details of Google Documents' GData API, see the
  * <ulink type="http" url="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Adding a Folder</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsFolder *folder, *new_folder;
+ *	gchar *upload_uri;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_documents_service ();
+ *
+ *	/<!-- -->* Create the new folder *<!-- -->/
+ *	folder = gdata_documents_folder_new (NULL);
+ *	gdata_entry_set_title (GDATA_ENTRY (folder), "Folder Name");
+ *
+ *	/<!-- -->* Insert the folder *<!-- -->/
+ *	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+ *	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (folder), NULL, &error));
+ *	g_free (upload_uri);
+ *
+ *	g_object_unref (folder);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error inserting new folder: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the new folder, such as store its ID for future use *<!-- -->/
+ *
+ *	g_object_unref (new_folder);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.4.0
  **/
 
