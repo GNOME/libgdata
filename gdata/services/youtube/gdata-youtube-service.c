@@ -80,7 +80,7 @@
  *	video_file = g_file_new_for_path ("sample.ogg");
  *
  *	/<!-- -->* Get the file's display name and content type *<!-- -->/
- *	file_info = g_file_query_info (data->video_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+ *	file_info = g_file_query_info (video_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
  *	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
  *
  *	if (error != NULL) {
