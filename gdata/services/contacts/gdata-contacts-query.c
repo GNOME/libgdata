@@ -29,6 +29,51 @@
  * For more information on the custom GData query parameters supported by #GDataContactsQuery, see the <ulink type="http"
  * url="http://code.google.com/apis/contacts/docs/2.0/reference.html#Parameters">online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Querying for Contacts</title>
+ * 	<programlisting>
+ *	GDataContactsService *service;
+ *	gchar *group_id;
+ *	GDataContactsQuery *query;
+ *	GDataFeed *feed;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and return the group we're querying within. *<!-- -->/
+ *	service = create_contacts_service ();
+ *	group_id = query_user_for_group (service);
+ *
+ *	/<!-- -->* Create the query to use. We're going to query for contacts which match the search term "John" within a given group,
+ *	 * including deleted contacts. The group is specified by its ID. *<!-- -->/
+ *	query = gdata_contacts_query_new ("John");
+ *	gdata_contacts_query_set_show_deleted (query, TRUE);
+ *	gdata_contacts_query_set_group (query, group_id);
+ *
+ *	g_free (group_id);
+ *
+ *	/<!-- -->* Execute the query *<!-- -->/
+ *	feed = gdata_contacts_service_query_contacts (service, query, NULL, NULL, NULL, &error);
+ *
+ *	g_object_unref (query);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error querying for contacts: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Iterate through the returned contacts and do something with them *<!-- -->/
+ *	for (i = gdata_feed_get_entries (feed); i != NULL; i = i->next) {
+ *		GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (i->data);
+ *
+ *		/<!-- -->* Do something with the contact here, such as insert it into a UI *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (feed);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.2.0
  **/
 
