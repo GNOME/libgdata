@@ -52,11 +52,10 @@
  *	/<!-- -->* Query the service for the ACL for the given calendar *<!-- -->/
  *	acl_feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
  *
- *	g_object_unref (calendar);
- *
  *	if (error != NULL) {
  *		g_error ("Error getting ACL feed for calendar: %s", error->message);
  *		g_error_free (error);
+ *		g_object_unref (calendar);
  *		g_object_unref (service);
  *		return;
  *	}
@@ -82,6 +81,7 @@
  *				g_error ("Error updating access rule for %s: %s", scope_value, error->message);
  *				g_error_free (error);
  *				g_object_unref (acl_feed);
+ *				g_object_unref (calendar);
  *				g_object_unref (service);
  *				return;
  *			}
@@ -95,6 +95,7 @@
  *				g_error ("Error deleting access rule for %s: %s", scope_value, error->message);
  *				g_error_free (error);
  *				g_object_unref (acl_feed);
+ *				g_object_unref (calendar);
  *				g_object_unref (service);
  *				return;
  *			}
@@ -103,7 +104,7 @@
  *
  *	g_object_unref (acl_feed);
  *
- *	/<!-- -->* Create and insert a new access rule for example@gmail.com which allows then to view free/busy information for events in the
+ *	/<!-- -->* Create and insert a new access rule for example@gmail.com which allows them to view free/busy information for events in the
  *	 * calendar, but doesn't allow them to view the full event details. *<!-- -->/
  *	rule = gdata_access_rule_new (NULL);
  *	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY);
@@ -114,6 +115,7 @@
  *	                                                          NULL, &error));
  *
  *	g_object_unref (rule);
+ *	g_object_unref (calendar);
  *	g_object_unref (service);
  *
  *	if (error != NULL) {
