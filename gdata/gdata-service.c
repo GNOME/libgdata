@@ -814,15 +814,13 @@ authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 
 	/* Authenticate and return */
 	success = authenticate (service, data->username, data->password, NULL, NULL, cancellable, &error);
+	set_authentication_details (service, data->username, data->password, success);
 	g_simple_async_result_set_op_res_gboolean (result, success);
 
 	if (success == FALSE) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
 	}
-
-	/* Update the authentication details held by the service (protected by a mutex) */
-	set_authentication_details (service, data->username, data->password, success);
 }
 
 /**
