@@ -29,6 +29,59 @@
  * For more details of Google Documents' GData API, see the
  * <ulink type="http" url="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Downloading a Specific Sheet of a Spreadsheet</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsSpreadsheet *spreadsheet;
+ *	GFile *destination_file;
+ *	guint gid;
+ *	gchar *download_uri;
+ *	GDataDownloadStream *download_stream;
+ *	GFileOutputStream *output_stream;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and retrieve the spreadsheet and sheet index (GID) to download and the file to save the download in *<!-- -->/
+ *	service = create_youtube_service ();
+ *	spreadsheet = get_document_to_download (service);
+ *	destination_file = query_user_for_destination_file (spreadsheet);
+ *	gid = query_user_for_gid (spreadsheet);
+ *
+ *	/<!-- -->* Create the download stream *<!-- -->/
+ *	download_uri = gdata_documents_spreadsheet_get_download_uri (spreadsheet, GDATA_DOCUMENTS_SPREADSHEET_CSV, gid);
+ *	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (service, download_uri, NULL));
+ *	g_free (download_uri);
+ *
+ *	g_object_unref (spreadsheet);
+ *	g_object_unref (service);
+ *
+ *	/<!-- -->* Create the file output stream *<!-- -->/
+ *	output_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
+ *
+ *	g_object_unref (destination_file);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error creating destination file: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (download_stream);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Download the document. This should almost always be done asynchronously. *<!-- -->/
+ *	g_output_stream_splice (G_OUTPUT_STREAM (output_stream), G_INPUT_STREAM (download_stream),
+ *	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+ *
+ *	g_object_unref (output_stream);
+ *	g_object_unref (download_stream);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error downloading spreadsheet: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.4.0
  **/
 
