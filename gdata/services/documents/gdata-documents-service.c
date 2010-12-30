@@ -143,7 +143,6 @@
  * 	<title>Performing a Batch Operation on Documents</title>
  * 	<programlisting>
  *	GDataDocumentsService *service;
- *	GDataDocumentsDocument *document;
  *	GDataBatchOperation *operation;
  *	GDataFeed *feed;
  *	GDataLink *batch_link;
