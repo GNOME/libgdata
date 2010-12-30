@@ -135,6 +135,77 @@
  * 	</programlisting>
  * </example>
  *
+ * The Documents service can be manipulated using batch operations, too. See the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#ACLBatch">online documentation on batch
+ * operations</ulink> for more information.
+ *
+ * <example>
+ * 	<title>Performing a Batch Operation on Documents</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsDocument *document;
+ *	GDataBatchOperation *operation;
+ *	GDataFeed *feed;
+ *	GDataLink *batch_link;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_documents_service ();
+ *
+ *	/<!-- -->* Create the batch operation; this requires that we have done a query first so that we can get the batch link *<!-- -->/
+ *	feed = do_some_query (service);
+ *	batch_link = gdata_feed_look_up_link (feed, GDATA_LINK_BATCH);
+ *	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_link_get_uri (batch_link));
+ *	g_object_unref (feed);
+ *
+ *	gdata_batch_operation_add_query (operation, presentation_entry_id_to_query, GDATA_TYPE_DOCUMENTS_PRESENTATION,
+ *	                                 (GDataBatchOperationCallback) batch_query_cb, user_data);
+ *	gdata_batch_operation_add_insertion (operation, new_entry, (GDataBatchOperationCallback) batch_insertion_cb, user_data);
+ *	gdata_batch_operation_add_update (operation, old_entry, (GDataBatchOperationCallback) batch_update_cb, user_data);
+ *	gdata_batch_operation_add_deletion (operation, entry_to_delete, (GDataBatchOperationCallback) batch_deletion_cb, user_data);
+ *
+ *	/<!-- -->* Run the batch operation and handle the results in the various callbacks *<!-- -->/
+ *	gdata_test_batch_operation_run (operation, NULL, &error);
+ *
+ *	g_object_unref (operation);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error running batch operation: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	static void
+ *	batch_query_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+ *	{
+ *		/<!-- -->* operation_type == GDATA_BATCH_OPERATION_QUERY *<!-- -->/
+ *		/<!-- -->* Reference and do something with the returned entry. *<!-- -->/
+ *	}
+ *
+ *	static void
+ *	batch_insertion_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+ *	{
+ *		/<!-- -->* operation_type == GDATA_BATCH_OPERATION_INSERTION *<!-- -->/
+ *		/<!-- -->* Reference and do something with the returned entry. *<!-- -->/
+ *	}
+ *
+ *	static void
+ *	batch_update_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+ *	{
+ *		/<!-- -->* operation_type == GDATA_BATCH_OPERATION_UPDATE *<!-- -->/
+ *		/<!-- -->* Reference and do something with the returned entry. *<!-- -->/
+ *	}
+ *
+ *	static void
+ *	batch_deletion_cb (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry, GError *error, gpointer user_data)
+ *	{
+ *		/<!-- -->* operation_type == GDATA_BATCH_OPERATION_DELETION, entry == NULL *<!-- -->/
+ *	}
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.4.0
  **/
 
