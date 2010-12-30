@@ -34,6 +34,107 @@
  * <ulink type="http" url="http://groups.google.com/group/Google-Docs-Data-APIs/browse_thread/thread/bfc50e94e303a29a?pli=1">
  * online explanation about the problem</ulink>.
  *
+ * <example>
+ * 	<title>Uploading a Document from Disk</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsDocument *document, *uploaded_document;
+ *	GFile *document_file;
+ *	GDataDocumentsFolder *destination_folder;
+ *	GFileInfo *file_info;
+ *	const gchar *slug, *content_type;
+ *	GFileInputStream *file_stream;
+ *	GDataUploadStream *upload_stream;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_documents_service ();
+ *
+ *	/<!-- -->* Get the document file to upload and the folder to upload it into *<!-- -->/
+ *	document_file = g_file_new_for_path ("document.odt");
+ *	destination_folder = query_user_for_destination_folder (service);
+ *
+ *	/<!-- -->* Get the file's display name and content type *<!-- -->/
+ *	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+ *	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting document file information: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (destination_folder);
+ *		g_object_unref (document_file);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	slug = g_file_info_get_display_name (file_info);
+ *	content_type = g_file_info_get_content_type (file_info);
+ *
+ *	/<!-- -->* Get an input stream for the file *<!-- -->/
+ *	file_stream = g_file_read (document_file, NULL, &error);
+ *
+ *	g_object_unref (document_file);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting document file stream: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (file_info);
+ *		g_object_unref (destination_folder);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Create the document metadata to upload *<!-- -->/
+ *	document = gdata_documents_text_new (NULL);
+ *	gdata_entry_set_title (GDATA_ENTRY (document), "Document Title");
+ *
+ *	/<!-- -->* Get an upload stream for the document *<!-- -->/
+ *	upload_stream = gdata_documents_service_upload_document (service, document, slug, content_type, destination_folder, NULL, &error);
+ *
+ *	g_object_unref (document);
+ *	g_object_unref (file_info);
+ *	g_object_unref (destination_folder);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting upload stream: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (file_stream);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Upload the document. This is a blocking operation, and should normally be done asynchronously. *<!-- -->/
+ *	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+ *	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+ *
+ *	g_object_unref (file_stream);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error splicing streams: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (upload_stream);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Finish off the upload by parsing the returned updated document metadata entry *<!-- -->/
+ *	uploaded_document = gdata_documents_service_finish_upload (service, upload_stream, &error);
+ *
+ *	g_object_unref (upload_stream);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error uploading document: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the uploaded document *<!-- -->/
+ *
+ *	g_object_unref (uploaded_document);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.4.0
  **/
 
