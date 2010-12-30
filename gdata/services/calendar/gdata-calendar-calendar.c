@@ -31,6 +31,46 @@
  *
  * For more details of Google Calendar's GData API, see the <ulink type="http" url="http://code.google.com/apis/calendar/docs/2.0/reference.html">
  * online documentation</ulink>.
+ *
+ * <example>
+ * 	<title>Listing Calendars</title>
+ * 	<programlisting>
+ *	GDataCalendarService *service;
+ *	GDataFeed *feed;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_calendar_service ();
+ *
+ *	/<!-- -->* Query for all of the calendars the currently authenticated user has access to, including those which they have read-only
+ *	 * access to. *<!-- -->/
+ *	feed = gdata_calendar_service_query_all_calendars (service, NULL, NULL, NULL, NULL, &error);
+ *
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error querying for calendars: %s", error->message);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Iterate through the returned calendars and do something with them *<!-- -->/
+ *	for (i = gdata_feed_get_entries (feed); i != NULL; i = i->next) {
+ *		const gchar *access_level;
+ *		gboolean has_write_access;
+ *		GDataCalendarCalendar *calendar = GDATA_CALENDAR_CALENDAR (i->data);
+ *
+ *		/<!-- -->* Determine whether we have write access to the calendar, or just read-only or free/busy access. Note that the access levels
+ *		 * are more detailed than this; see the documentation for gdata_calendar_calendar_get_access_level() for more information. *<!-- -->/
+ *		access_level = gdata_calendar_calendar_get_access_level (calendar);
+ *		has_write_access = (access_level != NULL && strcmp (access_level, GDATA_CALENDAR_ACCESS_ROLE_EDITOR) == 0) ? TRUE : FALSE;
+ *
+ *		/<!-- -->* Do something with the calendar here, such as insert it into a UI *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (feed);
+ * 	</programlisting>
+ * </example>
  **/
 
 #include <config.h>
