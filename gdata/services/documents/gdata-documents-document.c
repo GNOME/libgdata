@@ -86,6 +86,104 @@
  * 	</programlisting>
  * </example>
  *
+ * Each document accessible through the service has an access control list (ACL) which defines the level of access to the document to each user, and
+ * which users the document is shared with. For more information about ACLs for documents, see the
+ * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#AccessControlLists">online documentation on
+ * sharing documents</ulink>.
+ *
+ * <example>
+ * 	<title>Retrieving the Access Control List for a Document</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsDocument *document;
+ *	GDataFeed *acl_feed;
+ *	GDataAccessRule *rule, *new_rule;
+ *	GDataLink *acl_link;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and retrieve a document to work on *<!-- -->/
+ *	service = create_documents_service ();
+ *	document = get_document (service);
+ *
+ *	/<!-- -->* Query the service for the ACL for the given document *<!-- -->/
+ *	acl_feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (document), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting ACL feed for document: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (document);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Iterate through the ACL *<!-- -->/
+ *	for (i = gdata_feed_get_entries (acl_feed); i != NULL; i = i->next) {
+ *		const gchar *scope_value;
+ *
+ *		rule = GDATA_ACCESS_RULE (i->data);
+ *
+ *		/<!-- -->* Do something with the access rule here. As an example, we update the rule applying to test@gmail.com and delete all
+ *		 * the other rules. We then insert another rule for example@gmail.com below. *<!-- -->/
+ *		gdata_access_rule_get_scope (rule, NULL, &scope_value);
+ *		if (scope_value != NULL && strcmp (scope_value, "test@gmail.com") == 0) {
+ *			GDataAccessRule *updated_rule;
+ *
+ *			/<!-- -->* Update the rule to make test@gmail.com a writer (full read/write access to the document, but they can't change
+ *			 * the ACL or delete the document). *<!-- -->/
+ *			gdata_access_rule_set_role (rule, GDATA_DOCUMENTS_ACCESS_ROLE_WRITER);
+ *			updated_rule = GDATA_ACCESS_RULE (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (rule), NULL, &error));
+ *
+ *			if (error != NULL) {
+ *				g_error ("Error updating access rule for %s: %s", scope_value, error->message);
+ *				g_error_free (error);
+ *				g_object_unref (acl_feed);
+ *				g_object_unref (document);
+ *				g_object_unref (service);
+ *				return;
+ *			}
+ *
+ *			g_object_unref (updated_rule);
+ *		} else {
+ *			/<!-- -->* Delete any rule which doesn't apply to test@gmail.com *<!-- -->/
+ *			gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (rule), NULL, &error);
+ *
+ *			if (error != NULL) {
+ *				g_error ("Error deleting access rule for %s: %s", scope_value, error->message);
+ *				g_error_free (error);
+ *				g_object_unref (acl_feed);
+ *				g_object_unref (document);
+ *				g_object_unref (service);
+ *				return;
+ *			}
+ *		}
+ *	}
+ *
+ *	g_object_unref (acl_feed);
+ *
+ *	/<!-- -->* Create and insert a new access rule for example@gmail.com which allows them read-only access to the document. *<!-- -->/
+ *	rule = gdata_access_rule_new (NULL);
+ *	gdata_access_rule_set_role (rule, GDATA_DOCUMENTS_ACCESS_ROLE_READER);
+ *	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "example@gmail.com");
+ *
+ *	acl_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_ACCESS_CONTROL_LIST);
+ *	new_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_link_get_uri (acl_link), GDATA_ENTRY (rule),
+ *	                                                          NULL, &error));
+ *
+ *	g_object_unref (rule);
+ *	g_object_unref (document);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error inserting access rule: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	g_object_unref (acl_link);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.7.0
  **/
 
