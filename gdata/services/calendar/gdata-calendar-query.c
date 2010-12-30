@@ -60,6 +60,7 @@
  *
  *	if (error != NULL) {
  *		g_error ("Error querying for events: %s", error->message);
+ *		g_error_free (error);
  *		return;
  *	}
  *
