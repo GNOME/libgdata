@@ -29,6 +29,63 @@
  * For more details of Google Documents' GData API, see the
  * <ulink type="http" url="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
+ * <example>
+ * 	<title>Downloading a Document</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsDocument *document;
+ *	GFile *destination_file;
+ *	const gchar *download_format;
+ *	GDataDownloadStream *download_stream;
+ *	GFileOutputStream *output_stream;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and retrieve the document to download and the file and format to save the download in *<!-- -->/
+ *	service = create_youtube_service ();
+ *	document = get_document_to_download (service);
+ *	destination_file = query_user_for_destination_file (document);
+ *	download_format = query_user_for_download_format (document);
+ *
+ *	/<!-- -->* Create the download stream *<!-- -->/
+ *	download_stream = gdata_documents_document_download (document, service, download_format, NULL, &error);
+ *
+ *	g_object_unref (document);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error creating download stream: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (destination_file);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Create the file output stream *<!-- -->/
+ *	output_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
+ *
+ *	g_object_unref (destination_file);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error creating destination file: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (download_stream);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Download the document. This should almost always be done asynchronously. *<!-- -->/
+ *	g_output_stream_splice (G_OUTPUT_STREAM (output_stream), G_INPUT_STREAM (download_stream),
+ *	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+ *
+ *	g_object_unref (output_stream);
+ *	g_object_unref (download_stream);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error downloading document: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.7.0
  **/
 
