@@ -163,6 +163,39 @@
  *	g_object_unref (uploaded_video);
  * 	</programlisting>
  * </example>
+ *
+ * <example>
+ * 	<title>Querying for Videos from a Standard Feed</title>
+ * 	<programlisting>
+ *	GDataYouTubeService *service;
+ *	GDataFeed *feed;
+ *	GList *i;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_youtube_service ();
+ *
+ *	/<!-- -->* Query for the top page of videos in the most popular feed *<!-- -->/
+ *	feed = gdata_youtube_service_query_standard_feed (service, GDATA_YOUTUBE_MOST_POPULAR_FEED, NULL, NULL, NULL, NULL, &error);
+ *
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error querying for most popular videos: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Iterate through the videos *<!-- -->/
+ *	for (i = gdata_feed_get_entries (feed); i != NULL; i = i->next) {
+ *		GDataYouTubeVideo *video = GDATA_YOUTUBE_VIDEO (i->data);
+ *
+ *		/<!-- -->* Do something with the video, like insert it into the UI *<!-- -->/
+ *	}
+ *
+ *	g_object_unref (feed);
+ * 	</programlisting>
+ * </example>
  **/
 
 #include <config.h>
