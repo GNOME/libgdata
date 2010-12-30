@@ -58,6 +58,111 @@
  *	g_object_unref (service);
  * 	</programlisting>
  * </example>
+ *
+ * <example>
+ * 	<title>Uploading a Video from Disk</title>
+ * 	<programlisting>
+ *	GDataYouTubeService *service;
+ *	GDataYouTubeVideo *video, *uploaded_video;
+ *	GDataMediaCategory *category;
+ *	const gchar * const tags[] = { "tag1", "tag2", NULL };
+ *	GFile *video_file;
+ *	GFileInfo *file_info;
+ *	const gchar *slug, *content_type;
+ *	GFileInputStream *file_stream;
+ *	GDataUploadStream *upload_stream;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service *<!-- -->/
+ *	service = create_youtube_service ();
+ *
+ *	/<!-- -->* Get the video file to upload *<!-- -->/
+ *	video_file = g_file_new_for_path ("sample.ogg");
+ *
+ *	/<!-- -->* Get the file's display name and content type *<!-- -->/
+ *	file_info = g_file_query_info (data->video_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+ *	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting video file information: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (video_file);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	slug = g_file_info_get_display_name (file_info);
+ *	content_type = g_file_info_get_content_type (file_info);
+ *
+ *	/<!-- -->* Get an input stream for the file *<!-- -->/
+ *	file_stream = g_file_read (video_file, NULL, &error);
+ *
+ *	g_object_unref (video_file);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting video file stream: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (file_info);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Create the video to upload *<!-- -->/
+ *	video = gdata_youtube_video_new (NULL);
+ *
+ *	gdata_entry_set_title (GDATA_ENTRY (video), "Video Title");
+ *	gdata_youtube_video_set_description (video, "Video description.");
+ *	gdata_youtube_video_set_keywords (video, video_tags);
+ *
+ *	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
+ *	gdata_youtube_video_set_category (video, category);
+ *	g_object_unref (category);
+ *
+ *	/<!-- -->* Get an upload stream for the video *<!-- -->/
+ *	upload_stream = gdata_youtube_service_upload_video (service, video, slug, content_type, NULL, &error);
+ *
+ *	g_object_unref (video);
+ *	g_object_unref (file_info);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting upload stream: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (file_stream);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Upload the video. This is a blocking operation, and should normally be done asynchronously. *<!-- -->/
+ *	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+ *	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+ *
+ *	g_object_unref (file_stream);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error splicing streams: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (upload_stream);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Finish off the upload by parsing the returned updated video entry *<!-- -->/
+ *	uploaded_video = gdata_youtube_service_finish_video_upload (service, upload_stream, &error);
+ *
+ *	g_object_unref (upload_stream);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error uploading video: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the uploaded video *<!-- -->/
+ *
+ *	g_object_unref (uploaded_video);
+ * 	</programlisting>
+ * </example>
  **/
 
 #include <config.h>
