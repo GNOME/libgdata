@@ -48,7 +48,6 @@ typedef struct _ScrapData {
 	GtkWidget		*box1, *box2;
 	GtkWidget		*table;
 	GtkWidget		*scrollWindow;
-	gchar			*title;
 	ScrapYTSearch	*yt_search;
 	ScrapPSearch	*p_search;
 	ScrapPSearch	*pic_search;
@@ -120,7 +119,7 @@ typedef struct _ScrapProps {
 	GtkWidget	*button;
 	GtkWidget	*box1, *box2;
 	GtkWidget	*label;
-	GtkWidget	*username_entry, *password_entry, *title_entry;
+	GtkWidget	*username_entry, *password_entry;
 	ScrapData	*main_data;
 } ScrapProps;
 

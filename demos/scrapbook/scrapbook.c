@@ -429,10 +429,6 @@ properties_set (GtkWidget *widget, ScrapProps *self)
 		}
 	}
 
-	
-	/* if the username and password are changed, we re-authenticate */
-	self->main_data->title	  = gtk_entry_get_text (GTK_ENTRY(self->title_entry));
-	gtk_window_set_title(GTK_WINDOW (self->main_data->window), self->main_data->title);
 	gtk_widget_destroy (self->window);
 }
 
@@ -455,9 +451,6 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	self->label = gtk_label_new ("Password");
 	gtk_widget_show		(self->label);
 	gtk_box_pack_start 	(GTK_BOX (self->box2), self->label, TRUE, TRUE, 0);
-	self->label = gtk_label_new ("Title");
-	gtk_widget_show		(self->label);
-	gtk_box_pack_start	(GTK_BOX (self->box2), self->label, TRUE, TRUE, 0);
 	gtk_widget_show		(self->box2);
 	gtk_box_pack_start 	(GTK_BOX (self->box1), self->box2, FALSE, FALSE, 0);
 	
@@ -478,13 +471,6 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	
 	gtk_widget_show	   (self->password_entry);
 	gtk_box_pack_start (GTK_BOX (self->box2), self->password_entry, TRUE, TRUE, 0);
-	
-	self->title_entry = gtk_entry_new ();
-	if (self->main_data->title != NULL)
-		gtk_entry_set_text (GTK_ENTRY (self->title_entry), self->main_data->title);
-	
-	gtk_widget_show (self->title_entry);
-	gtk_box_pack_start (GTK_BOX (self->box2), self->title_entry, TRUE, TRUE, 0);
 	
 	gtk_box_pack_start 	(GTK_BOX (self->box1), self->box2, FALSE, FALSE, 0);
 	gtk_widget_show		(self->box2);
@@ -599,7 +585,6 @@ main(int argc, char **argv)
 	ScrapPicSearch	*photoSearch;
 	ScrapPUpload	*fUpload;
 	scrapbook = g_slice_new (struct _ScrapData);
-	scrapbook->title			= NULL;
 	scrapbook->max_rows			= 5;
 	g_type_init ();
 	gtk_init	(&argc, &argv);
@@ -609,6 +594,7 @@ main(int argc, char **argv)
 	
 	scrapbook->lStore   = gtk_list_store_new (ORIG_N_COLS, GDK_TYPE_PIXBUF, G_TYPE_STRING, GDATA_TYPE_ENTRY);
 	scrapbook->window 	= gtk_window_new 	(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (scrapbook->window), "Scrapbook");
 	g_signal_connect (scrapbook->window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
 	g_signal_connect (scrapbook->window, "delete-event", G_CALLBACK (gtk_main_quit), NULL);
 	
