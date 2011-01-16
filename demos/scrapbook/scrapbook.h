@@ -5,6 +5,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #define DEVELOPER_KEY "AI39si5MkSF-0bzTmP5WETk1D-Z7inHaQJzX13PeG_5Uzeu8mz3vo40cFoqnxjejB-UqzYFrqzOSlsqJvHuPNEGqdycqnPo30A"
+#define CLIENT_ID "ytapi-GNOME-libgdata-444fubtt-0"
 #define THUMBNAIL_WIDTH 180
 #define MAX_RESULTS 	10
 
