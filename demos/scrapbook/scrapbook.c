@@ -1,6 +1,5 @@
 #include "scrapbook.h"
 
-
 static void
 open_in_web_browser (GtkWidget *widget, gchar *uri) /* quicky wrapper for gtk_show_uri */
 {
@@ -325,7 +324,7 @@ start_new_picasa_search (GtkWidget *widget, ScrapData *first)
 	/* search bar */
 	
 	self->user_entry = gtk_entry_new ();
-	gtk_entry_set_text 				(GTK_ENTRY (self->user_entry), "user to search for");
+	gtk_entry_set_text 				(GTK_ENTRY (self->user_entry), "User to search for");
 	g_signal_connect				(self->button, "activated", G_CALLBACK (p_text_callback), self);
 	gtk_box_pack_start 				(GTK_BOX(self->box2), self->user_entry, TRUE, TRUE, 0);
 	gtk_widget_show    				(self->user_entry);
@@ -333,7 +332,7 @@ start_new_picasa_search (GtkWidget *widget, ScrapData *first)
 	/* button */
 		
 			
-	self->button = gtk_button_new_with_label ("search");
+	self->button = gtk_button_new_with_mnemonic ("_Search");
 	g_signal_connect	(self->button, "clicked", G_CALLBACK (p_text_callback), self);
 	gtk_box_pack_start 	(GTK_BOX (self->box2), self->button, FALSE, FALSE, 0);
 	gtk_widget_show		(self->button);
@@ -376,7 +375,7 @@ start_new_youtube_search (GtkWidget *widget, ScrapData *first) /* *first is a po
 	
 	/* button */
 	
-	self->button = gtk_button_new_with_label 	("search");
+	self->button = gtk_button_new_with_mnemonic ("_Search");
 	g_signal_connect 							(self->button, "clicked", G_CALLBACK (yt_text_callback), self);
 	gtk_box_pack_start 							(GTK_BOX (self->box2), self->button, TRUE, TRUE, 0);
 	gtk_widget_show								(self->button);
@@ -451,13 +450,13 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	self->box1	= gtk_vbox_new (FALSE, 3);
 	self->box2 	= gtk_hbox_new (FALSE, 10);
 	
-	self->label = gtk_label_new ("username");
+	self->label = gtk_label_new ("Username");
 	gtk_widget_show		(self->label);
 	gtk_box_pack_start 	(GTK_BOX (self->box2), self->label, TRUE, TRUE, 0);
-	self->label = gtk_label_new ("password");
+	self->label = gtk_label_new ("Password");
 	gtk_widget_show		(self->label);
 	gtk_box_pack_start 	(GTK_BOX (self->box2), self->label, TRUE, TRUE, 0);
-	self->label = gtk_label_new ("title");
+	self->label = gtk_label_new ("Title");
 	gtk_widget_show		(self->label);
 	gtk_box_pack_start	(GTK_BOX (self->box2), self->label, TRUE, TRUE, 0);
 	gtk_widget_show		(self->box2);
@@ -490,7 +489,7 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	
 	gtk_box_pack_start 	(GTK_BOX (self->box1), self->box2, FALSE, FALSE, 0);
 	gtk_widget_show		(self->box2);
-	self->button = gtk_button_new_with_label ("Ok");
+	self->button = gtk_button_new_with_mnemonic ("_OK");
 	g_signal_connect 	(self->button, "clicked", G_CALLBACK (properties_set), self);
 	gtk_widget_show		(self->button);
 	gtk_box_pack_start 	(GTK_BOX (self->box1), self->button, FALSE, FALSE, 0);
@@ -565,7 +564,7 @@ upload (GtkWidget *widget, ScrapData *first)
 	GtkWidget *label, *content_area, *action_area;
 	label = gtk_label_new ("Enter photo name and description");
 	self = first->p_upload;
-	self->file_dialog = gtk_file_chooser_dialog_new ("Upload", GTK_WINDOW (first->window), GTK_FILE_CHOOSER_ACTION_SAVE,
+	self->file_dialog = gtk_file_chooser_dialog_new ("Upload Photo", GTK_WINDOW (first->window), GTK_FILE_CHOOSER_ACTION_SAVE,
 	                                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 	                                                 GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 	                                                 NULL);
@@ -645,22 +644,22 @@ main(int argc, char **argv)
 	scrapbook->box2		= gtk_vbox_new		(FALSE, 2);
 	scrapbook->table	= gtk_table_new		(5,5,FALSE);
 	
-	scrapbook->button = gtk_button_new_with_label ("Add You Tube Video");	
+	scrapbook->button = gtk_button_new_with_mnemonic ("Add YouTube _Video");
 	g_signal_connect 	(scrapbook->button, "clicked", G_CALLBACK (start_new_youtube_search), scrapbook);
 	gtk_box_pack_start	(GTK_BOX (scrapbook->box2), scrapbook->button, FALSE, FALSE, 0);
 	gtk_widget_show		(scrapbook->button);
 		
-	scrapbook->button = gtk_button_new_with_label ("Add Picasa Photo");
+	scrapbook->button = gtk_button_new_with_mnemonic ("Add PicasaWeb _Photo");
 	g_signal_connect	(scrapbook->button,"clicked", G_CALLBACK (start_new_picasa_search), scrapbook);
 	gtk_box_pack_start	(GTK_BOX (scrapbook->box2), scrapbook->button, FALSE, FALSE, 0);
 	gtk_widget_show 	(scrapbook->button);
 	
-	scrapbook->button = gtk_button_new_with_label ("Properties");
+	scrapbook->button = gtk_button_new_with_mnemonic ("P_roperties");
 	g_signal_connect	(scrapbook->button, "clicked", G_CALLBACK (properties_show), scrapbook);
 	gtk_box_pack_start	(GTK_BOX (scrapbook->box2), scrapbook->button, FALSE, FALSE, 0);
 	gtk_widget_show		(scrapbook->button);
 	
-	scrapbook->button = gtk_button_new_with_label ("Upload picture to picasa web");
+	scrapbook->button = gtk_button_new_with_mnemonic ("_Upload Photo to PicasaWeb");
 	g_signal_connect	(scrapbook->button, "clicked", G_CALLBACK (upload), scrapbook);
 	gtk_box_pack_start 	(GTK_BOX (scrapbook->box2), scrapbook->button, FALSE, FALSE, 0);
 	gtk_widget_show		(scrapbook->button);
