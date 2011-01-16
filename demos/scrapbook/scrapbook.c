@@ -523,7 +523,7 @@ static void
 upload (GtkWidget *widget, ScrapData *first)
 {
 	ScrapPUpload 	*self;
-	GtkWidget		*label;
+	GtkWidget *label, *content_area, *action_area;
 	label = gtk_label_new ("Enter photo name and description");
 	self = first->p_upload;
 	self->file_dialog = gtk_file_chooser_dialog_new ("Upload", GTK_WINDOW (first->window), GTK_FILE_CHOOSER_ACTION_SAVE,
@@ -534,22 +534,21 @@ upload (GtkWidget *widget, ScrapData *first)
 	self->file  = gdata_picasaweb_file_new (NULL);
 	/* dialog to get the file's name and description */
 	self->dialog = gtk_dialog_new();
-	
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (self->dialog));
+	action_area = gtk_dialog_get_action_area (GTK_DIALOG (self->dialog));
+
 	gtk_widget_show (label);
-	gtk_box_pack_start	(GTK_BOX (GTK_DIALOG(self->dialog)->vbox),
-						 label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 0);
 	
 	self->name	= gtk_entry_new ();
 	g_signal_connect 	(self->name, "activate", G_CALLBACK (got_name), self);
 	gtk_widget_show  	(self->name);
-	gtk_box_pack_start 	(GTK_BOX (GTK_DIALOG(self->dialog)->action_area),
-						 self->name, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (action_area), self->name, TRUE, TRUE, 0);
 	
 	self->description = gtk_entry_new ();
 	g_signal_connect 	(self->description, "activate", G_CALLBACK (got_name), self);
 	gtk_widget_show  	(self->description);
-	gtk_box_pack_start 	(GTK_BOX (GTK_DIALOG (self->dialog)->action_area),
-						 self->description, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (action_area), self->description, TRUE, TRUE, 0);
 	
 	gtk_widget_show		(self->dialog);
 }
