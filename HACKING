@@ -164,6 +164,8 @@ the following format "tag: Short explanation". The following tags are valid:
 
  - tests: for changes to the test code in gdata/tests which are not specific to a service or namespace.
 
+ - demos: for changes to the demo applications in the demos directory.
+
  - introspection: for introspection annotations and build changes.
 
  - calendar: for the Google Calendar code in gdata/services/calendar.
