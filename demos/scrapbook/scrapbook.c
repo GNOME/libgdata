@@ -197,20 +197,23 @@ p_query_element (GDataEntry *entry, guint entry_key, guint entry_count, ScrapPSe
 {
 	GError				*error=NULL;
 	ScrapPicSearch		*picture;
+	GDataFeed *feed;
+
 	picture = self->pic;
 	picture->title				= gdata_entry_get_title	(entry);
 	picture->query 				= picture->search_data->query;
 	picture->user				= self->user;
 	gdata_query_set_q 					(picture->query, picture->title);
-	gdata_picasaweb_service_query_files (picture->search_data->service,
-										 GDATA_PICASAWEB_ALBUM (entry),
-										 picture->query,
-										 NULL,
-										 (GDataQueryProgressCallback) find_pictures,
-										 picture, &error);
+	feed = gdata_picasaweb_service_query_files (picture->search_data->service, GDATA_PICASAWEB_ALBUM (entry), picture->query, NULL,
+	                                            (GDataQueryProgressCallback) find_pictures, picture, &error);
+
 	if (error != NULL) {
 		g_print ("whoops, somebody raised an error!\n%s", error->message);
 		g_error_free (error);
+	}
+
+	if (feed != NULL) {
+		g_object_unref (feed);
 	}
 }
 
@@ -218,20 +221,25 @@ static void
 p_text_callback (GtkWidget *widget, ScrapPSearch *self)
 {
 	GError *error 	= NULL;
+	GDataFeed *feed;
+
 	self->user		= gtk_entry_get_text 			(GTK_ENTRY (self->user_entry));
 	self->pic->lStore = gtk_list_store_new (P_N_COLS, GDK_TYPE_PIXBUF,
 											G_TYPE_STRING,
 											G_TYPE_STRING,
 											GDATA_TYPE_ENTRY);
 	self->pic->tView	= gtk_tree_view_new ();
-	gdata_picasaweb_service_query_all_albums	(self->service, self->query,
-												 self->user, NULL,
-											    (GDataQueryProgressCallback) p_query_element,
-												 self, &error);
+	feed = gdata_picasaweb_service_query_all_albums (self->service, self->query, self->user, NULL, (GDataQueryProgressCallback) p_query_element,
+	                                                 self, &error);
 	if (error != NULL) {
 		g_print ("someone raised an error\n%s\n",error->message);
 		g_error_free (error);
 	}
+
+	if (feed != NULL) {
+		g_object_unref (feed);
+	}
+
 	p_display_tree (self->pic);
 }
 
@@ -274,10 +282,17 @@ yt_query_element (GDataEntry *entry, guint entry_key, guint entry_count, ScrapYT
 static void
 yt_text_callback (GtkWidget *widget, ScrapYTSearch *self)
 {
+	GDataFeed *feed;
+
 	self->txt = gtk_entry_get_text (GTK_ENTRY (self->txt_entry));
 	gdata_query_set_q	 				(self->query, self->txt);	/* set the string we'll be searching for in youtube */
+
 	/* do the actual query, running yt_query_element for each object found */
-	gdata_youtube_service_query_videos 	(self->service, self->query, NULL, (GDataQueryProgressCallback) yt_query_element, self, NULL);
+	feed = gdata_youtube_service_query_videos (self->service, self->query, NULL, (GDataQueryProgressCallback) yt_query_element, self, NULL);
+	if (feed != NULL) {
+		g_object_unref (feed);
+	}
+
 	yt_display_tree (self); /* run yt_display_tree to show the results */
 }
 
