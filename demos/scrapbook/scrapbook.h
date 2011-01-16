@@ -58,6 +58,9 @@ typedef struct _ScrapData {
 	gchar			*password;
 	GtkListStore	*lStore;
 	GtkTreeIter		iter;
+
+	GDataYouTubeService *youtube_service;
+	GDataPicasaWebService *picasaweb_service;
 } ScrapData;
 struct _ScrapPUpload {
 	ScrapData			*main_data;
@@ -87,7 +90,6 @@ struct _ScrapYTSearch { /* youtube search data */
 	gchar 	  			*txt;
 	GtkWidget			*window;
 	GDataQuery		 	*query;
-	GDataYouTubeService	*service;
 	gchar				*title;
 	gchar				*uri;
 	GdkPixbuf			*thumbnail;
@@ -102,7 +104,6 @@ struct _ScrapYTSearch { /* youtube search data */
 struct _ScrapPSearch { /* for finding albums */
 	GtkWidget				*window;
 	GDataQuery				*query;
-	GDataPicasaWebService	*service;
 	gchar					*title;
 	gchar					*uri;
 	GdkPixbuf				*thumbnail;

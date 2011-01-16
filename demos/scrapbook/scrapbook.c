@@ -204,7 +204,7 @@ p_query_element (GDataEntry *entry, guint entry_key, guint entry_count, ScrapPSe
 	picture->query 				= picture->search_data->query;
 	picture->user				= self->user;
 	gdata_query_set_q 					(picture->query, picture->title);
-	feed = gdata_picasaweb_service_query_files (picture->search_data->service, GDATA_PICASAWEB_ALBUM (entry), picture->query, NULL,
+	feed = gdata_picasaweb_service_query_files (self->main_data->picasaweb_service, GDATA_PICASAWEB_ALBUM (entry), picture->query, NULL,
 	                                            (GDataQueryProgressCallback) find_pictures, picture, &error);
 
 	if (error != NULL) {
@@ -229,8 +229,8 @@ p_text_callback (GtkWidget *widget, ScrapPSearch *self)
 											G_TYPE_STRING,
 											GDATA_TYPE_ENTRY);
 	self->pic->tView	= gtk_tree_view_new ();
-	feed = gdata_picasaweb_service_query_all_albums (self->service, self->query, self->user, NULL, (GDataQueryProgressCallback) p_query_element,
-	                                                 self, &error);
+	feed = gdata_picasaweb_service_query_all_albums (self->main_data->picasaweb_service, self->query, self->user, NULL,
+	                                                 (GDataQueryProgressCallback) p_query_element, self, &error);
 	if (error != NULL) {
 		g_print ("someone raised an error\n%s\n",error->message);
 		g_error_free (error);
@@ -288,7 +288,8 @@ yt_text_callback (GtkWidget *widget, ScrapYTSearch *self)
 	gdata_query_set_q	 				(self->query, self->txt);	/* set the string we'll be searching for in youtube */
 
 	/* do the actual query, running yt_query_element for each object found */
-	feed = gdata_youtube_service_query_videos (self->service, self->query, NULL, (GDataQueryProgressCallback) yt_query_element, self, NULL);
+	feed = gdata_youtube_service_query_videos (self->main_data->youtube_service, self->query, NULL, (GDataQueryProgressCallback) yt_query_element,
+	                                           self, NULL);
 	if (feed != NULL) {
 		g_object_unref (feed);
 	}
@@ -307,7 +308,7 @@ start_new_picasa_search (GtkWidget *widget, ScrapData *first)
 	picture->search_data 		= self;
 	picture->search_data->pic	= picture;
 	picture->main_data			= self->main_data;
-	g_assert			 (GDATA_IS_PICASAWEB_SERVICE (self->service));
+	g_assert (GDATA_IS_PICASAWEB_SERVICE (first->picasaweb_service));
 	gtk_list_store_clear (self->pic->lStore);
 	
 	self->window = gtk_window_new 	(GTK_WINDOW_TOPLEVEL);
@@ -399,7 +400,7 @@ properties_set (GtkWidget *widget, ScrapProps *self)
 	/* authenticate on youtube */
 	{
 		GError *error = NULL;
-		gdata_service_authenticate (GDATA_SERVICE (self->main_data->yt_search->service),
+		gdata_service_authenticate (GDATA_SERVICE (self->main_data->youtube_service),
 									self->main_data->username,
 									self->main_data->password,
 									NULL, &error);
@@ -415,7 +416,7 @@ properties_set (GtkWidget *widget, ScrapProps *self)
 	/* authenticate on picasa (no time for fun and games, so we assume he's got the same account on both services) */
 	{
 		GError *error = NULL;
-		gdata_service_authenticate (GDATA_SERVICE (self->main_data->p_search->service),
+		gdata_service_authenticate (GDATA_SERVICE (self->main_data->picasaweb_service),
 									self->main_data->username,
 									self->main_data->password,
 									NULL, &error);
@@ -515,7 +516,7 @@ select_file (GtkWidget *widget, ScrapPUpload *self)
 	/* upload our file, using the service we've set up, and metadata
 	 * set up in upload ()
 	 * no album is specified, but that should be easy to add */
-	upload_stream = gdata_picasaweb_service_upload_file (self->main_data->p_search->service, NULL /* for now uploading to drop box */,
+	upload_stream = gdata_picasaweb_service_upload_file (self->main_data->picasaweb_service, NULL /* for now uploading to drop box */,
 	                                                     self->file, g_file_info_get_display_name (file_info),
 	                                                     g_file_info_get_content_type (file_info), NULL, &error);
 
@@ -533,7 +534,7 @@ select_file (GtkWidget *widget, ScrapPUpload *self)
 	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
 	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, NULL);
 
-	self->file = gdata_picasaweb_service_finish_file_upload (self->main_data->p_search->service, upload_stream, NULL);
+	self->file = gdata_picasaweb_service_finish_file_upload (self->main_data->picasaweb_service, upload_stream, NULL);
 
 	g_object_unref (file_stream);
 	g_object_unref (upload_stream);
@@ -620,7 +621,7 @@ main(int argc, char **argv)
 	/* create a new query, without any search text, starting at 0, and search only MAX_RESULTS results */
 	youtubeSearch->query = gdata_query_new_with_limits (NULL, 0, MAX_RESULTS);
 	/* create a new youtube service, giving it our developer key; google no longer uses client ids so we send in an empty string (NULL gives an error) */
-	youtubeSearch->service = gdata_youtube_service_new (DEVELOPER_KEY, "");
+	scrapbook->youtube_service = gdata_youtube_service_new (DEVELOPER_KEY, "");
 	/* create a new list store and tree to show the user the results
 	 * it has three columns (two of which are displayed): a pixbuf for the thumbnail, the title, and the video data itself (as a gdata generic entry) */
 	youtubeSearch->lStore = gtk_list_store_new 	(N_COLS, GDK_TYPE_PIXBUF, G_TYPE_STRING, GDATA_TYPE_ENTRY);
@@ -629,7 +630,7 @@ main(int argc, char **argv)
 	scrapbook->p_search 		= picasaSearch;
 	picasaSearch->main_data 	= scrapbook;
 	picasaSearch->query 		= gdata_query_new_with_limits (NULL, 0, MAX_RESULTS);
-	picasaSearch->service 		= gdata_picasaweb_service_new ("");
+	scrapbook->picasaweb_service = gdata_picasaweb_service_new ("");
 
 	photoSearch					= g_slice_new (struct _ScrapPicSearch);
 	scrapbook->p_search->pic	= photoSearch;
