@@ -75,7 +75,8 @@ video_selected (GtkTreeView *tree, GtkTreePath *path, GtkTreeViewColumn *column,
 	button 	= gtk_button_new ();
 	gtk_widget_show 	(image);
 	gtk_container_add 	(GTK_CONTAINER (button), image);
-	g_signal_connect (button, "clicked", G_CALLBACK (open_in_web_browser), gdata_youtube_video_get_player_uri (GDATA_YOUTUBE_VIDEO (video)));
+	g_signal_connect (button, "clicked", G_CALLBACK (open_in_web_browser),
+	                  (gpointer) gdata_youtube_video_get_player_uri (GDATA_YOUTUBE_VIDEO (video)));
 	gtk_table_attach_defaults (GTK_TABLE(self->main_data->table), button,
 										 self->main_data->currentRow[self->main_data->currentCol],
 										 self->main_data->currentRow[self->main_data->currentCol]+1,
@@ -251,9 +252,10 @@ yt_query_element (GDataEntry *entry, guint entry_key, guint entry_count, ScrapYT
 {
 	GList 				*thumbnails;
 	GDataMediaThumbnail *thumbnail;
-	gchar				*title; /* the video's title */
-	gchar				*uri;   /* the video's URI */
+	const gchar *title; /* the video's title */
+	const gchar *uri; /* the video's URI */
 	GFileInputStream	*input_stream; /* this will be used to make a pixbuf to store the thumbnail */
+
 	title	= gdata_entry_get_title 				(entry); /* self-explanatory, I hope */
 	uri		= gdata_youtube_video_get_player_uri	(GDATA_YOUTUBE_VIDEO (entry)); /* ditto */
 	g_print ("%s %s", title, uri);
@@ -394,8 +396,9 @@ start_new_youtube_search (GtkWidget *widget, ScrapData *first) /* *first is a po
 static void
 properties_set (GtkWidget *widget, ScrapProps *self)
 {
-	self->main_data->username = gtk_entry_get_text (GTK_ENTRY(self->username_entry));
-	self->main_data->password = gtk_entry_get_text (GTK_ENTRY(self->password_entry));
+	self->main_data->username = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->username_entry)));
+	self->main_data->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->password_entry)));
+
 	/* authenticate on youtube */
 	{
 		GError *error = NULL;

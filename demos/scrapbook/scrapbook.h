@@ -71,9 +71,9 @@ struct _ScrapPUpload {
 };
 
 typedef struct _ScrapPicSearch { /* for finding pictures */
-	gchar					*title;
+	const gchar *title;
 	gchar					*uri;
-	gchar					*user;
+	const gchar *user;
 	GdkPixbuf				*thumbnail;
 	ScrapData				*main_data;
 	ScrapPSearch			*search_data;
@@ -86,7 +86,7 @@ typedef struct _ScrapPicSearch { /* for finding pictures */
 
 struct _ScrapYTSearch { /* youtube search data */
 	GtkWidget 			*txt_entry;
-	gchar 	  			*txt;
+	const gchar *txt;
 	GtkWidget			*window;
 	GDataQuery		 	*query;
 	gchar				*title;
@@ -110,7 +110,7 @@ struct _ScrapPSearch { /* for finding albums */
 	ScrapData				*main_data;
 	GtkWidget				*button;
 	GtkWidget				*user_entry;
-	gchar					*user;
+	const gchar *user;
 	ScrapPicSearch			*pic;
 };
 
