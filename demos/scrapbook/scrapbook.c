@@ -443,7 +443,6 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	self			= g_slice_new (struct _ScrapProps);
 	self->main_data	= first;
 	self->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_resize (GTK_WINDOW (self->window), 250, 250);
 	g_signal_connect (self->window, "destroy", G_CALLBACK (gtk_widget_destroy), NULL);
 	g_signal_connect (self->window, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 	
@@ -639,7 +638,6 @@ main(int argc, char **argv)
 	scrapbook->p_upload			= fUpload;
 	fUpload->main_data			= scrapbook;
 	
-	gtk_window_resize(GTK_WINDOW (scrapbook->window), 350, 150);
 	scrapbook->box1		= gtk_hbox_new		(FALSE, 0);
 	scrapbook->box2		= gtk_vbox_new		(FALSE, 2);
 	scrapbook->table	= gtk_table_new		(5,5,FALSE);
