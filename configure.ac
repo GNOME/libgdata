@@ -74,6 +74,9 @@ fi
 AC_SUBST(GDK_PIXBUF_CFLAGS)
 AC_SUBST(GDK_PIXBUF_LIBS)
 
+PKG_CHECK_MODULES([GTK], [gtk+-3.0], [have_gtk=yes], [have_gtk=no])
+AM_CONDITIONAL([HAVE_GTK], [test "x$have_gtk" = "xyes"])
+
 # GNOME support, which pulls in libsoup-gnome-2.4 to provide transparent proxy support
 AC_MSG_CHECKING(whether to build with GNOME support)
 AC_ARG_ENABLE(gnome, AS_HELP_STRING([--enable-gnome], [Whether to enable GNOME support]),, enable_gnome=yes)

@@ -527,6 +527,40 @@ gcov:
 	@echo "Need to reconfigure with --enable-gcov"
 endif
 
+# Demo programs
+noinst_PROGRAMS =
+
+if HAVE_GTK
+noinst_PROGRAMS += demos/scrapbook/scrapbook
+endif
+
+demos_scrapbook_scrapbook_SOURCES = \
+	demos/scrapbook/scrap.c \
+	demos/scrapbook/scrapdata.h \
+	$(NULL)
+
+demos_scrapbook_scrapbook_CPPFLAGS = \
+	-I$(top_srcdir)/ \
+	-I$(top_srcdir)/gdata \
+	-DG_LOG_DOMAIN=\"scrapbook\" \
+	$(DISABLE_DEPRECATED) \
+	$(AM_CPPFLAGS) \
+	$(NULL)
+
+demos_scrapbook_scrapbook_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GTK_CFLAGS) \
+	$(GDATA_CFLAGS) \
+	$(AM_CFLAGS) \
+	$(NULL)
+
+demos_scrapbook_scrapbook_LDADD = \
+	$(top_builddir)/gdata/libgdata.la \
+	$(GTK_LIBS) \
+	$(GDATA_LIBS) \
+	$(AM_LDADD) \
+	$(NULL)
+
 # Cleaning
 EXTRA_DIST += \
 	autogen.sh		\
