@@ -40,6 +40,7 @@ enum {
 typedef struct _ScrapYTSearch ScrapYTSearch;
 typedef struct _ScrapPSearch  ScrapPSearch;
 typedef struct _ScrapPUpload  ScrapPUpload;
+typedef struct _ScrapPicSearch ScrapPicSearch;
 
 typedef struct _ScrapData {
 	GtkWidget		*window;
@@ -51,7 +52,7 @@ typedef struct _ScrapData {
 	GtkWidget		*scrollWindow;
 	ScrapYTSearch	*yt_search;
 	ScrapPSearch	*p_search;
-	ScrapPSearch	*pic_search;
+	ScrapPicSearch *pic_search;
 	ScrapPUpload	*p_upload;
 	gint			max_rows;
 	gchar			*username;
@@ -71,7 +72,7 @@ struct _ScrapPUpload {
 	GtkWidget			*description;
 };
 
-typedef struct _ScrapPicSearch { /* for finding pictures */
+struct _ScrapPicSearch { /* for finding pictures */
 	const gchar *title;
 	gchar					*uri;
 	const gchar *user;
@@ -83,7 +84,7 @@ typedef struct _ScrapPicSearch { /* for finding pictures */
 	GtkListStore			*lStore;
 	GtkTreeIter				iter;
 	GtkWidget				*tView;
-} ScrapPicSearch;
+};
 
 struct _ScrapYTSearch { /* youtube search data */
 	GtkWidget 			*txt_entry;
