@@ -488,7 +488,7 @@ select_file (GtkWidget *widget, ScrapPUpload *self)
 {
 	GFile *file;
 	GError *error = NULL;
-	file = g_file_new_for_path(gtk_file_selection_get_filename (GTK_FILE_SELECTION(self->file_dialog)));
+	file = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (self->file_dialog));
 	/* upload our file, using the service we've set up, and metadata
 	 * set up in upload ()
 	 * no album is specified, but that should be easy to add */
@@ -499,9 +499,6 @@ select_file (GtkWidget *widget, ScrapPUpload *self)
 		g_print ("error: %s\n", error->message);
 	}
 	g_free (error);
-	/* since the upload blocks, it's safe to assume the widget won't
-	 * be destroyed until we're done */
-	gtk_widget_destroy (self->file_dialog);
 }
 										 
 static void
@@ -512,7 +509,14 @@ got_name (GtkWidget *widget, ScrapPUpload *self)
 	gdata_entry_set_summary	(GDATA_ENTRY (self->file),
 							 gtk_entry_get_text (GTK_ENTRY (self->description)));
 	gtk_widget_destroy 	(self->dialog);
-	gtk_widget_show		(self->file_dialog);
+
+	if (gtk_dialog_run (GTK_DIALOG (self->file_dialog)) == GTK_RESPONSE_ACCEPT) {
+		select_file (NULL, self);
+	}
+
+	/* since the upload blocks, it's safe to assume the widget won't
+	 * be destroyed until we're done */
+	gtk_widget_destroy (self->file_dialog);
 }
 	
 static void
@@ -522,7 +526,10 @@ upload (GtkWidget *widget, ScrapData *first)
 	GtkWidget		*label;
 	label = gtk_label_new ("Enter photo name and description");
 	self = first->p_upload;
-	self->file_dialog = gtk_file_selection_new ("upload");
+	self->file_dialog = gtk_file_chooser_dialog_new ("Upload", GTK_WINDOW (first->window), GTK_FILE_CHOOSER_ACTION_SAVE,
+	                                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                                 GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+	                                                 NULL);
 	/* we make a new file, without an id (it will be assigned automatically later on) */
 	self->file  = gdata_picasaweb_file_new (NULL);
 	/* dialog to get the file's name and description */
@@ -545,13 +552,6 @@ upload (GtkWidget *widget, ScrapData *first)
 						 self->description, TRUE, TRUE, 0);
 	
 	gtk_widget_show		(self->dialog);
-	g_signal_connect 	(self->file_dialog, "destroy", G_CALLBACK (gtk_widget_destroy), NULL);
-	g_signal_connect 	(GTK_FILE_SELECTION(self->file_dialog)->ok_button, "clicked",
-						 G_CALLBACK (select_file), self);
-	
-	g_signal_connect_swapped (GTK_FILE_SELECTION (self->file_dialog)->cancel_button,
-							  "clicked", G_CALLBACK (gtk_widget_destroy),
-							  self->file_dialog);
 }
 
 int
