@@ -535,8 +535,8 @@ noinst_PROGRAMS += demos/scrapbook/scrapbook
 endif
 
 demos_scrapbook_scrapbook_SOURCES = \
-	demos/scrapbook/scrap.c \
-	demos/scrapbook/scrapdata.h \
+	demos/scrapbook/scrapbook.c \
+	demos/scrapbook/scrapbook.h \
 	$(NULL)
 
 demos_scrapbook_scrapbook_CPPFLAGS = \
