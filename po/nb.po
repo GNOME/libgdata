@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgdata 0.3.x\n"
+"Project-Id-Version: libgdata 0.8.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-23 11:42+0100\n"
-"PO-Revision-Date: 2011-01-23 11:49+0100\n"
+"POT-Creation-Date: 2011-01-26 15:29+0100\n"
+"PO-Revision-Date: 2011-01-26 15:31+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -38,7 +38,7 @@ msgstr "Tomt dokument."
 #: ../gdata/gdata-parser.c:66
 #, c-format
 msgid "A %s element was missing required content."
-msgstr ""
+msgstr "Et %s-element manglet nødvendig innhold."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -100,7 +100,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:182
 #, c-format
 msgid "A required element (%s) was not present."
-msgstr ""
+msgstr "Et nødvendig element (%s) var ikke tilstede."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -113,7 +113,7 @@ msgstr ""
 
 #: ../gdata/gdata-service.c:430
 msgid "The server returned a malformed response."
-msgstr ""
+msgstr "Tjeneren returnerte et feilutformet svar."
 
 #: ../gdata/gdata-service.c:473
 #, c-format
@@ -147,7 +147,7 @@ msgstr "Forespurt ressurs ble ikke funnet: %s"
 #: ../gdata/gdata-service.c:501
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr ""
+msgstr "Oppføringen er endret siden den ble lastet ned: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -349,7 +349,8 @@ msgstr "Du må være autentisert for å flytte dokumenter og mapper."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "Du må oppgi et brukernavn eller være autentisert for å spørre på en bruker."
+msgstr ""
+"Du må oppgi et brukernavn eller være autentisert for å spørre på en bruker."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
@@ -359,7 +360,8 @@ msgstr "Spørreparameter er ikke tillatt for album."
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Du må oppgi et brukernavn eller være autentisert for å spørre på alle album."
+msgstr ""
+"Du må oppgi et brukernavn eller være autentisert for å spørre på alle album."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
 msgid "The album did not have a feed link."
