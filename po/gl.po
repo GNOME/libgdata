@@ -5,24 +5,25 @@
 #
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Dieguez <fran.dieguez@glug.es>, 2009.
-# Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010.
 # Leandro Regueiro <leandro.regueiro@gmail.com>, 2011.
 #
 # Proxecto Trasno - Adaptación do software libre á lingua galega:  Se desexas
 # colaborar connosco, podes atopar máis información en <http://trasno.net>
+# Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010, 2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata-master-po-gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-19 15:40+0100\n"
-"PO-Revision-Date: 2011-01-19 14:59+0100\n"
-"Last-Translator: Leandro Regueiro <leandro.regueiro@gmail.com>\n"
-"Language-Team: Galician <gnome@g11.net>\n"
+"POT-Creation-Date: 2011-01-27 03:22+0100\n"
+"PO-Revision-Date: 2011-01-24 19:46+0100\n"
+"Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
+"Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\\\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
 msgid "Stream is already closed"
@@ -140,8 +141,8 @@ msgstr "Non é posíbel conectar co servidor proxy."
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"A URI ou a cabeceira da petición é inválida, ou o parámetro non estándar non "
-"é compatíbel: %s"
+"A URI ou a cabeceira da petición non é válida, ou o parámetro non estándar "
+"non é compatíbel: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-service.c:490
@@ -159,7 +160,7 @@ msgstr "O recurso solicitado non foi atopado: %s"
 #: ../gdata/gdata-service.c:501
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr "A entrada foi modificada dende que foi subida: %s"
+msgstr "A entrada foi modificada desde que foi subida: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -275,7 +276,7 @@ msgstr "Este servizo non está dispoñíbel neste momento. (%s)"
 #: ../gdata/gdata-service.c:1065
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "URI de redirección inválida: %s"
+msgstr "O URI de redirección non é válido: %s"
 
 #: ../gdata/gdata-service.c:1641
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
