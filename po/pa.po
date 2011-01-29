@@ -96,7 +96,7 @@ msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
 msgstr ""
-"ਵਿਸ਼ੇਸ਼ਤਾ %1$s ਅਤੇ %3$s ਐਲੀਮੈਂਟ ਦੀ %2s ਲਈ ਮੁੱਲ ਮੌਜੂਦ ਸਨ, ਜਦੋਂ ਕਿ ਇਹਨਾਂ ਦੋ "
+"ਵਿਸ਼ੇਸ਼ਤਾ %1$s ਅਤੇ %3$s ਐਲੀਮੈਂਟ ਦੀ %2$s ਲਈ ਮੁੱਲ ਮੌਜੂਦ ਸਨ, ਜਦੋਂ ਕਿ ਇਹਨਾਂ ਦੋ "
 "ਵਿੱਚੋਂ ਇੱਕ ਹੀ ਮਨਜ਼ੂਰ "
 "ਹੈ।"
 
