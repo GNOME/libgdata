@@ -1,0 +1,425 @@
+# translation of gu.po to Gujarati
+# Gujarati translation for libgdata.
+# Copyright (C) 2011 libgdata's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgdata package.
+#
+# Sweta Kothari <swkothar@redhat.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gu\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&component=general\n"
+"POT-Creation-Date: 2011-02-04 22:21+0000\n"
+"PO-Revision-Date: 2011-02-08 14:13+0530\n"
+"Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
+"Language-Team: Gujarati\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
+msgid "Stream is already closed"
+msgstr "સ્ટ્રીમ પહેલેથી બંધ થયેલ છે"
+
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
+#, c-format
+msgid "Error parsing XML: %s"
+msgstr "XML ને પદચ્છેદન કરી રહ્યા હોય ત્યારે ભૂલ: %s"
+
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: ../gdata/gdata-parsable.c:258
+msgid "Empty document."
+msgstr "ખાલી દસ્તાવેજ."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#: ../gdata/gdata-parser.c:66
+#, c-format
+msgid "A %s element was missing required content."
+msgstr ""
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:82
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgstr ""
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#: ../gdata/gdata-parser.c:102
+#, c-format
+msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgstr ""
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#: ../gdata/gdata-parser.c:120
+#, c-format
+msgid "The content of a %s element (\"%s\") was unknown."
+msgstr "%s ઘટના (\"%s\") નો સમાવિષ્ટ અજ્ઞાત હતો."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: ../gdata/gdata-parser.c:140
+#, c-format
+msgid "A required property of a %s element (%s) was not present."
+msgstr ""
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#: ../gdata/gdata-parser.c:182
+#, c-format
+msgid "A required element (%s) was not present."
+msgstr "જરૂરી ઘટક (%s) હાજર ન હતો."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#: ../gdata/gdata-parser.c:197
+#, c-format
+msgid "A singleton element (%s) was duplicated."
+msgstr "singleton ઘટક (%s) નકલી હતો."
+
+#: ../gdata/gdata-service.c:430
+msgid "The server returned a malformed response."
+msgstr ""
+
+#: ../gdata/gdata-service.c:473
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "સેવાનાં સર્વરને જોડી શકતા નથી."
+
+#: ../gdata/gdata-service.c:478
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "પ્રોક્સી સર્વરને જોડી શકતા નથી."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:484
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:490
+#, c-format
+msgid "Authentication required: %s"
+msgstr "સત્તાધિકરણ જરૂરી: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:495
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "સૂચિત સ્ત્રોત મળ્યો ન હતો: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-service.c:501
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr ""
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:515
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "ભૂલ કોડ %u જ્યારે સત્તાધિકરણ કરી રહ્યા હોય: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:521
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr ""
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:527
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "ભૂલ કોડ %u જ્યારે નોંધણીને દાખલ કરી રહ્યા હોય: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:533
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "ભૂલ કોડ %u જ્યારે નોંધણીને સુધારી રહ્યા હોય: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:539
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "ભૂલ કોડ %u જ્યારે નોંધણીને કાઢી રહ્યા હોય: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:545
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "ભૂલ કોડ %u જ્યારે ડાઉનલોડ કરી રહ્યા હોય: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:551
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "ભૂલ કોડ %u જ્યારે અપલોડ કરી રહ્યા હોય: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:557
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr ""
+
+#: ../gdata/gdata-service.c:686
+msgid "A CAPTCHA must be filled out to log in."
+msgstr ""
+
+#: ../gdata/gdata-service.c:710
+msgid "Your username or password were incorrect."
+msgstr "તમારો વપરાશકર્તાનામ અથવા પાસવર્ડ અયોગ્ય હતા."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:729
+#, c-format
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "તમારા ખાતાનાં ઇમેલ સરનામાંને ચકાસવામાં આવ્યુ નથી. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:734
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr ""
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:740
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:745
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "આ ખાતાને કાઢી નાખવામાં આવ્યુ છે. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:750
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "આ ખાતાને નિષ્ક્રિય કરી દેવામાં આવ્યુ છે. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:755
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "આ સેવા માટે આ ખાતાનાં પ્રવેશને નિષ્ક્રિય કરી દેવામાં આવ્યુ છે. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:760
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "આ સેવા અત્યારે ઉપલબ્ધ નથી. (%s)"
+
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:1065
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "અયોગ્ય રિડાયરેક્ટ URI : %s"
+
+#: ../gdata/gdata-service.c:1641
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
+#: ../gdata/services/youtube/gdata-youtube-service.c:778
+msgid "The entry has already been inserted."
+msgstr "નોંધણી પહેલેથી જ દાખલ થયેલ છે."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgstr ""
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:281
+#: ../gdata/services/calendar/gdata-calendar-service.c:326
+msgid "You must be authenticated to query all calendars."
+msgstr ""
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:368
+#: ../gdata/services/calendar/gdata-calendar-service.c:413
+#: ../gdata/services/calendar/gdata-calendar-service.c:454
+#: ../gdata/services/calendar/gdata-calendar-service.c:510
+msgid "You must be authenticated to query your own calendars."
+msgstr ""
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:519
+msgid "The calendar did not have a content URI."
+msgstr "કૅલેન્ડર પાસે સમાવિષ્ટ URI ન હતી."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:229
+#: ../gdata/services/contacts/gdata-contacts-service.c:275
+msgid "You must be authenticated to query contacts."
+msgstr ""
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:384
+#: ../gdata/services/contacts/gdata-contacts-service.c:430
+msgid "You must be authenticated to query contact groups."
+msgstr ""
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:466
+msgid "The group has already been inserted."
+msgstr "જૂથને પહેલેથી જ દાખલ થયેલ છે."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:472
+msgid "You must be authenticated to insert a group."
+msgstr ""
+
+#: ../gdata/services/documents/gdata-documents-document.c:274
+msgid "You must be authenticated to download documents."
+msgstr "દસ્તાવેજોને ડાઉનલોડ કરવા માટે તમે સત્તાધિકરણ થયેલ હોવા જ જોઇએ."
+
+#: ../gdata/services/documents/gdata-documents-service.c:369
+#: ../gdata/services/documents/gdata-documents-service.c:420
+msgid "You must be authenticated to query documents."
+msgstr ""
+
+#: ../gdata/services/documents/gdata-documents-service.c:527
+msgid "You must be authenticated to upload documents."
+msgstr "દસ્તાવેજોને અપલોડ કરવા માટે તમે સત્તાધિકરણ થયેલ હોવા જ જોઇએ."
+
+#: ../gdata/services/documents/gdata-documents-service.c:533
+msgid "The document has already been uploaded."
+msgstr "દસ્તાવેજને પહેલેથી જ અપલોડ કરેલ છે."
+
+#: ../gdata/services/documents/gdata-documents-service.c:587
+msgid "You must be authenticated to update documents."
+msgstr "દસ્તાવેજોને સુધારવા માટે તમે સત્તાધિકરણ થયેલ હોવા જ જોઇએ."
+
+#: ../gdata/services/documents/gdata-documents-service.c:650
+#, c-format
+msgid "The content type of the supplied document ('%s') could not be recognized."
+msgstr ""
+
+#: ../gdata/services/documents/gdata-documents-service.c:698
+#: ../gdata/services/documents/gdata-documents-service.c:882
+msgid "You must be authenticated to move documents and folders."
+msgstr "દસ્તાવેજો અને ફોલ્ડરોને ખસેડવા માટે તમે સત્તાધિકરણ થયેલ હોવા જ જોઇએ."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
+msgid "Query parameter not allowed for albums."
+msgstr ""
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr ""
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
+msgid "The album did not have a feed link."
+msgstr ""
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
+msgid "You must be authenticated to upload a file."
+msgstr "ફાઇલને અપલોડ કરવા માટે તમે સત્તાધિકરણ થયેલ હોવા જ જોઇએ."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
+msgid "The album has already been inserted."
+msgstr "આલ્બમને પહેલેથી જ દાખલ થયેલ છે."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
+msgid "You must be authenticated to insert an album."
+msgstr "આલ્બમને દાખલ કરવા માટે તમે સત્તાધિકરણ થયેલ હોવા જ જોઇએ."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:416
+#, c-format
+msgid "This service is not available at the moment."
+msgstr "આ સેવા અત્યારે ઉપલબ્ધ નથી."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:421
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "આ કરવા માટે તમે સત્તાધિકરણ થયેલ હોવા જ જોઇએ."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:426
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:429
+#, c-format
+msgid "You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:436
+#: ../gdata/services/youtube/gdata-youtube-service.c:442
+#, c-format
+msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr ""
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr ""
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:682
+#: ../gdata/services/youtube/gdata-youtube-service.c:729
+msgid "The video did not have a related videos <link>."
+msgstr ""
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:784
+msgid "You must be authenticated to upload a video."
+msgstr "વિડિયો અપલોડ કરવા માટે તમે સત્તાધિકરણ થયેલ હોવા જ જોઇએ."
+
