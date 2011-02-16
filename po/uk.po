@@ -2,300 +2,445 @@
 # Copyright (C) Free Software foundation, 2003
 # This file is distributed under the same license as the libgdata package.
 # Maxim Dziumanenko <dziumanenko@gmail.com>, 2009
-#
+# Korostil Daniel <ted.korostiled@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-01 15:00+0300\n"
-"PO-Revision-Date: 2009-07-01 15:00+0300\n"
-"Last-Translator: Maxim V. Dziumanenko <dziumanenko@gmail.com>\n"
-"Language-Team: Ukrainian <uk@li.org>\n"
+"POT-Creation-Date: 2011-02-16 07:35+0200\n"
+"PO-Revision-Date: 2011-02-16 08:01+0300\n"
+"Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
+"Language-Team: translation@linux.org.ua\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.6.1\n"
 
-#: ../gdata/gdata-access-handler.c:176
-msgid "The rule has already been inserted."
-msgstr "Правило вже додано."
-
-#: ../gdata/gdata-access-handler.c:378
-msgid "The owner's rule may not be deleted."
-msgstr "Правило власника не можна видалити."
+#: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
+msgid "Stream is already closed"
+msgstr "Потік уже закрито"
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:164 ../gdata/gdata-parsable.c:175
+#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
 #, c-format
 msgid "Error parsing XML: %s"
-msgstr "Помилка розбору XML: '%s"
+msgstr "Помилка аналізування XML: '%s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:177
+#: ../gdata/gdata-parsable.c:258
 msgid "Empty document."
-msgstr "порожній документ."
+msgstr "Порожній документ."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:65
+#: ../gdata/gdata-parser.c:66
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "У елементі %s пропущено обов'язковий зміст."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")), and the second parameter is
-#. * the erroneous value (which was not in ISO 8601 format).
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:81
+#: ../gdata/gdata-parser.c:82
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "Зміст елементу %s (\"%s\") не відповідає формату ISO 8601."
+msgstr "Зміст елементу %s («%s») не відповідає формату ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:101
+#: ../gdata/gdata-parser.c:102
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr "Значення ознаки \"%s\" елементу \"%s\" (\"%s\") є невідомим."
+msgstr "Значення ознаки %s\" елементу %s («%s») є невідомим."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:119
+#: ../gdata/gdata-parser.c:120
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
-msgstr "Зміст елемента %s (\"%s\") є невідомим."
+msgstr "Зміст елемента %s («%s») є невідомим."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:139
+#: ../gdata/gdata-parser.c:140
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
-msgstr "Відсутня обов'язкова властивість елементу %s (%s)."
+msgstr "Нема обов'язкової властивості елементу %s (%s)."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"Наявні значення для властивостей %s і %s елементу %s, коли допустимий лише "
+"один із них."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:156
+#: ../gdata/gdata-parser.c:182
 #, c-format
 msgid "A required element (%s) was not present."
-msgstr "Не вказаний обов'язковий елемент '%s'."
+msgstr "Не вказано обов'язковий елемент (%s)."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:171
+#: ../gdata/gdata-parser.c:197
 #, c-format
 msgid "A singleton element (%s) was duplicated."
-msgstr "Дубльований одиночний елемент ('%s')."
+msgstr "Дубльований одиночний елемент (%s)."
 
-#: ../gdata/gdata-service.c:308 ../gdata/gdata-service.c:738
-#: ../gdata/services/youtube/gdata-youtube-service.c:202
+#: ../gdata/gdata-service.c:430
 msgid "The server returned a malformed response."
 msgstr "Сервер повернув помилкову або нерозпізнану відповідь."
 
+#: ../gdata/gdata-service.c:473
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "Неможливо зв'язатись зі службою сервера."
+
+#: ../gdata/gdata-service.c:478
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "Неможливо з'єднатись з проксі-сервером."
+
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:340
+#: ../gdata/gdata-service.c:484
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr "Неправильний запит URI або заголовок, або непідтримуваний нестандартний параметр: %s"
+msgstr ""
+"Неправильний запит URI або заголовок, або непідтримуваний нестандартний "
+"параметр: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:346
+#: ../gdata/gdata-service.c:490
 #, c-format
 msgid "Authentication required: %s"
-msgstr "Вимагається автентифікація: %s"
+msgstr "Потрібна автентифікація: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:351
+#: ../gdata/gdata-service.c:495
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Потрібний ресурс не знайдено: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:356
+#: ../gdata/gdata-service.c:501
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Елемент змінено з моменту останнього завантаження: %s"
 
-#. Translators: the first parameter is a HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:515
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Помилка з кодом %u при автентифікації: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:521
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "Помилка з кодом %u при очікуванні: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:527
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
-msgstr "Помилка з кодом %u при додаванні елементу: %s"
+msgstr "Помилка з кодом %u при вставленні елементу: %s"
 
-#. Translators: the first parameter is a HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:533
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Помилка з кодом %u при оновленні елементу: %s"
 
-#. Translators: the first parameter is a HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:379
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:539
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
-msgstr "Помилка з кодом %u при видаленні елементу: %s"
+msgstr "Помилка з кодом %u при вилученні елементу: %s"
 
-#. Translators: the first parameter is a HTTP status, and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:384
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:545
 #, c-format
-msgid "Error code %u when querying: %s"
-msgstr "Помилка з кодом %u при запиті: %s"
+msgid "Error code %u when downloading: %s"
+msgstr "Помилка з кодом %u при звантаженні: %s"
 
-#: ../gdata/gdata-service.c:626
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:551
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Помилка з кодом %u при вивантаженні: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:557
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "Помилка з кодом %u при виконанні пакетної дії: %s"
+
+#: ../gdata/gdata-service.c:686
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Для входу треба заповнити поле CAPTCHA."
 
-#: ../gdata/gdata-service.c:650
+#: ../gdata/gdata-service.c:710
 msgid "Your username or password were incorrect."
-msgstr "Неправильний пароль або невідоме ім'я користувача."
+msgstr "Неправильний пароль або невідомий користувача."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:669
+#: ../gdata/gdata-service.c:729
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "Адресу електронної пошти вашого облікового запису не було перевірено. (%s)"
+msgstr ""
+"Адресу електронної пошти вашого облікового запису не було перевірено. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:674
+#: ../gdata/gdata-service.c:734
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Ви підтвердили згоду з термінами та умовами обслуговування. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:679
+#: ../gdata/gdata-service.c:740
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"Цей обліковий запис перенесено. Будь ласка, зареєструйтесь у мережі, щоб "
+"отримати дані для входу. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:745
 #, c-format
 msgid "This account has been deleted. (%s)"
-msgstr "Обліковий запис було видалено. (%s)"
+msgstr "Цей обліковий запис вилучено. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:684
+#: ../gdata/gdata-service.c:750
 #, c-format
 msgid "This account has been disabled. (%s)"
-msgstr "Цей обліковий запис було вимкнено. (%s)"
+msgstr "Цей обліковий запис вимкнено. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:689
+#: ../gdata/gdata-service.c:755
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
-msgstr "Доступ цього облікового запису до цієї служби було вимкнено. (%s)"
+msgstr "Доступ цього облікового запису до цієї служби вимкнено. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:694
+#: ../gdata/gdata-service.c:760
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Ця служба наразі недоступна. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:808
+#: ../gdata/gdata-service.c:1065
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Неправильний URI перенаправлення: %s"
 
-#: ../gdata/gdata-service.c:1207
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:277
-#: ../gdata/services/youtube/gdata-youtube-service.c:626
+#: ../gdata/gdata-service.c:1641
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
+#: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
-msgstr "Елемент вже було встановлено."
+msgstr "Елемент вже вставлено."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">"),
-#. * and the second parameter is the erroneous value (which was not in hexadecimal RGB format).
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:330
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "Зміст елементу %s (\"%s\") не у шістнадцятковому RGB-форматі."
+msgstr "Зміст елементу %s (\"%s\") не у шістнадцятковому форматі RGB."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:106
-#: ../gdata/services/calendar/gdata-calendar-service.c:140
+#: ../gdata/services/calendar/gdata-calendar-service.c:281
+#: ../gdata/services/calendar/gdata-calendar-service.c:326
 msgid "You must be authenticated to query all calendars."
-msgstr "Щоб робити запити до усіх календарів треба пройти автентифікацію."
+msgstr "Щоб робити запити до усіх календарів, треба пройти автентифікацію."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:172
-#: ../gdata/services/calendar/gdata-calendar-service.c:206
-#: ../gdata/services/calendar/gdata-calendar-service.c:240
+#: ../gdata/services/calendar/gdata-calendar-service.c:368
+#: ../gdata/services/calendar/gdata-calendar-service.c:413
+#: ../gdata/services/calendar/gdata-calendar-service.c:454
+#: ../gdata/services/calendar/gdata-calendar-service.c:510
 msgid "You must be authenticated to query your own calendars."
-msgstr "Щоб робити запити до власного календаря треба пройти автентифікацію."
+msgstr "Щоб робити запити до власного календаря, треба пройти автентифікацію."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:249
-msgid "The calendar did not have a content source."
-msgstr "Календар не має джерела вмісту"
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:519
+msgid "The calendar did not have a content URI."
+msgstr "Календар не містить URI."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:104
-#: ../gdata/services/contacts/gdata-contacts-service.c:139
+#: ../gdata/services/contacts/gdata-contacts-service.c:229
+#: ../gdata/services/contacts/gdata-contacts-service.c:275
 msgid "You must be authenticated to query contacts."
-msgstr "Щоб робити запити до контактів треба пройти автентифікацію."
+msgstr "Щоб робити запити до контактів, треба пройти автентифікацію."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:132
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:179
+#: ../gdata/services/contacts/gdata-contacts-service.c:384
+#: ../gdata/services/contacts/gdata-contacts-service.c:430
+msgid "You must be authenticated to query contact groups."
+msgstr "Щоб робити запити до контактів, треба пройти автентифікацію."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:466
+msgid "The group has already been inserted."
+msgstr "Групу вже вставлено."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:472
+msgid "You must be authenticated to insert a group."
+msgstr "Щоб це вставити групу, треба пройти автентифікацію."
+
+#: ../gdata/services/documents/gdata-documents-document.c:274
+msgid "You must be authenticated to download documents."
+msgstr "Щоб це звантажити документи, треба пройти автентифікацію."
+
+#: ../gdata/services/documents/gdata-documents-service.c:369
+#: ../gdata/services/documents/gdata-documents-service.c:420
+msgid "You must be authenticated to query documents."
+msgstr "Щоб робити запити документів, треба пройти автентифікацію."
+
+#: ../gdata/services/documents/gdata-documents-service.c:527
+msgid "You must be authenticated to upload documents."
+msgstr "Щоб вивантажувати документи, треба пройти автентифікацію."
+
+#: ../gdata/services/documents/gdata-documents-service.c:533
+msgid "The document has already been uploaded."
+msgstr "Документ вже було вивантажено."
+
+#: ../gdata/services/documents/gdata-documents-service.c:587
+msgid "You must be authenticated to update documents."
+msgstr "Щоб оновити документи, треба пройти автентифікацію."
+
+#: ../gdata/services/documents/gdata-documents-service.c:650
+#, c-format
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
+msgstr "Тип вмісту документа («%s») неможливо розпізнати."
+
+#: ../gdata/services/documents/gdata-documents-service.c:698
+#: ../gdata/services/documents/gdata-documents-service.c:882
+msgid "You must be authenticated to move documents and folders."
+msgstr "Щоб переміщати файли й теки, треба пройти автентифікацію."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
+msgid "You must specify a username or be authenticated to query a user."
+msgstr "Щоб робити запити, треба вказати користувача або пройти автентифікацію."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
+msgid "Query parameter not allowed for albums."
+msgstr "Параметр запиту не дозволено для альбомів."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Щоб робити запити до усіх альбомів треба вказати ім'я користувача або пройти автентифікацію."
+msgstr ""
+"Щоб робити запити до усіх альбомів, треба вказати користувача або пройти "
+"автентифікацію."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:220
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
 msgid "The album did not have a feed link."
-msgstr "ДЛя альбому не встановлено посилання джерела."
+msgstr "Для альбому не встановлено посилання джерела."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:283
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
 msgid "You must be authenticated to upload a file."
-msgstr "Щоб вивантажувати файли треба пройти автентифікацію."
+msgstr "Щоб вивантажувати файли, треба пройти автентифікацію."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:303
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
+msgid "The album has already been inserted."
+msgstr "Альбом уже вставлено."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
+msgid "You must be authenticated to insert an album."
+msgstr "Щоб вставити альбом, треба пройти автентифікацію."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:416
 #, c-format
 msgid "This service is not available at the moment."
-msgstr "Цей сервіс наразі недоступний."
+msgstr "Ця служба наразі недоступна."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:308
+#: ../gdata/services/youtube/gdata-youtube-service.c:421
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "Щоб це зробити треба пройти автентифікацію."
+msgstr "Щоб це зробити, треба пройти автентифікацію."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:313
+#: ../gdata/services/youtube/gdata-youtube-service.c:426
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr ""
-"Ви зробили надто багато викликів API останнім часом. Зачекайте декілька хвилин та спробуйте ще раз."
+"Ви зробили надто багато викликів API останнім часом. Зачекайте декілька "
+"хвилин та спробуйте ще раз."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:316
+#: ../gdata/services/youtube/gdata-youtube-service.c:429
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
-"Ви перевищили вашу квоту записів. Будь ласка, видаліть деякі записи та спробуйте ще раз."
+"Ви перевищили вашу квоту записів. Будь ласка, вилучіть деякі записи та "
+"спробуйте ще раз."
 
-#. Translators: the first parameter is an error code, which is a coded string. The second parameter
-#. * is an error domain, which is another coded string. The third parameter is the location of the
-#. * error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:323
-#: ../gdata/services/youtube/gdata-youtube-service.c:329
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:436
+#: ../gdata/services/youtube/gdata-youtube-service.c:442
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
-"Отримано помилку з невідомим кодом \"%s\" у домені \"%s\" з розташуванням у \"%s\"."
+"Отримано помилку з невідомим кодом «%s» у домені «%s» з розташуванням у «%"
+"s»."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:539
-#: ../gdata/services/youtube/gdata-youtube-service.c:580
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr "Отримано Невідому і нерозбірливу помилку. "
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:682
+#: ../gdata/services/youtube/gdata-youtube-service.c:729
 msgid "The video did not have a related videos <link>."
 msgstr "Відео не має пов'язаних інших відео <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:632
+#: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "You must be authenticated to upload a video."
-msgstr "Щоб вивантажувати відео треба пройти автентифікацію."
+msgstr "Щоб вивантажувати відео, треба пройти автентифікацію."
 
-
+#~ msgid "The owner's rule may not be deleted."
+#~ msgstr "Правило власника не можна видалити."
