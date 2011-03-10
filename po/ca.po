@@ -1,37 +1,34 @@
 # Traducció del libgdata de l'equip de Softcatalà.
 # Copyright © 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
-# Joan Duran <jodufi@gmail.com>, 2009.
+# Joan Duran <jodufi@gmail.com>, 2009-2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-26 13:20+0200\n"
-"PO-Revision-Date: 2010-06-19 18:15+0200\n"
+"POT-Creation-Date: 2011-03-10 23:47+0100\n"
+"PO-Revision-Date: 2011-03-09 23:59+0100\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
 
-#: ../gdata/gdata-access-handler.c:170
-msgid "The rule has already been inserted."
-msgstr "La regla ja fou inserida."
-
-#: ../gdata/gdata-access-handler.c:350
-msgid "The owner's rule may not be deleted."
-msgstr "No es pot suprimir la regla del propietari."
+#: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
+msgid "Stream is already closed"
+msgstr "El flux ja està tancat"
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:186 ../gdata/gdata-parsable.c:197
+#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "S'ha produït un error en analitzar l'XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:199
+#: ../gdata/gdata-parsable.c:258
 msgid "Empty document."
 msgstr "Document buit."
 
@@ -117,23 +114,22 @@ msgstr "No exisita un element necessari (%s)."
 msgid "A singleton element (%s) was duplicated."
 msgstr "Un element únic (%s) estava duplicat."
 
-#: ../gdata/gdata-service.c:392
-#: ../gdata/services/youtube/gdata-youtube-service.c:233
+#: ../gdata/gdata-service.c:430
 msgid "The server returned a malformed response."
 msgstr "El servidor ha retornat una resposta mal formada."
 
-#: ../gdata/gdata-service.c:429
+#: ../gdata/gdata-service.c:473
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "No es pot connectar al servidor del servei."
 
-#: ../gdata/gdata-service.c:434
+#: ../gdata/gdata-service.c:478
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "No es pot connectar al servidor intermediari."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:440
+#: ../gdata/gdata-service.c:484
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -141,126 +137,142 @@ msgstr ""
 "estàndard i no compatible: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:446
+#: ../gdata/gdata-service.c:490
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Cal autenticació: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:451
+#: ../gdata/gdata-service.c:495
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "No s'ha trobat el recurs sol·licitat: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:457
+#: ../gdata/gdata-service.c:501
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "S'ha modificat l'entrada des que es va baixar: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:471
+#: ../gdata/gdata-service.c:515
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Codi d'error %u en autenticar: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:477
+#: ../gdata/gdata-service.c:521
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Codi d'error %u en consultar: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:483
+#: ../gdata/gdata-service.c:527
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Codi d'error %u en inserir una entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:489
+#: ../gdata/gdata-service.c:533
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Codi d'error %u en actualitzar una entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:495
+#: ../gdata/gdata-service.c:539
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Codi d'error %u en suprimir una entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:501
+#: ../gdata/gdata-service.c:545
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Codi d'error %u en baixar: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:507
+#: ../gdata/gdata-service.c:551
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Codi d'error %u en pujar: %s"
 
-#: ../gdata/gdata-service.c:632
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:557
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "Codi d'error %u en executar l'operació massiva: %s"
+
+#: ../gdata/gdata-service.c:686
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "S'ha d'emplenar un CAPTCHA per entrar."
 
-#: ../gdata/gdata-service.c:656
+#: ../gdata/gdata-service.c:710
 msgid "Your username or password were incorrect."
 msgstr "El nom d'usuari o la contrasenya eren incorrectes."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:675
+#: ../gdata/gdata-service.c:729
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "No s'ha verificat la vostra adreça de correu electrònic. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:680
+#: ../gdata/gdata-service.c:734
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "No heu acceptat els termes i les condicions del servei. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:685
+#: ../gdata/gdata-service.c:740
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"Aquest compte s'ha migrat. Entreu en línia per rebre el nom d'usuari i la "
+"contrasenya nous. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:745
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Aquest compte s'ha suprimit. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:690
+#: ../gdata/gdata-service.c:750
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Aquest compte s'ha inhabilitat. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:695
+#: ../gdata/gdata-service.c:755
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "S'ha inhabilitat l'accés a aquest servei des d'aquest compte. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:700
+#: ../gdata/gdata-service.c:760
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Aquest servei no està disponible actualment. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:971
+#: ../gdata/gdata-service.c:1065
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "URI de redireccionament no vàlid: %s"
 
-#: ../gdata/gdata-service.c:1564
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:449
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:606
-#: ../gdata/services/youtube/gdata-youtube-service.c:691
+#: ../gdata/gdata-service.c:1641
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
+#: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
 msgstr "Aquesta entrada ja fou inserida."
 
@@ -270,108 +282,126 @@ msgstr "Aquesta entrada ja fou inserida."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:320
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
 "El contingut de l'element %s («%s») no estava en format RGB hexadecimal."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:110
-#: ../gdata/services/calendar/gdata-calendar-service.c:155
+#: ../gdata/services/calendar/gdata-calendar-service.c:281
+#: ../gdata/services/calendar/gdata-calendar-service.c:326
 msgid "You must be authenticated to query all calendars."
 msgstr "Heu d'estar autenticat per consultar tots els calendaris."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:197
-#: ../gdata/services/calendar/gdata-calendar-service.c:242
-#: ../gdata/services/calendar/gdata-calendar-service.c:284
+#: ../gdata/services/calendar/gdata-calendar-service.c:368
+#: ../gdata/services/calendar/gdata-calendar-service.c:413
+#: ../gdata/services/calendar/gdata-calendar-service.c:454
+#: ../gdata/services/calendar/gdata-calendar-service.c:510
 msgid "You must be authenticated to query your own calendars."
 msgstr "Heu d'estar autenticat per consultar els vostres calendaris."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:293
-msgid "The calendar did not have a content source."
-msgstr "El calendari no tenia una font de contingut."
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:519
+msgid "The calendar did not have a content URI."
+msgstr "El calendari no tenia un URI de contingut."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:114
-#: ../gdata/services/contacts/gdata-contacts-service.c:160
+#: ../gdata/services/contacts/gdata-contacts-service.c:229
+#: ../gdata/services/contacts/gdata-contacts-service.c:275
 msgid "You must be authenticated to query contacts."
 msgstr "Heu d'estar autenticat per consultar els contactes."
 
-#: ../gdata/services/documents/gdata-documents-entry.c:622
+#: ../gdata/services/contacts/gdata-contacts-service.c:384
+#: ../gdata/services/contacts/gdata-contacts-service.c:430
+msgid "You must be authenticated to query contact groups."
+msgstr "Heu d'estar autenticat per consultar els grups de contactes."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:466
+msgid "The group has already been inserted."
+msgstr "El grup ja fou inserit."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:472
+msgid "You must be authenticated to insert a group."
+msgstr "Heu d'estar autenticat per inserir un grup."
+
+#: ../gdata/services/documents/gdata-documents-document.c:274
 msgid "You must be authenticated to download documents."
 msgstr "Heu d'estar autenticat per baixar documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:199
-#: ../gdata/services/documents/gdata-documents-service.c:250
+#: ../gdata/services/documents/gdata-documents-service.c:369
+#: ../gdata/services/documents/gdata-documents-service.c:420
 msgid "You must be authenticated to query documents."
 msgstr "Heu d'estar autenticat per consultar els documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:344
-msgid "The supplied document had an invalid content type."
-msgstr "El tipus de document rebut tenia un tipus de contingut no vàlid."
-
-#: ../gdata/services/documents/gdata-documents-service.c:431
+#: ../gdata/services/documents/gdata-documents-service.c:527
 msgid "You must be authenticated to upload documents."
 msgstr "Heu d'estar autenticat per pujar documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:437
+#: ../gdata/services/documents/gdata-documents-service.c:533
 msgid "The document has already been uploaded."
 msgstr "Aquest document ja s'ha pujat."
 
-#: ../gdata/services/documents/gdata-documents-service.c:488
+#: ../gdata/services/documents/gdata-documents-service.c:587
 msgid "You must be authenticated to update documents."
 msgstr "Heu d'estar autenticat per actualitzar documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:536
-#: ../gdata/services/documents/gdata-documents-service.c:610
-msgid "You must be authenticated to move documents."
-msgstr "Heu d'estar autenticat per moure documents."
+#: ../gdata/services/documents/gdata-documents-service.c:650
+#, c-format
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
+msgstr ""
+"No s'ha pogut reconèixer el tipus de contingut del document subministrat "
+"(«%s»)."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:186
+#: ../gdata/services/documents/gdata-documents-service.c:698
+#: ../gdata/services/documents/gdata-documents-service.c:882
+msgid "You must be authenticated to move documents and folders."
+msgstr "Heu d'estar autenticat per moure documents i carpetes."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
 "Heu d'especificar un nom d'usuari o estar autenticat per consultar un "
 "usuari.."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:240
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:295
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
 msgid "Query parameter not allowed for albums."
 msgstr "El paràmetre de consulta no és vàlid per als àlbums."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:247
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:303
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Heu d'especificar un nom d'usuari o estar autenticat per consultar tots els "
 "àlbums."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:350
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
 msgid "The album did not have a feed link."
 msgstr "L'àlbum no tenia cap enllaç de canal."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
 msgid "You must be authenticated to upload a file."
 msgstr "Heu d'estar autenticat per pujar un fitxer."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:672
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
 msgid "The album has already been inserted."
 msgstr "Ja s'ha inserit l'àlbum."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:678
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
 msgid "You must be authenticated to insert an album."
 msgstr "Heu d'estar autenticat per inserir un àlbum."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:332
+#: ../gdata/services/youtube/gdata-youtube-service.c:416
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Aquest servei no està disponible actualment."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:337
+#: ../gdata/services/youtube/gdata-youtube-service.c:421
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Heu d'estar autenticat per fer-ho."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:342
+#: ../gdata/services/youtube/gdata-youtube-service.c:426
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -380,7 +410,7 @@ msgstr ""
 "Heu realitzat massa crides a l'API últimament. Espereu uns minuts i torneu-"
 "ho a intentar."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:345
+#: ../gdata/services/youtube/gdata-youtube-service.c:429
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -391,27 +421,34 @@ msgstr ""
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
 #. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:352
-#: ../gdata/services/youtube/gdata-youtube-service.c:358
+#: ../gdata/services/youtube/gdata-youtube-service.c:436
+#: ../gdata/services/youtube/gdata-youtube-service.c:442
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
-"S'ha rebut un codi d'error desconegut «%s» al domini «%s» amb la ubicació «%s»."
+"S'ha rebut un codi d'error desconegut «%s» al domini «%s» amb la ubicació "
+"«%s»."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:376
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "S'ha rebut un error desconegut i que no es pot analitzar."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:598
-#: ../gdata/services/youtube/gdata-youtube-service.c:645
+#: ../gdata/services/youtube/gdata-youtube-service.c:682
+#: ../gdata/services/youtube/gdata-youtube-service.c:729
 msgid "The video did not have a related videos <link>."
 msgstr "El vídeo no tenia vídeos relacionats <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:697
+#: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "You must be authenticated to upload a video."
 msgstr "Heu d'estar autenticat per pujar un vídeo."
+
+#~ msgid "The owner's rule may not be deleted."
+#~ msgstr "No es pot suprimir la regla del propietari."
+
+#~ msgid "The supplied document had an invalid content type."
+#~ msgstr "El tipus de document rebut tenia un tipus de contingut no vàlid."
 
 #~ msgid "Unhandled <%s:%s> element as a child of <%s>."
 #~ msgstr "L'element <%s:%s> no és gestionat com a fill de <%s>."
