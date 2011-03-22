@@ -706,6 +706,24 @@ authenticate (GDataService *self, const gchar *username, const gchar *password, 
 			goto protocol_error;
 		} else if (strncmp (error_start, "BadAuthentication", error_end - error_start) == 0) {
 			/* Looks like Error=BadAuthentication errors don't return a URI */
+			gchar *info_start, *info_end;
+
+			info_start = strstr (response_body, "Info=");
+			if (info_start != NULL) {
+				info_start += strlen ("Info=");
+				info_end = strstr (info_start, "\n");
+			}
+
+			/* If Info=InvalidSecondFactor, the user needs to generate an application-specific password and use that instead */
+			if (info_start != NULL && info_end != NULL && strncmp (info_start, "InvalidSecondFactor", info_end - info_start) == 0) {
+				g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_INVALID_SECOND_FACTOR,
+				             /* Translators: the parameter is a URI for further information. */
+				             _("This account requires an application-specific password. (%s)"),
+				             "http://www.google.com/support/accounts/bin/static.py?page=guide.cs&guide=1056283&topic=1056286");
+				goto login_error;
+			}
+
+			/* Fall back to a generic "bad authentication details" message */
 			g_set_error_literal (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_BAD_AUTHENTICATION,
 			                     _("Your username or password were incorrect."));
 			goto login_error;
