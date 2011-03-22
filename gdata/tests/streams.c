@@ -166,7 +166,7 @@ test_upload_stream_upload_no_entry_content_length_server_handler_cb (SoupServer 
 	test_string = get_test_string (1, 1000);
 	test_string_length = strlen (test_string) + 1;
 
-	g_assert_cmpint (message->request_body->length, ==, strlen (test_string) + 1);
+	g_assert_cmpint (message->request_body->length, ==, test_string_length);
 	g_assert_cmpstr (message->request_body->data, ==, test_string);
 
 	g_free (test_string);
