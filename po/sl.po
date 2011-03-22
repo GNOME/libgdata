@@ -2,14 +2,14 @@
 # Copyright (C) 2009 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
 #
-# Matej Urbančič <mateju@svn.gnome.org>, 2009 - 2010.
+# Matej Urbančič <mateju@svn.gnome.org>, 2009 - 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-12-30 17:30+0000\n"
-"PO-Revision-Date: 2010-12-30 21:00+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-03-22 20:35+0000\n"
+"PO-Revision-Date: 2011-03-22 21:46+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -214,59 +214,65 @@ msgstr "Koda napake %u med izvajanjem paketnih ukazov: %s"
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Vnosno polje vprašanja CAPTCHA mora biti izpolnjeno pred prijavo."
 
-#: ../gdata/gdata-service.c:710
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:721
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Račun zahteva vnos posebnega programskega gesla. (%s)"
+
+#: ../gdata/gdata-service.c:728
 msgid "Your username or password were incorrect."
 msgstr "Uporabniško ime ali geslo ni vpisano pravilno."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:729
+#: ../gdata/gdata-service.c:747
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Vaš elektronski naslov ni overjen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:734
+#: ../gdata/gdata-service.c:752
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Za nadaljevanje je treba potrditi strinjanje z določili in s pogoji storitve. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:740
+#: ../gdata/gdata-service.c:758
 #, c-format
 msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
 msgstr "Račun je premaknjen. S prijavo preko povezave, je mogoče pridobiti novo uporabniško ime in geslo. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:745
+#: ../gdata/gdata-service.c:763
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Račun je bil izbrisan. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:750
+#: ../gdata/gdata-service.c:768
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Račun je onemogočen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:755
+#: ../gdata/gdata-service.c:773
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Dostop računa do storitve je onemogočen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:760
+#: ../gdata/gdata-service.c:778
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Storitev trenutno ni na voljo. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1065
+#: ../gdata/gdata-service.c:1083
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neveljaven preusmeritveni naslov URI: %s"
 
-#: ../gdata/gdata-service.c:1641
+#: ../gdata/gdata-service.c:1659
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
 #: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
