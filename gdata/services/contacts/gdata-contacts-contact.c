@@ -229,7 +229,8 @@ enum {
 	PROP_PRIORITY,
 	PROP_SENSITIVITY,
 	PROP_SHORT_NAME,
-	PROP_SUBJECT
+	PROP_SUBJECT,
+	PROP_PHOTO_ETAG
 };
 
 G_DEFINE_TYPE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
@@ -291,11 +292,26 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Whether the contact has a photo.
 	 *
 	 * Since: 0.4.0
+	 * Deprecated: 0.9.0: Use #GDataContactsContact:photo-etag and gdata_contacts_contact_get_photo_etag() instead. It is %NULL exactly when this
+	 * would've been %FALSE.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HAS_PHOTO,
 	                                 g_param_spec_boolean ("has-photo",
 	                                                       "Has photo?", "Whether the contact has a photo.",
 	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
+
+	/**
+	 * GDataContactsContact:photo-etag:
+	 *
+	 * The ETag of the contact's photo, if the contact has a photo; %NULL otherwise.
+	 *
+	 * Since: 0.9.0
+	 **/
+	g_object_class_install_property (gobject_class, PROP_PHOTO_ETAG,
+	                                 g_param_spec_string ("photo-etag",
+	                                                       "Photo ETag", "The ETag of the contact's photo.",
+	                                                       NULL,
 	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -651,6 +667,9 @@ gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue 
 			break;
 		case PROP_HAS_PHOTO:
 			g_value_set_boolean (value, (priv->photo_etag != NULL) ? TRUE : FALSE);
+			break;
+		case PROP_PHOTO_ETAG:
+			g_value_set_string (value, priv->photo_etag);
 			break;
 		case PROP_NAME:
 			g_value_set_object (value, priv->name);
@@ -3021,6 +3040,7 @@ gdata_contacts_contact_is_deleted (GDataContactsContact *self)
  * does have a photo, it can be returned using gdata_contacts_contact_get_photo().
  *
  * Return value: %TRUE if the contact has a photo, %FALSE otherwise
+ * Deprecated: 0.9.0: Use gdata_contacts_contact_get_photo_etag() instead; it returns %NULL exactly when this function would've returned %FALSE.
  *
  * Since: 0.4.0
  **/
@@ -3029,6 +3049,25 @@ gdata_contacts_contact_has_photo (GDataContactsContact *self)
 {
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
 	return (self->priv->photo_etag != NULL) ? TRUE : FALSE;
+}
+
+/**
+ * gdata_contacts_contact_get_photo_etag:
+ * @self: a #GDataContactsContact
+ *
+ * Returns the ETag for the contact's attached photo, if it exists. If it does exist, the contact's photo can be retrieved using
+ * gdata_contacts_contact_get_photo(). If it doesn't exist, %NULL will be returned, and the contact doesn't have a photo (so calling
+ * gdata_contacts_contact_get_photo() will also return %NULL)
+ *
+ * Return value: the contact's photo's ETag if it exists, %NULL otherwise
+ *
+ * Since: 0.9.0
+ **/
+const gchar *
+gdata_contacts_contact_get_photo_etag (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->photo_etag;
 }
 
 /**
@@ -3069,7 +3108,7 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Return if there is no photo */
-	if (gdata_contacts_contact_has_photo (self) == FALSE)
+	if (gdata_contacts_contact_get_photo_etag (self) == NULL)
 		return NULL;
 
 	/* Get the photo URI */

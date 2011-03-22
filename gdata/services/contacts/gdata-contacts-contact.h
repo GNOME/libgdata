@@ -277,7 +277,8 @@ GList *gdata_contacts_contact_get_groups (GDataContactsContact *self) G_GNUC_WAR
 
 #include <gdata/services/contacts/gdata-contacts-service.h>
 
-gboolean gdata_contacts_contact_has_photo (GDataContactsContact *self) G_GNUC_PURE;
+gboolean gdata_contacts_contact_has_photo (GDataContactsContact *self) G_GNUC_PURE G_GNUC_DEPRECATED_FOR(gdata_contacts_contact_get_photo_etag);
+const gchar *gdata_contacts_contact_get_photo_etag (GDataContactsContact *self) G_GNUC_PURE;
 
 guint8 *gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
                                           GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

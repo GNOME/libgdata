@@ -163,13 +163,13 @@ test_insert_simple (gconstpointer service)
 	GDataGContactExternalID *external_id;
 	GDataGContactLanguage *language;
 	gchar *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
-	gchar *priority, *sensitivity, *short_name, *subject;
+	gchar *priority, *sensitivity, *short_name, *subject, *photo_etag;
 	GList *list;
 	GDate date, *date2;
 	GHashTable *properties;
 	GTimeVal current_time;
 	gint64 edited, creation_time;
-	gboolean deleted, has_photo, birthday_has_year;
+	gboolean deleted, birthday_has_year;
 	GError *error = NULL;
 
 	contact = gdata_contacts_contact_new (NULL);
@@ -281,7 +281,7 @@ test_insert_simple (gconstpointer service)
 	g_object_get (G_OBJECT (contact),
 	              "edited", &edited,
 	              "deleted", &deleted,
-	              "has-photo", &has_photo,
+	              "photo-etag", &photo_etag,
 	              "name", &name,
 	              "nickname", &nickname,
 	              "birthday", &date2,
@@ -301,7 +301,7 @@ test_insert_simple (gconstpointer service)
 
 	g_assert_cmpint (edited, ==, current_time.tv_sec);
 	g_assert (deleted == FALSE);
-	g_assert (has_photo == FALSE);
+	g_assert (photo_etag == NULL);
 	g_assert (name2 == name);
 	g_assert_cmpstr (nickname, ==, "Big J");
 	g_assert (g_date_valid (date2) == TRUE);
@@ -334,6 +334,7 @@ test_insert_simple (gconstpointer service)
 	g_free (sensitivity);
 	g_free (short_name);
 	g_free (subject);
+	g_free (photo_etag);
 
 	/* Check the XML */
 	gdata_test_assert_xml (contact,
@@ -1524,7 +1525,7 @@ test_photo_has_photo (gconstpointer service)
 	g_clear_error (&error);
 
 	/* Check for no photo */
-	g_assert (gdata_contacts_contact_has_photo (contact) == FALSE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_photo (contact, GDATA_CONTACTS_SERVICE (service), &length, &content_type, NULL, &error) == NULL);
 	g_assert_cmpint (length, ==, 0);
 	g_assert (content_type == NULL);
@@ -1551,7 +1552,7 @@ test_photo_has_photo (gconstpointer service)
 	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
 	g_clear_error (&error);
 
-	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 	g_object_unref (contact);
 }
 
@@ -1588,7 +1589,7 @@ test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, GM
 	g_assert_no_error (error);
 	g_assert (success == TRUE);
 
-	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
 	g_main_loop_quit (main_loop);
 }
@@ -1627,7 +1628,7 @@ test_photo_get (gconstpointer service)
 	GError *error = NULL;
 
 	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
 	/* Get the photo from the network */
 	data = gdata_contacts_contact_get_photo (contact, GDATA_CONTACTS_SERVICE (service), &length, &content_type, NULL, &error);
@@ -1636,7 +1637,7 @@ test_photo_get (gconstpointer service)
 	g_assert (length != 0);
 	g_assert_cmpstr (content_type, ==, "image/jpeg");
 
-	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
 	g_free (content_type);
 	g_free (data);
@@ -1659,7 +1660,7 @@ test_photo_get_async_cb (GDataContactsContact *contact, GAsyncResult *result, GM
 	g_assert (length != 0);
 	g_assert_cmpstr (content_type, ==, "image/jpeg");
 
-	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
 	g_main_loop_quit (main_loop);
 
@@ -1674,7 +1675,7 @@ test_photo_get_async (gconstpointer service)
 	GMainLoop *main_loop;
 
 	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -1694,13 +1695,13 @@ test_photo_delete (gconstpointer service)
 	GError *error = NULL;
 
 	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
 	/* Remove the contact's photo */
 	g_assert (gdata_contacts_contact_set_photo (contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
-	g_assert (gdata_contacts_contact_has_photo (contact) == FALSE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
 
 	g_clear_error (&error);
 	g_object_unref (contact);
@@ -1716,7 +1717,7 @@ test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result,
 	g_assert_no_error (error);
 	g_assert (success == TRUE);
 
-	g_assert (gdata_contacts_contact_has_photo (contact) == FALSE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
 
 	g_main_loop_quit (main_loop);
 }
@@ -1730,7 +1731,7 @@ test_photo_delete_async (gconstpointer service)
 	contact = get_contact (service);
 	main_loop = g_main_loop_new (NULL, TRUE);
 
-	g_assert (gdata_contacts_contact_has_photo (contact) == TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
 	/* Delete it from the contact asynchronously */
 	gdata_contacts_contact_set_photo_async (contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL,
