@@ -176,12 +176,10 @@ gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, c
 	g_assert (document_id != NULL);
 
 	if (gid != -1) {
-		return _gdata_service_build_uri (FALSE,
-		                                 "http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s&gid=%d",
+		return _gdata_service_build_uri ("http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s&gid=%d",
 		                                 document_id, export_format, gid);
 	} else {
-		return _gdata_service_build_uri (FALSE,
-		                                 "http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s",
+		return _gdata_service_build_uri ("http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s",
 		                                 document_id, export_format);
 	}
 }

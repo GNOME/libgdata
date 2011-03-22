@@ -890,16 +890,16 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	g_assert (entry_id != NULL);
 
 	if (GDATA_IS_DOCUMENTS_PRESENTATION (entry)) {
-		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s",
+		uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s",
 		                                folder_id, entry_id);
 	} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (entry)) {
-		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s",
+		uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s",
 		                                folder_id, entry_id);
 	} else if (GDATA_IS_DOCUMENTS_TEXT (entry)) {
-		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s",
+		uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s",
 		                                folder_id, entry_id);
 	} else if (GDATA_IS_DOCUMENTS_FOLDER (entry)) {
-		uri = _gdata_service_build_uri (FALSE, "http://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s",
+		uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s",
 		                                folder_id, entry_id);
 	} else {
 		g_assert_not_reached ();

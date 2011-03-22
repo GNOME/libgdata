@@ -2163,30 +2163,24 @@ _gdata_service_get_session (GDataService *self)
 /*
  * _gdata_service_get_scheme:
  *
- * Returns the name of the scheme to use (either "http" or "https") for network operations if a request should use HTTPS. This allows
- * requests to normally use HTTPS, but have the option of using HTTP for debugging purposes. If a request should normally use HTTP, that
- * should be hard-coded in the relevant code, and this function needn't be called.
+ * Returns the name of the scheme to use, which will always be <code class="literal">https</code>. The return type used to vary according to the
+ * environment variable <code class="literal">LIBGDATA_FORCE_HTTP</code>, but Google has since switched to using HTTPS exclusively.
  *
- * Return value: the scheme to use
+ * See <ulink type="http" url="http://googlecode.blogspot.com/2011/03/improving-security-of-google-apis-with.html">Improving the security of Google
+ * APIs with SSL</ulink>.
+ *
+ * Return value: the scheme to use (<code class="literal">https</code>)
  *
  * Since: 0.6.0
  */
 const gchar *
 _gdata_service_get_scheme (void)
 {
-	static gint force_http = -1;
-
-	if (force_http == -1)
-		force_http = (g_getenv ("LIBGDATA_FORCE_HTTP") != NULL);
-
-	if (force_http)
-		return "http";
 	return "https";
 }
 
 /*
  * _gdata_service_build_uri:
- * @force_http: %TRUE to force the outputted URI to use HTTP, %FALSE to use the scheme returned by _gdata_service_get_scheme()
  * @format: a standard printf() format string
  * @...: the arguments to insert in the output
  *
@@ -2195,14 +2189,13 @@ _gdata_service_get_scheme (void)
  * other printf() format placeholders are supported at the moment except <code class="literal">%%d</code>, which prints a signed integer; and
  * <code class="literal">%%</code>, which prints a literal percent symbol.
  *
- * The returned URI is guaranteed to use the scheme returned by _gdata_service_get_scheme(), unless the @force_http argument is %TRUE; in that case,
- * the returned URI is guaranteed to use HTTP. The format string, once all the arguments have been inserted into it, must include a service, but it
- * doesn't matter which one.
+ * The returned URI is guaranteed to use the scheme returned by _gdata_service_get_scheme(). The format string, once all the arguments have been
+ * inserted into it, must include a scheme, but it doesn't matter which one.
  *
  * Return value: a newly allocated URI string; free with g_free()
  */
 gchar *
-_gdata_service_build_uri (gboolean force_http, const gchar *format, ...)
+_gdata_service_build_uri (const gchar *format, ...)
 {
 	const gchar *p, *scheme;
 	gchar *built_uri;
@@ -2245,7 +2238,7 @@ _gdata_service_build_uri (gboolean force_http, const gchar *format, ...)
 	va_end (args);
 
 	built_uri = g_string_free (uri, FALSE);
-	scheme = (force_http == FALSE) ? _gdata_service_get_scheme () : "http";
+	scheme = _gdata_service_get_scheme ();
 
 	/* Ensure we're using the correct scheme (HTTP or HTTPS) */
 	if (g_str_has_prefix (built_uri, scheme) == FALSE) {

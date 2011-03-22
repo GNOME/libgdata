@@ -24,10 +24,6 @@ If compiling with --enable-gnome (for GNOME support):
 Environment variables
 =====================
 
-If the environment variable LIBGDATA_FORCE_HTTP is defined, libgdata will
-force the use of HTTP for requests which would otherwise normally use
-HTTPS. This allows the network traffic to be debugged more easily.
-
 If the environment variable LIGDATA_DEBUG is set to one of the following
 values, libgdata will give debug output (at various levels):
  0: Output no debug messages or network logs

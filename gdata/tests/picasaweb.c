@@ -384,7 +384,7 @@ test_photo (gconstpointer service)
 
 	content = GDATA_MEDIA_CONTENT (list->data);
 	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
-			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
+	                 "https://lh3.googleusercontent.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
 	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
 	g_assert_cmpuint (gdata_media_content_get_width (content), ==, 1600);
 	g_assert_cmpuint (gdata_media_content_get_height (content), ==, 1200);
@@ -401,7 +401,7 @@ test_photo (gconstpointer service)
 
 	thumbnail = GDATA_MEDIA_THUMBNAIL (list->data);
 	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
-			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/s288/100_0269.jpg");
+	                 "https://lh3.googleusercontent.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/s288/100_0269.jpg");
 	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 288);
 	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 216);
 	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
@@ -447,13 +447,14 @@ test_photo_feed_entry (gconstpointer service)
 
 	g_assert_cmpstr (gdata_entry_get_title (photo_entry), ==, "100_0269.jpg");
 	g_assert_cmpstr (gdata_picasaweb_file_get_id (GDATA_PICASAWEB_FILE (photo_entry)), ==, "5328890138794566386");
-	g_assert_cmpstr (gdata_entry_get_id (photo_entry), ==, "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
+	g_assert_cmpstr (gdata_entry_get_id (photo_entry), ==,
+	                 "https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
 	g_assert_cmpstr (gdata_entry_get_etag (photo_entry), !=, NULL);
 	g_assert_cmpint (gdata_entry_get_updated (photo_entry), ==, 1273783513);
 	g_assert_cmpint (gdata_entry_get_published (photo_entry), ==, 1240728920);
 	g_assert (gdata_entry_get_content (photo_entry) == NULL);
 	g_assert_cmpstr (gdata_entry_get_content_uri (photo_entry), ==,
-			 "http://lh3.ggpht.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
+	                 "https://lh3.googleusercontent.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
 
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo_entry));
 	g_assert_cmpstr (xml, !=, NULL);
@@ -493,7 +494,7 @@ test_photo_feed (gconstpointer service)
 
 	g_assert_cmpstr (gdata_feed_get_title (photo_feed), ==, "Test Album 1 - Venice - Public");
 	g_assert_cmpstr (gdata_feed_get_id (photo_feed), ==,
-			 "http://picasaweb.google.com/data/feed/user/libgdata.picasaweb/albumid/5328889949261497249");
+			 "https://picasaweb.google.com/data/feed/user/libgdata.picasaweb/albumid/5328889949261497249");
 	g_assert_cmpstr (gdata_feed_get_etag (photo_feed), !=, NULL);
 	g_assert_cmpuint (gdata_feed_get_items_per_page (photo_feed), ==, 1000);
 	g_assert_cmpuint (gdata_feed_get_start_index (photo_feed), ==, 1);
@@ -509,16 +510,16 @@ test_photo_single (gconstpointer service)
 	GDataEntry *photo;
 	GError *error = NULL;
 
-	photo = gdata_service_query_single_entry (GDATA_SERVICE (service),
-	                                          "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386",
-	                                          NULL, GDATA_TYPE_PICASAWEB_FILE, NULL, &error);
+	const gchar *entry_id =
+		"https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386";
+	photo = gdata_service_query_single_entry (GDATA_SERVICE (service), entry_id, NULL, GDATA_TYPE_PICASAWEB_FILE, NULL, &error);
 
 	g_assert_no_error (error);
 	g_assert (photo != NULL);
 	g_assert (GDATA_IS_PICASAWEB_FILE (photo));
 	g_assert_cmpstr (gdata_picasaweb_file_get_id (GDATA_PICASAWEB_FILE (photo)), ==, "5328890138794566386");
 	g_assert_cmpstr (gdata_entry_get_id (photo), ==,
-	                 "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
+	                 "https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
 	g_clear_error (&error);
 
 	g_object_unref (photo);
@@ -537,7 +538,7 @@ test_photo_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoo
 
 	/* Tests */
 	g_assert_cmpstr (gdata_feed_get_title (feed), ==, "Test Album 1 - Venice - Public");
-	g_assert_cmpstr (gdata_feed_get_id (feed), ==, "http://picasaweb.google.com/data/feed/user/libgdata.picasaweb/albumid/5328889949261497249");
+	g_assert_cmpstr (gdata_feed_get_id (feed), ==, "https://picasaweb.google.com/data/feed/user/libgdata.picasaweb/albumid/5328889949261497249");
 	g_assert_cmpstr (gdata_feed_get_etag (feed), !=, NULL);
 	g_assert_cmpuint (gdata_feed_get_items_per_page (feed), ==, 1000);
 	g_assert_cmpuint (gdata_feed_get_start_index (feed), ==, 1);
@@ -667,7 +668,7 @@ test_album (gconstpointer service)
 	content = GDATA_MEDIA_CONTENT (contents->data);
 
 	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
-			 "http://lh5.ggpht.com/_1kdcGyvOb8c/SfQFLNjhg6E/AAAAAAAAAB8/2WtMjZCa71k/TestAlbum1VenicePublic.jpg");
+	                 "https://lh5.googleusercontent.com/_1kdcGyvOb8c/SfQFLNjhg6E/AAAAAAAAAB8/2WtMjZCa71k/TestAlbum1VenicePublic.jpg");
 	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
 	g_assert_cmpuint (gdata_media_content_get_medium (content), ==, GDATA_MEDIA_IMAGE);
 
@@ -683,7 +684,7 @@ test_album (gconstpointer service)
 	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
 
 	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
-			 "http://lh5.ggpht.com/_1kdcGyvOb8c/SfQFLNjhg6E/AAAAAAAAAB8/2WtMjZCa71k/s160-c/TestAlbum1VenicePublic.jpg");
+	                 "https://lh5.googleusercontent.com/_1kdcGyvOb8c/SfQFLNjhg6E/AAAAAAAAAB8/2WtMjZCa71k/s160-c/TestAlbum1VenicePublic.jpg");
 	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
 	g_assert_cmpint (gdata_media_thumbnail_get_width (thumbnail), ==, 160);
 	g_assert_cmpint (gdata_media_thumbnail_get_height (thumbnail), ==, 160);
@@ -717,7 +718,8 @@ test_album_feed_entry (gconstpointer service)
 	/* Tests */
 	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "Test Album 1 - Venice - Public");
 	g_assert_cmpstr (gdata_picasaweb_album_get_id (GDATA_PICASAWEB_ALBUM (entry)), ==, "5328889949261497249");
-	g_assert_cmpstr (gdata_entry_get_id (entry), ==, "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249");
+	g_assert_cmpstr (gdata_entry_get_id (entry), ==,
+	                 "https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249");
 	g_assert_cmpstr (gdata_entry_get_etag (entry), !=, NULL);
 	g_assert_cmpstr (gdata_entry_get_rights (entry), ==, "public");
 	g_assert_cmpint (gdata_entry_get_updated (entry), ==, 1240729023);
@@ -746,9 +748,10 @@ test_album_feed (gconstpointer service)
 
 	g_assert_cmpstr (gdata_feed_get_title (album_feed), ==, "libgdata.picasaweb");
 	/* TODO find out why subtitle == null when returned: no subtitle for feed? printf("feed subtitle: %s\n", gdata_feed_get_subtitle(feed)); */
-	g_assert_cmpstr (gdata_feed_get_id (album_feed), ==, "http://picasaweb.google.com/data/feed/user/libgdata.picasaweb");
+	g_assert_cmpstr (gdata_feed_get_id (album_feed), ==, "https://picasaweb.google.com/data/feed/user/libgdata.picasaweb");
 	g_assert_cmpstr (gdata_feed_get_etag (album_feed), !=, NULL); /* this varies as albums change, like when a new image is uploaded in our test! */
-	g_assert_cmpstr (gdata_feed_get_icon (album_feed), ==, "http://lh3.ggpht.com/_1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAAAAA/jNhBfdaNdD4/s64-c/libgdata.picasaweb.jpg");
+	g_assert_cmpstr (gdata_feed_get_icon (album_feed), ==,
+	                 "https://lh3.googleusercontent.com/_1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAADJo/DBiSoq_oSTo/s64-c/libgdata.picasaweb.jpg");
 	g_assert_cmpuint (gdata_feed_get_items_per_page (album_feed), ==, 1000);
 	g_assert_cmpuint (gdata_feed_get_start_index (album_feed), ==, 1);
 	g_assert_cmpuint (gdata_feed_get_total_results (album_feed), ==, NUM_ALBUMS);
@@ -912,7 +915,8 @@ test_query_user (gconstpointer service)
 	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 1073741824); /* 1GiB: it'll be a beautiful day when this assert gets tripped */
 	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), >, 0);
 	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), >, 0); /* now it's 1000, testing this weakly to avoid having to regularly update it */
-	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), ==, "http://lh3.ggpht.com/_1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAAAAA/jNhBfdaNdD4/s64-c/libgdata.picasaweb.jpg");
+	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), ==,
+	                 "https://lh3.googleusercontent.com/_1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAADJo/DBiSoq_oSTo/s64-c/libgdata.picasaweb.jpg");
 
 	g_object_unref (user);
 }

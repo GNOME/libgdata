@@ -305,5 +305,5 @@ gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const g
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (self), NULL);
 	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
 
-	return _gdata_service_build_uri (FALSE, "%p&exportFormat=%s", gdata_entry_get_content_uri (GDATA_ENTRY (self)), export_format);
+	return _gdata_service_build_uri ("%p&exportFormat=%s", gdata_entry_get_content_uri (GDATA_ENTRY (self)), export_format);
 }

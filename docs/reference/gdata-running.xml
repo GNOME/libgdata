@@ -18,12 +18,6 @@
 			<title>Environment variables</title>
 			<para>libgdata makes use of a few environment variables which affect how it runs, mainly with respect to debugging.</para>
 
-			<formalpara id="LIBGDATA_FORCE_HTTP">
-				<title><envar>LIBGDATA_FORCE_HTTP</envar></title>
-				<para>If this environment variable is defined, libgdata will force the use of HTTP for requests which would otherwise
-					normally use HTTPS. This allows the network traffic to be debugged more easily.</para>
-			</formalpara>
-
 			<formalpara id="LIBGDATA_DEBUG">
 				<title><envar>LIBGDATA_DEBUG</envar></title>
 				<para>If this environment variable is set to one of the following values, libgdata will give debug output

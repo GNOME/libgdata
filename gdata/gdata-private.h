@@ -53,8 +53,7 @@ G_GNUC_INTERNAL guint _gdata_service_send_message (GDataService *self, SoupMessa
 G_GNUC_INTERNAL SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
                                                    GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL const gchar *_gdata_service_get_scheme (void) G_GNUC_CONST;
-G_GNUC_INTERNAL gchar *_gdata_service_build_uri (gboolean force_http,
-                                                 const gchar *format, ...) G_GNUC_PRINTF (2, 3) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL gchar *_gdata_service_build_uri (const gchar *format, ...) G_GNUC_PRINTF (1, 2) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL GDataLogLevel _gdata_service_get_log_level (void) G_GNUC_CONST;
 
 #include "gdata-query.h"
