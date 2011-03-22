@@ -384,7 +384,7 @@ static void
 test_xml_dates (void)
 {
 	GDataCalendarEvent *event;
-	GList *times, *i;
+	GList *i;
 	GDataGDWhen *when;
 	gint64 _time;
 	GError *error = NULL;
@@ -406,7 +406,7 @@ test_xml_dates (void)
 	g_clear_error (&error);
 
 	/* Check the times */
-	times = i = gdata_calendar_event_get_times (event);
+	i = gdata_calendar_event_get_times (event);
 
 	/* First time */
 	when = GDATA_GD_WHEN (i->data);
@@ -1021,13 +1021,12 @@ static void
 test_batch_async (BatchAsyncData *data, gconstpointer service)
 {
 	GDataBatchOperation *operation;
-	guint op_id;
 	GMainLoop *main_loop;
 
 	/* Run an async query operation on the event */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
-	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
-	                                          GDATA_ENTRY (data->new_event), NULL, NULL);
+	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
+	                                  GDATA_ENTRY (data->new_event), NULL, NULL);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -1057,15 +1056,14 @@ static void
 test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 {
 	GDataBatchOperation *operation;
-	guint op_id;
 	GMainLoop *main_loop;
 	GCancellable *cancellable;
 	GError *error = NULL;
 
 	/* Run an async query operation on the event */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
-	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
-	                                          GDATA_ENTRY (data->new_event), NULL, &error);
+	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
+	                                  GDATA_ENTRY (data->new_event), NULL, &error);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 	cancellable = g_cancellable_new ();
