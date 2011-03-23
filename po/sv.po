@@ -1,14 +1,14 @@
 # Swedish translation for libgdata.
-# Copyright (C) 2009, 2010 Free Software Foundation, Inc.
+# Copyright (C) 2009, 2010, 2011 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
-# Daniel Nylander <po@danielnylander.se>, 2009, 2010.
+# Daniel Nylander <po@danielnylander.se>, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-30 18:29+0100\n"
-"PO-Revision-Date: 2010-12-30 18:29+0100\n"
+"POT-Creation-Date: 2011-03-23 18:58+0100\n"
+"PO-Revision-Date: 2011-03-23 18:59+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -209,59 +209,65 @@ msgstr "Felkod %u vid körning av en satsoperation: %s"
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "En CAPTCHA måste fyllas i för att logga in."
 
-#: ../gdata/gdata-service.c:710
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:721
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Detta konto kräver ett programspecifikt lösenord. (%s)"
+
+#: ../gdata/gdata-service.c:728
 msgid "Your username or password were incorrect."
 msgstr "Ditt användarnamn eller lösenord var felaktigt."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:729
+#: ../gdata/gdata-service.c:747
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "E-postadressen för ditt konto har ännu inte verifierats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:734
+#: ../gdata/gdata-service.c:752
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Du har inte godkänt tjänstens villkor. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:740
+#: ../gdata/gdata-service.c:758
 #, c-format
 msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
 msgstr "Detta konto har migrerats. Logga in på nätet för att få ditt nya användarnamn och lösenord. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:745
+#: ../gdata/gdata-service.c:763
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Detta konto har tagits bort. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:750
+#: ../gdata/gdata-service.c:768
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Detta konto har inaktiverats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:755
+#: ../gdata/gdata-service.c:773
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Åtkomsten för detta konto till denna tjänst har inaktiverats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:760
+#: ../gdata/gdata-service.c:778
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Denna tjänst är inte tillgänglig för tillfället. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1065
+#: ../gdata/gdata-service.c:1083
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ogiltig URI för omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1641
+#: ../gdata/gdata-service.c:1659
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
 #: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
