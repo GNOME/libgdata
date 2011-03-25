@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-15 06:39+0200\n"
-"PO-Revision-Date: 2011-02-15 06:39+0200\n"
+"POT-Creation-Date: 2011-03-25 22:10+0200\n"
+"PO-Revision-Date: 2011-03-25 22:09+0200\n"
 "Last-Translator: Ivaylo Valkov <ivaylo@e-valkov.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -215,12 +215,18 @@ msgstr "Получен е код за грешка „%u“ при пакетн�
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "За да влезете, попълнете данните от CAPTCHA."
 
-#: ../gdata/gdata-service.c:710
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:721
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Следната регистрация изисква своя парола: %s"
+
+#: ../gdata/gdata-service.c:728
 msgid "Your username or password were incorrect."
 msgstr "Потребителското име или паролата са грешни."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:729
+#: ../gdata/gdata-service.c:747
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr ""
@@ -228,7 +234,7 @@ msgstr ""
 "информация посетете %s."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:734
+#: ../gdata/gdata-service.c:752
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr ""
@@ -236,7 +242,7 @@ msgstr ""
 "посетете %s."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:740
+#: ../gdata/gdata-service.c:758
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -246,19 +252,19 @@ msgstr ""
 "и парола, влезте в услугата през браузър. За повече информация посетете %s."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:745
+#: ../gdata/gdata-service.c:763
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Тази регистрация е била изтрита. За повече информация посетете %s."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:750
+#: ../gdata/gdata-service.c:768
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Тази регистрация е била спряна. За повече информация посетете %s."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:755
+#: ../gdata/gdata-service.c:773
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr ""
@@ -266,18 +272,18 @@ msgstr ""
 "информация вижте %s."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:760
+#: ../gdata/gdata-service.c:778
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "В момента тази услуга е недостъпна. За повече информация вижте %s."
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1065
+#: ../gdata/gdata-service.c:1083
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Неправилен адрес за пренасочване: %s"
 
-#: ../gdata/gdata-service.c:1641
+#: ../gdata/gdata-service.c:1659
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
 #: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
