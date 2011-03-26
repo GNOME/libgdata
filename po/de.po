@@ -1,16 +1,17 @@
 # German translation of libgdata.
 # Mario Blättermann <mariobl@gnome.org>, 2009, 2010, 2011.
 # Christian Kirbach <Christian.Kirbach@googlemail.com>, 2010.
+# Wolfgang Stöggl <c72578@yahoo.de>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-12-30 15:37+0000\n"
-"PO-Revision-Date: 2011-01-01 21:14+0100\n"
-"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
-"Language-Team: Deutsch <gnome-de@gnome.org>\n"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-03-25 20:32+0000\n"
+"PO-Revision-Date: 2011-03-25 22:02+0100\n"
+"Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -91,8 +92,8 @@ msgstr "Eine benötigte Eigenschaft %s eines %s-Elements war nicht vorhanden."
 #: ../gdata/gdata-parser.c:163
 #, c-format
 msgid ""
-"Values were present for properties %s and %s of a %s element when only one of "
-"the two is allowed."
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
 msgstr ""
 "Werte waren für Eigenschaften %s und %s eines %s-Elements vorhanden, wobei "
 "nur einer der zwei Werte erlaubt war."
@@ -215,24 +216,31 @@ msgstr "Fehlercode %u beim Ausführen einer Stapelverarbeitung: %s"
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Ein CAPTCHA muss zum Anmelden ausgefüllt werden."
 
-#: ../gdata/gdata-service.c:710
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:721
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr ""
+"Für dieses Konto wird ein anwendungsspezifisches Passwort benötigt. (%s)"
+
+#: ../gdata/gdata-service.c:728
 msgid "Your username or password were incorrect."
 msgstr "Ihr Benutzername oder Passwort waren nicht korrekt."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:729
+#: ../gdata/gdata-service.c:747
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Die E-Mail-Adresse Ihres Kontos wurde nicht bestätigt. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:734
+#: ../gdata/gdata-service.c:752
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Sie haben den Bedingungen dieses Dienstes nicht zugestimmt. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:740
+#: ../gdata/gdata-service.c:758
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -242,36 +250,37 @@ msgstr ""
 "Ihren neuen Benutzernamen und das Kennwort zu erhalten.  (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:745
+#: ../gdata/gdata-service.c:763
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Dieses Konto wurde entfernt. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:750
+#: ../gdata/gdata-service.c:768
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Dieses Konto wurde deaktiviert. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:755
+#: ../gdata/gdata-service.c:773
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
-msgstr "Der Zugriff auf diesen Dienst über dieses Konto wurde deaktiviert. (%s)"
+msgstr ""
+"Der Zugriff auf diesen Dienst über dieses Konto wurde deaktiviert. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:760
+#: ../gdata/gdata-service.c:778
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Dieser Dienst ist derzeit nicht verfügbar. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1065
+#: ../gdata/gdata-service.c:1083
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ungültige Weiterleitungsadresse: %s"
 
-#: ../gdata/gdata-service.c:1641
+#: ../gdata/gdata-service.c:1659
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
 #: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
@@ -318,7 +327,7 @@ msgstr "Sie müssen legitimiert sein, um alle Kontaktgruppen abzufragen."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:466
 msgid "The group has already been inserted."
-msgstr "Die Gruppel wurde bereits eingefügt."
+msgstr "Die Gruppe wurde bereits eingefügt."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:472
 msgid "You must be authenticated to insert a group."
