@@ -6,14 +6,15 @@
 # Claude Paroz <claude@2xlibre.net>, 2009-2010.
 # Nicolas Repentin <nicolas@shivaserv.fr>, 2009.
 # Julien Hardelin <jhardlin{AT}wanadoo{POINT}fr, 2010.
-# Bruno Brouard <annoa.b@gmail.com>, 2010.
+# Bruno Brouard <annoa.b@gmail.com>, 2010-2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-12-30 15:37+0000\n"
-"PO-Revision-Date: 2010-10-23 19:46+0200\n"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-03-22 13:26+0000\n"
+"PO-Revision-Date: 2011-03-27 21:25+0200\n"
 "Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -218,24 +219,30 @@ msgstr "Code d'erreur %u lors du lancement d'un lot d'opérations : %s"
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Un CAPTCHA doit être complété pour se connecter."
 
-#: ../gdata/gdata-service.c:710
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:721
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Ce compte nécessite un mot de passe spécifique à l'application. (%s)"
+
+#: ../gdata/gdata-service.c:728
 msgid "Your username or password were incorrect."
 msgstr "Nom d'utilisateur ou mot de passe incorrect."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:729
+#: ../gdata/gdata-service.c:747
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "L'adresse électronique de votre compte n'est pas vérifiée (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:734
+#: ../gdata/gdata-service.c:752
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Vous n'avez pas accepté les conditions générales du service (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:740
+#: ../gdata/gdata-service.c:758
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -245,36 +252,36 @@ msgstr ""
 "nouveau nom d'utilisateur et votre nouveau mot de passe (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:745
+#: ../gdata/gdata-service.c:763
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Ce compte a été supprimé (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:750
+#: ../gdata/gdata-service.c:768
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Ce compte a été désactivé (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:755
+#: ../gdata/gdata-service.c:773
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "L'accès à ce service est désactivé pour ce compte (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:760
+#: ../gdata/gdata-service.c:778
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Ce service n'est pas disponible pour le moment (%s)."
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1065
+#: ../gdata/gdata-service.c:1083
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "L'URI redirigé n'est pas valide : %s"
 
-#: ../gdata/gdata-service.c:1641
+#: ../gdata/gdata-service.c:1659
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
 #: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
@@ -431,8 +438,7 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
-"Code d'erreur inconnu « %s » dans le domaine « %s » reçu à l'emplacement "
-"« %s »."
+"Code d'erreur inconnu « %s » dans le domaine « %s » reçu à l'emplacement « %s »."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
@@ -448,5 +454,3 @@ msgstr "La vidéo n'a pas de vidéo connexe <link>."
 msgid "You must be authenticated to upload a video."
 msgstr "Vous devez vous authentifier pour envoyer une vidéo."
 
-#~ msgid "The supplied document had an invalid content type."
-#~ msgstr "Le document fourni avait un type de contenu non valide."
