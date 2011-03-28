@@ -1,20 +1,25 @@
 # Danish translation for libgdata.
 # Copyright (C) 2010 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
-# Kris Thomsen <lakristho@gmail.com>, 2010.
+# Kris Thomsen <lakristho@gmail.com>, 2010-2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-29 11:59+0100\n"
-"PO-Revision-Date: 2010-12-12 23:32+0100\n"
+"POT-Creation-Date: 2011-03-28 23:33+0200\n"
+"PO-Revision-Date: 2011-03-28 23:06+0000\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
+msgid "Stream is already closed"
+msgstr "Strøm er allerede lukket"
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -209,24 +214,30 @@ msgstr "Fejlkode %u under kørsel af batchoperation: %s"
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "En CAPTCHA skal være udfyldt for at logge ind."
 
-#: ../gdata/gdata-service.c:710
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-service.c:721
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Denne konto kræver en programspecifik adgangskode. (%s)"
+
+#: ../gdata/gdata-service.c:728
 msgid "Your username or password were incorrect."
 msgstr "Dit brugernavn eller adgangskode var forkert."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:729
+#: ../gdata/gdata-service.c:747
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Din kontos e-post-adresse er ikke blevet verificeret. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:734
+#: ../gdata/gdata-service.c:752
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Du har ikke accepteret tjenestens betingelser. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:740
+#: ../gdata/gdata-service.c:758
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -236,38 +247,38 @@ msgstr ""
 "nye brugernavn og adgangskode. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:745
+#: ../gdata/gdata-service.c:763
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Denne konto er blevet slettet. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:750
+#: ../gdata/gdata-service.c:768
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Denne konto er blevet deaktiveret. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:755
+#: ../gdata/gdata-service.c:773
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Denne kontos adgang til denne tjeneste er blevet deaktiveret. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:760
+#: ../gdata/gdata-service.c:778
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Denne tjeneste er ikke tilgængelig i øjeblikket. (%s)"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1075
+#: ../gdata/gdata-service.c:1083
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ugyldig omdirigeringsadresse: %s"
 
-#: ../gdata/gdata-service.c:1651
+#: ../gdata/gdata-service.c:1659
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
-#: ../gdata/services/youtube/gdata-youtube-service.c:640
+#: ../gdata/services/youtube/gdata-youtube-service.c:778
 msgid "The entry has already been inserted."
 msgstr "Elementet er allerede blevet sat ind."
 
@@ -277,78 +288,78 @@ msgstr "Elementet er allerede blevet sat ind."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:344
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Indholdet af et %s-element (\"%s\") var ikke i hexadecimal-RGB-format."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:111
-#: ../gdata/services/calendar/gdata-calendar-service.c:156
+#: ../gdata/services/calendar/gdata-calendar-service.c:281
+#: ../gdata/services/calendar/gdata-calendar-service.c:326
 msgid "You must be authenticated to query all calendars."
 msgstr "Du skal være godkendt for at forespørge alle kalendere."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:198
-#: ../gdata/services/calendar/gdata-calendar-service.c:243
-#: ../gdata/services/calendar/gdata-calendar-service.c:284
-#: ../gdata/services/calendar/gdata-calendar-service.c:340
+#: ../gdata/services/calendar/gdata-calendar-service.c:368
+#: ../gdata/services/calendar/gdata-calendar-service.c:413
+#: ../gdata/services/calendar/gdata-calendar-service.c:454
+#: ../gdata/services/calendar/gdata-calendar-service.c:510
 msgid "You must be authenticated to query your own calendars."
 msgstr "Du skal være godkendt for at forespørge dine egne kalendere."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:293
-#: ../gdata/services/calendar/gdata-calendar-service.c:349
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:519
 msgid "The calendar did not have a content URI."
 msgstr "Kalenderen havde ikke nogen indholdsadresse."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:116
-#: ../gdata/services/contacts/gdata-contacts-service.c:162
+#: ../gdata/services/contacts/gdata-contacts-service.c:229
+#: ../gdata/services/contacts/gdata-contacts-service.c:275
 msgid "You must be authenticated to query contacts."
 msgstr "Du skal være godkendt for at forespørge kontakter."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:271
-#: ../gdata/services/contacts/gdata-contacts-service.c:317
+#: ../gdata/services/contacts/gdata-contacts-service.c:384
+#: ../gdata/services/contacts/gdata-contacts-service.c:430
 msgid "You must be authenticated to query contact groups."
 msgstr "Du skal være godkendt for at forespørge kontaktergrupper."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:353
+#: ../gdata/services/contacts/gdata-contacts-service.c:466
 msgid "The group has already been inserted."
 msgstr "Grupppen er allerede blevet indsat."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:359
+#: ../gdata/services/contacts/gdata-contacts-service.c:472
 msgid "You must be authenticated to insert a group."
 msgstr "Du skal være godkendt for at indsætte en gruppe."
 
-#: ../gdata/services/documents/gdata-documents-document.c:119
+#: ../gdata/services/documents/gdata-documents-document.c:274
 msgid "You must be authenticated to download documents."
 msgstr "Du skal være godkendt for at hente dokumenter ned."
 
-#: ../gdata/services/documents/gdata-documents-service.c:198
-#: ../gdata/services/documents/gdata-documents-service.c:249
+#: ../gdata/services/documents/gdata-documents-service.c:369
+#: ../gdata/services/documents/gdata-documents-service.c:420
 msgid "You must be authenticated to query documents."
 msgstr "Du skal være godkendt for at forespørge dokumenter."
 
-#: ../gdata/services/documents/gdata-documents-service.c:356
+#: ../gdata/services/documents/gdata-documents-service.c:527
 msgid "You must be authenticated to upload documents."
 msgstr "Du skal være godkendt for at lægge dokumenter op."
 
-#: ../gdata/services/documents/gdata-documents-service.c:362
+#: ../gdata/services/documents/gdata-documents-service.c:533
 msgid "The document has already been uploaded."
 msgstr "Dokumentet er allerede blevet lagt op."
 
-#: ../gdata/services/documents/gdata-documents-service.c:416
+#: ../gdata/services/documents/gdata-documents-service.c:587
 msgid "You must be authenticated to update documents."
 msgstr "Du skal være godkendt for at opdatere dokumenter."
 
-#: ../gdata/services/documents/gdata-documents-service.c:479
+#: ../gdata/services/documents/gdata-documents-service.c:650
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr ""
+"Indholdstypen af det medfølgende dokument (\"%s\") kunne ikke genkendes."
 
-#: ../gdata/services/documents/gdata-documents-service.c:527
-#: ../gdata/services/documents/gdata-documents-service.c:711
-#, fuzzy
+#: ../gdata/services/documents/gdata-documents-service.c:698
+#: ../gdata/services/documents/gdata-documents-service.c:882
 msgid "You must be authenticated to move documents and folders."
-msgstr "Du skal være godkendt for at flytte dokumenter."
+msgstr "Du skal være godkendt for at flytte dokumenter og mapper."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
 msgid "You must specify a username or be authenticated to query a user."
@@ -382,17 +393,17 @@ msgstr "Albummet er allerede blevet indsat."
 msgid "You must be authenticated to insert an album."
 msgstr "Du skal være godkendt for at indsætte et album."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:278
+#: ../gdata/services/youtube/gdata-youtube-service.c:416
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Denne tjeneste er ikke tilgængelig i øjeblikket."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:283
+#: ../gdata/services/youtube/gdata-youtube-service.c:421
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Du skal være godkendt for at gøre dette."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:288
+#: ../gdata/services/youtube/gdata-youtube-service.c:426
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -401,7 +412,7 @@ msgstr ""
 "Du har lavet for mange API-kald for nylig. Vent venligst et par minutter og "
 "prøv igen."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:291
+#: ../gdata/services/youtube/gdata-youtube-service.c:429
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -412,24 +423,24 @@ msgstr ""
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
 #. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:298
-#: ../gdata/services/youtube/gdata-youtube-service.c:304
+#: ../gdata/services/youtube/gdata-youtube-service.c:436
+#: ../gdata/services/youtube/gdata-youtube-service.c:442
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Ukendt fejlkode \"%s\" i domæne \"%s\" modtaget med lokation \"%s\"."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:322
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "Ukendt og ikke fortolkningsbar fejl modtaget."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:544
-#: ../gdata/services/youtube/gdata-youtube-service.c:591
+#: ../gdata/services/youtube/gdata-youtube-service.c:682
+#: ../gdata/services/youtube/gdata-youtube-service.c:729
 msgid "The video did not have a related videos <link>."
 msgstr "Videoen havde ikke et relateret <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:646
+#: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "You must be authenticated to upload a video."
 msgstr "Du skal være godkendt for at lægge en video op."
 
