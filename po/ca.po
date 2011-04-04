@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-03-24 23:24+0100\n"
-"PO-Revision-Date: 2011-03-22 23:00+0100\n"
+"PO-Revision-Date: 2011-04-04 22:03+0200\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -103,7 +103,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:182
 #, c-format
 msgid "A required element (%s) was not present."
-msgstr "No exisita un element necessari (%s)."
+msgstr "No existia un element necessari (%s)."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -229,7 +229,7 @@ msgstr "El nom d'usuari o la contrasenya eren incorrectes."
 #: ../gdata/gdata-service.c:747
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "No s'ha verificat la vostra adreça de correu electrònic. (%s)"
+msgstr "No s'ha verificat la vostra adreça electrònica. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-service.c:752
