@@ -34,6 +34,7 @@ G_BEGIN_DECLS
  * differentiate calendars.
  **/
 typedef struct {
+	/*< public >*/
 	guint16 red;
 	guint16 green;
 	guint16 blue;
