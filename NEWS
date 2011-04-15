@@ -1,3 +1,42 @@
+Overview of changes from libgdata 0.8.0 to libgdata 0.8.1
+=========================================================
+
+Major changes:
+* Fix some gtk-doc issues
+* Other minor fixes to the parsing code and test suite
+
+Bugs fixed:
+* Bug 642983 — libgdata-0.8.0: test fail with --enable-gtk-doc
+
+Updated translations:
+* bg (Ivaylo Valkov)
+* bn_IN (Runa Bhattacharjee)
+* ca (Joan Duran)
+* cs (Marek Černocký)
+* de (Mario Blättermann)
+* el (Kostas Papadimas, Michael Kotsarinis)
+* es (Daniel Mustieles)
+* fr (Bruno Brouard)
+* gl (Leandro Regueiro, Fran Diéguez)
+* gu (Sweta Kothari)
+* hu (Gabor Kelemen)
+* id (Andika Triwidada)
+* ko (Changwoo Ryu)
+* lv (Rudolfs Mazurs)
+* nb (Kjartan Maraas)
+* or (Manoj Kumar Giri)
+* pa (A S Alam)
+* pl (Piotr Drąg)
+* pt (António Lima)
+* ro (Lucian Adrian Grijincu)
+* ru (Yuri Myaseodov)
+* sl (Matej Urbančič)
+* sv (Daniel Nylander)
+* ug (Gheyret Kenji)
+* uk (Korostil Daniel)
+* zh_CN (Ben)
+* zh_HK (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.7.0 to libgdata 0.8.0
 =========================================================
 
