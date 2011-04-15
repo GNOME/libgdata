@@ -195,16 +195,24 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
 			/* media:rating */
 			xmlChar *countries;
-			gchar **country_list, **country;
 
 			countries = xmlGetProp (node, (xmlChar*) "country");
-			country_list = g_strsplit ((const gchar*) countries, ",", -1);
-			xmlFree (countries);
 
-			/* Add all the listed countries to the restricted countries table */
-			for (country = country_list; *country != NULL; country++)
-				g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (TRUE));
-			g_free (country_list);
+			if (countries != NULL) {
+				gchar **country_list, **country;
+
+				/* It's either a comma-separated list of countries, or the value "all" */
+				country_list = g_strsplit ((const gchar*) countries, ",", -1);
+				xmlFree (countries);
+
+				/* Add all the listed countries to the restricted countries table */
+				for (country = country_list; *country != NULL; country++)
+					g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (TRUE));
+				g_free (country_list);
+			} else {
+				/* Assume it's restricted in all countries */
+				g_hash_table_insert (self->priv->restricted_countries, g_strdup ("all"), GUINT_TO_POINTER (TRUE));
+			}
 		} else if (xmlStrcmp (node->name, (xmlChar*) "restriction") == 0) {
 			/* media:restriction */
 			xmlChar *type, *countries, *relationship;
