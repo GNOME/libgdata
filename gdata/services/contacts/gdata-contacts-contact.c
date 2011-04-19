@@ -896,8 +896,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			/* gContact:userDefinedField */
 			xmlChar *name, *value;
 
+			/* Note that while we require the property to be present, we don't require it to be non-empty. See bgo#648058 */
 			name = xmlGetProp (node, (xmlChar*) "key");
-			if (name == NULL || *name == '\0') {
+			if (name == NULL) {
 				xmlFree (name);
 				return gdata_parser_error_required_property_missing (node, "key", error);
 			}
@@ -2843,6 +2844,8 @@ gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const 
  * Gets the value of a user-defined field of the contact. User-defined fields are settable by the user through the Google Contacts web interface,
  * in contrast to extended properties, which are visible and settable only through the GData interface.
  *
+ * The @name of the field may not be %NULL, but may be an empty string.
+ *
  * Return value: the field's value, or %NULL
  *
  * Since: 0.7.0
@@ -2851,7 +2854,7 @@ const gchar *
 gdata_contacts_contact_get_user_defined_field (GDataContactsContact *self, const gchar *name)
 {
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
-	g_return_val_if_fail (name != NULL && *name != '\0', NULL);
+	g_return_val_if_fail (name != NULL, NULL);
 	return g_hash_table_lookup (self->priv->user_defined_fields, name);
 }
 
@@ -2881,6 +2884,8 @@ gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self)
  * Sets the value of a contact's user-defined field. User-defined field names are unique (but of the client's choosing),
  * and reusing the same field name will result in the old value of that field being overwritten.
  *
+ * The @name of the field may not be %NULL, but may be an empty string.
+ *
  * To unset a field, set @value to %NULL.
  *
  * Since: 0.7.0
@@ -2889,7 +2894,7 @@ void
 gdata_contacts_contact_set_user_defined_field (GDataContactsContact *self, const gchar *name, const gchar *value)
 {
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
-	g_return_if_fail (name != NULL && *name != '\0');
+	g_return_if_fail (name != NULL);
 
 	if (value == NULL) {
 		/* Removing a field */

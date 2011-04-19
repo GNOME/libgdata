@@ -276,6 +276,7 @@ test_insert_simple (gconstpointer service)
 	gdata_contacts_contact_set_user_defined_field (contact, "Favourite colour", "Blue");
 	gdata_contacts_contact_set_user_defined_field (contact, "Owes me", "£10");
 	gdata_contacts_contact_set_user_defined_field (contact, "My notes", "");
+	gdata_contacts_contact_set_user_defined_field (contact, "", "Foo"); /* bgo#648058 */
 
 	/* Check the properties of the object */
 	g_object_get (G_OBJECT (contact),
@@ -374,6 +375,7 @@ test_insert_simple (gconstpointer service)
 				"<gContact:userDefinedField key='Favourite colour' value='Blue'/>"
 				"<gContact:userDefinedField key='Owes me' value='£10'/>"
 				"<gContact:userDefinedField key='My notes' value=''/>"
+				"<gContact:userDefinedField key='' value='Foo'/>" /* bgo#648058 */
 				"<gContact:hobby>Rowing</gContact:hobby>"
 				"<gContact:nickname>Big J</gContact:nickname>"
 				"<gContact:birthday when='--01-01'/>"
@@ -510,10 +512,11 @@ test_insert_simple (gconstpointer service)
 	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "Favourite colour"), ==, "Blue");
 	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "Owes me"), ==, "£10");
 	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "My notes"), ==, "");
+	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, ""), ==, "Foo");
 
 	properties = gdata_contacts_contact_get_user_defined_fields (new_contact);
 	g_assert (properties != NULL);
-	g_assert_cmpuint (g_hash_table_size (properties), ==, 3);
+	g_assert_cmpuint (g_hash_table_size (properties), ==, 4);
 
 	/* Groups */
 	list = gdata_contacts_contact_get_groups (new_contact);
@@ -1298,7 +1301,6 @@ test_parser_error_handling (void)
 	TEST_XML_ERROR_HANDLING ("<gContact:userDefinedField/>"); /* no key or value */
 	TEST_XML_ERROR_HANDLING ("<gContact:userDefinedField key='foo'/>"); /* no value */
 	TEST_XML_ERROR_HANDLING ("<gContact:userDefinedField value='bar'/>"); /* no key */
-	TEST_XML_ERROR_HANDLING ("<gContact:userDefinedField key='' value='bar'/>"); /* empty key */
 
 	/* gContact:groupMembershipInfo */
 	TEST_XML_ERROR_HANDLING ("<gContact:groupMembershipInfo/>");
