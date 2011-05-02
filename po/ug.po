@@ -2,14 +2,15 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Gheyret Kenji <gheyret@yahoo.com>, 2010.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-03-22 13:26+0000\n"
-"PO-Revision-Date: 2011-01-31 15:04+0000\n"
-"Last-Translator: Gheyret Kenji <gheyret@yahoo.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-04-25 17:13+0000\n"
+"PO-Revision-Date: 2011-04-26 13:39+0600\n"
+"Last-Translator: Sahran <sahran.ug@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,7 +38,7 @@ msgstr "قۇرۇق پۈتۈك."
 #: ../gdata/gdata-parser.c:66
 #, c-format
 msgid "A %s element was missing required content."
-msgstr ""
+msgstr "مەلۇم %s ئېلېمېنت تەلەپ قىلغان مەزمۇننى يوقاتتى."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -57,7 +58,7 @@ msgstr "ئېلېمېنت %s نىڭ مەزمۇنىدىكى (\"%s\") ISO 8601 فو
 #: ../gdata/gdata-parser.c:102
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr ""
+msgstr "مەلۇم %2$s ئېلېمېنت(\"%3$s\") نىڭ خاسلىقىنىڭ %1$s قىممىتى نامەلۇم"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -91,6 +92,8 @@ msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
 msgstr ""
+"%3$s ئېلېمېنتنىڭ %1$s ۋە %2$s خاسلىقى ئوخشاش بولمىغان ئىناۋەتلىك ئەھۋالدىلا "
+"ئاندىن قىممەتنىڭ مەنىسى بولىدۇ."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -129,6 +132,8 @@ msgstr "ۋاكالەتچى مۇلازىمېتىرغا باغلىنالمىدى."
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
+"ئىلتىماس قىلغان URI ياكى باش ئىناۋەتسىز ۋە ياكى قوللىمايدىغان ئۆلچەمسىز "
+"پارامېتىر: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-service.c:490
@@ -213,6 +218,7 @@ msgstr "تىزىمغا كىرىش ئۈچۈن CAPTCHA چوقۇم تولدۇرۇل
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr ""
+"بۇ ھېسابات قوللىنىشچان پروگرامما مەخسۇس ئىشلىتىدىغان ئىمغا ئېھتىياجلىق. (%s)"
 
 #: ../gdata/gdata-service.c:728
 msgid "Your username or password were incorrect."
@@ -236,7 +242,9 @@ msgstr "مۇلازىمەت ماددىلىرى ۋە شەرتلىرىگە قوشۇ
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
-msgstr "مەزكۇر ھېسابات يۆتكەلگەن. توردا تىزىمغا كىرىپ ئۆزىڭىزنىڭ يېڭى ئاتى ۋە ئىمىنى تاپشۇرۇپ ئېلىڭ. (%s)"
+msgstr ""
+"مەزكۇر ھېسابات يۆتكەلگەن. توردا تىزىمغا كىرىپ ئۆزىڭىزنىڭ يېڭى ئاتى ۋە ئىمىنى "
+"تاپشۇرۇپ ئېلىڭ. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-service.c:763
@@ -254,7 +262,8 @@ msgstr "مەزكۇر ھېسابات چەكلەنگەن. (%s)"
 #: ../gdata/gdata-service.c:773
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
-msgstr "مەزكۇر ھېساباتنىڭ بۇ مۇلازىمەتنى زىيارەت قىلىشى(ئىشلىتىشى) چەكلەنگەن. (%s)"
+msgstr ""
+"مەزكۇر ھېساباتنىڭ بۇ مۇلازىمەتنى زىيارەت قىلىشى(ئىشلىتىشى) چەكلەنگەن. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-service.c:778
@@ -266,7 +275,7 @@ msgstr "بۇ مۇلازىمەتنى ھازىرقى پەيتتە ئىشلەتكى
 #: ../gdata/gdata-service.c:1083
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr ""
+msgstr "ئىناۋەتسىز قايتا نىشانلانغان URI: %s"
 
 #: ../gdata/gdata-service.c:1659
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
@@ -283,34 +292,43 @@ msgstr "مەزمۇن ئاللىقاچان قىستۇرۇلغان."
 #: ../gdata/services/calendar/gdata-calendar-calendar.c:385
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "ئېلېمېنت %s نىڭ مەزمۇنىدىكى (\"%s\") 16 لىك سىستېمىدىكى RGB فورماتىدا ئەمەس."
+msgstr ""
+"ئېلېمېنت %s نىڭ مەزمۇنىدىكى (\"%s\") 16 لىك سىستېمىدىكى RGB فورماتىدا ئەمەس."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:281
 #: ../gdata/services/calendar/gdata-calendar-service.c:326
 msgid "You must be authenticated to query all calendars."
-msgstr "بارلىق يىلنامىلەرنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"بارلىق يىلنامىلەرنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن "
+"ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:368
 #: ../gdata/services/calendar/gdata-calendar-service.c:413
 #: ../gdata/services/calendar/gdata-calendar-service.c:454
 #: ../gdata/services/calendar/gdata-calendar-service.c:510
 msgid "You must be authenticated to query your own calendars."
-msgstr "ئۆزىڭىزنىڭ يىلنامىلىرىنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"ئۆزىڭىزنىڭ يىلنامىلىرىنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى "
+"دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:463
 #: ../gdata/services/calendar/gdata-calendar-service.c:519
 msgid "The calendar did not have a content URI."
-msgstr ""
+msgstr "يىلنامىدە مەزمۇن URI يوق."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:229
 #: ../gdata/services/contacts/gdata-contacts-service.c:275
 msgid "You must be authenticated to query contacts."
-msgstr "ئالاقەداشلارنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"ئالاقەداشلارنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن "
+"ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:384
 #: ../gdata/services/contacts/gdata-contacts-service.c:430
 msgid "You must be authenticated to query contact groups."
-msgstr "ئالاقەداشلار گۇرۇپپىسىنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"ئالاقەداشلار گۇرۇپپىسىنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى "
+"دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:466
 msgid "The group has already been inserted."
@@ -318,20 +336,28 @@ msgstr "گۇرۇپپا ئاللىقاچان قىستۇرۇلغان."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:472
 msgid "You must be authenticated to insert a group."
-msgstr "گۇرۇپپا قىستۇرۇش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"گۇرۇپپا قىستۇرۇش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز "
+"كېرەك."
 
 #: ../gdata/services/documents/gdata-documents-document.c:274
 msgid "You must be authenticated to download documents."
-msgstr "پۈتۈكلەرنى چۈشۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"پۈتۈكلەرنى چۈشۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز "
+"كېرەك."
 
 #: ../gdata/services/documents/gdata-documents-service.c:369
 #: ../gdata/services/documents/gdata-documents-service.c:420
 msgid "You must be authenticated to query documents."
-msgstr "پۈتۈكلەرنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"پۈتۈكلەرنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن "
+"ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/documents/gdata-documents-service.c:527
 msgid "You must be authenticated to upload documents."
-msgstr "پۈتۈكلەرنى يۈكلەش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"پۈتۈكلەرنى يۈكلەش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز "
+"كېرەك."
 
 #: ../gdata/services/documents/gdata-documents-service.c:533
 msgid "The document has already been uploaded."
@@ -339,7 +365,9 @@ msgstr "پۈتۈك ئاللىقاچان يۈكلەنگەن."
 
 #: ../gdata/services/documents/gdata-documents-service.c:587
 msgid "You must be authenticated to update documents."
-msgstr "پۈتۈكلەرنى يېڭىلاش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"پۈتۈكلەرنى يېڭىلاش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز "
+"كېرەك."
 
 #: ../gdata/services/documents/gdata-documents-service.c:650
 #, c-format
@@ -350,21 +378,27 @@ msgstr "تەمىنلەنگەن پۈتۈك ('%s') نىڭ مەزمۇنىنىڭ ت�
 #: ../gdata/services/documents/gdata-documents-service.c:698
 #: ../gdata/services/documents/gdata-documents-service.c:882
 msgid "You must be authenticated to move documents and folders."
-msgstr "پۈتۈك ۋە مۇندەرىجىلەرنى يۆتكەش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"پۈتۈك ۋە مۇندەرىجىلەرنى يۆتكەش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن "
+"ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "ئىشلەتكۈچىنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم ئاتىڭىزنى بەلگىلىشىڭىز ياكى سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"ئىشلەتكۈچىنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم ئاتىڭىزنى بەلگىلىشىڭىز ياكى "
+"سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
 msgid "Query parameter not allowed for albums."
-msgstr ""
+msgstr "سۈرۈشتۈرۈش پارامېتىرى ئالبۇمغا يول قويمايدۇ."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "بارلىق ئالبوملارنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم ئاتىڭىزنى بەلگىلىشىڭىز ياكى سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"بارلىق ئالبوملارنى سۈرۈشتۈرۈش ئۈچۈن، سىز چوقۇم ئاتىڭىزنى بەلگىلىشىڭىز ياكى "
+"سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
 msgid "The album did not have a feed link."
@@ -372,7 +406,9 @@ msgstr "ئالبومنىڭ feed ئۇلانمىسى يوق."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
 msgid "You must be authenticated to upload a file."
-msgstr "پۈتۈكنى يۈكلەش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"پۈتۈكنى يۈكلەش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز "
+"كېرەك."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
 msgid "The album has already been inserted."
@@ -380,7 +416,9 @@ msgstr "ئالبوم ئاللىقاچان قىستۇرۇلغان."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
 msgid "You must be authenticated to insert an album."
-msgstr "ئالبومنى قىستۇرۇش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"ئالبومنى قىستۇرۇش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز "
+"كېرەك."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:416
 #, c-format
@@ -390,14 +428,17 @@ msgstr "بۇ مۇلازىمەتنى ھازىرقى پەيتتە ئىشلەتكى
 #: ../gdata/services/youtube/gdata-youtube-service.c:421
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "بۇنى قىلىش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"بۇنى قىلىش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:426
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
-msgstr "يېقىندا سىز نۇرغۇن قېتىم API چاقىردىڭىز. بىر نەچچە مىنۇت ساقلاپ ئاندىن قايتا سىناڭ."
+msgstr ""
+"يېقىندا سىز نۇرغۇن قېتىم API چاقىردىڭىز. بىر نەچچە مىنۇت ساقلاپ ئاندىن قايتا "
+"سىناڭ."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:429
 #, c-format
@@ -414,6 +455,7 @@ msgstr "نورمىدىن ئېشىپ كەتتى. بەزى نەرسىلەرنى ئ
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
+"دائىرە «%2$s» دىكى نامەلۇم خاتالىق كودى «%1$s» نى تاپشۇرۇۋالدى ئورنى «%3$s»"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
@@ -427,4 +469,5 @@ msgstr "بۇ سىنغا مۇناسىۋەتلىك سىنلار يوق <link>"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:784
 msgid "You must be authenticated to upload a video."
-msgstr "سىننى يۈكلەش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
+msgstr ""
+"سىننى يۈكلەش ئۈچۈن، سىز چوقۇم سالاھىيىتىڭىزنى دەلىللەشتىن ئۆتكۈزۈشىڭىز كېرەك."
