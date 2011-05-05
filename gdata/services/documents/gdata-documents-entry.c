@@ -99,6 +99,7 @@
 #include "gdata-types.h"
 #include "gdata-private.h"
 #include "gdata-access-handler.h"
+#include "gdata-documents-service.h"
 
 static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface);
 static GObject *gdata_documents_entry_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
@@ -239,10 +240,17 @@ is_owner_rule (GDataAccessRule *rule)
 	return (strcmp (gdata_access_rule_get_role (rule), GDATA_DOCUMENTS_ACCESS_ROLE_OWNER) == 0) ? TRUE : FALSE;
 }
 
+static GDataAuthorizationDomain *
+get_authorization_domain (GDataAccessHandler *self)
+{
+	return gdata_documents_service_get_primary_authorization_domain ();
+}
+
 static void
 gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface)
 {
 	iface->is_owner_rule = is_owner_rule;
+	iface->get_authorization_domain = get_authorization_domain;
 }
 
 static void

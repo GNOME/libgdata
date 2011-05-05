@@ -964,10 +964,11 @@ test_service_network_error (void)
 	GError *error = NULL;
 
 	/* This is a little hacky, but it should work */
-	service = g_object_new (GDATA_TYPE_SERVICE, "client-id", CLIENT_ID, NULL);
+	service = g_object_new (GDATA_TYPE_SERVICE, NULL);
 
 	/* Try a query which should always fail due to errors resolving the hostname */
-	g_assert (gdata_service_query (service, "http://thisshouldnotexist.localhost", NULL, GDATA_TYPE_ENTRY, NULL, NULL, NULL, &error) == NULL);
+	g_assert (gdata_service_query (service, NULL, "http://thisshouldnotexist.localhost", NULL, GDATA_TYPE_ENTRY,
+	                               NULL, NULL, NULL, &error) == NULL);
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR);
 	g_clear_error (&error);
 
@@ -994,7 +995,7 @@ test_service_locale (void)
 	gchar *locale;
 
 	/* This is a little hacky, but it should work */
-	service = g_object_new (GDATA_TYPE_SERVICE, "client-id", CLIENT_ID, NULL);
+	service = g_object_new (GDATA_TYPE_SERVICE, NULL);
 
 	/* Just test setting and getting the locale */
 	g_assert (gdata_service_get_locale (service) == NULL);

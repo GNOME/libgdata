@@ -46,15 +46,17 @@ typedef enum {
 
 #include "gdata-service.h"
 G_GNUC_INTERNAL SoupSession *_gdata_service_get_session (GDataService *self) G_GNUC_PURE;
-G_GNUC_INTERNAL void _gdata_service_set_authenticated (GDataService *self, gboolean authenticated);
-G_GNUC_INTERNAL SoupMessage *_gdata_service_build_message (GDataService *self, const gchar *method, const gchar *uri, const gchar *etag, gboolean etag_if_match);
+G_GNUC_INTERNAL SoupMessage *_gdata_service_build_message (GDataService *self, GDataAuthorizationDomain *domain, const gchar *method, const gchar *uri,
+                                                           const gchar *etag, gboolean etag_if_match);
 G_GNUC_INTERNAL void _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message, GCancellable *cancellable, GError **error);
 G_GNUC_INTERNAL guint _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancellable *cancellable, GError **error);
-G_GNUC_INTERNAL SoupMessage *_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable,
-                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL SoupMessage *_gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query,
+                                                   GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL const gchar *_gdata_service_get_scheme (void) G_GNUC_CONST;
 G_GNUC_INTERNAL gchar *_gdata_service_build_uri (const gchar *format, ...) G_GNUC_PRINTF (1, 2) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL gchar *_gdata_service_fix_uri_scheme (const gchar *uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL GDataLogLevel _gdata_service_get_log_level (void) G_GNUC_CONST;
+G_GNUC_INTERNAL SoupSession *_gdata_service_build_session (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 #include "gdata-query.h"
 G_GNUC_INTERNAL void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
@@ -84,11 +86,42 @@ G_GNUC_INTERNAL void _gdata_feed_call_progress_callback (GDataFeed *self, gpoint
 G_GNUC_INTERNAL void _gdata_entry_set_updated (GDataEntry *self, gint64 updated);
 G_GNUC_INTERNAL void _gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type);
 
-#include "gdata/services/documents/gdata-documents-service.h"
-
-G_GNUC_INTERNAL GDataService *_gdata_documents_service_get_spreadsheet_service (GDataDocumentsService *self) G_GNUC_PURE;
-
 #include "gdata-parser.h"
+
+/**
+ * _GDATA_DEFINE_AUTHORIZATION_DOMAIN:
+ * @l_n: lowercase name for the authorization domain, separated by underscores
+ * @SERVICE_NAME: the service name, as listed here: http://code.google.com/apis/documents/faq_gdata.html#clientlogin
+ * @SCOPE: the scope URI, as listed here: http://code.google.com/apis/documents/faq_gdata.html#AuthScopes
+ *
+ * Defines a static function to return an interned singleton #GDataAuthorizationDomain instance for the given parameters. Every time it's called, the
+ * function will return the same instance.
+ *
+ * The function will be named <code class="literal">get_(l_n)_authorization_domain</code>.
+ *
+ * Return value: (transfer none): a #GDataAuthorizationDomain instance for the given parameters
+ *
+ * Since: 0.9.0
+ */
+#define _GDATA_DEFINE_AUTHORIZATION_DOMAIN(l_n, SERVICE_NAME, SCOPE) \
+static GDataAuthorizationDomain * \
+get_##l_n##_authorization_domain (void) \
+{ \
+	static volatile GDataAuthorizationDomain *domain__volatile = NULL; \
+ \
+	if (g_once_init_enter ((volatile gsize *) &domain__volatile) == TRUE) { \
+		GDataAuthorizationDomain *domain; \
+ \
+		domain = g_object_new (GDATA_TYPE_AUTHORIZATION_DOMAIN, \
+		                       "service-name", SERVICE_NAME, \
+		                       "scope", SCOPE, \
+		                       NULL); \
+ \
+		g_once_init_leave ((volatile gsize *) &domain__volatile, (gsize) domain); \
+	} \
+ \
+	return GDATA_AUTHORIZATION_DOMAIN (domain__volatile); \
+}
 
 G_END_DECLS
 

@@ -48,28 +48,74 @@ static void
 test_authentication (void)
 {
 	gboolean retval;
-	GDataDocumentsService *service;
+	GDataClientLoginAuthorizer *authorizer;
 	GError *error = NULL;
 
-	/* Create a service */
-	service = gdata_documents_service_new (CLIENT_ID);
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_DOCUMENTS_SERVICE);
 
-	g_assert (service != NULL);
-	g_assert (GDATA_IS_SERVICE (service));
-	g_assert_cmpstr (gdata_service_get_client_id (GDATA_SERVICE (service)), ==, CLIENT_ID);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
 	/* Log in */
-	retval = gdata_service_authenticate (GDATA_SERVICE (service), DOCUMENTS_USERNAME, PASSWORD, NULL, &error);
+	retval = gdata_client_login_authorizer_authenticate (authorizer, USERNAME, PASSWORD, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
 
 	/* Check all is as it should be */
-	g_assert (gdata_service_is_authenticated (GDATA_SERVICE (service)) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (GDATA_SERVICE (service)), ==, DOCUMENTS_USERNAME);
-	g_assert_cmpstr (gdata_service_get_password (GDATA_SERVICE (service)), ==, PASSWORD);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
 
-	g_object_unref (service);
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_documents_service_get_primary_authorization_domain ()) == TRUE);
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_documents_service_get_spreadsheet_authorization_domain ()) == TRUE);
+
+	g_object_unref (authorizer);
+}
+
+static void
+test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	gboolean retval;
+	GError *error = NULL;
+
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
+	g_assert_no_error (error);
+	g_assert (retval == TRUE);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+
+	/* Check all is as it should be */
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_documents_service_get_primary_authorization_domain ()) == TRUE);
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_documents_service_get_spreadsheet_authorization_domain ()) == TRUE);
+}
+
+static void
+test_authentication_async (void)
+{
+	GMainLoop *main_loop;
+	GDataClientLoginAuthorizer *authorizer;
+
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_DOCUMENTS_SERVICE);
+
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, NULL,
+	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (authorizer);
 }
 
 static void
@@ -92,7 +138,8 @@ test_remove_all_documents_and_folders (gconstpointer service)
 	/* We delete the folders after all the files so we don't get ETag mismatches; deleting a folder changes the version
 	 * of all the documents inside it. Conversely, deleting an entry inside a folder changes the version of the folder. */
 	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (i->data), NULL, &error);
+		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+		                            GDATA_ENTRY (i->data), NULL, &error);
 		g_assert_no_error (error);
 		g_clear_error (&error);
 	}
@@ -107,7 +154,8 @@ test_remove_all_documents_and_folders (gconstpointer service)
 	g_assert (GDATA_IS_DOCUMENTS_FEED (feed));
 
 	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (i->data), NULL, &error);
+		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+		                            GDATA_ENTRY (i->data), NULL, &error);
 		g_assert_no_error (error);
 		g_clear_error (&error);
 	}
@@ -199,7 +247,9 @@ test_upload_metadata (gconstpointer service)
 
 	/* Insert the document */
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL, &error));
+	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                  gdata_documents_service_get_primary_authorization_domain (),
+	                                                                  upload_uri, GDATA_ENTRY (document), NULL, &error));
 	g_free (upload_uri);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (new_document));
@@ -308,7 +358,8 @@ test_upload_file_get_entry (gconstpointer service)
 	g_object_unref (upload_stream);
 
 	/* Get the entry on the server */
-	new_presentation = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	new_presentation = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                                     gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
 	                                                     GDATA_TYPE_DOCUMENTS_PRESENTATION, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_presentation));
@@ -344,7 +395,9 @@ setup_folders (FoldersData *data, GDataDocumentsService *service, gboolean initi
 
 	/* Insert the folder */
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	data->folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (folder), NULL, &error));
+	data->folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                   gdata_documents_service_get_primary_authorization_domain (),
+	                                                                   upload_uri, GDATA_ENTRY (folder), NULL, &error));
 	g_free (upload_uri);
 
 	g_assert_no_error (error);
@@ -403,19 +456,21 @@ teardown_folders_add_to_folder (FoldersData *data, gconstpointer service)
 	GDataEntry *entry;
 
 	/* Re-query (to get an updated ETag) and delete the document (we don't care if this fails) */
-	entry = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_entry_get_id (GDATA_ENTRY (data->document)), NULL,
+	entry = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                          gdata_entry_get_id (GDATA_ENTRY (data->document)), NULL,
 	                                          GDATA_TYPE_DOCUMENTS_TEXT, NULL, NULL);
 	if (entry != NULL) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), entry, NULL, NULL);
+		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (), entry, NULL, NULL);
 		g_object_unref (entry);
 	}
 	g_object_unref (data->document);
 
 	/* Re-query (to get an updated ETag) and delete the folder (we don't care if this fails) */
-	entry = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_entry_get_id (GDATA_ENTRY (data->folder)), NULL,
+	entry = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                          gdata_entry_get_id (GDATA_ENTRY (data->folder)), NULL,
 	                                          GDATA_TYPE_DOCUMENTS_FOLDER, NULL, NULL);
 	if (entry != NULL) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), entry, NULL, NULL);
+		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (), entry, NULL, NULL);
 		g_object_unref (entry);
 	}
 	g_object_unref (data->folder);
@@ -660,7 +715,9 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 
 	/* Insert the folder */
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (folder), NULL, &error));
+	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                 gdata_documents_service_get_primary_authorization_domain (),
+	                                                                 upload_uri, GDATA_ENTRY (folder), NULL, &error));
 	g_free (upload_uri);
 
 	g_assert_no_error (error);
@@ -728,7 +785,9 @@ test_update_metadata (gconstpointer service)
 
 	/* Insert the document */
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL, &error));
+	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                  gdata_documents_service_get_primary_authorization_domain (),
+	                                                                  upload_uri, GDATA_ENTRY (document), NULL, &error));
 	g_free (upload_uri);
 
 	g_assert_no_error (error);
@@ -739,6 +798,7 @@ test_update_metadata (gconstpointer service)
 	 * trying this to allow the various Google servers to catch up with each other. */
 	g_usleep (5 * G_USEC_PER_SEC);
 	new_document2 = GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                         gdata_documents_service_get_primary_authorization_domain (),
 	                                                                         gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
 	                                                                         GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error));
 
@@ -748,7 +808,9 @@ test_update_metadata (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (new_document2), "update_metadata_updated_title");
 
 	/* Update the document */
-	updated_document = GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (new_document2), NULL, &error));
+	updated_document = GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (service),
+	                                                                      gdata_documents_service_get_primary_authorization_domain (),
+	                                                                      GDATA_ENTRY (new_document2), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (updated_document));
 
@@ -780,7 +842,9 @@ test_update_metadata_file (gconstpointer service)
 
 	/* Insert the document's metadata */
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL,
+	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                     gdata_documents_service_get_primary_authorization_domain (),
+	                                                                     upload_uri, GDATA_ENTRY (document), NULL,
 	                                                                     &error));
 	g_free (upload_uri);
 	g_assert_no_error (error);
@@ -793,6 +857,7 @@ test_update_metadata_file (gconstpointer service)
 	 * trying this to allow the various Google servers to catch up with each other. */
 	g_usleep (5 * G_USEC_PER_SEC);
 	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                            gdata_documents_service_get_primary_authorization_domain (),
 	                                                                            gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
 	                                                                            GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error));
 
@@ -897,6 +962,7 @@ test_update_file (gconstpointer service)
 	 * trying this to allow the various Google servers to catch up with each other. */
 	g_usleep (5 * G_USEC_PER_SEC);
 	new_document2 = GDATA_DOCUMENTS_DOCUMENT (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                            gdata_documents_service_get_primary_authorization_domain (),
 	                                                                            gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
 	                                                                            GDATA_TYPE_DOCUMENTS_PRESENTATION, NULL, &error));
 
@@ -1038,7 +1104,9 @@ test_new_document_with_collaborator (gconstpointer service)
 
 	/* Insert the document */
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (document), NULL, &error));
+	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                  gdata_documents_service_get_primary_authorization_domain (),
+	                                                                  upload_uri, GDATA_ENTRY (document), NULL, &error));
 	g_free (upload_uri);
 
 	g_assert_no_error (error);
@@ -1053,7 +1121,9 @@ test_new_document_with_collaborator (gconstpointer service)
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (new_document), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 
-	new_access_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_link_get_uri (_link),
+	new_access_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                 gdata_documents_service_get_primary_authorization_domain (),
+	                                                                 gdata_link_get_uri (_link),
 	                                                                 GDATA_ENTRY (access_rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_access_rule));
@@ -1103,7 +1173,8 @@ test_batch (gconstpointer service)
 	GError *error = NULL, *entry_error = NULL;
 
 	/* Here we hardcode the feed URI, but it should really be extracted from a document feed, as the GDATA_LINK_BATCH link */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 
 	/* Check the properties of the operation */
 	g_assert (gdata_batch_operation_get_service (operation) == service);
@@ -1136,7 +1207,8 @@ test_batch (gconstpointer service)
 	doc2 = gdata_documents_text_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (doc2), "I'm a poet and I didn't know it");
 
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 	op_id = gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (doc2), &inserted_entry2, NULL);
 	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry, NULL,
 	                                           NULL);
@@ -1151,7 +1223,8 @@ test_batch (gconstpointer service)
 
 	/* Run another batch operation to query one of the entries we just created, since it seems that the ETags for documents change for no
 	 * apparent reason when you're not looking. */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry,
 	                                  &inserted_entry_updated, NULL);
 
@@ -1165,7 +1238,8 @@ test_batch (gconstpointer service)
 	/* Run another batch operation to query the other entry we just created. It would be sensible to batch this query together with the previous
 	 * one, seeing as we're testing _batch_ functionality. Funnily enough, the combination of two idempotent operations changes the ETags and
 	 * makes the whole effort worthless. */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry2), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry2,
 	                                  &inserted_entry2_updated, NULL);
 
@@ -1179,7 +1253,8 @@ test_batch (gconstpointer service)
 	gdata_entry_set_title (inserted_entry2_updated, "War & Peace");
 	doc3 = gdata_documents_text_new ("foobar");
 
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 	op_id = gdata_test_batch_operation_deletion (operation, inserted_entry_updated, NULL);
 	op_id2 = gdata_test_batch_operation_deletion (operation, GDATA_ENTRY (doc3), &entry_error);
 	op_id3 = gdata_test_batch_operation_update (operation, inserted_entry2_updated, &inserted_entry3, NULL);
@@ -1201,7 +1276,8 @@ test_batch (gconstpointer service)
 
 	/* Run another batch operation to update the second entry with the wrong ETag (i.e. pass the old version of the entry to the batch operation
 	 * to test error handling */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
 	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -1214,7 +1290,8 @@ test_batch (gconstpointer service)
 	g_object_unref (inserted_entry2);
 
 	/* Run a final batch operation to delete the second entry */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
 	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -1240,7 +1317,9 @@ setup_batch_async (BatchAsyncData *data, gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (doc), "A View from the Bridge");
 
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	data->new_doc = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (doc), NULL, &error));
+	data->new_doc = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                   gdata_documents_service_get_primary_authorization_domain (),
+	                                                                   upload_uri, GDATA_ENTRY (doc), NULL, &error));
 	g_free (upload_uri);
 
 	g_assert_no_error (error);
@@ -1272,7 +1351,8 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	GMainLoop *main_loop;
 
 	/* Run an async query operation on the document */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), GDATA_TYPE_DOCUMENTS_TEXT,
 	                                  GDATA_ENTRY (data->new_doc), NULL, NULL);
 
@@ -1309,7 +1389,8 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	GError *error = NULL;
 
 	/* Run an async query operation on the document */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://docs.google.com/feeds/documents/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                              "https://docs.google.com/feeds/documents/private/full/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), GDATA_TYPE_DOCUMENTS_TEXT,
 	                                  GDATA_ENTRY (data->new_doc), NULL, &error);
 
@@ -1336,13 +1417,15 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 	GError *error = NULL;
 
 	/* Re-query the document in case its ETag has changed */
-	document = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), NULL,
+	document = gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                             gdata_documents_service_get_primary_authorization_domain (),
+	                                             gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), NULL,
 	                                             GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error);
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
 	/* Delete the document (we don't care if this fails) */
-	gdata_service_delete_entry (GDATA_SERVICE (service), document, NULL, NULL);
+	gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (), document, NULL, NULL);
 
 	g_object_unref (data->new_doc);
 	g_object_unref (document);
@@ -1352,15 +1435,19 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
+	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
 	if (gdata_test_internet () == TRUE) {
-		service = GDATA_SERVICE (gdata_documents_service_new (CLIENT_ID));
-		gdata_service_authenticate (service, DOCUMENTS_USERNAME, PASSWORD, NULL, NULL);
+		authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_DOCUMENTS_SERVICE));
+		gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), DOCUMENTS_USERNAME, PASSWORD, NULL, NULL);
+
+		service = GDATA_SERVICE (gdata_documents_service_new (authorizer));
 
 		g_test_add_func ("/documents/authentication", test_authentication);
+		g_test_add_func ("/documents/authentication_async", test_authentication_async);
 
 		g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);
 

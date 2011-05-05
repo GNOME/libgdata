@@ -157,6 +157,9 @@
 #include "gdata-private.h"
 #include "gdata-query.h"
 
+static GList *get_authorization_domains (void);
+
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (contacts, "cp", "https://www.google.com/m8/feeds/")
 G_DEFINE_TYPE_WITH_CODE (GDataContactsService, gdata_contacts_service, GDATA_TYPE_SERVICE,
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
@@ -164,8 +167,8 @@ static void
 gdata_contacts_service_class_init (GDataContactsServiceClass *klass)
 {
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
-	service_class->service_name = "cp";
 	service_class->api_version = "3";
+	service_class->get_authorization_domains = get_authorization_domains;
 }
 
 static void
@@ -174,24 +177,49 @@ gdata_contacts_service_init (GDataContactsService *self)
 	/* Nothing to see here */
 }
 
+static GList *
+get_authorization_domains (void)
+{
+	return g_list_prepend (NULL, get_contacts_authorization_domain ());
+}
+
 /**
  * gdata_contacts_service_new:
- * @client_id: your application's client ID
+ * @authorizer: (allow-none): a #GDataAuthorizer to authorize the service's requests, or %NULL
  *
- * Creates a new #GDataContactsService. The @client_id must be unique for your application, and as registered with Google.
+ * Creates a new #GDataContactsService using the given #GDataAuthorizer. If @authorizer is %NULL, all requests are made as an unauthenticated user.
  *
- * Return value: a new #GDataContactsService, or %NULL
+ * Return value: a new #GDataContactsService, or %NULL; unref with g_object_unref()
  *
- * Since: 0.2.0
- **/
+ * Since: 0.9.0
+ */
 GDataContactsService *
-gdata_contacts_service_new (const gchar *client_id)
+gdata_contacts_service_new (GDataAuthorizer *authorizer)
 {
-	g_return_val_if_fail (client_id != NULL, NULL);
+	g_return_val_if_fail (authorizer == NULL || GDATA_IS_AUTHORIZER (authorizer), NULL);
 
 	return g_object_new (GDATA_TYPE_CONTACTS_SERVICE,
-	                     "client-id", client_id,
+	                     "authorizer", authorizer,
 	                     NULL);
+}
+
+/**
+ * gdata_contacts_service_get_primary_authorization_domain:
+ *
+ * The primary #GDataAuthorizationDomain for interacting with Google Contacts. This will not normally need to be used, as it's used internally
+ * by the #GDataContactsService methods. However, if using the plain #GDataService methods to implement custom queries or requests which libgdata
+ * does not support natively, then this domain may be needed to authorize the requests.
+ *
+ * The domain never changes, and is interned so that pointer comparison can be used to differentiate it from other authorization domains.
+ *
+ * Return value: (transfer none): the service's authorization domain
+ *
+ * Since: 0.9.0
+ */
+GDataAuthorizationDomain *
+gdata_contacts_service_get_primary_authorization_domain (void)
+{
+	return get_contacts_authorization_domain ();
 }
 
 /**
@@ -224,14 +252,15 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_contacts_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to query contacts."));
 		return NULL;
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/contacts/default/full", NULL);
-	feed = gdata_service_query (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query),
+	feed = gdata_service_query (GDATA_SERVICE (self), get_contacts_authorization_domain (), request_uri, GDATA_QUERY (query),
 	                            GDATA_TYPE_CONTACTS_CONTACT, cancellable, progress_callback, progress_user_data, error);
 	g_free (request_uri);
 
@@ -269,7 +298,8 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
 	g_return_if_fail (callback != NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_contacts_authorization_domain ()) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
 		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                                     _("You must be authenticated to query contacts."));
@@ -277,7 +307,7 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/contacts/default/full", NULL);
-	gdata_service_query_async (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query),
+	gdata_service_query_async (GDATA_SERVICE (self), get_contacts_authorization_domain (), request_uri, GDATA_QUERY (query),
 	                           GDATA_TYPE_CONTACTS_CONTACT, cancellable, progress_callback, progress_user_data, callback, user_data);
 	g_free (request_uri);
 }
@@ -309,7 +339,8 @@ gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContacts
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/contacts/default/full", NULL);
-	entry = gdata_service_insert_entry (GDATA_SERVICE (self), uri, GDATA_ENTRY (contact), cancellable, error);
+	entry = gdata_service_insert_entry (GDATA_SERVICE (self), get_contacts_authorization_domain (), uri, GDATA_ENTRY (contact), cancellable,
+	                                    error);
 	g_free (uri);
 
 	return GDATA_CONTACTS_CONTACT (entry);
@@ -345,7 +376,8 @@ gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataCo
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/contacts/default/full", NULL);
-	gdata_service_insert_entry_async (GDATA_SERVICE (self), uri, GDATA_ENTRY (contact), cancellable, callback, user_data);
+	gdata_service_insert_entry_async (GDATA_SERVICE (self), get_contacts_authorization_domain (), uri, GDATA_ENTRY (contact), cancellable,
+	                                  callback, user_data);
 	g_free (uri);
 }
 
@@ -379,14 +411,15 @@ gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *que
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_contacts_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to query contact groups."));
 		return NULL;
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/groups/default/full", NULL);
-	feed = gdata_service_query (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query),
+	feed = gdata_service_query (GDATA_SERVICE (self), get_contacts_authorization_domain (), request_uri, GDATA_QUERY (query),
 	                            GDATA_TYPE_CONTACTS_GROUP, cancellable, progress_callback, progress_user_data, error);
 	g_free (request_uri);
 
@@ -424,7 +457,8 @@ gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuer
 	g_return_if_fail (callback != NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_contacts_authorization_domain ()) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
 		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                                     _("You must be authenticated to query contact groups."));
@@ -432,7 +466,7 @@ gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuer
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/groups/default/full", NULL);
-	gdata_service_query_async (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query),
+	gdata_service_query_async (GDATA_SERVICE (self), get_contacts_authorization_domain (), request_uri, GDATA_QUERY (query),
 	                           GDATA_TYPE_CONTACTS_GROUP, cancellable, progress_callback, progress_user_data, callback, user_data);
 	g_free (request_uri);
 }
@@ -467,14 +501,16 @@ gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGr
 		return NULL;
 	}
 
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_contacts_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to insert a group."));
 		return NULL;
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/groups/default/full", NULL);
-	new_group = gdata_service_insert_entry (GDATA_SERVICE (self), request_uri, GDATA_ENTRY (group), cancellable, error);
+	new_group = gdata_service_insert_entry (GDATA_SERVICE (self), get_contacts_authorization_domain (), request_uri, GDATA_ENTRY (group),
+	                                        cancellable, error);
 	g_free (request_uri);
 
 	return GDATA_CONTACTS_GROUP (new_group);
@@ -510,6 +546,7 @@ gdata_contacts_service_insert_group_async (GDataContactsService *self, GDataCont
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/m8/feeds/groups/default/full", NULL);
-	gdata_service_insert_entry_async (GDATA_SERVICE (self), request_uri, GDATA_ENTRY (group), cancellable, callback, user_data);
+	gdata_service_insert_entry_async (GDATA_SERVICE (self), get_contacts_authorization_domain (), request_uri, GDATA_ENTRY (group), cancellable,
+	                                  callback, user_data);
 	g_free (request_uri);
 }

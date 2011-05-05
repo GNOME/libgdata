@@ -25,6 +25,7 @@
 
 #include <gdata/gdata-service.h>
 #include <gdata/gdata-batch-operation.h>
+#include <gdata/gdata-authorization-domain.h>
 
 G_BEGIN_DECLS
 
@@ -57,7 +58,8 @@ typedef struct {
 
 GType gdata_batchable_get_type (void) G_GNUC_CONST;
 
-GDataBatchOperation *gdata_batchable_create_operation (GDataBatchable *self, const gchar *feed_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataBatchOperation *gdata_batchable_create_operation (GDataBatchable *self, GDataAuthorizationDomain *domain,
+                                                       const gchar *feed_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

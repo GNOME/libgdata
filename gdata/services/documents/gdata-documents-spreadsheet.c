@@ -49,7 +49,8 @@
  *
  *	/<!-- -->* Create the download stream *<!-- -->/
  *	download_uri = gdata_documents_spreadsheet_get_download_uri (spreadsheet, GDATA_DOCUMENTS_SPREADSHEET_CSV, gid);
- *	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (service, download_uri, NULL));
+ *	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (service, gdata_documents_service_get_spreadsheet_authorization_domain (),
+ *	                                                                    download_uri, NULL));
  *	g_free (download_uri);
  *
  *	g_object_unref (spreadsheet);

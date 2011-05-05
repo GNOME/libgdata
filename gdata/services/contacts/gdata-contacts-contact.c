@@ -3120,7 +3120,8 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	/* TODO: ETag support */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
 	g_assert (_link != NULL);
-	message = _gdata_service_build_message (GDATA_SERVICE (service), SOUP_METHOD_GET, gdata_link_get_uri (_link), NULL, FALSE);
+	message = _gdata_service_build_message (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                        SOUP_METHOD_GET, gdata_link_get_uri (_link), NULL, FALSE);
 
 	/* Send the message */
 	status = _gdata_service_send_message (GDATA_SERVICE (service), message, cancellable, error);
@@ -3326,7 +3327,8 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsServi
 	/* Get the photo URI */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
 	g_assert (_link != NULL);
-	message = _gdata_service_build_message (GDATA_SERVICE (service), (deleting_photo == TRUE) ? SOUP_METHOD_DELETE : SOUP_METHOD_PUT,
+	message = _gdata_service_build_message (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                        (deleting_photo == TRUE) ? SOUP_METHOD_DELETE : SOUP_METHOD_PUT,
 	                                        gdata_link_get_uri (_link), self->priv->photo_etag, TRUE);
 
 	/* Append the data */

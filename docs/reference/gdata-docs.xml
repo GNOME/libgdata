@@ -47,6 +47,13 @@
 			<xi:include href="xml/gdata-batchable.xml"/>
 			<xi:include href="xml/gdata-batch-operation.xml"/>
 		</chapter>
+
+		<chapter>
+			<title>Authentication/Authorization API</title>
+			<xi:include href="xml/gdata-authorizer.xml"/>
+			<xi:include href="xml/gdata-authorization-domain.xml"/>
+			<xi:include href="xml/gdata-client-login-authorizer.xml"/>
+		</chapter>
 	</part>
 
 	<part>

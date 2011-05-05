@@ -48,6 +48,12 @@ perf_SOURCES			 = perf.c $(TEST_SRCS)
 TEST_PROGS			+= streams
 streams_SOURCES			 = streams.c $(TEST_SRCS)
 
+TEST_PROGS			+= authorization
+authorization_SOURCES		 = authorization.c $(TEST_SRCS)
+
+TEST_PROGS			+= client-login-authorizer
+client_login_authorizer_SOURCES	 = client-login-authorizer.c $(TEST_SRCS)
+
 EXTRA_DIST += \
 	photo.jpg		\
 	sample.ogg		\

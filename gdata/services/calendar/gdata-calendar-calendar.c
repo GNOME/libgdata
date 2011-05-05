@@ -86,6 +86,7 @@
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "gdata-access-handler.h"
+#include "gdata-calendar-service.h"
 
 static void gdata_calendar_calendar_access_handler_init (GDataAccessHandlerIface *iface);
 static GObject *gdata_calendar_calendar_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
@@ -204,7 +205,8 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * GDataCalendarCalendar:access-level:
 	 *
 	 * Indicates the access level the current user has to the calendar. For example: %GDATA_CALENDAR_ACCESS_ROLE_READ or
-	 * %GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY. The "current user" is the one logged in with gdata_service_authenticate() or the guest user.
+	 * %GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY. The "current user" is the one authenticated against the service's #GDataService:authorizer,
+	 * or the guest user.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ACCESS_LEVEL,
 	                                 g_param_spec_string ("access-level",
@@ -233,10 +235,17 @@ is_owner_rule (GDataAccessRule *rule)
 	return (strcmp (gdata_access_rule_get_role (rule), GDATA_CALENDAR_ACCESS_ROLE_OWNER) == 0) ? TRUE : FALSE;
 }
 
+static GDataAuthorizationDomain *
+get_authorization_domain (GDataAccessHandler *self)
+{
+	return gdata_calendar_service_get_primary_authorization_domain ();
+}
+
 static void
 gdata_calendar_calendar_access_handler_init (GDataAccessHandlerIface *iface)
 {
 	iface->is_owner_rule = is_owner_rule;
+	iface->get_authorization_domain = get_authorization_domain;
 }
 
 static void

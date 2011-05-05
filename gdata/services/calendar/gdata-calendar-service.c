@@ -215,14 +215,17 @@
 
 /* Standards reference here: http://code.google.com/apis/calendar/docs/2.0/reference.html */
 
+static GList *get_authorization_domains (void);
+
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (calendar, "cl", "https://www.google.com/calendar/feeds/")
 G_DEFINE_TYPE_WITH_CODE (GDataCalendarService, gdata_calendar_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
 static void
 gdata_calendar_service_class_init (GDataCalendarServiceClass *klass)
 {
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
-	service_class->service_name = "cl";
 	service_class->feed_type = GDATA_TYPE_CALENDAR_FEED;
+	service_class->get_authorization_domains = get_authorization_domains;
 }
 
 static void
@@ -231,19 +234,49 @@ gdata_calendar_service_init (GDataCalendarService *self)
 	/* Nothing to see here */
 }
 
+static GList *
+get_authorization_domains (void)
+{
+	return g_list_prepend (NULL, get_calendar_authorization_domain ());
+}
+
 /**
  * gdata_calendar_service_new:
- * @client_id: your application's client ID
+ * @authorizer: (allow-none): a #GDataAuthorizer to authorize the service's requests, or %NULL
  *
- * Creates a new #GDataCalendarService. The @client_id must be unique for your application, and as registered with Google.
+ * Creates a new #GDataCalendarService using the given #GDataAuthorizer. If @authorizer is %NULL, all requests are made as an unauthenticated user.
  *
- * Return value: a new #GDataCalendarService, or %NULL
- **/
+ * Return value: a new #GDataCalendarService, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.9.0
+ */
 GDataCalendarService *
-gdata_calendar_service_new (const gchar *client_id)
+gdata_calendar_service_new (GDataAuthorizer *authorizer)
 {
-	g_return_val_if_fail (client_id != NULL, NULL);
-	return g_object_new (GDATA_TYPE_CALENDAR_SERVICE, "client-id", client_id, NULL);
+	g_return_val_if_fail (authorizer == NULL || GDATA_IS_AUTHORIZER (authorizer), NULL);
+
+	return g_object_new (GDATA_TYPE_CALENDAR_SERVICE,
+	                     "authorizer", authorizer,
+	                     NULL);
+}
+
+/**
+ * gdata_calendar_service_get_primary_authorization_domain:
+ *
+ * The primary #GDataAuthorizationDomain for interacting with Google Calendar. This will not normally need to be used, as it's used internally
+ * by the #GDataCalendarService methods. However, if using the plain #GDataService methods to implement custom queries or requests which libgdata
+ * does not support natively, then this domain may be needed to authorize the requests.
+ *
+ * The domain never changes, and is interned so that pointer comparison can be used to differentiate it from other authorization domains.
+ *
+ * Return value: (transfer none): the service's authorization domain
+ *
+ * Since: 0.9.0
+ */
+GDataAuthorizationDomain *
+gdata_calendar_service_get_primary_authorization_domain (void)
+{
+	return get_calendar_authorization_domain ();
 }
 
 /**
@@ -276,14 +309,15 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_calendar_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to query all calendars."));
 		return NULL;
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/allcalendars/full", NULL);
-	feed = gdata_service_query (GDATA_SERVICE (self), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
+	feed = gdata_service_query (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
 	                            cancellable, progress_callback, progress_user_data, error);
 	g_free (request_uri);
 
@@ -320,7 +354,8 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
 	g_return_if_fail (callback != NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_calendar_authorization_domain ()) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
 		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                                     _("You must be authenticated to query all calendars."));
@@ -328,7 +363,7 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/allcalendars/full", NULL);
-	gdata_service_query_async (GDATA_SERVICE (self), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
+	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
 	                           cancellable, progress_callback, progress_user_data, callback, user_data);
 	g_free (request_uri);
 }
@@ -363,15 +398,16 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_calendar_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to query your own calendars."));
 		return NULL;
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/owncalendars/full", NULL);
-	feed = gdata_service_query (GDATA_SERVICE (self), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR, cancellable,
-	                            progress_callback, progress_user_data, error);
+	feed = gdata_service_query (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
+	                            cancellable, progress_callback, progress_user_data, error);
 	g_free (request_uri);
 
 	return feed;
@@ -407,7 +443,8 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
 	g_return_if_fail (callback != NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_calendar_authorization_domain ()) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
 		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                                     _("You must be authenticated to query your own calendars."));
@@ -415,7 +452,7 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/owncalendars/full", NULL);
-	gdata_service_query_async (GDATA_SERVICE (self), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
+	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
 	                           cancellable, progress_callback, progress_user_data, callback, user_data);
 	g_free (request_uri);
 }
@@ -449,7 +486,8 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_calendar_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to query your own calendars."));
 		return NULL;
@@ -465,7 +503,7 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 	}
 
 	/* Execute the query */
-	return gdata_service_query (GDATA_SERVICE (self), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable,
+	return gdata_service_query (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable,
 	                            progress_callback, progress_user_data, error);
 }
 
@@ -504,7 +542,8 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
 	g_return_if_fail (callback != NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_calendar_authorization_domain ()) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
 		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                                     _("You must be authenticated to query your own calendars."));
@@ -521,8 +560,8 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
 	}
 
 	/* Execute the query */
-	gdata_service_query_async (GDATA_SERVICE (self), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable, progress_callback, progress_user_data,
-	                           callback, user_data);
+	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable,
+	                           progress_callback, progress_user_data, callback, user_data);
 }
 
 /**
@@ -553,7 +592,7 @@ gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEv
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/private/full", NULL);
-	entry = gdata_service_insert_entry (GDATA_SERVICE (self), uri, GDATA_ENTRY (event), cancellable, error);
+	entry = gdata_service_insert_entry (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, GDATA_ENTRY (event), cancellable, error);
 	g_free (uri);
 
 	return GDATA_CALENDAR_EVENT (entry);
@@ -589,6 +628,7 @@ gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCale
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/private/full", NULL);
-	gdata_service_insert_entry_async (GDATA_SERVICE (self), uri, GDATA_ENTRY (event), cancellable, callback, user_data);
+	gdata_service_insert_entry_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, GDATA_ENTRY (event), cancellable,
+	                                  callback, user_data);
 	g_free (uri);
 }

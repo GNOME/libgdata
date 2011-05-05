@@ -107,7 +107,9 @@ typedef struct {
 GType gdata_youtube_service_get_type (void) G_GNUC_CONST;
 GQuark gdata_youtube_service_error_quark (void) G_GNUC_CONST;
 
-GDataYouTubeService *gdata_youtube_service_new (const gchar *developer_key, const gchar *client_id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataYouTubeService *gdata_youtube_service_new (const gchar *developer_key, GDataAuthorizer *authorizer) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
+GDataAuthorizationDomain *gdata_youtube_service_get_primary_authorization_domain (void) G_GNUC_CONST;
 
 GDataFeed *gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTubeStandardFeedType feed_type, GDataQuery *query,
                                                       GCancellable *cancellable,

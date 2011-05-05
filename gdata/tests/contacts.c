@@ -76,28 +76,70 @@ static void
 test_authentication (void)
 {
 	gboolean retval;
-	GDataService *service;
+	GDataClientLoginAuthorizer *authorizer;
 	GError *error = NULL;
 
-	/* Create a service */
-	service = GDATA_SERVICE (gdata_contacts_service_new (CLIENT_ID));
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE);
 
-	g_assert (service != NULL);
-	g_assert (GDATA_IS_SERVICE (service));
-	g_assert_cmpstr (gdata_service_get_client_id (service), ==, CLIENT_ID);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
 	/* Log in */
-	retval = gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, &error);
+	retval = gdata_client_login_authorizer_authenticate (authorizer, USERNAME, PASSWORD, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
 
 	/* Check all is as it should be */
-	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
-	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
 
-	g_object_unref (service);
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_contacts_service_get_primary_authorization_domain ()) == TRUE);
+
+	g_object_unref (authorizer);
+}
+
+static void
+test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
+{
+	gboolean retval;
+	GError *error = NULL;
+
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
+	g_assert_no_error (error);
+	g_assert (retval == TRUE);
+	g_clear_error (&error);
+
+	g_main_loop_quit (main_loop);
+
+	/* Check all is as it should be */
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_contacts_service_get_primary_authorization_domain ()) == TRUE);
+}
+
+static void
+test_authentication_async (void)
+{
+	GMainLoop *main_loop;
+	GDataClientLoginAuthorizer *authorizer;
+
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE);
+
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, NULL,
+	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (authorizer);
 }
 
 static void
@@ -596,7 +638,9 @@ test_update_simple (gconstpointer service)
 	g_assert (gdata_contacts_contact_set_extended_property (contact, "contact-test", "value"));
 
 	/* Update the contact */
-	new_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (contact), NULL, &error));
+	new_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service),
+	                                                                  gdata_contacts_service_get_primary_authorization_domain (),
+	                                                                  GDATA_ENTRY (contact), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
 	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
@@ -733,7 +777,8 @@ test_insert_group (gconstpointer service)
 	g_assert_cmpstr (gdata_contacts_group_get_extended_property (new_group, "foobar"), ==, "barfoo");
 
 	/* Delete the group, just to be tidy */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (new_group), NULL, &error) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (new_group), NULL, &error) == TRUE);
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
@@ -755,7 +800,8 @@ test_insert_group_async_cb (GDataService *service, GAsyncResult *async_result, G
 	/* TODO: Tests? */
 
 	/* Delete the group, just to be tidy */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), entry, NULL, &error) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      entry, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
@@ -1756,11 +1802,12 @@ test_batch (gconstpointer service)
 	GError *error = NULL, *entry_error = NULL;
 
 	/* Here we hardcode the feed URI, but it should really be extracted from a contacts feed, as the GDATA_LINK_BATCH link */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/m8/feeds/contacts/default/full/batch");
 
 	/* Check the properties of the operation */
 	g_assert (gdata_batch_operation_get_service (operation) == service);
-	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, "https://www.google.com/m8/feeds/contacts/default/full/batch");
 
 	g_object_get (operation,
 	              "service", &service2,
@@ -1768,7 +1815,7 @@ test_batch (gconstpointer service)
 	              NULL);
 
 	g_assert (service2 == service);
-	g_assert_cmpstr (feed_uri, ==, "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	g_assert_cmpstr (feed_uri, ==, "https://www.google.com/m8/feeds/contacts/default/full/batch");
 
 	g_object_unref (service2);
 	g_free (feed_uri);
@@ -1789,7 +1836,8 @@ test_batch (gconstpointer service)
 	contact2 = gdata_contacts_contact_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (contact2), "Brian");
 
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/m8/feeds/contacts/default/full/batch");
 	op_id = gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (contact2), &inserted_entry2, NULL);
 	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_CONTACTS_CONTACT, inserted_entry, NULL,
 	                                           NULL);
@@ -1806,7 +1854,8 @@ test_batch (gconstpointer service)
 	gdata_entry_set_title (inserted_entry2, "Toby");
 	contact3 = gdata_contacts_contact_new ("foobar");
 
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/m8/feeds/contacts/default/full/batch");
 	op_id = gdata_test_batch_operation_deletion (operation, inserted_entry, NULL);
 	op_id2 = gdata_test_batch_operation_deletion (operation, GDATA_ENTRY (contact3), &entry_error);
 	op_id3 = gdata_test_batch_operation_update (operation, inserted_entry2, &inserted_entry3, NULL);
@@ -1827,7 +1876,8 @@ test_batch (gconstpointer service)
 
 	/* Run another batch operation to update the second entry with the wrong ETag (i.e. pass the old version of the entry to the batch operation
 	 * to test error handling */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/m8/feeds/contacts/default/full/batch");
 	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
 	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -1840,7 +1890,8 @@ test_batch (gconstpointer service)
 	g_object_unref (inserted_entry2);
 
 	/* Run a final batch operation to delete the second entry */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/m8/feeds/contacts/default/full/batch");
 	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
 	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -1894,7 +1945,8 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	GMainLoop *main_loop;
 
 	/* Run an async query operation on the contact */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/m8/feeds/contacts/default/full/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_contact)), GDATA_TYPE_CONTACTS_CONTACT,
 	                                  GDATA_ENTRY (data->new_contact), NULL, NULL);
 
@@ -1931,7 +1983,8 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	GError *error = NULL;
 
 	/* Run an async query operation on the contact */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://www.google.com/m8/feeds/contacts/default/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/m8/feeds/contacts/default/full/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_contact)), GDATA_TYPE_CONTACTS_CONTACT,
 	                                  GDATA_ENTRY (data->new_contact), NULL, &error);
 
@@ -1957,7 +2010,8 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 	GError *error = NULL;
 
 	/* Delete the contact */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (data->new_contact), NULL, &error) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_contact), NULL, &error) == TRUE);
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
@@ -2044,15 +2098,19 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
+	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
 	if (gdata_test_internet () == TRUE) {
-		service = GDATA_SERVICE (gdata_contacts_service_new (CLIENT_ID));
-		gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
+		authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE));
+		gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
+
+		service = GDATA_SERVICE (gdata_contacts_service_new (authorizer));
 
 		g_test_add_func ("/contacts/authentication", test_authentication);
+		g_test_add_func ("/contacts/authentication_async", test_authentication_async);
 
 		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
 		g_test_add_data_func ("/contacts/update/simple", service, test_update_simple);

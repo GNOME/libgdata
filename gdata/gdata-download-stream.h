@@ -63,10 +63,11 @@ typedef struct {
 
 GType gdata_download_stream_get_type (void) G_GNUC_CONST;
 
-GInputStream *gdata_download_stream_new (GDataService *service, const gchar *download_uri,
+GInputStream *gdata_download_stream_new (GDataService *service, GDataAuthorizationDomain *domain, const gchar *download_uri,
                                          GCancellable *cancellable) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataService *gdata_download_stream_get_service (GDataDownloadStream *self) G_GNUC_PURE;
+GDataAuthorizationDomain *gdata_download_stream_get_authorization_domain (GDataDownloadStream *self) G_GNUC_PURE;
 const gchar *gdata_download_stream_get_download_uri (GDataDownloadStream *self) G_GNUC_PURE;
 const gchar *gdata_download_stream_get_content_type (GDataDownloadStream *self) G_GNUC_PURE;
 gssize gdata_download_stream_get_content_length (GDataDownloadStream *self) G_GNUC_PURE;

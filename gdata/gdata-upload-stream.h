@@ -64,12 +64,14 @@ typedef struct {
 
 GType gdata_upload_stream_get_type (void) G_GNUC_CONST;
 
-GOutputStream *gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar *upload_uri, GDataEntry *entry,
-                                        const gchar *slug, const gchar *content_type, GCancellable *cancellable) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GOutputStream *gdata_upload_stream_new (GDataService *service, GDataAuthorizationDomain *domain, const gchar *method, const gchar *upload_uri,
+                                        GDataEntry *entry, const gchar *slug, const gchar *content_type,
+                                        GCancellable *cancellable) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_upload_stream_get_response (GDataUploadStream *self, gssize *length);
 
 GDataService *gdata_upload_stream_get_service (GDataUploadStream *self) G_GNUC_PURE;
+GDataAuthorizationDomain *gdata_upload_stream_get_authorization_domain (GDataUploadStream *self) G_GNUC_PURE;
 const gchar *gdata_upload_stream_get_method (GDataUploadStream *self) G_GNUC_PURE;
 const gchar *gdata_upload_stream_get_upload_uri (GDataUploadStream *self) G_GNUC_PURE;
 GDataEntry *gdata_upload_stream_get_entry (GDataUploadStream *self) G_GNUC_PURE;

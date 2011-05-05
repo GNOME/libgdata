@@ -35,6 +35,9 @@
 #include <gdata/gdata-comparable.h>
 #include <gdata/gdata-batchable.h>
 #include <gdata/gdata-batch-operation.h>
+#include <gdata/gdata-authorizer.h>
+#include <gdata/gdata-authorization-domain.h>
+#include <gdata/gdata-client-login-authorizer.h>
 
 /* Namespaces */
 

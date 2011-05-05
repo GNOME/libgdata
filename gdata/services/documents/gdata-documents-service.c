@@ -229,107 +229,94 @@ gdata_documents_service_error_quark (void)
 	return g_quark_from_static_string ("gdata-documents-service-error-quark");
 }
 
-static void gdata_documents_service_dispose (GObject *object);
-static void gdata_documents_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static void notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self);
-static void notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self);
+static GList *get_authorization_domains (void);
 
-struct _GDataDocumentsServicePrivate {
-	GDataService *spreadsheet_service;
-};
-
-enum {
-	PROP_SPREADSHEET_SERVICE = 1
-};
-
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (documents, "writely", "https://docs.google.com/feeds/")
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (spreadsheets, "wise", "https://spreadsheets.google.com/feeds/")
 G_DEFINE_TYPE_WITH_CODE (GDataDocumentsService, gdata_documents_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
 static void
 gdata_documents_service_class_init (GDataDocumentsServiceClass *klass)
 {
-	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDocumentsServicePrivate));
-
-	gobject_class->get_property = gdata_documents_service_get_property;
-	gobject_class->dispose = gdata_documents_service_dispose;
-
-	service_class->service_name = "writely";
 	service_class->feed_type = GDATA_TYPE_DOCUMENTS_FEED;
-
-	/**
-	 * GDataService:spreadsheet-service:
-	 *
-	 * Another service for spreadsheets, required to be able to handle downloads.
-	 *
-	 * For more details about the spreadsheet downloads handling, see the
-	 * <ulink type="http" url="http://groups.google.com/group/Google-Docs-Data-APIs/browse_thread/thread/bfc50e94e303a29a?pli=1">
-	 * online explanation about the problem</ulink>.
-	 *
-	 * Since: 0.4.0
-	 **/
-	g_object_class_install_property (gobject_class, PROP_SPREADSHEET_SERVICE,
-	                                 g_param_spec_object ("spreadsheet-service",
-	                                                      "Spreadsheet service", "Another service for spreadsheets.",
-	                                                      GDATA_TYPE_SERVICE,
-	                                                      G_PARAM_READABLE));
+	service_class->get_authorization_domains = get_authorization_domains;
 }
 
 static void
 gdata_documents_service_init (GDataDocumentsService *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_SERVICE, GDataDocumentsServicePrivate);
-	g_signal_connect (self, "notify::authenticated", G_CALLBACK (notify_authenticated_cb), NULL);
-	g_signal_connect (self, "notify::proxy-uri", G_CALLBACK (notify_proxy_uri_cb), NULL);
+	/* Nothing to see here */
 }
 
-static void
-gdata_documents_service_dispose (GObject *object)
+static GList *
+get_authorization_domains (void)
 {
-	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE (object)->priv;
+	GList *authorization_domains = NULL;
 
-	if (priv->spreadsheet_service != NULL)
-		g_object_unref (priv->spreadsheet_service);
-	priv->spreadsheet_service = NULL;
+	authorization_domains = g_list_prepend (authorization_domains, get_documents_authorization_domain ());
+	authorization_domains = g_list_prepend (authorization_domains, get_spreadsheets_authorization_domain ());
 
-	G_OBJECT_CLASS (gdata_documents_service_parent_class)->dispose (object);
-}
-
-static void
-gdata_documents_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
-{
-	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE (object)->priv;
-
-	switch (property_id) {
-		case PROP_SPREADSHEET_SERVICE:
-			g_value_set_object (value, priv->spreadsheet_service);
-			break;
-		default:
-			/* We don't have any other property... */
-			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-			break;
-	}
+	return authorization_domains;
 }
 
 /**
  * gdata_documents_service_new:
- * @client_id: your application's client ID
+ * @authorizer: (allow-none): a #GDataAuthorizer to authorize the service's requests, or %NULL
  *
- * Creates a new #GDataDocumentsService. The @client_id must be unique for your application, and as registered with Google.
+ * Creates a new #GDataDocumentsService using the given #GDataAuthorizer. If @authorizer is %NULL, all requests are made as an unauthenticated user.
  *
  * Return value: a new #GDataDocumentsService, or %NULL; unref with g_object_unref()
  *
- * Since: 0.4.0
- **/
+ * Since: 0.9.0
+ */
 GDataDocumentsService *
-gdata_documents_service_new (const gchar *client_id)
+gdata_documents_service_new (GDataAuthorizer *authorizer)
 {
-	g_return_val_if_fail (client_id != NULL, NULL);
+	g_return_val_if_fail (authorizer == NULL || GDATA_IS_AUTHORIZER (authorizer), NULL);
 
 	return g_object_new (GDATA_TYPE_DOCUMENTS_SERVICE,
-	                     "client-id", client_id,
+	                     "authorizer", authorizer,
 	                     NULL);
+}
+
+/**
+ * gdata_documents_service_get_primary_authorization_domain:
+ *
+ * The primary #GDataAuthorizationDomain for interacting with Google Documents. This will not normally need to be used, as it's used internally
+ * by the #GDataDocumentsService methods. However, if using the plain #GDataService methods to implement custom queries or requests which libgdata
+ * does not support natively, then this domain may be needed to authorize the requests.
+ *
+ * The domain never changes, and is interned so that pointer comparison can be used to differentiate it from other authorization domains.
+ *
+ * Return value: (transfer none): the service's authorization domain
+ *
+ * Since: 0.9.0
+ */
+GDataAuthorizationDomain *
+gdata_documents_service_get_primary_authorization_domain (void)
+{
+	return get_documents_authorization_domain ();
+}
+
+/**
+ * gdata_documents_service_get_spreadsheet_authorization_domain:
+ *
+ * The #GDataAuthorizationDomain for interacting with spreadsheet data. This will not normally need to be used, as it's automatically used internally
+ * by the #GDataDocumentsService methods. However, if using the plain #GDataService methods to implement custom queries or requests which libgdata
+ * does not support natively, then this domain may be needed to authorize the requests which pertain to the Google Spreadsheets Data API, such as
+ * requests to download or upload spreadsheet documents.
+ *
+ * The domain never changes, and is interned so that pointer comparison can be used to differentiate it from other authorization domains.
+ *
+ * Return value: (transfer none): the service's authorization domain
+ *
+ * Since: 0.9.0
+ */
+GDataAuthorizationDomain *
+gdata_documents_service_get_spreadsheet_authorization_domain (void)
+{
+	return get_spreadsheets_authorization_domain ();
 }
 
 /**
@@ -364,7 +351,8 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to query documents."));
 		return NULL;
@@ -376,8 +364,8 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 	else
 		request_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/documents/private/full", NULL);
 
-	feed = gdata_service_query (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query), GDATA_TYPE_DOCUMENTS_ENTRY, cancellable,
-	                            progress_callback, progress_user_data, error);
+	feed = gdata_service_query (GDATA_SERVICE (self), get_documents_authorization_domain (), request_uri, GDATA_QUERY (query),
+	                            GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data, error);
 	g_free (request_uri);
 
 	return GDATA_DOCUMENTS_FEED (feed);
@@ -414,7 +402,8 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 	g_return_if_fail (callback != NULL);
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
 		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
 		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                                     _("You must be authenticated to query documents."));
@@ -422,42 +411,9 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 	}
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/documents/private/full", NULL);
-	gdata_service_query_async (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query), GDATA_TYPE_DOCUMENTS_ENTRY,
-	                           cancellable, progress_callback, progress_user_data, callback, user_data);
+	gdata_service_query_async (GDATA_SERVICE (self), get_documents_authorization_domain (), request_uri, GDATA_QUERY (query),
+	                           GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data, callback, user_data);
 	g_free (request_uri);
-}
-
-/*
- * To upload spreadsheet documents, another token is needed since the service for it is "wise" as apposed to "writely" for other operations.
- * This callback aims to authenticate to this service as a private property (@priv->spreadsheet_service) of #GDataDocumentsService.
- */
-static void
-notify_authenticated_cb (GObject *service, GParamSpec *pspec, GObject *self)
-{
-	GDataService *spreadsheet_service;
-	GDataDocumentsServicePrivate *priv = GDATA_DOCUMENTS_SERVICE (service)->priv;
-
-	if (priv->spreadsheet_service != NULL)
-		g_object_unref (priv->spreadsheet_service);
-
-	spreadsheet_service = g_object_new (GDATA_TYPE_SERVICE, "client-id", gdata_service_get_client_id (GDATA_SERVICE (service)), NULL);
-	GDATA_SERVICE_GET_CLASS (spreadsheet_service)->service_name = "wise";
-	gdata_service_authenticate (spreadsheet_service, gdata_service_get_username (GDATA_SERVICE (service)),
-	                            gdata_service_get_password (GDATA_SERVICE (service)), NULL, NULL);
-	priv->spreadsheet_service = spreadsheet_service;
-}
-
-/* Sets the proxy on @spreadsheet_service when it is set on the service */
-static void
-notify_proxy_uri_cb (GObject *service, GParamSpec *pspec, GObject *self)
-{
-	SoupURI *proxy_uri;
-
-	if (GDATA_DOCUMENTS_SERVICE (self)->priv->spreadsheet_service == NULL)
-		return;
-
-	proxy_uri = gdata_service_get_proxy_uri (GDATA_SERVICE (service));
-	gdata_service_set_proxy_uri (GDATA_DOCUMENTS_SERVICE (self)->priv->spreadsheet_service, proxy_uri);
 }
 
 static GDataUploadStream *
@@ -473,8 +429,8 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
 		content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
 
 	/* We need streaming file I/O: GDataUploadStream */
-	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), method, upload_uri, GDATA_ENTRY (document), slug, content_type,
-	                                                     cancellable));
+	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), get_documents_authorization_domain (), method, upload_uri,
+	                                                     GDATA_ENTRY (document), slug, content_type, cancellable));
 }
 
 /**
@@ -522,7 +478,8 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to upload documents."));
 		return NULL;
@@ -582,7 +539,8 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to update documents."));
 		return NULL;
@@ -693,7 +651,8 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to move documents and folders."));
 		return NULL;
@@ -703,7 +662,7 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
 	g_assert (folder_id != NULL);
 	uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
-	message = _gdata_service_build_message (GDATA_SERVICE (self), SOUP_METHOD_POST, uri, NULL, TRUE);
+	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST, uri, NULL, TRUE);
 	g_free (uri);
 
 	/* Append the data */
@@ -877,7 +836,8 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to move documents and folders."));
 		return NULL;
@@ -905,7 +865,8 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 		g_assert_not_reached ();
 	}
 
-	message = _gdata_service_build_message (GDATA_SERVICE (self), SOUP_METHOD_DELETE, uri, gdata_entry_get_etag (GDATA_ENTRY (entry)), TRUE);
+	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_DELETE, uri,
+	                                        gdata_entry_get_etag (GDATA_ENTRY (entry)), TRUE);
 	g_free (uri);
 
 	/* Send the message */
@@ -929,7 +890,8 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 
 	/* Google's servers don't return an updated copy of the entry, so we have to query for it again.
 	 * See: http://code.google.com/p/gdata-issues/issues/detail?id=1380 */
-	return GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (self), gdata_entry_get_id (GDATA_ENTRY (entry)), NULL,
+	return GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (self), get_documents_authorization_domain (),
+	                                                                gdata_entry_get_id (GDATA_ENTRY (entry)), NULL,
 	                                                                G_OBJECT_TYPE (entry), cancellable, error));
 }
 
@@ -1069,11 +1031,4 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 
 	/* Otherwise return the default upload URI */
 	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/documents/private/full", NULL);
-}
-
-GDataService *
-_gdata_documents_service_get_spreadsheet_service (GDataDocumentsService *self)
-{
-	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
-	return self->priv->spreadsheet_service;
 }

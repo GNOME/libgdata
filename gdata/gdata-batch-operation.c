@@ -29,6 +29,15 @@
  * gdata_batch_operation_add_deletion(), respectively; run the request with gdata_batch_operation_run() or gdata_batch_operation_run_async(); and
  * handle the results in the callback functions which are invoked by the operation as the results are received and parsed.
  *
+ * If authorization is required for any of the requests in the batch operation, the #GDataService set in #GDataBatchOperation:service must have
+ * a #GDataAuthorizer set as its #GDataService:authorizer property, and that authorizer must be authorized for the #GDataAuthorizationDomain set
+ * in #GDataBatchOperation:authorization-domain. It's not possible for requests in a single batch operation to be authorized under multiple domains;
+ * in that case, the requests must be split up across several batch operations using different authorization domains.
+ *
+ * If all of the requests in the batch operation don't require authorization (i.e. they all operate on public data; see the documentation for the
+ * #GDataService subclass in question's operations for details of which require authorization), #GDataBatchOperation:authorization-domain can be set
+ * to %NULL to save the overhead of sending authorization data to the online service.
+ *
  * <example>
  * 	<title>Running a Synchronous Operation</title>
  * 	<programlisting>
@@ -36,18 +45,21 @@
  *	GDataBatchOperation *operation;
  *	GDataContactsContact *contact;
  *	GDataService *service;
+ *	GDataAuthorizationDomain *domain;
  *
  *	service = create_contacts_service ();
+ *	domain = get_authorization_domain_from_service (service);
  *	contact = create_new_contact ();
  *	batch_link = gdata_feed_look_up_link (contacts_feed, GDATA_LINK_BATCH);
  *
- *	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_link_get_uri (batch_link));
+ *	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), domain, gdata_link_get_uri (batch_link));
  *
  *	/<!-- -->* Add to the operation to insert a new contact and query for another one *<!-- -->/
  *	op_id = gdata_batch_operation_add_insertion (operation, GDATA_ENTRY (contact), insertion_cb, user_data);
  *	op_id2 = gdata_batch_operation_add_query (operation, gdata_entry_get_id (other_contact), GDATA_TYPE_CONTACTS_CONTACT, query_cb, user_data);
  *
  *	g_object_unref (contact);
+ *	g_object_unref (domain);
  *	g_object_unref (service);
  *
  *	/<!-- -->* Run the operations in a blocking fashion. Ideally, check and free the error as appropriate after running the operation. *<!-- -->/
@@ -98,6 +110,7 @@ static void gdata_batch_operation_set_property (GObject *object, guint property_
 
 struct _GDataBatchOperationPrivate {
 	GDataService *service;
+	GDataAuthorizationDomain *authorization_domain;
 	gchar *feed_uri;
 	GHashTable *operations;
 	guint next_id; /* next available operation ID */
@@ -107,7 +120,8 @@ struct _GDataBatchOperationPrivate {
 
 enum {
 	PROP_SERVICE = 1,
-	PROP_FEED_URI
+	PROP_FEED_URI,
+	PROP_AUTHORIZATION_DOMAIN,
 };
 
 G_DEFINE_TYPE (GDataBatchOperation, gdata_batch_operation, G_TYPE_OBJECT)
@@ -139,6 +153,23 @@ gdata_batch_operation_class_init (GDataBatchOperationClass *klass)
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
+	 * GDataBatchOperation:authorization-domain:
+	 *
+	 * The authorization domain for the batch operation, against which the #GDataService:authorizer for the #GDataBatchOperation:service should be
+	 * authorized. This may be %NULL if authorization is not needed for any of the requests in the batch operation.
+	 *
+	 * All requests in the batch operation must be authorizable under this single authorization domain. If requests need different authorization
+	 * domains, they must be performed in different batch operations.
+	 *
+	 * Since: 0.9.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_AUTHORIZATION_DOMAIN,
+	                                 g_param_spec_object ("authorization-domain",
+	                                                      "Authorization domain", "The authorization domain for the batch operation.",
+	                                                      GDATA_TYPE_AUTHORIZATION_DOMAIN,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * GDataBatchOperation:feed-uri:
 	 *
 	 * The feed URI that this batch operation will be sent to.
@@ -161,6 +192,9 @@ gdata_batch_operation_get_property (GObject *object, guint property_id, GValue *
 		case PROP_SERVICE:
 			g_value_set_object (value, priv->service);
 			break;
+		case PROP_AUTHORIZATION_DOMAIN:
+			g_value_set_object (value, priv->authorization_domain);
+			break;
 		case PROP_FEED_URI:
 			g_value_set_string (value, priv->feed_uri);
 			break;
@@ -179,6 +213,10 @@ gdata_batch_operation_set_property (GObject *object, guint property_id, const GV
 	switch (property_id) {
 		case PROP_SERVICE:
 			priv->service = g_value_dup_object (value);
+			break;
+		/* Construct only */
+		case PROP_AUTHORIZATION_DOMAIN:
+			priv->authorization_domain = g_value_dup_object (value);
 			break;
 		case PROP_FEED_URI:
 			priv->feed_uri = g_value_dup_string (value);
@@ -202,6 +240,10 @@ static void
 gdata_batch_operation_dispose (GObject *object)
 {
 	GDataBatchOperationPrivate *priv = GDATA_BATCH_OPERATION_GET_PRIVATE (object);
+
+	if (priv->authorization_domain != NULL)
+		g_object_unref (priv->authorization_domain);
+	priv->authorization_domain = NULL;
 
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
@@ -238,6 +280,24 @@ gdata_batch_operation_get_service (GDataBatchOperation *self)
 {
 	g_return_val_if_fail (GDATA_IS_BATCH_OPERATION (self), NULL);
 	return self->priv->service;
+}
+
+/**
+ * gdata_batch_operation_get_authorization_domain:
+ * @self: a #GDataBatchOperation
+ *
+ * Gets the #GDataBatchOperation:authorization-domain property.
+ *
+ * Return value: (transfer none) (allow-none): the #GDataAuthorizationDomain used to authorize the batch operation, or %NULL
+ *
+ * Since: 0.9.0
+ */
+GDataAuthorizationDomain *
+gdata_batch_operation_get_authorization_domain (GDataBatchOperation *self)
+{
+	g_return_val_if_fail (GDATA_IS_BATCH_OPERATION (self), NULL);
+
+	return self->priv->authorization_domain;
 }
 
 /**
@@ -549,7 +609,7 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 	g_return_val_if_fail (priv->has_run == FALSE, FALSE);
 
-	message = _gdata_service_build_message (priv->service, SOUP_METHOD_POST, priv->feed_uri, NULL, TRUE);
+	message = _gdata_service_build_message (priv->service, priv->authorization_domain, SOUP_METHOD_POST, priv->feed_uri, NULL, TRUE);
 
 	/* Build the request */
 	g_get_current_time (&updated);

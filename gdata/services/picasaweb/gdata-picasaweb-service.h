@@ -63,7 +63,9 @@ typedef struct {
 
 GType gdata_picasaweb_service_get_type (void) G_GNUC_CONST;
 
-GDataPicasaWebService *gdata_picasaweb_service_new (const gchar *client_id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataPicasaWebService *gdata_picasaweb_service_new (GDataAuthorizer *authorizer) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
+GDataAuthorizationDomain *gdata_picasaweb_service_get_primary_authorization_domain (void) G_GNUC_CONST;
 
 #include <gdata/services/picasaweb/gdata-picasaweb-query.h>
 

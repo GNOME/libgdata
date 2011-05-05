@@ -252,7 +252,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
                                    GError **error)
 {
 	gchar *download_uri;
-	GDataService *_service;
+	GDataAuthorizationDomain *domain;
 	GDataDownloadStream *download_stream;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (self), NULL);
@@ -261,15 +261,15 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	/* Horrible hack to force use of the spreadsheet service if the document we're downloading is a spreadsheet. This is necessary because it's
-	 * in a different authentication domain. */
-	if (GDATA_IS_DOCUMENTS_SPREADSHEET (self))
-		_service = _gdata_documents_service_get_spreadsheet_service (service);
-	else
-		_service = GDATA_SERVICE (service);
+	/* If we're downloading a spreadsheet we have to use a different authorization domain. */
+	if (GDATA_IS_DOCUMENTS_SPREADSHEET (self)) {
+		domain = gdata_documents_service_get_spreadsheet_authorization_domain ();
+	} else {
+		domain = gdata_documents_service_get_primary_authorization_domain ();
+	}
 
 	/* Ensure we're authenticated first */
-	if (gdata_service_is_authenticated (_service) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (service)), domain) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to download documents."));
 		return NULL;
@@ -277,7 +277,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 
 	/* Get the download URI and create a stream for it */
 	download_uri = gdata_documents_document_get_download_uri (self, export_format);
-	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (_service, download_uri, cancellable));
+	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (GDATA_SERVICE (service), domain, download_uri, cancellable));
 	g_free (download_uri);
 
 	return download_stream;

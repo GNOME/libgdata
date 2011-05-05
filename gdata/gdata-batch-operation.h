@@ -25,6 +25,7 @@
 
 #include <gdata/gdata-service.h>
 #include <gdata/gdata-entry.h>
+#include <gdata/gdata-authorization-domain.h>
 
 G_BEGIN_DECLS
 
@@ -122,6 +123,7 @@ typedef struct {
 GType gdata_batch_operation_get_type (void) G_GNUC_CONST;
 
 GDataService *gdata_batch_operation_get_service (GDataBatchOperation *self) G_GNUC_PURE;
+GDataAuthorizationDomain *gdata_batch_operation_get_authorization_domain (GDataBatchOperation *self) G_GNUC_PURE;
 const gchar *gdata_batch_operation_get_feed_uri (GDataBatchOperation *self) G_GNUC_PURE;
 
 guint gdata_batch_operation_add_query (GDataBatchOperation *self, const gchar *id, GType entry_type,

@@ -110,8 +110,8 @@ test_download_stream_download_content_length (void)
 
 	/* Create a new download stream connected to the server */
 	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
-	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", "client-id"));
-	download_stream = gdata_download_stream_new (service, download_uri, NULL);
+	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
+	download_stream = gdata_download_stream_new (service, NULL, download_uri, NULL);
 	g_object_unref (service);
 	g_free (download_uri);
 
@@ -216,8 +216,8 @@ test_upload_stream_upload_no_entry_content_length (void)
 
 	/* Create a new upload stream uploading to the server */
 	upload_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
-	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", "client-id"));
-	upload_stream = gdata_upload_stream_new (service, SOUP_METHOD_POST, upload_uri, NULL, "slug", "text/plain", NULL);
+	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
+	upload_stream = gdata_upload_stream_new (service, NULL, SOUP_METHOD_POST, upload_uri, NULL, "slug", "text/plain", NULL);
 	g_object_unref (service);
 	g_free (upload_uri);
 

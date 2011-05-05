@@ -33,12 +33,14 @@
  * <example>
  * 	<title>Authenticating and Creating a New Album</title>
  * 	<programlisting>
+ *	GDataClientLoginAuthorizer *authorizer;
  *	GDataPicasaWebService *service;
  *	GDataPicasaWebAlbum *album, *inserted_album;
  *
- *	/<!-- -->* Create a service object and authenticate with the PicasaWeb server *<!-- -->/
- *	service = gdata_picasaweb_service_new ("companyName-applicationName-versionID");
- *	gdata_service_authenticate (GDATA_SERVICE (service), username, password, NULL, NULL);
+ *	/<!-- -->* Create a service object and authorize against the PicasaWeb service *<!-- -->/
+ *	authorizer = gdata_client_login_authorizer_new ("companyName-applicationName-versionID", GDATA_TYPE_PICASAWEB_SERVICE);
+ *	gdata_client_login_authorizer_authenticate (authorizer, username, password, NULL, NULL);
+ *	service = gdata_picasaweb_service_new (GDATA_AUTHORIZER (authorizer));
  *
  *	/<!-- -->* Create a GDataPicasaWebAlbum entry for the new album, setting some information about it *<!-- -->/
  *	album = gdata_picasaweb_album_new (NULL);
@@ -52,6 +54,7 @@
  *	g_object_unref (album);
  *	g_object_unref (inserted_album);
  *	g_object_unref (service);
+ *	g_object_unref (authorizer);
  *	</programlisting>
  * </example>
  *
@@ -118,14 +121,17 @@
 #include "gdata-upload-stream.h"
 #include "gdata-picasaweb-feed.h"
 
+static GList *get_authorization_domains (void);
+
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (picasaweb, "lh2", "http://picasaweb.google.com/data/")
 G_DEFINE_TYPE (GDataPicasaWebService, gdata_picasaweb_service, GDATA_TYPE_SERVICE)
 
 static void
 gdata_picasaweb_service_class_init (GDataPicasaWebServiceClass *klass)
 {
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
-	service_class->service_name = "lh2";
 	service_class->feed_type = GDATA_TYPE_PICASAWEB_FEED;
+	service_class->get_authorization_domains = get_authorization_domains;
 }
 
 static void
@@ -134,23 +140,49 @@ gdata_picasaweb_service_init (GDataPicasaWebService *self)
 	/* Nothing to see here */
 }
 
+static GList *
+get_authorization_domains (void)
+{
+	return g_list_prepend (NULL, get_picasaweb_authorization_domain ());
+}
+
 /**
  * gdata_picasaweb_service_new:
- * @client_id: your application's client ID
+ * @authorizer: (allow-none): a #GDataAuthorizer to authorize the service's requests, or %NULL
  *
- * Creates a new #GDataPicasaWebService. The @client_id must be unique for your application, and as registered with Google.
- * The <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request">recommended
- * form</ulink> is "companyName-applicationName-versionID".
+ * Creates a new #GDataPicasaWebService using the given #GDataAuthorizer. If @authorizer is %NULL, all requests are made as an unauthenticated user.
  *
- * Return value: a new #GDataPicasaWebService, or %NULL
+ * Return value: a new #GDataPicasaWebService, or %NULL; unref with g_object_unref()
  *
- * Since: 0.4.0
- **/
+ * Since: 0.9.0
+ */
 GDataPicasaWebService *
-gdata_picasaweb_service_new (const gchar *client_id)
+gdata_picasaweb_service_new (GDataAuthorizer *authorizer)
 {
-	g_return_val_if_fail (client_id != NULL, NULL);
-	return g_object_new (GDATA_TYPE_PICASAWEB_SERVICE, "client-id", client_id, NULL);
+	g_return_val_if_fail (authorizer == NULL || GDATA_IS_AUTHORIZER (authorizer), NULL);
+
+	return g_object_new (GDATA_TYPE_PICASAWEB_SERVICE,
+	                     "authorizer", authorizer,
+	                     NULL);
+}
+
+/**
+ * gdata_picasaweb_service_get_primary_authorization_domain:
+ *
+ * The primary #GDataAuthorizationDomain for interacting with PicasaWeb. This will not normally need to be used, as it's used internally
+ * by the #GDataPicasaWebService methods. However, if using the plain #GDataService methods to implement custom queries or requests which libgdata
+ * does not support natively, then this domain may be needed to authorize the requests.
+ *
+ * The domain never changes, and is interned so that pointer comparison can be used to differentiate it from other authorization domains.
+ *
+ * Return value: (transfer none): the service's authorization domain
+ *
+ * Since: 0.9.0
+ */
+GDataAuthorizationDomain *
+gdata_picasaweb_service_get_primary_authorization_domain (void)
+{
+	return get_picasaweb_authorization_domain ();
 }
 
 /*
@@ -169,15 +201,17 @@ static gchar *
 create_uri (GDataPicasaWebService *self, const gchar *username, const gchar *type)
 {
 	if (username == NULL) {
-		/* Ensure we're authenticated first */
-		if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE)
+		/* Ensure we're authorized first */
+		if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+		                                               get_picasaweb_authorization_domain ()) == FALSE) {
 			return NULL;
+		}
 
 		/* Querying Picasa albums for the "default" user when logged in returns the albums for the authenticated user */
 		username = "default";
 	}
 
-	return _gdata_service_build_uri ("http://picasaweb.google.com/data/%s/api/user/%s", type, username);
+	return _gdata_service_build_uri ("https://picasaweb.google.com/data/%s/api/user/%s", type, username);
 }
 
 /**
@@ -211,7 +245,7 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
 		return NULL;
 	}
 
-	message = _gdata_service_query (GDATA_SERVICE (self), uri, NULL, cancellable, error);
+	message = _gdata_service_query (GDATA_SERVICE (self), get_picasaweb_authorization_domain (), uri, NULL, cancellable, error);
 	g_free (uri);
 
 	if (message == NULL)
@@ -273,7 +307,7 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
 	}
 
 	/* Execute the query */
-	album_feed = gdata_service_query (GDATA_SERVICE (self), uri, query, GDATA_TYPE_PICASAWEB_ALBUM,
+	album_feed = gdata_service_query (GDATA_SERVICE (self), get_picasaweb_authorization_domain (), uri, query, GDATA_TYPE_PICASAWEB_ALBUM,
 	                                  cancellable, progress_callback, progress_user_data, error);
 	g_free (uri);
 
@@ -329,8 +363,8 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 	}
 
 	/* Schedule the async query */
-	gdata_service_query_async (GDATA_SERVICE (self), uri, query, GDATA_TYPE_PICASAWEB_ALBUM, cancellable, progress_callback, progress_user_data,
-	                           callback, user_data);
+	gdata_service_query_async (GDATA_SERVICE (self), get_picasaweb_authorization_domain (), uri, query, GDATA_TYPE_PICASAWEB_ALBUM, cancellable,
+	                           progress_callback, progress_user_data, callback, user_data);
 	g_free (uri);
 }
 
@@ -349,7 +383,7 @@ get_query_files_uri (GDataPicasaWebAlbum *album, GError **error)
 		return gdata_link_get_uri (_link);
 	} else {
 		/* Default URI */
-		return "http://picasaweb.google.com/data/feed/api/user/default/albumid/default";
+		return "https://picasaweb.google.com/data/feed/api/user/default/albumid/default";
 	}
 }
 
@@ -389,8 +423,8 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 		return NULL;
 
 	/* Execute the query */
-	return gdata_service_query (GDATA_SERVICE (self), uri, GDATA_QUERY (query), GDATA_TYPE_PICASAWEB_FILE, cancellable,
-	                            progress_callback, progress_user_data, error);
+	return gdata_service_query (GDATA_SERVICE (self), get_picasaweb_authorization_domain (), uri, GDATA_QUERY (query), GDATA_TYPE_PICASAWEB_FILE,
+	                            cancellable, progress_callback, progress_user_data, error);
 }
 
 /**
@@ -434,8 +468,8 @@ gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPic
 		return;
 	}
 
-	gdata_service_query_async (GDATA_SERVICE (self), request_uri, GDATA_QUERY (query), GDATA_TYPE_PICASAWEB_FILE, cancellable, progress_callback,
-	                           progress_user_data, callback, user_data);
+	gdata_service_query_async (GDATA_SERVICE (self), get_picasaweb_authorization_domain (), request_uri, GDATA_QUERY (query),
+	                           GDATA_TYPE_PICASAWEB_FILE, cancellable, progress_callback, progress_user_data, callback, user_data);
 }
 
 /**
@@ -473,7 +507,7 @@ GDataUploadStream *
 gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataPicasaWebFile *file_entry, const gchar *slug,
                                      const gchar *content_type, GCancellable *cancellable, GError **error)
 {
-	const gchar *user_id = NULL, *album_id = NULL;
+	const gchar *album_id = NULL;
 	GDataUploadStream *upload_stream;
 	gchar *upload_uri;
 
@@ -491,7 +525,8 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 		return NULL;
 	}
 
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_picasaweb_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to upload a file."));
 		return NULL;
@@ -499,12 +534,11 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 
 	/* PicasaWeb allows you to post to a default Dropbox */
 	album_id = (album != NULL) ? gdata_entry_get_id (GDATA_ENTRY (album)) : "default";
-	user_id = gdata_service_get_username (GDATA_SERVICE (self));
 
 	/* Build the upload URI and upload stream */
-	upload_uri = _gdata_service_build_uri ("http://picasaweb.google.com/data/feed/api/user/%s/albumid/%s", user_id, album_id);
-	upload_stream = GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), SOUP_METHOD_POST, upload_uri, GDATA_ENTRY (file_entry),
-	                                                              slug, content_type, cancellable));
+	upload_uri = _gdata_service_build_uri ("https://picasaweb.google.com/data/feed/api/user/default/albumid/%s", album_id);
+	upload_stream = GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), get_picasaweb_authorization_domain (), SOUP_METHOD_POST,
+	                                                              upload_uri, GDATA_ENTRY (file_entry), slug, content_type, cancellable));
 	g_free (upload_uri);
 
 	return upload_stream;
@@ -574,13 +608,15 @@ gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWe
 		return NULL;
 	}
 
-	if (gdata_service_is_authenticated (GDATA_SERVICE (self)) == FALSE) {
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_picasaweb_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 		                     _("You must be authenticated to insert an album."));
 		return NULL;
 	}
 
-	return GDATA_PICASAWEB_ALBUM (gdata_service_insert_entry (GDATA_SERVICE (self), "http://picasaweb.google.com/data/feed/api/user/default",
+	return GDATA_PICASAWEB_ALBUM (gdata_service_insert_entry (GDATA_SERVICE (self), get_picasaweb_authorization_domain (),
+	                                                          "https://picasaweb.google.com/data/feed/api/user/default",
 	                                                          GDATA_ENTRY (album), cancellable, error));
 }
 
@@ -611,6 +647,7 @@ gdata_picasaweb_service_insert_album_async (GDataPicasaWebService *self, GDataPi
 	g_return_if_fail (GDATA_IS_PICASAWEB_ALBUM (album));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
-	gdata_service_insert_entry_async (GDATA_SERVICE (self), "http://picasaweb.google.com/data/feed/api/user/default", GDATA_ENTRY (album),
-	                                  cancellable, callback, user_data);
+	gdata_service_insert_entry_async (GDATA_SERVICE (self), get_picasaweb_authorization_domain (),
+	                                  "https://picasaweb.google.com/data/feed/api/user/default", GDATA_ENTRY (album), cancellable, callback,
+	                                  user_data);
 }

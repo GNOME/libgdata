@@ -27,36 +27,15 @@
  * #GDataService instance is required to issue queries to the service, handle insertions, updates and deletions, and generally
  * communicate with the online service.
  *
- * <example>
- * 	<title>Authenticating Asynchronously</title>
- * 	<programlisting>
- *	GDataSomeService *service;
+ * If operations performed on a #GDataService need authorization (such as uploading a video to YouTube or querying the user's personal calendar on
+ * Google Calendar), the service needs a #GDataAuthorizer instance set as #GDataService:authorizer. Once the user is appropriately authenticated and
+ * authorized by the #GDataAuthorizer implementation (see the documentation for #GDataAuthorizer for details on how this is achieved for specific
+ * implementations), all operations will be automatically authorized.
  *
- *	/<!-- -->* Create a service object and authenticate with the service's server asynchronously *<!-- -->/
- *	service = gdata_some_service_new ("companyName-applicationName-versionID");
- *	gdata_service_authenticate_async (GDATA_SERVICE (service), username, password, cancellable, (GAsyncReadyCallback) authenticate_cb, user_data);
- *
- *	static void
- *	authenticate_cb (GDataSomeService *service, GAsyncResult *async_result, gpointer user_data)
- *	{
- *		GError *error = NULL;
- *
- *		if (gdata_service_authenticate_finish (GDATA_SERVICE (service), async_result, &error) == FALSE) {
- *			/<!-- -->* Notify the user of all errors except cancellation errors *<!-- -->/
- *			if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
- *				g_error ("Authentication failed: %s", error->message);
- *			g_error_free (error);
- *			return;
- *		}
- *
- *		/<!-- -->* (The client is now authenticated. It can now proceed to execute queries on the service object which require the user
- *		 * to be authenticated. *<!-- -->/
- *	}
- *
- *	g_object_unref (service);
- *	</programlisting>
- * </example>
- **/
+ * Note that it's not always necessary to supply a #GDataAuthorizer instance to a #GDataService. If the only operations to be performed on the
+ * #GDataService don't need authorization (e.g. they only query public information), setting up a #GDataAuthorizer is just extra overhead. See the
+ * documentation for the operations on individual #GDataService subclasses to see which need authorization and which don't.
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -71,11 +50,9 @@
 
 #include "gdata-service.h"
 #include "gdata-private.h"
+#include "gdata-client-login-authorizer.h"
 #include "gdata-marshal.h"
 #include "gdata-types.h"
-
-/* The default e-mail domain to use for usernames */
-#define EMAIL_DOMAIN "gmail.com"
 
 GQuark
 gdata_service_error_quark (void)
@@ -83,18 +60,11 @@ gdata_service_error_quark (void)
 	return g_quark_from_static_string ("gdata-service-error-quark");
 }
 
-GQuark
-gdata_authentication_error_quark (void)
-{
-	return g_quark_from_static_string ("gdata-authentication-error-quark");
-}
-
 static void gdata_service_dispose (GObject *object);
 static void gdata_service_finalize (GObject *object);
 static void gdata_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_service_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean real_parse_authentication_response (GDataService *self, guint status, const gchar *response_body, gint length, GError **error);
-static void real_append_query_headers (GDataService *self, SoupMessage *message);
+static void real_append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message);
 static void real_parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
                                        const gchar *response_body, gint length, GError **error);
 static void notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
@@ -104,32 +74,16 @@ static void soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char
 
 struct _GDataServicePrivate {
 	SoupSession *session;
-
-	GStaticMutex authentication_mutex; /* mutex for username, password, auth_token and authenticated */
-	gchar *username;
-	gchar *password;
-	gchar *auth_token;
-	gchar *client_id;
-	gboolean authenticated;
 	gchar *locale;
+	GDataAuthorizer *authorizer;
 };
 
 enum {
-	PROP_CLIENT_ID = 1,
-	PROP_USERNAME,
-	PROP_PASSWORD,
-	PROP_AUTHENTICATED,
-	PROP_PROXY_URI,
+	PROP_PROXY_URI = 1,
 	PROP_TIMEOUT,
-	PROP_LOCALE
+	PROP_LOCALE,
+	PROP_AUTHORIZER,
 };
-
-enum {
-	SIGNAL_CAPTCHA_CHALLENGE,
-	LAST_SIGNAL
-};
-
-static guint service_signals[LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GDataService, gdata_service, G_TYPE_OBJECT)
 
@@ -145,66 +99,18 @@ gdata_service_class_init (GDataServiceClass *klass)
 	gobject_class->dispose = gdata_service_dispose;
 	gobject_class->finalize = gdata_service_finalize;
 
-	klass->service_name = "xapi";
-	klass->authentication_uri = "https://www.google.com/accounts/ClientLogin";
 	klass->api_version = "2";
 	klass->feed_type = GDATA_TYPE_FEED;
-	klass->parse_authentication_response = real_parse_authentication_response;
 	klass->append_query_headers = real_append_query_headers;
 	klass->parse_error_response = real_parse_error_response;
-
-	/**
-	 * GDataService:client-id:
-	 *
-	 * A client ID for your application (see the
-	 * <ulink url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request" type="http">reference documentation</ulink>).
-	 *
-	 * It is recommended that the ID is of the form <literal><replaceable>company name</replaceable>-<replaceable>application name</replaceable>-
-	 * <replaceable>version ID</replaceable></literal>.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_CLIENT_ID,
-	                                 g_param_spec_string ("client-id",
-	                                                      "Client ID", "A client ID for your application.",
-	                                                      NULL,
-	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataService:username:
-	 *
-	 * The user's Google username for authentication. This will always be a full e-mail address.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_USERNAME,
-	                                 g_param_spec_string ("username",
-	                                                      "Username", "The user's Google username for authentication.",
-	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataService:password:
-	 *
-	 * The user's account password for authentication.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_PASSWORD,
-	                                 g_param_spec_string ("password",
-	                                                      "Password", "The user's account password for authentication.",
-	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataService:authenticated:
-	 *
-	 * Whether the user is authenticated (logged in) with the service.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_AUTHENTICATED,
-	                                 g_param_spec_boolean ("authenticated",
-	                                                       "Authenticated", "Whether the user is authenticated (logged in) with the service.",
-	                                                       FALSE,
-	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	klass->get_authorization_domains = NULL; /* equivalent to returning an empty list of domains */
 
 	/**
 	 * GDataService:proxy-uri:
 	 *
 	 * The proxy URI used internally for all network requests.
+	 *
+	 * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its proxy URI setting.
 	 *
 	 * Since: 0.2.0
 	 **/
@@ -221,6 +127,8 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * %GDATA_SERVICE_ERROR_NETWORK_ERROR will be returned.
 	 *
 	 * If the timeout is <code class="literal">0</code>, operations will never time out.
+	 *
+	 * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its timeout setting.
 	 *
 	 * Since: 0.7.0
 	 **/
@@ -250,66 +158,38 @@ gdata_service_class_init (GDataServiceClass *klass)
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataService::captcha-challenge:
-	 * @service: the #GDataService which received the challenge
-	 * @uri: the URI of the CAPTCHA image to be used
+	 * GDataService:authorizer:
 	 *
-	 * The #GDataService::captcha-challenge signal is emitted during the authentication process if
-	 * the service requires a CAPTCHA to be completed. The URI of a CAPTCHA image is given, and the
-	 * program should display this to the user, and return their response (the text displayed in the
-	 * image). There is no timeout imposed by the library for the response.
+	 * An object which implements #GDataAuthorizer. This should have previously been authenticated authorized against this service type (and
+	 * potentially other service types). The service will use the authorizer to add an authorization token to each request it performs.
 	 *
-	 * Return value: a newly allocated string containing the text in the CAPTCHA image
+	 * Your application should call methods on the #GDataAuthorizer object itself in order to authenticate with the Google accounts service and
+	 * authorize against this service type. See the documentation for the particular #GDataAuthorizer implementation being used for more details.
+	 *
+	 * The authorizer for a service can be changed at runtime for a different #GDataAuthorizer object or %NULL without affecting ongoing requests
+	 * and operations.
+	 *
+	 * Note that it's only necessary to set an authorizer on the service if your application is going to make requests of the service which
+	 * require authorization. For example, listing the current most popular videos on YouTube does not require authorization, but uploading a
+	 * video to YouTube does. It's an unnecessary overhead to require the user to authorize against a service when not strictly required.
+	 *
+	 * Since: 0.9.0
 	 **/
-	service_signals[SIGNAL_CAPTCHA_CHALLENGE] = g_signal_new ("captcha-challenge",
-	                                                          G_TYPE_FROM_CLASS (klass),
-	                                                          G_SIGNAL_RUN_LAST,
-	                                                          0, NULL, NULL,
-	                                                          gdata_marshal_STRING__OBJECT_STRING,
-	                                                          G_TYPE_STRING, 1, G_TYPE_STRING);
+	g_object_class_install_property (gobject_class, PROP_AUTHORIZER,
+	                                 g_param_spec_object ("authorizer",
+	                                                      "Authorizer", "An authorizer object to provide an authorization token for each request.",
+	                                                      GDATA_TYPE_AUTHORIZER,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
 gdata_service_init (GDataService *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_SERVICE, GDataServicePrivate);
-	self->priv->session = soup_session_sync_new ();
-
-#ifdef HAVE_GNOME
-	soup_session_add_feature_by_type (self->priv->session, SOUP_TYPE_GNOME_FEATURES_2_26);
-#endif /* HAVE_GNOME */
+	self->priv->session = _gdata_service_build_session ();
 
 	/* Debug log handling */
 	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, (GLogFunc) debug_handler, self);
-
-	/* Set up the authentication mutex */
-	g_static_mutex_init (&(self->priv->authentication_mutex));
-
-	/* Log all libsoup traffic if debugging's turned on */
-	if (_gdata_service_get_log_level () > GDATA_LOG_MESSAGES) {
-		SoupLoggerLogLevel level;
-		SoupLogger *logger;
-
-		switch (_gdata_service_get_log_level ()) {
-			case GDATA_LOG_FULL:
-				level = SOUP_LOGGER_LOG_BODY;
-				break;
-			case GDATA_LOG_HEADERS:
-				level = SOUP_LOGGER_LOG_HEADERS;
-				break;
-			case GDATA_LOG_MESSAGES:
-			case GDATA_LOG_NONE:
-			default:
-				g_assert_not_reached ();
-		}
-
-		logger = soup_logger_new (level, -1);
-		soup_logger_set_printer (logger, (SoupLoggerPrinter) soup_log_printer, self, NULL);
-
-		soup_session_add_feature (self->priv->session, SOUP_SESSION_FEATURE (logger));
-
-		g_object_unref (logger);
-	}
 
 	/* Proxy the SoupSession's proxy-uri and timeout properties */
 	g_signal_connect (self->priv->session, "notify::proxy-uri", (GCallback) notify_proxy_uri_cb, self);
@@ -320,6 +200,10 @@ static void
 gdata_service_dispose (GObject *object)
 {
 	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
+
+	if (priv->authorizer != NULL)
+		g_object_unref (priv->authorizer);
+	priv->authorizer = NULL;
 
 	if (priv->session != NULL)
 		g_object_unref (priv->session);
@@ -334,12 +218,7 @@ gdata_service_finalize (GObject *object)
 {
 	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
 
-	g_free (priv->username);
-	g_free (priv->password);
-	g_free (priv->auth_token);
-	g_free (priv->client_id);
 	g_free (priv->locale);
-	g_static_mutex_free (&(priv->authentication_mutex));
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_service_parent_class)->finalize (object);
@@ -351,18 +230,6 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
 
 	switch (property_id) {
-		case PROP_CLIENT_ID:
-			g_value_set_string (value, priv->client_id);
-			break;
-		case PROP_USERNAME:
-			g_value_set_string (value, priv->username);
-			break;
-		case PROP_PASSWORD:
-			g_value_set_string (value, priv->password);
-			break;
-		case PROP_AUTHENTICATED:
-			g_value_set_boolean (value, priv->authenticated);
-			break;
 		case PROP_PROXY_URI:
 			g_value_set_boxed (value, gdata_service_get_proxy_uri (GDATA_SERVICE (object)));
 			break;
@@ -371,6 +238,9 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 			break;
 		case PROP_LOCALE:
 			g_value_set_string (value, priv->locale);
+			break;
+		case PROP_AUTHORIZER:
+			g_value_set_object (value, priv->authorizer);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -382,12 +252,7 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 static void
 gdata_service_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
-
 	switch (property_id) {
-		case PROP_CLIENT_ID:
-			priv->client_id = g_value_dup_string (value);
-			break;
 		case PROP_PROXY_URI:
 			gdata_service_set_proxy_uri (GDATA_SERVICE (object), g_value_get_boxed (value));
 			break;
@@ -397,6 +262,9 @@ gdata_service_set_property (GObject *object, guint property_id, const GValue *va
 		case PROP_LOCALE:
 			gdata_service_set_locale (GDATA_SERVICE (object), g_value_get_string (value));
 			break;
+		case PROP_AUTHORIZER:
+			gdata_service_set_authorizer (GDATA_SERVICE (object), g_value_get_object (value));
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -404,48 +272,15 @@ gdata_service_set_property (GObject *object, guint property_id, const GValue *va
 	}
 }
 
-static gboolean
-real_parse_authentication_response (GDataService *self, guint status, const gchar *response_body, gint length, GError **error)
-{
-	gchar *auth_start, *auth_end;
-
-	/* Parse the response */
-	auth_start = strstr (response_body, "Auth=");
-	if (auth_start == NULL)
-		goto protocol_error;
-	auth_start += strlen ("Auth=");
-
-	auth_end = strstr (auth_start, "\n");
-	if (auth_end == NULL)
-		goto protocol_error;
-
-	self->priv->auth_token = g_strndup (auth_start, auth_end - auth_start);
-	if (self->priv->auth_token == NULL || strlen (self->priv->auth_token) == 0)
-		goto protocol_error;
-
-	return TRUE;
-
-protocol_error:
-	g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-	                     _("The server returned a malformed response."));
-	return FALSE;
-}
-
 static void
-real_append_query_headers (GDataService *self, SoupMessage *message)
+real_append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message)
 {
-	gchar *authorisation_header;
-
 	g_assert (message != NULL);
 
 	/* Set the authorisation header */
-	g_static_mutex_lock (&(self->priv->authentication_mutex));
-	if (self->priv->auth_token != NULL) {
-		authorisation_header = g_strdup_printf ("GoogleLogin auth=%s", self->priv->auth_token);
-		soup_message_headers_append (message->request_headers, "Authorization", authorisation_header);
-		g_free (authorisation_header);
+	if (self->priv->authorizer != NULL) {
+		gdata_authorizer_process_request (self->priv->authorizer, domain, message);
 	}
-	g_static_mutex_unlock (&(self->priv->authentication_mutex));
 
 	/* Set the GData-Version header to tell it we want to use the v2 API */
 	soup_message_headers_append (message->request_headers, "GData-Version", GDATA_SERVICE_GET_CLASS (self)->api_version);
@@ -562,402 +397,132 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 	}
 }
 
-static void
-set_authentication_details (GDataService *self, const gchar *username, const gchar *password, gboolean authenticated)
+/**
+ * gdata_service_is_authorized:
+ * @self: a #GDataService
+ *
+ * Determines whether the service is authorized for all the #GDataAuthorizationDomain<!-- -->s it belongs to (as returned by
+ * gdata_service_get_authorization_domains()). If the service's #GDataService:authorizer is %NULL, %FALSE is always returned.
+ *
+ * This is basically a convenience method for checking that the service's #GDataAuthorizer is authorized for all the service's
+ * #GDataAuthorizationDomain<!-- -->s.
+ *
+ * Return value: %TRUE if the service is authorized for all its domains, %FALSE otherwise
+ *
+ * Since: 0.9.0
+ */
+gboolean
+gdata_service_is_authorized (GDataService *self)
 {
-	GObject *service = G_OBJECT (self);
-	GDataServicePrivate *priv = self->priv;
+	GList *domains, *i;
+	gboolean authorised = TRUE;
 
-	g_static_mutex_lock (&(priv->authentication_mutex));
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
 
-	g_object_freeze_notify (service);
-
-	if (authenticated == TRUE) {
-		/* Update several properties the service holds */
-		g_free (priv->username);
-
-		/* Ensure the username is always a full e-mail address */
-		if (strchr (username, '@') == NULL)
-			priv->username = g_strdup_printf ("%s@" EMAIL_DOMAIN, username);
-		else
-			priv->username = g_strdup (username);
-
-		g_free (priv->password);
-		priv->password = g_strdup (password);
-
-		g_object_notify (service, "username");
-		g_object_notify (service, "password");
-	}
-
-	if (priv->authenticated != authenticated) {
-		priv->authenticated = authenticated;
-		g_object_notify (service, "authenticated");
-	}
-
-	g_object_thaw_notify (service);
-
-	g_static_mutex_unlock (&(priv->authentication_mutex));
-}
-
-static gboolean
-authenticate (GDataService *self, const gchar *username, const gchar *password, gchar *captcha_token, gchar *captcha_answer,
-              GCancellable *cancellable, GError **error)
-{
-	GDataServicePrivate *priv = self->priv;
-	GDataServiceClass *klass;
-	SoupMessage *message;
-	gchar *request_body;
-	guint status;
-	gboolean retval;
-
-	/* Prepare the request */
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	request_body = soup_form_encode ("accountType", "HOSTED_OR_GOOGLE",
-	                                 "Email", username,
-	                                 "Passwd", password,
-	                                 "service", klass->service_name,
-	                                 "source", priv->client_id,
-	                                 (captcha_token == NULL) ? NULL : "logintoken", captcha_token,
-	                                 "loginanswer", captcha_answer,
-	                                 NULL);
-
-	/* Free the CAPTCHA token and answer if necessary */
-	g_free (captcha_token);
-	g_free (captcha_answer);
-
-	/* Build the message */
-	message = soup_message_new (SOUP_METHOD_POST, klass->authentication_uri);
-	soup_message_set_request (message, "application/x-www-form-urlencoded", SOUP_MEMORY_TAKE, request_body, strlen (request_body));
-
-	/* Send the message */
-	status = _gdata_service_send_message (self, message, cancellable, error);
-
-	if (status == SOUP_STATUS_CANCELLED) {
-		/* Cancelled (the error has already been set) */
-		g_object_unref (message);
-		return FALSE;
-	} else if (status != SOUP_STATUS_OK) {
-		const gchar *response_body = message->response_body->data;
-		gchar *error_start, *error_end, *uri_start, *uri_end, *uri = NULL;
-
-		/* Parse the error response; see: http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Errors */
-		if (response_body == NULL)
-			goto protocol_error;
-
-		/* Error */
-		error_start = strstr (response_body, "Error=");
-		if (error_start == NULL)
-			goto protocol_error;
-		error_start += strlen ("Error=");
-
-		error_end = strstr (error_start, "\n");
-		if (error_end == NULL)
-			goto protocol_error;
-
-		if (strncmp (error_start, "CaptchaRequired", error_end - error_start) == 0) {
-			const gchar *captcha_base_uri = "http://www.google.com/accounts/";
-			gchar *captcha_start, *captcha_end, *captcha_uri, *new_captcha_answer;
-			guint captcha_base_uri_length;
-
-			/* CAPTCHA required to log in */
-			captcha_start = strstr (response_body, "CaptchaUrl=");
-			if (captcha_start == NULL)
-				goto protocol_error;
-			captcha_start += strlen ("CaptchaUrl=");
-
-			captcha_end = strstr (captcha_start, "\n");
-			if (captcha_end == NULL)
-				goto protocol_error;
-
-			/* Do some fancy memory stuff to save ourselves another alloc */
-			captcha_base_uri_length = strlen (captcha_base_uri);
-			captcha_uri = g_malloc (captcha_base_uri_length + (captcha_end - captcha_start) + 1);
-			memcpy (captcha_uri, captcha_base_uri, captcha_base_uri_length);
-			memcpy (captcha_uri + captcha_base_uri_length, captcha_start, (captcha_end - captcha_start));
-			captcha_uri[captcha_base_uri_length + (captcha_end - captcha_start)] = '\0';
-
-			/* Request a CAPTCHA answer from the application */
-			g_signal_emit (self, service_signals[SIGNAL_CAPTCHA_CHALLENGE], 0, captcha_uri, &new_captcha_answer);
-			g_free (captcha_uri);
-
-			if (new_captcha_answer == NULL || *new_captcha_answer == '\0') {
-				/* Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs */
-				g_set_error_literal (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED,
-				                     _("A CAPTCHA must be filled out to log in."));
-				goto login_error;
-			}
-
-			/* Get the CAPTCHA token */
-			captcha_start = strstr (response_body, "CaptchaToken=");
-			if (captcha_start == NULL)
-				goto protocol_error;
-			captcha_start += strlen ("CaptchaToken=");
-
-			captcha_end = strstr (captcha_start, "\n");
-			if (captcha_end == NULL)
-				goto protocol_error;
-
-			/* Save the CAPTCHA token and answer, and attempt to log in with them */
-			g_object_unref (message);
-
-			return authenticate (self, username, password, g_strndup (captcha_start, captcha_end - captcha_start), new_captcha_answer,
-			                     cancellable, error);
-		} else if (strncmp (error_start, "Unknown", error_end - error_start) == 0) {
-			goto protocol_error;
-		} else if (strncmp (error_start, "BadAuthentication", error_end - error_start) == 0) {
-			/* Looks like Error=BadAuthentication errors don't return a URI */
-			gchar *info_start, *info_end;
-
-			info_start = strstr (response_body, "Info=");
-			if (info_start != NULL) {
-				info_start += strlen ("Info=");
-				info_end = strstr (info_start, "\n");
-			}
-
-			/* If Info=InvalidSecondFactor, the user needs to generate an application-specific password and use that instead */
-			if (info_start != NULL && info_end != NULL && strncmp (info_start, "InvalidSecondFactor", info_end - info_start) == 0) {
-				g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_INVALID_SECOND_FACTOR,
-				             /* Translators: the parameter is a URI for further information. */
-				             _("This account requires an application-specific password. (%s)"),
-				             "http://www.google.com/support/accounts/bin/static.py?page=guide.cs&guide=1056283&topic=1056286");
-				goto login_error;
-			}
-
-			/* Fall back to a generic "bad authentication details" message */
-			g_set_error_literal (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_BAD_AUTHENTICATION,
-			                     _("Your username or password were incorrect."));
-			goto login_error;
-		}
-
-		/* Get the information URI */
-		uri_start = strstr (response_body, "Url=");
-		if (uri_start == NULL)
-			goto protocol_error;
-		uri_start += strlen ("Url=");
-
-		uri_end = strstr (uri_start, "\n");
-		if (uri_end == NULL)
-			goto protocol_error;
-
-		uri = g_strndup (uri_start, uri_end - uri_start);
-
-		if (strncmp (error_start, "NotVerified", error_end - error_start) == 0) {
-			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_NOT_VERIFIED,
-			             /* Translators: the parameter is a URI for further information. */
-			             _("Your account's e-mail address has not been verified. (%s)"), uri);
-			goto login_error;
-		} else if (strncmp (error_start, "TermsNotAgreed", error_end - error_start) == 0) {
-			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_TERMS_NOT_AGREED,
-			             /* Translators: the parameter is a URI for further information. */
-			             _("You have not agreed to the service's terms and conditions. (%s)"), uri);
-			goto login_error;
-		} else if (strncmp (error_start, "AccountMigrated", error_end - error_start) == 0) {
-			/* This is non-standard, and used by YouTube since it's got messed-up accounts */
-			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_ACCOUNT_MIGRATED,
-			             /* Translators: the parameter is a URI for further information. */
-			             _("This account has been migrated. Please log in online to receive your new username and password. (%s)"), uri);
-			goto login_error;
-		} else if (strncmp (error_start, "AccountDeleted", error_end - error_start) == 0) {
-			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_ACCOUNT_DELETED,
-			             /* Translators: the parameter is a URI for further information. */
-			             _("This account has been deleted. (%s)"), uri);
-			goto login_error;
-		} else if (strncmp (error_start, "AccountDisabled", error_end - error_start) == 0) {
-			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_ACCOUNT_DISABLED,
-			             /* Translators: the parameter is a URI for further information. */
-			             _("This account has been disabled. (%s)"), uri);
-			goto login_error;
-		} else if (strncmp (error_start, "ServiceDisabled", error_end - error_start) == 0) {
-			g_set_error (error, GDATA_AUTHENTICATION_ERROR, GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED,
-			             /* Translators: the parameter is a URI for further information. */
-			             _("This account's access to this service has been disabled. (%s)"), uri);
-			goto login_error;
-		} else if (strncmp (error_start, "ServiceUnavailable", error_end - error_start) == 0) {
-			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
-			             /* Translators: the parameter is a URI for further information. */
-			             _("This service is not available at the moment. (%s)"), uri);
-			goto login_error;
-		}
-
-		/* Unknown error type! */
-		goto protocol_error;
-
-login_error:
-		g_free (uri);
-		g_object_unref (message);
-
+	/* If we don't have an authoriser set, we can't be authorised */
+	if (self->priv->authorizer == NULL) {
 		return FALSE;
 	}
 
-	g_assert (message->response_body->data != NULL);
+	domains = gdata_service_get_authorization_domains (G_OBJECT_TYPE (self));
 
-	g_static_mutex_lock (&(priv->authentication_mutex));
-	retval = klass->parse_authentication_response (self, status, message->response_body->data, message->response_body->length, error);
-	g_static_mutex_unlock (&(priv->authentication_mutex));
-
-	g_object_unref (message);
-
-	return retval;
-
-protocol_error:
-	g_assert (klass->parse_error_response != NULL);
-	klass->parse_error_response (self, GDATA_OPERATION_AUTHENTICATION, status, message->reason_phrase, message->response_body->data,
-	                             message->response_body->length, error);
-
-	g_object_unref (message);
-
-	return FALSE;
-}
-
-typedef struct {
-	gchar *username;
-	gchar *password;
-} AuthenticateAsyncData;
-
-static void
-authenticate_async_data_free (AuthenticateAsyncData *self)
-{
-	g_free (self->username);
-	g_free (self->password);
-
-	g_slice_free (AuthenticateAsyncData, self);
-}
-
-static void
-authenticate_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
-{
-	GError *error = NULL;
-	gboolean success;
-	AuthenticateAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
-
-	/* Authenticate and return */
-	success = authenticate (service, data->username, data->password, NULL, NULL, cancellable, &error);
-	set_authentication_details (service, data->username, data->password, success);
-	g_simple_async_result_set_op_res_gboolean (result, success);
-
-	if (success == FALSE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
+	/* Find any domains which we're not authorised for */
+	for (i = domains; i != NULL; i = i->next) {
+		if (gdata_authorizer_is_authorized_for_domain (self->priv->authorizer, GDATA_AUTHORIZATION_DOMAIN (i->data)) == FALSE) {
+			authorised = FALSE;
+			break;
+		}
 	}
+
+	g_list_free (domains);
+
+	return authorised;
 }
 
 /**
- * gdata_service_authenticate_async:
+ * gdata_service_get_authorizer:
  * @self: a #GDataService
- * @username: the user's username
- * @password: the user's password
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when authentication is finished
- * @user_data: (closure): data to pass to the @callback function
  *
- * Authenticates the #GDataService with the online service using the given @username and @password. @self, @username and
- * @password are all reffed/copied when this function is called, so can safely be freed after this function returns.
+ * Gets the #GDataAuthorizer object currently in use by the service. See the documentation for #GDataService:authorizer for more details.
  *
- * For more details, see gdata_service_authenticate(), which is the synchronous version of this function.
+ * Return value: (transfer none): the authorizer object for this service, or %NULL
  *
- * When the operation is finished, @callback will be called. You can then call gdata_service_authenticate_finish()
- * to get the results of the operation.
- **/
-void
-gdata_service_authenticate_async (GDataService *self, const gchar *username, const gchar *password,
-				  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+ * Since: 0.9.0
+ */
+GDataAuthorizer *
+gdata_service_get_authorizer (GDataService *self)
 {
-	GSimpleAsyncResult *result;
-	AuthenticateAsyncData *data;
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+
+	return self->priv->authorizer;
+}
+
+/**
+ * gdata_service_set_authorizer:
+ * @self: a #GDataService
+ * @authorizer: a new authorizer object for the service, or %NULL
+ *
+ * Sets #GDataService:authorizer to @authorizer. This may be %NULL if the service will only make requests in future which don't require authorization.
+ * See the documentation for #GDataService:authorizer for more information.
+ *
+ * Since: 0.9.0
+ */
+void
+gdata_service_set_authorizer (GDataService *self, GDataAuthorizer *authorizer)
+{
+	GDataServicePrivate *priv = self->priv;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
-	g_return_if_fail (username != NULL);
-	g_return_if_fail (password != NULL);
-	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (authorizer == NULL || GDATA_IS_AUTHORIZER (authorizer));
 
-	data = g_slice_new (AuthenticateAsyncData);
-	data->username = g_strdup (username);
-	data->password = g_strdup (password);
+	if (priv->authorizer != NULL) {
+		g_object_unref (priv->authorizer);
+	}
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_authenticate_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) authenticate_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) authenticate_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	priv->authorizer = authorizer;
+
+	if (priv->authorizer != NULL) {
+		g_object_ref (priv->authorizer);
+	}
+
+	g_object_notify (G_OBJECT (self), "authorizer");
 }
 
 /**
- * gdata_service_authenticate_finish:
- * @self: a #GDataService
- * @async_result: a #GAsyncResult
- * @error: a #GError, or %NULL
+ * gdata_service_get_authorization_domains:
+ * @service_type: the #GType of the #GDataService subclass to retrieve the authorization domains for
  *
- * Finishes an asynchronous authentication operation started with gdata_service_authenticate_async().
+ * Retrieves the full list of #GDataAuthorizationDomain<!-- -->s which relate to the specified @service_type. All the
+ * #GDataAuthorizationDomain<!-- -->s are unique and interned, so can be compared with other domains by simple pointer comparison.
  *
- * Return value: %TRUE if authentication was successful, %FALSE otherwise
- **/
-gboolean
-gdata_service_authenticate_finish (GDataService *self, GAsyncResult *async_result, GError **error)
+ * Note that in addition to this method, #GDataService subclasses may expose some or all of their authorization domains individually by means of
+ * individual accessor functions.
+ *
+ * Return value: (transfer container) (element-type GDataAuthorizationDomain): an unordered list of #GDataAuthorizationDomain<!-- -->s; free with
+ * g_list_free()
+ *
+ * Since: 0.9.0
+ */
+GList *
+gdata_service_get_authorization_domains (GType service_type)
 {
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	gboolean success;
+	GDataServiceClass *klass;
+	GList *domains = NULL;
 
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_type_is_a (service_type, GDATA_TYPE_SERVICE), NULL);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_authenticate_async);
+	klass = GDATA_SERVICE_CLASS (g_type_class_ref (service_type));
+	if (klass->get_authorization_domains != NULL) {
+		domains = klass->get_authorization_domains ();
+	}
+	g_type_class_unref (klass);
 
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return FALSE;
-
-	success = g_simple_async_result_get_op_res_gboolean (result);
-	g_assert (success == TRUE);
-
-	return success;
-}
-
-/**
- * gdata_service_authenticate:
- * @self: a #GDataService
- * @username: the user's username
- * @password: the user's password
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: a #GError, or %NULL
- *
- * Authenticates the #GDataService with the online service using @username and @password; i.e. logs into the service with the given
- * user account. @username should be a full e-mail address (e.g. <literal>john.smith\@gmail.com</literal>). If a full e-mail address is
- * not given, @username will have <literal>\@gmail.com</literal> appended to create an e-mail address
- *
- * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
- * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
- *
- * A %GDATA_AUTHENTICATION_ERROR_BAD_AUTHENTICATION will be returned if authentication failed due to an incorrect username or password.
- * Other #GDataAuthenticationError errors can be returned for other conditions.
- *
- * If the service requires a CAPTCHA to be completed, the #GDataService::captcha-challenge signal will be emitted. The return value from
- * a signal handler for the signal should be a newly allocated string containing the text from the image. If the text is %NULL or empty,
- * authentication will fail with a %GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED error. Otherwise, authentication will be automatically and
- * transparently restarted with the new CAPTCHA details.
- *
- * A %GDATA_SERVICE_ERROR_PROTOCOL_ERROR will be returned if the server's responses were invalid. Subclasses of #GDataService can override
- * parsing the authentication response, and may return their own error codes. See their documentation for more details.
- *
- * Return value: %TRUE if authentication was successful, %FALSE otherwise
- **/
-gboolean
-gdata_service_authenticate (GDataService *self, const gchar *username, const gchar *password, GCancellable *cancellable, GError **error)
-{
-	gboolean retval;
-
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
-	g_return_val_if_fail (username != NULL, FALSE);
-	g_return_val_if_fail (password != NULL, FALSE);
-	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	retval = authenticate (self, username, password, NULL, NULL, cancellable, error);
-	set_authentication_details (self, username, password, retval);
-
-	return retval;
+	return domains;
 }
 
 SoupMessage *
-_gdata_service_build_message (GDataService *self, const gchar *method, const gchar *uri, const gchar *etag, gboolean etag_if_match)
+_gdata_service_build_message (GDataService *self, GDataAuthorizationDomain *domain, const gchar *method, const gchar *uri,
+                              const gchar *etag, gboolean etag_if_match)
 {
 	SoupMessage *message;
 	GDataServiceClass *klass;
@@ -968,7 +533,7 @@ _gdata_service_build_message (GDataService *self, const gchar *method, const gch
 	/* Make sure subclasses set their headers */
 	klass = GDATA_SERVICE_GET_CLASS (self);
 	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (self, message);
+		klass->append_query_headers (self, domain, message);
 
 	/* Append the ETag header if possible */
 	if (etag != NULL)
@@ -1110,11 +675,24 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancella
 		_gdata_service_actually_send_message (self->priv->session, message, cancellable, error);
 	}
 
+	/* Not authorised, or authorisation has expired. If we were authorised in the first place, attempt to refresh the authorisation and
+	 * try sending the message again (but only once, so we don't get caught in an infinite loop of denied authorisation errors). */
+	if (message->status_code == SOUP_STATUS_UNAUTHORIZED) {
+		GDataAuthorizer *authorizer = self->priv->authorizer;
+
+		if (authorizer != NULL && gdata_authorizer_refresh_authorization (authorizer, cancellable, NULL) == TRUE) {
+			/* Send the message again */
+			g_clear_error (error);
+			_gdata_service_actually_send_message (self->priv->session, message, cancellable, error);
+		}
+	}
+
 	return message->status_code;
 }
 
 typedef struct {
 	/* Input */
+	GDataAuthorizationDomain *domain;
 	gchar *feed_uri;
 	GDataQuery *query;
 	GType entry_type;
@@ -1128,6 +706,9 @@ typedef struct {
 static void
 query_async_data_free (QueryAsyncData *self)
 {
+	if (self->domain != NULL)
+		g_object_unref (self->domain);
+
 	g_free (self->feed_uri);
 	if (self->query)
 		g_object_unref (self->query);
@@ -1144,7 +725,7 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
 	QueryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Execute the query and return */
-	data->feed = gdata_service_query (service, data->feed_uri, data->query, data->entry_type, cancellable,
+	data->feed = gdata_service_query (service, data->domain, data->feed_uri, data->query, data->entry_type, cancellable,
 	                                  data->progress_callback, data->progress_user_data, &error);
 	if (data->feed == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
@@ -1155,6 +736,7 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
 /**
  * gdata_service_query_async: (skip)
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the query falls under, or %NULL
  * @feed_uri: the feed URI to query, including the host name and protocol
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
@@ -1171,22 +753,26 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
  *
  * When the operation is finished, @callback will be called. You can then call gdata_service_query_finish()
  * to get the results of the operation.
+ *
+ * Since: 0.9.0
  **/
 void
-gdata_service_query_async (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type, GCancellable *cancellable,
-                           GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
+                           GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
 	QueryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_return_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain));
 	g_return_if_fail (feed_uri != NULL);
 	g_return_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
 	data = g_slice_new (QueryAsyncData);
+	data->domain = (domain != NULL) ? g_object_ref (domain) : NULL;
 	data->feed_uri = g_strdup (feed_uri);
 	data->query = (query != NULL) ? g_object_ref (query) : NULL;
 	data->entry_type = entry_type;
@@ -1233,7 +819,8 @@ gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GErr
 /* Does the bulk of the work of gdata_service_query. Split out because certain queries (such as that done by
  * gdata_service_query_single_entry()) only return a single entry, and thus need special parsing code. */
 SoupMessage *
-_gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GCancellable *cancellable, GError **error)
+_gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query,
+                      GCancellable *cancellable, GError **error)
 {
 	SoupMessage *message;
 	guint status;
@@ -1246,10 +833,10 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
 	/* Build the message */
 	if (query != NULL) {
 		gchar *query_uri = gdata_query_get_query_uri (query, feed_uri);
-		message = _gdata_service_build_message (self, SOUP_METHOD_GET, query_uri, etag, FALSE);
+		message = _gdata_service_build_message (self, domain, SOUP_METHOD_GET, query_uri, etag, FALSE);
 		g_free (query_uri);
 	} else {
-		message = _gdata_service_build_message (self, SOUP_METHOD_GET, feed_uri, etag, FALSE);
+		message = _gdata_service_build_message (self, domain, SOUP_METHOD_GET, feed_uri, etag, FALSE);
 	}
 
 	/* Note that cancellation only applies to network activity; not to the processing done afterwards */
@@ -1275,6 +862,7 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
 /**
  * gdata_service_query:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the query falls under, or %NULL
  * @feed_uri: the feed URI to query, including the host name and protocol
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
@@ -1304,9 +892,11 @@ _gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *que
  * @query's ETag will be updated with the ETag from the returned feed, if available.
  *
  * Return value: (transfer full): a #GDataFeed of query results, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.9.0
  **/
 GDataFeed *
-gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *query, GType entry_type,
+gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
                      GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataServiceClass *klass;
@@ -1314,12 +904,13 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 	SoupMessage *message;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
 	g_return_val_if_fail (feed_uri != NULL, NULL);
 	g_return_val_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	message = _gdata_service_query (self, feed_uri, query, cancellable, error);
+	message = _gdata_service_query (self, domain, feed_uri, query, cancellable, error);
 	if (message == NULL)
 		return NULL;
 
@@ -1354,6 +945,7 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
 /**
  * gdata_service_query_single_entry:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the query falls under, or %NULL
  * @entry_id: the entry ID of the desired entry
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry to build from the XML
@@ -1371,10 +963,10 @@ gdata_service_query (GDataService *self, const gchar *feed_uri, GDataQuery *quer
  *
  * Return value: (transfer full): a #GDataEntry, or %NULL; unref with g_object_unref()
  *
- * Since: 0.7.0
+ * Since: 0.9.0
  **/
 GDataEntry *
-gdata_service_query_single_entry (GDataService *self, const gchar *entry_id, GDataQuery *query, GType entry_type,
+gdata_service_query_single_entry (GDataService *self, GDataAuthorizationDomain *domain, const gchar *entry_id, GDataQuery *query, GType entry_type,
                                   GCancellable *cancellable, GError **error)
 {
 	GDataEntryClass *klass;
@@ -1383,6 +975,7 @@ gdata_service_query_single_entry (GDataService *self, const gchar *entry_id, GDa
 	SoupMessage *message;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
 	g_return_val_if_fail (entry_id != NULL, NULL);
 	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
 	g_return_val_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY) == TRUE, NULL);
@@ -1394,7 +987,7 @@ gdata_service_query_single_entry (GDataService *self, const gchar *entry_id, GDa
 	g_assert (klass->get_entry_uri != NULL);
 
 	entry_uri = klass->get_entry_uri (entry_id);
-	message = _gdata_service_query (GDATA_SERVICE (self), entry_uri, query, cancellable, error);
+	message = _gdata_service_query (GDATA_SERVICE (self), domain, entry_uri, query, cancellable, error);
 	g_free (entry_uri);
 
 	if (message == NULL) {
@@ -1411,6 +1004,7 @@ gdata_service_query_single_entry (GDataService *self, const gchar *entry_id, GDa
 }
 
 typedef struct {
+	GDataAuthorizationDomain *domain;
 	gchar *entry_id;
 	GDataQuery *query;
 	GType entry_type;
@@ -1419,6 +1013,9 @@ typedef struct {
 static void
 query_single_entry_async_data_free (QuerySingleEntryAsyncData *data)
 {
+	if (data->domain != NULL)
+		g_object_unref (data->domain);
+
 	g_free (data->entry_id);
 	if (data->query != NULL)
 		g_object_unref (data->query);
@@ -1433,7 +1030,7 @@ query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GC
 	QuerySingleEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Execute the query and return */
-	entry = gdata_service_query_single_entry (service, data->entry_id, data->query, data->entry_type, cancellable, &error);
+	entry = gdata_service_query_single_entry (service, data->domain, data->entry_id, data->query, data->entry_type, cancellable, &error);
 	if (entry == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -1445,6 +1042,7 @@ query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GC
 /**
  * gdata_service_query_single_entry_async:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the query falls under, or %NULL
  * @entry_id: the entry ID of the desired entry
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry to build from the XML
@@ -1461,16 +1059,17 @@ query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GC
  * When the operation is finished, @callback will be called. You can then call gdata_service_query_single_entry_finish()
  * to get the results of the operation.
  *
- * Since: 0.7.0
+ * Since: 0.9.0
  **/
 void
-gdata_service_query_single_entry_async (GDataService *self, const gchar *entry_id, GDataQuery *query, GType entry_type,
-                                        GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+gdata_service_query_single_entry_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *entry_id, GDataQuery *query,
+                                        GType entry_type, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
 	QuerySingleEntryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_return_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain));
 	g_return_if_fail (entry_id != NULL);
 	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
 	g_return_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY) == TRUE);
@@ -1478,6 +1077,7 @@ gdata_service_query_single_entry_async (GDataService *self, const gchar *entry_i
 	g_return_if_fail (callback != NULL);
 
 	data = g_slice_new (QuerySingleEntryAsyncData);
+	data->domain = (domain != NULL) ? g_object_ref (domain) : NULL;
 	data->query = (query != NULL) ? g_object_ref (query) : NULL;
 	data->entry_id = g_strdup (entry_id);
 	data->entry_type = entry_type;
@@ -1522,6 +1122,7 @@ gdata_service_query_single_entry_finish (GDataService *self, GAsyncResult *async
 }
 
 typedef struct {
+	GDataAuthorizationDomain *domain;
 	gchar *upload_uri;
 	GDataEntry *entry;
 } InsertEntryAsyncData;
@@ -1529,6 +1130,9 @@ typedef struct {
 static void
 insert_entry_async_data_free (InsertEntryAsyncData *self)
 {
+	if (self->domain != NULL)
+		g_object_unref (self->domain);
+
 	g_free (self->upload_uri);
 	if (self->entry)
 		g_object_unref (self->entry);
@@ -1544,7 +1148,7 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 	InsertEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Insert the entry and return */
-	updated_entry = gdata_service_insert_entry (service, data->upload_uri, data->entry, cancellable, &error);
+	updated_entry = gdata_service_insert_entry (service, data->domain, data->upload_uri, data->entry, cancellable, &error);
 	if (updated_entry == NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -1558,6 +1162,7 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 /**
  * gdata_service_insert_entry_async:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the insertion operation falls under, or %NULL
  * @upload_uri: the URI to which the upload should be sent
  * @entry: the #GDataEntry to insert
  * @cancellable: optional #GCancellable object, or %NULL
@@ -1572,21 +1177,23 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * When the operation is finished, @callback will be called. You can then call gdata_service_insert_entry_finish()
  * to get the results of the operation.
  *
- * Since: 0.3.0
+ * Since: 0.9.0
  **/
 void
-gdata_service_insert_entry_async (GDataService *self, const gchar *upload_uri, GDataEntry *entry, GCancellable *cancellable,
-                                  GAsyncReadyCallback callback, gpointer user_data)
+gdata_service_insert_entry_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *upload_uri, GDataEntry *entry,
+                                  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
 	InsertEntryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_return_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain));
 	g_return_if_fail (upload_uri != NULL);
 	g_return_if_fail (GDATA_IS_ENTRY (entry));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	data = g_slice_new (InsertEntryAsyncData);
+	data->domain = (domain != NULL) ? g_object_ref (domain) : NULL;
 	data->upload_uri = g_strdup (upload_uri);
 	data->entry = g_object_ref (entry);
 
@@ -1633,6 +1240,7 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
 /**
  * gdata_service_insert_entry:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the insertion operation falls under, or %NULL
  * @upload_uri: the URI to which the upload should be sent
  * @entry: the #GDataEntry to insert
  * @cancellable: optional #GCancellable object, or %NULL
@@ -1657,9 +1265,12 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
  * <emphasis>cannot</emphasis> cannot override this or provide more specific errors.
  *
  * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
- **/
+ *
+ * Since: 0.9.0
+ */
 GDataEntry *
-gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEntry *entry, GCancellable *cancellable, GError **error)
+gdata_service_insert_entry (GDataService *self, GDataAuthorizationDomain *domain, const gchar *upload_uri, GDataEntry *entry,
+                            GCancellable *cancellable, GError **error)
 {
 	GDataEntry *updated_entry;
 	SoupMessage *message;
@@ -1667,6 +1278,7 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 	guint status;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
 	g_return_val_if_fail (upload_uri != NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
@@ -1678,7 +1290,7 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 		return NULL;
 	}
 
-	message = _gdata_service_build_message (self, SOUP_METHOD_POST, upload_uri, NULL, FALSE);
+	message = _gdata_service_build_message (self, domain, SOUP_METHOD_POST, upload_uri, NULL, FALSE);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
@@ -1710,14 +1322,32 @@ gdata_service_insert_entry (GDataService *self, const gchar *upload_uri, GDataEn
 	return updated_entry;
 }
 
+typedef struct {
+	GDataAuthorizationDomain *domain;
+	GDataEntry *entry;
+} UpdateEntryAsyncData;
+
+static void
+update_entry_async_data_free (UpdateEntryAsyncData *data)
+{
+	if (data->domain != NULL)
+		g_object_unref (data->domain);
+
+	if (data->entry != NULL)
+		g_object_unref (data->entry);
+
+	g_slice_free (UpdateEntryAsyncData, data);
+}
+
 static void
 update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
 {
 	GDataEntry *updated_entry;
 	GError *error = NULL;
+	UpdateEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Update the entry and return */
-	updated_entry = gdata_service_update_entry (service, g_simple_async_result_get_op_res_gpointer (result), cancellable, &error);
+	updated_entry = gdata_service_update_entry (service, data->domain, data->entry, cancellable, &error);
 	if (updated_entry == NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -1731,6 +1361,7 @@ update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 /**
  * gdata_service_update_entry_async:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the update operation falls under, or %NULL
  * @entry: the #GDataEntry to update
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the update is finished, or %NULL
@@ -1744,19 +1375,26 @@ update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * When the operation is finished, @callback will be called. You can then call gdata_service_update_entry_finish()
  * to get the results of the operation.
  *
- * Since: 0.3.0
+ * Since: 0.9.0
  **/
 void
-gdata_service_update_entry_async (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+gdata_service_update_entry_async (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry,
+                                  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
+	UpdateEntryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_return_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain));
 	g_return_if_fail (GDATA_IS_ENTRY (entry));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
+	data = g_slice_new (UpdateEntryAsyncData);
+	data->domain = (domain != NULL) ? g_object_ref (domain) : NULL;
+	data->entry = g_object_ref (entry);
+
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_update_entry_async);
-	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (entry), (GDestroyNotify) g_object_unref);
+	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) update_entry_async_data_free);
 	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) update_entry_thread, G_PRIORITY_DEFAULT, cancellable);
 	g_object_unref (result);
 }
@@ -1798,6 +1436,7 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
 /**
  * gdata_service_update_entry:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the update operation falls under, or %NULL
  * @entry: the #GDataEntry to update
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
@@ -1819,10 +1458,10 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
  *
  * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
  *
- * Since: 0.2.0
+ * Since: 0.9.0
  **/
 GDataEntry *
-gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GError **error)
+gdata_service_update_entry (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
 	GDataEntry *updated_entry;
 	GDataLink *_link;
@@ -1831,6 +1470,7 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	guint status;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -1838,7 +1478,7 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	/* Get the edit URI */
 	_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
 	g_assert (_link != NULL);
-	message = _gdata_service_build_message (self, SOUP_METHOD_PUT, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
+	message = _gdata_service_build_message (self, domain, SOUP_METHOD_PUT, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
@@ -1870,14 +1510,32 @@ gdata_service_update_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	return updated_entry;
 }
 
+typedef struct {
+	GDataAuthorizationDomain *domain;
+	GDataEntry *entry;
+} DeleteEntryAsyncData;
+
+static void
+delete_entry_async_data_free (DeleteEntryAsyncData *data)
+{
+	if (data->domain != NULL)
+		g_object_unref (data->domain);
+
+	if (data->entry != NULL)
+		g_object_unref (data->entry);
+
+	g_slice_free (DeleteEntryAsyncData, data);
+}
+
 static void
 delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
 {
 	gboolean success;
 	GError *error = NULL;
+	DeleteEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Delete the entry and return */
-	success = gdata_service_delete_entry (service, g_simple_async_result_get_op_res_gpointer (result), cancellable, &error);
+	success = gdata_service_delete_entry (service, data->domain, data->entry, cancellable, &error);
 	if (success == FALSE) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -1891,6 +1549,7 @@ delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
 /**
  * gdata_service_delete_entry_async:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the deletion falls under, or %NULL
  * @entry: the #GDataEntry to delete
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when deletion is finished, or %NULL
@@ -1904,19 +1563,26 @@ delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * When the operation is finished, @callback will be called. You can then call gdata_service_delete_entry_finish()
  * to get the results of the operation.
  *
- * Since: 0.3.0
+ * Since: 0.9.0
  **/
 void
-gdata_service_delete_entry_async (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+gdata_service_delete_entry_async (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry,
+                                  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
+	DeleteEntryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_return_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain));
 	g_return_if_fail (GDATA_IS_ENTRY (entry));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
+	data = g_slice_new (DeleteEntryAsyncData);
+	data->domain = (domain != NULL) ? g_object_ref (domain) : NULL;
+	data->entry = g_object_ref (entry);
+
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_delete_entry_async);
-	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (entry), (GDestroyNotify) g_object_unref);
+	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) delete_entry_async_data_free);
 	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) delete_entry_thread, G_PRIORITY_DEFAULT, cancellable);
 	g_object_unref (result);
 }
@@ -1953,6 +1619,7 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
 /**
  * gdata_service_delete_entry:
  * @self: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain the deletion falls under, or %NULL
  * @entry: the #GDataEntry to delete
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
@@ -1972,16 +1639,17 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
  *
  * Return value: %TRUE on success, %FALSE otherwise
  *
- * Since: 0.2.0
+ * Since: 0.9.0
  **/
 gboolean
-gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable *cancellable, GError **error)
+gdata_service_delete_entry (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
 	GDataLink *_link;
 	SoupMessage *message;
 	guint status;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), FALSE);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), FALSE);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -1989,7 +1657,7 @@ gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GCancellable 
 	/* Get the edit URI */
 	_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
 	g_assert (_link != NULL);
-	message = _gdata_service_build_message (self, SOUP_METHOD_DELETE, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
+	message = _gdata_service_build_message (self, domain, SOUP_METHOD_DELETE, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
 
 	/* Send the message */
 	status = _gdata_service_send_message (self, message, cancellable, error);
@@ -2052,6 +1720,8 @@ gdata_service_get_proxy_uri (GDataService *self)
  *
  * If @proxy_uri is %NULL, no proxy will be used.
  *
+ * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its proxy URI setting.
+ *
  * Since: 0.2.0
  **/
 void
@@ -2099,6 +1769,8 @@ gdata_service_get_timeout (GDataService *self)
  *
  * If @timeout is <code class="literal">0</code>, network operations will never time out.
  *
+ * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its timeout setting.
+ *
  * Since: 0.7.0
  **/
 void
@@ -2107,86 +1779,6 @@ gdata_service_set_timeout (GDataService *self, guint timeout)
 	g_return_if_fail (GDATA_IS_SERVICE (self));
 	g_object_set (self->priv->session, SOUP_SESSION_TIMEOUT, timeout, NULL);
 	g_object_notify (G_OBJECT (self), "timeout");
-}
-
-/**
- * gdata_service_is_authenticated:
- * @self: a #GDataService
- *
- * Returns whether a user is authenticated with the online service through @self.
- * Authentication is performed by calling gdata_service_authenticate() or gdata_service_authenticate_async().
- *
- * Return value: %TRUE if a user is authenticated, %FALSE otherwise
- **/
-gboolean
-gdata_service_is_authenticated (GDataService *self)
-{
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
-	return self->priv->authenticated;
-}
-
-/* This should only ever be called in the main thread */
-void
-_gdata_service_set_authenticated (GDataService *self, gboolean authenticated)
-{
-	g_return_if_fail (GDATA_IS_SERVICE (self));
-	self->priv->authenticated = authenticated;
-	g_object_notify (G_OBJECT (self), "authenticated");
-}
-
-/**
- * gdata_service_get_client_id:
- * @self: a #GDataService
- *
- * Returns the service's client ID, as specified on constructing the #GDataService.
- *
- * Return value: the service's client ID
- **/
-const gchar *
-gdata_service_get_client_id (GDataService *self)
-{
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
-	return self->priv->client_id;
-}
-
-/**
- * gdata_service_get_username:
- * @self: a #GDataService
- *
- * Returns the username of the currently-authenticated user, or %NULL if nobody is authenticated.
- *
- * It is not safe to call this while an authentication operation is ongoing.
- *
- * Return value: the username of the currently-authenticated user, or %NULL
- **/
-const gchar *
-gdata_service_get_username (GDataService *self)
-{
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
-
-	/* There's little point protecting this with authentication_mutex, as the data's meaningless if accessed during an authentication operation,
-	 * and not being accessed concurrently otherwise. */
-	return self->priv->username;
-}
-
-/**
- * gdata_service_get_password:
- * @self: a #GDataService
- *
- * Returns the password of the currently-authenticated user, or %NULL if nobody is authenticated.
- *
- * It is not safe to call this while an authentication operation is ongoing.
- *
- * Return value: the password of the currently-authenticated user, or %NULL
- **/
-const gchar *
-gdata_service_get_password (GDataService *self)
-{
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
-
-	/* There's little point protecting this with authentication_mutex, as the data's meaningless if accessed during an authentication operation,
-	 * and not being accessed concurrently otherwise. */
-	return self->priv->password;
 }
 
 SoupSession *
@@ -2233,8 +1825,8 @@ _gdata_service_get_scheme (void)
 gchar *
 _gdata_service_build_uri (const gchar *format, ...)
 {
-	const gchar *p, *scheme;
-	gchar *built_uri;
+	const gchar *p;
+	gchar *fixed_uri;
 	GString *uri;
 	va_list args;
 
@@ -2273,25 +1865,43 @@ _gdata_service_build_uri (const gchar *format, ...)
 
 	va_end (args);
 
-	built_uri = g_string_free (uri, FALSE);
-	scheme = _gdata_service_get_scheme ();
+	/* Fix the scheme to always be HTTPS */
+	fixed_uri = _gdata_service_fix_uri_scheme (uri->str);
+	g_string_free (uri, TRUE);
+
+	return fixed_uri;
+}
+
+/**
+ * _gdata_service_fix_uri_scheme:
+ * @uri: an URI with either HTTP or HTTPS as the scheme
+ *
+ * Fixes the given URI to always have HTTPS as its scheme.
+ *
+ * Return value: (transfer full): the URI with HTTPS as its scheme
+ *
+ * Since: 0.9.0
+ */
+gchar *
+_gdata_service_fix_uri_scheme (const gchar *uri)
+{
+	g_return_val_if_fail (uri != NULL && *uri != '\0', NULL);
 
 	/* Ensure we're using the correct scheme (HTTP or HTTPS) */
-	if (g_str_has_prefix (built_uri, scheme) == FALSE) {
+	if (g_str_has_prefix (uri, "https") == FALSE) {
 		gchar *fixed_uri, **pieces;
 
-		pieces = g_strsplit (built_uri, ":", 2);
+		pieces = g_strsplit (uri, ":", 2);
 		g_assert (pieces[0] != NULL && pieces[1] != NULL && pieces[2] == NULL);
 
-		fixed_uri = g_strdup_printf ("%s:%s", scheme, pieces[1]);
+		fixed_uri = g_strconcat ("https:", pieces[1], NULL);
 
 		g_strfreev (pieces);
-		g_free (built_uri);
 
 		return fixed_uri;
 	}
 
-	return built_uri;
+	return g_strdup (uri);
 }
 
 /*
@@ -2340,6 +1950,54 @@ _gdata_service_get_log_level (void)
 	}
 
 	return level;
+}
+
+/**
+ * _gdata_service_build_session:
+ *
+ * Build a new #SoupSession, enabling GNOME features if support has been compiled for them, and adding a log printer which is hooked into
+ * libgdata's logging functionality.
+ *
+ * Return value: a new #SoupSession; unref with g_object_unref()
+ *
+ * Since: 0.9.0
+ */
+SoupSession *
+_gdata_service_build_session (void)
+{
+	SoupSession *session = soup_session_sync_new ();
+
+#ifdef HAVE_GNOME
+	soup_session_add_feature_by_type (session, SOUP_TYPE_GNOME_FEATURES_2_26);
+#endif /* HAVE_GNOME */
+
+	/* Log all libsoup traffic if debugging's turned on */
+	if (_gdata_service_get_log_level () > GDATA_LOG_MESSAGES) {
+		SoupLoggerLogLevel level;
+		SoupLogger *logger;
+
+		switch (_gdata_service_get_log_level ()) {
+			case GDATA_LOG_FULL:
+				level = SOUP_LOGGER_LOG_BODY;
+				break;
+			case GDATA_LOG_HEADERS:
+				level = SOUP_LOGGER_LOG_HEADERS;
+				break;
+			case GDATA_LOG_MESSAGES:
+			case GDATA_LOG_NONE:
+			default:
+				g_assert_not_reached ();
+		}
+
+		logger = soup_logger_new (level, -1);
+		soup_logger_set_printer (logger, (SoupLoggerPrinter) soup_log_printer, NULL, NULL);
+
+		soup_session_add_feature (session, SOUP_SESSION_FEATURE (logger));
+
+		g_object_unref (logger);
+	}
+
+	return session;
 }
 
 /**

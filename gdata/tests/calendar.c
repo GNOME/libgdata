@@ -52,37 +52,37 @@ static void
 test_authentication (void)
 {
 	gboolean retval;
-	GDataService *service;
+	GDataClientLoginAuthorizer *authorizer;
 	GError *error = NULL;
 
-	/* Create a service */
-	service = GDATA_SERVICE (gdata_calendar_service_new (CLIENT_ID));
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CALENDAR_SERVICE);
 
-	g_assert (service != NULL);
-	g_assert (GDATA_IS_SERVICE (service));
-	g_assert_cmpstr (gdata_service_get_client_id (service), ==, CLIENT_ID);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
 	/* Log in */
-	retval = gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, &error);
+	retval = gdata_client_login_authorizer_authenticate (authorizer, USERNAME, PASSWORD, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
 
 	/* Check all is as it should be */
-	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
-	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
 
-	g_object_unref (service);
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_calendar_service_get_primary_authorization_domain ()) == TRUE);
+
+	g_object_unref (authorizer);
 }
 
 static void
-test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	gboolean retval;
 	GError *error = NULL;
 
-	retval = gdata_service_authenticate_finish (service, async_result, &error);
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
@@ -90,29 +90,32 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 	g_main_loop_quit (main_loop);
 
 	/* Check all is as it should be */
-	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
-	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_calendar_service_get_primary_authorization_domain ()) == TRUE);
 }
 
 static void
 test_authentication_async (void)
 {
-	GDataService *service;
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
+	GMainLoop *main_loop;
+	GDataClientLoginAuthorizer *authorizer;
 
-	/* Create a service */
-	service = GDATA_SERVICE (gdata_calendar_service_new (CLIENT_ID));
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CALENDAR_SERVICE);
 
-	g_assert (service != NULL);
-	g_assert (GDATA_IS_SERVICE (service));
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
-	gdata_service_authenticate_async (service, USERNAME, PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+	main_loop = g_main_loop_new (NULL, TRUE);
+	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, NULL,
+	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
 
-	g_object_unref (service);
+	g_main_loop_unref (main_loop);
+	g_object_unref (authorizer);
 }
 
 static void
@@ -741,7 +744,8 @@ test_acls_insert_rule (gconstpointer service)
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 
-	new_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_link_get_uri (_link), GDATA_ENTRY (rule),
+	new_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                                          gdata_link_get_uri (_link), GDATA_ENTRY (rule),
 	                                                          NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
@@ -808,7 +812,8 @@ test_acls_update_rule (gconstpointer service)
 	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
 
 	/* Send the update to the server */
-	new_rule = GDATA_ACCESS_RULE (gdata_service_update_entry (GDATA_SERVICE (service), GDATA_ENTRY (rule), NULL, &error));
+	new_rule = GDATA_ACCESS_RULE (gdata_service_update_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                                          GDATA_ENTRY (rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
@@ -860,7 +865,8 @@ test_acls_delete_rule (gconstpointer service)
 	g_object_unref (feed);
 
 	/* Delete the rule */
-	success = gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (rule), NULL, &error);
+	success = gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (rule), NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success == TRUE);
 	g_clear_error (&error);
@@ -884,7 +890,8 @@ test_batch (gconstpointer service)
 	calendar = get_calendar (service, &error);
 
 	/* Here we hardcode the feed URI, but it should really be extracted from an event feed, as the GDATA_LINK_BATCH link */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/calendar/feeds/default/private/full/batch");
 
 	/* Check the properties of the operation */
 	g_assert (gdata_batch_operation_get_service (operation) == service);
@@ -917,7 +924,8 @@ test_batch (gconstpointer service)
 	event2 = gdata_calendar_event_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (event2), "Cow Lunch");
 
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/calendar/feeds/default/private/full/batch");
 	op_id = gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (event2), &inserted_entry2, NULL);
 	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_CALENDAR_EVENT, inserted_entry, NULL,
 	                                           NULL);
@@ -934,7 +942,8 @@ test_batch (gconstpointer service)
 	gdata_entry_set_title (inserted_entry2, "Toby");
 	event3 = gdata_calendar_event_new ("foobar");
 
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/calendar/feeds/default/private/full/batch");
 	op_id = gdata_test_batch_operation_deletion (operation, inserted_entry, NULL);
 	op_id2 = gdata_test_batch_operation_deletion (operation, GDATA_ENTRY (event3), &entry_error);
 	op_id3 = gdata_test_batch_operation_update (operation, inserted_entry2, &inserted_entry3, NULL);
@@ -969,7 +978,8 @@ test_batch (gconstpointer service)
 	g_object_unref (inserted_entry2);
 
 	/* Run a final batch operation to delete the second entry */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/calendar/feeds/default/private/full/batch");
 	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
 	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -1024,7 +1034,8 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	GMainLoop *main_loop;
 
 	/* Run an async query operation on the event */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/calendar/feeds/default/private/full/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
 	                                  GDATA_ENTRY (data->new_event), NULL, NULL);
 
@@ -1061,7 +1072,8 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	GError *error = NULL;
 
 	/* Run an async query operation on the event */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "https://www.google.com/calendar/feeds/default/private/full/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                              "https://www.google.com/calendar/feeds/default/private/full/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_event)), GDATA_TYPE_CALENDAR_EVENT,
 	                                  GDATA_ENTRY (data->new_event), NULL, &error);
 
@@ -1087,7 +1099,8 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 	GError *error = NULL;
 
 	/* Delete the event */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (data->new_event), NULL, &error) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_event), NULL, &error) == TRUE);
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
@@ -1098,13 +1111,16 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
+	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
 	if (gdata_test_internet () == TRUE) {
-		service = GDATA_SERVICE (gdata_calendar_service_new (CLIENT_ID));
-		gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
+		authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CALENDAR_SERVICE));
+		gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
+
+		service = GDATA_SERVICE (gdata_calendar_service_new (authorizer));
 
 		g_test_add_func ("/calendar/authentication", test_authentication);
 		g_test_add_func ("/calendar/authentication_async", test_authentication_async);

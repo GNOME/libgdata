@@ -26,6 +26,7 @@
 #include <gdata/gdata-feed.h>
 #include <gdata/gdata-service.h>
 #include <gdata/gdata-access-rule.h>
+#include <gdata/gdata-authorization-domain.h>
 
 G_BEGIN_DECLS
 
@@ -60,15 +61,19 @@ typedef struct _GDataAccessHandler		GDataAccessHandler; /* dummy typedef */
  * GDataAccessHandlerIface:
  * @parent: the parent type
  * @is_owner_rule: a function to return whether the given #GDataAccessRule has the role of an owner (of a #GDataAccessHandler).
+ * @get_authorization_domain: (allow-none): a function to return the #GDataAuthorizationDomain to be used for all operations on the access rules
+ * belonging to this access handler; not implementing this function is equivalent to returning %NULL from it, which signifies that operations on the
+ * access rules don't require authorization; new in version 0.9.0
  *
  * The class structure for the #GDataAccessHandler interface.
  *
- * Since: 0.3.0
- **/
+ * Since: 0.9.0
+ */
 typedef struct {
 	GTypeInterface parent;
 
 	gboolean (*is_owner_rule) (GDataAccessRule *rule);
+	GDataAuthorizationDomain *(*get_authorization_domain) (GDataAccessHandler *self);
 } GDataAccessHandlerIface;
 
 GType gdata_access_handler_get_type (void) G_GNUC_CONST;

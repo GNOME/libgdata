@@ -26,9 +26,18 @@
 G_BEGIN_DECLS
 
 #define CLIENT_ID "ytapi-GNOME-libgdata-444fubtt-0"
-#define USERNAME "libgdata.test@gmail.com"
 #define DOCUMENTS_USERNAME "libgdata.documents@gmail.com"
+
+/* These two must match */
+#define USERNAME_NO_DOMAIN "libgdata.test"
+#define USERNAME USERNAME_NO_DOMAIN "@gmail.com"
+
+/* This must not match the above two */
+#define INCORRECT_USERNAME "libgdata.test.invalid@gmail.com"
+
+/* These two must not match (obviously) */
 #define PASSWORD "gdata-libgdata"
+#define INCORRECT_PASSWORD "bad-password"
 
 void gdata_test_init (int argc, char **argv);
 

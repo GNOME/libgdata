@@ -23,7 +23,9 @@
  * @stability: Unstable
  * @include: gdata/gdata-download-stream.h
  *
- * #GDataDownloadStream is a #GInputStream subclass to allow downloading of files from GData services with authentication from a #GDataService.
+ * #GDataDownloadStream is a #GInputStream subclass to allow downloading of files from GData services with authorization from a #GDataService under
+ * the given #GDataAuthorizationDomain. If authorization is not required to perform the download, a #GDataAuthorizationDomain doesn't have to be
+ * specified.
  *
  * Once a #GDataDownloadStream is instantiated with gdata_download_stream_new(), the standard #GInputStream API can be used on the stream to download
  * the file. Network communication may not actually begin until the first call to g_input_stream_read(), so having a #GDataDownloadStream around is no
@@ -49,21 +51,23 @@
  * using the method's #GCancellable, or by cancelling the download stream as a whole) will cause it to stop waiting for the network activity to finish,
  * and return %G_IO_ERROR_CANCELLED immediately. Network activity will continue to be shut down in the background.
  *
- * If the server returns an error message (for example, if the user is not correctly authenticated or doesn't have suitable permissions to download
- * from the given URI), it will be returned as a #GDataServiceError by the first call to g_input_stream_read().
+ * If the server returns an error message (for example, if the user is not correctly authenticated/authorized or doesn't have suitable permissions to
+ * download from the given URI), it will be returned as a #GDataServiceError by the first call to g_input_stream_read().
  *
  * <example>
  * 	<title>Downloading to a File</title>
  * 	<programlisting>
  *	GDataService *service;
+ *	GDataAuthorizationDomain *domain;
  *	GCancellable *cancellable;
  *	GInputStream *download_stream;
  *	GOutputStream *output_stream;
  *
  *	/<!-- -->* Create the download stream *<!-- -->/
  *	service = create_my_service ();
+ *	domain = get_my_authorization_domain_from_service (service);
  *	cancellable = g_cancellable_new (); /<!-- -->* cancel this to cancel the entire download operation *<!-- -->/
- *	download_stream = gdata_download_stream_new (service, download_uri, cancellable);
+ *	download_stream = gdata_download_stream_new (service, domain, download_uri, cancellable);
  *	output_stream = create_file_and_return_output_stream ();
  *
  *	/<!-- -->* Perform the download asynchronously *<!-- -->/
@@ -73,6 +77,7 @@
  *	g_object_unref (output_stream);
  *	g_object_unref (download_stream);
  *	g_object_unref (cancellable);
+ *	g_object_unref (domain);
  *	g_object_unref (service);
  *
  *	static void
@@ -137,6 +142,7 @@ static void create_network_thread (GDataDownloadStream *self, GError **error);
 struct _GDataDownloadStreamPrivate {
 	gchar *download_uri;
 	GDataService *service;
+	GDataAuthorizationDomain *authorization_domain;
 	SoupSession *session;
 	SoupMessage *message;
 	GDataBuffer *buffer;
@@ -161,7 +167,8 @@ enum {
 	PROP_DOWNLOAD_URI,
 	PROP_CONTENT_TYPE,
 	PROP_CONTENT_LENGTH,
-	PROP_CANCELLABLE
+	PROP_CANCELLABLE,
+	PROP_AUTHORIZATION_DOMAIN,
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataDownloadStream, gdata_download_stream, G_TYPE_INPUT_STREAM,
@@ -189,14 +196,28 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	/**
 	 * GDataDownloadStream:service:
 	 *
-	 * The service which is used to authenticate the download, and to which the download relates.
+	 * The service which is used to authorize the download, and to which the download relates.
 	 *
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 	                                 g_param_spec_object ("service",
-	                                                      "Service", "The service which is used to authenticate the download.",
+	                                                      "Service", "The service which is used to authorize the download.",
 	                                                      GDATA_TYPE_SERVICE,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDownloadStream:authorization-domain:
+	 *
+	 * The authorization domain for the download, against which the #GDataService:authorizer for the #GDataDownloadStream:service should be
+	 * authorized. This may be %NULL if authorization is not needed for the download.
+	 *
+	 * Since: 0.9.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_AUTHORIZATION_DOMAIN,
+	                                 g_param_spec_object ("authorization-domain",
+	                                                      "Authorization domain", "The authorization domain for the download.",
+	                                                      GDATA_TYPE_AUTHORIZATION_DOMAIN,
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -328,8 +349,9 @@ gdata_download_stream_constructor (GType type, guint n_construct_params, GObject
 
 	/* Make sure the headers are set */
 	klass = GDATA_SERVICE_GET_CLASS (priv->service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (priv->service, priv->message);
+	if (klass->append_query_headers != NULL) {
+		klass->append_query_headers (priv->service, priv->authorization_domain, priv->message);
+	}
 
 	/* We don't want to accumulate chunks */
 	soup_message_body_set_accumulate (priv->message->request_body, FALSE);
@@ -354,6 +376,10 @@ gdata_download_stream_dispose (GObject *object)
 	if (priv->network_cancellable != NULL)
 		g_object_unref (priv->network_cancellable);
 	priv->network_cancellable = NULL;
+
+	if (priv->authorization_domain != NULL)
+		g_object_unref (priv->authorization_domain);
+	priv->authorization_domain = NULL;
 
 	if (priv->service != NULL)
 		g_object_unref (priv->service);
@@ -393,6 +419,9 @@ gdata_download_stream_get_property (GObject *object, guint property_id, GValue *
 		case PROP_SERVICE:
 			g_value_set_object (value, priv->service);
 			break;
+		case PROP_AUTHORIZATION_DOMAIN:
+			g_value_set_object (value, priv->authorization_domain);
+			break;
 		case PROP_DOWNLOAD_URI:
 			g_value_set_string (value, priv->download_uri);
 			break;
@@ -425,6 +454,9 @@ gdata_download_stream_set_property (GObject *object, guint property_id, const GV
 		case PROP_SERVICE:
 			priv->service = g_value_dup_object (value);
 			priv->session = _gdata_service_get_session (priv->service);
+			break;
+		case PROP_AUTHORIZATION_DOMAIN:
+			priv->authorization_domain = g_value_dup_object (value);
 			break;
 		case PROP_DOWNLOAD_URI:
 			priv->download_uri = g_value_dup_string (value);
@@ -773,6 +805,7 @@ create_network_thread (GDataDownloadStream *self, GError **error)
 /**
  * gdata_download_stream_new:
  * @service: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain to authorize the download, or %NULL
  * @download_uri: the URI to download
  * @cancellable: (allow-none): a #GCancellable for the entire download stream, or %NULL
  *
@@ -789,18 +822,20 @@ create_network_thread (GDataDownloadStream *self, GError **error)
  *
  * Return value: a new #GInputStream, or %NULL; unref with g_object_unref()
  *
- * Since: 0.8.0
+ * Since: 0.9.0
  **/
 GInputStream *
-gdata_download_stream_new (GDataService *service, const gchar *download_uri, GCancellable *cancellable)
+gdata_download_stream_new (GDataService *service, GDataAuthorizationDomain *domain, const gchar *download_uri, GCancellable *cancellable)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
 	g_return_val_if_fail (download_uri != NULL, NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 
 	return G_INPUT_STREAM (g_object_new (GDATA_TYPE_DOWNLOAD_STREAM,
 	                                     "download-uri", download_uri,
 	                                     "service", service,
+	                                     "authorization-domain", domain,
 	                                     "cancellable", cancellable,
 	                                     NULL));
 }
@@ -809,9 +844,9 @@ gdata_download_stream_new (GDataService *service, const gchar *download_uri, GCa
  * gdata_download_stream_get_service:
  * @self: a #GDataDownloadStream
  *
- * Gets the service used to authenticate the download, as passed to gdata_download_stream_new().
+ * Gets the service used to authorize the download, as passed to gdata_download_stream_new().
  *
- * Return value: (transfer none): the #GDataService used to authenticate the download
+ * Return value: (transfer none): the #GDataService used to authorize the download
  *
  * Since: 0.5.0
  **/
@@ -820,6 +855,24 @@ gdata_download_stream_get_service (GDataDownloadStream *self)
 {
 	g_return_val_if_fail (GDATA_IS_DOWNLOAD_STREAM (self), NULL);
 	return self->priv->service;
+}
+
+/**
+ * gdata_download_stream_get_authorization_domain:
+ * @self: a #GDataDownloadStream
+ *
+ * Gets the authorization domain used to authorize the download, as passed to gdata_download_stream_new(). It may be %NULL if authorization is not
+ * needed for the download.
+ *
+ * Return value: (transfer none) (allow-none): the #GDataAuthorizationDomain used to authorize the download, or %NULL
+ *
+ * Since: 0.9.0
+ */
+GDataAuthorizationDomain *
+gdata_download_stream_get_authorization_domain (GDataDownloadStream *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOWNLOAD_STREAM (self), NULL);
+	return self->priv->authorization_domain;
 }
 
 /**

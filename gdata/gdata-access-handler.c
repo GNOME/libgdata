@@ -27,7 +27,9 @@
  * access control list (ACL). It has a set of methods which allow the #GDataAccessRule<!-- -->s for the access handler/entry to be retrieved,
  * added, modified and deleted, with immediate effect.
  *
- * When implementing the interface, classes must implement an <function>is_owner_rule</function> function.
+ * When implementing the interface, classes must implement an <function>is_owner_rule</function> function. It's optional to implement a
+ * <function>get_authorization_domain</function> function, but if it's not implemented, any operations on the access handler's
+ * #GDataAccessRule<!-- -->s will be performed unauthorized (i.e. as if by a non-logged-in user). This will not usually work.
  *
  * Since: 0.3.0
  **/
@@ -162,6 +164,8 @@ GDataFeed *
 gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
+	GDataAccessHandlerIface *iface;
+	GDataAuthorizationDomain *domain = NULL;
 	GDataFeed *feed;
 	GDataLink *_link;
 	SoupMessage *message;
@@ -173,7 +177,13 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
-	message = _gdata_service_query (service, gdata_link_get_uri (_link), NULL, cancellable, error);
+
+	iface = GDATA_ACCESS_HANDLER_GET_IFACE (self);
+	if (iface->get_authorization_domain != NULL) {
+		domain = iface->get_authorization_domain (self);
+	}
+
+	message = _gdata_service_query (service, domain, gdata_link_get_uri (_link), NULL, cancellable, error);
 	if (message == NULL)
 		return NULL;
 

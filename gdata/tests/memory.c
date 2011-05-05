@@ -26,15 +26,17 @@ static void
 test_query_events (void)
 {
 	GDataFeed *feed, *calendar_feed;
+	GDataClientLoginAuthorizer *authorizer;
 	GDataCalendarCalendar *calendar;
 	GDataCalendarService *service;
 	GList *calendars;
 	GError *error = NULL;
 
-	service = gdata_calendar_service_new (CLIENT_ID);
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CALENDAR_SERVICE);
+	service = gdata_calendar_service_new (GDATA_AUTHORIZER (authorizer));
 
 	/* Log in */
-	gdata_service_authenticate (GDATA_SERVICE (service), USERNAME, PASSWORD, NULL, &error);
+	gdata_client_login_authorizer_authenticate (authorizer, USERNAME, PASSWORD, NULL, &error);
 	g_assert_no_error (error);
 
 	/* Get a calendar */
@@ -54,6 +56,7 @@ test_query_events (void)
 	g_object_unref (feed);
 	g_object_unref (calendar);
 	g_object_unref (service);
+	g_object_unref (authorizer);
 }
 
 int

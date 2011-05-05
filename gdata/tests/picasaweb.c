@@ -40,37 +40,37 @@ static void
 test_authentication (void)
 {
 	gboolean retval;
-	GDataService *service;
+	GDataClientLoginAuthorizer *authorizer;
 	GError *error = NULL;
 
-	/* Create a service */
-	service = GDATA_SERVICE (gdata_picasaweb_service_new (CLIENT_ID));
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE);
 
-	g_assert (service != NULL);
-	g_assert (GDATA_IS_SERVICE (service));
-	g_assert_cmpstr (gdata_service_get_client_id (service), ==, CLIENT_ID);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
 	/* Log in */
-	retval = gdata_service_authenticate (service, PW_USERNAME, PASSWORD, NULL, &error);
+	retval = gdata_client_login_authorizer_authenticate (authorizer, PW_USERNAME, PASSWORD, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
 
 	/* Check all is as it should be */
-	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, PW_USERNAME);
-	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, PW_USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
 
-	g_object_unref (service);
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == TRUE);
+
+	g_object_unref (authorizer);
 }
 
 static void
-test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	gboolean retval;
 	GError *error = NULL;
 
-	retval = gdata_service_authenticate_finish (service, async_result, &error);
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
@@ -78,29 +78,32 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 	g_main_loop_quit (main_loop);
 
 	/* Check all is as it should be */
-	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, PW_USERNAME);
-	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, PW_USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == TRUE);
 }
 
 static void
 test_authentication_async (void)
 {
-	GDataService *service;
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
+	GMainLoop *main_loop;
+	GDataClientLoginAuthorizer *authorizer;
 
-	/* Create a service */
-	service = GDATA_SERVICE (gdata_picasaweb_service_new (CLIENT_ID));
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE);
 
-	g_assert (service != NULL);
-	g_assert (GDATA_IS_SERVICE (service));
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
-	gdata_service_authenticate_async (service, PW_USERNAME, PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+	main_loop = g_main_loop_new (NULL, TRUE);
+	gdata_client_login_authorizer_authenticate_async (authorizer, PW_USERNAME, PASSWORD, NULL,
+	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
 
-	g_object_unref (service);
+	g_main_loop_unref (main_loop);
+	g_object_unref (authorizer);
 }
 
 static void
@@ -384,7 +387,7 @@ test_photo (gconstpointer service)
 
 	content = GDATA_MEDIA_CONTENT (list->data);
 	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
-	                 "https://lh3.googleusercontent.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
+	                 "https://lh3.googleusercontent.com/--1R6jzZZ1oI/SfQFWPnuovI/AAAAAAAAAB0/WdINsvmFPf8/100_0269.jpg");
 	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
 	g_assert_cmpuint (gdata_media_content_get_width (content), ==, 1600);
 	g_assert_cmpuint (gdata_media_content_get_height (content), ==, 1200);
@@ -401,7 +404,7 @@ test_photo (gconstpointer service)
 
 	thumbnail = GDATA_MEDIA_THUMBNAIL (list->data);
 	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
-	                 "https://lh3.googleusercontent.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/s288/100_0269.jpg");
+	                 "https://lh3.googleusercontent.com/--1R6jzZZ1oI/SfQFWPnuovI/AAAAAAAAAB0/WdINsvmFPf8/s288/100_0269.jpg");
 	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 288);
 	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 216);
 	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
@@ -454,7 +457,7 @@ test_photo_feed_entry (gconstpointer service)
 	g_assert_cmpint (gdata_entry_get_published (photo_entry), ==, 1240728920);
 	g_assert (gdata_entry_get_content (photo_entry) == NULL);
 	g_assert_cmpstr (gdata_entry_get_content_uri (photo_entry), ==,
-	                 "https://lh3.googleusercontent.com/_1kdcGyvOb8c/SfQFWPnuovI/AAAAAAAAAB0/MI0L4Sd11Eg/100_0269.jpg");
+	                 "https://lh3.googleusercontent.com/--1R6jzZZ1oI/SfQFWPnuovI/AAAAAAAAAB0/WdINsvmFPf8/100_0269.jpg");
 
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo_entry));
 	g_assert_cmpstr (xml, !=, NULL);
@@ -512,7 +515,8 @@ test_photo_single (gconstpointer service)
 
 	const gchar *entry_id =
 		"https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386";
-	photo = gdata_service_query_single_entry (GDATA_SERVICE (service), entry_id, NULL, GDATA_TYPE_PICASAWEB_FILE, NULL, &error);
+	photo = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                                          entry_id, NULL, GDATA_TYPE_PICASAWEB_FILE, NULL, &error);
 
 	g_assert_no_error (error);
 	g_assert (photo != NULL);
@@ -668,7 +672,7 @@ test_album (gconstpointer service)
 	content = GDATA_MEDIA_CONTENT (contents->data);
 
 	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
-	                 "https://lh5.googleusercontent.com/_1kdcGyvOb8c/SfQFLNjhg6E/AAAAAAAAAB8/2WtMjZCa71k/TestAlbum1VenicePublic.jpg");
+	                 "https://lh5.googleusercontent.com/-Cdx1RdQou5E/SfQFLNjhg6E/AAAAAAAAAB8/DZlVjtcAqjg/TestAlbum1VenicePublic.jpg");
 	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
 	g_assert_cmpuint (gdata_media_content_get_medium (content), ==, GDATA_MEDIA_IMAGE);
 
@@ -684,7 +688,7 @@ test_album (gconstpointer service)
 	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
 
 	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
-	                 "https://lh5.googleusercontent.com/_1kdcGyvOb8c/SfQFLNjhg6E/AAAAAAAAAB8/2WtMjZCa71k/s160-c/TestAlbum1VenicePublic.jpg");
+	                 "https://lh5.googleusercontent.com/-Cdx1RdQou5E/SfQFLNjhg6E/AAAAAAAAAB8/DZlVjtcAqjg/s160-c/TestAlbum1VenicePublic.jpg");
 	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
 	g_assert_cmpint (gdata_media_thumbnail_get_width (thumbnail), ==, 160);
 	g_assert_cmpint (gdata_media_thumbnail_get_height (thumbnail), ==, 160);
@@ -800,14 +804,15 @@ test_insert_album (gconstpointer service)
 
 	album_found = FALSE;
 	for (node = albums; node != NULL; node = node->next) {
-		if (g_strcmp0 (gdata_entry_get_title (GDATA_ENTRY (node->data)), "Thanksgiving photos")) {
+		if (g_strcmp0 (gdata_entry_get_title (GDATA_ENTRY (node->data)), "Thanksgiving photos") == 0) {
 			album_found = TRUE;
 		}
 	}
 	g_assert (album_found);
 
 	/* Clean up the evidence */
-	gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (inserted_album), NULL, &error);
+	gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                            GDATA_ENTRY (inserted_album), NULL, &error);
 	g_assert_no_error (error);
 
 	g_object_unref (album_feed);
@@ -830,7 +835,8 @@ test_insert_album_async_cb (GDataService *service, GAsyncResult *async_result, G
 	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "Asynchronous album!");
 
 	/* Delete the album, just to be tidy */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), entry, NULL, &error) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                                      entry, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
@@ -1054,7 +1060,8 @@ teardown_upload (UploadData *data, gconstpointer service)
 {
 	/* Delete the uploaded photo (don't worry if this fails) */
 	if (data->updated_photo != NULL) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (data->updated_photo), NULL, NULL);
+		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+		                            GDATA_ENTRY (data->updated_photo), NULL, NULL);
 		g_object_unref (data->updated_photo);
 	}
 
@@ -1433,13 +1440,16 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
+	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
 	if (gdata_test_internet () == TRUE) {
-		service = GDATA_SERVICE (gdata_picasaweb_service_new (CLIENT_ID));
-		gdata_service_authenticate (service, PW_USERNAME, PASSWORD, NULL, NULL);
+		authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE));
+		gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), PW_USERNAME, PASSWORD, NULL, NULL);
+
+		service = GDATA_SERVICE (gdata_picasaweb_service_new (authorizer));
 
 		g_test_add_func ("/picasaweb/authentication", test_authentication);
 		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);

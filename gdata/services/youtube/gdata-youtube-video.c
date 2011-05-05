@@ -924,7 +924,7 @@ get_entry_uri (const gchar *id)
 	g_assert (video_id != NULL);
 
 	/* Build the URI using the video ID */
-	uri = g_strconcat ("http://gdata.youtube.com/feeds/api/videos/", video_id, NULL);
+	uri = g_strconcat ("https://gdata.youtube.com/feeds/api/videos/", video_id, NULL);
 	g_strfreev (parts);
 
 	return uri;

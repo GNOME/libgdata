@@ -59,7 +59,9 @@ typedef struct {
 
 GType gdata_calendar_service_get_type (void) G_GNUC_CONST;
 
-GDataCalendarService *gdata_calendar_service_new (const gchar *client_id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataCalendarService *gdata_calendar_service_new (GDataAuthorizer *authorizer) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
+GDataAuthorizationDomain *gdata_calendar_service_get_primary_authorization_domain (void) G_GNUC_CONST;
 
 GDataFeed *gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
                                                        GDataQueryProgressCallback progress_callback, gpointer progress_user_data,

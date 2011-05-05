@@ -29,38 +29,37 @@ static void
 test_authentication (void)
 {
 	gboolean retval;
-	GDataService *service;
+	GDataClientLoginAuthorizer *authorizer;
 	GError *error = NULL;
 
-	/* Create a service */
-	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE);
 
-	g_assert (service != NULL);
-	g_assert (GDATA_IS_SERVICE (service));
-	g_assert_cmpstr (gdata_service_get_client_id (service), ==, CLIENT_ID);
-	g_assert_cmpstr (gdata_youtube_service_get_developer_key (GDATA_YOUTUBE_SERVICE (service)), ==, DEVELOPER_KEY);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
 	/* Log in */
-	retval = gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, &error);
+	retval = gdata_client_login_authorizer_authenticate (authorizer, USERNAME, PASSWORD, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
 
 	/* Check all is as it should be */
-	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
-	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
 
-	g_object_unref (service);
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_youtube_service_get_primary_authorization_domain ()) == TRUE);
+
+	g_object_unref (authorizer);
 }
 
 static void
-test_authentication_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
 {
 	gboolean retval;
 	GError *error = NULL;
 
-	retval = gdata_service_authenticate_finish (service, async_result, &error);
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 	g_clear_error (&error);
@@ -68,28 +67,46 @@ test_authentication_async_cb (GDataService *service, GAsyncResult *async_result,
 	g_main_loop_quit (main_loop);
 
 	/* Check all is as it should be */
-	g_assert (gdata_service_is_authenticated (service) == TRUE);
-	g_assert_cmpstr (gdata_service_get_username (service), ==, USERNAME);
-	g_assert_cmpstr (gdata_service_get_password (service), ==, PASSWORD);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_youtube_service_get_primary_authorization_domain ()) == TRUE);
 }
 
 static void
 test_authentication_async (void)
 {
 	GMainLoop *main_loop;
+	GDataClientLoginAuthorizer *authorizer;
+
+	/* Create an authorizer */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE);
+
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
+
+	main_loop = g_main_loop_new (NULL, TRUE);
+	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, NULL,
+	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+
+	g_main_loop_run (main_loop);
+
+	g_main_loop_unref (main_loop);
+	g_object_unref (authorizer);
+}
+
+static void
+test_service_properties (void)
+{
 	GDataService *service;
 
 	/* Create a service */
-	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
+	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, NULL));
 
 	g_assert (service != NULL);
 	g_assert (GDATA_IS_SERVICE (service));
+	g_assert_cmpstr (gdata_youtube_service_get_developer_key (GDATA_YOUTUBE_SERVICE (service)), ==, DEVELOPER_KEY);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
-	gdata_service_authenticate_async (service, USERNAME, PASSWORD, NULL, (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
 	g_object_unref (service);
 }
 
@@ -314,7 +331,8 @@ teardown_upload (UploadData *data, gconstpointer service)
 {
 	/* Delete the uploaded video, if possible */
 	if (data->updated_video != NULL) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), GDATA_ENTRY (data->updated_video), NULL, NULL);
+		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_youtube_service_get_primary_authorization_domain (),
+		                            GDATA_ENTRY (data->updated_video), NULL, NULL);
 		g_object_unref (data->updated_video);
 	}
 
@@ -1101,7 +1119,9 @@ test_query_single (gconstpointer service)
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
 
-	video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry (GDATA_SERVICE (service), "tag:youtube.com,2008:video:_LeQuMpwbW4", NULL,
+	video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                               gdata_youtube_service_get_primary_authorization_domain (),
+	                                                               "tag:youtube.com,2008:video:_LeQuMpwbW4", NULL,
 	                                                               GDATA_TYPE_YOUTUBE_VIDEO, NULL, &error));
 
 	g_assert_no_error (error);
@@ -1137,7 +1157,8 @@ test_query_single_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_service_query_single_entry_async (GDATA_SERVICE (service), "tag:youtube.com,2008:video:_LeQuMpwbW4", NULL, GDATA_TYPE_YOUTUBE_VIDEO,
+	gdata_service_query_single_entry_async (GDATA_SERVICE (service), gdata_youtube_service_get_primary_authorization_domain (),
+	                                        "tag:youtube.com,2008:video:_LeQuMpwbW4", NULL, GDATA_TYPE_YOUTUBE_VIDEO,
 	                                        NULL, (GAsyncReadyCallback) test_query_single_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
@@ -1268,14 +1289,16 @@ setup_batch (BatchData *data, gconstpointer service)
 
 	/* We can't insert new videos as they'd just hit the moderation queue and cause tests to fail. Instead, we rely on two videos already existing
 	 * on the server with the given IDs. */
-	video = gdata_service_query_single_entry (GDATA_SERVICE (service), "tag:youtube.com,2008:video:RzR2k8yo4NY", NULL, GDATA_TYPE_YOUTUBE_VIDEO,
+	video = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_youtube_service_get_primary_authorization_domain (),
+	                                          "tag:youtube.com,2008:video:RzR2k8yo4NY", NULL, GDATA_TYPE_YOUTUBE_VIDEO,
 	                                          NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 
 	data->new_video = video;
 
-	video = gdata_service_query_single_entry (GDATA_SERVICE (service), "tag:youtube.com,2008:video:VppEcVz8qaI", NULL, GDATA_TYPE_YOUTUBE_VIDEO,
+	video = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_youtube_service_get_primary_authorization_domain (),
+	                                          "tag:youtube.com,2008:video:VppEcVz8qaI", NULL, GDATA_TYPE_YOUTUBE_VIDEO,
 	                                          NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
@@ -1294,11 +1317,12 @@ test_batch (BatchData *data, gconstpointer service)
 
 	/* Here we hardcode the feed URI, but it should really be extracted from a video feed, as the GDATA_LINK_BATCH link.
 	 * It looks like this feed is read-only, so we can only test querying. */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://gdata.youtube.com/feeds/api/videos/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_youtube_service_get_primary_authorization_domain (),
+	                                              "https://gdata.youtube.com/feeds/api/videos/batch");
 
 	/* Check the properties of the operation */
 	g_assert (gdata_batch_operation_get_service (operation) == service);
-	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, "http://gdata.youtube.com/feeds/api/videos/batch");
+	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, "https://gdata.youtube.com/feeds/api/videos/batch");
 
 	g_object_get (operation,
 	              "service", &service2,
@@ -1306,7 +1330,7 @@ test_batch (BatchData *data, gconstpointer service)
 	              NULL);
 
 	g_assert (service2 == service);
-	g_assert_cmpstr (feed_uri, ==, "http://gdata.youtube.com/feeds/api/videos/batch");
+	g_assert_cmpstr (feed_uri, ==, "https://gdata.youtube.com/feeds/api/videos/batch");
 
 	g_object_unref (service2);
 	g_free (feed_uri);
@@ -1321,7 +1345,8 @@ test_batch (BatchData *data, gconstpointer service)
 	g_object_unref (operation);
 
 	/* Run another batch operation to query the two entries */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://gdata.youtube.com/feeds/api/videos/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_youtube_service_get_primary_authorization_domain (),
+	                                              "https://gdata.youtube.com/feeds/api/videos/batch");
 	op_id = gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL,
 	                                          NULL);
 	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video2), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video2, NULL,
@@ -1354,7 +1379,8 @@ test_batch_async (BatchData *data, gconstpointer service)
 	GMainLoop *main_loop;
 
 	/* Run an async query operation on the video */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://gdata.youtube.com/feeds/api/videos/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_youtube_service_get_primary_authorization_domain (),
+	                                              "https://gdata.youtube.com/feeds/api/videos/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, NULL);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
@@ -1386,7 +1412,8 @@ test_batch_async_cancellation (BatchData *data, gconstpointer service)
 	GError *error = NULL;
 
 	/* Run an async query operation on the video */
-	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), "http://gdata.youtube.com/feeds/api/videos/batch");
+	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_youtube_service_get_primary_authorization_domain (),
+	                                              "https://gdata.youtube.com/feeds/api/videos/batch");
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, &error);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
@@ -1416,13 +1443,16 @@ int
 main (int argc, char *argv[])
 {
 	gint retval;
+	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
 
 	gdata_test_init (argc, argv);
 
 	if (gdata_test_internet () == TRUE) {
-		service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID));
-		gdata_service_authenticate (service, USERNAME, PASSWORD, NULL, NULL);
+		authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE));
+		gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
+
+		service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, authorizer));
 
 		g_test_add_func ("/youtube/authentication", test_authentication);
 		g_test_add_func ("/youtube/authentication_async", test_authentication_async);
@@ -1445,6 +1475,8 @@ main (int argc, char *argv[])
 		g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);
 		g_test_add ("/youtube/batch/async/cancellation", BatchData, service, setup_batch, test_batch_async_cancellation, teardown_batch);
 	}
+
+	g_test_add_func ("/youtube/service/properties", test_service_properties);
 
 	g_test_add_func ("/youtube/parsing/app:control", test_parsing_app_control);
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/

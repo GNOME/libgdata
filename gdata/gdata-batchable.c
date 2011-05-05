@@ -54,20 +54,28 @@ gdata_batchable_get_type (void)
 /**
  * gdata_batchable_create_operation:
  * @self: a #GDataBatchable
+ * @domain: (allow-none): the #GDataAuthorizationDomain to authorize the operation, or %NULL
  * @feed_uri: the URI to send the batch operation request to
  *
  * Creates a new #GDataBatchOperation for the given #GDataBatchable service, and with the given @feed_uri. @feed_uri is normally the %GDATA_LINK_BATCH
- * link URI in the appropriate #GDataFeed from the service.
+ * link URI in the appropriate #GDataFeed from the service. If authorization will be required to perform any of the requests in the batch operation,
+ * @domain must be non-%NULL, and must be an authorization domain which covers all of the requests. Otherwise, @domain may be %NULL if authorization
+ * is not required.
  *
  * Return value: (transfer full): a new #GDataBatchOperation; unref with g_object_unref()
  *
- * Since: 0.7.0
- **/
+ * Since: 0.9.0
+ */
 GDataBatchOperation *
-gdata_batchable_create_operation (GDataBatchable *self, const gchar *feed_uri)
+gdata_batchable_create_operation (GDataBatchable *self, GDataAuthorizationDomain *domain, const gchar *feed_uri)
 {
 	g_return_val_if_fail (GDATA_IS_BATCHABLE (self), NULL);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
 	g_return_val_if_fail (feed_uri != NULL, NULL);
 
-	return g_object_new (GDATA_TYPE_BATCH_OPERATION, "service", self, "feed-uri", feed_uri, NULL);
+	return g_object_new (GDATA_TYPE_BATCH_OPERATION,
+	                     "service", self,
+	                     "authorization-domain", domain,
+	                     "feed-uri", feed_uri,
+	                     NULL);
 }

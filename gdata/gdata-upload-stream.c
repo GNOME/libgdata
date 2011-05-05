@@ -23,7 +23,9 @@
  * @stability: Unstable
  * @include: gdata/gdata-upload-stream.h
  *
- * #GDataUploadStream is a #GOutputStream subclass to allow uploading of files from GData services with authentication from a #GDataService.
+ * #GDataUploadStream is a #GOutputStream subclass to allow uploading of files from GData services with authorization from a #GDataService under
+ * the given #GDataAuthorizationDomain. If authorization is not required to perform the upload, a #GDataAuthorizationDomain doesn't have to be
+ * specified.
  *
  * Once a #GDataUploadStream is instantiated with gdata_upload_stream_new(), the standard #GOutputStream API can be used on the stream to upload
  * the file. Network communication may not actually begin until the first call to g_output_stream_write(), so having a #GDataUploadStream around is no
@@ -59,13 +61,14 @@
  * connection will be closed immediately. i.e. #GDataUploadStream will do its best to instruct the server to cancel the upload and any associated
  * server-side changes of state.
  *
- * If the server returns an error message (for example, if the user is not correctly authenticated or doesn't have suitable permissions to upload
- * from the given URI), it will be returned as a #GDataServiceError by g_output_stream_close().
+ * If the server returns an error message (for example, if the user is not correctly authenticated/authorized or doesn't have suitable permissions
+ * to upload from the given URI), it will be returned as a #GDataServiceError by g_output_stream_close().
  *
  * <example>
  * 	<title>Uploading from a File</title>
  * 	<programlisting>
  *	GDataService *service;
+ *	GDataAuthorizationDomain *domain;
  *	GCancellable *cancellable;
  *	GInputStream *input_stream;
  *	GOutputStream *upload_stream;
@@ -97,8 +100,9 @@
  *
  *	/<!-- -->* Create the upload stream *<!-- -->/
  *	service = create_my_service ();
+ *	domain = get_my_authorization_domain_from_service (service);
  *	cancellable = g_cancellable_new (); /<!-- -->* cancel this to cancel the entire upload operation *<!-- -->/
- *	upload_stream = gdata_upload_stream_new (service, SOUP_METHOD_POST, upload_uri, NULL, g_file_info_get_display_name (file_info),
+ *	upload_stream = gdata_upload_stream_new (service, domain, SOUP_METHOD_POST, upload_uri, NULL, g_file_info_get_display_name (file_info),
  *	                                         g_file_info_get_content_type (file_info), cancellable);
  *	g_object_unref (file_info);
  *
@@ -109,6 +113,7 @@
  *	g_object_unref (upload_stream);
  *	g_object_unref (input_stream);
  *	g_object_unref (cancellable);
+ *	g_object_unref (domain);
  *	g_object_unref (service);
  *
  *	static void
@@ -186,6 +191,7 @@ struct _GDataUploadStreamPrivate {
 	gchar *method;
 	gchar *upload_uri;
 	GDataService *service;
+	GDataAuthorizationDomain *authorization_domain;
 	GDataEntry *entry;
 	gchar *slug;
 	gchar *content_type;
@@ -216,7 +222,8 @@ enum {
 	PROP_SLUG,
 	PROP_CONTENT_TYPE,
 	PROP_METHOD,
-	PROP_CANCELLABLE
+	PROP_CANCELLABLE,
+	PROP_AUTHORIZATION_DOMAIN,
 };
 
 G_DEFINE_TYPE (GDataUploadStream, gdata_upload_stream, G_TYPE_OUTPUT_STREAM)
@@ -244,14 +251,28 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	/**
 	 * GDataUploadStream:service:
 	 *
-	 * The service which is used to authenticate the upload, and to which the upload relates.
+	 * The service which is used to authorize the upload, and to which the upload relates.
 	 *
 	 * Since: 0.5.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 	                                 g_param_spec_object ("service",
-	                                                      "Service", "The service which is used to authenticate the upload.",
+	                                                      "Service", "The service which is used to authorize the upload.",
 	                                                      GDATA_TYPE_SERVICE,
+	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataUploadStream:authorization-domain:
+	 *
+	 * The authorization domain for the upload, against which the #GDataService:authorizer for the #GDataDownloadStream:service should be
+	 * authorized. This may be %NULL if authorization is not needed for the upload.
+	 *
+	 * Since: 0.9.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_AUTHORIZATION_DOMAIN,
+	                                 g_param_spec_object ("authorization-domain",
+	                                                      "Authorization domain", "The authorization domain for the upload.",
+	                                                      GDATA_TYPE_AUTHORIZATION_DOMAIN,
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -372,8 +393,9 @@ gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectCo
 
 	/* Make sure the headers are set */
 	klass = GDATA_SERVICE_GET_CLASS (priv->service);
-	if (klass->append_query_headers != NULL)
-		klass->append_query_headers (priv->service, priv->message);
+	if (klass->append_query_headers != NULL) {
+		klass->append_query_headers (priv->service, priv->authorization_domain, priv->message);
+	}
 
 	if (priv->slug != NULL)
 		soup_message_headers_append (priv->message->request_headers, "Slug", priv->slug);
@@ -416,6 +438,10 @@ gdata_upload_stream_dispose (GObject *object)
 		g_object_unref (priv->service);
 	priv->service = NULL;
 
+	if (priv->authorization_domain != NULL)
+		g_object_unref (priv->authorization_domain);
+	priv->authorization_domain = NULL;
+
 	if (priv->message != NULL)
 		g_object_unref (priv->message);
 	priv->message = NULL;
@@ -457,6 +483,9 @@ gdata_upload_stream_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_SERVICE:
 			g_value_set_object (value, priv->service);
 			break;
+		case PROP_AUTHORIZATION_DOMAIN:
+			g_value_set_object (value, priv->authorization_domain);
+			break;
 		case PROP_METHOD:
 			g_value_set_string (value, priv->method);
 			break;
@@ -491,6 +520,9 @@ gdata_upload_stream_set_property (GObject *object, guint property_id, const GVal
 		case PROP_SERVICE:
 			priv->service = g_value_dup_object (value);
 			priv->session = _gdata_service_get_session (priv->service);
+			break;
+		case PROP_AUTHORIZATION_DOMAIN:
+			priv->authorization_domain = g_value_dup_object (value);
 			break;
 		case PROP_METHOD:
 			priv->method = g_value_dup_string (value);
@@ -965,6 +997,7 @@ create_network_thread (GDataUploadStream *self, GError **error)
 /**
  * gdata_upload_stream_new:
  * @service: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain to authorize the upload, or %NULL
  * @method: the HTTP method to use
  * @upload_uri: the URI to upload
  * @entry: (allow-none): the entry to upload as metadata, or %NULL
@@ -997,13 +1030,14 @@ create_network_thread (GDataUploadStream *self, GError **error)
  *
  * Return value: a new #GOutputStream, or %NULL; unref with g_object_unref()
  *
- * Since: 0.8.0
+ * Since: 0.9.0
  **/
 GOutputStream *
-gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar *upload_uri, GDataEntry *entry,
+gdata_upload_stream_new (GDataService *service, GDataAuthorizationDomain *domain, const gchar *method, const gchar *upload_uri, GDataEntry *entry,
                          const gchar *slug, const gchar *content_type, GCancellable *cancellable)
 {
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
 	g_return_val_if_fail (method != NULL, NULL);
 	g_return_val_if_fail (upload_uri != NULL, NULL);
 	g_return_val_if_fail (entry == NULL || GDATA_IS_ENTRY (entry), NULL);
@@ -1012,8 +1046,16 @@ gdata_upload_stream_new (GDataService *service, const gchar *method, const gchar
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 
 	/* Create the upload stream */
-	return G_OUTPUT_STREAM (g_object_new (GDATA_TYPE_UPLOAD_STREAM, "method", method, "upload-uri", upload_uri, "service", service,
-	                                      "entry", entry, "slug", slug, "content-type", content_type, "cancellable", cancellable, NULL));
+	return G_OUTPUT_STREAM (g_object_new (GDATA_TYPE_UPLOAD_STREAM,
+	                                      "method", method,
+	                                      "upload-uri", upload_uri,
+	                                      "service", service,
+	                                      "authorization-domain", domain,
+	                                      "entry", entry,
+	                                      "slug", slug,
+	                                      "content-type", content_type,
+	                                      "cancellable", cancellable,
+	                                      NULL));
 }
 
 /**
@@ -1073,9 +1115,9 @@ gdata_upload_stream_get_response (GDataUploadStream *self, gssize *length)
  * gdata_upload_stream_get_service:
  * @self: a #GDataUploadStream
  *
- * Gets the service used to authenticate the upload, as passed to gdata_upload_stream_new().
+ * Gets the service used to authorize the upload, as passed to gdata_upload_stream_new().
  *
- * Return value: (transfer none): the #GDataService used to authenticate the upload
+ * Return value: (transfer none): the #GDataService used to authorize the upload
  *
  * Since: 0.5.0
  **/
@@ -1084,6 +1126,24 @@ gdata_upload_stream_get_service (GDataUploadStream *self)
 {
 	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (self), NULL);
 	return self->priv->service;
+}
+
+/**
+ * gdata_upload_stream_get_authorization_domain:
+ * @self: a #GDataUploadStream
+ *
+ * Gets the authorization domain used to authorize the upload, as passed to gdata_upload_stream_new(). It may be %NULL if authorization is not
+ * needed for the upload.
+ *
+ * Return value: (transfer none) (allow-none): the #GDataAuthorizationDomain used to authorize the upload, or %NULL
+ *
+ * Since: 0.9.0
+ */
+GDataAuthorizationDomain *
+gdata_upload_stream_get_authorization_domain (GDataUploadStream *self)
+{
+	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (self), NULL);
+	return self->priv->authorization_domain;
 }
 
 /**
