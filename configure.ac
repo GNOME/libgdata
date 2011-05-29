@@ -33,6 +33,7 @@ AC_PATH_PROG([GLIB_MKENUMS],[glib-mkenums])
 GLIB_REQS=2.19.0
 GIO_REQS=2.17.3
 SOUP_REQS=2.26.1
+OAUTH_REQS=0.9.4
 
 # Before making a release, the GDATA_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:
 #
@@ -58,7 +59,7 @@ AC_SUBST(GDATA_API_VERSION)
 AC_SUBST(GDATA_API_VERSION_MAJOR)
 AC_SUBST(GDATA_API_VERSION_MINOR)
 
-pkg_modules="glib-2.0 >= $GLIB_REQS libxml-2.0 gthread-2.0 gio-2.0 >= $GIO_REQS libsoup-2.4 >= $SOUP_REQS"
+pkg_modules="glib-2.0 >= $GLIB_REQS libxml-2.0 gthread-2.0 gio-2.0 >= $GIO_REQS libsoup-2.4 >= $SOUP_REQS oauth >= $OAUTH_REQS"
 PKG_CHECK_MODULES(GDATA, [$pkg_modules])
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)

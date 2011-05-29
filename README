@@ -17,6 +17,7 @@ Dependencies
  * libxml-2.0
  * gio-2.0 >= 2.17.3
  * libsoup-2.4 >= 2.26.1
+ * liboauth >= 0.94
 
 If compiling with --enable-gnome (for GNOME support):
  * libsoup-gnome-2.4

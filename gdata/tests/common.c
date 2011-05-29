@@ -29,6 +29,9 @@
 /* %TRUE if there's no Internet connection, so we should only run local tests */
 static gboolean no_internet = FALSE;
 
+/* %TRUE if interactive tests should be skipped because we're running automatically (for example) */
+static gboolean no_interactive = FALSE;
+
 void
 gdata_test_init (int argc, char **argv)
 {
@@ -37,13 +40,16 @@ gdata_test_init (int argc, char **argv)
 	g_type_init ();
 	g_thread_init (NULL);
 
-	/* Parse the --no-internet option */
+	/* Parse the --no-internet and --no-interactive options */
 	for (i = 1; i < argc; i++) {
 		if (strcmp ("--no-internet", argv[i]) == 0 || strcmp ("-n", argv[i]) == 0) {
 			no_internet = TRUE;
 			argv[i] = (char*) "";
+		} else if (strcmp ("--no-interactive", argv[i]) == 0 || strcmp ("-i", argv[i]) == 0) {
+			no_interactive = TRUE;
+			argv[i] = (char*) "";
 		} else if (strcmp ("-?", argv[i]) == 0 || strcmp ("--help", argv[i]) == 0 || strcmp ("-h" , argv[i]) == 0) {
-			/* We have to override --help in order to document --no-internet */
+			/* We have to override --help in order to document --no-internet and --no-interactive */
 			printf ("Usage:\n"
 			          "  %s [OPTION...]\n\n"
 			          "Help Options:\n"
@@ -57,7 +63,8 @@ gdata_test_init (int argc, char **argv)
 			          "  -p TESTPATH                    Execute all tests matching TESTPATH\n"
 			          "  -m {perf|slow|thorough|quick}  Execute tests according modes\n"
 			          "  --debug-log                    Debug test logging output\n"
-			          "  -n, --no-internet              Only execute tests which don't require Internet connectivity\n",
+			          "  -n, --no-internet              Only execute tests which don't require Internet connectivity\n"
+			          "  -i, --no-interactive           Only execute tests which don't require user interaction\n",
 			          argv[0]);
 			exit (0);
 		}
@@ -83,6 +90,21 @@ gboolean
 gdata_test_internet (void)
 {
 	return (no_internet == FALSE) ? TRUE : FALSE;
+}
+
+/*
+ * gdata_test_interactive:
+ *
+ * Returns whether tests which require interactivity should be run.
+ *
+ * Return value: %TRUE if interactive tests should be run, %FALSE otherwise
+ *
+ * Since: 0.9.0
+ */
+gboolean
+gdata_test_interactive (void)
+{
+	return (no_interactive == FALSE) ? TRUE : FALSE;
 }
 
 typedef struct {

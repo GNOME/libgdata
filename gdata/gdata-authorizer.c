@@ -24,10 +24,10 @@
  * @include: gdata/gdata-authorizer.h
  *
  * The #GDataAuthorizer interface provides a uniform way to implement authentication and authorization processes for use by #GDataService<!-- -->s.
- * Client code will construct a new #GDataAuthorizer instance of their choosing, such as #GDataClientLoginAuthorizer, for the #GDataService<!-- -->s
- * which will be used by the client, then authenticates and authorizes with the #GDataAuthorizer instead of the #GDataService. The #GDataService then
- * uses the #GDataAuthorizer to authorize individual network requests using whatever authorization token was returned to the #GDataAuthorizer by the
- * Google Accounts service.
+ * Client code will construct a new #GDataAuthorizer instance of their choosing, such as #GDataClientLoginAuthorizer or #GDataOAuth1Authorizer, for
+ * the #GDataService<!-- -->s which will be used by the client, then authenticates and authorizes with the #GDataAuthorizer instead of the
+ * #GDataService. The #GDataService then uses the #GDataAuthorizer to authorize individual network requests using whatever authorization token was
+ * returned to the #GDataAuthorizer by the Google Accounts service.
  *
  * All #GDataAuthorizer implementations are expected to operate against a set of #GDataAuthorizationDomain<!-- -->s which are provided to the
  * authorizer at construction time. These domains specify which data domains the client expects to access using the #GDataService<!-- -->s they
@@ -39,7 +39,9 @@
  * listed in their <ulink type="http" url="http://code.google.com/apis/accounts/docs/GettingStarted.html">online documentation</ulink>:
  * <itemizedlist>
  *  <listitem>#GDataClientLoginAuthorizer for
- *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html">ClientLogin</ulink></listitem>
+ *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html">ClientLogin</ulink> (deprecated)</listitem>
+ *  <listitem>#GDataOAuth1Authorizer for
+ *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> (preferred)</listitem>
  * </itemizedlist>
  *
  * It is quite possible for clients to write their own #GDataAuthorizer implementation. For example, if a client uses OAuth 2.0 and handles

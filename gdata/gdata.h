@@ -38,6 +38,7 @@
 #include <gdata/gdata-authorizer.h>
 #include <gdata/gdata-authorization-domain.h>
 #include <gdata/gdata-client-login-authorizer.h>
+#include <gdata/gdata-oauth1-authorizer.h>
 
 /* Namespaces */
 

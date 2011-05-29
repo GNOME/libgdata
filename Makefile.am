@@ -161,7 +161,8 @@ gdata_headers = \
 	gdata/gdata-batchable.h		\
 	gdata/gdata-authorizer.h	\
 	gdata/gdata-authorization-domain.h	\
-	gdata/gdata-client-login-authorizer.h
+	gdata/gdata-client-login-authorizer.h	\
+	gdata/gdata-oauth1-authorizer.h
 # The following headers are private, and shouldn't be installed:
 private_headers = \
 	gdata/gdata-private.h		\
@@ -299,6 +300,7 @@ gdata_sources = \
 	gdata/gdata-authorizer.c	\
 	gdata/gdata-authorization-domain.c	\
 	gdata/gdata-client-login-authorizer.c	\
+	gdata/gdata-oauth1-authorizer.c		\
 	\
 	gdata/atom/gdata-author.c	\
 	gdata/atom/gdata-category.c	\
