@@ -175,7 +175,7 @@ pop_cancelled_cb (GCancellable *cancellable, CancelledData *data)
  * @data: return location for the popped data
  * @length_requested: the number of bytes of data requested
  * @reached_eof: return location for a value which is %TRUE when we've reached EOF, %FALSE otherwise, or %NULL
- * @cancellable: a #GCancellable, or %NULL
+ * @cancellable: (allow-none): a #GCancellable, or %NULL
  *
  * Pops up to @length_requested bytes off the head of the buffer and copies them to @data, which must be allocated by
  * the caller and have enough space to store at most @length_requested bytes of output.

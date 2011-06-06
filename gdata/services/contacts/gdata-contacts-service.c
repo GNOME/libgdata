@@ -226,8 +226,8 @@ gdata_contacts_service_get_primary_authorization_domain (void)
  * gdata_contacts_service_query_contacts:
  * @self: a #GDataContactsService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -271,8 +271,8 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
  * gdata_contacts_service_query_contacts_async: (skip)
  * @self: a #GDataContactsService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -316,7 +316,7 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
  * gdata_contacts_service_insert_contact:
  * @self: a #GDataContactsService
  * @contact: the #GDataContactsContact to insert
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Inserts @contact by uploading it to the online contacts service.
@@ -350,7 +350,7 @@ gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContacts
  * gdata_contacts_service_insert_contact_async:
  * @self: a #GDataContactsService
  * @contact: the #GDataContactsContact to insert
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when insertion is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -385,8 +385,8 @@ gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataCo
  * gdata_contacts_service_query_groups:
  * @self: a #GDataContactsService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -430,8 +430,8 @@ gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *que
  * gdata_contacts_service_query_groups_async: (skip)
  * @self: a #GDataContactsService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -475,7 +475,7 @@ gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuer
  * gdata_contacts_service_insert_group:
  * @self: a #GDataContactsService
  * @group: a #GDataContactsGroup to create on the server
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Inserts a new contact group described by @group. The user must be authenticated to use this function.
@@ -520,7 +520,7 @@ gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGr
  * gdata_contacts_service_insert_group_async:
  * @self: a #GDataContactsService
  * @group: the #GDataContactsGroup to insert
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when insertion is finished
  * @user_data: (closure): data to pass to the @callback function
  *

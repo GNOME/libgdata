@@ -283,8 +283,8 @@ gdata_calendar_service_get_primary_authorization_domain (void)
  * gdata_calendar_service_query_all_calendars:
  * @self: a #GDataCalendarService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -328,8 +328,8 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
  * gdata_calendar_service_query_all_calendars_async: (skip)
  * @self: a #GDataCalendarService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -372,8 +372,8 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
  * gdata_calendar_service_query_own_calendars:
  * @self: a #GDataCalendarService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -417,8 +417,8 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
  * gdata_calendar_service_query_own_calendars_async: (skip)
  * @self: a #GDataCalendarService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -462,8 +462,8 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
  * @self: a #GDataCalendarService
  * @calendar: a #GDataCalendarCalendar
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -512,8 +512,8 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
  * @self: a #GDataCalendarService
  * @calendar: a #GDataCalendarCalendar
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -568,7 +568,7 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
  * gdata_calendar_service_insert_event:
  * @self: a #GDataCalendarService
  * @event: the #GDataCalendarEvent to insert
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Inserts @event by uploading it to the online calendar service.
@@ -602,7 +602,7 @@ gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEv
  * gdata_calendar_service_insert_event_async:
  * @self: a #GDataCalendarService
  * @event: the #GDataCalendarEvent to insert
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when insertion is finished
  * @user_data: (closure): data to pass to the @callback function
  *

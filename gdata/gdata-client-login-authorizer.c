@@ -910,7 +910,7 @@ authenticate_thread (GSimpleAsyncResult *result, GDataClientLoginAuthorizer *aut
  * @self: a #GDataClientLoginAuthorizer
  * @username: the user's username
  * @password: the user's password
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -980,7 +980,7 @@ gdata_client_login_authorizer_authenticate_finish (GDataClientLoginAuthorizer *s
  * @self: a #GDataClientLoginAuthorizer
  * @username: the user's username
  * @password: the user's password
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Authenticates the #GDataClientLoginAuthorizer with the Google Accounts service using @username and @password and authorizes it against all the

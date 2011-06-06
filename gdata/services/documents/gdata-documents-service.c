@@ -323,8 +323,8 @@ gdata_documents_service_get_spreadsheet_authorization_domain (void)
  * gdata_documents_service_query_documents:
  * @self: a #GDataDocumentsService
  * @query: (allow-none): a #GDataDocumentsQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -375,9 +375,9 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
  * gdata_documents_service_query_documents_async: (skip)
  * @self: a #GDataDocumentsService
  * @query: (allow-none): a #GDataDocumentsQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
- * @progress_user_data: data to pass to the @progress_callback function
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -622,7 +622,7 @@ gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadS
  * @self: an authenticated #GDataDocumentsService
  * @entry: the #GDataDocumentsEntry to move
  * @folder: the #GDataDocumentsFolder to move @entry into
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Add the given @entry to the specified @folder, and return an updated #GDataDocumentsEntry for @entry. If the @entry is already in another folder, it
@@ -734,7 +734,7 @@ add_entry_to_folder_thread (GSimpleAsyncResult *result, GDataDocumentsService *s
  * @self: a #GDataDocumentsService
  * @entry: the #GDataDocumentsEntry to add to @folder
  * @folder: the #GDataDocumentsFolder to add @entry to
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the operation is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -809,7 +809,7 @@ gdata_documents_service_add_entry_to_folder_finish (GDataDocumentsService *self,
  * @self: a #GDataDocumentsService
  * @entry: the #GDataDocumentsEntry to remove
  * @folder: the #GDataDocumentsFolder from which we should remove @entry
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Remove the given @entry from @folder, and return an updated #GDataDocumentsEntry for @entry. @entry will remain a member of any other folders it's
@@ -934,7 +934,7 @@ remove_entry_from_folder_thread (GSimpleAsyncResult *result, GDataDocumentsServi
  * @self: a #GDataDocumentsService
  * @entry: the #GDataDocumentsEntry to remove from @folder
  * @folder: the #GDataDocumentsFolder to remove @entry from
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the operation is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *

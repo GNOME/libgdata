@@ -740,8 +740,8 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
  * @feed_uri: the feed URI to query, including the host name and protocol
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -866,8 +866,8 @@ _gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, cons
  * @feed_uri: the feed URI to query, including the host name and protocol
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -949,7 +949,7 @@ gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const
  * @entry_id: the entry ID of the desired entry
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry to build from the XML
- * @cancellable: a #GCancellable, or %NULL
+ * @cancellable: (allow-none): a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
  * Retrieves information about the single entry with the given @entry_id. @entry_id should be as returned by
@@ -1046,7 +1046,7 @@ query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GC
  * @entry_id: the entry ID of the desired entry
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @entry_type: a #GType for the #GDataEntry to build from the XML
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -1165,7 +1165,7 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @domain: (allow-none): the #GDataAuthorizationDomain the insertion operation falls under, or %NULL
  * @upload_uri: the URI to which the upload should be sent
  * @entry: the #GDataEntry to insert
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when insertion is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -1243,7 +1243,7 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
  * @domain: (allow-none): the #GDataAuthorizationDomain the insertion operation falls under, or %NULL
  * @upload_uri: the URI to which the upload should be sent
  * @entry: the #GDataEntry to insert
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Inserts @entry by uploading it to the online service at @upload_uri. For more information about the concept of inserting entries, see
@@ -1363,7 +1363,7 @@ update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @self: a #GDataService
  * @domain: (allow-none): the #GDataAuthorizationDomain the update operation falls under, or %NULL
  * @entry: the #GDataEntry to update
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the update is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -1438,7 +1438,7 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
  * @self: a #GDataService
  * @domain: (allow-none): the #GDataAuthorizationDomain the update operation falls under, or %NULL
  * @entry: the #GDataEntry to update
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Updates @entry by PUTting it to its <literal>edit</literal> link's URI. For more information about the concept of updating entries, see
@@ -1551,7 +1551,7 @@ delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * @self: a #GDataService
  * @domain: (allow-none): the #GDataAuthorizationDomain the deletion falls under, or %NULL
  * @entry: the #GDataEntry to delete
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when deletion is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -1621,7 +1621,7 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
  * @self: a #GDataService
  * @domain: (allow-none): the #GDataAuthorizationDomain the deletion falls under, or %NULL
  * @entry: the #GDataEntry to delete
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Deletes @entry from the server. For more information about the concept of deleting entries, see the

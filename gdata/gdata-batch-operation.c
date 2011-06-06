@@ -570,7 +570,7 @@ gdata_batch_operation_add_deletion (GDataBatchOperation *self, GDataEntry *entry
 /**
  * gdata_batch_operation_run:
  * @self: a #GDataBatchOperation
- * @cancellable: a #GCancellable, or %NULL
+ * @cancellable: (allow-none): a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
  * Run the #GDataBatchOperation synchronously. This will send all the operations in the batch operation to the server, and call their respective
@@ -713,7 +713,7 @@ run_thread (GSimpleAsyncResult *result, GDataBatchOperation *operation, GCancell
 /**
  * gdata_batch_operation_run_async:
  * @self: a #GDataBatchOperation
- * @cancellable: a #GCancellable, or %NULL
+ * @cancellable: (allow-none): a #GCancellable, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the batch operation is finished, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *

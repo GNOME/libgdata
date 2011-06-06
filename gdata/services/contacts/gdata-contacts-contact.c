@@ -3081,7 +3081,7 @@ gdata_contacts_contact_get_photo_etag (GDataContactsContact *self)
  * @service: a #GDataContactsService
  * @length: (out caller-allocates): return location for the image length, in bytes
  * @content_type: (out callee-allocates) (transfer full) (allow-none): return location for the image's content type, or %NULL; free with g_free()
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Downloads and returns the contact's photo, if they have one. If the contact doesn't
@@ -3200,7 +3200,7 @@ get_photo_thread (GSimpleAsyncResult *result, GDataContactsContact *contact, GCa
  * gdata_contacts_contact_get_photo_async:
  * @self: a #GDataContactsContact
  * @service: a #GDataContactsService
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the photo has been retrieved, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -3290,7 +3290,7 @@ gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResul
  * @data: (allow-none): the image data, or %NULL
  * @length: the image length, in bytes
  * @content_type: (allow-none): the content type of the image, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Sets the contact's photo to @data or, if @data is %NULL, deletes the contact's photo. @content_type must be specified if @data is non-%NULL.
@@ -3392,7 +3392,7 @@ set_photo_thread (GSimpleAsyncResult *result, GDataContactsContact *contact, GCa
  * @data: (allow-none): the image data, or %NULL
  * @length: the image length, in bytes
  * @content_type: (allow-none): the content type of the image, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the photo has been set, or %NULL
  * @user_data: (closure): data to pass to the @callback function
  *

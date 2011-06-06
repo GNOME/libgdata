@@ -218,7 +218,7 @@ create_uri (GDataPicasaWebService *self, const gchar *username, const gchar *typ
  * gdata_picasaweb_service_get_user:
  * @self: a #GDataPicasaWebService
  * @username: (allow-none): the username of the user whose information you wish to retrieve, or %NULL for the currently authenticated user.
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Queries the service to return the user specified by @username.
@@ -263,8 +263,8 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
  * @self: a #GDataPicasaWebService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @username: (allow-none): the username of the user whose albums you wish to retrieve, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -319,8 +319,8 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
  * @self: a #GDataPicasaWebService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @username: (allow-none): the username of the user whose albums you wish to retrieve, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -392,8 +392,8 @@ get_query_files_uri (GDataPicasaWebAlbum *album, GError **error)
  * @self: a #GDataPicasaWebService
  * @album: (allow-none): a #GDataPicasaWebAlbum from which to retrieve the files, or %NULL
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
@@ -432,8 +432,8 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
  * @self: a #GDataPicasaWebService
  * @album: (allow-none): a #GDataPicasaWebAlbum from which to retrieve the files, or %NULL
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -583,7 +583,7 @@ gdata_picasaweb_service_finish_file_upload (GDataPicasaWebService *self, GDataUp
  * gdata_picasaweb_service_insert_album:
  * @self: a #GDataPicasaWebService
  * @album: a #GDataPicasaWebAlbum to create on the server
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Inserts a new album described by @album. A user must be
@@ -624,7 +624,7 @@ gdata_picasaweb_service_insert_album (GDataPicasaWebService *self, GDataPicasaWe
  * gdata_picasaweb_service_insert_album_async:
  * @self: a #GDataPicasaWebService
  * @album: a #GDataPicasaWebAlbum to create on the server
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when insertion is finished
  * @user_data: (closure): data to pass to the @callback function
  *

@@ -95,8 +95,8 @@ get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler
  * gdata_access_handler_get_rules_async: (skip)
  * @self: a #GDataAccessHandler
  * @service: a #GDataService
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: a #GDataQueryProgressCallback to call when a rule is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when a rule is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
@@ -140,8 +140,8 @@ gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *se
  * gdata_access_handler_get_rules:
  * @self: a #GDataAccessHandler
  * @service: a #GDataService
- * @cancellable: optional #GCancellable object, or %NULL
- * @progress_callback: (scope call): a #GDataQueryProgressCallback to call when a rule is loaded, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when a rule is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
