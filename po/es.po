@@ -1,8 +1,8 @@
 # Spanish translation for libgdata.master.es.po
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2009, 2010, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
@@ -10,13 +10,13 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-06-05 15:50+0000\n"
-"PO-Revision-Date: 2011-06-06 20:54+0200\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
+"PO-Revision-Date: 2011-06-06 12:58+0200\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:572
 #: ../gdata/gdata-oauth1-authorizer.c:770
@@ -138,7 +138,7 @@ msgstr "El servidor rechazó la solicitud de credenciales temporales."
 #. * or the user denied authorization to the token on the authorization web page.
 #: ../gdata/gdata-oauth1-authorizer.c:1007
 msgid "Access was denied by the user or server."
-msgstr "El servidor o el usuario denegaron el acceso."
+msgstr ""
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -444,8 +444,8 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
-"Código de error «%s» desconocido en el dominio «%s», recibido con la "
-"ubicación «%s»."
+"Código de error «%s» desconocido en el dominio «%s», recibido con la ubicación "
+"«%s»."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
