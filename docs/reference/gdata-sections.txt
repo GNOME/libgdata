@@ -2254,7 +2254,7 @@ GDATA_OAUTH1_AUTHORIZER_CLASS
 GDATA_IS_OAUTH1_AUTHORIZER
 GDATA_IS_OAUTH1_AUTHORIZER_CLASS
 GDATA_OAUTH1_AUTHORIZER_GET_CLASS
-gdata_OAUTH1_authorizer_get_type
+gdata_oauth1_authorizer_get_type
 <SUBSECTION Private>
-GDataClientLoginAuthorizerPrivate
+GDataOAuth1AuthorizerPrivate
 </SECTION>
