@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-26 10:40+0200\n"
-"PO-Revision-Date: 2011-03-26 11:41+0200\n"
+"POT-Creation-Date: 2011-06-10 08:08+0300\n"
+"PO-Revision-Date: 2011-06-10 08:09+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
+"Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,9 +20,127 @@ msgstr ""
 "X-Poedit-Country: ISRAEL\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
+#: ../gdata/gdata-client-login-authorizer.c:572
+#: ../gdata/gdata-oauth1-authorizer.c:770
+#: ../gdata/gdata-oauth1-authorizer.c:1029
+msgid "The server returned a malformed response."
+msgstr "השרת החזיר תגובה פגומה."
+
+#: ../gdata/gdata-client-login-authorizer.c:592 ../gdata/gdata-service.c:308
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "לא ניתן להתחבר לשרת השירות."
+
+#: ../gdata/gdata-client-login-authorizer.c:597 ../gdata/gdata-service.c:313
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "לא ניתן להתחבר לשרת המתווך."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:603 ../gdata/gdata-service.c:319
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+"הכותרת או הכתובת של הבקשה שגויים או שנוסף משתנה בלתי תקני שאינו נתמך: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:609 ../gdata/gdata-service.c:325
+#, c-format
+msgid "Authentication required: %s"
+msgstr "נדרשת הזדהות: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:614 ../gdata/gdata-service.c:330
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "המשאב המבוקש לא נמצא: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:620 ../gdata/gdata-service.c:336
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "הרשומה עברה שינויים מאז שהתקבלה: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:632 ../gdata/gdata-service.c:350
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "התקבל קוד השגיאה %u בעת ההזדהות: %s"
+
+#: ../gdata/gdata-client-login-authorizer.c:725
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "יש לעבור מבחן טיורינג כדי להיכנס."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:763
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "חשבון זה דורש ססמה ייעודית ליישום. (%s)"
+
+#: ../gdata/gdata-client-login-authorizer.c:770
+msgid "Your username or password were incorrect."
+msgstr "שם המשתמש או הססמה שלך שגויים."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:791
+#, c-format
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "כתובת הדוא״ל של החשבון שלך לא אומתה. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:796
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr "הסכמת לתנאי השימוש בשירות. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:802
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"חשבון זה עבר הגירה. יש להיכנס אליו כדי לקבל את שם המשתמש והססמה החדשים שלך. "
+"(%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:807
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "חשבון זה נמחק. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:812
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "חשבון זה נוטרל. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:817
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "הגישה של חשבון זה לשירות נוטרלה. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:822
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "השירות אינו זמין לעת עתה. (%s)"
+
+#: ../gdata/gdata-download-stream.c:603 ../gdata/gdata-upload-stream.c:785
 msgid "Stream is already closed"
 msgstr "התזרים כבר נסגר"
+
+#: ../gdata/gdata-oauth1-authorizer.c:745
+msgid "The server rejected the temporary credentials request."
+msgstr "השרת דחה את הבקשה לפרטי זיהוי זמניים."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: ../gdata/gdata-oauth1-authorizer.c:1007
+msgid "Access was denied by the user or server."
+msgstr "הגישה נדחתה על ידי המשתמש או השרת."
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -116,170 +235,64 @@ msgstr "רכיב הכרחי (%s) לא נמצא."
 msgid "A singleton element (%s) was duplicated."
 msgstr "פריט יחידני (%s) שוחזר."
 
-#: ../gdata/gdata-service.c:430
-msgid "The server returned a malformed response."
-msgstr "השרת החזיר תגובה פגומה."
-
-#: ../gdata/gdata-service.c:473
-#, c-format
-msgid "Cannot connect to the service's server."
-msgstr "לא ניתן להתחבר לשרת השירות."
-
-#: ../gdata/gdata-service.c:478
-#, c-format
-msgid "Cannot connect to the proxy server."
-msgstr "לא ניתן להתחבר לשרת המתווך."
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:484
-#, c-format
-msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr ""
-"הכותרת או הכתובת של הבקשה שגויים או שנוסף משתנה בלתי תקני שאינו נתמך: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:490
-#, c-format
-msgid "Authentication required: %s"
-msgstr "נדרשת הזדהות: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:495
-#, c-format
-msgid "The requested resource was not found: %s"
-msgstr "המשאב המבוקש לא נמצא: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:501
-#, c-format
-msgid "The entry has been modified since it was downloaded: %s"
-msgstr "הרשומה עברה שינויים מאז שהתקבלה: %s"
-
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:515
-#, c-format
-msgid "Error code %u when authenticating: %s"
-msgstr "התקבל קוד השגיאה %u בעת ההזדהות: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:521
+#: ../gdata/gdata-service.c:356
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "התקבל קוד השגיאה %u בעת ביצוע השאילתה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:527
+#: ../gdata/gdata-service.c:362
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "התקבל קוד השגיאה %u בעת הוספת רשומה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:533
+#: ../gdata/gdata-service.c:368
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "התקבל קוד השגיאה %u בעת עדכון רשומה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:539
+#: ../gdata/gdata-service.c:374
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "התקבל קוד השגיאה %u בעת מחיקת רשומה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:545
+#: ../gdata/gdata-service.c:380
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "התקבל קוד השגיאה %u במהלך הורדה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:551
+#: ../gdata/gdata-service.c:386
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "התקבל קוד השגיאה %u במהלך העלאה: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:557
+#: ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "התקבל קוד השגיאה %u במהלך פעולה הכמותית: %s"
 
-#: ../gdata/gdata-service.c:686
-msgid "A CAPTCHA must be filled out to log in."
-msgstr "יש לעבור מבחן טיורינג כדי להיכנס."
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:721
-#, c-format
-msgid "This account requires an application-specific password. (%s)"
-msgstr "חשבון זה דורש ססמה ייעודית ליישום. (%s)"
-
-#: ../gdata/gdata-service.c:728
-msgid "Your username or password were incorrect."
-msgstr "שם המשתמש או הססמה שלך שגויים."
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:747
-#, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "כתובת הדוא״ל של החשבון שלך לא אומתה. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:752
-#, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "הסכמת לתנאי השימוש בשירות. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:758
-#, c-format
-msgid ""
-"This account has been migrated. Please log in online to receive your new "
-"username and password. (%s)"
-msgstr ""
-"חשבון זה עבר הגירה. יש להיכנס אליו כדי לקבל את שם המשתמש והססמה החדשים שלך. "
-"(%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:763
-#, c-format
-msgid "This account has been deleted. (%s)"
-msgstr "חשבון זה נמחק. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:768
-#, c-format
-msgid "This account has been disabled. (%s)"
-msgstr "חשבון זה נוטרל. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:773
-#, c-format
-msgid "This account's access to this service has been disabled. (%s)"
-msgstr "הגישה של חשבון זה לשירות נוטרלה. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:778
-#, c-format
-msgid "This service is not available at the moment. (%s)"
-msgstr "השירות אינו זמין לעת עתה. (%s)"
-
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1083
+#: ../gdata/gdata-service.c:666
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "כתובת הפנייה שגויה: %s"
 
-#: ../gdata/gdata-service.c:1659
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
-#: ../gdata/services/youtube/gdata-youtube-service.c:778
+#: ../gdata/gdata-service.c:1289
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:524
+#: ../gdata/services/youtube/gdata-youtube-service.c:815
 msgid "The entry has already been inserted."
 msgstr "הרשומה כבר נוספה."
 
@@ -289,43 +302,43 @@ msgstr "הרשומה כבר נוספה."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:394
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "התוכן של רכיב מסוג %s‏ (\"%s\") לא הופיעה במבנה RGB הקסדצימלי."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:281
-#: ../gdata/services/calendar/gdata-calendar-service.c:326
+#: ../gdata/services/calendar/gdata-calendar-service.c:315
+#: ../gdata/services/calendar/gdata-calendar-service.c:361
 msgid "You must be authenticated to query all calendars."
 msgstr "עליך להזדהות כדי לתשאל את כל היומנים."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:368
-#: ../gdata/services/calendar/gdata-calendar-service.c:413
-#: ../gdata/services/calendar/gdata-calendar-service.c:454
-#: ../gdata/services/calendar/gdata-calendar-service.c:510
+#: ../gdata/services/calendar/gdata-calendar-service.c:404
+#: ../gdata/services/calendar/gdata-calendar-service.c:450
+#: ../gdata/services/calendar/gdata-calendar-service.c:492
+#: ../gdata/services/calendar/gdata-calendar-service.c:549
 msgid "You must be authenticated to query your own calendars."
 msgstr "עליך להזדהות כדי לתשאל את היומנים שלך."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:463
-#: ../gdata/services/calendar/gdata-calendar-service.c:519
+#: ../gdata/services/calendar/gdata-calendar-service.c:501
+#: ../gdata/services/calendar/gdata-calendar-service.c:558
 msgid "The calendar did not have a content URI."
 msgstr "ליומן לא הייתה כתובת לתוכן."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:229
-#: ../gdata/services/contacts/gdata-contacts-service.c:275
+#: ../gdata/services/contacts/gdata-contacts-service.c:258
+#: ../gdata/services/contacts/gdata-contacts-service.c:305
 msgid "You must be authenticated to query contacts."
 msgstr "עליך להזדהות כדי לתשאל משתמשים."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:384
-#: ../gdata/services/contacts/gdata-contacts-service.c:430
+#: ../gdata/services/contacts/gdata-contacts-service.c:417
+#: ../gdata/services/contacts/gdata-contacts-service.c:464
 msgid "You must be authenticated to query contact groups."
 msgstr "עליך להזדהות כדי לתשאל קבוצות משתמשים."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:466
+#: ../gdata/services/contacts/gdata-contacts-service.c:500
 msgid "The group has already been inserted."
 msgstr "הקבוצה כבר נוספה."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:472
+#: ../gdata/services/contacts/gdata-contacts-service.c:507
 msgid "You must be authenticated to insert a group."
 msgstr "עליך להזדהות כדי להוסיף קבוצה."
 
@@ -333,65 +346,65 @@ msgstr "עליך להזדהות כדי להוסיף קבוצה."
 msgid "You must be authenticated to download documents."
 msgstr "עליך להזדהות כדי להוריד מסמכים."
 
-#: ../gdata/services/documents/gdata-documents-service.c:369
-#: ../gdata/services/documents/gdata-documents-service.c:420
+#: ../gdata/services/documents/gdata-documents-service.c:357
+#: ../gdata/services/documents/gdata-documents-service.c:409
 msgid "You must be authenticated to query documents."
 msgstr "עליך להזדהות כדי לתשאל מסמכים."
 
-#: ../gdata/services/documents/gdata-documents-service.c:527
+#: ../gdata/services/documents/gdata-documents-service.c:484
 msgid "You must be authenticated to upload documents."
 msgstr "עליך להזדהות כדי להעלות מסמכים."
 
-#: ../gdata/services/documents/gdata-documents-service.c:533
+#: ../gdata/services/documents/gdata-documents-service.c:490
 msgid "The document has already been uploaded."
 msgstr "המסמך כבר הועלה."
 
-#: ../gdata/services/documents/gdata-documents-service.c:587
+#: ../gdata/services/documents/gdata-documents-service.c:545
 msgid "You must be authenticated to update documents."
 msgstr "עליך להזדהות כדי להעלות מסמכים."
 
-#: ../gdata/services/documents/gdata-documents-service.c:650
+#: ../gdata/services/documents/gdata-documents-service.c:608
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "לא ניתן לזהות את סוג התוכן של המסמך שסופק ('%s')."
 
-#: ../gdata/services/documents/gdata-documents-service.c:698
-#: ../gdata/services/documents/gdata-documents-service.c:882
+#: ../gdata/services/documents/gdata-documents-service.c:657
+#: ../gdata/services/documents/gdata-documents-service.c:842
 msgid "You must be authenticated to move documents and folders."
 msgstr "עליך להזדהות כדי להעביר מסמכים ותיקיות."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "עליך לציין שם משתמש או להזדהות כדי לתשאל משתמש."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:353
 msgid "Query parameter not allowed for albums."
 msgstr "משתנה בשאילתה לא מורשה עבור אלבומים."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:361
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "עליך לציין שם משתמש או להזדהות כדי לבצע שאילתות מול כל האלבומים."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:379
 msgid "The album did not have a feed link."
 msgstr "לאלבום לא היה קישור להזנה."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:531
 msgid "You must be authenticated to upload a file."
 msgstr "עליך להזדהות כדי להעלות קובץ."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:607
 msgid "The album has already been inserted."
 msgstr "האלבום כבר נוסף."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
 msgid "You must be authenticated to insert an album."
 msgstr "עליך להזדהות כדי להוסיף אלבום."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:416
+#: ../gdata/services/youtube/gdata-youtube-service.c:417
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "שירות זה אינו זמין לעת עתה."
@@ -429,11 +442,11 @@ msgstr "התקבל קוד שגיאה בלתי ידוע \"%s\" במתחם \"%s\" 
 msgid "Unknown and unparsable error received."
 msgstr "התקבלה שגיאה בלתי ידועה ובלתי ניתנת לפענוח."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:682
-#: ../gdata/services/youtube/gdata-youtube-service.c:729
+#: ../gdata/services/youtube/gdata-youtube-service.c:712
+#: ../gdata/services/youtube/gdata-youtube-service.c:764
 msgid "The video did not have a related videos <link>."
 msgstr "לסרטון הווידאו לא היה <link> לסרטוני וידאו קשורים."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:784
+#: ../gdata/services/youtube/gdata-youtube-service.c:822
 msgid "You must be authenticated to upload a video."
 msgstr "עליך להזדהות כדי להעלות וידאו."
