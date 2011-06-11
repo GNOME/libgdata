@@ -214,7 +214,6 @@ struct _GDataContactsContactPrivate {
 enum {
 	PROP_EDITED = 1,
 	PROP_DELETED,
-	PROP_HAS_PHOTO,
 	PROP_NAME,
 	PROP_NICKNAME,
 	PROP_BIRTHDAY,
@@ -285,21 +284,6 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	                                                       "Deleted", "Whether the entry has been deleted.",
 	                                                       FALSE,
 	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataContactsContact:has-photo:
-	 *
-	 * Whether the contact has a photo.
-	 *
-	 * Since: 0.4.0
-	 * Deprecated: 0.9.0: Use #GDataContactsContact:photo-etag and gdata_contacts_contact_get_photo_etag() instead. It is %NULL exactly when this
-	 * would've been %FALSE.
-	 **/
-	g_object_class_install_property (gobject_class, PROP_HAS_PHOTO,
-	                                 g_param_spec_boolean ("has-photo",
-	                                                       "Has photo?", "Whether the contact has a photo.",
-	                                                       FALSE,
-	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataContactsContact:photo-etag:
@@ -664,9 +648,6 @@ gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue 
 			break;
 		case PROP_DELETED:
 			g_value_set_boolean (value, priv->deleted);
-			break;
-		case PROP_HAS_PHOTO:
-			g_value_set_boolean (value, (priv->photo_etag != NULL) ? TRUE : FALSE);
 			break;
 		case PROP_PHOTO_ETAG:
 			g_value_set_string (value, priv->photo_etag);
@@ -3038,25 +3019,6 @@ gdata_contacts_contact_is_deleted (GDataContactsContact *self)
 }
 
 /**
- * gdata_contacts_contact_has_photo:
- * @self: a #GDataContactsContact
- *
- * Returns whether the contact has a photo attached to their contact entry. If the contact
- * does have a photo, it can be returned using gdata_contacts_contact_get_photo().
- *
- * Return value: %TRUE if the contact has a photo, %FALSE otherwise
- * Deprecated: 0.9.0: Use gdata_contacts_contact_get_photo_etag() instead; it returns %NULL exactly when this function would've returned %FALSE.
- *
- * Since: 0.4.0
- **/
-gboolean
-gdata_contacts_contact_has_photo (GDataContactsContact *self)
-{
-	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
-	return (self->priv->photo_etag != NULL) ? TRUE : FALSE;
-}
-
-/**
  * gdata_contacts_contact_get_photo_etag:
  * @self: a #GDataContactsContact
  *
@@ -3085,7 +3047,7 @@ gdata_contacts_contact_get_photo_etag (GDataContactsContact *self)
  * @error: a #GError, or %NULL
  *
  * Downloads and returns the contact's photo, if they have one. If the contact doesn't
- * have a photo (i.e. gdata_contacts_contact_has_photo() returns %FALSE), %NULL is returned, but
+ * have a photo (i.e. gdata_contacts_contact_get_photo_etag() returns %NULL), %NULL is returned, but
  * no error is set in @error.
  *
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
@@ -3245,7 +3207,7 @@ gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataContact
  * @error: a #GError, or %NULL
  *
  * Finishes an asynchronous contact photo retrieval operation started with gdata_contacts_contact_get_photo_async(). If the contact doesn't have a
- * photo (i.e. gdata_contacts_contact_has_photo() returns %FALSE), %NULL is returned, but no error is set in @error.
+ * photo (i.e. gdata_contacts_contact_get_photo_etag() returns %NULL), %NULL is returned, but no error is set in @error.
  *
  * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
@@ -3311,7 +3273,7 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsServi
 	GDataLink *_link;
 	SoupMessage *message;
 	guint status;
-	gboolean adding_photo = FALSE, deleting_photo = FALSE;
+	gboolean deleting_photo = FALSE;
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
 	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (service), FALSE);
@@ -3319,9 +3281,7 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsServi
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	if (self->priv->photo_etag == NULL && data != NULL)
-		adding_photo = TRUE;
-	else if (self->priv->photo_etag != NULL && data == NULL)
+	if (self->priv->photo_etag != NULL && data == NULL)
 		deleting_photo = TRUE;
 
 	/* Get the photo URI */
@@ -3355,10 +3315,9 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsServi
 	/* Update the stored photo ETag */
 	g_free (self->priv->photo_etag);
 	self->priv->photo_etag = g_strdup (soup_message_headers_get_one (message->response_headers, "ETag"));
-	g_object_unref (message);
+	g_object_notify (G_OBJECT (self), "photo-etag");
 
-	if (adding_photo == TRUE || deleting_photo == TRUE)
-		g_object_notify (G_OBJECT (self), "has-photo");
+	g_object_unref (message);
 
 	return TRUE;
 }
