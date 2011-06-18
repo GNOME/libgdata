@@ -118,6 +118,7 @@ GDataFeed *gdata_youtube_service_query_standard_feed (GDataYouTubeService *self,
 void gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDataYouTubeStandardFeedType feed_type, GDataQuery *query,
                                                       GCancellable *cancellable,
                                                       GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                      GDestroyNotify destroy_progress_user_data,
                                                       GAsyncReadyCallback callback, gpointer user_data);
 
 GDataFeed *gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query,
@@ -125,6 +126,7 @@ GDataFeed *gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQ
                                                GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery *query,
                                                GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                               GDestroyNotify destroy_progress_user_data,
                                                GAsyncReadyCallback callback, gpointer user_data);
 
 GDataFeed *gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVideo *video, GDataQuery *query,
@@ -132,6 +134,7 @@ GDataFeed *gdata_youtube_service_query_related (GDataYouTubeService *self, GData
                                                 GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTubeVideo *video, GDataQuery *query,
                                                 GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                GDestroyNotify destroy_progress_user_data,
                                                 GAsyncReadyCallback callback, gpointer user_data);
 
 GDataUploadStream *gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, const gchar *slug,

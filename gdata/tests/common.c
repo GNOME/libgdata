@@ -566,3 +566,29 @@ gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboo
 
 	return success;
 }
+
+/* Common code for tests of async query functions that have progress callbacks */
+
+void
+gdata_test_async_progress_callback (GDataEntry *entry, guint entry_key, guint entry_count, GDataAsyncProgressClosure *data)
+{
+    /* No-op */
+}
+
+void
+gdata_test_async_progress_closure_free (GDataAsyncProgressClosure *data)
+{
+    /* Check that this callback is called first */
+    g_assert_cmpuint (data->async_ready_notify_count, ==, 0);
+    data->progress_destroy_notify_count++;
+}
+
+void
+gdata_test_async_progress_finish_callback (GObject *service, GAsyncResult *res, GDataAsyncProgressClosure *data)
+{
+    /* Check that this callback is called second */
+    g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+    data->async_ready_notify_count++;
+
+    g_main_loop_quit (data->main_loop);
+}

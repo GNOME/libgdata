@@ -121,6 +121,9 @@ Adding public API
    See http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html for information about libtool's versioning system. See also the
    “Versioning” section below.
 
+ - Any async function which uses non-async-scope callbacks as well as the async ready callback should provide GDestroyNotify callbacks for destroying
+   the user data for those callbacks. See https://bugzilla.gnome.org/show_bug.cgi?id=649728 for details.
+
 Choosing function names
 =======================
 

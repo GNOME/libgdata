@@ -315,13 +315,15 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
 }
 
 /**
- * gdata_picasaweb_service_query_all_albums_async: (skip)
+ * gdata_picasaweb_service_query_all_albums_async:
  * @self: a #GDataPicasaWebService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @username: (allow-none): the username of the user whose albums you wish to retrieve, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -332,12 +334,12 @@ gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuer
  * For more details, see gdata_picasaweb_service_query_all_albums(), which is the synchronous version of
  * this function, and gdata_service_query_async(), which is the base asynchronous query function.
  *
- * Since: 0.4.0
+ * Since: 0.9.1
  **/
 void
 gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDataQuery *query, const gchar *username,
                                                 GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-                                                GAsyncReadyCallback callback, gpointer user_data)
+                                                GDestroyNotify destroy_progress_user_data, GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *uri;
 
@@ -364,7 +366,7 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 
 	/* Schedule the async query */
 	gdata_service_query_async (GDATA_SERVICE (self), get_picasaweb_authorization_domain (), uri, query, GDATA_TYPE_PICASAWEB_ALBUM, cancellable,
-	                           progress_callback, progress_user_data, callback, user_data);
+	                           progress_callback, progress_user_data, destroy_progress_user_data, callback, user_data);
 	g_free (uri);
 }
 
@@ -428,13 +430,15 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
 }
 
 /**
- * gdata_picasaweb_service_query_files_async: (skip)
+ * gdata_picasaweb_service_query_files_async:
  * @self: a #GDataPicasaWebService
  * @album: (allow-none): a #GDataPicasaWebAlbum from which to retrieve the files, or %NULL
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -445,12 +449,12 @@ gdata_picasaweb_service_query_files (GDataPicasaWebService *self, GDataPicasaWeb
  * For more details, see gdata_picasaweb_service_query_files(), which is the synchronous version of this function, and gdata_service_query_async(),
  * which is the base asynchronous query function.
  *
- * Since: 0.8.0
+ * Since: 0.9.1
  **/
 void
 gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPicasaWebAlbum *album, GDataQuery *query, GCancellable *cancellable,
-                                           GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GAsyncReadyCallback callback,
-                                           gpointer user_data)
+                                           GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                           GDestroyNotify destroy_progress_user_data, GAsyncReadyCallback callback, gpointer user_data)
 {
 	const gchar *request_uri;
 	GError *child_error = NULL;
@@ -469,7 +473,8 @@ gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPic
 	}
 
 	gdata_service_query_async (GDATA_SERVICE (self), get_picasaweb_authorization_domain (), request_uri, GDATA_QUERY (query),
-	                           GDATA_TYPE_PICASAWEB_FILE, cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           GDATA_TYPE_PICASAWEB_FILE, cancellable, progress_callback, progress_user_data, destroy_progress_user_data,
+	                           callback, user_data);
 }
 
 /**

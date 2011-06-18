@@ -169,7 +169,7 @@ GDataFeed *gdata_service_query (GDataService *self, GDataAuthorizationDomain *do
                                 GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
                                 GCancellable *cancellable,
-                                GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GDestroyNotify destroy_progress_user_data,
                                 GAsyncReadyCallback callback, gpointer user_data);
 GDataFeed *gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 

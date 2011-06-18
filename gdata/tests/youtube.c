@@ -148,11 +148,34 @@ test_query_standard_feed_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_youtube_service_query_standard_feed_async (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL,
+	gdata_youtube_service_query_standard_feed_async (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL,
 							 NULL, NULL, NULL, (GAsyncReadyCallback) test_query_standard_feed_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+}
+
+static void
+test_query_standard_feed_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	g_assert (service != NULL);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_youtube_service_query_standard_feed_async (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL,
+	                                                 (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                                 data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                                 (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 static GDataYouTubeVideo *
@@ -268,11 +291,38 @@ test_query_related_async (gconstpointer service)
 
 	video = get_video_for_related ();
 	gdata_youtube_service_query_related_async (GDATA_YOUTUBE_SERVICE (service), video, NULL, NULL, NULL,
-						   NULL, (GAsyncReadyCallback) test_query_related_async_cb, main_loop);
+						   NULL, NULL, (GAsyncReadyCallback) test_query_related_async_cb, main_loop);
 	g_object_unref (video);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+}
+
+static void
+test_query_related_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+	GDataYouTubeVideo *video;
+
+	g_assert (service != NULL);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+	video = get_video_for_related ();
+
+	gdata_youtube_service_query_related_async (GDATA_YOUTUBE_SERVICE (service), video, NULL, NULL,
+	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_object_unref (video);
+
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 typedef struct {
@@ -1459,8 +1509,10 @@ main (int argc, char *argv[])
 
 		g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
 		g_test_add_data_func ("/youtube/query/standard_feed_async", service, test_query_standard_feed_async);
+		g_test_add_data_func ("/youtube/query/standard_feed_async_progress_closure", service, test_query_standard_feed_async_progress_closure);
 		g_test_add_data_func ("/youtube/query/related", service, test_query_related);
 		g_test_add_data_func ("/youtube/query/related_async", service, test_query_related_async);
+		g_test_add_data_func ("/youtube/query/related_async_progress_closure", service, test_query_related_async_progress_closure);
 
 		g_test_add ("/youtube/upload/simple", UploadData, service, setup_upload, test_upload_simple, teardown_upload);
 		g_test_add ("/youtube/upload/async", UploadAsyncData, service, setup_upload_async, test_upload_async, teardown_upload_async);

@@ -157,10 +157,33 @@ test_query_all_calendars_async (gconstpointer service)
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_calendar_service_query_all_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL,
-							  NULL, (GAsyncReadyCallback) test_query_all_calendars_async_cb, main_loop);
+							  NULL, NULL, (GAsyncReadyCallback) test_query_all_calendars_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+}
+
+static void
+test_query_all_calendars_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	g_assert (service != NULL);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_calendar_service_query_all_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL,
+	                                                  (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                                  data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                                  (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 static void
@@ -202,10 +225,33 @@ test_query_own_calendars_async (gconstpointer service)
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_calendar_service_query_own_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL,
-							  NULL, (GAsyncReadyCallback) test_query_own_calendars_async_cb, main_loop);
+							  NULL, NULL, (GAsyncReadyCallback) test_query_own_calendars_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+}
+
+static void
+test_query_own_calendars_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	g_assert (service != NULL);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_calendar_service_query_own_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL,
+	                                               (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                               data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                               (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 static void
@@ -255,12 +301,39 @@ test_query_events_async (gconstpointer service)
 	calendar = get_calendar (service, &error);
 	main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_calendar_service_query_events_async (GDATA_CALENDAR_SERVICE (service), calendar, NULL, NULL, NULL, NULL,
+	gdata_calendar_service_query_events_async (GDATA_CALENDAR_SERVICE (service), calendar, NULL, NULL, NULL, NULL, NULL,
 	                                           (GAsyncReadyCallback) test_query_events_async_cb, main_loop);
 	g_main_loop_run (main_loop);
 
 	g_main_loop_unref (main_loop);
 	g_object_unref (calendar);
+}
+
+static void
+test_query_events_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+	GDataCalendarCalendar *calendar;
+	GError *error = NULL;
+
+	g_assert (service != NULL);
+
+	calendar = get_calendar (service, &error);
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_calendar_service_query_events_async (GDATA_CALENDAR_SERVICE (service), calendar, NULL, NULL,
+	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+	g_object_unref (calendar);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 static void
@@ -1127,10 +1200,13 @@ main (int argc, char *argv[])
 
 		g_test_add_data_func ("/calendar/query/all_calendars", service, test_query_all_calendars);
 		g_test_add_data_func ("/calendar/query/all_calendars_async", service, test_query_all_calendars_async);
+		g_test_add_data_func ("/calendar/query/all_calendars_async_progress_closure", service, test_query_all_calendars_async_progress_closure);
 		g_test_add_data_func ("/calendar/query/own_calendars", service, test_query_own_calendars);
 		g_test_add_data_func ("/calendar/query/own_calendars_async", service, test_query_own_calendars_async);
+		g_test_add_data_func ("/calendar/query/own_calendars_async_progress_closure", service, test_query_own_calendars_async_progress_closure);
 		g_test_add_data_func ("/calendar/query/events", service, test_query_events);
 		g_test_add_data_func ("/calendar/query/events_async", service, test_query_events_async);
+		g_test_add_data_func ("/calendar/query/events_async_progress_closure", service, test_query_events_async_progress_closure);
 
 		g_test_add_data_func ("/calendar/insert/simple", service, test_insert_simple);
 		g_test_add_data_func ("/calendar/insert/simple/async", service, test_insert_simple_async);

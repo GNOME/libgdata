@@ -325,12 +325,14 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
 }
 
 /**
- * gdata_calendar_service_query_all_calendars_async: (skip)
+ * gdata_calendar_service_query_all_calendars_async:
  * @self: a #GDataCalendarService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -340,10 +342,13 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
  *
  * For more details, see gdata_calendar_service_query_all_calendars(), which is the synchronous version of
  * this function, and gdata_service_query_async(), which is the base asynchronous query function.
+ *
+ * Since: 0.9.1
  **/
 void
 gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
                                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                  GDestroyNotify destroy_progress_user_data,
                                                   GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *request_uri;
@@ -364,7 +369,7 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/allcalendars/full", NULL);
 	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
-	                           cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           cancellable, progress_callback, progress_user_data, destroy_progress_user_data, callback, user_data);
 	g_free (request_uri);
 }
 
@@ -414,12 +419,14 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
 }
 
 /**
- * gdata_calendar_service_query_own_calendars_async: (skip)
+ * gdata_calendar_service_query_own_calendars_async:
  * @self: a #GDataCalendarService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -429,10 +436,13 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
  *
  * For more details, see gdata_calendar_service_query_own_calendars(), which is the synchronous version of
  * this function, and gdata_service_query_async(), which is the base asynchronous query function.
+ *
+ * Since: 0.9.1
  **/
 void
 gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
                                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                  GDestroyNotify destroy_progress_user_data,
                                                   GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *request_uri;
@@ -453,7 +463,7 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/owncalendars/full", NULL);
 	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
-	                           cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           cancellable, progress_callback, progress_user_data, destroy_progress_user_data, callback, user_data);
 	g_free (request_uri);
 }
 
@@ -508,13 +518,15 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 }
 
 /**
- * gdata_calendar_service_query_events_async: (skip)
+ * gdata_calendar_service_query_events_async:
  * @self: a #GDataCalendarService
  * @calendar: a #GDataCalendarCalendar
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -526,11 +538,12 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
  * For more details, see gdata_calendar_service_query_events(), which is the synchronous version of this function, and gdata_service_query_async(),
  * which is the base asynchronous query function.
  *
- * Since: 0.8.0
+ * Since: 0.9.1
  **/
 void
 gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCalendarCalendar *calendar, GDataQuery *query, GCancellable *cancellable,
                                            GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                           GDestroyNotify destroy_progress_user_data,
                                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	const gchar *uri;
@@ -561,7 +574,7 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
 
 	/* Execute the query */
 	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable,
-	                           progress_callback, progress_user_data, callback, user_data);
+	                           progress_callback, progress_user_data, destroy_progress_user_data, callback, user_data);
 }
 
 /**

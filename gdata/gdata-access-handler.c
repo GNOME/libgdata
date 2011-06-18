@@ -62,6 +62,7 @@ typedef struct {
 	GDataService *service;
 	GDataQueryProgressCallback progress_callback;
 	gpointer progress_user_data;
+	GDestroyNotify destroy_progress_user_data;
 	GDataFeed *feed;
 } GetRulesAsyncData;
 
@@ -89,15 +90,21 @@ get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
 	}
+
+	if (data->destroy_progress_user_data != NULL) {
+		data->destroy_progress_user_data (data->progress_user_data);
+	}
 }
 
 /**
- * gdata_access_handler_get_rules_async: (skip)
+ * gdata_access_handler_get_rules_async:
  * @self: a #GDataAccessHandler
  * @service: a #GDataService
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when a rule is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -110,11 +117,12 @@ get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler
  * When the operation is finished, @callback will be called. You can then call gdata_service_query_finish()
  * to get the results of the operation.
  *
- * Since: 0.7.0
+ * Since: 0.9.1
  **/
 void
 gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
                                       GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                      GDestroyNotify destroy_progress_user_data,
                                       GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
@@ -129,6 +137,7 @@ gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *se
 	data->service = g_object_ref (service);
 	data->progress_callback = progress_callback;
 	data->progress_user_data = progress_user_data;
+	data->destroy_progress_user_data = destroy_progress_user_data;
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
 	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) get_rules_async_data_free);

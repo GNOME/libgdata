@@ -90,6 +90,7 @@ GDataDocumentsFeed *gdata_documents_service_query_documents (GDataDocumentsServi
                                                              GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDataDocumentsQuery *query, GCancellable *cancellable,
                                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                    GDestroyNotify destroy_progress_user_data,
                                                     GAsyncReadyCallback callback, gpointer user_data);
 
 #include <gdata/services/documents/gdata-documents-document.h>

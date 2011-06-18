@@ -372,12 +372,14 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 }
 
 /**
- * gdata_documents_service_query_documents_async: (skip)
+ * gdata_documents_service_query_documents_async:
  * @self: a #GDataDocumentsService
  * @query: (allow-none): a #GDataDocumentsQuery with the query parameters, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -387,11 +389,12 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
  * For more details, see gdata_documents_service_query_documents(), which is the synchronous version of this function,
  * and gdata_service_query_async(), which is the base asynchronous query function.
  *
- * Since: 0.4.0
+ * Since: 0.9.1
  **/
 void
 gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDataDocumentsQuery *query, GCancellable *cancellable,
                                                GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                               GDestroyNotify destroy_progress_user_data,
                                                GAsyncReadyCallback callback, gpointer user_data)
 {
 	gchar *request_uri;
@@ -412,7 +415,8 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/documents/private/full", NULL);
 	gdata_service_query_async (GDATA_SERVICE (self), get_documents_authorization_domain (), request_uri, GDATA_QUERY (query),
-	                           GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data,
+	                           destroy_progress_user_data, callback, user_data);
 	g_free (request_uri);
 }
 

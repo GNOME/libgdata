@@ -701,6 +701,7 @@ typedef struct {
 	GDataFeed *feed;
 	GDataQueryProgressCallback progress_callback;
 	gpointer progress_user_data;
+	GDestroyNotify destroy_progress_user_data;
 } QueryAsyncData;
 
 static void
@@ -731,10 +732,14 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
 	}
+
+	if (data->destroy_progress_user_data != NULL) {
+		data->destroy_progress_user_data (data->progress_user_data);
+	}
 }
 
 /**
- * gdata_service_query_async: (skip)
+ * gdata_service_query_async:
  * @self: a #GDataService
  * @domain: (allow-none): the #GDataAuthorizationDomain the query falls under, or %NULL
  * @feed_uri: the feed URI to query, including the host name and protocol
@@ -743,6 +748,8 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -754,12 +761,12 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
  * When the operation is finished, @callback will be called. You can then call gdata_service_query_finish()
  * to get the results of the operation.
  *
- * Since: 0.9.0
+ * Since: 0.9.1
  **/
 void
 gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
                            GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
-                           GAsyncReadyCallback callback, gpointer user_data)
+                           GDestroyNotify destroy_progress_user_data, GAsyncReadyCallback callback, gpointer user_data)
 {
 	GSimpleAsyncResult *result;
 	QueryAsyncData *data;
@@ -778,6 +785,7 @@ gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain,
 	data->entry_type = entry_type;
 	data->progress_callback = progress_callback;
 	data->progress_user_data = progress_user_data;
+	data->destroy_progress_user_data = destroy_progress_user_data;
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
 	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) query_async_data_free);

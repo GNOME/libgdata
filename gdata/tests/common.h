@@ -62,6 +62,16 @@ gboolean gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_
 		g_assert (_test_success == TRUE); \
 	} G_STMT_END
 
+/* Common code for tests of async query functions that have progress callbacks */
+typedef struct {
+    guint progress_destroy_notify_count;
+    guint async_ready_notify_count;
+    GMainLoop *main_loop;
+} GDataAsyncProgressClosure;
+void gdata_test_async_progress_callback (GDataEntry *entry, guint entry_key, guint entry_count, GDataAsyncProgressClosure *data);
+void gdata_test_async_progress_closure_free (GDataAsyncProgressClosure *data);
+void gdata_test_async_progress_finish_callback (GObject *service, GAsyncResult *res, GDataAsyncProgressClosure *data);
+
 G_END_DECLS
 
 #endif /* !GDATA_TEST_COMMON_H */

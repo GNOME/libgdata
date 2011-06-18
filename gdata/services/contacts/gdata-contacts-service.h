@@ -71,6 +71,7 @@ GDataFeed *gdata_contacts_service_query_contacts (GDataContactsService *self, GD
                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                  GDestroyNotify destroy_progress_user_data,
                                                   GAsyncReadyCallback callback, gpointer user_data);
 
 #include <gdata/services/contacts/gdata-contacts-contact.h>
@@ -87,6 +88,7 @@ GDataFeed *gdata_contacts_service_query_groups (GDataContactsService *self, GDat
                                                 GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                GDestroyNotify destroy_progress_user_data,
                                                 GAsyncReadyCallback callback, gpointer user_data);
 
 GDataContactsGroup *gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGroup *group,

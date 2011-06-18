@@ -575,12 +575,51 @@ test_photo_async (gconstpointer service)
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL, NULL, NULL,
+	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL, NULL, NULL, NULL,
 	                                           (GAsyncReadyCallback) test_photo_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 	g_object_unref (album_feed);
+}
+
+static void
+test_photo_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+	GDataFeed *album_feed;
+	GDataEntry *entry;
+	GDataPicasaWebAlbum *album;
+	GList *albums;
+	GError *error = NULL;
+
+	g_assert (service != NULL);
+
+	/* Find an album */
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (album_feed));
+	g_clear_error (&error);
+
+	albums = gdata_feed_get_entries (album_feed);
+	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
+	album = GDATA_PICASAWEB_ALBUM (entry);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL,
+	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+	g_object_unref (album_feed);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 static void
@@ -1003,10 +1042,33 @@ test_query_all_albums_async (gconstpointer service)
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_picasaweb_service_query_all_albums_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL,
-							NULL, (GAsyncReadyCallback) test_query_all_albums_async_cb, main_loop);
+							NULL, NULL, (GAsyncReadyCallback) test_query_all_albums_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+}
+
+static void
+test_query_all_albums_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	g_assert (service != NULL);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_picasaweb_service_query_all_albums_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL,
+	                                                (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                                data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                                (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 typedef struct {
@@ -1457,6 +1519,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
 		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
 		g_test_add_data_func ("/picasaweb/query/all_albums_async", service, test_query_all_albums_async);
+		g_test_add_data_func ("/picasaweb/query/all_albums_async_progress_closure", service, test_query_all_albums_async_progress_closure);
 		g_test_add_data_func ("/picasaweb/query/new_with_limits", service, test_query_new_with_limits);
 		g_test_add_data_func ("/picasaweb/query/album_feed", service, test_album_feed);
 		g_test_add_data_func ("/picasaweb/query/album_feed_entry", service, test_album_feed_entry);
@@ -1470,6 +1533,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
 		g_test_add_data_func ("/picasaweb/query/photo_single", service, test_photo_single);
 		g_test_add_data_func ("/picasaweb/query/photo/async", service, test_photo_async);
+		g_test_add_data_func ("/picasaweb/query/photo/async_progress_closure", service, test_photo_async_progress_closure);
 
 		g_test_add ("/picasaweb/upload/default_album", UploadData, service, setup_upload, test_upload_default_album, teardown_upload);
 		g_test_add ("/picasaweb/upload/default_album/async", UploadAsyncData, service, setup_upload_async, test_upload_default_album_async,

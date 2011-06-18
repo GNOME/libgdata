@@ -578,13 +578,15 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
 }
 
 /**
- * gdata_youtube_service_query_standard_feed_async: (skip)
+ * gdata_youtube_service_query_standard_feed_async:
  * @self: a #GDataService
  * @feed_type: the feed type to query, from #GDataYouTubeStandardFeedType
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -595,10 +597,13 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
  *
  * When the operation is finished, @callback will be called. You can then call gdata_service_query_finish()
  * to get the results of the operation.
+ *
+ * Since: 0.9.1
  **/
 void
 gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDataYouTubeStandardFeedType feed_type, GDataQuery *query,
                                                  GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                 GDestroyNotify destroy_progress_user_data,
                                                  GAsyncReadyCallback callback, gpointer user_data)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
@@ -607,7 +612,8 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
 	g_return_if_fail (callback != NULL);
 
 	gdata_service_query_async (GDATA_SERVICE (self), get_youtube_authorization_domain (), standard_feed_type_to_feed_uri (feed_type), query,
-	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, destroy_progress_user_data,
+	                           callback, user_data);
 }
 
 /**
@@ -641,12 +647,14 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
 }
 
 /**
- * gdata_youtube_service_query_videos_async: (skip)
+ * gdata_youtube_service_query_videos_async:
  * @self: a #GDataService
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -657,10 +665,13 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
  *
  * When the operation is finished, @callback will be called. You can then call gdata_service_query_finish()
  * to get the results of the operation.
+ *
+ * Since: 0.9.1
  **/
 void
 gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery *query,
                                           GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                          GDestroyNotify destroy_progress_user_data,
                                           GAsyncReadyCallback callback, gpointer user_data)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
@@ -669,7 +680,8 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
 	g_return_if_fail (callback != NULL);
 
 	gdata_service_query_async (GDATA_SERVICE (self), get_youtube_authorization_domain (), "https://gdata.youtube.com/feeds/api/videos", query,
-	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, destroy_progress_user_data,
+	                           callback, user_data);
 }
 
 /**
@@ -723,13 +735,15 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
 }
 
 /**
- * gdata_youtube_service_query_related_async: (skip)
+ * gdata_youtube_service_query_related_async:
  * @self: a #GDataService
  * @video: a #GDataYouTubeVideo for which to find related videos
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (allow-none): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
  * @callback: a #GAsyncReadyCallback to call when authentication is finished
  * @user_data: (closure): data to pass to the @callback function
  *
@@ -740,10 +754,13 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
  *
  * When the operation is finished, @callback will be called. You can then call gdata_service_query_finish()
  * to get the results of the operation.
+ *
+ * Since: 0.9.1
  **/
 void
 gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTubeVideo *video, GDataQuery *query,
                                            GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                           GDestroyNotify destroy_progress_user_data,
                                            GAsyncReadyCallback callback, gpointer user_data)
 {
 	GDataLink *related_link;
@@ -767,7 +784,8 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
 
 	uri = _gdata_service_fix_uri_scheme (gdata_link_get_uri (related_link));
 	gdata_service_query_async (GDATA_SERVICE (self), get_youtube_authorization_domain (), uri, query,
-	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, callback, user_data);
+	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data,
+	                           destroy_progress_user_data, callback, user_data);
 	g_free (uri);
 }
 

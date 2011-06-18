@@ -181,10 +181,33 @@ test_query_all_contacts_async (gconstpointer service)
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL,
-						     NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, main_loop);
+						     NULL, NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+}
+
+static void
+test_query_all_contacts_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	g_assert (service != NULL);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL,
+	                                             (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                             data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                             (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 static void
@@ -694,11 +717,34 @@ test_query_all_groups_async (gconstpointer service)
 {
 	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL,
+	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
 	                                           (GAsyncReadyCallback) test_query_all_groups_async_cb, main_loop);
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+}
+
+static void
+test_query_all_groups_async_progress_closure (gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	g_assert (service != NULL);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL,
+	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
 static void
@@ -2117,6 +2163,7 @@ main (int argc, char *argv[])
 
 		g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
 		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
+		g_test_add_data_func ("/contacts/query/all_contacts_async_progress_closure", service, test_query_all_contacts_async_progress_closure);
 
 		g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
 		g_test_add_data_func ("/contacts/photo/add", service, test_photo_add);
@@ -2133,6 +2180,7 @@ main (int argc, char *argv[])
 
 		g_test_add_data_func ("/contacts/groups/query", service, test_query_all_groups);
 		g_test_add_data_func ("/contacts/groups/query_async", service, test_query_all_groups_async);
+		g_test_add_data_func ("/contacts/groups/query_async_progress_closure", service, test_query_all_groups_async_progress_closure);
 		g_test_add_data_func ("/contacts/groups/insert", service, test_insert_group);
 		g_test_add_data_func ("/contacts/groups/insert_async", service, test_insert_group_async);
 	}
