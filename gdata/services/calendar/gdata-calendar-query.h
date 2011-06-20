@@ -82,6 +82,8 @@ const gchar *gdata_calendar_query_get_timezone (GDataCalendarQuery *self) G_GNUC
 void gdata_calendar_query_set_timezone (GDataCalendarQuery *self, const gchar *_timezone);
 guint gdata_calendar_query_get_max_attendees (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_max_attendees (GDataCalendarQuery *self, guint max_attendees);
+gboolean gdata_calendar_query_show_deleted (GDataCalendarQuery *self) G_GNUC_PURE;
+void gdata_calendar_query_set_show_deleted (GDataCalendarQuery *self, gboolean show_deleted);
 
 G_END_DECLS
 

@@ -101,6 +101,7 @@ struct _GDataCalendarQueryPrivate {
 	gint64 start_max;
 	gchar *timezone;
 	guint max_attendees;
+	gboolean show_deleted;
 };
 
 enum {
@@ -114,6 +115,7 @@ enum {
 	PROP_START_MAX,
 	PROP_TIMEZONE,
 	PROP_MAX_ATTENDEES,
+	PROP_SHOW_DELETED,
 };
 
 G_DEFINE_TYPE (GDataCalendarQuery, gdata_calendar_query, GDATA_TYPE_QUERY)
@@ -260,6 +262,20 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	                                                    "Max attendee count", "Specifies the maximum number of attendees to list for an event.",
 	                                                    0, G_MAXUINT, 0,
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataCalendarQuery:show-deleted:
+	 *
+	 * Whether to include deleted/cancelled events in the query feed. Deleted events have their #GDataCalendarEvent:status property set to
+	 * %GDATA_GD_EVENT_STATUS_CANCELED. They do not normally appear in query results.
+	 *
+	 * Since: 0.9.1
+	 */
+	g_object_class_install_property (gobject_class, PROP_SHOW_DELETED,
+	                                 g_param_spec_boolean ("show-deleted",
+	                                                       "Show deleted?", "Whether to include deleted/cancelled events in the query feed.",
+	                                                       FALSE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -321,6 +337,9 @@ gdata_calendar_query_get_property (GObject *object, guint property_id, GValue *v
 		case PROP_MAX_ATTENDEES:
 			g_value_set_uint (value, priv->max_attendees);
 			break;
+		case PROP_SHOW_DELETED:
+			g_value_set_boolean (value, priv->show_deleted);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -363,6 +382,9 @@ gdata_calendar_query_set_property (GObject *object, guint property_id, const GVa
 			break;
 		case PROP_MAX_ATTENDEES:
 			gdata_calendar_query_set_max_attendees (self, g_value_get_uint (value));
+			break;
+		case PROP_SHOW_DELETED:
+			gdata_calendar_query_set_show_deleted (self, g_value_get_boolean (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -454,6 +476,13 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->max_attendees > 0) {
 		APPEND_SEP
 		g_string_append_printf (query_uri, "max-attendees=%u", priv->max_attendees);
+	}
+
+	APPEND_SEP
+	if (priv->show_deleted == TRUE) {
+		g_string_append (query_uri, "showdeleted=true");
+	} else {
+		g_string_append (query_uri, "showdeleted=false");
 	}
 }
 
@@ -874,6 +903,44 @@ gdata_calendar_query_set_max_attendees (GDataCalendarQuery *self, guint max_atte
 
 	self->priv->max_attendees = max_attendees;
 	g_object_notify (G_OBJECT (self), "max-attendees");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
+}
+
+/**
+ * gdata_calendar_query_show_deleted:
+ * @self: a #GDataCalendarQuery
+ *
+ * Gets the #GDataCalendarQuery:show-deleted property.
+ *
+ * Return value: %TRUE if deleted/cancelled events should be shown, %FALSE otherwise
+ *
+ * Since: 0.9.1
+ */
+gboolean
+gdata_calendar_query_show_deleted (GDataCalendarQuery *self)
+{
+	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), FALSE);
+	return self->priv->show_deleted;
+}
+
+/**
+ * gdata_calendar_query_set_show_deleted:
+ * @self: a #GDataCalendarQuery
+ * @show_deleted: %TRUE to show deleted events, %FALSE otherwise
+ *
+ * Sets the #GDataCalendarQuery:show-deleted property of the #GDataCalendarQuery.
+ *
+ * Since: 0.9.1
+ */
+void
+gdata_calendar_query_set_show_deleted (GDataCalendarQuery *self, gboolean show_deleted)
+{
+	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
+
+	self->priv->show_deleted = show_deleted;
+	g_object_notify (G_OBJECT (self), "show-deleted");
 
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);

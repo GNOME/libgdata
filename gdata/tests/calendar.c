@@ -706,18 +706,23 @@ test_query_uri (void)
 	gdata_calendar_query_set_max_attendees (query, 15);
 	g_assert_cmpuint (gdata_calendar_query_get_max_attendees (query), ==, 15);
 
+	gdata_calendar_query_set_show_deleted (query, TRUE);
+	g_assert (gdata_calendar_query_show_deleted (query) == TRUE);
+
 	/* Check the built query URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
 	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00Z"
 					"&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
-					"&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15");
+					"&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
+					"&showdeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with a trailing slash */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00Z"
 					"&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
-					"&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15");
+					"&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
+					"&showdeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with pre-existing arguments */
@@ -725,7 +730,7 @@ test_query_uri (void)
 	g_assert_cmpstr (query_uri, ==, "http://example.com/bar/?test=test&this=that&q=q&futureevents=true&orderby=starttime"
 					"&recurrence-expansion-start=2009-04-17T15:00:00Z&recurrence-expansion-end=2010-04-17T15:00:00Z"
 					"&singleevents=true&sortorder=descending&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z"
-					"&ctz=America%2FLos_Angeles&max-attendees=15");
+					"&ctz=America%2FLos_Angeles&max-attendees=15&showdeleted=true");
 	g_free (query_uri);
 
 	g_object_unref (query);
@@ -754,6 +759,7 @@ test_query_etag (void)
 	CHECK_ETAG (gdata_calendar_query_set_start_max (query, -1))
 	CHECK_ETAG (gdata_calendar_query_set_timezone (query, "about now"))
 	CHECK_ETAG (gdata_calendar_query_set_max_attendees (query, 10))
+	CHECK_ETAG (gdata_calendar_query_set_show_deleted (query, TRUE))
 
 #undef CHECK_ETAG
 
