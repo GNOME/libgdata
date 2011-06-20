@@ -100,6 +100,7 @@ struct _GDataCalendarQueryPrivate {
 	gint64 start_min;
 	gint64 start_max;
 	gchar *timezone;
+	guint max_attendees;
 };
 
 enum {
@@ -111,7 +112,8 @@ enum {
 	PROP_SORT_ORDER,
 	PROP_START_MIN,
 	PROP_START_MAX,
-	PROP_TIMEZONE
+	PROP_TIMEZONE,
+	PROP_MAX_ATTENDEES,
 };
 
 G_DEFINE_TYPE (GDataCalendarQuery, gdata_calendar_query, GDATA_TYPE_QUERY)
@@ -244,6 +246,20 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	                                                      "Timezone", "The current timezone.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataCalendarQuery:max-attendees:
+	 *
+	 * Specifies the maximum number of attendees to list for an event. If the actual number of attendees for an event is greater than this value,
+	 * only the current user and the event organiser are listed.
+	 *
+	 * Since: 0.9.1
+	 */
+	g_object_class_install_property (gobject_class, PROP_MAX_ATTENDEES,
+	                                 g_param_spec_uint ("max-attendees",
+	                                                    "Max attendee count", "Specifies the maximum number of attendees to list for an event.",
+	                                                    0, G_MAXUINT, 0,
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -302,6 +318,9 @@ gdata_calendar_query_get_property (GObject *object, guint property_id, GValue *v
 		case PROP_TIMEZONE:
 			g_value_set_string (value, priv->timezone);
 			break;
+		case PROP_MAX_ATTENDEES:
+			g_value_set_uint (value, priv->max_attendees);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -341,6 +360,9 @@ gdata_calendar_query_set_property (GObject *object, guint property_id, const GVa
 			break;
 		case PROP_TIMEZONE:
 			gdata_calendar_query_set_timezone (self, g_value_get_string (value));
+			break;
+		case PROP_MAX_ATTENDEES:
+			gdata_calendar_query_set_max_attendees (self, g_value_get_uint (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -427,6 +449,11 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		APPEND_SEP
 		g_string_append (query_uri, "ctz=");
 		g_string_append_uri_escaped (query_uri, priv->timezone, NULL, FALSE);
+	}
+
+	if (priv->max_attendees > 0) {
+		APPEND_SEP
+		g_string_append_printf (query_uri, "max-attendees=%u", priv->max_attendees);
 	}
 }
 
@@ -807,6 +834,46 @@ gdata_calendar_query_set_timezone (GDataCalendarQuery *self, const gchar *_timez
 	}
 
 	g_object_notify (G_OBJECT (self), "timezone");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
+}
+
+/**
+ * gdata_calendar_query_get_max_attendees:
+ * @self: a #GDataCalendarQuery
+ *
+ * Gets the #GDataCalendarQuery:max-attendees property. If the property is unset, <code class="literal">0</code> will be returned.
+ *
+ * Return value: the maximum number of attendees, or <code class="literal">0</code>
+ *
+ * Since: 0.9.1
+ */
+guint
+gdata_calendar_query_get_max_attendees (GDataCalendarQuery *self)
+{
+	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), 0);
+	return self->priv->max_attendees;
+}
+
+/**
+ * gdata_calendar_query_set_max_attendees:
+ * @self: a #GDataCalendarQuery
+ * @max_attendees: a new maximum attendee count, or <code class="literal">0</code>
+ *
+ * Sets the #GDataCalendarQuery:max-attendees property of the #GDataCalendarQuery to the new value, @max_attendees.
+ *
+ * Set @max_attendees to <code class="literal">0</code> to unset the property in the query URI.
+ *
+ * Since: 0.9.1
+ */
+void
+gdata_calendar_query_set_max_attendees (GDataCalendarQuery *self, guint max_attendees)
+{
+	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
+
+	self->priv->max_attendees = max_attendees;
+	g_object_notify (G_OBJECT (self), "max-attendees");
 
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);

@@ -80,6 +80,8 @@ gint64 gdata_calendar_query_get_start_max (GDataCalendarQuery *self);
 void gdata_calendar_query_set_start_max (GDataCalendarQuery *self, gint64 start_max);
 const gchar *gdata_calendar_query_get_timezone (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_timezone (GDataCalendarQuery *self, const gchar *_timezone);
+guint gdata_calendar_query_get_max_attendees (GDataCalendarQuery *self) G_GNUC_PURE;
+void gdata_calendar_query_set_max_attendees (GDataCalendarQuery *self, guint max_attendees);
 
 G_END_DECLS
 
