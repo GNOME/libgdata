@@ -489,7 +489,8 @@ gdata_client_login_authorizer_new_for_authorization_domains (const gchar *client
 	return authorizer;
 }
 
-/* Called in the main thread to notify of changes to the username and password properties from the authentication thread */
+/* Called in the main thread to notify of changes to the username and password properties from the authentication thread. It swallows a reference
+ * the authoriser. */
 static gboolean
 notify_authentication_details_cb (GDataClientLoginAuthorizer *self)
 {
@@ -499,6 +500,8 @@ notify_authentication_details_cb (GDataClientLoginAuthorizer *self)
 	g_object_notify (authorizer, "username");
 	g_object_notify (authorizer, "password");
 	g_object_thaw_notify (authorizer);
+
+	g_object_unref (self);
 
 	/* Only execute once */
 	return FALSE;
@@ -530,9 +533,9 @@ set_authentication_details (GDataClientLoginAuthorizer *self, const gchar *usern
 	 *  • notifications will always be emitted before gdata_client_login_authorizer_authenticate() returns; and
 	 *  • notifications will always be emitted in the main thread for calls to gdata_client_login_authorizer_authenticate_async(). */
 	if (is_async == TRUE) {
-		g_idle_add ((GSourceFunc) notify_authentication_details_cb, self);
+		g_idle_add ((GSourceFunc) notify_authentication_details_cb, g_object_ref (self));
 	} else {
-		notify_authentication_details_cb (self);
+		notify_authentication_details_cb (g_object_ref (self));
 	}
 }
 
