@@ -172,7 +172,7 @@ pop_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 /**
  * gdata_buffer_pop_data:
  * @self: a #GDataBuffer
- * @data: return location for the popped data
+ * @data: (allow-none): return location for the popped data, or %NULL to just drop the data
  * @length_requested: the number of bytes of data requested
  * @reached_eof: return location for a value which is %TRUE when we've reached EOF, %FALSE otherwise, or %NULL
  * @cancellable: (allow-none): a #GCancellable, or %NULL
@@ -204,7 +204,6 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	gboolean cancelled = FALSE;
 
 	g_return_val_if_fail (self != NULL, 0);
-	g_return_val_if_fail (data != NULL, 0);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), 0);
 
 	/* In the case:
@@ -272,8 +271,10 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 
 		/* Copy the data to the output */
 		length_remaining -= chunk_length;
-		memcpy (data, chunk->data + self->head_read_offset, chunk_length);
-		data += chunk_length;
+		if (data != NULL) {
+			memcpy (data, chunk->data + self->head_read_offset, chunk_length);
+			data += chunk_length;
+		}
 
 		/* Free the chunk and move on */
 		next_chunk = chunk->next;
@@ -290,7 +291,9 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 		g_assert (chunk != NULL);
 
 		/* Copy the requested data to the output */
-		memcpy (data, chunk->data + self->head_read_offset, length_remaining);
+		if (data != NULL) {
+			memcpy (data, chunk->data + self->head_read_offset, length_remaining);
+		}
 		self->head_read_offset += length_remaining;
 	}
 

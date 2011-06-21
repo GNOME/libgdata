@@ -55,7 +55,7 @@ get_test_string (guint start_num, guint end_num)
 }
 
 static void
-test_download_stream_download_content_length_server_handler_cb (SoupServer *server, SoupMessage *message, const char *path, GHashTable *query,
+test_download_stream_download_server_content_length_handler_cb (SoupServer *server, SoupMessage *message, const char *path, GHashTable *query,
                                                                 SoupClientContext *client, gpointer user_data)
 {
 	gchar *test_string;
@@ -97,7 +97,7 @@ test_download_stream_download_content_length (void)
 	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
 	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
 	                          NULL);
-	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_content_length_server_handler_cb, NULL, NULL);
+	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_server_content_length_handler_cb, NULL, NULL);
 
 	g_object_unref (addr);
 
@@ -141,6 +141,331 @@ test_download_stream_download_content_length (void)
 
 	g_free (test_string);
 	g_string_free (contents, TRUE);
+
+	/* Kill the server and wait for it to die */
+	soup_add_completion (async_context, (GSourceFunc) quit_server_cb, server);
+	g_thread_join (thread);
+
+	g_object_unref (download_stream);
+	g_object_unref (server);
+	g_main_context_unref (async_context);
+}
+
+static void
+test_download_stream_download_server_seek_handler_cb (SoupServer *server, SoupMessage *message, const char *path, GHashTable *query,
+                                                      SoupClientContext *client, gpointer user_data)
+{
+	gchar *test_string;
+	goffset test_string_length;
+
+	test_string = get_test_string (1, 1000);
+	test_string_length = strlen (test_string) + 1;
+
+	/* Add some response headers */
+	soup_message_set_status (message, SOUP_STATUS_OK);
+	soup_message_body_append (message->response_body, SOUP_MEMORY_TAKE, test_string, test_string_length);
+}
+
+/* Test seeking before the first read */
+static void
+test_download_stream_download_seek_before_start (void)
+{
+	SoupServer *server;
+	GMainContext *async_context;
+	SoupAddress *addr;
+	GThread *thread;
+	gchar *download_uri, *test_string;
+	goffset test_string_offset = 0;
+	guint test_string_length;
+	GDataService *service;
+	GInputStream *download_stream;
+	gssize length_read;
+	guint8 buffer[20];
+	gboolean success;
+	GError *error = NULL;
+
+	/* Create the server */
+	async_context = g_main_context_new ();
+	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
+	soup_address_resolve_sync (addr, NULL);
+
+	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
+	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
+	                          NULL);
+	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, NULL);
+
+	g_object_unref (addr);
+
+	g_assert (server != NULL);
+
+	/* Create a thread for the server */
+	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
+	g_assert_no_error (error);
+	g_assert (thread != NULL);
+
+	/* Create a new download stream connected to the server */
+	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
+	download_stream = gdata_download_stream_new (service, NULL, download_uri, NULL);
+	g_object_unref (service);
+	g_free (download_uri);
+
+	/* Read alternating blocks into a string and compare with what we expect as we go. i.e. Skip 20 bytes, then read 20 bytes, etc. */
+	test_string = get_test_string (1, 1000);
+	test_string_length = strlen (test_string) + 1;
+
+	while (TRUE) {
+		/* Check the seek offset */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+
+		/* Seek forward a buffer length */
+		if (g_seekable_seek (G_SEEKABLE (download_stream), sizeof (buffer), G_SEEK_CUR, NULL, &error) == FALSE) {
+			/* Tried to seek past the end of the stream */
+			g_assert_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT);
+			g_clear_error (&error);
+			break;
+		}
+
+		test_string_offset += sizeof (buffer);
+		g_assert_no_error (error);
+
+		/* Check the seek offset again */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+
+		/* Read a buffer-load */
+		length_read = g_input_stream_read (download_stream, buffer, sizeof (buffer), NULL, &error);
+
+		g_assert_no_error (error);
+		g_assert_cmpint (length_read, <=, sizeof (buffer));
+
+		/* Check the buffer-load against the test string */
+		g_assert (memcmp (buffer, test_string + test_string_offset, length_read) == 0);
+		test_string_offset += length_read;
+
+		/* Check the seek offset again */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+
+		if (length_read < (gssize) sizeof (buffer)) {
+			/* Done */
+			break;
+		}
+	}
+
+	g_free (test_string);
+
+	/* Check the seek offset is within one buffer-load of the end */
+	g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), >, test_string_length - sizeof (buffer));
+	g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), <=, test_string_length);
+
+	/* Close the stream */
+	success = g_input_stream_close (download_stream, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success == TRUE);
+
+	/* Kill the server and wait for it to die */
+	soup_add_completion (async_context, (GSourceFunc) quit_server_cb, server);
+	g_thread_join (thread);
+
+	g_object_unref (download_stream);
+	g_object_unref (server);
+	g_main_context_unref (async_context);
+}
+
+/* Test seeking forwards after the first read */
+static void
+test_download_stream_download_seek_after_start_forwards (void)
+{
+	SoupServer *server;
+	GMainContext *async_context;
+	SoupAddress *addr;
+	GThread *thread;
+	gchar *download_uri, *test_string;
+	goffset test_string_offset = 0;
+	guint test_string_length;
+	GDataService *service;
+	GInputStream *download_stream;
+	gssize length_read;
+	guint8 buffer[20];
+	gboolean success;
+	GError *error = NULL;
+
+	/* Create the server */
+	async_context = g_main_context_new ();
+	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
+	soup_address_resolve_sync (addr, NULL);
+
+	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
+	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
+	                          NULL);
+	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, NULL);
+
+	g_object_unref (addr);
+
+	g_assert (server != NULL);
+
+	/* Create a thread for the server */
+	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
+	g_assert_no_error (error);
+	g_assert (thread != NULL);
+
+	/* Create a new download stream connected to the server */
+	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
+	download_stream = gdata_download_stream_new (service, NULL, download_uri, NULL);
+	g_object_unref (service);
+	g_free (download_uri);
+
+	/* Read alternating blocks into a string and compare with what we expect as we go. i.e. Read 20 bytes, then skip 20 bytes, etc. */
+	test_string = get_test_string (1, 1000);
+	test_string_length = strlen (test_string) + 1;
+
+	while (TRUE) {
+		/* Check the seek offset */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+
+		/* Read a buffer-load */
+		length_read = g_input_stream_read (download_stream, buffer, sizeof (buffer), NULL, &error);
+
+		g_assert_no_error (error);
+		g_assert_cmpint (length_read, <=, sizeof (buffer));
+
+		/* Check the buffer-load against the test string */
+		g_assert (memcmp (buffer, test_string + test_string_offset, length_read) == 0);
+		test_string_offset += length_read;
+
+		/* Check the seek offset again */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+
+		if (length_read < (gssize) sizeof (buffer)) {
+			/* Done */
+			break;
+		}
+
+		/* Seek forward a buffer length */
+		if (g_seekable_seek (G_SEEKABLE (download_stream), sizeof (buffer), G_SEEK_CUR, NULL, &error) == FALSE) {
+			/* Tried to seek past the end of the stream */
+			g_assert_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT);
+			g_clear_error (&error);
+			break;
+		}
+
+		test_string_offset += sizeof (buffer);
+		g_assert_no_error (error);
+
+		/* Check the seek offset again */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+	}
+
+	g_free (test_string);
+
+	/* Check the seek offset is within one buffer-load of the end */
+	g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), >, test_string_length - sizeof (buffer));
+	g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), <=, test_string_length);
+
+	/* Close the stream */
+	success = g_input_stream_close (download_stream, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success == TRUE);
+
+	/* Kill the server and wait for it to die */
+	soup_add_completion (async_context, (GSourceFunc) quit_server_cb, server);
+	g_thread_join (thread);
+
+	g_object_unref (download_stream);
+	g_object_unref (server);
+	g_main_context_unref (async_context);
+}
+
+/* Test seeking backwards after the first read */
+static void
+test_download_stream_download_seek_after_start_backwards (void)
+{
+	SoupServer *server;
+	GMainContext *async_context;
+	SoupAddress *addr;
+	GThread *thread;
+	gchar *download_uri, *test_string;
+	goffset test_string_offset = 0;
+	guint repeat_count;
+	GDataService *service;
+	GInputStream *download_stream;
+	gssize length_read;
+	guint8 buffer[20];
+	gboolean success;
+	GError *error = NULL;
+
+	/* Create the server */
+	async_context = g_main_context_new ();
+	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
+	soup_address_resolve_sync (addr, NULL);
+
+	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
+	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
+	                          NULL);
+	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, NULL);
+
+	g_object_unref (addr);
+
+	g_assert (server != NULL);
+
+	/* Create a thread for the server */
+	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
+	g_assert_no_error (error);
+	g_assert (thread != NULL);
+
+	/* Create a new download stream connected to the server */
+	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
+	download_stream = gdata_download_stream_new (service, NULL, download_uri, NULL);
+	g_object_unref (service);
+	g_free (download_uri);
+
+	/* Read a block in, then skip back over the block again. i.e. Read the first block, read the second block, skip back over the second block,
+	 * read the second block again, skip back over it, etc. Close the stream after doing this several times. */
+	test_string = get_test_string (1, 1000);
+
+	/* Read a buffer-load to begin with */
+	length_read = g_input_stream_read (download_stream, buffer, sizeof (buffer), NULL, &error);
+
+	g_assert_no_error (error);
+	test_string_offset += length_read;
+
+	for (repeat_count = 6; repeat_count > 0; repeat_count--) {
+		/* Check the seek offset */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+
+		/* Read a buffer-load */
+		length_read = g_input_stream_read (download_stream, buffer, sizeof (buffer), NULL, &error);
+
+		g_assert_no_error (error);
+		g_assert_cmpint (length_read, <=, sizeof (buffer));
+
+		/* Check the buffer-load against the test string */
+		g_assert (memcmp (buffer, test_string + test_string_offset, length_read) == 0);
+		test_string_offset += length_read;
+
+		/* Check the seek offset again */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+
+		/* Seek backwards a buffer length */
+		success = g_seekable_seek (G_SEEKABLE (download_stream), -length_read, G_SEEK_CUR, NULL, &error);
+		g_assert_no_error (error);
+		g_assert (success == TRUE);
+		test_string_offset -= length_read;
+
+		/* Check the seek offset again */
+		g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, test_string_offset);
+	}
+
+	g_free (test_string);
+
+	/* Check the seek offset is at the end of the first buffer-load */
+	g_assert_cmpint (g_seekable_tell (G_SEEKABLE (download_stream)), ==, sizeof (buffer));
+
+	/* Close the stream */
+	success = g_input_stream_close (download_stream, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success == TRUE);
 
 	/* Kill the server and wait for it to die */
 	soup_add_completion (async_context, (GSourceFunc) quit_server_cb, server);
@@ -259,6 +584,9 @@ main (int argc, char *argv[])
 	gdata_test_init (argc, argv);
 
 	g_test_add_func ("/download-stream/download_content_length", test_download_stream_download_content_length);
+	g_test_add_func ("/download-stream/download_seek/before_start", test_download_stream_download_seek_before_start);
+	g_test_add_func ("/download-stream/download_seek/after_start_forwards", test_download_stream_download_seek_after_start_forwards);
+	g_test_add_func ("/download-stream/download_seek/after_start_backwards", test_download_stream_download_seek_after_start_backwards);
 
 	g_test_add_func ("/upload-stream/upload_no_entry_content_length", test_upload_stream_upload_no_entry_content_length);
 

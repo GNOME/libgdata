@@ -125,19 +125,28 @@ static gboolean gdata_download_stream_can_truncate (GSeekable *seekable);
 static gboolean gdata_download_stream_truncate (GSeekable *seekable, goffset offset, GCancellable *cancellable, GError **error);
 
 static void create_network_thread (GDataDownloadStream *self, GError **error);
+static void reset_network_thread (GDataDownloadStream *self);
 
 /*
  * The GDataDownloadStream can be in one of several states:
  *  1. Pre-network activity. This is the state that the stream is created in. @network_thread and @cancellable are both %NULL, and @finished is %FALSE.
  *     The stream will remain in this state until gdata_download_stream_read() or gdata_download_stream_seek() are called for the first time.
  *     @content_type and @content_length are at their default values (NULL and -1, respectively).
- *  2. Network activity. This state is entered when gdata_download_stream_read() or gdata_download_stream_seek() are called for the first time.
- *     @network_thread and @cancellable are created, while @finished remains %FALSE.
+ *  2. Network activity. This state is entered when gdata_download_stream_read() is called for the first time.
+ *     @network_thread, @buffer and @cancellable are created, while @finished remains %FALSE.
  *     As soon as the headers are downloaded, which is guaranteed to be before the first call to gdata_download_stream_read() returns, @content_type
  *     and @content_length are set from the headers. From this point onwards, they are immutable.
- *  3. Post-network activity. This state is reached once the download thread finishes downloading, either due to having downloaded everything, or due
- *     to being cancelled by gdata_download_stream_close(). @network_thread is non-%NULL, but meaningless; @cancellable is still a valid #GCancellable
- *     instance; and @finished is set to %TRUE. At the same time, @finished_cond is signalled. The stream remains in this state until it's destroyed.
+ *  3. Reset network activity. This state is entered only if case 3 is encountered in a call to gdata_download_stream_seek(): a seek to an offset which
+ *     has already been read out of the buffer. In this state, @buffer is freed and set to %NULL, @network_thread is cancelled (then set to %NULL),
+ *     and @offset is set to the seeked-to offset. @finished remains at %FALSE.
+ *     When the next call to gdata_download_stream_read() is made, the download stream will go back to state 2 as if this was the first call to
+ *     gdata_download_stream_read().
+ *  4. Post-network activity. This state is reached once the download thread finishes downloading, due to having downloaded everything.
+ *     @buffer is non-%NULL, @network_thread is non-%NULL, but meaningless; @cancellable is still a valid #GCancellable instance; and @finished is set
+ *     to %TRUE. At the same time, @finished_cond is signalled.
+ *     This state can be exited either by making a call to gdata_download_stream_seek(), in which case the stream will go back to state 3; or by
+ *     calling gdata_download_stream_close(), in which case the stream will return errors for all operations, as the underlying %GInputStream will be
+ *     marked as closed.
  */
 struct _GDataDownloadStreamPrivate {
 	gchar *download_uri;
@@ -146,7 +155,7 @@ struct _GDataDownloadStreamPrivate {
 	SoupSession *session;
 	SoupMessage *message;
 	GDataBuffer *buffer;
-	goffset offset; /* seek offset */
+	goffset offset; /* current position in the stream */
 
 	GThread *network_thread;
 	GCancellable *cancellable;
@@ -305,7 +314,7 @@ static void
 gdata_download_stream_init (GDataDownloadStream *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOWNLOAD_STREAM, GDataDownloadStreamPrivate);
-	self->priv->buffer = gdata_buffer_new ();
+	self->priv->buffer = NULL; /* created when the network thread is started and destroyed when the stream is closed */
 
 	self->priv->finished = FALSE;
 	self->priv->finished_cond = g_cond_new ();
@@ -398,11 +407,13 @@ gdata_download_stream_finalize (GObject *object)
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (object)->priv;
 
+	reset_network_thread (GDATA_DOWNLOAD_STREAM (object));
+
 	g_cond_free (priv->finished_cond);
 	g_static_mutex_free (&(priv->finished_mutex));
 
 	g_static_mutex_free (&(priv->content_mutex));
-	gdata_buffer_free (priv->buffer);
+
 	g_free (priv->download_uri);
 	g_free (priv->content_type);
 
@@ -515,6 +526,7 @@ gdata_download_stream_read (GInputStream *stream, void *buffer, gsize count, GCa
 
 	/* Read the data off the buffer. If the operation is cancelled, it'll probably still return a positive number of bytes read — if it does, we
 	 * can return without error. Iff it returns a non-positive number of bytes should we return an error. */
+	g_assert (priv->buffer != NULL);
 	length_read = (gssize) gdata_buffer_pop_data (priv->buffer, buffer, count, &reached_eof, child_cancellable);
 
 	if (length_read < 1 && g_cancellable_set_error_if_cancelled (child_cancellable, &child_error) == TRUE) {
@@ -549,6 +561,11 @@ done:
 
 	if (child_error != NULL)
 		g_propagate_error (error, child_error);
+
+	/* Update our internal offset */
+	if (length_read > 0) {
+		priv->offset += length_read;
+	}
 
 	return length_read;
 }
@@ -593,17 +610,9 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 	GError *child_error = NULL;
 
 	/* If the operation was never started, return successfully immediately */
-	if (priv->network_thread == NULL)
-		return TRUE;
-
-	/* If we've already closed the stream, return G_IO_ERROR_CLOSED */
-	g_static_mutex_lock (&(priv->finished_mutex));
-	if (priv->finished == FALSE) {
-		g_static_mutex_unlock (&(priv->finished_mutex));
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CLOSED, _("Stream is already closed"));
-		return FALSE;
+	if (priv->network_thread == NULL) {
+		goto done;
 	}
-	g_static_mutex_unlock (&(priv->finished_mutex));
 
 	/* Allow cancellation */
 	data.download_stream = GDATA_DOWNLOAD_STREAM (stream);
@@ -644,6 +653,16 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 	if (global_cancelled_signal != 0)
 		g_cancellable_disconnect (priv->cancellable, global_cancelled_signal);
 
+done:
+	/* If we were successful, tidy up various bits of state */
+	g_static_mutex_lock (&(priv->finished_mutex));
+
+	if (success == TRUE && priv->finished == TRUE) {
+		reset_network_thread (GDATA_DOWNLOAD_STREAM (stream));
+	}
+
+	g_static_mutex_unlock (&(priv->finished_mutex));
+
 	g_assert ((success == TRUE && child_error == NULL) || (success == FALSE && child_error != NULL));
 
 	if (child_error != NULL)
@@ -666,56 +685,104 @@ gdata_download_stream_can_seek (GSeekable *seekable)
 
 extern void soup_message_io_cleanup (SoupMessage *msg);
 
-/* Copied from SoupInputStream */
 static gboolean
 gdata_download_stream_seek (GSeekable *seekable, goffset offset, GSeekType type, GCancellable *cancellable, GError **error)
 {
 	GDataDownloadStreamPrivate *priv = GDATA_DOWNLOAD_STREAM (seekable)->priv;
-	gchar *range = NULL;
+	GError *child_error = NULL;
 
-	if (type == G_SEEK_END) {
-		/* FIXME: we could send "bytes=-offset", but unless we know the
-		 * Content-Length, we wouldn't be able to answer a tell() properly.
-		 * We could find the Content-Length by doing a HEAD...
-		*/
+	if (type == G_SEEK_END && priv->content_length == -1) {
+		/* If we don't have the Content-Length, we can't calculate the offset from the start of the stream properly, so just give up.
+		 * We could technically use a HEAD request to get the Content-Length, but this hasn't been tried yet (FIXME). */
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED, "G_SEEK_END not currently supported");
 		return FALSE;
 	}
 
-	if (g_input_stream_set_pending (G_INPUT_STREAM (seekable), error) == FALSE)
+	if (g_input_stream_set_pending (G_INPUT_STREAM (seekable), error) == FALSE) {
 		return FALSE;
+	}
 
-	/* Cancel the current network thread if it exists */
-	if (gdata_download_stream_close (G_INPUT_STREAM (seekable), NULL, error) == FALSE)
-		goto done;
-	soup_message_io_cleanup (priv->message);
-
+	/* Ensure that offset is relative to the start of the stream. */
 	switch (type) {
 		case G_SEEK_CUR:
 			offset += priv->offset;
-			/* fall through */
+			break;
 		case G_SEEK_SET:
-			range = g_strdup_printf ("bytes=%" G_GUINT64_FORMAT "-", (guint64) offset);
-			priv->offset = offset;
+			/* Nothing needs doing */
 			break;
 		case G_SEEK_END:
+			offset += priv->content_length;
+			break;
 		default:
 			g_assert_not_reached ();
 	}
 
-	/* Change the Range header and re-send the message */
-	soup_message_headers_remove (priv->message->request_headers, "Range");
-	soup_message_headers_append (priv->message->request_headers, "Range", range);
-	g_free (range);
+	/* There are three cases to consider:
+	 *  1. The network thread hasn't been started. In this case, we need to set the offset and do nothing. When the network thread is started
+	 *     (in the next read() call), a Range header will be set on it which will give the correct seek.
+	 *  2. The network thread has been started and the seek is to a position greater than our current position (i.e. one which already does, or
+	 *     will soon, exist in the buffer). In this case, we need to pop the intervening bytes off the buffer (which may block) and update the
+	 *     offset.
+	 *  3. The network thread has been started and the seek is to a position which has already been popped off the buffer. In this case, we need
+	 *     to set the offset and cancel the network thread. When the network thread is restarted (in the next read() call), a Range header will
+	 *     be set on it which will give the correct seek.
+	 */
 
-	/* Launch a new thread with the modified message */
-	create_network_thread (GDATA_DOWNLOAD_STREAM (seekable), error);
+	if (priv->network_thread == NULL) {
+		/* Case 1. Set the offset and we're done. */
+		priv->offset = offset;
+
+		goto done;
+	}
+
+	/* Cases 2 and 3. The network thread has already been started. */
+	if (offset >= priv->offset) {
+		goffset num_intervening_bytes;
+		gssize length_read;
+
+		/* Case 2. Pop off the intervening bytes and update the offset. If we can't pop enough bytes off, we throw an error. */
+		num_intervening_bytes = offset - priv->offset;
+		g_assert (priv->buffer != NULL);
+		length_read = (gssize) gdata_buffer_pop_data (priv->buffer, NULL, num_intervening_bytes, NULL, cancellable);
+
+		if (length_read != num_intervening_bytes) {
+			if (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == FALSE) {
+				/* Tried to seek too far */
+				g_set_error_literal (&child_error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Invalid seek request"));
+			}
+
+			goto done;
+		}
+
+		/* Update the offset */
+		priv->offset = offset;
+
+		goto done;
+	} else {
+		/* Case 3. Cancel the current network thread. Note that we don't allow cancellation of this call, as we depend on it waiting for
+		 * the network thread to join. */
+		if (gdata_download_stream_close (G_INPUT_STREAM (seekable), NULL, &child_error) == FALSE) {
+			goto done;
+		}
+
+		/* Update the offset */
+		priv->offset = offset;
+
+		/* Mark the thread as unfinished */
+		g_static_mutex_lock (&(priv->finished_mutex));
+		priv->finished = FALSE;
+		g_static_mutex_unlock (&(priv->finished_mutex));
+
+		goto done;
+	}
 
 done:
 	g_input_stream_clear_pending (G_INPUT_STREAM (seekable));
 
-	if (priv->network_thread == NULL)
+	if (child_error != NULL) {
+		g_propagate_error (error, child_error);
 		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -761,6 +828,7 @@ got_chunk_cb (SoupMessage *message, SoupBuffer *buffer, GDataDownloadStream *sel
 		return;
 
 	/* Push the data onto the buffer immediately */
+	g_assert (self->priv->buffer != NULL);
 	gdata_buffer_push_data (self->priv->buffer, (const guint8*) buffer->data, buffer->length);
 }
 
@@ -777,9 +845,17 @@ download_thread (GDataDownloadStream *self)
 	g_signal_connect (priv->message, "got-headers", (GCallback) got_headers_cb, self);
 	g_signal_connect (priv->message, "got-chunk", (GCallback) got_chunk_cb, self);
 
+	/* Set a Range header if our starting offset is non-zero */
+	if (priv->offset > 0) {
+		soup_message_headers_set_range (priv->message->request_headers, priv->offset, -1);
+	} else {
+		soup_message_headers_remove (priv->message->request_headers, "Range");
+	}
+
 	_gdata_service_actually_send_message (priv->session, priv->message, priv->network_cancellable, NULL);
 
 	/* Mark the buffer as having reached EOF */
+	g_assert (priv->buffer != NULL);
 	gdata_buffer_push_data (priv->buffer, NULL, 0);
 
 	/* Mark the download as finished */
@@ -798,8 +874,34 @@ create_network_thread (GDataDownloadStream *self, GError **error)
 {
 	GDataDownloadStreamPrivate *priv = self->priv;
 
+	g_assert (priv->buffer == NULL);
+	priv->buffer = gdata_buffer_new ();
+
 	g_assert (priv->network_thread == NULL);
 	priv->network_thread = g_thread_create ((GThreadFunc) download_thread, self, TRUE, error);
+}
+
+static void
+reset_network_thread (GDataDownloadStream *self)
+{
+	GDataDownloadStreamPrivate *priv = self->priv;
+
+	priv->network_thread = NULL;
+
+	if (priv->buffer != NULL) {
+		gdata_buffer_free (priv->buffer);
+		priv->buffer = NULL;
+	}
+
+	if (priv->message != NULL) {
+		soup_message_io_cleanup (priv->message);
+	}
+
+	priv->offset = 0;
+
+	if (priv->network_cancellable != NULL) {
+		g_cancellable_reset (priv->network_cancellable);
+	}
 }
 
 /**
