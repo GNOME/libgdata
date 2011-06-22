@@ -4,29 +4,148 @@
 #
 # Alexandr Andrushchenko <diesel594@gmail.com>, 2009.
 # Andrew Grigorev <andrew@ei-grad.ru>, 2010.
-# Yuri Kozlov <yuray@komyakino.ru>, 2010.
+# Yuri Kozlov <yuray@komyakino.ru>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-03-22 13:26+0000\n"
-"PO-Revision-Date: 2011-03-23 23:48+0400\n"
-"Last-Translator: Yuri Myaseodov <omerta13@yandex.ru>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-06-20 20:38+0000\n"
+"PO-Revision-Date: 2011-06-21 21:22+0400\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.0\n"
 
-#: ../gdata/gdata-download-stream.c:571
-#: ../gdata/gdata-upload-stream.c:753
+#: ../gdata/gdata-client-login-authorizer.c:575
+#: ../gdata/gdata-oauth1-authorizer.c:770
+#: ../gdata/gdata-oauth1-authorizer.c:1029
+msgid "The server returned a malformed response."
+msgstr "Сервер вернул неверный ответ."
+
+#: ../gdata/gdata-client-login-authorizer.c:595 ../gdata/gdata-service.c:308
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "Не удалось подключиться к серверу службы."
+
+#: ../gdata/gdata-client-login-authorizer.c:600 ../gdata/gdata-service.c:313
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "Не удалось подключиться к прокси-серверу."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:606 ../gdata/gdata-service.c:319
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+"Неверный запрос URI или заголовок, или неподдерживаемый нестандартный "
+"параметр: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:612 ../gdata/gdata-service.c:325
+#, c-format
+msgid "Authentication required: %s"
+msgstr "Требуется аутентификация: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:330
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "Запрошенный ресурс не найден: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:623 ../gdata/gdata-service.c:336
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "Запись была изменена с момента последней загрузки: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:635 ../gdata/gdata-service.c:350
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Произошла ошибка %u при аутентификации: %s"
+
+#: ../gdata/gdata-client-login-authorizer.c:728
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "Чтобы войти, необходимо заполнить поле CAPTCHA."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:766
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Эта учётная запись требует пароль, специфичный для приложения. (%s)"
+
+#: ../gdata/gdata-client-login-authorizer.c:773
+msgid "Your username or password were incorrect."
+msgstr "Ваше имя пользователя или пароль неверны."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:794
+#, c-format
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "Адрес эл. почты вашей учётной записи не был проверен. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:799
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr "Вы не одобрили лицензионное соглашение. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:805
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"Эта учётная запись была перенесена. Чтобы получить новое имя пользователя и "
+"пароль, выполните вход. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:810
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "Учётная запись удалена. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:815
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "Учётная запись отключена. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:820
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "Доступ учётной записи к этой службе отключён. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:825
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "В данный момент служба недоступна. (%s)"
+
+#: ../gdata/gdata-download-stream.c:603 ../gdata/gdata-upload-stream.c:785
 msgid "Stream is already closed"
 msgstr "Поток уже закрыт"
 
+#: ../gdata/gdata-oauth1-authorizer.c:745
+msgid "The server rejected the temporary credentials request."
+msgstr "Сервер отклонил запрос временных учётных данных."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: ../gdata/gdata-oauth1-authorizer.c:1007
+msgid "Access was denied by the user or server."
+msgstr "В доступе отказано со стороны пользователя или сервера."
+
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:245
-#: ../gdata/gdata-parsable.c:256
+#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Ошибка разбора XML: %s"
@@ -93,8 +212,12 @@ msgstr "Отсутствует требуемое свойство элемен�
 #. *  two is allowed.
 #: ../gdata/gdata-parser.c:163
 #, c-format
-msgid "Values were present for properties %s and %s of a %s element when only one of the two is allowed."
-msgstr "У элемента %3$s указано два свойства %1$s и %2$s, но одновременно может быть только одно из них."
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"У элемента %3$s указано два свойства %1$s и %2$s, но одновременно может быть "
+"только одно из них."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -114,165 +237,64 @@ msgstr "Отсутствует требуемый элемент (%s)."
 msgid "A singleton element (%s) was duplicated."
 msgstr "Повторение единичного элемента (%s)."
 
-#: ../gdata/gdata-service.c:430
-msgid "The server returned a malformed response."
-msgstr "Сервер вернул неверный ответ."
-
-#: ../gdata/gdata-service.c:473
-#, c-format
-msgid "Cannot connect to the service's server."
-msgstr "Не удалось подключиться к серверу службы."
-
-#: ../gdata/gdata-service.c:478
-#, c-format
-msgid "Cannot connect to the proxy server."
-msgstr "Не удалось подключиться к прокси-серверу."
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:484
-#, c-format
-msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr "Неверный запрос URI или заголовок, или неподдерживаемый нестандартный параметр: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:490
-#, c-format
-msgid "Authentication required: %s"
-msgstr "Требуется аутентификация: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:495
-#, c-format
-msgid "The requested resource was not found: %s"
-msgstr "Запрошенный ресурс не найден: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:501
-#, c-format
-msgid "The entry has been modified since it was downloaded: %s"
-msgstr "Запись была изменена с момента последней загрузки: %s"
-
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:515
-#, c-format
-msgid "Error code %u when authenticating: %s"
-msgstr "Произошла ошибка %u при аутентификации: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:521
+#: ../gdata/gdata-service.c:356
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Произошла ошибка %u при выполнении запроса: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:527
+#: ../gdata/gdata-service.c:362
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Произошла ошибка %u при добавлении записи: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:533
+#: ../gdata/gdata-service.c:368
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Произошла ошибка %u при обновлении записи: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:539
+#: ../gdata/gdata-service.c:374
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Произошла ошибка %u при удалении записи: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:545
+#: ../gdata/gdata-service.c:380
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Произошла ошибка %u при загрузке: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:551
+#: ../gdata/gdata-service.c:386
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Произошла ошибка %u при загрузке: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:557
+#: ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "При выполнении групповой операции получен код ошибки %u: %s"
 
-#: ../gdata/gdata-service.c:686
-msgid "A CAPTCHA must be filled out to log in."
-msgstr "Чтобы войти, необходимо заполнить поле CAPTCHA."
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:721
-#, c-format
-msgid "This account requires an application-specific password. (%s)"
-msgstr "Эта учётная запись требует пароль, специфичный для приложения. (%s)"
-
-#: ../gdata/gdata-service.c:728
-msgid "Your username or password were incorrect."
-msgstr "Ваше имя пользователя или пароль неверны."
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:747
-#, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "Адрес эл. почты вашей учётной записи не был проверен. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:752
-#, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "Вы не одобрили лицензионное соглашение. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:758
-#, c-format
-msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
-msgstr "Эта учётная запись была перенесена. Чтобы получить новое имя пользователя и пароль, выполните вход. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:763
-#, c-format
-msgid "This account has been deleted. (%s)"
-msgstr "Учётная запись удалена. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:768
-#, c-format
-msgid "This account has been disabled. (%s)"
-msgstr "Учётная запись отключена. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:773
-#, c-format
-msgid "This account's access to this service has been disabled. (%s)"
-msgstr "Доступ учётной записи к этой службе отключён. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:778
-#, c-format
-msgid "This service is not available at the moment. (%s)"
-msgstr "В данный момент служба недоступна. (%s)"
-
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1083
+#: ../gdata/gdata-service.c:666
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Неверное перенаправление URI: %s"
 
-#: ../gdata/gdata-service.c:1659
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
-#: ../gdata/services/youtube/gdata-youtube-service.c:778
+#: ../gdata/gdata-service.c:1297
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:529
+#: ../gdata/services/youtube/gdata-youtube-service.c:833
 msgid "The entry has already been inserted."
 msgstr "Запись уже вставлена."
 
@@ -282,43 +304,44 @@ msgstr "Запись уже вставлена."
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:394
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "Содержимое элемента %s («%s») не соответствует шестнадцатеричному формату RGB."
+msgstr ""
+"Содержимое элемента %s («%s») не соответствует шестнадцатеричному формату RGB."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:281
-#: ../gdata/services/calendar/gdata-calendar-service.c:326
+#: ../gdata/services/calendar/gdata-calendar-service.c:315
+#: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
 msgstr "Для доступа ко всем календарям необходимо пройти аутентификацию."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:368
-#: ../gdata/services/calendar/gdata-calendar-service.c:413
-#: ../gdata/services/calendar/gdata-calendar-service.c:454
-#: ../gdata/services/calendar/gdata-calendar-service.c:510
+#: ../gdata/services/calendar/gdata-calendar-service.c:409
+#: ../gdata/services/calendar/gdata-calendar-service.c:460
+#: ../gdata/services/calendar/gdata-calendar-service.c:502
+#: ../gdata/services/calendar/gdata-calendar-service.c:562
 msgid "You must be authenticated to query your own calendars."
 msgstr "Для доступа к личным календарям необходимо пройти аутентификацию."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:463
-#: ../gdata/services/calendar/gdata-calendar-service.c:519
+#: ../gdata/services/calendar/gdata-calendar-service.c:511
+#: ../gdata/services/calendar/gdata-calendar-service.c:571
 msgid "The calendar did not have a content URI."
 msgstr "У календаря нет содержимого URI."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:229
-#: ../gdata/services/contacts/gdata-contacts-service.c:275
+#: ../gdata/services/contacts/gdata-contacts-service.c:258
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
 msgstr "Для доступа к контактам необходимо пройти аутентификацию."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:384
-#: ../gdata/services/contacts/gdata-contacts-service.c:430
+#: ../gdata/services/contacts/gdata-contacts-service.c:421
+#: ../gdata/services/contacts/gdata-contacts-service.c:471
 msgid "You must be authenticated to query contact groups."
 msgstr "Для запроса групп контактов необходимо пройти аутентификацию."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:466
+#: ../gdata/services/contacts/gdata-contacts-service.c:508
 msgid "The group has already been inserted."
 msgstr "Группа уже добавлена."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:472
+#: ../gdata/services/contacts/gdata-contacts-service.c:515
 msgid "You must be authenticated to insert a group."
 msgstr "Для добавления группы необходимо пройти аутентификацию."
 
@@ -326,64 +349,70 @@ msgstr "Для добавления группы необходимо пройт
 msgid "You must be authenticated to download documents."
 msgstr "Для загрузки документов необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:369
-#: ../gdata/services/documents/gdata-documents-service.c:420
+#: ../gdata/services/documents/gdata-documents-service.c:357
+#: ../gdata/services/documents/gdata-documents-service.c:412
 msgid "You must be authenticated to query documents."
 msgstr "Для доступа к документам необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:527
+#: ../gdata/services/documents/gdata-documents-service.c:488
 msgid "You must be authenticated to upload documents."
 msgstr "Для загрузки документов необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:533
+#: ../gdata/services/documents/gdata-documents-service.c:494
 msgid "The document has already been uploaded."
 msgstr "Документ уже загружен."
 
-#: ../gdata/services/documents/gdata-documents-service.c:587
+#: ../gdata/services/documents/gdata-documents-service.c:549
 msgid "You must be authenticated to update documents."
 msgstr "Для обновления документов необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:650
+#: ../gdata/services/documents/gdata-documents-service.c:612
 #, c-format
-msgid "The content type of the supplied document ('%s') could not be recognized."
-msgstr "Не удалось распознать тип содержимого предоставленного документа («%s»)."
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
+msgstr ""
+"Не удалось распознать тип содержимого предоставленного документа («%s»)."
 
-#: ../gdata/services/documents/gdata-documents-service.c:698
-#: ../gdata/services/documents/gdata-documents-service.c:882
+#: ../gdata/services/documents/gdata-documents-service.c:661
+#: ../gdata/services/documents/gdata-documents-service.c:846
 msgid "You must be authenticated to move documents and folders."
 msgstr "Для перемещения документов и папок необходимо пройти аутентификацию."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "Для доступа к пользователю необходимо указать имя пользователя или пройти аутентификацию."
+msgstr ""
+"Для доступа к пользователю необходимо указать имя пользователя или пройти "
+"аутентификацию."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:355
 msgid "Query parameter not allowed for albums."
 msgstr "Параметр запроса недопустим для альбомов."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:363
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Для доступа ко всем альбомам необходимо указать имя пользователя или пройти аутентификацию."
+msgstr ""
+"Для доступа ко всем альбомам необходимо указать имя пользователя или пройти "
+"аутентификацию."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:381
 msgid "The album did not have a feed link."
 msgstr "У альбома отсутствует лента новостей."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:536
 msgid "You must be authenticated to upload a file."
 msgstr "Для загрузки файла необходимо пройти аутентификацию."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
 msgid "The album has already been inserted."
 msgstr "Альбом уже добавлен."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:619
 msgid "You must be authenticated to insert an album."
 msgstr "Для добавления альбома необходимо пройти аутентификацию."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:416
+#: ../gdata/services/youtube/gdata-youtube-service.c:417
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "В данный момент служба недоступна."
@@ -395,13 +424,20 @@ msgstr "Чтобы сделать это, необходимо пройти ау
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:426
 #, c-format
-msgid "You have made too many API calls recently. Please wait a few minutes and try again."
-msgstr "За короткий промежуток времени сделано слишком много API-запросов. Подождите несколько минут и повторите попытку снова."
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"За короткий промежуток времени сделано слишком много API-запросов. Подождите "
+"несколько минут и повторите попытку снова."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:429
 #, c-format
-msgid "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "Достигнуто максимальное количество записей. Удалите несколько записей и повторите попытку."
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Достигнуто максимальное количество записей. Удалите несколько записей и "
+"повторите попытку."
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
@@ -409,7 +445,8 @@ msgstr "Достигнуто максимальное количество за�
 #: ../gdata/services/youtube/gdata-youtube-service.c:436
 #: ../gdata/services/youtube/gdata-youtube-service.c:442
 #, c-format
-msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Неизвестный код ошибки «%s» в домене «%s» по адресу «%s»."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
@@ -417,12 +454,11 @@ msgstr "Неизвестный код ошибки «%s» в домене «%s»
 msgid "Unknown and unparsable error received."
 msgstr "Принята неизвестная ошибка или она не поддаётся анализу."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:682
-#: ../gdata/services/youtube/gdata-youtube-service.c:729
+#: ../gdata/services/youtube/gdata-youtube-service.c:724
+#: ../gdata/services/youtube/gdata-youtube-service.c:781
 msgid "The video did not have a related videos <link>."
 msgstr "Видео не содержит связанных видео <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:784
+#: ../gdata/services/youtube/gdata-youtube-service.c:840
 msgid "You must be authenticated to upload a video."
 msgstr "Для загрузки видео, необходимо пройти аутентификацию."
-
