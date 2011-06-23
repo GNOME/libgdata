@@ -265,7 +265,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	g_object_class_install_property (gobject_class, PROP_VISIBILITY,
 	                                 g_param_spec_enum ("visibility",
 	                                                    "Visibility", "The visibility (or access rights) of the album.",
-	                                                    GDATA_TYPE_PICASAWEB_VISIBILITY, GDATA_PICASAWEB_PUBLIC,
+	                                                    GDATA_TYPE_PICASAWEB_VISIBILITY, GDATA_PICASAWEB_PRIVATE,
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -480,9 +480,12 @@ gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_ALBUM, GDataPicasaWebAlbumPrivate);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
-	self->priv->visibility = GDATA_PICASAWEB_PRIVATE;
 	self->priv->edited = -1;
 	self->priv->timestamp = -1;
+
+	/* Set the initial visibility */
+	self->priv->visibility = GDATA_PICASAWEB_PRIVATE;
+	gdata_entry_set_rights (GDATA_ENTRY (self), "private");
 
 	/* Connect to the notify::title signal from GDataEntry so our media:group title can be kept in sync
 	 * (the title of an album is duplicated in atom:title and media:group/media:title) */
