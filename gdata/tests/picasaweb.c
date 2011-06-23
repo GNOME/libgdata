@@ -36,6 +36,137 @@
 #define NUM_ALBUMS 5
 #define TEST_ALBUM_INDEX 2
 
+/* Assert that two albums have equal properties, but aren't the same object instance. For use in, e.g., comparing an inserted album from the server
+ * to the original instance which was inserted. */
+static void
+assert_albums_equal (GDataPicasaWebAlbum *album1, GDataPicasaWebAlbum *album2, gboolean compare_inserted_data)
+{
+	gdouble latitude1, longitude1, latitude2, longitude2;
+	const gchar * const *tags1, * const *tags2;
+
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (album1));
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (album2));
+
+	g_assert (album1 != album2);
+
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (album1)), ==, gdata_entry_get_title (GDATA_ENTRY (album2)));
+	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (album1)), ==, gdata_entry_get_summary (GDATA_ENTRY (album2)));
+	g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (album1)), ==, gdata_entry_get_content (GDATA_ENTRY (album2)));
+	g_assert_cmpstr (gdata_entry_get_content_uri (GDATA_ENTRY (album1)), ==, gdata_entry_get_content_uri (GDATA_ENTRY (album2)));
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album1)), ==, gdata_entry_get_rights (GDATA_ENTRY (album2)));
+
+	if (compare_inserted_data == TRUE) {
+		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (album1)), ==, gdata_entry_get_id (GDATA_ENTRY (album2)));
+		g_assert_cmpstr (gdata_entry_get_etag (GDATA_ENTRY (album1)), ==, gdata_entry_get_etag (GDATA_ENTRY (album2)));
+		g_assert_cmpint (gdata_entry_get_updated (GDATA_ENTRY (album1)), ==, gdata_entry_get_updated (GDATA_ENTRY (album2)));
+		g_assert_cmpint (gdata_entry_get_published (GDATA_ENTRY (album1)), ==, gdata_entry_get_published (GDATA_ENTRY (album2)));
+	}
+
+	g_assert_cmpstr (gdata_picasaweb_album_get_location (album1), ==, gdata_picasaweb_album_get_location (album2));
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album1), ==, gdata_picasaweb_album_get_visibility (album2));
+	g_assert_cmpint (gdata_picasaweb_album_get_timestamp (album1), ==, gdata_picasaweb_album_get_timestamp (album2));
+	g_assert (gdata_picasaweb_album_is_commenting_enabled (album1) == gdata_picasaweb_album_is_commenting_enabled (album2));
+
+	/* Compare coordinates */
+	gdata_picasaweb_album_get_coordinates (album1, &latitude1, &longitude1);
+	gdata_picasaweb_album_get_coordinates (album2, &latitude2, &longitude2);
+	g_assert_cmpfloat (latitude1, ==, latitude2);
+	g_assert_cmpfloat (longitude1, ==, longitude2);
+
+	/* Compare tags */
+	tags1 = gdata_picasaweb_album_get_tags (album1);
+	tags2 = gdata_picasaweb_album_get_tags (album2);
+
+	g_assert ((tags1 == NULL) == (tags2 == NULL));
+
+	if (tags1 != NULL && tags2 != NULL) {
+		guint i;
+
+		for (i = 0; tags1[i] != NULL; i++) {
+			g_assert_cmpstr (tags1[i], ==, tags2[i]);
+		}
+
+		g_assert (tags2[i] == NULL);
+	}
+
+	if (compare_inserted_data == TRUE) {
+		GList *contents1, *contents2, *thumbnails1, *thumbnails2, *i1, *i2;
+
+		g_assert_cmpstr (gdata_picasaweb_album_get_id (album1), ==, gdata_picasaweb_album_get_id (album2));
+		g_assert_cmpstr (gdata_picasaweb_album_get_user (album1), ==, gdata_picasaweb_album_get_user (album2));
+		g_assert_cmpstr (gdata_picasaweb_album_get_nickname (album1), ==, gdata_picasaweb_album_get_nickname (album2));
+		g_assert_cmpint (gdata_picasaweb_album_get_edited (album1), ==, gdata_picasaweb_album_get_edited (album2));
+		g_assert_cmpuint (gdata_picasaweb_album_get_num_photos (album1), ==, gdata_picasaweb_album_get_num_photos (album2));
+		g_assert_cmpuint (gdata_picasaweb_album_get_num_photos_remaining (album1), ==,
+		                  gdata_picasaweb_album_get_num_photos_remaining (album2));
+		g_assert_cmpuint (gdata_picasaweb_album_get_bytes_used (album1), ==, gdata_picasaweb_album_get_bytes_used (album2));
+		g_assert_cmpuint (gdata_picasaweb_album_get_comment_count (album1), ==, gdata_picasaweb_album_get_comment_count (album2));
+
+		/* Compare contents */
+		contents1 = gdata_picasaweb_album_get_contents (album1);
+		contents2 = gdata_picasaweb_album_get_contents (album2);
+
+		g_assert_cmpuint (g_list_length (contents1), ==, g_list_length (contents2));
+		g_assert_cmpuint (g_list_length (contents1), >=, 1);
+
+		for (i1 = contents1, i2 = contents2; i1 != NULL && i2 != NULL; i1 = i1->next, i2 = i2->next) {
+			GDataMediaContent *content1, *content2;
+
+			content1 = GDATA_MEDIA_CONTENT (i1->data);
+			content2 = GDATA_MEDIA_CONTENT (i2->data);
+
+			g_assert_cmpstr (gdata_media_content_get_uri (content1), ==, gdata_media_content_get_uri (content2));
+			g_assert (strstr (gdata_media_content_get_uri (content1), "googleusercontent.com") != NULL);
+			g_assert_cmpstr (gdata_media_content_get_content_type (content1), ==, gdata_media_content_get_content_type (content2));
+			g_assert_cmpstr (gdata_media_content_get_content_type (content1), ==, "image/jpeg");
+			g_assert_cmpuint (gdata_media_content_get_medium (content1), ==, gdata_media_content_get_medium (content2));
+			g_assert_cmpuint (gdata_media_content_get_medium (content1), ==, GDATA_MEDIA_IMAGE);
+
+			g_assert (gdata_media_content_is_default (content1) == gdata_media_content_is_default (content2));
+			g_assert (gdata_media_content_is_default (content1) == FALSE);
+			g_assert_cmpint (gdata_media_content_get_duration (content1), ==, gdata_media_content_get_duration (content2));
+			g_assert_cmpint (gdata_media_content_get_duration (content1), ==, 0); /* doesn't apply to photos */
+			g_assert_cmpuint (gdata_media_content_get_width (content1), ==, gdata_media_content_get_width (content2));
+			g_assert_cmpuint (gdata_media_content_get_width (content1), ==, 0); /* PicasaWeb doesn't set anything better */
+			g_assert_cmpuint (gdata_media_content_get_height (content1), ==, gdata_media_content_get_height (content2));
+			g_assert_cmpuint (gdata_media_content_get_height (content1), ==, 0); /* PicasaWeb doesn't set anything better */
+			g_assert_cmpuint (gdata_media_content_get_filesize (content1), ==, gdata_media_content_get_filesize (content2));
+			g_assert_cmpuint (gdata_media_content_get_filesize (content1), ==, 0); /* PicasaWeb doesn't set anything better */
+			g_assert_cmpuint (gdata_media_content_get_expression (content1), ==, gdata_media_content_get_expression (content2));
+			g_assert_cmpuint (gdata_media_content_get_expression (content1), ==, GDATA_MEDIA_EXPRESSION_FULL);
+		}
+
+		g_assert (i1 == NULL && i2 == NULL);
+
+		/* Compare thumbnails */
+		thumbnails1 = gdata_picasaweb_album_get_thumbnails (album1);
+		thumbnails2 = gdata_picasaweb_album_get_thumbnails (album2);
+
+		g_assert_cmpuint (g_list_length (thumbnails1), ==, g_list_length (thumbnails2));
+		g_assert_cmpuint (g_list_length (thumbnails1), >=, 1);
+
+		for (i1 = thumbnails1, i2 = thumbnails2; i1 != NULL && i2 != NULL; i1 = i1->next, i2 = i2->next) {
+			GDataMediaThumbnail *thumbnail1, *thumbnail2;
+
+			thumbnail1 = GDATA_MEDIA_THUMBNAIL (i1->data);
+			thumbnail2 = GDATA_MEDIA_THUMBNAIL (i2->data);
+
+			g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail1), ==, gdata_media_thumbnail_get_uri (thumbnail2));
+			g_assert (strstr (gdata_media_thumbnail_get_uri (thumbnail1), "googleusercontent.com") != NULL);
+			g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail1), ==, gdata_media_thumbnail_get_time (thumbnail2));
+			g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail1), ==, -1); /* PicasaWeb doesn't set anything better */
+			g_assert_cmpint (gdata_media_thumbnail_get_width (thumbnail1), ==, gdata_media_thumbnail_get_width (thumbnail2));
+			g_assert_cmpint (gdata_media_thumbnail_get_width (thumbnail1), ==, 160);
+			g_assert_cmpint (gdata_media_thumbnail_get_height (thumbnail1), ==, gdata_media_thumbnail_get_height (thumbnail2));
+			g_assert_cmpint (gdata_media_thumbnail_get_height (thumbnail1), ==, 160);
+		}
+
+		g_assert (i1 == NULL && i2 == NULL);
+	}
+
+	/* TODO: We don't compare categories or authors yet. */
+}
+
 static void
 test_authentication (void)
 {
