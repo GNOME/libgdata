@@ -866,66 +866,88 @@ test_album (gconstpointer service)
 	g_object_unref (album_feed);
 }
 
-static void
-test_insert_album (gconstpointer service)
-{
+typedef struct {
 	GDataPicasaWebAlbum *album;
 	GDataPicasaWebAlbum *inserted_album;
+} InsertAlbumData;
+
+static void
+set_up_insert_album (InsertAlbumData *data, gconstpointer service)
+{
 	GTimeVal timestamp;
-	GError *error;
 
-	GDataFeed *album_feed;
-	GList *albums;
-	gboolean album_found;
-	GList *node;
+	data->album = gdata_picasaweb_album_new (NULL);
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (data->album));
 
-	error = NULL;
-
-	album = gdata_picasaweb_album_new (NULL);
-	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
-
-	gdata_entry_set_title (GDATA_ENTRY (album), "Thanksgiving photos");
-	gdata_entry_set_summary (GDATA_ENTRY (album), "Family photos of the feast!");
-	gdata_picasaweb_album_set_location (album, "Winnipeg, MN");
+	gdata_entry_set_title (GDATA_ENTRY (data->album), "Thanksgiving photos");
+	gdata_entry_set_summary (GDATA_ENTRY (data->album), "Family photos of the feast!");
+	gdata_picasaweb_album_set_location (data->album, "Winnipeg, MN");
 
 	g_time_val_from_iso8601 ("2002-10-14T09:58:59.643554Z", &timestamp);
-	gdata_picasaweb_album_set_timestamp (album, timestamp.tv_sec * 1000);
-
-	inserted_album = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_PICASAWEB_ALBUM (inserted_album));
-
-	/* Test that it returns what we gave */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (inserted_album)), ==, "Thanksgiving photos");
-	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (inserted_album)), ==, "Family photos of the feast!");
-	g_assert_cmpstr (gdata_picasaweb_album_get_location (inserted_album), ==, "Winnipeg, MN");
-	g_assert_cmpint (gdata_picasaweb_album_get_timestamp (inserted_album), ==, 1034589539000);
-
-	/* Test that album is actually on server */
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	albums = gdata_feed_get_entries (album_feed);
-
-	album_found = FALSE;
-	for (node = albums; node != NULL; node = node->next) {
-		if (g_strcmp0 (gdata_entry_get_title (GDATA_ENTRY (node->data)), "Thanksgiving photos") == 0) {
-			album_found = TRUE;
-		}
-	}
-	g_assert (album_found);
-
-	/* Clean up the evidence */
-	gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
-	                            GDATA_ENTRY (inserted_album), NULL, &error);
-	g_assert_no_error (error);
-
-	g_object_unref (album_feed);
-	g_object_unref (album);
-	g_object_unref (inserted_album);
+	gdata_picasaweb_album_set_timestamp (data->album, timestamp.tv_sec * 1000);
 }
 
 static void
-test_insert_album_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+tear_down_insert_album (InsertAlbumData *data, gconstpointer service)
+{
+	g_object_unref (data->album);
+
+	/* Clean up the evidence */
+	gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                            GDATA_ENTRY (data->inserted_album), NULL, NULL);
+}
+
+static void
+test_insert_album (InsertAlbumData *data, gconstpointer service)
+{
+	GDataPicasaWebAlbum *inserted_album;
+	GDataFeed *album_feed;
+	GError *error = NULL;
+
+	/* Insert the album synchronously */
+	inserted_album = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), data->album, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (inserted_album));
+	g_clear_error (&error);
+
+	data->inserted_album = g_object_ref (inserted_album);
+
+	/* Test that it returns what we gave */
+	assert_albums_equal (inserted_album, data->album, FALSE);
+
+	/* Test that the album is actually on the server */
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+
+	assert_albums_equal (GDATA_PICASAWEB_ALBUM (gdata_feed_look_up_entry (album_feed, gdata_entry_get_id (GDATA_ENTRY (inserted_album)))),
+	                     inserted_album, TRUE);
+
+	g_object_unref (album_feed);
+
+	g_object_unref (inserted_album);
+}
+
+typedef struct {
+	InsertAlbumData data;
+	GMainLoop *main_loop;
+} InsertAlbumAsyncData;
+
+static void
+set_up_insert_album_async (InsertAlbumAsyncData *data, gconstpointer service)
+{
+	set_up_insert_album ((InsertAlbumData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+}
+
+static void
+tear_down_insert_album_async (InsertAlbumAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_insert_album ((InsertAlbumData*) data, service);
+}
+
+static void
+test_insert_album_async_cb (GDataService *service, GAsyncResult *async_result, InsertAlbumAsyncData *data)
 {
 	GDataEntry *entry;
 	GError *error = NULL;
@@ -935,39 +957,23 @@ test_insert_album_async_cb (GDataService *service, GAsyncResult *async_result, G
 	g_assert (GDATA_IS_PICASAWEB_ALBUM (entry));
 	g_clear_error (&error);
 
+	data->data.inserted_album = g_object_ref (entry);
+
 	/* Test the album was uploaded correctly */
-	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "Asynchronous album!");
+	assert_albums_equal (GDATA_PICASAWEB_ALBUM (entry), data->data.album, FALSE);
 
-	/* Delete the album, just to be tidy */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
-	                                      entry, NULL, &error) == TRUE);
-	g_assert_no_error (error);
-	g_clear_error (&error);
-
-	g_main_loop_quit (main_loop);
 	g_object_unref (entry);
+
+	g_main_loop_quit (data->main_loop);
 }
 
 static void
-test_insert_album_async (gconstpointer service)
+test_insert_album_async (InsertAlbumAsyncData *data, gconstpointer service)
 {
-	GDataPicasaWebAlbum *album;
-	GMainLoop *main_loop;
+	gdata_picasaweb_service_insert_album_async (GDATA_PICASAWEB_SERVICE (service), data->data.album, NULL,
+	                                            (GAsyncReadyCallback) test_insert_album_async_cb, data);
 
-	album = gdata_picasaweb_album_new (NULL);
-	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
-
-	/* Set various properties */
-	gdata_entry_set_title (GDATA_ENTRY (album), "Asynchronous album!");
-
-	main_loop = g_main_loop_new (NULL, TRUE);
-
-	gdata_picasaweb_service_insert_album_async (GDATA_PICASAWEB_SERVICE (service), album, NULL, (GAsyncReadyCallback) test_insert_album_async_cb,
-	                                            main_loop);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-	g_object_unref (album);
+	g_main_loop_run (data->main_loop);
 }
 
 typedef struct {
@@ -1725,8 +1731,9 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
 		g_test_add_data_func ("/picasaweb/query/album", service, test_album);
 
-		g_test_add_data_func ("/picasaweb/insert/album", service, test_insert_album);
-		g_test_add_data_func ("/picasaweb/insert/album/async", service, test_insert_album_async);
+		g_test_add ("/picasaweb/insert/album", InsertAlbumData, service, set_up_insert_album, test_insert_album, tear_down_insert_album);
+		g_test_add ("/picasaweb/insert/album/async", InsertAlbumAsyncData, service, set_up_insert_album_async, test_insert_album_async,
+		            tear_down_insert_album_async);
 
 		g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
 		g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
