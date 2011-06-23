@@ -867,72 +867,6 @@ test_album (gconstpointer service)
 }
 
 static void
-test_album_feed_entry (gconstpointer service)
-{
-	GDataFeed *album_feed;
-	GError *error = NULL;
-	GDataEntry *entry;
-	GList *albums;
-	gchar *xml;
-
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-	g_clear_error (&error);
-
-	albums = gdata_feed_get_entries (album_feed);
-	g_assert_cmpuint (g_list_length (albums), ==, NUM_ALBUMS);
-
-	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
-	g_assert (entry != NULL);
-
-	g_object_ref (entry);
-	g_object_unref (album_feed);
-
-	/* Tests */
-	g_assert_cmpstr (gdata_entry_get_title (entry), ==, "Test Album 1 - Venice - Public");
-	g_assert_cmpstr (gdata_picasaweb_album_get_id (GDATA_PICASAWEB_ALBUM (entry)), ==, "5328889949261497249");
-	g_assert_cmpstr (gdata_entry_get_id (entry), ==,
-	                 "https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249");
-	g_assert_cmpstr (gdata_entry_get_etag (entry), !=, NULL);
-	g_assert_cmpstr (gdata_entry_get_rights (entry), ==, "public");
-	g_assert_cmpint (gdata_entry_get_updated (entry), ==, 1240729023);
-	g_assert_cmpint (gdata_entry_get_published (entry), ==, 1240729200);
-
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-	g_assert_cmpstr (xml, !=, NULL);
-	g_assert_cmpuint (strlen (xml), >, 0);
-	g_free (xml);
-
-	g_object_unref (entry);
-}
-
-static void
-test_album_feed (gconstpointer service)
-{
-	GDataFeed *album_feed;
-	GError *error = NULL;
-
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-	g_clear_error (&error);
-
-	/* tests */
-
-	g_assert_cmpstr (gdata_feed_get_title (album_feed), ==, "libgdata.picasaweb");
-	/* TODO find out why subtitle == null when returned: no subtitle for feed? printf("feed subtitle: %s\n", gdata_feed_get_subtitle(feed)); */
-	g_assert_cmpstr (gdata_feed_get_id (album_feed), ==, "https://picasaweb.google.com/data/feed/user/libgdata.picasaweb");
-	g_assert_cmpstr (gdata_feed_get_etag (album_feed), !=, NULL); /* this varies as albums change, like when a new image is uploaded in our test! */
-	g_assert_cmpstr (gdata_feed_get_icon (album_feed), !=, NULL); /* tested weakly because it changes fairly regularly */
-	g_assert_cmpuint (gdata_feed_get_items_per_page (album_feed), ==, 1000);
-	g_assert_cmpuint (gdata_feed_get_start_index (album_feed), ==, 1);
-	g_assert_cmpuint (gdata_feed_get_total_results (album_feed), ==, NUM_ALBUMS);
-
-	g_object_unref (album_feed);
-}
-
-static void
 test_insert_album (gconstpointer service)
 {
 	GDataPicasaWebAlbum *album;
@@ -1036,82 +970,169 @@ test_insert_album_async (gconstpointer service)
 	g_object_unref (album);
 }
 
+typedef struct {
+	GDataPicasaWebAlbum *album1;
+	GDataPicasaWebAlbum *album2;
+	GDataPicasaWebAlbum *album3;
+	GDataPicasaWebAlbum *album4;
+} QueryAllAlbumsData;
+
 static void
-test_query_all_albums (gconstpointer service)
+set_up_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 {
-	GDataFeed *album_feed, *photo_feed;
-	GDataQuery *query;
-	GError *error = NULL;
-	GList *albums;
-	GDataEntry *entry;
 	GDataPicasaWebAlbum *album;
+
+	/* First album */
+	album = gdata_picasaweb_album_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (album), "Test album 1 for QueryAllAlbums");
+
+	data->album1 = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL);
+	g_assert (data->album1 != NULL);
+
+	g_object_unref (album);
+
+	/* Second album */
+	album = gdata_picasaweb_album_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (album), "Test album 2 for QueryAllAlbums");
+
+	data->album2 = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL);
+	g_assert (data->album2 != NULL);
+
+	g_object_unref (album);
+
+	/* Third album */
+	album = gdata_picasaweb_album_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (album), "Test album 3 for QueryAllAlbums");
+
+	data->album3 = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL);
+	g_assert (data->album3 != NULL);
+
+	g_object_unref (album);
+
+	/* Fourth album */
+	album = gdata_picasaweb_album_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (album), "Test album 4 for QueryAllAlbums");
+
+	data->album4 = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL);
+	g_assert (data->album4 != NULL);
+
+	g_object_unref (album);
+}
+
+static void
+tear_down_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
+{
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->album1), NULL, NULL) == TRUE);
+	g_object_unref (data->album1);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->album2), NULL, NULL) == TRUE);
+	g_object_unref (data->album2);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->album3), NULL, NULL) == TRUE);
+	g_object_unref (data->album3);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->album4), NULL, NULL) == TRUE);
+	g_object_unref (data->album4);
+}
+
+static void
+test_query_all_albums_bad_query (gconstpointer service)
+{
+	GDataQuery *query;
+	GDataFeed *album_feed;
+	GError *error = NULL;
 
 	/* Test a query with a "q" parameter; it should fail */
 	query = GDATA_QUERY (gdata_picasaweb_query_new ("foobar"));
+
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER);
 	g_assert (album_feed == NULL);
 	g_clear_error (&error);
-	g_object_unref (query);
 
-	/* Now try a proper query */
+	g_object_unref (query);
+}
+
+static void
+test_query_all_albums_bad_query_with_limits (gconstpointer service)
+{
+	GDataQuery *query;
+	GDataFeed *album_feed;
+	GError *error = NULL;
+
+	/* Test a query with a "q" parameter; it should fail */
+	query = GDATA_QUERY (gdata_picasaweb_query_new_with_limits ("foobar", 1, 1));
+
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER);
+	g_assert (album_feed == NULL);
+	g_clear_error (&error);
+
+	g_object_unref (query);
+}
+
+/* Checks to perform on an album feed from test_query_all_albums() or test_query_all_albums_async(). */
+static void
+_test_query_all_albums (GDataFeed *album_feed, QueryAllAlbumsData *data)
+{
+	GDataEntry *entry;
+	gchar *xml;
+
+	g_assert (GDATA_IS_FEED (album_feed));
+
+	/* Check properties of the feed */
+	g_assert_cmpint (g_list_length (gdata_feed_get_entries (album_feed)), >=, 4);
+
+	g_assert_cmpstr (gdata_feed_get_title (album_feed), ==, "libgdata.picasaweb");
+	g_assert_cmpstr (gdata_feed_get_subtitle (album_feed), ==, NULL);
+	g_assert_cmpstr (gdata_feed_get_id (album_feed), ==, "https://picasaweb.google.com/data/feed/user/libgdata.picasaweb");
+	g_assert_cmpstr (gdata_feed_get_etag (album_feed), !=, NULL); /* this varies as albums change, e.g. when new images are uploaded */
+	g_assert_cmpstr (gdata_feed_get_icon (album_feed), !=, NULL); /* tested weakly because it changes fairly regularly */
+	g_assert_cmpuint (gdata_feed_get_items_per_page (album_feed), ==, 1000);
+	g_assert_cmpuint (gdata_feed_get_start_index (album_feed), ==, 1);
+	g_assert_cmpuint (gdata_feed_get_total_results (album_feed), >=, 4);
+
+	/* Test the first album */
+	entry = gdata_feed_look_up_entry (album_feed, gdata_entry_get_id (GDATA_ENTRY (data->album1)));
+	g_assert (entry != NULL);
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (entry));
+
+	assert_albums_equal (GDATA_PICASAWEB_ALBUM (entry), data->album1, TRUE);
+
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+	g_assert_cmpstr (xml, !=, NULL);
+	g_assert_cmpuint (strlen (xml), >, 0);
+	g_free (xml);
+}
+
+/* Test that synchronously querying for all albums lists them correctly. */
+static void
+test_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
+{
+	GDataFeed *album_feed;
+	GError *error = NULL;
+
+	/* Try a proper query */
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
 	g_clear_error (&error);
 
-	albums = gdata_feed_get_entries (album_feed);
-	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
-	album = GDATA_PICASAWEB_ALBUM (entry);
+	_test_query_all_albums (album_feed, data);
 
-	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), GDATA_PICASAWEB_ALBUM (album), NULL, NULL, NULL,
-							  NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (photo_feed));
-	g_clear_error (&error);
-
-	g_object_unref (photo_feed);
 	g_object_unref (album_feed);
 }
 
 static void
-test_query_user (gconstpointer service)
-{
-	GDataPicasaWebUser *user;
-	GError *error = NULL;
-
-	user = gdata_picasaweb_service_get_user (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_PICASAWEB_USER (user));
-	g_clear_error (&error);
-
-	g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "libgdata.picasaweb");
-	g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "libgdata.picasaweb");
-	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 1073741824); /* 1GiB: it'll be a beautiful day when this assert gets tripped */
-	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), >, 0);
-	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), >, 0); /* now it's 1000, testing this weakly to avoid having to regularly update it */
-	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), !=, NULL); /* tested weakly to avoid having to update it regularly */
-
-	g_object_unref (user);
-}
-
-static void
-test_query_new_with_limits (gconstpointer service)
+test_query_all_albums_with_limits (QueryAllAlbumsData *data, gconstpointer service)
 {
 	GDataQuery *query;
 	GDataFeed *album_feed_1, *album_feed_2;
-	GError *error;
+	GError *error = NULL;
 	GList *albums_1, *albums_2;
-
-	error = NULL;
-
-	/* Test a query with a "q" parameter; it should fail */
-	query = GDATA_QUERY (gdata_picasaweb_query_new_with_limits ("foobar", 1, 1));
-	album_feed_1 = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), query, NULL, NULL, NULL, NULL, &error);
-	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER);
-	g_assert (album_feed_1 == NULL);
-	g_clear_error (&error);
-	g_object_unref (query);
 
 	/* Test that two queries starting at different indices don't return the same content */
 	query = GDATA_QUERY (gdata_picasaweb_query_new_with_limits (NULL, 1, 1));
@@ -1150,41 +1171,60 @@ test_query_new_with_limits (gconstpointer service)
 	g_object_unref (album_feed_1);
 }
 
+typedef struct {
+	QueryAllAlbumsData data;
+	GMainLoop *main_loop;
+} QueryAllAlbumsAsyncData;
+
 static void
-test_query_all_albums_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+set_up_query_all_albums_async (QueryAllAlbumsAsyncData *data, gconstpointer service)
 {
-	GDataFeed *feed;
+	set_up_query_all_albums ((QueryAllAlbumsData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+}
+
+static void
+tear_down_query_all_albums_async (QueryAllAlbumsAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_query_all_albums ((QueryAllAlbumsData*) data, service);
+}
+
+static void
+test_query_all_albums_async_cb (GDataService *service, GAsyncResult *async_result, QueryAllAlbumsAsyncData *data)
+{
+	GDataFeed *album_feed;
 	GError *error = NULL;
 
-	feed = gdata_service_query_finish (service, async_result, &error);
+	/* Get the album feed */
+	album_feed = gdata_service_query_finish (service, async_result, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
 
-	/* @TODO: Tests? */
-	g_main_loop_quit (main_loop);
+	_test_query_all_albums (album_feed, (QueryAllAlbumsData*) data);
 
-	g_object_unref (feed);
+	g_object_unref (album_feed);
+
+	g_main_loop_quit (data->main_loop);
 }
 
+/* Test that asynchronously querying for all albums lists them correctly. */
 static void
-test_query_all_albums_async (gconstpointer service)
+test_query_all_albums_async (QueryAllAlbumsAsyncData *data, gconstpointer service)
 {
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
 	gdata_picasaweb_service_query_all_albums_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL,
-							NULL, NULL, (GAsyncReadyCallback) test_query_all_albums_async_cb, main_loop);
+	                                                NULL, NULL, (GAsyncReadyCallback) test_query_all_albums_async_cb, data);
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
 }
 
+/* Test that the progress callbacks from gdata_picasaweb_service_query_all_albums_async() are called correctly.
+ * We take a QueryAllAlbumsAsyncData so that we can guarantee at least one album exists (since it's created in the setup function for
+ * QueryAllAlbumsAsyncData), but we don't use it as we don't actually care about the specific album. */
 static void
-test_query_all_albums_async_progress_closure (gconstpointer service)
+test_query_all_albums_async_progress_closure (QueryAllAlbumsAsyncData *unused_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-
-	g_assert (service != NULL);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -1192,6 +1232,7 @@ test_query_all_albums_async_progress_closure (gconstpointer service)
 	                                                (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                                data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                                (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
 	g_main_loop_run (data->main_loop);
 	g_main_loop_unref (data->main_loop);
 
@@ -1200,6 +1241,27 @@ test_query_all_albums_async_progress_closure (gconstpointer service)
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+}
+
+static void
+test_query_user (gconstpointer service)
+{
+	GDataPicasaWebUser *user;
+	GError *error = NULL;
+
+	user = gdata_picasaweb_service_get_user (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_USER (user));
+	g_clear_error (&error);
+
+	g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "libgdata.picasaweb");
+	g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "libgdata.picasaweb");
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 1073741824); /* 1GiB: it'll be a beautiful day when this assert gets tripped */
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), >, 0);
+	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), >, 0); /* now it's 1000, testing this weakly to avoid having to regularly update it */
+	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), !=, NULL); /* tested weakly to avoid having to update it regularly */
+
+	g_object_unref (user);
 }
 
 typedef struct {
@@ -1647,13 +1709,18 @@ main (int argc, char *argv[])
 		g_test_add_func ("/picasaweb/authentication", test_authentication);
 		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);
 
-		g_test_add_data_func ("/picasaweb/query/all_albums", service, test_query_all_albums);
+		g_test_add ("/picasaweb/query/all_albums", QueryAllAlbumsData, service, set_up_query_all_albums, test_query_all_albums,
+		            tear_down_query_all_albums);
+		g_test_add ("/picasaweb/query/all_albums/with_limits", QueryAllAlbumsData, service, set_up_query_all_albums,
+		            test_query_all_albums_with_limits, tear_down_query_all_albums);
+		g_test_add ("/picasaweb/query/all_albums/async", QueryAllAlbumsAsyncData, service, set_up_query_all_albums_async,
+		            test_query_all_albums_async, tear_down_query_all_albums_async);
+		g_test_add ("/picasaweb/query/all_albums/async/progress_closure", QueryAllAlbumsAsyncData, service, set_up_query_all_albums_async,
+		            test_query_all_albums_async_progress_closure, tear_down_query_all_albums_async);
+		g_test_add_data_func ("/picasaweb/query/all_albums/bad_query", service, test_query_all_albums_bad_query);
+		g_test_add_data_func ("/picasaweb/query/all_albums/bad_query/with_limits", service, test_query_all_albums_bad_query_with_limits);
+
 		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
-		g_test_add_data_func ("/picasaweb/query/all_albums_async", service, test_query_all_albums_async);
-		g_test_add_data_func ("/picasaweb/query/all_albums_async_progress_closure", service, test_query_all_albums_async_progress_closure);
-		g_test_add_data_func ("/picasaweb/query/new_with_limits", service, test_query_new_with_limits);
-		g_test_add_data_func ("/picasaweb/query/album_feed", service, test_album_feed);
-		g_test_add_data_func ("/picasaweb/query/album_feed_entry", service, test_album_feed_entry);
 		g_test_add_data_func ("/picasaweb/query/album", service, test_album);
 
 		g_test_add_data_func ("/picasaweb/insert/album", service, test_insert_album);
