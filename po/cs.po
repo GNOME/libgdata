@@ -8,37 +8,36 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-06-05 15:50+0000\n"
-"PO-Revision-Date: 2011-06-07 07:19+0200\n"
-"Last-Translator: Marek Černocký <marek@manet.cz>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-23 21:04+0200\n"
+"PO-Revision-Date: 2011-06-23 21:05+0200\n"
+"Last-Translator: Andre Klapper <ak-47@gmx.net>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Lokalize 1.0\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:572
+#: ../gdata/gdata-client-login-authorizer.c:575
 #: ../gdata/gdata-oauth1-authorizer.c:770
 #: ../gdata/gdata-oauth1-authorizer.c:1029
 msgid "The server returned a malformed response."
 msgstr "Server vrátil chybnou odpověď."
 
-#: ../gdata/gdata-client-login-authorizer.c:592 ../gdata/gdata-service.c:308
+#: ../gdata/gdata-client-login-authorizer.c:595 ../gdata/gdata-service.c:308
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Nelze se připojit k serveru poskytujícímu službu."
 
-#: ../gdata/gdata-client-login-authorizer.c:597 ../gdata/gdata-service.c:313
+#: ../gdata/gdata-client-login-authorizer.c:600 ../gdata/gdata-service.c:313
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Nelze se připojit k serveru proxy."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:603 ../gdata/gdata-service.c:319
+#: ../gdata/gdata-client-login-authorizer.c:606 ../gdata/gdata-service.c:319
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -46,58 +45,58 @@ msgstr ""
 "parametr: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:609 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:612 ../gdata/gdata-service.c:325
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Vyžadováno ověření: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:614 ../gdata/gdata-service.c:330
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:330
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Vyžadovaný zdroj nebyl nalezen: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:620 ../gdata/gdata-service.c:336
+#: ../gdata/gdata-client-login-authorizer.c:623 ../gdata/gdata-service.c:336
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Záznam byl od doby svého stažení změněn: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:632 ../gdata/gdata-service.c:350
+#: ../gdata/gdata-client-login-authorizer.c:635 ../gdata/gdata-service.c:350
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Kód chyby %u při ověřování: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:725
+#: ../gdata/gdata-client-login-authorizer.c:728
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Pro přihlášení se musí vyplnit CAPTCHA."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:763
+#: ../gdata/gdata-client-login-authorizer.c:766
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Tento účet vyžaduje heslo specifické pro aplikaci. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:770
+#: ../gdata/gdata-client-login-authorizer.c:773
 msgid "Your username or password were incorrect."
 msgstr "Vaše uživatelské jméno nebo heslo byly nesprávné."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:791
+#: ../gdata/gdata-client-login-authorizer.c:794
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "E-mailová adresa vašeho účtu nebyla ověřena. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:796
+#: ../gdata/gdata-client-login-authorizer.c:799
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Neodsouhlasili jste pravidla a podmínky služby. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:802
+#: ../gdata/gdata-client-login-authorizer.c:805
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -107,32 +106,33 @@ msgstr ""
 "nové uživatelské jméno a heslo. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:807
+#: ../gdata/gdata-client-login-authorizer.c:810
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Tento účet byl smazán. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:812
+#: ../gdata/gdata-client-login-authorizer.c:815
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Tento účet byl zablokován. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:817
+#: ../gdata/gdata-client-login-authorizer.c:820
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Účet pro přístup k této službě byl zablokován. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:822
+#: ../gdata/gdata-client-login-authorizer.c:825
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Tato služba není v tuto chvíli dostupná. (%s)"
 
-#: ../gdata/gdata-download-stream.c:603 ../gdata/gdata-upload-stream.c:785
-msgid "Stream is already closed"
-msgstr "Proud je již zavřen"
+#. Tried to seek too far
+#: ../gdata/gdata-download-stream.c:751
+msgid "Invalid seek request"
+msgstr "Neplatný požadavek na hledání"
 
 #: ../gdata/gdata-oauth1-authorizer.c:745
 msgid "The server rejected the temporary credentials request."
@@ -292,11 +292,15 @@ msgstr "Kód chyby %u při běhu dávkové operace: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "Neplatné přesměrované URI: %s"
 
-#: ../gdata/gdata-service.c:1289
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:524
-#: ../gdata/services/youtube/gdata-youtube-service.c:815
+#: ../gdata/gdata-service.c:1297
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:529
+#: ../gdata/services/youtube/gdata-youtube-service.c:833
 msgid "The entry has already been inserted."
 msgstr "Záznam byl již vložen."
+
+#: ../gdata/gdata-upload-stream.c:785
+msgid "Stream is already closed"
+msgstr "Proud je již zavřen"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -310,37 +314,37 @@ msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Obsah elementu %s („%s“) nebyl v šestnáctkovém formátu RGB."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:315
-#: ../gdata/services/calendar/gdata-calendar-service.c:361
+#: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
 msgstr "Abyste se mohli dotázat na všechny kalendáře, musíte projít ověřením."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:404
-#: ../gdata/services/calendar/gdata-calendar-service.c:450
-#: ../gdata/services/calendar/gdata-calendar-service.c:492
-#: ../gdata/services/calendar/gdata-calendar-service.c:549
+#: ../gdata/services/calendar/gdata-calendar-service.c:409
+#: ../gdata/services/calendar/gdata-calendar-service.c:460
+#: ../gdata/services/calendar/gdata-calendar-service.c:502
+#: ../gdata/services/calendar/gdata-calendar-service.c:562
 msgid "You must be authenticated to query your own calendars."
 msgstr "Abyste se mohli dotázat na vlastní kalendář, musíte projít ověřením."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:501
-#: ../gdata/services/calendar/gdata-calendar-service.c:558
+#: ../gdata/services/calendar/gdata-calendar-service.c:511
+#: ../gdata/services/calendar/gdata-calendar-service.c:571
 msgid "The calendar did not have a content URI."
 msgstr "Kalendář neměl URI obsahu."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
-#: ../gdata/services/contacts/gdata-contacts-service.c:305
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
 msgstr "Abyste se mohli dotázat na kontakt, musíte projít ověřením."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:417
-#: ../gdata/services/contacts/gdata-contacts-service.c:464
+#: ../gdata/services/contacts/gdata-contacts-service.c:421
+#: ../gdata/services/contacts/gdata-contacts-service.c:471
 msgid "You must be authenticated to query contact groups."
 msgstr "Abyste se mohli dotázat na kontaktní skupiny, musíte projít ověřením."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:500
+#: ../gdata/services/contacts/gdata-contacts-service.c:508
 msgid "The group has already been inserted."
 msgstr "Skupina již byla vložena."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:507
+#: ../gdata/services/contacts/gdata-contacts-service.c:515
 msgid "You must be authenticated to insert a group."
 msgstr "Abyste mohli vložit skupinu, musíte projít ověřením."
 
@@ -349,30 +353,30 @@ msgid "You must be authenticated to download documents."
 msgstr "Abyste mohli stáhnout dokument, musíte projít ověřením."
 
 #: ../gdata/services/documents/gdata-documents-service.c:357
-#: ../gdata/services/documents/gdata-documents-service.c:409
+#: ../gdata/services/documents/gdata-documents-service.c:412
 msgid "You must be authenticated to query documents."
 msgstr "Abyste se mohli dotázat na dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:484
+#: ../gdata/services/documents/gdata-documents-service.c:488
 msgid "You must be authenticated to upload documents."
 msgstr "Abyste mohli odeslat dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:490
+#: ../gdata/services/documents/gdata-documents-service.c:494
 msgid "The document has already been uploaded."
 msgstr "Dokument byl již odeslán."
 
-#: ../gdata/services/documents/gdata-documents-service.c:545
+#: ../gdata/services/documents/gdata-documents-service.c:549
 msgid "You must be authenticated to update documents."
 msgstr "Abyste mohli aktualizovat dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:608
+#: ../gdata/services/documents/gdata-documents-service.c:612
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Typ obsahu uvedeného dokumentu („%s“) nebyl rozpoznán."
 
-#: ../gdata/services/documents/gdata-documents-service.c:657
-#: ../gdata/services/documents/gdata-documents-service.c:842
+#: ../gdata/services/documents/gdata-documents-service.c:661
+#: ../gdata/services/documents/gdata-documents-service.c:846
 msgid "You must be authenticated to move documents and folders."
 msgstr "Abyste mohli přesouvat dokumenty a složky, musíte projít ověřením."
 
@@ -383,30 +387,30 @@ msgstr ""
 "projít ověřením."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:353
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:355
 msgid "Query parameter not allowed for albums."
 msgstr "Parametr dotazu není možný pro album."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:361
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:363
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Abyste se mohli dotázat na všechna alba, musíte zadat uživatelské jméno nebo "
 "projít ověřením."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:379
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:381
 msgid "The album did not have a feed link."
 msgstr "Na album nevede přístupný odkaz."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:531
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:536
 msgid "You must be authenticated to upload a file."
 msgstr "Abyste mohli odeslat soubor, musíte projít ověřením."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:607
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
 msgid "The album has already been inserted."
 msgstr "Album již bylo vloženo."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:619
 msgid "You must be authenticated to insert an album."
 msgstr "Abyste mohli vložit album, musíte projít ověřením."
 
@@ -451,11 +455,11 @@ msgstr "Neznámý kód chyby „%s“ v doméně „%s“ byl přijat pro umíst
 msgid "Unknown and unparsable error received."
 msgstr "Obdržena neznámá a nezpracovatelná chyba."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:712
-#: ../gdata/services/youtube/gdata-youtube-service.c:764
+#: ../gdata/services/youtube/gdata-youtube-service.c:724
+#: ../gdata/services/youtube/gdata-youtube-service.c:781
 msgid "The video did not have a related videos <link>."
 msgstr "Video nemělo odpovídající element videa <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:822
+#: ../gdata/services/youtube/gdata-youtube-service.c:840
 msgid "You must be authenticated to upload a video."
 msgstr "Abyste mohli odesílat video, musíte projít ověřením."
