@@ -753,119 +753,6 @@ test_photo_async_progress_closure (gconstpointer service)
 	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
-static void
-test_album (gconstpointer service)
-{
-	GDataFeed *album_feed;
-	GDataPicasaWebAlbum *album;
-	GList *albums, *contents, *thumbnails;
-	gchar *original_rights;
-	gdouble latitude, longitude, original_latitude, original_longitude;
-	GDataMediaContent *content;
-	GDataMediaThumbnail *thumbnail;
-	GError *error = NULL;
-
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-	g_clear_error (&error);
-
-	albums = gdata_feed_get_entries (album_feed);
-	album = GDATA_PICASAWEB_ALBUM (g_list_nth_data (albums, TEST_ALBUM_INDEX));
-
-	/* Tests */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (album)), ==, "Test Album 1 - Venice - Public");
-	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (album)), ==, "This is the test description.  This album should be in Venice.");
-
-	/* Check album-specific API */
-	g_assert_cmpstr (gdata_picasaweb_album_get_user (album), ==, "libgdata.picasaweb");
-	g_assert_cmpstr (gdata_picasaweb_album_get_nickname (album), ==, "libgdata.picasaweb");
-	g_assert_cmpint (gdata_picasaweb_album_get_edited (album), ==, 1240729023);
-	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
-	g_assert_cmpstr (gdata_picasaweb_album_get_location (album), ==, "Venice");
-	g_assert_cmpint (gdata_picasaweb_album_get_timestamp (album), ==, 1240729200000);
-	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos (album), ==, 1);
-	g_assert_cmpuint (gdata_picasaweb_album_get_num_photos_remaining (album), >, 0); /* about 999 remaining, testing weakly to avoid having to update regularly */
-	g_assert_cmpuint (gdata_picasaweb_album_get_bytes_used (album), ==, 1124730);
-
-	/* Check GeoRSS coordinates */
-	gdata_picasaweb_album_get_coordinates (album, &latitude, &longitude);
-	g_assert_cmpfloat (latitude, ==, 45.434336);
-	gdata_picasaweb_album_get_coordinates (album, &original_latitude, &original_longitude);
-	g_assert_cmpfloat (original_latitude, ==, 45.434336);
-	g_assert_cmpfloat (original_longitude, ==, 12.338784);
-
-	gdata_picasaweb_album_get_coordinates (album, NULL, &longitude);
-	g_assert_cmpfloat (longitude, ==, 12.338784);
-	gdata_picasaweb_album_get_coordinates (album, &latitude, NULL);
-	g_assert_cmpfloat (latitude, ==, 45.434336);
-	gdata_picasaweb_album_get_coordinates (album, NULL, NULL);
-
-	gdata_picasaweb_album_set_coordinates (album, original_longitude, original_latitude);
-	gdata_picasaweb_album_get_coordinates (album, &latitude, &longitude);
-	g_assert_cmpfloat (latitude, ==, original_longitude);
-	g_assert_cmpfloat (longitude, ==, original_latitude);
-	gdata_picasaweb_album_set_coordinates (album, original_latitude, original_longitude);
-	gdata_picasaweb_album_get_coordinates (album, &original_latitude, &original_longitude);
-	g_assert_cmpfloat (original_latitude, ==, 45.434336);
-	g_assert_cmpfloat (original_longitude, ==, 12.338784);
-
-	/* Test visibility and its synchronisation with its GDataEntry's rights */
-	original_rights = g_strdup (gdata_entry_get_rights (GDATA_ENTRY (album)));
-
-	gdata_entry_set_rights (GDATA_ENTRY (album), "private");
-	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "private");
-	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PRIVATE);
-
-	gdata_entry_set_rights (GDATA_ENTRY (album), "public");
-	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "public");
-	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
-
-	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PRIVATE);
-	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "private");
-	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PRIVATE);
-
-	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PUBLIC);
-	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "public");
-	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
-
-	gdata_entry_set_rights (GDATA_ENTRY (album), original_rights);
-	g_free (original_rights);
-
-	/* Check Media */
-	g_assert (gdata_picasaweb_album_get_tags (album) == NULL);
-	/* TODO: they return a <media:keywords></...> but it's empty and the web interface can't set it;
-	   try setting it programmatically; if we can't do that either, consider removing API */
-
-	contents = gdata_picasaweb_album_get_contents (album);
-	g_assert_cmpuint (g_list_length (contents), ==, 1);
-	content = GDATA_MEDIA_CONTENT (contents->data);
-
-	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
-	                 "https://lh5.googleusercontent.com/-Cdx1RdQou5E/SfQFLNjhg6E/AAAAAAAAAB8/DZlVjtcAqjg/TestAlbum1VenicePublic.jpg");
-	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
-	g_assert_cmpuint (gdata_media_content_get_medium (content), ==, GDATA_MEDIA_IMAGE);
-
-	g_assert_cmpuint (gdata_media_content_is_default (content), ==, FALSE);
-	g_assert_cmpint (gdata_media_content_get_duration (content), ==, 0); /* doesn't apply to photos */
-	g_assert_cmpuint (gdata_media_content_get_width (content), ==, 0); /* PicasaWeb doesn't set anything better */
-	g_assert_cmpuint (gdata_media_content_get_height (content), ==, 0); /* PicasaWeb doesn't set anything better */
-	g_assert_cmpuint (gdata_media_content_get_filesize (content), ==, 0); /* PicasaWeb doesn't set anything better */
-	g_assert_cmpuint (gdata_media_content_get_expression (content), ==, GDATA_MEDIA_EXPRESSION_FULL);
-
-	thumbnails = gdata_picasaweb_album_get_thumbnails (album);
-	g_assert_cmpuint (g_list_length (thumbnails), ==, 1);
-	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
-
-	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
-	                 "https://lh5.googleusercontent.com/-Cdx1RdQou5E/SfQFLNjhg6E/AAAAAAAAAB8/DZlVjtcAqjg/s160-c/TestAlbum1VenicePublic.jpg");
-	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
-	g_assert_cmpint (gdata_media_thumbnail_get_width (thumbnail), ==, 160);
-	g_assert_cmpint (gdata_media_thumbnail_get_height (thumbnail), ==, 160);
-
-	g_object_unref (album_feed);
-}
-
 typedef struct {
 	GDataPicasaWebAlbum *album;
 	GDataPicasaWebAlbum *inserted_album;
@@ -1624,6 +1511,77 @@ test_album_escaping (void)
 }
 
 static void
+test_album_properties_coordinates (void)
+{
+	GDataPicasaWebAlbum *album;
+	gdouble latitude, longitude, original_latitude, original_longitude;
+
+	/* Create a new album to test against */
+	album = gdata_picasaweb_album_new (NULL);
+	gdata_picasaweb_album_set_coordinates (album, 45.434336, 12.338784);
+
+	/* Getting the coordinates */
+	gdata_picasaweb_album_get_coordinates (album, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, 45.434336);
+	gdata_picasaweb_album_get_coordinates (album, &original_latitude, &original_longitude);
+	g_assert_cmpfloat (original_latitude, ==, 45.434336);
+	g_assert_cmpfloat (original_longitude, ==, 12.338784);
+
+	/* Providing NULL to either or both parameters */
+	gdata_picasaweb_album_get_coordinates (album, NULL, &longitude);
+	g_assert_cmpfloat (longitude, ==, 12.338784);
+	gdata_picasaweb_album_get_coordinates (album, &latitude, NULL);
+	g_assert_cmpfloat (latitude, ==, 45.434336);
+	gdata_picasaweb_album_get_coordinates (album, NULL, NULL);
+
+	/* Setting the coordinates */
+	gdata_picasaweb_album_set_coordinates (album, original_longitude, original_latitude);
+	gdata_picasaweb_album_get_coordinates (album, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, original_longitude);
+	g_assert_cmpfloat (longitude, ==, original_latitude);
+	gdata_picasaweb_album_set_coordinates (album, original_latitude, original_longitude);
+	gdata_picasaweb_album_get_coordinates (album, &original_latitude, &original_longitude);
+	g_assert_cmpfloat (original_latitude, ==, 45.434336);
+	g_assert_cmpfloat (original_longitude, ==, 12.338784);
+
+	g_object_unref (album);
+}
+
+static void
+test_album_properties_visibility (void)
+{
+	GDataPicasaWebAlbum *album;
+	gchar *original_rights;
+
+	/* Create a test album */
+	album = gdata_picasaweb_album_new (NULL);
+
+	/* Test visibility and its synchronisation with its GDataEntry's rights */
+	original_rights = g_strdup (gdata_entry_get_rights (GDATA_ENTRY (album)));
+
+	gdata_entry_set_rights (GDATA_ENTRY (album), "private");
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "private");
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PRIVATE);
+
+	gdata_entry_set_rights (GDATA_ENTRY (album), "public");
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "public");
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
+
+	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PRIVATE);
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "private");
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PRIVATE);
+
+	gdata_picasaweb_album_set_visibility (album, GDATA_PICASAWEB_PUBLIC);
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (album)), ==, "public");
+	g_assert_cmpint (gdata_picasaweb_album_get_visibility (album), ==, GDATA_PICASAWEB_PUBLIC);
+
+	gdata_entry_set_rights (GDATA_ENTRY (album), original_rights);
+	g_free (original_rights);
+
+	g_object_unref (album);
+}
+
+static void
 test_file_escaping (void)
 {
 	GDataPicasaWebFile *file;
@@ -1729,7 +1687,6 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/all_albums/bad_query/with_limits", service, test_query_all_albums_bad_query_with_limits);
 
 		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
-		g_test_add_data_func ("/picasaweb/query/album", service, test_album);
 
 		g_test_add ("/picasaweb/insert/album", InsertAlbumData, service, set_up_insert_album, test_insert_album, tear_down_insert_album);
 		g_test_add ("/picasaweb/insert/album/async", InsertAlbumAsyncData, service, set_up_insert_album_async, test_insert_album_async,
@@ -1756,6 +1713,8 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/picasaweb/album/new", test_album_new);
 	g_test_add_func ("/picasaweb/album/escaping", test_album_escaping);
+	g_test_add_func ("/picasaweb/album/properties/coordinates", test_album_properties_coordinates);
+	g_test_add_func ("/picasaweb/album/properties/visibility", test_album_properties_visibility);
 	g_test_add_func ("/picasaweb/file/escaping", test_file_escaping);
 
 	g_test_add_func ("/picasaweb/query/etag", test_query_etag);
