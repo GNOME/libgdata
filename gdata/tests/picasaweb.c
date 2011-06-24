@@ -32,9 +32,6 @@
 #include "common.h"
 
 #define PW_USERNAME "libgdata.picasaweb@gmail.com"
-/* the following two properties will change if a new album is added */
-#define NUM_ALBUMS 5
-#define TEST_ALBUM_INDEX 2
 
 /* Assert that two albums have equal properties, but aren't the same object instance. For use in, e.g., comparing an inserted album from the server
  * to the original instance which was inserted. */
@@ -582,343 +579,246 @@ test_download (gconstpointer _service)
 	g_object_unref (album_feed);
 }
 
-static void
-test_photo (gconstpointer service)
-{
-	GError *error = NULL;
-	GDataFeed *album_feed;
-	GDataFeed *photo_feed;
-	GList *albums;
-	GList *files;
-	GDataEntry *album_entry;
-	GDataEntry *photo_entry;
+typedef struct {
 	GDataPicasaWebAlbum *album;
-	GDataPicasaWebFile *photo;
-	GList *list;
-	GDataMediaContent *content;
-	GDataMediaThumbnail *thumbnail;
-	const gchar * const *tags;
-	gdouble latitude;
-	gdouble longitude;
-	gdouble original_latitude;
-	gdouble original_longitude;
+	GDataPicasaWebFile *file1;
+	GDataPicasaWebFile *file2;
+	GDataPicasaWebFile *file3;
+	GDataPicasaWebFile *file4;
+} QueryFilesData;
 
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-	g_clear_error (&error);
+static GDataPicasaWebFile *
+upload_file (GDataPicasaWebService *service, const gchar *title, GDataPicasaWebAlbum *album)
+{
+	GDataPicasaWebFile *file, *uploaded_file;
+	GFile *photo_file;
+	GFileInfo *file_info;
+	GFileInputStream *input_stream;
+	GDataUploadStream *upload_stream;
 
-	albums = gdata_feed_get_entries (album_feed);
-	album_entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
-	album = GDATA_PICASAWEB_ALBUM (album_entry);
+	file = gdata_picasaweb_file_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (file), title);
 
-	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), GDATA_PICASAWEB_ALBUM (album), NULL, NULL, NULL,
-							  NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (photo_feed));
-	g_clear_error (&error);
+	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
+	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
 
-	files = gdata_feed_get_entries (photo_feed);
-	photo_entry = GDATA_ENTRY (g_list_nth_data (files, 0));
-	photo = GDATA_PICASAWEB_FILE (photo_entry);
+	/* Get the file's info */
+	file_info = g_file_query_info (photo_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, NULL);
+	g_assert (G_IS_FILE_INFO (file_info));
 
-	g_assert_cmpint (gdata_picasaweb_file_get_edited (photo), ==, 1273783513);
+	/* Get an input stream for the file */
+	input_stream = g_file_read (photo_file, NULL, NULL);
+	g_assert (G_IS_FILE_INPUT_STREAM (input_stream));
 
-	/* tests */
+	g_object_unref (photo_file);
 
-	g_assert_cmpstr (gdata_picasaweb_file_get_caption (photo), ==, "Ginger cookie caption");
-	g_assert_cmpstr (gdata_picasaweb_file_get_version (photo), ==, "29"); /* 1240729023474000"); */ /* TODO check how constant this even is */
-	g_assert_cmpstr (gdata_picasaweb_file_get_album_id (photo), ==, "5328889949261497249");
-	g_assert_cmpuint (gdata_picasaweb_file_get_width (photo), ==, 2576);
-	g_assert_cmpuint (gdata_picasaweb_file_get_height (photo), ==, 1932);
-	g_assert_cmpuint (gdata_picasaweb_file_get_size (photo), ==, 1124730);
-	/* TODO: file wasn't uploaded with checksum assigned; g_assert_cmpstr (gdata_picasaweb_file_get_checksum (photo), ==, ??); */
-	g_assert_cmpint (gdata_picasaweb_file_get_timestamp (photo), ==, 1228588330000);
-	g_assert_cmpstr (gdata_picasaweb_file_get_video_status (photo), ==, NULL);
-	/* TODO: not a good test of video status; want to upload a video for it */
-	g_assert_cmpuint (gdata_picasaweb_file_is_commenting_enabled (photo), ==, TRUE);
-	g_assert_cmpuint (gdata_picasaweb_file_get_comment_count (photo), ==, 2);
-	g_assert_cmpuint (gdata_picasaweb_file_get_rotation (photo), ==, 0);
+	/* Prepare the upload stream */
+	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), album, file, g_file_info_get_display_name (file_info),
+	                                                     g_file_info_get_content_type (file_info), NULL, NULL);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
-	g_assert_cmpstr (gdata_picasaweb_file_get_caption (photo), ==, "Ginger cookie caption");
-	tags = gdata_picasaweb_file_get_tags (photo);
-	g_assert (tags != NULL);
-	g_assert_cmpstr (tags[0], ==, "cookies");
-	g_assert (tags[1] == NULL);
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (photo)), ==, "100_0269.jpg");
+	g_object_unref (file_info);
+	g_object_unref (file);
 
-	g_assert_cmpstr (gdata_picasaweb_file_get_credit (photo), ==, "libgdata.picasaweb");
+	/* Upload the photo */
+	g_assert_cmpint (g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (input_stream),
+	                                         G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, NULL), >, 0);
 
-	/* Check EXIF values */
-	g_assert_cmpfloat (gdata_picasaweb_file_get_distance (photo), ==, 0);
-	g_assert_cmpfloat (gdata_picasaweb_file_get_exposure (photo), ==, 0.016666668);
-	g_assert_cmpint (gdata_picasaweb_file_get_flash (photo), ==, TRUE);
-	g_assert_cmpfloat (gdata_picasaweb_file_get_focal_length (photo), ==, 6.3);
-	g_assert_cmpfloat (gdata_picasaweb_file_get_fstop (photo), ==, 2.8);
-	g_assert_cmpstr (gdata_picasaweb_file_get_image_unique_id (photo), ==, "1c179e0ac4f6741c8c1cdda3516e69e5");
-	g_assert_cmpint (gdata_picasaweb_file_get_iso (photo), ==, 80);
-	g_assert_cmpstr (gdata_picasaweb_file_get_make (photo), ==, "EASTMAN KODAK COMPANY");
-	g_assert_cmpstr (gdata_picasaweb_file_get_model (photo), ==, "KODAK Z740 ZOOM DIGITAL CAMERA");
+	g_object_unref (input_stream);
 
-	/* Check GeoRSS coordinates */
-	gdata_picasaweb_file_get_coordinates (photo, &original_latitude, &original_longitude);
-	g_assert_cmpfloat (original_latitude, ==, 45.4341173);
-	g_assert_cmpfloat (original_longitude, ==, 12.1289062);
+	/* Finish off the upload */
+	uploaded_file = gdata_picasaweb_service_finish_file_upload (GDATA_PICASAWEB_SERVICE (service), upload_stream, NULL);
 
-	gdata_picasaweb_file_get_coordinates (photo, NULL, &longitude);
-	g_assert_cmpfloat (longitude, ==, 12.1289062);
-	gdata_picasaweb_file_get_coordinates (photo, &latitude, NULL);
-	g_assert_cmpfloat (latitude, ==, 45.4341173);
-	gdata_picasaweb_file_get_coordinates (photo, NULL, NULL);
+	g_object_unref (upload_stream);
 
-	gdata_picasaweb_file_set_coordinates (photo, original_longitude, original_latitude);
-	gdata_picasaweb_file_get_coordinates (photo, &latitude, &longitude);
-	g_assert_cmpfloat (latitude, ==, original_longitude);
-	g_assert_cmpfloat (longitude, ==, original_latitude);
-	gdata_picasaweb_file_set_coordinates (photo, original_latitude, original_longitude);
-	gdata_picasaweb_file_get_coordinates (photo, &latitude, &longitude);
-	g_assert_cmpfloat (latitude, ==, 45.4341173);
-	g_assert_cmpfloat (longitude, ==, 12.1289062);
+	g_assert (GDATA_IS_PICASAWEB_FILE (uploaded_file));
 
-	/* Check Media */
-	list = gdata_picasaweb_file_get_contents (photo);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-
-	content = GDATA_MEDIA_CONTENT (list->data);
-	g_assert_cmpstr (gdata_media_content_get_uri (content), ==,
-	                 "https://lh3.googleusercontent.com/--1R6jzZZ1oI/SfQFWPnuovI/AAAAAAAAAB0/WdINsvmFPf8/100_0269.jpg");
-	g_assert_cmpstr (gdata_media_content_get_content_type (content), ==, "image/jpeg");
-	g_assert_cmpuint (gdata_media_content_get_width (content), ==, 1600);
-	g_assert_cmpuint (gdata_media_content_get_height (content), ==, 1200);
-	g_assert_cmpuint (gdata_media_content_get_medium (content), ==, GDATA_MEDIA_IMAGE);
-
-	g_assert_cmpuint (gdata_media_content_is_default (content), ==, FALSE);
-	g_assert_cmpint (gdata_media_content_get_duration (content), ==, 0); /* doesn't apply to photos */
-	g_assert_cmpuint (gdata_media_content_get_filesize (content), ==, 0); /* PicasaWeb doesn't set anything better */
-	g_assert_cmpuint (gdata_media_content_get_expression (content), ==, GDATA_MEDIA_EXPRESSION_FULL);
-	/* TODO: really want to test these with a video clip */
-
-	list = gdata_picasaweb_file_get_thumbnails (photo);
-	g_assert_cmpuint (g_list_length (list), ==, 3);
-
-	thumbnail = GDATA_MEDIA_THUMBNAIL (list->data);
-	g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail), ==,
-	                 "https://lh3.googleusercontent.com/--1R6jzZZ1oI/SfQFWPnuovI/AAAAAAAAAB0/WdINsvmFPf8/s288/100_0269.jpg");
-	g_assert_cmpuint (gdata_media_thumbnail_get_width (thumbnail), ==, 288);
-	g_assert_cmpuint (gdata_media_thumbnail_get_height (thumbnail), ==, 216);
-	g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail), ==, -1); /* PicasaWeb doesn't set anything better */
-
-	g_object_unref (album_feed);
-	g_object_unref (photo_feed);
+	return uploaded_file;
 }
 
 static void
-test_photo_feed_entry (gconstpointer service)
+set_up_query_files (QueryFilesData *data, gconstpointer service)
+{
+	GDataPicasaWebAlbum *album;
+
+	/* Album */
+	album = gdata_picasaweb_album_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (album), "Test album for QueryFiles");
+
+	data->album = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL);
+	g_assert (data->album != NULL);
+
+	g_object_unref (album);
+
+	/* Upload the files */
+	data->file1 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 1", data->album);
+	data->file2 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 2", data->album);
+	data->file3 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 3", data->album);
+	data->file4 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 4", data->album);
+}
+
+static void
+tear_down_query_files (QueryFilesData *data, gconstpointer service)
 {
 	GDataFeed *album_feed;
-	GDataFeed *photo_feed;
-	GError *error = NULL;
+	GDataEntry *album;
+
+	g_object_unref (data->file4);
+	g_object_unref (data->file3);
+	g_object_unref (data->file2);
+	g_object_unref (data->file1);
+
+	/* We have to re-query for the album, since its ETag will be out of date */
+	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, NULL);
+	album = gdata_feed_look_up_entry (GDATA_FEED (album_feed), gdata_entry_get_id (GDATA_ENTRY (data->album)));
+	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                                      album, NULL, NULL) == TRUE);
+
+	g_object_unref (album_feed);
+	g_object_unref (data->album);
+}
+
+/* Checks to perform on a photo feed from test_query_files() or test_query_files_async(). */
+static void
+_test_query_files (GDataFeed *photo_feed, QueryFilesData *data)
+{
 	GDataEntry *entry;
-	GDataPicasaWebAlbum *album;
-	GList *albums;
-	GList *files;
 	gchar *xml;
-	GDataEntry *photo_entry;
 
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-	g_clear_error (&error);
-
-	albums = gdata_feed_get_entries (album_feed);
-	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
-	album = GDATA_PICASAWEB_ALBUM (entry);
-
-	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), GDATA_PICASAWEB_ALBUM (album), NULL, NULL, NULL,
-							  NULL, &error);
-	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (photo_feed));
-	g_clear_error (&error);
 
-	files = gdata_feed_get_entries (photo_feed);
-	photo_entry = GDATA_ENTRY (g_list_nth_data (files, 0));
+	/* Check properties of the feed */
+	g_assert_cmpint (g_list_length (gdata_feed_get_entries (photo_feed)), ==, 4);
 
-	/* tests */
+	g_assert_cmpstr (gdata_feed_get_title (photo_feed), ==, "Test album for QueryFiles");
+	g_assert_cmpstr (gdata_feed_get_subtitle (photo_feed), ==, NULL);
+	g_assert_cmpstr (gdata_feed_get_id (photo_feed), !=, NULL);
+	g_assert_cmpstr (gdata_feed_get_etag (photo_feed), !=, NULL); /* this varies as the album changes, e.g. when new images are uploaded */
+	g_assert_cmpstr (gdata_feed_get_icon (photo_feed), !=, NULL); /* tested weakly because it changes fairly regularly */
+	g_assert_cmpuint (gdata_feed_get_items_per_page (photo_feed), ==, 1000);
+	g_assert_cmpuint (gdata_feed_get_start_index (photo_feed), ==, 1);
+	g_assert_cmpuint (gdata_feed_get_total_results (photo_feed), ==, 4);
 
-	g_assert_cmpuint (g_list_length (files), ==, 1);
+	/* Test the first file */
+	entry = gdata_feed_look_up_entry (photo_feed, gdata_entry_get_id (GDATA_ENTRY (data->file1)));
+	g_assert (entry != NULL);
+	g_assert (GDATA_IS_PICASAWEB_FILE (entry));
 
-	g_assert_cmpstr (gdata_entry_get_title (photo_entry), ==, "100_0269.jpg");
-	g_assert_cmpstr (gdata_picasaweb_file_get_id (GDATA_PICASAWEB_FILE (photo_entry)), ==, "5328890138794566386");
-	g_assert_cmpstr (gdata_entry_get_id (photo_entry), ==,
-	                 "https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
-	g_assert_cmpstr (gdata_entry_get_etag (photo_entry), !=, NULL);
-	g_assert_cmpint (gdata_entry_get_updated (photo_entry), ==, 1273783513);
-	g_assert_cmpint (gdata_entry_get_published (photo_entry), ==, 1240728920);
-	g_assert (gdata_entry_get_content (photo_entry) == NULL);
-	g_assert_cmpstr (gdata_entry_get_content_uri (photo_entry), ==,
-	                 "https://lh3.googleusercontent.com/--1R6jzZZ1oI/SfQFWPnuovI/AAAAAAAAAB0/WdINsvmFPf8/100_0269.jpg");
+	assert_files_equal (GDATA_PICASAWEB_FILE (entry), data->file1, TRUE);
 
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (photo_entry));
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
 	g_assert_cmpstr (xml, !=, NULL);
 	g_assert_cmpuint (strlen (xml), >, 0);
 	g_free (xml);
-
-	g_object_unref (album_feed);
-	g_object_unref (photo_feed);
 }
 
 static void
-test_photo_feed (gconstpointer service)
+test_query_files (QueryFilesData *data, gconstpointer service)
 {
-	GError *error = NULL;
-	GDataFeed *album_feed;
 	GDataFeed *photo_feed;
-	GDataEntry *entry;
-	GDataPicasaWebAlbum *album;
-	GList *albums;
+	GError *error = NULL;
 
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-	g_clear_error (&error);
-
-	albums = gdata_feed_get_entries (album_feed);
-	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
-	album = GDATA_PICASAWEB_ALBUM (entry);
-
-	/* tests */
-
-	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), GDATA_PICASAWEB_ALBUM (album), NULL, NULL, NULL,
-							  NULL, &error);
+	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), data->album, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (photo_feed));
 	g_clear_error (&error);
 
-	g_assert_cmpstr (gdata_feed_get_title (photo_feed), ==, "Test Album 1 - Venice - Public");
-	g_assert_cmpstr (gdata_feed_get_id (photo_feed), ==,
-			 "https://picasaweb.google.com/data/feed/user/libgdata.picasaweb/albumid/5328889949261497249");
-	g_assert_cmpstr (gdata_feed_get_etag (photo_feed), !=, NULL);
-	g_assert_cmpuint (gdata_feed_get_items_per_page (photo_feed), ==, 1000);
-	g_assert_cmpuint (gdata_feed_get_start_index (photo_feed), ==, 1);
-	g_assert_cmpuint (gdata_feed_get_total_results (photo_feed), ==, 1);
+	_test_query_files (photo_feed, data);
 
-	g_object_unref (album_feed);
 	g_object_unref (photo_feed);
 }
 
-static void
-test_photo_single (gconstpointer service)
-{
-	GDataEntry *photo;
-	GError *error = NULL;
-
-	const gchar *entry_id =
-		"https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386";
-	photo = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
-	                                          entry_id, NULL, GDATA_TYPE_PICASAWEB_FILE, NULL, &error);
-
-	g_assert_no_error (error);
-	g_assert (photo != NULL);
-	g_assert (GDATA_IS_PICASAWEB_FILE (photo));
-	g_assert_cmpstr (gdata_picasaweb_file_get_id (GDATA_PICASAWEB_FILE (photo)), ==, "5328890138794566386");
-	g_assert_cmpstr (gdata_entry_get_id (photo), ==,
-	                 "https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386");
-	g_clear_error (&error);
-
-	g_object_unref (photo);
-}
-
-static void
-test_photo_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	GDataFeed *feed;
-	GError *error = NULL;
-
-	feed = gdata_service_query_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
-
-	/* Tests */
-	g_assert_cmpstr (gdata_feed_get_title (feed), ==, "Test Album 1 - Venice - Public");
-	g_assert_cmpstr (gdata_feed_get_id (feed), ==, "https://picasaweb.google.com/data/feed/user/libgdata.picasaweb/albumid/5328889949261497249");
-	g_assert_cmpstr (gdata_feed_get_etag (feed), !=, NULL);
-	g_assert_cmpuint (gdata_feed_get_items_per_page (feed), ==, 1000);
-	g_assert_cmpuint (gdata_feed_get_start_index (feed), ==, 1);
-	g_assert_cmpuint (gdata_feed_get_total_results (feed), ==, 1);
-
-	g_main_loop_quit (main_loop);
-
-	g_object_unref (feed);
-}
-
-static void
-test_photo_async (gconstpointer service)
-{
+typedef struct {
+	QueryFilesData data;
 	GMainLoop *main_loop;
-	GDataFeed *album_feed;
-	GDataEntry *entry;
-	GDataPicasaWebAlbum *album;
-	GList *albums;
-	GError *error = NULL;
+} QueryFilesAsyncData;
 
-	/* Find an album */
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-	g_clear_error (&error);
-
-	albums = gdata_feed_get_entries (album_feed);
-	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
-	album = GDATA_PICASAWEB_ALBUM (entry);
-
-	main_loop = g_main_loop_new (NULL, TRUE);
-
-	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL, NULL, NULL, NULL,
-	                                           (GAsyncReadyCallback) test_photo_async_cb, main_loop);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-	g_object_unref (album_feed);
+static void
+set_up_query_files_async (QueryFilesAsyncData *data, gconstpointer service)
+{
+	set_up_query_files ((QueryFilesData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, TRUE);
 }
 
 static void
-test_photo_async_progress_closure (gconstpointer service)
+tear_down_query_files_async (QueryFilesAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_query_files ((QueryFilesData*) data, service);
+}
+
+static void
+test_query_files_async_cb (GDataService *service, GAsyncResult *async_result, QueryFilesAsyncData *data)
+{
+	GDataFeed *photo_feed;
+	GError *error = NULL;
+
+	/* Get the photo feed */
+	photo_feed = gdata_service_query_finish (service, async_result, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	_test_query_files (photo_feed, (QueryFilesData*) data);
+
+	g_object_unref (photo_feed);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+
+/* Test that asynchronously querying for all photos in an album lists them correctly. */
+static void
+test_query_files_async (QueryFilesAsyncData *data, gconstpointer service)
+{
+	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), data->data.album, NULL, NULL, NULL, NULL, NULL,
+	                                           (GAsyncReadyCallback) test_query_files_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
+}
+
+/* Test that the progress callbacks from gdata_picasaweb_service_query_files_async() are called correctly.
+ * We take a QueryFilesAsyncData so that we can guarantee the album and at least one file exists (since it's created in the setup function for
+ * QueryFilesAsyncData), but we don't use it much as we don't actually care about the specific files. */
+static void
+test_query_files_async_progress_closure (QueryFilesAsyncData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-	GDataFeed *album_feed;
-	GDataEntry *entry;
-	GDataPicasaWebAlbum *album;
-	GList *albums;
-	GError *error = NULL;
-
-	g_assert (service != NULL);
-
-	/* Find an album */
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-	g_clear_error (&error);
-
-	albums = gdata_feed_get_entries (album_feed);
-	entry = GDATA_ENTRY (g_list_nth_data (albums, TEST_ALBUM_INDEX));
-	album = GDATA_PICASAWEB_ALBUM (entry);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL,
+	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), query_data->data.album, NULL, NULL,
 	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
 	g_main_loop_run (data->main_loop);
 	g_main_loop_unref (data->main_loop);
-	g_object_unref (album_feed);
 
 	/* Check that both callbacks were called exactly once */
 	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+}
+
+static void
+test_query_files_single (QueryFilesData *data, gconstpointer service)
+{
+	GDataEntry *file;
+	GError *error = NULL;
+
+	file = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
+	                                         gdata_entry_get_id (GDATA_ENTRY (data->file1)), NULL, GDATA_TYPE_PICASAWEB_FILE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PICASAWEB_FILE (file));
+	g_clear_error (&error);
+
+	assert_files_equal (GDATA_PICASAWEB_FILE (file), data->file1, TRUE);
+
+	g_object_unref (file);
 }
 
 typedef struct {
@@ -1895,12 +1795,13 @@ main (int argc, char *argv[])
 		g_test_add ("/picasaweb/insert/album/async", InsertAlbumAsyncData, service, set_up_insert_album_async, test_insert_album_async,
 		            tear_down_insert_album_async);
 
-		g_test_add_data_func ("/picasaweb/query/photo_feed", service, test_photo_feed);
-		g_test_add_data_func ("/picasaweb/query/photo_feed_entry", service, test_photo_feed_entry);
-		g_test_add_data_func ("/picasaweb/query/photo", service, test_photo);
-		g_test_add_data_func ("/picasaweb/query/photo_single", service, test_photo_single);
-		g_test_add_data_func ("/picasaweb/query/photo/async", service, test_photo_async);
-		g_test_add_data_func ("/picasaweb/query/photo/async_progress_closure", service, test_photo_async_progress_closure);
+		g_test_add ("/picasaweb/query/files", QueryFilesData, service, set_up_query_files, test_query_files, tear_down_query_files);
+		g_test_add ("/picasaweb/query/files/async", QueryFilesAsyncData, service, set_up_query_files_async, test_query_files_async,
+		            tear_down_query_files_async);
+		g_test_add ("/picasaweb/query/files/async/progress_closure", QueryFilesAsyncData, service, set_up_query_files_async,
+		            test_query_files_async_progress_closure, tear_down_query_files_async);
+		g_test_add ("/picasaweb/query/files/single", QueryFilesData, service, set_up_query_files, test_query_files_single,
+		            tear_down_query_files);
 
 		g_test_add ("/picasaweb/upload/default_album", UploadData, service, setup_upload, test_upload_default_album, teardown_upload);
 		g_test_add ("/picasaweb/upload/default_album/async", UploadAsyncData, service, setup_upload_async, test_upload_default_album_async,
