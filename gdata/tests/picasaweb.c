@@ -167,6 +167,174 @@ assert_albums_equal (GDataPicasaWebAlbum *album1, GDataPicasaWebAlbum *album2, g
 	/* TODO: We don't compare categories or authors yet. */
 }
 
+/* Assert that two files have equal properties, but aren't the same object instance. For use in, e.g., comparing an inserted file from the server
+ * to the original instance which was inserted. */
+static void
+assert_files_equal (GDataPicasaWebFile *file1, GDataPicasaWebFile *file2, gboolean compare_inserted_data)
+{
+	gdouble latitude1, longitude1, latitude2, longitude2;
+	const gchar * const *tags1, * const *tags2;
+
+	g_assert (GDATA_IS_PICASAWEB_FILE (file1));
+	g_assert (GDATA_IS_PICASAWEB_FILE (file2));
+
+	g_assert (file1 != file2);
+
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (file1)), ==, gdata_entry_get_title (GDATA_ENTRY (file2)));
+	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (file1)), ==, gdata_entry_get_summary (GDATA_ENTRY (file2)));
+	g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (file1)), ==, gdata_entry_get_content (GDATA_ENTRY (file2)));
+	g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (file1)), ==, NULL);
+	g_assert_cmpstr (gdata_entry_get_content_uri (GDATA_ENTRY (file1)), ==, gdata_entry_get_content_uri (GDATA_ENTRY (file2)));
+	g_assert (strstr (gdata_entry_get_content_uri (GDATA_ENTRY (file1)), "googleusercontent.com") != NULL);
+	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (file1)), ==, gdata_entry_get_rights (GDATA_ENTRY (file2)));
+
+	if (compare_inserted_data == TRUE) {
+		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (file1)), ==, gdata_entry_get_id (GDATA_ENTRY (file2)));
+		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (file1)), !=, NULL);
+		g_assert_cmpstr (gdata_entry_get_etag (GDATA_ENTRY (file1)), ==, gdata_entry_get_etag (GDATA_ENTRY (file2)));
+		g_assert_cmpstr (gdata_entry_get_etag (GDATA_ENTRY (file1)), !=, NULL);
+		g_assert_cmpint (gdata_entry_get_updated (GDATA_ENTRY (file1)), ==, gdata_entry_get_updated (GDATA_ENTRY (file2)));
+		g_assert_cmpint (gdata_entry_get_updated (GDATA_ENTRY (file1)), >, 0);
+		g_assert_cmpint (gdata_entry_get_published (GDATA_ENTRY (file1)), ==, gdata_entry_get_published (GDATA_ENTRY (file2)));
+		g_assert_cmpint (gdata_entry_get_published (GDATA_ENTRY (file1)), >, 0);
+	}
+
+	g_assert_cmpstr (gdata_picasaweb_file_get_id (file1), ==, gdata_picasaweb_file_get_id (file2));
+	g_assert_cmpint (strlen (gdata_picasaweb_file_get_id (file1)), >, 0);
+	g_assert_cmpstr (gdata_picasaweb_file_get_checksum (file1), ==, gdata_picasaweb_file_get_checksum (file2));
+	g_assert (gdata_picasaweb_file_is_commenting_enabled (file1) == gdata_picasaweb_file_is_commenting_enabled (file2));
+	g_assert_cmpstr (gdata_picasaweb_file_get_credit (file1), ==, gdata_picasaweb_file_get_credit (file2));
+	g_assert_cmpstr (gdata_picasaweb_file_get_caption (file1), ==, gdata_picasaweb_file_get_caption (file2));
+
+	/* Compare coordinates */
+	gdata_picasaweb_file_get_coordinates (file1, &latitude1, &longitude1);
+	gdata_picasaweb_file_get_coordinates (file2, &latitude2, &longitude2);
+	g_assert_cmpfloat (latitude1, ==, latitude2);
+	g_assert_cmpfloat (longitude1, ==, longitude2);
+
+	/* Compare tags */
+	tags1 = gdata_picasaweb_file_get_tags (file1);
+	tags2 = gdata_picasaweb_file_get_tags (file2);
+
+	g_assert ((tags1 == NULL) == (tags2 == NULL));
+
+	if (tags1 != NULL && tags2 != NULL) {
+		guint i;
+
+		for (i = 0; tags1[i] != NULL; i++) {
+			g_assert_cmpstr (tags1[i], ==, tags2[i]);
+		}
+
+		g_assert (tags2[i] == NULL);
+	}
+
+	if (compare_inserted_data == TRUE) {
+		GList *contents1, *contents2, *thumbnails1, *thumbnails2, *i1, *i2;
+
+		g_assert_cmpint (gdata_picasaweb_file_get_edited (file1), ==, gdata_picasaweb_file_get_edited (file2));
+		g_assert_cmpint (gdata_picasaweb_file_get_edited (file1), >, 0);
+		g_assert_cmpstr (gdata_picasaweb_file_get_version (file1), ==, gdata_picasaweb_file_get_version (file2));
+		g_assert_cmpuint (strlen (gdata_picasaweb_file_get_version (file1)), >, 0);
+		g_assert_cmpstr (gdata_picasaweb_file_get_album_id (file1), ==, gdata_picasaweb_file_get_album_id (file2));
+		g_assert_cmpuint (strlen (gdata_picasaweb_file_get_album_id (file1)), >, 0);
+		g_assert_cmpuint (gdata_picasaweb_file_get_width (file1), ==, gdata_picasaweb_file_get_width (file2));
+		g_assert_cmpuint (gdata_picasaweb_file_get_width (file1), >, 0);
+		g_assert_cmpuint (gdata_picasaweb_file_get_height (file1), ==, gdata_picasaweb_file_get_height (file2));
+		g_assert_cmpuint (gdata_picasaweb_file_get_height (file1), >, 0);
+		g_assert_cmpuint (gdata_picasaweb_file_get_size (file1), ==, gdata_picasaweb_file_get_size (file2));
+		g_assert_cmpuint (gdata_picasaweb_file_get_size (file1), >, 0);
+		g_assert_cmpint (gdata_picasaweb_file_get_timestamp (file1), ==, gdata_picasaweb_file_get_timestamp (file2));
+		g_assert_cmpint (gdata_picasaweb_file_get_timestamp (file1), >, 0);
+		g_assert_cmpuint (gdata_picasaweb_file_get_comment_count (file1), ==, gdata_picasaweb_file_get_comment_count (file2));
+		g_assert_cmpuint (gdata_picasaweb_file_get_rotation (file1), ==, gdata_picasaweb_file_get_rotation (file2));
+		g_assert_cmpstr (gdata_picasaweb_file_get_video_status (file1), ==, gdata_picasaweb_file_get_video_status (file2));
+
+		/* Compare contents */
+		contents1 = gdata_picasaweb_file_get_contents (file1);
+		contents2 = gdata_picasaweb_file_get_contents (file2);
+
+		g_assert_cmpuint (g_list_length (contents1), ==, g_list_length (contents2));
+		g_assert_cmpuint (g_list_length (contents1), >=, 1);
+
+		for (i1 = contents1, i2 = contents2; i1 != NULL && i2 != NULL; i1 = i1->next, i2 = i2->next) {
+			GDataMediaContent *content1, *content2;
+
+			content1 = GDATA_MEDIA_CONTENT (i1->data);
+			content2 = GDATA_MEDIA_CONTENT (i2->data);
+
+			g_assert_cmpstr (gdata_media_content_get_uri (content1), ==, gdata_media_content_get_uri (content2));
+			g_assert (strstr (gdata_media_content_get_uri (content1), "googleusercontent.com") != NULL);
+			g_assert_cmpstr (gdata_media_content_get_content_type (content1), ==, gdata_media_content_get_content_type (content2));
+			g_assert_cmpstr (gdata_media_content_get_content_type (content1), ==, "image/jpeg");
+			g_assert_cmpuint (gdata_media_content_get_medium (content1), ==, gdata_media_content_get_medium (content2));
+			g_assert_cmpuint (gdata_media_content_get_medium (content1), ==, GDATA_MEDIA_IMAGE);
+
+			g_assert (gdata_media_content_is_default (content1) == gdata_media_content_is_default (content2));
+			g_assert (gdata_media_content_is_default (content1) == FALSE);
+			g_assert_cmpint (gdata_media_content_get_duration (content1), ==, gdata_media_content_get_duration (content2));
+			g_assert_cmpint (gdata_media_content_get_duration (content1), ==, 0); /* doesn't apply to photos */
+			g_assert_cmpuint (gdata_media_content_get_width (content1), ==, gdata_media_content_get_width (content2));
+			g_assert_cmpuint (gdata_media_content_get_width (content1), >, 0);
+			g_assert_cmpuint (gdata_media_content_get_height (content1), ==, gdata_media_content_get_height (content2));
+			g_assert_cmpuint (gdata_media_content_get_height (content1), >, 0);
+			g_assert_cmpuint (gdata_media_content_get_filesize (content1), ==, gdata_media_content_get_filesize (content2));
+			g_assert_cmpuint (gdata_media_content_get_filesize (content1), ==, 0); /* PicasaWeb doesn't set anything better */
+			g_assert_cmpuint (gdata_media_content_get_expression (content1), ==, gdata_media_content_get_expression (content2));
+			g_assert_cmpuint (gdata_media_content_get_expression (content1), ==, GDATA_MEDIA_EXPRESSION_FULL);
+
+			/* TODO: really want to test these with a video clip */
+		}
+
+		g_assert (i1 == NULL && i2 == NULL);
+
+		/* Compare thumbnails */
+		thumbnails1 = gdata_picasaweb_file_get_thumbnails (file1);
+		thumbnails2 = gdata_picasaweb_file_get_thumbnails (file2);
+
+		g_assert_cmpuint (g_list_length (thumbnails1), ==, g_list_length (thumbnails2));
+		g_assert_cmpuint (g_list_length (thumbnails1), >=, 1);
+
+		for (i1 = thumbnails1, i2 = thumbnails2; i1 != NULL && i2 != NULL; i1 = i1->next, i2 = i2->next) {
+			GDataMediaThumbnail *thumbnail1, *thumbnail2;
+
+			thumbnail1 = GDATA_MEDIA_THUMBNAIL (i1->data);
+			thumbnail2 = GDATA_MEDIA_THUMBNAIL (i2->data);
+
+			g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail1), ==, gdata_media_thumbnail_get_uri (thumbnail2));
+			g_assert (strstr (gdata_media_thumbnail_get_uri (thumbnail1), "googleusercontent.com") != NULL);
+			g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail1), ==, gdata_media_thumbnail_get_time (thumbnail2));
+			g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail1), ==, -1); /* PicasaWeb doesn't set anything better */
+			g_assert_cmpint (gdata_media_thumbnail_get_width (thumbnail1), ==, gdata_media_thumbnail_get_width (thumbnail2));
+			g_assert_cmpint (gdata_media_thumbnail_get_width (thumbnail1), >, 0);
+			g_assert_cmpint (gdata_media_thumbnail_get_height (thumbnail1), ==, gdata_media_thumbnail_get_height (thumbnail2));
+			g_assert_cmpint (gdata_media_thumbnail_get_height (thumbnail1), >, 0);
+		}
+
+		g_assert (i1 == NULL && i2 == NULL);
+
+		/* Check EXIF values */
+		g_assert_cmpfloat (gdata_picasaweb_file_get_distance (file1), ==, gdata_picasaweb_file_get_distance (file2));
+		g_assert_cmpfloat (gdata_picasaweb_file_get_exposure (file1), ==, gdata_picasaweb_file_get_exposure (file2));
+		g_assert_cmpfloat (gdata_picasaweb_file_get_exposure (file1), >, 0.0);
+		g_assert (gdata_picasaweb_file_get_flash (file1) == gdata_picasaweb_file_get_flash (file2));
+		g_assert_cmpfloat (gdata_picasaweb_file_get_focal_length (file1), ==, gdata_picasaweb_file_get_focal_length (file2));
+		g_assert_cmpfloat (gdata_picasaweb_file_get_focal_length (file1), >, 0.0);
+		g_assert_cmpfloat (gdata_picasaweb_file_get_fstop (file1), ==, gdata_picasaweb_file_get_fstop (file2));
+		g_assert_cmpfloat (gdata_picasaweb_file_get_fstop (file1), >, 0.0);
+		g_assert_cmpstr (gdata_picasaweb_file_get_image_unique_id (file1), ==, gdata_picasaweb_file_get_image_unique_id (file2));
+		g_assert_cmpuint (strlen (gdata_picasaweb_file_get_image_unique_id (file1)), >, 0);
+		g_assert_cmpint (gdata_picasaweb_file_get_iso (file1), ==, gdata_picasaweb_file_get_iso (file2));
+		g_assert_cmpint (gdata_picasaweb_file_get_iso (file1), >, 0);
+		g_assert_cmpstr (gdata_picasaweb_file_get_make (file1), ==, gdata_picasaweb_file_get_make (file2));
+		g_assert_cmpuint (strlen (gdata_picasaweb_file_get_make (file1)), >, 0);
+		g_assert_cmpstr (gdata_picasaweb_file_get_model (file1), ==, gdata_picasaweb_file_get_model (file2));
+		g_assert_cmpuint (strlen (gdata_picasaweb_file_get_model (file1)), >, 0);
+	}
+
+	/* TODO: file wasn't uploaded with checksum assigned; g_assert_cmpstr (gdata_picasaweb_file_get_checksum (photo), ==, ??); */
+	/* TODO: not a good test of video status; want to upload a video for it */
+}
+
 static void
 test_authentication (void)
 {
