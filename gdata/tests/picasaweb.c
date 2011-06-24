@@ -1798,6 +1798,41 @@ test_file_escaping (void)
 }
 
 static void
+test_file_properties_coordinates (void)
+{
+	GDataPicasaWebFile *file;
+	gdouble latitude, longitude, original_latitude, original_longitude;
+
+	/* Create a new file to test against */
+	file = gdata_picasaweb_file_new (NULL);
+	gdata_picasaweb_file_set_coordinates (file, 45.4341173, 12.1289062);
+
+	/* Getting the coordinates */
+	gdata_picasaweb_file_get_coordinates (file, &original_latitude, &original_longitude);
+	g_assert_cmpfloat (original_latitude, ==, 45.4341173);
+	g_assert_cmpfloat (original_longitude, ==, 12.1289062);
+
+	/* Providing NULL to either or both parameters */
+	gdata_picasaweb_file_get_coordinates (file, NULL, &longitude);
+	g_assert_cmpfloat (longitude, ==, 12.1289062);
+	gdata_picasaweb_file_get_coordinates (file, &latitude, NULL);
+	g_assert_cmpfloat (latitude, ==, 45.4341173);
+	gdata_picasaweb_file_get_coordinates (file, NULL, NULL);
+
+	/* Setting the coordinates */
+	gdata_picasaweb_file_set_coordinates (file, original_longitude, original_latitude);
+	gdata_picasaweb_file_get_coordinates (file, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, original_longitude);
+	g_assert_cmpfloat (longitude, ==, original_latitude);
+	gdata_picasaweb_file_set_coordinates (file, original_latitude, original_longitude);
+	gdata_picasaweb_file_get_coordinates (file, &latitude, &longitude);
+	g_assert_cmpfloat (latitude, ==, 45.4341173);
+	g_assert_cmpfloat (longitude, ==, 12.1289062);
+
+	g_object_unref (file);
+}
+
+static void
 test_query_etag (void)
 {
 	GDataPicasaWebQuery *query = gdata_picasaweb_query_new (NULL);
@@ -1883,7 +1918,9 @@ main (int argc, char *argv[])
 	g_test_add_func ("/picasaweb/album/escaping", test_album_escaping);
 	g_test_add_func ("/picasaweb/album/properties/coordinates", test_album_properties_coordinates);
 	g_test_add_func ("/picasaweb/album/properties/visibility", test_album_properties_visibility);
+
 	g_test_add_func ("/picasaweb/file/escaping", test_file_escaping);
+	g_test_add_func ("/picasaweb/file/properties/coordinates", test_file_properties_coordinates);
 
 	g_test_add_func ("/picasaweb/query/etag", test_query_etag);
 
