@@ -402,183 +402,6 @@ test_authentication_async (void)
 	g_object_unref (authorizer);
 }
 
-static void
-test_download_thumbnails (gconstpointer _service)
-{
-	GDataService *service = GDATA_SERVICE (_service);
-	GDataFeed *album_feed, *photo_feed;
-	GList *album_entries, *photo_entries, *thumbnails, *node;
-	GDataPicasaWebAlbum *album;
-	GDataPicasaWebFile *photo;
-	GDataPicasaWebQuery *query;
-	GDataMediaThumbnail *thumbnail;
-	GDataDownloadStream *download_stream;
-	gchar *destination_file_name, *destination_file_path;
-	GFile *destination_file;
-	GFileOutputStream *file_stream;
-	gssize transfer_size;
-	GError *error = NULL;
-
-	/* Acquire album, photo to test */
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-
-	album_entries = gdata_feed_get_entries (album_feed);
-	g_assert (album_entries != NULL);
-
-	album = GDATA_PICASAWEB_ALBUM (album_entries->data);
-
-	query = gdata_picasaweb_query_new (NULL);
-	gdata_picasaweb_query_set_image_size (query, "32"); /* we're querying for the smallest size, to save bandwidth here :D */
-	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), album, GDATA_QUERY (query), NULL, NULL, NULL, &error);
-	g_object_unref (query);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (photo_feed));
-
-	photo_entries = gdata_feed_get_entries (photo_feed);
-	g_assert (photo_entries != NULL);
-
-	photo = GDATA_PICASAWEB_FILE (photo_entries->data);
-	thumbnails = gdata_picasaweb_file_get_thumbnails (photo);
-	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
-
-	/* Download a single thumbnail to a file for testing (in case we weren't compiled with GdkPixbuf support) */
-	download_stream = gdata_media_thumbnail_download (thumbnail, service, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
-
-	/* Prepare a file to write the data to */
-	destination_file_name = g_strdup_printf ("%s_thumbnail_%ux%u.jpg", gdata_picasaweb_file_get_id (photo),
-	                                         gdata_media_thumbnail_get_width (thumbnail), gdata_media_thumbnail_get_height (thumbnail));
-	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
-	g_free (destination_file_name);
-	destination_file = g_file_new_for_path (destination_file_path);
-	g_free (destination_file_path);
-
-	/* Download the file */
-	file_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (G_IS_FILE_OUTPUT_STREAM (file_stream));
-
-	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),
-			                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
-	g_assert_no_error (error);
-	g_assert_cmpint (transfer_size, >, 0);
-
-	g_object_unref (file_stream);
-	g_object_unref (download_stream);
-
-	/* Delete the file (shouldn't cause the test to fail if this fails) */
-	g_file_delete (destination_file, NULL, NULL);
-	g_object_unref (destination_file);
-
-#ifdef HAVE_GDK_PIXBUF
-	/* Test downloading all thumbnails directly into GdkPixbufs, and check that they're all the correct size */
-	for (node = thumbnails; node != NULL; node = node->next) {
-		GdkPixbuf *pixbuf;
-
-		thumbnail = GDATA_MEDIA_THUMBNAIL (node->data);
-
-		/* Prepare a download stream */
-		download_stream = gdata_media_thumbnail_download (thumbnail, service, NULL, &error);
-		g_assert_no_error (error);
-		g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
-
-		/* Download into a new GdkPixbuf */
-		pixbuf = gdk_pixbuf_new_from_stream (G_INPUT_STREAM (download_stream), NULL, &error);
-		g_assert_no_error (error);
-		g_assert (GDK_IS_PIXBUF (pixbuf));
-
-		g_object_unref (download_stream);
-
-		/* PicasaWeb reported the height of a thumbnail as a pixel too large once, but otherwise correct */
-		g_assert_cmpint (abs (gdk_pixbuf_get_width (pixbuf) - (gint) gdata_media_thumbnail_get_width (thumbnail)) , <=, 1);
-		g_assert_cmpint (abs (gdk_pixbuf_get_height (pixbuf) - (gint) gdata_media_thumbnail_get_height (thumbnail)) , <=, 1);
-
-		g_object_unref (pixbuf);
-	}
-#endif /* HAVE_GDK_PIXBUF */
-
-	g_object_unref (photo_feed);
-	g_object_unref (album_feed);
-}
-
-static void
-test_download (gconstpointer _service)
-{
-	GDataService *service = GDATA_SERVICE (_service);
-	GDataFeed *album_feed, *photo_feed;
-	GList *album_entries, *photo_entries, *media_contents;
-	GDataPicasaWebAlbum *album;
-	GDataPicasaWebFile *photo;
-	GDataPicasaWebQuery *query;
-	GDataMediaContent *content;
-	GDataDownloadStream *download_stream;
-	gchar *destination_file_name, *destination_file_path;
-	GFile *destination_file;
-	GFileOutputStream *file_stream;
-	gssize transfer_size;
-	GError *error = NULL;
-
-	/*** Acquire a photo to test ***/
-	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (album_feed));
-
-	album_entries = gdata_feed_get_entries (album_feed);
-	g_assert (album_entries != NULL);
-
-	album = GDATA_PICASAWEB_ALBUM (album_entries->data);
-
-	query = gdata_picasaweb_query_new (NULL);
-	gdata_picasaweb_query_set_image_size (query, "32"); /* we're querying for the smallest size, to save bandwidth here :D */
-	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), album, GDATA_QUERY (query), NULL, NULL, NULL, &error);
-	g_object_unref (query);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (photo_feed));
-
-	photo_entries = gdata_feed_get_entries (photo_feed);
-	g_assert (photo_entries != NULL);
-
-	photo = GDATA_PICASAWEB_FILE (photo_entries->data);
-	media_contents = gdata_picasaweb_file_get_contents (photo);
-	g_assert_cmpint (g_list_length (media_contents), ==, 1);
-	content = GDATA_MEDIA_CONTENT (media_contents->data);
-
-	/* Prepare a download stream */
-	download_stream = gdata_media_content_download (content, service, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
-
-	/* Prepare a file to write the data to */
-	destination_file_name = g_strdup_printf ("%s.jpg", gdata_picasaweb_file_get_id (photo));
-	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
-	g_free (destination_file_name);
-	destination_file = g_file_new_for_path (destination_file_path);
-	g_free (destination_file_path);
-
-	/* Download the file */
-	file_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (G_IS_FILE_OUTPUT_STREAM (file_stream));
-
-	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),
-	                                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
-	g_assert_no_error (error);
-	g_assert_cmpint (transfer_size, >, 0);
-
-	g_object_unref (file_stream);
-	g_object_unref (download_stream);
-
-	/* Delete the file (shouldn't cause the test to fail if this fails) */
-	g_file_delete (destination_file, NULL, NULL);
-	g_object_unref (destination_file);
-
-	g_object_unref (photo_feed);
-	g_object_unref (album_feed);
-}
-
 typedef struct {
 	GDataPicasaWebAlbum *album;
 	GDataPicasaWebFile *file1;
@@ -819,6 +642,131 @@ test_query_files_single (QueryFilesData *data, gconstpointer service)
 	assert_files_equal (GDATA_PICASAWEB_FILE (file), data->file1, TRUE);
 
 	g_object_unref (file);
+}
+
+static void
+test_download_thumbnails (QueryFilesData *data, gconstpointer service)
+{
+	GList *thumbnails, *node;
+	GDataPicasaWebFile *photo;
+	GDataMediaThumbnail *thumbnail;
+	GDataDownloadStream *download_stream;
+	gchar *destination_file_name, *destination_file_path;
+	GFile *destination_file;
+	GFileOutputStream *file_stream;
+	gssize transfer_size;
+	GError *error = NULL;
+
+	photo = GDATA_PICASAWEB_FILE (data->file3);
+
+	thumbnails = gdata_picasaweb_file_get_thumbnails (photo);
+	thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
+
+	/* Download a single thumbnail to a file for testing (in case we weren't compiled with GdkPixbuf support) */
+	download_stream = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
+
+	/* Prepare a file to write the data to */
+	destination_file_name = g_strdup_printf ("%s_thumbnail_%ux%u.jpg", gdata_picasaweb_file_get_id (photo),
+	                                         gdata_media_thumbnail_get_width (thumbnail), gdata_media_thumbnail_get_height (thumbnail));
+	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
+	g_free (destination_file_name);
+	destination_file = g_file_new_for_path (destination_file_path);
+	g_free (destination_file_path);
+
+	/* Download the file */
+	file_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_OUTPUT_STREAM (file_stream));
+
+	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),
+			                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
+
+	g_object_unref (file_stream);
+	g_object_unref (download_stream);
+
+	/* Delete the file (shouldn't cause the test to fail if this fails) */
+	g_file_delete (destination_file, NULL, NULL);
+	g_object_unref (destination_file);
+
+#ifdef HAVE_GDK_PIXBUF
+	/* Test downloading all thumbnails directly into GdkPixbufs, and check that they're all the correct size */
+	for (node = thumbnails; node != NULL; node = node->next) {
+		GdkPixbuf *pixbuf;
+
+		thumbnail = GDATA_MEDIA_THUMBNAIL (node->data);
+
+		/* Prepare a download stream */
+		download_stream = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), NULL, &error);
+		g_assert_no_error (error);
+		g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
+
+		/* Download into a new GdkPixbuf */
+		pixbuf = gdk_pixbuf_new_from_stream (G_INPUT_STREAM (download_stream), NULL, &error);
+		g_assert_no_error (error);
+		g_assert (GDK_IS_PIXBUF (pixbuf));
+
+		g_object_unref (download_stream);
+
+		/* PicasaWeb reported the height of a thumbnail as a pixel too large once, but otherwise correct */
+		g_assert_cmpint (abs (gdk_pixbuf_get_width (pixbuf) - (gint) gdata_media_thumbnail_get_width (thumbnail)) , <=, 1);
+		g_assert_cmpint (abs (gdk_pixbuf_get_height (pixbuf) - (gint) gdata_media_thumbnail_get_height (thumbnail)) , <=, 1);
+
+		g_object_unref (pixbuf);
+	}
+#endif /* HAVE_GDK_PIXBUF */
+}
+
+static void
+test_download_photo (QueryFilesData *data, gconstpointer service)
+{
+	GList *media_contents;
+	GDataPicasaWebFile *photo;
+	GDataMediaContent *content;
+	GDataDownloadStream *download_stream;
+	gchar *destination_file_name, *destination_file_path;
+	GFile *destination_file;
+	GFileOutputStream *file_stream;
+	gssize transfer_size;
+	GError *error = NULL;
+
+	photo = GDATA_PICASAWEB_FILE (data->file3);
+
+	media_contents = gdata_picasaweb_file_get_contents (photo);
+	g_assert_cmpint (g_list_length (media_contents), ==, 1);
+	content = GDATA_MEDIA_CONTENT (media_contents->data);
+
+	/* Prepare a download stream */
+	download_stream = gdata_media_content_download (content, GDATA_SERVICE (service), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
+
+	/* Prepare a file to write the data to */
+	destination_file_name = g_strdup_printf ("%s.jpg", gdata_picasaweb_file_get_id (photo));
+	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
+	g_free (destination_file_name);
+	destination_file = g_file_new_for_path (destination_file_path);
+	g_free (destination_file_path);
+
+	/* Download the file */
+	file_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_OUTPUT_STREAM (file_stream));
+
+	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),
+	                                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
+
+	g_object_unref (file_stream);
+	g_object_unref (download_stream);
+
+	/* Delete the file (shouldn't cause the test to fail if this fails) */
+	g_file_delete (destination_file, NULL, NULL);
+	g_object_unref (destination_file);
 }
 
 typedef struct {
@@ -1811,8 +1759,9 @@ main (int argc, char *argv[])
 		g_test_add ("/picasaweb/upload/default_album/cancellation2", UploadAsyncData, service, setup_upload_async,
 		            test_upload_default_album_cancellation2, teardown_upload_async);
 
-		g_test_add_data_func ("/picasaweb/download/photo", service, test_download);
-		g_test_add_data_func ("/picasaweb/download/thumbnails", service, test_download_thumbnails);
+		g_test_add ("/picasaweb/download/photo", QueryFilesData, service, set_up_query_files, test_download_photo, tear_down_query_files);
+		g_test_add ("/picasaweb/download/thumbnails", QueryFilesData, service, set_up_query_files, test_download_thumbnails,
+		            tear_down_query_files);
 	}
 
 	g_test_add_func ("/picasaweb/album/new", test_album_new);
