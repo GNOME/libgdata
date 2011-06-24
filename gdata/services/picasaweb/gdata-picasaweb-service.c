@@ -538,7 +538,7 @@ gdata_picasaweb_service_upload_file (GDataPicasaWebService *self, GDataPicasaWeb
 	}
 
 	/* PicasaWeb allows you to post to a default Dropbox */
-	album_id = (album != NULL) ? gdata_entry_get_id (GDATA_ENTRY (album)) : "default";
+	album_id = (album != NULL) ? gdata_picasaweb_album_get_id (album) : "default";
 
 	/* Build the upload URI and upload stream */
 	upload_uri = _gdata_service_build_uri ("https://picasaweb.google.com/data/feed/api/user/default/albumid/%s", album_id);
