@@ -77,6 +77,37 @@ get_rules_async_data_free (GetRulesAsyncData *self)
 	g_slice_free (GetRulesAsyncData, self);
 }
 
+static GDataFeed *
+_gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
+                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, gboolean is_async, GError **error)
+{
+	GDataAccessHandlerIface *iface;
+	GDataAuthorizationDomain *domain = NULL;
+	GDataFeed *feed;
+	GDataLink *_link;
+	SoupMessage *message;
+
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), GDATA_LINK_ACCESS_CONTROL_LIST);
+	g_assert (_link != NULL);
+
+	iface = GDATA_ACCESS_HANDLER_GET_IFACE (self);
+	if (iface->get_authorization_domain != NULL) {
+		domain = iface->get_authorization_domain (self);
+	}
+
+	message = _gdata_service_query (service, domain, gdata_link_get_uri (_link), NULL, cancellable, error);
+	if (message == NULL) {
+		return NULL;
+	}
+
+	g_assert (message->response_body->data != NULL);
+	feed = _gdata_feed_new_from_xml (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_ACCESS_RULE,
+	                                 progress_callback, progress_user_data, is_async, error);
+	g_object_unref (message);
+
+	return feed;
+}
+
 static void
 get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler, GCancellable *cancellable)
 {
@@ -84,8 +115,8 @@ get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler
 	GetRulesAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Execute the query and return */
-	data->feed = gdata_access_handler_get_rules (access_handler, data->service, cancellable, data->progress_callback, data->progress_user_data,
-	                                             &error);
+	data->feed = _gdata_access_handler_get_rules (access_handler, data->service, cancellable, data->progress_callback, data->progress_user_data,
+	                                              TRUE, &error);
 	if (data->feed == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -173,33 +204,10 @@ GDataFeed *
 gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
-	GDataAccessHandlerIface *iface;
-	GDataAuthorizationDomain *domain = NULL;
-	GDataFeed *feed;
-	GDataLink *_link;
-	SoupMessage *message;
-
 	g_return_val_if_fail (GDATA_IS_ACCESS_HANDLER (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), GDATA_LINK_ACCESS_CONTROL_LIST);
-	g_assert (_link != NULL);
-
-	iface = GDATA_ACCESS_HANDLER_GET_IFACE (self);
-	if (iface->get_authorization_domain != NULL) {
-		domain = iface->get_authorization_domain (self);
-	}
-
-	message = _gdata_service_query (service, domain, gdata_link_get_uri (_link), NULL, cancellable, error);
-	if (message == NULL)
-		return NULL;
-
-	g_assert (message->response_body->data != NULL);
-	feed = _gdata_feed_new_from_xml (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_ACCESS_RULE,
-	                                 progress_callback, progress_user_data, error);
-	g_object_unref (message);
-
-	return feed;
+	return _gdata_access_handler_get_rules (self, service, cancellable, progress_callback, progress_user_data, FALSE, error);
 }

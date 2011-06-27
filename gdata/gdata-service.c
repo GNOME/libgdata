@@ -72,6 +72,10 @@ static void notify_timeout_cb (GObject *gobject, GParamSpec *pspec, GObject *sel
 static void debug_handler (const char *log_domain, GLogLevelFlags log_level, const char *message, gpointer user_data);
 static void soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char direction, const char *data, gpointer user_data);
 
+static GDataFeed *__gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query,
+                                         GType entry_type, GCancellable *cancellable, GDataQueryProgressCallback progress_callback,
+                                         gpointer progress_user_data, GError **error, gboolean is_async);
+
 struct _GDataServicePrivate {
 	SoupSession *session;
 	gchar *locale;
@@ -726,8 +730,8 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
 	QueryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Execute the query and return */
-	data->feed = gdata_service_query (service, data->domain, data->feed_uri, data->query, data->entry_type, cancellable,
-	                                  data->progress_callback, data->progress_user_data, &error);
+	data->feed = __gdata_service_query (service, data->domain, data->feed_uri, data->query, data->entry_type, cancellable,
+	                                    data->progress_callback, data->progress_user_data, &error, TRUE);
 	if (data->feed == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -867,6 +871,47 @@ _gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, cons
 	return message;
 }
 
+static GDataFeed *
+__gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
+                       GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error,
+                       gboolean is_async)
+{
+	GDataServiceClass *klass;
+	GDataFeed *feed;
+	SoupMessage *message;
+
+	message = _gdata_service_query (self, domain, feed_uri, query, cancellable, error);
+	if (message == NULL)
+		return NULL;
+
+	g_assert (message->response_body->data != NULL);
+	klass = GDATA_SERVICE_GET_CLASS (self);
+	feed = _gdata_feed_new_from_xml (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
+	                                 progress_callback, progress_user_data, is_async, error);
+	g_object_unref (message);
+
+	if (feed == NULL)
+		return NULL;
+
+	/* Update the query with the feed's ETag */
+	if (query != NULL && feed != NULL && gdata_feed_get_etag (feed) != NULL)
+		gdata_query_set_etag (query, gdata_feed_get_etag (feed));
+
+	/* Update the query with the next and previous URIs from the feed */
+	if (query != NULL && feed != NULL) {
+		GDataLink *_link;
+
+		_link = gdata_feed_look_up_link (feed, "next");
+		if (_link != NULL)
+			_gdata_query_set_next_uri (query, gdata_link_get_uri (_link));
+		_link = gdata_feed_look_up_link (feed, "previous");
+		if (_link != NULL)
+			_gdata_query_set_previous_uri (query, gdata_link_get_uri (_link));
+	}
+
+	return feed;
+}
+
 /**
  * gdata_service_query:
  * @self: a #GDataService
@@ -907,10 +952,6 @@ GDataFeed *
 gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
                      GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
-	GDataServiceClass *klass;
-	GDataFeed *feed;
-	SoupMessage *message;
-
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
 	g_return_val_if_fail (feed_uri != NULL, NULL);
@@ -918,36 +959,7 @@ gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	message = _gdata_service_query (self, domain, feed_uri, query, cancellable, error);
-	if (message == NULL)
-		return NULL;
-
-	g_assert (message->response_body->data != NULL);
-	klass = GDATA_SERVICE_GET_CLASS (self);
-	feed = _gdata_feed_new_from_xml (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
-	                                 progress_callback, progress_user_data, error);
-	g_object_unref (message);
-
-	if (feed == NULL)
-		return NULL;
-
-	/* Update the query with the feed's ETag */
-	if (query != NULL && feed != NULL && gdata_feed_get_etag (feed) != NULL)
-		gdata_query_set_etag (query, gdata_feed_get_etag (feed));
-
-	/* Update the query with the next and previous URIs from the feed */
-	if (query != NULL && feed != NULL) {
-		GDataLink *_link;
-
-		_link = gdata_feed_look_up_link (feed, "next");
-		if (_link != NULL)
-			_gdata_query_set_next_uri (query, gdata_link_get_uri (_link));
-		_link = gdata_feed_look_up_link (feed, "previous");
-		if (_link != NULL)
-			_gdata_query_set_previous_uri (query, gdata_link_get_uri (_link));
-	}
-
-	return feed;
+	return __gdata_service_query (self, domain, feed_uri, query, entry_type, cancellable, progress_callback, progress_user_data, error, FALSE);
 }
 
 /**
