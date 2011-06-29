@@ -284,6 +284,10 @@ real_append_query_headers (GDataService *self, GDataAuthorizationDomain *domain,
 	/* Set the authorisation header */
 	if (self->priv->authorizer != NULL) {
 		gdata_authorizer_process_request (self->priv->authorizer, domain, message);
+
+		/* Store the authorisation domain on the message so that we can access it again after refreshing authorisation if necessary.
+		 * See _gdata_service_send_message(). */
+		g_object_set_data_full (G_OBJECT (message), "gdata-authorization-domain", g_object_ref (domain), (GDestroyNotify) g_object_unref);
 	}
 
 	/* Set the GData-Version header to tell it we want to use the v2 API */
@@ -680,11 +684,22 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancella
 	}
 
 	/* Not authorised, or authorisation has expired. If we were authorised in the first place, attempt to refresh the authorisation and
-	 * try sending the message again (but only once, so we don't get caught in an infinite loop of denied authorisation errors). */
+	 * try sending the message again (but only once, so we don't get caught in an infinite loop of denied authorisation errors).
+	 *
+	 * Note that we have to re-process the message with the authoriser so that its authorisation headers get updated after the refresh
+	 * (bgo#653535). */
 	if (message->status_code == SOUP_STATUS_UNAUTHORIZED) {
 		GDataAuthorizer *authorizer = self->priv->authorizer;
 
 		if (authorizer != NULL && gdata_authorizer_refresh_authorization (authorizer, cancellable, NULL) == TRUE) {
+			GDataAuthorizationDomain *domain;
+
+			/* Re-process the request */
+			domain = g_object_get_data (G_OBJECT (message), "gdata-authorization-domain");
+			g_assert (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain));
+
+			gdata_authorizer_process_request (authorizer, domain, message);
+
 			/* Send the message again */
 			g_clear_error (error);
 			_gdata_service_actually_send_message (self->priv->session, message, cancellable, error);

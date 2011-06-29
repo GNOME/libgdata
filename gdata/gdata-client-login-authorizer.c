@@ -401,7 +401,7 @@ process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMe
 			g_warning ("Not authorizing a non-HTTPS message with the user's ClientLogin auth token as the connection isn't secure.");
 		} else {
 			gchar *authorisation_header = g_strdup_printf ("GoogleLogin auth=%s", auth_token);
-			soup_message_headers_append (message->request_headers, "Authorization", authorisation_header);
+			soup_message_headers_replace (message->request_headers, "Authorization", authorisation_header);
 			g_free (authorisation_header);
 		}
 	}

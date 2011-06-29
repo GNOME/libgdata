@@ -558,7 +558,7 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	g_string_append_uri_escaped (authorization_header, nonce, NULL, FALSE);
 	g_string_append (authorization_header, "\",oauth_version=\"1.0\"");
 
-	soup_message_headers_append (message->request_headers, "Authorization", authorization_header->str);
+	soup_message_headers_replace (message->request_headers, "Authorization", authorization_header->str);
 
 	g_string_free (authorization_header, TRUE);
 	free (signature);

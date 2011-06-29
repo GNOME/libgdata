@@ -48,7 +48,8 @@ typedef struct _GDataAuthorizer		GDataAuthorizer; /* dummy typedef */
  * GDataAuthorizerInterface:
  * @parent: the parent type
  * @process_request: a function to append authorization headers to queries before they are submitted to the online service under the given
- * authorization domain (which may be %NULL); this must be implemented and must be thread safe
+ * authorization domain (which may be %NULL); this must be implemented and must be thread safe, and must also handle being called multiple times on
+ * the same #SoupMessage instance (so must be careful to replace headers rather than append them, for example)
  * @is_authorized_for_domain: a function to check whether the authorizer is authorized against the given domain; this must be implemented and must
  * be thread safe
  * @refresh_authorization: (allow-none): a function to force a refresh of any authorization tokens the authorizer holds, returning %TRUE if a refresh
