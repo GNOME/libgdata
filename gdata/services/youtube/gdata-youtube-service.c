@@ -776,9 +776,12 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
 	related_link = gdata_entry_look_up_link (GDATA_ENTRY (video), "http://gdata.youtube.com/schemas/2007#video.related");
 	if (related_link == NULL) {
 		/* Erroring out is probably the safest thing to do */
-		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		                                     _("The video did not have a related videos <link>."));
+		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
+		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, "%s",
+		                                 _("The video did not have a related videos <link>."));
+		g_simple_async_result_complete_in_idle (result);
+		g_object_unref (result);
+
 		return;
 	}
 

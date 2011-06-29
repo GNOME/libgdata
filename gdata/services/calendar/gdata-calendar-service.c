@@ -361,9 +361,12 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
 	/* Ensure we're authenticated first */
 	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
 	                                               get_calendar_authorization_domain ()) == FALSE) {
-		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                                     _("You must be authenticated to query all calendars."));
+		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
+		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
+		                                 _("You must be authenticated to query all calendars."));
+		g_simple_async_result_complete_in_idle (result);
+		g_object_unref (result);
+
 		return;
 	}
 
@@ -455,9 +458,12 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
 	/* Ensure we're authenticated first */
 	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
 	                                               get_calendar_authorization_domain ()) == FALSE) {
-		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                                     _("You must be authenticated to query your own calendars."));
+		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
+		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
+		                                 _("You must be authenticated to query your own calendars."));
+		g_simple_async_result_complete_in_idle (result);
+		g_object_unref (result);
+
 		return;
 	}
 
@@ -557,9 +563,12 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
 	/* Ensure we're authenticated first */
 	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
 	                                               get_calendar_authorization_domain ()) == FALSE) {
-		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data,
-		                                     GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                                     _("You must be authenticated to query your own calendars."));
+		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
+		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
+		                                 _("You must be authenticated to query your own calendars."));
+		g_simple_async_result_complete_in_idle (result);
+		g_object_unref (result);
+
 		return;
 	}
 
@@ -567,8 +576,12 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
 	uri = gdata_entry_get_content_uri (GDATA_ENTRY (calendar));
 	if (uri == NULL) {
 		/* Erroring out is probably the safest thing to do */
-		g_simple_async_report_error_in_idle (G_OBJECT (self), callback, user_data, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		                                     _("The calendar did not have a content URI."));
+		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
+		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
+		                                 _("The calendar did not have a content URI."));
+		g_simple_async_result_complete_in_idle (result);
+		g_object_unref (result);
+
 		return;
 	}
 
