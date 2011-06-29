@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-12 20:23+0200\n"
-"PO-Revision-Date: 2011-06-12 20:24+0100\n"
+"POT-Creation-Date: 2011-06-29 10:44+0200\n"
+"PO-Revision-Date: 2011-06-29 10:44+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -16,120 +16,120 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:572
+#: ../gdata/gdata-client-login-authorizer.c:575
 #: ../gdata/gdata-oauth1-authorizer.c:770
 #: ../gdata/gdata-oauth1-authorizer.c:1029
 msgid "The server returned a malformed response."
 msgstr "Servern returnerade ett felformulerat svar."
 
-#: ../gdata/gdata-client-login-authorizer.c:592
-#: ../gdata/gdata-service.c:308
+#: ../gdata/gdata-client-login-authorizer.c:595
+#: ../gdata/gdata-service.c:316
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Kan inte ansluta till tjänstens server."
 
-#: ../gdata/gdata-client-login-authorizer.c:597
-#: ../gdata/gdata-service.c:313
+#: ../gdata/gdata-client-login-authorizer.c:600
+#: ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Kan inte ansluta till proxyservern."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:603
-#: ../gdata/gdata-service.c:319
+#: ../gdata/gdata-client-login-authorizer.c:606
+#: ../gdata/gdata-service.c:327
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "Ogiltig URI-begäran eller rubrik, eller icke-standardparameter som inte stöds: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:609
-#: ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:612
+#: ../gdata/gdata-service.c:333
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Autentisering krävs: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:614
-#: ../gdata/gdata-service.c:330
+#: ../gdata/gdata-client-login-authorizer.c:617
+#: ../gdata/gdata-service.c:338
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Den begärda resursen kunde inte hittas: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:620
-#: ../gdata/gdata-service.c:336
+#: ../gdata/gdata-client-login-authorizer.c:623
+#: ../gdata/gdata-service.c:344
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Objektet har ändrats sedan den hämtades: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:632
-#: ../gdata/gdata-service.c:350
+#: ../gdata/gdata-client-login-authorizer.c:635
+#: ../gdata/gdata-service.c:358
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Felkod %u vid autentisering: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:725
+#: ../gdata/gdata-client-login-authorizer.c:728
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "En CAPTCHA måste fyllas i för att logga in."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:763
+#: ../gdata/gdata-client-login-authorizer.c:766
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Detta konto kräver ett programspecifikt lösenord. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:770
+#: ../gdata/gdata-client-login-authorizer.c:773
 msgid "Your username or password were incorrect."
 msgstr "Ditt användarnamn eller lösenord var felaktigt."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:791
+#: ../gdata/gdata-client-login-authorizer.c:794
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "E-postadressen för ditt konto har ännu inte verifierats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:796
+#: ../gdata/gdata-client-login-authorizer.c:799
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Du har inte godkänt tjänstens villkor. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:802
+#: ../gdata/gdata-client-login-authorizer.c:805
 #, c-format
 msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
 msgstr "Detta konto har migrerats. Logga in på nätet för att få ditt nya användarnamn och lösenord. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:807
+#: ../gdata/gdata-client-login-authorizer.c:810
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Detta konto har tagits bort. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:812
+#: ../gdata/gdata-client-login-authorizer.c:815
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Detta konto har inaktiverats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:817
+#: ../gdata/gdata-client-login-authorizer.c:820
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Åtkomsten för detta konto till denna tjänst har inaktiverats. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:822
+#: ../gdata/gdata-client-login-authorizer.c:825
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Denna tjänst är inte tillgänglig för tillfället. (%s)"
 
-#: ../gdata/gdata-download-stream.c:603
-#: ../gdata/gdata-upload-stream.c:785
-msgid "Stream is already closed"
-msgstr "Strömmen är redan stängd"
+#. Tried to seek too far
+#: ../gdata/gdata-download-stream.c:751
+msgid "Invalid seek request"
+msgstr "Ogiltig sökbegäran"
 
 #: ../gdata/gdata-oauth1-authorizer.c:745
 msgid "The server rejected the temporary credentials request."
@@ -233,64 +233,68 @@ msgstr "Ett singleton-element (%s) var duplicerat."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:356
+#: ../gdata/gdata-service.c:364
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Felkod %u vid fråga: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:362
+#: ../gdata/gdata-service.c:370
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Felkod %u vid infogning av ett objekt: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:376
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Felkod %u vid uppdatering av ett objekt: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:382
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Felkod %u vid borttagning av ett objekt: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:388
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Felkod %u vid hämtning: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:394
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Felkod %u vid sändning: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:400
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Felkod %u vid körning av en satsoperation: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:666
+#: ../gdata/gdata-service.c:674
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ogiltig URI för omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1289
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:524
-#: ../gdata/services/youtube/gdata-youtube-service.c:815
+#: ../gdata/gdata-service.c:1324
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:535
+#: ../gdata/services/youtube/gdata-youtube-service.c:836
 msgid "The entry has already been inserted."
 msgstr "Objektet har redan infogats."
+
+#: ../gdata/gdata-upload-stream.c:785
+msgid "Stream is already closed"
+msgstr "Strömmen är redan stängd"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -304,37 +308,37 @@ msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Innehållet för ett %s-element (\"%s\") var inte i hexadecimalt RGB-format."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:315
-#: ../gdata/services/calendar/gdata-calendar-service.c:361
+#: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
 msgstr "Du måste vara autentiserad för att söka i alla kalendrar."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:404
-#: ../gdata/services/calendar/gdata-calendar-service.c:450
-#: ../gdata/services/calendar/gdata-calendar-service.c:492
-#: ../gdata/services/calendar/gdata-calendar-service.c:549
+#: ../gdata/services/calendar/gdata-calendar-service.c:412
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:508
+#: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
 msgstr "Du måste vara autentiserad för att söka i dina egna kalendrar."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:501
-#: ../gdata/services/calendar/gdata-calendar-service.c:558
+#: ../gdata/services/calendar/gdata-calendar-service.c:517
+#: ../gdata/services/calendar/gdata-calendar-service.c:581
 msgid "The calendar did not have a content URI."
 msgstr "Kalendern saknade en innehålls-URI."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
-#: ../gdata/services/contacts/gdata-contacts-service.c:305
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
 msgstr "Du måste vara autentiserad för att fråga efter kontakter."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:417
-#: ../gdata/services/contacts/gdata-contacts-service.c:464
+#: ../gdata/services/contacts/gdata-contacts-service.c:424
+#: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
 msgstr "Du måste vara autentiserad för att fråga efter kontaktgrupper."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:500
+#: ../gdata/services/contacts/gdata-contacts-service.c:514
 msgid "The group has already been inserted."
 msgstr "Gruppen har redan infogats."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:507
+#: ../gdata/services/contacts/gdata-contacts-service.c:521
 msgid "You must be authenticated to insert a group."
 msgstr "Du måste vara autentiserad för att infoga en grupp."
 
@@ -343,29 +347,29 @@ msgid "You must be authenticated to download documents."
 msgstr "Du måste vara autentiserad för att hämta dokument."
 
 #: ../gdata/services/documents/gdata-documents-service.c:357
-#: ../gdata/services/documents/gdata-documents-service.c:409
+#: ../gdata/services/documents/gdata-documents-service.c:412
 msgid "You must be authenticated to query documents."
 msgstr "Du måste vara autentiserad för att fråga efter dokument."
 
-#: ../gdata/services/documents/gdata-documents-service.c:484
+#: ../gdata/services/documents/gdata-documents-service.c:491
 msgid "You must be authenticated to upload documents."
 msgstr "Du måste vara autentiserad för att skicka upp dokument."
 
-#: ../gdata/services/documents/gdata-documents-service.c:490
+#: ../gdata/services/documents/gdata-documents-service.c:497
 msgid "The document has already been uploaded."
 msgstr "Dokumentet har redan skickats upp."
 
-#: ../gdata/services/documents/gdata-documents-service.c:545
+#: ../gdata/services/documents/gdata-documents-service.c:552
 msgid "You must be authenticated to update documents."
 msgstr "Du måste vara autentiserad för att uppdatera dokument."
 
-#: ../gdata/services/documents/gdata-documents-service.c:608
+#: ../gdata/services/documents/gdata-documents-service.c:615
 #, c-format
 msgid "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Innehållstypen för det angivna dokumentet (\"%s\") gick inte att känna igen."
 
-#: ../gdata/services/documents/gdata-documents-service.c:657
-#: ../gdata/services/documents/gdata-documents-service.c:842
+#: ../gdata/services/documents/gdata-documents-service.c:664
+#: ../gdata/services/documents/gdata-documents-service.c:849
 msgid "You must be authenticated to move documents and folders."
 msgstr "Du måste vara autentiserad för att flytta dokument och mappar."
 
@@ -374,28 +378,28 @@ msgid "You must specify a username or be authenticated to query a user."
 msgstr "Du måste ange ett användarnamn eller vara autentiserad för att söka efter en användare."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:353
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:355
 msgid "Query parameter not allowed for albums."
 msgstr "Frågeparametern tillåts inte för album."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:361
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:366
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "Du måste ange ett användarnamn eller vara autentiserad för att söka i alla album."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:379
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
 msgid "The album did not have a feed link."
 msgstr "Albumet saknade en webbkanalslänk."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:531
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:542
 msgid "You must be authenticated to upload a file."
 msgstr "Du måste vara autentiserad för att skicka upp en fil."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:607
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:618
 msgid "The album has already been inserted."
 msgstr "Albumet har redan infogats."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:614
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:625
 msgid "You must be authenticated to insert an album."
 msgstr "Du måste vara autentiserad för att infoga ett album."
 
@@ -433,12 +437,12 @@ msgstr "Okänd felkod \"%s\" i domänen \"%s\" togs emot på platsen \"%s\"."
 msgid "Unknown and unparsable error received."
 msgstr "Okänt och ej tolkningsbart fel mottogs."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:712
-#: ../gdata/services/youtube/gdata-youtube-service.c:764
+#: ../gdata/services/youtube/gdata-youtube-service.c:724
+#: ../gdata/services/youtube/gdata-youtube-service.c:781
 msgid "The video did not have a related videos <link>."
 msgstr "Videoklippet hade inga relaterade videoklipp <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:822
+#: ../gdata/services/youtube/gdata-youtube-service.c:843
 msgid "You must be authenticated to upload a video."
 msgstr "Du måste vara autentiserad för att skicka upp en video."
 
