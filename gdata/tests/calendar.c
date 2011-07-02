@@ -118,8 +118,90 @@ test_authentication_async (void)
 	g_object_unref (authorizer);
 }
 
+typedef struct {
+	GDataCalendarCalendar *calendar1;
+	GDataCalendarCalendar *calendar2;
+	GDataCalendarCalendar *calendar3;
+} QueryCalendarsData;
+
 static void
-test_query_all_calendars (gconstpointer service)
+set_up_query_calendars (QueryCalendarsData *data, gconstpointer service)
+{
+	GDataCalendarCalendar *calendar;
+	GDataColor colour;
+
+	g_assert (gdata_color_from_hexadecimal ("#7A367A", &colour) == TRUE);
+
+	/* Create some new calendars for queries */
+	calendar = gdata_calendar_calendar_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (calendar), "Test Calendar 1");
+	gdata_calendar_calendar_set_color (calendar, &colour);
+	data->calendar1 = GDATA_CALENDAR_CALENDAR (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                       gdata_calendar_service_get_primary_authorization_domain (),
+	                                                                       "https://www.google.com/calendar/feeds/default/owncalendars/full",
+	                                                                       GDATA_ENTRY (calendar), NULL, NULL));
+	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar1));
+	g_object_unref (calendar);
+
+	calendar = gdata_calendar_calendar_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (calendar), "Test Calendar 2");
+	gdata_calendar_calendar_set_color (calendar, &colour);
+	data->calendar2 = GDATA_CALENDAR_CALENDAR (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                       gdata_calendar_service_get_primary_authorization_domain (),
+	                                                                       "https://www.google.com/calendar/feeds/default/owncalendars/full",
+	                                                                       GDATA_ENTRY (calendar), NULL, NULL));
+	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar2));
+	g_object_unref (calendar);
+
+	calendar = gdata_calendar_calendar_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (calendar), "Test Calendar 3");
+	gdata_calendar_calendar_set_color (calendar, &colour);
+	data->calendar3 = GDATA_CALENDAR_CALENDAR (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                       gdata_calendar_service_get_primary_authorization_domain (),
+	                                                                       "https://www.google.com/calendar/feeds/default/owncalendars/full",
+	                                                                       GDATA_ENTRY (calendar), NULL, NULL));
+	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar3));
+	g_object_unref (calendar);
+}
+
+static void
+tear_down_query_calendars (QueryCalendarsData *data, gconstpointer service)
+{
+	/* Delete the calendars */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->calendar1), NULL, NULL) == TRUE);
+	g_object_unref (data->calendar1);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->calendar2), NULL, NULL) == TRUE);
+	g_object_unref (data->calendar2);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->calendar3), NULL, NULL) == TRUE);
+	g_object_unref (data->calendar3);
+}
+
+typedef struct {
+	QueryCalendarsData parent;
+	GMainLoop *main_loop;
+} QueryCalendarsAsyncData;
+
+static void
+set_up_query_calendars_async (QueryCalendarsAsyncData *data, gconstpointer service)
+{
+	set_up_query_calendars ((QueryCalendarsData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_query_calendars_async (QueryCalendarsAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_query_calendars ((QueryCalendarsData*) data, service);
+}
+
+static void
+test_query_all_calendars (QueryCalendarsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -135,7 +217,7 @@ test_query_all_calendars (gconstpointer service)
 }
 
 static void
-test_query_all_calendars_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+test_query_all_calendars_async_cb (GDataService *service, GAsyncResult *async_result, QueryCalendarsAsyncData *data)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -146,29 +228,24 @@ test_query_all_calendars_async_cb (GDataService *service, GAsyncResult *async_re
 	g_clear_error (&error);
 
 	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 
 	g_object_unref (feed);
 }
 
 static void
-test_query_all_calendars_async (gconstpointer service)
+test_query_all_calendars_async (QueryCalendarsAsyncData *data, gconstpointer service)
 {
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
 	gdata_calendar_service_query_all_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL,
-							  NULL, NULL, (GAsyncReadyCallback) test_query_all_calendars_async_cb, main_loop);
+	                                                  NULL, NULL, (GAsyncReadyCallback) test_query_all_calendars_async_cb, data);
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
-test_query_all_calendars_async_progress_closure (gconstpointer service)
+test_query_all_calendars_async_progress_closure (QueryCalendarsAsyncData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-
-	g_assert (service != NULL);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -176,6 +253,7 @@ test_query_all_calendars_async_progress_closure (gconstpointer service)
 	                                                  (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                                  data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                                  (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
 	g_main_loop_run (data->main_loop);
 	g_main_loop_unref (data->main_loop);
 
@@ -187,7 +265,7 @@ test_query_all_calendars_async_progress_closure (gconstpointer service)
 }
 
 static void
-test_query_own_calendars (gconstpointer service)
+test_query_own_calendars (QueryCalendarsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -203,7 +281,7 @@ test_query_own_calendars (gconstpointer service)
 }
 
 static void
-test_query_own_calendars_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+test_query_own_calendars_async_cb (GDataService *service, GAsyncResult *async_result, QueryCalendarsAsyncData *data)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -214,29 +292,24 @@ test_query_own_calendars_async_cb (GDataService *service, GAsyncResult *async_re
 	g_clear_error (&error);
 
 	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 
 	g_object_unref (feed);
 }
 
 static void
-test_query_own_calendars_async (gconstpointer service)
+test_query_own_calendars_async (QueryCalendarsAsyncData *data, gconstpointer service)
 {
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
 	gdata_calendar_service_query_own_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL,
-							  NULL, NULL, (GAsyncReadyCallback) test_query_own_calendars_async_cb, main_loop);
+	                                                  NULL, NULL, (GAsyncReadyCallback) test_query_own_calendars_async_cb, data);
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
-test_query_own_calendars_async_progress_closure (gconstpointer service)
+test_query_own_calendars_async_progress_closure (QueryCalendarsAsyncData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-
-	g_assert (service != NULL);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -244,6 +317,7 @@ test_query_own_calendars_async_progress_closure (gconstpointer service)
 	                                               (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                               data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                               (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
 	g_main_loop_run (data->main_loop);
 	g_main_loop_unref (data->main_loop);
 
@@ -1208,12 +1282,20 @@ main (int argc, char *argv[])
 		g_test_add_func ("/calendar/authentication", test_authentication);
 		g_test_add_func ("/calendar/authentication_async", test_authentication_async);
 
-		g_test_add_data_func ("/calendar/query/all_calendars", service, test_query_all_calendars);
-		g_test_add_data_func ("/calendar/query/all_calendars_async", service, test_query_all_calendars_async);
-		g_test_add_data_func ("/calendar/query/all_calendars_async_progress_closure", service, test_query_all_calendars_async_progress_closure);
-		g_test_add_data_func ("/calendar/query/own_calendars", service, test_query_own_calendars);
-		g_test_add_data_func ("/calendar/query/own_calendars_async", service, test_query_own_calendars_async);
-		g_test_add_data_func ("/calendar/query/own_calendars_async_progress_closure", service, test_query_own_calendars_async_progress_closure);
+		g_test_add ("/calendar/query/all_calendars", QueryCalendarsData, service, set_up_query_calendars, test_query_all_calendars,
+		            tear_down_query_calendars);
+		g_test_add ("/calendar/query/all_calendars/async", QueryCalendarsAsyncData, service, set_up_query_calendars_async,
+		            test_query_all_calendars_async, tear_down_query_calendars_async);
+		g_test_add ("/calendar/query/all_calendars/async/progress_closure", QueryCalendarsAsyncData, service, set_up_query_calendars_async,
+		            test_query_all_calendars_async_progress_closure, tear_down_query_calendars_async);
+
+		g_test_add ("/calendar/query/own_calendars", QueryCalendarsData, service, set_up_query_calendars, test_query_own_calendars,
+		            tear_down_query_calendars);
+		g_test_add ("/calendar/query/own_calendars/async", QueryCalendarsAsyncData, service, set_up_query_calendars_async,
+		            test_query_own_calendars_async, tear_down_query_calendars_async);
+		g_test_add ("/calendar/query/own_calendars/async/progress_closure", QueryCalendarsAsyncData, service, set_up_query_calendars_async,
+		            test_query_own_calendars_async_progress_closure, tear_down_query_calendars_async);
+
 		g_test_add_data_func ("/calendar/query/events", service, test_query_events);
 		g_test_add_data_func ("/calendar/query/events_async", service, test_query_events_async);
 		g_test_add_data_func ("/calendar/query/events_async_progress_closure", service, test_query_events_async_progress_closure);
