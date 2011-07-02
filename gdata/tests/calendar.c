@@ -524,7 +524,7 @@ tear_down_insert_event (InsertEventData *data, gconstpointer service)
 }
 
 static void
-test_insert_simple (InsertEventData *data, gconstpointer service)
+test_event_insert (InsertEventData *data, gconstpointer service)
 {
 	GDataCalendarEvent *event, *new_event;
 	GDataGDWhere *where;
@@ -582,7 +582,7 @@ tear_down_insert_event_async (InsertEventAsyncData *data, gconstpointer service)
 }
 
 static void
-test_insert_simple_async_cb (GDataService *service, GAsyncResult *result, InsertEventAsyncData *data)
+test_event_insert_async_cb (GDataService *service, GAsyncResult *result, InsertEventAsyncData *data)
 {
 	GDataEntry *event;
 	GError *error = NULL;
@@ -600,7 +600,7 @@ test_insert_simple_async_cb (GDataService *service, GAsyncResult *result, Insert
 }
 
 static void
-test_insert_simple_async (InsertEventAsyncData *data, gconstpointer service)
+test_event_insert_async (InsertEventAsyncData *data, gconstpointer service)
 {
 	GDataCalendarEvent *event;
 	GDataGDWhere *where;
@@ -627,7 +627,7 @@ test_insert_simple_async (InsertEventAsyncData *data, gconstpointer service)
 	g_object_unref (when);
 
 	/* Insert the event */
-	gdata_calendar_service_insert_event_async (GDATA_CALENDAR_SERVICE (service), event, NULL, (GAsyncReadyCallback) test_insert_simple_async_cb,
+	gdata_calendar_service_insert_event_async (GDATA_CALENDAR_SERVICE (service), event, NULL, (GAsyncReadyCallback) test_event_insert_async_cb,
 	                                           data);
 
 	g_main_loop_run (data->main_loop);
@@ -687,7 +687,7 @@ test_event_xml (void)
 }
 
 static void
-test_xml_dates (void)
+test_event_xml_dates (void)
 {
 	GDataCalendarEvent *event;
 	GList *i;
@@ -772,7 +772,7 @@ test_xml_dates (void)
 }
 
 static void
-test_xml_recurrence (void)
+test_event_xml_recurrence (void)
 {
 	GDataCalendarEvent *event;
 	GError *error = NULL;
@@ -1090,7 +1090,7 @@ tear_down_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 }
 
 static void
-test_acls_get_rules (TempCalendarAclsData *data, gconstpointer service)
+test_access_rule_get (TempCalendarAclsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -1107,7 +1107,7 @@ test_acls_get_rules (TempCalendarAclsData *data, gconstpointer service)
 }
 
 static void
-test_acls_insert_rule (TempCalendarAclsData *data, gconstpointer service)
+test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 {
 	GDataAccessRule *rule, *new_rule;
 	const gchar *scope_type, *scope_value;
@@ -1156,7 +1156,7 @@ test_acls_insert_rule (TempCalendarAclsData *data, gconstpointer service)
 }
 
 static void
-test_acls_update_rule (TempCalendarAclsData *data, gconstpointer service)
+test_access_rule_update (TempCalendarAclsData *data, gconstpointer service)
 {
 	GDataAccessRule *new_rule;
 	const gchar *scope_type, *scope_value;
@@ -1185,7 +1185,7 @@ test_acls_update_rule (TempCalendarAclsData *data, gconstpointer service)
 }
 
 static void
-test_acls_delete_rule (TempCalendarAclsData *data, gconstpointer service)
+test_access_rule_delete (TempCalendarAclsData *data, gconstpointer service)
 {
 	gboolean success;
 	GError *error = NULL;
@@ -1449,7 +1449,7 @@ main (int argc, char *argv[])
 		service = GDATA_SERVICE (gdata_calendar_service_new (authorizer));
 
 		g_test_add_func ("/calendar/authentication", test_authentication);
-		g_test_add_func ("/calendar/authentication_async", test_authentication_async);
+		g_test_add_func ("/calendar/authentication/async", test_authentication_async);
 
 		g_test_add ("/calendar/query/all_calendars", QueryCalendarsData, service, set_up_query_calendars, test_query_all_calendars,
 		            tear_down_query_calendars);
@@ -1471,17 +1471,17 @@ main (int argc, char *argv[])
 		g_test_add ("/calendar/query/events/async/progress_closure", QueryEventsAsyncData, service, set_up_query_events_async,
 		            test_query_events_async_progress_closure, tear_down_query_events_async);
 
-		g_test_add ("/calendar/insert/simple", InsertEventData, service, set_up_insert_event, test_insert_simple, tear_down_insert_event);
-		g_test_add ("/calendar/insert/simple/async", InsertEventAsyncData, service, set_up_insert_event_async, test_insert_simple_async,
+		g_test_add ("/calendar/event/insert", InsertEventData, service, set_up_insert_event, test_event_insert, tear_down_insert_event);
+		g_test_add ("/calendar/event/insert/async", InsertEventAsyncData, service, set_up_insert_event_async, test_event_insert_async,
 		            tear_down_insert_event_async);
 
-		g_test_add ("/calendar/acls/get_rules", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_acls_get_rules,
+		g_test_add ("/calendar/access-rule/get", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_get,
 		            tear_down_temp_calendar_acls);
-		g_test_add ("/calendar/acls/insert_rule", TempCalendarAclsData, service, set_up_temp_calendar_acls_no_insertion, test_acls_insert_rule,
+		g_test_add ("/calendar/access-rule/insert", TempCalendarAclsData, service, set_up_temp_calendar_acls_no_insertion,
+		            test_access_rule_insert, tear_down_temp_calendar_acls);
+		g_test_add ("/calendar/access-rule/update", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_update,
 		            tear_down_temp_calendar_acls);
-		g_test_add ("/calendar/acls/update_rule", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_acls_update_rule,
-		            tear_down_temp_calendar_acls);
-		g_test_add ("/calendar/acls/delete_rule", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_acls_delete_rule,
+		g_test_add ("/calendar/access-rule/delete", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_delete,
 		            tear_down_temp_calendar_acls);
 
 		g_test_add_data_func ("/calendar/batch", service, test_batch);
@@ -1491,11 +1491,11 @@ main (int argc, char *argv[])
 	}
 
 	g_test_add_func ("/calendar/event/xml", test_event_xml);
-	g_test_add_func ("/calendar/xml/dates", test_xml_dates);
-	g_test_add_func ("/calendar/xml/recurrence", test_xml_recurrence);
+	g_test_add_func ("/calendar/event/xml/dates", test_event_xml_dates);
+	g_test_add_func ("/calendar/event/xml/recurrence", test_event_xml_recurrence);
+	g_test_add_func ("/calendar/event/escaping", test_event_escaping);
 
 	g_test_add_func ("/calendar/calendar/escaping", test_calendar_escaping);
-	g_test_add_func ("/calendar/event/escaping", test_event_escaping);
 
 	g_test_add_func ("/calendar/access-rule/properties", test_access_rule_properties);
 	g_test_add_func ("/calendar/access-rule/xml", test_access_rule_xml);
