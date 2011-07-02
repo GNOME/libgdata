@@ -697,16 +697,16 @@ test_event_xml_dates (void)
 
 	event = GDATA_CALENDAR_EVENT (gdata_parsable_new_from_xml (GDATA_TYPE_CALENDAR_EVENT,
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		 	"xmlns:gd='http://schemas.google.com/g/2005' "
-		 	"xmlns:gCal='http://schemas.google.com/gCal/2005' "
-		 	"xmlns:app='http://www.w3.org/2007/app'>"
-		 	"<title type='text'>Tennis with Beth</title>"
-		 	"<content type='text'>Meet for a quick lesson.</content>"
-		 	"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
-		 	"<gd:when startTime='2009-04-17'/>"
-		 	"<gd:when startTime='2009-04-17T15:00:00Z'/>"
-		 	"<gd:when startTime='2009-04-27' endTime='20090506'/>"
-		 "</entry>", -1, &error));
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gCal='http://schemas.google.com/gCal/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app'>"
+			"<title type='text'>Tennis with Beth</title>"
+			"<content type='text'>Meet for a quick lesson.</content>"
+			"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:when startTime='2009-04-17'/>"
+			"<gd:when startTime='2009-04-17T15:00:00Z'/>"
+			"<gd:when startTime='2009-04-27' endTime='20090506'/>"
+		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ENTRY (event));
 	g_clear_error (&error);
@@ -751,22 +751,22 @@ test_event_xml_dates (void)
 
 	/* Check the XML */
 	gdata_test_assert_xml (event,
-			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-			 	"xmlns:gd='http://schemas.google.com/g/2005' "
-			 	"xmlns:gCal='http://schemas.google.com/gCal/2005' "
-			 	"xmlns:app='http://www.w3.org/2007/app'>"
-			 	"<title type='text'>Tennis with Beth</title>"
-			 	"<content type='text'>Meet for a quick lesson.</content>"
-			 	"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
-			 	"<gCal:guestsCanModify value='false'/>"
-				"<gCal:guestsCanInviteOthers value='false'/>"
-				"<gCal:guestsCanSeeGuests value='false'/>"
-				"<gCal:anyoneCanAddSelf value='false'/>"
-			 	"<gd:when startTime='2009-04-17'/>"
-			 	"<gd:when startTime='2009-04-17T15:00:00Z'/>"
-			 	"<gd:when startTime='2009-04-27' endTime='2009-05-06'/>"
-			 "</entry>");
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gCal='http://schemas.google.com/gCal/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app'>"
+			"<title type='text'>Tennis with Beth</title>"
+			"<content type='text'>Meet for a quick lesson.</content>"
+			"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gCal:guestsCanModify value='false'/>"
+			"<gCal:guestsCanInviteOthers value='false'/>"
+			"<gCal:guestsCanSeeGuests value='false'/>"
+			"<gCal:anyoneCanAddSelf value='false'/>"
+			"<gd:when startTime='2009-04-17'/>"
+			"<gd:when startTime='2009-04-17T15:00:00Z'/>"
+			"<gd:when startTime='2009-04-27' endTime='2009-05-06'/>"
+		"</entry>");
 
 	g_object_unref (event);
 }
@@ -780,9 +780,9 @@ test_event_xml_recurrence (void)
 
 	event = GDATA_CALENDAR_EVENT (gdata_parsable_new_from_xml (GDATA_TYPE_CALENDAR_EVENT,
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		 	"xmlns:gd='http://schemas.google.com/g/2005' "
-		 	"xmlns:gCal='http://schemas.google.com/gCal/2005' "
-		 	"xmlns:app='http://www.w3.org/2007/app'>"
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gCal='http://schemas.google.com/gCal/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app'>"
 			"<id>http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/events/g5928e82rrch95b25f8ud0dlsg_20090429T153000Z</id>"
 			"<published>2009-04-25T15:22:47.000Z</published>"
 			"<updated>2009-04-27T17:54:10.000Z</updated>"
@@ -790,14 +790,23 @@ test_event_xml_recurrence (void)
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'/>"
 			"<title>Test daily instance event</title>"
 			"<content></content>"
-			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.google.com/calendar/event?eid=ZzU5MjhlODJycmNoOTViMjVmOHVkMGRsc2dfMjAwOTA0MjlUMTUzMDAwWiBsaWJnZGF0YS50ZXN0QGdvb2dsZW1haWwuY29t' title='alternate'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/g5928e82rrch95b25f8ud0dlsg_20090429T153000Z'/>"
-			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' href='http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/g5928e82rrch95b25f8ud0dlsg_20090429T153000Z'/>"
+			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' "
+			      "href='http://www.google.com/calendar/event?"
+			            "eid=ZzU5MjhlODJycmNoOTViMjVmOHVkMGRsc2dfMjAwOTA0MjlUMTUzMDAwWiBsaWJnZGF0YS50ZXN0QGdvb2dsZW1haWwuY29t' "
+			      "title='alternate'/>"
+			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' "
+			      "href='http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/"
+			            "g5928e82rrch95b25f8ud0dlsg_20090429T153000Z'/>"
+			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' "
+			      "href='http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/"
+			            "g5928e82rrch95b25f8ud0dlsg_20090429T153000Z'/>"
 			"<author>"
 				"<name>GData Test</name>"
 				"<email>libgdata.test@googlemail.com</email>"
 			"</author>"
-			"<gd:originalEvent id='g5928e82rrch95b25f8ud0dlsg' href='http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/g5928e82rrch95b25f8ud0dlsg'>"
+			"<gd:originalEvent id='g5928e82rrch95b25f8ud0dlsg' "
+			                  "href='http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/"
+			                        "g5928e82rrch95b25f8ud0dlsg'>"
 				"<gd:when startTime='2009-04-29T16:30:00.000+01:00'/>"
 			"</gd:originalEvent>"
 			"<gCal:guestsCanModify value='false'/>"
@@ -805,7 +814,8 @@ test_event_xml_recurrence (void)
 			"<gCal:guestsCanSeeGuests value='false'/>"
 			"<gCal:anyoneCanAddSelf value='false'/>"
 			"<gd:comments>"
-				"<gd:feedLink href='http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/g5928e82rrch95b25f8ud0dlsg_20090429T153000Z/comments'/>"
+				"<gd:feedLink href='http://www.google.com/calendar/feeds/libgdata.test@googlemail.com/private/full/"
+				                   "g5928e82rrch95b25f8ud0dlsg_20090429T153000Z/comments'/>"
 			"</gd:comments>"
 			"<gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/>"
 			"<gd:visibility value='http://schemas.google.com/g/2005#event.private'/>"
@@ -816,7 +826,8 @@ test_event_xml_recurrence (void)
 				"<gd:reminder minutes='10' method='email'/>"
 				"<gd:reminder minutes='10' method='alert'/>"
 			"</gd:when>"
-			"<gd:who rel='http://schemas.google.com/g/2005#event.organizer' valueString='GData Test' email='libgdata.test@googlemail.com'/>"
+			"<gd:who rel='http://schemas.google.com/g/2005#event.organizer' valueString='GData Test' "
+			        "email='libgdata.test@googlemail.com'/>"
 			"<gd:where valueString=''/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
@@ -845,16 +856,16 @@ test_calendar_escaping (void)
 
 	/* Check the outputted XML is escaped properly */
 	gdata_test_assert_xml (calendar,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
-	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
-	                        "xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:app='http://www.w3.org/2007/app'>"
-				"<title type='text'></title>"
-				"<category term='http://schemas.google.com/gCal/2005#calendarmeta' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gCal:timezone value='&lt;timezone&gt;'/>"
-				"<gCal:hidden value='false'/>"
-				"<gCal:color value='#000000'/>"
-				"<gCal:selected value='false'/>"
-	                 "</entry>");
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:app='http://www.w3.org/2007/app'>"
+			"<title type='text'></title>"
+			"<category term='http://schemas.google.com/gCal/2005#calendarmeta' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gCal:timezone value='&lt;timezone&gt;'/>"
+			"<gCal:hidden value='false'/>"
+			"<gCal:color value='#000000'/>"
+			"<gCal:selected value='false'/>"
+		"</entry>");
 	g_object_unref (calendar);
 }
 
@@ -872,21 +883,21 @@ test_event_escaping (void)
 
 	/* Check the outputted XML is escaped properly */
 	gdata_test_assert_xml (event,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
-	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
-	                        "xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:app='http://www.w3.org/2007/app'>"
-				"<title type='text'></title>"
-				"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gd:eventStatus value='&lt;status&gt;'/>"
-				"<gd:visibility value='&lt;visibility&gt;'/>"
-				"<gd:transparency value='&lt;transparency&gt;'/>"
-				"<gCal:uid value='&lt;uid&gt;'/>"
-				"<gCal:guestsCanModify value='false'/>"
-				"<gCal:guestsCanInviteOthers value='false'/>"
-				"<gCal:guestsCanSeeGuests value='false'/>"
-				"<gCal:anyoneCanAddSelf value='false'/>"
-				"<gd:recurrence>&lt;recurrence&gt;</gd:recurrence>"
-	                 "</entry>");
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:app='http://www.w3.org/2007/app'>"
+			"<title type='text'></title>"
+			"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:eventStatus value='&lt;status&gt;'/>"
+			"<gd:visibility value='&lt;visibility&gt;'/>"
+			"<gd:transparency value='&lt;transparency&gt;'/>"
+			"<gCal:uid value='&lt;uid&gt;'/>"
+			"<gCal:guestsCanModify value='false'/>"
+			"<gCal:guestsCanInviteOthers value='false'/>"
+			"<gCal:guestsCanSeeGuests value='false'/>"
+			"<gCal:anyoneCanAddSelf value='false'/>"
+			"<gd:recurrence>&lt;recurrence&gt;</gd:recurrence>"
+		"</entry>");
 	g_object_unref (event);
 }
 
@@ -982,25 +993,25 @@ test_query_uri (void)
 	/* Check the built query URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
 	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00Z"
-					"&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
-					"&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
-					"&showdeleted=true");
+	                                "&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
+	                                "&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
+	                                "&showdeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with a trailing slash */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00Z"
-					"&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
-					"&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
-					"&showdeleted=true");
+	                                "&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
+	                                "&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
+	                                "&showdeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with pre-existing arguments */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/bar/?test=test&this=that");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/bar/?test=test&this=that&q=q&futureevents=true&orderby=starttime"
-					"&recurrence-expansion-start=2009-04-17T15:00:00Z&recurrence-expansion-end=2010-04-17T15:00:00Z"
-					"&singleevents=true&sortorder=descending&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z"
-					"&ctz=America%2FLos_Angeles&max-attendees=15&showdeleted=true");
+	                                "&recurrence-expansion-start=2009-04-17T15:00:00Z&recurrence-expansion-end=2010-04-17T15:00:00Z"
+	                                "&singleevents=true&sortorder=descending&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z"
+	                                "&ctz=America%2FLos_Angeles&max-attendees=15&showdeleted=true");
 	g_free (query_uri);
 
 	g_object_unref (query);
@@ -1015,8 +1026,8 @@ test_query_etag (void)
 	g_test_bug ("613529");
 
 #define CHECK_ETAG(C) \
-	gdata_query_set_etag (GDATA_QUERY (query), "foobar");		\
-	(C);								\
+	gdata_query_set_etag (GDATA_QUERY (query), "foobar"); \
+	(C); \
 	g_assert (gdata_query_get_etag (GDATA_QUERY (query)) == NULL);
 
 	CHECK_ETAG (gdata_calendar_query_set_future_events (query, FALSE))
