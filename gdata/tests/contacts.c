@@ -210,8 +210,28 @@ test_query_all_contacts_async_progress_closure (gconstpointer service)
 	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
+typedef struct {
+	GDataContactsContact *new_contact;
+} InsertData;
+
 static void
-test_insert_simple (gconstpointer service)
+set_up_insert (InsertData *data, gconstpointer service)
+{
+	data->new_contact = NULL;
+}
+
+static void
+tear_down_insert (InsertData *data, gconstpointer service)
+{
+	/* Delete the new contact */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_contact), NULL, NULL) == TRUE);
+
+	g_object_unref (data->new_contact);
+}
+
+static void
+test_insert_simple (InsertData *data, gconstpointer service)
 {
 	GDataContactsContact *contact, *new_contact;
 	GDataGDName *name, *name2;
@@ -338,7 +358,7 @@ test_insert_simple (gconstpointer service)
 	gdata_contacts_contact_set_user_defined_field (contact, "", "Foo"); /* bgo#648058 */
 
 	/* Insert the contact */
-	new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
+	new_contact = data->new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
 	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
@@ -474,7 +494,6 @@ test_insert_simple (gconstpointer service)
 	/* TODO: check entries and feed properties */
 
 	g_object_unref (contact);
-	g_object_unref (new_contact);
 }
 
 static void
@@ -2284,7 +2303,7 @@ main (int argc, char *argv[])
 		g_test_add_func ("/contacts/authentication", test_authentication);
 		g_test_add_func ("/contacts/authentication_async", test_authentication_async);
 
-		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
+		g_test_add ("/contacts/insert/simple", InsertData, service, set_up_insert, test_insert_simple, tear_down_insert);
 		g_test_add_data_func ("/contacts/update/simple", service, test_update_simple);
 
 		g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
