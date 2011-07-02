@@ -320,7 +320,7 @@ tear_down_insert (InsertData *data, gconstpointer service)
 }
 
 static void
-test_insert_simple (InsertData *data, gconstpointer service)
+test_contact_insert (InsertData *data, gconstpointer service)
 {
 	GDataContactsContact *contact, *new_contact;
 	GDataGDName *name, *name2;
@@ -586,7 +586,7 @@ test_insert_simple (InsertData *data, gconstpointer service)
 }
 
 static void
-test_update_simple (TempContactData *data, gconstpointer service)
+test_contact_update (TempContactData *data, gconstpointer service)
 {
 	GDataContactsContact *new_contact;
 	GError *error = NULL;
@@ -761,7 +761,7 @@ tear_down_insert_group (InsertGroupData *data, gconstpointer service)
 }
 
 static void
-test_insert_group (InsertGroupData *data, gconstpointer service)
+test_group_insert (InsertGroupData *data, gconstpointer service)
 {
 	GDataContactsGroup *group, *new_group;
 	GTimeVal time_val;
@@ -820,7 +820,7 @@ tear_down_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
 }
 
 static void
-test_insert_group_async_cb (GDataService *service, GAsyncResult *async_result, InsertGroupAsyncData *data)
+test_group_insert_async_cb (GDataService *service, GAsyncResult *async_result, InsertGroupAsyncData *data)
 {
 	GDataEntry *entry;
 	GError *error = NULL;
@@ -838,7 +838,7 @@ test_insert_group_async_cb (GDataService *service, GAsyncResult *async_result, I
 }
 
 static void
-test_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
+test_group_insert_async (InsertGroupAsyncData *data, gconstpointer service)
 {
 	GDataContactsGroup *group;
 
@@ -852,7 +852,7 @@ test_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
 	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
 
-	gdata_contacts_service_insert_group_async (GDATA_CONTACTS_SERVICE (service), group, NULL, (GAsyncReadyCallback) test_insert_group_async_cb,
+	gdata_contacts_service_insert_group_async (GDATA_CONTACTS_SERVICE (service), group, NULL, (GAsyncReadyCallback) test_group_insert_async_cb,
 	                                           data);
 
 	g_main_loop_run (data->main_loop);
@@ -1339,7 +1339,7 @@ test_query_properties (void)
 }
 
 static void
-test_parser_minimal (void)
+test_contact_parser_minimal (void)
 {
 	GDataContactsContact *contact;
 	GDate birthday;
@@ -1401,7 +1401,7 @@ test_parser_minimal (void)
 }
 
 static void
-test_parser_normal (void)
+test_contact_parser_normal (void)
 {
 	GDataContactsContact *contact;
 	GDate date;
@@ -1622,7 +1622,7 @@ test_parser_normal (void)
 }
 
 static void
-test_parser_error_handling (void)
+test_contact_parser_error_handling (void)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
@@ -1756,7 +1756,7 @@ test_parser_error_handling (void)
 }
 
 static void
-test_groups_properties (void)
+test_group_properties (void)
 {
 	GDataContactsGroup *group;
 	GTimeVal time_val;
@@ -1816,7 +1816,7 @@ test_groups_properties (void)
 }
 
 static void
-test_groups_parser_normal (void)
+test_group_parser_normal (void)
 {
 	GDataContactsGroup *group;
 	GHashTable *properties;
@@ -1861,7 +1861,7 @@ test_groups_parser_normal (void)
 }
 
 static void
-test_groups_parser_system (void)
+test_group_parser_system (void)
 {
 	GDataContactsGroup *group;
 	GError *error = NULL;
@@ -1895,7 +1895,7 @@ test_groups_parser_system (void)
 }
 
 static void
-test_groups_parser_error_handling (void)
+test_group_parser_error_handling (void)
 {
 	GDataContactsGroup *group;
 	GError *error = NULL;
@@ -2393,7 +2393,7 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 }
 
 static void
-test_groups_membership (void)
+test_group_membership (void)
 {
 	GDataContactsContact *contact;
 	GList *groups;
@@ -2438,7 +2438,7 @@ test_groups_membership (void)
 }
 
 static void
-test_id (void)
+test_contact_id (void)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
@@ -2484,10 +2484,10 @@ main (int argc, char *argv[])
 		service = GDATA_SERVICE (gdata_contacts_service_new (authorizer));
 
 		g_test_add_func ("/contacts/authentication", test_authentication);
-		g_test_add_func ("/contacts/authentication_async", test_authentication_async);
+		g_test_add_func ("/contacts/authentication/async", test_authentication_async);
 
-		g_test_add ("/contacts/insert/simple", InsertData, service, set_up_insert, test_insert_simple, tear_down_insert);
-		g_test_add ("/contacts/update/simple", TempContactData, service, set_up_temp_contact, test_update_simple, tear_down_temp_contact);
+		g_test_add ("/contacts/contact/insert", InsertData, service, set_up_insert, test_contact_insert, tear_down_insert);
+		g_test_add ("/contacts/contact/update", TempContactData, service, set_up_temp_contact, test_contact_update, tear_down_temp_contact);
 
 		g_test_add ("/contacts/query/all_contacts", QueryAllContactsData, service, set_up_query_all_contacts, test_query_all_contacts,
 		            tear_down_query_all_contacts);
@@ -2513,37 +2513,35 @@ main (int argc, char *argv[])
 		g_test_add ("/contacts/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
 		            teardown_batch_async);
 
-		g_test_add ("/contacts/groups/query", QueryAllGroupsData, service, set_up_query_all_groups, test_query_all_groups,
+		g_test_add ("/contacts/group/query", QueryAllGroupsData, service, set_up_query_all_groups, test_query_all_groups,
 		            tear_down_query_all_groups);
-		g_test_add ("/contacts/groups/query/async", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async, test_query_all_groups_async,
+		g_test_add ("/contacts/group/query/async", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async, test_query_all_groups_async,
 		            tear_down_query_all_groups_async);
-		g_test_add ("/contacts/groups/query/async/progress_closure", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
+		g_test_add ("/contacts/group/query/async/progress_closure", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
 		            test_query_all_groups_async_progress_closure, tear_down_query_all_groups_async);
 
-		g_test_add ("/contacts/groups/insert", InsertGroupData, service, set_up_insert_group, test_insert_group, tear_down_insert_group);
-		g_test_add ("/contacts/groups/insert/async", InsertGroupAsyncData, service, set_up_insert_group_async, test_insert_group_async,
+		g_test_add ("/contacts/group/insert", InsertGroupData, service, set_up_insert_group, test_group_insert, tear_down_insert_group);
+		g_test_add ("/contacts/group/insert/async", InsertGroupAsyncData, service, set_up_insert_group_async, test_group_insert_async,
 		            tear_down_insert_group_async);
 	}
 
 	g_test_add_func ("/contacts/contact/properties", test_contact_properties);
 	g_test_add_func ("/contacts/contact/escaping", test_contact_escaping);
-	g_test_add_func ("/contacts/group/escaping", test_group_escaping);
+	g_test_add_func ("/contacts/contact/parser/minimal", test_contact_parser_minimal);
+	g_test_add_func ("/contacts/contact/parser/normal", test_contact_parser_normal);
+	g_test_add_func ("/contacts/contact/parser/error_handling", test_contact_parser_error_handling);
+	g_test_add_func ("/contacts/contact/id", test_contact_id);
 
 	g_test_add_func ("/contacts/query/uri", test_query_uri);
 	g_test_add_func ("/contacts/query/etag", test_query_etag);
 	g_test_add_func ("/contacts/query/properties", test_query_properties);
 
-	g_test_add_func ("/contacts/parser/minimal", test_parser_minimal);
-	g_test_add_func ("/contacts/parser/normal", test_parser_normal);
-	g_test_add_func ("/contacts/parser/error_handling", test_parser_error_handling);
-
-	g_test_add_func ("/contacts/groups/properties", test_groups_properties);
-	g_test_add_func ("/contacts/groups/parser/normal", test_groups_parser_normal);
-	g_test_add_func ("/contacts/groups/parser/system", test_groups_parser_system);
-	g_test_add_func ("/contacts/groups/parser/error_handling", test_groups_parser_error_handling);
-	g_test_add_func ("/contacts/groups/membership", test_groups_membership);
-
-	g_test_add_func ("/contacts/id", test_id);
+	g_test_add_func ("/contacts/group/properties", test_group_properties);
+	g_test_add_func ("/contacts/group/escaping", test_group_escaping);
+	g_test_add_func ("/contacts/group/parser/normal", test_group_parser_normal);
+	g_test_add_func ("/contacts/group/parser/system", test_group_parser_system);
+	g_test_add_func ("/contacts/group/parser/error_handling", test_group_parser_error_handling);
+	g_test_add_func ("/contacts/group/membership", test_group_membership);
 
 	retval = g_test_run ();
 
