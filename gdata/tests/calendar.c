@@ -527,29 +527,6 @@ test_insert_simple (gconstpointer service)
 	gdata_calendar_event_add_time (event, when);
 	g_object_unref (when);
 
-	/* Check the XML */
-	gdata_test_assert_xml (event,
-			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-			 	"xmlns:gd='http://schemas.google.com/g/2005' "
-			 	"xmlns:gCal='http://schemas.google.com/gCal/2005' "
-			 	"xmlns:app='http://www.w3.org/2007/app'>"
-			 	"<title type='text'>Tennis with Beth</title>"
-			 	"<content type='text'>Meet for a quick lesson.</content>"
-			 	"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
-			 	"<gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/>"
-			 	"<gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/>"
-			 	"<gCal:guestsCanModify value='false'/>"
-			 	"<gCal:guestsCanInviteOthers value='false'/>"
-			 	"<gCal:guestsCanSeeGuests value='false'/>"
-			 	"<gCal:anyoneCanAddSelf value='false'/>"
-				"<gd:when startTime='2009-04-17T15:00:00Z' endTime='2009-04-17T17:00:00Z'/>"
-			 	"<gd:who email='john.smith@example.com' "
-			 		"rel='http://schemas.google.com/g/2005#event.organizer' "
-			 		"valueString='John Smith\342\200\275'/>"
-			 	"<gd:where valueString='Rolling Lawn Courts'/>"
-			 "</entry>");
-
 	/* Insert the event */
 	new_event = gdata_calendar_service_insert_event (GDATA_CALENDAR_SERVICE (service), event, NULL, &error);
 	g_assert_no_error (error);
@@ -617,6 +594,57 @@ test_insert_simple_async (gconstpointer service)
 
 	g_main_loop_unref (main_loop);
 	g_object_unref (event);
+}
+
+static void
+test_event_xml (void)
+{
+	GDataCalendarEvent *event;
+	GDataGDWhere *where;
+	GDataGDWho *who;
+	GDataGDWhen *when;
+	GTimeVal start_time, end_time;
+
+	event = gdata_calendar_event_new (NULL);
+
+	gdata_entry_set_title (GDATA_ENTRY (event), "Tennis with Beth");
+	gdata_entry_set_content (GDATA_ENTRY (event), "Meet for a quick lesson.");
+	gdata_calendar_event_set_transparency (event, GDATA_GD_EVENT_TRANSPARENCY_OPAQUE);
+	gdata_calendar_event_set_status (event, GDATA_GD_EVENT_STATUS_CONFIRMED);
+	where = gdata_gd_where_new (NULL, "Rolling Lawn Courts", NULL);
+	gdata_calendar_event_add_place (event, where);
+	g_object_unref (where);
+	who = gdata_gd_who_new (GDATA_GD_WHO_EVENT_ORGANIZER, "John Smith‽", "john.smith@example.com");
+	gdata_calendar_event_add_person (event, who);
+	g_object_unref (who);
+	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &start_time);
+	g_time_val_from_iso8601 ("2009-04-17T17:00:00.000Z", &end_time);
+	when = gdata_gd_when_new (start_time.tv_sec, end_time.tv_sec, FALSE);
+	gdata_calendar_event_add_time (event, when);
+	g_object_unref (when);
+
+	/* Check the XML */
+	gdata_test_assert_xml (event,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gCal='http://schemas.google.com/gCal/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app'>"
+			"<title type='text'>Tennis with Beth</title>"
+			"<content type='text'>Meet for a quick lesson.</content>"
+			"<category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/>"
+			"<gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/>"
+			"<gCal:guestsCanModify value='false'/>"
+			"<gCal:guestsCanInviteOthers value='false'/>"
+			"<gCal:guestsCanSeeGuests value='false'/>"
+			"<gCal:anyoneCanAddSelf value='false'/>"
+			"<gd:when startTime='2009-04-17T15:00:00Z' endTime='2009-04-17T17:00:00Z'/>"
+			"<gd:who email='john.smith@example.com' "
+			        "rel='http://schemas.google.com/g/2005#event.organizer' "
+			        "valueString='John Smith\342\200\275'/>"
+			"<gd:where valueString='Rolling Lawn Courts'/>"
+		"</entry>");
 }
 
 static void
@@ -1405,6 +1433,7 @@ main (int argc, char *argv[])
 		            teardown_batch_async);
 	}
 
+	g_test_add_func ("/calendar/event/xml", test_event_xml);
 	g_test_add_func ("/calendar/xml/dates", test_xml_dates);
 	g_test_add_func ("/calendar/xml/recurrence", test_xml_recurrence);
 
