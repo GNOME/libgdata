@@ -115,7 +115,8 @@ enum {
 	PROP_COLOR,
 	PROP_IS_SELECTED,
 	PROP_ACCESS_LEVEL,
-	PROP_EDITED
+	PROP_EDITED,
+	PROP_ETAG,
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataCalendarCalendar, gdata_calendar_calendar, GDATA_TYPE_ENTRY,
@@ -227,6 +228,9 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	                                                     "Edited", "The last time the calendar was edited.",
 	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/* Override the ETag property since ETags don't seem to be supported for calendars. */
+	g_object_class_override_property (gobject_class, PROP_ETAG, "etag");
 }
 
 static gboolean
@@ -315,6 +319,10 @@ gdata_calendar_calendar_get_property (GObject *object, guint property_id, GValue
 		case PROP_EDITED:
 			g_value_set_int64 (value, priv->edited);
 			break;
+		case PROP_ETAG:
+			/* Never return an ETag */
+			g_value_set_string (value, NULL);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -339,6 +347,9 @@ gdata_calendar_calendar_set_property (GObject *object, guint property_id, const 
 			break;
 		case PROP_IS_SELECTED:
 			gdata_calendar_calendar_set_is_selected (self, g_value_get_boolean (value));
+			break;
+		case PROP_ETAG:
+			/* Never set an ETag (note that this doesn't stop it being set in GDataEntry due to XML parsing) */
 			break;
 		default:
 			/* We don't have any other property... */
