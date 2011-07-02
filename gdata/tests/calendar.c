@@ -499,8 +499,32 @@ test_query_events_async_progress_closure (QueryEventsAsyncData *query_data, gcon
 	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
+typedef struct {
+	TempCalendarData parent;
+	GDataCalendarEvent *new_event;
+} InsertEventData;
+
 static void
-test_insert_simple (gconstpointer service)
+set_up_insert_event (InsertEventData *data, gconstpointer service)
+{
+	set_up_temp_calendar ((TempCalendarData*) data, service);
+	data->new_event = NULL;
+}
+
+static void
+tear_down_insert_event (InsertEventData *data, gconstpointer service)
+{
+	/* Delete the new event */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_event), NULL, NULL) == TRUE);
+	g_object_unref (data->new_event);
+
+	/* Delete the calendar too */
+	tear_down_temp_calendar ((TempCalendarData*) data, service);
+}
+
+static void
+test_insert_simple (InsertEventData *data, gconstpointer service)
 {
 	GDataCalendarEvent *event, *new_event;
 	GDataGDWhere *where;
@@ -528,7 +552,7 @@ test_insert_simple (gconstpointer service)
 	g_object_unref (when);
 
 	/* Insert the event */
-	new_event = gdata_calendar_service_insert_event (GDATA_CALENDAR_SERVICE (service), event, NULL, &error);
+	new_event = data->new_event = gdata_calendar_service_insert_event (GDATA_CALENDAR_SERVICE (service), event, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CALENDAR_EVENT (new_event));
 	g_clear_error (&error);
@@ -536,11 +560,29 @@ test_insert_simple (gconstpointer service)
 	/* TODO: check entries and feed properties */
 
 	g_object_unref (event);
-	g_object_unref (new_event);
+}
+
+typedef struct {
+	InsertEventData parent;
+	GMainLoop *main_loop;
+} InsertEventAsyncData;
+
+static void
+set_up_insert_event_async (InsertEventAsyncData *data, gconstpointer service)
+{
+	set_up_insert_event ((InsertEventData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
 }
 
 static void
-test_insert_simple_async_cb (GDataService *service, GAsyncResult *result, GMainLoop *main_loop)
+tear_down_insert_event_async (InsertEventAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_insert_event ((InsertEventData*) data, service);
+}
+
+static void
+test_insert_simple_async_cb (GDataService *service, GAsyncResult *result, InsertEventAsyncData *data)
 {
 	GDataEntry *event;
 	GError *error = NULL;
@@ -549,23 +591,22 @@ test_insert_simple_async_cb (GDataService *service, GAsyncResult *result, GMainL
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CALENDAR_EVENT (event));
 
+	data->parent.new_event = GDATA_CALENDAR_EVENT (event);
+
 	/* Check the event is correct */
 	g_assert_cmpstr (gdata_entry_get_title (event), ==, "Tennis with Beth");
 
-	g_main_loop_quit (main_loop);
-
-	g_object_unref (event);
+	g_main_loop_quit (data->main_loop);
 }
 
 static void
-test_insert_simple_async (gconstpointer service)
+test_insert_simple_async (InsertEventAsyncData *data, gconstpointer service)
 {
 	GDataCalendarEvent *event;
 	GDataGDWhere *where;
 	GDataGDWho *who;
 	GDataGDWhen *when;
 	GTimeVal start_time, end_time;
-	GMainLoop *main_loop;
 
 	event = gdata_calendar_event_new (NULL);
 
@@ -585,14 +626,12 @@ test_insert_simple_async (gconstpointer service)
 	gdata_calendar_event_add_time (event, when);
 	g_object_unref (when);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
-
 	/* Insert the event */
 	gdata_calendar_service_insert_event_async (GDATA_CALENDAR_SERVICE (service), event, NULL, (GAsyncReadyCallback) test_insert_simple_async_cb,
-	                                           main_loop);
-	g_main_loop_run (main_loop);
+	                                           data);
 
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
+
 	g_object_unref (event);
 }
 
@@ -1419,8 +1458,9 @@ main (int argc, char *argv[])
 		g_test_add ("/calendar/query/events/async/progress_closure", QueryEventsAsyncData, service, set_up_query_events_async,
 		            test_query_events_async_progress_closure, tear_down_query_events_async);
 
-		g_test_add_data_func ("/calendar/insert/simple", service, test_insert_simple);
-		g_test_add_data_func ("/calendar/insert/simple/async", service, test_insert_simple_async);
+		g_test_add ("/calendar/insert/simple", InsertEventData, service, set_up_insert_event, test_insert_simple, tear_down_insert_event);
+		g_test_add ("/calendar/insert/simple/async", InsertEventAsyncData, service, set_up_insert_event_async, test_insert_simple_async,
+		            tear_down_insert_event_async);
 
 		g_test_add_data_func ("/calendar/acls/get_rules", service, test_acls_get_rules);
 		g_test_add_data_func ("/calendar/acls/insert_rule", service, test_acls_insert_rule);
