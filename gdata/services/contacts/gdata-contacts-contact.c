@@ -1174,7 +1174,18 @@ static gchar *
 get_entry_uri (const gchar *id)
 {
 	const gchar *base_pos;
-	gchar *uri = g_strdup (id);
+	gchar *uri;
+
+	/* Ensure it uses the HTTPS protocol */
+	if (g_str_has_prefix (id, "http://") == TRUE) {
+		guint id_length = strlen (id);
+
+		uri = g_malloc (id_length + 2);
+		strcpy (uri, "https://");
+		strcpy (uri + strlen ("https://"), id + strlen ("http://"));
+	} else {
+		uri = g_strdup (id);
+	}
 
 	/* The service API sometimes stubbornly insists on using the "base" view instead of the "full" view, which we have
 	 * to fix, or our extended attributes are never visible */
