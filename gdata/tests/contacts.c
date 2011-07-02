@@ -747,10 +747,9 @@ test_insert_group (gconstpointer service)
 	GDataContactsGroup *group, *new_group;
 	GTimeVal time_val;
 	GHashTable *properties;
-	gint64 edited;
-	gboolean deleted;
-	gchar *system_group_id;
 	GError *error = NULL;
+
+	g_get_current_time (&time_val);
 
 	group = gdata_contacts_group_new (NULL);
 
@@ -762,43 +761,6 @@ test_insert_group (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
 	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
 
-	/* Check various properties */
-	g_get_current_time (&time_val);
-	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, time_val.tv_sec);
-	g_assert (gdata_contacts_group_is_deleted (group) == FALSE);
-	g_assert (gdata_contacts_group_get_system_group_id (group) == NULL);
-
-	properties = gdata_contacts_group_get_extended_properties (group);
-	g_assert (properties != NULL);
-	g_assert_cmpint (g_hash_table_size (properties), ==, 1);
-	g_assert_cmpstr (gdata_contacts_group_get_extended_property (group, "foobar"), ==, "barfoo");
-
-	/* Check the properties a different way */
-	g_object_get (G_OBJECT (group),
-	              "edited", &edited,
-	              "deleted", &deleted,
-	              "system-group-id", &system_group_id,
-	              NULL);
-
-	g_assert_cmpint (edited, ==, time_val.tv_sec);
-	g_assert (deleted == FALSE);
-	g_assert (system_group_id == NULL);
-
-	g_free (system_group_id);
-
-	/* Check the XML */
-	gdata_test_assert_xml (group,
-		"<?xml version='1.0' encoding='UTF-8'?>"
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		       "xmlns:gd='http://schemas.google.com/g/2005' "
-		       "xmlns:app='http://www.w3.org/2007/app' "
-		       "xmlns:gContact='http://schemas.google.com/contact/2008'>"
-			"<title type='text'>New Group!</title>"
-			"<content type='text'>New Group!</content>"
-			"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
-			"<gd:extendedProperty name='foobar'>barfoo</gd:extendedProperty>"
-		"</entry>");
-
 	/* Insert the group */
 	new_group = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, &error);
 	g_assert_no_error (error);
@@ -806,7 +768,7 @@ test_insert_group (gconstpointer service)
 	check_kind (GDATA_ENTRY (new_group), "http://schemas.google.com/contact/2008#group");
 	g_clear_error (&error);
 
-	/* Check the properties again */
+	/* Check the properties */
 	g_assert_cmpint (gdata_contacts_group_get_edited (new_group), >=, time_val.tv_sec);
 	g_assert (gdata_contacts_group_is_deleted (new_group) == FALSE);
 	g_assert (gdata_contacts_group_get_system_group_id (new_group) == NULL);
@@ -1771,6 +1733,66 @@ test_parser_error_handling (void)
 }
 
 static void
+test_groups_properties (void)
+{
+	GDataContactsGroup *group;
+	GTimeVal time_val;
+	GHashTable *properties;
+	gint64 edited;
+	gboolean deleted;
+	gchar *system_group_id;
+
+	group = gdata_contacts_group_new (NULL);
+
+	/* Check the kind is present and correct */
+	g_assert (GDATA_IS_CONTACTS_GROUP (group));
+	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+
+	/* Set various properties */
+	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
+	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
+
+	/* Check various properties */
+	g_get_current_time (&time_val);
+	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, time_val.tv_sec);
+	g_assert (gdata_contacts_group_is_deleted (group) == FALSE);
+	g_assert (gdata_contacts_group_get_system_group_id (group) == NULL);
+
+	properties = gdata_contacts_group_get_extended_properties (group);
+	g_assert (properties != NULL);
+	g_assert_cmpint (g_hash_table_size (properties), ==, 1);
+	g_assert_cmpstr (gdata_contacts_group_get_extended_property (group, "foobar"), ==, "barfoo");
+
+	/* Check the properties a different way */
+	g_object_get (G_OBJECT (group),
+	              "edited", &edited,
+	              "deleted", &deleted,
+	              "system-group-id", &system_group_id,
+	              NULL);
+
+	g_assert_cmpint (edited, ==, time_val.tv_sec);
+	g_assert (deleted == FALSE);
+	g_assert (system_group_id == NULL);
+
+	g_free (system_group_id);
+
+	/* Check the XML */
+	gdata_test_assert_xml (group,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app' "
+		       "xmlns:gContact='http://schemas.google.com/contact/2008'>"
+			"<title type='text'>New Group!</title>"
+			"<content type='text'>New Group!</content>"
+			"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:extendedProperty name='foobar'>barfoo</gd:extendedProperty>"
+		"</entry>");
+
+	g_object_unref (group);
+}
+
+static void
 test_groups_parser_normal (void)
 {
 	GDataContactsGroup *group;
@@ -2491,6 +2513,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/contacts/parser/normal", test_parser_normal);
 	g_test_add_func ("/contacts/parser/error_handling", test_parser_error_handling);
 
+	g_test_add_func ("/contacts/groups/properties", test_groups_properties);
 	g_test_add_func ("/contacts/groups/parser/normal", test_groups_parser_normal);
 	g_test_add_func ("/contacts/groups/parser/system", test_groups_parser_system);
 	g_test_add_func ("/contacts/groups/parser/error_handling", test_groups_parser_error_handling);
