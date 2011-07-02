@@ -612,8 +612,54 @@ test_update_simple (TempContactData *data, gconstpointer service)
 	g_object_unref (new_contact);
 }
 
+typedef struct {
+	GDataContactsGroup *group1;
+	GDataContactsGroup *group2;
+	GDataContactsGroup *group3;
+} QueryAllGroupsData;
+
 static void
-test_query_all_groups (gconstpointer service)
+set_up_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
+{
+	GDataContactsGroup *group;
+
+	group = gdata_contacts_group_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (group), "Test Group 1");
+	data->group1 = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_GROUP (data->group1));
+	g_object_unref (group);
+
+	group = gdata_contacts_group_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (group), "Test Group 2");
+	data->group2 = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_GROUP (data->group2));
+	g_object_unref (group);
+
+	group = gdata_contacts_group_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (group), "Test Group 3");
+	data->group3 = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_GROUP (data->group3));
+	g_object_unref (group);
+}
+
+static void
+tear_down_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
+{
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->group1), NULL, NULL) == TRUE);
+	g_object_unref (data->group1);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->group2), NULL, NULL) == TRUE);
+	g_object_unref (data->group2);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->group3), NULL, NULL) == TRUE);
+	g_object_unref (data->group3);
+}
+
+static void
+test_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -626,11 +672,29 @@ test_query_all_groups (gconstpointer service)
 	/* TODO: check entries, kinds and feed properties */
 
 	g_object_unref (feed);
+}
 
+typedef struct {
+	QueryAllGroupsData parent;
+	GMainLoop *main_loop;
+} QueryAllGroupsAsyncData;
+
+static void
+set_up_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
+{
+	set_up_query_all_groups ((QueryAllGroupsData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
 }
 
 static void
-test_query_all_groups_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+tear_down_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_query_all_groups ((QueryAllGroupsData*) data, service);
+}
+
+static void
+test_query_all_groups_async_cb (GDataService *service, GAsyncResult *async_result, QueryAllGroupsAsyncData *data)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -641,29 +705,24 @@ test_query_all_groups_async_cb (GDataService *service, GAsyncResult *async_resul
 	g_clear_error (&error);
 
 	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 
 	g_object_unref (feed);
 }
 
 static void
-test_query_all_groups_async (gconstpointer service)
+test_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
 {
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
 	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
-	                                           (GAsyncReadyCallback) test_query_all_groups_async_cb, main_loop);
+	                                           (GAsyncReadyCallback) test_query_all_groups_async_cb, data);
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
-test_query_all_groups_async_progress_closure (gconstpointer service)
+test_query_all_groups_async_progress_closure (QueryAllGroupsAsyncData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-
-	g_assert (service != NULL);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -671,6 +730,7 @@ test_query_all_groups_async_progress_closure (gconstpointer service)
 	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
 	g_main_loop_run (data->main_loop);
 	g_main_loop_unref (data->main_loop);
 
@@ -2408,9 +2468,13 @@ main (int argc, char *argv[])
 		g_test_add ("/contacts/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
 		            teardown_batch_async);
 
-		g_test_add_data_func ("/contacts/groups/query", service, test_query_all_groups);
-		g_test_add_data_func ("/contacts/groups/query_async", service, test_query_all_groups_async);
-		g_test_add_data_func ("/contacts/groups/query_async_progress_closure", service, test_query_all_groups_async_progress_closure);
+		g_test_add ("/contacts/groups/query", QueryAllGroupsData, service, set_up_query_all_groups, test_query_all_groups,
+		            tear_down_query_all_groups);
+		g_test_add ("/contacts/groups/query/async", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async, test_query_all_groups_async,
+		            tear_down_query_all_groups_async);
+		g_test_add ("/contacts/groups/query/async/progress_closure", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
+		            test_query_all_groups_async_progress_closure, tear_down_query_all_groups_async);
+
 		g_test_add_data_func ("/contacts/groups/insert", service, test_insert_group);
 		g_test_add_data_func ("/contacts/groups/insert_async", service, test_insert_group_async);
 	}
