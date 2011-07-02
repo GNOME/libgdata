@@ -181,7 +181,8 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	/**
 	 * GDataCalendarCalendar:color:
 	 *
-	 * The color used to highlight the calendar in the user's browser.
+	 * The color used to highlight the calendar in the user's browser. This must be one of a limited set of colors listed in the
+	 * <ulink type="http" url="http://code.google.com/apis/calendar/data/2.0/reference.html#gCalcolor">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_COLOR,
 	                                 g_param_spec_boxed ("color",
