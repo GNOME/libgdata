@@ -1178,31 +1178,31 @@ test_contact_escaping (void)
 
 	/* Check the outputted XML is escaped properly */
 	gdata_test_assert_xml (contact,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
-	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
-	                        "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
-				"<title type='text'></title>"
-				"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gd:name/>"
-				"<gd:extendedProperty name='extended &amp; prop'>"
-					"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
-				"</gd:extendedProperty>"
-				"<gContact:userDefinedField key='User defined field &amp; stuff' value='Value &amp; stuff'/>"
-				"<gContact:groupMembershipInfo href='http://foo.com?foo&amp;bar'/>"
-				"<gContact:hobby>Escaping &amp;s</gContact:hobby>"
-				"<gContact:nickname>Nickname &amp; stuff</gContact:nickname>"
-				"<gContact:billingInformation>Billing information &amp; stuff</gContact:billingInformation>"
-				"<gContact:directoryServer>http://foo.com?foo&amp;bar</gContact:directoryServer>"
-				"<gContact:gender value='Misc. &amp; other'/>"
-				"<gContact:initials>&lt;AB&gt;</gContact:initials>"
-				"<gContact:maidenName>Maiden &amp; name</gContact:maidenName>"
-				"<gContact:mileage>Over the hills &amp; far away</gContact:mileage>"
-				"<gContact:occupation>Occupation &amp; stuff</gContact:occupation>"
-				"<gContact:priority rel='http://foo.com?foo&amp;priority=bar'/>"
-				"<gContact:sensitivity rel='http://foo.com?foo&amp;sensitivity=bar'/>"
-				"<gContact:shortName>Short name &amp; stuff</gContact:shortName>"
-				"<gContact:subject>Subject &amp; stuff</gContact:subject>"
-	                 "</entry>");
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
+			"<title type='text'></title>"
+			"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:name/>"
+			"<gd:extendedProperty name='extended &amp; prop'>"
+				"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
+			"</gd:extendedProperty>"
+			"<gContact:userDefinedField key='User defined field &amp; stuff' value='Value &amp; stuff'/>"
+			"<gContact:groupMembershipInfo href='http://foo.com?foo&amp;bar'/>"
+			"<gContact:hobby>Escaping &amp;s</gContact:hobby>"
+			"<gContact:nickname>Nickname &amp; stuff</gContact:nickname>"
+			"<gContact:billingInformation>Billing information &amp; stuff</gContact:billingInformation>"
+			"<gContact:directoryServer>http://foo.com?foo&amp;bar</gContact:directoryServer>"
+			"<gContact:gender value='Misc. &amp; other'/>"
+			"<gContact:initials>&lt;AB&gt;</gContact:initials>"
+			"<gContact:maidenName>Maiden &amp; name</gContact:maidenName>"
+			"<gContact:mileage>Over the hills &amp; far away</gContact:mileage>"
+			"<gContact:occupation>Occupation &amp; stuff</gContact:occupation>"
+			"<gContact:priority rel='http://foo.com?foo&amp;priority=bar'/>"
+			"<gContact:sensitivity rel='http://foo.com?foo&amp;sensitivity=bar'/>"
+			"<gContact:shortName>Short name &amp; stuff</gContact:shortName>"
+			"<gContact:subject>Subject &amp; stuff</gContact:subject>"
+		"</entry>");
 	g_object_unref (contact);
 }
 
@@ -1216,15 +1216,15 @@ test_group_escaping (void)
 
 	/* Check the outputted XML is escaped properly */
 	gdata_test_assert_xml (group,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
-	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
-	                        "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
-				"<title type='text'></title>"
-				"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gd:extendedProperty name='extended &amp; prop'>"
-					"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
-				"</gd:extendedProperty>"
-	                 "</entry>");
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
+			"<title type='text'></title>"
+			"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:extendedProperty name='extended &amp; prop'>"
+				"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
+			"</gd:extendedProperty>"
+		"</entry>");
 	g_object_unref (group);
 }
 
@@ -1257,19 +1257,19 @@ test_query_uri (void)
 	/* Check the built query URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
 	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&orderby=lastmodified&showdeleted=true&sortorder=descending"
-					"&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
+	                                "&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
 	g_free (query_uri);
 
 	/* …with a feed URI with a trailing slash */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&orderby=lastmodified&showdeleted=true&sortorder=descending"
-					"&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
+	                                "&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
 	g_free (query_uri);
 
 	/* …with a feed URI with pre-existing arguments */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/bar/?test=test&this=that");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/bar/?test=test&this=that&q=q&orderby=lastmodified&showdeleted=true&sortorder=descending"
-					"&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
+	                                "&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
 	g_free (query_uri);
 
 	g_object_unref (query);
@@ -1356,9 +1356,12 @@ test_contact_parser_minimal (void)
 			"<app:edited xmlns:app='http://www.w3.org/2007/app'>2009-04-25T15:21:53.688Z</app:edited>"
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
 			"<title></title>" /* Here's where it all went wrong */
-			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
-			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
+			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
+			      "href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
+			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' "
+			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
+			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' "
+			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
 			"<gd:email rel='http://schemas.google.com/g/2005#other' address='bob@example.com'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
@@ -1418,14 +1421,17 @@ test_contact_parser_normal (void)
 			"<app:edited xmlns:app='http://www.w3.org/2007/app'>2009-04-25T15:21:53.688Z</app:edited>"
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
 			"<title></title>" /* Here's where it all went wrong */
-			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
-			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
+			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
+			      "href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
+			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' "
+			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
+			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' "
+			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
 			"<gd:email rel='http://schemas.google.com/g/2005#other' address='bob@example.com'/>"
 			"<gd:extendedProperty name='test' value='test value'/>"
 			"<gd:organization rel='http://schemas.google.com/g/2005#work' label='Work' primary='true'/>"
 			"<gContact:groupMembershipInfo href='http://www.google.com/feeds/contacts/groups/jo%40gmail.com/base/1234a' "
-				"deleted='true'/>"
+			                              "deleted='true'/>"
 			"<gContact:groupMembershipInfo href='http://www.google.com/feeds/contacts/groups/jo%40gmail.com/base/1234b'/>"
 			"<gd:deleted/>"
 			"<gContact:nickname>Agent Smith</gContact:nickname>"
@@ -1630,8 +1636,8 @@ test_contact_parser_error_handling (void)
 #define TEST_XML_ERROR_HANDLING(x) \
 	contact = GDATA_CONTACTS_CONTACT (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT,\
 		"<entry xmlns='http://www.w3.org/2005/Atom' "\
-		"xmlns:gd='http://schemas.google.com/g/2005' "\
-		"xmlns:gContact='http://schemas.google.com/contact/2008'>"\
+		       "xmlns:gd='http://schemas.google.com/g/2005' "\
+		       "xmlns:gContact='http://schemas.google.com/contact/2008'>"\
 			x\
 		"</entry>", -1, &error));\
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
@@ -1943,7 +1949,7 @@ test_photo_has_photo (gconstpointer service)
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
 			"<title></title>" /* Here's where it all went wrong */
 			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
-				"href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
+			      "href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -1970,8 +1976,8 @@ test_photo_has_photo (gconstpointer service)
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
 			"<title></title>" /* Here's where it all went wrong */
 			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
-				"href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b' "
-				"gd:etag='&quot;QngzcDVSLyp7ImA9WxJTFkoITgU.&quot;'/>"
+			      "href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b' "
+			     "gd:etag='&quot;QngzcDVSLyp7ImA9WxJTFkoITgU.&quot;'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -2515,8 +2521,8 @@ main (int argc, char *argv[])
 
 		g_test_add ("/contacts/group/query", QueryAllGroupsData, service, set_up_query_all_groups, test_query_all_groups,
 		            tear_down_query_all_groups);
-		g_test_add ("/contacts/group/query/async", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async, test_query_all_groups_async,
-		            tear_down_query_all_groups_async);
+		g_test_add ("/contacts/group/query/async", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
+		            test_query_all_groups_async, tear_down_query_all_groups_async);
 		g_test_add ("/contacts/group/query/async/progress_closure", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
 		            test_query_all_groups_async_progress_closure, tear_down_query_all_groups_async);
 
