@@ -891,6 +891,46 @@ test_event_escaping (void)
 }
 
 static void
+test_access_rule_properties (void)
+{
+	GDataAccessRule *rule;
+	const gchar *scope_type, *scope_value;
+
+	rule = gdata_access_rule_new (NULL);
+
+	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+
+	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
+	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
+	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
+	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
+}
+
+static void
+test_access_rule_xml (void)
+{
+	GDataAccessRule *rule;
+
+	rule = gdata_access_rule_new (NULL);
+
+	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
+
+	/* Check the XML */
+	gdata_test_assert_xml (rule,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>http://schemas.google.com/gCal/2005#editor</title>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='http://schemas.google.com/gCal/2005#editor'/>"
+			"<gAcl:scope type='user' value='darcy@gmail.com'/>"
+		"</entry>");
+}
+
+static void
 test_query_uri (void)
 {
 	gint64 _time;
@@ -1034,24 +1074,7 @@ test_acls_insert_rule (gconstpointer service)
 	rule = gdata_access_rule_new (NULL);
 
 	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
-	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
-
 	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
-	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
-	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
-	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
-
-	/* Check the XML */
-	gdata_test_assert_xml (rule,
-			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-			 	"xmlns:gd='http://schemas.google.com/g/2005' "
-			 	"xmlns:gAcl='http://schemas.google.com/acl/2007'>"
-			 	"<title type='text'>http://schemas.google.com/gCal/2005#editor</title>"
-			 	"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gAcl:role value='http://schemas.google.com/gCal/2005#editor'/>"
-				"<gAcl:scope type='user' value='darcy@gmail.com'/>"
-			 "</entry>");
 
 	/* Insert the rule */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
@@ -1479,6 +1502,9 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/calendar/calendar/escaping", test_calendar_escaping);
 	g_test_add_func ("/calendar/event/escaping", test_event_escaping);
+
+	g_test_add_func ("/calendar/access-rule/properties", test_access_rule_properties);
+	g_test_add_func ("/calendar/access-rule/xml", test_access_rule_xml);
 
 	g_test_add_func ("/calendar/query/uri", test_query_uri);
 	g_test_add_func ("/calendar/query/etag", test_query_etag);
