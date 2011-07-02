@@ -42,34 +42,64 @@ check_kind (GDataEntry *entry, const gchar *expected_kind)
 	g_assert (has_kind == TRUE);
 }
 
-static GDataContactsContact *
-get_contact (gconstpointer service)
+typedef struct {
+	GDataContactsContact *contact;
+} TempContactData;
+
+static void
+set_up_temp_contact (TempContactData *data, gconstpointer service)
 {
-	GDataFeed *feed;
-	GDataEntry *entry;
-	GList *entries;
-	GError *error = NULL;
-	static gchar *entry_id = NULL;
+	GDataContactsContact *contact;
 
-	/* Make sure we use the same contact throughout */
-	feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
+	/* Create a new temporary contact to use for a single test */
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Test Contact Esq.");
 
-	entries = gdata_feed_get_entries (feed);
-	g_assert (entries != NULL);
-	entry = entries->data;
-	g_assert (GDATA_IS_CONTACTS_CONTACT (entry));
-	check_kind (entry, "http://schemas.google.com/contact/2008#contact");
+	/* Insert the contact */
+	data->contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (data->contact));
+	check_kind (GDATA_ENTRY (data->contact), "http://schemas.google.com/contact/2008#contact");
 
-	g_object_ref (entry);
-	g_object_unref (feed);
+	g_object_unref (contact);
+}
 
-	if (entry_id == NULL)
-		entry_id = g_strdup (gdata_entry_get_id (entry));
+static void
+tear_down_temp_contact (TempContactData *data, gconstpointer service)
+{
+	GDataEntry *updated_contact;
 
-	return GDATA_CONTACTS_CONTACT (entry);
+	/* Re-query for the contact to get any updated ETags */
+	updated_contact = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                                    gdata_entry_get_id (GDATA_ENTRY (data->contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
+	                                                    NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (updated_contact));
+
+	g_object_unref (data->contact);
+
+	/* Delete the new/updated contact */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      updated_contact, NULL, NULL) == TRUE);
+
+	g_object_unref (updated_contact);
+}
+
+typedef struct {
+	TempContactData parent;
+	GMainLoop *main_loop;
+} TempContactAsyncData;
+
+static void
+set_up_temp_contact_async (TempContactAsyncData *data, gconstpointer service)
+{
+	set_up_temp_contact ((TempContactData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_temp_contact_async (TempContactAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_temp_contact ((TempContactData*) data, service);
 }
 
 static void
@@ -142,8 +172,53 @@ test_authentication_async (void)
 	g_object_unref (authorizer);
 }
 
+typedef struct {
+	GDataContactsContact *contact1;
+	GDataContactsContact *contact2;
+	GDataContactsContact *contact3;
+} QueryAllContactsData;
+
 static void
-test_query_all_contacts (gconstpointer service)
+set_up_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
+{
+	GDataContactsContact *contact;
+
+	/* Create new temporary contacts to use for the query all contacts tests */
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Test Contact 1");
+	data->contact1 = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
+	g_object_unref (contact);
+
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Test Contact 2");
+	data->contact2 = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
+	g_object_unref (contact);
+
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Test Contact 3");
+	data->contact3 = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
+	g_object_unref (contact);
+}
+
+static void
+tear_down_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
+{
+	/* Delete the new contacts */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->contact1), NULL, NULL) == TRUE);
+	g_object_unref (data->contact1);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->contact2), NULL, NULL) == TRUE);
+	g_object_unref (data->contact2);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->contact3), NULL, NULL) == TRUE);
+	g_object_unref (data->contact3);
+}
+
+static void
+test_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -158,8 +233,27 @@ test_query_all_contacts (gconstpointer service)
 	g_object_unref (feed);
 }
 
+typedef struct {
+	QueryAllContactsData parent;
+	GMainLoop *main_loop;
+} QueryAllContactsAsyncData;
+
 static void
-test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+set_up_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
+{
+	set_up_query_all_contacts ((QueryAllContactsData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_query_all_contacts ((QueryAllContactsData*) data, service);
+}
+
+static void
+test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_result, QueryAllContactsAsyncData *data)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -170,29 +264,24 @@ test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_res
 	g_clear_error (&error);
 
 	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 
 	g_object_unref (feed);
 }
 
 static void
-test_query_all_contacts_async (gconstpointer service)
+test_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
 {
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
 	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL,
-						     NULL, NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, main_loop);
+	                                             NULL, NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, data);
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
-test_query_all_contacts_async_progress_closure (gconstpointer service)
+test_query_all_contacts_async_progress_closure (QueryAllContactsAsyncData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-
-	g_assert (service != NULL);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -210,8 +299,28 @@ test_query_all_contacts_async_progress_closure (gconstpointer service)
 	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
+typedef struct {
+	GDataContactsContact *new_contact;
+} InsertData;
+
 static void
-test_insert_simple (gconstpointer service)
+set_up_insert (InsertData *data, gconstpointer service)
+{
+	data->new_contact = NULL;
+}
+
+static void
+tear_down_insert (InsertData *data, gconstpointer service)
+{
+	/* Delete the new contact */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_contact), NULL, NULL) == TRUE);
+
+	g_object_unref (data->new_contact);
+}
+
+static void
+test_contact_insert (InsertData *data, gconstpointer service)
 {
 	GDataContactsContact *contact, *new_contact;
 	GDataGDName *name, *name2;
@@ -227,15 +336,553 @@ test_insert_simple (gconstpointer service)
 	GDataGContactCalendar *calendar;
 	GDataGContactExternalID *external_id;
 	GDataGContactLanguage *language;
-	gchar *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
-	gchar *priority, *sensitivity, *short_name, *subject, *photo_etag;
 	GList *list;
-	GDate date, *date2;
+	GDate date;
 	GHashTable *properties;
 	GTimeVal current_time;
 	gint64 edited, creation_time;
-	gboolean deleted, birthday_has_year;
 	GError *error = NULL;
+
+	contact = gdata_contacts_contact_new (NULL);
+	g_get_current_time (&current_time);
+
+	/* Check the kind is present and correct */
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
+
+	/* Set and check the name (to check if the title of the entry is updated) */
+	gdata_entry_set_title (GDATA_ENTRY (contact), "Elizabeth Bennet");
+	name = gdata_contacts_contact_get_name (contact);
+	gdata_gd_name_set_full_name (name, "Lizzie Bennet");
+
+	name2 = gdata_gd_name_new ("John", "Smith");
+	gdata_gd_name_set_full_name (name2, "John Smith");
+	gdata_contacts_contact_set_name (contact, name2);
+	g_object_unref (name2);
+
+	gdata_contacts_contact_set_nickname (contact, "Big J");
+	g_date_set_dmy (&date, 1, 1, 1900);
+	gdata_contacts_contact_set_birthday (contact, &date, FALSE);
+	gdata_entry_set_content (GDATA_ENTRY (contact), "Notes");
+	gdata_contacts_contact_set_billing_information (contact, "Big J Enterprises, Ltd.");
+	gdata_contacts_contact_set_directory_server (contact, "This is a server");
+	gdata_contacts_contact_set_gender (contact, GDATA_CONTACTS_GENDER_MALE);
+	gdata_contacts_contact_set_initials (contact, "A. B. C.");
+	gdata_contacts_contact_set_maiden_name (contact, "Smith");
+	gdata_contacts_contact_set_mileage (contact, "12km");
+	gdata_contacts_contact_set_occupation (contact, "Professional bum");
+	gdata_contacts_contact_set_priority (contact, GDATA_CONTACTS_PRIORITY_HIGH);
+	gdata_contacts_contact_set_sensitivity (contact, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
+	gdata_contacts_contact_set_short_name (contact, "Jon");
+	gdata_contacts_contact_set_subject (contact, "Charity work");
+
+	email_address1 = gdata_gd_email_address_new ("liz@gmail.com", GDATA_GD_EMAIL_ADDRESS_WORK, NULL, FALSE);
+	gdata_contacts_contact_add_email_address (contact, email_address1);
+	g_object_unref (email_address1);
+
+	email_address2 = gdata_gd_email_address_new ("liz@example.org", GDATA_GD_EMAIL_ADDRESS_HOME, NULL, FALSE);
+	gdata_contacts_contact_add_email_address (contact, email_address2);
+	g_object_unref (email_address2);
+
+	phone_number1 = gdata_gd_phone_number_new ("(206)555-1212", GDATA_GD_PHONE_NUMBER_WORK, NULL, NULL, TRUE);
+	gdata_contacts_contact_add_phone_number (contact, phone_number1);
+	g_object_unref (phone_number1);
+
+	phone_number2 = gdata_gd_phone_number_new ("(206)555-1213", GDATA_GD_PHONE_NUMBER_HOME, NULL, NULL, FALSE);
+	gdata_contacts_contact_add_phone_number (contact, phone_number2);
+	g_object_unref (phone_number2);
+
+	im_address = gdata_gd_im_address_new ("liz@gmail.com", GDATA_GD_IM_PROTOCOL_GOOGLE_TALK, GDATA_GD_IM_ADDRESS_HOME, NULL, FALSE);
+	gdata_contacts_contact_add_im_address (contact, im_address);
+	g_object_unref (im_address);
+
+	postal_address = gdata_gd_postal_address_new (GDATA_GD_POSTAL_ADDRESS_WORK, NULL, TRUE);
+	gdata_gd_postal_address_set_street (postal_address, "1600 Amphitheatre Pkwy Mountain View");
+	gdata_contacts_contact_add_postal_address (contact, postal_address);
+	g_object_unref (postal_address);
+
+	org = gdata_gd_organization_new ("OrgCorp", "President", GDATA_GD_ORGANIZATION_WORK, NULL, FALSE);
+	gdata_contacts_contact_add_organization (contact, org);
+	g_object_unref (org);
+
+	jot = gdata_gcontact_jot_new ("This is a jot.", GDATA_GCONTACT_JOT_OTHER);
+	gdata_contacts_contact_add_jot (contact, jot);
+	g_object_unref (jot);
+
+	relation = gdata_gcontact_relation_new ("Brian Haddock", GDATA_GCONTACT_RELATION_FRIEND, NULL);
+	gdata_contacts_contact_add_relation (contact, relation);
+	g_object_unref (relation);
+
+	website = gdata_gcontact_website_new ("http://example.com/", GDATA_GCONTACT_WEBSITE_PROFILE, NULL, TRUE);
+	gdata_contacts_contact_add_website (contact, website);
+	g_object_unref (website);
+
+	event = gdata_gcontact_event_new (&date, GDATA_GCONTACT_EVENT_ANNIVERSARY, NULL);
+	gdata_contacts_contact_add_event (contact, event);
+	g_object_unref (event);
+
+	calendar = gdata_gcontact_calendar_new ("http://calendar.example.com/", GDATA_GCONTACT_CALENDAR_HOME, NULL, TRUE);
+	gdata_contacts_contact_add_calendar (contact, calendar);
+	g_object_unref (calendar);
+
+	external_id = gdata_gcontact_external_id_new ("Number Six", GDATA_GCONTACT_EXTERNAL_ID_ORGANIZATION, NULL);
+	gdata_contacts_contact_add_external_id (contact, external_id);
+	g_object_unref (external_id);
+
+	gdata_contacts_contact_add_hobby (contact, "Rowing");
+
+	language = gdata_gcontact_language_new ("en-GB", NULL);
+	gdata_contacts_contact_add_language (contact, language);
+	g_object_unref (language);
+
+	/* Add some extended properties */
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "TITLE", NULL) == TRUE);
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "ROLE", "") == TRUE);
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "CALURI", "http://example.com/") == TRUE);
+
+	/* Add some user-defined fields */
+	gdata_contacts_contact_set_user_defined_field (contact, "Favourite colour", "Blue");
+	gdata_contacts_contact_set_user_defined_field (contact, "Owes me", "£10");
+	gdata_contacts_contact_set_user_defined_field (contact, "My notes", "");
+	gdata_contacts_contact_set_user_defined_field (contact, "", "Foo"); /* bgo#648058 */
+
+	/* Insert the contact */
+	new_contact = data->new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
+	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
+	g_clear_error (&error);
+
+	/* Check its edited date */
+	edited = gdata_contacts_contact_get_edited (contact);
+	creation_time = gdata_contacts_contact_get_edited (new_contact);
+	g_assert_cmpint (creation_time, >=, edited);
+
+	/* Various properties */
+	g_assert_cmpstr (gdata_contacts_contact_get_nickname (new_contact), ==, "Big J");
+	g_assert (gdata_contacts_contact_get_birthday (new_contact, &date) == FALSE);
+	g_assert (g_date_valid (&date) == TRUE);
+	g_assert_cmpuint (g_date_get_month (&date), ==, 1);
+	g_assert_cmpuint (g_date_get_day (&date), ==, 1);
+	g_assert_cmpstr (gdata_contacts_contact_get_billing_information (new_contact), ==, "Big J Enterprises, Ltd.");
+	g_assert_cmpstr (gdata_contacts_contact_get_directory_server (new_contact), ==, "This is a server");
+	g_assert_cmpstr (gdata_contacts_contact_get_gender (new_contact), ==, GDATA_CONTACTS_GENDER_MALE);
+	g_assert_cmpstr (gdata_contacts_contact_get_initials (new_contact), ==, "A. B. C.");
+	g_assert_cmpstr (gdata_contacts_contact_get_maiden_name (new_contact), ==, "Smith");
+	g_assert_cmpstr (gdata_contacts_contact_get_mileage (new_contact), ==, "12km");
+	g_assert_cmpstr (gdata_contacts_contact_get_occupation (new_contact), ==, "Professional bum");
+	g_assert_cmpstr (gdata_contacts_contact_get_priority (new_contact), ==, GDATA_CONTACTS_PRIORITY_HIGH);
+	g_assert_cmpstr (gdata_contacts_contact_get_sensitivity (new_contact), ==, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
+	g_assert_cmpstr (gdata_contacts_contact_get_short_name (new_contact), ==, "Jon");
+	g_assert_cmpstr (gdata_contacts_contact_get_subject (new_contact), ==, "Charity work");
+
+	/* E-mail addresses */
+	list = gdata_contacts_contact_get_email_addresses (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 2);
+	g_assert (GDATA_IS_GD_EMAIL_ADDRESS (list->data));
+
+	g_assert (gdata_contacts_contact_get_primary_email_address (new_contact) == NULL);
+
+	/* IM addresses */
+	list = gdata_contacts_contact_get_im_addresses (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GD_IM_ADDRESS (list->data));
+
+	g_assert (gdata_contacts_contact_get_primary_im_address (new_contact) == NULL);
+
+	/* Phone numbers */
+	list = gdata_contacts_contact_get_phone_numbers (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 2);
+	g_assert (GDATA_IS_GD_PHONE_NUMBER (list->data));
+
+	g_assert (GDATA_IS_GD_PHONE_NUMBER (gdata_contacts_contact_get_primary_phone_number (new_contact)));
+
+	/* Postal addresses */
+	list = gdata_contacts_contact_get_postal_addresses (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GD_POSTAL_ADDRESS (list->data));
+
+	g_assert (GDATA_IS_GD_POSTAL_ADDRESS (gdata_contacts_contact_get_primary_postal_address (new_contact)));
+
+	/* Organizations */
+	list = gdata_contacts_contact_get_organizations (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GD_ORGANIZATION (list->data));
+
+	g_assert (gdata_contacts_contact_get_primary_organization (new_contact) == NULL);
+
+	/* Jots */
+	list = gdata_contacts_contact_get_jots (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_JOT (list->data));
+
+	/* Relations */
+	list = gdata_contacts_contact_get_relations (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_RELATION (list->data));
+
+	/* Websites */
+	list = gdata_contacts_contact_get_websites (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (list->data));
+
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (gdata_contacts_contact_get_primary_website (new_contact)));
+
+	/* Events */
+	list = gdata_contacts_contact_get_events (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_EVENT (list->data));
+
+	/* Calendars */
+	list = gdata_contacts_contact_get_calendars (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (list->data));
+
+	g_assert (GDATA_IS_GCONTACT_CALENDAR (gdata_contacts_contact_get_primary_calendar (new_contact)));
+
+	/* External IDs */
+	list = gdata_contacts_contact_get_external_ids (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (list->data));
+
+	/* Languages */
+	list = gdata_contacts_contact_get_languages (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert (GDATA_IS_GCONTACT_LANGUAGE (list->data));
+
+	/* Hobbies */
+	list = gdata_contacts_contact_get_hobbies (new_contact);
+	g_assert_cmpuint (g_list_length (list), ==, 1);
+	g_assert_cmpstr (list->data, ==, "Rowing");
+
+	/* Extended properties */
+	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "CALURI"), ==, "http://example.com/");
+	g_assert (gdata_contacts_contact_get_extended_property (new_contact, "non-existent") == NULL);
+
+	properties = gdata_contacts_contact_get_extended_properties (new_contact);
+	g_assert (properties != NULL);
+	g_assert_cmpuint (g_hash_table_size (properties), ==, 1);
+
+	/* User-defined fields */
+	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "Favourite colour"), ==, "Blue");
+	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "Owes me"), ==, "£10");
+	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "My notes"), ==, "");
+	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, ""), ==, "Foo");
+
+	properties = gdata_contacts_contact_get_user_defined_fields (new_contact);
+	g_assert (properties != NULL);
+	g_assert_cmpuint (g_hash_table_size (properties), ==, 4);
+
+	/* Groups */
+	list = gdata_contacts_contact_get_groups (new_contact);
+	g_assert (list == NULL);
+
+	/* Deleted? */
+	g_assert (gdata_contacts_contact_is_deleted (new_contact) == FALSE);
+
+	/* TODO: check entries and feed properties */
+
+	g_object_unref (contact);
+}
+
+static void
+test_contact_update (TempContactData *data, gconstpointer service)
+{
+	GDataContactsContact *new_contact;
+	GError *error = NULL;
+
+	/* Update the contact's name and add an extended property */
+	gdata_entry_set_title (GDATA_ENTRY (data->contact), "John Wilson");
+	g_assert (gdata_contacts_contact_set_extended_property (data->contact, "contact-test", "value"));
+
+	/* Update the contact */
+	new_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service),
+	                                                                  gdata_contacts_service_get_primary_authorization_domain (),
+	                                                                  GDATA_ENTRY (data->contact), NULL, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
+	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
+	g_clear_error (&error);
+
+	/* Check a few properties */
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_contact)), ==, "John Wilson");
+	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "contact-test"), ==, "value");
+	g_assert (gdata_contacts_contact_is_deleted (new_contact) == FALSE);
+
+	g_object_unref (new_contact);
+}
+
+typedef struct {
+	GDataContactsGroup *group1;
+	GDataContactsGroup *group2;
+	GDataContactsGroup *group3;
+} QueryAllGroupsData;
+
+static void
+set_up_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
+{
+	GDataContactsGroup *group;
+
+	group = gdata_contacts_group_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (group), "Test Group 1");
+	data->group1 = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_GROUP (data->group1));
+	g_object_unref (group);
+
+	group = gdata_contacts_group_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (group), "Test Group 2");
+	data->group2 = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_GROUP (data->group2));
+	g_object_unref (group);
+
+	group = gdata_contacts_group_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (group), "Test Group 3");
+	data->group3 = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_GROUP (data->group3));
+	g_object_unref (group);
+}
+
+static void
+tear_down_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
+{
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->group1), NULL, NULL) == TRUE);
+	g_object_unref (data->group1);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->group2), NULL, NULL) == TRUE);
+	g_object_unref (data->group2);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->group3), NULL, NULL) == TRUE);
+	g_object_unref (data->group3);
+}
+
+static void
+test_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
+{
+	GDataFeed *feed;
+	GError *error = NULL;
+
+	feed = gdata_contacts_service_query_groups (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (feed));
+	g_clear_error (&error);
+
+	/* TODO: check entries, kinds and feed properties */
+
+	g_object_unref (feed);
+}
+
+typedef struct {
+	QueryAllGroupsData parent;
+	GMainLoop *main_loop;
+} QueryAllGroupsAsyncData;
+
+static void
+set_up_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
+{
+	set_up_query_all_groups ((QueryAllGroupsData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_query_all_groups ((QueryAllGroupsData*) data, service);
+}
+
+static void
+test_query_all_groups_async_cb (GDataService *service, GAsyncResult *async_result, QueryAllGroupsAsyncData *data)
+{
+	GDataFeed *feed;
+	GError *error = NULL;
+
+	feed = gdata_service_query_finish (service, async_result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (feed));
+	g_clear_error (&error);
+
+	/* TODO: Tests? */
+	g_main_loop_quit (data->main_loop);
+
+	g_object_unref (feed);
+}
+
+static void
+test_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
+{
+	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
+	                                           (GAsyncReadyCallback) test_query_all_groups_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
+}
+
+static void
+test_query_all_groups_async_progress_closure (QueryAllGroupsAsyncData *query_data, gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL,
+	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
+}
+
+typedef struct {
+	GDataContactsGroup *new_group;
+} InsertGroupData;
+
+static void
+set_up_insert_group (InsertGroupData *data, gconstpointer service)
+{
+	data->new_group = NULL;
+}
+
+static void
+tear_down_insert_group (InsertGroupData *data, gconstpointer service)
+{
+	/* Delete the group, just to be tidy */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_group), NULL, NULL) == TRUE);
+	g_object_unref (data->new_group);
+}
+
+static void
+test_group_insert (InsertGroupData *data, gconstpointer service)
+{
+	GDataContactsGroup *group, *new_group;
+	GTimeVal time_val;
+	GHashTable *properties;
+	GError *error = NULL;
+
+	g_get_current_time (&time_val);
+
+	group = gdata_contacts_group_new (NULL);
+
+	/* Check the kind is present and correct */
+	g_assert (GDATA_IS_CONTACTS_GROUP (group));
+	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+
+	/* Set various properties */
+	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
+	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
+
+	/* Insert the group */
+	new_group = data->new_group = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_GROUP (new_group));
+	check_kind (GDATA_ENTRY (new_group), "http://schemas.google.com/contact/2008#group");
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpint (gdata_contacts_group_get_edited (new_group), >=, time_val.tv_sec);
+	g_assert (gdata_contacts_group_is_deleted (new_group) == FALSE);
+	g_assert (gdata_contacts_group_get_system_group_id (new_group) == NULL);
+
+	properties = gdata_contacts_group_get_extended_properties (new_group);
+	g_assert (properties != NULL);
+	g_assert_cmpint (g_hash_table_size (properties), ==, 1);
+	g_assert_cmpstr (gdata_contacts_group_get_extended_property (new_group, "foobar"), ==, "barfoo");
+
+	g_object_unref (group);
+}
+
+typedef struct {
+	InsertGroupData parent;
+	GMainLoop *main_loop;
+} InsertGroupAsyncData;
+
+static void
+set_up_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
+{
+	set_up_insert_group ((InsertGroupData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_insert_group ((InsertGroupData*) data, service);
+}
+
+static void
+test_group_insert_async_cb (GDataService *service, GAsyncResult *async_result, InsertGroupAsyncData *data)
+{
+	GDataEntry *entry;
+	GError *error = NULL;
+
+	entry = gdata_service_insert_entry_finish (service, async_result, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CONTACTS_GROUP (entry));
+	g_clear_error (&error);
+
+	data->parent.new_group = GDATA_CONTACTS_GROUP (entry);
+
+	/* TODO: Tests? */
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_group_insert_async (InsertGroupAsyncData *data, gconstpointer service)
+{
+	GDataContactsGroup *group;
+
+	group = gdata_contacts_group_new (NULL);
+
+	/* Check the kind is present and correct */
+	g_assert (GDATA_IS_CONTACTS_GROUP (group));
+	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+
+	/* Set various properties */
+	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
+	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
+
+	gdata_contacts_service_insert_group_async (GDATA_CONTACTS_SERVICE (service), group, NULL, (GAsyncReadyCallback) test_group_insert_async_cb,
+	                                           data);
+
+	g_main_loop_run (data->main_loop);
+
+	g_object_unref (group);
+}
+
+static void
+test_contact_properties (void)
+{
+	GDataContactsContact *contact;
+	GDataGDName *name, *name2;
+	GDataGDEmailAddress *email_address1, *email_address2;
+	GDataGDPhoneNumber *phone_number1, *phone_number2;
+	GDataGDIMAddress *im_address;
+	GDataGDOrganization *org;
+	GDataGDPostalAddress *postal_address;
+	GDataGContactJot *jot;
+	GDataGContactRelation *relation;
+	GDataGContactWebsite *website;
+	GDataGContactEvent *event;
+	GDataGContactCalendar *calendar;
+	GDataGContactExternalID *external_id;
+	GDataGContactLanguage *language;
+	gchar *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
+	gchar *priority, *sensitivity, *short_name, *subject, *photo_etag;
+	GDate date, *date2;
+	GTimeVal current_time;
+	gint64 edited;
+	gboolean deleted, birthday_has_year;
 
 	contact = gdata_contacts_contact_new (NULL);
 	g_get_current_time (&current_time);
@@ -404,481 +1051,106 @@ test_insert_simple (gconstpointer service)
 
 	/* Check the XML */
 	gdata_test_assert_xml (contact,
-			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:gd='http://schemas.google.com/g/2005' "
-				"xmlns:app='http://www.w3.org/2007/app' "
-				"xmlns:gContact='http://schemas.google.com/contact/2008'>"
-				"<title type='text'>John Smith</title>"
-				"<content type='text'>Notes</content>"
-				"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gd:name>"
-					"<gd:givenName>John</gd:givenName>"
-					"<gd:familyName>Smith</gd:familyName>"
-					"<gd:fullName>John Smith</gd:fullName>"
-				"</gd:name>"
-				"<gd:email address='liz@gmail.com' rel='http://schemas.google.com/g/2005#work' primary='false'/>"
-				"<gd:email address='liz@example.org' rel='http://schemas.google.com/g/2005#home' primary='false'/>"
-				"<gd:im address='liz@gmail.com' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK' "
-					"rel='http://schemas.google.com/g/2005#home' primary='false'/>"
-				"<gd:phoneNumber rel='http://schemas.google.com/g/2005#work' primary='true'>(206)555-1212</gd:phoneNumber>"
-				"<gd:phoneNumber rel='http://schemas.google.com/g/2005#home' primary='false'>(206)555-1213</gd:phoneNumber>"
-				"<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work' primary='true'>"
-					"<gd:street>1600 Amphitheatre Pkwy Mountain View</gd:street>"
-				"</gd:structuredPostalAddress>"
-				"<gd:organization rel='http://schemas.google.com/g/2005#work' primary='false'>"
-					"<gd:orgName>OrgCorp</gd:orgName>"
-					"<gd:orgTitle>President</gd:orgTitle>"
-				"</gd:organization>"
-				"<gContact:jot rel='other'>This is a jot.</gContact:jot>"
-				"<gContact:relation rel='friend'>Brian Haddock</gContact:relation>"
-				"<gContact:website href='http://example.com/' rel='profile' primary='true'/>"
-				"<gContact:event rel='anniversary'><gd:when startTime='1900-01-01'/></gContact:event>"
-				"<gContact:calendarLink href='http://calendar.example.com/' rel='home' primary='true'/>"
-				"<gContact:externalId value='Number Six' rel='organization'/>"
-				"<gContact:language code='en-GB'/>"
-				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
-				"<gContact:userDefinedField key='Favourite colour' value='Blue'/>"
-				"<gContact:userDefinedField key='Owes me' value='£10'/>"
-				"<gContact:userDefinedField key='My notes' value=''/>"
-				"<gContact:userDefinedField key='' value='Foo'/>" /* bgo#648058 */
-				"<gContact:hobby>Rowing</gContact:hobby>"
-				"<gContact:nickname>Big J</gContact:nickname>"
-				"<gContact:birthday when='--01-01'/>"
-				"<gContact:billingInformation>Big J Enterprises, Ltd.</gContact:billingInformation>"
-				"<gContact:directoryServer>This is a server</gContact:directoryServer>"
-				"<gContact:gender value='male'/>"
-				"<gContact:initials>A. B. C.</gContact:initials>"
-				"<gContact:maidenName>Smith</gContact:maidenName>"
-				"<gContact:mileage>12km</gContact:mileage>"
-				"<gContact:occupation>Professional bum</gContact:occupation>"
-				"<gContact:priority rel='high'/>"
-				"<gContact:sensitivity rel='personal'/>"
-				"<gContact:shortName>Jon</gContact:shortName>"
-				"<gContact:subject>Charity work</gContact:subject>"
-			 "</entry>");
-
-	/* Insert the contact */
-	new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
-	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
-	g_clear_error (&error);
-
-	/* Check its edited date */
-	creation_time = gdata_contacts_contact_get_edited (new_contact);
-	g_assert_cmpint (creation_time, >=, edited);
-
-	/* Various properties */
-	g_assert_cmpstr (gdata_contacts_contact_get_nickname (new_contact), ==, "Big J");
-	g_assert (gdata_contacts_contact_get_birthday (new_contact, &date) == FALSE);
-	g_assert (g_date_valid (&date) == TRUE);
-	g_assert_cmpuint (g_date_get_month (&date), ==, 1);
-	g_assert_cmpuint (g_date_get_day (&date), ==, 1);
-	g_assert_cmpstr (gdata_contacts_contact_get_billing_information (new_contact), ==, "Big J Enterprises, Ltd.");
-	g_assert_cmpstr (gdata_contacts_contact_get_directory_server (new_contact), ==, "This is a server");
-	g_assert_cmpstr (gdata_contacts_contact_get_gender (new_contact), ==, GDATA_CONTACTS_GENDER_MALE);
-	g_assert_cmpstr (gdata_contacts_contact_get_initials (new_contact), ==, "A. B. C.");
-	g_assert_cmpstr (gdata_contacts_contact_get_maiden_name (new_contact), ==, "Smith");
-	g_assert_cmpstr (gdata_contacts_contact_get_mileage (new_contact), ==, "12km");
-	g_assert_cmpstr (gdata_contacts_contact_get_occupation (new_contact), ==, "Professional bum");
-	g_assert_cmpstr (gdata_contacts_contact_get_priority (new_contact), ==, GDATA_CONTACTS_PRIORITY_HIGH);
-	g_assert_cmpstr (gdata_contacts_contact_get_sensitivity (new_contact), ==, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
-	g_assert_cmpstr (gdata_contacts_contact_get_short_name (new_contact), ==, "Jon");
-	g_assert_cmpstr (gdata_contacts_contact_get_subject (new_contact), ==, "Charity work");
-
-	/* E-mail addresses */
-	list = gdata_contacts_contact_get_email_addresses (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 2);
-	g_assert (GDATA_IS_GD_EMAIL_ADDRESS (list->data));
-
-	g_assert (gdata_contacts_contact_get_primary_email_address (new_contact) == NULL);
-
-	/* IM addresses */
-	list = gdata_contacts_contact_get_im_addresses (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GD_IM_ADDRESS (list->data));
-
-	g_assert (gdata_contacts_contact_get_primary_im_address (new_contact) == NULL);
-
-	/* Phone numbers */
-	list = gdata_contacts_contact_get_phone_numbers (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 2);
-	g_assert (GDATA_IS_GD_PHONE_NUMBER (list->data));
-
-	g_assert (GDATA_IS_GD_PHONE_NUMBER (gdata_contacts_contact_get_primary_phone_number (new_contact)));
-
-	/* Postal addresses */
-	list = gdata_contacts_contact_get_postal_addresses (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GD_POSTAL_ADDRESS (list->data));
-
-	g_assert (GDATA_IS_GD_POSTAL_ADDRESS (gdata_contacts_contact_get_primary_postal_address (new_contact)));
-
-	/* Organizations */
-	list = gdata_contacts_contact_get_organizations (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GD_ORGANIZATION (list->data));
-
-	g_assert (gdata_contacts_contact_get_primary_organization (new_contact) == NULL);
-
-	/* Jots */
-	list = gdata_contacts_contact_get_jots (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GCONTACT_JOT (list->data));
-
-	/* Relations */
-	list = gdata_contacts_contact_get_relations (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GCONTACT_RELATION (list->data));
-
-	/* Websites */
-	list = gdata_contacts_contact_get_websites (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GCONTACT_WEBSITE (list->data));
-
-	g_assert (GDATA_IS_GCONTACT_WEBSITE (gdata_contacts_contact_get_primary_website (new_contact)));
-
-	/* Events */
-	list = gdata_contacts_contact_get_events (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GCONTACT_EVENT (list->data));
-
-	/* Calendars */
-	list = gdata_contacts_contact_get_calendars (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GCONTACT_CALENDAR (list->data));
-
-	g_assert (GDATA_IS_GCONTACT_CALENDAR (gdata_contacts_contact_get_primary_calendar (new_contact)));
-
-	/* External IDs */
-	list = gdata_contacts_contact_get_external_ids (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GCONTACT_EXTERNAL_ID (list->data));
-
-	/* Languages */
-	list = gdata_contacts_contact_get_languages (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert (GDATA_IS_GCONTACT_LANGUAGE (list->data));
-
-	/* Hobbies */
-	list = gdata_contacts_contact_get_hobbies (new_contact);
-	g_assert_cmpuint (g_list_length (list), ==, 1);
-	g_assert_cmpstr (list->data, ==, "Rowing");
-
-	/* Extended properties */
-	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "CALURI"), ==, "http://example.com/");
-	g_assert (gdata_contacts_contact_get_extended_property (new_contact, "non-existent") == NULL);
-
-	properties = gdata_contacts_contact_get_extended_properties (new_contact);
-	g_assert (properties != NULL);
-	g_assert_cmpuint (g_hash_table_size (properties), ==, 1);
-
-	/* User-defined fields */
-	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "Favourite colour"), ==, "Blue");
-	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "Owes me"), ==, "£10");
-	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, "My notes"), ==, "");
-	g_assert_cmpstr (gdata_contacts_contact_get_user_defined_field (new_contact, ""), ==, "Foo");
-
-	properties = gdata_contacts_contact_get_user_defined_fields (new_contact);
-	g_assert (properties != NULL);
-	g_assert_cmpuint (g_hash_table_size (properties), ==, 4);
-
-	/* Groups */
-	list = gdata_contacts_contact_get_groups (new_contact);
-	g_assert (list == NULL);
-
-	/* Deleted? */
-	g_assert (gdata_contacts_contact_is_deleted (new_contact) == FALSE);
-
-	/* TODO: check entries and feed properties */
-
-	/* Try removing some things from the new contact and ensure it works */
-	gdata_contacts_contact_remove_all_email_addresses (new_contact);
-	g_assert (gdata_contacts_contact_get_email_addresses (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_email_address (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_im_addresses (new_contact);
-	g_assert (gdata_contacts_contact_get_im_addresses (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_im_address (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_phone_numbers (new_contact);
-	g_assert (gdata_contacts_contact_get_phone_numbers (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_phone_number (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_postal_addresses (new_contact);
-	g_assert (gdata_contacts_contact_get_postal_addresses (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_postal_address (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_organizations (new_contact);
-	g_assert (gdata_contacts_contact_get_organizations (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_organization (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_jots (new_contact);
-	g_assert (gdata_contacts_contact_get_jots (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_relations (new_contact);
-	g_assert (gdata_contacts_contact_get_relations (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_websites (new_contact);
-	g_assert (gdata_contacts_contact_get_websites (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_website (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_events (new_contact);
-	g_assert (gdata_contacts_contact_get_events (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_calendars (new_contact);
-	g_assert (gdata_contacts_contact_get_calendars (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_calendar (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_external_ids (new_contact);
-	g_assert (gdata_contacts_contact_get_external_ids (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_languages (new_contact);
-	g_assert (gdata_contacts_contact_get_languages (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_hobbies (new_contact);
-	g_assert (gdata_contacts_contact_get_hobbies (new_contact) == NULL);
-
-	g_object_unref (contact);
-	g_object_unref (new_contact);
-}
-
-static void
-test_update_simple (gconstpointer service)
-{
-	GDataContactsContact *contact, *new_contact;
-	GError *error = NULL;
-
-	contact = get_contact (service);
-
-	/* Check the kind is present and correct */
-	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
-
-	/* Update the contact's name and add an extended property */
-	gdata_entry_set_title (GDATA_ENTRY (contact), "John Wilson");
-	g_assert (gdata_contacts_contact_set_extended_property (contact, "contact-test", "value"));
-
-	/* Update the contact */
-	new_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service),
-	                                                                  gdata_contacts_service_get_primary_authorization_domain (),
-	                                                                  GDATA_ENTRY (contact), NULL, &error));
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
-	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
-	g_clear_error (&error);
-
-	/* Check a few properties */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_contact)), ==, "John Wilson");
-	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "contact-test"), ==, "value");
-	g_assert (gdata_contacts_contact_is_deleted (new_contact) == FALSE);
-
-	g_object_unref (contact);
-	g_object_unref (new_contact);
-}
-
-static void
-test_query_all_groups (gconstpointer service)
-{
-	GDataFeed *feed;
-	GError *error = NULL;
-
-	feed = gdata_contacts_service_query_groups (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
-
-	/* TODO: check entries, kinds and feed properties */
-
-	g_object_unref (feed);
-
-}
-
-static void
-test_query_all_groups_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	GDataFeed *feed;
-	GError *error = NULL;
-
-	feed = gdata_service_query_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
-
-	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
-
-	g_object_unref (feed);
-}
-
-static void
-test_query_all_groups_async (gconstpointer service)
-{
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
-	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
-	                                           (GAsyncReadyCallback) test_query_all_groups_async_cb, main_loop);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-}
-
-static void
-test_query_all_groups_async_progress_closure (gconstpointer service)
-{
-	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-
-	g_assert (service != NULL);
-
-	data->main_loop = g_main_loop_new (NULL, TRUE);
-
-	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL,
-	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
-	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
-	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
-	g_main_loop_run (data->main_loop);
-	g_main_loop_unref (data->main_loop);
-
-	/* Check that both callbacks were called exactly once */
-	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
-	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
-
-	g_slice_free (GDataAsyncProgressClosure, data);
-}
-
-static void
-test_insert_group (gconstpointer service)
-{
-	GDataContactsGroup *group, *new_group;
-	GTimeVal time_val;
-	GHashTable *properties;
-	gint64 edited;
-	gboolean deleted;
-	gchar *system_group_id;
-	GError *error = NULL;
-
-	group = gdata_contacts_group_new (NULL);
-
-	/* Check the kind is present and correct */
-	g_assert (GDATA_IS_CONTACTS_GROUP (group));
-	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
-
-	/* Set various properties */
-	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
-	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
-
-	/* Check various properties */
-	g_get_current_time (&time_val);
-	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, time_val.tv_sec);
-	g_assert (gdata_contacts_group_is_deleted (group) == FALSE);
-	g_assert (gdata_contacts_group_get_system_group_id (group) == NULL);
-
-	properties = gdata_contacts_group_get_extended_properties (group);
-	g_assert (properties != NULL);
-	g_assert_cmpint (g_hash_table_size (properties), ==, 1);
-	g_assert_cmpstr (gdata_contacts_group_get_extended_property (group, "foobar"), ==, "barfoo");
-
-	/* Check the properties a different way */
-	g_object_get (G_OBJECT (group),
-	              "edited", &edited,
-	              "deleted", &deleted,
-	              "system-group-id", &system_group_id,
-	              NULL);
-
-	g_assert_cmpint (edited, ==, time_val.tv_sec);
-	g_assert (deleted == FALSE);
-	g_assert (system_group_id == NULL);
-
-	g_free (system_group_id);
-
-	/* Check the XML */
-	gdata_test_assert_xml (group,
 		"<?xml version='1.0' encoding='UTF-8'?>"
 		"<entry xmlns='http://www.w3.org/2005/Atom' "
 		       "xmlns:gd='http://schemas.google.com/g/2005' "
 		       "xmlns:app='http://www.w3.org/2007/app' "
 		       "xmlns:gContact='http://schemas.google.com/contact/2008'>"
-			"<title type='text'>New Group!</title>"
-			"<content type='text'>New Group!</content>"
-			"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
-			"<gd:extendedProperty name='foobar'>barfoo</gd:extendedProperty>"
+			"<title type='text'>John Smith</title>"
+			"<content type='text'>Notes</content>"
+			"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:name>"
+				"<gd:givenName>John</gd:givenName>"
+				"<gd:familyName>Smith</gd:familyName>"
+				"<gd:fullName>John Smith</gd:fullName>"
+			"</gd:name>"
+			"<gd:email address='liz@gmail.com' rel='http://schemas.google.com/g/2005#work' primary='false'/>"
+			"<gd:email address='liz@example.org' rel='http://schemas.google.com/g/2005#home' primary='false'/>"
+			"<gd:im address='liz@gmail.com' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK' "
+			       "rel='http://schemas.google.com/g/2005#home' primary='false'/>"
+			"<gd:phoneNumber rel='http://schemas.google.com/g/2005#work' primary='true'>(206)555-1212</gd:phoneNumber>"
+			"<gd:phoneNumber rel='http://schemas.google.com/g/2005#home' primary='false'>(206)555-1213</gd:phoneNumber>"
+			"<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work' primary='true'>"
+				"<gd:street>1600 Amphitheatre Pkwy Mountain View</gd:street>"
+			"</gd:structuredPostalAddress>"
+			"<gd:organization rel='http://schemas.google.com/g/2005#work' primary='false'>"
+				"<gd:orgName>OrgCorp</gd:orgName>"
+				"<gd:orgTitle>President</gd:orgTitle>"
+			"</gd:organization>"
+			"<gContact:jot rel='other'>This is a jot.</gContact:jot>"
+			"<gContact:relation rel='friend'>Brian Haddock</gContact:relation>"
+			"<gContact:website href='http://example.com/' rel='profile' primary='true'/>"
+			"<gContact:event rel='anniversary'><gd:when startTime='1900-01-01'/></gContact:event>"
+			"<gContact:calendarLink href='http://calendar.example.com/' rel='home' primary='true'/>"
+			"<gContact:externalId value='Number Six' rel='organization'/>"
+			"<gContact:language code='en-GB'/>"
+			"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
+			"<gContact:userDefinedField key='Favourite colour' value='Blue'/>"
+			"<gContact:userDefinedField key='Owes me' value='£10'/>"
+			"<gContact:userDefinedField key='My notes' value=''/>"
+			"<gContact:userDefinedField key='' value='Foo'/>" /* bgo#648058 */
+			"<gContact:hobby>Rowing</gContact:hobby>"
+			"<gContact:nickname>Big J</gContact:nickname>"
+			"<gContact:birthday when='--01-01'/>"
+			"<gContact:billingInformation>Big J Enterprises, Ltd.</gContact:billingInformation>"
+			"<gContact:directoryServer>This is a server</gContact:directoryServer>"
+			"<gContact:gender value='male'/>"
+			"<gContact:initials>A. B. C.</gContact:initials>"
+			"<gContact:maidenName>Smith</gContact:maidenName>"
+			"<gContact:mileage>12km</gContact:mileage>"
+			"<gContact:occupation>Professional bum</gContact:occupation>"
+			"<gContact:priority rel='high'/>"
+			"<gContact:sensitivity rel='personal'/>"
+			"<gContact:shortName>Jon</gContact:shortName>"
+			"<gContact:subject>Charity work</gContact:subject>"
 		"</entry>");
 
-	/* Insert the group */
-	new_group = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_CONTACTS_GROUP (new_group));
-	check_kind (GDATA_ENTRY (new_group), "http://schemas.google.com/contact/2008#group");
-	g_clear_error (&error);
+	/* Try removing some things from the contact and ensure it works */
+	gdata_contacts_contact_remove_all_email_addresses (contact);
+	g_assert (gdata_contacts_contact_get_email_addresses (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_email_address (contact) == NULL);
 
-	/* Check the properties again */
-	g_assert_cmpint (gdata_contacts_group_get_edited (new_group), >=, time_val.tv_sec);
-	g_assert (gdata_contacts_group_is_deleted (new_group) == FALSE);
-	g_assert (gdata_contacts_group_get_system_group_id (new_group) == NULL);
+	gdata_contacts_contact_remove_all_im_addresses (contact);
+	g_assert (gdata_contacts_contact_get_im_addresses (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_im_address (contact) == NULL);
 
-	properties = gdata_contacts_group_get_extended_properties (new_group);
-	g_assert (properties != NULL);
-	g_assert_cmpint (g_hash_table_size (properties), ==, 1);
-	g_assert_cmpstr (gdata_contacts_group_get_extended_property (new_group, "foobar"), ==, "barfoo");
+	gdata_contacts_contact_remove_all_phone_numbers (contact);
+	g_assert (gdata_contacts_contact_get_phone_numbers (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_phone_number (contact) == NULL);
 
-	/* Delete the group, just to be tidy */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
-	                                      GDATA_ENTRY (new_group), NULL, &error) == TRUE);
-	g_assert_no_error (error);
-	g_clear_error (&error);
+	gdata_contacts_contact_remove_all_postal_addresses (contact);
+	g_assert (gdata_contacts_contact_get_postal_addresses (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_postal_address (contact) == NULL);
 
-	g_object_unref (group);
-	g_object_unref (new_group);
-}
+	gdata_contacts_contact_remove_all_organizations (contact);
+	g_assert (gdata_contacts_contact_get_organizations (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_organization (contact) == NULL);
 
-static void
-test_insert_group_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	GDataEntry *entry;
-	GError *error = NULL;
+	gdata_contacts_contact_remove_all_jots (contact);
+	g_assert (gdata_contacts_contact_get_jots (contact) == NULL);
 
-	entry = gdata_service_insert_entry_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_CONTACTS_GROUP (entry));
-	g_clear_error (&error);
+	gdata_contacts_contact_remove_all_relations (contact);
+	g_assert (gdata_contacts_contact_get_relations (contact) == NULL);
 
-	/* TODO: Tests? */
+	gdata_contacts_contact_remove_all_websites (contact);
+	g_assert (gdata_contacts_contact_get_websites (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_website (contact) == NULL);
 
-	/* Delete the group, just to be tidy */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
-	                                      entry, NULL, &error) == TRUE);
-	g_assert_no_error (error);
-	g_clear_error (&error);
+	gdata_contacts_contact_remove_all_events (contact);
+	g_assert (gdata_contacts_contact_get_events (contact) == NULL);
 
-	g_main_loop_quit (main_loop);
-	g_object_unref (entry);
-}
+	gdata_contacts_contact_remove_all_calendars (contact);
+	g_assert (gdata_contacts_contact_get_calendars (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_calendar (contact) == NULL);
 
-static void
-test_insert_group_async (gconstpointer service)
-{
-	GDataContactsGroup *group;
-	GMainLoop *main_loop;
+	gdata_contacts_contact_remove_all_external_ids (contact);
+	g_assert (gdata_contacts_contact_get_external_ids (contact) == NULL);
 
-	group = gdata_contacts_group_new (NULL);
+	gdata_contacts_contact_remove_all_languages (contact);
+	g_assert (gdata_contacts_contact_get_languages (contact) == NULL);
 
-	/* Check the kind is present and correct */
-	g_assert (GDATA_IS_CONTACTS_GROUP (group));
-	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
-
-	/* Set various properties */
-	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
-	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
-
-	main_loop = g_main_loop_new (NULL, TRUE);
-
-	gdata_contacts_service_insert_group_async (GDATA_CONTACTS_SERVICE (service), group, NULL, (GAsyncReadyCallback) test_insert_group_async_cb,
-	                                           main_loop);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-	g_object_unref (group);
+	gdata_contacts_contact_remove_all_hobbies (contact);
+	g_assert (gdata_contacts_contact_get_hobbies (contact) == NULL);
 }
 
 static void
@@ -906,31 +1178,31 @@ test_contact_escaping (void)
 
 	/* Check the outputted XML is escaped properly */
 	gdata_test_assert_xml (contact,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
-	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
-	                        "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
-				"<title type='text'></title>"
-				"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gd:name/>"
-				"<gd:extendedProperty name='extended &amp; prop'>"
-					"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
-				"</gd:extendedProperty>"
-				"<gContact:userDefinedField key='User defined field &amp; stuff' value='Value &amp; stuff'/>"
-				"<gContact:groupMembershipInfo href='http://foo.com?foo&amp;bar'/>"
-				"<gContact:hobby>Escaping &amp;s</gContact:hobby>"
-				"<gContact:nickname>Nickname &amp; stuff</gContact:nickname>"
-				"<gContact:billingInformation>Billing information &amp; stuff</gContact:billingInformation>"
-				"<gContact:directoryServer>http://foo.com?foo&amp;bar</gContact:directoryServer>"
-				"<gContact:gender value='Misc. &amp; other'/>"
-				"<gContact:initials>&lt;AB&gt;</gContact:initials>"
-				"<gContact:maidenName>Maiden &amp; name</gContact:maidenName>"
-				"<gContact:mileage>Over the hills &amp; far away</gContact:mileage>"
-				"<gContact:occupation>Occupation &amp; stuff</gContact:occupation>"
-				"<gContact:priority rel='http://foo.com?foo&amp;priority=bar'/>"
-				"<gContact:sensitivity rel='http://foo.com?foo&amp;sensitivity=bar'/>"
-				"<gContact:shortName>Short name &amp; stuff</gContact:shortName>"
-				"<gContact:subject>Subject &amp; stuff</gContact:subject>"
-	                 "</entry>");
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
+			"<title type='text'></title>"
+			"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:name/>"
+			"<gd:extendedProperty name='extended &amp; prop'>"
+				"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
+			"</gd:extendedProperty>"
+			"<gContact:userDefinedField key='User defined field &amp; stuff' value='Value &amp; stuff'/>"
+			"<gContact:groupMembershipInfo href='http://foo.com?foo&amp;bar'/>"
+			"<gContact:hobby>Escaping &amp;s</gContact:hobby>"
+			"<gContact:nickname>Nickname &amp; stuff</gContact:nickname>"
+			"<gContact:billingInformation>Billing information &amp; stuff</gContact:billingInformation>"
+			"<gContact:directoryServer>http://foo.com?foo&amp;bar</gContact:directoryServer>"
+			"<gContact:gender value='Misc. &amp; other'/>"
+			"<gContact:initials>&lt;AB&gt;</gContact:initials>"
+			"<gContact:maidenName>Maiden &amp; name</gContact:maidenName>"
+			"<gContact:mileage>Over the hills &amp; far away</gContact:mileage>"
+			"<gContact:occupation>Occupation &amp; stuff</gContact:occupation>"
+			"<gContact:priority rel='http://foo.com?foo&amp;priority=bar'/>"
+			"<gContact:sensitivity rel='http://foo.com?foo&amp;sensitivity=bar'/>"
+			"<gContact:shortName>Short name &amp; stuff</gContact:shortName>"
+			"<gContact:subject>Subject &amp; stuff</gContact:subject>"
+		"</entry>");
 	g_object_unref (contact);
 }
 
@@ -944,15 +1216,15 @@ test_group_escaping (void)
 
 	/* Check the outputted XML is escaped properly */
 	gdata_test_assert_xml (group,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
-	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
-	                        "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
-				"<title type='text'></title>"
-				"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gd:extendedProperty name='extended &amp; prop'>"
-					"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
-				"</gd:extendedProperty>"
-	                 "</entry>");
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app' xmlns:gContact='http://schemas.google.com/contact/2008'>"
+			"<title type='text'></title>"
+			"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:extendedProperty name='extended &amp; prop'>"
+				"<unescaped>Value should be a pre-escaped XML blob.</unescaped>"
+			"</gd:extendedProperty>"
+		"</entry>");
 	g_object_unref (group);
 }
 
@@ -985,19 +1257,19 @@ test_query_uri (void)
 	/* Check the built query URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
 	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&orderby=lastmodified&showdeleted=true&sortorder=descending"
-					"&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
+	                                "&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
 	g_free (query_uri);
 
 	/* …with a feed URI with a trailing slash */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&orderby=lastmodified&showdeleted=true&sortorder=descending"
-					"&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
+	                                "&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
 	g_free (query_uri);
 
 	/* …with a feed URI with pre-existing arguments */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/bar/?test=test&this=that");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/bar/?test=test&this=that&q=q&orderby=lastmodified&showdeleted=true&sortorder=descending"
-					"&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
+	                                "&group=http%3A%2F%2Fwww.google.com%2Ffeeds%2Fcontacts%2Fgroups%2Fjo%40gmail.com%2Fbase%2F1234a");
 	g_free (query_uri);
 
 	g_object_unref (query);
@@ -1067,7 +1339,7 @@ test_query_properties (void)
 }
 
 static void
-test_parser_minimal (void)
+test_contact_parser_minimal (void)
 {
 	GDataContactsContact *contact;
 	GDate birthday;
@@ -1084,9 +1356,12 @@ test_parser_minimal (void)
 			"<app:edited xmlns:app='http://www.w3.org/2007/app'>2009-04-25T15:21:53.688Z</app:edited>"
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
 			"<title></title>" /* Here's where it all went wrong */
-			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
-			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
+			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
+			      "href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
+			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' "
+			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
+			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' "
+			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
 			"<gd:email rel='http://schemas.google.com/g/2005#other' address='bob@example.com'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
@@ -1129,7 +1404,7 @@ test_parser_minimal (void)
 }
 
 static void
-test_parser_normal (void)
+test_contact_parser_normal (void)
 {
 	GDataContactsContact *contact;
 	GDate date;
@@ -1146,14 +1421,17 @@ test_parser_normal (void)
 			"<app:edited xmlns:app='http://www.w3.org/2007/app'>2009-04-25T15:21:53.688Z</app:edited>"
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
 			"<title></title>" /* Here's where it all went wrong */
-			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
-			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
+			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
+			      "href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
+			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' "
+			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
+			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' "
+			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
 			"<gd:email rel='http://schemas.google.com/g/2005#other' address='bob@example.com'/>"
 			"<gd:extendedProperty name='test' value='test value'/>"
 			"<gd:organization rel='http://schemas.google.com/g/2005#work' label='Work' primary='true'/>"
 			"<gContact:groupMembershipInfo href='http://www.google.com/feeds/contacts/groups/jo%40gmail.com/base/1234a' "
-				"deleted='true'/>"
+			                              "deleted='true'/>"
 			"<gContact:groupMembershipInfo href='http://www.google.com/feeds/contacts/groups/jo%40gmail.com/base/1234b'/>"
 			"<gd:deleted/>"
 			"<gContact:nickname>Agent Smith</gContact:nickname>"
@@ -1350,7 +1628,7 @@ test_parser_normal (void)
 }
 
 static void
-test_parser_error_handling (void)
+test_contact_parser_error_handling (void)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
@@ -1358,8 +1636,8 @@ test_parser_error_handling (void)
 #define TEST_XML_ERROR_HANDLING(x) \
 	contact = GDATA_CONTACTS_CONTACT (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT,\
 		"<entry xmlns='http://www.w3.org/2005/Atom' "\
-		"xmlns:gd='http://schemas.google.com/g/2005' "\
-		"xmlns:gContact='http://schemas.google.com/contact/2008'>"\
+		       "xmlns:gd='http://schemas.google.com/g/2005' "\
+		       "xmlns:gContact='http://schemas.google.com/contact/2008'>"\
 			x\
 		"</entry>", -1, &error));\
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
@@ -1484,7 +1762,67 @@ test_parser_error_handling (void)
 }
 
 static void
-test_groups_parser_normal (void)
+test_group_properties (void)
+{
+	GDataContactsGroup *group;
+	GTimeVal time_val;
+	GHashTable *properties;
+	gint64 edited;
+	gboolean deleted;
+	gchar *system_group_id;
+
+	group = gdata_contacts_group_new (NULL);
+
+	/* Check the kind is present and correct */
+	g_assert (GDATA_IS_CONTACTS_GROUP (group));
+	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+
+	/* Set various properties */
+	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
+	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
+
+	/* Check various properties */
+	g_get_current_time (&time_val);
+	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, time_val.tv_sec);
+	g_assert (gdata_contacts_group_is_deleted (group) == FALSE);
+	g_assert (gdata_contacts_group_get_system_group_id (group) == NULL);
+
+	properties = gdata_contacts_group_get_extended_properties (group);
+	g_assert (properties != NULL);
+	g_assert_cmpint (g_hash_table_size (properties), ==, 1);
+	g_assert_cmpstr (gdata_contacts_group_get_extended_property (group, "foobar"), ==, "barfoo");
+
+	/* Check the properties a different way */
+	g_object_get (G_OBJECT (group),
+	              "edited", &edited,
+	              "deleted", &deleted,
+	              "system-group-id", &system_group_id,
+	              NULL);
+
+	g_assert_cmpint (edited, ==, time_val.tv_sec);
+	g_assert (deleted == FALSE);
+	g_assert (system_group_id == NULL);
+
+	g_free (system_group_id);
+
+	/* Check the XML */
+	gdata_test_assert_xml (group,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app' "
+		       "xmlns:gContact='http://schemas.google.com/contact/2008'>"
+			"<title type='text'>New Group!</title>"
+			"<content type='text'>New Group!</content>"
+			"<category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:extendedProperty name='foobar'>barfoo</gd:extendedProperty>"
+		"</entry>");
+
+	g_object_unref (group);
+}
+
+static void
+test_group_parser_normal (void)
 {
 	GDataContactsGroup *group;
 	GHashTable *properties;
@@ -1529,7 +1867,7 @@ test_groups_parser_normal (void)
 }
 
 static void
-test_groups_parser_system (void)
+test_group_parser_system (void)
 {
 	GDataContactsGroup *group;
 	GError *error = NULL;
@@ -1563,7 +1901,7 @@ test_groups_parser_system (void)
 }
 
 static void
-test_groups_parser_error_handling (void)
+test_group_parser_error_handling (void)
 {
 	GDataContactsGroup *group;
 	GError *error = NULL;
@@ -1611,7 +1949,7 @@ test_photo_has_photo (gconstpointer service)
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
 			"<title></title>" /* Here's where it all went wrong */
 			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
-				"href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
+			      "href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -1638,8 +1976,8 @@ test_photo_has_photo (gconstpointer service)
 			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/>"
 			"<title></title>" /* Here's where it all went wrong */
 			"<link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' "
-				"href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b' "
-				"gd:etag='&quot;QngzcDVSLyp7ImA9WxJTFkoITgU.&quot;'/>"
+			      "href='http://www.google.com/m8/feeds/photos/media/libgdata.test@googlemail.com/1b46cdd20bfbee3b' "
+			     "gd:etag='&quot;QngzcDVSLyp7ImA9WxJTFkoITgU.&quot;'/>"
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -1651,30 +1989,27 @@ test_photo_has_photo (gconstpointer service)
 }
 
 static void
-test_photo_add (gconstpointer service)
+test_photo_add (TempContactData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
-	guint8 *data;
+	guint8 *photo_data;
 	gsize length;
 	gboolean retval;
 	GError *error = NULL;
 
 	/* Get the photo */
-	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &data, &length, NULL) == TRUE);
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
 
 	/* Add it to the contact */
-	contact = get_contact (service);
-	retval = gdata_contacts_contact_set_photo (contact, GDATA_CONTACTS_SERVICE (service), data, length, "image/jpeg", NULL, &error);
+	retval = gdata_contacts_contact_set_photo (data->contact, GDATA_CONTACTS_SERVICE (service), photo_data, length, "image/jpeg", NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 
 	g_clear_error (&error);
-	g_object_unref (contact);
-	g_free (data);
+	g_free (photo_data);
 }
 
 static void
-test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
 {
 	gboolean success;
 	GError *error = NULL;
@@ -1685,124 +2020,131 @@ test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, GM
 
 	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 }
 
 static void
-test_photo_add_async (gconstpointer service)
+test_photo_add_async (TempContactAsyncData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
-	guint8 *data;
+	guint8 *photo_data;
 	gsize length;
-	GMainLoop *main_loop;
 
 	/* Get the photo */
-	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &data, &length, NULL) == TRUE);
-
-	contact = get_contact (service);
-	main_loop = g_main_loop_new (NULL, TRUE);
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
 
 	/* Add it to the contact asynchronously */
-	gdata_contacts_contact_set_photo_async (contact, GDATA_CONTACTS_SERVICE (service), data, length, "image/jpeg", NULL,
-	                                        (GAsyncReadyCallback) test_photo_add_async_cb, main_loop);
-	g_main_loop_run (main_loop);
+	gdata_contacts_contact_set_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), photo_data, length, "image/jpeg", NULL,
+	                                        (GAsyncReadyCallback) test_photo_add_async_cb, data);
 
-	g_main_loop_unref (main_loop);
-	g_object_unref (contact);
-	g_free (data);
+	g_main_loop_run (data->main_loop);
+
+	g_free (photo_data);
 }
 
 static void
-test_photo_get (gconstpointer service)
+add_photo_to_contact (GDataContactsService *service, GDataContactsContact *contact)
 {
-	GDataContactsContact *contact;
-	guint8 *data;
+	guint8 *photo_data;
+	gsize length;
+
+	/* Get the photo and add it to the contact */
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
+	g_assert (gdata_contacts_contact_set_photo (contact, service, photo_data, length, "image/jpeg", NULL, NULL) == TRUE);
+
+	g_free (photo_data);
+}
+
+static void
+set_up_temp_contact_with_photo (TempContactData *data, gconstpointer service)
+{
+	set_up_temp_contact (data, service);
+	add_photo_to_contact (GDATA_CONTACTS_SERVICE (service), data->contact);
+}
+
+static void
+test_photo_get (TempContactData *data, gconstpointer service)
+{
+	guint8 *photo_data;
 	gchar *content_type = NULL;
 	gsize length = 0;
 	GError *error = NULL;
 
-	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);
 
 	/* Get the photo from the network */
-	data = gdata_contacts_contact_get_photo (contact, GDATA_CONTACTS_SERVICE (service), &length, &content_type, NULL, &error);
+	photo_data = gdata_contacts_contact_get_photo (data->contact, GDATA_CONTACTS_SERVICE (service), &length, &content_type, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (data != NULL);
+	g_assert (photo_data != NULL);
 	g_assert (length != 0);
 	g_assert_cmpstr (content_type, ==, "image/jpeg");
 
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);
 
 	g_free (content_type);
-	g_free (data);
-	g_object_unref (contact);
+	g_free (photo_data);
 	g_clear_error (&error);
 }
 
 static void
-test_photo_get_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+set_up_temp_contact_async_with_photo (TempContactAsyncData *data, gconstpointer service)
 {
-	guint8 *data;
+	set_up_temp_contact_async (data, service);
+	add_photo_to_contact (GDATA_CONTACTS_SERVICE (service), data->parent.contact);
+}
+
+static void
+test_photo_get_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
+{
+	guint8 *photo_data;
 	gsize length;
 	gchar *content_type;
 	GError *error = NULL;
 
 	/* Finish getting the photo */
-	data = gdata_contacts_contact_get_photo_finish (contact, result, &length, &content_type, &error);
+	photo_data = gdata_contacts_contact_get_photo_finish (contact, result, &length, &content_type, &error);
 	g_assert_no_error (error);
-	g_assert (data != NULL);
+	g_assert (photo_data != NULL);
 	g_assert (length != 0);
 	g_assert_cmpstr (content_type, ==, "image/jpeg");
 
 	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 
 	g_free (content_type);
-	g_free (data);
+	g_free (photo_data);
 }
 
 static void
-test_photo_get_async (gconstpointer service)
+test_photo_get_async (TempContactAsyncData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
-	GMainLoop *main_loop;
-
-	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
-
-	main_loop = g_main_loop_new (NULL, TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->parent.contact) != NULL);
 
 	/* Get the photo from the network asynchronously */
-	gdata_contacts_contact_get_photo_async (contact, GDATA_CONTACTS_SERVICE (service), NULL, (GAsyncReadyCallback) test_photo_get_async_cb,
-	                                        main_loop);
-	g_main_loop_run (main_loop);
+	gdata_contacts_contact_get_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), NULL,
+	                                        (GAsyncReadyCallback) test_photo_get_async_cb, data);
 
-	g_main_loop_unref (main_loop);
-	g_object_unref (contact);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
-test_photo_delete (gconstpointer service)
+test_photo_delete (TempContactData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
 	GError *error = NULL;
 
-	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);
 
 	/* Remove the contact's photo */
-	g_assert (gdata_contacts_contact_set_photo (contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL, &error) == TRUE);
+	g_assert (gdata_contacts_contact_set_photo (data->contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) == NULL);
 
 	g_clear_error (&error);
-	g_object_unref (contact);
 }
 
 static void
-test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
 {
 	gboolean success;
 	GError *error = NULL;
@@ -1813,27 +2155,19 @@ test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result,
 
 	g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
 
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 }
 
 static void
-test_photo_delete_async (gconstpointer service)
+test_photo_delete_async (TempContactAsyncData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
-	GMainLoop *main_loop;
-
-	contact = get_contact (service);
-	main_loop = g_main_loop_new (NULL, TRUE);
-
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->parent.contact) != NULL);
 
 	/* Delete it from the contact asynchronously */
-	gdata_contacts_contact_set_photo_async (contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL,
-	                                        (GAsyncReadyCallback) test_photo_delete_async_cb, main_loop);
-	g_main_loop_run (main_loop);
+	gdata_contacts_contact_set_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL,
+	                                        (GAsyncReadyCallback) test_photo_delete_async_cb, data);
 
-	g_main_loop_unref (main_loop);
-	g_object_unref (contact);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
@@ -2065,7 +2399,7 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 }
 
 static void
-test_groups_membership (void)
+test_group_membership (void)
 {
 	GDataContactsContact *contact;
 	GList *groups;
@@ -2110,7 +2444,7 @@ test_groups_membership (void)
 }
 
 static void
-test_id (void)
+test_contact_id (void)
 {
 	GDataContactsContact *contact;
 	GError *error = NULL;
@@ -2156,52 +2490,64 @@ main (int argc, char *argv[])
 		service = GDATA_SERVICE (gdata_contacts_service_new (authorizer));
 
 		g_test_add_func ("/contacts/authentication", test_authentication);
-		g_test_add_func ("/contacts/authentication_async", test_authentication_async);
+		g_test_add_func ("/contacts/authentication/async", test_authentication_async);
 
-		g_test_add_data_func ("/contacts/insert/simple", service, test_insert_simple);
-		g_test_add_data_func ("/contacts/update/simple", service, test_update_simple);
+		g_test_add ("/contacts/contact/insert", InsertData, service, set_up_insert, test_contact_insert, tear_down_insert);
+		g_test_add ("/contacts/contact/update", TempContactData, service, set_up_temp_contact, test_contact_update, tear_down_temp_contact);
 
-		g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
-		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
-		g_test_add_data_func ("/contacts/query/all_contacts_async_progress_closure", service, test_query_all_contacts_async_progress_closure);
+		g_test_add ("/contacts/query/all_contacts", QueryAllContactsData, service, set_up_query_all_contacts, test_query_all_contacts,
+		            tear_down_query_all_contacts);
+		g_test_add ("/contacts/query/all_contacts/async", QueryAllContactsAsyncData, service, set_up_query_all_contacts_async,
+		            test_query_all_contacts_async, tear_down_query_all_contacts_async);
+		g_test_add ("/contacts/query/all_contacts/async/progress_closure", QueryAllContactsAsyncData, service,
+		            set_up_query_all_contacts_async, test_query_all_contacts_async_progress_closure, tear_down_query_all_contacts_async);
 
 		g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
-		g_test_add_data_func ("/contacts/photo/add", service, test_photo_add);
-		g_test_add_data_func ("/contacts/photo/get", service, test_photo_get);
-		g_test_add_data_func ("/contacts/photo/get/async", service, test_photo_get_async);
-		g_test_add_data_func ("/contacts/photo/delete", service, test_photo_delete);
-		g_test_add_data_func ("/contacts/photo/add/async", service, test_photo_add_async);
-		g_test_add_data_func ("/contacts/photo/delete/async", service, test_photo_delete_async);
+		g_test_add ("/contacts/photo/add", TempContactData, service, set_up_temp_contact, test_photo_add, tear_down_temp_contact);
+		g_test_add ("/contacts/photo/add/async", TempContactAsyncData, service, set_up_temp_contact_async, test_photo_add_async,
+		            tear_down_temp_contact_async);
+		g_test_add ("/contacts/photo/get", TempContactData, service, set_up_temp_contact_with_photo, test_photo_get, tear_down_temp_contact);
+		g_test_add ("/contacts/photo/get/async", TempContactAsyncData, service, set_up_temp_contact_async_with_photo, test_photo_get_async,
+		            tear_down_temp_contact_async);
+		g_test_add ("/contacts/photo/delete", TempContactData, service, set_up_temp_contact_with_photo, test_photo_delete,
+		            tear_down_temp_contact);
+		g_test_add ("/contacts/photo/delete/async", TempContactAsyncData, service, set_up_temp_contact_async_with_photo,
+		            test_photo_delete_async, tear_down_temp_contact_async);
 
 		g_test_add_data_func ("/contacts/batch", service, test_batch);
 		g_test_add ("/contacts/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
 		g_test_add ("/contacts/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
 		            teardown_batch_async);
 
-		g_test_add_data_func ("/contacts/groups/query", service, test_query_all_groups);
-		g_test_add_data_func ("/contacts/groups/query_async", service, test_query_all_groups_async);
-		g_test_add_data_func ("/contacts/groups/query_async_progress_closure", service, test_query_all_groups_async_progress_closure);
-		g_test_add_data_func ("/contacts/groups/insert", service, test_insert_group);
-		g_test_add_data_func ("/contacts/groups/insert_async", service, test_insert_group_async);
+		g_test_add ("/contacts/group/query", QueryAllGroupsData, service, set_up_query_all_groups, test_query_all_groups,
+		            tear_down_query_all_groups);
+		g_test_add ("/contacts/group/query/async", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
+		            test_query_all_groups_async, tear_down_query_all_groups_async);
+		g_test_add ("/contacts/group/query/async/progress_closure", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
+		            test_query_all_groups_async_progress_closure, tear_down_query_all_groups_async);
+
+		g_test_add ("/contacts/group/insert", InsertGroupData, service, set_up_insert_group, test_group_insert, tear_down_insert_group);
+		g_test_add ("/contacts/group/insert/async", InsertGroupAsyncData, service, set_up_insert_group_async, test_group_insert_async,
+		            tear_down_insert_group_async);
 	}
 
+	g_test_add_func ("/contacts/contact/properties", test_contact_properties);
 	g_test_add_func ("/contacts/contact/escaping", test_contact_escaping);
-	g_test_add_func ("/contacts/group/escaping", test_group_escaping);
+	g_test_add_func ("/contacts/contact/parser/minimal", test_contact_parser_minimal);
+	g_test_add_func ("/contacts/contact/parser/normal", test_contact_parser_normal);
+	g_test_add_func ("/contacts/contact/parser/error_handling", test_contact_parser_error_handling);
+	g_test_add_func ("/contacts/contact/id", test_contact_id);
 
 	g_test_add_func ("/contacts/query/uri", test_query_uri);
 	g_test_add_func ("/contacts/query/etag", test_query_etag);
 	g_test_add_func ("/contacts/query/properties", test_query_properties);
 
-	g_test_add_func ("/contacts/parser/minimal", test_parser_minimal);
-	g_test_add_func ("/contacts/parser/normal", test_parser_normal);
-	g_test_add_func ("/contacts/parser/error_handling", test_parser_error_handling);
-
-	g_test_add_func ("/contacts/groups/parser/normal", test_groups_parser_normal);
-	g_test_add_func ("/contacts/groups/parser/system", test_groups_parser_system);
-	g_test_add_func ("/contacts/groups/parser/error_handling", test_groups_parser_error_handling);
-	g_test_add_func ("/contacts/groups/membership", test_groups_membership);
-
-	g_test_add_func ("/contacts/id", test_id);
+	g_test_add_func ("/contacts/group/properties", test_group_properties);
+	g_test_add_func ("/contacts/group/escaping", test_group_escaping);
+	g_test_add_func ("/contacts/group/parser/normal", test_group_parser_normal);
+	g_test_add_func ("/contacts/group/parser/system", test_group_parser_system);
+	g_test_add_func ("/contacts/group/parser/error_handling", test_group_parser_error_handling);
+	g_test_add_func ("/contacts/group/membership", test_group_membership);
 
 	retval = g_test_run ();
 
