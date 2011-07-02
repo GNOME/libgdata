@@ -741,8 +741,27 @@ test_query_all_groups_async_progress_closure (QueryAllGroupsAsyncData *query_dat
 	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
+typedef struct {
+	GDataContactsGroup *new_group;
+} InsertGroupData;
+
 static void
-test_insert_group (gconstpointer service)
+set_up_insert_group (InsertGroupData *data, gconstpointer service)
+{
+	data->new_group = NULL;
+}
+
+static void
+tear_down_insert_group (InsertGroupData *data, gconstpointer service)
+{
+	/* Delete the group, just to be tidy */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_group), NULL, NULL) == TRUE);
+	g_object_unref (data->new_group);
+}
+
+static void
+test_insert_group (InsertGroupData *data, gconstpointer service)
 {
 	GDataContactsGroup *group, *new_group;
 	GTimeVal time_val;
@@ -762,7 +781,7 @@ test_insert_group (gconstpointer service)
 	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
 
 	/* Insert the group */
-	new_group = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, &error);
+	new_group = data->new_group = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_GROUP (new_group));
 	check_kind (GDATA_ENTRY (new_group), "http://schemas.google.com/contact/2008#group");
@@ -778,18 +797,30 @@ test_insert_group (gconstpointer service)
 	g_assert_cmpint (g_hash_table_size (properties), ==, 1);
 	g_assert_cmpstr (gdata_contacts_group_get_extended_property (new_group, "foobar"), ==, "barfoo");
 
-	/* Delete the group, just to be tidy */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
-	                                      GDATA_ENTRY (new_group), NULL, &error) == TRUE);
-	g_assert_no_error (error);
-	g_clear_error (&error);
-
 	g_object_unref (group);
-	g_object_unref (new_group);
+}
+
+typedef struct {
+	InsertGroupData parent;
+	GMainLoop *main_loop;
+} InsertGroupAsyncData;
+
+static void
+set_up_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
+{
+	set_up_insert_group ((InsertGroupData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
 }
 
 static void
-test_insert_group_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+tear_down_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_insert_group ((InsertGroupData*) data, service);
+}
+
+static void
+test_insert_group_async_cb (GDataService *service, GAsyncResult *async_result, InsertGroupAsyncData *data)
 {
 	GDataEntry *entry;
 	GError *error = NULL;
@@ -799,23 +830,17 @@ test_insert_group_async_cb (GDataService *service, GAsyncResult *async_result, G
 	g_assert (GDATA_IS_CONTACTS_GROUP (entry));
 	g_clear_error (&error);
 
+	data->parent.new_group = GDATA_CONTACTS_GROUP (entry);
+
 	/* TODO: Tests? */
 
-	/* Delete the group, just to be tidy */
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
-	                                      entry, NULL, &error) == TRUE);
-	g_assert_no_error (error);
-	g_clear_error (&error);
-
-	g_main_loop_quit (main_loop);
-	g_object_unref (entry);
+	g_main_loop_quit (data->main_loop);
 }
 
 static void
-test_insert_group_async (gconstpointer service)
+test_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
 {
 	GDataContactsGroup *group;
-	GMainLoop *main_loop;
 
 	group = gdata_contacts_group_new (NULL);
 
@@ -827,13 +852,11 @@ test_insert_group_async (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
 	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
-
 	gdata_contacts_service_insert_group_async (GDATA_CONTACTS_SERVICE (service), group, NULL, (GAsyncReadyCallback) test_insert_group_async_cb,
-	                                           main_loop);
+	                                           data);
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
+
 	g_object_unref (group);
 }
 
@@ -2497,8 +2520,9 @@ main (int argc, char *argv[])
 		g_test_add ("/contacts/groups/query/async/progress_closure", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
 		            test_query_all_groups_async_progress_closure, tear_down_query_all_groups_async);
 
-		g_test_add_data_func ("/contacts/groups/insert", service, test_insert_group);
-		g_test_add_data_func ("/contacts/groups/insert_async", service, test_insert_group_async);
+		g_test_add ("/contacts/groups/insert", InsertGroupData, service, set_up_insert_group, test_insert_group, tear_down_insert_group);
+		g_test_add ("/contacts/groups/insert/async", InsertGroupAsyncData, service, set_up_insert_group_async, test_insert_group_async,
+		            tear_down_insert_group_async);
 	}
 
 	g_test_add_func ("/contacts/contact/properties", test_contact_properties);
