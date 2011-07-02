@@ -1036,17 +1036,67 @@ test_query_etag (void)
 	g_object_unref (query);
 }
 
+typedef struct {
+	TempCalendarData parent;
+	GDataAccessRule *rule;
+} TempCalendarAclsData;
+
 static void
-test_acls_get_rules (gconstpointer service)
+set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
+{
+	GDataAccessRule *rule;
+	GDataLink *_link;
+
+	/* Set up a calendar */
+	set_up_temp_calendar ((TempCalendarData*) data, service);
+
+	/* Add an access rule to the calendar */
+	rule = gdata_access_rule_new (NULL);
+
+	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
+
+	/* Insert the rule */
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (data->parent.calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
+	g_assert (_link != NULL);
+
+	data->rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                            gdata_calendar_service_get_primary_authorization_domain (),
+	                                                            gdata_link_get_uri (_link), GDATA_ENTRY (rule), NULL, NULL));
+	g_assert (GDATA_IS_ACCESS_RULE (data->rule));
+
+	g_object_unref (rule);
+}
+
+static void
+set_up_temp_calendar_acls_no_insertion (TempCalendarAclsData *data, gconstpointer service)
+{
+	set_up_temp_calendar ((TempCalendarData*) data, service);
+	data->rule = NULL;
+}
+
+static void
+tear_down_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
+{
+	/* Delete the access rule if it still exists */
+	if (data->rule != NULL) {
+		g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+		                                      GDATA_ENTRY (data->rule), NULL, NULL) == TRUE);
+		g_object_unref (data->rule);
+	}
+
+	/* Delete the calendar */
+	tear_down_temp_calendar ((TempCalendarData*) data, service);
+}
+
+static void
+test_acls_get_rules (TempCalendarAclsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
-	GDataCalendarCalendar *calendar;
 	GError *error = NULL;
 
-	calendar = get_calendar (service, &error);
-
 	/* Get the rules */
-	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
+	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (data->parent.calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
@@ -1054,13 +1104,11 @@ test_acls_get_rules (gconstpointer service)
 	/* TODO: check rules and feed properties */
 
 	g_object_unref (feed);
-	g_object_unref (calendar);
 }
 
 static void
-test_acls_insert_rule (gconstpointer service)
+test_acls_insert_rule (TempCalendarAclsData *data, gconstpointer service)
 {
-	GDataCalendarCalendar *calendar;
 	GDataAccessRule *rule, *new_rule;
 	const gchar *scope_type, *scope_value;
 	GDataCategory *category;
@@ -1069,20 +1117,18 @@ test_acls_insert_rule (gconstpointer service)
 	gint64 edited;
 	GError *error = NULL;
 
-	calendar = get_calendar (service, &error);
-
 	rule = gdata_access_rule_new (NULL);
 
 	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
 
 	/* Insert the rule */
-	_link = gdata_entry_look_up_link (GDATA_ENTRY (calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (data->parent.calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 
-	new_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
-	                                                          gdata_link_get_uri (_link), GDATA_ENTRY (rule),
-	                                                          NULL, &error));
+	new_rule = data->rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                       gdata_calendar_service_get_primary_authorization_domain (),
+	                                                                       gdata_link_get_uri (_link), GDATA_ENTRY (rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
@@ -1107,53 +1153,25 @@ test_acls_insert_rule (gconstpointer service)
 	/* TODO: Check more properties? */
 
 	g_object_unref (rule);
-	g_object_unref (new_rule);
-	g_object_unref (calendar);
 }
 
 static void
-test_acls_update_rule (gconstpointer service)
+test_acls_update_rule (TempCalendarAclsData *data, gconstpointer service)
 {
-	GDataFeed *feed;
-	GDataCalendarCalendar *calendar;
-	GDataAccessRule *rule = NULL, *new_rule;
+	GDataAccessRule *new_rule;
 	const gchar *scope_type, *scope_value;
-	GList *rules;
 	gint64 edited;
 	GError *error = NULL;
 
-	calendar = get_calendar (service, &error);
-
-	/* Get a rule */
-	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
-
-	/* Find the rule applying to darcy@gmail.com */
-	for (rules = gdata_feed_get_entries (feed); rules != NULL; rules = rules->next) {
-		gdata_access_rule_get_scope (GDATA_ACCESS_RULE (rules->data), NULL, &scope_value);
-		if (scope_value != NULL && strcmp (scope_value, "darcy@gmail.com") == 0) {
-			rule = GDATA_ACCESS_RULE (rules->data);
-			break;
-		}
-	}
-	g_assert (GDATA_IS_ACCESS_RULE (rule));
-
-	g_object_ref (rule);
-	g_object_unref (feed);
-
 	/* Update the rule */
-	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_READ);
-	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
+	gdata_access_rule_set_role (data->rule, GDATA_CALENDAR_ACCESS_ROLE_READ);
 
 	/* Send the update to the server */
 	new_rule = GDATA_ACCESS_RULE (gdata_service_update_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
-	                                                          GDATA_ENTRY (rule), NULL, &error));
+	                                                          GDATA_ENTRY (data->rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
-	g_object_unref (rule);
 
 	/* Check the properties of the returned rule */
 	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
@@ -1164,51 +1182,23 @@ test_acls_update_rule (gconstpointer service)
 	g_assert_cmpuint (edited, >, 0);
 
 	g_object_unref (new_rule);
-	g_object_unref (calendar);
 }
 
 static void
-test_acls_delete_rule (gconstpointer service)
+test_acls_delete_rule (TempCalendarAclsData *data, gconstpointer service)
 {
-	GDataFeed *feed;
-	GDataCalendarCalendar *calendar;
-	GDataAccessRule *rule = NULL;
-	GList *rules;
 	gboolean success;
 	GError *error = NULL;
 
-	calendar = get_calendar (service, &error);
-
-	/* Get a rule */
-	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
-
-	/* Find the rule applying to darcy@gmail.com */
-	for (rules = gdata_feed_get_entries (feed); rules != NULL; rules = rules->next) {
-		const gchar *scope_value;
-
-		gdata_access_rule_get_scope (GDATA_ACCESS_RULE (rules->data), NULL, &scope_value);
-		if (scope_value != NULL && strcmp (scope_value, "darcy@gmail.com") == 0) {
-			rule = GDATA_ACCESS_RULE (rules->data);
-			break;
-		}
-	}
-	g_assert (GDATA_IS_ACCESS_RULE (rule));
-
-	g_object_ref (rule);
-	g_object_unref (feed);
-
 	/* Delete the rule */
 	success = gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
-	                                      GDATA_ENTRY (rule), NULL, &error);
+	                                      GDATA_ENTRY (data->rule), NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success == TRUE);
 	g_clear_error (&error);
 
-	g_object_unref (rule);
-	g_object_unref (calendar);
+	g_object_unref (data->rule);
+	data->rule = NULL;
 }
 
 static void
@@ -1485,10 +1475,14 @@ main (int argc, char *argv[])
 		g_test_add ("/calendar/insert/simple/async", InsertEventAsyncData, service, set_up_insert_event_async, test_insert_simple_async,
 		            tear_down_insert_event_async);
 
-		g_test_add_data_func ("/calendar/acls/get_rules", service, test_acls_get_rules);
-		g_test_add_data_func ("/calendar/acls/insert_rule", service, test_acls_insert_rule);
-		g_test_add_data_func ("/calendar/acls/update_rule", service, test_acls_update_rule);
-		g_test_add_data_func ("/calendar/acls/delete_rule", service, test_acls_delete_rule);
+		g_test_add ("/calendar/acls/get_rules", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_acls_get_rules,
+		            tear_down_temp_calendar_acls);
+		g_test_add ("/calendar/acls/insert_rule", TempCalendarAclsData, service, set_up_temp_calendar_acls_no_insertion, test_acls_insert_rule,
+		            tear_down_temp_calendar_acls);
+		g_test_add ("/calendar/acls/update_rule", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_acls_update_rule,
+		            tear_down_temp_calendar_acls);
+		g_test_add ("/calendar/acls/delete_rule", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_acls_delete_rule,
+		            tear_down_temp_calendar_acls);
 
 		g_test_add_data_func ("/calendar/batch", service, test_batch);
 		g_test_add ("/calendar/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
