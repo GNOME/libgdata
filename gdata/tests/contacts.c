@@ -42,34 +42,64 @@ check_kind (GDataEntry *entry, const gchar *expected_kind)
 	g_assert (has_kind == TRUE);
 }
 
-static GDataContactsContact *
-get_contact (gconstpointer service)
+typedef struct {
+	GDataContactsContact *contact;
+} TempContactData;
+
+static void
+set_up_temp_contact (TempContactData *data, gconstpointer service)
 {
-	GDataFeed *feed;
-	GDataEntry *entry;
-	GList *entries;
-	GError *error = NULL;
-	static gchar *entry_id = NULL;
+	GDataContactsContact *contact;
 
-	/* Make sure we use the same contact throughout */
-	feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
+	/* Create a new temporary contact to use for a single test */
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Test Contact Esq.");
 
-	entries = gdata_feed_get_entries (feed);
-	g_assert (entries != NULL);
-	entry = entries->data;
-	g_assert (GDATA_IS_CONTACTS_CONTACT (entry));
-	check_kind (entry, "http://schemas.google.com/contact/2008#contact");
+	/* Insert the contact */
+	data->contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (data->contact));
+	check_kind (GDATA_ENTRY (data->contact), "http://schemas.google.com/contact/2008#contact");
 
-	g_object_ref (entry);
-	g_object_unref (feed);
+	g_object_unref (contact);
+}
 
-	if (entry_id == NULL)
-		entry_id = g_strdup (gdata_entry_get_id (entry));
+static void
+tear_down_temp_contact (TempContactData *data, gconstpointer service)
+{
+	GDataEntry *updated_contact;
 
-	return GDATA_CONTACTS_CONTACT (entry);
+	/* Re-query for the contact to get any updated ETags */
+	updated_contact = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                                    gdata_entry_get_id (GDATA_ENTRY (data->contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
+	                                                    NULL, NULL);
+	g_assert (GDATA_IS_CONTACTS_CONTACT (updated_contact));
+
+	g_object_unref (data->contact);
+
+	/* Delete the new/updated contact */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      updated_contact, NULL, NULL) == TRUE);
+
+	g_object_unref (updated_contact);
+}
+
+typedef struct {
+	TempContactData parent;
+	GMainLoop *main_loop;
+} TempContactAsyncData;
+
+static void
+set_up_temp_contact_async (TempContactAsyncData *data, gconstpointer service)
+{
+	set_up_temp_contact ((TempContactData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_temp_contact_async (TempContactAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_temp_contact ((TempContactData*) data, service);
 }
 
 static void
@@ -497,25 +527,19 @@ test_insert_simple (InsertData *data, gconstpointer service)
 }
 
 static void
-test_update_simple (gconstpointer service)
+test_update_simple (TempContactData *data, gconstpointer service)
 {
-	GDataContactsContact *contact, *new_contact;
+	GDataContactsContact *new_contact;
 	GError *error = NULL;
 
-	contact = get_contact (service);
-
-	/* Check the kind is present and correct */
-	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
-
 	/* Update the contact's name and add an extended property */
-	gdata_entry_set_title (GDATA_ENTRY (contact), "John Wilson");
-	g_assert (gdata_contacts_contact_set_extended_property (contact, "contact-test", "value"));
+	gdata_entry_set_title (GDATA_ENTRY (data->contact), "John Wilson");
+	g_assert (gdata_contacts_contact_set_extended_property (data->contact, "contact-test", "value"));
 
 	/* Update the contact */
 	new_contact = GDATA_CONTACTS_CONTACT (gdata_service_update_entry (GDATA_SERVICE (service),
 	                                                                  gdata_contacts_service_get_primary_authorization_domain (),
-	                                                                  GDATA_ENTRY (contact), NULL, &error));
+	                                                                  GDATA_ENTRY (data->contact), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
 	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
@@ -526,7 +550,6 @@ test_update_simple (gconstpointer service)
 	g_assert_cmpstr (gdata_contacts_contact_get_extended_property (new_contact, "contact-test"), ==, "value");
 	g_assert (gdata_contacts_contact_is_deleted (new_contact) == FALSE);
 
-	g_object_unref (contact);
 	g_object_unref (new_contact);
 }
 
@@ -1796,30 +1819,27 @@ test_photo_has_photo (gconstpointer service)
 }
 
 static void
-test_photo_add (gconstpointer service)
+test_photo_add (TempContactData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
-	guint8 *data;
+	guint8 *photo_data;
 	gsize length;
 	gboolean retval;
 	GError *error = NULL;
 
 	/* Get the photo */
-	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &data, &length, NULL) == TRUE);
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
 
 	/* Add it to the contact */
-	contact = get_contact (service);
-	retval = gdata_contacts_contact_set_photo (contact, GDATA_CONTACTS_SERVICE (service), data, length, "image/jpeg", NULL, &error);
+	retval = gdata_contacts_contact_set_photo (data->contact, GDATA_CONTACTS_SERVICE (service), photo_data, length, "image/jpeg", NULL, &error);
 	g_assert_no_error (error);
 	g_assert (retval == TRUE);
 
 	g_clear_error (&error);
-	g_object_unref (contact);
-	g_free (data);
+	g_free (photo_data);
 }
 
 static void
-test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
 {
 	gboolean success;
 	GError *error = NULL;
@@ -1830,124 +1850,131 @@ test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, GM
 
 	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 }
 
 static void
-test_photo_add_async (gconstpointer service)
+test_photo_add_async (TempContactAsyncData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
-	guint8 *data;
+	guint8 *photo_data;
 	gsize length;
-	GMainLoop *main_loop;
 
 	/* Get the photo */
-	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &data, &length, NULL) == TRUE);
-
-	contact = get_contact (service);
-	main_loop = g_main_loop_new (NULL, TRUE);
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
 
 	/* Add it to the contact asynchronously */
-	gdata_contacts_contact_set_photo_async (contact, GDATA_CONTACTS_SERVICE (service), data, length, "image/jpeg", NULL,
-	                                        (GAsyncReadyCallback) test_photo_add_async_cb, main_loop);
-	g_main_loop_run (main_loop);
+	gdata_contacts_contact_set_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), photo_data, length, "image/jpeg", NULL,
+	                                        (GAsyncReadyCallback) test_photo_add_async_cb, data);
 
-	g_main_loop_unref (main_loop);
-	g_object_unref (contact);
-	g_free (data);
+	g_main_loop_run (data->main_loop);
+
+	g_free (photo_data);
 }
 
 static void
-test_photo_get (gconstpointer service)
+add_photo_to_contact (GDataContactsService *service, GDataContactsContact *contact)
 {
-	GDataContactsContact *contact;
-	guint8 *data;
+	guint8 *photo_data;
+	gsize length;
+
+	/* Get the photo and add it to the contact */
+	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
+	g_assert (gdata_contacts_contact_set_photo (contact, service, photo_data, length, "image/jpeg", NULL, NULL) == TRUE);
+
+	g_free (photo_data);
+}
+
+static void
+set_up_temp_contact_with_photo (TempContactData *data, gconstpointer service)
+{
+	set_up_temp_contact (data, service);
+	add_photo_to_contact (GDATA_CONTACTS_SERVICE (service), data->contact);
+}
+
+static void
+test_photo_get (TempContactData *data, gconstpointer service)
+{
+	guint8 *photo_data;
 	gchar *content_type = NULL;
 	gsize length = 0;
 	GError *error = NULL;
 
-	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);
 
 	/* Get the photo from the network */
-	data = gdata_contacts_contact_get_photo (contact, GDATA_CONTACTS_SERVICE (service), &length, &content_type, NULL, &error);
+	photo_data = gdata_contacts_contact_get_photo (data->contact, GDATA_CONTACTS_SERVICE (service), &length, &content_type, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (data != NULL);
+	g_assert (photo_data != NULL);
 	g_assert (length != 0);
 	g_assert_cmpstr (content_type, ==, "image/jpeg");
 
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);
 
 	g_free (content_type);
-	g_free (data);
-	g_object_unref (contact);
+	g_free (photo_data);
 	g_clear_error (&error);
 }
 
 static void
-test_photo_get_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+set_up_temp_contact_async_with_photo (TempContactAsyncData *data, gconstpointer service)
 {
-	guint8 *data;
+	set_up_temp_contact_async (data, service);
+	add_photo_to_contact (GDATA_CONTACTS_SERVICE (service), data->parent.contact);
+}
+
+static void
+test_photo_get_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
+{
+	guint8 *photo_data;
 	gsize length;
 	gchar *content_type;
 	GError *error = NULL;
 
 	/* Finish getting the photo */
-	data = gdata_contacts_contact_get_photo_finish (contact, result, &length, &content_type, &error);
+	photo_data = gdata_contacts_contact_get_photo_finish (contact, result, &length, &content_type, &error);
 	g_assert_no_error (error);
-	g_assert (data != NULL);
+	g_assert (photo_data != NULL);
 	g_assert (length != 0);
 	g_assert_cmpstr (content_type, ==, "image/jpeg");
 
 	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
 
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 
 	g_free (content_type);
-	g_free (data);
+	g_free (photo_data);
 }
 
 static void
-test_photo_get_async (gconstpointer service)
+test_photo_get_async (TempContactAsyncData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
-	GMainLoop *main_loop;
-
-	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
-
-	main_loop = g_main_loop_new (NULL, TRUE);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->parent.contact) != NULL);
 
 	/* Get the photo from the network asynchronously */
-	gdata_contacts_contact_get_photo_async (contact, GDATA_CONTACTS_SERVICE (service), NULL, (GAsyncReadyCallback) test_photo_get_async_cb,
-	                                        main_loop);
-	g_main_loop_run (main_loop);
+	gdata_contacts_contact_get_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), NULL,
+	                                        (GAsyncReadyCallback) test_photo_get_async_cb, data);
 
-	g_main_loop_unref (main_loop);
-	g_object_unref (contact);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
-test_photo_delete (gconstpointer service)
+test_photo_delete (TempContactData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
 	GError *error = NULL;
 
-	contact = get_contact (service);
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);
 
 	/* Remove the contact's photo */
-	g_assert (gdata_contacts_contact_set_photo (contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL, &error) == TRUE);
+	g_assert (gdata_contacts_contact_set_photo (data->contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL, &error) == TRUE);
 	g_assert_no_error (error);
 
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) == NULL);
 
 	g_clear_error (&error);
-	g_object_unref (contact);
 }
 
 static void
-test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result, GMainLoop *main_loop)
+test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
 {
 	gboolean success;
 	GError *error = NULL;
@@ -1958,27 +1985,19 @@ test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result,
 
 	g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
 
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 }
 
 static void
-test_photo_delete_async (gconstpointer service)
+test_photo_delete_async (TempContactAsyncData *data, gconstpointer service)
 {
-	GDataContactsContact *contact;
-	GMainLoop *main_loop;
-
-	contact = get_contact (service);
-	main_loop = g_main_loop_new (NULL, TRUE);
-
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	g_assert (gdata_contacts_contact_get_photo_etag (data->parent.contact) != NULL);
 
 	/* Delete it from the contact asynchronously */
-	gdata_contacts_contact_set_photo_async (contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL,
-	                                        (GAsyncReadyCallback) test_photo_delete_async_cb, main_loop);
-	g_main_loop_run (main_loop);
+	gdata_contacts_contact_set_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL,
+	                                        (GAsyncReadyCallback) test_photo_delete_async_cb, data);
 
-	g_main_loop_unref (main_loop);
-	g_object_unref (contact);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
@@ -2304,19 +2323,23 @@ main (int argc, char *argv[])
 		g_test_add_func ("/contacts/authentication_async", test_authentication_async);
 
 		g_test_add ("/contacts/insert/simple", InsertData, service, set_up_insert, test_insert_simple, tear_down_insert);
-		g_test_add_data_func ("/contacts/update/simple", service, test_update_simple);
+		g_test_add ("/contacts/update/simple", TempContactData, service, set_up_temp_contact, test_update_simple, tear_down_temp_contact);
 
 		g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
 		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
 		g_test_add_data_func ("/contacts/query/all_contacts_async_progress_closure", service, test_query_all_contacts_async_progress_closure);
 
 		g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
-		g_test_add_data_func ("/contacts/photo/add", service, test_photo_add);
-		g_test_add_data_func ("/contacts/photo/get", service, test_photo_get);
-		g_test_add_data_func ("/contacts/photo/get/async", service, test_photo_get_async);
-		g_test_add_data_func ("/contacts/photo/delete", service, test_photo_delete);
-		g_test_add_data_func ("/contacts/photo/add/async", service, test_photo_add_async);
-		g_test_add_data_func ("/contacts/photo/delete/async", service, test_photo_delete_async);
+		g_test_add ("/contacts/photo/add", TempContactData, service, set_up_temp_contact, test_photo_add, tear_down_temp_contact);
+		g_test_add ("/contacts/photo/add/async", TempContactAsyncData, service, set_up_temp_contact_async, test_photo_add_async,
+		            tear_down_temp_contact_async);
+		g_test_add ("/contacts/photo/get", TempContactData, service, set_up_temp_contact_with_photo, test_photo_get, tear_down_temp_contact);
+		g_test_add ("/contacts/photo/get/async", TempContactAsyncData, service, set_up_temp_contact_async_with_photo, test_photo_get_async,
+		            tear_down_temp_contact_async);
+		g_test_add ("/contacts/photo/delete", TempContactData, service, set_up_temp_contact_with_photo, test_photo_delete,
+		            tear_down_temp_contact);
+		g_test_add ("/contacts/photo/delete/async", TempContactAsyncData, service, set_up_temp_contact_async_with_photo,
+		            test_photo_delete_async, tear_down_temp_contact_async);
 
 		g_test_add_data_func ("/contacts/batch", service, test_batch);
 		g_test_add ("/contacts/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
