@@ -227,14 +227,11 @@ test_insert_simple (gconstpointer service)
 	GDataGContactCalendar *calendar;
 	GDataGContactExternalID *external_id;
 	GDataGContactLanguage *language;
-	gchar *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
-	gchar *priority, *sensitivity, *short_name, *subject, *photo_etag;
 	GList *list;
-	GDate date, *date2;
+	GDate date;
 	GHashTable *properties;
 	GTimeVal current_time;
 	gint64 edited, creation_time;
-	gboolean deleted, birthday_has_year;
 	GError *error = NULL;
 
 	contact = gdata_contacts_contact_new (NULL);
@@ -247,15 +244,12 @@ test_insert_simple (gconstpointer service)
 	/* Set and check the name (to check if the title of the entry is updated) */
 	gdata_entry_set_title (GDATA_ENTRY (contact), "Elizabeth Bennet");
 	name = gdata_contacts_contact_get_name (contact);
-	g_assert_cmpstr (gdata_gd_name_get_full_name (name), ==, "Elizabeth Bennet");
 	gdata_gd_name_set_full_name (name, "Lizzie Bennet");
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (contact)), ==, "Lizzie Bennet");
 
 	name2 = gdata_gd_name_new ("John", "Smith");
 	gdata_gd_name_set_full_name (name2, "John Smith");
 	gdata_contacts_contact_set_name (contact, name2);
 	g_object_unref (name2);
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (contact)), ==, "John Smith");
 
 	gdata_contacts_contact_set_nickname (contact, "Big J");
 	g_date_set_dmy (&date, 1, 1, 1900);
@@ -343,121 +337,6 @@ test_insert_simple (gconstpointer service)
 	gdata_contacts_contact_set_user_defined_field (contact, "My notes", "");
 	gdata_contacts_contact_set_user_defined_field (contact, "", "Foo"); /* bgo#648058 */
 
-	/* Check the properties of the object */
-	g_object_get (G_OBJECT (contact),
-	              "edited", &edited,
-	              "deleted", &deleted,
-	              "photo-etag", &photo_etag,
-	              "name", &name,
-	              "nickname", &nickname,
-	              "birthday", &date2,
-	              "birthday-has-year", &birthday_has_year,
-	              "billing-information", &billing_information,
-	              "directory-server", &directory_server,
-	              "gender", &gender,
-	              "initials", &initials,
-	              "maiden-name", &maiden_name,
-	              "mileage", &mileage,
-	              "occupation", &occupation,
-	              "priority", &priority,
-	              "sensitivity", &sensitivity,
-	              "short-name", &short_name,
-	              "subject", &subject,
-	              NULL);
-
-	g_assert_cmpint (edited, ==, current_time.tv_sec);
-	g_assert (deleted == FALSE);
-	g_assert (photo_etag == NULL);
-	g_assert (name2 == name);
-	g_assert_cmpstr (nickname, ==, "Big J");
-	g_assert (g_date_valid (date2) == TRUE);
-	g_assert_cmpuint (g_date_get_month (date2), ==, 1);
-	g_assert_cmpuint (g_date_get_day (date2), ==, 1);
-	g_assert (birthday_has_year == FALSE);
-	g_assert_cmpstr (billing_information, ==, "Big J Enterprises, Ltd.");
-	g_assert_cmpstr (directory_server, ==, "This is a server");
-	g_assert_cmpstr (gender, ==, GDATA_CONTACTS_GENDER_MALE);
-	g_assert_cmpstr (initials, ==, "A. B. C.");
-	g_assert_cmpstr (maiden_name, ==, "Smith");
-	g_assert_cmpstr (mileage, ==, "12km");
-	g_assert_cmpstr (occupation, ==, "Professional bum");
-	g_assert_cmpstr (priority, ==, GDATA_CONTACTS_PRIORITY_HIGH);
-	g_assert_cmpstr (sensitivity, ==, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
-	g_assert_cmpstr (short_name, ==, "Jon");
-	g_assert_cmpstr (subject, ==, "Charity work");
-
-	g_object_unref (name2);
-	g_free (date2);
-	g_free (nickname);
-	g_free (billing_information);
-	g_free (directory_server);
-	g_free (gender);
-	g_free (initials);
-	g_free (maiden_name);
-	g_free (mileage);
-	g_free (occupation);
-	g_free (priority);
-	g_free (sensitivity);
-	g_free (short_name);
-	g_free (subject);
-	g_free (photo_etag);
-
-	/* Check the XML */
-	gdata_test_assert_xml (contact,
-			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:gd='http://schemas.google.com/g/2005' "
-				"xmlns:app='http://www.w3.org/2007/app' "
-				"xmlns:gContact='http://schemas.google.com/contact/2008'>"
-				"<title type='text'>John Smith</title>"
-				"<content type='text'>Notes</content>"
-				"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<gd:name>"
-					"<gd:givenName>John</gd:givenName>"
-					"<gd:familyName>Smith</gd:familyName>"
-					"<gd:fullName>John Smith</gd:fullName>"
-				"</gd:name>"
-				"<gd:email address='liz@gmail.com' rel='http://schemas.google.com/g/2005#work' primary='false'/>"
-				"<gd:email address='liz@example.org' rel='http://schemas.google.com/g/2005#home' primary='false'/>"
-				"<gd:im address='liz@gmail.com' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK' "
-					"rel='http://schemas.google.com/g/2005#home' primary='false'/>"
-				"<gd:phoneNumber rel='http://schemas.google.com/g/2005#work' primary='true'>(206)555-1212</gd:phoneNumber>"
-				"<gd:phoneNumber rel='http://schemas.google.com/g/2005#home' primary='false'>(206)555-1213</gd:phoneNumber>"
-				"<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work' primary='true'>"
-					"<gd:street>1600 Amphitheatre Pkwy Mountain View</gd:street>"
-				"</gd:structuredPostalAddress>"
-				"<gd:organization rel='http://schemas.google.com/g/2005#work' primary='false'>"
-					"<gd:orgName>OrgCorp</gd:orgName>"
-					"<gd:orgTitle>President</gd:orgTitle>"
-				"</gd:organization>"
-				"<gContact:jot rel='other'>This is a jot.</gContact:jot>"
-				"<gContact:relation rel='friend'>Brian Haddock</gContact:relation>"
-				"<gContact:website href='http://example.com/' rel='profile' primary='true'/>"
-				"<gContact:event rel='anniversary'><gd:when startTime='1900-01-01'/></gContact:event>"
-				"<gContact:calendarLink href='http://calendar.example.com/' rel='home' primary='true'/>"
-				"<gContact:externalId value='Number Six' rel='organization'/>"
-				"<gContact:language code='en-GB'/>"
-				"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
-				"<gContact:userDefinedField key='Favourite colour' value='Blue'/>"
-				"<gContact:userDefinedField key='Owes me' value='£10'/>"
-				"<gContact:userDefinedField key='My notes' value=''/>"
-				"<gContact:userDefinedField key='' value='Foo'/>" /* bgo#648058 */
-				"<gContact:hobby>Rowing</gContact:hobby>"
-				"<gContact:nickname>Big J</gContact:nickname>"
-				"<gContact:birthday when='--01-01'/>"
-				"<gContact:billingInformation>Big J Enterprises, Ltd.</gContact:billingInformation>"
-				"<gContact:directoryServer>This is a server</gContact:directoryServer>"
-				"<gContact:gender value='male'/>"
-				"<gContact:initials>A. B. C.</gContact:initials>"
-				"<gContact:maidenName>Smith</gContact:maidenName>"
-				"<gContact:mileage>12km</gContact:mileage>"
-				"<gContact:occupation>Professional bum</gContact:occupation>"
-				"<gContact:priority rel='high'/>"
-				"<gContact:sensitivity rel='personal'/>"
-				"<gContact:shortName>Jon</gContact:shortName>"
-				"<gContact:subject>Charity work</gContact:subject>"
-			 "</entry>");
-
 	/* Insert the contact */
 	new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
 	g_assert_no_error (error);
@@ -466,6 +345,7 @@ test_insert_simple (gconstpointer service)
 	g_clear_error (&error);
 
 	/* Check its edited date */
+	edited = gdata_contacts_contact_get_edited (contact);
 	creation_time = gdata_contacts_contact_get_edited (new_contact);
 	g_assert_cmpint (creation_time, >=, edited);
 
@@ -592,53 +472,6 @@ test_insert_simple (gconstpointer service)
 	g_assert (gdata_contacts_contact_is_deleted (new_contact) == FALSE);
 
 	/* TODO: check entries and feed properties */
-
-	/* Try removing some things from the new contact and ensure it works */
-	gdata_contacts_contact_remove_all_email_addresses (new_contact);
-	g_assert (gdata_contacts_contact_get_email_addresses (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_email_address (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_im_addresses (new_contact);
-	g_assert (gdata_contacts_contact_get_im_addresses (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_im_address (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_phone_numbers (new_contact);
-	g_assert (gdata_contacts_contact_get_phone_numbers (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_phone_number (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_postal_addresses (new_contact);
-	g_assert (gdata_contacts_contact_get_postal_addresses (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_postal_address (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_organizations (new_contact);
-	g_assert (gdata_contacts_contact_get_organizations (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_organization (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_jots (new_contact);
-	g_assert (gdata_contacts_contact_get_jots (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_relations (new_contact);
-	g_assert (gdata_contacts_contact_get_relations (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_websites (new_contact);
-	g_assert (gdata_contacts_contact_get_websites (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_website (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_events (new_contact);
-	g_assert (gdata_contacts_contact_get_events (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_calendars (new_contact);
-	g_assert (gdata_contacts_contact_get_calendars (new_contact) == NULL);
-	g_assert (gdata_contacts_contact_get_primary_calendar (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_external_ids (new_contact);
-	g_assert (gdata_contacts_contact_get_external_ids (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_languages (new_contact);
-	g_assert (gdata_contacts_contact_get_languages (new_contact) == NULL);
-
-	gdata_contacts_contact_remove_all_hobbies (new_contact);
-	g_assert (gdata_contacts_contact_get_hobbies (new_contact) == NULL);
 
 	g_object_unref (contact);
 	g_object_unref (new_contact);
@@ -879,6 +712,299 @@ test_insert_group_async (gconstpointer service)
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 	g_object_unref (group);
+}
+
+static void
+test_contact_properties (void)
+{
+	GDataContactsContact *contact;
+	GDataGDName *name, *name2;
+	GDataGDEmailAddress *email_address1, *email_address2;
+	GDataGDPhoneNumber *phone_number1, *phone_number2;
+	GDataGDIMAddress *im_address;
+	GDataGDOrganization *org;
+	GDataGDPostalAddress *postal_address;
+	GDataGContactJot *jot;
+	GDataGContactRelation *relation;
+	GDataGContactWebsite *website;
+	GDataGContactEvent *event;
+	GDataGContactCalendar *calendar;
+	GDataGContactExternalID *external_id;
+	GDataGContactLanguage *language;
+	gchar *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
+	gchar *priority, *sensitivity, *short_name, *subject, *photo_etag;
+	GDate date, *date2;
+	GTimeVal current_time;
+	gint64 edited;
+	gboolean deleted, birthday_has_year;
+
+	contact = gdata_contacts_contact_new (NULL);
+	g_get_current_time (&current_time);
+
+	/* Check the kind is present and correct */
+	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
+	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
+
+	/* Set and check the name (to check if the title of the entry is updated) */
+	gdata_entry_set_title (GDATA_ENTRY (contact), "Elizabeth Bennet");
+	name = gdata_contacts_contact_get_name (contact);
+	g_assert_cmpstr (gdata_gd_name_get_full_name (name), ==, "Elizabeth Bennet");
+	gdata_gd_name_set_full_name (name, "Lizzie Bennet");
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (contact)), ==, "Lizzie Bennet");
+
+	name2 = gdata_gd_name_new ("John", "Smith");
+	gdata_gd_name_set_full_name (name2, "John Smith");
+	gdata_contacts_contact_set_name (contact, name2);
+	g_object_unref (name2);
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (contact)), ==, "John Smith");
+
+	gdata_contacts_contact_set_nickname (contact, "Big J");
+	g_date_set_dmy (&date, 1, 1, 1900);
+	gdata_contacts_contact_set_birthday (contact, &date, FALSE);
+	gdata_entry_set_content (GDATA_ENTRY (contact), "Notes");
+	gdata_contacts_contact_set_billing_information (contact, "Big J Enterprises, Ltd.");
+	gdata_contacts_contact_set_directory_server (contact, "This is a server");
+	gdata_contacts_contact_set_gender (contact, GDATA_CONTACTS_GENDER_MALE);
+	gdata_contacts_contact_set_initials (contact, "A. B. C.");
+	gdata_contacts_contact_set_maiden_name (contact, "Smith");
+	gdata_contacts_contact_set_mileage (contact, "12km");
+	gdata_contacts_contact_set_occupation (contact, "Professional bum");
+	gdata_contacts_contact_set_priority (contact, GDATA_CONTACTS_PRIORITY_HIGH);
+	gdata_contacts_contact_set_sensitivity (contact, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
+	gdata_contacts_contact_set_short_name (contact, "Jon");
+	gdata_contacts_contact_set_subject (contact, "Charity work");
+
+	email_address1 = gdata_gd_email_address_new ("liz@gmail.com", GDATA_GD_EMAIL_ADDRESS_WORK, NULL, FALSE);
+	gdata_contacts_contact_add_email_address (contact, email_address1);
+	g_object_unref (email_address1);
+
+	email_address2 = gdata_gd_email_address_new ("liz@example.org", GDATA_GD_EMAIL_ADDRESS_HOME, NULL, FALSE);
+	gdata_contacts_contact_add_email_address (contact, email_address2);
+	g_object_unref (email_address2);
+
+	phone_number1 = gdata_gd_phone_number_new ("(206)555-1212", GDATA_GD_PHONE_NUMBER_WORK, NULL, NULL, TRUE);
+	gdata_contacts_contact_add_phone_number (contact, phone_number1);
+	g_object_unref (phone_number1);
+
+	phone_number2 = gdata_gd_phone_number_new ("(206)555-1213", GDATA_GD_PHONE_NUMBER_HOME, NULL, NULL, FALSE);
+	gdata_contacts_contact_add_phone_number (contact, phone_number2);
+	g_object_unref (phone_number2);
+
+	im_address = gdata_gd_im_address_new ("liz@gmail.com", GDATA_GD_IM_PROTOCOL_GOOGLE_TALK, GDATA_GD_IM_ADDRESS_HOME, NULL, FALSE);
+	gdata_contacts_contact_add_im_address (contact, im_address);
+	g_object_unref (im_address);
+
+	postal_address = gdata_gd_postal_address_new (GDATA_GD_POSTAL_ADDRESS_WORK, NULL, TRUE);
+	gdata_gd_postal_address_set_street (postal_address, "1600 Amphitheatre Pkwy Mountain View");
+	gdata_contacts_contact_add_postal_address (contact, postal_address);
+	g_object_unref (postal_address);
+
+	org = gdata_gd_organization_new ("OrgCorp", "President", GDATA_GD_ORGANIZATION_WORK, NULL, FALSE);
+	gdata_contacts_contact_add_organization (contact, org);
+	g_object_unref (org);
+
+	jot = gdata_gcontact_jot_new ("This is a jot.", GDATA_GCONTACT_JOT_OTHER);
+	gdata_contacts_contact_add_jot (contact, jot);
+	g_object_unref (jot);
+
+	relation = gdata_gcontact_relation_new ("Brian Haddock", GDATA_GCONTACT_RELATION_FRIEND, NULL);
+	gdata_contacts_contact_add_relation (contact, relation);
+	g_object_unref (relation);
+
+	website = gdata_gcontact_website_new ("http://example.com/", GDATA_GCONTACT_WEBSITE_PROFILE, NULL, TRUE);
+	gdata_contacts_contact_add_website (contact, website);
+	g_object_unref (website);
+
+	event = gdata_gcontact_event_new (&date, GDATA_GCONTACT_EVENT_ANNIVERSARY, NULL);
+	gdata_contacts_contact_add_event (contact, event);
+	g_object_unref (event);
+
+	calendar = gdata_gcontact_calendar_new ("http://calendar.example.com/", GDATA_GCONTACT_CALENDAR_HOME, NULL, TRUE);
+	gdata_contacts_contact_add_calendar (contact, calendar);
+	g_object_unref (calendar);
+
+	external_id = gdata_gcontact_external_id_new ("Number Six", GDATA_GCONTACT_EXTERNAL_ID_ORGANIZATION, NULL);
+	gdata_contacts_contact_add_external_id (contact, external_id);
+	g_object_unref (external_id);
+
+	gdata_contacts_contact_add_hobby (contact, "Rowing");
+
+	language = gdata_gcontact_language_new ("en-GB", NULL);
+	gdata_contacts_contact_add_language (contact, language);
+	g_object_unref (language);
+
+	/* Add some extended properties */
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "TITLE", NULL) == TRUE);
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "ROLE", "") == TRUE);
+	g_assert (gdata_contacts_contact_set_extended_property (contact, "CALURI", "http://example.com/") == TRUE);
+
+	/* Add some user-defined fields */
+	gdata_contacts_contact_set_user_defined_field (contact, "Favourite colour", "Blue");
+	gdata_contacts_contact_set_user_defined_field (contact, "Owes me", "£10");
+	gdata_contacts_contact_set_user_defined_field (contact, "My notes", "");
+	gdata_contacts_contact_set_user_defined_field (contact, "", "Foo"); /* bgo#648058 */
+
+	/* Check the properties of the object */
+	g_object_get (G_OBJECT (contact),
+	              "edited", &edited,
+	              "deleted", &deleted,
+	              "photo-etag", &photo_etag,
+	              "name", &name,
+	              "nickname", &nickname,
+	              "birthday", &date2,
+	              "birthday-has-year", &birthday_has_year,
+	              "billing-information", &billing_information,
+	              "directory-server", &directory_server,
+	              "gender", &gender,
+	              "initials", &initials,
+	              "maiden-name", &maiden_name,
+	              "mileage", &mileage,
+	              "occupation", &occupation,
+	              "priority", &priority,
+	              "sensitivity", &sensitivity,
+	              "short-name", &short_name,
+	              "subject", &subject,
+	              NULL);
+
+	g_assert_cmpint (edited, ==, current_time.tv_sec);
+	g_assert (deleted == FALSE);
+	g_assert (photo_etag == NULL);
+	g_assert (name2 == name);
+	g_assert_cmpstr (nickname, ==, "Big J");
+	g_assert (g_date_valid (date2) == TRUE);
+	g_assert_cmpuint (g_date_get_month (date2), ==, 1);
+	g_assert_cmpuint (g_date_get_day (date2), ==, 1);
+	g_assert (birthday_has_year == FALSE);
+	g_assert_cmpstr (billing_information, ==, "Big J Enterprises, Ltd.");
+	g_assert_cmpstr (directory_server, ==, "This is a server");
+	g_assert_cmpstr (gender, ==, GDATA_CONTACTS_GENDER_MALE);
+	g_assert_cmpstr (initials, ==, "A. B. C.");
+	g_assert_cmpstr (maiden_name, ==, "Smith");
+	g_assert_cmpstr (mileage, ==, "12km");
+	g_assert_cmpstr (occupation, ==, "Professional bum");
+	g_assert_cmpstr (priority, ==, GDATA_CONTACTS_PRIORITY_HIGH);
+	g_assert_cmpstr (sensitivity, ==, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
+	g_assert_cmpstr (short_name, ==, "Jon");
+	g_assert_cmpstr (subject, ==, "Charity work");
+
+	g_object_unref (name2);
+	g_free (date2);
+	g_free (nickname);
+	g_free (billing_information);
+	g_free (directory_server);
+	g_free (gender);
+	g_free (initials);
+	g_free (maiden_name);
+	g_free (mileage);
+	g_free (occupation);
+	g_free (priority);
+	g_free (sensitivity);
+	g_free (short_name);
+	g_free (subject);
+	g_free (photo_etag);
+
+	/* Check the XML */
+	gdata_test_assert_xml (contact,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:app='http://www.w3.org/2007/app' "
+		       "xmlns:gContact='http://schemas.google.com/contact/2008'>"
+			"<title type='text'>John Smith</title>"
+			"<content type='text'>Notes</content>"
+			"<category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gd:name>"
+				"<gd:givenName>John</gd:givenName>"
+				"<gd:familyName>Smith</gd:familyName>"
+				"<gd:fullName>John Smith</gd:fullName>"
+			"</gd:name>"
+			"<gd:email address='liz@gmail.com' rel='http://schemas.google.com/g/2005#work' primary='false'/>"
+			"<gd:email address='liz@example.org' rel='http://schemas.google.com/g/2005#home' primary='false'/>"
+			"<gd:im address='liz@gmail.com' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK' "
+			       "rel='http://schemas.google.com/g/2005#home' primary='false'/>"
+			"<gd:phoneNumber rel='http://schemas.google.com/g/2005#work' primary='true'>(206)555-1212</gd:phoneNumber>"
+			"<gd:phoneNumber rel='http://schemas.google.com/g/2005#home' primary='false'>(206)555-1213</gd:phoneNumber>"
+			"<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work' primary='true'>"
+				"<gd:street>1600 Amphitheatre Pkwy Mountain View</gd:street>"
+			"</gd:structuredPostalAddress>"
+			"<gd:organization rel='http://schemas.google.com/g/2005#work' primary='false'>"
+				"<gd:orgName>OrgCorp</gd:orgName>"
+				"<gd:orgTitle>President</gd:orgTitle>"
+			"</gd:organization>"
+			"<gContact:jot rel='other'>This is a jot.</gContact:jot>"
+			"<gContact:relation rel='friend'>Brian Haddock</gContact:relation>"
+			"<gContact:website href='http://example.com/' rel='profile' primary='true'/>"
+			"<gContact:event rel='anniversary'><gd:when startTime='1900-01-01'/></gContact:event>"
+			"<gContact:calendarLink href='http://calendar.example.com/' rel='home' primary='true'/>"
+			"<gContact:externalId value='Number Six' rel='organization'/>"
+			"<gContact:language code='en-GB'/>"
+			"<gd:extendedProperty name='CALURI'>http://example.com/</gd:extendedProperty>"
+			"<gContact:userDefinedField key='Favourite colour' value='Blue'/>"
+			"<gContact:userDefinedField key='Owes me' value='£10'/>"
+			"<gContact:userDefinedField key='My notes' value=''/>"
+			"<gContact:userDefinedField key='' value='Foo'/>" /* bgo#648058 */
+			"<gContact:hobby>Rowing</gContact:hobby>"
+			"<gContact:nickname>Big J</gContact:nickname>"
+			"<gContact:birthday when='--01-01'/>"
+			"<gContact:billingInformation>Big J Enterprises, Ltd.</gContact:billingInformation>"
+			"<gContact:directoryServer>This is a server</gContact:directoryServer>"
+			"<gContact:gender value='male'/>"
+			"<gContact:initials>A. B. C.</gContact:initials>"
+			"<gContact:maidenName>Smith</gContact:maidenName>"
+			"<gContact:mileage>12km</gContact:mileage>"
+			"<gContact:occupation>Professional bum</gContact:occupation>"
+			"<gContact:priority rel='high'/>"
+			"<gContact:sensitivity rel='personal'/>"
+			"<gContact:shortName>Jon</gContact:shortName>"
+			"<gContact:subject>Charity work</gContact:subject>"
+		"</entry>");
+
+	/* Try removing some things from the contact and ensure it works */
+	gdata_contacts_contact_remove_all_email_addresses (contact);
+	g_assert (gdata_contacts_contact_get_email_addresses (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_email_address (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_im_addresses (contact);
+	g_assert (gdata_contacts_contact_get_im_addresses (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_im_address (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_phone_numbers (contact);
+	g_assert (gdata_contacts_contact_get_phone_numbers (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_phone_number (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_postal_addresses (contact);
+	g_assert (gdata_contacts_contact_get_postal_addresses (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_postal_address (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_organizations (contact);
+	g_assert (gdata_contacts_contact_get_organizations (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_organization (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_jots (contact);
+	g_assert (gdata_contacts_contact_get_jots (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_relations (contact);
+	g_assert (gdata_contacts_contact_get_relations (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_websites (contact);
+	g_assert (gdata_contacts_contact_get_websites (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_website (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_events (contact);
+	g_assert (gdata_contacts_contact_get_events (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_calendars (contact);
+	g_assert (gdata_contacts_contact_get_calendars (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_primary_calendar (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_external_ids (contact);
+	g_assert (gdata_contacts_contact_get_external_ids (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_languages (contact);
+	g_assert (gdata_contacts_contact_get_languages (contact) == NULL);
+
+	gdata_contacts_contact_remove_all_hobbies (contact);
+	g_assert (gdata_contacts_contact_get_hobbies (contact) == NULL);
 }
 
 static void
@@ -2185,6 +2311,7 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/contacts/groups/insert_async", service, test_insert_group_async);
 	}
 
+	g_test_add_func ("/contacts/contact/properties", test_contact_properties);
 	g_test_add_func ("/contacts/contact/escaping", test_contact_escaping);
 	g_test_add_func ("/contacts/group/escaping", test_group_escaping);
 
