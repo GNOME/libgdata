@@ -172,8 +172,53 @@ test_authentication_async (void)
 	g_object_unref (authorizer);
 }
 
+typedef struct {
+	GDataContactsContact *contact1;
+	GDataContactsContact *contact2;
+	GDataContactsContact *contact3;
+} QueryAllContactsData;
+
 static void
-test_query_all_contacts (gconstpointer service)
+set_up_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
+{
+	GDataContactsContact *contact;
+
+	/* Create new temporary contacts to use for the query all contacts tests */
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Test Contact 1");
+	data->contact1 = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
+	g_object_unref (contact);
+
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Test Contact 2");
+	data->contact2 = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
+	g_object_unref (contact);
+
+	contact = gdata_contacts_contact_new (NULL);
+	gdata_contacts_contact_set_nickname (contact, "Test Contact 3");
+	data->contact3 = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
+	g_object_unref (contact);
+}
+
+static void
+tear_down_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
+{
+	/* Delete the new contacts */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->contact1), NULL, NULL) == TRUE);
+	g_object_unref (data->contact1);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->contact2), NULL, NULL) == TRUE);
+	g_object_unref (data->contact2);
+
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->contact3), NULL, NULL) == TRUE);
+	g_object_unref (data->contact3);
+}
+
+static void
+test_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -188,8 +233,27 @@ test_query_all_contacts (gconstpointer service)
 	g_object_unref (feed);
 }
 
+typedef struct {
+	QueryAllContactsData parent;
+	GMainLoop *main_loop;
+} QueryAllContactsAsyncData;
+
 static void
-test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+set_up_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
+{
+	set_up_query_all_contacts ((QueryAllContactsData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_query_all_contacts ((QueryAllContactsData*) data, service);
+}
+
+static void
+test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_result, QueryAllContactsAsyncData *data)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
@@ -200,29 +264,24 @@ test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_res
 	g_clear_error (&error);
 
 	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
+	g_main_loop_quit (data->main_loop);
 
 	g_object_unref (feed);
 }
 
 static void
-test_query_all_contacts_async (gconstpointer service)
+test_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
 {
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
 	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL,
-						     NULL, NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, main_loop);
+	                                             NULL, NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, data);
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
-test_query_all_contacts_async_progress_closure (gconstpointer service)
+test_query_all_contacts_async_progress_closure (QueryAllContactsAsyncData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-
-	g_assert (service != NULL);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -2325,9 +2384,12 @@ main (int argc, char *argv[])
 		g_test_add ("/contacts/insert/simple", InsertData, service, set_up_insert, test_insert_simple, tear_down_insert);
 		g_test_add ("/contacts/update/simple", TempContactData, service, set_up_temp_contact, test_update_simple, tear_down_temp_contact);
 
-		g_test_add_data_func ("/contacts/query/all_contacts", service, test_query_all_contacts);
-		g_test_add_data_func ("/contacts/query/all_contacts_async", service, test_query_all_contacts_async);
-		g_test_add_data_func ("/contacts/query/all_contacts_async_progress_closure", service, test_query_all_contacts_async_progress_closure);
+		g_test_add ("/contacts/query/all_contacts", QueryAllContactsData, service, set_up_query_all_contacts, test_query_all_contacts,
+		            tear_down_query_all_contacts);
+		g_test_add ("/contacts/query/all_contacts/async", QueryAllContactsAsyncData, service, set_up_query_all_contacts_async,
+		            test_query_all_contacts_async, tear_down_query_all_contacts_async);
+		g_test_add ("/contacts/query/all_contacts/async/progress_closure", QueryAllContactsAsyncData, service,
+		            set_up_query_all_contacts_async, test_query_all_contacts_async_progress_closure, tear_down_query_all_contacts_async);
 
 		g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
 		g_test_add ("/contacts/photo/add", TempContactData, service, set_up_temp_contact, test_photo_add, tear_down_temp_contact);
