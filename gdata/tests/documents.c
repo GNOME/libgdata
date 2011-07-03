@@ -675,7 +675,7 @@ static void
 setup_folders (FoldersData *data, GDataDocumentsService *service, gboolean initially_in_folder)
 {
 	GDataDocumentsFolder *folder;
-	GDataDocumentsDocument *document;
+	GDataDocumentsDocument *document, *new_document;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 	GFile *document_file;
@@ -730,12 +730,22 @@ setup_folders (FoldersData *data, GDataDocumentsService *service, gboolean initi
 	g_assert_no_error (error);
 
 	/* Finish the upload */
-	data->document = gdata_documents_service_finish_upload (service, upload_stream, &error);
+	new_document = gdata_documents_service_finish_upload (service, upload_stream, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->document));
+	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
 
 	g_object_unref (upload_stream);
 	g_object_unref (file_stream);
+
+	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back when creating the document:
+	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before trying this to allow the
+	 * various Google servers to catch up with each other. */
+	g_usleep (5 * G_USEC_PER_SEC);
+	data->document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                             gdata_documents_service_get_primary_authorization_domain (),
+	                                                                             gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                                             G_OBJECT_TYPE (new_document), NULL, NULL));
+	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->document));
 }
 
 static void
