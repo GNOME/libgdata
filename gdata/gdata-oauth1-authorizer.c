@@ -24,8 +24,9 @@
  * @include: gdata/gdata-oauth1-authorizer.h
  *
  * #GDataOAuth1Authorizer provides an implementation of the #GDataAuthorizer interface for authentication and authorization using the
- * <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> process, which is Google's
- * currently preferred authentication and authorization process, though OAuth 2.0 will be transitioned to in future.
+ * <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> process,
+ * which was preferred by Google until OAuth 2.0 was released — it is now
+ * preferred to use #GDataOAuth2Authorizer.
  *
  * OAuth 1.0 replaces the deprecated ClientLogin process. One of the main reasons for this is to allow two-factor authentication to be supported, by
  * moving the authentication interface to a web page under Google's control.

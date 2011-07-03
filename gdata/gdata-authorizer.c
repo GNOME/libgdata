@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2011 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2011, 2014 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,7 @@
  * @include: gdata/gdata-authorizer.h
  *
  * The #GDataAuthorizer interface provides a uniform way to implement authentication and authorization processes for use by #GDataService<!-- -->s.
- * Client code will construct a new #GDataAuthorizer instance of their choosing, such as #GDataClientLoginAuthorizer or #GDataOAuth1Authorizer, for
+ * Client code will construct a new #GDataAuthorizer instance of their choosing, such as #GDataClientLoginAuthorizer or #GDataOAuth2Authorizer, for
  * the #GDataService<!-- -->s which will be used by the client, then authenticates and authorizes with the #GDataAuthorizer instead of the
  * #GDataService. The #GDataService then uses the #GDataAuthorizer to authorize individual network requests using whatever authorization token was
  * returned to the #GDataAuthorizer by the Google Accounts service.
@@ -41,10 +41,12 @@
  *  <listitem>#GDataClientLoginAuthorizer for
  *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html">ClientLogin</ulink> (deprecated)</listitem>
  *  <listitem>#GDataOAuth1Authorizer for
- *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> (preferred)</listitem>
+ *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> (deprecated)</listitem>
+ *  <listitem>#GDataOAuth2Authorizer for
+ *    <ulink type="http" url="https://developers.google.com/accounts/docs/OAuth2InstalledApp">OAuth 2.0</ulink> (preferred)</listitem>
  * </itemizedlist>
  *
- * It is quite possible for clients to write their own #GDataAuthorizer implementation. For example, if a client uses OAuth 2.0 and handles
+ * It is quite possible for clients to write their own #GDataAuthorizer implementation. For example, if a client already uses OAuth 2.0 and handles
  * authentication itself, it may want to use its own #GDataAuthorizer implementation which simply exposes the client's existing access token to
  * libgdata and does nothing more.
  *

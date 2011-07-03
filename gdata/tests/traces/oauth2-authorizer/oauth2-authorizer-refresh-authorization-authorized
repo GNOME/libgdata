@@ -1,0 +1,34 @@
+> POST /o/oauth2/token HTTP/1.1
+> Soup-Debug-Timestamp: 1411296439
+> Soup-Debug: SoupSession 1 (0x1888240), SoupMessage 2 (0x1ace9b0), SoupSocket 2 (0x1a43330)
+> Host: accounts.google.com
+> Content-Type: application/x-www-form-urlencoded
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.16.1 - gzip
+> Connection: Keep-Alive
+> 
+> client_id=352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com&client_secret=-fA4pHQJxR3zJ-FyAMPQsikg&refresh_token=1%2FmIo8e1bmcRxrXd2gKfhtabh3Vvtjfc3GGJT5ODsf_t0&grant_type=refresh_token
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1411296439
+< Soup-Debug: SoupMessage 2 (0x1ace9b0)
+< Content-Type: application/json; charset=utf-8
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 10:47:19 GMT
+< Content-Disposition: attachment; filename="json.txt"; filename*=UTF-8''json.txt
+< Content-Encoding: gzip
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< Transfer-Encoding: chunked
+< 
+< {
+<   "access_token" : "ya29.hwDtghueiadzgPMb3otq_QAWMXEVup-cyRwyiP0GQGH3iqMMtfvQMngM",
+<   "token_type" : "Bearer",
+<   "expires_in" : 3600
+< }
+  

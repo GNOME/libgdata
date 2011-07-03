@@ -31,6 +31,8 @@
  * two-factor authentication enabled has to use a service-specific one-time password instead if a client is authenticating with
  * #GDataClientLoginAuthorizer. More documentation about this is
  * <ulink type="http" url="http://www.google.com/support/accounts/bin/static.py?page=guide.cs&guide=1056283&topic=1056286">available online</ulink>.
+ * Note that newer services cannot be authenticated against using ClientLogin,
+ * and a #GDataOAuth2Authorizer must be used instead.
  *
  * The ClientLogin process is a simple one whereby the user's Google Account username and password are sent over an HTTPS connection to the Google
  * Account servers (when gdata_client_login_authorizer_authenticate() is called), which return an authorization token. This token is then attached to

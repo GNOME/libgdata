@@ -57,6 +57,7 @@ TESTS = \
 	authorization \
 	client-login-authorizer \
 	oauth1-authorizer \
+	oauth2-authorizer \
 	$(NULL)
 
 # FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
@@ -283,6 +284,16 @@ EXTRA_DIST += \
 	traces/oauth1-authorizer/oauth1-authorizer-request-authorization-sync-cancellation \
 	traces/oauth1-authorizer/setup-oauth1-authorizer-data-authenticated \
 	traces/oauth1-authorizer/setup-oauth1-authorizer-interactive-data \
+	\
+	traces/oauth2-authorizer/oauth2-authorizer-refresh-authorization-authorized \
+	traces/oauth2-authorizer/oauth2-authorizer-refresh-authorization-unauthorized \
+	traces/oauth2-authorizer/oauth2-authorizer-request-authorization-async \
+	traces/oauth2-authorizer/oauth2-authorizer-request-authorization-async-bad-credentials \
+	traces/oauth2-authorizer/oauth2-authorizer-request-authorization-async-cancellation \
+	traces/oauth2-authorizer/oauth2-authorizer-request-authorization-sync \
+	traces/oauth2-authorizer/oauth2-authorizer-request-authorization-sync-bad-credentials \
+	traces/oauth2-authorizer/oauth2-authorizer-request-authorization-sync-cancellation \
+	traces/oauth2-authorizer/setup-oauth2-authorizer-data-authenticated \
 	\
 	traces/picasaweb/authentication \
 	traces/picasaweb/authentication-async \
