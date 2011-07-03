@@ -618,8 +618,6 @@ test_upload_file_get_entry (UploadDocumentData *data, gconstpointer service)
 	GFileInfo *file_info;
 	GError *error = NULL;
 
-	g_assert (service != NULL);
-
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.ppt");
 	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
@@ -770,8 +768,6 @@ test_folders_add_to_folder (FoldersData *data, gconstpointer service)
 	GDataDocumentsDocument *new_document;
 	GError *error = NULL;
 
-	g_assert (service != NULL);
-
 	/* Add the document to the folder */
 	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_add_entry_to_folder (GDATA_DOCUMENTS_SERVICE (service),
 	                                                                                      GDATA_DOCUMENTS_ENTRY (data->document),
@@ -887,8 +883,6 @@ test_folders_remove_from_folder (FoldersData *data, gconstpointer service)
 {
 	GDataDocumentsDocument *new_document;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	/* Remove the document from the folder */
 	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_remove_entry_from_folder (GDATA_DOCUMENTS_SERVICE (service),
@@ -1302,8 +1296,8 @@ test_query_etag (void)
 	g_test_bug ("613529");
 
 #define CHECK_ETAG(C) \
-	gdata_query_set_etag (GDATA_QUERY (query), "foobar");		\
-	(C);								\
+	gdata_query_set_etag (GDATA_QUERY (query), "foobar"); \
+	(C); \
 	g_assert (gdata_query_get_etag (GDATA_QUERY (query)) == NULL);
 
 	CHECK_ETAG (gdata_documents_query_set_show_deleted (query, FALSE))
