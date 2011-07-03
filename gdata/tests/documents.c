@@ -672,7 +672,7 @@ typedef struct {
 } FoldersData;
 
 static void
-setup_folders (FoldersData *data, GDataDocumentsService *service, gboolean initially_in_folder)
+set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean initially_in_folder)
 {
 	GDataDocumentsFolder *folder;
 	GDataDocumentsDocument *document, *new_document;
@@ -749,13 +749,13 @@ setup_folders (FoldersData *data, GDataDocumentsService *service, gboolean initi
 }
 
 static void
-setup_folders_add_to_folder (FoldersData *data, gconstpointer service)
+set_up_folders_add_to_folder (FoldersData *data, gconstpointer service)
 {
-	setup_folders (data, GDATA_DOCUMENTS_SERVICE (service), FALSE);
+	set_up_folders (data, GDATA_DOCUMENTS_SERVICE (service), FALSE);
 }
 
 static void
-teardown_folders_add_to_folder (FoldersData *data, gconstpointer service)
+tear_down_folders_add_to_folder (FoldersData *data, gconstpointer service)
 {
 	delete_entry (GDATA_DOCUMENTS_ENTRY (data->document), GDATA_SERVICE (service));
 	g_object_unref (data->document);
@@ -792,17 +792,17 @@ typedef struct {
 } FoldersAsyncData;
 
 static void
-setup_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
+set_up_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
 {
-	setup_folders_add_to_folder ((FoldersData*) data, service);
+	set_up_folders_add_to_folder ((FoldersData*) data, service);
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 }
 
 static void
-teardown_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
+tear_down_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
 {
 	g_main_loop_unref (data->main_loop);
-	teardown_folders_add_to_folder ((FoldersData*) data, service);
+	tear_down_folders_add_to_folder ((FoldersData*) data, service);
 }
 
 static void
@@ -871,15 +871,15 @@ test_folders_add_to_folder_cancellation (FoldersAsyncData *data, gconstpointer s
 }
 
 static void
-setup_folders_remove_from_folder (FoldersData *data, gconstpointer service)
+set_up_folders_remove_from_folder (FoldersData *data, gconstpointer service)
 {
-	setup_folders (data, GDATA_DOCUMENTS_SERVICE (service), TRUE);
+	set_up_folders (data, GDATA_DOCUMENTS_SERVICE (service), TRUE);
 }
 
 static void
-teardown_folders_remove_from_folder (FoldersData *data, gconstpointer service)
+tear_down_folders_remove_from_folder (FoldersData *data, gconstpointer service)
 {
-	teardown_folders_add_to_folder (data, service);
+	tear_down_folders_add_to_folder (data, service);
 }
 
 static void
@@ -905,17 +905,17 @@ test_folders_remove_from_folder (FoldersData *data, gconstpointer service)
 }
 
 static void
-setup_folders_remove_from_folder_async (FoldersAsyncData *data, gconstpointer service)
+set_up_folders_remove_from_folder_async (FoldersAsyncData *data, gconstpointer service)
 {
-	setup_folders_remove_from_folder ((FoldersData*) data, service);
+	set_up_folders_remove_from_folder ((FoldersData*) data, service);
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 }
 
 static void
-teardown_folders_remove_from_folder_async (FoldersAsyncData *data, gconstpointer service)
+tear_down_folders_remove_from_folder_async (FoldersAsyncData *data, gconstpointer service)
 {
 	g_main_loop_unref (data->main_loop);
-	teardown_folders_remove_from_folder ((FoldersData*) data, service);
+	tear_down_folders_remove_from_folder ((FoldersData*) data, service);
 }
 
 static void
@@ -1185,7 +1185,7 @@ test_update_file (TempDocumentData *data, gconstpointer service)
 }
 
 static void
-_test_document_download (GDataDocumentsDocument *document, GDataService *service)
+_test_download_document (GDataDocumentsDocument *document, GDataService *service)
 {
 	GDataDownloadStream *download_stream;
 	GFileOutputStream *output_stream;
@@ -1256,15 +1256,15 @@ _test_document_download (GDataDocumentsDocument *document, GDataService *service
 }
 
 static void
-test_document_download (TempDocumentsData *data, gconstpointer service)
+test_download_document (TempDocumentsData *data, gconstpointer service)
 {
-	_test_document_download (GDATA_DOCUMENTS_DOCUMENT (data->spreadsheet_document), GDATA_SERVICE (service));
-	_test_document_download (GDATA_DOCUMENTS_DOCUMENT (data->presentation_document), GDATA_SERVICE (service));
-	_test_document_download (GDATA_DOCUMENTS_DOCUMENT (data->text_document), GDATA_SERVICE (service));
+	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->spreadsheet_document), GDATA_SERVICE (service));
+	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->presentation_document), GDATA_SERVICE (service));
+	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->text_document), GDATA_SERVICE (service));
 }
 
 static void
-test_new_document_with_collaborator (TempDocumentData *data, gconstpointer service)
+test_access_rule_insert (TempDocumentData *data, gconstpointer service)
 {
 	GDataAccessRule *access_rule, *new_access_rule;
 	GDataLink *_link;
@@ -1463,7 +1463,7 @@ typedef struct {
 } BatchAsyncData;
 
 static void
-setup_batch_async (BatchAsyncData *data, gconstpointer service)
+set_up_batch_async (BatchAsyncData *data, gconstpointer service)
 {
 	GDataDocumentsText *doc;
 	gchar *upload_uri;
@@ -1568,7 +1568,7 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 }
 
 static void
-teardown_batch_async (BatchAsyncData *data, gconstpointer service)
+tear_down_batch_async (BatchAsyncData *data, gconstpointer service)
 {
 	delete_entry (GDATA_DOCUMENTS_ENTRY (data->new_doc), GDATA_SERVICE (service));
 	g_object_unref (data->new_doc);
@@ -1590,7 +1590,7 @@ main (int argc, char *argv[])
 		service = GDATA_SERVICE (gdata_documents_service_new (authorizer));
 
 		g_test_add_func ("/documents/authentication", test_authentication);
-		g_test_add_func ("/documents/authentication_async", test_authentication_async);
+		g_test_add_func ("/documents/authentication/async", test_authentication_async);
 
 		g_test_add ("/documents/delete/document", TempDocumentData, service, set_up_temp_document_spreadsheet, test_delete_document,
 		            tear_down_temp_document);
@@ -1605,7 +1605,7 @@ main (int argc, char *argv[])
 		g_test_add ("/documents/upload/metadata_file_in_new_folder", UploadDocumentData, service, set_up_upload_document_with_folder,
 		            test_upload_file_metadata_in_new_folder, tear_down_upload_document);
 
-		g_test_add ("/documents/document/download", TempDocumentsData, service, set_up_temp_documents, test_document_download,
+		g_test_add ("/documents/download/document", TempDocumentsData, service, set_up_temp_documents, test_download_document,
 		            tear_down_temp_documents);
 
 		g_test_add ("/documents/update/only_metadata", TempDocumentData, service, set_up_temp_document_text, test_update_metadata,
@@ -1615,35 +1615,36 @@ main (int argc, char *argv[])
 		g_test_add ("/documents/update/metadata_file", TempDocumentData, service, set_up_temp_document_text, test_update_metadata_file,
 		            tear_down_temp_document);
 
-		g_test_add ("/documents/access_rules/add_document_with_a_collaborator", TempDocumentData, service, set_up_temp_document_spreadsheet,
-		            test_new_document_with_collaborator, tear_down_temp_document);
+		g_test_add ("/documents/access-rule/insert", TempDocumentData, service, set_up_temp_document_spreadsheet, test_access_rule_insert,
+		            tear_down_temp_document);
 
-		g_test_add ("/documents/query/all_documents/with_folder", TempDocumentsData, service, set_up_temp_documents,
-		            test_query_all_documents_with_folder, tear_down_temp_documents);
 		g_test_add ("/documents/query/all_documents", TempDocumentsData, service, set_up_temp_documents, test_query_all_documents,
 		            tear_down_temp_documents);
+		g_test_add ("/documents/query/all_documents/with_folder", TempDocumentsData, service, set_up_temp_documents,
+		            test_query_all_documents_with_folder, tear_down_temp_documents);
 		g_test_add ("/documents/query/all_documents/async", TempDocumentsAsyncData, service, set_up_temp_documents_async,
 		            test_query_all_documents_async, tear_down_temp_documents_async);
 		g_test_add ("/documents/query/all_documents/async/progress_closure", TempDocumentsAsyncData, service, set_up_temp_documents_async,
 		            test_query_all_documents_async_progress_closure, tear_down_temp_documents_async);
 
-		g_test_add ("/documents/folders/add_to_folder", FoldersData, service, setup_folders_add_to_folder,
-		            test_folders_add_to_folder, teardown_folders_add_to_folder);
-		g_test_add ("/documents/folders/add_to_folder/async", FoldersAsyncData, service, setup_folders_add_to_folder_async,
-		            test_folders_add_to_folder_async, teardown_folders_add_to_folder_async);
-		g_test_add ("/documents/folders/add_to_folder/cancellation", FoldersAsyncData, service, setup_folders_add_to_folder_async,
-		            test_folders_add_to_folder_cancellation, teardown_folders_add_to_folder_async);
-		g_test_add ("/documents/folders/remove_from_folder", FoldersData, service, setup_folders_remove_from_folder,
-		            test_folders_remove_from_folder, teardown_folders_remove_from_folder);
-		g_test_add ("/documents/folders/remove_from_folder/async", FoldersAsyncData, service, setup_folders_remove_from_folder_async,
-		            test_folders_remove_from_folder_async, teardown_folders_remove_from_folder_async);
-		g_test_add ("/documents/folders/remove_from_folder/cancellation", FoldersAsyncData, service, setup_folders_remove_from_folder_async,
-		            test_folders_remove_from_folder_cancellation, teardown_folders_remove_from_folder_async);
+		g_test_add ("/documents/folders/add_to_folder", FoldersData, service, set_up_folders_add_to_folder,
+		            test_folders_add_to_folder, tear_down_folders_add_to_folder);
+		g_test_add ("/documents/folders/add_to_folder/async", FoldersAsyncData, service, set_up_folders_add_to_folder_async,
+		            test_folders_add_to_folder_async, tear_down_folders_add_to_folder_async);
+		g_test_add ("/documents/folders/add_to_folder/cancellation", FoldersAsyncData, service, set_up_folders_add_to_folder_async,
+		            test_folders_add_to_folder_cancellation, tear_down_folders_add_to_folder_async);
+
+		g_test_add ("/documents/folders/remove_from_folder", FoldersData, service, set_up_folders_remove_from_folder,
+		            test_folders_remove_from_folder, tear_down_folders_remove_from_folder);
+		g_test_add ("/documents/folders/remove_from_folder/async", FoldersAsyncData, service, set_up_folders_remove_from_folder_async,
+		            test_folders_remove_from_folder_async, tear_down_folders_remove_from_folder_async);
+		g_test_add ("/documents/folders/remove_from_folder/cancellation", FoldersAsyncData, service, set_up_folders_remove_from_folder_async,
+		            test_folders_remove_from_folder_cancellation, tear_down_folders_remove_from_folder_async);
 
 		g_test_add_data_func ("/documents/batch", service, test_batch);
-		g_test_add ("/documents/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
-		g_test_add ("/documents/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
-		            teardown_batch_async);
+		g_test_add ("/documents/batch/async", BatchAsyncData, service, set_up_batch_async, test_batch_async, tear_down_batch_async);
+		g_test_add ("/documents/batch/async/cancellation", BatchAsyncData, service, set_up_batch_async, test_batch_async_cancellation,
+		            tear_down_batch_async);
 	}
 
 	g_test_add_func ("/documents/query/etag", test_query_etag);
