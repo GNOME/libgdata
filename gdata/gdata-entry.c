@@ -677,8 +677,18 @@ gdata_entry_set_summary (GDataEntry *self, const gchar *summary)
 const gchar *
 gdata_entry_get_id (GDataEntry *self)
 {
+	gchar *id;
+
 	g_return_val_if_fail (GDATA_IS_ENTRY (self), NULL);
-	return self->priv->id;
+
+	/* We have to get the actual property since GDataDocumentsEntry overrides it. We then store it in our own ID field so that we can
+	 * free it later on. */
+	g_object_get (G_OBJECT (self), "id", &id, NULL);
+
+	g_free (self->priv->id);
+	self->priv->id = id;
+
+	return id;
 }
 
 /**

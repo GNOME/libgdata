@@ -101,6 +101,11 @@
 #include "gdata-access-handler.h"
 #include "gdata-documents-service.h"
 
+#include "gdata-documents-spreadsheet.h"
+#include "gdata-documents-presentation.h"
+#include "gdata-documents-text.h"
+#include "gdata-documents-folder.h"
+
 static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface);
 static GObject *gdata_documents_entry_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_documents_entry_finalize (GObject *object);
@@ -126,7 +131,8 @@ enum {
 	PROP_DOCUMENT_ID,
 	PROP_LAST_MODIFIED_BY,
 	PROP_IS_DELETED,
-	PROP_WRITERS_CAN_INVITE
+	PROP_WRITERS_CAN_INVITE,
+	PROP_ID,
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
@@ -232,6 +238,17 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                      GDATA_TYPE_AUTHOR,
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
+	/* Override the ID property since the server returns two different forms of ID depending on how you form a query on an entry. These two forms
+	 * of ID are:
+	 *  - Document ID: /feeds/documents/private/full/document%3A[document_id]
+	 *  - Folder ID: /feeds/folders/private/full/folder%3A[folder_id]/document%3A[document_id]
+	 * The former is the ID we want; the latter should only ever be used for manipulating the location of documents (i.e. adding them to and
+	 * removing them from folders). The latter will, however, work fine for operations such as updating documents. It's only when one comes to
+	 * try and delete a document that it becomes a problem: sending a DELETE request to the folder ID will only remove the document from that
+	 * folder; it's only if one sends the DELETE request to the document ID that the document actually gets deleted.
+	 * Unfortunately, uploading a document directly to a folder results in the server returning us a folder ID. Consequently, we need to override
+	 * the property to fix this mess. */
+	g_object_class_override_property (gobject_class, PROP_ID, "id");
 }
 
 static gboolean
@@ -331,6 +348,35 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 		case PROP_LAST_MODIFIED_BY:
 			g_value_set_object (value, priv->last_modified_by);
 			break;
+		case PROP_ID: {
+			gchar *uri;
+g_message ("FOOBAR TODO");
+			/* Is it unset? */
+			if (priv->document_id == NULL) {
+				g_value_set_string (value, NULL);
+				break;
+			}
+
+			/* Build the ID */
+			if (GDATA_IS_DOCUMENTS_PRESENTATION (object)) {
+				uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/presentation%%3A%s",
+				                                priv->document_id);
+			} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (object)) {
+				uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/spreadsheet%%3A%s",
+				                                priv->document_id);
+			} else if (GDATA_IS_DOCUMENTS_TEXT (object)) {
+				uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/document%%3A%s",
+				                                priv->document_id);
+			} else if (GDATA_IS_DOCUMENTS_FOLDER (object)) {
+				uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/folder%%3A%s",
+				                                priv->document_id);
+			} else {
+				g_assert_not_reached ();
+			}
+
+			g_value_take_string (value, uri);
+			break;
+		}
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -346,6 +392,9 @@ gdata_documents_entry_set_property (GObject *object, guint property_id, const GV
 	switch (property_id) {
 		case PROP_WRITERS_CAN_INVITE:
 			gdata_documents_entry_set_writers_can_invite (self, g_value_get_boolean (value));
+			break;
+		case PROP_ID:
+			/* Never set an ID (note that this doesn't stop it being set in GDataEntry due to XML parsing) */
 			break;
 		default:
 			/* We don't have any other property... */
