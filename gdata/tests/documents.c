@@ -45,6 +45,22 @@ check_document_is_in_folder (GDataDocumentsDocument *document, GDataDocumentsFol
 }
 
 static void
+delete_entry (GDataDocumentsEntry *entry, GDataService *service)
+{
+	GDataEntry *new_entry;
+
+	/* Re-query for the entry because its ETag may have changed over the course of the tests (or because the Documents servers like to
+	 * arbitrarily change ETag values). */
+	new_entry = gdata_service_query_single_entry (service, gdata_documents_service_get_primary_authorization_domain (),
+	                                              gdata_entry_get_id (GDATA_ENTRY (entry)), NULL, G_OBJECT_TYPE (entry), NULL, NULL);
+	g_assert (GDATA_IS_DOCUMENTS_ENTRY (new_entry));
+
+	/* Delete the entry */
+	g_assert (gdata_service_delete_entry (service, gdata_documents_service_get_primary_authorization_domain (), new_entry, NULL, NULL) == TRUE);
+	g_object_unref (new_entry);
+}
+
+static void
 test_authentication (void)
 {
 	gboolean retval;
@@ -118,50 +134,132 @@ test_authentication_async (void)
 	g_object_unref (authorizer);
 }
 
+typedef struct {
+	GDataDocumentsFolder *folder;
+} TempFolderData;
+
 static void
-test_remove_all_documents_and_folders (gconstpointer service)
+set_up_temp_folder (TempFolderData *data, gconstpointer service)
 {
-	GDataDocumentsFeed *feed;
-	GDataDocumentsQuery *query;
+	GDataDocumentsFolder *folder;
+	gchar *upload_uri;
+
+	/* Create a folder */
+	folder = gdata_documents_folder_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (folder), "Temporary Folder");
+
+	/* Insert the folder */
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	data->folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                   gdata_documents_service_get_primary_authorization_domain (),
+	                                                                   upload_uri, GDATA_ENTRY (folder), NULL, NULL));
+	g_assert (GDATA_IS_DOCUMENTS_FOLDER (data->folder));
+	g_free (upload_uri);
+	g_object_unref (folder);
+}
+
+static void
+tear_down_temp_folder (TempFolderData *data, gconstpointer service)
+{
+	if (data->folder != NULL) {
+		delete_entry (GDATA_DOCUMENTS_ENTRY (data->folder), GDATA_SERVICE (service));
+		g_object_unref (data->folder);
+	}
+}
+
+typedef struct {
+	GDataDocumentsDocument *document;
+} TempDocumentData;
+
+static void
+set_up_temp_document (TempDocumentData *data, gconstpointer service)
+{
+	GDataDocumentsEntry *document;
+	gchar *upload_uri;
+
+	/* Create a document */
+	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_spreadsheet_new (NULL));
+	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Document");
+
+	/* Insert the document */
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	data->document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                       gdata_documents_service_get_primary_authorization_domain (),
+	                                                                       upload_uri, GDATA_ENTRY (document), NULL, NULL));
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (data->document));
+	g_free (upload_uri);
+	g_object_unref (document);
+}
+
+static void
+tear_down_temp_document (TempDocumentData *data, gconstpointer service)
+{
+	if (data->document != NULL) {
+		delete_entry (GDATA_DOCUMENTS_ENTRY (data->document), GDATA_SERVICE (service));
+		g_object_unref (data->document);
+	}
+}
+
+static void
+test_delete_folder (TempFolderData *data, gconstpointer service)
+{
+	gboolean success;
+	GDataEntry *updated_folder;
 	GError *error = NULL;
-	GList *i;
 
-	g_assert (service != NULL);
+	g_assert (gdata_documents_entry_is_deleted (GDATA_DOCUMENTS_ENTRY (data->folder)) == FALSE);
 
-	query = gdata_documents_query_new (NULL);
-	gdata_documents_query_set_show_folders (query, FALSE);
-
-	feed = gdata_documents_service_query_documents (GDATA_DOCUMENTS_SERVICE (service), query, NULL, NULL, NULL, &error);
+	/* Delete the folder */
+	success = gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->folder), NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_FEED (feed));
+	g_assert (success == TRUE);
+	g_clear_error (&error);
 
-	/* We delete the folders after all the files so we don't get ETag mismatches; deleting a folder changes the version
-	 * of all the documents inside it. Conversely, deleting an entry inside a folder changes the version of the folder. */
-	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-		                            GDATA_ENTRY (i->data), NULL, &error);
-		g_assert_no_error (error);
-		g_clear_error (&error);
-	}
-
-	g_object_unref (feed);
-
-	/* Now delete the folders */
-	gdata_documents_query_set_show_folders (query, TRUE);
-
-	feed = gdata_documents_service_query_documents (GDATA_DOCUMENTS_SERVICE (service), query, NULL, NULL, NULL, &error);
+	/* Re-query for the folder to ensure it's been deleted */
+	updated_folder = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                                   gdata_entry_get_id (GDATA_ENTRY (data->folder)), NULL,
+	                                                   GDATA_TYPE_DOCUMENTS_FOLDER, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_FEED (feed));
+	g_assert (GDATA_IS_DOCUMENTS_FOLDER (updated_folder));
+	g_clear_error (&error);
 
-	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-		                            GDATA_ENTRY (i->data), NULL, &error);
-		g_assert_no_error (error);
-		g_clear_error (&error);
-	}
+	g_assert (gdata_documents_entry_is_deleted (GDATA_DOCUMENTS_ENTRY (updated_folder)) == TRUE);
 
-	g_object_unref (query);
-	g_object_unref (feed);
+	g_object_unref (updated_folder);
+	g_object_unref (data->folder);
+	data->folder = NULL;
+}
+
+static void
+test_delete_document (TempDocumentData *data, gconstpointer service)
+{
+	gboolean success;
+	GDataEntry *updated_document;
+	GError *error = NULL;
+
+	g_assert (gdata_documents_entry_is_deleted (GDATA_DOCUMENTS_ENTRY (data->document)) == FALSE);
+
+	/* Delete the document */
+	success = gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->document), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success == TRUE);
+	g_clear_error (&error);
+
+	/* Re-query for the document to ensure it's been deleted */
+	updated_document = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+	                                                     gdata_entry_get_id (GDATA_ENTRY (data->document)), NULL,
+	                                                     G_OBJECT_TYPE (data->document), NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (updated_document));
+	g_clear_error (&error);
+
+	g_assert (gdata_documents_entry_is_deleted (GDATA_DOCUMENTS_ENTRY (updated_document)) == TRUE);
+
+	g_object_unref (updated_document);
+	g_object_unref (data->document);
+	data->document = NULL;
 }
 
 static void
@@ -296,39 +394,18 @@ tear_down_upload_document (UploadDocumentData *data, gconstpointer service)
 {
 	/* Delete the new file */
 	if (data->new_document != NULL) {
-		GDataEntry *new_document;
-
 		/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data
 		 * when creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few
 		 * seconds before trying this to allow the various Google servers to catch up with each other. */
 		g_usleep (5 * G_USEC_PER_SEC);
-		new_document = GDATA_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
-		                                                              gdata_documents_service_get_primary_authorization_domain (),
-		                                                              gdata_entry_get_id (GDATA_ENTRY (data->new_document)), NULL,
-		                                                              G_OBJECT_TYPE (data->new_document), NULL, NULL));
-		g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (new_document));
+		delete_entry (GDATA_DOCUMENTS_ENTRY (data->new_document), GDATA_SERVICE (service));
 		g_object_unref (data->new_document);
-
-		g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-		                                      new_document, NULL, NULL) == TRUE);
-		g_object_unref (new_document);
 	}
 
 	/* Delete the folder */
 	if (data->folder != NULL) {
-		GDataEntry *new_folder;
-
-		/* Re-query for the folder because its ETag will have changed as a result of adding/removing documents to it */
-		new_folder = GDATA_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
-		                                                            gdata_documents_service_get_primary_authorization_domain (),
-		                                                            gdata_entry_get_id (GDATA_ENTRY (data->folder)), NULL,
-		                                                            GDATA_TYPE_DOCUMENTS_FOLDER, NULL, NULL));
-		g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
+		delete_entry (GDATA_DOCUMENTS_ENTRY (data->folder), GDATA_SERVICE (service));
 		g_object_unref (data->folder);
-
-		g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-		                                      new_folder, NULL, NULL) == TRUE);
-		g_object_unref (new_folder);
 	}
 }
 
@@ -544,26 +621,10 @@ setup_folders_add_to_folder (FoldersData *data, gconstpointer service)
 static void
 teardown_folders_add_to_folder (FoldersData *data, gconstpointer service)
 {
-	GDataEntry *entry;
-
-	/* Re-query (to get an updated ETag) and delete the document (we don't care if this fails) */
-	entry = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                          gdata_entry_get_id (GDATA_ENTRY (data->document)), NULL,
-	                                          GDATA_TYPE_DOCUMENTS_TEXT, NULL, NULL);
-	if (entry != NULL) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (), entry, NULL, NULL);
-		g_object_unref (entry);
-	}
+	delete_entry (GDATA_DOCUMENTS_ENTRY (data->document), GDATA_SERVICE (service));
 	g_object_unref (data->document);
 
-	/* Re-query (to get an updated ETag) and delete the folder (we don't care if this fails) */
-	entry = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                          gdata_entry_get_id (GDATA_ENTRY (data->folder)), NULL,
-	                                          GDATA_TYPE_DOCUMENTS_FOLDER, NULL, NULL);
-	if (entry != NULL) {
-		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (), entry, NULL, NULL);
-		g_object_unref (entry);
-	}
+	delete_entry (GDATA_DOCUMENTS_ENTRY (data->folder), GDATA_SERVICE (service));
 	g_object_unref (data->folder);
 }
 
@@ -1483,22 +1544,8 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 static void
 teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 {
-	GDataEntry *document;
-	GError *error = NULL;
-
-	/* Re-query the document in case its ETag has changed */
-	document = gdata_service_query_single_entry (GDATA_SERVICE (service),
-	                                             gdata_documents_service_get_primary_authorization_domain (),
-	                                             gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), NULL,
-	                                             GDATA_TYPE_DOCUMENTS_TEXT, NULL, &error);
-	g_assert_no_error (error);
-	g_clear_error (&error);
-
-	/* Delete the document (we don't care if this fails) */
-	gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (), document, NULL, NULL);
-
+	delete_entry (GDATA_DOCUMENTS_ENTRY (data->new_doc), GDATA_SERVICE (service));
 	g_object_unref (data->new_doc);
-	g_object_unref (document);
 }
 
 int
@@ -1519,7 +1566,9 @@ main (int argc, char *argv[])
 		g_test_add_func ("/documents/authentication", test_authentication);
 		g_test_add_func ("/documents/authentication_async", test_authentication_async);
 
-		g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);
+		g_test_add ("/documents/delete/document", TempDocumentData, service, set_up_temp_document, test_delete_document,
+		            tear_down_temp_document);
+		g_test_add ("/documents/delete/folder", TempFolderData, service, set_up_temp_folder, test_delete_folder, tear_down_temp_folder);
 
 		g_test_add ("/documents/upload/only_file_get_entry", UploadDocumentData, service, set_up_upload_document, test_upload_file_get_entry,
 		            tear_down_upload_document);
