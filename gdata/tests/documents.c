@@ -256,43 +256,114 @@ test_query_all_documents_async_progress_closure (gconstpointer service)
 	g_slice_free (GDataAsyncProgressClosure, data);
 }
 
+typedef struct {
+	GDataDocumentsFolder *folder;
+	GDataDocumentsDocument *new_document;
+} UploadDocumentData;
+
 static void
-test_upload_metadata (gconstpointer service)
+set_up_upload_document (UploadDocumentData *data, gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document;
-	GError *error = NULL;
+	data->folder = NULL;
+	data->new_document = NULL;
+}
+
+static void
+set_up_upload_document_with_folder (UploadDocumentData *data, gconstpointer service)
+{
+	GDataDocumentsFolder *folder;
 	gchar *upload_uri;
 
-	g_assert (service != NULL);
+	/* Set up the structure */
+	set_up_upload_document (data, service);
+
+	/* Create a folder */
+	folder = gdata_documents_folder_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (folder), "Temporary Folder for Uploading Documents");
+
+	/* Insert the folder */
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+	data->folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                   gdata_documents_service_get_primary_authorization_domain (),
+	                                                                   upload_uri, GDATA_ENTRY (folder), NULL, NULL));
+	g_assert (GDATA_IS_DOCUMENTS_FOLDER (data->folder));
+	g_free (upload_uri);
+	g_object_unref (folder);
+}
+
+static void
+tear_down_upload_document (UploadDocumentData *data, gconstpointer service)
+{
+	/* Delete the new file */
+	if (data->new_document != NULL) {
+		GDataEntry *new_document;
+
+		/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data
+		 * when creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few
+		 * seconds before trying this to allow the various Google servers to catch up with each other. */
+		g_usleep (5 * G_USEC_PER_SEC);
+		new_document = GDATA_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+		                                                              gdata_documents_service_get_primary_authorization_domain (),
+		                                                              gdata_entry_get_id (GDATA_ENTRY (data->new_document)), NULL,
+		                                                              G_OBJECT_TYPE (data->new_document), NULL, NULL));
+		g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (new_document));
+		g_object_unref (data->new_document);
+
+		g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+		                                      new_document, NULL, NULL) == TRUE);
+		g_object_unref (new_document);
+	}
+
+	/* Delete the folder */
+	if (data->folder != NULL) {
+		GDataEntry *new_folder;
+
+		/* Re-query for the folder because its ETag will have changed as a result of adding/removing documents to it */
+		new_folder = GDATA_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (service),
+		                                                            gdata_documents_service_get_primary_authorization_domain (),
+		                                                            gdata_entry_get_id (GDATA_ENTRY (data->folder)), NULL,
+		                                                            GDATA_TYPE_DOCUMENTS_FOLDER, NULL, NULL));
+		g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
+		g_object_unref (data->folder);
+
+		g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+		                                      new_folder, NULL, NULL) == TRUE);
+		g_object_unref (new_folder);
+	}
+}
+
+static void
+test_upload_metadata (UploadDocumentData *data, gconstpointer service)
+{
+	GDataDocumentsEntry *document;
+	GError *error = NULL;
+	gchar *upload_uri;
 
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_spreadsheet_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "myNewSpreadsheet");
 
 	/* Insert the document */
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                                  gdata_documents_service_get_primary_authorization_domain (),
-	                                                                  upload_uri, GDATA_ENTRY (document), NULL, &error));
+	data->new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                           gdata_documents_service_get_primary_authorization_domain (),
+	                                                                           upload_uri, GDATA_ENTRY (document), NULL, &error));
 	g_free (upload_uri);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (new_document));
+	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (data->new_document));
 
 	g_clear_error (&error);
 	g_object_unref (document);
-	g_object_unref (new_document);
 }
 
 static void
-test_upload_metadata_file (gconstpointer service)
+test_upload_metadata_file (UploadDocumentData *data, gconstpointer service)
 {
-	GDataDocumentsDocument *document, *new_document;
+	GDataDocumentsDocument *document;
 	GFile *document_file;
 	GFileInfo *file_info;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
 	file_info = g_file_query_info (document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
@@ -320,25 +391,23 @@ test_upload_metadata_file (gconstpointer service)
 	g_assert_no_error (error);
 
 	/* Finish the upload */
-	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
+	data->new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
+	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->new_document));
 
 	/* Verify the uploaded document is the same as the original */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (document)), ==, gdata_entry_get_title (GDATA_ENTRY (new_document)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (document)), ==, gdata_entry_get_title (GDATA_ENTRY (data->new_document)));
 
 	g_clear_error (&error);
 	g_object_unref (upload_stream);
 	g_object_unref (file_stream);
 	g_object_unref (document_file);
 	g_object_unref (document);
-	g_object_unref (new_document);
 }
 
 static void
-test_upload_file_get_entry (gconstpointer service)
+test_upload_file_get_entry (UploadDocumentData *data, gconstpointer service)
 {
-	GDataDocumentsDocument *new_document;
 	GDataEntry *new_presentation;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
@@ -373,16 +442,16 @@ test_upload_file_get_entry (gconstpointer service)
 	g_assert_no_error (error);
 
 	/* Finish the upload */
-	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
+	data->new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_document));
+	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (data->new_document));
 
 	g_object_unref (file_stream);
 	g_object_unref (upload_stream);
 
 	/* Get the entry on the server */
 	new_presentation = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                                     gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
+	                                                     gdata_entry_get_id (GDATA_ENTRY (data->new_document)), NULL,
 	                                                     GDATA_TYPE_DOCUMENTS_PRESENTATION, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (new_presentation));
@@ -391,7 +460,6 @@ test_upload_file_get_entry (gconstpointer service)
 	g_assert_cmpstr (gdata_entry_get_title (new_presentation), ==, "test");
 
 	g_clear_error (&error);
-	g_object_unref (new_document);
 	g_object_unref (new_presentation);
 }
 
@@ -720,33 +788,14 @@ test_folders_remove_from_folder_cancellation (FoldersAsyncData *data, gconstpoin
 }
 
 static void
-test_upload_file_metadata_in_new_folder (gconstpointer service)
+test_upload_file_metadata_in_new_folder (UploadDocumentData *data, gconstpointer service)
 {
-	GDataDocumentsDocument *document, *new_document;
-	GDataDocumentsFolder *folder, *new_folder;
+	GDataDocumentsDocument *document;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 	GFile *document_file;
 	GFileInfo *file_info;
-	gchar *upload_uri;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
-
-	folder = gdata_documents_folder_new (NULL);
-	gdata_entry_set_title (GDATA_ENTRY (folder), "upload_file_metadata_in_new_folder_folder");
-
-	/* Insert the folder */
-	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                                 gdata_documents_service_get_primary_authorization_domain (),
-	                                                                 upload_uri, GDATA_ENTRY (folder), NULL, &error));
-	g_free (upload_uri);
-
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_FOLDER (new_folder));
-
-	g_object_unref (folder);
 
 	/* Prepare the file */
 	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
@@ -759,7 +808,7 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service), document, g_file_info_get_display_name (file_info),
-	                                                         g_file_info_get_content_type (file_info), new_folder, NULL, &error);
+	                                                         g_file_info_get_content_type (file_info), data->folder, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -777,21 +826,19 @@ test_upload_file_metadata_in_new_folder (gconstpointer service)
 	g_assert_no_error (error);
 
 	/* Finish the upload */
-	new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
+	data->new_document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
+	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->new_document));
 
 	g_object_unref (upload_stream);
 	g_object_unref (file_stream);
 
 	/* Check for success */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
-	g_assert (check_document_is_in_folder (new_document, new_folder) == TRUE);
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (document)));
+	g_assert (check_document_is_in_folder (data->new_document, data->folder) == TRUE);
 
 	g_clear_error (&error);
 	g_object_unref (document);
-	g_object_unref (new_document);
-	g_object_unref (new_folder);
 }
 
 static void
@@ -1474,10 +1521,14 @@ main (int argc, char *argv[])
 
 		g_test_add_data_func ("/documents/remove/all", service, test_remove_all_documents_and_folders);
 
-		g_test_add_data_func ("/documents/upload/only_file_get_entry", service, test_upload_file_get_entry);
-		g_test_add_data_func ("/documents/upload/metadata_file", service, test_upload_metadata_file);
-		g_test_add_data_func ("/documents/upload/only_metadata", service, test_upload_metadata);
-		g_test_add_data_func ("/documents/upload/metadata_file_in_new_folder", service, test_upload_file_metadata_in_new_folder);
+		g_test_add ("/documents/upload/only_file_get_entry", UploadDocumentData, service, set_up_upload_document, test_upload_file_get_entry,
+		            tear_down_upload_document);
+		g_test_add ("/documents/upload/metadata_file", UploadDocumentData, service, set_up_upload_document, test_upload_metadata_file,
+		            tear_down_upload_document);
+		g_test_add ("/documents/upload/only_metadata", UploadDocumentData, service, set_up_upload_document, test_upload_metadata,
+		            tear_down_upload_document);
+		g_test_add ("/documents/upload/metadata_file_in_new_folder", UploadDocumentData, service, set_up_upload_document_with_folder,
+		            test_upload_file_metadata_in_new_folder, tear_down_upload_document);
 
 		g_test_add_data_func ("/documents/download/download_all_documents", service, test_download_all_documents);
 
