@@ -1222,79 +1222,82 @@ test_update_file (gconstpointer service)
 }
 
 static void
-test_download_all_documents (gconstpointer service)
+_test_document_download (GDataDocumentsDocument *document, GDataService *service)
 {
-	GDataDocumentsFeed *feed;
+	GDataDownloadStream *download_stream;
+	GFileOutputStream *output_stream;
+	GFile *destination_file;
+	GFileInfo *file_info;
+	const gchar *destination_file_extension;
+	gchar *destination_file_name, *destination_file_path;
 	GError *error = NULL;
-	GList *i;
 
-	feed = gdata_documents_service_query_documents (GDATA_DOCUMENTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-
-	for (i = gdata_feed_get_entries (GDATA_FEED (feed)); i != NULL; i = i->next) {
-		GDataDownloadStream *download_stream;
-		GFileOutputStream *output_stream;
-		GFile *destination_file;
-		GFileInfo *file_info;
-		const gchar *destination_file_extension;
-		gchar *destination_file_name, *destination_file_path;
-
-		if (GDATA_IS_DOCUMENTS_PRESENTATION (i->data)) {
-			/* Presentation */
-			destination_file_extension = "odp";
-			download_stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
-			                                                     GDATA_DOCUMENTS_PRESENTATION_PPT, NULL, &error);
-		} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (i->data)) {
-			/* Spreadsheet */
-			destination_file_extension = "ods";
-			download_stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
-			                                                     GDATA_DOCUMENTS_SPREADSHEET_ODS, NULL, &error);
-		} else if (GDATA_IS_DOCUMENTS_TEXT (i->data)) {
-			/* Text document */
-			destination_file_extension = "odt";
-			download_stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (i->data), GDATA_DOCUMENTS_SERVICE (service),
-			                                                     GDATA_DOCUMENTS_TEXT_ODT, NULL, &error);
-		} else {
-			/* Error! */
-			g_assert_not_reached ();
-		}
-
-		g_assert_no_error (error);
-
-		/* Find a destination file */
-		destination_file_name = g_strdup_printf ("%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (i->data)),
-		                                         destination_file_extension);
-		destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
-		g_free (destination_file_name);
-
-		destination_file = g_file_new_for_path (destination_file_path);
-		g_free (destination_file_path);
-
-		/* Download the file */
-		output_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
-		g_assert_no_error (error);
-
-		g_output_stream_splice (G_OUTPUT_STREAM (output_stream), G_INPUT_STREAM (download_stream),
-		                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
-		g_object_unref (output_stream);
-		g_assert_no_error (error);
-
-		/* Check the filesize */
-		file_info = g_file_query_info (destination_file, G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, NULL, &error);
-		g_assert_no_error (error);
-
-		g_assert (g_file_info_get_size (file_info) > 0);
-		/* Checking the content types turns out to be quite involved, and not worth doing as it depends on the local user's content type DB */
-
-		g_object_unref (download_stream);
-
-		/* Delete the file (shouldn't cause the test to fail if this fails) */
-		g_file_delete (destination_file, NULL, NULL);
-		g_object_unref (destination_file);
+	if (GDATA_IS_DOCUMENTS_PRESENTATION (document)) {
+		/* Presentation */
+		destination_file_extension = "odp";
+		download_stream = gdata_documents_document_download (document, GDATA_DOCUMENTS_SERVICE (service),
+		                                                     GDATA_DOCUMENTS_PRESENTATION_PPT, NULL, &error);
+	} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (document)) {
+		/* Spreadsheet */
+		destination_file_extension = "ods";
+		download_stream = gdata_documents_document_download (document, GDATA_DOCUMENTS_SERVICE (service),
+		                                                     GDATA_DOCUMENTS_SPREADSHEET_ODS, NULL, &error);
+	} else if (GDATA_IS_DOCUMENTS_TEXT (document)) {
+		/* Text document */
+		destination_file_extension = "odt";
+		download_stream = gdata_documents_document_download (document, GDATA_DOCUMENTS_SERVICE (service),
+		                                                     GDATA_DOCUMENTS_TEXT_ODT, NULL, &error);
+	} else {
+		/* Error! */
+		g_assert_not_reached ();
 	}
 
-	g_object_unref (feed);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	/* Find a destination file */
+	destination_file_name = g_strdup_printf ("%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (document)),
+	                                         destination_file_extension);
+	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
+	g_free (destination_file_name);
+
+	destination_file = g_file_new_for_path (destination_file_path);
+	g_free (destination_file_path);
+
+	/* Download the file */
+	output_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_output_stream_splice (G_OUTPUT_STREAM (output_stream), G_INPUT_STREAM (download_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_object_unref (output_stream);
+	g_object_unref (download_stream);
+
+	/* Check the file size.
+	 * Checking the content types turns out to be quite involved, and not worth doing, as it depends on the local user's content type DB. */
+	file_info = g_file_query_info (destination_file, G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	g_assert_cmpint (g_file_info_get_size (file_info), >, 0);
+
+	g_object_unref (file_info);
+
+	/* Delete the file (shouldn't cause the test to fail if this fails) */
+	g_file_delete (destination_file, NULL, NULL);
+	g_object_unref (destination_file);
+}
+
+static void
+test_document_download (TempDocumentsData *data, gconstpointer service)
+{
+	_test_document_download (GDATA_DOCUMENTS_DOCUMENT (data->spreadsheet_document), GDATA_SERVICE (service));
+	_test_document_download (GDATA_DOCUMENTS_DOCUMENT (data->presentation_document), GDATA_SERVICE (service));
+	_test_document_download (GDATA_DOCUMENTS_DOCUMENT (data->text_document), GDATA_SERVICE (service));
 }
 
 static void
@@ -1657,7 +1660,8 @@ main (int argc, char *argv[])
 		g_test_add ("/documents/upload/metadata_file_in_new_folder", UploadDocumentData, service, set_up_upload_document_with_folder,
 		            test_upload_file_metadata_in_new_folder, tear_down_upload_document);
 
-		g_test_add_data_func ("/documents/download/download_all_documents", service, test_download_all_documents);
+		g_test_add ("/documents/document/download", TempDocumentsData, service, set_up_temp_documents, test_document_download,
+		            tear_down_temp_documents);
 
 		g_test_add_data_func ("/documents/update/only_metadata", service, test_update_metadata);
 		g_test_add_data_func ("/documents/update/only_file", service, test_update_file);
