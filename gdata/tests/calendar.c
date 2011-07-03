@@ -24,30 +24,6 @@
 #include "gdata.h"
 #include "common.h"
 
-static GDataCalendarCalendar *
-get_calendar (gconstpointer service, GError **error)
-{
-	GDataFeed *calendar_feed;
-	GDataCalendarCalendar *calendar;
-	GList *calendars;
-
-	/* Get a calendar */
-	calendar_feed = gdata_calendar_service_query_own_calendars (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL, NULL, error);
-	g_assert_no_error (*error);
-	g_assert (GDATA_IS_CALENDAR_FEED (calendar_feed));
-	g_clear_error (error);
-
-	calendars = gdata_feed_get_entries (calendar_feed);
-	g_assert (calendars != NULL);
-	calendar = calendars->data;
-	g_assert (GDATA_IS_CALENDAR_CALENDAR (calendar));
-
-	g_object_ref (calendar);
-	g_object_unref (calendar_feed);
-
-	return calendar;
-}
-
 typedef struct {
 	GDataCalendarCalendar *calendar;
 } TempCalendarData;
@@ -1217,14 +1193,11 @@ test_batch (gconstpointer service)
 {
 	GDataBatchOperation *operation;
 	GDataService *service2;
-	GDataCalendarCalendar *calendar;
 	GDataCalendarEvent *event, *event2, *event3;
 	GDataEntry *inserted_entry, *inserted_entry2, *inserted_entry3;
 	gchar *feed_uri;
 	guint op_id, op_id2, op_id3;
 	GError *error = NULL, *entry_error = NULL;
-
-	calendar = get_calendar (service, &error);
 
 	/* Here we hardcode the feed URI, but it should really be extracted from an event feed, as the GDATA_LINK_BATCH link */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
@@ -1324,7 +1297,6 @@ test_batch (gconstpointer service)
 	g_clear_error (&error);
 	g_object_unref (operation);
 	g_object_unref (inserted_entry3);
-	g_object_unref (calendar);
 }
 
 typedef struct {
