@@ -1254,28 +1254,11 @@ test_document_download (TempDocumentsData *data, gconstpointer service)
 }
 
 static void
-test_new_document_with_collaborator (gconstpointer service)
+test_new_document_with_collaborator (TempDocumentData *data, gconstpointer service)
 {
-	GDataDocumentsEntry *document, *new_document;
 	GDataAccessRule *access_rule, *new_access_rule;
 	GDataLink *_link;
-	gchar *upload_uri;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
-
-	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_spreadsheet_new (NULL));
-	gdata_entry_set_title (GDATA_ENTRY (document), "new_with_collaborator");
-
-	/* Insert the document */
-	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	new_document = GDATA_DOCUMENTS_ENTRY (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                                  gdata_documents_service_get_primary_authorization_domain (),
-	                                                                  upload_uri, GDATA_ENTRY (document), NULL, &error));
-	g_free (upload_uri);
-
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (new_document));
 
 	/* New access rule */
 	access_rule = gdata_access_rule_new (NULL);
@@ -1283,7 +1266,7 @@ test_new_document_with_collaborator (gconstpointer service)
 	gdata_access_rule_set_scope (access_rule, GDATA_ACCESS_SCOPE_USER, "libgdata.test@gmail.com");
 
 	/* Set access rules */
-	_link = gdata_entry_look_up_link (GDATA_ENTRY (new_document), GDATA_LINK_ACCESS_CONTROL_LIST);
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (data->document), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 
 	new_access_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
@@ -1292,11 +1275,10 @@ test_new_document_with_collaborator (gconstpointer service)
 	                                                                 GDATA_ENTRY (access_rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_access_rule));
-
-	/* Check if everything is as it should be */
 	g_clear_error (&error);
-	g_object_unref (document);
-	g_object_unref (new_document);
+
+	/* TODO: Check if everything is as it should be */
+
 	g_object_unref (access_rule);
 	g_object_unref (new_access_rule);
 }
@@ -1623,7 +1605,8 @@ main (int argc, char *argv[])
 		g_test_add ("/documents/update/metadata_file", TempDocumentData, service, set_up_temp_document_text, test_update_metadata_file,
 		            tear_down_temp_document);
 
-		g_test_add_data_func ("/documents/access_rules/add_document_with_a_collaborator", service, test_new_document_with_collaborator);
+		g_test_add ("/documents/access_rules/add_document_with_a_collaborator", TempDocumentData, service, set_up_temp_document_spreadsheet,
+		            test_new_document_with_collaborator, tear_down_temp_document);
 
 		g_test_add ("/documents/query/all_documents/with_folder", TempDocumentsData, service, set_up_temp_documents,
 		            test_query_all_documents_with_folder, tear_down_temp_documents);
