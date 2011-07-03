@@ -262,14 +262,78 @@ test_delete_document (TempDocumentData *data, gconstpointer service)
 	data->document = NULL;
 }
 
+typedef struct {
+	TempFolderData parent;
+	GDataDocumentsSpreadsheet *spreadsheet_document;
+	GDataDocumentsPresentation *presentation_document;
+	GDataDocumentsText *text_document;
+} TempDocumentsData;
+
 static void
-test_query_all_documents_with_folder (gconstpointer service)
+set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
+{
+	GDataDocumentsEntry *document;
+	gchar *upload_uri;
+
+	upload_uri = gdata_documents_service_get_upload_uri (NULL);
+
+	/* Create a temporary folder */
+	set_up_temp_folder ((TempFolderData*) data, service);
+
+	/* Create some temporary documents of different types */
+	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_spreadsheet_new (NULL));
+	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Spreadsheet");
+	data->spreadsheet_document = GDATA_DOCUMENTS_SPREADSHEET (
+		gdata_service_insert_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+		                            upload_uri, GDATA_ENTRY (document), NULL, NULL)
+	);
+	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (data->spreadsheet_document));
+	g_object_unref (document);
+
+	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_presentation_new (NULL));
+	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Presentation");
+	data->presentation_document = GDATA_DOCUMENTS_PRESENTATION (
+		gdata_service_insert_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+		                            upload_uri, GDATA_ENTRY (document), NULL, NULL)
+	);
+	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (data->presentation_document));
+	g_object_unref (document);
+
+	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
+	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Text Document");
+	data->text_document = GDATA_DOCUMENTS_TEXT (
+		gdata_service_insert_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+		                            upload_uri, GDATA_ENTRY (document), NULL, NULL)
+	);
+	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->text_document));
+	g_object_unref (document);
+
+	g_free (upload_uri);
+}
+
+static void
+tear_down_temp_documents (TempDocumentsData *data, gconstpointer service)
+{
+	/* Delete the documents */
+	delete_entry (GDATA_DOCUMENTS_ENTRY (data->spreadsheet_document), GDATA_SERVICE (service));
+	g_object_unref (data->spreadsheet_document);
+
+	delete_entry (GDATA_DOCUMENTS_ENTRY (data->presentation_document), GDATA_SERVICE (service));
+	g_object_unref (data->presentation_document);
+
+	delete_entry (GDATA_DOCUMENTS_ENTRY (data->text_document), GDATA_SERVICE (service));
+	g_object_unref (data->text_document);
+
+	/* Delete the folder */
+	tear_down_temp_folder ((TempFolderData*) data, service);
+}
+
+static void
+test_query_all_documents_with_folder (TempDocumentsData *data, gconstpointer service)
 {
 	GDataDocumentsFeed *feed;
 	GDataDocumentsQuery *query;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	query = gdata_documents_query_new (NULL);
 	gdata_documents_query_set_show_folders (query, TRUE);
@@ -278,18 +342,18 @@ test_query_all_documents_with_folder (gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (feed));
 
+	/* TODO: Test the feed */
+
 	g_clear_error (&error);
 	g_object_unref (feed);
 	g_object_unref (query);
 }
 
 static void
-test_query_all_documents (gconstpointer service)
+test_query_all_documents (TempDocumentsData *data, gconstpointer service)
 {
 	GDataDocumentsFeed *feed;
 	GError *error = NULL;
-
-	g_assert (service != NULL);
 
 	feed = gdata_documents_service_query_documents (GDATA_DOCUMENTS_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -301,8 +365,27 @@ test_query_all_documents (gconstpointer service)
 	g_object_unref (feed);
 }
 
+typedef struct {
+	TempDocumentsData parent;
+	GMainLoop *main_loop;
+} TempDocumentsAsyncData;
+
 static void
-test_query_all_documents_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
+set_up_temp_documents_async (TempDocumentsAsyncData *data, gconstpointer service)
+{
+	set_up_temp_documents ((TempDocumentsData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_temp_documents_async (TempDocumentsAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_temp_documents ((TempDocumentsData*) data, service);
+}
+
+static void
+test_query_all_documents_async_cb (GDataService *service, GAsyncResult *async_result, TempDocumentsAsyncData *data)
 {
 	GDataDocumentsFeed *feed;
 	GError *error = NULL;
@@ -313,30 +396,24 @@ test_query_all_documents_async_cb (GDataService *service, GAsyncResult *async_re
 	g_clear_error (&error);
 
 	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
+
+	g_main_loop_quit (data->main_loop);
 	g_object_unref (feed);
 }
 
 static void
-test_query_all_documents_async (gconstpointer service)
+test_query_all_documents_async (TempDocumentsAsyncData *data, gconstpointer service)
 {
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
-	g_assert (service != NULL);
-
 	gdata_documents_service_query_documents_async (GDATA_DOCUMENTS_SERVICE (service), NULL, NULL, NULL, NULL,
-						     NULL, (GAsyncReadyCallback) test_query_all_documents_async_cb, main_loop);
+	                                               NULL, (GAsyncReadyCallback) test_query_all_documents_async_cb, data);
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
+	g_main_loop_run (data->main_loop);
 }
 
 static void
-test_query_all_documents_async_progress_closure (gconstpointer service)
+test_query_all_documents_async_progress_closure (TempDocumentsAsyncData *documents_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
-
-	g_assert (service != NULL);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -344,6 +421,7 @@ test_query_all_documents_async_progress_closure (gconstpointer service)
 	                                               (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                               data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                               (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
 	g_main_loop_run (data->main_loop);
 	g_main_loop_unref (data->main_loop);
 
@@ -1587,10 +1665,14 @@ main (int argc, char *argv[])
 
 		g_test_add_data_func ("/documents/access_rules/add_document_with_a_collaborator", service, test_new_document_with_collaborator);
 
-		g_test_add_data_func ("/documents/query/all_documents_with_folder", service, test_query_all_documents_with_folder);
-		g_test_add_data_func ("/documents/query/all_documents", service, test_query_all_documents);
-		g_test_add_data_func ("/documents/query/all_documents_async", service, test_query_all_documents_async);
-		g_test_add_data_func ("/documents/query/all_documents_async_progress_closure", service, test_query_all_documents_async_progress_closure);
+		g_test_add ("/documents/query/all_documents/with_folder", TempDocumentsData, service, set_up_temp_documents,
+		            test_query_all_documents_with_folder, tear_down_temp_documents);
+		g_test_add ("/documents/query/all_documents", TempDocumentsData, service, set_up_temp_documents, test_query_all_documents,
+		            tear_down_temp_documents);
+		g_test_add ("/documents/query/all_documents/async", TempDocumentsAsyncData, service, set_up_temp_documents_async,
+		            test_query_all_documents_async, tear_down_temp_documents_async);
+		g_test_add ("/documents/query/all_documents/async/progress_closure", TempDocumentsAsyncData, service, set_up_temp_documents_async,
+		            test_query_all_documents_async_progress_closure, tear_down_temp_documents_async);
 
 		g_test_add ("/documents/folders/add_to_folder", FoldersData, service, setup_folders_add_to_folder,
 		            test_folders_add_to_folder, teardown_folders_add_to_folder);
