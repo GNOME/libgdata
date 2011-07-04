@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-16 13:32+0300\n"
-"PO-Revision-Date: 2011-06-16 13:31+0300\n"
+"POT-Creation-Date: 2011-07-04 11:05+0300\n"
+"PO-Revision-Date: 2011-07-04 11:08+0300\n"
 "Last-Translator: Tommi Vainikainen <thv@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: \n"
@@ -104,8 +104,9 @@ msgstr "Tällä tunnuksella pääsy tähän palvelu on kytketty pois käytöstä
 msgid "This service is not available at the moment. (%s)"
 msgstr "Tämä palvelu ei ole saatavilla tällä hetkellä. (%s)"
 
-msgid "Stream is already closed"
-msgstr "Virta on jo suljettu"
+#. Tried to seek too far
+msgid "Invalid seek request"
+msgstr "Virheellinen kelauspyyntö"
 
 msgid "The server rejected the temporary credentials request."
 msgstr "Palvelin hylkäsi tilapäisen valtuutuksen pyynnön."
@@ -247,6 +248,9 @@ msgstr "Virheellinen uudelleenohjaus-URI: %s"
 
 msgid "The entry has already been inserted."
 msgstr "Merkintä on lisätty jo aiemmin."
+
+msgid "Stream is already closed"
+msgstr "Virta on jo suljettu"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
