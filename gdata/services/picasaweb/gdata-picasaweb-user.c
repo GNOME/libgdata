@@ -83,10 +83,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * GDataPicasaWebUser:user:
 	 *
 	 * The username of the user, as seen in feed URLs.
-	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_user
+	 * http://code.google.com/apis/picasaweb/docs/2.0/reference.html#gphoto_user
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_USER,
 	                                 g_param_spec_string ("user",
 	                                                      "User", "The username of the user.",
@@ -97,10 +97,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * GDataPicasaWebUser:nickname:
 	 *
 	 * The user's nickname. This is a user-specified value that should be used when referring to the user by name.
-	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_nickname
+	 * http://code.google.com/apis/picasaweb/docs/2.0/reference.html#gphoto_nickname
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NICKNAME,
 	                                 g_param_spec_string ("nickname",
 	                                                      "Nickname", "The user's nickname.",
@@ -111,10 +111,12 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * GDataPicasaWebUser:quota-limit:
 	 *
 	 * The total amount of space, in bytes, available to the user.
-	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_quotalimit
+	 * http://code.google.com/apis/picasaweb/docs/2.0/reference.html#gphoto_quotalimit
+	 *
+	 * If the #GDataPicasaWebUser does not represent the currently authenticated user, this will be <code class="literal">-1</code>.
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_QUOTA_LIMIT,
 	                                 g_param_spec_int64 ("quota-limit",
 	                                                     "Quota Limit", "The total amount of space, in bytes, available to the user.",
@@ -125,10 +127,12 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * GDataPicasaWebUser:quota-current:
 	 *
 	 * The current amount of space, in bytes, already used by the user.
-	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_quotacurrent
+	 * http://code.google.com/apis/picasaweb/docs/2.0/reference.html#gphoto_quotacurrent
+	 *
+	 * If the #GDataPicasaWebUser does not represent the currently authenticated user, this will be <code class="literal">-1</code>.
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_QUOTA_CURRENT,
 	                                 g_param_spec_int64 ("quota-current",
 	                                                     "Quota Current", "The current amount of space, in bytes, already used by the user.",
@@ -139,10 +143,12 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * GDataPicasaWebUser:max-photos-per-album:
 	 *
 	 * The maximum number of photos allowed in an album.
-	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_maxPhotosPerAlbum
+	 * http://code.google.com/apis/picasaweb/docs/2.0/reference.html#gphoto_maxPhotosPerAlbum
+	 *
+	 * If the #GDataPicasaWebUser does not represent the currently authenticated user, this will be <code class="literal">-1</code>.
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_MAX_PHOTOS_PER_ALBUM,
 	                                 g_param_spec_int ("max-photos-per-album",
 	                                                   "Max Photos Per Album", "The maximum number of photos allowed in an album.",
@@ -153,10 +159,10 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	 * GDataPicasaWebUser:thumbnail-uri:
 	 *
 	 * The URI of a thumbnail-sized portrait of the user.
-	 * http://code.google.com/apis/picasaweb/reference.html#gphoto_thumbnail
+	 * http://code.google.com/apis/picasaweb/docs/2.0/reference.html#gphoto_thumbnail
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_THUMBNAIL_URI,
 	                                 g_param_spec_string ("thumbnail-uri",
 	                                                      "Thumbnail URI", "The URI of a thumbnail-sized portrait of the user.",
