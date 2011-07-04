@@ -258,6 +258,95 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
 	return GDATA_PICASAWEB_USER (user);
 }
 
+static void
+get_user_thread (GSimpleAsyncResult *result, GDataPicasaWebService *service, GCancellable *cancellable)
+{
+	GDataPicasaWebUser *user;
+	GError *error = NULL;
+
+	/* Get the user and return */
+	user = gdata_picasaweb_service_get_user (service, g_simple_async_result_get_op_res_gpointer (result), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+
+		if (user != NULL) {
+			g_object_unref (user);
+		}
+
+		return;
+	}
+
+	/* Replace the username with the user object */
+	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (user), (GDestroyNotify) g_object_unref);
+}
+
+/**
+ * gdata_picasaweb_service_get_user_async:
+ * @self: a #GDataPicasaWebService
+ * @username: (allow-none): the username of the user whose information you wish to retrieve, or %NULL for the currently authenticated user
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the query is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Queries the service to return the user specified by @username.
+ *
+ * For more details, see gdata_picasaweb_service_get_user() which is the synchronous version of this method.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_picasaweb_service_get_user_finish() to get the results of the
+ * operation.
+ *
+ * Since: 0.9.1
+ */
+void
+gdata_picasaweb_service_get_user_async (GDataPicasaWebService *self, const gchar *username, GCancellable *cancellable,
+                                        GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+
+	g_return_if_fail (GDATA_IS_PICASAWEB_SERVICE (self));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_picasaweb_service_get_user_async);
+	g_simple_async_result_set_op_res_gpointer (result, g_strdup (username), (GDestroyNotify) g_free);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_user_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_picasaweb_service_get_user_finish:
+ * @self: a #GDataPicasaWebService
+ * @result: a #GAsyncResult
+ * @error: a #GError, or %NULL
+ *
+ * Finishes an asynchronous user retrieval operation started with gdata_picasaweb_service_get_user_async().
+ *
+ * Return value: (transfer full): a #GDataPicasaWebUser; unref with g_object_unref()
+ *
+ * Since: 0.9.1
+ */
+GDataPicasaWebUser *
+gdata_picasaweb_service_get_user_finish (GDataPicasaWebService *self, GAsyncResult *async_result, GError **error)
+{
+	GSimpleAsyncResult *result;
+
+	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	g_return_val_if_fail (g_simple_async_result_is_valid (async_result, G_OBJECT (self), gdata_picasaweb_service_get_user_async) == TRUE, NULL);
+
+	result = G_SIMPLE_ASYNC_RESULT (async_result);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE) {
+		return NULL;
+	}
+
+	return g_simple_async_result_get_op_res_gpointer (result);
+}
+
 /**
  * gdata_picasaweb_service_query_all_albums:
  * @self: a #GDataPicasaWebService

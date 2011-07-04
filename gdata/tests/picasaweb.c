@@ -1153,6 +1153,22 @@ test_query_all_albums_async_progress_closure (QueryAllAlbumsAsyncData *unused_da
 }
 
 static void
+check_authenticated_user_details (GDataPicasaWebUser *user)
+{
+	g_assert (GDATA_IS_PICASAWEB_USER (user));
+
+	g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "libgdata.picasaweb");
+	g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "libgdata.picasaweb");
+	/* 1GiB: it'll be a beautiful day when this assert gets tripped */
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 1073741824);
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), >=, 0);
+	/* now it's 1000, testing this weakly to avoid having to regularly update it */
+	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), >, 0);
+	/* tested weakly to avoid having to update it regularly */
+	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), !=, NULL);
+}
+
+static void
 test_query_user (gconstpointer service)
 {
 	GDataPicasaWebUser *user;
@@ -1160,17 +1176,119 @@ test_query_user (gconstpointer service)
 
 	user = gdata_picasaweb_service_get_user (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, &error);
 	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	check_authenticated_user_details (user);
+
+	g_object_unref (user);
+}
+
+typedef struct {
+	GMainLoop *main_loop;
+} QueryUserAsyncData;
+
+static void
+set_up_query_user_async (QueryUserAsyncData *data, gconstpointer service)
+{
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_query_user_async (QueryUserAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+}
+
+static void
+test_query_user_async_cb (GDataPicasaWebService *service, GAsyncResult *result, QueryUserAsyncData *data)
+{
+	GDataPicasaWebUser *user;
+	GError *error = NULL;
+
+	user = gdata_picasaweb_service_get_user_finish (service, result, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	check_authenticated_user_details (user);
+
+	g_object_unref (user);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+/* Check that asynchronously querying for the currently authenticated user's details works and returns the correct details. */
+static void
+test_query_user_async (QueryUserAsyncData *data, gconstpointer service)
+{
+	gdata_picasaweb_service_get_user_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, (GAsyncReadyCallback) test_query_user_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
+}
+
+static void
+test_query_user_async_cancellable_cb (GDataPicasaWebService *service, GAsyncResult *result, QueryUserAsyncData *data)
+{
+	GDataPicasaWebUser *user;
+	GError *error = NULL;
+
+	user = gdata_picasaweb_service_get_user_finish (service, result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_assert (user == NULL);
+	g_clear_error (&error);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+/* Check that cancelling an asynchronous query for the currently authenticated user's details works. */
+static void
+test_query_user_async_cancellation (QueryUserAsyncData *data, gconstpointer service)
+{
+	GCancellable *cancellable;
+
+	cancellable = g_cancellable_new ();
+	g_cancellable_cancel (cancellable);
+	gdata_picasaweb_service_get_user_async (GDATA_PICASAWEB_SERVICE (service), NULL, cancellable,
+	                                        (GAsyncReadyCallback) test_query_user_async_cancellable_cb, data);
+
+	g_main_loop_run (data->main_loop);
+
+	g_object_unref (cancellable);
+}
+
+static void
+test_query_user_by_username_async_cb (GDataPicasaWebService *service, GAsyncResult *result, QueryUserAsyncData *data)
+{
+	GDataPicasaWebUser *user;
+	GError *error = NULL;
+
+	user = gdata_picasaweb_service_get_user_finish (service, result, &error);
+	g_assert_no_error (error);
 	g_assert (GDATA_IS_PICASAWEB_USER (user));
 	g_clear_error (&error);
 
-	g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "libgdata.picasaweb");
-	g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "libgdata.picasaweb");
-	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 1073741824); /* 1GiB: it'll be a beautiful day when this assert gets tripped */
-	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), >=, 0);
-	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), >, 0); /* now it's 1000, testing this weakly to avoid having to regularly update it */
-	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), !=, NULL); /* tested weakly to avoid having to update it regularly */
+	g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "philip.withnall");
+	g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "Philip");
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, -1); /* not the logged in user */
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), ==, -1); /* not the logged in user */
+	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), ==, -1); /* not the logged in user */
+	/* tested weakly to avoid having to update it regularly */
+	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), !=, NULL);
 
 	g_object_unref (user);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+/* Check that querying for a user other than the currently authenticated user, asynchronously, gives us an appropriate result. This result should,
+ * for example, not contain any private information about the queried user. (That's a server-side consideration, but libgdata has to handle the
+ * lack of information correctly.) */
+static void
+test_query_user_by_username_async (QueryUserAsyncData *data, gconstpointer service)
+{
+	gdata_picasaweb_service_get_user_async (GDATA_PICASAWEB_SERVICE (service), "philip.withnall", NULL,
+	                                        (GAsyncReadyCallback) test_query_user_by_username_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
 }
 
 typedef struct {
@@ -1738,6 +1856,12 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/picasaweb/query/all_albums/bad_query/with_limits", service, test_query_all_albums_bad_query_with_limits);
 
 		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
+		g_test_add ("/picasaweb/query/user/async", QueryUserAsyncData, service, set_up_query_user_async, test_query_user_async,
+		            tear_down_query_user_async);
+		g_test_add ("/picasaweb/query/user/async/cancellation", QueryUserAsyncData, service, set_up_query_user_async,
+		            test_query_user_async_cancellation, tear_down_query_user_async);
+		g_test_add ("/picasaweb/query/user/by-username/async", QueryUserAsyncData, service, set_up_query_user_async,
+		            test_query_user_by_username_async, tear_down_query_user_async);
 
 		g_test_add ("/picasaweb/insert/album", InsertAlbumData, service, set_up_insert_album, test_insert_album, tear_down_insert_album);
 		g_test_add ("/picasaweb/insert/album/async", InsertAlbumAsyncData, service, set_up_insert_album_async, test_insert_album_async,

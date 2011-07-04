@@ -71,6 +71,10 @@ GDataAuthorizationDomain *gdata_picasaweb_service_get_primary_authorization_doma
 
 GDataPicasaWebUser *gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *username,
                                                       GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_picasaweb_service_get_user_async (GDataPicasaWebService *self, const gchar *username, GCancellable *cancellable,
+                                             GAsyncReadyCallback callback, gpointer user_data);
+GDataPicasaWebUser *gdata_picasaweb_service_get_user_finish (GDataPicasaWebService *self, GAsyncResult *result,
+                                                             GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataFeed *gdata_picasaweb_service_query_all_albums (GDataPicasaWebService *self, GDataQuery *query, const gchar *username, GCancellable *cancellable,
                                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
