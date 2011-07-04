@@ -1,3 +1,58 @@
+Overview of changes from libgdata 0.9.0 to libgdata 0.9.1
+=========================================================
+
+Major changes:
+* Added GDestroyNotify parameters to query-type methods so that they're properly introspectable, breaking API (see below)
+* Fixed seeking in GDataDownloadStream
+* Made the tests individually idempotent, so the test suites should be less of a tangled mess now
+* Fixed uploading to non-default PicasaWeb albums
+* Fixed GDataAuthorizer to re-process requests after refreshing, involving a slight change to the semantics of GDataAuthorizer (see bgo#653535)
+* Ensure that Google Contacts uses HTTPS for everything
+* Fixed the IDs used for Google Documents so that deleting documents now consistently works, even when they're in folders
+
+API changes:
+* Changed the following methods, adding GDestroyNotify parameters for their progress user data parameters:
+  - gdata_access_handler_get_rules_async()
+  - gdata_service_query_async()
+  - gdata_calendar_service_query_all_calendars_async()
+  - gdata_calendar_service_query_own_calendars_async()
+  - gdata_calendar_service_query_events_async()
+  - gdata_contacts_service_query_contacts_async()
+  - gdata_contacts_service_query_groups_async()
+  - gdata_documents_service_query_documents_async()
+  - gdata_picasaweb_service_query_all_albums_async()
+  - gdata_picasaweb_service_query_files_async()
+  - gdata_youtube_service_query_standard_feed_async()
+  - gdata_youtube_service_query_videos_async()
+  - gdata_youtube_service_query_related_async()
+* Added GDataCalendarQuery:max-attendees, gdata_calendar_query_get_max_attendees(), gdata_calendar_query_set_max_attendees()
+* Added GDataCalendarQuery:show-deleted, gdata_calendar_query_show_deleted(), gdata_calendar_query_set_show_deleted()
+* Added gdata_picasaweb_service_get_user_async(), gdata_picasaweb_service_get_user_finish()
+
+Bugs fixed:
+* Bug 649728 — Add introspection annotations for documents_service_query(_async)
+* Bug 639405 — Add max-attendees query parameter
+* Bug 637664 — Fix GSeekable interface implementation in GDataDownloadStream
+* Bug 633359 — Make tests individually idempotent
+* Bug 653535 — Let GDataAuthorizer re-process request after refreshing
+* Bug 653530 — Bogus run-time warnings
+* Bug 653224 — Add gdata_picasaweb_service_get_user_async()
+
+Updated translations:
+* ca, ca@valencia (Joan Duran)
+* cs (Andre Klapper)
+* de (Mario Blättermann)
+* es (Daniel Mustieles)
+* fi (Tommi Vainikainen)
+* gl (Fran Diéguez)
+* he (Yaron Shahrabani)
+* lt (Aurimas Černius)
+* ru (Yuri Kozlov)
+* sl (Matej Urbančič)
+* sr (Мирослав Николић)
+* sv (Daniel Nylander)
+* tr (Muhammet Kara)
+
 Overview of changes from libgdata 0.8.0 to libgdata 0.9.0
 =========================================================
 
