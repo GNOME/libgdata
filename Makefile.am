@@ -172,6 +172,7 @@ private_headers = \
 	gdata/gdata-batch-feed.h	\
 	gdata/gdata-parser.h		\
 	gdata/gdata-buffer.h		\
+	gdata/gd/gdata-gd-feed-link.h	\
 	gdata/exif/gdata-exif-tags.h	\
 	gdata/georss/gdata-georss-where.h
 gdatainclude_HEADERS = \
@@ -314,6 +315,7 @@ gdata_sources = \
 	gdata/exif/gdata-exif-tags.c	\
 	\
 	gdata/gd/gdata-gd-email-address.c	\
+	gdata/gd/gdata-gd-feed-link.c		\
 	gdata/gd/gdata-gd-im-address.c		\
 	gdata/gd/gdata-gd-organization.c	\
 	gdata/gd/gdata-gd-phone-number.c	\
