@@ -2325,3 +2325,21 @@ gdata_youtube_comment_get_type
 <SUBSECTION Private>
 GDataYouTubeCommentPrivate
 </SECTION>
+
+<SECTION>
+<FILE>gdata-picasaweb-comment</FILE>
+<TITLE>GDataPicasaWebComment</TITLE>
+GDataPicasaWebComment
+GDataPicasaWebCommentClass
+gdata_picasaweb_comment_new
+<SUBSECTION Standard>
+GDATA_TYPE_PICASAWEB_COMMENT
+GDATA_PICASAWEB_COMMENT
+GDATA_PICASAWEB_COMMENT_CLASS
+GDATA_IS_PICASAWEB_COMMENT
+GDATA_IS_PICASAWEB_COMMENT_CLASS
+GDATA_PICASAWEB_COMMENT_GET_CLASS
+gdata_picasaweb_comment_get_type
+<SUBSECTION Private>
+GDataPicasaWebCommentPrivate
+</SECTION>

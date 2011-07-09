@@ -109,6 +109,7 @@
 #include <gdata/services/picasaweb/gdata-picasaweb-file.h>
 #include <gdata/services/picasaweb/gdata-picasaweb-enums.h>
 #include <gdata/services/picasaweb/gdata-picasaweb-user.h>
+#include <gdata/services/picasaweb/gdata-picasaweb-comment.h>
 
 /* Google Contacts */
 #include <gdata/services/contacts/gdata-contacts-service.h>

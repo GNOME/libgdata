@@ -1168,6 +1168,456 @@ check_authenticated_user_details (GDataPicasaWebUser *user)
 	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), !=, NULL);
 }
 
+typedef struct {
+	QueryFilesData parent;
+	GDataPicasaWebComment *comment1;
+	GDataPicasaWebComment *comment2;
+	GDataPicasaWebComment *comment3;
+} QueryCommentsData;
+
+static void
+set_up_query_comments (QueryCommentsData *data, gconstpointer service)
+{
+	GDataPicasaWebComment *comment_;
+
+	/* Set up some test albums and files. */
+	set_up_query_files ((QueryFilesData*) data, service);
+
+	/* Insert four test comments on the first test file. */
+	comment_ = gdata_picasaweb_comment_new (NULL);
+	gdata_entry_set_content (GDATA_ENTRY (comment_), "Test comment 1.");
+	data->comment1 = GDATA_PICASAWEB_COMMENT (gdata_commentable_insert_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+	                                                                            GDATA_COMMENT (comment_), NULL, NULL));
+	g_assert (GDATA_IS_PICASAWEB_COMMENT (data->comment1));
+	g_object_unref (comment_);
+
+	comment_ = gdata_picasaweb_comment_new (NULL);
+	gdata_entry_set_content (GDATA_ENTRY (comment_), "Test comment 2.");
+	data->comment2 = GDATA_PICASAWEB_COMMENT (gdata_commentable_insert_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+	                                                                            GDATA_COMMENT (comment_), NULL, NULL));
+	g_assert (GDATA_IS_PICASAWEB_COMMENT (data->comment1));
+	g_object_unref (comment_);
+
+	comment_ = gdata_picasaweb_comment_new (NULL);
+	gdata_entry_set_content (GDATA_ENTRY (comment_), "Test comment 3.");
+	data->comment3 = GDATA_PICASAWEB_COMMENT (gdata_commentable_insert_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+	                                                                            GDATA_COMMENT (comment_), NULL, NULL));
+	g_assert (GDATA_IS_PICASAWEB_COMMENT (data->comment1));
+	g_object_unref (comment_);
+}
+
+static void
+tear_down_query_comments (QueryCommentsData *data, gconstpointer service)
+{
+	/* Delete the test comments. */
+	if (data->comment1 != NULL) {
+		g_assert (gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+		                                            GDATA_COMMENT (data->comment1), NULL, NULL) == TRUE);
+		g_object_unref (data->comment1);
+	}
+
+	if (data->comment2 != NULL) {
+		g_assert (gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+		                                            GDATA_COMMENT (data->comment2), NULL, NULL) == TRUE);
+		g_object_unref (data->comment2);
+	}
+
+	if (data->comment3 != NULL) {
+		g_assert (gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+		                                            GDATA_COMMENT (data->comment3), NULL, NULL) == TRUE);
+		g_object_unref (data->comment3);
+	}
+
+	/* Delete the test files and albums. */
+	tear_down_query_files ((QueryFilesData*) data, service);
+}
+
+static void
+assert_comments_feed (QueryCommentsData *data, GDataFeed *comments_feed)
+{
+	gboolean comment1_seen = FALSE, comment2_seen = FALSE, comment3_seen = FALSE;
+	GList *comments;
+
+	g_assert (GDATA_IS_FEED (comments_feed));
+	g_assert_cmpuint (g_list_length (gdata_feed_get_entries (comments_feed)), >=, 3);
+
+	for (comments = gdata_feed_get_entries (comments_feed); comments != NULL; comments = comments->next) {
+		GList *authors;
+		GDataPicasaWebComment *expected_comment, *actual_comment;
+
+		actual_comment = GDATA_PICASAWEB_COMMENT (comments->data);
+
+		if (strcmp (gdata_entry_get_id (GDATA_ENTRY (data->comment1)), gdata_entry_get_id (GDATA_ENTRY (actual_comment))) == 0) {
+			g_assert (comment1_seen == FALSE);
+			comment1_seen = TRUE;
+			expected_comment = data->comment1;
+		} else if (strcmp (gdata_entry_get_id (GDATA_ENTRY (data->comment2)), gdata_entry_get_id (GDATA_ENTRY (actual_comment))) == 0) {
+			g_assert (comment2_seen == FALSE);
+			comment2_seen = TRUE;
+			expected_comment = data->comment2;
+		} else if (strcmp (gdata_entry_get_id (GDATA_ENTRY (data->comment3)), gdata_entry_get_id (GDATA_ENTRY (actual_comment))) == 0) {
+			g_assert (comment3_seen == FALSE);
+			comment3_seen = TRUE;
+			expected_comment = data->comment3;
+		} else {
+			/* Unknown comment; we'll assume it's been added externally to the test suite. */
+			continue;
+		}
+
+		g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (actual_comment)), ==, gdata_entry_get_title (GDATA_ENTRY (expected_comment)));
+		g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (actual_comment)), ==, gdata_entry_get_content (GDATA_ENTRY (expected_comment)));
+
+		g_assert_cmpuint (g_list_length (gdata_entry_get_authors (GDATA_ENTRY (actual_comment))), >, 0);
+
+		for (authors = gdata_entry_get_authors (GDATA_ENTRY (actual_comment)); authors != NULL; authors = authors->next) {
+			GDataAuthor *author = GDATA_AUTHOR (authors->data);
+
+			/* We can't test these much. */
+			g_assert_cmpstr (gdata_author_get_name (author), !=, NULL);
+			g_assert_cmpstr (gdata_author_get_uri (author), !=, NULL);
+		}
+	}
+}
+
+static void
+test_comment_query (QueryCommentsData *data, gconstpointer service)
+{
+	GDataFeed *comments_feed;
+	GError *error = NULL;
+
+	comments_feed = gdata_commentable_query_comments (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service), NULL, NULL, NULL, NULL,
+	                                                  &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	assert_comments_feed (data, comments_feed);
+
+	g_object_unref (comments_feed);
+}
+
+typedef struct {
+	QueryCommentsData parent;
+	GMainLoop *main_loop;
+} QueryCommentsAsyncData;
+
+static void
+set_up_query_comments_async (QueryCommentsAsyncData *data, gconstpointer service)
+{
+	set_up_query_comments ((QueryCommentsData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_query_comments_async (QueryCommentsAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_query_comments ((QueryCommentsData*) data, service);
+}
+
+static void
+test_comment_query_async_cb (GDataCommentable *commentable, GAsyncResult *result, QueryCommentsAsyncData *data)
+{
+	GDataFeed *comments_feed;
+	GError *error = NULL;
+
+	comments_feed = gdata_commentable_query_comments_finish (commentable, result, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	assert_comments_feed ((QueryCommentsData*) data, comments_feed);
+
+	g_object_unref (comments_feed);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_query_async (QueryCommentsAsyncData *data, gconstpointer service)
+{
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
+	                                        (GAsyncReadyCallback) test_comment_query_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
+}
+
+static void
+test_comment_query_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, QueryCommentsAsyncData *data)
+{
+	GDataFeed *comments_feed;
+	GError *error = NULL;
+
+	comments_feed = gdata_commentable_query_comments_finish (commentable, result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_assert (comments_feed == NULL);
+	g_clear_error (&error);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_query_async_cancellation (QueryCommentsAsyncData *data, gconstpointer service)
+{
+	GCancellable *cancellable;
+
+	cancellable = g_cancellable_new ();
+	g_cancellable_cancel (cancellable);
+
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service), NULL, cancellable, NULL, NULL,
+	                                        NULL, (GAsyncReadyCallback) test_comment_query_async_cancellation_cb, data);
+
+	g_main_loop_run (data->main_loop);
+
+	g_object_unref (cancellable);
+}
+
+/* Test that the progress callbacks from gdata_commentable_query_comments_async() are called correctly.
+ * We take a QueryCommentsAsyncData so that we can guarantee the file exists, but we don't use it much as we don't actually care about the specific
+ * file. */
+static void
+test_comment_query_async_progress_closure (QueryCommentsAsyncData *query_data, gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (query_data->parent.parent.file1), GDATA_SERVICE (service), NULL, NULL,
+	                                        (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                        data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                        (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
+}
+
+typedef struct {
+	QueryFilesData parent;
+	GDataPicasaWebComment *comment;
+	GDataPicasaWebComment *new_comment;
+} InsertCommentData;
+
+static void
+set_up_insert_comment (InsertCommentData *data, gconstpointer service)
+{
+	set_up_query_files ((QueryFilesData*) data, service);
+
+	/* Create a test comment to be inserted. */
+	data->comment = gdata_picasaweb_comment_new (NULL);
+	g_assert (GDATA_IS_PICASAWEB_COMMENT (data->comment));
+
+	gdata_entry_set_content (GDATA_ENTRY (data->comment), "This is a test comment.");
+
+	data->new_comment = NULL;
+}
+
+static void
+tear_down_insert_comment (InsertCommentData *data, gconstpointer service)
+{
+	/* Delete the inserted comment. */
+	if (data->new_comment != NULL) {
+		g_assert (gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+		                                            GDATA_COMMENT (data->new_comment), NULL, NULL) == TRUE);
+		g_object_unref (data->new_comment);
+	}
+
+	if (data->comment != NULL) {
+		g_object_unref (data->comment);
+	}
+
+	tear_down_query_files ((QueryFilesData*) data, service);
+}
+
+static void
+assert_comments_equal (GDataComment *new_comment, GDataPicasaWebComment *original_comment)
+{
+	GList *authors;
+	GDataAuthor *author;
+
+	g_assert (GDATA_IS_PICASAWEB_COMMENT (new_comment));
+	g_assert (GDATA_IS_PICASAWEB_COMMENT (original_comment));
+	g_assert (GDATA_PICASAWEB_COMMENT (new_comment) != original_comment);
+
+	g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (new_comment)), ==, gdata_entry_get_content (GDATA_ENTRY (original_comment)));
+
+	/* Check the author of the new comment. */
+	authors = gdata_entry_get_authors (GDATA_ENTRY (new_comment));
+	g_assert_cmpuint (g_list_length (authors), ==, 1);
+
+	author = GDATA_AUTHOR (authors->data);
+
+	g_assert_cmpstr (gdata_author_get_name (author), ==, "libgdata.picasaweb");
+	g_assert_cmpstr (gdata_author_get_uri (author), ==, "https://picasaweb.google.com/libgdata.picasaweb");
+}
+
+static void
+test_comment_insert (InsertCommentData *data, gconstpointer service)
+{
+	GDataComment *new_comment;
+	GError *error = NULL;
+
+	new_comment = gdata_commentable_insert_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service), GDATA_COMMENT (data->comment),
+	                                                NULL, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	assert_comments_equal (new_comment, data->comment);
+
+	data->new_comment = GDATA_PICASAWEB_COMMENT (new_comment);
+}
+
+typedef struct {
+	InsertCommentData parent;
+	GMainLoop *main_loop;
+} InsertCommentAsyncData;
+
+static void
+set_up_insert_comment_async (InsertCommentAsyncData *data, gconstpointer service)
+{
+	set_up_insert_comment ((InsertCommentData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_insert_comment_async (InsertCommentAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_insert_comment ((InsertCommentData*) data, service);
+}
+
+static void
+test_comment_insert_async_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
+{
+	GDataComment *new_comment;
+	GError *error = NULL;
+
+	new_comment = gdata_commentable_insert_comment_finish (commentable, result, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	assert_comments_equal (new_comment, data->parent.comment);
+
+	data->parent.new_comment = GDATA_PICASAWEB_COMMENT (new_comment);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_insert_async (InsertCommentAsyncData *data, gconstpointer service)
+{
+	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->parent.comment), NULL, (GAsyncReadyCallback) test_comment_insert_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
+}
+
+static void
+test_comment_insert_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
+{
+	GDataComment *new_comment;
+	GError *error = NULL;
+
+	new_comment = gdata_commentable_insert_comment_finish (commentable, result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_assert (new_comment == NULL);
+	g_clear_error (&error);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_insert_async_cancellation (InsertCommentAsyncData *data, gconstpointer service)
+{
+	GCancellable *cancellable;
+
+	cancellable = g_cancellable_new ();
+	g_cancellable_cancel (cancellable);
+
+	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->parent.comment), cancellable,
+	                                        (GAsyncReadyCallback) test_comment_insert_async_cancellation_cb, data);
+
+	g_main_loop_run (data->main_loop);
+
+	g_object_unref (cancellable);
+}
+
+static void
+test_comment_delete (QueryCommentsData *data, gconstpointer service)
+{
+	gboolean success;
+	GError *error = NULL;
+
+	success = gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service), GDATA_COMMENT (data->comment1),
+	                                            NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success == TRUE);
+	g_clear_error (&error);
+
+	g_object_unref (data->comment1);
+	data->comment1 = NULL;
+}
+
+static void
+test_comment_delete_async_cb (GDataCommentable *commentable, GAsyncResult *result, QueryCommentsAsyncData *data)
+{
+	gboolean success;
+	GError *error = NULL;
+
+	success = gdata_commentable_delete_comment_finish (commentable, result, &error);
+	g_assert_no_error (error);
+	g_assert (success == TRUE);
+	g_clear_error (&error);
+
+	g_object_unref (data->parent.comment1);
+	data->parent.comment1 = NULL;
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_delete_async (QueryCommentsAsyncData *data, gconstpointer service)
+{
+	gdata_commentable_delete_comment_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->parent.comment1), NULL, (GAsyncReadyCallback) test_comment_delete_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
+}
+
+static void
+test_comment_delete_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, QueryCommentsAsyncData *data)
+{
+	gboolean success;
+	GError *error = NULL;
+
+	success = gdata_commentable_delete_comment_finish (commentable, result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_assert (success == FALSE);
+	g_clear_error (&error);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_delete_async_cancellation (QueryCommentsAsyncData *data, gconstpointer service)
+{
+	GCancellable *cancellable;
+
+	cancellable = g_cancellable_new ();
+	g_cancellable_cancel (cancellable);
+	gdata_commentable_delete_comment_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->parent.comment1), cancellable,
+	                                        (GAsyncReadyCallback) test_comment_delete_async_cancellation_cb, data);
+
+	g_main_loop_run (data->main_loop);
+
+	g_object_unref (cancellable);
+}
+
 static void
 test_query_user (gconstpointer service)
 {
@@ -1799,6 +2249,26 @@ test_file_properties_coordinates (void)
 }
 
 static void
+test_comment_get_xml (void)
+{
+	GDataPicasaWebComment *comment_;
+
+	comment_ = gdata_picasaweb_comment_new (NULL);
+	gdata_entry_set_content (GDATA_ENTRY (comment_), "This is a comment with <markup> & stüff.");
+
+	/* Check the outputted XML is OK */
+	gdata_test_assert_xml (comment_,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
+			"<title type='text'></title>"
+			"<content type='text'>This is a comment with &lt;markup&gt; &amp; stüff.</content>"
+			"<category term='http://schemas.google.com/photos/2007#comment' scheme='http://schemas.google.com/g/2005#kind'/>"
+		"</entry>");
+
+	g_object_unref (comment_);
+}
+
+static void
 test_query_etag (void)
 {
 	GDataPicasaWebQuery *query = gdata_picasaweb_query_new (NULL);
@@ -1875,6 +2345,29 @@ main (int argc, char *argv[])
 		g_test_add ("/picasaweb/query/files/single", QueryFilesData, service, set_up_query_files, test_query_files_single,
 		            tear_down_query_files);
 
+		g_test_add ("/picasaweb/comment/query", QueryCommentsData, service, set_up_query_comments, test_comment_query,
+		            tear_down_query_comments);
+		g_test_add ("/picasaweb/comment/query/async", QueryCommentsAsyncData, service, set_up_query_comments_async, test_comment_query_async,
+		            tear_down_query_comments_async);
+		g_test_add ("/picasaweb/comment/query/async/cancellation", QueryCommentsAsyncData, service, set_up_query_comments_async,
+		            test_comment_query_async_cancellation, tear_down_query_comments_async);
+		g_test_add ("/picasaweb/comment/query/progress_closure", QueryCommentsAsyncData, service, set_up_query_comments_async,
+		            test_comment_query_async_progress_closure, tear_down_query_comments_async);
+
+		g_test_add ("/picasaweb/comment/insert", InsertCommentData, service, set_up_insert_comment, test_comment_insert,
+		            tear_down_insert_comment);
+		g_test_add ("/picasaweb/comment/insert/async", InsertCommentAsyncData, service, set_up_insert_comment_async, test_comment_insert_async,
+		            tear_down_insert_comment_async);
+		g_test_add ("/picasaweb/comment/insert/async/cancellation", InsertCommentAsyncData, service, set_up_insert_comment_async,
+		            test_comment_insert_async_cancellation, tear_down_insert_comment_async);
+
+		g_test_add ("/picasaweb/comment/delete", QueryCommentsData, service, set_up_query_comments, test_comment_delete,
+		            tear_down_query_comments);
+		g_test_add ("/picasaweb/comment/delete/async", QueryCommentsAsyncData, service, set_up_query_comments_async, test_comment_delete_async,
+		            tear_down_query_comments_async);
+		g_test_add ("/picasaweb/comment/delete/async/cancellation", QueryCommentsAsyncData, service, set_up_query_comments_async,
+		            test_comment_delete_async_cancellation, tear_down_query_comments_async);
+
 		g_test_add ("/picasaweb/upload/default_album", UploadData, service, setup_upload, test_upload_default_album, teardown_upload);
 		g_test_add ("/picasaweb/upload/default_album/async", UploadAsyncData, service, setup_upload_async, test_upload_default_album_async,
 		            teardown_upload_async);
@@ -1895,6 +2388,8 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/picasaweb/file/escaping", test_file_escaping);
 	g_test_add_func ("/picasaweb/file/properties/coordinates", test_file_properties_coordinates);
+
+	g_test_add_func ("/picasaweb/comment/get_xml", test_comment_get_xml);
 
 	g_test_add_func ("/picasaweb/query/etag", test_query_etag);
 

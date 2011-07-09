@@ -26,6 +26,10 @@
  *
  * #GDataPicasaWebFile is a subclass of #GDataEntry to represent a file (photo or video) in an album on Google PicasaWeb.
  *
+ * #GDataPicasaWebFile implements #GDataCommentable, allowing comments on files to be queried using gdata_commentable_query_comments(), new
+ * comments to be added to files using gdata_commentable_insert_comment() and existing comments to be deleted from files using
+ * gdata_commentable_delete_comment().
+ *
  * For more details of Google PicasaWeb's GData API, see the
  * <ulink type="http" url="http://code.google.com/apis/picasaweb/developers_guide_protocol.html">online documentation</ulink>.
  *
@@ -102,6 +106,10 @@
 #include "media/gdata-media-group.h"
 #include "exif/gdata-exif-tags.h"
 #include "georss/gdata-georss-where.h"
+#include "gd/gdata-gd-feed-link.h"
+#include "gdata-commentable.h"
+#include "gdata-picasaweb-comment.h"
+#include "gdata-picasaweb-service.h"
 
 static GObject *gdata_picasaweb_file_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_picasaweb_file_dispose (GObject *object);
@@ -112,6 +120,11 @@ static void get_xml (GDataParsable *parsable, GString *xml_string);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
+GDataAuthorizationDomain *get_authorization_domain (GDataCommentable *self) G_GNUC_CONST;
+static gchar *get_query_comments_uri (GDataCommentable *self) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
+static gchar *get_insert_comment_uri (GDataCommentable *self, GDataComment *comment_) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
+static gboolean is_comment_deletable (GDataCommentable *self, GDataComment *comment_);
+static void gdata_picasaweb_file_commentable_init (GDataCommentableInterface *iface);
 
 struct _GDataPicasaWebFilePrivate {
 	gchar *file_id;
@@ -146,7 +159,7 @@ enum {
 	PROP_CHECKSUM,
 	PROP_TIMESTAMP,
 	PROP_IS_COMMENTING_ENABLED,
-	PROP_COMMENT_COUNT, /* TODO support comments */
+	PROP_COMMENT_COUNT,
 	PROP_ROTATION,
 	PROP_VIDEO_STATUS,
 	PROP_CREDIT,
@@ -166,7 +179,8 @@ enum {
 	PROP_FILE_ID
 };
 
-G_DEFINE_TYPE (GDataPicasaWebFile, gdata_picasaweb_file, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_CODE (GDataPicasaWebFile, gdata_picasaweb_file, GDATA_TYPE_ENTRY,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMMENTABLE, gdata_picasaweb_file_commentable_init))
 
 static void
 gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
@@ -625,6 +639,16 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 }
 
 static void
+gdata_picasaweb_file_commentable_init (GDataCommentableInterface *iface)
+{
+	iface->comment_type = GDATA_TYPE_PICASAWEB_COMMENT;
+	iface->get_authorization_domain = get_authorization_domain;
+	iface->get_query_comments_uri = get_query_comments_uri;
+	iface->get_insert_comment_uri = get_insert_comment_uri;
+	iface->is_comment_deletable = is_comment_deletable;
+}
+
+static void
 notify_title_cb (GDataPicasaWebFile *self, GParamSpec *pspec, gpointer user_data)
 {
 	/* Keep the atom:title and media:group/media:title in sync */
@@ -1032,6 +1056,56 @@ get_entry_uri (const gchar *id)
 	g_strfreev (parts);
 
 	return uri;
+}
+
+GDataAuthorizationDomain *
+get_authorization_domain (GDataCommentable *self)
+{
+	return gdata_picasaweb_service_get_primary_authorization_domain ();
+}
+
+static gchar *
+get_query_comments_uri (GDataCommentable *self)
+{
+	GDataLink *_link;
+	SoupURI *uri;
+	GHashTable *query;
+	gchar *output_uri;
+
+	/* Get the feed link of the form: https://picasaweb.google.com/data/feed/api/user/[userID]/albumid/[albumID]/photoid/[photoID] */
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/g/2005#feed");
+	g_assert (_link != NULL);
+
+	/* We're going to query the comments belonging to the photo, so add the comment kind. This link isn't available as a normal <link> on
+	 * photos. It's of the form: https://picasaweb.google.com/data/feed/api/user/[userID]/albumid/[albumID]/photoid/[photoID]?kind=comment */
+	uri = soup_uri_new (gdata_link_get_uri (_link));
+	query = soup_form_decode (uri->query);
+
+	g_hash_table_replace (query, g_strdup ("kind"), (gchar*) "comment"); /* libsoup only specifies a destruction function for the key */
+	soup_uri_set_query_from_form (uri, query);
+	output_uri = soup_uri_to_string (uri, FALSE);
+
+	g_hash_table_destroy (query);
+	soup_uri_free (uri);
+
+	return output_uri;
+}
+
+static gchar *
+get_insert_comment_uri (GDataCommentable *self, GDataComment *comment_)
+{
+	GDataLink *_link;
+
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/g/2005#feed");
+	g_assert (_link != NULL);
+
+	return g_strdup (gdata_link_get_uri (_link));
+}
+
+static gboolean
+is_comment_deletable (GDataCommentable *self, GDataComment *comment_)
+{
+	return (gdata_entry_look_up_link (GDATA_ENTRY (comment_), GDATA_LINK_EDIT) != NULL) ? TRUE : FALSE;
 }
 
 /**

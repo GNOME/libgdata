@@ -264,7 +264,8 @@ gdata_picasaweb_headers = \
 	gdata/services/picasaweb/gdata-picasaweb-file.h		\
 	gdata/services/picasaweb/gdata-picasaweb-album.h	\
 	gdata/services/picasaweb/gdata-picasaweb-user.h		\
-	gdata/services/picasaweb/gdata-picasaweb-feed.h
+	gdata/services/picasaweb/gdata-picasaweb-feed.h		\
+	gdata/services/picasaweb/gdata-picasaweb-comment.h
 gdatapicasawebinclude_HEADERS = \
 	$(gdata_picasaweb_headers)				\
 	gdata/services/picasaweb/gdata-picasaweb-enums.h
@@ -374,6 +375,7 @@ gdata_sources = \
 	gdata/services/picasaweb/gdata-picasaweb-service.c	\
 	gdata/services/picasaweb/gdata-picasaweb-user.c		\
 	gdata/services/picasaweb/gdata-picasaweb-feed.c		\
+	gdata/services/picasaweb/gdata-picasaweb-comment.c	\
 	\
 	gdata/services/youtube/gdata-youtube-service.c		\
 	gdata/services/youtube/gdata-youtube-video.c		\
