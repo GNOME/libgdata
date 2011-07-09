@@ -350,7 +350,7 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 			break;
 		case PROP_ID: {
 			gchar *uri;
-g_message ("FOOBAR TODO");
+
 			/* Is it unset? */
 			if (priv->document_id == NULL) {
 				g_value_set_string (value, NULL);
