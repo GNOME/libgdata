@@ -153,6 +153,8 @@ gdata_headers = \
 	gdata/gdata-feed.h		\
 	gdata/gdata-service.h		\
 	gdata/gdata-query.h		\
+	gdata/gdata-commentable.h	\
+	gdata/gdata-comment.h		\
 	gdata/gdata-access-handler.h	\
 	gdata/gdata-access-rule.h	\
 	gdata/gdata-parsable.h		\
@@ -290,6 +292,8 @@ gdata_sources = \
 	gdata/gdata-types.c		\
 	gdata/gdata-query.c		\
 	gdata/gdata-parser.c		\
+	gdata/gdata-commentable.c	\
+	gdata/gdata-comment.c		\
 	gdata/gdata-access-handler.c	\
 	gdata/gdata-access-rule.c	\
 	gdata/gdata-parsable.c		\

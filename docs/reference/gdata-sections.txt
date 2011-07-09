@@ -2264,3 +2264,43 @@ gdata_oauth1_authorizer_get_type
 <SUBSECTION Private>
 GDataOAuth1AuthorizerPrivate
 </SECTION>
+
+<SECTION>
+<FILE>gdata-commentable</FILE>
+<TITLE>GDataCommentable</TITLE>
+GDataCommentable
+GDataCommentableInterface
+gdata_commentable_query_comments
+gdata_commentable_query_comments_async
+gdata_commentable_query_comments_finish
+gdata_commentable_insert_comment
+gdata_commentable_insert_comment_async
+gdata_commentable_insert_comment_finish
+gdata_commentable_delete_comment
+gdata_commentable_delete_comment_async
+gdata_commentable_delete_comment_finish
+<SUBSECTION Standard>
+gdata_commentable_get_type
+GDATA_COMMENTABLE
+GDATA_COMMENTABLE_CLASS
+GDATA_COMMENTABLE_GET_IFACE
+GDATA_IS_COMMENTABLE
+GDATA_TYPE_COMMENTABLE
+</SECTION>
+
+<SECTION>
+<FILE>gdata-comment</FILE>
+<TITLE>GDataComment</TITLE>
+GDataComment
+GDataCommentClass
+<SUBSECTION Standard>
+GDATA_TYPE_COMMENT
+GDATA_COMMENT
+GDATA_COMMENT_CLASS
+GDATA_IS_COMMENT
+GDATA_IS_COMMENT_CLASS
+GDATA_COMMENT_GET_CLASS
+gdata_comment_get_type
+<SUBSECTION Private>
+GDataCommentPrivate
+</SECTION>

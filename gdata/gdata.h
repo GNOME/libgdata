@@ -39,6 +39,8 @@
 #include <gdata/gdata-authorization-domain.h>
 #include <gdata/gdata-client-login-authorizer.h>
 #include <gdata/gdata-oauth1-authorizer.h>
+#include <gdata/gdata-commentable.h>
+#include <gdata/gdata-comment.h>
 
 /* Namespaces */
 
