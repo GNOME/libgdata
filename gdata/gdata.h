@@ -92,6 +92,7 @@
 #include <gdata/services/youtube/gdata-youtube-state.h>
 #include <gdata/services/youtube/gdata-youtube-enums.h>
 #include <gdata/services/youtube/gdata-youtube-category.h>
+#include <gdata/services/youtube/gdata-youtube-comment.h>
 
 /* Google Calendar */
 #include <gdata/services/calendar/gdata-calendar-service.h>

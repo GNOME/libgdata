@@ -127,6 +127,7 @@
 			<xi:include href="xml/gdata-youtube-service.xml"/>
 			<xi:include href="xml/gdata-youtube-query.xml"/>
 			<xi:include href="xml/gdata-youtube-video.xml"/>
+			<xi:include href="xml/gdata-youtube-comment.xml"/>
 		</chapter>
 
 		<chapter>

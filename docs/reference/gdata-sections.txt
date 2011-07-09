@@ -2305,3 +2305,23 @@ gdata_comment_get_type
 <SUBSECTION Private>
 GDataCommentPrivate
 </SECTION>
+
+<SECTION>
+<FILE>gdata-youtube-comment</FILE>
+<TITLE>GDataYouTubeComment</TITLE>
+GDataYouTubeComment
+GDataYouTubeCommentClass
+gdata_youtube_comment_new
+gdata_youtube_comment_get_parent_comment_uri
+gdata_youtube_comment_set_parent_comment_uri
+<SUBSECTION Standard>
+GDATA_TYPE_YOUTUBE_COMMENT
+GDATA_YOUTUBE_COMMENT
+GDATA_YOUTUBE_COMMENT_CLASS
+GDATA_IS_YOUTUBE_COMMENT
+GDATA_IS_YOUTUBE_COMMENT_CLASS
+GDATA_YOUTUBE_COMMENT_GET_CLASS
+gdata_youtube_comment_get_type
+<SUBSECTION Private>
+GDataYouTubeCommentPrivate
+</SECTION>

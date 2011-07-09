@@ -1057,6 +1057,81 @@ test_video_escaping (void)
 }
 
 static void
+test_comment_get_xml (void)
+{
+	GDataYouTubeComment *comment_;
+
+	comment_ = gdata_youtube_comment_new (NULL);
+	gdata_entry_set_content (GDATA_ENTRY (comment_), "This is a comment with <markup> & stüff.");
+	gdata_youtube_comment_set_parent_comment_uri (comment_, "http://example.com/?foo=bar&baz=shizzle");
+
+	/* Check the outputted XML is OK */
+	gdata_test_assert_xml (comment_,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
+			"<title type='text'></title>"
+			"<content type='text'>This is a comment with &lt;markup&gt; &amp; stüff.</content>"
+			"<category term='http://gdata.youtube.com/schemas/2007#comment' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<link href='http://example.com/?foo=bar&amp;baz=shizzle' rel='http://gdata.youtube.com/schemas/2007#in-reply-to'/>"
+		"</entry>");
+
+	g_object_unref (comment_);
+}
+
+static void
+notify_cb (GDataYouTubeComment *comment_, GParamSpec *pspec, guint *notification_count)
+{
+	*notification_count = *notification_count + 1;
+}
+
+static void
+test_comment_properties_parent_comment_uri (void)
+{
+	GDataYouTubeComment *comment_;
+	guint notification_count = 0;
+	gchar *parent_comment_uri;
+
+	comment_ = gdata_youtube_comment_new (NULL);
+	g_signal_connect (comment_, "notify::parent-comment-uri", (GCallback) notify_cb, &notification_count);
+
+	/* Default. */
+	g_assert (gdata_youtube_comment_get_parent_comment_uri (comment_) == NULL);
+
+	/* Set the property. */
+	gdata_youtube_comment_set_parent_comment_uri (comment_, "foo");
+	g_assert_cmpuint (notification_count, ==, 1);
+
+	g_assert_cmpstr (gdata_youtube_comment_get_parent_comment_uri (comment_), ==, "foo");
+
+	/* Get the property a different way. */
+	g_object_get (G_OBJECT (comment_),
+	              "parent-comment-uri", &parent_comment_uri,
+	              NULL);
+
+	g_assert_cmpstr (parent_comment_uri, ==, "foo");
+
+	g_free (parent_comment_uri);
+
+	/* Set the property a different way. */
+	g_object_set (G_OBJECT (comment_),
+	              "parent-comment-uri", "bar",
+	              NULL);
+	g_assert_cmpuint (notification_count, ==, 2);
+
+	/* Set the property to the same value. */
+	gdata_youtube_comment_set_parent_comment_uri (comment_, "bar");
+	g_assert_cmpuint (notification_count, ==, 2);
+
+	/* Set the property back to NULL. */
+	gdata_youtube_comment_set_parent_comment_uri (comment_, NULL);
+	g_assert_cmpuint (notification_count, ==, 3);
+
+	g_assert (gdata_youtube_comment_get_parent_comment_uri (comment_) == NULL);
+
+	g_object_unref (comment_);
+}
+
+static void
 test_query_uri (void)
 {
 	gdouble latitude, longitude, radius;
@@ -1213,6 +1288,353 @@ test_query_single_async (gconstpointer service)
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+}
+
+typedef struct {
+	GDataYouTubeVideo *video;
+} CommentData;
+
+static void
+set_up_comment (CommentData *data, gconstpointer service)
+{
+	/* Get a video known to have comments on it. */
+	data->video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                     gdata_youtube_service_get_primary_authorization_domain (),
+	                                                                     "tag:youtube.com,2008:video:RzR2k8yo4NY", NULL,
+	                                                                     GDATA_TYPE_YOUTUBE_VIDEO, NULL, NULL));
+	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->video));
+}
+
+static void
+tear_down_comment (CommentData *data, gconstpointer service)
+{
+	g_object_unref (data->video);
+}
+
+static void
+assert_comments_feed (GDataFeed *comments_feed)
+{
+	GList *comments;
+
+	g_assert (GDATA_IS_FEED (comments_feed));
+
+	for (comments = gdata_feed_get_entries (comments_feed); comments != NULL; comments = comments->next) {
+		GList *authors;
+		GDataYouTubeComment *comment_ = GDATA_YOUTUBE_COMMENT (comments->data);
+
+		/* We can't do much more than this, since we can't reasonably add test comments to public videos, and can't upload a new video
+		 * for each test since it has to go through moderation. */
+		g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (comment_)), !=, NULL);
+		g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (comment_)), !=, NULL);
+
+		g_assert_cmpuint (g_list_length (gdata_entry_get_authors (GDATA_ENTRY (comment_))), >, 0);
+
+		for (authors = gdata_entry_get_authors (GDATA_ENTRY (comment_)); authors != NULL; authors = authors->next) {
+			GDataAuthor *author = GDATA_AUTHOR (authors->data);
+
+			/* Again, we can't test these much. */
+			g_assert_cmpstr (gdata_author_get_name (author), !=, NULL);
+			g_assert_cmpstr (gdata_author_get_uri (author), !=, NULL);
+		}
+	}
+}
+
+static void
+test_comment_query (CommentData *data, gconstpointer service)
+{
+	GDataFeed *comments_feed;
+	GError *error = NULL;
+
+	/* Get the comments feed for the video */
+	comments_feed = gdata_commentable_query_comments (GDATA_COMMENTABLE (data->video), GDATA_SERVICE (service), NULL, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	assert_comments_feed (comments_feed);
+
+	g_object_unref (comments_feed);
+}
+
+typedef struct {
+	CommentData parent;
+	GMainLoop *main_loop;
+} CommentAsyncData;
+
+static void
+set_up_comment_async (CommentAsyncData *data, gconstpointer service)
+{
+	set_up_comment ((CommentData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_comment_async (CommentAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_comment ((CommentData*) data, service);
+}
+
+static void
+test_comment_query_async_cb (GDataCommentable *commentable, GAsyncResult *result, CommentAsyncData *data)
+{
+	GDataFeed *comments_feed;
+	GError *error = NULL;
+
+	comments_feed = gdata_commentable_query_comments_finish (commentable, result, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	assert_comments_feed (comments_feed);
+
+	g_object_unref (comments_feed);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_query_async (CommentAsyncData *data, gconstpointer service)
+{
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
+	                                        (GAsyncReadyCallback) test_comment_query_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
+}
+
+static void
+test_comment_query_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, CommentAsyncData *data)
+{
+	GDataFeed *comments_feed;
+	GError *error = NULL;
+
+	comments_feed = gdata_commentable_query_comments_finish (commentable, result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_assert (comments_feed == NULL);
+	g_clear_error (&error);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_query_async_cancellation (CommentAsyncData *data, gconstpointer service)
+{
+	GCancellable *cancellable;
+
+	cancellable = g_cancellable_new ();
+	g_cancellable_cancel (cancellable);
+
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service), NULL, cancellable, NULL, NULL, NULL,
+	                                        (GAsyncReadyCallback) test_comment_query_async_cancellation_cb, data);
+
+	g_main_loop_run (data->main_loop);
+
+	g_object_unref (cancellable);
+}
+
+/* Test that the progress callbacks from gdata_commentable_query_comments_async() are called correctly.
+ * We take a CommentAsyncData so that we can guarantee the video exists, but we don't use it much as we don't actually care about the specific
+ * video. */
+static void
+test_comment_query_async_progress_closure (CommentAsyncData *query_data, gconstpointer service)
+{
+	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+
+	data->main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (query_data->parent.video), GDATA_SERVICE (service), NULL, NULL,
+	                                        (GDataQueryProgressCallback) gdata_test_async_progress_callback,
+	                                        data, (GDestroyNotify) gdata_test_async_progress_closure_free,
+	                                        (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
+
+	g_main_loop_run (data->main_loop);
+	g_main_loop_unref (data->main_loop);
+
+	/* Check that both callbacks were called exactly once */
+	g_assert_cmpuint (data->progress_destroy_notify_count, ==, 1);
+	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
+
+	g_slice_free (GDataAsyncProgressClosure, data);
+}
+
+typedef struct {
+	CommentData parent;
+	GDataYouTubeComment *comment;
+} InsertCommentData;
+
+static void
+set_up_insert_comment (InsertCommentData *data, gconstpointer service)
+{
+	set_up_comment ((CommentData*) data, service);
+
+	/* Create a test comment to be inserted. */
+	data->comment = gdata_youtube_comment_new (NULL);
+	g_assert (GDATA_IS_YOUTUBE_COMMENT (data->comment));
+
+	gdata_entry_set_content (GDATA_ENTRY (data->comment), "This is a test comment.");
+}
+
+static void
+tear_down_insert_comment (InsertCommentData *data, gconstpointer service)
+{
+	if (data->comment != NULL) {
+		g_object_unref (data->comment);
+	}
+
+	tear_down_comment ((CommentData*) data, service);
+}
+
+static void
+assert_comments_equal (GDataComment *new_comment, GDataYouTubeComment *original_comment)
+{
+	GList *authors;
+	GDataAuthor *author;
+
+	g_assert (GDATA_IS_YOUTUBE_COMMENT (new_comment));
+	g_assert (GDATA_IS_YOUTUBE_COMMENT (original_comment));
+	g_assert (GDATA_YOUTUBE_COMMENT (new_comment) != original_comment);
+
+	g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (new_comment)), ==, gdata_entry_get_content (GDATA_ENTRY (original_comment)));
+	g_assert_cmpstr (gdata_youtube_comment_get_parent_comment_uri (GDATA_YOUTUBE_COMMENT (new_comment)), ==,
+	                 gdata_youtube_comment_get_parent_comment_uri (original_comment));
+
+	/* Check the author of the new comment. */
+	authors = gdata_entry_get_authors (GDATA_ENTRY (new_comment));
+	g_assert_cmpuint (g_list_length (authors), ==, 1);
+
+	author = GDATA_AUTHOR (authors->data);
+
+	g_assert_cmpstr (gdata_author_get_name (author), ==, "GDataTest");
+	g_assert_cmpstr (gdata_author_get_uri (author), ==, "https://gdata.youtube.com/feeds/api/users/gdatatest");
+}
+
+static void
+test_comment_insert (InsertCommentData *data, gconstpointer service)
+{
+	GDataComment *new_comment;
+	GError *error = NULL;
+
+	new_comment = gdata_commentable_insert_comment (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service), GDATA_COMMENT (data->comment),
+	                                                NULL, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	assert_comments_equal (new_comment, data->comment);
+
+	g_object_unref (new_comment);
+}
+
+typedef struct {
+	InsertCommentData parent;
+	GMainLoop *main_loop;
+} InsertCommentAsyncData;
+
+static void
+set_up_insert_comment_async (InsertCommentAsyncData *data, gconstpointer service)
+{
+	set_up_insert_comment ((InsertCommentData*) data, service);
+	data->main_loop = g_main_loop_new (NULL, FALSE);
+}
+
+static void
+tear_down_insert_comment_async (InsertCommentAsyncData *data, gconstpointer service)
+{
+	g_main_loop_unref (data->main_loop);
+	tear_down_insert_comment ((InsertCommentData*) data, service);
+}
+
+static void
+test_comment_insert_async_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
+{
+	GDataComment *new_comment;
+	GError *error = NULL;
+
+	new_comment = gdata_commentable_insert_comment_finish (commentable, result, &error);
+	g_assert_no_error (error);
+	g_clear_error (&error);
+
+	assert_comments_equal (new_comment, data->parent.comment);
+
+	g_object_unref (new_comment);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_insert_async (InsertCommentAsyncData *data, gconstpointer service)
+{
+	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.parent.video), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->parent.comment), NULL, (GAsyncReadyCallback) test_comment_insert_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
+}
+
+static void
+test_comment_insert_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
+{
+	GDataComment *new_comment;
+	GError *error = NULL;
+
+	new_comment = gdata_commentable_insert_comment_finish (commentable, result, &error);
+	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+	g_assert (new_comment == NULL);
+	g_clear_error (&error);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_insert_async_cancellation (InsertCommentAsyncData *data, gconstpointer service)
+{
+	GCancellable *cancellable;
+
+	cancellable = g_cancellable_new ();
+	g_cancellable_cancel (cancellable);
+
+	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.parent.video), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->parent.comment), cancellable,
+	                                        (GAsyncReadyCallback) test_comment_insert_async_cancellation_cb, data);
+
+	g_main_loop_run (data->main_loop);
+
+	g_object_unref (cancellable);
+}
+
+static void
+test_comment_delete (InsertCommentData *data, gconstpointer service)
+{
+	gboolean success;
+	GError *error = NULL;
+
+	/* We attempt to delete a comment which hasn't been inserted here, but that doesn't matter as the function should always immediately
+	 * return an error because deleting YouTube comments isn't allowed. */
+	success = gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service), GDATA_COMMENT (data->comment),
+	                                            NULL, &error);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN);
+	g_assert (success == FALSE);
+	g_clear_error (&error);
+}
+
+static void
+test_comment_delete_async_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
+{
+	gboolean success;
+	GError *error = NULL;
+
+	success = gdata_commentable_delete_comment_finish (commentable, result, &error);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN);
+	g_assert (success == FALSE);
+	g_clear_error (&error);
+
+	g_main_loop_quit (data->main_loop);
+}
+
+static void
+test_comment_delete_async (InsertCommentAsyncData *data, gconstpointer service)
+{
+	/* See the note above in test_comment_delete(). */
+	gdata_commentable_delete_comment_async (GDATA_COMMENTABLE (data->parent.parent.video), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->parent.comment), NULL, (GAsyncReadyCallback) test_comment_delete_async_cb, data);
+
+	g_main_loop_run (data->main_loop);
 }
 
 static void
@@ -1520,6 +1942,26 @@ main (int argc, char *argv[])
 		g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);
 
+		g_test_add ("/youtube/comment/query", CommentData, service, set_up_comment, test_comment_query, tear_down_comment);
+		g_test_add ("/youtube/comment/query/async", CommentAsyncData, service, set_up_comment_async, test_comment_query_async,
+		            tear_down_comment_async);
+		g_test_add ("/youtube/comment/query/async/cancellation", CommentAsyncData, service, set_up_comment_async,
+		            test_comment_query_async_cancellation, tear_down_comment_async);
+		g_test_add ("/youtube/comment/query/async/progress_closure", CommentAsyncData, service, set_up_comment_async,
+		            test_comment_query_async_progress_closure, tear_down_comment_async);
+
+		g_test_add ("/youtube/comment/insert", InsertCommentData, service, set_up_insert_comment, test_comment_insert,
+		            tear_down_insert_comment);
+		g_test_add ("/youtube/comment/insert/async", InsertCommentAsyncData, service, set_up_insert_comment_async, test_comment_insert_async,
+		            tear_down_insert_comment_async);
+		g_test_add ("/youtube/comment/insert/async/cancellation", InsertCommentAsyncData, service, set_up_insert_comment_async,
+		            test_comment_insert_async_cancellation, tear_down_insert_comment_async);
+
+		g_test_add ("/youtube/comment/delete", InsertCommentData, service, set_up_insert_comment, test_comment_delete,
+		            tear_down_insert_comment);
+		g_test_add ("/youtube/comment/delete/async", InsertCommentAsyncData, service, set_up_insert_comment_async, test_comment_delete_async,
+		            tear_down_insert_comment_async);
+
 		g_test_add_data_func ("/youtube/categories", service, test_categories);
 		g_test_add_data_func ("/youtube/categories/async", service, test_categories_async);
 
@@ -1540,6 +1982,9 @@ main (int argc, char *argv[])
 	g_test_add_func ("/youtube/parsing/media:group", test_parsing_media_group);
 
 	g_test_add_func ("/youtube/video/escaping", test_video_escaping);
+
+	g_test_add_func ("/youtube/comment/get_xml", test_comment_get_xml);
+	g_test_add_func ("/youtube/comment/properties/parent-comment-id", test_comment_properties_parent_comment_uri);
 
 	g_test_add_func ("/youtube/query/uri", test_query_uri);
 	g_test_add_func ("/youtube/query/etag", test_query_etag);

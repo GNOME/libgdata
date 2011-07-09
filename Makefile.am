@@ -277,7 +277,8 @@ gdata_youtube_headers = \
 	gdata/services/youtube/gdata-youtube-credit.h	\
 	gdata/services/youtube/gdata-youtube-query.h	\
 	gdata/services/youtube/gdata-youtube-state.h	\
-	gdata/services/youtube/gdata-youtube-category.h
+	gdata/services/youtube/gdata-youtube-category.h	\
+	gdata/services/youtube/gdata-youtube-comment.h
 private_headers += \
 	gdata/services/youtube/gdata-youtube-group.h	\
 	gdata/services/youtube/gdata-youtube-control.h
@@ -382,7 +383,8 @@ gdata_sources = \
 	gdata/services/youtube/gdata-youtube-group.c		\
 	gdata/services/youtube/gdata-youtube-state.c		\
 	gdata/services/youtube/gdata-youtube-control.c		\
-	gdata/services/youtube/gdata-youtube-category.c
+	gdata/services/youtube/gdata-youtube-category.c		\
+	gdata/services/youtube/gdata-youtube-comment.c
 
 main_header = gdata/gdata.h
 public_headers = \

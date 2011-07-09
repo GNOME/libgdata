@@ -25,6 +25,10 @@
  *
  * #GDataYouTubeVideo is a subclass of #GDataEntry to represent a single video on YouTube, either when uploading or querying.
  *
+ * #GDataYouTubeVideo implements #GDataCommentable, allowing comments on videos to be queried using gdata_commentable_query_comments(), and new
+ * comments to be added to videos using gdata_commentable_insert_comment(). Note that deletion of comments on any #GDataYouTubeVideo is not permitted;
+ * gdata_commentable_delete_comment() will always fail if called on a #GDataYouTubeVideo.
+ *
  * For more details of YouTube's GData API, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html">
  * online documentation</ulink>.
  *
@@ -79,6 +83,10 @@
 #include "gdata-youtube-control.h"
 #include "gdata-youtube-enums.h"
 #include "georss/gdata-georss-where.h"
+#include "gd/gdata-gd-feed-link.h"
+#include "gdata-commentable.h"
+#include "gdata-youtube-comment.h"
+#include "gdata-youtube-service.h"
 
 static GObject *gdata_youtube_video_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_youtube_video_dispose (GObject *object);
@@ -90,6 +98,11 @@ static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GEr
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
+static void gdata_youtube_video_commentable_init (GDataCommentableInterface *iface);
+static GDataAuthorizationDomain *get_authorization_domain (GDataCommentable *self) G_GNUC_CONST;
+static gchar *get_query_comments_uri (GDataCommentable *self) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
+static gchar *get_insert_comment_uri (GDataCommentable *self, GDataComment *comment_) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
+static gboolean is_comment_deletable (GDataCommentable *self, GDataComment *comment_);
 
 struct _GDataYouTubeVideoPrivate {
 	guint view_count;
@@ -114,6 +127,9 @@ struct _GDataYouTubeVideoPrivate {
 	/* Other properties */
 	GDataYouTubeControl *youtube_control;
 	gint64 recorded;
+
+	/* Comments */
+	GDataGDFeedLink *comments_feed_link;
 };
 
 enum {
@@ -141,7 +157,8 @@ enum {
 	PROP_LONGITUDE
 };
 
-G_DEFINE_TYPE (GDataYouTubeVideo, gdata_youtube_video, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_CODE (GDataYouTubeVideo, gdata_youtube_video, GDATA_TYPE_ENTRY,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMMENTABLE, gdata_youtube_video_commentable_init))
 
 static void
 gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
@@ -488,6 +505,16 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 }
 
 static void
+gdata_youtube_video_commentable_init (GDataCommentableInterface *iface)
+{
+	iface->comment_type = GDATA_TYPE_YOUTUBE_COMMENT;
+	iface->get_authorization_domain = get_authorization_domain;
+	iface->get_query_comments_uri = get_query_comments_uri;
+	iface->get_insert_comment_uri = get_insert_comment_uri;
+	iface->is_comment_deletable = is_comment_deletable;
+}
+
+static void
 notify_title_cb (GDataYouTubeVideo *self, GParamSpec *pspec, gpointer user_data)
 {
 	/* Update our media:group title */
@@ -543,6 +570,10 @@ gdata_youtube_video_dispose (GObject *object)
 	if (priv->youtube_control != NULL)
 		g_object_unref (priv->youtube_control);
 	priv->youtube_control = NULL;
+
+	if (priv->comments_feed_link != NULL)
+		g_object_unref (priv->comments_feed_link);
+	priv->comments_feed_link = NULL;
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_video_parent_class)->dispose (object);
@@ -806,6 +837,20 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
 			self->priv->rating.count = num_raters_uint;
 			self->priv->rating.average = average_double;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
+			/* gd:comments */
+			xmlNode *child_node;
+
+			/* This is actually the child of the <comments> element */
+			child_node = node->children;
+			if (child_node == NULL) {
+				return gdata_parser_error_required_element_missing ("gd:feedLink", "gd:comments", error);
+			}
+
+			if (gdata_parser_object_from_element (child_node, "feedLink", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GD_FEED_LINK,
+			                                      &(self->priv->comments_feed_link), &success, error) == TRUE) {
+				return success;
+			}
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
@@ -928,6 +973,47 @@ get_entry_uri (const gchar *id)
 	g_strfreev (parts);
 
 	return uri;
+}
+
+static GDataAuthorizationDomain *
+get_authorization_domain (GDataCommentable *self)
+{
+	return gdata_youtube_service_get_primary_authorization_domain ();
+}
+
+static gchar *
+get_query_comments_uri (GDataCommentable *self)
+{
+	GDataGDFeedLink *feed_link;
+
+	feed_link = GDATA_YOUTUBE_VIDEO (self)->priv->comments_feed_link;
+
+	if (feed_link == NULL) {
+		return NULL;
+	}
+
+	return g_strdup (gdata_gd_feed_link_get_uri (feed_link));
+}
+
+static gchar *
+get_insert_comment_uri (GDataCommentable *self, GDataComment *comment_)
+{
+	GDataGDFeedLink *feed_link;
+
+	feed_link = GDATA_YOUTUBE_VIDEO (self)->priv->comments_feed_link;
+
+	if (feed_link == NULL) {
+		return NULL;
+	}
+
+	return g_strdup (gdata_gd_feed_link_get_uri (feed_link));
+}
+
+static gboolean
+is_comment_deletable (GDataCommentable *self, GDataComment *comment_)
+{
+	/* Deletion of comments is unsupported. */
+	return FALSE;
 }
 
 /**
