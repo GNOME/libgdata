@@ -802,6 +802,7 @@ gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain,
 	data->feed_uri = g_strdup (feed_uri);
 	data->query = (query != NULL) ? g_object_ref (query) : NULL;
 	data->entry_type = entry_type;
+	data->feed = NULL;
 	data->progress_callback = progress_callback;
 	data->progress_user_data = progress_user_data;
 	data->destroy_progress_user_data = destroy_progress_user_data;
