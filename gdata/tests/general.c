@@ -579,6 +579,46 @@ test_entry_escaping (void)
 }
 
 static void
+test_entry_links_remove (void)
+{
+	GDataEntry *entry;
+	GDataLink *link_, *link2_;
+	GError *error = NULL;
+
+	/* Since we can't construct a GDataEntry directly, we need to parse it from XML. */
+	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom'>"
+			"<title type='text'>Escaped content &amp; stuff</title>"
+			"<id>http://foo.com/?foo&amp;bar</id>"
+			"<updated>2010-12-10T17:21:24Z</updated>"
+			"<published>2010-12-10T17:21:24Z</published>"
+			"<summary type='text'>Summary &amp; stuff</summary>"
+			"<rights>Free &amp; open source</rights>"
+			"<content type='text'>Content &amp; things.</content>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (entry));
+
+	link_ = gdata_link_new ("http://example.com/", GDATA_LINK_RELATED);
+
+	/* Add a link. */
+	gdata_entry_add_link (entry, link_);
+	g_assert (gdata_entry_look_up_link (entry, GDATA_LINK_RELATED) == link_);
+
+	/* Remove the link. */
+	g_assert (gdata_entry_remove_link (entry, link_) == TRUE);
+	g_assert (gdata_entry_look_up_link (entry, GDATA_LINK_RELATED) == NULL);
+
+	/* Attempt to remove a non-existent link. */
+	link2_ = gdata_link_new ("http://foobar.com/", GDATA_LINK_SELF);
+	g_assert (gdata_entry_remove_link (entry, link2_) == FALSE);
+
+	g_object_unref (link2_);
+	g_object_unref (link_);
+}
+
+static void
 test_feed_parse_xml (void)
 {
 	GDataFeed *feed;
@@ -3639,6 +3679,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);
 	g_test_add_func ("/entry/error_handling", test_entry_error_handling);
 	g_test_add_func ("/entry/escaping", test_entry_escaping);
+	g_test_add_func ("/entry/links/remove", test_entry_links_remove);
 
 	g_test_add_func ("/feed/parse_xml", test_feed_parse_xml);
 	g_test_add_func ("/feed/error_handling", test_feed_error_handling);

@@ -930,6 +930,38 @@ gdata_entry_add_link (GDataEntry *self, GDataLink *_link)
 		self->priv->links = g_list_prepend (self->priv->links, g_object_ref (_link));
 }
 
+/**
+ * gdata_entry_remove_link:
+ * @self: a #GDataEntry
+ * @_link: a #GDataLink to remove
+ *
+ * Removes @_link from the list of links in the given #GDataEntry and decrements its reference count (since the #GDataEntry held a reference to it
+ * while it was in the list).
+ *
+ * Return value: %TRUE if @_link was found in the #GDataEntry and removed, %FALSE if it was not found
+ *
+ * Since: 0.9.2
+ */
+gboolean
+gdata_entry_remove_link (GDataEntry *self, GDataLink *_link)
+{
+	GList *i;
+
+	g_return_val_if_fail (GDATA_IS_ENTRY (self), FALSE);
+	g_return_val_if_fail (GDATA_IS_LINK (_link), FALSE);
+
+	i = g_list_find_custom (self->priv->links, _link, (GCompareFunc) gdata_comparable_compare);
+
+	if (i == NULL) {
+		return FALSE;
+	}
+
+	self->priv->links = g_list_delete_link (self->priv->links, i);
+	g_object_unref (_link);
+
+	return TRUE;
+}
+
 static gint
 link_compare_cb (const GDataLink *_link, const gchar *rel)
 {
