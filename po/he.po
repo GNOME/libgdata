@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-02 10:50+0300\n"
-"PO-Revision-Date: 2011-07-02 10:51+0200\n"
+"POT-Creation-Date: 2011-07-15 11:09+0300\n"
+"PO-Revision-Date: 2011-07-15 11:10+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -127,6 +127,23 @@ msgstr "הגישה של חשבון זה לשירות נוטרלה. (%s)"
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "השירות אינו זמין לעת עתה. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "רשומה זו אינה תומכת בתגובות."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "לא ניתן להוסיף תגובות לרשומה זו."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+msgid "This comment may not be deleted."
+msgstr "לא ניתן למחוק תגובה זו."
 
 #. Tried to seek too far
 #: ../gdata/gdata-download-stream.c:751
@@ -291,8 +308,8 @@ msgstr "התקבל קוד השגיאה %u במהלך פעולה הכמותית: 
 msgid "Invalid redirect URI: %s"
 msgstr "כתובת הפנייה שגויה: %s"
 
-#: ../gdata/gdata-service.c:1324
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:535
+#: ../gdata/gdata-service.c:1325
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:836
 msgid "The entry has already been inserted."
 msgstr "הרשומה כבר נוספה."
@@ -307,7 +324,7 @@ msgstr "התזרים כבר נסגר"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:394
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "התוכן של רכיב מסוג %s‏ (\"%s\") לא הופיעה במבנה RGB הקסדצימלי."
@@ -383,29 +400,29 @@ msgstr "עליך להזדהות כדי להעביר מסמכים ותיקיות.
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "עליך לציין שם משתמש או להזדהות כדי לתשאל משתמש."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:355
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
 msgstr "משתנה בשאילתה לא מורשה עבור אלבומים."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:366
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "עליך לציין שם משתמש או להזדהות כדי לבצע שאילתות מול כל האלבומים."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
 msgstr "לאלבום לא היה קישור להזנה."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:542
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
 msgstr "עליך להזדהות כדי להעלות קובץ."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:618
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
 msgstr "האלבום כבר נוסף."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:625
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "עליך להזדהות כדי להוסיף אלבום."
 
