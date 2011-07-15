@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-29 10:44+0200\n"
-"PO-Revision-Date: 2011-06-29 10:44+0100\n"
+"POT-Creation-Date: 2011-07-15 13:04+0200\n"
+"PO-Revision-Date: 2011-07-15 13:05+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -125,6 +125,26 @@ msgstr "Åtkomsten för detta konto till denna tjänst har inaktiverats. (%s)"
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Denna tjänst är inte tillgänglig för tillfället. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172
+#: ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "Detta objekt saknar stöd för kommentarer."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349
+#: ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "Kommentarer kan inte läggas till i detta objekt."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518
+#: ../gdata/gdata-commentable.c:594
+msgid "This comment may not be deleted."
+msgstr "Denna kommentar kan inte tas bort."
 
 #. Tried to seek too far
 #: ../gdata/gdata-download-stream.c:751
@@ -286,8 +306,8 @@ msgstr "Felkod %u vid körning av en satsoperation: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "Ogiltig URI för omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1324
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:535
+#: ../gdata/gdata-service.c:1325
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:836
 msgid "The entry has already been inserted."
 msgstr "Objektet har redan infogats."
@@ -302,7 +322,7 @@ msgstr "Strömmen är redan stängd"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:394
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Innehållet för ett %s-element (\"%s\") var inte i hexadecimalt RGB-format."
@@ -377,29 +397,29 @@ msgstr "Du måste vara autentiserad för att flytta dokument och mappar."
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "Du måste ange ett användarnamn eller vara autentiserad för att söka efter en användare."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:355
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
 msgstr "Frågeparametern tillåts inte för album."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:366
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr "Du måste ange ett användarnamn eller vara autentiserad för att söka i alla album."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
 msgstr "Albumet saknade en webbkanalslänk."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:542
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
 msgstr "Du måste vara autentiserad för att skicka upp en fil."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:618
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
 msgstr "Albumet har redan infogats."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:625
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "Du måste vara autentiserad för att infoga ett album."
 
@@ -448,6 +468,3 @@ msgstr "Du måste vara autentiserad för att skicka upp en video."
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "Det angivna dokumentet hade en ogiltig innehållstyp."
-
-#~ msgid "The owner's rule may not be deleted."
-#~ msgstr "Ägarens regel får inte tas bort."
