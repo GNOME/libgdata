@@ -2,14 +2,15 @@
 # Copyright © 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
 # Joan Duran <jodufi@gmail.com>, 2009-2011.
+# Gil Forcada <gilforcada@guifi.net>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-01 17:43+0200\n"
-"PO-Revision-Date: 2011-07-01 17:43+0200\n"
-"Last-Translator: Joan Duran <jodufi@gmail.com>\n"
+"POT-Creation-Date: 2011-07-16 13:20+0200\n"
+"PO-Revision-Date: 2011-07-16 13:19+0200\n"
+"Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -126,6 +127,23 @@ msgstr "S'ha inhabilitat l'accés a aquest servei des d'aquest compte. (%s)"
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Aquest servei no està disponible actualment. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "Aquesta entrada no permet fer-hi comentaris."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "No podeu afegir comentaris a aquesta entrada."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+msgid "This comment may not be deleted."
+msgstr "No podeu suprimir aquest missatge."
 
 #. Tried to seek too far
 #: ../gdata/gdata-download-stream.c:751
@@ -290,8 +308,8 @@ msgstr "Codi d'error %u en executar l'operació massiva: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "URI de redireccionament no vàlid: %s"
 
-#: ../gdata/gdata-service.c:1324
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:535
+#: ../gdata/gdata-service.c:1325
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:836
 msgid "The entry has already been inserted."
 msgstr "Aquesta entrada ja fou inserida."
@@ -306,7 +324,7 @@ msgstr "El flux ja està tancat"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:394
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
@@ -387,31 +405,31 @@ msgstr ""
 "Heu d'especificar un nom d'usuari o estar autenticat per consultar un "
 "usuari.."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:355
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
 msgstr "El paràmetre de consulta no és vàlid per als àlbums."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:366
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Heu d'especificar un nom d'usuari o estar autenticat per consultar tots els "
 "àlbums."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
 msgstr "L'àlbum no tenia cap enllaç de canal."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:542
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
 msgstr "Heu d'estar autenticat per pujar un fitxer."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:618
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
 msgstr "Ja s'ha inserit l'àlbum."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:625
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "Heu d'estar autenticat per inserir un àlbum."
 
@@ -467,9 +485,6 @@ msgstr "El vídeo no tenia vídeos relacionats <link>."
 #: ../gdata/services/youtube/gdata-youtube-service.c:843
 msgid "You must be authenticated to upload a video."
 msgstr "Heu d'estar autenticat per pujar un vídeo."
-
-#~ msgid "The owner's rule may not be deleted."
-#~ msgstr "No es pot suprimir la regla del propietari."
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "El tipus de document rebut tenia un tipus de contingut no vàlid."
