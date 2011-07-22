@@ -34,7 +34,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-feed.h"
@@ -47,8 +47,8 @@
 static void gdata_feed_dispose (GObject *object);
 static void gdata_feed_finalize (GObject *object);
 static void gdata_feed_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -410,10 +410,10 @@ typedef struct {
 } ParseData;
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	/* Extract the ETag */
-	GDATA_FEED (parsable)->priv->etag = (gchar*) xmlGetProp (root_node, (xmlChar*) "etag");
+	GDATA_FEED (parsable)->priv->etag = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (root_node), "etag");
 	return TRUE;
 }
 
@@ -426,14 +426,14 @@ typedef struct {
 } ProgressCallbackData;
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataFeed *self = GDATA_FEED (parsable);
 	ParseData *data = user_data;
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
+		if (g_strcmp0 (gxml_dom_xnode_get_node_name (node), "entry") == 0) {
 			/* atom:entry */
 			GDataEntry *entry;
 			GType entry_type;
@@ -471,46 +471,49 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
 	} else if (gdata_parser_is_namespace (node, "http://a9.com/-/spec/opensearch/1.1/") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "totalResults") == 0) {
+		const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+		GXmlDomNodeList *node_list = gxml_dom_xnode_get_child_nodes (node);
+
+		if (g_strcmp0 (node_name, "totalResults") == 0) {
 			/* openSearch:totalResults */
-			xmlChar *total_results_string;
+			gchar *total_results_string;
 
 			/* Duplicate checking */
 			if (self->priv->total_results != 0)
 				return gdata_parser_error_duplicate_element (node, error);
 
 			/* Parse the number */
-			total_results_string = xmlNodeListGetString (doc, node->children, TRUE);
+			total_results_string = gxml_dom_node_list_to_string (node_list, TRUE);
 			if (total_results_string == NULL)
 				return gdata_parser_error_required_content_missing (node, error);
 
 			self->priv->total_results = strtoul ((gchar*) total_results_string, NULL, 10);
-			xmlFree (total_results_string);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "startIndex") == 0) {
+			g_free (total_results_string);
+		} else if (g_strcmp0 (node_name, "startIndex") == 0) {
 			/* openSearch:startIndex */
-			xmlChar *start_index_string;
+			gchar *start_index_string;
 
 			/* Duplicate checking */
 			if (self->priv->start_index != 0)
 				return gdata_parser_error_duplicate_element (node, error);
 
 			/* Parse the number */
-			start_index_string = xmlNodeListGetString (doc, node->children, TRUE);
+			start_index_string = gxml_dom_node_list_to_string (node_list, TRUE);
 			if (start_index_string == NULL)
 				return gdata_parser_error_required_content_missing (node, error);
 
 			self->priv->start_index = strtoul ((gchar*) start_index_string, NULL, 10);
-			xmlFree (start_index_string);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "itemsPerPage") == 0) {
+			g_free (start_index_string);
+		} else if (g_strcmp0 (node_name, "itemsPerPage") == 0) {
 			/* openSearch:itemsPerPage */
-			xmlChar *items_per_page_string;
+			gchar *items_per_page_string;
 
 			/* Duplicate checking */
 			if (self->priv->items_per_page != 0)
 				return gdata_parser_error_duplicate_element (node, error);
 
 			/* Parse the number */
-			items_per_page_string = xmlNodeListGetString (doc, node->children, TRUE);
+			items_per_page_string = gxml_dom_node_list_to_string (node_list, TRUE);
 			if (items_per_page_string == NULL)
 				return gdata_parser_error_required_content_missing (node, error);
 
