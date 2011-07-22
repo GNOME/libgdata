@@ -31,7 +31,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-entry.h"
@@ -48,8 +48,8 @@ static void gdata_entry_dispose (GObject *object);
 static void gdata_entry_finalize (GObject *object);
 static void gdata_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
@@ -412,19 +412,22 @@ gdata_entry_set_property (GObject *object, guint property_id, const GValue *valu
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	/* Extract the ETag */
-	GDATA_ENTRY (parsable)->priv->etag = (gchar*) xmlGetProp (root_node, (xmlChar*) "etag");
+	GDATA_ENTRY (parsable)->priv->etag = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (root_node), "etag");
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+// TODO:GXML: does parse_xml always expect an element for a node?
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *xnode, gpointer user_data, GError **error)
 {
+	const gchar *node_name;
 	gboolean success;
 	GDataEntryPrivate *priv = GDATA_ENTRY (parsable)->priv;
+	GXmlDomElement *node = GXML_DOM_ELEMENT (xnode);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE) {
 		if (gdata_parser_string_from_element (node, "title", P_DEFAULT, &(priv->title), &success, error) == TRUE ||
@@ -440,28 +443,29 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
 		                                             gdata_entry_add_author, parsable, &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "content") == 0) {
+		} else if (g_strcmp0 (gxml_dom_element_get_tag_name (node), "content") == 0) {
 			/* atom:content */
-			priv->content = (gchar*) xmlGetProp (node, (xmlChar*) "src");
+			priv->content = gxml_dom_element_get_attribute (node, "src");
 			priv->content_is_uri = TRUE;
 
 			if (priv->content == NULL) {
-				priv->content = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+				priv->content = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (xnode), TRUE);
 				priv->content_is_uri = FALSE;
 			}
 
 			return TRUE;
 		}
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/gdata/batch") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "id") == 0 ||
-		    xmlStrcmp (node->name, (xmlChar*) "status") == 0 ||
-		    xmlStrcmp (node->name, (xmlChar*) "operation") == 0) {
+		node_name = gxml_dom_element_get_tag_name (node);
+		if (g_strcmp0 (node_name, "id") == 0 ||
+		    g_strcmp0 (node_name, "status") == 0 ||
+		    g_strcmp0 (node_name, "operation") == 0) {
 			/* Ignore batch operation elements; they're handled in GDataBatchFeed */
 			return TRUE;
 		}
 	}
 
-	return GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+	return GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, xnode, user_data, error);
 }
 
 static gboolean
@@ -540,6 +544,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 
 	for (authors = priv->authors; authors != NULL; authors = authors->next)
 		_gdata_parsable_get_xml (GDATA_PARSABLE (authors->data), xml_string, FALSE);
+
+	// TODO:GXML: is there a better way to build XML strings than by hand?  Perhaps using GXml?
 
 	/* Batch operation data */
 	if (priv->batch_id != 0) {
