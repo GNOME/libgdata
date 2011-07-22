@@ -38,7 +38,7 @@
  */
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-gd-feed-link.h"
@@ -49,7 +49,7 @@
 static void gdata_gd_feed_link_finalize (GObject *object);
 static void gdata_gd_feed_link_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_feed_link_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -223,30 +223,33 @@ gdata_gd_feed_link_set_property (GObject *object, guint property_id, const GValu
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel, *href, *count_hint;
+	gchar *rel, *href, *count_hint;
 	GDataGDFeedLink *self = GDATA_GD_FEED_LINK (parsable);
+	GXmlDomElement *root_elem;
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
+	root_elem = GXML_DOM_ELEMENT (root_node);
+
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
 	if (rel != NULL && *rel == '\0') {
-		xmlFree (rel);
+		g_free (rel); // TODO:GXML: do we have to free these?
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	gdata_gd_feed_link_set_relation_type (self, (const gchar*) rel);
-	xmlFree (rel);
+	gdata_gd_feed_link_set_relation_type (self, rel);
+	g_free (rel);
 
-	href = xmlGetProp (root_node, (xmlChar*) "href");
+	href = gxml_dom_element_get_attribute (root_elem, "href");
 	if (href == NULL || *href == '\0') {
-		xmlFree (href);
+		g_free (href);
 		return gdata_parser_error_required_property_missing (root_node, "href", error);
 	}
-	self->priv->uri = (gchar*) href;
+	self->priv->uri = href;
 
-	count_hint = xmlGetProp (root_node, (xmlChar*) "countHint");
+	count_hint = gxml_dom_element_get_attribute (root_elem, "countHint");
 	self->priv->count_hint = (count_hint != NULL) ? strtol ((char*) count_hint, NULL, 10) : -1;
-	xmlFree (count_hint);
+	g_free (count_hint);
 
 	return gdata_parser_boolean_from_property (root_node, "readOnly", &(self->priv->is_read_only), 0, error);
 }
