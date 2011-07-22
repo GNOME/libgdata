@@ -32,13 +32,13 @@
  */
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-batch-feed.h"
 #include "gdata-private.h"
 #include "gdata-batch-private.h"
 
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 
 G_DEFINE_TYPE (GDataBatchFeed, gdata_batch_feed, GDATA_TYPE_FEED)
 
@@ -56,47 +56,53 @@ gdata_batch_feed_init (GDataBatchFeed *self)
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	GDataBatchOperation *operation = GDATA_BATCH_OPERATION (user_data);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
+	if (g_strcmp0 (gxml_dom_xnode_get_node_name (node), "entry") == 0) {
 		GDataEntry *entry = NULL;
-		xmlBuffer *status_response = NULL;
+		gchar *status_response = g_strdup ("");
+		gchar *status_response_new = NULL;
 		gchar *status_reason = NULL;
 		guint id = 0, status_code = 0;
-		xmlNode *entry_node;
+		GXmlDomXNode *entry_node;
 		BatchOperation *op;
-
-		status_response = xmlBufferCreate ();
+		const gchar *entry_node_name;
 
 		/* Parse the child nodes of the <entry> to get the batch namespace elements containing information about this operation */
-		for (entry_node = node->children; entry_node != NULL; entry_node = entry_node->next) {
+		for (entry_node = gxml_dom_xnode_get_first_child (node); entry_node != NULL; entry_node = gxml_dom_xnode_get_next_sibling (entry_node)) {
 			/* We have to be careful about namespaces here, and we can skip text nodes (since none of the nodes we're looking for
 			 * are text nodes) */
-			if (entry_node->type == XML_TEXT_NODE ||
+			if (gxml_dom_xnode_get_node_type (entry_node) == GXML_DOM_NODE_TYPE_TEXT ||  // < TODO:GXML: consider using GXML_DOM_IS_TEXT, but then subclasses (CDATASection) would match? want that?
 			    gdata_parser_is_namespace (entry_node, "http://schemas.google.com/gdata/batch") == FALSE)
 				continue;
 
-			if (xmlStrcmp (entry_node->name, (xmlChar*) "id") == 0) {
+			entry_node_name = gxml_dom_xnode_get_node_name (entry_node);
+
+			if (g_strcmp0 (entry_node_name, "id") == 0) {
 				/* batch:id */
-				xmlChar *id_string = xmlNodeListGetString (doc, entry_node->children, TRUE);
+				gchar *id_string = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (entry_node), TRUE);
 				id = strtoul ((char*) id_string, NULL, 10);
-				xmlFree (id_string);
-			} else if (xmlStrcmp (entry_node->name, (xmlChar*) "status") == 0) {
+				g_free (id_string); // TODO:GXML: do we want to be freeing this?
+			} else if (g_strcmp0 (entry_node_name, "status") == 0) {
 				/* batch:status */
-				xmlChar *status_code_string;
-				xmlNode *child_node;
+				gchar *status_code_string;
+				GXmlDomXNode *child_node;
 
-				status_code_string = xmlGetProp (entry_node, (xmlChar*) "code");
+				status_code_string = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (entry_node), "code");
 				status_code = strtoul ((char*) status_code_string, NULL, 10);
-				xmlFree (status_code_string);
+				g_free (status_code_string); // TODO:GXML: do we want to free this?
 
-				status_reason = (gchar*) xmlGetProp (entry_node, (xmlChar*) "reason");
+				status_reason = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (entry_node), "reason");
 
 				/* Dump the content of the status node, since it's service-specific, and could be anything from plain text to XML */
-				for (child_node = entry_node->children; child_node != NULL; child_node = child_node->next)
-					xmlNodeDump (status_response, doc, child_node, 0, 0);
+
+				for (child_node = gxml_dom_xnode_get_first_child (entry_node); child_node != NULL; child_node = gxml_dom_xnode_get_next_sibling (child_node)) {
+					status_response_new = g_strconcat (status_response, gxml_dom_xnode_to_string (child_node, 0, 0), NULL); // TODO:GXML: want to use a string building thing like gstring
+					g_free (status_response);
+					status_response = status_response_new;
+				}
 			}
 
 			if (id != 0 && status_code != 0)
@@ -123,14 +129,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 			/* Parse the error (it's returned in a service-specific format */
 			g_assert (klass->parse_error_response != NULL);
-			klass->parse_error_response (service, op->type, status_code, status_reason, (gchar*) xmlBufferContent (status_response),
-			                             xmlBufferLength (status_response), &child_error);
+			klass->parse_error_response (service, op->type, status_code, status_reason, status_response,
+			                             strlen (status_response), &child_error);
 
 			/* Run the operation's callback. This takes ownership of @child_error. */
 			_gdata_batch_operation_run_callback (operation, op, NULL, child_error);
 
 			g_free (status_reason);
-			xmlBufferFree (status_response);
+			g_free (status_response);
 
 			/* We return TRUE because we parsed the XML successfully; despite it being an error that we parsed */
 			return TRUE;
@@ -151,13 +157,13 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			g_object_unref (entry);
 
 		g_free (status_reason);
-		xmlBufferFree (status_response);
+		g_free (status_response);
 
 		return TRUE;
 
 error:
 		g_free (status_reason);
-		xmlBufferFree (status_response);
+		g_free (status_response);
 
 		return FALSE;
 	} else if (GDATA_PARSABLE_CLASS (gdata_batch_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
