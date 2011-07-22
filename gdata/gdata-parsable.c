@@ -215,8 +215,8 @@ gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length,
 GDataParsable *
 _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, gpointer user_data, GError **error)
 {
-	xmlDoc *doc;
-	xmlNode *node;
+	GXmlDomDocument *doc;
+	GXmlDomXNode *node;
 	GDataParsable *parsable;
 	static gboolean libxml_initialised = FALSE;
 
@@ -225,34 +225,35 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	g_return_val_if_fail (length >= -1, NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	/* Set up libxml. We do this here to avoid introducing a libgdata setup function, which would be unnecessary hassle. This is the only place
-	 * that libxml can be initialised in the library. */
-	if (libxml_initialised == FALSE) {
-		/* Change the libxml memory allocation functions to be GLib's. This means we don't have to re-allocate all the strings we get from
-		 * libxml, which cuts down on strdup() calls dramatically. */
-		xmlMemSetup ((xmlFreeFunc) g_free, (xmlMallocFunc) g_malloc, (xmlReallocFunc) g_realloc, (xmlStrdupFunc) g_strdup);
-		libxml_initialised = TRUE;
-	}
+	// TODO:GXML: won't need the below anymore!
+	/* /\* Set up libxml. We do this here to avoid introducing a libgdata setup function, which would be unnecessary hassle. This is the only place */
+	/*  * that libxml can be initialised in the library. *\/ */
+	/* if (libxml_initialised == FALSE) { */
+	/* 	/\* Change the libxml memory allocation functions to be GLib's. This means we don't have to re-allocate all the strings we get from */
+	/* 	 * libxml, which cuts down on strdup() calls dramatically. *\/ */
+	/* 	xmlMemSetup ((xmlFreeFunc) g_free, (xmlMallocFunc) g_malloc, (xmlReallocFunc) g_realloc, (xmlStrdupFunc) g_strdup); */
+	/* 	libxml_initialised = TRUE; */
+	/* } */
 
 	if (length == -1)
 		length = strlen (xml);
 
 	/* Parse the XML */
-	doc = xmlReadMemory (xml, length, "/dev/null", NULL, 0);
-	if (doc == NULL) {
-		xmlError *xml_error = xmlGetLastError ();
+	GError *error2 = NULL;
+	doc = gxml_dom_document_new_from_string (xml, &error2); // TODO:GXML: do we want to include params for a URL, for encoding, like xmlReadMemory() ?
+	if (error2 != NULL) { // if (doc == NULL) { // TODO:GXML: check if error was set instead?
 		g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_PARSING_STRING,
 		             /* Translators: the parameter is an error message */
 		             _("Error parsing XML: %s"),
-		             (xml_error != NULL) ? xml_error->message : NULL);
+		             error2->message);
 		return NULL;
 	}
 
 	/* Get the root element */
-	node = xmlDocGetRootElement (doc);
+	node = GXML_DOM_XNODE (gxml_dom_document_get_document_element (doc));
 	if (node == NULL) {
 		/* XML document's empty */
-		xmlFreeDoc (doc);
+		// xmlFreeDoc (doc); // TODO:GXML: should vala->c code have _unref's automatically?  Do I need finalise style methods?
 		g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_EMPTY_DOCUMENT,
 		             _("Error parsing XML: %s"),
 		             /* Translators: this is a dummy error message to be substituted into "Error parsing XML: %s". */
@@ -261,13 +262,13 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	}
 
 	parsable = _gdata_parsable_new_from_xml_node (parsable_type, doc, node, user_data, error);
-	xmlFreeDoc (doc);
+	// xmlFreeDoc (doc); // TODO:GXML: unref it?
 
 	return parsable;
 }
 
 GDataParsable *
-_gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+_gdata_parsable_new_from_xml_node (GType parsable_type, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	GDataParsable *parsable;
 	GDataParsableClass *klass;
@@ -302,13 +303,11 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
 	}
 
 	/* Parse each child element */
-	node = node->children;
-	while (node != NULL) {
+	for (node = gxml_dom_xnode_get_first_child (node); node != NULL; node = gxml_dom_xnode_get_next_sibling (node)) {
 		if (klass->parse_xml (parsable, doc, node, user_data, error) == FALSE) {
 			g_object_unref (parsable);
 			return NULL;
 		}
-		node = node->next;
 	}
 
 	/* Call the post-parse function */
@@ -436,6 +435,8 @@ _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean decl
 		g_string_append_printf (xml_string, "</%s:%s>", klass->element_namespace, klass->element_name);
 	else
 		g_string_append_printf (xml_string, "</%s>", klass->element_name);
+
+	// TODO:GXML: can the above be replaced by something in gxml?
 }
 
 /*
