@@ -29,33 +29,41 @@
 #include "gdata-private.h"
 
 static gchar *
-print_element (xmlNode *node)
+print_element (GXmlDomXNode *node)
 {
-	gboolean node_has_ns = (node->ns == NULL || node->ns->prefix == NULL ||
-	                        xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
+	// TODO:GXML: support namespaces
+	/* gboolean node_has_ns = (node->ns == NULL || node->ns->prefix == NULL || */
+	/*                         xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE; */
+	gboolean node_has_ns = FALSE; // < TODO:GXML: remove
+	GXmlDomXNode *parent = gxml_dom_xnode_get_parent_node (node);
 
-	if (node->parent == NULL) {
+	if (parent == NULL) {
 		/* No parent node */
 		if (node_has_ns == TRUE)
-			return g_strdup_printf ("<%s:%s>", node->ns->prefix, node->name);
+			// return g_strdup_printf ("<%s:%s>", node->ns->prefix, node->name); // TODO:GXML
+			return g_strdup_printf ("NAMESPACENOTSUPPORTED");
 		else
-			return g_strdup_printf ("<%s>", node->name);
+			return g_strdup_printf ("<%s>", gxml_dom_xnode_get_node_name (node));
 	} else {
 		/* We have a parent node, which makes things a lot more complex */
-		gboolean parent_has_ns = (node->parent->type == XML_DOCUMENT_NODE || node->parent->ns == NULL || node->parent->ns->prefix == NULL ||
-		                          xmlStrcmp (node->parent->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
+		// TODO:GXML: support namespaces
+		/* gboolean parent_has_ns = (node->parent->type == XML_DOCUMENT_NODE || node->parent->ns == NULL || node->parent->ns->prefix == NULL || */
+		/*                           xmlStrcmp (node->parent->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE; */
+		gboolean parent_has_ns = FALSE; // < TODO:GXML: remove
 
 		if (parent_has_ns == TRUE && node_has_ns == TRUE)
-			return g_strdup_printf ("<%s:%s/%s:%s>", node->parent->ns->prefix, node->parent->name, node->ns->prefix, node->name);
+			//return g_strdup_printf ("<%s:%s/%s:%s>", node->parent->ns->prefix, node->parent->name, node->ns->prefix, node->name);// TODO:GXML
+			return g_strdup_printf ("NAMESPACENOTSUPPORTED");
 		else if (parent_has_ns == FALSE && node_has_ns == TRUE)
-			return g_strdup_printf ("<%s/%s:%s>", node->parent->name, node->ns->prefix, node->name);
+			//return g_strdup_printf ("<%s/%s:%s>", node->parent->name, node->ns->prefix, node->name);// TODO:GXML
+			return g_strdup_printf ("NAMESPACENOTSUPPORTED");
 		else
-			return g_strdup_printf ("<%s/%s>", node->parent->name, node->name);
+			return g_strdup_printf ("<%s/%s>", gxml_dom_xnode_get_node_name (parent), gxml_dom_xnode_get_node_name (node));
 	}
 }
 
 gboolean
-gdata_parser_error_required_content_missing (xmlNode *element, GError **error)
+gdata_parser_error_required_content_missing (GXmlDomXNode *element, GError **error)
 {
 	gchar *element_string = print_element (element);
 
@@ -70,7 +78,7 @@ gdata_parser_error_required_content_missing (xmlNode *element, GError **error)
 }
 
 gboolean
-gdata_parser_error_not_iso8601_format (xmlNode *element, const gchar *actual_value, GError **error)
+gdata_parser_error_not_iso8601_format (GXmlDomXNode *element, const gchar *actual_value, GError **error)
 {
 	gchar *element_string = print_element (element);
 	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
@@ -86,7 +94,7 @@ gdata_parser_error_not_iso8601_format (xmlNode *element, const gchar *actual_val
 }
 
 gboolean
-gdata_parser_error_unknown_property_value (xmlNode *element, const gchar *property_name, const gchar *actual_value, GError **error)
+gdata_parser_error_unknown_property_value (GXmlDomXNode *element, const gchar *property_name, const gchar *actual_value, GError **error)
 {
 	gchar *property_string, *element_string;
 
@@ -107,7 +115,7 @@ gdata_parser_error_unknown_property_value (xmlNode *element, const gchar *proper
 }
 
 gboolean
-gdata_parser_error_unknown_content (xmlNode *element, const gchar *actual_content, GError **error)
+gdata_parser_error_unknown_content (GXmlDomXNode *element, const gchar *actual_content, GError **error)
 {
 	gchar *element_string = print_element (element);
 
@@ -124,7 +132,7 @@ gdata_parser_error_unknown_content (xmlNode *element, const gchar *actual_conten
 }
 
 gboolean
-gdata_parser_error_required_property_missing (xmlNode *element, const gchar *property_name, GError **error)
+gdata_parser_error_required_property_missing (GXmlDomXNode *element, const gchar *property_name, GError **error)
 {
 	gchar *property_string, *element_string;
 
@@ -145,7 +153,7 @@ gdata_parser_error_required_property_missing (xmlNode *element, const gchar *pro
 }
 
 gboolean
-gdata_parser_error_mutexed_properties (xmlNode *element, const gchar *property1_name, const gchar *property2_name, GError **error)
+gdata_parser_error_mutexed_properties (GXmlDomXNode *element, const gchar *property1_name, const gchar *property2_name, GError **error)
 {
 	gchar *property1_string, *property2_string, *element_string;
 
@@ -186,7 +194,7 @@ gdata_parser_error_required_element_missing (const gchar *element_name, const gc
 }
 
 gboolean
-gdata_parser_error_duplicate_element (xmlNode *element, GError **error)
+gdata_parser_error_duplicate_element (GXmlDomXNode *element, GError **error)
 {
 	gchar *element_string = print_element (element);
 
@@ -280,27 +288,27 @@ gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time)
  * Since: 0.7.0
  */
 gboolean
-gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error)
+gdata_parser_boolean_from_property (GXmlDomXNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error)
 {
-	xmlChar *value = xmlGetProp (element, (xmlChar*) property_name);
+	gchar *value = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (element), property_name);
 
 	if (value == NULL) {
 		/* Missing property */
 		if (default_output == -1)
 			return gdata_parser_error_required_property_missing (element, property_name, error);
 		*output = (default_output == 1) ? TRUE : FALSE;
-	} else if (xmlStrcmp (value, (xmlChar*) "false") == 0) {
+	} else if (g_strcmp0 (value, "false") == 0) {
 		*output = FALSE;
-	} else if (xmlStrcmp (value, (xmlChar*) "true") == 0) {
+	} else if (g_strcmp0 (value, "true") == 0) {
 		*output = TRUE;
 	} else {
 		/* Parsing failed */
-		gdata_parser_error_unknown_property_value (element, property_name, (gchar*) value, error);
-		xmlFree (value);
+		gdata_parser_error_unknown_property_value (element, property_name, value, error);
+		g_free (value);
 		return FALSE;
 	}
 
-	xmlFree (value);
+	g_free (value);
 	return TRUE;
 }
 
@@ -317,11 +325,12 @@ gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name
  * Since: 0.7.0
  */
 gboolean
-gdata_parser_is_namespace (xmlNode *element, const gchar *namespace_uri)
+gdata_parser_is_namespace (GXmlDomXNode *element, const gchar *namespace_uri)
 {
-	if ((element->ns != NULL && xmlStrcmp (element->ns->href, (const xmlChar*) namespace_uri) == 0) ||
-	    (element->ns == NULL && strcmp (namespace_uri, "http://www.w3.org/2005/Atom") == 0))
-		return TRUE;
+	// TODO:GXML: namespace support
+	/* if ((element->ns != NULL && xmlStrcmp (element->ns->href, (const xmlChar*) namespace_uri) == 0) || */
+	/*     (element->ns == NULL && strcmp (namespace_uri, "http://www.w3.org/2005/Atom") == 0)) */
+	/* 	return TRUE; */
 	return FALSE;
 }
 
@@ -354,13 +363,13 @@ gdata_parser_is_namespace (xmlNode *element, const gchar *namespace_uri)
  * Since: 0.7.0
  */
 gboolean
-gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+gdata_parser_string_from_element (GXmlDomXNode *element, const gchar *element_name, GDataParserOptions options,
                                   gchar **output, gboolean *success, GError **error)
 {
-	xmlChar *text;
+	gchar *text;
 
 	/* Check it's the right element */
-	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
+	if (g_strcmp0 (gxml_dom_xnode_get_node_name (element), element_name) != 0)
 		return FALSE;
 
 	/* Check if the output string has already been set */
@@ -370,19 +379,20 @@ gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, G
 	}
 
 	/* Get the string and check it for NULLness or emptiness */
-	text = xmlNodeListGetString (element->doc, element->children, TRUE);
+	text = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (element), TRUE);
 	if ((options & P_REQUIRED && text == NULL) || (options & P_NON_EMPTY && text != NULL && *text == '\0')) {
-		xmlFree (text);
+		g_free (text); // TODO:GXML: make sure return value of node_list_to_string (and other to_strings) is alloc'd
 		*success = gdata_parser_error_required_content_missing (element, error);
 		return TRUE;
 	} else if (options & P_DEFAULT && (text == NULL || *text == '\0')) {
-		text = (xmlChar*) g_strdup ("");
+		text = g_strdup ("");
 	}
 
 	/* Success! */
 	g_free (*output);
 	*output = (gchar*) text;
 	*success = TRUE;
+	// TODO:GXML: is gdata failing to free text now?  I think so
 
 	return TRUE;
 }
@@ -417,14 +427,14 @@ gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, G
  * Since: 0.7.0
  */
 gboolean
-gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+gdata_parser_int64_from_element (GXmlDomXNode *element, const gchar *element_name, GDataParserOptions options,
                                  gint64 *output, gboolean *success, GError **error)
 {
-	xmlChar *text;
+	gchar *text;
 	GTimeVal time_val;
 
 	/* Check it's the right element */
-	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
+	if (g_strcmp0 (gxml_dom_xnode_get_node_name (element), element_name) != 0)
 		return FALSE;
 
 	/* Check if the output time val has already been set */
@@ -434,24 +444,24 @@ gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GD
 	}
 
 	/* Get the string and check it for NULLness */
-	text = xmlNodeListGetString (element->doc, element->children, TRUE);
+	text = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (element), TRUE);
 	if (options & P_REQUIRED && (text == NULL || *text == '\0')) {
-		xmlFree (text);
+		g_free (text);
 		*success = gdata_parser_error_required_content_missing (element, error);
 		return TRUE;
 	}
 
 	/* Attempt to parse the string as a GTimeVal */
-	if (g_time_val_from_iso8601 ((gchar*) text, &time_val) == FALSE) {
-		*success = gdata_parser_error_not_iso8601_format (element, (gchar*) text, error);
-		xmlFree (text);
+	if (g_time_val_from_iso8601 (text, &time_val) == FALSE) {
+		*success = gdata_parser_error_not_iso8601_format (element, text, error);
+		g_free (text);
 		return TRUE;
 	}
 
 	*output = time_val.tv_sec;
 
 	/* Success! */
-	xmlFree (text);
+	g_free (text);
 	*success = TRUE;
 
 	return TRUE;
@@ -495,7 +505,7 @@ gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GD
  * Since: 0.7.0
  */
 gboolean
-gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
+gdata_parser_object_from_element_setter (GXmlDomXNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
                                          gpointer /* GDataParserSetterFunc */ _setter, gpointer /* GDataParsable * */ _parent_parsable,
                                          gboolean *success, GError **error)
 {
@@ -507,11 +517,11 @@ gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_
 	parent_parsable = (GDataParsable*) _parent_parsable;
 
 	/* Check it's the right element */
-	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
+	if (g_strcmp0 (gxml_dom_xnode_get_node_name (element), element_name) != 0)
 		return FALSE;
 
 	/* Get the object and check for instantiation failure */
-	parsable = _gdata_parsable_new_from_xml_node (object_type, element->doc, element, NULL, error);
+	parsable = _gdata_parsable_new_from_xml_node (object_type, gxml_dom_xnode_get_owner_document (element), element, NULL, error);
 	if (options & P_REQUIRED && parsable == NULL) {
 		/* The error has already been set by _gdata_parsable_new_from_xml_node() */
 		*success = FALSE;
@@ -561,7 +571,7 @@ gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_
  * Since: 0.7.0
  */
 gboolean
-gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
+gdata_parser_object_from_element (GXmlDomXNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
                                   gpointer /* GDataParsable ** */ _output, gboolean *success, GError **error)
 {
 	GDataParsable *parsable, **output;
@@ -570,7 +580,7 @@ gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, G
 	output = (GDataParsable**) _output;
 
 	/* Check it's the right element */
-	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
+	if (g_strcmp0 (gxml_dom_xnode_get_node_name (element), element_name) != 0)
 		return FALSE;
 
 	/* If we're not using a setter, check if the output already exists */
@@ -580,7 +590,7 @@ gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, G
 	}
 
 	/* Get the object and check for instantiation failure */
-	parsable = _gdata_parsable_new_from_xml_node (object_type, element->doc, element, NULL, error);
+	parsable = _gdata_parsable_new_from_xml_node (object_type, gxml_dom_xnode_get_owner_document (element), element, NULL, error);
 	if (options & P_REQUIRED && parsable == NULL) {
 		/* The error has already been set by _gdata_parsable_new_from_xml_node() */
 		*success = FALSE;

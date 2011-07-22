@@ -422,12 +422,11 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 static gboolean
 // TODO:GXML: does parse_xml always expect an element for a node?
-parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *xnode, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	const gchar *node_name;
 	gboolean success;
 	GDataEntryPrivate *priv = GDATA_ENTRY (parsable)->priv;
-	GXmlDomElement *node = GXML_DOM_ELEMENT (xnode);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE) {
 		if (gdata_parser_string_from_element (node, "title", P_DEFAULT, &(priv->title), &success, error) == TRUE ||
@@ -443,20 +442,20 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *xnode, g
 		    gdata_parser_object_from_element_setter (node, "author", P_REQUIRED, GDATA_TYPE_AUTHOR,
 		                                             gdata_entry_add_author, parsable, &success, error) == TRUE) {
 			return success;
-		} else if (g_strcmp0 (gxml_dom_element_get_tag_name (node), "content") == 0) {
+		} else if (g_strcmp0 (gxml_dom_xnode_get_node_name (node), "content") == 0) {
 			/* atom:content */
-			priv->content = gxml_dom_element_get_attribute (node, "src");
+			priv->content = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "src");
 			priv->content_is_uri = TRUE;
 
 			if (priv->content == NULL) {
-				priv->content = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (xnode), TRUE);
+				priv->content = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (node), TRUE);
 				priv->content_is_uri = FALSE;
 			}
 
 			return TRUE;
 		}
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/gdata/batch") == TRUE) {
-		node_name = gxml_dom_element_get_tag_name (node);
+		node_name = gxml_dom_xnode_get_node_name (node);
 		if (g_strcmp0 (node_name, "id") == 0 ||
 		    g_strcmp0 (node_name, "status") == 0 ||
 		    g_strcmp0 (node_name, "operation") == 0) {
@@ -465,7 +464,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *xnode, g
 		}
 	}
 
-	return GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, xnode, user_data, error);
+	return GDATA_PARSABLE_CLASS (gdata_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 }
 
 static gboolean

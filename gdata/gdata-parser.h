@@ -26,14 +26,14 @@
 
 G_BEGIN_DECLS
 
-gboolean gdata_parser_error_required_content_missing (xmlNode *element, GError **error);
-gboolean gdata_parser_error_not_iso8601_format (xmlNode *element, const gchar *actual_value, GError **error);
-gboolean gdata_parser_error_unknown_property_value (xmlNode *element, const gchar *property_name, const gchar *actual_value, GError **error);
-gboolean gdata_parser_error_unknown_content (xmlNode *element, const gchar *actual_content, GError **error);
-gboolean gdata_parser_error_required_property_missing (xmlNode *element, const gchar *property_name, GError **error);
-gboolean gdata_parser_error_mutexed_properties (xmlNode *element, const gchar *property1_name, const gchar *property2_name, GError **error);
+gboolean gdata_parser_error_required_content_missing (GXmlDomXNode *element, GError **error);
+gboolean gdata_parser_error_not_iso8601_format (GXmlDomXNode *element, const gchar *actual_value, GError **error);
+gboolean gdata_parser_error_unknown_property_value (GXmlDomXNode *element, const gchar *property_name, const gchar *actual_value, GError **error);
+gboolean gdata_parser_error_unknown_content (GXmlDomXNode *element, const gchar *actual_content, GError **error);
+gboolean gdata_parser_error_required_property_missing (GXmlDomXNode *element, const gchar *property_name, GError **error);
+gboolean gdata_parser_error_mutexed_properties (GXmlDomXNode *element, const gchar *property1_name, const gchar *property2_name, GError **error);
 gboolean gdata_parser_error_required_element_missing (const gchar *element_name, const gchar *parent_element_name, GError **error);
-gboolean gdata_parser_error_duplicate_element (xmlNode *element, GError **error);
+gboolean gdata_parser_error_duplicate_element (GXmlDomXNode *element, GError **error);
 
 gboolean gdata_parser_int64_from_date (const gchar *date, gint64 *_time);
 gchar *gdata_parser_date_from_int64 (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
@@ -65,18 +65,18 @@ typedef enum {
 
 typedef void (*GDataParserSetterFunc) (GDataParsable *parent_parsable, GDataParsable *parsable);
 
-gboolean gdata_parser_boolean_from_property (xmlNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error);
+gboolean gdata_parser_boolean_from_property (GXmlDomXNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error);
 
-gboolean gdata_parser_is_namespace (xmlNode *element, const gchar *namespace_uri);
+gboolean gdata_parser_is_namespace (GXmlDomXNode *element, const gchar *namespace_uri);
 
-gboolean gdata_parser_string_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+gboolean gdata_parser_string_from_element (GXmlDomXNode *element, const gchar *element_name, GDataParserOptions options,
                                            gchar **output, gboolean *success, GError **error);
-gboolean gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+gboolean gdata_parser_int64_from_element (GXmlDomXNode *element, const gchar *element_name, GDataParserOptions options,
                                           gint64 *output, gboolean *success, GError **error);
-gboolean gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
+gboolean gdata_parser_object_from_element_setter (GXmlDomXNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
                                                   gpointer /* GDataParserSetterFunc */ _setter, gpointer /* GDataParsable * */ _parent_parsable,
                                                   gboolean *success, GError **error);
-gboolean gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
+gboolean gdata_parser_object_from_element (GXmlDomXNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
                                            gpointer /* GDataParsable ** */ _output, gboolean *success, GError **error);
 
 void gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
