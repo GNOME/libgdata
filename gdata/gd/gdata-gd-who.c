@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gd-who.h"
 #include "gdata-parsable.h"
@@ -41,8 +41,8 @@ static void gdata_gd_who_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_who_finalize (GObject *object);
 static void gdata_gd_who_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_who_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-/*static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);*/
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+/*static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);*/
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 /*static void get_xml (GDataParsable *parsable, GString *xml_string);*/
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -212,33 +212,34 @@ gdata_gd_who_set_property (GObject *object, guint property_id, const GValue *val
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel, *email;
+	gchar *rel, *email;
 	GDataGDWhoPrivate *priv = GDATA_GD_WHO (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
 	if (rel != NULL && *rel == '\0') {
-		xmlFree (rel);
+		g_free (rel);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	email = xmlGetProp (root_node, (xmlChar*) "email");
+	email = gxml_dom_element_get_attribute (root_elem, "email");
 	if (email != NULL && *email == '\0') {
-		xmlFree (rel);
-		xmlFree (email);
+		g_free (rel);
+		g_free (email);
 		return gdata_parser_error_required_property_missing (root_node, "email", error);
 	}
 
-	priv->relation_type = (gchar*) rel;
-	priv->value_string = (gchar*) xmlGetProp (root_node, (xmlChar*) "valueString");
-	priv->email_address = (gchar*) email;
+	priv->relation_type = rel;
+	priv->value_string = gxml_dom_element_get_attribute (root_elem, "valueString");
+	priv->email_address = email;
 
 	return TRUE;
 }
 
 /*static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	GDataGDWhoPrivate *priv = GDATA_GD_WHO (parsable)->priv;
 

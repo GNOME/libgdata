@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gd-reminder.h"
 #include "gdata-parsable.h"
@@ -42,7 +42,7 @@ static void gdata_gd_reminder_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_reminder_finalize (GObject *object);
 static void gdata_gd_reminder_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_reminder_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -238,42 +238,43 @@ gdata_gd_reminder_set_property (GObject *object, guint property_id, const GValue
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	GDataGDReminderPrivate *priv = GDATA_GD_REMINDER (parsable)->priv;
-	xmlChar *absolute_time, *relative_time;
+	gchar *absolute_time, *relative_time;
 	gint64 absolute_time_int64;
 	gint relative_time_int = -1;
 	gboolean is_absolute_time = FALSE;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Absolute time */
-	absolute_time = xmlGetProp (root_node, (xmlChar*) "absoluteTime");
+	absolute_time = gxml_dom_element_get_attribute (root_elem, "absoluteTime");
 	if (absolute_time != NULL) {
 		is_absolute_time = TRUE;
-		if (gdata_parser_int64_from_iso8601 ((gchar*) absolute_time, &absolute_time_int64) == FALSE) {
+		if (gdata_parser_int64_from_iso8601 (absolute_time, &absolute_time_int64) == FALSE) {
 			/* Error */
-			gdata_parser_error_not_iso8601_format (root_node, (gchar*) absolute_time, error);
-			xmlFree (absolute_time);
+			gdata_parser_error_not_iso8601_format (root_node, absolute_time, error);
+			g_free (absolute_time);
 			return FALSE;
 		}
-		xmlFree (absolute_time);
+		g_free (absolute_time);
 	}
 
 	/* Relative time */
-	relative_time = xmlGetProp (root_node, (xmlChar*) "days");
+	relative_time = gxml_dom_element_get_attribute (root_elem, "days");
 	if (relative_time != NULL) {
-		relative_time_int = strtol ((gchar*) relative_time, NULL, 10) * 60 * 24;
+		relative_time_int = strtol (relative_time, NULL, 10) * 60 * 24;
 	} else {
-		relative_time = xmlGetProp (root_node, (xmlChar*) "hours");
+		relative_time = gxml_dom_element_get_attribute (root_elem, "hours");
 		if (relative_time != NULL) {
-			relative_time_int = strtol ((gchar*) relative_time, NULL, 10) * 60;
+			relative_time_int = strtol (relative_time, NULL, 10) * 60;
 		} else {
-			relative_time = xmlGetProp (root_node, (xmlChar*) "minutes");
+			relative_time = gxml_dom_element_get_attribute (root_elem, "minutes");
 			if (relative_time != NULL)
-				relative_time_int = strtol ((gchar*) relative_time, NULL, 10);
+				relative_time_int = strtol (relative_time, NULL, 10);
 		}
 	}
-	xmlFree (relative_time);
+	g_free (relative_time);
 
 	if (is_absolute_time == TRUE) {
 		priv->absolute_time = absolute_time_int64;
@@ -283,7 +284,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		priv->relative_time = relative_time_int;
 	}
 
-	priv->method = (gchar*) xmlGetProp (root_node, (xmlChar*) "method");
+	priv->method = gxml_dom_element_get_attribute (root_elem, "method");
 
 	return TRUE;
 }

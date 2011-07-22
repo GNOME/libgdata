@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gd-when.h"
 #include "gdata-gd-reminder.h"
@@ -45,8 +45,8 @@ static void gdata_gd_when_dispose (GObject *object);
 static void gdata_gd_when_finalize (GObject *object);
 static void gdata_gd_when_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_when_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
@@ -265,42 +265,43 @@ gdata_gd_when_set_property (GObject *object, guint property_id, const GValue *va
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	GDataGDWhenPrivate *priv = GDATA_GD_WHEN (parsable)->priv;
-	xmlChar *start_time, *end_time;
+	gchar *start_time, *end_time;
 	gint64 start_time_int64, end_time_int64;
 	gboolean is_date = FALSE;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Start time */
-	start_time = xmlGetProp (root_node, (xmlChar*) "startTime");
-	if (gdata_parser_int64_from_date ((gchar*) start_time, &start_time_int64) == TRUE) {
+	start_time = gxml_dom_element_get_attribute (root_elem, "startTime");
+	if (gdata_parser_int64_from_date (start_time, &start_time_int64) == TRUE) {
 		is_date = TRUE;
-	} else if (gdata_parser_int64_from_iso8601 ((gchar*) start_time, &start_time_int64) == FALSE) {
+	} else if (gdata_parser_int64_from_iso8601 (start_time, &start_time_int64) == FALSE) {
 		/* Error */
-		gdata_parser_error_not_iso8601_format (root_node, (gchar*) start_time, error);
-		xmlFree (start_time);
+		gdata_parser_error_not_iso8601_format (root_node, start_time, error);
+		g_free (start_time);
 		return FALSE;
 	}
-	xmlFree (start_time);
+	g_free (start_time);
 
 	/* End time (optional) */
-	end_time = xmlGetProp (root_node, (xmlChar*) "endTime");
+	end_time = gxml_dom_element_get_attribute (root_elem, "endTime");
 	if (end_time != NULL) {
 		gboolean success;
 
 		if (is_date == TRUE)
-			success = gdata_parser_int64_from_date ((gchar*) end_time, &end_time_int64);
+			success = gdata_parser_int64_from_date (end_time, &end_time_int64);
 		else
-			success = gdata_parser_int64_from_iso8601 ((gchar*) end_time, &end_time_int64);
+			success = gdata_parser_int64_from_iso8601 (end_time, &end_time_int64);
 
 		if (success == FALSE) {
 			/* Error */
-			gdata_parser_error_not_iso8601_format (root_node, (gchar*) end_time, error);
-			xmlFree (end_time);
+			gdata_parser_error_not_iso8601_format (root_node, end_time, error);
+			g_free (end_time);
 			return FALSE;
 		}
-		xmlFree (end_time);
+		g_free (end_time);
 	} else {
 		/* Give a default */
 		end_time_int64 = -1;
@@ -309,13 +310,13 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	priv->start_time = start_time_int64;
 	priv->end_time = end_time_int64;
 	priv->is_date = is_date;
-	priv->value_string = (gchar*) xmlGetProp (root_node, (xmlChar*) "valueString");
+	priv->value_string = gxml_dom_element_get_attribute (root_elem, "valueString");
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 
