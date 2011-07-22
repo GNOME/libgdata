@@ -31,7 +31,7 @@
 
 #include <config.h>
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-app-categories.h"
 #include "atom/gdata-category.h"
@@ -41,8 +41,8 @@
 static void gdata_app_categories_dispose (GObject *object);
 static void gdata_app_categories_finalize (GObject *object);
 static void gdata_app_categories_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 
 struct _GDataAPPCategoriesPrivate {
@@ -140,18 +140,19 @@ gdata_app_categories_get_property (GObject *object, guint property_id, GValue *v
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	GDataAPPCategoriesPrivate *priv = GDATA_APP_CATEGORIES (parsable)->priv;
-	xmlChar *fixed;
+	gchar *fixed;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Extract fixed and scheme */
-	priv->scheme = (gchar*) xmlGetProp (root_node, (xmlChar*) "scheme");
+	priv->scheme = gxml_dom_element_get_attribute (root_elem, "scheme");
 
-	fixed = xmlGetProp (root_node, (xmlChar*) "fixed");
-	if (xmlStrcmp (fixed, (xmlChar*) "yes") == 0)
+	fixed = gxml_dom_element_get_attribute (root_elem, "fixed");
+	if (g_strcmp0 (fixed, "yes") == 0)
 		priv->fixed = TRUE;
-	xmlFree (fixed);
+	g_free (fixed);
 
 	return TRUE;
 }
@@ -170,7 +171,7 @@ _gdata_app_categories_add_category (GDataAPPCategories *self, GDataCategory *cat
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 

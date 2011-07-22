@@ -32,7 +32,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-media-credit.h"
 #include "gdata-parsable.h"
@@ -41,8 +41,8 @@
 
 static void gdata_media_credit_finalize (GObject *object);
 static void gdata_media_credit_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataMediaCreditPrivate {
@@ -164,32 +164,33 @@ gdata_media_credit_get_property (GObject *object, guint property_id, GValue *val
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	GDataMediaCreditPrivate *priv = GDATA_MEDIA_CREDIT (parsable)->priv;
-	xmlChar *credit;
+	gchar *credit;
 	gchar *scheme;
 	guint i;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	credit = xmlNodeListGetString (doc, root_node->children, TRUE);
+	credit = gxml_dom_element_content_to_string (root_elem);
 	if (credit == NULL || *credit == '\0') {
-		xmlFree (credit);
+		g_free (credit);
 		return gdata_parser_error_required_content_missing (root_node, error);
 	}
 
-	scheme = (gchar*) xmlGetProp (root_node, (xmlChar*) "scheme");
+	scheme = gxml_dom_element_get_attribute (root_elem, "scheme");
 	if (scheme != NULL && *scheme == '\0') {
 		g_free (scheme);
-		xmlFree (credit);
+		g_free (credit);
 		return gdata_parser_error_required_property_missing (root_node, "scheme", error);
 	} else if (scheme == NULL) {
 		/* Default */
 		scheme = g_strdup ("urn:ebu");
 	}
 
-	priv->credit = (gchar*) credit;
+	priv->credit = credit;
 	priv->scheme = scheme;
-	priv->role = (gchar*) xmlGetProp (root_node, (xmlChar*) "role");
+	priv->role = gxml_dom_element_get_attribute (root_elem, "role");
 
 	/* Convert the role to lower case */
 	if (priv->role != NULL) {
@@ -201,10 +202,10 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	/* Textual content's handled in pre_parse_xml */
-	if (node->type != XML_ELEMENT_NODE)
+	if (gxml_dom_xnode_get_node_type (node) != GXML_DOM_NODE_TYPE_ELEMENT)
 		return TRUE;
 
 	return GDATA_PARSABLE_CLASS (gdata_media_credit_parent_class)->parse_xml (parsable, doc, node, user_data, error);

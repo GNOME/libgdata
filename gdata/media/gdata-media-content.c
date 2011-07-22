@@ -32,7 +32,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-media-content.h"
 #include "gdata-download-stream.h"
@@ -43,7 +43,7 @@
 
 static void gdata_media_content_finalize (GObject *object);
 static void gdata_media_content_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataMediaContentPrivate {
@@ -285,86 +285,87 @@ gdata_media_content_get_property (GObject *object, guint property_id, GValue *va
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	GDataMediaContentPrivate *priv = GDATA_MEDIA_CONTENT (parsable)->priv;
-	xmlChar *uri, *expression, *medium, *duration, *filesize, *height, *width;
+	gchar *uri, *expression, *medium, *duration, *filesize, *height, *width;
 	gboolean is_default_bool;
 	GDataMediaExpression expression_enum;
 	GDataMediaMedium medium_enum;
 	guint height_uint, width_uint;
 	gint64 duration_int64;
 	gulong filesize_ulong;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Parse isDefault */
 	if (gdata_parser_boolean_from_property (root_node, "isDefault", &is_default_bool, 0, error) == FALSE)
 		return FALSE;
 
 	/* Parse expression */
-	expression = xmlGetProp (root_node, (xmlChar*) "expression");
-	if (expression == NULL || xmlStrcmp (expression, (xmlChar*) "full") == 0) {
+	expression = gxml_dom_element_get_attribute (root_elem, "expression");
+	if (expression == NULL || g_strcmp0 (expression, "full") == 0) {
 		expression_enum = GDATA_MEDIA_EXPRESSION_FULL;
-	} else if (xmlStrcmp (expression, (xmlChar*) "sample") == 0) {
+	} else if (g_strcmp0 (expression, "sample") == 0) {
 		expression_enum = GDATA_MEDIA_EXPRESSION_SAMPLE;
-	} else if (xmlStrcmp (expression, (xmlChar*) "nonstop") == 0) {
+	} else if (g_strcmp0 (expression, "nonstop") == 0) {
 		expression_enum = GDATA_MEDIA_EXPRESSION_NONSTOP;
 	} else {
 		gdata_parser_error_unknown_property_value (root_node, "expression", (gchar*) expression, error);
-		xmlFree (expression);
+		g_free (expression);
 		return FALSE;
 	}
-	xmlFree (expression);
+	g_free (expression);
 
 	/* Parse medium */
-	medium = xmlGetProp (root_node, (xmlChar*) "medium");
+	medium = gxml_dom_element_get_attribute (root_elem, "medium");
 	if (medium == NULL) {
 		medium_enum = GDATA_MEDIA_UNKNOWN;
-	} else if (xmlStrcmp (medium, (xmlChar*) "image") == 0) {
+	} else if (g_strcmp0 (medium, "image") == 0) {
 		medium_enum = GDATA_MEDIA_IMAGE;
-	} else if (xmlStrcmp (medium, (xmlChar*) "audio") == 0) {
+	} else if (g_strcmp0 (medium, "audio") == 0) {
 		medium_enum = GDATA_MEDIA_AUDIO;
-	} else if (xmlStrcmp (medium, (xmlChar*) "video") == 0) {
+	} else if (g_strcmp0 (medium, "video") == 0) {
 		medium_enum = GDATA_MEDIA_VIDEO;
-	} else if (xmlStrcmp (medium, (xmlChar*) "document") == 0) {
+	} else if (g_strcmp0 (medium, "document") == 0) {
 		medium_enum = GDATA_MEDIA_DOCUMENT;
-	} else if (xmlStrcmp (medium, (xmlChar*) "executable") == 0) {
+	} else if (g_strcmp0 (medium, "executable") == 0) {
 		medium_enum = GDATA_MEDIA_EXECUTABLE;
 	} else {
-		gdata_parser_error_unknown_property_value (root_node, "medium", (gchar*) medium, error);
-		xmlFree (medium);
+		gdata_parser_error_unknown_property_value (root_node, "medium", medium, error);
+		g_free (medium);
 		return FALSE;
 	}
-	xmlFree (medium);
+	g_free (medium);
 
 	/* Parse duration */
-	duration = xmlGetProp (root_node, (xmlChar*) "duration");
-	duration_int64 = (duration == NULL) ? 0 : strtol ((gchar*) duration, NULL, 10);
-	xmlFree (duration);
+	duration = gxml_dom_element_get_attribute (root_elem, "duration");
+	duration_int64 = (duration == NULL) ? 0 : strtol (duration, NULL, 10);
+	g_free (duration);
 
 	/* Parse filesize */
-	filesize = xmlGetProp (root_node, (xmlChar*) "fileSize");
-	filesize_ulong = (filesize == NULL) ? 0 : strtoul ((gchar*) filesize, NULL, 10);
-	xmlFree (filesize);
+	filesize = gxml_dom_element_get_attribute (root_elem, "fileSize");
+	filesize_ulong = (filesize == NULL) ? 0 : strtoul (filesize, NULL, 10);
+	g_free (filesize);
 
 	/* Parse height and width */
-	height = xmlGetProp (root_node, (xmlChar*) "height");
-	height_uint = (height == NULL) ? 0 : strtoul ((gchar*) height, NULL, 10);
-	xmlFree (height);
+	height = gxml_dom_element_get_attribute (root_elem, "height");
+	height_uint = (height == NULL) ? 0 : strtoul (height, NULL, 10);
+	g_free (height);
 
-	width = xmlGetProp (root_node, (xmlChar*) "width");
-	width_uint = (width == NULL) ? 0 : strtoul ((gchar*) width, NULL, 10);
-	xmlFree (width);
+	width = gxml_dom_element_get_attribute (root_elem, "width");
+	width_uint = (width == NULL) ? 0 : strtoul (width, NULL, 10);
+	g_free (width);
 
 	/* Other properties */
-	uri = xmlGetProp (root_node, (xmlChar*) "url");
+	uri = gxml_dom_element_get_attribute (root_elem, "url");
 	if (uri != NULL && *uri == '\0') {
-		xmlFree (uri);
+		g_free (uri);
 		return gdata_parser_error_required_property_missing (root_node, "url", error);
 	}
 
-	priv->uri = (gchar*) uri;
+	priv->uri = uri;
 	priv->filesize = filesize_ulong;
-	priv->content_type = (gchar*) xmlGetProp (root_node, (xmlChar*) "type");
+	priv->content_type = gxml_dom_element_get_attribute (root_elem, "type");
 	priv->medium = medium_enum;
 	priv->is_default = is_default_bool;
 	priv->expression = expression_enum;

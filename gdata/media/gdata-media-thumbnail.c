@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-media-thumbnail.h"
@@ -41,7 +41,7 @@
 
 static void gdata_media_thumbnail_finalize (GObject *object);
 static void gdata_media_thumbnail_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataMediaThumbnailPrivate {
@@ -242,44 +242,45 @@ build_time (gint64 _time)
 }*/
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	GDataMediaThumbnailPrivate *priv = GDATA_MEDIA_THUMBNAIL (parsable)->priv;
-	xmlChar *uri, *width, *height, *_time;
+	gchar *uri, *width, *height, *_time;
 	guint width_uint, height_uint;
 	gint64 time_int64;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Get the width and height */
-	width = xmlGetProp (root_node, (xmlChar*) "width");
-	width_uint = (width == NULL) ? 0 : strtoul ((gchar*) width, NULL, 10);
-	xmlFree (width);
+	width = gxml_dom_element_get_attribute (root_elem, "width");
+	width_uint = (width == NULL) ? 0 : strtoul (width, NULL, 10);
+	g_free (width);
 
-	height = xmlGetProp (root_node, (xmlChar*) "height");
-	height_uint = (height == NULL) ? 0 : strtoul ((gchar*) height, NULL, 10);
-	xmlFree (height);
+	height = gxml_dom_element_get_attribute (root_elem, "height");
+	height_uint = (height == NULL) ? 0 : strtoul (height, NULL, 10);
+	g_free (height);
 
 	/* Get and parse the time */
-	_time = xmlGetProp (root_node, (xmlChar*) "time");
+	_time = gxml_dom_element_get_attribute (root_elem, "time");
 	if (_time == NULL) {
 		time_int64 = -1;
 	} else {
-		time_int64 = parse_time ((gchar*) _time);
+		time_int64 = parse_time (_time);
 		if (time_int64 == -1) {
-			gdata_parser_error_unknown_property_value (root_node, "time", (gchar*) _time, error);
-			xmlFree (_time);
+			gdata_parser_error_unknown_property_value (root_node, "time", _time, error);
+			g_free (_time);
 			return FALSE;
 		}
-		xmlFree (_time);
+		g_free (_time);
 	}
 
 	/* Get the URI */
-	uri = xmlGetProp (root_node, (xmlChar*) "url");
+	uri = gxml_dom_element_get_attribute (root_elem, "url");
 	if (uri == NULL || *uri == '\0') {
-		xmlFree (uri);
+		g_free (uri);
 		return gdata_parser_error_required_property_missing (root_node, "url", error);
 	}
 
-	priv->uri = (gchar*) uri;
+	priv->uri = uri;
 	priv->height = height_uint;
 	priv->width = width_uint;
 	priv->time = time_int64;

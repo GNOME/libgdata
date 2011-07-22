@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-media-category.h"
 #include "gdata-parsable.h"
@@ -40,8 +40,8 @@
 static void gdata_media_category_finalize (GObject *object);
 static void gdata_media_category_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_media_category_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -190,39 +190,40 @@ gdata_media_category_set_property (GObject *object, guint property_id, const GVa
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	GDataMediaCategoryPrivate *priv = GDATA_MEDIA_CATEGORY (parsable)->priv;
-	xmlChar *category, *scheme;
+	gchar *category, *scheme;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	category = xmlNodeListGetString (doc, root_node->children, TRUE);
+	category = gxml_dom_element_content_to_string (root_elem);
 	if (category == NULL || *category == '\0') {
-		xmlFree (category);
+		g_free (category);
 		return gdata_parser_error_required_content_missing (root_node, error);
 	}
 
-	scheme = xmlGetProp (root_node, (xmlChar*) "scheme");
+	scheme = gxml_dom_element_get_attribute (root_elem, "scheme");
 	if (scheme != NULL && *scheme == '\0') {
-		xmlFree (scheme);
-		xmlFree (category);
+		g_free (scheme);
+		g_free (category);
 		return gdata_parser_error_required_property_missing (root_node, "scheme", error);
 	} else if (scheme == NULL) {
 		/* Default */
-		scheme = xmlStrdup ((xmlChar*) "http://video.search.yahoo.com/mrss/category_schema");
+		scheme = g_strdup ("http://video.search.yahoo.com/mrss/category_schema");
 	}
 
-	priv->category = (gchar*) category;
-	priv->scheme = (gchar*) scheme;
-	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
+	priv->category = category;
+	priv->scheme = scheme;
+	priv->label = gxml_dom_element_get_attribute (root_elem, "label");
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	/* Textual content's handled in pre_parse_xml */
-	if (node->type != XML_ELEMENT_NODE)
+	if (gxml_dom_xnode_get_node_type (node) != GXML_DOM_NODE_TYPE_ELEMENT)
 		return TRUE;
 
 	return GDATA_PARSABLE_CLASS (gdata_media_category_parent_class)->parse_xml (parsable, doc, node, user_data, error);

@@ -40,7 +40,7 @@
  */
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-exif-tags.h"
@@ -49,7 +49,7 @@
 #include "gdata-private.h"
 
 static void gdata_exif_tags_finalize (GObject *object);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataExifTagsPrivate {
@@ -104,58 +104,60 @@ gdata_exif_tags_finalize (GObject *object)
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataExifTags *self = GDATA_EXIF_TAGS (parsable);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
 
 	if (gdata_parser_is_namespace (node, "http://schemas.google.com/photos/exif/2007") == FALSE)
 		return GDATA_PARSABLE_CLASS (gdata_exif_tags_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "distance") == 0 ) {
+	if (g_strcmp0 (node_name, "distance") == 0 ) {
 		/* exif:distance */
-		xmlChar *distance = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->distance = g_ascii_strtod ((gchar*) distance, NULL);
-		xmlFree (distance);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "fstop") == 0) {
+		gchar *distance = gxml_dom_element_content_to_string (elem);
+		self->priv->distance = g_ascii_strtod (distance, NULL);
+		g_free (distance);
+	} else if (g_strcmp0 (node_name, "fstop") == 0) {
 		/* exif:fstop */
-		xmlChar *fstop = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->fstop = g_ascii_strtod ((gchar*) fstop, NULL);
-		xmlFree (fstop);
+		gchar *fstop = gxml_dom_element_content_to_string (elem);
+		self->priv->fstop = g_ascii_strtod (fstop, NULL);
+		g_free (fstop);
 	} else if (gdata_parser_string_from_element (node, "make", P_NONE, &(self->priv->make), &success, error) == TRUE ||
 	           gdata_parser_string_from_element (node, "model", P_NONE, &(self->priv->model), &success, error) == TRUE ||
 	           gdata_parser_string_from_element (node, "imageUniqueID", P_NONE, &(self->priv->image_unique_id), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "exposure") == 0) {
+	} else if (g_strcmp0 (node_name, "exposure") == 0) {
 		/* exif:exposure */
-		xmlChar *exposure = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->exposure = g_ascii_strtod ((gchar*) exposure, NULL);
-		xmlFree (exposure);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "flash") == 0) {
+		gchar *exposure = gxml_dom_element_content_to_string (elem);
+		self->priv->exposure = g_ascii_strtod (exposure, NULL);
+		g_free (exposure);
+	} else if (g_strcmp0 (node_name, "flash") == 0) {
 		/* exif:flash */
-		xmlChar *flash = xmlNodeListGetString (doc, node->children, TRUE);
+		gchar *flash = gxml_dom_element_content_to_string (elem);
 		if (flash == NULL)
 			return gdata_parser_error_required_content_missing (node, error);
-		self->priv->flash = (xmlStrcmp (flash, (xmlChar*) "true") == 0 ? TRUE : FALSE);
-		xmlFree (flash);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "focallength") == 0) {
+		self->priv->flash = (g_strcmp0 (flash, "true") == 0 ? TRUE : FALSE);
+		g_free (flash);
+	} else if (g_strcmp0 (node_name, "focallength") == 0) {
 		/* exif:focal-length */
-		xmlChar *focal_length = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->focal_length = g_ascii_strtod ((gchar*) focal_length, NULL);
-		xmlFree (focal_length);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "iso") == 0) {
+		gchar *focal_length = gxml_dom_element_content_to_string (elem);
+		self->priv->focal_length = g_ascii_strtod (focal_length, NULL);
+		g_free (focal_length);
+	} else if (g_strcmp0 (node_name, "iso") == 0) {
 		/* exif:iso */
-		xmlChar *iso = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->iso = strtol ((gchar*) iso, NULL, 10);
-		xmlFree (iso);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "time") == 0) {
+		gchar *iso = gxml_dom_element_content_to_string (elem);
+		self->priv->iso = strtol (iso, NULL, 10);
+		g_free (iso);
+	} else if (g_strcmp0 (node_name, "time") == 0) {
 		/* exif:time */
-		xmlChar *time_str;
+		gchar *time_str;
 		guint64 milliseconds;
 
-		time_str = xmlNodeListGetString (doc, node->children, TRUE);
-		milliseconds = g_ascii_strtoull ((gchar*) time_str, NULL, 10);
-		xmlFree (time_str);
+		time_str = gxml_dom_element_content_to_string (elem);
+		milliseconds = g_ascii_strtoull (time_str, NULL, 10);
+		g_free (time_str);
 
 		self->priv->_time = (gint64) milliseconds;
 	} else {
