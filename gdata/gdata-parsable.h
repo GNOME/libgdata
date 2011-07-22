@@ -22,7 +22,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 G_BEGIN_DECLS
 
@@ -83,8 +83,8 @@ typedef struct {
 typedef struct {
 	GObjectClass parent;
 
-	gboolean (*pre_parse_xml) (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-	gboolean (*parse_xml) (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+	gboolean (*pre_parse_xml) (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+	gboolean (*parse_xml) (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 	gboolean (*post_parse_xml) (GDataParsable *parsable, gpointer user_data, GError **error);
 
 	void (*pre_get_xml) (GDataParsable *parsable, GString *xml_string);
