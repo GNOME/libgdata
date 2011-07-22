@@ -36,7 +36,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-access-rule.h"
@@ -50,7 +50,7 @@ static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void gdata_access_rule_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void gdata_access_rule_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 
 struct _GDataAccessRulePrivate {
 	gchar *role;
@@ -280,38 +280,40 @@ gdata_access_rule_set_property (GObject *object, guint property_id, const GValue
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataAccessRule *self = GDATA_ACCESS_RULE (parsable);
+	const gchar *node_name;
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/acl/2007") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "role") == 0) {
+		node_name = gxml_dom_xnode_get_node_name (node);
+		if (g_strcmp0 (node_name, "role") == 0) {
 			/* gAcl:role */
-			xmlChar *role = xmlGetProp (node, (xmlChar*) "value");
+			gchar *role = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "value");
 			if (role == NULL)
 				return gdata_parser_error_required_property_missing (node, "value", error);
-			self->priv->role = (gchar*) role;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "scope") == 0) {
+			self->priv->role = role;
+		} else if (g_strcmp0 (node_name, "scope") == 0) {
 			/* gAcl:scope */
-			xmlChar *scope_type, *scope_value;
+			gchar *scope_type, *scope_value;
 
-			scope_type = xmlGetProp (node, (xmlChar*) "type");
+			scope_type = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "type");
 			if (scope_type == NULL)
 				return gdata_parser_error_required_property_missing (node, "type", error);
 
-			scope_value = xmlGetProp (node, (xmlChar*) "value");
+			scope_value = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "value");
 
-			if (xmlStrcmp (scope_type, (xmlChar*) GDATA_ACCESS_SCOPE_DEFAULT) == 0 && scope_value == NULL) {
-				xmlFree (scope_type);
+			if (g_strcmp0 (scope_type, GDATA_ACCESS_SCOPE_DEFAULT) == 0 && scope_value == NULL) {
+				g_free (scope_type); // TODO:GXML: should scope_type be dealloc'd from get_attribute? should not scope_value be as well?
 				return gdata_parser_error_required_property_missing (node, "value", error);
 			}
 
-			self->priv->scope_type = (gchar*) scope_type;
-			self->priv->scope_value = (gchar*) scope_value;
+			self->priv->scope_type = scope_type;
+			self->priv->scope_value = scope_value;
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
