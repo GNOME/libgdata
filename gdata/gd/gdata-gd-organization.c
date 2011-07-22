@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gd-organization.h"
 #include "gdata-parsable.h"
@@ -44,8 +44,8 @@ static void gdata_gd_organization_dispose (GObject *object);
 static void gdata_gd_organization_finalize (GObject *object);
 static void gdata_gd_organization_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_organization_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -376,31 +376,32 @@ gdata_gd_organization_set_property (GObject *object, guint property_id, const GV
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel;
+	gchar *rel;
 	gboolean primary_bool;
 	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Is it the primary organisation? */
 	if (gdata_parser_boolean_from_property (root_node, "primary", &primary_bool, 0, error) == FALSE)
 		return FALSE;
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
 	if (rel != NULL && *rel == '\0') {
-		xmlFree (rel);
+		g_free (rel);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
+	priv->relation_type = rel;
+	priv->label = gxml_dom_element_get_attribute (root_elem, "label");
 	priv->is_primary = primary_bool;
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataGDOrganizationPrivate *priv = GDATA_GD_ORGANIZATION (parsable)->priv;

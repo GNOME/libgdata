@@ -40,7 +40,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gd-name.h"
 #include "gdata-parsable.h"
@@ -51,7 +51,7 @@ static void gdata_gd_name_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_name_finalize (GObject *object);
 static void gdata_gd_name_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_name_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -294,7 +294,7 @@ gdata_gd_name_set_property (GObject *object, guint property_id, const GValue *va
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataGDNamePrivate *priv = GDATA_GD_NAME (parsable)->priv;

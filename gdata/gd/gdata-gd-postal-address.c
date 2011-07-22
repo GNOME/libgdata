@@ -31,7 +31,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-gd-postal-address.h"
@@ -43,8 +43,8 @@ static void gdata_gd_postal_address_comparable_init (GDataComparableIface *iface
 static void gdata_gd_postal_address_finalize (GObject *object);
 static void gdata_gd_postal_address_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_postal_address_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -563,36 +563,38 @@ gdata_gd_postal_address_set_property (GObject *object, guint property_id, const 
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel;
+	gchar *rel;
 	gboolean primary_bool;
 	GDataGDPostalAddressPrivate *priv = GDATA_GD_POSTAL_ADDRESS (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Is it the primary postal address? */
 	if (gdata_parser_boolean_from_property (root_node, "primary", &primary_bool, 0, error) == FALSE)
 		return FALSE;
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
 	if (rel != NULL && *rel == '\0') {
-		xmlFree (rel);
+		g_free (rel);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
-	priv->mail_class = (gchar*) xmlGetProp (root_node, (xmlChar*) "mailClass");
-	priv->usage = (gchar*) xmlGetProp (root_node, (xmlChar*) "usage");
+	priv->relation_type = rel;
+	priv->label = gxml_dom_element_get_attribute (root_elem, "label");
+	priv->mail_class = gxml_dom_element_get_attribute (root_elem, "mailClass");
+	priv->usage = gxml_dom_element_get_attribute (root_elem, "usage");
 	priv->is_primary = primary_bool;
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataGDPostalAddressPrivate *priv = GDATA_GD_POSTAL_ADDRESS (parsable)->priv;
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
 		if (gdata_parser_string_from_element (node, "agent", P_NO_DUPES, &(priv->agent), &success, error) == TRUE ||
@@ -606,10 +608,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_string_from_element (node, "postcode", P_NO_DUPES, &(priv->postcode), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "formattedAddress", P_NO_DUPES, &(priv->formatted_address), &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "country") == 0) {
+		} else if (g_strcmp0 (gxml_dom_xnode_get_node_name (node), "country") == 0) {
 			/* gd:country */
-			priv->country_code = (gchar*) xmlGetProp (node, (xmlChar*) "code");
-			priv->country = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+			priv->country_code = gxml_dom_element_get_attribute (elem, "code");
+			priv->country = gxml_dom_element_content_to_string (elem);
 
 			return TRUE;
 		}

@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gd-im-address.h"
 #include "gdata-parsable.h"
@@ -41,7 +41,7 @@ static void gdata_gd_im_address_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_im_address_finalize (GObject *object);
 static void gdata_gd_im_address_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_im_address_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -256,33 +256,34 @@ gdata_gd_im_address_set_property (GObject *object, guint property_id, const GVal
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *address, *rel;
+	gchar *address, *rel;
 	gboolean primary_bool;
 	GDataGDIMAddressPrivate *priv = GDATA_GD_IM_ADDRESS (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node); // TODO:GXML: yah, perhaps change *parse_xml functions to take Element instead of XNode
 
 	/* Is it the primary IM address? */
 	if (gdata_parser_boolean_from_property (root_node, "primary", &primary_bool, 0, error) == FALSE)
 		return FALSE;
 
-	address = xmlGetProp (root_node, (xmlChar*) "address");
+	address = gxml_dom_element_get_attribute (root_elem, "address");
 	if (address == NULL || *address == '\0') {
-		xmlFree (address);
+		g_free (address);
 		return gdata_parser_error_required_property_missing (root_node, "address", error);
 	}
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
 	if (rel != NULL && *rel == '\0') {
-		xmlFree (address);
-		xmlFree (rel);
+		g_free (address);
+		g_free (rel);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	priv->address = (gchar*) address;
-	priv->protocol = (gchar*) xmlGetProp (root_node, (xmlChar*) "protocol");
-	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
+	priv->address = address;
+	priv->protocol = gxml_dom_element_get_attribute (root_elem, "protocol");
+	priv->relation_type = rel;
+	priv->label = gxml_dom_element_get_attribute (root_elem, "label");
 	priv->is_primary = primary_bool;
 
 	return TRUE;
