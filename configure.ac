@@ -60,7 +60,7 @@ AC_SUBST(GDATA_API_VERSION)
 AC_SUBST(GDATA_API_VERSION_MAJOR)
 AC_SUBST(GDATA_API_VERSION_MINOR)
 
-pkg_modules="glib-2.0 >= $GLIB_REQS libxml-2.0 gthread-2.0 gio-2.0 >= $GIO_REQS libsoup-2.4 >= $SOUP_REQS oauth >= $OAUTH_REQS"
+pkg_modules="glib-2.0 >= $GLIB_REQS gxml gthread-2.0 gio-2.0 >= $GIO_REQS libsoup-2.4 >= $SOUP_REQS oauth >= $OAUTH_REQS"
 PKG_CHECK_MODULES(GDATA, [$pkg_modules])
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
