@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-gd-phone-number.h"
@@ -42,8 +42,8 @@ static void gdata_gd_phone_number_comparable_init (GDataComparableIface *iface);
 static void gdata_gd_phone_number_finalize (GObject *object);
 static void gdata_gd_phone_number_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gd_phone_number_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -257,45 +257,46 @@ gdata_gd_phone_number_set_property (GObject *object, guint property_id, const GV
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *number, *rel;
+	gchar *number, *rel;
 	gboolean primary_bool;
 	GDataGDPhoneNumberPrivate *priv = GDATA_GD_PHONE_NUMBER (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Is it the primary phone number? */
 	if (gdata_parser_boolean_from_property (root_node, "primary", &primary_bool, 0, error) == FALSE)
 		return FALSE;
 
-	number = xmlNodeListGetString (doc, root_node->children, TRUE);
+	number = gxml_dom_element_content_to_string (root_elem);
 	if (number == NULL || *number == '\0') {
-		xmlFree (number);
+		g_free (number);
 		return gdata_parser_error_required_content_missing (root_node, error);
 	}
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
 	if (rel != NULL && *rel == '\0') {
-		xmlFree (rel);
-		xmlFree (number);
+		g_free (rel);
+		g_free (number);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	gdata_gd_phone_number_set_number (GDATA_GD_PHONE_NUMBER (parsable), (gchar*) number);
-	priv->uri = (gchar*) xmlGetProp (root_node, (xmlChar*) "uri");
-	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
+	gdata_gd_phone_number_set_number (GDATA_GD_PHONE_NUMBER (parsable), number);
+	priv->uri = gxml_dom_element_get_attribute (root_elem, "uri");
+	priv->relation_type = rel;
+	priv->label = gxml_dom_element_get_attribute (root_elem, "label");
 	priv->is_primary = primary_bool;
 
-	xmlFree (number);
+	g_free (number);
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	/* Textual content's handled in pre_parse_xml */
-	if (node->type != XML_ELEMENT_NODE)
+	if (gxml_dom_xnode_get_node_type (node) != GXML_DOM_NODE_TYPE_ELEMENT)
 		return TRUE;
 
 	return GDATA_PARSABLE_CLASS (gdata_gd_phone_number_parent_class)->parse_xml (parsable, doc, node, user_data, error);

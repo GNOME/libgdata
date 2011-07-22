@@ -28,7 +28,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-generator.h"
 #include "gdata-parsable.h"
@@ -38,8 +38,8 @@
 static void gdata_generator_comparable_init (GDataComparableIface *iface);
 static void gdata_generator_finalize (GObject *object);
 static void gdata_generator_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 
 struct _GDataGeneratorPrivate {
 	gchar *name;
@@ -177,29 +177,30 @@ gdata_generator_get_property (GObject *object, guint property_id, GValue *value,
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *uri;
+	gchar *uri;
 	GDataGeneratorPrivate *priv = GDATA_GENERATOR (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	uri = xmlGetProp (root_node, (xmlChar*) "uri");
+	uri = gxml_dom_element_get_attribute (root_elem, "uri");
 	if (uri != NULL && *uri == '\0') {
-		xmlFree (uri);
+		g_free (uri);
 		return gdata_parser_error_required_property_missing (root_node, "uri", error);
 	}
-	priv->uri = (gchar*) uri;
+	priv->uri = uri;
 
-	priv->name = (gchar*) xmlNodeListGetString (doc, root_node->children, TRUE);
-	priv->version = (gchar*) xmlGetProp (root_node, (xmlChar*) "version");
+	priv->name = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (root_node), TRUE); // TODO:GXML: consider adding a _contents_to_string for elements
+	priv->version = gxml_dom_element_get_attribute (root_elem, "version");
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	/* Textual content's handled in pre_parse_xml */
-	if (node->type != XML_ELEMENT_NODE)
+	if (gxml_dom_xnode_get_node_type (node) != GXML_DOM_NODE_TYPE_ELEMENT)
 		return TRUE;
 
 	return GDATA_PARSABLE_CLASS (gdata_generator_parent_class)->parse_xml (parsable, doc, node, user_data, error);

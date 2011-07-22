@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-category.h"
 #include "gdata-parsable.h"
@@ -41,7 +41,7 @@ static void gdata_category_comparable_init (GDataComparableIface *iface);
 static void gdata_category_finalize (GObject *object);
 static void gdata_category_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_category_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 
 struct _GDataCategoryPrivate {
@@ -203,20 +203,21 @@ gdata_category_set_property (GObject *object, guint property_id, const GValue *v
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *term;
+	gchar *term;
 	GDataCategory *self = GDATA_CATEGORY (parsable);
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	term = xmlGetProp (root_node, (xmlChar*) "term");
+	term = gxml_dom_element_get_attribute (root_elem, "term");
 	if (term == NULL || *term == '\0') {
-		xmlFree (term);
+		g_free (term);
 		return gdata_parser_error_required_property_missing (root_node, "term", error);
 	}
-	self->priv->term = (gchar*) term;
+	self->priv->term = term;
 
-	self->priv->scheme = (gchar*) xmlGetProp (root_node, (xmlChar*) "scheme");
-	self->priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
+	self->priv->scheme = gxml_dom_element_get_attribute (root_elem, "scheme");
+	self->priv->label = gxml_dom_element_get_attribute (root_elem, "label");
 
 	return TRUE;
 }

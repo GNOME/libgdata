@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-link.h"
@@ -42,7 +42,7 @@ static void gdata_link_comparable_init (GDataComparableIface *iface);
 static void gdata_link_finalize (GObject *object);
 static void gdata_link_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_link_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 
 struct _GDataLinkPrivate {
@@ -282,55 +282,56 @@ gdata_link_set_property (GObject *object, guint property_id, const GValue *value
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *uri, *relation_type, *content_type, *language, *length;
+	gchar *uri, *relation_type, *content_type, *language, *length;
 	GDataLink *self = GDATA_LINK (parsable);
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* href */
-	uri = xmlGetProp (root_node, (xmlChar*) "href");
+	uri = gxml_dom_element_get_attribute (root_elem, "href");
 	if (uri == NULL || *uri == '\0') {
-		xmlFree (uri);
+		g_free (uri);
 		return gdata_parser_error_required_property_missing (root_node, "href", error);
 	}
-	self->priv->uri = (gchar*) uri;
+	self->priv->uri = uri;
 
 	/* rel */
-	relation_type = xmlGetProp (root_node, (xmlChar*) "rel");
+	relation_type = gxml_dom_element_get_attribute (root_elem, "rel");
 	if (relation_type != NULL && *relation_type == '\0') {
-		xmlFree (relation_type);
+		g_free (relation_type);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	gdata_link_set_relation_type (self, (const gchar*) relation_type);
-	xmlFree (relation_type);
+	gdata_link_set_relation_type (self, relation_type);
+	g_free (relation_type);
 
 	/* type */
-	content_type = xmlGetProp (root_node, (xmlChar*) "type");
+	content_type = gxml_dom_element_get_attribute (root_elem, "type");
 	if (content_type != NULL && *content_type == '\0') {
-		xmlFree (content_type);
+		g_free (content_type);
 		return gdata_parser_error_required_property_missing (root_node, "type", error);
 	}
-	self->priv->content_type = (gchar*) content_type;
+	self->priv->content_type = content_type;
 
 	/* hreflang */
-	language = xmlGetProp (root_node, (xmlChar*) "hreflang");
+	language = gxml_dom_element_get_attribute (root_elem, "hreflang");
 	if (language != NULL && *language == '\0') {
-		xmlFree (language);
+		g_free (language);
 		return gdata_parser_error_required_property_missing (root_node, "hreflang", error);
 	}
-	self->priv->language = (gchar*) language;
+	self->priv->language = language;
 
 	/* title */
-	self->priv->title = (gchar*) xmlGetProp (root_node, (xmlChar*) "title");
+	self->priv->title = gxml_dom_element_get_attribute (root_elem, "title"); // TODO:GXML: perhaps when dealing with so many, I should just get the HashMap directly
 
 	/* length */
-	length = xmlGetProp (root_node, (xmlChar*) "length");
+	length = gxml_dom_element_get_attribute (root_elem, "length");
 	if (length == NULL)
 		self->priv->length = -1;
 	else
-		self->priv->length = strtoul ((gchar*) length, NULL, 10);
-	xmlFree (length);
+		self->priv->length = strtoul (length, NULL, 10);
+	g_free (length);
 
 	return TRUE;
 }
