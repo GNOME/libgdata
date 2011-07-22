@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-author.h"
 #include "gdata-parsable.h"
@@ -41,7 +41,7 @@ static void gdata_author_comparable_init (GDataComparableIface *iface);
 static void gdata_author_finalize (GObject *object);
 static void gdata_author_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_author_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 
@@ -202,7 +202,7 @@ gdata_author_set_property (GObject *object, guint property_id, const GValue *val
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataAuthorPrivate *priv = GDATA_AUTHOR (parsable)->priv;
