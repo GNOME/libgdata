@@ -468,7 +468,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		           gdata_parser_string_from_element (node, "rights", P_NONE, &(self->priv->rights), &success, error) == TRUE) {
 			return success;
 		} else {
-			return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+			return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error); // TODO:GXML: for all functions that accept a doc and a node, we could remove the doc param, and use get_owner_document () if needed instead
 		}
 	} else if (gdata_parser_is_namespace (node, "http://a9.com/-/spec/opensearch/1.1/") == TRUE) {
 		const gchar *node_name = gxml_dom_xnode_get_node_name (node);
