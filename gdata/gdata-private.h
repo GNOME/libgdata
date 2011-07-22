@@ -18,7 +18,7 @@
  */
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <libsoup/soup.h>
 
 #include <gdata/gdata-service.h>

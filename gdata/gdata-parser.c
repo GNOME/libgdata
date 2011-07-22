@@ -22,7 +22,7 @@
 #include <glib/gi18n-lib.h>
 #include <sys/time.h>
 #include <time.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-parser.h"
 #include "gdata-service.h"
