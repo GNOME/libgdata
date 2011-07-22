@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gcontact-relation.h"
 #include "gdata-parsable.h"
@@ -39,8 +39,8 @@
 static void gdata_gcontact_relation_finalize (GObject *object);
 static void gdata_gcontact_relation_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gcontact_relation_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -193,45 +193,46 @@ gdata_gcontact_relation_set_property (GObject *object, guint property_id, const 
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel, *label, *name;
+	gchar *rel, *label, *name;
 	GDataGContactRelationPrivate *priv = GDATA_GCONTACT_RELATION (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
-	label = xmlGetProp (root_node, (xmlChar*) "label");
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
+	label = gxml_dom_element_get_attribute (root_elem, "label");
 	if ((rel == NULL || *rel == '\0') && (label == NULL || *label == '\0')) {
-		xmlFree (rel);
-		xmlFree (label);
+		g_free (rel);
+		g_free (label);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	} else if (rel != NULL && label != NULL) {
 		/* Can't have both set at once */
-		xmlFree (rel);
-		xmlFree (label);
+		g_free (rel);
+		g_free (label);
 		return gdata_parser_error_mutexed_properties (root_node, "rel", "label", error);
 	}
 
 	/* Get the name */
-	name = xmlNodeListGetString (doc, root_node->children, TRUE);
+	name = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (root_node), TRUE);
 	if (name == NULL || *name == '\0') {
-		xmlFree (rel);
-		xmlFree (label);
-		xmlFree (name);
+		g_free (rel);
+		g_free (label);
+		g_free (name);
 		return gdata_parser_error_required_content_missing (root_node, error);
 	}
 
-	priv->name = (gchar*) name;
-	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) label;
+	priv->name = name;
+	priv->relation_type = rel;
+	priv->label = label;
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	/* Textual content's handled in pre_parse_xml */
-	if (node->type != XML_ELEMENT_NODE)
+	if (gxml_dom_xnode_get_node_type (node) != GXML_DOM_NODE_TYPE_ELEMENT)
 		return TRUE;
 
 	return GDATA_PARSABLE_CLASS (gdata_gcontact_relation_parent_class)->parse_xml (parsable, doc, node, user_data, error);
