@@ -35,7 +35,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <string.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-parsable.h"
 #include "gdata-private.h"
@@ -50,7 +50,7 @@ gdata_parser_error_quark (void)
 static void gdata_parsable_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_parsable_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void gdata_parsable_finalize (GObject *object);
-static gboolean real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean real_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 
 struct _GDataParsablePrivate {
 	GString *extra_xml;
@@ -147,33 +147,34 @@ gdata_parsable_finalize (GObject *object)
 }
 
 static gboolean
-real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+real_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
-	xmlBuffer *buffer;
+	gchar *str;
 	xmlNs **namespaces, **namespace;
 
 	/* Unhandled XML */
-	buffer = xmlBufferCreate ();
-	xmlNodeDump (buffer, doc, node, 0, 0);
-	g_string_append (parsable->priv->extra_xml, (gchar*) xmlBufferContent (buffer));
-	g_message ("Unhandled XML in %s: %s", G_OBJECT_TYPE_NAME (parsable), (gchar*) xmlBufferContent (buffer));
-	xmlBufferFree (buffer);
+	str = gxml_dom_xnode_to_string (node, 0, 0);
+	// TODO:GXML: can we return as const, don't need to free, right?
+
+	g_string_append (parsable->priv->extra_xml, str);
+	g_message ("Unhandled XML in %s: %s", G_OBJECT_TYPE_NAME (parsable), str);
 
 	/* Get the namespaces */
-	namespaces = xmlGetNsList (doc, node);
-	if (namespaces == NULL)
-		return TRUE;
+	/* TODO:GXML: how do we want to support namespaces? Check higher Core levels? */
+	/* namespaces = xmlGetNsList (doc, node); */
+	/* if (namespaces == NULL) */
+	/* 	return TRUE; */
 
-	for (namespace = namespaces; *namespace != NULL; namespace++) {
-		if ((*namespace)->prefix != NULL) {
-			/* NOTE: These two g_strdup()s leak, but it's probably acceptable, given that it saves us
-			 * g_strdup()ing every other namespace we put in @extra_namespaces. */
-			g_hash_table_insert (parsable->priv->extra_namespaces,
-			                     g_strdup ((gchar*) ((*namespace)->prefix)),
-			                     g_strdup ((gchar*) ((*namespace)->href)));
-		}
-	}
-	xmlFree (namespaces);
+	/* for (namespace = namespaces; *namespace != NULL; namespace++) { */
+	/* 	if ((*namespace)->prefix != NULL) { */
+	/* 		/\* NOTE: These two g_strdup()s leak, but it's probably acceptable, given that it saves us */
+	/* 		 * g_strdup()ing every other namespace we put in @extra_namespaces. *\/ */
+	/* 		g_hash_table_insert (parsable->priv->extra_namespaces, */
+	/* 		                     g_strdup ((gchar*) ((*namespace)->prefix)), */
+	/* 		                     g_strdup ((gchar*) ((*namespace)->href))); */
+	/* 	} */
+	/* } */
+	/* xmlFree (namespaces); */
 
 	return TRUE;
 }
