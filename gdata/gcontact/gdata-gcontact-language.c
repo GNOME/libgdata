@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gcontact-language.h"
 #include "gdata-parsable.h"
@@ -41,7 +41,7 @@ static void gdata_gcontact_language_comparable_init (GDataComparableIface *iface
 static void gdata_gcontact_language_finalize (GObject *object);
 static void gdata_gcontact_language_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gcontact_language_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -182,21 +182,22 @@ gdata_gcontact_language_set_property (GObject *object, guint property_id, const 
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *code, *label;
+	gchar *code, *label;
 	GDataGContactLanguagePrivate *priv = GDATA_GCONTACT_LANGUAGE (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	code = xmlGetProp (root_node, (xmlChar*) "code");
-	label = xmlGetProp (root_node, (xmlChar*) "label");
+	code = gxml_dom_element_get_attribute (root_elem, "code");
+	label = gxml_dom_element_get_attribute (root_elem, "label");
 	if ((code == NULL || *code == '\0') && (label == NULL || *label == '\0')) {
-		xmlFree (code);
-		xmlFree (label);
+		g_free (code);
+		g_free (label);
 		return gdata_parser_error_required_property_missing (root_node, "code", error);
 	} else if (code != NULL && label != NULL) {
 		/* Can't have both set at once */
-		xmlFree (code);
-		xmlFree (label);
+		g_free (code);
+		g_free (label);
 		return gdata_parser_error_mutexed_properties (root_node, "code", "label", error);
 	}
 
