@@ -340,8 +340,9 @@ static void
 parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase, const gchar *response_body,
                       gint length, GError **error)
 {
-	xmlDoc *doc;
-	xmlNode *node;
+	GXmlDomDocument *doc;
+	GXmlDomXNode *node;
+	const gchar *node_name; 
 
 	if (response_body == NULL)
 		goto parent;
@@ -350,81 +351,87 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 		length = strlen (response_body);
 
 	/* Parse the XML */
-	doc = xmlReadMemory (response_body, length, "/dev/null", NULL, 0);
+	doc = gxml_dom_document_new_from_string (response_body, NULL); // TODO:GXML: consider passing error and then checking it
+
 	if (doc == NULL)
 		goto parent;
 
 	/* Get the root element */
-	node = xmlDocGetRootElement (doc);
+	node = GXML_DOM_XNODE (gxml_dom_document_get_document_element (doc));
 	if (node == NULL) {
 		/* XML document's empty; chain up to the parent class */
-		xmlFreeDoc (doc);
+		// xmlFreeDoc (doc);
 		goto parent;
 	}
 
-	if (xmlStrcmp (node->name, (xmlChar*) "errors") != 0) {
+	node_name = gxml_dom_xnode_get_node_name (node);
+
+	if (g_strcmp0 (node_name, "errors") != 0) {
 		/* No <errors> element (required); chain up to the parent class */
-		xmlFreeDoc (doc);
+		// xmlFreeDoc (doc); //TODO:GXML: figure out what to do with freeing these, g_object_unref?
 		goto parent;
 	}
 
 	/* Parse the actual errors */
-	node = node->children;
+	node = gxml_dom_xnode_get_first_child (node);
 	while (node != NULL) {
-		xmlChar *domain = NULL, *code = NULL, *location = NULL;
-		xmlNode *child_node = node->children;
+		gchar *domain = NULL, *code = NULL, *location = NULL;
+		GXmlDomXNode *child_node = gxml_dom_xnode_get_first_child (node);
 
-		if (node->type == XML_TEXT_NODE) {
+		if (gxml_dom_xnode_get_node_type (node) == GXML_DOM_NODE_TYPE_TEXT) {
 			/* Skip text nodes; they're all whitespace */
-			node = node->next;
+			node = gxml_dom_xnode_get_next_sibling (node);
 			continue;
 		}
 
 		/* Get the error data */
 		while (child_node != NULL) {
-			if (child_node->type == XML_TEXT_NODE) {
+			if (gxml_dom_xnode_get_node_type (child_node) == GXML_DOM_NODE_TYPE_TEXT) {
 				/* Skip text nodes; they're all whitespace */
-				child_node = child_node->next;
+				child_node = gxml_dom_xnode_get_next_sibling (child_node);
 				continue;
 			}
 
-			if (xmlStrcmp (child_node->name, (xmlChar*) "domain") == 0)
-				domain = xmlNodeListGetString (doc, child_node->children, TRUE);
-			else if (xmlStrcmp (child_node->name, (xmlChar*) "code") == 0)
-				code = xmlNodeListGetString (doc, child_node->children, TRUE);
-			else if (xmlStrcmp (child_node->name, (xmlChar*) "location") == 0)
-				location = xmlNodeListGetString (doc, child_node->children, TRUE);
-			else if (xmlStrcmp (child_node->name, (xmlChar*) "internalReason") != 0) {
-				/* Unknown element (ignore internalReason) */
-				g_message ("Unhandled <error/%s> element.", child_node->name);
+			const gchar *child_node_name = gxml_dom_xnode_get_node_name (child_node);
+			GXmlDomElement *child_elem = GXML_DOM_ELEMENT (child_node);
 
-				xmlFree (domain);
-				xmlFree (code);
-				xmlFree (location);
-				xmlFreeDoc (doc);
+			if (g_strcmp0 (child_node_name, "domain") == 0)
+				domain = gxml_dom_element_get_content (child_elem);
+			else if (g_strcmp0 (child_node_name, "code") == 0)
+				code = gxml_dom_element_get_content (child_elem);
+			else if (g_strcmp0 (child_node_name, "location") == 0)
+				location = gxml_dom_element_get_content (child_elem);
+			else if (g_strcmp0 (child_node_name, "internalReason") != 0) {
+				/* Unknown element (ignore internalReason) */
+				g_message ("Unhandled <error/%s> element.", child_node_name);
+
+				g_free (domain);
+				g_free (code);
+				g_free (location);
+				//xmlFreeDoc (doc);
 				goto check_error;
 			}
 
-			child_node = child_node->next;
+			child_node = gxml_dom_xnode_get_next_sibling (child_node);
 		}
 
 		/* Create an error message, but only for the first error */
 		if (error == NULL || *error == NULL) {
 			/* See http://code.google.com/apis/youtube/2.0/developers_guide_protocol.html#Error_responses */
-			if (xmlStrcmp (domain, (xmlChar*) "yt:service") == 0 && xmlStrcmp (code, (xmlChar*) "disabled_in_maintenance_mode") == 0) {
+			if (g_strcmp0 (domain, "yt:service") == 0 && g_strcmp0 (code, "disabled_in_maintenance_mode") == 0) {
 				/* Service disabled */
 				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
 				             _("This service is not available at the moment."));
-			} else if (xmlStrcmp (domain, (xmlChar*) "yt:authentication") == 0) {
+			} else if (g_strcmp0 (domain, "yt:authentication") == 0) {
 				/* Authentication problem */
 				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
 				             _("You must be authenticated to do this."));
-			} else if (xmlStrcmp (domain, (xmlChar*) "yt:quota") == 0) {
+			} else if (g_strcmp0 (domain, "yt:quota") == 0) {
 				/* Quota errors */
-				if (xmlStrcmp (code, (xmlChar*) "too_many_recent_calls") == 0) {
+				if (g_strcmp0 (code, "too_many_recent_calls") == 0) {
 					g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR, GDATA_YOUTUBE_SERVICE_ERROR_API_QUOTA_EXCEEDED,
 					             _("You have made too many API calls recently. Please wait a few minutes and try again."));
-				} else if (xmlStrcmp (code, (xmlChar*) "too_many_entries") == 0) {
+				} else if (g_strcmp0 (code, "too_many_entries") == 0) {
 					g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR, GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED,
 					             _("You have exceeded your entry quota. Please delete some entries and try again."));
 				} else {
@@ -447,11 +454,11 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 			g_debug ("Error message received in response: code \"%s\", domain \"%s\", location \"%s\".", code, domain, location);
 		}
 
-		xmlFree (domain);
-		xmlFree (code);
-		xmlFree (location);
+		g_free (domain);
+		g_free (code);
+		g_free (location);
 
-		node = node->next;
+		node = gxml_dom_xnode_get_next_sibling (node);
 	}
 
 check_error:

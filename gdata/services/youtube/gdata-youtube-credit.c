@@ -31,7 +31,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-youtube-credit.h"
 #include "gdata-parsable.h"
@@ -39,7 +39,7 @@
 
 static void gdata_youtube_credit_finalize (GObject *object);
 static void gdata_youtube_credit_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -120,12 +120,12 @@ gdata_youtube_credit_get_property (GObject *object, guint property_id, GValue *v
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_youtube_credit_parent_class)->pre_parse_xml (parsable, doc, root_node, user_data, error);
 
-	GDATA_YOUTUBE_CREDIT (parsable)->priv->entity_type = (gchar*) xmlGetProp (root_node, (xmlChar*) "type");
+	GDATA_YOUTUBE_CREDIT (parsable)->priv->entity_type = (gchar*) gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (root_node), "type");
 
 	return TRUE;
 }

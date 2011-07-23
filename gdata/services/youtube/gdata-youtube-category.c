@@ -31,7 +31,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-youtube-category.h"
@@ -40,7 +40,7 @@
 
 static void gdata_youtube_category_finalize (GObject *object);
 static void gdata_youtube_category_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataYouTubeCategoryPrivate {
@@ -135,24 +135,26 @@ gdata_youtube_category_get_property (GObject *object, guint property_id, GValue 
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	GDataYouTubeCategory *self = GDATA_YOUTUBE_CATEGORY (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "assignable") == 0) {
+		if (g_strcmp0 (node_name, "assignable") == 0) {
 			/* yt:assignable */
 			self->priv->assignable = TRUE;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "deprecated") == 0) {
+		} else if (g_strcmp0 (node_name, "deprecated") == 0) {
 			/* yt:deprecated */
 			self->priv->assignable = FALSE;
 			g_strfreev (self->priv->browsable_regions);
 			self->priv->browsable_regions = NULL;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "browsable") == 0) {
+		} else if (g_strcmp0 (node_name, "browsable") == 0) {
 			/* yt:browsable */
-			xmlChar *regions;
+			gchar *regions;
 
-			regions = xmlGetProp (node, (xmlChar*) "regions");
+			regions = gxml_dom_element_get_attribute (elem, "regions");
 			if (regions == NULL)
 				return gdata_parser_error_required_property_missing (node, "regions", error);
 

@@ -36,7 +36,7 @@
  */
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-youtube-control.h"
 #include "gdata-parsable.h"
@@ -45,7 +45,7 @@
 #include "gdata-youtube-state.h"
 
 static void gdata_youtube_control_dispose (GObject *object);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -93,20 +93,21 @@ gdata_youtube_control_dispose (GObject *object)
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataYouTubeControl *self = GDATA_YOUTUBE_CONTROL (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    xmlStrcmp (node->name, (xmlChar*) "draft") == 0) {
+	    g_strcmp0 (node_name, "draft") == 0) {
 		/* app:draft */
-		xmlChar *draft = xmlNodeListGetString (doc, node, TRUE);
-		if (xmlStrcmp (draft, (xmlChar*) "no") == 0)
+		gchar *draft = gxml_dom_element_get_content (GXML_DOM_ELEMENT (gxml_dom_xnode_get_parent_node (node)));
+		if (g_strcmp0 (draft, "no") == 0)
 			self->priv->is_draft = FALSE;
 		else
 			self->priv->is_draft = TRUE;
-		xmlFree (draft);
+		g_free (draft);
 	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE &&
 	           gdata_parser_object_from_element (node, "state", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_STATE,
 	                                             &(self->priv->state), &success, error) == TRUE) {

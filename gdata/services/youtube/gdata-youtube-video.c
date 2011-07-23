@@ -69,7 +69,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-youtube-video.h"
@@ -93,7 +93,7 @@ static void gdata_youtube_video_dispose (GObject *object);
 static void gdata_youtube_video_finalize (GObject *object);
 static void gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_youtube_video_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -716,10 +716,12 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataYouTubeVideo *self = GDATA_YOUTUBE_VIDEO (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
 	    gdata_parser_object_from_element (node, "group", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_GROUP,
@@ -736,113 +738,113 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
 		if (gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "statistics") == 0) {
+		} else if (g_strcmp0 (node_name, "statistics") == 0) {
 			/* yt:statistics */
-			xmlChar *view_count, *favorite_count;
+			gchar *view_count, *favorite_count;
 
 			/* View count */
-			view_count = xmlGetProp (node, (xmlChar*) "viewCount");
+			view_count = gxml_dom_element_get_attribute (elem, "viewCount");
 			if (view_count == NULL)
 				return gdata_parser_error_required_property_missing (node, "viewCount", error);
 			self->priv->view_count = strtoul ((gchar*) view_count, NULL, 10);
-			xmlFree (view_count);
+			g_free (view_count);
 
 			/* Favourite count */
-			favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
+			favorite_count = gxml_dom_element_get_attribute (elem, "favoriteCount");
 			self->priv->favorite_count = (favorite_count != NULL) ? strtoul ((gchar*) favorite_count, NULL, 10) : 0;
-			xmlFree (favorite_count);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
+			g_free (favorite_count);
+		} else if (g_strcmp0 (node_name, "noembed") == 0) {
 			/* yt:noembed */
 			/* Ignore this now; it's been superceded by yt:accessControl.
 			 * See http://apiblog.youtube.com/2010/02/extended-access-controls-available-via.html */
-		} else if (xmlStrcmp (node->name, (xmlChar*) "accessControl") == 0) {
+		} else if (g_strcmp0 (node_name, "accessControl") == 0) {
 			/* yt:accessControl */
-			xmlChar *action, *permission;
+			gchar *action, *permission;
 			GDataYouTubePermission permission_enum;
 
-			action = xmlGetProp (node, (xmlChar*) "action");
+			action = gxml_dom_element_get_attribute (elem, "action");
 			if (action == NULL)
 				return gdata_parser_error_required_property_missing (node, "action", error);
-			permission = xmlGetProp (node, (xmlChar*) "permission");
+			permission = gxml_dom_element_get_attribute (elem, "permission");
 			if (permission == NULL) {
-				xmlFree (action);
+				g_free (action);
 				return gdata_parser_error_required_property_missing (node, "permission", error);
 			}
 
 			/* Work out what the permission is */
-			if (xmlStrcmp (permission, (xmlChar*) "allowed") == 0) {
+			if (g_strcmp0 (permission, "allowed") == 0) {
 				permission_enum = GDATA_YOUTUBE_PERMISSION_ALLOWED;
-			} else if (xmlStrcmp (permission, (xmlChar*) "denied") == 0) {
+			} else if (g_strcmp0 (permission, "denied") == 0) {
 				permission_enum = GDATA_YOUTUBE_PERMISSION_DENIED;
-			} else if (xmlStrcmp (permission, (xmlChar*) "moderated") == 0) {
+			} else if (g_strcmp0 (permission, "moderated") == 0) {
 				permission_enum = GDATA_YOUTUBE_PERMISSION_MODERATED;
 			} else {
-				xmlFree (action);
-				xmlFree (permission);
+				g_free (action);
+				g_free (permission);
 				return gdata_parser_error_unknown_property_value (node, "permission", (gchar*) permission, error);
 			}
 
 			/* Store the access control */
 			g_hash_table_insert (self->priv->access_controls, (gchar*) action, GINT_TO_POINTER (permission_enum));
-		} else if (xmlStrcmp (node->name, (xmlChar*) "recorded") == 0) {
+		} else if (g_strcmp0 (node_name, "recorded") == 0) {
 			/* yt:recorded */
-			xmlChar *recorded;
+			gchar *recorded;
 			gint64 recorded_int64;
 
-			recorded = xmlNodeListGetString (doc, node->children, TRUE);
+			recorded = gxml_dom_element_get_content (elem);
 			if (gdata_parser_int64_from_date ((gchar*) recorded, &recorded_int64) == FALSE) {
 				/* Error */
 				gdata_parser_error_not_iso8601_format (node, (gchar*) recorded, error);
-				xmlFree (recorded);
+				g_free (recorded);
 				return FALSE;
 			}
-			xmlFree (recorded);
+			g_free (recorded);
 			gdata_youtube_video_set_recorded (self, recorded_int64);
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
+		if (g_strcmp0 (node_name, "rating") == 0) {
 			/* gd:rating */
-			xmlChar *min, *max, *num_raters, *average;
+			gchar *min, *max, *num_raters, *average;
 			guint num_raters_uint;
 			gdouble average_double;
 
-			min = xmlGetProp (node, (xmlChar*) "min");
+			min = gxml_dom_element_get_attribute (elem, "min");
 			if (min == NULL)
 				return gdata_parser_error_required_property_missing (node, "min", error);
 
-			max = xmlGetProp (node, (xmlChar*) "max");
+			max = gxml_dom_element_get_attribute (elem, "max");
 			if (max == NULL) {
 				gdata_parser_error_required_property_missing (node, "max", error);
-				xmlFree (min);
+				g_free (min);
 				return FALSE;
 			}
 
-			num_raters = xmlGetProp (node, (xmlChar*) "numRaters");
+			num_raters = gxml_dom_element_get_attribute (elem, "numRaters");
 			if (num_raters == NULL)
 				num_raters_uint = 0;
 			else
 				num_raters_uint = strtoul ((gchar*) num_raters, NULL, 10);
-			xmlFree (num_raters);
+			g_free (num_raters);
 
-			average = xmlGetProp (node, (xmlChar*) "average");
+			average = gxml_dom_element_get_attribute (elem, "average");
 			if (average == NULL)
 				average_double = 0;
 			else
 				average_double = g_ascii_strtod ((gchar*) average, NULL);
-			xmlFree (average);
+			g_free (average);
 
 			self->priv->rating.min = strtoul ((gchar*) min, NULL, 10);
 			self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
 			self->priv->rating.count = num_raters_uint;
 			self->priv->rating.average = average_double;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
+		} else if (g_strcmp0 (node_name, "comments") == 0) {
 			/* gd:comments */
-			xmlNode *child_node;
+			GXmlDomXNode *child_node;
 
 			/* This is actually the child of the <comments> element */
-			child_node = node->children;
+			child_node = gxml_dom_xnode_get_first_child (node);
 			if (child_node == NULL) {
 				return gdata_parser_error_required_element_missing ("gd:feedLink", "gd:comments", error);
 			}

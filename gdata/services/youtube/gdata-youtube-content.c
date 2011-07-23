@@ -31,7 +31,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-youtube-content.h"
 #include "gdata-parsable.h"
@@ -39,7 +39,7 @@
 #include "gdata-youtube-enums.h"
 
 static void gdata_youtube_content_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataYouTubeContentPrivate {
@@ -106,14 +106,14 @@ gdata_youtube_content_get_property (GObject *object, guint property_id, GValue *
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *format;
+	gchar *format;
 
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_youtube_content_parent_class)->pre_parse_xml (parsable, doc, root_node, user_data, error);
 
-	format = xmlGetProp (root_node, (xmlChar*) "format");
+	format = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (root_node), "format");
 	GDATA_YOUTUBE_CONTENT (parsable)->priv->format = (format == NULL) ? GDATA_YOUTUBE_FORMAT_UNKNOWN : strtoul ((gchar*) format, NULL, 10);
 
 	return TRUE;

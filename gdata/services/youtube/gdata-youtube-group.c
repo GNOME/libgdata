@@ -29,7 +29,7 @@
  */
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-youtube-group.h"
 #include "gdata-parsable.h"
@@ -40,7 +40,7 @@
 #include "gdata-youtube-credit.h"
 
 static void gdata_youtube_group_finalize (GObject *object);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -88,10 +88,12 @@ gdata_youtube_group_finalize (GObject *object)
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataYouTubeGroup *self = GDATA_YOUTUBE_GROUP (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
 	    (gdata_parser_object_from_element_setter (node, "content", P_REQUIRED, GDATA_TYPE_YOUTUBE_CONTENT,
@@ -106,15 +108,15 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_int64_from_element (node, "uploaded", P_REQUIRED | P_NO_DUPES,
 		                                     &(self->priv->uploaded), &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "duration") == 0) {
+		} else if (g_strcmp0 (node_name, "duration") == 0) {
 			/* yt:duration */
-			xmlChar *duration = xmlGetProp (node, (xmlChar*) "seconds");
+			gchar *duration = gxml_dom_element_get_attribute (elem, "seconds");
 			if (duration == NULL)
 				return gdata_parser_error_required_property_missing (node, "seconds", error);
 
 			self->priv->duration = strtoul ((gchar*) duration, NULL, 10);
-			xmlFree (duration);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "private") == 0) {
+			g_free (duration);
+		} else if (g_strcmp0 (node_name, "private") == 0) {
 			/* yt:private */
 			gdata_youtube_group_set_is_private (self, TRUE);
 		} else {
