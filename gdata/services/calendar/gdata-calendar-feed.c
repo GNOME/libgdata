@@ -28,7 +28,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-calendar-feed.h"
 #include "gdata-feed.h"
@@ -36,7 +36,7 @@
 
 static void gdata_calendar_feed_finalize (GObject *object);
 static void gdata_calendar_feed_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 
 struct _GDataCalendarFeedPrivate {
 	gchar *timezone;
@@ -128,27 +128,29 @@ gdata_calendar_feed_get_property (GObject *object, guint property_id, GValue *va
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	GDataCalendarFeed *self = GDATA_CALENDAR_FEED (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://schemas.google.com/gCal/2005") == FALSE)
 		return GDATA_PARSABLE_CLASS (gdata_calendar_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 
-	if (xmlStrcmp (node->name, (xmlChar*) "timezone") == 0) {
+	if (g_strcmp0 (node_name, "timezone") == 0) {
 		/* gCal:timezone */
-		xmlChar *_timezone = xmlGetProp (node, (xmlChar*) "value");
+		gchar *_timezone = gxml_dom_element_get_attribute (elem, "value");
 		if (_timezone == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
 		g_free (self->priv->timezone);
-		self->priv->timezone = (gchar*) _timezone;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "timesCleaned") == 0) {
+		self->priv->timezone = _timezone;
+	} else if (g_strcmp0 (node_name, "timesCleaned") == 0) {
 		/* gCal:timesCleaned */
-		xmlChar *times_cleaned = xmlGetProp (node, (xmlChar*) "value");
+		gchar *times_cleaned = gxml_dom_element_get_attribute (elem, "value");
 		if (times_cleaned == NULL)
 			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->times_cleaned = strtoul ((gchar*) times_cleaned, NULL, 10);
-		xmlFree (times_cleaned);
+		self->priv->times_cleaned = strtoul (times_cleaned, NULL, 10);
+		g_free (times_cleaned);
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_calendar_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
