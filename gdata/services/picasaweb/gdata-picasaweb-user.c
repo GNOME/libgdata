@@ -31,7 +31,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-picasaweb-user.h"
 #include "gdata-entry.h"
@@ -39,7 +39,7 @@
 
 static void gdata_picasaweb_user_finalize (GObject *object);
 static void gdata_picasaweb_user_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataPicasaWebUserPrivate {
@@ -224,10 +224,12 @@ gdata_picasaweb_user_get_property (GObject *object, guint property_id, GValue *v
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataPicasaWebUser *self = GDATA_PICASAWEB_USER (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://schemas.google.com/photos/2007") == FALSE)
 		return GDATA_PARSABLE_CLASS (gdata_picasaweb_user_parent_class)->parse_xml (parsable, doc, node, user_data, error);
@@ -236,25 +238,25 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NON_EMPTY, &(self->priv->nickname), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "thumbnail", P_REQUIRED | P_NON_EMPTY, &(self->priv->thumbnail_uri), &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "quotacurrent") == 0) {
+	} else if (g_strcmp0 (node_name, "quotacurrent") == 0) {
 		/* gphoto:quota-current */
-		xmlChar *quota_current = xmlNodeListGetString (doc, node->children, TRUE);
+		gchar *quota_current = gxml_dom_element_get_content (elem);
 		self->priv->quota_current = g_ascii_strtoll ((const gchar*) quota_current, NULL, 10);
-		xmlFree (quota_current);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "quotalimit") == 0) {
+		g_free (quota_current);
+	} else if (g_strcmp0 (node_name, "quotalimit") == 0) {
 		/* gphoto:quota-limit */
-		xmlChar *quota_limit = xmlNodeListGetString (doc, node->children, TRUE);
+		gchar *quota_limit = gxml_dom_element_get_content (elem);
 		self->priv->quota_limit = g_ascii_strtoll ((const gchar*) quota_limit, NULL, 10);
-		xmlFree (quota_limit);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "maxPhotosPerAlbum") == 0) {
+		g_free (quota_limit);
+	} else if (g_strcmp0 (node_name, "maxPhotosPerAlbum") == 0) {
 		/* gphoto:max-photos-per-album */
-		xmlChar *max_photos_per_album = xmlNodeListGetString (doc, node->children, TRUE);
+		gchar *max_photos_per_album = gxml_dom_element_get_content (elem);
 		self->priv->max_photos_per_album = strtol ((char*) max_photos_per_album, NULL, 10);
-		xmlFree (max_photos_per_album);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "x-allowDownloads") == 0) { /* RHSTODO: see if this comes with the user */
+		g_free (max_photos_per_album);
+	} else if (g_strcmp0 (node_name, "x-allowDownloads") == 0) { /* RHSTODO: see if this comes with the user */
 		/* gphoto:allowDownloads */
 		/* TODO: Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
-	} else if (xmlStrcmp (node->name, (xmlChar*) "x-allowPrints") == 0) { /* RHSTODO: see if this comes with the user */
+	} else if (g_strcmp0 (node_name, "x-allowPrints") == 0) { /* RHSTODO: see if this comes with the user */
 		/* gphoto:allowPrints */
 		/* TODO: Not part of public API so we're capturing and ignoring for now.  See bgo #589858. */
 	} else {

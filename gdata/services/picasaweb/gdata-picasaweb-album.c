@@ -87,7 +87,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-picasaweb-album.h"
@@ -106,7 +106,7 @@ static void gdata_picasaweb_album_finalize (GObject *object);
 static void gdata_picasaweb_album_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_picasaweb_album_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataPicasaWebAlbumPrivate {
@@ -652,10 +652,12 @@ gdata_picasaweb_album_set_property (GObject *object, guint property_id, const GV
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataPicasaWebAlbum *self = GDATA_PICASAWEB_ALBUM (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	/* TODO: media:group should also be P_NO_DUPES, but we can't, as priv->media_group has to be pre-populated
 	 * in order for things like gdata_picasaweb_album_get_tags() to work. */
@@ -677,80 +679,80 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES,
 		                                      &(self->priv->album_id), &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "access") == 0) {
+		} else if (g_strcmp0 (node_name, "access") == 0) {
 			/* gphoto:access */
-			xmlChar *access_level = xmlNodeListGetString (doc, node->children, TRUE);
-			if (xmlStrcmp (access_level, (xmlChar*) "public") == 0) {
+			gchar *access_level = gxml_dom_element_get_content (elem);
+			if (g_strcmp0 (access_level, "public") == 0) {
 				gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PUBLIC);
-			} else if (xmlStrcmp (access_level, (xmlChar*) "private") == 0) {
+			} else if (g_strcmp0 (access_level, "private") == 0) {
 				gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PRIVATE);
 			} else {
-				gdata_parser_error_unknown_content (node, (gchar*) access_level, error);
-				xmlFree (access_level);
+				gdata_parser_error_unknown_content (node, access_level, error);
+				g_free (access_level);
 				return FALSE;
 			}
-			xmlFree (access_level);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "timestamp") == 0) {
+			g_free (access_level);
+		} else if (g_strcmp0 (node_name, "timestamp") == 0) {
 			/* gphoto:timestamp */
-			xmlChar *timestamp_str;
+			gchar *timestamp_str;
 			guint64 milliseconds;
 
-			timestamp_str = xmlNodeListGetString (doc, node->children, TRUE);
-			milliseconds = g_ascii_strtoull ((gchar*) timestamp_str, NULL, 10);
-			xmlFree (timestamp_str);
+			timestamp_str = gxml_dom_element_get_content (elem);
+			milliseconds = g_ascii_strtoull (timestamp_str, NULL, 10);
+			g_free (timestamp_str);
 
 			gdata_picasaweb_album_set_timestamp (self, (gint64) milliseconds);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "numphotos") == 0) {
+		} else if (g_strcmp0 (node_name, "numphotos") == 0) {
 			/* gphoto:numphotos */
-			xmlChar *num_photos = xmlNodeListGetString (doc, node->children, TRUE);
+			gchar *num_photos = gxml_dom_element_get_content (elem);
 			if (num_photos == NULL || *num_photos == '\0') {
-				xmlFree (num_photos);
+				g_free (num_photos);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			self->priv->num_photos = strtoul ((char*) num_photos, NULL, 10);
-			xmlFree (num_photos);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "numphotosremaining") == 0) {
+			g_free (num_photos);
+		} else if (g_strcmp0 (node_name, "numphotosremaining") == 0) {
 			/* gphoto:numphotosremaining */
-			xmlChar *num_photos_remaining = xmlNodeListGetString (doc, node->children, TRUE);
+			gchar *num_photos_remaining = gxml_dom_element_get_content (elem);
 			if (num_photos_remaining == NULL || *num_photos_remaining == '\0') {
-				xmlFree (num_photos_remaining);
+				g_free (num_photos_remaining);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			self->priv->num_photos_remaining = strtoul ((char*) num_photos_remaining, NULL, 10);
-			xmlFree (num_photos_remaining);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "bytesUsed") == 0) {
+			g_free (num_photos_remaining);
+		} else if (g_strcmp0 (node_name, "bytesUsed") == 0) {
 			/* gphoto:bytesUsed */
-			xmlChar *bytes_used = xmlNodeListGetString (doc, node->children, TRUE);
+			gchar *bytes_used = gxml_dom_element_get_content (elem);
 			if (bytes_used == NULL || *bytes_used == '\0') {
-				xmlFree (bytes_used);
+				g_free (bytes_used);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			self->priv->bytes_used = strtol ((char*) bytes_used, NULL, 10);
-			xmlFree (bytes_used);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "commentingEnabled") == 0) {
+			g_free (bytes_used);
+		} else if (g_strcmp0 (node_name, "commentingEnabled") == 0) {
 			/* gphoto:commentingEnabled */
-			xmlChar *commenting_enabled = xmlNodeListGetString (doc, node->children, TRUE);
+			gchar *commenting_enabled = gxml_dom_element_get_content (elem);
 			if (commenting_enabled == NULL || *commenting_enabled == '\0') {
-				xmlFree (commenting_enabled);
+				g_free (commenting_enabled);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			gdata_picasaweb_album_set_is_commenting_enabled (self,
-			                                                 (xmlStrcmp (commenting_enabled, (xmlChar*) "true") == 0) ? TRUE : FALSE);
-			xmlFree (commenting_enabled);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "commentCount") == 0) {
+			                                                 (g_strcmp0 (commenting_enabled, "true") == 0) ? TRUE : FALSE);
+			g_free (commenting_enabled);
+		} else if (g_strcmp0 (node_name, "commentCount") == 0) {
 			/* gphoto:commentCount */
-			xmlChar *comment_count = xmlNodeListGetString (doc, node->children, TRUE);
+			gchar *comment_count = gxml_dom_element_get_content (elem);
 			if (comment_count == NULL || *comment_count == '\0') {
-				xmlFree (comment_count);
+				g_free (comment_count);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			self->priv->comment_count = strtoul ((char*) comment_count, NULL, 10);
-			xmlFree (comment_count);
+			g_free (comment_count);
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_picasaweb_album_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
