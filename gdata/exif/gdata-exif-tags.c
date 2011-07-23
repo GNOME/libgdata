@@ -116,12 +116,12 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 
 	if (g_strcmp0 (node_name, "distance") == 0 ) {
 		/* exif:distance */
-		gchar *distance = gxml_dom_element_content_to_string (elem);
+		gchar *distance = gxml_dom_element_get_content (elem);
 		self->priv->distance = g_ascii_strtod (distance, NULL);
 		g_free (distance);
 	} else if (g_strcmp0 (node_name, "fstop") == 0) {
 		/* exif:fstop */
-		gchar *fstop = gxml_dom_element_content_to_string (elem);
+		gchar *fstop = gxml_dom_element_get_content (elem);
 		self->priv->fstop = g_ascii_strtod (fstop, NULL);
 		g_free (fstop);
 	} else if (gdata_parser_string_from_element (node, "make", P_NONE, &(self->priv->make), &success, error) == TRUE ||
@@ -130,24 +130,24 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		return success;
 	} else if (g_strcmp0 (node_name, "exposure") == 0) {
 		/* exif:exposure */
-		gchar *exposure = gxml_dom_element_content_to_string (elem);
+		gchar *exposure = gxml_dom_element_get_content (elem);
 		self->priv->exposure = g_ascii_strtod (exposure, NULL);
 		g_free (exposure);
 	} else if (g_strcmp0 (node_name, "flash") == 0) {
 		/* exif:flash */
-		gchar *flash = gxml_dom_element_content_to_string (elem);
+		gchar *flash = gxml_dom_element_get_content (elem);
 		if (flash == NULL)
 			return gdata_parser_error_required_content_missing (node, error);
 		self->priv->flash = (g_strcmp0 (flash, "true") == 0 ? TRUE : FALSE);
 		g_free (flash);
 	} else if (g_strcmp0 (node_name, "focallength") == 0) {
 		/* exif:focal-length */
-		gchar *focal_length = gxml_dom_element_content_to_string (elem);
+		gchar *focal_length = gxml_dom_element_get_content (elem);
 		self->priv->focal_length = g_ascii_strtod (focal_length, NULL);
 		g_free (focal_length);
 	} else if (g_strcmp0 (node_name, "iso") == 0) {
 		/* exif:iso */
-		gchar *iso = gxml_dom_element_content_to_string (elem);
+		gchar *iso = gxml_dom_element_get_content (elem);
 		self->priv->iso = strtol (iso, NULL, 10);
 		g_free (iso);
 	} else if (g_strcmp0 (node_name, "time") == 0) {
@@ -155,7 +155,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		gchar *time_str;
 		guint64 milliseconds;
 
-		time_str = gxml_dom_element_content_to_string (elem);
+		time_str = gxml_dom_element_get_content (elem);
 		milliseconds = g_ascii_strtoull (time_str, NULL, 10);
 		g_free (time_str);
 

@@ -172,7 +172,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	guint i;
 	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	credit = gxml_dom_element_content_to_string (root_elem);
+	credit = gxml_dom_element_get_content (root_elem);
 	if (credit == NULL || *credit == '\0') {
 		g_free (credit);
 		return gdata_parser_error_required_content_missing (root_node, error);

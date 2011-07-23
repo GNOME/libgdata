@@ -611,7 +611,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		} else if (g_strcmp0 (gxml_dom_xnode_get_node_name (node), "country") == 0) {
 			/* gd:country */
 			priv->country_code = gxml_dom_element_get_attribute (elem, "code");
-			priv->country = gxml_dom_element_content_to_string (elem);
+			priv->country = gxml_dom_element_get_content (elem);
 
 			return TRUE;
 		}

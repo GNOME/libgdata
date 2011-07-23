@@ -163,7 +163,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		} else if (g_strcmp0 (node_name, "keywords") == 0) {
 			/* media:keywords */
 			guint i;
-			gchar *text = gxml_dom_element_content_to_string (elem);
+			gchar *text = gxml_dom_element_get_content (elem);
 
 			g_strfreev (self->priv->keywords);
 			if (text == NULL) {
@@ -246,7 +246,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			}
 			g_free (relationship);
 
-			countries = gxml_dom_element_content_to_string (elem);
+			countries = gxml_dom_element_get_content (elem);
 			country_list = g_strsplit (countries, " ", -1);
 			g_free (countries);
 

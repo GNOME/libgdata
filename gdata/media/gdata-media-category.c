@@ -196,7 +196,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	gchar *category, *scheme;
 	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	category = gxml_dom_element_content_to_string (root_elem);
+	category = gxml_dom_element_get_content (root_elem);
 	if (category == NULL || *category == '\0') {
 		g_free (category);
 		return gdata_parser_error_required_content_missing (root_node, error);
