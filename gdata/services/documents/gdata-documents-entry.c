@@ -91,7 +91,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-documents-entry.h"
@@ -114,7 +114,7 @@ static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 
 struct _GDataDocumentsEntryPrivate {
 	gint64 edited;
@@ -404,10 +404,12 @@ gdata_documents_entry_set_property (GObject *object, guint property_id, const GV
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
@@ -420,30 +422,30 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
 		                                      &(self->priv->last_modified_by), &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
+		} else if (g_strcmp0 (node_name, "deleted") ==  0) {
 			/* <gd:deleted> */
 			/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */
 			self->priv->is_deleted = TRUE;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
+		} else if (g_strcmp0 (node_name, "resourceId") ==  0) {
 			gchar **document_id_parts;
-			xmlChar *resource_id;
+			gchar *resource_id;
 
 			if (self->priv->document_id != NULL)
 				return gdata_parser_error_duplicate_element (node, error);
 
-			resource_id = xmlNodeListGetString (doc, node->children, TRUE);
+			resource_id = gxml_dom_element_get_content (elem);
 			if (resource_id == NULL || *resource_id == '\0') {
-				xmlFree (resource_id);
+				g_free (resource_id);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
-			document_id_parts = g_strsplit ((gchar*) resource_id, ":", 2);
+			document_id_parts = g_strsplit (resource_id, ":", 2);
 			if (document_id_parts == NULL) {
-				gdata_parser_error_unknown_content (node, (gchar*) resource_id, error);
-				xmlFree (resource_id);
+				gdata_parser_error_unknown_content (node, resource_id, error);
+				g_free (resource_id);
 				return FALSE;
 			}
-			xmlFree (resource_id);
+			g_free (resource_id);
 
 			self->priv->document_id = g_strdup (document_id_parts[1]);
 			g_strfreev (document_id_parts);
@@ -451,7 +453,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/docs/2007") == TRUE &&
-	           xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
+	           g_strcmp0 (node_name, "writersCanInvite") ==  0) {
 		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->writers_can_invite), -1, error) == FALSE)
 			return FALSE;
 	} else {

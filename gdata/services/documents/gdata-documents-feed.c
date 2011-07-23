@@ -36,7 +36,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-documents-feed.h"
@@ -49,7 +49,7 @@
 #include "gdata-private.h"
 #include "gdata-service.h"
 
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 
 G_DEFINE_TYPE (GDataDocumentsFeed, gdata_documents_feed, GDATA_TYPE_FEED)
 
@@ -66,22 +66,24 @@ gdata_documents_feed_init (GDataDocumentsFeed *self)
 	/* Why am I writing it? */
 }
 
-/* NOTE: Cast from (xmlChar*) to (gchar*) (and corresponding change in memory management functions) is safe because we've changed
+/* NOTE: Cast from to (gchar*) (and corresponding change in memory management functions) is safe because we've changed
  * libxml's memory functions. */
 static gchar *
-get_kind (xmlDoc *doc, xmlNode *node)
+get_kind (GXmlDomDocument *doc, GXmlDomXNode *node)
 {
-	xmlNode *entry_node;
+	GXmlDomXNode *entry_node;
+	GXmlDomElement *entry_elem;
 
-	for (entry_node = node->children; entry_node != NULL; entry_node = entry_node->next) {
-		if (xmlStrcmp (entry_node->name, (xmlChar*) "category") == 0) {
-			xmlChar *scheme = xmlGetProp (entry_node, (xmlChar*) "scheme");
+	for (entry_node = gxml_dom_xnode_get_first_child (node); entry_node != NULL; entry_node = gxml_dom_xnode_get_next_sibling (entry_node)) {
+		if (g_strcmp0 (gxml_dom_xnode_get_node_name (entry_node), "category") == 0) {
+			entry_elem = GXML_DOM_ELEMENT (entry_node);
+			gchar *scheme = gxml_dom_element_get_attribute (entry_elem, "scheme");
 
-			if (xmlStrcmp (scheme, (xmlChar*) "http://schemas.google.com/g/2005#kind") == 0) {
-				xmlFree (scheme);
-				return (gchar*) xmlGetProp (entry_node, (xmlChar*) "term");
+			if (g_strcmp0 (scheme, "http://schemas.google.com/g/2005#kind") == 0) {
+				g_free (scheme);
+				return gxml_dom_element_get_attribute (entry_elem, "term");
 			}
-			xmlFree (scheme);
+			g_free (scheme);
 		}
 	}
 
@@ -89,12 +91,13 @@ get_kind (xmlDoc *doc, xmlNode *node)
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	GDataDocumentsFeed *self = GDATA_DOCUMENTS_FEED (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE &&
-	    xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
+	    g_strcmp0 (node_name, "entry") == 0) {
 		GDataEntry *entry = NULL;
 		gchar *kind = get_kind (doc, node);
 
