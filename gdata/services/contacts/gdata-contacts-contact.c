@@ -149,7 +149,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-contacts-contact.h"
@@ -170,7 +170,7 @@ static void gdata_contacts_contact_finalize (GObject *object);
 static void gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_contacts_contact_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
@@ -763,30 +763,32 @@ gdata_contacts_contact_set_property (GObject *object, guint property_id, const G
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataContactsContact *self = GDATA_CONTACTS_CONTACT (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
-	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE && xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
+	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE && g_strcmp0 (node_name, "id") == 0) {
 		/* We have to override <id> parsing to fix the projection. Modify it in-place so that the parser in GDataEntry will pick up
 		 * the changes. This fixes bugs caused by referring to contacts by the base projection, rather than the full projection;
 		 * such as http://code.google.com/p/gdata-issues/issues/detail?id=2129. */
 		gchar *base;
-		gchar *id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		gchar *id = gxml_dom_element_get_content (elem);
 
 		if (id != NULL) {
 			base = strstr (id, "/base/");
 			if (base != NULL) {
 				memcpy (base, "/full/", 6);
-				xmlNodeSetContent (node, (xmlChar*) id);
+				gxml_dom_element_set_content (elem, id);
 			}
 		}
 
-		xmlFree (id);
+		g_free (id);
 
 		return GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
@@ -802,35 +804,33 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                             gdata_contacts_contact_add_organization, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element (node, "name", P_REQUIRED, GDATA_TYPE_GD_NAME, &(self->priv->name), &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "extendedProperty") == 0) {
+		} else if (g_strcmp0 (node_name, "extendedProperty") == 0) {
 			/* gd:extendedProperty */
-			xmlChar *name, *value;
-			xmlBuffer *buffer = NULL;
+			gchar *name, *value, *value_new;
+			value = g_strdup ("");
 
-			name = xmlGetProp (node, (xmlChar*) "name");
+			name = gxml_dom_element_get_attribute (elem, "name");
 			if (name == NULL)
 				return gdata_parser_error_required_property_missing (node, "name", error);
 
 			/* Get either the value property, or the element's content */
-			value = xmlGetProp (node, (xmlChar*) "value");
+			value = gxml_dom_element_get_attribute (elem, "value");
 			if (value == NULL) {
-				xmlNode *child_node;
-
+				GXmlDomXNode *child_node;
+				
 				/* Use the element's content instead (arbitrary XML) */
-				buffer = xmlBufferCreate ();
-				for (child_node = node->children; child_node != NULL; child_node = child_node->next)
-					xmlNodeDump (buffer, doc, child_node, 0, 0);
-				value = (xmlChar*) xmlBufferContent (buffer);
+				for (child_node = gxml_dom_xnode_get_first_child (node); child_node != NULL; child_node = gxml_dom_xnode_get_next_sibling (child_node)) {
+					value_new = g_strconcat (value, gxml_dom_xnode_to_string (child_node, 0, 0), NULL);
+					g_free (value);
+					value = value_new;
+				}
 			}
 
 			gdata_contacts_contact_set_extended_property (self, (gchar*) name, (gchar*) value);
 
-			xmlFree (name);
-			if (buffer != NULL)
-				xmlBufferFree (buffer);
-			else
-				xmlFree (value);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") == 0) {
+			g_free (name);
+			g_free (value);
+		} else if (g_strcmp0 (node_name, "deleted") == 0) {
 			/* gd:deleted */
 			self->priv->deleted = TRUE;
 		} else {
@@ -866,108 +866,108 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                      &(self->priv->short_name), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "subject", P_REQUIRED | P_NO_DUPES, &(self->priv->subject), &success, error) == TRUE) {
 			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "gender") == 0) {
+		} else if (g_strcmp0 (node_name, "gender") == 0) {
 			/* gContact:gender */
-			xmlChar *value;
+			gchar *value;
 
 			if (self->priv->gender != NULL)
 				return gdata_parser_error_duplicate_element (node, error);
 
-			value = xmlGetProp (node, (xmlChar*) "value");
+			value = gxml_dom_element_get_attribute (elem, "value");
 			if (value == NULL || *value == '\0') {
-				xmlFree (value);
+				g_free (value);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			self->priv->gender = (gchar*) value;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "hobby") == 0) {
+		} else if (g_strcmp0 (node_name, "hobby") == 0) {
 			/* gContact:hobby */
-			xmlChar *hobby;
+			gchar *hobby;
 
-			hobby = xmlNodeListGetString (doc, node->children, TRUE);
+			hobby = gxml_dom_element_get_content (elem);
 			if (hobby == NULL || *hobby == '\0') {
-				xmlFree (hobby);
+				g_free (hobby);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			gdata_contacts_contact_add_hobby (self, (gchar*) hobby);
-			xmlFree (hobby);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "userDefinedField") == 0) {
+			g_free (hobby);
+		} else if (g_strcmp0 (node_name, "userDefinedField") == 0) {
 			/* gContact:userDefinedField */
-			xmlChar *name, *value;
+			gchar *name, *value;
 
 			/* Note that while we require the property to be present, we don't require it to be non-empty. See bgo#648058 */
-			name = xmlGetProp (node, (xmlChar*) "key");
+			name = gxml_dom_element_get_attribute (elem, "key");
 			if (name == NULL) {
-				xmlFree (name);
+				g_free (name);
 				return gdata_parser_error_required_property_missing (node, "key", error);
 			}
 
 			/* Get either the value property, or the element's content */
-			value = xmlGetProp (node, (xmlChar*) "value");
+			value = gxml_dom_element_get_attribute (elem, "value");
 			if (value == NULL) {
-				xmlFree (name);
+				g_free (name);
 				return gdata_parser_error_required_property_missing (node, "value", error);
 			}
 
 			gdata_contacts_contact_set_user_defined_field (self, (gchar*) name, (gchar*) value);
 
-			xmlFree (name);
-			xmlFree (value);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "priority") == 0) {
+			g_free (name);
+			g_free (value);
+		} else if (g_strcmp0 (node_name, "priority") == 0) {
 			/* gContact:priority */
-			xmlChar *rel;
+			gchar *rel;
 
 			if (self->priv->priority != NULL)
 				return gdata_parser_error_duplicate_element (node, error);
 
-			rel = xmlGetProp (node, (xmlChar*) "rel");
+			rel = gxml_dom_element_get_attribute (elem, "rel");
 			if (rel == NULL || *rel == '\0') {
-				xmlFree (rel);
+				g_free (rel);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			self->priv->priority = (gchar*) rel;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "sensitivity") == 0) {
+		} else if (g_strcmp0 (node_name, "sensitivity") == 0) {
 			/* gContact:sensitivity */
-			xmlChar *rel;
+			gchar *rel;
 
 			if (self->priv->sensitivity != NULL)
 				return gdata_parser_error_duplicate_element (node, error);
 
-			rel = xmlGetProp (node, (xmlChar*) "rel");
+			rel = gxml_dom_element_get_attribute (elem, "rel");
 			if (rel == NULL || *rel == '\0') {
-				xmlFree (rel);
+				g_free (rel);
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
 			self->priv->sensitivity = (gchar*) rel;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "groupMembershipInfo") == 0) {
+		} else if (g_strcmp0 (node_name, "groupMembershipInfo") == 0) {
 			/* gContact:groupMembershipInfo */
-			xmlChar *href;
+			gchar *href;
 			gboolean deleted_bool;
 
-			href = xmlGetProp (node, (xmlChar*) "href");
+			href = gxml_dom_element_get_attribute (elem, "href");
 			if (href == NULL)
 				return gdata_parser_error_required_property_missing (node, "href", error);
 
 			/* Has it been deleted? */
 			if (gdata_parser_boolean_from_property (node, "deleted", &deleted_bool, 0, error) == FALSE) {
-				xmlFree (href);
+				g_free (href);
 				return FALSE;
 			}
 
 			/* Insert it into the hash table */
 			g_hash_table_insert (self->priv->groups, (gchar*) href, GUINT_TO_POINTER (deleted_bool));
-		} else if (xmlStrcmp (node->name, (xmlChar*) "birthday") == 0) {
+		} else if (g_strcmp0 (node_name, "birthday") == 0) {
 			/* gContact:birthday */
-			xmlChar *birthday;
+			gchar *birthday;
 			guint length = 0, year = 666, month, day;
 
 			if (g_date_valid (&(self->priv->birthday)) == TRUE)
 				return gdata_parser_error_duplicate_element (node, error);
 
-			birthday = xmlGetProp (node, (xmlChar*) "when");
+			birthday = gxml_dom_element_get_attribute (elem, "when");
 			if (birthday == NULL)
 				return gdata_parser_error_required_property_missing (node, "when", error);
 			length = strlen ((char*) birthday);
@@ -979,11 +979,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				/* Store the values in the GDate */
 				g_date_set_dmy (&(self->priv->birthday), day, month, year);
 				self->priv->birthday_has_year = (length == 10) ? TRUE : FALSE;
-				xmlFree (birthday);
+				g_free (birthday);
 			} else {
 				/* Parsing failed */
 				gdata_parser_error_not_iso8601_format (node, (gchar*) birthday, error);
-				xmlFree (birthday);
+				g_free (birthday);
 				return FALSE;
 			}
 		} else {
@@ -991,14 +991,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 	} else {
 		/* If we haven't yet found a photo, check to see if it's a photo <link> element */
-		if (self->priv->photo_etag == NULL && xmlStrcmp (node->name, (xmlChar*) "link") == 0) {
-			xmlChar *rel = xmlGetProp (node, (xmlChar*) "rel");
-			if (xmlStrcmp (rel, (xmlChar*) "http://schemas.google.com/contacts/2008/rel#photo") == 0) {
+		if (self->priv->photo_etag == NULL && g_strcmp0 (node_name, "link") == 0) {
+			gchar *rel = gxml_dom_element_get_attribute (elem, "rel");
+			if (g_strcmp0 (rel, "http://schemas.google.com/contacts/2008/rel#photo") == 0) {
 				/* It's the photo link (http://code.google.com/apis/contacts/docs/2.0/reference.html#Photos), whose ETag we should
 				 * note down, then pass onto the parent class to parse properly */
-				self->priv->photo_etag = (gchar*) xmlGetProp (node, (xmlChar*) "etag");
+				self->priv->photo_etag = (gchar*) gxml_dom_element_get_attribute (elem, "etag");
 			}
-			xmlFree (rel);
+			g_free (rel);
 		}
 
 		return GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error);
