@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gcontact-website.h"
 #include "gdata-parsable.h"
@@ -41,7 +41,7 @@ static void gdata_gcontact_website_comparable_init (GDataComparableIface *iface)
 static void gdata_gcontact_website_finalize (GObject *object);
 static void gdata_gcontact_website_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gcontact_website_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -233,19 +233,20 @@ gdata_gcontact_website_set_property (GObject *object, guint property_id, const G
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *uri, *rel, *label;
+	gchar *uri, *rel;
 	gboolean primary_bool;
 	GDataGContactWebsitePrivate *priv = GDATA_GCONTACT_WEBSITE (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Is it the primary website? */
 	if (gdata_parser_boolean_from_property (root_node, "primary", &primary_bool, 0, error) == FALSE)
 		return FALSE;
 
-	uri = xmlGetProp (root_node, (xmlChar*) "href");
+	uri = gxml_dom_element_get_attribute (root_elem, "href");
 	if (uri == NULL || *uri == '\0') {
-		xmlFree (uri);
+		g_free (uri);
 		return gdata_parser_error_required_property_missing (root_node, "href", error);
 	}
 
@@ -262,6 +263,16 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	priv->relation_type = (gchar*) rel;
 	priv->label = (gchar*) label;
 	priv->uri = (gchar*) uri;
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
+	if (rel == NULL || *rel == '\0') {
+		g_free (uri);
+		g_free (rel);
+		return gdata_parser_error_required_property_missing (root_node, "rel", error);
+	}
+
+	priv->uri = uri;
+	priv->relation_type = rel;
+	priv->label = gxml_dom_element_get_attribute (root_elem, "label");
 	priv->is_primary = primary_bool;
 
 	return TRUE;

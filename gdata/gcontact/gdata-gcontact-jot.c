@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gcontact-jot.h"
 #include "gdata-parsable.h"
@@ -39,8 +39,8 @@
 static void gdata_gcontact_jot_finalize (GObject *object);
 static void gdata_gcontact_jot_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gcontact_jot_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, xmlNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -167,7 +167,7 @@ gdata_gcontact_jot_set_property (GObject *object, guint property_id, const GValu
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
 	xmlChar *rel;
 	GDataGContactJotPrivate *priv = GDATA_GCONTACT_JOT (parsable)->priv;
@@ -185,7 +185,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, xmlNode *node, gpointer user_data, GError **error)
 {
 	/* Textual content's handled in pre_parse_xml */
 	if (node->type != XML_ELEMENT_NODE)

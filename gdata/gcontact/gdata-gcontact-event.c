@@ -31,7 +31,7 @@
 
 #include <glib.h>
 #include <string.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gcontact-event.h"
 #include "gdata-parsable.h"
@@ -40,8 +40,8 @@
 static void gdata_gcontact_event_finalize (GObject *object);
 static void gdata_gcontact_event_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gcontact_event_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
@@ -199,37 +199,38 @@ gdata_gcontact_event_set_property (GObject *object, guint property_id, const GVa
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *rel, *label;
+	gchar *rel, *label;
 	GDataGContactEventPrivate *priv = GDATA_GCONTACT_EVENT (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
-	label = xmlGetProp (root_node, (xmlChar*) "label");
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
+	label = gxml_dom_element_get_attribute (root_elem, "label");
 	if ((rel == NULL || *rel == '\0') && (label == NULL || *label == '\0')) {
-		xmlFree (rel);
-		xmlFree (label);
+		g_free (rel);
+		g_free (label);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	} else if (rel != NULL && label != NULL) {
 		/* Can't have both set at once */
-		xmlFree (rel);
-		xmlFree (label);
+		g_free (rel);
+		g_free (label);
 		return gdata_parser_error_mutexed_properties (root_node, "rel", "label", error);
 	}
 
-	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) label;
+	priv->relation_type = rel;
+	priv->label = label;
 
 	return TRUE;
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	GDataGContactEventPrivate *priv = GDATA_GCONTACT_EVENT (parsable)->priv;
 
-	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE && xmlStrcmp (node->name, (xmlChar*) "when") == 0) {
-		xmlChar *start_time;
+	if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE && g_strcmp0 (gxml_dom_xnode_get_node_name (node), "when") == 0) {
+		gchar *start_time;
 		guint year, month, day;
 
 		/* gd:when; note we don't use GDataGDWhen here because gContact:event only uses a limited subset
@@ -237,20 +238,20 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (g_date_valid (&(priv->date)) == TRUE)
 			return gdata_parser_error_duplicate_element (node, error);
 
-		start_time = xmlGetProp (node, (xmlChar*) "startTime");
+		start_time = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "startTime");
 		if (start_time == NULL)
 			return gdata_parser_error_required_property_missing (node, "startTime", error);
 
 		/* Try parsing the date format: YYYY-MM-DD */
-		if (strlen ((char*) start_time) == 10 &&
-		    sscanf ((char*) start_time, "%4u-%2u-%2u", &year, &month, &day) == 3 && g_date_valid_dmy (day, month, year) == TRUE) {
+		if (strlen (start_time) == 10 &&
+		    sscanf (start_time, "%4u-%2u-%2u", &year, &month, &day) == 3 && g_date_valid_dmy (day, month, year) == TRUE) {
 			/* Store the values in the GDate */
 			g_date_set_dmy (&(priv->date), day, month, year);
-			xmlFree (start_time);
+			g_free (start_time);
 		} else {
 			/* Parsing failed */
 			gdata_parser_error_not_iso8601_format (node, (gchar*) start_time, error);
-			xmlFree (start_time);
+			g_free (start_time);
 			return FALSE;
 		}
 

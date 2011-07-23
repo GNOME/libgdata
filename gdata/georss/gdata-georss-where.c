@@ -37,7 +37,7 @@
  */
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-georss-where.h"
@@ -45,7 +45,7 @@
 #include "gdata-parser.h"
 #include "gdata-private.h"
 
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
 
@@ -80,36 +80,33 @@ gdata_georss_where_init (GDataGeoRSSWhere *self)
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	GDataGeoRSSWhere *self = GDATA_GEORSS_WHERE (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
 
 	if (gdata_parser_is_namespace (node, "http://www.opengis.net/gml") == TRUE &&
-	    xmlStrcmp (node->name, (xmlChar*) "Point") == 0) {
+	    g_strcmp0 (node_name, "Point") == 0) {
 		/* gml:Point */
 		gboolean found_pos = FALSE;
-		xmlNode *child;
+		GXmlDomXNode *child;
 
-		for (child = node->children; child != NULL; child = child->next) {
-			if (xmlStrcmp (child->name, (xmlChar*) "pos") == 0) {
-				xmlChar *pos = xmlNodeListGetString (doc, child->children, TRUE);
+		for (child = gxml_dom_xnode_get_first_child (node); child != NULL; child = gxml_dom_xnode_get_next_sibling (child)) {
+			if (g_strcmp0 (gxml_dom_xnode_get_node_name (child), "pos") == 0) {
+				gchar *pos = gxml_dom_element_content_to_string (GXML_DOM_ELEMENT (child));
 				gchar *endptr;
 
-				self->priv->latitude = g_ascii_strtod ((gchar*) pos, &endptr);
+				self->priv->latitude = g_ascii_strtod (pos, &endptr);
 				self->priv->longitude = g_ascii_strtod (endptr, NULL);
 
-				xmlFree (pos);
+				g_free (pos);
 				found_pos = TRUE;
 			} else {
 				/* TODO: this logic copied from gdata-parsable.c.  Re-evaluate this at some point in the future.
 				   If GeoRSS and GML support were to be used more widely, it might due to implement GML objects. */
-				xmlBuffer *buffer;
 
 				/* Unhandled XML */
-				buffer = xmlBufferCreate ();
-				xmlNodeDump (buffer, doc, child, 0, 0);
-				g_message ("Unhandled XML in <gml:Point>: %s", (gchar*) xmlBufferContent (buffer));
-				xmlBufferFree (buffer);
+				g_message ("Unhandled XML in <gml:Point>: %s", gxml_dom_xnode_to_string (child, 0, 0));
 			}
 		}
 

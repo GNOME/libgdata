@@ -30,7 +30,7 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 
 #include "gdata-gcontact-external-id.h"
 #include "gdata-parsable.h"
@@ -41,7 +41,7 @@ static void gdata_gcontact_external_id_comparable_init (GDataComparableIface *if
 static void gdata_gcontact_external_id_finalize (GObject *object);
 static void gdata_gcontact_external_id_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_gcontact_external_id_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error);
 static void pre_get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
@@ -208,35 +208,36 @@ gdata_gcontact_external_id_set_property (GObject *object, guint property_id, con
 }
 
 static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
+pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *value, *rel, *label;
+	gchar *value, *rel, *label;
 	GDataGContactExternalIDPrivate *priv = GDATA_GCONTACT_EXTERNAL_ID (parsable)->priv;
+	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	value = xmlGetProp (root_node, (xmlChar*) "value");
+	value = gxml_dom_element_get_attribute (root_elem, "value");
 	if (value == NULL) {
-		xmlFree (value);
+		g_free (value);
 		return gdata_parser_error_required_property_missing (root_node, "value", error);
 	}
 
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
-	label = xmlGetProp (root_node, (xmlChar*) "label");
+	rel = gxml_dom_element_get_attribute (root_elem, "rel");
+	label = gxml_dom_element_get_attribute (root_elem, "label");
 	if ((rel == NULL || *rel == '\0') && (label == NULL || *label == '\0')) {
-		xmlFree (value);
-		xmlFree (rel);
-		xmlFree (label);
+		g_free (value);
+		g_free (rel);
+		g_free (label);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	} else if (rel != NULL && label != NULL) {
 		/* Can't have both set at once */
-		xmlFree (value);
-		xmlFree (rel);
-		xmlFree (label);
+		g_free (value);
+		g_free (rel);
+		g_free (label);
 		return gdata_parser_error_mutexed_properties (root_node, "rel", "label", error);
 	}
 
-	priv->value = (gchar*) value;
-	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) label;
+	priv->value = value;
+	priv->relation_type = rel;
+	priv->label = label;
 
 	return TRUE;
 }
