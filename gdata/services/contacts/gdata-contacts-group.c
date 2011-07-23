@@ -95,7 +95,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <gxml.h>
 #include <string.h>
 
 #include "gdata-contacts-group.h"
@@ -113,7 +113,7 @@ static GObject *gdata_contacts_group_constructor (GType type, guint n_construct_
 static void gdata_contacts_group_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_contacts_group_finalize (GObject *object);
 static void get_xml (GDataParsable *parsable, GString *xml_string);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 
@@ -314,62 +314,62 @@ gdata_contacts_group_finalize (GObject *object)
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataContactsGroup *self = GDATA_CONTACTS_GROUP (parsable);
+	const gchar *node_name = gxml_dom_xnode_get_node_name (node);
+	GXmlDomElement *elem = GXML_DOM_ELEMENT (node);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
-	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE && xmlStrcmp (node->name, (xmlChar*) "id") == 0) {
+	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE && g_strcmp0 (node_name, "id") == 0) {
 		/* We have to override <id> parsing to fix the projection. Modify it in-place so that the parser in GDataEntry will pick up the
 		 * changes. This fixes bugs caused by referring to contacts by the base projection, rather than the full projection; such as
 		 * http://code.google.com/p/gdata-issues/issues/detail?id=2129. */
 		gchar *base;
-		gchar *id = (gchar*) xmlNodeListGetString (doc, node->children, TRUE);
+		gchar *id = gxml_dom_element_get_content (elem);
 
 		if (id != NULL) {
 			base = strstr (id, "/base/");
 			if (base != NULL) {
 				memcpy (base, "/full/", 6);
-				xmlNodeSetContent (node, (xmlChar*) id);
+				gxml_dom_element_set_content (elem, id);
 			}
 		}
 
-		xmlFree (id);
+		g_free (id);
 
 		return GDATA_PARSABLE_CLASS (gdata_contacts_group_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "extendedProperty") == 0) {
+		if (g_strcmp0 (node_name, "extendedProperty") == 0) {
 			/* gd:extendedProperty */
-			xmlChar *name, *value;
-			xmlBuffer *buffer = NULL;
+			gchar *name, *value, *value_new;
+			value = g_strdup ("");
 
-			name = xmlGetProp (node, (xmlChar*) "name");
+			name = gxml_dom_element_get_attribute (elem, "name");
 			if (name == NULL)
 				return gdata_parser_error_required_property_missing (node, "name", error);
 
 			/* Get either the value property, or the element's content */
-			value = xmlGetProp (node, (xmlChar*) "value");
+			value = gxml_dom_element_get_attribute (elem, "value");
 			if (value == NULL) {
-				xmlNode *child_node;
+				GXmlDomXNode *child_node;
 
 				/* Use the element's content instead (arbitrary XML) */
-				buffer = xmlBufferCreate ();
-				for (child_node = node->children; child_node != NULL; child_node = child_node->next)
-					xmlNodeDump (buffer, doc, child_node, 0, 0);
-				value = (xmlChar*) xmlBufferContent (buffer);
+				for (child_node = gxml_dom_xnode_get_first_child (node); child_node != NULL; child_node = gxml_dom_xnode_get_next_sibling (child_node)) {
+					value_new = g_strconcat (value, gxml_dom_xnode_to_string (child_node, 0, 0), NULL);
+					g_free (value);
+					value = value_new;
+				}
 			}
 
 			gdata_contacts_group_set_extended_property (self, (gchar*) name, (gchar*) value);
 
-			xmlFree (name);
-			if (buffer != NULL)
-				xmlBufferFree (buffer);
-			else
-				xmlFree (value);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") == 0) {
+			g_free (name);
+			g_free (value);
+		} else if (g_strcmp0 (node_name, "deleted") == 0) {
 			/* gd:deleted */
 			if (self->priv->deleted == TRUE)
 				return gdata_parser_error_duplicate_element (node, error);
@@ -379,16 +379,16 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			return GDATA_PARSABLE_CLASS (gdata_contacts_group_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/contact/2008") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "systemGroup") == 0) {
+		if (g_strcmp0 (node_name, "systemGroup") == 0) {
 			/* gContact:systemGroup */
-			xmlChar *value;
+			gchar *value;
 
 			if (self->priv->system_group_id != NULL)
 				return gdata_parser_error_duplicate_element (node, error);
 
-			value = xmlGetProp (node, (xmlChar*) "id");
+			value = gxml_dom_element_get_attribute (elem, "id");
 			if (value == NULL || *value == '\0') {
-				xmlFree (value);
+				g_free (value);
 				return gdata_parser_error_required_property_missing (node, "id", error);
 			}
 
