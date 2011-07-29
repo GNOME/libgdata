@@ -25,7 +25,7 @@ If compiling with --enable-gnome (for GNOME support):
 Environment variables
 =====================
 
-If the environment variable LIGDATA_DEBUG is set to one of the following
+If the environment variable LIBGDATA_DEBUG is set to one of the following
 values, libgdata will give debug output (at various levels):
  0: Output no debug messages or network logs
  1: Output debug messages, but not network logs
