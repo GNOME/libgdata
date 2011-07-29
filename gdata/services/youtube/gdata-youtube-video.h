@@ -98,6 +98,39 @@ G_BEGIN_DECLS
 #define GDATA_YOUTUBE_ACTION_SYNDICATE "syndicate"
 
 /**
+ * GDATA_YOUTUBE_RATING_TYPE_SIMPLE:
+ *
+ * A rating type to pass to gdata_youtube_video_get_media_rating() for “simple” ratings. The values which can be returned for such ratings are:
+ * <code class="literal">adult</code> and <code class="literal">nonadult</code>.
+ *
+ * Since: 0.9.2
+ */
+#define GDATA_YOUTUBE_RATING_TYPE_SIMPLE "simple"
+
+/**
+ * GDATA_YOUTUBE_RATING_TYPE_MPAA:
+ *
+ * A rating type to pass to gdata_youtube_video_get_media_rating() for ratings by the <ulink type="http" url="http://www.mpaa.org/">MPAA</ulink>. The
+ * values which can be returned for such ratings are: <code class="literal">g</code>, <code class="literal">pg</code>,
+ * <code class="literal">pg-13</code>, <code class="literal">r</code> and <code class="literal">nc-17</code>.
+ *
+ * Since: 0.9.2
+ */
+#define GDATA_YOUTUBE_RATING_TYPE_MPAA "mpaa"
+
+/**
+ * GDATA_YOUTUBE_RATING_TYPE_V_CHIP:
+ *
+ * A rating type to pass to gdata_youtube_video_get_media_rating() for ratings following the FCC
+ * <ulink type="http" url="http://www.fcc.gov/vchip/">V-Chip</ulink> system. The values which can be returned for such ratings are:
+ * <code class="literal">tv-y</code>, <code class="literal">tv-y7</code>, <code class="literal">tv-y7-fv</code>, <code class="literal">tv-g</code>,
+ * <code class="literal">tv-pg</code>, <code class="literal">tv-14</code> and <code class="literal">tv-ma</code>.
+ *
+ * Since: 0.9.2
+ */
+#define GDATA_YOUTUBE_RATING_TYPE_V_CHIP "v-chip"
+
+/**
  * GDataYouTubePermission:
  * @GDATA_YOUTUBE_PERMISSION_ALLOWED: the action is allowed for everyone
  * @GDATA_YOUTUBE_PERMISSION_DENIED: the action is denied for everyone
@@ -160,6 +193,7 @@ const gchar * const *gdata_youtube_video_get_keywords (GDataYouTubeVideo *self) 
 void gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *keywords);
 const gchar *gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self) G_GNUC_PURE;
 gboolean gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gchar *country) G_GNUC_PURE;
+const gchar *gdata_youtube_video_get_media_rating (GDataYouTubeVideo *self, const gchar *rating_type) G_GNUC_PURE;
 GDataMediaCategory *gdata_youtube_video_get_category (GDataYouTubeVideo *self) G_GNUC_PURE;
 void gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *category);
 GDataYouTubeCredit *gdata_youtube_video_get_credit (GDataYouTubeVideo *self) G_GNUC_PURE;

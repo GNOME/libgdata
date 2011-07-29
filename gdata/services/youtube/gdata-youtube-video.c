@@ -1237,6 +1237,33 @@ gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gch
 }
 
 /**
+ * gdata_youtube_video_get_media_rating:
+ * @self: a #GDataYouTubeVideo
+ * @rating_type: the type of rating to retrieve
+ *
+ * Returns the rating of the given type for the video, if one exists. For example, this could be a film rating awarded by the MPAA; or a simple
+ * rating specifying whether the video contains adult content.
+ *
+ * The valid values for @rating_type are: %GDATA_YOUTUBE_RATING_TYPE_SIMPLE, %GDATA_YOUTUBE_RATING_TYPE_MPAA and %GDATA_YOUTUBE_RATING_TYPE_V_CHIP.
+ * Further values may be added in future; if an unknown rating type is passed to the function, %NULL will be returned.
+ *
+ * The possible return values depend on what's passed to @rating_type. Valid values for each rating type are listed in the documentation for the
+ * rating types.
+ *
+ * Return value: the rating of the video for the given @rating_type, or %NULL if the video isn't rated with that type (or the type is unknown)
+ *
+ * Since: 0.9.2
+ */
+const gchar *
+gdata_youtube_video_get_media_rating (GDataYouTubeVideo *self, const gchar *rating_type)
+{
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
+	g_return_val_if_fail (rating_type != NULL && *rating_type != '\0', NULL);
+
+	return gdata_media_group_get_media_rating (self->priv->media_group, rating_type);
+}
+
+/**
  * gdata_youtube_video_get_category:
  * @self: a #GDataYouTubeVideo
  *

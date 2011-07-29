@@ -55,6 +55,9 @@ struct _GDataMediaGroupPrivate {
 	gchar **keywords;
 	gchar *player_uri;
 	GHashTable *restricted_countries;
+	gchar *simple_rating;
+	gchar *mpaa_rating;
+	gchar *v_chip_rating;
 	GList *thumbnails; /* GDataMediaThumbnail */
 	gchar *title;
 	GDataMediaCategory *category;
@@ -126,6 +129,9 @@ gdata_media_group_finalize (GObject *object)
 
 	g_strfreev (priv->keywords);
 	g_free (priv->player_uri);
+	g_free (priv->v_chip_rating);
+	g_free (priv->mpaa_rating);
+	g_free (priv->simple_rating);
 	g_hash_table_destroy (priv->restricted_countries);
 	g_free (priv->title);
 	g_free (priv->description);
@@ -194,25 +200,61 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			self->priv->player_uri = (gchar*) player_uri;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
 			/* media:rating */
-			xmlChar *countries;
+			xmlChar *scheme;
 
-			countries = xmlGetProp (node, (xmlChar*) "country");
+			/* The possible schemes are defined here:
+			 *  • http://video.search.yahoo.com/mrss
+			 *  • http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:rating
+			 */
+			scheme = xmlGetProp (node, (xmlChar*) "scheme");
 
-			if (countries != NULL) {
-				gchar **country_list, **country;
+			if (scheme == NULL || xmlStrcmp (scheme, (xmlChar*) "urn:simple") == 0) {
+				/* Options: adult, nonadult */
+				gdata_parser_string_from_element (node, "rating", P_REQUIRED | P_NON_EMPTY, &(self->priv->simple_rating),
+				                                  &success, error);
+			} else if (xmlStrcmp (scheme, (xmlChar*) "urn:mpaa") == 0) {
+				/* Options: g, pg, pg-13, r, nc-17 */
+				gdata_parser_string_from_element (node, "rating", P_REQUIRED | P_NON_EMPTY, &(self->priv->mpaa_rating),
+				                                  &success, error);
+			} else if (xmlStrcmp (scheme, (xmlChar*) "urn:v-chip") == 0) {
+				/* Options: tv-y, tv-y7, tv-y7-fv, tv-g, tv-pg, tv-14, tv-ma */
+				gdata_parser_string_from_element (node, "rating", P_REQUIRED | P_NON_EMPTY, &(self->priv->v_chip_rating),
+				                                  &success, error);
+			} else if (xmlStrcmp (scheme, (xmlChar*) "http://gdata.youtube.com/schemas/2007#mediarating") == 0) {
+				/* No content, but we do get a list of countries. There's nothing like overloading the semantics of XML elements
+				 * to brighten up one's day. */
+				xmlChar *countries;
 
-				/* It's either a comma-separated list of countries, or the value "all" */
-				country_list = g_strsplit ((const gchar*) countries, ",", -1);
-				xmlFree (countries);
+				countries = xmlGetProp (node, (xmlChar*) "country");
 
-				/* Add all the listed countries to the restricted countries table */
-				for (country = country_list; *country != NULL; country++)
-					g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (TRUE));
-				g_free (country_list);
+				if (countries != NULL) {
+					gchar **country_list, **country;
+
+					/* It's either a comma-separated list of countries, or the value "all" */
+					country_list = g_strsplit ((const gchar*) countries, ",", -1);
+					xmlFree (countries);
+
+					/* Add all the listed countries to the restricted countries table */
+					for (country = country_list; *country != NULL; country++) {
+						g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (TRUE));
+					}
+
+					g_free (country_list);
+				} else {
+					/* Assume it's restricted in all countries */
+					g_hash_table_insert (self->priv->restricted_countries, g_strdup ("all"), GUINT_TO_POINTER (TRUE));
+				}
+
+				success = TRUE;
 			} else {
-				/* Assume it's restricted in all countries */
-				g_hash_table_insert (self->priv->restricted_countries, g_strdup ("all"), GUINT_TO_POINTER (TRUE));
+				/* Error */
+				gdata_parser_error_unknown_property_value (node, "scheme", (gchar*) scheme, error);
+				success = FALSE;
 			}
+
+			xmlFree (scheme);
+
+			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "restriction") == 0) {
 			/* media:restriction */
 			xmlChar *type, *countries, *relationship;
@@ -573,6 +615,38 @@ gdata_media_group_is_restricted_in_country (GDataMediaGroup *self, const gchar *
 		return TRUE;
 
 	return GPOINTER_TO_UINT (g_hash_table_lookup (self->priv->restricted_countries, "all"));
+}
+
+/**
+ * gdata_media_group_get_media_rating:
+ * @self: a #GDataMediaGroup
+ * @rating_type: the type of rating to retrieve
+ *
+ * Returns the rating of the given type for the media, if one exists. For example, this could be a film rating awarded by the MPAA.
+ * The valid values for @rating_type are: <code class="literal">simple</code>, <code class="literal">mpaa</code> and
+ * <code class="literal">v-chip</code>.
+ *
+ * The rating values returned for each of these rating types are string as defined in the
+ * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:rating">YouTube documentation</ulink> and
+ * <ulink type="http" url="http://video.search.yahoo.com/mrss">MRSS specification</ulink>.
+ *
+ * Return value: rating for the given rating type, or %NULL if the media has no rating for that type (or the type is invalid)
+ */
+const gchar *
+gdata_media_group_get_media_rating (GDataMediaGroup *self, const gchar *rating_type)
+{
+	g_return_val_if_fail (GDATA_IS_MEDIA_GROUP (self), NULL);
+	g_return_val_if_fail (rating_type != NULL && *rating_type != '\0', NULL);
+
+	if (strcmp (rating_type, "simple") == 0) {
+		return self->priv->simple_rating;
+	} else if (strcmp (rating_type, "mpaa") == 0) {
+		return self->priv->mpaa_rating;
+	} else if (strcmp (rating_type, "v-chip") == 0) {
+		return self->priv->v_chip_rating;
+	}
+
+	return NULL;
 }
 
 /**
