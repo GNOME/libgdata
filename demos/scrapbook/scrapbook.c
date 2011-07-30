@@ -21,8 +21,8 @@ picture_selected (GtkTreeView *tree, GtkTreePath *path, GtkTreeViewColumn *colum
 	gtk_tree_model_get_iter			(model, &iter, path);
 	gtk_tree_model_get				(model, &iter, COL_PIXBUF, &(thumbnail), P_COL_PIC, &(pic), -1);
 	gtk_widget_destroy				(self->search_data->window);
-	gtk_list_store_append			(self->main_data->lStore, &(self->main_data->iter));
-	gtk_list_store_set				(self->main_data->lStore, &(self->main_data->iter),
+	gtk_list_store_append (self->main_data->lStore, &iter);
+	gtk_list_store_set (self->main_data->lStore, &iter,
 									 ORIG_COL_PIXBUF, 	thumbnail,
 									 ORIG_COL_TITLE,	gdata_entry_get_title (pic),
 									 ORIG_COL_ENTRY, 	pic, -1);
@@ -62,8 +62,8 @@ video_selected (GtkTreeView *tree, GtkTreePath *path, GtkTreeViewColumn *column,
 	gtk_tree_model_get_iter 		(model, &iter, path);
 	gtk_tree_model_get 				(model, &iter, COL_PIXBUF, &(thumbnail), COL_VIDEO, &(video), -1);
 	gtk_widget_destroy 				(self->window);
-	gtk_list_store_append			(self->main_data->lStore, &(self->main_data->iter));
-	gtk_list_store_set				(self->main_data->lStore, &(self->main_data->iter),
+	gtk_list_store_append (self->main_data->lStore, &iter);
+	gtk_list_store_set (self->main_data->lStore, &iter,
 									 ORIG_COL_PIXBUF, thumbnail,
 									 ORIG_COL_TITLE, gdata_entry_get_title (video),
 									 ORIG_COL_ENTRY, video, -1);
@@ -167,12 +167,13 @@ choose_best_thumbnail (GList *thumbnails, gint ideal_size)
 static void
 find_pictures  (GDataEntry *entry, guint entry_key, guint entry_count, ScrapPicSearch *self)
 {
+	GtkTreeIter iter;
 	GList 				*thumbnails;
 	GDataMediaThumbnail	*thumbnail;
 	GFileInputStream	*input_stream;
 
-	gtk_list_store_append	(self->lStore, &(self->iter));
-	gtk_list_store_set		(self->lStore, &(self->iter),
+	gtk_list_store_append (self->lStore, &iter);
+	gtk_list_store_set (self->lStore, &iter,
 							 P_COL_PIXBUF, NULL,
 							 P_COL_TITLE,  self->title,
 							 P_COL_USER,   self->user,
@@ -185,7 +186,7 @@ find_pictures  (GDataEntry *entry, guint entry_key, guint entry_count, ScrapPicS
 		input_stream   	= g_file_read							(thumbnail_file, NULL, NULL);
 		self->thumbnail	= gdk_pixbuf_new_from_stream_at_scale 	(G_INPUT_STREAM (input_stream), THUMBNAIL_WIDTH, -1,
 																 TRUE, NULL, NULL);
-		gtk_list_store_set 	(self->lStore, &(self->iter), P_COL_PIXBUF, self->thumbnail, -1); /* we can now set the thumbnail ;) */
+		gtk_list_store_set (self->lStore, &iter, P_COL_PIXBUF, self->thumbnail, -1); /* we can now set the thumbnail ;) */
 		g_object_unref		(thumbnail_file);
 	}
 	gdata_query_set_q (self->query, NULL);
@@ -250,6 +251,7 @@ p_text_callback (GtkWidget *widget, ScrapPSearch *self)
 static void
 yt_query_element (GDataEntry *entry, guint entry_key, guint entry_count, ScrapYTSearch *self)
 {
+	GtkTreeIter iter;
 	GList 				*thumbnails;
 	GDataMediaThumbnail *thumbnail;
 	const gchar *title; /* the video's title */
@@ -259,8 +261,8 @@ yt_query_element (GDataEntry *entry, guint entry_key, guint entry_count, ScrapYT
 	title	= gdata_entry_get_title 				(entry); /* self-explanatory, I hope */
 	uri		= gdata_youtube_video_get_player_uri	(GDATA_YOUTUBE_VIDEO (entry)); /* ditto */
 	g_print ("%s %s", title, uri);
-	gtk_list_store_append (self->lStore, &(self->iter)); /* make a new entry for this vid */
-	gtk_list_store_set	  (self->lStore, &(self->iter),
+	gtk_list_store_append (self->lStore, &iter); /* make a new entry for this vid */
+	gtk_list_store_set (self->lStore, &iter,
 						   COL_PIXBUF, NULL, /* this will be set in a few moments */
 						   COL_TITLE, title,
 						   COL_VIDEO, entry,
@@ -274,7 +276,7 @@ yt_query_element (GDataEntry *entry, guint entry_key, guint entry_count, ScrapYT
 		input_stream   	= g_file_read							(thumbnail_file, NULL, NULL);
 		self->thumbnail	= gdk_pixbuf_new_from_stream_at_scale 	(G_INPUT_STREAM (input_stream), THUMBNAIL_WIDTH, -1,
 																 TRUE, NULL, NULL);
-		gtk_list_store_set 	(self->lStore, &(self->iter), COL_PIXBUF, self->thumbnail, -1); /* we can now set the thumbnail ;) */
+		gtk_list_store_set (self->lStore, &iter, COL_PIXBUF, self->thumbnail, -1); /* we can now set the thumbnail ;) */
 		g_object_unref		(thumbnail_file);
 	}
 }
@@ -304,6 +306,8 @@ start_new_picasa_search (GtkWidget *widget, ScrapData *first)
 {
 	ScrapPSearch 				*self;
 	ScrapPicSearch				*picture;
+	GtkWidget *button, *box2;
+
 	self = first->p_search;
 	picture 					= first->pic_search;
 	picture->search_data 		= self;
@@ -321,26 +325,24 @@ start_new_picasa_search (GtkWidget *widget, ScrapData *first)
 
 	self->box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10); /* this box contains everything in our window */
 	gtk_container_add 				(GTK_CONTAINER (self->window), self->box1);
-	self->box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+	box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 
 	/* search bar */
 
 	self->user_entry = gtk_entry_new ();
 	gtk_entry_set_text 				(GTK_ENTRY (self->user_entry), "User to search for");
-	g_signal_connect				(self->button, "activated", G_CALLBACK (p_text_callback), self);
-	gtk_box_pack_start 				(GTK_BOX(self->box2), self->user_entry, TRUE, TRUE, 0);
+	g_signal_connect				(self->user_entry, "activated", (GCallback) p_text_callback, self);
+	gtk_box_pack_start (GTK_BOX(box2), self->user_entry, TRUE, TRUE, 0);
 	gtk_widget_show    				(self->user_entry);
 
-	/* button */
+	/* Search button */
+	button = gtk_button_new_with_mnemonic ("_Search");
+	g_signal_connect (button, "clicked", (GCallback) p_text_callback, self);
+	gtk_box_pack_start (GTK_BOX (box2), button, FALSE, FALSE, 0);
+	gtk_widget_show (button);
 
-
-	self->button = gtk_button_new_with_mnemonic ("_Search");
-	g_signal_connect	(self->button, "clicked", G_CALLBACK (p_text_callback), self);
-	gtk_box_pack_start 	(GTK_BOX (self->box2), self->button, FALSE, FALSE, 0);
-	gtk_widget_show		(self->button);
-
-	gtk_box_pack_end (GTK_BOX (self->box1), self->box2, FALSE, FALSE, 0); /* pack the box with the button and search bar */
-	gtk_widget_show (self->box2);
+	gtk_box_pack_end (GTK_BOX (self->box1), box2, FALSE, FALSE, 0); /* pack the box with the button and search bar */
+	gtk_widget_show (box2);
 
 	gtk_widget_show (self->box1);
 	gtk_widget_show (self->window);
@@ -352,6 +354,8 @@ static void
 start_new_youtube_search (GtkWidget *widget, ScrapData *first) /* *first is a pointer we use to talk to the main window */
 {
 	ScrapYTSearch *self; /* this struct will be used for all the data in the search, if there's time I'll make it into a GObject */
+	GtkWidget *button, *box2;
+
 	self = first->yt_search;
 
 	gtk_list_store_clear 				(self->lStore); /* clear it out */
@@ -366,25 +370,24 @@ start_new_youtube_search (GtkWidget *widget, ScrapData *first) /* *first is a po
 
 	self->box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10); /* this box contains everything in our window */
 	gtk_container_add 				(GTK_CONTAINER (self->window), self->box1);
-	self->box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+	box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 
 	/* search bar */
 
 	self->txt_entry = gtk_entry_new ();
 	g_signal_connect 				(self->txt_entry, "activate", G_CALLBACK (yt_text_callback), self);
-	gtk_box_pack_start 				(GTK_BOX(self->box2), self->txt_entry, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box2), self->txt_entry, TRUE, TRUE, 0);
 	gtk_widget_show    				(self->txt_entry);
 
-	/* button */
+	/* Search button */
+	button = gtk_button_new_with_mnemonic ("_Search");
+	g_signal_connect (button, "clicked", (GCallback) yt_text_callback, self);
+	gtk_box_pack_start (GTK_BOX (box2), button, TRUE, TRUE, 0);
+	gtk_widget_show (button);
 
-	self->button = gtk_button_new_with_mnemonic ("_Search");
-	g_signal_connect 							(self->button, "clicked", G_CALLBACK (yt_text_callback), self);
-	gtk_box_pack_start 							(GTK_BOX (self->box2), self->button, TRUE, TRUE, 0);
-	gtk_widget_show								(self->button);
+	gtk_box_pack_end (GTK_BOX (self->box1), box2, FALSE, FALSE, 0); /* pack the box with the button and search bar */
 
-	gtk_box_pack_end (GTK_BOX (self->box1), self->box2, FALSE, FALSE, 0); /* pack the box with the button and search bar */
-
-	gtk_widget_show (self->box2);
+	gtk_widget_show (box2);
 	gtk_widget_show (self->box1);
 	gtk_widget_show (self->window);
 
@@ -436,6 +439,8 @@ static void
 properties_show (GtkWidget *widget, ScrapData *first)
 {
 	ScrapProps	*self;
+	GtkWidget *label, *button, *box2;
+
 	self			= g_slice_new (struct _ScrapProps);
 	self->main_data	= first;
 	self->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -443,25 +448,30 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	g_signal_connect (self->window, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 
 	self->box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
-	self->box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
 
-	self->label = gtk_label_new ("Username");
-	gtk_widget_show		(self->label);
-	gtk_box_pack_start 	(GTK_BOX (self->box2), self->label, TRUE, TRUE, 0);
-	self->label = gtk_label_new ("Password");
-	gtk_widget_show		(self->label);
-	gtk_box_pack_start 	(GTK_BOX (self->box2), self->label, TRUE, TRUE, 0);
-	gtk_widget_show		(self->box2);
-	gtk_box_pack_start 	(GTK_BOX (self->box1), self->box2, FALSE, FALSE, 0);
+	/* Username/Password labels box */
+	box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
 
-	self->box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
+	label = gtk_label_new ("Username");
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (box2), label, TRUE, TRUE, 0);
+
+	label = gtk_label_new ("Password");
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (box2), label, TRUE, TRUE, 0);
+
+	gtk_widget_show (box2);
+	gtk_box_pack_start (GTK_BOX (self->box1), box2, FALSE, FALSE, 0);
+
+	/* Username/Password entries box */
+	box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
 	self->username_entry = gtk_entry_new ();
 
 	if (self->main_data->username != NULL)
 		gtk_entry_set_text (GTK_ENTRY(self->username_entry), self->main_data->username);
 
 	gtk_widget_show	   (self->username_entry);
-	gtk_box_pack_start (GTK_BOX (self->box2), self->username_entry, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box2), self->username_entry, TRUE, TRUE, 0);
 
 	self->password_entry = gtk_entry_new ();
 	gtk_entry_set_visibility (GTK_ENTRY (self->password_entry), FALSE);
@@ -470,21 +480,24 @@ properties_show (GtkWidget *widget, ScrapData *first)
 		gtk_entry_set_text (GTK_ENTRY(self->password_entry), self->main_data->password);
 
 	gtk_widget_show	   (self->password_entry);
-	gtk_box_pack_start (GTK_BOX (self->box2), self->password_entry, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box2), self->password_entry, TRUE, TRUE, 0);
 
-	gtk_box_pack_start 	(GTK_BOX (self->box1), self->box2, FALSE, FALSE, 0);
-	gtk_widget_show		(self->box2);
-	self->button = gtk_button_new_with_mnemonic ("_OK");
-	g_signal_connect 	(self->button, "clicked", G_CALLBACK (properties_set), self);
-	gtk_widget_show		(self->button);
-	gtk_box_pack_start 	(GTK_BOX (self->box1), self->button, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (self->box1), box2, FALSE, FALSE, 0);
+	gtk_widget_show (box2);
+
+	/* OK button */
+	button = gtk_button_new_from_stock (GTK_STOCK_OK);
+	g_signal_connect (button, "clicked", (GCallback) properties_set, self);
+	gtk_widget_show (button);
+	gtk_box_pack_start (GTK_BOX (self->box1), button, FALSE, FALSE, 0);
+
 	gtk_widget_show		(self->box1);
 	gtk_container_add	(GTK_CONTAINER (self->window), self->box1);
 	gtk_widget_show		(self->window);
 }
 
 static void
-select_file (GtkWidget *widget, ScrapPUpload *self)
+select_file (ScrapPUpload *self, GtkFileChooser *file_chooser)
 {
 	GFile *file;
 	GError *error = NULL;
@@ -492,7 +505,7 @@ select_file (GtkWidget *widget, ScrapPUpload *self)
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 
-	file = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (self->file_dialog));
+	file = gtk_file_chooser_get_file (file_chooser);
 
 	file_info = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 	                               G_FILE_QUERY_INFO_NONE, NULL, NULL);
@@ -525,21 +538,31 @@ select_file (GtkWidget *widget, ScrapPUpload *self)
 }
 
 static void
-got_name (GtkWidget *widget, ScrapPUpload *self)
+got_name (GtkWidget *widget, ScrapData *scrap_data)
 {
+	ScrapPUpload *self;
+	GtkWidget *file_dialog;
+
+	self = scrap_data->p_upload;
+
 	gdata_entry_set_title 	(GDATA_ENTRY (self->file),
 							 gtk_entry_get_text (GTK_ENTRY (self->name)));
 	gdata_entry_set_summary	(GDATA_ENTRY (self->file),
 							 gtk_entry_get_text (GTK_ENTRY (self->description)));
 	gtk_widget_destroy 	(self->dialog);
 
-	if (gtk_dialog_run (GTK_DIALOG (self->file_dialog)) == GTK_RESPONSE_ACCEPT) {
-		select_file (NULL, self);
+	file_dialog = gtk_file_chooser_dialog_new ("Upload Photo", GTK_WINDOW (scrap_data->window), GTK_FILE_CHOOSER_ACTION_SAVE,
+	                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                           GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+	                                           NULL);
+
+	if (gtk_dialog_run (GTK_DIALOG (file_dialog)) == GTK_RESPONSE_ACCEPT) {
+		select_file (self, GTK_FILE_CHOOSER (file_dialog));
 	}
 
 	/* since the upload blocks, it's safe to assume the widget won't
 	 * be destroyed until we're done */
-	gtk_widget_destroy (self->file_dialog);
+	gtk_widget_destroy (file_dialog);
 }
 
 static void
@@ -549,10 +572,7 @@ upload (GtkWidget *widget, ScrapData *first)
 	GtkWidget *label, *content_area, *action_area;
 	label = gtk_label_new ("Enter photo name and description");
 	self = first->p_upload;
-	self->file_dialog = gtk_file_chooser_dialog_new ("Upload Photo", GTK_WINDOW (first->window), GTK_FILE_CHOOSER_ACTION_SAVE,
-	                                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                                 GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-	                                                 NULL);
+
 	/* we make a new file, without an id (it will be assigned automatically later on) */
 	self->file  = gdata_picasaweb_file_new (NULL);
 	/* dialog to get the file's name and description */
@@ -569,7 +589,7 @@ upload (GtkWidget *widget, ScrapData *first)
 	gtk_box_pack_start (GTK_BOX (action_area), self->name, TRUE, TRUE, 0);
 
 	self->description = gtk_entry_new ();
-	g_signal_connect 	(self->description, "activate", G_CALLBACK (got_name), self);
+	g_signal_connect 	(self->description, "activate", G_CALLBACK (got_name), first);
 	gtk_widget_show  	(self->description);
 	gtk_box_pack_start (GTK_BOX (action_area), self->description, TRUE, TRUE, 0);
 
@@ -584,6 +604,9 @@ main(int argc, char **argv)
 	ScrapYTSearch	*youtubeSearch;
 	ScrapPicSearch	*photoSearch;
 	ScrapPUpload	*fUpload;
+	GtkWidget *button;
+	GtkWidget *vbox;
+
 	scrapbook = g_slice_new (struct _ScrapData);
 	scrapbook->max_rows			= 5;
 	g_type_init ();
@@ -625,31 +648,34 @@ main(int argc, char **argv)
 	fUpload->main_data			= scrapbook;
 
 	scrapbook->box1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	scrapbook->box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
 	scrapbook->table	= gtk_table_new		(5,5,FALSE);
 
-	scrapbook->button = gtk_button_new_with_mnemonic ("Add YouTube _Video");
-	g_signal_connect 	(scrapbook->button, "clicked", G_CALLBACK (start_new_youtube_search), scrapbook);
-	gtk_box_pack_start	(GTK_BOX (scrapbook->box2), scrapbook->button, FALSE, FALSE, 0);
-	gtk_widget_show		(scrapbook->button);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
 
-	scrapbook->button = gtk_button_new_with_mnemonic ("Add PicasaWeb _Photo");
-	g_signal_connect	(scrapbook->button,"clicked", G_CALLBACK (start_new_picasa_search), scrapbook);
-	gtk_box_pack_start	(GTK_BOX (scrapbook->box2), scrapbook->button, FALSE, FALSE, 0);
-	gtk_widget_show 	(scrapbook->button);
+	/* Add buttons to the main window */
+	button = gtk_button_new_with_mnemonic ("Add YouTube _Video");
+	g_signal_connect (button, "clicked", (GCallback) start_new_youtube_search, scrapbook);
+	gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+	gtk_widget_show (button);
 
-	scrapbook->button = gtk_button_new_with_mnemonic ("P_roperties");
-	g_signal_connect	(scrapbook->button, "clicked", G_CALLBACK (properties_show), scrapbook);
-	gtk_box_pack_start	(GTK_BOX (scrapbook->box2), scrapbook->button, FALSE, FALSE, 0);
-	gtk_widget_show		(scrapbook->button);
+	button = gtk_button_new_with_mnemonic ("Add PicasaWeb _Photo");
+	g_signal_connect (button, "clicked", (GCallback) start_new_picasa_search, scrapbook);
+	gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+	gtk_widget_show (button);
 
-	scrapbook->button = gtk_button_new_with_mnemonic ("_Upload Photo to PicasaWeb");
-	g_signal_connect	(scrapbook->button, "clicked", G_CALLBACK (upload), scrapbook);
-	gtk_box_pack_start 	(GTK_BOX (scrapbook->box2), scrapbook->button, FALSE, FALSE, 0);
-	gtk_widget_show		(scrapbook->button);
+	button = gtk_button_new_with_mnemonic ("P_roperties");
+	g_signal_connect (button, "clicked", (GCallback) properties_show, scrapbook);
+	gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+	gtk_widget_show (button);
 
-	gtk_widget_show		(scrapbook->box2);
-	gtk_box_pack_start	(GTK_BOX (scrapbook->box1), scrapbook->box2, FALSE, FALSE, 5);
+	button = gtk_button_new_with_mnemonic ("_Upload Photo to PicasaWeb");
+	g_signal_connect (button, "clicked", (GCallback) upload, scrapbook);
+	gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+	gtk_widget_show (button);
+
+	gtk_widget_show (vbox);
+	gtk_box_pack_start (GTK_BOX (scrapbook->box1), vbox, FALSE, FALSE, 5);
+
 	gtk_box_pack_start	(GTK_BOX (scrapbook->box1), scrapbook->table, TRUE, TRUE, 0);
 	gtk_widget_show		(scrapbook->table);
 	gtk_widget_show		(scrapbook->box1);

@@ -44,10 +44,9 @@ typedef struct _ScrapPicSearch ScrapPicSearch;
 
 typedef struct _ScrapData {
 	GtkWidget		*window;
-	GtkWidget		*button;
 	gint			currentCol;
 	gint			currentRow[5];
-	GtkWidget		*box1, *box2;
+	GtkWidget		*box1;
 	GtkWidget		*table;
 	GtkWidget		*scrollWindow;
 	ScrapYTSearch	*yt_search;
@@ -58,14 +57,12 @@ typedef struct _ScrapData {
 	gchar			*username;
 	gchar			*password;
 	GtkListStore	*lStore;
-	GtkTreeIter		iter;
 
 	GDataYouTubeService *youtube_service;
 	GDataPicasaWebService *picasaweb_service;
 } ScrapData;
 struct _ScrapPUpload {
 	ScrapData			*main_data;
-	GtkWidget			*file_dialog;
 	GDataPicasaWebFile	*file;
 	GtkWidget			*dialog;
 	GtkWidget			*name;
@@ -82,7 +79,6 @@ struct _ScrapPicSearch { /* for finding pictures */
 	GDataQuery				*query;
 	GDataPicasaWebFile		*file;
 	GtkListStore			*lStore;
-	GtkTreeIter				iter;
 	GtkWidget				*tView;
 };
 
@@ -94,11 +90,9 @@ struct _ScrapYTSearch { /* youtube search data */
 	gchar				*title;
 	gchar				*uri;
 	GdkPixbuf			*thumbnail;
-	GtkWidget 			*box1, *box2;
+	GtkWidget 			*box1;
 	ScrapData			*main_data; /* <- points to a structure containing main vars */
-	GtkWidget			*button;
 	GtkListStore		*lStore;
-	GtkTreeIter			iter;
 	GtkWidget			*tView;
 };
 
@@ -108,9 +102,8 @@ struct _ScrapPSearch { /* for finding albums */
 	gchar					*title;
 	gchar					*uri;
 	GdkPixbuf				*thumbnail;
-	GtkWidget				*box1, *box2;
+	GtkWidget				*box1;
 	ScrapData				*main_data;
-	GtkWidget				*button;
 	GtkWidget				*user_entry;
 	const gchar *user;
 	ScrapPicSearch			*pic;
@@ -118,9 +111,7 @@ struct _ScrapPSearch { /* for finding albums */
 
 typedef struct _ScrapProps {
 	GtkWidget	*window;
-	GtkWidget	*button;
-	GtkWidget	*box1, *box2;
-	GtkWidget	*label;
+	GtkWidget	*box1;
 	GtkWidget	*username_entry, *password_entry;
 	ScrapData	*main_data;
 } ScrapProps;
@@ -170,12 +161,6 @@ properties_set (GtkWidget *widget, ScrapProps *self);
 
 static void
 properties_show (GtkWidget *widget, ScrapData *first);
-
-static void
-select_file (GtkWidget *widget, ScrapPUpload *self);
-
-static void
-got_name (GtkWidget *widget, ScrapPUpload *self);
 
 static void
 upload (GtkWidget *widget, ScrapData *first);
