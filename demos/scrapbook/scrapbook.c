@@ -519,11 +519,16 @@ select_file (ScrapPUpload *self, GtkFileChooser *file_chooser)
 
 	g_object_unref (file_info);
 	g_object_unref (self->file);
+	self->file = NULL;
 
 	if (error != NULL) {
-		g_print ("error: %s\n", error->message);
+		g_print ("Error: %s\n", error->message);
+		g_error_free (error);
+
+		g_object_unref (file);
+
+		return;
 	}
-	g_free (error);
 
 	file_stream = g_file_read (file, NULL, NULL);
 	g_object_unref (file);
