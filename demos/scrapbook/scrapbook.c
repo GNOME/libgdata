@@ -1,3 +1,35 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/*
+ * GData Client
+ * Copyright (C) Joe Cortes 2010 <escozzia@gmail.com>
+ *
+ * GData Client is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * GData Client is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * This is an extremely simple example program to query youtube videos
+ * and picasa pictures and add them to a table.
+ * It was coded as part of the 2010 Google Code-In.
+ * Click on Properties to change the window's title, or authenticate
+ * yourself (it's assumed that your google and picasa ids are the same)
+ * It's also possible to upload files to picasa.
+ * Since this is only an example, intended to serve as documentation,
+ * it's probably full of bugs and a couple of awful programming practices.
+ * The program itself is of no practical use, but it does what it is
+ * meant to do and doesn't segfault randomly (I hope so :p).
+ */
+
 #include "scrapbook.h"
 
 static void
