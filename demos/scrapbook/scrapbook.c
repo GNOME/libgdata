@@ -319,9 +319,9 @@ start_new_picasa_search (GtkWidget *widget, ScrapData *first)
 
 	/* our two boxes */
 
-	self->box1	 = gtk_vbox_new	  	(FALSE, 10); /* this box contains everything in our window */
+	self->box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10); /* this box contains everything in our window */
 	gtk_container_add 				(GTK_CONTAINER (self->window), self->box1);
-	self->box2	 = gtk_hbox_new	  	(FALSE,  2);
+	self->box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 
 	/* search bar */
 
@@ -364,9 +364,9 @@ start_new_youtube_search (GtkWidget *widget, ScrapData *first) /* *first is a po
 
 	/* our two boxes */
 
-	self->box1	 = gtk_vbox_new	  	(FALSE, 10); /* this box contains everything in our window */
+	self->box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10); /* this box contains everything in our window */
 	gtk_container_add 				(GTK_CONTAINER (self->window), self->box1);
-	self->box2	 = gtk_hbox_new	  	(FALSE,  2);
+	self->box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 
 	/* search bar */
 
@@ -445,8 +445,8 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	g_signal_connect (self->window, "destroy", G_CALLBACK (gtk_widget_destroy), NULL);
 	g_signal_connect (self->window, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 
-	self->box1	= gtk_vbox_new (FALSE, 3);
-	self->box2 	= gtk_hbox_new (FALSE, 10);
+	self->box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
+	self->box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
 
 	self->label = gtk_label_new ("Username");
 	gtk_widget_show		(self->label);
@@ -457,7 +457,7 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	gtk_widget_show		(self->box2);
 	gtk_box_pack_start 	(GTK_BOX (self->box1), self->box2, FALSE, FALSE, 0);
 
-	self->box2 = gtk_hbox_new (FALSE, 10);
+	self->box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
 	self->username_entry = gtk_entry_new ();
 
 	if (self->main_data->username != NULL)
@@ -627,8 +627,8 @@ main(int argc, char **argv)
 	scrapbook->p_upload			= fUpload;
 	fUpload->main_data			= scrapbook;
 
-	scrapbook->box1		= gtk_hbox_new		(FALSE, 0);
-	scrapbook->box2		= gtk_vbox_new		(FALSE, 2);
+	scrapbook->box1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	scrapbook->box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
 	scrapbook->table	= gtk_table_new		(5,5,FALSE);
 
 	scrapbook->button = gtk_button_new_with_mnemonic ("Add YouTube _Video");
