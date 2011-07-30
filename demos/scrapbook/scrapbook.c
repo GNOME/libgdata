@@ -257,10 +257,6 @@ p_text_callback (GtkWidget *widget, ScrapPSearch *self)
 	GDataFeed *feed;
 
 	self->user		= gtk_entry_get_text 			(GTK_ENTRY (self->user_entry));
-	self->pic->lStore = gtk_list_store_new (P_N_COLS, GDK_TYPE_PIXBUF,
-											G_TYPE_STRING,
-											G_TYPE_STRING,
-											GDATA_TYPE_ENTRY);
 	self->pic->tView	= gtk_tree_view_new ();
 	feed = gdata_picasaweb_service_query_all_albums (self->main_data->picasaweb_service, self->query, self->user, NULL,
 	                                                 (GDataQueryProgressCallback) p_query_element, self, &error);
@@ -363,7 +359,7 @@ start_new_picasa_search (GtkWidget *widget, ScrapData *first)
 
 	self->user_entry = gtk_entry_new ();
 	gtk_entry_set_text 				(GTK_ENTRY (self->user_entry), "User to search for");
-	g_signal_connect				(self->user_entry, "activated", (GCallback) p_text_callback, self);
+	g_signal_connect (self->user_entry, "activate", (GCallback) p_text_callback, self);
 	gtk_box_pack_start (GTK_BOX(box2), self->user_entry, TRUE, TRUE, 0);
 	gtk_widget_show    				(self->user_entry);
 
@@ -679,6 +675,7 @@ main(int argc, char **argv)
 	photoSearch					= g_slice_new (struct _ScrapPicSearch);
 	scrapbook->p_search->pic	= photoSearch;
 	scrapbook->pic_search		= photoSearch;
+	photoSearch->lStore = gtk_list_store_new (P_N_COLS, GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_STRING, GDATA_TYPE_ENTRY);
 
 	fUpload						= g_slice_new (struct _ScrapPUpload);
 	scrapbook->p_upload			= fUpload;
