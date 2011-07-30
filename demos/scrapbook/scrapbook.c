@@ -75,7 +75,6 @@ picture_selected (GtkTreeView *tree, GtkTreePath *path, GtkTreeViewColumn *colum
 										 self->main_data->currentCol, self->main_data->currentCol+1);
 	gtk_widget_show (button);
 	self->main_data->currentRow[self->main_data->currentCol]++;
-	g_object_unref (self->tView);
 }
 
 
@@ -115,7 +114,6 @@ video_selected (GtkTreeView *tree, GtkTreePath *path, GtkTreeViewColumn *column,
 										 self->main_data->currentCol, self->main_data->currentCol+1);
 	gtk_widget_show (button);
 	self->main_data->currentRow[self->main_data->currentCol]++;
-	g_object_unref (self->tView);
 }
 
 static void
