@@ -396,43 +396,40 @@ start_new_youtube_search (GtkWidget *widget, ScrapData *first) /* *first is a po
 static void
 properties_set (GtkWidget *widget, ScrapProps *self)
 {
+	GDataClientLoginAuthorizer *authorizer;
+	GList *domains = NULL; /* list of GDataAuthorizationDomains */
+	GError *error = NULL;
+
+	/* Get the username and password to use */
 	self->main_data->username = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->username_entry)));
 	self->main_data->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->password_entry)));
 
-	/* authenticate on youtube */
-	{
-		GError *error = NULL;
-		gdata_service_authenticate (GDATA_SERVICE (self->main_data->youtube_service),
-									self->main_data->username,
-									self->main_data->password,
-									NULL, &error);
-		if (error != NULL) { /* we show this to the user in case he mistyped his password */
-			GtkWidget *label;
-			label = gtk_label_new (error->message);
-			gtk_widget_show (label);
-			gtk_box_pack_end (GTK_BOX (self->box1), label, FALSE, FALSE, 0);
-			g_print("error\n%s\n", error->message);
-			g_error_free(error);
-		}
-	}
-	/* authenticate on picasa (no time for fun and games, so we assume he's got the same account on both services) */
-	{
-		GError *error = NULL;
-		gdata_service_authenticate (GDATA_SERVICE (self->main_data->picasaweb_service),
-									self->main_data->username,
-									self->main_data->password,
-									NULL, &error);
-		if (error != NULL) {
-			GtkWidget *label;
-			label = gtk_label_new (error->message);
-			gtk_widget_show (label);
-			gtk_box_pack_end (GTK_BOX (self->box1), label, FALSE, FALSE, 0);
-			g_print("error\n%s\n", error->message);
-			g_error_free(error);
-		}
+	/* Domains we need to be authorised for */
+	domains = g_list_prepend (domains, gdata_youtube_service_get_primary_authorization_domain ());
+	domains = g_list_prepend (domains, gdata_picasaweb_service_get_primary_authorization_domain ());
+
+	/* Authenticate */
+	authorizer = gdata_client_login_authorizer_new_for_authorization_domains (CLIENT_ID, domains);
+
+	gdata_client_login_authorizer_authenticate (authorizer, self->main_data->username, self->main_data->password, NULL, &error);
+
+	if (error != NULL) { /* we show this to the user in case they mistyped their password */
+		GtkWidget *label;
+
+		label = gtk_label_new (error->message);
+		gtk_widget_show (label);
+		gtk_box_pack_end (GTK_BOX (self->box1), label, FALSE, FALSE, 0);
+
+		g_print ("error\n%s\n", error->message);
+
+		g_error_free (error);
 	}
 
+	gdata_service_set_authorizer (GDATA_SERVICE (self->main_data->youtube_service), GDATA_AUTHORIZER (authorizer));
+	gdata_service_set_authorizer (GDATA_SERVICE (self->main_data->picasaweb_service), GDATA_AUTHORIZER (authorizer));
+
 	gtk_widget_destroy (self->window);
+	g_object_unref (authorizer);
 }
 
 static void
@@ -608,7 +605,7 @@ main(int argc, char **argv)
 	/* create a new query, without any search text, starting at 0, and search only MAX_RESULTS results */
 	youtubeSearch->query = gdata_query_new_with_limits (NULL, 0, MAX_RESULTS);
 	/* create a new youtube service, giving it our developer key; google no longer uses client ids so we send in an empty string (NULL gives an error) */
-	scrapbook->youtube_service = gdata_youtube_service_new (DEVELOPER_KEY, CLIENT_ID);
+	scrapbook->youtube_service = gdata_youtube_service_new (DEVELOPER_KEY, NULL);
 	/* create a new list store and tree to show the user the results
 	 * it has three columns (two of which are displayed): a pixbuf for the thumbnail, the title, and the video data itself (as a gdata generic entry) */
 	youtubeSearch->lStore = gtk_list_store_new 	(N_COLS, GDK_TYPE_PIXBUF, G_TYPE_STRING, GDATA_TYPE_ENTRY);
@@ -617,7 +614,7 @@ main(int argc, char **argv)
 	scrapbook->p_search 		= picasaSearch;
 	picasaSearch->main_data 	= scrapbook;
 	picasaSearch->query 		= gdata_query_new_with_limits (NULL, 0, MAX_RESULTS);
-	scrapbook->picasaweb_service = gdata_picasaweb_service_new (CLIENT_ID);
+	scrapbook->picasaweb_service = gdata_picasaweb_service_new (NULL);
 
 	photoSearch					= g_slice_new (struct _ScrapPicSearch);
 	scrapbook->p_search->pic	= photoSearch;
