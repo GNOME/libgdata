@@ -150,7 +150,7 @@ static gboolean
 real_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gpointer user_data, GError **error)
 {
 	gchar *str;
-	xmlNs **namespaces, **namespace;
+	const gchar *prefix, *uri;
 
 	/* Unhandled XML */
 	str = gxml_dom_xnode_to_string (node, 0, 0);
@@ -160,21 +160,15 @@ real_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *nod
 	g_message ("Unhandled XML in %s: %s", G_OBJECT_TYPE_NAME (parsable), str);
 
 	/* Get the namespaces */
-	/* TODO:GXML: how do we want to support namespaces? Check higher Core levels? */
-	/* namespaces = xmlGetNsList (doc, node); */
-	/* if (namespaces == NULL) */
-	/* 	return TRUE; */
+	uri = gxml_dom_xnode_get_namespace_uri (node);
+	prefix = gxml_dom_xnode_get_prefix (node);
 
-	/* for (namespace = namespaces; *namespace != NULL; namespace++) { */
-	/* 	if ((*namespace)->prefix != NULL) { */
-	/* 		/\* NOTE: These two g_strdup()s leak, but it's probably acceptable, given that it saves us */
-	/* 		 * g_strdup()ing every other namespace we put in @extra_namespaces. *\/ */
-	/* 		g_hash_table_insert (parsable->priv->extra_namespaces, */
-	/* 		                     g_strdup ((gchar*) ((*namespace)->prefix)), */
-	/* 		                     g_strdup ((gchar*) ((*namespace)->href))); */
-	/* 	} */
-	/* } */
-	/* xmlFree (namespaces); */
+	if (uri == NULL || prefix == NULL) {
+		return TRUE;
+	}
+
+	g_hash_table_insert (parsable->priv->extra_namespaces,
+			     g_strdup (prefix), g_strdup (uri));
 
 	return TRUE;
 }
@@ -218,22 +212,11 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	GXmlDomDocument *doc;
 	GXmlDomXNode *node;
 	GDataParsable *parsable;
-	static gboolean libxml_initialised = FALSE;
 
 	g_return_val_if_fail (g_type_is_a (parsable_type, GDATA_TYPE_PARSABLE), NULL);
 	g_return_val_if_fail (xml != NULL && *xml != '\0', NULL);
 	g_return_val_if_fail (length >= -1, NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	// TODO:GXML: won't need the below anymore!
-	/* /\* Set up libxml. We do this here to avoid introducing a libgdata setup function, which would be unnecessary hassle. This is the only place */
-	/*  * that libxml can be initialised in the library. *\/ */
-	/* if (libxml_initialised == FALSE) { */
-	/* 	/\* Change the libxml memory allocation functions to be GLib's. This means we don't have to re-allocate all the strings we get from */
-	/* 	 * libxml, which cuts down on strdup() calls dramatically. *\/ */
-	/* 	xmlMemSetup ((xmlFreeFunc) g_free, (xmlMallocFunc) g_malloc, (xmlReallocFunc) g_realloc, (xmlStrdupFunc) g_strdup); */
-	/* 	libxml_initialised = TRUE; */
-	/* } */
 
 	if (length == -1)
 		length = strlen (xml);
@@ -241,7 +224,7 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	/* Parse the XML */
 	GError *error2 = NULL;
 	doc = gxml_dom_document_new_from_string (xml, &error2); // TODO:GXML: do we want to include params for a URL, for encoding, like xmlReadMemory() ?
-	if (error2 != NULL) { // if (doc == NULL) { // TODO:GXML: check if error was set instead?
+	if (error2 != NULL) {
 		g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_PARSING_STRING,
 		             /* Translators: the parameter is an error message */
 		             _("Error parsing XML: %s"),
@@ -253,7 +236,7 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	node = GXML_DOM_XNODE (gxml_dom_document_get_document_element (doc));
 	if (node == NULL) {
 		/* XML document's empty */
-		// xmlFreeDoc (doc); // TODO:GXML: should vala->c code have _unref's automatically?  Do I need finalise style methods?
+		g_object_unref (doc);
 		g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_EMPTY_DOCUMENT,
 		             _("Error parsing XML: %s"),
 		             /* Translators: this is a dummy error message to be substituted into "Error parsing XML: %s". */
@@ -262,7 +245,7 @@ _gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length
 	}
 
 	parsable = _gdata_parsable_new_from_xml_node (parsable_type, doc, node, user_data, error);
-	// xmlFreeDoc (doc); // TODO:GXML: unref it?
+	g_object_unref (doc);
 
 	return parsable;
 }

@@ -21,8 +21,7 @@
 #include <glib-object.h>
 #include <stdio.h>
 #include <string.h>
-#include <libxml/parser.h>
-#include <libxml/xmlsave.h>
+#include <gxml.h>
 
 #include "common.h"
 
@@ -390,29 +389,30 @@ gdata_test_batch_operation_run_finish (GDataBatchOperation *operation, GAsyncRes
 }
 
 static gboolean
-compare_xml_namespaces (xmlNs *ns1, xmlNs *ns2)
+compare_xml_namespaces (GXmlDomXNode *node1, GXmlDomXNode *node2)
 {
-	if (ns1 == ns2)
+	if (node1 == node2)
 		return TRUE;
 
 	/* Compare various simple properties */
-	if (ns1->type != ns2->type ||
-	    xmlStrcmp (ns1->href, ns2->href) != 0 ||
-	    xmlStrcmp (ns1->prefix, ns2->prefix) != 0 ||
-	    ns1->context != ns2->context) {
+	if (g_strcmp0 (gxml_dom_xnode_get_namespace_uri (node1),
+		       gxml_dom_xnode_get_namespace_uri (node2)) != 0 ||
+	    g_strcmp0 (gxml_dom_xnode_get_prefix (node1),
+		       gxml_dom_xnode_get_prefix (node2)) != 0 ||
+	    gxml_dom_xnode_get_owner_document (node1) != gxml_dom_xnode_get_owner_document (node2)) {
 		return FALSE;
 	}
 
 	return TRUE;
 }
 
-static gboolean compare_xml_nodes (xmlNode *node1, xmlNode *node2);
+static gboolean compare_xml_nodes (GXmlDomXNode *node1, GXmlDomXNode *node2);
 
 static gboolean
-compare_xml_node_lists (xmlNode *list1, xmlNode *list2)
+compare_xml_node_lists (GXmlDomNodeList *list1, GXmlDomNodeList *list2)
 {
 	GHashTable *table;
-	xmlNode *child;
+	GXmlDomXNode *child;
 
 	/* Compare their child elements. We iterate through the first linked list and, for each child node, iterate through the second linked list
 	 * comparing it against each node there. We keep a hashed set of nodes in the second linked list which have already been visited and compared
@@ -424,11 +424,11 @@ compare_xml_node_lists (xmlNode *list1, xmlNode *list2)
 	 * be OK. */
 	table = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-	for (child = list1; child != NULL; child = child->next) {
-		xmlNode *other_child;
+	for (child = gxml_dom_node_list_first (list1); child != NULL; child = gxml_dom_xnode_get_next_sibling (child)) {
+		GXmlDomXNode *other_child;
 		gboolean matched = FALSE;
 
-		for (other_child = list2; other_child != NULL; other_child = other_child->next) {
+		for (other_child = gxml_dom_node_list_first (list2); other_child != NULL; other_child = gxml_dom_xnode_get_next_sibling (other_child)) {
 			if (g_hash_table_lookup (table, other_child) != NULL)
 				continue;
 
@@ -445,7 +445,7 @@ compare_xml_node_lists (xmlNode *list1, xmlNode *list2)
 		}
 	}
 
-	for (child = list2; child != NULL; child = child->next) {
+	for (child = gxml_dom_node_list_first (list2); child != NULL; child = gxml_dom_xnode_get_next_sibling (child)) {
 		if (g_hash_table_lookup (table, child) == NULL) {
 			g_hash_table_destroy (table);
 			return FALSE;
@@ -458,79 +458,101 @@ compare_xml_node_lists (xmlNode *list1, xmlNode *list2)
 }
 
 static gboolean
-compare_xml_nodes (xmlNode *node1, xmlNode *node2)
+compare_xml_nodes (GXmlDomXNode *node1, GXmlDomXNode *node2)
 {
-	GHashTable *table;
-	xmlAttr *attr1, *attr2;
-	xmlNs *ns;
+	GXmlDomXNode *attr1, *attr2;
+	gchar *attr1name;
+	GList *key1;
 
 	if (node1 == node2)
 		return TRUE;
 
 	/* Compare various simple properties */
-	if (node1->type != node2->type ||
-	    xmlStrcmp (node1->name, node2->name) != 0 ||
-	    compare_xml_namespaces (node1->ns, node2->ns) == FALSE ||
-	    xmlStrcmp (node1->content, node2->content) != 0) {
+	if (gxml_dom_xnode_get_node_type (node1) != gxml_dom_xnode_get_node_type (node2) ||
+	    g_strcmp0 (gxml_dom_xnode_get_node_name (node1), gxml_dom_xnode_get_node_name (node2)) != 0 ||
+	    compare_xml_namespaces (node1, node2) == FALSE ||
+	    g_strcmp0 (gxml_dom_element_get_content (GXML_DOM_ELEMENT (node1)),
+		       gxml_dom_element_get_content (GXML_DOM_ELEMENT (node2))) != 0) {
+		return FALSE;
+	}
+	
+	/* Compare their attributes. This is done in document order,
+	 * which isn't strictly correct, since XML specifically does
+	 * not apply an ordering over attributes. However, it suffices
+	 * for our needs. */
+
+	/* This used to iterate over the attributes of node1 and node2 in parallel
+	     if two attrs types did not match,
+	     or their names did not match
+	     or their namespaces did not match
+	     or their atypes did not match
+	       FAIL
+	     if their nodelists (children, an attrs value) do not match
+	       FAIL
+	*/
+	GHashTable *attrs1;
+	GHashTable *attrs2;
+
+	GList *keys1;
+
+	attrs1 = gxml_dom_xnode_get_attributes (node1);
+	attrs2 = gxml_dom_xnode_get_attributes (node2);
+
+	if (g_hash_table_size (attrs1) != g_hash_table_size (attrs2)) {
 		return FALSE;
 	}
 
-	/* Compare their attributes. This is done in document order, which isn't strictly correct, since XML specifically does not apply an ordering
-	 * over attributes. However, it suffices for our needs. */
-	for (attr1 = node1->properties, attr2 = node2->properties; attr1 != NULL && attr2 != NULL; attr1 = attr1->next, attr2 = attr2->next) {
-		/* Compare various simple properties */
-		if (attr1->type != attr2->type ||
-		    xmlStrcmp (attr1->name, attr2->name) != 0 ||
-		    compare_xml_namespaces (attr1->ns, attr2->ns) == FALSE ||
-		    attr1->atype != attr2->atype) {
+	keys1 = g_hash_table_get_keys (attrs1);
+
+	for (key1 = keys1; key1 != NULL; key1 = key1->next) {
+		attr1name = (gchar*)key1->data;
+
+		attr1 = (GXmlDomXNode*)g_hash_table_lookup (attrs1 ,attr1name);
+		attr2 = (GXmlDomXNode*)g_hash_table_lookup (attrs2 ,attr1name);
+
+		if (attr1 == NULL || attr2 == NULL) {
 			return FALSE;
 		}
-
-		/* Compare their child nodes (values represented as text and entity nodes) */
-		if (compare_xml_node_lists (attr1->children, attr2->children) == FALSE)
-			return FALSE;
-	}
-
-	/* Stragglers? */
-	if (attr1 != NULL || attr2 != NULL)
-		return FALSE;
-
-	/* Compare their namespace definitions regardless of order. Do this by inserting all the definitions from node1 into a hash table, then running
-	 * through the  definitions in node2 and ensuring they exist in the hash table, removing each one from the table as we go. Check there aren't
-	 * any left in the hash table afterwards. */
-	table = g_hash_table_new (g_str_hash, g_str_equal);
-
-	for (ns = node1->nsDef; ns != NULL; ns = ns->next) {
-		/* Prefixes should be unique, but I trust libxml about as far as I can throw it. */
-		if (g_hash_table_lookup (table, ns->prefix ? ns->prefix : (gpointer) "") != NULL) {
-			g_hash_table_destroy (table);
+		
+		if (g_strcmp0 (gxml_dom_xnode_get_node_name (attr1),
+			       gxml_dom_xnode_get_node_name (attr2)) != 0
+		    || compare_xml_namespaces (attr1, attr2) == FALSE) {
 			return FALSE;
 		}
-
-		g_hash_table_insert (table, ns->prefix ? (gpointer) ns->prefix : (gpointer) "", ns);
-	}
-
-	for (ns = node2->nsDef; ns != NULL; ns = ns->next) {
-		xmlNs *original_ns = g_hash_table_lookup (table, ns->prefix ? ns->prefix : (gpointer) "");
-
-		if (original_ns == NULL ||
-		    compare_xml_namespaces (original_ns, ns) == FALSE) {
-			g_hash_table_destroy (table);
+		
+		if (compare_xml_node_lists (gxml_dom_xnode_get_child_nodes (attr1),
+					    gxml_dom_xnode_get_child_nodes (attr2)) == FALSE)
 			return FALSE;
-		}
-
-		g_hash_table_remove (table, ns->prefix ? ns->prefix : (gpointer) "");
 	}
+	
+	// no straglers like we once had, since we now check list size
 
-	if (g_hash_table_size (table) != 0) {
-		g_hash_table_destroy (table);
+	/* /\* Compare their namespace definitions regardless of order. Do this by inserting all the definitions from node1 into a hash table, then running */
+	/*  * through the  definitions in node2 and ensuring they exist in the hash table, removing each one from the table as we go. Check there aren't */
+	/*  * any left in the hash table afterwards. *\/ */
+
+	/* The above doesn't reply for now, because, because we only
+	   have one namespace per node right now, while the code here
+	   used to iterate over a list of namespaces.  Here is what we
+	   used to do: 
+  	     made sure all the prefixes used by node1 were unique
+	     remembered them all
+	     went through all the prefixes for node2
+	     if one was not used by node1,
+	       FAIL
+	     if one was also used by node1,
+	       compare namespace
+	       if FAIL
+	         FAIL
+	*/
+	if (compare_xml_namespaces (node1, node2) == FALSE) {
 		return FALSE;
 	}
 
-	g_hash_table_destroy (table);
 
 	/* Compare their child nodes */
-	if (compare_xml_node_lists (node1->children, node2->children) == FALSE)
+	if (compare_xml_node_lists (gxml_dom_xnode_get_child_nodes (node1),
+				    gxml_dom_xnode_get_child_nodes (node2)) == FALSE)
 		return FALSE;
 
 	/* Success! */
@@ -542,26 +564,28 @@ gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboo
 {
 	gboolean success;
 	gchar *parsable_xml;
-	xmlDoc *parsable_doc, *expected_doc;
+	GXmlDomDocument *parsable_doc, *expected_doc;
+	GError *error = NULL;
 
 	/* Get an XML string for the GDataParsable */
 	parsable_xml = gdata_parsable_get_xml (parsable);
 
 	/* Parse both the XML strings */
-	parsable_doc = xmlReadMemory (parsable_xml, strlen (parsable_xml), "/dev/null", NULL, 0);
-	expected_doc = xmlReadMemory (expected_xml, strlen (expected_xml), "/dev/null", NULL, 0);
+	parsable_doc = gxml_dom_document_new_from_string (parsable_xml, &error);
+	expected_doc = gxml_dom_document_new_from_string (expected_xml, &error); // TODO:GXML; grep for 'gxml.*_new_' and make sure we g_object_unref () everything! 
 
 	g_assert (parsable_doc != NULL && expected_doc != NULL);
 
 	/* Recursively compare the two XML trees */
-	success = compare_xml_nodes (xmlDocGetRootElement (parsable_doc), xmlDocGetRootElement (expected_doc));
+	success = compare_xml_nodes (GXML_DOM_XNODE (gxml_dom_document_get_document_element (parsable_doc)),
+				     GXML_DOM_XNODE (gxml_dom_document_get_document_element (expected_doc)));
 	if (success == FALSE && print_error == TRUE) {
 		/* The comparison has failed, so print out the two XML strings for ease of debugging */
 		g_message ("\n\nParsable: %s\n\nExpected: %s\n\n", parsable_xml, expected_xml);
 	}
 
-	xmlFreeDoc (expected_doc);
-	xmlFreeDoc (parsable_doc);
+	g_object_unref (expected_doc);
+	g_object_unref (parsable_doc);
 	g_free (parsable_xml);
 
 	return success;

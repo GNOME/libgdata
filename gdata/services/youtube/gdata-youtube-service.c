@@ -360,7 +360,7 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 	node = GXML_DOM_XNODE (gxml_dom_document_get_document_element (doc));
 	if (node == NULL) {
 		/* XML document's empty; chain up to the parent class */
-		// xmlFreeDoc (doc);
+		g_object_unref (doc);
 		goto parent;
 	}
 
@@ -368,7 +368,7 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 
 	if (g_strcmp0 (node_name, "errors") != 0) {
 		/* No <errors> element (required); chain up to the parent class */
-		// xmlFreeDoc (doc); //TODO:GXML: figure out what to do with freeing these, g_object_unref?
+		g_object_unref (doc);
 		goto parent;
 	}
 
@@ -408,7 +408,7 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 				g_free (domain);
 				g_free (code);
 				g_free (location);
-				//xmlFreeDoc (doc);
+				g_object_unref (doc);
 				goto check_error;
 			}
 
