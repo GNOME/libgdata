@@ -177,7 +177,7 @@ GDataMediaThumbnail *
 choose_best_thumbnail (GList *thumbnails, gint ideal_size)
 {
 	gint delta = G_MININT;
-	GDataMediaThumbnail *thumbnail;
+	GDataMediaThumbnail *thumbnail = NULL;
 	for (; thumbnails != NULL; thumbnails = thumbnails->next) {
 		gint new_delta;
 		GDataMediaThumbnail *current = (GDataMediaThumbnail *) thumbnails->data;
