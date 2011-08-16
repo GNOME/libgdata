@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata-master-po-gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-04 10:21+0200\n"
-"PO-Revision-Date: 2011-07-04 10:21+0200\n"
+"POT-Creation-Date: 2011-08-16 13:32+0200\n"
+"PO-Revision-Date: 2011-08-16 19:05+0200\n"
 "Last-Translator: Fran Diéguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -135,6 +135,23 @@ msgstr "O acceso de esta conta a este servizo foi desactivado. (%s)"
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Este servizo non está dispoñíbel neste momento. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "Esta entrada non admite comentarios."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "Pode que os comentarios non se engadan nesta entrada."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+msgid "This comment may not be deleted."
+msgstr "Pode que non se elimine este comentario."
 
 #. Tried to seek too far
 #: ../gdata/gdata-download-stream.c:751
@@ -299,8 +316,8 @@ msgstr "Código de erro %u ao executar unha operación de lote: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "O URI de redirección non é válido: %s"
 
-#: ../gdata/gdata-service.c:1324
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:535
+#: ../gdata/gdata-service.c:1325
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:836
 msgid "The entry has already been inserted."
 msgstr "A entrada xa foi inserida."
@@ -397,31 +414,31 @@ msgstr ""
 "Debe especificar un nome de usuario ou autenticarse para consultar un "
 "usuario."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:355
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
 msgstr "Parámetro de consulta non permitido para os álbums."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:366
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Debe especificar un nome de usuario ou autenticarse para solicitar todos os "
 "álbums."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
 msgstr "O álbum non ten unha ligazón fonte."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:542
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
 msgstr "Debe estar autenticado para subir un ficheiro."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:618
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
 msgstr "A álbum xa foi inserido."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:625
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "Debe autenticarse para inserir un álbum."
 
@@ -476,9 +493,6 @@ msgstr "O vídeo non ten vídeos relacionados <link>."
 #: ../gdata/services/youtube/gdata-youtube-service.c:843
 msgid "You must be authenticated to upload a video."
 msgstr "Debe estar autenticado para subir un vídeo."
-
-#~ msgid "The owner's rule may not be deleted."
-#~ msgstr "A regra do propietario non debe ser eliminada."
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "O documento proporcionado ten un tipo de contido incorrecto."
