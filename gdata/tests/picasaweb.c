@@ -360,31 +360,8 @@ test_authentication (void)
 	g_object_unref (authorizer);
 }
 
-static void
-test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	gboolean retval;
-	GError *error = NULL;
-
-	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (retval == TRUE);
-	g_clear_error (&error);
-
-	g_main_loop_quit (main_loop);
-
-	/* Check all is as it should be */
-	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, PW_USERNAME);
-	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
-	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-	                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == TRUE);
-}
-
-static void
-test_authentication_async (void)
-{
-	GMainLoop *main_loop;
+GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
+G_STMT_START {
 	GDataClientLoginAuthorizer *authorizer;
 
 	/* Create an authorizer */
@@ -392,15 +369,36 @@ test_authentication_async (void)
 
 	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
-	gdata_client_login_authorizer_authenticate_async (authorizer, PW_USERNAME, PASSWORD, NULL,
-	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+	gdata_client_login_authorizer_authenticate_async (authorizer, PW_USERNAME, PASSWORD, cancellable, async_ready_callback, async_data);
 
-	g_main_loop_run (main_loop);
-
-	g_main_loop_unref (main_loop);
 	g_object_unref (authorizer);
-}
+} G_STMT_END,
+G_STMT_START {
+	gboolean retval;
+	GDataClientLoginAuthorizer *authorizer = GDATA_CLIENT_LOGIN_AUTHORIZER (obj);
+
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
+
+	if (error == NULL) {
+		g_assert (retval == TRUE);
+
+		/* Check all is as it should be */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, PW_USERNAME);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == TRUE);
+	} else {
+		g_assert (retval == FALSE);
+
+		/* Check nothing's changed */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == FALSE);
+	}
+} G_STMT_END);
 
 typedef struct {
 	GDataPicasaWebAlbum *album;
@@ -554,65 +552,39 @@ test_query_files (QueryFilesData *data, gconstpointer service)
 	g_object_unref (photo_feed);
 }
 
-typedef struct {
-	QueryFilesData data;
-	GMainLoop *main_loop;
-} QueryFilesAsyncData;
-
-static void
-set_up_query_files_async (QueryFilesAsyncData *data, gconstpointer service)
-{
-	set_up_query_files ((QueryFilesData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, TRUE);
-}
-
-static void
-tear_down_query_files_async (QueryFilesAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_query_files ((QueryFilesData*) data, service);
-}
-
-static void
-test_query_files_async_cb (GDataService *service, GAsyncResult *async_result, QueryFilesAsyncData *data)
-{
-	GDataFeed *photo_feed;
-	GError *error = NULL;
-
-	/* Get the photo feed */
-	photo_feed = gdata_service_query_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_clear_error (&error);
-
-	_test_query_files (photo_feed, (QueryFilesData*) data);
-
-	g_object_unref (photo_feed);
-
-	g_main_loop_quit (data->main_loop);
-}
-
+GDATA_ASYNC_CLOSURE_FUNCTIONS (query_files, QueryFilesData);
 
 /* Test that asynchronously querying for all photos in an album lists them correctly. */
-static void
-test_query_files_async (QueryFilesAsyncData *data, gconstpointer service)
-{
-	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), data->data.album, NULL, NULL, NULL, NULL, NULL,
-	                                           (GAsyncReadyCallback) test_query_files_async_cb, data);
+GDATA_ASYNC_TEST_FUNCTIONS (query_files, QueryFilesData,
+G_STMT_START {
+	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), data->album, NULL, cancellable, NULL, NULL, NULL,
+	                                           async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
+	GDataFeed *photo_feed;
 
-	g_main_loop_run (data->main_loop);
-}
+	/* Get the photo feed */
+	photo_feed = gdata_service_query_finish (GDATA_SERVICE (obj), async_result, &error);
+
+	if (error == NULL) {
+		_test_query_files (photo_feed, data);
+		g_object_unref (photo_feed);
+	} else {
+		g_assert (photo_feed == NULL);
+	}
+} G_STMT_END);
 
 /* Test that the progress callbacks from gdata_picasaweb_service_query_files_async() are called correctly.
- * We take a QueryFilesAsyncData so that we can guarantee the album and at least one file exists (since it's created in the setup function for
- * QueryFilesAsyncData), but we don't use it much as we don't actually care about the specific files. */
+ * We take a QueryFilesData so that we can guarantee the album and at least one file exists (since it's created in the setup function for
+ * QueryFilesData), but we don't use it much as we don't actually care about the specific files. */
 static void
-test_query_files_async_progress_closure (QueryFilesAsyncData *query_data, gconstpointer service)
+test_query_files_async_progress_closure (QueryFilesData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), query_data->data.album, NULL, NULL,
+	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), query_data->album, NULL, NULL,
 	                                           (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                           data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                           (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
@@ -830,54 +802,29 @@ test_insert_album (InsertAlbumData *data, gconstpointer service)
 	g_object_unref (inserted_album);
 }
 
-typedef struct {
-	InsertAlbumData data;
-	GMainLoop *main_loop;
-} InsertAlbumAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_album, InsertAlbumData);
 
-static void
-set_up_insert_album_async (InsertAlbumAsyncData *data, gconstpointer service)
-{
-	set_up_insert_album ((InsertAlbumData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, TRUE);
-}
-
-static void
-tear_down_insert_album_async (InsertAlbumAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_insert_album ((InsertAlbumData*) data, service);
-}
-
-static void
-test_insert_album_async_cb (GDataService *service, GAsyncResult *async_result, InsertAlbumAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (insert_album, InsertAlbumData,
+G_STMT_START {
+	gdata_picasaweb_service_insert_album_async (GDATA_PICASAWEB_SERVICE (service), data->album, cancellable,
+	                                            async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataEntry *entry;
-	GError *error = NULL;
 
-	entry = gdata_service_insert_entry_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_PICASAWEB_ALBUM (entry));
-	g_clear_error (&error);
+	entry = gdata_service_insert_entry_finish (GDATA_SERVICE (obj), async_result, &error);
 
-	data->data.inserted_album = g_object_ref (entry);
+	if (error == NULL) {
+		g_assert (GDATA_IS_PICASAWEB_ALBUM (entry));
 
-	/* Test the album was uploaded correctly */
-	assert_albums_equal (GDATA_PICASAWEB_ALBUM (entry), data->data.album, FALSE);
+		/* Test the album was uploaded correctly */
+		assert_albums_equal (GDATA_PICASAWEB_ALBUM (entry), data->album, FALSE);
 
-	g_object_unref (entry);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_insert_album_async (InsertAlbumAsyncData *data, gconstpointer service)
-{
-	gdata_picasaweb_service_insert_album_async (GDATA_PICASAWEB_SERVICE (service), data->data.album, NULL,
-	                                            (GAsyncReadyCallback) test_insert_album_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
+		data->inserted_album = GDATA_PICASAWEB_ALBUM (entry);
+	} else {
+		g_assert (entry == NULL);
+	}
+} G_STMT_END);
 
 typedef struct {
 	GDataPicasaWebAlbum *album1;
@@ -1080,58 +1027,34 @@ test_query_all_albums_with_limits (QueryAllAlbumsData *data, gconstpointer servi
 	g_object_unref (album_feed_1);
 }
 
-typedef struct {
-	QueryAllAlbumsData data;
-	GMainLoop *main_loop;
-} QueryAllAlbumsAsyncData;
-
-static void
-set_up_query_all_albums_async (QueryAllAlbumsAsyncData *data, gconstpointer service)
-{
-	set_up_query_all_albums ((QueryAllAlbumsData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, TRUE);
-}
-
-static void
-tear_down_query_all_albums_async (QueryAllAlbumsAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_query_all_albums ((QueryAllAlbumsData*) data, service);
-}
-
-static void
-test_query_all_albums_async_cb (GDataService *service, GAsyncResult *async_result, QueryAllAlbumsAsyncData *data)
-{
-	GDataFeed *album_feed;
-	GError *error = NULL;
-
-	/* Get the album feed */
-	album_feed = gdata_service_query_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_clear_error (&error);
-
-	_test_query_all_albums (album_feed, (QueryAllAlbumsData*) data);
-
-	g_object_unref (album_feed);
-
-	g_main_loop_quit (data->main_loop);
-}
+GDATA_ASYNC_CLOSURE_FUNCTIONS (query_all_albums, QueryAllAlbumsData);
 
 /* Test that asynchronously querying for all albums lists them correctly. */
-static void
-test_query_all_albums_async (QueryAllAlbumsAsyncData *data, gconstpointer service)
-{
-	gdata_picasaweb_service_query_all_albums_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL,
-	                                                NULL, NULL, (GAsyncReadyCallback) test_query_all_albums_async_cb, data);
+GDATA_ASYNC_TEST_FUNCTIONS (query_all_albums, QueryAllAlbumsData,
+G_STMT_START {
+	gdata_picasaweb_service_query_all_albums_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, cancellable, NULL,
+	                                                NULL, NULL, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
+	GDataFeed *album_feed;
 
-	g_main_loop_run (data->main_loop);
-}
+	/* Get the album feed */
+	album_feed = gdata_service_query_finish (GDATA_SERVICE (obj), async_result, &error);
+
+	if (error == NULL) {
+		_test_query_all_albums (album_feed, (QueryAllAlbumsData*) data);
+
+		g_object_unref (album_feed);
+	} else {
+		g_assert (album_feed == NULL);
+	}
+} G_STMT_END);
 
 /* Test that the progress callbacks from gdata_picasaweb_service_query_all_albums_async() are called correctly.
- * We take a QueryAllAlbumsAsyncData so that we can guarantee at least one album exists (since it's created in the setup function for
- * QueryAllAlbumsAsyncData), but we don't use it as we don't actually care about the specific album. */
+ * We take a QueryAllAlbumsData so that we can guarantee at least one album exists (since it's created in the setup function for
+ * QueryAllAlbumsData), but we don't use it as we don't actually care about the specific album. */
 static void
-test_query_all_albums_async_progress_closure (QueryAllAlbumsAsyncData *unused_data, gconstpointer service)
+test_query_all_albums_async_progress_closure (QueryAllAlbumsData *unused_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
@@ -1211,20 +1134,20 @@ tear_down_query_comments (QueryCommentsData *data, gconstpointer service)
 {
 	/* Delete the test comments. */
 	if (data->comment1 != NULL) {
-		g_assert (gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
-		                                            GDATA_COMMENT (data->comment1), NULL, NULL) == TRUE);
+		gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+		                                  GDATA_COMMENT (data->comment1), NULL, NULL);
 		g_object_unref (data->comment1);
 	}
 
 	if (data->comment2 != NULL) {
-		g_assert (gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
-		                                            GDATA_COMMENT (data->comment2), NULL, NULL) == TRUE);
+		gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+		                                  GDATA_COMMENT (data->comment2), NULL, NULL);
 		g_object_unref (data->comment2);
 	}
 
 	if (data->comment3 != NULL) {
-		g_assert (gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
-		                                            GDATA_COMMENT (data->comment3), NULL, NULL) == TRUE);
+		gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+		                                  GDATA_COMMENT (data->comment3), NULL, NULL);
 		g_object_unref (data->comment3);
 	}
 
@@ -1295,92 +1218,40 @@ test_comment_query (QueryCommentsData *data, gconstpointer service)
 	g_object_unref (comments_feed);
 }
 
-typedef struct {
-	QueryCommentsData parent;
-	GMainLoop *main_loop;
-} QueryCommentsAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (query_comments, QueryCommentsData);
 
-static void
-set_up_query_comments_async (QueryCommentsAsyncData *data, gconstpointer service)
-{
-	set_up_query_comments ((QueryCommentsData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_query_comments_async (QueryCommentsAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_query_comments ((QueryCommentsData*) data, service);
-}
-
-static void
-test_comment_query_async_cb (GDataCommentable *commentable, GAsyncResult *result, QueryCommentsAsyncData *data)
-{
+/* Test that asynchronously querying for all albums lists them correctly. */
+GDATA_ASYNC_TEST_FUNCTIONS (comment_query, QueryCommentsData,
+G_STMT_START {
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service), NULL, cancellable, NULL, NULL, NULL,
+	                                        async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataFeed *comments_feed;
-	GError *error = NULL;
 
-	comments_feed = gdata_commentable_query_comments_finish (commentable, result, &error);
-	g_assert_no_error (error);
-	g_clear_error (&error);
+	/* Get the comments feed */
+	comments_feed = gdata_commentable_query_comments_finish (GDATA_COMMENTABLE (obj), async_result, &error);
 
-	assert_comments_feed ((QueryCommentsData*) data, comments_feed);
+	if (error == NULL) {
+		assert_comments_feed (data, comments_feed);
 
-	g_object_unref (comments_feed);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_query_async (QueryCommentsAsyncData *data, gconstpointer service)
-{
-	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
-	                                        (GAsyncReadyCallback) test_comment_query_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
-
-static void
-test_comment_query_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, QueryCommentsAsyncData *data)
-{
-	GDataFeed *comments_feed;
-	GError *error = NULL;
-
-	comments_feed = gdata_commentable_query_comments_finish (commentable, result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (comments_feed == NULL);
-	g_clear_error (&error);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_query_async_cancellation (QueryCommentsAsyncData *data, gconstpointer service)
-{
-	GCancellable *cancellable;
-
-	cancellable = g_cancellable_new ();
-	g_cancellable_cancel (cancellable);
-
-	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service), NULL, cancellable, NULL, NULL,
-	                                        NULL, (GAsyncReadyCallback) test_comment_query_async_cancellation_cb, data);
-
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (cancellable);
-}
+		g_object_unref (comments_feed);
+	} else {
+		g_assert (comments_feed == NULL);
+	}
+} G_STMT_END);
 
 /* Test that the progress callbacks from gdata_commentable_query_comments_async() are called correctly.
- * We take a QueryCommentsAsyncData so that we can guarantee the file exists, but we don't use it much as we don't actually care about the specific
+ * We take a QueryCommentsData so that we can guarantee the file exists, but we don't use it much as we don't actually care about the specific
  * file. */
 static void
-test_comment_query_async_progress_closure (QueryCommentsAsyncData *query_data, gconstpointer service)
+test_comment_query_async_progress_closure (QueryCommentsData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (query_data->parent.parent.file1), GDATA_SERVICE (service), NULL, NULL,
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (query_data->parent.file1), GDATA_SERVICE (service), NULL, NULL,
 	                                        (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                        data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                        (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
@@ -1470,81 +1341,26 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 	data->new_comment = GDATA_PICASAWEB_COMMENT (new_comment);
 }
 
-typedef struct {
-	InsertCommentData parent;
-	GMainLoop *main_loop;
-} InsertCommentAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_comment, InsertCommentData);
 
-static void
-set_up_insert_comment_async (InsertCommentAsyncData *data, gconstpointer service)
-{
-	set_up_insert_comment ((InsertCommentData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_insert_comment_async (InsertCommentAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_insert_comment ((InsertCommentData*) data, service);
-}
-
-static void
-test_comment_insert_async_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (comment_insert, InsertCommentData,
+G_STMT_START {
+	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->comment), cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataComment *new_comment;
-	GError *error = NULL;
 
-	new_comment = gdata_commentable_insert_comment_finish (commentable, result, &error);
-	g_assert_no_error (error);
-	g_clear_error (&error);
+	new_comment = gdata_commentable_insert_comment_finish (GDATA_COMMENTABLE (obj), async_result, &error);
 
-	assert_comments_equal (new_comment, data->parent.comment);
+	if (error == NULL) {
+		assert_comments_equal (new_comment, data->comment);
 
-	data->parent.new_comment = GDATA_PICASAWEB_COMMENT (new_comment);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_insert_async (InsertCommentAsyncData *data, gconstpointer service)
-{
-	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service),
-	                                        GDATA_COMMENT (data->parent.comment), NULL, (GAsyncReadyCallback) test_comment_insert_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
-
-static void
-test_comment_insert_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
-{
-	GDataComment *new_comment;
-	GError *error = NULL;
-
-	new_comment = gdata_commentable_insert_comment_finish (commentable, result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (new_comment == NULL);
-	g_clear_error (&error);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_insert_async_cancellation (InsertCommentAsyncData *data, gconstpointer service)
-{
-	GCancellable *cancellable;
-
-	cancellable = g_cancellable_new ();
-	g_cancellable_cancel (cancellable);
-
-	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service),
-	                                        GDATA_COMMENT (data->parent.comment), cancellable,
-	                                        (GAsyncReadyCallback) test_comment_insert_async_cancellation_cb, data);
-
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (cancellable);
-}
+		data->new_comment = GDATA_PICASAWEB_COMMENT (new_comment);
+	} else {
+		g_assert (new_comment == NULL);
+	}
+} G_STMT_END);
 
 static void
 test_comment_delete (QueryCommentsData *data, gconstpointer service)
@@ -1562,61 +1378,34 @@ test_comment_delete (QueryCommentsData *data, gconstpointer service)
 	data->comment1 = NULL;
 }
 
-static void
-test_comment_delete_async_cb (GDataCommentable *commentable, GAsyncResult *result, QueryCommentsAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (comment_delete, QueryCommentsData,
+G_STMT_START {
+	gdata_commentable_delete_comment_async (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->comment1), cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	gboolean success;
-	GError *error = NULL;
 
-	success = gdata_commentable_delete_comment_finish (commentable, result, &error);
-	g_assert_no_error (error);
-	g_assert (success == TRUE);
-	g_clear_error (&error);
+	success = gdata_commentable_delete_comment_finish (GDATA_COMMENTABLE (obj), async_result, &error);
 
-	g_object_unref (data->parent.comment1);
-	data->parent.comment1 = NULL;
+	if (error == NULL) {
+		g_assert (success == TRUE);
 
-	g_main_loop_quit (data->main_loop);
-}
+		/* Prevent the closure tear down function from trying to delete the comment again */
+		g_object_unref (data->comment1);
+		data->comment1 = NULL;
+	} else {
+		g_assert (success == FALSE);
 
-static void
-test_comment_delete_async (QueryCommentsAsyncData *data, gconstpointer service)
-{
-	gdata_commentable_delete_comment_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service),
-	                                        GDATA_COMMENT (data->parent.comment1), NULL, (GAsyncReadyCallback) test_comment_delete_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
-
-static void
-test_comment_delete_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, QueryCommentsAsyncData *data)
-{
-	gboolean success;
-	GError *error = NULL;
-
-	success = gdata_commentable_delete_comment_finish (commentable, result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (success == FALSE);
-	g_clear_error (&error);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_delete_async_cancellation (QueryCommentsAsyncData *data, gconstpointer service)
-{
-	GCancellable *cancellable;
-
-	cancellable = g_cancellable_new ();
-	g_cancellable_cancel (cancellable);
-	gdata_commentable_delete_comment_async (GDATA_COMMENTABLE (data->parent.parent.file1), GDATA_SERVICE (service),
-	                                        GDATA_COMMENT (data->parent.comment1), cancellable,
-	                                        (GAsyncReadyCallback) test_comment_delete_async_cancellation_cb, data);
-
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (cancellable);
-}
+		/* The server's naughty and often deletes comments even if the connection's closed prematurely (when we cancel the operation). In
+		 * this case, it returns an error 400, which we sneakily hide. */
+		if (g_error_matches (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR) == TRUE &&
+		    async_data->cancellation_timeout > 0) {
+			async_data->cancellation_successful = FALSE;
+			g_clear_error (&error);
+		}
+	}
+} G_STMT_END);
 
 static void
 test_query_user (gconstpointer service)
@@ -1633,113 +1422,53 @@ test_query_user (gconstpointer service)
 	g_object_unref (user);
 }
 
-typedef struct {
-	GMainLoop *main_loop;
-} QueryUserAsyncData;
-
-static void
-set_up_query_user_async (QueryUserAsyncData *data, gconstpointer service)
-{
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_query_user_async (QueryUserAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-}
-
-static void
-test_query_user_async_cb (GDataPicasaWebService *service, GAsyncResult *result, QueryUserAsyncData *data)
-{
-	GDataPicasaWebUser *user;
-	GError *error = NULL;
-
-	user = gdata_picasaweb_service_get_user_finish (service, result, &error);
-	g_assert_no_error (error);
-	g_clear_error (&error);
-
-	check_authenticated_user_details (user);
-
-	g_object_unref (user);
-
-	g_main_loop_quit (data->main_loop);
-}
-
 /* Check that asynchronously querying for the currently authenticated user's details works and returns the correct details. */
-static void
-test_query_user_async (QueryUserAsyncData *data, gconstpointer service)
-{
-	gdata_picasaweb_service_get_user_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, (GAsyncReadyCallback) test_query_user_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
-
-static void
-test_query_user_async_cancellable_cb (GDataPicasaWebService *service, GAsyncResult *result, QueryUserAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (query_user, void,
+G_STMT_START {
+	gdata_picasaweb_service_get_user_async (GDATA_PICASAWEB_SERVICE (service), NULL, cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataPicasaWebUser *user;
-	GError *error = NULL;
 
-	user = gdata_picasaweb_service_get_user_finish (service, result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (user == NULL);
-	g_clear_error (&error);
+	user = gdata_picasaweb_service_get_user_finish (GDATA_PICASAWEB_SERVICE (obj), async_result, &error);
 
-	g_main_loop_quit (data->main_loop);
-}
+	if (error == NULL) {
+		check_authenticated_user_details (user);
 
-/* Check that cancelling an asynchronous query for the currently authenticated user's details works. */
-static void
-test_query_user_async_cancellation (QueryUserAsyncData *data, gconstpointer service)
-{
-	GCancellable *cancellable;
-
-	cancellable = g_cancellable_new ();
-	g_cancellable_cancel (cancellable);
-	gdata_picasaweb_service_get_user_async (GDATA_PICASAWEB_SERVICE (service), NULL, cancellable,
-	                                        (GAsyncReadyCallback) test_query_user_async_cancellable_cb, data);
-
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (cancellable);
-}
-
-static void
-test_query_user_by_username_async_cb (GDataPicasaWebService *service, GAsyncResult *result, QueryUserAsyncData *data)
-{
-	GDataPicasaWebUser *user;
-	GError *error = NULL;
-
-	user = gdata_picasaweb_service_get_user_finish (service, result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_PICASAWEB_USER (user));
-	g_clear_error (&error);
-
-	g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "philip.withnall");
-	g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "Philip");
-	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, -1); /* not the logged in user */
-	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), ==, -1); /* not the logged in user */
-	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), ==, -1); /* not the logged in user */
-	/* tested weakly to avoid having to update it regularly */
-	g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), !=, NULL);
-
-	g_object_unref (user);
-
-	g_main_loop_quit (data->main_loop);
-}
+		g_object_unref (user);
+	} else {
+		g_assert (user == NULL);
+	}
+} G_STMT_END);
 
 /* Check that querying for a user other than the currently authenticated user, asynchronously, gives us an appropriate result. This result should,
  * for example, not contain any private information about the queried user. (That's a server-side consideration, but libgdata has to handle the
  * lack of information correctly.) */
-static void
-test_query_user_by_username_async (QueryUserAsyncData *data, gconstpointer service)
-{
-	gdata_picasaweb_service_get_user_async (GDATA_PICASAWEB_SERVICE (service), "philip.withnall", NULL,
-	                                        (GAsyncReadyCallback) test_query_user_by_username_async_cb, data);
+GDATA_ASYNC_TEST_FUNCTIONS (query_user_by_username, void,
+G_STMT_START {
+	gdata_picasaweb_service_get_user_async (GDATA_PICASAWEB_SERVICE (service), "philip.withnall", cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
+	GDataPicasaWebUser *user;
 
-	g_main_loop_run (data->main_loop);
-}
+	user = gdata_picasaweb_service_get_user_finish (GDATA_PICASAWEB_SERVICE (obj), async_result, &error);
+
+	if (error == NULL) {
+		g_assert (GDATA_IS_PICASAWEB_USER (user));
+
+		g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "104200312198892774147");
+		g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "Philip Withnall");
+		g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, -1); /* not the logged in user */
+		g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), ==, -1); /* not the logged in user */
+		g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), ==, -1); /* not the logged in user */
+		/* tested weakly to avoid having to update it regularly */
+		g_assert_cmpstr (gdata_picasaweb_user_get_thumbnail_uri (user), !=, NULL);
+
+		g_object_unref (user);
+	} else {
+		g_assert (user == NULL);
+	}
+} G_STMT_END);
 
 typedef struct {
 	GDataPicasaWebService *service;
@@ -1752,7 +1481,7 @@ typedef struct {
 } UploadData;
 
 static void
-setup_upload (UploadData *data, gconstpointer service)
+set_up_upload (UploadData *data, gconstpointer service)
 {
 	GFileInfo *file_info;
 	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
@@ -1788,7 +1517,7 @@ setup_upload (UploadData *data, gconstpointer service)
 }
 
 static void
-teardown_upload (UploadData *data, gconstpointer service)
+tear_down_upload (UploadData *data, gconstpointer service)
 {
 	/* Delete the uploaded photo (don't worry if this fails) */
 	if (data->updated_photo != NULL) {
@@ -1844,158 +1573,69 @@ test_upload_default_album (UploadData *data, gconstpointer service)
 	g_assert_cmpstr (tags2[2], ==, tags[2]);
 }
 
-typedef struct {
-	UploadData data;
-	GMainLoop *main_loop;
-} UploadAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (upload, UploadData);
 
-static void
-setup_upload_async (UploadAsyncData *data, gconstpointer service)
-{
-	setup_upload ((UploadData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, TRUE);
-}
-
-static void
-teardown_upload_async (UploadAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	teardown_upload ((UploadData*) data, service);
-}
-
-static void
-test_upload_default_album_async_cb (GOutputStream *stream, GAsyncResult *result, UploadAsyncData *data)
-{
-	const gchar * const *tags, * const *tags2;
-	gssize transfer_size;
+GDATA_ASYNC_TEST_FUNCTIONS (upload_default_album, UploadData,
+G_STMT_START {
+	GDataUploadStream *upload_stream;
 	GError *error = NULL;
+
+	/* Prepare the upload stream */
+	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->photo, data->slug,
+	                                                     data->content_type, cancellable, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	/* Upload the photo asynchronously */
+	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->file_stream),
+	                              G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
+	                              async_ready_callback, async_data);
+
+	g_object_unref (upload_stream);
+
+	/* Reset the input stream to the beginning. */
+	g_assert (g_seekable_seek (G_SEEKABLE (data->file_stream), 0, G_SEEK_SET, NULL, NULL) == TRUE);
+} G_STMT_END,
+G_STMT_START {
+	GOutputStream *stream = G_OUTPUT_STREAM (obj);
+	const gchar * const *tags;
+	const gchar * const *tags2;
+	gssize transfer_size;
+	GError *upload_error = NULL;
 
 	/* Finish off the transfer */
-	transfer_size = g_output_stream_splice_finish (stream, result, &error);
-	g_assert_no_error (error);
-	g_assert_cmpint (transfer_size, >, 0);
+	transfer_size = g_output_stream_splice_finish (stream, async_result, &error);
 
-	/* Finish off the upload */
-	data->data.updated_photo = gdata_picasaweb_service_finish_file_upload (data->data.service, GDATA_UPLOAD_STREAM (stream), &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_PICASAWEB_FILE (data->data.updated_photo));
+	if (error == NULL) {
+		g_assert_cmpint (transfer_size, >, 0);
 
-	/* Check the photo's properties */
-	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->data.updated_photo)));
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->data.updated_photo)), ==, gdata_entry_get_title (GDATA_ENTRY (data->data.photo)));
-	g_assert_cmpstr (gdata_picasaweb_file_get_caption (data->data.updated_photo), ==, gdata_picasaweb_file_get_caption (data->data.photo));
+		/* Finish off the upload */
+		data->updated_photo = gdata_picasaweb_service_finish_file_upload (data->service, GDATA_UPLOAD_STREAM (stream), &upload_error);
+		g_assert_no_error (upload_error);
+		g_assert (GDATA_IS_PICASAWEB_FILE (data->updated_photo));
 
-	tags = gdata_picasaweb_file_get_tags (data->data.photo);
-	tags2 = gdata_picasaweb_file_get_tags (data->data.updated_photo);
-	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, g_strv_length ((gchar**) tags));
-	g_assert_cmpstr (tags2[0], ==, tags[0]);
-	g_assert_cmpstr (tags2[1], ==, tags[1]);
-	g_assert_cmpstr (tags2[2], ==, tags[2]);
+		/* Check the photo's properties */
+		g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->updated_photo)));
+		g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->updated_photo)), ==, gdata_entry_get_title (GDATA_ENTRY (data->photo)));
+		g_assert_cmpstr (gdata_picasaweb_file_get_caption (data->updated_photo), ==, gdata_picasaweb_file_get_caption (data->photo));
 
-	g_main_loop_quit (data->main_loop);
-}
+		tags = gdata_picasaweb_file_get_tags (data->photo);
+		tags2 = gdata_picasaweb_file_get_tags (data->updated_photo);
+		g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, g_strv_length ((gchar**) tags));
+		g_assert_cmpstr (tags2[0], ==, tags[0]);
+		g_assert_cmpstr (tags2[1], ==, tags[1]);
+		g_assert_cmpstr (tags2[2], ==, tags[2]);
+	} else {
+		g_assert_cmpint (transfer_size, ==, -1);
 
-static void
-test_upload_default_album_async (UploadAsyncData *data, gconstpointer service)
-{
-	GDataUploadStream *upload_stream;
-	GError *error = NULL;
+		/* Finish off the upload */
+		data->updated_photo = gdata_picasaweb_service_finish_file_upload (data->service, GDATA_UPLOAD_STREAM (stream), &upload_error);
+		g_assert_no_error (upload_error);
+		g_assert (data->updated_photo == NULL);
+	}
 
-	/* Prepare the upload stream */
-	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
-	                                                     data->data.content_type, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
-
-	/* Upload the photo asynchronously */
-	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
-	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
-	                              (GAsyncReadyCallback) test_upload_default_album_async_cb, data);
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (upload_stream);
-}
-
-static void
-test_upload_default_album_cancellation_cb (GOutputStream *stream, GAsyncResult *result, UploadAsyncData *data)
-{
-	gssize transfer_size;
-	GError *error = NULL;
-
-	/* Finish off the transfer */
-	transfer_size = g_output_stream_splice_finish (stream, result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert_cmpint (transfer_size, ==, -1);
-	g_clear_error (&error);
-
-	/* Finish off the upload */
-	data->data.updated_photo = gdata_picasaweb_service_finish_file_upload (data->data.service, GDATA_UPLOAD_STREAM (stream), &error);
-	g_assert_no_error (error);
-	g_assert (data->data.updated_photo == NULL);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static gboolean
-test_upload_default_album_cancellation_cancel_cb (GCancellable *cancellable)
-{
-	g_cancellable_cancel (cancellable);
-	return FALSE;
-}
-
-static void
-test_upload_default_album_cancellation (UploadAsyncData *data, gconstpointer service)
-{
-	GDataUploadStream *upload_stream;
-	GCancellable *cancellable;
-	GError *error = NULL;
-
-	/* Create an idle function which will cancel the upload */
-	cancellable = g_cancellable_new ();
-	g_idle_add ((GSourceFunc) test_upload_default_album_cancellation_cancel_cb, cancellable);
-
-	/* Prepare the upload stream */
-	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
-	                                                     data->data.content_type, cancellable, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
-
-	/* Upload the photo asynchronously */
-	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
-	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
-	                              (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, data);
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (upload_stream);
-	g_object_unref (cancellable);
-}
-
-static void
-test_upload_default_album_cancellation2 (UploadAsyncData *data, gconstpointer service)
-{
-	GDataUploadStream *upload_stream;
-	GCancellable *cancellable;
-	GError *error = NULL;
-
-	/* Create a timeout function which will cancel the upload after 1ms */
-	cancellable = g_cancellable_new ();
-	g_timeout_add (1, (GSourceFunc) test_upload_default_album_cancellation_cancel_cb, cancellable);
-
-	/* Prepare the upload stream */
-	upload_stream = gdata_picasaweb_service_upload_file (GDATA_PICASAWEB_SERVICE (service), NULL, data->data.photo, data->data.slug,
-	                                                     data->data.content_type, cancellable, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
-
-	/* Upload the photo asynchronously */
-	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
-	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
-	                              (GAsyncReadyCallback) test_upload_default_album_cancellation_cb, data);
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (upload_stream);
-	g_object_unref (cancellable);
-}
+	g_clear_error (&upload_error);
+} G_STMT_END);
 
 static void
 test_album_new (void)
@@ -2312,69 +1952,78 @@ main (int argc, char *argv[])
 		service = GDATA_SERVICE (gdata_picasaweb_service_new (authorizer));
 
 		g_test_add_func ("/picasaweb/authentication", test_authentication);
-		g_test_add_func ("/picasaweb/authentication_async", test_authentication_async);
+		g_test_add ("/picasaweb/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
+		            gdata_tear_down_async_test_data);
+		g_test_add ("/picasaweb/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
+		            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
 		g_test_add ("/picasaweb/query/all_albums", QueryAllAlbumsData, service, set_up_query_all_albums, test_query_all_albums,
 		            tear_down_query_all_albums);
 		g_test_add ("/picasaweb/query/all_albums/with_limits", QueryAllAlbumsData, service, set_up_query_all_albums,
 		            test_query_all_albums_with_limits, tear_down_query_all_albums);
-		g_test_add ("/picasaweb/query/all_albums/async", QueryAllAlbumsAsyncData, service, set_up_query_all_albums_async,
+		g_test_add ("/picasaweb/query/all_albums/async", GDataAsyncTestData, service, set_up_query_all_albums_async,
 		            test_query_all_albums_async, tear_down_query_all_albums_async);
-		g_test_add ("/picasaweb/query/all_albums/async/progress_closure", QueryAllAlbumsAsyncData, service, set_up_query_all_albums_async,
-		            test_query_all_albums_async_progress_closure, tear_down_query_all_albums_async);
+		g_test_add ("/picasaweb/query/all_albums/async/progress_closure", QueryAllAlbumsData, service, set_up_query_all_albums,
+		            test_query_all_albums_async_progress_closure, tear_down_query_all_albums);
+		g_test_add ("/picasaweb/query/all_albums/async/cancellation", GDataAsyncTestData, service, set_up_query_all_albums_async,
+		            test_query_all_albums_async_cancellation, tear_down_query_all_albums_async);
 		g_test_add_data_func ("/picasaweb/query/all_albums/bad_query", service, test_query_all_albums_bad_query);
 		g_test_add_data_func ("/picasaweb/query/all_albums/bad_query/with_limits", service, test_query_all_albums_bad_query_with_limits);
 
 		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
-		g_test_add ("/picasaweb/query/user/async", QueryUserAsyncData, service, set_up_query_user_async, test_query_user_async,
-		            tear_down_query_user_async);
-		g_test_add ("/picasaweb/query/user/async/cancellation", QueryUserAsyncData, service, set_up_query_user_async,
-		            test_query_user_async_cancellation, tear_down_query_user_async);
-		g_test_add ("/picasaweb/query/user/by-username/async", QueryUserAsyncData, service, set_up_query_user_async,
-		            test_query_user_by_username_async, tear_down_query_user_async);
+		g_test_add ("/picasaweb/query/user/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_user_async,
+		            gdata_tear_down_async_test_data);
+		g_test_add ("/picasaweb/query/user/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+		            test_query_user_async_cancellation, gdata_tear_down_async_test_data);
+		g_test_add ("/picasaweb/query/user/by-username/async", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+		            test_query_user_by_username_async, gdata_tear_down_async_test_data);
+		g_test_add ("/picasaweb/query/user/by-username/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+		            test_query_user_by_username_async_cancellation, gdata_tear_down_async_test_data);
 
 		g_test_add ("/picasaweb/insert/album", InsertAlbumData, service, set_up_insert_album, test_insert_album, tear_down_insert_album);
-		g_test_add ("/picasaweb/insert/album/async", InsertAlbumAsyncData, service, set_up_insert_album_async, test_insert_album_async,
+		g_test_add ("/picasaweb/insert/album/async", GDataAsyncTestData, service, set_up_insert_album_async, test_insert_album_async,
 		            tear_down_insert_album_async);
+		g_test_add ("/picasaweb/insert/album/async/cancellation", GDataAsyncTestData, service, set_up_insert_album_async,
+		            test_insert_album_async_cancellation, tear_down_insert_album_async);
 
 		g_test_add ("/picasaweb/query/files", QueryFilesData, service, set_up_query_files, test_query_files, tear_down_query_files);
-		g_test_add ("/picasaweb/query/files/async", QueryFilesAsyncData, service, set_up_query_files_async, test_query_files_async,
+		g_test_add ("/picasaweb/query/files/async", GDataAsyncTestData, service, set_up_query_files_async, test_query_files_async,
 		            tear_down_query_files_async);
-		g_test_add ("/picasaweb/query/files/async/progress_closure", QueryFilesAsyncData, service, set_up_query_files_async,
-		            test_query_files_async_progress_closure, tear_down_query_files_async);
+		g_test_add ("/picasaweb/query/files/async/progress_closure", QueryFilesData, service, set_up_query_files,
+		            test_query_files_async_progress_closure, tear_down_query_files);
+		g_test_add ("/picasaweb/query/files/async/cancellation", GDataAsyncTestData, service, set_up_query_files_async,
+		            test_query_files_async_cancellation, tear_down_query_files_async);
 		g_test_add ("/picasaweb/query/files/single", QueryFilesData, service, set_up_query_files, test_query_files_single,
 		            tear_down_query_files);
 
 		g_test_add ("/picasaweb/comment/query", QueryCommentsData, service, set_up_query_comments, test_comment_query,
 		            tear_down_query_comments);
-		g_test_add ("/picasaweb/comment/query/async", QueryCommentsAsyncData, service, set_up_query_comments_async, test_comment_query_async,
+		g_test_add ("/picasaweb/comment/query/async", GDataAsyncTestData, service, set_up_query_comments_async, test_comment_query_async,
 		            tear_down_query_comments_async);
-		g_test_add ("/picasaweb/comment/query/async/cancellation", QueryCommentsAsyncData, service, set_up_query_comments_async,
+		g_test_add ("/picasaweb/comment/query/async/cancellation", GDataAsyncTestData, service, set_up_query_comments_async,
 		            test_comment_query_async_cancellation, tear_down_query_comments_async);
-		g_test_add ("/picasaweb/comment/query/progress_closure", QueryCommentsAsyncData, service, set_up_query_comments_async,
-		            test_comment_query_async_progress_closure, tear_down_query_comments_async);
+		g_test_add ("/picasaweb/comment/query/progress_closure", QueryCommentsData, service, set_up_query_comments,
+		            test_comment_query_async_progress_closure, tear_down_query_comments);
 
 		g_test_add ("/picasaweb/comment/insert", InsertCommentData, service, set_up_insert_comment, test_comment_insert,
 		            tear_down_insert_comment);
-		g_test_add ("/picasaweb/comment/insert/async", InsertCommentAsyncData, service, set_up_insert_comment_async, test_comment_insert_async,
+		g_test_add ("/picasaweb/comment/insert/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_insert_async,
 		            tear_down_insert_comment_async);
-		g_test_add ("/picasaweb/comment/insert/async/cancellation", InsertCommentAsyncData, service, set_up_insert_comment_async,
+		g_test_add ("/picasaweb/comment/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
 		            test_comment_insert_async_cancellation, tear_down_insert_comment_async);
 
 		g_test_add ("/picasaweb/comment/delete", QueryCommentsData, service, set_up_query_comments, test_comment_delete,
 		            tear_down_query_comments);
-		g_test_add ("/picasaweb/comment/delete/async", QueryCommentsAsyncData, service, set_up_query_comments_async, test_comment_delete_async,
+		g_test_add ("/picasaweb/comment/delete/async", GDataAsyncTestData, service, set_up_query_comments_async, test_comment_delete_async,
 		            tear_down_query_comments_async);
-		g_test_add ("/picasaweb/comment/delete/async/cancellation", QueryCommentsAsyncData, service, set_up_query_comments_async,
+		g_test_add ("/picasaweb/comment/delete/async/cancellation", GDataAsyncTestData, service, set_up_query_comments_async,
 		            test_comment_delete_async_cancellation, tear_down_query_comments_async);
 
-		g_test_add ("/picasaweb/upload/default_album", UploadData, service, setup_upload, test_upload_default_album, teardown_upload);
-		g_test_add ("/picasaweb/upload/default_album/async", UploadAsyncData, service, setup_upload_async, test_upload_default_album_async,
-		            teardown_upload_async);
-		g_test_add ("/picasaweb/upload/default_album/cancellation", UploadAsyncData, service, setup_upload_async,
-		            test_upload_default_album_cancellation, teardown_upload_async);
-		g_test_add ("/picasaweb/upload/default_album/cancellation2", UploadAsyncData, service, setup_upload_async,
-		            test_upload_default_album_cancellation2, teardown_upload_async);
+		g_test_add ("/picasaweb/upload/default_album", UploadData, service, set_up_upload, test_upload_default_album, tear_down_upload);
+		g_test_add ("/picasaweb/upload/default_album/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_default_album_async,
+		            tear_down_upload_async);
+		g_test_add ("/picasaweb/upload/default_album/async/cancellation", GDataAsyncTestData, service, set_up_upload_async,
+		            test_upload_default_album_async_cancellation, tear_down_upload_async);
 
 		g_test_add ("/picasaweb/download/photo", QueryFilesData, service, set_up_query_files, test_download_photo, tear_down_query_files);
 		g_test_add ("/picasaweb/download/thumbnails", QueryFilesData, service, set_up_query_files, test_download_thumbnails,

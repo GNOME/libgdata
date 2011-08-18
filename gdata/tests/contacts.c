@@ -83,24 +83,7 @@ tear_down_temp_contact (TempContactData *data, gconstpointer service)
 	g_object_unref (updated_contact);
 }
 
-typedef struct {
-	TempContactData parent;
-	GMainLoop *main_loop;
-} TempContactAsyncData;
-
-static void
-set_up_temp_contact_async (TempContactAsyncData *data, gconstpointer service)
-{
-	set_up_temp_contact ((TempContactData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_temp_contact_async (TempContactAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_temp_contact ((TempContactData*) data, service);
-}
+GDATA_ASYNC_CLOSURE_FUNCTIONS (temp_contact, TempContactData);
 
 static void
 test_authentication (void)
@@ -130,31 +113,8 @@ test_authentication (void)
 	g_object_unref (authorizer);
 }
 
-static void
-test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	gboolean retval;
-	GError *error = NULL;
-
-	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (retval == TRUE);
-	g_clear_error (&error);
-
-	g_main_loop_quit (main_loop);
-
-	/* Check all is as it should be */
-	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
-	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
-	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-	                                                     gdata_contacts_service_get_primary_authorization_domain ()) == TRUE);
-}
-
-static void
-test_authentication_async (void)
-{
-	GMainLoop *main_loop;
+GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
+G_STMT_START {
 	GDataClientLoginAuthorizer *authorizer;
 
 	/* Create an authorizer */
@@ -162,15 +122,36 @@ test_authentication_async (void)
 
 	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
-	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, NULL,
-	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, cancellable, async_ready_callback, async_data);
 
-	g_main_loop_run (main_loop);
-
-	g_main_loop_unref (main_loop);
 	g_object_unref (authorizer);
-}
+} G_STMT_END,
+G_STMT_START {
+	gboolean retval;
+	GDataClientLoginAuthorizer *authorizer = GDATA_CLIENT_LOGIN_AUTHORIZER (obj);
+
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
+
+	if (error == NULL) {
+		g_assert (retval == TRUE);
+
+		/* Check all is as it should be */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_contacts_service_get_primary_authorization_domain ()) == TRUE);
+	} else {
+		g_assert (retval == FALSE);
+
+		/* Check nothing's changed */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_contacts_service_get_primary_authorization_domain ()) == FALSE);
+	}
+} G_STMT_END);
 
 typedef struct {
 	GDataContactsContact *contact1;
@@ -233,53 +214,30 @@ test_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
 	g_object_unref (feed);
 }
 
-typedef struct {
-	QueryAllContactsData parent;
-	GMainLoop *main_loop;
-} QueryAllContactsAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (query_all_contacts, QueryAllContactsData);
 
-static void
-set_up_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
-{
-	set_up_query_all_contacts ((QueryAllContactsData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_query_all_contacts ((QueryAllContactsData*) data, service);
-}
-
-static void
-test_query_all_contacts_async_cb (GDataService *service, GAsyncResult *async_result, QueryAllContactsAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (query_all_contacts, QueryAllContactsData,
+G_STMT_START {
+	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (service), NULL, cancellable, NULL,
+	                                             NULL, NULL, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataFeed *feed;
-	GError *error = NULL;
 
-	feed = gdata_service_query_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
+	feed = gdata_service_query_finish (GDATA_SERVICE (obj), async_result, &error);
 
-	/* TODO: Tests? */
-	g_main_loop_quit (data->main_loop);
+	if (error == NULL) {
+		g_assert (GDATA_IS_FEED (feed));
+		/* TODO: Tests? */
 
-	g_object_unref (feed);
-}
-
-static void
-test_query_all_contacts_async (QueryAllContactsAsyncData *data, gconstpointer service)
-{
-	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL,
-	                                             NULL, NULL, (GAsyncReadyCallback) test_query_all_contacts_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
+		g_object_unref (feed);
+	} else {
+		g_assert (feed == NULL);
+	}
+} G_STMT_END);
 
 static void
-test_query_all_contacts_async_progress_closure (QueryAllContactsAsyncData *query_data, gconstpointer service)
+test_query_all_contacts_async_progress_closure (QueryAllContactsData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
@@ -674,53 +632,30 @@ test_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
 	g_object_unref (feed);
 }
 
-typedef struct {
-	QueryAllGroupsData parent;
-	GMainLoop *main_loop;
-} QueryAllGroupsAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (query_all_groups, QueryAllGroupsData);
 
-static void
-set_up_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
-{
-	set_up_query_all_groups ((QueryAllGroupsData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_query_all_groups ((QueryAllGroupsData*) data, service);
-}
-
-static void
-test_query_all_groups_async_cb (GDataService *service, GAsyncResult *async_result, QueryAllGroupsAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (query_all_groups, QueryAllGroupsData,
+G_STMT_START {
+	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, cancellable, NULL, NULL, NULL,
+	                                           async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataFeed *feed;
-	GError *error = NULL;
 
-	feed = gdata_service_query_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
+	feed = gdata_service_query_finish (GDATA_SERVICE (obj), async_result, &error);
 
-	/* TODO: Tests? */
-	g_main_loop_quit (data->main_loop);
+	if (error == NULL) {
+		g_assert (GDATA_IS_FEED (feed));
+		/* TODO: Tests? */
 
-	g_object_unref (feed);
-}
-
-static void
-test_query_all_groups_async (QueryAllGroupsAsyncData *data, gconstpointer service)
-{
-	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
-	                                           (GAsyncReadyCallback) test_query_all_groups_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
+		g_object_unref (feed);
+	} else {
+		g_assert (feed == NULL);
+	}
+} G_STMT_END);
 
 static void
-test_query_all_groups_async_progress_closure (QueryAllGroupsAsyncData *query_data, gconstpointer service)
+test_query_all_groups_async_progress_closure (QueryAllGroupsData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
@@ -800,46 +735,10 @@ test_group_insert (InsertGroupData *data, gconstpointer service)
 	g_object_unref (group);
 }
 
-typedef struct {
-	InsertGroupData parent;
-	GMainLoop *main_loop;
-} InsertGroupAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_group, InsertGroupData);
 
-static void
-set_up_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
-{
-	set_up_insert_group ((InsertGroupData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_insert_group_async (InsertGroupAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_insert_group ((InsertGroupData*) data, service);
-}
-
-static void
-test_group_insert_async_cb (GDataService *service, GAsyncResult *async_result, InsertGroupAsyncData *data)
-{
-	GDataEntry *entry;
-	GError *error = NULL;
-
-	entry = gdata_service_insert_entry_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_CONTACTS_GROUP (entry));
-	g_clear_error (&error);
-
-	data->parent.new_group = GDATA_CONTACTS_GROUP (entry);
-
-	/* TODO: Tests? */
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_group_insert_async (InsertGroupAsyncData *data, gconstpointer service)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (group_insert, InsertGroupData,
+G_STMT_START {
 	GDataContactsGroup *group;
 
 	group = gdata_contacts_group_new (NULL);
@@ -852,13 +751,24 @@ test_group_insert_async (InsertGroupAsyncData *data, gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
 	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
 
-	gdata_contacts_service_insert_group_async (GDATA_CONTACTS_SERVICE (service), group, NULL, (GAsyncReadyCallback) test_group_insert_async_cb,
-	                                           data);
-
-	g_main_loop_run (data->main_loop);
+	gdata_contacts_service_insert_group_async (GDATA_CONTACTS_SERVICE (service), group, cancellable, async_ready_callback, async_data);
 
 	g_object_unref (group);
-}
+} G_STMT_END,
+G_STMT_START {
+	GDataEntry *entry;
+
+	entry = gdata_service_insert_entry_finish (GDATA_SERVICE (obj), async_result, &error);
+
+	if (error == NULL) {
+		g_assert (GDATA_IS_CONTACTS_GROUP (entry));
+		/* TODO: Tests? */
+
+		data->new_group = GDATA_CONTACTS_GROUP (entry);
+	} else {
+		g_assert (entry == NULL);
+	}
+} G_STMT_END);
 
 static void
 test_contact_properties (void)
@@ -2008,24 +1918,8 @@ test_photo_add (TempContactData *data, gconstpointer service)
 	g_free (photo_data);
 }
 
-static void
-test_photo_add_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
-{
-	gboolean success;
-	GError *error = NULL;
-
-	success = gdata_contacts_contact_set_photo_finish (contact, result, &error);
-	g_assert_no_error (error);
-	g_assert (success == TRUE);
-
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_photo_add_async (TempContactAsyncData *data, gconstpointer service)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (photo_add, TempContactData,
+G_STMT_START {
 	guint8 *photo_data;
 	gsize length;
 
@@ -2033,13 +1927,25 @@ test_photo_add_async (TempContactAsyncData *data, gconstpointer service)
 	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
 
 	/* Add it to the contact asynchronously */
-	gdata_contacts_contact_set_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), photo_data, length, "image/jpeg", NULL,
-	                                        (GAsyncReadyCallback) test_photo_add_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
+	gdata_contacts_contact_set_photo_async (data->contact, GDATA_CONTACTS_SERVICE (service), photo_data, length, "image/jpeg", cancellable,
+	                                        async_ready_callback, async_data);
 
 	g_free (photo_data);
-}
+} G_STMT_END,
+G_STMT_START {
+	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (obj);
+	gboolean success;
+
+	success = gdata_contacts_contact_set_photo_finish (contact, async_result, &error);
+
+	if (error == NULL) {
+		g_assert (success == TRUE);
+		g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	} else {
+		g_assert (success == FALSE);
+		g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
+	}
+} G_STMT_END);
 
 static void
 add_photo_to_contact (GDataContactsService *service, GDataContactsContact *contact)
@@ -2054,12 +1960,22 @@ add_photo_to_contact (GDataContactsService *service, GDataContactsContact *conta
 	g_free (photo_data);
 }
 
+typedef TempContactData TempContactWithPhotoData;
+
 static void
-set_up_temp_contact_with_photo (TempContactData *data, gconstpointer service)
+set_up_temp_contact_with_photo (TempContactWithPhotoData *data, gconstpointer service)
 {
-	set_up_temp_contact (data, service);
+	set_up_temp_contact ((TempContactData*) data, service);
 	add_photo_to_contact (GDATA_CONTACTS_SERVICE (service), data->contact);
 }
+
+static void
+tear_down_temp_contact_with_photo (TempContactWithPhotoData *data, gconstpointer service)
+{
+	tear_down_temp_contact ((TempContactData*) data, service);
+}
+
+GDATA_ASYNC_CLOSURE_FUNCTIONS (temp_contact_with_photo, TempContactWithPhotoData);
 
 static void
 test_photo_get (TempContactData *data, gconstpointer service)
@@ -2085,47 +2001,37 @@ test_photo_get (TempContactData *data, gconstpointer service)
 	g_clear_error (&error);
 }
 
-static void
-set_up_temp_contact_async_with_photo (TempContactAsyncData *data, gconstpointer service)
-{
-	set_up_temp_contact_async (data, service);
-	add_photo_to_contact (GDATA_CONTACTS_SERVICE (service), data->parent.contact);
-}
+GDATA_ASYNC_TEST_FUNCTIONS (photo_get, TempContactData,
+G_STMT_START {
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);
 
-static void
-test_photo_get_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
-{
+	/* Get the photo from the network asynchronously */
+	gdata_contacts_contact_get_photo_async (data->contact, GDATA_CONTACTS_SERVICE (service), cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
+	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (obj);
 	guint8 *photo_data;
 	gsize length;
 	gchar *content_type;
-	GError *error = NULL;
 
 	/* Finish getting the photo */
-	photo_data = gdata_contacts_contact_get_photo_finish (contact, result, &length, &content_type, &error);
-	g_assert_no_error (error);
-	g_assert (photo_data != NULL);
-	g_assert (length != 0);
-	g_assert_cmpstr (content_type, ==, "image/jpeg");
+	photo_data = gdata_contacts_contact_get_photo_finish (contact, async_result, &length, &content_type, &error);
 
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	if (error == NULL) {
+		g_assert (photo_data != NULL);
+		g_assert (length != 0);
+		g_assert_cmpstr (content_type, ==, "image/jpeg");
 
-	g_main_loop_quit (data->main_loop);
+		g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	} else {
+		g_assert (photo_data == NULL);
+		g_assert (length == 0);
+		g_assert (content_type == NULL);
+	}
 
 	g_free (content_type);
 	g_free (photo_data);
-}
-
-static void
-test_photo_get_async (TempContactAsyncData *data, gconstpointer service)
-{
-	g_assert (gdata_contacts_contact_get_photo_etag (data->parent.contact) != NULL);
-
-	/* Get the photo from the network asynchronously */
-	gdata_contacts_contact_get_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), NULL,
-	                                        (GAsyncReadyCallback) test_photo_get_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
+} G_STMT_END);
 
 static void
 test_photo_delete (TempContactData *data, gconstpointer service)
@@ -2143,32 +2049,28 @@ test_photo_delete (TempContactData *data, gconstpointer service)
 	g_clear_error (&error);
 }
 
-static void
-test_photo_delete_async_cb (GDataContactsContact *contact, GAsyncResult *result, TempContactAsyncData *data)
-{
-	gboolean success;
-	GError *error = NULL;
-
-	success = gdata_contacts_contact_set_photo_finish (contact, result, &error);
-	g_assert_no_error (error);
-	g_assert (success == TRUE);
-
-	g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_photo_delete_async (TempContactAsyncData *data, gconstpointer service)
-{
-	g_assert (gdata_contacts_contact_get_photo_etag (data->parent.contact) != NULL);
+GDATA_ASYNC_TEST_FUNCTIONS (photo_delete, TempContactData,
+G_STMT_START {
+	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);
 
 	/* Delete it from the contact asynchronously */
-	gdata_contacts_contact_set_photo_async (data->parent.contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, NULL,
-	                                        (GAsyncReadyCallback) test_photo_delete_async_cb, data);
+	gdata_contacts_contact_set_photo_async (data->contact, GDATA_CONTACTS_SERVICE (service), NULL, 0, NULL, cancellable,
+	                                        async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
+	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (obj);
+	gboolean success;
 
-	g_main_loop_run (data->main_loop);
-}
+	success = gdata_contacts_contact_set_photo_finish (contact, async_result, &error);
+
+	if (error == NULL) {
+		g_assert (success == TRUE);
+		g_assert (gdata_contacts_contact_get_photo_etag (contact) == NULL);
+	} else {
+		g_assert (success == FALSE);
+		g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);
+	}
+} G_STMT_END);
 
 static void
 test_batch (gconstpointer service)
@@ -2490,29 +2392,40 @@ main (int argc, char *argv[])
 		service = GDATA_SERVICE (gdata_contacts_service_new (authorizer));
 
 		g_test_add_func ("/contacts/authentication", test_authentication);
-		g_test_add_func ("/contacts/authentication/async", test_authentication_async);
+		g_test_add ("/contacts/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
+		            gdata_tear_down_async_test_data);
+		g_test_add ("/contacts/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
+		            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
 		g_test_add ("/contacts/contact/insert", InsertData, service, set_up_insert, test_contact_insert, tear_down_insert);
 		g_test_add ("/contacts/contact/update", TempContactData, service, set_up_temp_contact, test_contact_update, tear_down_temp_contact);
 
 		g_test_add ("/contacts/query/all_contacts", QueryAllContactsData, service, set_up_query_all_contacts, test_query_all_contacts,
 		            tear_down_query_all_contacts);
-		g_test_add ("/contacts/query/all_contacts/async", QueryAllContactsAsyncData, service, set_up_query_all_contacts_async,
+		g_test_add ("/contacts/query/all_contacts/async", GDataAsyncTestData, service, set_up_query_all_contacts_async,
 		            test_query_all_contacts_async, tear_down_query_all_contacts_async);
-		g_test_add ("/contacts/query/all_contacts/async/progress_closure", QueryAllContactsAsyncData, service,
-		            set_up_query_all_contacts_async, test_query_all_contacts_async_progress_closure, tear_down_query_all_contacts_async);
+		g_test_add ("/contacts/query/all_contacts/async/progress_closure", QueryAllContactsData, service,
+		            set_up_query_all_contacts, test_query_all_contacts_async_progress_closure, tear_down_query_all_contacts);
+		g_test_add ("/contacts/query/all_contacts/cancellation", GDataAsyncTestData, service, set_up_query_all_contacts_async,
+		            test_query_all_contacts_async_cancellation, tear_down_query_all_contacts_async);
 
 		g_test_add_data_func ("/contacts/photo/has_photo", service, test_photo_has_photo);
 		g_test_add ("/contacts/photo/add", TempContactData, service, set_up_temp_contact, test_photo_add, tear_down_temp_contact);
-		g_test_add ("/contacts/photo/add/async", TempContactAsyncData, service, set_up_temp_contact_async, test_photo_add_async,
+		g_test_add ("/contacts/photo/add/async", GDataAsyncTestData, service, set_up_temp_contact_async, test_photo_add_async,
 		            tear_down_temp_contact_async);
+		g_test_add ("/contacts/photo/add/async/cancellation", GDataAsyncTestData, service, set_up_temp_contact_async,
+		            test_photo_add_async_cancellation, tear_down_temp_contact_async);
 		g_test_add ("/contacts/photo/get", TempContactData, service, set_up_temp_contact_with_photo, test_photo_get, tear_down_temp_contact);
-		g_test_add ("/contacts/photo/get/async", TempContactAsyncData, service, set_up_temp_contact_async_with_photo, test_photo_get_async,
-		            tear_down_temp_contact_async);
+		g_test_add ("/contacts/photo/get/async", GDataAsyncTestData, service, set_up_temp_contact_with_photo_async, test_photo_get_async,
+		            tear_down_temp_contact_with_photo_async);
+		g_test_add ("/contacts/photo/get/async/cancellation", GDataAsyncTestData, service, set_up_temp_contact_with_photo_async,
+		            test_photo_get_async_cancellation, tear_down_temp_contact_with_photo_async);
 		g_test_add ("/contacts/photo/delete", TempContactData, service, set_up_temp_contact_with_photo, test_photo_delete,
 		            tear_down_temp_contact);
-		g_test_add ("/contacts/photo/delete/async", TempContactAsyncData, service, set_up_temp_contact_async_with_photo,
-		            test_photo_delete_async, tear_down_temp_contact_async);
+		g_test_add ("/contacts/photo/delete/async", GDataAsyncTestData, service, set_up_temp_contact_with_photo_async,
+		            test_photo_delete_async, tear_down_temp_contact_with_photo_async);
+		g_test_add ("/contacts/photo/delete/async/cancellation", GDataAsyncTestData, service, set_up_temp_contact_with_photo_async,
+		            test_photo_delete_async_cancellation, tear_down_temp_contact_with_photo_async);
 
 		g_test_add_data_func ("/contacts/batch", service, test_batch);
 		g_test_add ("/contacts/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
@@ -2521,14 +2434,18 @@ main (int argc, char *argv[])
 
 		g_test_add ("/contacts/group/query", QueryAllGroupsData, service, set_up_query_all_groups, test_query_all_groups,
 		            tear_down_query_all_groups);
-		g_test_add ("/contacts/group/query/async", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
+		g_test_add ("/contacts/group/query/async", GDataAsyncTestData, service, set_up_query_all_groups_async,
 		            test_query_all_groups_async, tear_down_query_all_groups_async);
-		g_test_add ("/contacts/group/query/async/progress_closure", QueryAllGroupsAsyncData, service, set_up_query_all_groups_async,
-		            test_query_all_groups_async_progress_closure, tear_down_query_all_groups_async);
+		g_test_add ("/contacts/group/query/async/progress_closure", QueryAllGroupsData, service, set_up_query_all_groups,
+		            test_query_all_groups_async_progress_closure, tear_down_query_all_groups);
+		g_test_add ("/contacts/group/query/async/cancellation", GDataAsyncTestData, service, set_up_query_all_groups_async,
+		            test_query_all_groups_async_cancellation, tear_down_query_all_groups_async);
 
 		g_test_add ("/contacts/group/insert", InsertGroupData, service, set_up_insert_group, test_group_insert, tear_down_insert_group);
-		g_test_add ("/contacts/group/insert/async", InsertGroupAsyncData, service, set_up_insert_group_async, test_group_insert_async,
+		g_test_add ("/contacts/group/insert/async", GDataAsyncTestData, service, set_up_insert_group_async, test_group_insert_async,
 		            tear_down_insert_group_async);
+		g_test_add ("/contacts/group/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_group_async,
+		            test_group_insert_async_cancellation, tear_down_insert_group_async);
 	}
 
 	g_test_add_func ("/contacts/contact/properties", test_contact_properties);

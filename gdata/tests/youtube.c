@@ -53,31 +53,8 @@ test_authentication (void)
 	g_object_unref (authorizer);
 }
 
-static void
-test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	gboolean retval;
-	GError *error = NULL;
-
-	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (retval == TRUE);
-	g_clear_error (&error);
-
-	g_main_loop_quit (main_loop);
-
-	/* Check all is as it should be */
-	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
-	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
-	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-	                                                     gdata_youtube_service_get_primary_authorization_domain ()) == TRUE);
-}
-
-static void
-test_authentication_async (void)
-{
-	GMainLoop *main_loop;
+GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
+G_STMT_START {
 	GDataClientLoginAuthorizer *authorizer;
 
 	/* Create an authorizer */
@@ -85,15 +62,36 @@ test_authentication_async (void)
 
 	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
-	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, NULL,
-	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, cancellable, async_ready_callback, async_data);
 
-	g_main_loop_run (main_loop);
-
-	g_main_loop_unref (main_loop);
 	g_object_unref (authorizer);
-}
+} G_STMT_END,
+G_STMT_START {
+	gboolean retval;
+	GDataClientLoginAuthorizer *authorizer = GDATA_CLIENT_LOGIN_AUTHORIZER (obj);
+
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
+
+	if (error == NULL) {
+		g_assert (retval == TRUE);
+
+		/* Check all is as it should be */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_youtube_service_get_primary_authorization_domain ()) == TRUE);
+	} else {
+		g_assert (retval == FALSE);
+
+		/* Check nothing's changed */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_youtube_service_get_primary_authorization_domain ()) == FALSE);
+	}
+} G_STMT_END);
 
 static void
 test_service_properties (void)
@@ -126,34 +124,25 @@ test_query_standard_feed (gconstpointer service)
 	g_object_unref (feed);
 }
 
-static void
-test_query_standard_feed_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (query_standard_feed, void,
+G_STMT_START {
+	gdata_youtube_service_query_standard_feed_async (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, cancellable,
+	                                                 NULL, NULL, NULL, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataFeed *feed;
-	GError *error = NULL;
 
-	feed = gdata_service_query_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
+	feed = gdata_service_query_finish (GDATA_SERVICE (obj), async_result, &error);
 
-	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
+	if (error == NULL) {
+		g_assert (GDATA_IS_FEED (feed));
+		/* TODO: Tests? */
 
-	g_object_unref (feed);
-}
-
-static void
-test_query_standard_feed_async (gconstpointer service)
-{
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
-	gdata_youtube_service_query_standard_feed_async (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL,
-							 NULL, NULL, NULL, (GAsyncReadyCallback) test_query_standard_feed_async_cb, main_loop);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-}
+		g_object_unref (feed);
+	} else {
+		g_assert (feed == NULL);
+	}
+} G_STMT_END);
 
 static void
 test_query_standard_feed_async_progress_closure (gconstpointer service)
@@ -266,37 +255,29 @@ test_query_related (gconstpointer service)
 	g_object_unref (feed);
 }
 
-static void
-test_query_related_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	GDataFeed *feed;
-	GError *error = NULL;
-
-	feed = gdata_service_query_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
-
-	/* TODO: Tests? */
-	g_main_loop_quit (main_loop);
-
-	g_object_unref (feed);
-}
-
-static void
-test_query_related_async (gconstpointer service)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (query_related, void,
+G_STMT_START {
 	GDataYouTubeVideo *video;
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
 
 	video = get_video_for_related ();
-	gdata_youtube_service_query_related_async (GDATA_YOUTUBE_SERVICE (service), video, NULL, NULL, NULL,
-						   NULL, NULL, (GAsyncReadyCallback) test_query_related_async_cb, main_loop);
+	gdata_youtube_service_query_related_async (GDATA_YOUTUBE_SERVICE (service), video, NULL, cancellable, NULL,
+	                                           NULL, NULL, async_ready_callback, async_data);
 	g_object_unref (video);
+} G_STMT_END,
+G_STMT_START {
+	GDataFeed *feed;
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-}
+	feed = gdata_service_query_finish (GDATA_SERVICE (obj), async_result, &error);
+
+	if (error == NULL) {
+		g_assert (GDATA_IS_FEED (feed));
+		/* TODO: Tests? */
+
+		g_object_unref (feed);
+	} else {
+		g_assert (feed == NULL);
+	}
+} G_STMT_END);
 
 static void
 test_query_related_async_progress_closure (gconstpointer service)
@@ -336,7 +317,7 @@ typedef struct {
 } UploadData;
 
 static void
-setup_upload (UploadData *data, gconstpointer service)
+set_up_upload (UploadData *data, gconstpointer service)
 {
 	GDataMediaCategory *category;
 	GFileInfo *file_info;
@@ -377,7 +358,7 @@ setup_upload (UploadData *data, gconstpointer service)
 }
 
 static void
-teardown_upload (UploadData *data, gconstpointer service)
+tear_down_upload (UploadData *data, gconstpointer service)
 {
 	/* Delete the uploaded video, if possible */
 	if (data->updated_video != NULL) {
@@ -434,79 +415,71 @@ test_upload_simple (UploadData *data, gconstpointer service)
 	g_assert_cmpstr (tags2[2], ==, tags[2]);
 }
 
-typedef struct {
-	UploadData data;
-	GMainLoop *main_loop;
-} UploadAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (upload, UploadData);
 
-static void
-setup_upload_async (UploadAsyncData *data, gconstpointer service)
-{
-	setup_upload ((UploadData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, TRUE);
-}
-
-static void
-teardown_upload_async (UploadAsyncData *data, gconstpointer service)
-{
-	teardown_upload ((UploadData*) data, service);
-	g_main_loop_unref (data->main_loop);
-}
-
-static void
-test_upload_async_cb (GOutputStream *stream, GAsyncResult *result, UploadAsyncData *data)
-{
-	const gchar * const *tags, * const *tags2;
-	gssize transfer_size;
-	GError *error = NULL;
-
-	/* Finish off the transfer */
-	transfer_size = g_output_stream_splice_finish (stream, result, &error);
-	g_assert_no_error (error);
-	g_assert_cmpint (transfer_size, >, 0);
-
-	/* Finish off the upload */
-	data->data.updated_video = gdata_youtube_service_finish_video_upload (data->data.service, GDATA_UPLOAD_STREAM (stream), &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->data.updated_video));
-
-	/* Check the video's properties */
-	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->data.updated_video)));
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->data.updated_video)), ==, gdata_entry_get_title (GDATA_ENTRY (data->data.video)));
-	g_assert_cmpstr (gdata_youtube_video_get_description (data->data.updated_video), ==, gdata_youtube_video_get_description (data->data.video));
-	g_assert_cmpstr (gdata_media_category_get_category (gdata_youtube_video_get_category (data->data.updated_video)), ==,
-	                 gdata_media_category_get_category (gdata_youtube_video_get_category (data->data.video)));
-
-	tags = gdata_youtube_video_get_keywords (data->data.video);
-	tags2 = gdata_youtube_video_get_keywords (data->data.updated_video);
-	g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, g_strv_length ((gchar**) tags));
-	g_assert_cmpstr (tags2[0], ==, tags[0]);
-	g_assert_cmpstr (tags2[1], ==, tags[1]);
-	g_assert_cmpstr (tags2[2], ==, tags[2]);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_upload_async (UploadAsyncData *data, gconstpointer service)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (upload, UploadData,
+G_STMT_START {
 	GDataUploadStream *upload_stream;
 	GError *error = NULL;
 
 	/* Prepare the upload stream */
-	upload_stream = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->data.video, data->data.slug,
-	                                                    data->data.content_type, NULL, &error);
+	upload_stream = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->video, data->slug,
+	                                                    data->content_type, cancellable, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
 	/* Upload the video asynchronously */
-	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->data.file_stream),
-	                              G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
-	                              (GAsyncReadyCallback) test_upload_async_cb, data);
-	g_main_loop_run (data->main_loop);
+	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->file_stream),
+	                              G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
+	                              async_ready_callback, async_data);
 
 	g_object_unref (upload_stream);
-}
+
+	/* Reset the input stream to the beginning. */
+	g_assert (g_seekable_seek (G_SEEKABLE (data->file_stream), 0, G_SEEK_SET, NULL, NULL) == TRUE);
+} G_STMT_END,
+G_STMT_START {
+	GOutputStream *stream = G_OUTPUT_STREAM (obj);
+	const gchar * const *tags;
+	const gchar * const *tags2;
+	gssize transfer_size;
+	GError *upload_error = NULL;
+
+	/* Finish off the transfer */
+	transfer_size = g_output_stream_splice_finish (stream, async_result, &error);
+
+	if (error == NULL) {
+		g_assert_cmpint (transfer_size, >, 0);
+
+		/* Finish off the upload */
+		data->updated_video = gdata_youtube_service_finish_video_upload (data->service, GDATA_UPLOAD_STREAM (stream), &upload_error);
+		g_assert_no_error (upload_error);
+		g_assert (GDATA_IS_YOUTUBE_VIDEO (data->updated_video));
+
+		/* Check the video's properties */
+		g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->updated_video)));
+		g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->updated_video)), ==, gdata_entry_get_title (GDATA_ENTRY (data->video)));
+		g_assert_cmpstr (gdata_youtube_video_get_description (data->updated_video), ==, gdata_youtube_video_get_description (data->video));
+		g_assert_cmpstr (gdata_media_category_get_category (gdata_youtube_video_get_category (data->updated_video)), ==,
+		                 gdata_media_category_get_category (gdata_youtube_video_get_category (data->video)));
+
+		tags = gdata_youtube_video_get_keywords (data->video);
+		tags2 = gdata_youtube_video_get_keywords (data->updated_video);
+		g_assert_cmpuint (g_strv_length ((gchar**) tags2), ==, g_strv_length ((gchar**) tags));
+		g_assert_cmpstr (tags2[0], ==, tags[0]);
+		g_assert_cmpstr (tags2[1], ==, tags[1]);
+		g_assert_cmpstr (tags2[2], ==, tags[2]);
+	} else {
+		g_assert_cmpint (transfer_size, ==, -1);
+
+		/* Finish off the upload */
+		data->updated_video = gdata_youtube_service_finish_video_upload (data->service, GDATA_UPLOAD_STREAM (stream), &upload_error);
+		g_assert_no_error (upload_error);
+		g_assert (data->updated_video == NULL);
+	}
+
+	g_clear_error (&upload_error);
+} G_STMT_END);
 
 static void
 test_parsing_app_control (void)
@@ -1368,36 +1341,27 @@ test_query_single (gconstpointer service)
 	g_object_unref (video);
 }
 
-static void
-test_query_single_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	GDataYouTubeVideo *video;
-	GError *error = NULL;
-
-	video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry_finish (GDATA_SERVICE (service), async_result, &error));
-
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
-	g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
-	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
-	g_clear_error (&error);
-
-	g_main_loop_quit (main_loop);
-	g_object_unref (video);
-}
-
-static void
-test_query_single_async (gconstpointer service)
-{
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
+GDATA_ASYNC_TEST_FUNCTIONS (query_single, void,
+G_STMT_START {
 	gdata_service_query_single_entry_async (GDATA_SERVICE (service), gdata_youtube_service_get_primary_authorization_domain (),
 	                                        "tag:youtube.com,2008:video:_LeQuMpwbW4", NULL, GDATA_TYPE_YOUTUBE_VIDEO,
-	                                        NULL, (GAsyncReadyCallback) test_query_single_async_cb, main_loop);
+	                                        cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
+	GDataYouTubeVideo *video;
 
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-}
+	video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry_finish (GDATA_SERVICE (obj), async_result, &error));
+
+	if (error == NULL) {
+		g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
+		g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
+		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
+
+		g_object_unref (video);
+	} else {
+		g_assert (video == NULL);
+	}
+} G_STMT_END);
 
 typedef struct {
 	GDataYouTubeVideo *video;
@@ -1464,92 +1428,38 @@ test_comment_query (CommentData *data, gconstpointer service)
 	g_object_unref (comments_feed);
 }
 
-typedef struct {
-	CommentData parent;
-	GMainLoop *main_loop;
-} CommentAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (comment, CommentData);
 
-static void
-set_up_comment_async (CommentAsyncData *data, gconstpointer service)
-{
-	set_up_comment ((CommentData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_comment_async (CommentAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_comment ((CommentData*) data, service);
-}
-
-static void
-test_comment_query_async_cb (GDataCommentable *commentable, GAsyncResult *result, CommentAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (comment_query, CommentData,
+G_STMT_START {
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->video), GDATA_SERVICE (service), NULL, cancellable, NULL, NULL, NULL,
+	                                        async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataFeed *comments_feed;
-	GError *error = NULL;
 
-	comments_feed = gdata_commentable_query_comments_finish (commentable, result, &error);
-	g_assert_no_error (error);
-	g_clear_error (&error);
+	comments_feed = gdata_commentable_query_comments_finish (GDATA_COMMENTABLE (obj), async_result, &error);
 
-	assert_comments_feed (comments_feed);
+	if (error == NULL) {
+		assert_comments_feed (comments_feed);
 
-	g_object_unref (comments_feed);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_query_async (CommentAsyncData *data, gconstpointer service)
-{
-	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service), NULL, NULL, NULL, NULL, NULL,
-	                                        (GAsyncReadyCallback) test_comment_query_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
-
-static void
-test_comment_query_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, CommentAsyncData *data)
-{
-	GDataFeed *comments_feed;
-	GError *error = NULL;
-
-	comments_feed = gdata_commentable_query_comments_finish (commentable, result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (comments_feed == NULL);
-	g_clear_error (&error);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_query_async_cancellation (CommentAsyncData *data, gconstpointer service)
-{
-	GCancellable *cancellable;
-
-	cancellable = g_cancellable_new ();
-	g_cancellable_cancel (cancellable);
-
-	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service), NULL, cancellable, NULL, NULL, NULL,
-	                                        (GAsyncReadyCallback) test_comment_query_async_cancellation_cb, data);
-
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (cancellable);
-}
+		g_object_unref (comments_feed);
+	} else {
+		g_assert (comments_feed == NULL);
+	}
+} G_STMT_END);
 
 /* Test that the progress callbacks from gdata_commentable_query_comments_async() are called correctly.
- * We take a CommentAsyncData so that we can guarantee the video exists, but we don't use it much as we don't actually care about the specific
+ * We take a CommentData so that we can guarantee the video exists, but we don't use it much as we don't actually care about the specific
  * video. */
 static void
-test_comment_query_async_progress_closure (CommentAsyncData *query_data, gconstpointer service)
+test_comment_query_async_progress_closure (CommentData *query_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
-	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (query_data->parent.video), GDATA_SERVICE (service), NULL, NULL,
+	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (query_data->video), GDATA_SERVICE (service), NULL, NULL,
 	                                        (GDataQueryProgressCallback) gdata_test_async_progress_callback,
 	                                        data, (GDestroyNotify) gdata_test_async_progress_closure_free,
 	                                        (GAsyncReadyCallback) gdata_test_async_progress_finish_callback, data);
@@ -1612,7 +1522,7 @@ assert_comments_equal (GDataComment *new_comment, GDataYouTubeComment *original_
 	author = GDATA_AUTHOR (authors->data);
 
 	g_assert_cmpstr (gdata_author_get_name (author), ==, "GDataTest");
-	g_assert_cmpstr (gdata_author_get_uri (author), ==, "https://gdata.youtube.com/feeds/api/users/gdatatest");
+	g_assert_cmpstr (gdata_author_get_uri (author), ==, "http://gdata.youtube.com/feeds/api/users/gdatatest");
 }
 
 static void
@@ -1631,81 +1541,26 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 	g_object_unref (new_comment);
 }
 
-typedef struct {
-	InsertCommentData parent;
-	GMainLoop *main_loop;
-} InsertCommentAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_comment, InsertCommentData);
 
-static void
-set_up_insert_comment_async (InsertCommentAsyncData *data, gconstpointer service)
-{
-	set_up_insert_comment ((InsertCommentData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_insert_comment_async (InsertCommentAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_insert_comment ((InsertCommentData*) data, service);
-}
-
-static void
-test_comment_insert_async_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (comment_insert, InsertCommentData,
+G_STMT_START {
+	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->comment), cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataComment *new_comment;
-	GError *error = NULL;
 
-	new_comment = gdata_commentable_insert_comment_finish (commentable, result, &error);
-	g_assert_no_error (error);
-	g_clear_error (&error);
+	new_comment = gdata_commentable_insert_comment_finish (GDATA_COMMENTABLE (obj), async_result, &error);
 
-	assert_comments_equal (new_comment, data->parent.comment);
+	if (error == NULL) {
+		assert_comments_equal (new_comment, data->comment);
 
-	g_object_unref (new_comment);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_insert_async (InsertCommentAsyncData *data, gconstpointer service)
-{
-	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.parent.video), GDATA_SERVICE (service),
-	                                        GDATA_COMMENT (data->parent.comment), NULL, (GAsyncReadyCallback) test_comment_insert_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
-
-static void
-test_comment_insert_async_cancellation_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
-{
-	GDataComment *new_comment;
-	GError *error = NULL;
-
-	new_comment = gdata_commentable_insert_comment_finish (commentable, result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (new_comment == NULL);
-	g_clear_error (&error);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_insert_async_cancellation (InsertCommentAsyncData *data, gconstpointer service)
-{
-	GCancellable *cancellable;
-
-	cancellable = g_cancellable_new ();
-	g_cancellable_cancel (cancellable);
-
-	gdata_commentable_insert_comment_async (GDATA_COMMENTABLE (data->parent.parent.video), GDATA_SERVICE (service),
-	                                        GDATA_COMMENT (data->parent.comment), cancellable,
-	                                        (GAsyncReadyCallback) test_comment_insert_async_cancellation_cb, data);
-
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (cancellable);
-}
+		g_object_unref (new_comment);
+	} else {
+		g_assert (new_comment == NULL);
+	}
+} G_STMT_END);
 
 static void
 test_comment_delete (InsertCommentData *data, gconstpointer service)
@@ -1722,29 +1577,26 @@ test_comment_delete (InsertCommentData *data, gconstpointer service)
 	g_clear_error (&error);
 }
 
-static void
-test_comment_delete_async_cb (GDataCommentable *commentable, GAsyncResult *result, InsertCommentAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (comment_delete, InsertCommentData,
+G_STMT_START {
+	gdata_commentable_delete_comment_async (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service),
+	                                        GDATA_COMMENT (data->comment), cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	gboolean success;
-	GError *error = NULL;
 
-	success = gdata_commentable_delete_comment_finish (commentable, result, &error);
-	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN);
+	success = gdata_commentable_delete_comment_finish (GDATA_COMMENTABLE (obj), async_result, &error);
+
+	g_assert (error != NULL);
 	g_assert (success == FALSE);
-	g_clear_error (&error);
 
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_comment_delete_async (InsertCommentAsyncData *data, gconstpointer service)
-{
 	/* See the note above in test_comment_delete(). */
-	gdata_commentable_delete_comment_async (GDATA_COMMENTABLE (data->parent.parent.video), GDATA_SERVICE (service),
-	                                        GDATA_COMMENT (data->parent.comment), NULL, (GAsyncReadyCallback) test_comment_delete_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
+	if (g_error_matches (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN) == TRUE) {
+		/* Pretend no error happened so that the test succeeds. */
+		g_clear_error (&error);
+		async_data->cancellation_timeout = 13;
+	}
+} G_STMT_END);
 
 static void
 test_parsing_video_id_from_uri (void)
@@ -1826,36 +1678,28 @@ test_categories (gconstpointer service)
 	g_free (old_locale);
 }
 
-static void
-test_categories_async_cb (GDataService *service, GAsyncResult *async_result, GMainLoop *main_loop)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (categories, void,
+G_STMT_START {
+	gdata_youtube_service_get_categories_async (GDATA_YOUTUBE_SERVICE (service), cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataAPPCategories *app_categories;
 	GList *categories;
-	GError *error = NULL;
 
-	app_categories = gdata_youtube_service_get_categories_finish (GDATA_YOUTUBE_SERVICE (service), async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_APP_CATEGORIES (app_categories));
-	g_clear_error (&error);
+	app_categories = gdata_youtube_service_get_categories_finish (GDATA_YOUTUBE_SERVICE (obj), async_result, &error);
 
-	categories = gdata_app_categories_get_categories (app_categories);
-	g_assert_cmpint (g_list_length (categories), >, 0);
-	g_assert (GDATA_IS_YOUTUBE_CATEGORY (categories->data));
+	if (error == NULL) {
+		g_assert (GDATA_IS_APP_CATEGORIES (app_categories));
 
-	g_main_loop_quit (main_loop);
-	g_object_unref (app_categories);
-}
+		categories = gdata_app_categories_get_categories (app_categories);
+		g_assert_cmpint (g_list_length (categories), >, 0);
+		g_assert (GDATA_IS_YOUTUBE_CATEGORY (categories->data));
 
-static void
-test_categories_async (gconstpointer service)
-{
-	GMainLoop *main_loop = g_main_loop_new (NULL, TRUE);
-
-	gdata_youtube_service_get_categories_async (GDATA_YOUTUBE_SERVICE (service), NULL, (GAsyncReadyCallback) test_categories_async_cb, main_loop);
-
-	g_main_loop_run (main_loop);
-	g_main_loop_unref (main_loop);
-}
+		g_object_unref (app_categories);
+	} else {
+		g_assert (app_categories == NULL);
+	}
+} G_STMT_END);
 
 typedef struct {
 	GDataEntry *new_video;
@@ -2036,43 +1880,62 @@ main (int argc, char *argv[])
 		service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, authorizer));
 
 		g_test_add_func ("/youtube/authentication", test_authentication);
-		g_test_add_func ("/youtube/authentication_async", test_authentication_async);
+		g_test_add ("/youtube/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
+		            gdata_tear_down_async_test_data);
+		g_test_add ("/youtube/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
+		            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
 		g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
-		g_test_add_data_func ("/youtube/query/standard_feed_async", service, test_query_standard_feed_async);
-		g_test_add_data_func ("/youtube/query/standard_feed_async_progress_closure", service, test_query_standard_feed_async_progress_closure);
+		g_test_add ("/youtube/query/standard_feed/async", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+		            test_query_standard_feed_async, gdata_tear_down_async_test_data);
+		g_test_add_data_func ("/youtube/query/standard_feed/async/progress_closure", service, test_query_standard_feed_async_progress_closure);
+		g_test_add ("/youtube/query/standard_feed/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+		            test_query_standard_feed_async_cancellation, gdata_tear_down_async_test_data);
 		g_test_add_data_func ("/youtube/query/related", service, test_query_related);
-		g_test_add_data_func ("/youtube/query/related_async", service, test_query_related_async);
-		g_test_add_data_func ("/youtube/query/related_async_progress_closure", service, test_query_related_async_progress_closure);
+		g_test_add ("/youtube/query/related/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_related_async,
+		            gdata_tear_down_async_test_data);
+		g_test_add_data_func ("/youtube/query/related/async/progress_closure", service, test_query_related_async_progress_closure);
+		g_test_add ("/youtube/query/related/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+		            test_query_related_async_cancellation, gdata_tear_down_async_test_data);
 
-		g_test_add ("/youtube/upload/simple", UploadData, service, setup_upload, test_upload_simple, teardown_upload);
-		g_test_add ("/youtube/upload/async", UploadAsyncData, service, setup_upload_async, test_upload_async, teardown_upload_async);
+		g_test_add ("/youtube/upload/simple", UploadData, service, set_up_upload, test_upload_simple, tear_down_upload);
+		g_test_add ("/youtube/upload/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_async, tear_down_upload_async);
+		g_test_add ("/youtube/upload/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_async_cancellation,
+		            tear_down_upload_async);
 
 		g_test_add_data_func ("/youtube/query/single", service, test_query_single);
-		g_test_add_data_func ("/youtube/query/single_async", service, test_query_single_async);
+		g_test_add ("/youtube/query/single/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_single_async,
+		            gdata_tear_down_async_test_data);
+		g_test_add ("/youtube/query/single/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+		            test_query_single_async_cancellation, gdata_tear_down_async_test_data);
 
 		g_test_add ("/youtube/comment/query", CommentData, service, set_up_comment, test_comment_query, tear_down_comment);
-		g_test_add ("/youtube/comment/query/async", CommentAsyncData, service, set_up_comment_async, test_comment_query_async,
+		g_test_add ("/youtube/comment/query/async", GDataAsyncTestData, service, set_up_comment_async, test_comment_query_async,
 		            tear_down_comment_async);
-		g_test_add ("/youtube/comment/query/async/cancellation", CommentAsyncData, service, set_up_comment_async,
+		g_test_add ("/youtube/comment/query/async/cancellation", GDataAsyncTestData, service, set_up_comment_async,
 		            test_comment_query_async_cancellation, tear_down_comment_async);
-		g_test_add ("/youtube/comment/query/async/progress_closure", CommentAsyncData, service, set_up_comment_async,
-		            test_comment_query_async_progress_closure, tear_down_comment_async);
+		g_test_add ("/youtube/comment/query/async/progress_closure", CommentData, service, set_up_comment,
+		            test_comment_query_async_progress_closure, tear_down_comment);
 
 		g_test_add ("/youtube/comment/insert", InsertCommentData, service, set_up_insert_comment, test_comment_insert,
 		            tear_down_insert_comment);
-		g_test_add ("/youtube/comment/insert/async", InsertCommentAsyncData, service, set_up_insert_comment_async, test_comment_insert_async,
+		g_test_add ("/youtube/comment/insert/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_insert_async,
 		            tear_down_insert_comment_async);
-		g_test_add ("/youtube/comment/insert/async/cancellation", InsertCommentAsyncData, service, set_up_insert_comment_async,
+		g_test_add ("/youtube/comment/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
 		            test_comment_insert_async_cancellation, tear_down_insert_comment_async);
 
 		g_test_add ("/youtube/comment/delete", InsertCommentData, service, set_up_insert_comment, test_comment_delete,
 		            tear_down_insert_comment);
-		g_test_add ("/youtube/comment/delete/async", InsertCommentAsyncData, service, set_up_insert_comment_async, test_comment_delete_async,
+		g_test_add ("/youtube/comment/delete/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_delete_async,
 		            tear_down_insert_comment_async);
+		g_test_add ("/youtube/comment/delete/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
+		            test_comment_delete_async_cancellation, tear_down_insert_comment_async);
 
 		g_test_add_data_func ("/youtube/categories", service, test_categories);
-		g_test_add_data_func ("/youtube/categories/async", service, test_categories_async);
+		g_test_add ("/youtube/categories/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_categories_async,
+		            gdata_tear_down_async_test_data);
+		g_test_add ("/youtube/categories/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+		            test_categories_async_cancellation, gdata_tear_down_async_test_data);
 
 		g_test_add ("/youtube/batch", BatchData, service, setup_batch, test_batch, teardown_batch);
 		g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);

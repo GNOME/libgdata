@@ -592,3 +592,31 @@ gdata_test_async_progress_finish_callback (GObject *service, GAsyncResult *res, 
 
     g_main_loop_quit (data->main_loop);
 }
+
+gboolean
+gdata_async_test_cancellation_cb (GDataAsyncTestData *async_data)
+{
+	g_cancellable_cancel (async_data->cancellable);
+	async_data->cancellation_timeout_id = 0;
+	return FALSE;
+}
+
+void
+gdata_set_up_async_test_data (GDataAsyncTestData *async_data, gconstpointer test_data)
+{
+	async_data->main_loop = g_main_loop_new (NULL, FALSE);
+	async_data->cancellable = g_cancellable_new ();
+	async_data->cancellation_timeout = 0;
+	async_data->cancellation_successful = FALSE;
+
+	async_data->test_data = test_data;
+}
+
+void
+gdata_tear_down_async_test_data (GDataAsyncTestData *async_data, gconstpointer test_data)
+{
+	g_assert (async_data->test_data == test_data); /* sanity check */
+
+	g_object_unref (async_data->cancellable);
+	g_main_loop_unref (async_data->main_loop);
+}

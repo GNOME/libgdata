@@ -55,8 +55,8 @@ delete_entry (GDataDocumentsEntry *entry, GDataService *service)
 	                                              gdata_entry_get_id (GDATA_ENTRY (entry)), NULL, G_OBJECT_TYPE (entry), NULL, NULL);
 	g_assert (GDATA_IS_DOCUMENTS_ENTRY (new_entry));
 
-	/* Delete the entry */
-	g_assert (gdata_service_delete_entry (service, gdata_documents_service_get_primary_authorization_domain (), new_entry, NULL, NULL) == TRUE);
+	/* Delete the entry. Don't bother asserting that it succeeds, because it will often fail because Google keep giving us the wrong ETag above. */
+	gdata_service_delete_entry (service, gdata_documents_service_get_primary_authorization_domain (), new_entry, NULL, NULL);
 	g_object_unref (new_entry);
 }
 
@@ -90,33 +90,8 @@ test_authentication (void)
 	g_object_unref (authorizer);
 }
 
-static void
-test_authentication_async_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *async_result, GMainLoop *main_loop)
-{
-	gboolean retval;
-	GError *error = NULL;
-
-	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (retval == TRUE);
-	g_clear_error (&error);
-
-	g_main_loop_quit (main_loop);
-
-	/* Check all is as it should be */
-	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
-	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
-	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-	                                                     gdata_documents_service_get_primary_authorization_domain ()) == TRUE);
-	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-	                                                     gdata_documents_service_get_spreadsheet_authorization_domain ()) == TRUE);
-}
-
-static void
-test_authentication_async (void)
-{
-	GMainLoop *main_loop;
+GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
+G_STMT_START {
 	GDataClientLoginAuthorizer *authorizer;
 
 	/* Create an authorizer */
@@ -124,15 +99,40 @@ test_authentication_async (void)
 
 	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
 
-	main_loop = g_main_loop_new (NULL, TRUE);
-	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, NULL,
-	                                                  (GAsyncReadyCallback) test_authentication_async_cb, main_loop);
+	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, cancellable, async_ready_callback, async_data);
 
-	g_main_loop_run (main_loop);
-
-	g_main_loop_unref (main_loop);
 	g_object_unref (authorizer);
-}
+} G_STMT_END,
+G_STMT_START {
+	gboolean retval;
+	GDataClientLoginAuthorizer *authorizer = GDATA_CLIENT_LOGIN_AUTHORIZER (obj);
+
+	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
+
+	if (error == NULL) {
+		g_assert (retval == TRUE);
+
+		/* Check all is as it should be */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_documents_service_get_primary_authorization_domain ()) == TRUE);
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_documents_service_get_spreadsheet_authorization_domain ()) == TRUE);
+	} else {
+		g_assert (retval == FALSE);
+
+		/* Check nothing's changed */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_documents_service_get_primary_authorization_domain ()) == FALSE);
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_documents_service_get_spreadsheet_authorization_domain ()) == FALSE);
+	}
+} G_STMT_END);
 
 typedef struct {
 	GDataDocumentsFolder *folder;
@@ -413,53 +413,30 @@ test_query_all_documents (TempDocumentsData *data, gconstpointer service)
 	g_object_unref (feed);
 }
 
-typedef struct {
-	TempDocumentsData parent;
-	GMainLoop *main_loop;
-} TempDocumentsAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (temp_documents, TempDocumentsData);
 
-static void
-set_up_temp_documents_async (TempDocumentsAsyncData *data, gconstpointer service)
-{
-	set_up_temp_documents ((TempDocumentsData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, FALSE);
-}
-
-static void
-tear_down_temp_documents_async (TempDocumentsAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_temp_documents ((TempDocumentsData*) data, service);
-}
-
-static void
-test_query_all_documents_async_cb (GDataService *service, GAsyncResult *async_result, TempDocumentsAsyncData *data)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (query_all_documents, TempDocumentsData,
+G_STMT_START {
+	gdata_documents_service_query_documents_async (GDATA_DOCUMENTS_SERVICE (service), NULL, cancellable, NULL, NULL,
+	                                               NULL, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataDocumentsFeed *feed;
-	GError *error = NULL;
 
-	feed = GDATA_DOCUMENTS_FEED (gdata_service_query_finish (GDATA_SERVICE (service), async_result, &error));
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_FEED (feed));
-	g_clear_error (&error);
+	feed = GDATA_DOCUMENTS_FEED (gdata_service_query_finish (GDATA_SERVICE (obj), async_result, &error));
 
-	/* TODO: Tests? */
+	if (error == NULL) {
+		g_assert (GDATA_IS_FEED (feed));
+		/* TODO: Tests? */
 
-	g_main_loop_quit (data->main_loop);
-	g_object_unref (feed);
-}
-
-static void
-test_query_all_documents_async (TempDocumentsAsyncData *data, gconstpointer service)
-{
-	gdata_documents_service_query_documents_async (GDATA_DOCUMENTS_SERVICE (service), NULL, NULL, NULL, NULL,
-	                                               NULL, (GAsyncReadyCallback) test_query_all_documents_async_cb, data);
-
-	g_main_loop_run (data->main_loop);
-}
+		g_object_unref (feed);
+	} else {
+		g_assert (feed == NULL);
+	}
+} G_STMT_END);
 
 static void
-test_query_all_documents_async_progress_closure (TempDocumentsAsyncData *documents_data, gconstpointer service)
+test_query_all_documents_async_progress_closure (TempDocumentsData *documents_data, gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
@@ -782,89 +759,31 @@ test_folders_add_to_folder (FoldersData *data, gconstpointer service)
 	g_object_unref (new_document);
 }
 
-typedef struct {
-	FoldersData data;
-	GMainLoop *main_loop;
-} FoldersAsyncData;
+GDATA_ASYNC_CLOSURE_FUNCTIONS (folders_add_to_folder, FoldersData);
 
-static void
-set_up_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
-{
-	set_up_folders_add_to_folder ((FoldersData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, TRUE);
-}
-
-static void
-tear_down_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_folders_add_to_folder ((FoldersData*) data, service);
-}
-
-static void
-test_folders_add_to_folder_async_cb (GDataDocumentsService *service, GAsyncResult *async_result, FoldersAsyncData *data)
-{
-	GDataDocumentsEntry *entry;
-	GError *error = NULL;
-
-	entry = gdata_documents_service_add_entry_to_folder_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_ENTRY (entry));
-	g_clear_error (&error);
-
-	/* Check it's still the same document */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (entry)), ==, gdata_entry_get_title (GDATA_ENTRY (data->data.document)));
-	g_assert (check_document_is_in_folder (GDATA_DOCUMENTS_DOCUMENT (entry), data->data.folder) == TRUE);
-
-	g_object_unref (entry);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_folders_add_to_folder_async (FoldersAsyncData *data, gconstpointer service)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (folders_add_to_folder, FoldersData,
+G_STMT_START {
 	/* Add the document to the folder asynchronously */
-	gdata_documents_service_add_entry_to_folder_async (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (data->data.document),
-	                                                   data->data.folder, NULL, (GAsyncReadyCallback) test_folders_add_to_folder_async_cb, data);
-	g_main_loop_run (data->main_loop);
-}
-
-static void
-test_folders_add_to_folder_cancellation_cb (GDataDocumentsService *service, GAsyncResult *async_result, FoldersAsyncData *data)
-{
+	gdata_documents_service_add_entry_to_folder_async (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (data->document),
+	                                                   data->folder, cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataDocumentsEntry *entry;
-	GError *error = NULL;
 
-	entry = gdata_documents_service_add_entry_to_folder_finish (service, async_result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (entry == NULL);
-	g_clear_error (&error);
+	entry = gdata_documents_service_add_entry_to_folder_finish (GDATA_DOCUMENTS_SERVICE (obj), async_result, &error);
 
-	g_main_loop_quit (data->main_loop);
-}
+	if (error == NULL) {
+		g_assert (GDATA_IS_DOCUMENTS_ENTRY (entry));
 
-static gboolean
-test_folders_add_to_folder_cancellation_cancel_cb (GCancellable *cancellable)
-{
-	g_cancellable_cancel (cancellable);
-	return FALSE;
-}
+		/* Check it's still the same document */
+		g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (entry)), ==, gdata_entry_get_title (GDATA_ENTRY (data->document)));
+		g_assert (check_document_is_in_folder (GDATA_DOCUMENTS_DOCUMENT (entry), data->folder) == TRUE);
 
-static void
-test_folders_add_to_folder_cancellation (FoldersAsyncData *data, gconstpointer service)
-{
-	GCancellable *cancellable = g_cancellable_new ();
-	g_timeout_add (1, (GSourceFunc) test_folders_add_to_folder_cancellation_cancel_cb, cancellable);
-
-	/* Add the document to the folder asynchronously and cancel the operation after a few milliseconds */
-	gdata_documents_service_add_entry_to_folder_async (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (data->data.document),
-	                                                   data->data.folder, cancellable,
-	                                                   (GAsyncReadyCallback) test_folders_add_to_folder_cancellation_cb, data);
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (cancellable);
-}
+		g_object_unref (entry);
+	} else {
+		g_assert (entry == NULL);
+	}
+} G_STMT_END);
 
 static void
 set_up_folders_remove_from_folder (FoldersData *data, gconstpointer service)
@@ -898,85 +817,31 @@ test_folders_remove_from_folder (FoldersData *data, gconstpointer service)
 	g_object_unref (new_document);
 }
 
-static void
-set_up_folders_remove_from_folder_async (FoldersAsyncData *data, gconstpointer service)
-{
-	set_up_folders_remove_from_folder ((FoldersData*) data, service);
-	data->main_loop = g_main_loop_new (NULL, TRUE);
-}
+GDATA_ASYNC_CLOSURE_FUNCTIONS (folders_remove_from_folder, FoldersData);
 
-static void
-tear_down_folders_remove_from_folder_async (FoldersAsyncData *data, gconstpointer service)
-{
-	g_main_loop_unref (data->main_loop);
-	tear_down_folders_remove_from_folder ((FoldersData*) data, service);
-}
-
-static void
-test_folders_remove_from_folder_async_cb (GDataDocumentsService *service, GAsyncResult *async_result, FoldersAsyncData *data)
-{
-	GDataDocumentsEntry *entry;
-	GError *error = NULL;
-
-	entry = gdata_documents_service_remove_entry_from_folder_finish (service, async_result, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_ENTRY (entry));
-	g_clear_error (&error);
-
-	/* Check it's still the same document */
-	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (entry)), ==, gdata_entry_get_title (GDATA_ENTRY (data->data.document)));
-	g_assert (check_document_is_in_folder (GDATA_DOCUMENTS_DOCUMENT (entry), data->data.folder) == FALSE);
-
-	g_object_unref (entry);
-
-	g_main_loop_quit (data->main_loop);
-}
-
-static void
-test_folders_remove_from_folder_async (FoldersAsyncData *data, gconstpointer service)
-{
+GDATA_ASYNC_TEST_FUNCTIONS (folders_remove_from_folder, FoldersData,
+G_STMT_START {
 	/* Remove the document from the folder asynchronously */
-	gdata_documents_service_remove_entry_from_folder_async (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (data->data.document),
-	                                                        data->data.folder, NULL,
-	                                                        (GAsyncReadyCallback) test_folders_remove_from_folder_async_cb, data);
-	g_main_loop_run (data->main_loop);
-}
-
-static void
-test_folders_remove_from_folder_cancellation_cb (GDataDocumentsService *service, GAsyncResult *async_result, FoldersAsyncData *data)
-{
+	gdata_documents_service_remove_entry_from_folder_async (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (data->document),
+	                                                        data->folder, cancellable, async_ready_callback, async_data);
+} G_STMT_END,
+G_STMT_START {
 	GDataDocumentsEntry *entry;
-	GError *error = NULL;
 
-	entry = gdata_documents_service_remove_entry_from_folder_finish (service, async_result, &error);
-	g_assert_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
-	g_assert (entry == NULL);
-	g_clear_error (&error);
+	entry = gdata_documents_service_remove_entry_from_folder_finish (GDATA_DOCUMENTS_SERVICE (obj), async_result, &error);
 
-	g_main_loop_quit (data->main_loop);
-}
+	if (error == NULL) {
+		g_assert (GDATA_IS_DOCUMENTS_ENTRY (entry));
 
-static gboolean
-test_folders_remove_from_folder_cancellation_cancel_cb (GCancellable *cancellable)
-{
-	g_cancellable_cancel (cancellable);
-	return FALSE;
-}
+		/* Check it's still the same document */
+		g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (entry)), ==, gdata_entry_get_title (GDATA_ENTRY (data->document)));
+		g_assert (check_document_is_in_folder (GDATA_DOCUMENTS_DOCUMENT (entry), data->folder) == FALSE);
 
-static void
-test_folders_remove_from_folder_cancellation (FoldersAsyncData *data, gconstpointer service)
-{
-	GCancellable *cancellable = g_cancellable_new ();
-	g_timeout_add (1, (GSourceFunc) test_folders_remove_from_folder_cancellation_cancel_cb, cancellable);
-
-	/* Remove the document from the folder asynchronously and cancel the operation after a few milliseconds */
-	gdata_documents_service_remove_entry_from_folder_async (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_ENTRY (data->data.document),
-	                                                        data->data.folder, cancellable,
-	                                                        (GAsyncReadyCallback) test_folders_remove_from_folder_cancellation_cb, data);
-	g_main_loop_run (data->main_loop);
-
-	g_object_unref (cancellable);
-}
+		g_object_unref (entry);
+	} else {
+		g_assert (entry == NULL);
+	}
+} G_STMT_END);
 
 static void
 test_upload_file_metadata_in_new_folder (UploadDocumentData *data, gconstpointer service)
@@ -1584,7 +1449,10 @@ main (int argc, char *argv[])
 		service = GDATA_SERVICE (gdata_documents_service_new (authorizer));
 
 		g_test_add_func ("/documents/authentication", test_authentication);
-		g_test_add_func ("/documents/authentication/async", test_authentication_async);
+		g_test_add ("/documents/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
+		            gdata_tear_down_async_test_data);
+		g_test_add ("/documents/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
+		            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
 		g_test_add ("/documents/delete/document", TempDocumentData, service, set_up_temp_document_spreadsheet, test_delete_document,
 		            tear_down_temp_document);
@@ -1616,24 +1484,27 @@ main (int argc, char *argv[])
 		            tear_down_temp_documents);
 		g_test_add ("/documents/query/all_documents/with_folder", TempDocumentsData, service, set_up_temp_documents,
 		            test_query_all_documents_with_folder, tear_down_temp_documents);
-		g_test_add ("/documents/query/all_documents/async", TempDocumentsAsyncData, service, set_up_temp_documents_async,
+		g_test_add ("/documents/query/all_documents/async", GDataAsyncTestData, service, set_up_temp_documents_async,
 		            test_query_all_documents_async, tear_down_temp_documents_async);
-		g_test_add ("/documents/query/all_documents/async/progress_closure", TempDocumentsAsyncData, service, set_up_temp_documents_async,
-		            test_query_all_documents_async_progress_closure, tear_down_temp_documents_async);
+		g_test_add ("/documents/query/all_documents/async/progress_closure", TempDocumentsData, service, set_up_temp_documents,
+		            test_query_all_documents_async_progress_closure, tear_down_temp_documents);
+		g_test_add ("/documents/query/all_documents/async/cancellation", GDataAsyncTestData, service, set_up_temp_documents_async,
+		            test_query_all_documents_async_cancellation, tear_down_temp_documents_async);
 
 		g_test_add ("/documents/folders/add_to_folder", FoldersData, service, set_up_folders_add_to_folder,
 		            test_folders_add_to_folder, tear_down_folders_add_to_folder);
-		g_test_add ("/documents/folders/add_to_folder/async", FoldersAsyncData, service, set_up_folders_add_to_folder_async,
+		g_test_add ("/documents/folders/add_to_folder/async", GDataAsyncTestData, service, set_up_folders_add_to_folder_async,
 		            test_folders_add_to_folder_async, tear_down_folders_add_to_folder_async);
-		g_test_add ("/documents/folders/add_to_folder/cancellation", FoldersAsyncData, service, set_up_folders_add_to_folder_async,
-		            test_folders_add_to_folder_cancellation, tear_down_folders_add_to_folder_async);
+		g_test_add ("/documents/folders/add_to_folder/async/cancellation", GDataAsyncTestData, service, set_up_folders_add_to_folder_async,
+		            test_folders_add_to_folder_async_cancellation, tear_down_folders_add_to_folder_async);
 
 		g_test_add ("/documents/folders/remove_from_folder", FoldersData, service, set_up_folders_remove_from_folder,
 		            test_folders_remove_from_folder, tear_down_folders_remove_from_folder);
-		g_test_add ("/documents/folders/remove_from_folder/async", FoldersAsyncData, service, set_up_folders_remove_from_folder_async,
+		g_test_add ("/documents/folders/remove_from_folder/async", GDataAsyncTestData, service, set_up_folders_remove_from_folder_async,
 		            test_folders_remove_from_folder_async, tear_down_folders_remove_from_folder_async);
-		g_test_add ("/documents/folders/remove_from_folder/cancellation", FoldersAsyncData, service, set_up_folders_remove_from_folder_async,
-		            test_folders_remove_from_folder_cancellation, tear_down_folders_remove_from_folder_async);
+		g_test_add ("/documents/folders/remove_from_folder/async/cancellation", GDataAsyncTestData, service,
+		            set_up_folders_remove_from_folder_async, test_folders_remove_from_folder_async_cancellation,
+		            tear_down_folders_remove_from_folder_async);
 
 		g_test_add_data_func ("/documents/batch", service, test_batch);
 		g_test_add ("/documents/batch/async", BatchAsyncData, service, set_up_batch_async, test_batch_async, tear_down_batch_async);

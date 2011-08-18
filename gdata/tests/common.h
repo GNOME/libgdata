@@ -72,6 +72,210 @@ void gdata_test_async_progress_callback (GDataEntry *entry, guint entry_key, gui
 void gdata_test_async_progress_closure_free (GDataAsyncProgressClosure *data);
 void gdata_test_async_progress_finish_callback (GObject *service, GAsyncResult *res, GDataAsyncProgressClosure *data);
 
+typedef struct {
+	/*< private >*/
+	GMainLoop *main_loop;
+	GCancellable *cancellable;
+	guint cancellation_timeout; /* timeout period in ms */
+	guint cancellation_timeout_id; /* ID of the callback source */
+	gboolean cancellation_successful;
+
+	gconstpointer test_data;
+} GDataAsyncTestData;
+
+/**
+ * GDATA_ASYNC_CLOSURE_FUNCTIONS:
+ * @CLOSURE_NAME: the name of the closure
+ * @TestStructType: the type of the synchronous closure structure
+ *
+ * Defines set up and tear down functions for a version of @TestStructType which is wrapped by #GDataAsyncTestData (i.e. allocated and pointed to by
+ * the #GDataAsyncTestData.test_data pointer). These functions will be named <function>set_up_<replaceable>CLOSURE_NAME</replaceable>_async</function>
+ * and <function>tear_down_<replaceable>CLOSURE_NAME</replaceable>_async</function>.
+ *
+ * Since: 0.9.2
+ */
+#define GDATA_ASYNC_CLOSURE_FUNCTIONS(CLOSURE_NAME, TestStructType) \
+static void \
+set_up_##CLOSURE_NAME##_async (GDataAsyncTestData *async_data, gconstpointer service) \
+{ \
+	TestStructType *test_data = g_slice_new (TestStructType); \
+	set_up_##CLOSURE_NAME (test_data, service); \
+	gdata_set_up_async_test_data (async_data, test_data); \
+} \
+ \
+static void \
+tear_down_##CLOSURE_NAME##_async (GDataAsyncTestData *async_data, gconstpointer service) \
+{ \
+	tear_down_##CLOSURE_NAME ((TestStructType*) async_data->test_data, service); \
+	g_slice_free (TestStructType, (TestStructType*) async_data->test_data); \
+	gdata_tear_down_async_test_data (async_data, async_data->test_data); \
+}
+
+/**
+ * GDATA_ASYNC_STARTING_TIMEOUT:
+ *
+ * The initial timeout for cancellation tests, which will be the first timeout used after testing cancelling the operation before it's started.
+ * The value is in milliseconds.
+ *
+ * Since: 0.9.2
+ */
+#define GDATA_ASYNC_STARTING_TIMEOUT 20 /* ms */
+
+/**
+ * GDATA_ASYNC_TIMEOUT_MULTIPLIER:
+ *
+ * The factor by which the asynchronous cancellation timeout will be multiplied between iterations of the cancellation test.
+ *
+ * Since: 0.9.2
+ */
+#define GDATA_ASYNC_TIMEOUT_MULTIPLIER 3
+
+/**
+ * GDATA_ASYNC_MAXIMUM_TIMEOUT:
+ *
+ * The maximum timeout value for cancellation tests before they fail. i.e. If an operation takes longer than this period of time, the asynchronous
+ * operation test will fail.
+ * The value is in milliseconds.
+ *
+ * Since: 0.9.2
+ */
+#define GDATA_ASYNC_MAXIMUM_TIMEOUT 43740 /* ms */
+
+/**
+ * GDATA_ASYNC_TEST_FUNCTIONS:
+ * @TEST_NAME: the name of the test, excluding the “test_” prefix and the “_async” suffix
+ * @TestStructType: type of the closure structure to use, or <type>void</type>
+ * @TEST_BEGIN_CODE: code to execute to begin the test and start the asynchronous call
+ * @TEST_END_CODE: code to execute once the asynchronous call has completed, which will check the return values and any changed state
+ *
+ * Defines test and callback functions to test normal asynchronous operation and the cancellation behaviour of the given asynchronous function call.
+ *
+ * The asynchronous function call should be started in @TEST_BEGIN_CODE, using <varname>cancellable</varname> as its #GCancellable parameter,
+ * <varname>async_ready_callback</varname> as its #GAsyncReadyCallback parameter and <varname>async_data</varname> as its <varname>user_data</varname>
+ * parameter. There is no need for the code to create its own main loop: that's taken care of by the wrapper code.
+ *
+ * The code in @TEST_END_CODE will be inserted into the callback function for both the normal asynchronous test and the cancellation test, so should
+ * finish the asynchronous function call, using <varname>obj</varname> as the object on which the asynchronous function call was made,
+ * <varname>async_result</varname> as its #GAsyncResult parameter and <varname>error</varname> as its #GError parameter. The code should then check
+ * <varname>error</code>: if it's %NULL, the code should assert success conditions; if it's non-%NULL, the code should assert failure conditions.
+ * The wrapper code will ensure that the error is a %G_IO_ERROR_CANCELLED at the appropriate times.
+ *
+ * The following functions will be defined, and should be added to the test suite using the #GAsyncTestData closure structure:
+ * <function>test_<replaceable>TEST_NAME</replaceable>_async</function> and
+ * <function>test_<replaceable>TEST_NAME</replaceable>_async_cancellation</function>.
+ *
+ * Since: 0.9.2
+ */
+#define GDATA_ASYNC_TEST_FUNCTIONS(TEST_NAME, TestStructType, TEST_BEGIN_CODE, TEST_END_CODE) \
+static void \
+test_##TEST_NAME##_async_cb (GObject *obj, GAsyncResult *async_result, GDataAsyncTestData *async_data) \
+{ \
+	TestStructType *data = (TestStructType*) async_data->test_data; \
+	GError *error = NULL; \
+ \
+	(void) data; /* hide potential unused variable warning */ \
+ \
+	{ \
+		TEST_END_CODE; \
+ \
+		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) == TRUE) { \
+			g_assert (g_cancellable_is_cancelled (async_data->cancellable) == TRUE); \
+			async_data->cancellation_successful = TRUE; \
+		} else if (error == NULL) { \
+			g_assert (g_cancellable_is_cancelled (async_data->cancellable) == FALSE || async_data->cancellation_timeout > 0); \
+			async_data->cancellation_successful = FALSE; \
+		} else { \
+			/* Unexpected error: explode. */ \
+			g_assert_no_error (error); \
+			async_data->cancellation_successful = FALSE; \
+		} \
+	} \
+ \
+	g_clear_error (&error); \
+ \
+	g_main_loop_quit (async_data->main_loop); \
+} \
+\
+static void \
+test_##TEST_NAME##_async (GDataAsyncTestData *async_data, gconstpointer service) \
+{ \
+	GAsyncReadyCallback async_ready_callback = (GAsyncReadyCallback) test_##TEST_NAME##_async_cb; \
+	TestStructType *data = (TestStructType*) async_data->test_data; \
+	GCancellable *cancellable = NULL; /* don't expose the cancellable, so the test proceeds as normal */ \
+ \
+	(void) data; /* hide potential unused variable warning */ \
+ \
+	/* Just run the test without doing any cancellation, and assert that it succeeds. */ \
+	async_data->cancellation_timeout = 0; \
+ \
+	g_test_message ("Running normal operation test…"); \
+ \
+	{ \
+		TEST_BEGIN_CODE; \
+	} \
+ \
+	g_main_loop_run (async_data->main_loop); \
+} \
+ \
+static void \
+test_##TEST_NAME##_async_cancellation (GDataAsyncTestData *async_data, gconstpointer service) \
+{ \
+	async_data->cancellation_timeout = 0; \
+ \
+	/* Starting with a short timeout, repeatedly run the async. operation, cancelling it after the timeout and increasing the timeout until
+	 * the operation succeeds for the first time. We then finish the test. This guarantees that if, for example, the test creates an entry on
+	 * the server, it only ever creates one; because the test only ever succeeds once. (Of course, this assumes that the server doesn't change
+	 * state if we cancel the operation, which is a fairly optimistic assumption. Sigh.) */ \
+	do { \
+		GCancellable *cancellable = async_data->cancellable; \
+		GAsyncReadyCallback async_ready_callback = (GAsyncReadyCallback) test_##TEST_NAME##_async_cb; \
+		TestStructType *data = (TestStructType*) async_data->test_data; \
+ \
+		(void) data; /* hide potential unused variable warning */ \
+ \
+		/* Ensure the timeout remains sane. */ \
+		g_assert_cmpuint (async_data->cancellation_timeout, <=, GDATA_ASYNC_MAXIMUM_TIMEOUT); \
+ \
+		/* Schedule the cancellation after the timeout. */ \
+		if (async_data->cancellation_timeout == 0) { \
+			/* For the first test, cancel the cancellable before the test code is run */ \
+			gdata_async_test_cancellation_cb (async_data); \
+		} else { \
+			async_data->cancellation_timeout_id = g_timeout_add (async_data->cancellation_timeout, \
+			                                                     (GSourceFunc) gdata_async_test_cancellation_cb, async_data); \
+		} \
+ \
+		/* Mark the cancellation as unsuccessful and hope we get proven wrong. */ \
+		async_data->cancellation_successful = FALSE; \
+ \
+		g_test_message ("Running cancellation test with timeout of %u ms…", async_data->cancellation_timeout); \
+ \
+		{ \
+			TEST_BEGIN_CODE; \
+		} \
+ \
+		g_main_loop_run (async_data->main_loop); \
+ \
+		/* Reset the cancellable for the next iteration and increase the timeout geometrically. */ \
+		g_cancellable_reset (cancellable); \
+ \
+		if (async_data->cancellation_timeout == 0) { \
+			async_data->cancellation_timeout = GDATA_ASYNC_STARTING_TIMEOUT; /* ms */ \
+		} else { \
+			async_data->cancellation_timeout *= GDATA_ASYNC_TIMEOUT_MULTIPLIER; \
+		} \
+	} while (async_data->cancellation_successful == TRUE); \
+ \
+	/* Clean up the last timeout callback */ \
+	if (async_data->cancellation_timeout_id != 0) { \
+		g_source_remove (async_data->cancellation_timeout_id); \
+	} \
+}
+
+gboolean gdata_async_test_cancellation_cb (GDataAsyncTestData *async_data);
+void gdata_set_up_async_test_data (GDataAsyncTestData *async_data, gconstpointer test_data);
+void gdata_tear_down_async_test_data (GDataAsyncTestData *async_data, gconstpointer test_data);
+
 G_END_DECLS
 
 #endif /* !GDATA_TEST_COMMON_H */
