@@ -444,7 +444,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		gdata_parser_string_append_escaped (xml_string, "<gd:orgName>", priv->name, "</gd:orgName>");
 	if (priv->title != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gd:orgTitle>", priv->title, "</gd:orgTitle>");
-	if (priv->department != NULL)
+	if (priv->department != NULL && *(priv->department) != '\0')
 		gdata_parser_string_append_escaped (xml_string, "<gd:orgDepartment>", priv->department, "</gd:orgDepartment>");
 	if (priv->job_description != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gd:orgJobDescription>", priv->job_description, "</gd:orgJobDescription>");
