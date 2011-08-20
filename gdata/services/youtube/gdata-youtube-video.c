@@ -992,7 +992,7 @@ get_query_comments_uri (GDataCommentable *self)
 		return NULL;
 	}
 
-	return g_strdup (gdata_gd_feed_link_get_uri (feed_link));
+	return _gdata_service_fix_uri_scheme (gdata_gd_feed_link_get_uri (feed_link));
 }
 
 static gchar *
@@ -1006,7 +1006,7 @@ get_insert_comment_uri (GDataCommentable *self, GDataComment *comment_)
 		return NULL;
 	}
 
-	return g_strdup (gdata_gd_feed_link_get_uri (feed_link));
+	return _gdata_service_fix_uri_scheme (gdata_gd_feed_link_get_uri (feed_link));
 }
 
 static gboolean
