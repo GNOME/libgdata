@@ -41,7 +41,7 @@ typedef struct _GDataYouTubeCommentPrivate	GDataYouTubeCommentPrivate;
  *
  * All the fields in the #GDataYouTubeComment structure are private and should never be accessed directly.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	GDataComment parent;
@@ -53,7 +53,7 @@ typedef struct {
  *
  * All the fields in the #GDataYouTubeCommentClass structure are private and should never be accessed directly.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	/*< private >*/

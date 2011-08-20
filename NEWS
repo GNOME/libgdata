@@ -1,3 +1,45 @@
+Overview of changes from libgdata 0.9.1 to libgdata 0.10.0
+==========================================================
+
+Major changes:
+* Added support for comments to YouTube and PicasaWeb (thanks to Richard Schwarting)
+* Added a “scrapbook” demo application (thanks to Joe Cortes)
+* Added lots of cancellation tests
+
+API changes:
+* Added GDataCommentable
+* Added GDataComment, GDataYouTubeComment, GDataPicasaWebComment
+* Added gdata_entry_remove_link()
+* Added gdata_youtube_video_get_media_rating(), GDATA_YOUTUBE_RATING_TYPE_SIMPLE, GDATA_YOUTUBE_RATING_TYPE_MPAA, GDATA_YOUTUBE_RATING_TYPE_V_CHIP
+
+Bugs fixed:
+* Bug 618587 — Implement GDataGDFeedLink
+* Bug 598752 — Support comments
+* Bug 647882 — Support rating schemes
+* Bug 628069 — Add some demo applications
+* Bug 656529 — undefined references trying to compile/build libgdata
+* Bug 633364 — Add cancellation tests
+
+Updated translations:
+* bg (Alexander Shopov)
+* ca, ca@valencia (Gil Forcada)
+* cs (Andre Klapper)
+* de (Mario Blättermann)
+* eo (Kristjan SCHMIDT)
+* es (Jorge González)
+* fr (Bruno Brouard)
+* gl (Fran Diéguez)
+* he (Yaron Shahrabani)
+* id (Andika Triwidada)
+* lt (Aurimas Černius)
+* lv (Rūdofls Mazurs)
+* nb (Kjartan Maraas)
+* ru (Yuri Kozlov)
+* sl (Matej Urbančič)
+* sv (Daniel Nylander)
+* th (Akom Chotiphantawanon)
+* ug (Gheyret Kenji)
+
 Overview of changes from libgdata 0.9.0 to libgdata 0.9.1
 =========================================================
 

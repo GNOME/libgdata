@@ -1252,7 +1252,7 @@ gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gch
  *
  * Return value: the rating of the video for the given @rating_type, or %NULL if the video isn't rated with that type (or the type is unknown)
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 const gchar *
 gdata_youtube_video_get_media_rating (GDataYouTubeVideo *self, const gchar *rating_type)

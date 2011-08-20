@@ -41,7 +41,7 @@ typedef struct _GDataPicasaWebCommentPrivate	GDataPicasaWebCommentPrivate;
  *
  * All the fields in the #GDataPicasaWebComment structure are private and should never be accessed directly.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	GDataComment parent;
@@ -53,7 +53,7 @@ typedef struct {
  *
  * All the fields in the #GDataPicasaWebCommentClass structure are private and should never be accessed directly.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	/*< private >*/

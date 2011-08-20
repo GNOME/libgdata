@@ -34,7 +34,7 @@
  * the same video (as retrieved using gdata_entry_look_up_link() on the comments). Comments with #GDataYouTubeComment:parent-comment-uri set to %NULL
  * are top-level comments.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 
 #include <config.h>
@@ -71,7 +71,7 @@ gdata_youtube_comment_class_init (GDataYouTubeCommentClass *klass)
 	 *
 	 * See the documentation for #GDataYouTubeComment for an explanation of the semantics of parent comment URIs.
 	 *
-	 * Since: 0.9.2.
+	 * Since: 0.10.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_PARENT_COMMENT_URI,
 	                                 g_param_spec_string ("parent-comment-uri",
@@ -126,7 +126,7 @@ gdata_youtube_comment_set_property (GObject *object, guint property_id, const GV
  *
  * Return value: a new #GDataYouTubeComment; unref with g_object_unref()
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 GDataYouTubeComment *
 gdata_youtube_comment_new (const gchar *id)
@@ -144,7 +144,7 @@ gdata_youtube_comment_new (const gchar *id)
  *
  * Return value: the parent comment URI, or %NULL
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 const gchar *
 gdata_youtube_comment_get_parent_comment_uri (GDataYouTubeComment *self)
@@ -174,7 +174,7 @@ gdata_youtube_comment_get_parent_comment_uri (GDataYouTubeComment *self)
  * See the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/developers_guide_protocol_comments.html#Retrieve_comments">online
  * documentation</ulink> for more information.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 void
 gdata_youtube_comment_set_parent_comment_uri (GDataYouTubeComment *self, const gchar *parent_comment_uri)

@@ -41,7 +41,7 @@ typedef struct _GDataCommentPrivate	GDataCommentPrivate;
  *
  * All the fields in the #GDataComment structure are private and should never be accessed directly.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	GDataEntry parent;
@@ -53,7 +53,7 @@ typedef struct {
  *
  * All the fields in the #GDataCommentClass structure are private and should never be accessed directly.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	/*< private >*/

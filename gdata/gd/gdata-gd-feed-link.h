@@ -41,7 +41,7 @@ typedef struct _GDataGDFeedLinkPrivate	GDataGDFeedLinkPrivate;
  *
  * All the fields in the #GDataGDFeedLink structure are private and should never be accessed directly.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	GDataParsable parent;
@@ -53,7 +53,7 @@ typedef struct {
  *
  * All the fields in the #GDataGDFeedLinkClass structure are private and should never be accessed directly.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	/*< private >*/

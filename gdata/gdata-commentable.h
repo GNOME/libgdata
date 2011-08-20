@@ -39,7 +39,7 @@
  *
  * All the fields in the #GDataCommentable structure are private and should never be accessed directly
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct _GDataCommentable		GDataCommentable; /* dummy typedef */
 
@@ -58,7 +58,7 @@ typedef struct _GDataCommentable		GDataCommentable; /* dummy typedef */
  *
  * The interface structure for the #GDataCommentable interface.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 typedef struct {
 	GTypeInterface parent;

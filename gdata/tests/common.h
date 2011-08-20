@@ -92,7 +92,7 @@ typedef struct {
  * the #GDataAsyncTestData.test_data pointer). These functions will be named <function>set_up_<replaceable>CLOSURE_NAME</replaceable>_async</function>
  * and <function>tear_down_<replaceable>CLOSURE_NAME</replaceable>_async</function>.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 #define GDATA_ASYNC_CLOSURE_FUNCTIONS(CLOSURE_NAME, TestStructType) \
 static void \
@@ -117,7 +117,7 @@ tear_down_##CLOSURE_NAME##_async (GDataAsyncTestData *async_data, gconstpointer 
  * The initial timeout for cancellation tests, which will be the first timeout used after testing cancelling the operation before it's started.
  * The value is in milliseconds.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 #define GDATA_ASYNC_STARTING_TIMEOUT 20 /* ms */
 
@@ -126,7 +126,7 @@ tear_down_##CLOSURE_NAME##_async (GDataAsyncTestData *async_data, gconstpointer 
  *
  * The factor by which the asynchronous cancellation timeout will be multiplied between iterations of the cancellation test.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 #define GDATA_ASYNC_TIMEOUT_MULTIPLIER 3
 
@@ -137,7 +137,7 @@ tear_down_##CLOSURE_NAME##_async (GDataAsyncTestData *async_data, gconstpointer 
  * operation test will fail.
  * The value is in milliseconds.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 #define GDATA_ASYNC_MAXIMUM_TIMEOUT 43740 /* ms */
 
@@ -164,7 +164,7 @@ tear_down_##CLOSURE_NAME##_async (GDataAsyncTestData *async_data, gconstpointer 
  * <function>test_<replaceable>TEST_NAME</replaceable>_async</function> and
  * <function>test_<replaceable>TEST_NAME</replaceable>_async_cancellation</function>.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 #define GDATA_ASYNC_TEST_FUNCTIONS(TEST_NAME, TestStructType, TEST_BEGIN_CODE, TEST_END_CODE) \
 static void \

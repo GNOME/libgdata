@@ -103,7 +103,7 @@ G_BEGIN_DECLS
  * A rating type to pass to gdata_youtube_video_get_media_rating() for “simple” ratings. The values which can be returned for such ratings are:
  * <code class="literal">adult</code> and <code class="literal">nonadult</code>.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 #define GDATA_YOUTUBE_RATING_TYPE_SIMPLE "simple"
 
@@ -114,7 +114,7 @@ G_BEGIN_DECLS
  * values which can be returned for such ratings are: <code class="literal">g</code>, <code class="literal">pg</code>,
  * <code class="literal">pg-13</code>, <code class="literal">r</code> and <code class="literal">nc-17</code>.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 #define GDATA_YOUTUBE_RATING_TYPE_MPAA "mpaa"
 
@@ -126,7 +126,7 @@ G_BEGIN_DECLS
  * <code class="literal">tv-y</code>, <code class="literal">tv-y7</code>, <code class="literal">tv-y7-fv</code>, <code class="literal">tv-g</code>,
  * <code class="literal">tv-pg</code>, <code class="literal">tv-14</code> and <code class="literal">tv-ma</code>.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 #define GDATA_YOUTUBE_RATING_TYPE_V_CHIP "v-chip"
 

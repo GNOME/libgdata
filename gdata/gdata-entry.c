@@ -940,7 +940,7 @@ gdata_entry_add_link (GDataEntry *self, GDataLink *_link)
  *
  * Return value: %TRUE if @_link was found in the #GDataEntry and removed, %FALSE if it was not found
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 gboolean
 gdata_entry_remove_link (GDataEntry *self, GDataLink *_link)

@@ -34,7 +34,7 @@
  * In its current state, #GDataGDFeedLink supports the <code class="literal">href</code> attribute, but doesn't support inline
  * <code class="literal">feed</code> elements, since they don't seem to appear in the wild.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 
 #include <glib.h>
@@ -95,7 +95,7 @@ gdata_gd_feed_link_class_init (GDataGDFeedLinkClass *klass)
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdFeedLink">GData specification</ulink>.
 	 *
-	 * Since: 0.9.2
+	 * Since: 0.10.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
@@ -111,7 +111,7 @@ gdata_gd_feed_link_class_init (GDataGDFeedLinkClass *klass)
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdFeedLink">GData specification</ulink>.
 	 *
-	 * Since: 0.9.2
+	 * Since: 0.10.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
@@ -127,7 +127,7 @@ gdata_gd_feed_link_class_init (GDataGDFeedLinkClass *klass)
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdFeedLink">GData specification</ulink>.
 	 *
-	 * Since: 0.9.2
+	 * Since: 0.10.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_COUNT_HINT,
 	                                 g_param_spec_int ("count-hint",
@@ -143,7 +143,7 @@ gdata_gd_feed_link_class_init (GDataGDFeedLinkClass *klass)
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdFeedLink">GData specification</ulink>.
 	 *
-	 * Since: 0.9.2
+	 * Since: 0.10.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_IS_READ_ONLY,
 	                                 g_param_spec_boolean ("is-read-only",
@@ -289,7 +289,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  *
  * Return value: the feed's relation to its owner, or %NULL
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 const gchar *
 gdata_gd_feed_link_get_relation_type (GDataGDFeedLink *self)
@@ -307,7 +307,7 @@ gdata_gd_feed_link_get_relation_type (GDataGDFeedLink *self)
  *
  * Return value: the related feed's URI
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 const gchar *
 gdata_gd_feed_link_get_uri (GDataGDFeedLink *self)
@@ -325,7 +325,7 @@ gdata_gd_feed_link_get_uri (GDataGDFeedLink *self)
  *
  * Return value: the potential number of entries in the related feed, or <code class="literal">-1</code> if not set
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 gint
 gdata_gd_feed_link_get_count_hint (GDataGDFeedLink *self)
@@ -343,7 +343,7 @@ gdata_gd_feed_link_get_count_hint (GDataGDFeedLink *self)
  *
  * Return value: %TRUE if the feed is read only, %FALSE otherwise
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 gboolean
 gdata_gd_feed_link_is_read_only (GDataGDFeedLink *self)
@@ -361,7 +361,7 @@ gdata_gd_feed_link_is_read_only (GDataGDFeedLink *self)
  * Sets the relation type of the #GDataGDFeedLink's related feed to @relation_type. If @relation_type is one of the standard Atom relation types,
  * use one of the defined relation type values, instead of a static string. e.g. %GDATA_LINK_EDIT or %GDATA_LINK_SELF.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 void
 gdata_gd_feed_link_set_relation_type (GDataGDFeedLink *self, const gchar *relation_type)
@@ -392,7 +392,7 @@ gdata_gd_feed_link_set_relation_type (GDataGDFeedLink *self, const gchar *relati
  *
  * Sets the URI of the #GDataGDFeedLink's related feed to @uri.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 void
 gdata_gd_feed_link_set_uri (GDataGDFeedLink *self, const gchar *uri)
@@ -413,7 +413,7 @@ gdata_gd_feed_link_set_uri (GDataGDFeedLink *self, const gchar *uri)
  *
  * Sets the number of entries in the #GDataGDFeedLink's related feed to @count_hint. This number may be an imprecise estimate.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 void
 gdata_gd_feed_link_set_count_hint (GDataGDFeedLink *self, gint count_hint)
@@ -433,7 +433,7 @@ gdata_gd_feed_link_set_count_hint (GDataGDFeedLink *self, gint count_hint)
  *
  * Sets the read only status of the #GDataGDFeedLink's related feed to @is_read_only.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 void
 gdata_gd_feed_link_set_is_read_only (GDataGDFeedLink *self, gboolean is_read_only)

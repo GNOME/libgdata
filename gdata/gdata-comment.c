@@ -31,7 +31,7 @@
  * All subclasses of #GDataComment should ensure that the body of a comment is accessible using gdata_entry_get_content(), and that each comment has
  * at least one #GDataAuthor object representing the person who wrote the comment, accessible using gdata_entry_get_authors().
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 
 #include <config.h>

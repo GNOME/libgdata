@@ -89,7 +89,7 @@
  * 	</programlisting>
  * </example>
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 
 #include <config.h>
@@ -141,7 +141,7 @@ get_comment_type (GDataCommentableInterface *iface)
  *
  * Return value: (transfer full) (allow-none): a #GDataFeed of #GDataComment<!-- -->s, or %NULL; unref with g_object_unref()
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 GDataFeed *
 gdata_commentable_query_comments (GDataCommentable *self, GDataService *service, GDataQuery *query,
@@ -227,7 +227,7 @@ query_comments_async_cb (GDataService *service, GAsyncResult *service_result, GS
  * When the operation is finished, @callback will be called. You can then call gdata_commentable_query_comments_finish() to get the results of the
  * operation.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 void
 gdata_commentable_query_comments_async (GDataCommentable *self, GDataService *service, GDataQuery *query, GCancellable *cancellable,
@@ -286,7 +286,7 @@ gdata_commentable_query_comments_async (GDataCommentable *self, GDataService *se
  *
  * Return value: (transfer full) (allow-none): a #GDataFeed of #GDataComment<!-- -->s, or %NULL; unref with g_object_unref()
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 GDataFeed *
 gdata_commentable_query_comments_finish (GDataCommentable *self, GAsyncResult *result, GError **error)
@@ -319,7 +319,7 @@ gdata_commentable_query_comments_finish (GDataCommentable *self, GAsyncResult *r
  *
  * Return value: (transfer full) (allow-none): the added #GDataComment, or %NULL; unref with g_object_unref()
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 GDataComment *
 gdata_commentable_insert_comment (GDataCommentable *self, GDataService *service, GDataComment *comment_, GCancellable *cancellable, GError **error)
@@ -400,7 +400,7 @@ insert_comment_async_cb (GDataService *service, GAsyncResult *service_result, GS
  * When the operation is finished, @callback will be called. You can then call gdata_commentable_insert_comment_finish() to get the results of the
  * operation.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 void
 gdata_commentable_insert_comment_async (GDataCommentable *self, GDataService *service, GDataComment *comment_, GCancellable *cancellable,
@@ -460,7 +460,7 @@ gdata_commentable_insert_comment_async (GDataCommentable *self, GDataService *se
  *
  * Return value: (transfer full) (allow-none): the added #GDataComment, or %NULL; unref with g_object_unref()
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 GDataComment *
 gdata_commentable_insert_comment_finish (GDataCommentable *self, GAsyncResult *result, GError **error)
@@ -494,7 +494,7 @@ gdata_commentable_insert_comment_finish (GDataCommentable *self, GAsyncResult *r
  *
  * Return value: %TRUE if the comment was successfully deleted, %FALSE otherwise
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 gboolean
 gdata_commentable_delete_comment (GDataCommentable *self, GDataService *service, GDataComment *comment_, GCancellable *cancellable, GError **error)
@@ -565,7 +565,7 @@ delete_comment_async_cb (GDataService *service, GAsyncResult *service_result, GS
  * When the operation is finished, @callback will be called. You can then call gdata_commentable_delete_comment_finish() to get the results of the
  * operation.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 void
 gdata_commentable_delete_comment_async (GDataCommentable *self, GDataService *service, GDataComment *comment_, GCancellable *cancellable,
@@ -616,7 +616,7 @@ gdata_commentable_delete_comment_async (GDataCommentable *self, GDataService *se
  *
  * Return value: %TRUE if the comment was successfully deleted, %FALSE otherwise
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 gboolean
 gdata_commentable_delete_comment_finish (GDataCommentable *self, GAsyncResult *result, GError **error)

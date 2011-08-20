@@ -28,7 +28,7 @@
  *
  * It's possible to query for, add and delete #GDataPicasaWebComment<!-- -->s from #GDataPicasaWebFile<!-- -->s.
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 
 #include <config.h>
@@ -103,7 +103,7 @@ gdata_picasaweb_comment_set_property (GObject *object, guint property_id, const 
  *
  * Return value: a new #GDataPicasaWebComment; unref with g_object_unref()
  *
- * Since: 0.9.2
+ * Since: 0.10.0
  */
 GDataPicasaWebComment *
 gdata_picasaweb_comment_new (const gchar *id)

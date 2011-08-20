@@ -2,8 +2,8 @@ AC_PREREQ(2.65)
 
 # Release version
 m4_define(gdata_version_major, 0)
-m4_define(gdata_version_minor, 9)
-m4_define(gdata_version_micro, 2)
+m4_define(gdata_version_minor, 10)
+m4_define(gdata_version_micro, 0)
 
 # API version
 # TODO: This currently isn't used in the library name; once we hit gdata_version_major=1, that should be changed
@@ -44,7 +44,7 @@ OAUTH_REQS=0.9.4
 #  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
 #
 # Note that versioning started at 2:0:0 to ensure no conflicts with e-d-s' libgdata library, whose maximum version was 1:0:0
-GDATA_LT_VERSION=13:0:0
+GDATA_LT_VERSION=14:0:1
 AC_SUBST(GDATA_LT_VERSION)
 
 GDATA_VERSION_MAJOR=gdata_version_major
