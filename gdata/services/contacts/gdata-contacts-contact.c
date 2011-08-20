@@ -3294,6 +3294,7 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsServi
 	SoupMessage *message;
 	guint status;
 	gboolean deleting_photo = FALSE;
+	const gchar *etag;
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
 	g_return_val_if_fail (GDATA_IS_CONTACTS_SERVICE (service), FALSE);
@@ -3307,9 +3308,16 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsServi
 	/* Get the photo URI */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/contacts/2008/rel#photo");
 	g_assert (_link != NULL);
+
+	/* We always have to set an If-Match header. */
+	etag = self->priv->photo_etag;
+	if (etag == NULL || *etag == '\0') {
+		etag = "*";
+	}
+
 	message = _gdata_service_build_message (GDATA_SERVICE (service), gdata_contacts_service_get_primary_authorization_domain (),
 	                                        (deleting_photo == TRUE) ? SOUP_METHOD_DELETE : SOUP_METHOD_PUT,
-	                                        gdata_link_get_uri (_link), self->priv->photo_etag, TRUE);
+	                                        gdata_link_get_uri (_link), etag, TRUE);
 
 	/* Append the data */
 	if (deleting_photo == FALSE)
