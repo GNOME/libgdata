@@ -630,16 +630,22 @@ _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message
 	}
 
 	/* Set the cancellation error if applicable. We can't assume that our GCancellable has been cancelled just because the message has;
-	 * libsoup may internally cancel messages if, for example, the proxy URI of the SoupSession is changed. */
+	 * libsoup may internally cancel messages if, for example, the proxy URI of the SoupSession is changed.
+	 * libsoup also sometimes seems to return a SOUP_STATUS_IO_ERROR when we cancel a message, even though we've specified SOUP_STATUS_CANCELLED
+	 * at cancellation time. Ho Hum. */
 	g_assert (message->status_code != SOUP_STATUS_NONE);
 
-	if (message->status_code == SOUP_STATUS_CANCELLED) {
+	if (message->status_code == SOUP_STATUS_CANCELLED ||
+	    (message->status_code == SOUP_STATUS_IO_ERROR && cancellable != NULL && g_cancellable_is_cancelled (cancellable) == TRUE)) {
 		/* We hackily create and cancel a new GCancellable so that we can set the error using it and therefore save ourselves a translatable
 		 * string and the associated maintenance. */
 		GCancellable *error_cancellable = g_cancellable_new ();
 		g_cancellable_cancel (error_cancellable);
 		g_assert (g_cancellable_set_error_if_cancelled (error_cancellable, error) == TRUE);
 		g_object_unref (error_cancellable);
+
+		/* As per the above comment, force the status to be SOUP_STATUS_CANCELLED. */
+		soup_message_set_status (message, SOUP_STATUS_CANCELLED);
 	}
 
 	/* Free things */
