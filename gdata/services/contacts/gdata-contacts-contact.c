@@ -3220,7 +3220,8 @@ gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataContact
  * Finishes an asynchronous contact photo retrieval operation started with gdata_contacts_contact_get_photo_async(). If the contact doesn't have a
  * photo (i.e. gdata_contacts_contact_get_photo_etag() returns %NULL), %NULL is returned, but no error is set in @error.
  *
- * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
+ * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned. @length will be set to
+ * <code class="literal">0</code> and @content_type will be set to %NULL.
  *
  * Return value: the image data, or %NULL; free with g_free()
  *
@@ -3240,8 +3241,16 @@ gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResul
 
 	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_contacts_contact_get_photo_async);
 
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
+	if (g_simple_async_result_propagate_error (result, error) == TRUE) {
+		/* Error */
+		*length = 0;
+
+		if (content_type != NULL) {
+			*content_type = NULL;
+		}
+
 		return NULL;
+	}
 
 	/* Return the photo (steal the data from the PhotoData struct so we don't have to copy it again) */
 	data = g_simple_async_result_get_op_res_gpointer (result);
