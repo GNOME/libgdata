@@ -886,9 +886,13 @@ authenticate_thread (GSimpleAsyncResult *result, GDataClientLoginAuthorizer *aut
 
 		success = authenticate (authorizer, domain, data->username, data->password, NULL, NULL, cancellable, &authenticate_error) && success;
 
-		if (success == FALSE) {
+		/* Only propagate the first error which occurs. */
+		if (success == FALSE && error == NULL) {
 			g_propagate_error (&error, authenticate_error);
+			authenticate_error = NULL;
 		}
+
+		g_clear_error (&authenticate_error);
 	}
 
 	g_static_rec_mutex_unlock (&(priv->mutex));
