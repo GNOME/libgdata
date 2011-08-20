@@ -224,7 +224,7 @@ test_##TEST_NAME##_async_cancellation (GDataAsyncTestData *async_data, gconstpoi
  \
 	/* Starting with a short timeout, repeatedly run the async. operation, cancelling it after the timeout and increasing the timeout until
 	 * the operation succeeds for the first time. We then finish the test. This guarantees that if, for example, the test creates an entry on
-	 * the server, it only ever creates one; because the test only ever succeeds once. (Of course, this assumes that the server doesn't change
+	 * the server, it only ever creates one; because the test only ever succeeds once. (Of course, this assumes that the server does not change
 	 * state if we cancel the operation, which is a fairly optimistic assumption. Sigh.) */ \
 	do { \
 		GCancellable *cancellable = async_data->cancellable; \
