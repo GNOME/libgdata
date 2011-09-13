@@ -257,7 +257,7 @@ msgstr "ஒரு ஒற்றைடோன் உருப்படி (%s) ந�
 #: ../gdata/gdata-service.c:367
 #, c-format
 msgid "Error code %u when querying: %s"
-msgstr "வினவும் போதான பிழை குறியீடு u : %s"
+msgstr "வினவும் போதான பிழை குறியீடு %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
