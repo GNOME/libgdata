@@ -1,0 +1,485 @@
+# Tamil translation for libgdata.
+# Copyright (C) 2011 libgdata's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgdata package.
+#
+# I Felix <ifelix@redhat.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: libgdata master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-04 16:33+0000\n"
+"PO-Revision-Date: 2011-09-11 07:07+0530\n"
+"Last-Translator: I Felix <ifelix@redhat.com>\n"
+"Language-Team: Tamil <ta@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ta\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../gdata/gdata-client-login-authorizer.c:575
+#: ../gdata/gdata-oauth1-authorizer.c:770
+#: ../gdata/gdata-oauth1-authorizer.c:1029
+msgid "The server returned a malformed response."
+msgstr "ஒரு தவறான பதிலில் சேவையகம் திரும்பியது."
+
+#: ../gdata/gdata-client-login-authorizer.c:595 ../gdata/gdata-service.c:319
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "சேவையின் சேவையகத்திற்கு இணைக்க முடியவில்லை."
+
+#: ../gdata/gdata-client-login-authorizer.c:600 ../gdata/gdata-service.c:324
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "ப்ராக்ஸி சேவையகத்திற்கு இணைக்க முடியவில்லை."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:606 ../gdata/gdata-service.c:330
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+"தவறான கோரிக்கை URI அல்லது தலைப்பு, அல்லது துணைப்புரியாத நிலையில்லா அளவுரு: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:612 ../gdata/gdata-service.c:336
+#, c-format
+msgid "Authentication required: %s"
+msgstr "அங்கீகாரம் தேவைப்பட்டது: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:341
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "கோரப்பட்ட மறுமூலம் காணப்படவில்லை: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:623 ../gdata/gdata-service.c:347
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "உள்ளீடு பதிவிறக்கப்படும் வரை மாற்றியமைக்கப்படலாம்: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:635 ../gdata/gdata-service.c:361
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "அங்கீகரிக்கும் போது பிழை குறியீடு %u : %s"
+
+#: ../gdata/gdata-client-login-authorizer.c:728
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "உள்நுழைவிற்கு ஒரு CAPTCHA ஆனது நிரப்பப்படும்."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:766
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "இந்த பயன்பாடானது ஒரு பயன்பாடு-குறிப்பிட்ட கடவுச்சொல்லை கோருகிறது. (%s)"
+
+#: ../gdata/gdata-client-login-authorizer.c:773
+msgid "Your username or password were incorrect."
+msgstr "உங்கள் கயனர்பெயர் அல்லது கடவுச்சொல் தவறானது."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:794
+#, c-format
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "உங்கள் கணக்கின் மின்னஞ்சல் முகவரி சரிபார்க்கப்படவில்லை. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:799
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr "சேவையின் நிபந்தனைகள் மற்றும் விதிமுறைகளை நீங்கள் ஏற்கவில்லை. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:805
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"இந்த கணக்கு மாற்றப்படும். உங்கள் புதிய பயனர்பெயர் மற்றும் கடவுச்சொல்லை "
+"பெறுவதற்கு ஆன்லைனில் உள்நுழையவும். (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:810
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "இந்த கணக்கு அழிக்கப்படும். (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:815
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "இந்த கணக்கு செயல்நீக்கப்படும். (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:820
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "இந்த சேவைக்கான கணிக்கின் அணுகல் செயல்நீக்கப்படும். (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:825
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "இத்தருணத்தில் இந்த சேவை இல்லை. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "கருத்துக்களை இந்த உள்ளிடு துணைபுரியாது."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "இந்த உள்ளிட்டில் கருத்துகள் சேர்க்கப்படவில்லை."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+msgid "This comment may not be deleted."
+msgstr "இந்த கருத்து  அழிக்கப்படாது."
+
+#. Tried to seek too far
+#: ../gdata/gdata-download-stream.c:751
+msgid "Invalid seek request"
+msgstr "தவறான தேடும் கோரிக்கை"
+
+#: ../gdata/gdata-oauth1-authorizer.c:745
+msgid "The server rejected the temporary credentials request."
+msgstr "சேவையகமானது தற்காலிக சான்றுகளின் கோரிக்கை புறக்கணித்தது."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: ../gdata/gdata-oauth1-authorizer.c:1007
+msgid "Access was denied by the user or server."
+msgstr "பயனர் அல்லது சேவையகத்தினால் அணுகல் மறுக்கப்பட்டது."
+
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
+#, c-format
+msgid "Error parsing XML: %s"
+msgstr "பிழை பகுக்கும் உள்ளாய்வு XML: %s"
+
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: ../gdata/gdata-parsable.c:258
+msgid "Empty document."
+msgstr "காலி ஆவணம்"
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#: ../gdata/gdata-parser.c:66
+#, c-format
+msgid "A %s element was missing required content."
+msgstr "ஒருA %s உருப்படியாது தேவைப்படும் உள்ளடக்கத்தை விடுத்தது."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:82
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgstr "ஒரு %s உருப்படியின் உள்ளடக்கம் (\"%s\") ஆனது ISO 8601 வடிவில் இல்லை."
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#: ../gdata/gdata-parser.c:102
+#, c-format
+msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgstr "ஒரு %s பண்பின் மதிப்பானது %s உருப்படியில் (\"%s\") தெரியாதது."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#: ../gdata/gdata-parser.c:120
+#, c-format
+msgid "The content of a %s element (\"%s\") was unknown."
+msgstr "ஒரு %s உருப்படியின் உள்ளடக்கம் (\"%s\") தெரியாதது."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: ../gdata/gdata-parser.c:140
+#, c-format
+msgid "A required property of a %s element (%s) was not present."
+msgstr "ஒரு தேவைப்படும் பண்பான %s இல் உருப்படி (%s) இல்லை."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"பண்புகள் %s க்கான மதிப்பு உள்ளது மற்றும் %s இல் ஒரு %s உருப்படி இரண்டில் "
+"ஒன்று மட்டும் அனுமதிக்கப்பட்டன."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#: ../gdata/gdata-parser.c:182
+#, c-format
+msgid "A required element (%s) was not present."
+msgstr "ஒரு தேவையான உருப்படி (%s) இல்லை."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#: ../gdata/gdata-parser.c:197
+#, c-format
+msgid "A singleton element (%s) was duplicated."
+msgstr "ஒரு ஒற்றைடோன் உருப்படி (%s) நகலெடுக்கப்பட்டது."
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:367
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "வினவும் போதான பிழை குறியீடு u : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:373
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "ஒரு உள்ளிடுவை நுழைக்கும் போதான பிழை குறியீடு %u : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:379
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "ஒரு உள்ளிடுவை புதுப்பிக்கும் போதான பிழை குறியீடு %u : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:385
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "ஒரு உள்ளிடுவை அழிக்கும் போதான பிழை குறியீடு %u : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:391
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "பதிவிறக்கும் போது பிழை குறியீடு %u : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:397
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "பதிவேற்றும் போதான பிழை குறியீடு %u : %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:403
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "ஒரு பிரிவு செயல்பாட்டை இயக்கும் போதான பிழை குறியீடு %u: %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:683
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "தவறான திருப்பிவிடல் URI: %s"
+
+#: ../gdata/gdata-service.c:1334
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:836
+msgid "The entry has already been inserted."
+msgstr "இந்த உள்ளிடு ஏற்கனவே நுழைக்கப்பட்டது."
+
+#: ../gdata/gdata-upload-stream.c:785
+msgid "Stream is already closed"
+msgstr "ஸ்ட்ரெம் ஏற்கனவே மூடப்பட்டது"
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgstr ""
+"ஒரு %s உருப்படியின் உள்ளடக்கம் (\"%s\") ஆனது ஹெக்சாதசம RGB வடிவில் இல்லை."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:315
+#: ../gdata/services/calendar/gdata-calendar-service.c:366
+msgid "You must be authenticated to query all calendars."
+msgstr "அனைத்து நாள்காட்டிகளையும் வினவ நீங்கள் அங்கீகரிக்கப்பட்டுள்ளீர்கள்."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:412
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:508
+#: ../gdata/services/calendar/gdata-calendar-service.c:568
+msgid "You must be authenticated to query your own calendars."
+msgstr "உங்கள் சொந்த நாள்காட்டிகளை வினவ நீங்கள் அங்கீகரிக்கப்பட்டுள்ளீர்கள்."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:517
+#: ../gdata/services/calendar/gdata-calendar-service.c:581
+msgid "The calendar did not have a content URI."
+msgstr "நாள்காட்டியானது ஒரு உள்ளடக்க URI ஐ கொண்டிருக்கவில்லை."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:258
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
+msgid "You must be authenticated to query contacts."
+msgstr "கேள்வி தொடர்புகளுக்கு நீங்கள் அங்கீகரிக்க வேண்டும்."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:424
+#: ../gdata/services/contacts/gdata-contacts-service.c:474
+msgid "You must be authenticated to query contact groups."
+msgstr "கேள்வி தொடர்பு குழுக்களுக்கு நீங்கள் அங்கீகரிக்க வேண்டும்."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:514
+msgid "The group has already been inserted."
+msgstr "குழு ஏற்கனவே நுழைக்கப்பட்டது."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:521
+msgid "You must be authenticated to insert a group."
+msgstr "ஒரு குழுவை நுழைக்க நீங்கள் அங்கீகரிக்கப்பட வேண்டும்."
+
+#: ../gdata/services/documents/gdata-documents-document.c:274
+msgid "You must be authenticated to download documents."
+msgstr "ஆவணங்களை பதிவிறக்க நீங்கள் அங்கீகரிக்கப்பட வேண்டும்."
+
+#: ../gdata/services/documents/gdata-documents-service.c:357
+#: ../gdata/services/documents/gdata-documents-service.c:412
+msgid "You must be authenticated to query documents."
+msgstr "கேள்வி ஆவணங்களை  நீங்கள் அங்கீகரிக்க வேண்டும்."
+
+#: ../gdata/services/documents/gdata-documents-service.c:491
+msgid "You must be authenticated to upload documents."
+msgstr "ஆவணங்களை பதிவேற்ற நீங்கள் அங்கீகரிக்கப்பட வேண்டும்."
+
+#: ../gdata/services/documents/gdata-documents-service.c:497
+msgid "The document has already been uploaded."
+msgstr "ஆவணம் ஏற்கனவே பதிவேற்றப்பட்டது."
+
+#: ../gdata/services/documents/gdata-documents-service.c:552
+msgid "You must be authenticated to update documents."
+msgstr "ஆவணங்களை புதுப்பிக்க நீங்கள் அங்கீகரிக்கப்பட வேண்டும்."
+
+#: ../gdata/services/documents/gdata-documents-service.c:615
+#, c-format
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
+msgstr "வழங்கப்பட்ட ஆவண ('%s') உள்ளடக்க வகையால் கண்டறிய முடியவில்லை."
+
+#: ../gdata/services/documents/gdata-documents-service.c:664
+#: ../gdata/services/documents/gdata-documents-service.c:849
+msgid "You must be authenticated to move documents and folders."
+msgstr "ஆவணங்களை கோப்புறைக்கு நகர்த்த நீங்கள் அங்கீகரிக்க வேண்டும்."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"நீங்கள் ஒரு பயனர்பெயரை குறிப்பிட வேண்டும் அல்லது ஒரு பயனரை வினவ "
+"அங்கீகரிக்கப்பட வேண்டும்."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
+msgid "Query parameter not allowed for albums."
+msgstr "ஆல்பங்களுக்கு கேள்வி அளவுரு அனுமதிக்கப்படவில்லை."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr ""
+"நீங்கள் ஒரு பயனர்பெயரை குறிப்பிட வேண்டும் அல்லது அனைத்து ஆல்பங்களுக்கு வினவ "
+"அங்கீகரிக்க வேண்டும்."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
+msgid "The album did not have a feed link."
+msgstr "இந்த ஆல்பம் ஒரு பீட் இணைப்பை கொண்டிருக்கவில்லை."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+msgid "You must be authenticated to upload a file."
+msgstr "ஒரு கோப்பினை பதிவேற்ற நீங்கள் அங்கீகரிக்க வேண்டும்."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+msgid "The album has already been inserted."
+msgstr "இந்த ஆல்பம் ஏற்கனவே நுழைக்கப்பட்டது."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+msgid "You must be authenticated to insert an album."
+msgstr "ஒரு ஆல்பத்தை நுழைக்க நீங்கள் அங்கீகரிக்கப்பட வேண்டும்."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:417
+#, c-format
+msgid "This service is not available at the moment."
+msgstr "இத்தருணத்தில் இந்த சேவை இல்லை. "
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:421
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "இதை செய்வதற்கு நீங்கள் அங்கீகரிக்கப்பட வேண்டும்."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:426
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"நீங்கள் சமீபத்தில் API க்கு அதிக அழைப்புகளை செய்துள்ளீர்கள். ஒரு சில "
+"நிமிடங்கள் காத்திருந்து மீண்டும் முயற்சிக்கவும்."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:429
+#, c-format
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"உங்கள் உள்ளிடு பங்கை தாண்டிவிட்டீர்கள். சில உள்ளிடுகளை அழித்து மீண்டும் "
+"முயற்சிக்கவும்."
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:436
+#: ../gdata/services/youtube/gdata-youtube-service.c:442
+#, c-format
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr ""
+"தெரியாத பிழை குறியீடு \"%s\" செயற்களத்தில் \"%s\" இடத்துடன் \"%s\"ஐ பெற்றது."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr "தெரியாத மற்றும் பகுக்கமுடியாத பிழை பெறப்பட்டது."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:724
+#: ../gdata/services/youtube/gdata-youtube-service.c:781
+msgid "The video did not have a related videos <link>."
+msgstr "இந்த வீடியோ ஒரு தொடர்புடைய வீடியோக்களை <link> கொண்டிருக்கவில்லை."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:843
+msgid "You must be authenticated to upload a video."
+msgstr "ஒரு வீடியோவை பதிவேற்ற நீங்கள் அங்கீகரிக்க வேண்டும்."
+
+
