@@ -3627,6 +3627,35 @@ test_gcontact_website (void)
 }
 
 static void
+test_gcontact_website_label (void)
+{
+	GDataGContactWebsite *website;
+	GError *error = NULL;
+
+	g_test_bug ("659016");
+
+	/* Parse a website with a label but no rel. */
+	website = GDATA_GCONTACT_WEBSITE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_WEBSITE,
+		"<gContact:website xmlns:gContact='http://schemas.google.com/contact/2008' href='http://test.com/' label='Custom'/>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GCONTACT_WEBSITE (website));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gcontact_website_get_uri (website), ==, "http://test.com/");
+	g_assert_cmpstr (gdata_gcontact_website_get_relation_type (website), ==, NULL);
+	g_assert_cmpstr (gdata_gcontact_website_get_label (website), ==, "Custom");
+	g_assert (gdata_gcontact_website_is_primary (website) == FALSE);
+
+	/* Check the outputted XML is still OK */
+	gdata_test_assert_xml (website,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<gContact:website xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' "
+		                  "href='http://test.com/' label='Custom' primary='false'/>");
+	g_object_unref (website);
+}
+
+static void
 test_gcontact_website_error_handling (void)
 {
 	GDataGContactWebsite *website;
@@ -3642,7 +3671,7 @@ test_gcontact_website_error_handling (void)
 
 	TEST_XML_ERROR_HANDLING ("rel='work'"); /* no href */
 	TEST_XML_ERROR_HANDLING ("rel='work' href=''"); /* empty href */
-	TEST_XML_ERROR_HANDLING ("href='http://example.com/'"); /* no rel */
+	TEST_XML_ERROR_HANDLING ("href='http://example.com/'"); /* no rel or label */
 	TEST_XML_ERROR_HANDLING ("href='http://example.com/' rel=''"); /* empty rel */
 	TEST_XML_ERROR_HANDLING ("href='http://example.com/' rel='profile' primary='not a boolean'"); /* invalid primary */
 
@@ -3760,6 +3789,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gcontact/relation/error_handling", test_gcontact_relation_error_handling);
 	g_test_add_func ("/gcontact/relation/escaping", test_gcontact_relation_escaping);
 	g_test_add_func ("/gcontact/website", test_gcontact_website);
+	g_test_add_func ("/gcontact/website/label", test_gcontact_website_label);
 	g_test_add_func ("/gcontact/website/error_handling", test_gcontact_website_error_handling);
 	g_test_add_func ("/gcontact/website/escaping", test_gcontact_website_escaping);
 

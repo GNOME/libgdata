@@ -100,6 +100,7 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * GDataGContactWebsite:relation-type:
 	 *
 	 * A programmatic value that identifies the type of website. Examples are %GDATA_GCONTACT_WEBSITE_HOME_PAGE or %GDATA_GCONTACT_WEBSITE_FTP.
+	 * It is mutually exclusive with #GDataGContactWebsite:label.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcWebsite">gContact specification</ulink>.
@@ -116,6 +117,7 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * GDataGContactWebsite:label:
 	 *
 	 * A simple string value used to name this website. It allows UIs to display a label such as "Work", "Travel blog", "Personal blog", etc.
+	 * It is mutually exclusive with #GDataGContactWebsite:relation-type.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcWebsite">gContact specification</ulink>.
@@ -233,7 +235,7 @@ gdata_gcontact_website_set_property (GObject *object, guint property_id, const G
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *uri, *rel;
+	xmlChar *uri, *rel, *label;
 	gboolean primary_bool;
 	GDataGContactWebsitePrivate *priv = GDATA_GCONTACT_WEBSITE (parsable)->priv;
 
@@ -247,16 +249,19 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		return gdata_parser_error_required_property_missing (root_node, "href", error);
 	}
 
+	/* NOTE: We allow both rel and label to be present when we should probably be asserting that they're mutually exclusive. See the comment in
+	 * pre_get_xml() for details. */
 	rel = xmlGetProp (root_node, (xmlChar*) "rel");
-	if (rel == NULL || *rel == '\0') {
-		xmlFree (uri);
+	label = xmlGetProp (root_node, (xmlChar*) "label");
+	if ((rel == NULL || *rel == '\0') && (label == NULL || *label == '\0')) {
 		xmlFree (rel);
+		xmlFree (label);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	priv->uri = (gchar*) uri;
 	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
+	priv->label = (gchar*) label;
+	priv->uri = (gchar*) uri;
 	priv->is_primary = primary_bool;
 
 	return TRUE;
@@ -268,10 +273,18 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
 	GDataGContactWebsitePrivate *priv = GDATA_GCONTACT_WEBSITE (parsable)->priv;
 
 	gdata_parser_string_append_escaped (xml_string, " href='", priv->uri, "'");
-	gdata_parser_string_append_escaped (xml_string, " rel='", priv->relation_type, "'");
 
-	if (priv->label != NULL)
+	/* NOTE: We previously allowed both rel and label to be set, making rel mandatory. Since bgo#659016, we treat rel and label as mutually
+	 * exclusive attributes when parsing. We should treat them as mutually exclusive here as well, and g_assert_not_reached() if neither or
+	 * both are set (as in gdata-gcontact-event.c:pre_get_xml()), but in order to maintain backwards compatibility, we don't.
+	 * Sigh, Google. */
+	if (priv->relation_type != NULL) {
+		gdata_parser_string_append_escaped (xml_string, " rel='", priv->relation_type, "'");
+	}
+
+	if (priv->label != NULL) {
 		gdata_parser_string_append_escaped (xml_string, " label='", priv->label, "'");
+	}
 
 	if (priv->is_primary == TRUE)
 		g_string_append (xml_string, " primary='true'");
@@ -288,12 +301,14 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 /**
  * gdata_gcontact_website_new:
  * @uri: the website URI
- * @relation_type: the relationship between the website and its owner
+ * @relation_type: the relationship between the website and its owner, or %NULL
  * @label: (allow-none): a human-readable label for the website, or %NULL
  * @is_primary: %TRUE if this website is its owner's primary website, %FALSE otherwise
  *
  * Creates a new #GDataGContactWebsite. More information is available in the <ulink type="http"
  * url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcWebsite">gContact specification</ulink>.
+ *
+ * Exactly one of @relation_type and @label should be provided; the other must be %NULL.
  *
  * Return value: a new #GDataGContactWebsite; unref with g_object_unref()
  *
@@ -303,7 +318,10 @@ GDataGContactWebsite *
 gdata_gcontact_website_new (const gchar *uri, const gchar *relation_type, const gchar *label, gboolean is_primary)
 {
 	g_return_val_if_fail (uri != NULL && *uri != '\0', NULL);
-	g_return_val_if_fail (relation_type != NULL && *relation_type != '\0', NULL);
+	g_return_val_if_fail ((relation_type != NULL && *relation_type != '\0'/* && label == NULL*/) ||
+	                      (relation_type == NULL && label != NULL && *label != '\0'), NULL);
+	/* NOTE: As in pre_get_xml(), we should treat rel and label as mutually exclusive here, but we can't for backwards compatibility reasons. */
+
 	return g_object_new (GDATA_TYPE_GCONTACT_WEBSITE, "uri", uri, "relation-type", relation_type, "label", label, "is-primary", is_primary, NULL);
 }
 
@@ -369,13 +387,16 @@ gdata_gcontact_website_get_relation_type (GDataGContactWebsite *self)
  * Sets the #GDataGContactWebsite:relation-type property to @relation_type
  * such as %GDATA_GCONTACT_WEBSITE_HOME_PAGE or %GDATA_GCONTACT_WEBSITE_FTP.
  *
+ * If @relation_type is %NULL, the relation type will be unset. When the #GDataGContactWebsite is used in a query, however,
+ * exactly one of #GDataGContactWebsite:relation-type and #GDataGContactWebsite:label must be %NULL.
+ *
  * Since: 0.7.0
  **/
 void
 gdata_gcontact_website_set_relation_type (GDataGContactWebsite *self, const gchar *relation_type)
 {
 	g_return_if_fail (GDATA_IS_GCONTACT_WEBSITE (self));
-	g_return_if_fail (relation_type != NULL && *relation_type != '\0');
+	g_return_if_fail (relation_type == NULL || *relation_type != '\0');
 
 	g_free (self->priv->relation_type);
 	self->priv->relation_type = g_strdup (relation_type);
@@ -406,7 +427,8 @@ gdata_gcontact_website_get_label (GDataGContactWebsite *self)
  *
  * Sets the #GDataGContactWebsite:label property to @label.
  *
- * Set @label to %NULL to unset the property in the website.
+ * If @label is %NULL, the label will be unset. When the #GDataGContactWebsite is used in a query, however,
+ * exactly one of #GDataGContactWebsite:relation-type and #GDataGContactWebsite:label must be %NULL.
  *
  * Since: 0.7.0
  **/
@@ -414,6 +436,8 @@ void
 gdata_gcontact_website_set_label (GDataGContactWebsite *self, const gchar *label)
 {
 	g_return_if_fail (GDATA_IS_GCONTACT_WEBSITE (self));
+	/* NOTE: We should be validating using the code below, but we can't. See pre_get_xml() for details. */
+	g_return_if_fail (label == NULL || *label != '\0');
 
 	g_free (self->priv->label);
 	self->priv->label = g_strdup (label);
