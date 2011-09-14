@@ -1079,6 +1079,7 @@ query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GC
 	if (entry == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
+		return;
 	}
 
 	g_simple_async_result_set_op_res_gpointer (result, entry, (GDestroyNotify) g_object_unref);
