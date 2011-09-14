@@ -1,3 +1,21 @@
+Overview of changes from libgdata 0.10.0 to libgdata 0.10.1
+===========================================================
+
+Bugs fixed:
+* Bug 659016 — @rel not mandatory in website references
+
+Updated translations:
+* kn (Shankar Prasad)
+* ko (Changwoo Ryu)
+* lv (Rūdofls Mazurs)
+* pa (A S Alam)
+* pl (Piotr Drąg)
+* pt (António Lima)
+* pt_BR (Flamarion Jorge)
+* ta (I Felix)
+* zh_HK (Chao-Hsiung Liao)
+* zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.9.1 to libgdata 0.10.0
 ==========================================================
 
