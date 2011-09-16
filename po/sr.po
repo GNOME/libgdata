@@ -4,16 +4,18 @@ msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-06-22 22:37+0000\n"
-"PO-Revision-Date: 2011-06-13 22:42+0200\n"
+"POT-Creation-Date: 2011-09-14 22:33+0000\n"
+"PO-Revision-Date: 2011-08-03 09:34+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: Serbian (sr)\n"
+"Language: sr\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.0\n"
+"X-Project-Style: gnome\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:575
 #: ../gdata/gdata-oauth1-authorizer.c:770
@@ -21,18 +23,18 @@ msgstr ""
 msgid "The server returned a malformed response."
 msgstr "Сервер је вратио неисправан одговор."
 
-#: ../gdata/gdata-client-login-authorizer.c:595 ../gdata/gdata-service.c:308
+#: ../gdata/gdata-client-login-authorizer.c:595 ../gdata/gdata-service.c:319
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Не могу да се повежем на сервер услуге."
 
-#: ../gdata/gdata-client-login-authorizer.c:600 ../gdata/gdata-service.c:313
+#: ../gdata/gdata-client-login-authorizer.c:600 ../gdata/gdata-service.c:324
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Не могу да се повежем на посреднички сервер."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:606 ../gdata/gdata-service.c:319
+#: ../gdata/gdata-client-login-authorizer.c:606 ../gdata/gdata-service.c:330
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -40,26 +42,26 @@ msgstr ""
 "параметар: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:612 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:612 ../gdata/gdata-service.c:336
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Потребно је потврђивање идентитета: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:330
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:341
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Тражени ресурс није пронађен: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:623 ../gdata/gdata-service.c:336
+#: ../gdata/gdata-client-login-authorizer.c:623 ../gdata/gdata-service.c:347
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Унос је измењена од када је преузет: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:635 ../gdata/gdata-service.c:350
+#: ../gdata/gdata-client-login-authorizer.c:635 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Кôд грешке %u приликом потврђивања идентитета: %s"
@@ -124,10 +126,27 @@ msgstr "Приступ овог налога овом сервису је оне
 msgid "This service is not available at the moment. (%s)"
 msgstr "Тражена услуга није доступна у овом тренутку. (%s)"
 
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "Овај унос не подржава коментаре."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "Коментари не могу да се додају овом уносу."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+msgid "This comment may not be deleted."
+msgstr "Овај налог не може бити избрисан."
+
 #. Tried to seek too far
 #: ../gdata/gdata-download-stream.c:751
 msgid "Invalid seek request"
-msgstr ""
+msgstr "Неисправан захтев претраге"
 
 #: ../gdata/gdata-oauth1-authorizer.c:745
 msgid "The server rejected the temporary credentials request."
@@ -234,62 +253,62 @@ msgstr "Синглетон елемент (%s) је дуплирани."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:356
+#: ../gdata/gdata-service.c:367
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Кôд грешке %u приликом пропитивања: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:362
+#: ../gdata/gdata-service.c:373
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Кôд грешке %u приликом уметања уноса: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:379
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Кôд грешке %u приликом ажурирања уноса: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:385
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Кôд грешке %u приликом брисања уноса: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:391
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Кôд грешке %u приликом преузимања: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:397
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Кôд грешке %u приликом слања: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:403
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Кд грешке %u приликом покретања серијске операције: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:666
+#: ../gdata/gdata-service.c:683
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Неисправна адреса преусмеравања: %s"
 
-#: ../gdata/gdata-service.c:1297
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:529
-#: ../gdata/services/youtube/gdata-youtube-service.c:833
+#: ../gdata/gdata-service.c:1335
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:836
 msgid "The entry has already been inserted."
 msgstr "Унос је већ уметнут."
 
@@ -303,7 +322,7 @@ msgstr "Ток је већ затворен"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:394
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Садржај елемента „%s“ („%s“) није у хексадецималном РГБ формату."
@@ -313,15 +332,15 @@ msgstr "Садржај елемента „%s“ („%s“) није у хекс
 msgid "You must be authenticated to query all calendars."
 msgstr "Морате да потврдите идентитет да бисте пропитали све календаре."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:409
-#: ../gdata/services/calendar/gdata-calendar-service.c:460
-#: ../gdata/services/calendar/gdata-calendar-service.c:502
-#: ../gdata/services/calendar/gdata-calendar-service.c:562
+#: ../gdata/services/calendar/gdata-calendar-service.c:412
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:508
+#: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
 msgstr "Морате да потврдите идентитет да бисте пропитали ваше личне календаре."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:511
-#: ../gdata/services/calendar/gdata-calendar-service.c:571
+#: ../gdata/services/calendar/gdata-calendar-service.c:517
+#: ../gdata/services/calendar/gdata-calendar-service.c:581
 msgid "The calendar did not have a content URI."
 msgstr "Календар нема адресу садржаја."
 
@@ -330,16 +349,16 @@ msgstr "Календар нема адресу садржаја."
 msgid "You must be authenticated to query contacts."
 msgstr "Морате да потврдите идентитет да бисте пропитали контакте."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:421
-#: ../gdata/services/contacts/gdata-contacts-service.c:471
+#: ../gdata/services/contacts/gdata-contacts-service.c:424
+#: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
 msgstr "Морате да потврдите идентитет да бисте пропитали групе контакта."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:508
+#: ../gdata/services/contacts/gdata-contacts-service.c:514
 msgid "The group has already been inserted."
 msgstr "Група је већ уметнута."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:515
+#: ../gdata/services/contacts/gdata-contacts-service.c:521
 msgid "You must be authenticated to insert a group."
 msgstr "Морате да потврдите идентитет да бисте уметнули групу."
 
@@ -352,26 +371,26 @@ msgstr "Морате да потврдите идентитет да бисте 
 msgid "You must be authenticated to query documents."
 msgstr "Морате да потврдите идентитет да бисте пропитали документа."
 
-#: ../gdata/services/documents/gdata-documents-service.c:488
+#: ../gdata/services/documents/gdata-documents-service.c:491
 msgid "You must be authenticated to upload documents."
 msgstr "Морате да потврдите идентитет да бисте послали документа."
 
-#: ../gdata/services/documents/gdata-documents-service.c:494
+#: ../gdata/services/documents/gdata-documents-service.c:497
 msgid "The document has already been uploaded."
 msgstr "Документ је већ отпремљен."
 
-#: ../gdata/services/documents/gdata-documents-service.c:549
+#: ../gdata/services/documents/gdata-documents-service.c:552
 msgid "You must be authenticated to update documents."
 msgstr "Морате да потврдите идентитет да бисте ажурирали документа."
 
-#: ../gdata/services/documents/gdata-documents-service.c:612
+#: ../gdata/services/documents/gdata-documents-service.c:615
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Не могу препознати врсту садржаја испорученог документа („%s“)."
 
-#: ../gdata/services/documents/gdata-documents-service.c:661
-#: ../gdata/services/documents/gdata-documents-service.c:846
+#: ../gdata/services/documents/gdata-documents-service.c:664
+#: ../gdata/services/documents/gdata-documents-service.c:849
 msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Морате да потврдите идентитет да бисте премештали документа и фасцикле."
@@ -382,31 +401,31 @@ msgstr ""
 "Морате да наведете корисничко име или да потврдите идентитет да бисте "
 "пропитали корисника."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:298
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:355
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
 msgstr "Параметар упита није дозвољен за албуме."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:305
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:363
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Морате да наведете корисничко име или да потврдите идентитет да бисте "
 "пропитали све албуме."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:381
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
 msgstr "Албум није имао везу напајања."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:536
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
 msgstr "Морате да потврдите идентитет да бисте послали датотеку."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
 msgstr "Албум је већ уметнут."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:619
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "Морате да потврдите идентитет да бисте уметнули албум."
 
@@ -456,6 +475,6 @@ msgstr "Примио сам непознату и нерашчлањиву гр�
 msgid "The video did not have a related videos <link>."
 msgstr "Видео није имало одговарајуће видео снимке <link> ."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:840
+#: ../gdata/services/youtube/gdata-youtube-service.c:843
 msgid "You must be authenticated to upload a video."
 msgstr "Морате да потврдите идентитет да бисте послали видео снимак."
