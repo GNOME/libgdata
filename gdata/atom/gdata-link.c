@@ -290,15 +290,15 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 	/* href */
 	uri = gxml_dom_element_get_attribute (root_elem, "href");
-	if (uri == NULL || *uri == '\0') {
-		g_free (uri);
+	if (gxml_dom_element_get_attribute_node (root_elem, "href") == NULL || *uri == '\0') {
+		g_free (uri); // TODO:GXML: do we want to free these?  I think not.
 		return gdata_parser_error_required_property_missing (root_node, "href", error);
 	}
 	self->priv->uri = uri;
 
 	/* rel */
 	relation_type = gxml_dom_element_get_attribute (root_elem, "rel");
-	if (relation_type != NULL && *relation_type == '\0') {
+	if (gxml_dom_element_get_attribute_node (root_elem, "rel") != NULL && *relation_type == '\0') {
 		g_free (relation_type);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
@@ -308,7 +308,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 	/* type */
 	content_type = gxml_dom_element_get_attribute (root_elem, "type");
-	if (content_type != NULL && *content_type == '\0') {
+	if (gxml_dom_element_get_attribute_node (root_elem, "type") != NULL && *content_type == '\0') {
 		g_free (content_type);
 		return gdata_parser_error_required_property_missing (root_node, "type", error);
 	}
@@ -316,7 +316,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 	/* hreflang */
 	language = gxml_dom_element_get_attribute (root_elem, "hreflang");
-	if (language != NULL && *language == '\0') {
+	if (gxml_dom_element_get_attribute_node (root_elem, "hreflang") != NULL && *language == '\0') {
 		g_free (language);
 		return gdata_parser_error_required_property_missing (root_node, "hreflang", error);
 	}
@@ -327,7 +327,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 	/* length */
 	length = gxml_dom_element_get_attribute (root_elem, "length");
-	if (length == NULL)
+	if (gxml_dom_element_get_attribute_node (root_elem, "length") == NULL)
 		self->priv->length = -1;
 	else
 		self->priv->length = strtoul (length, NULL, 10);
