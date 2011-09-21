@@ -31,32 +31,29 @@
 static gchar *
 print_element (GXmlDomXNode *node)
 {
-	// TODO:GXML: support namespaces
-	/* gboolean node_has_ns = (node->ns == NULL || node->ns->prefix == NULL || */
-	/*                         xmlStrcmp (node->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE; */
-	gboolean node_has_ns = FALSE; // < TODO:GXML: remove
+	const gchar *uri = gxml_dom_xnode_get_namespace_uri (node);
+	gboolean node_has_ns = (uri == NULL || gxml_dom_xnode_get_prefix (node) == NULL ||
+				g_strcmp0 (uri, "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
 	GXmlDomXNode *parent = gxml_dom_xnode_get_parent_node (node);
 
 	if (parent == NULL) {
 		/* No parent node */
 		if (node_has_ns == TRUE)
-			// return g_strdup_printf ("<%s:%s>", node->ns->prefix, node->name); // TODO:GXML
-			return g_strdup_printf ("NAMESPACENOTSUPPORTED");
+			return g_strdup_printf ("<%s:%s>", gxml_dom_xnode_get_prefix (node), gxml_dom_xnode_get_node_name (node));
 		else
 			return g_strdup_printf ("<%s>", gxml_dom_xnode_get_node_name (node));
 	} else {
 		/* We have a parent node, which makes things a lot more complex */
-		// TODO:GXML: support namespaces
-		/* gboolean parent_has_ns = (node->parent->type == XML_DOCUMENT_NODE || node->parent->ns == NULL || node->parent->ns->prefix == NULL || */
-		/*                           xmlStrcmp (node->parent->ns->href, (xmlChar*) "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE; */
-		gboolean parent_has_ns = FALSE; // < TODO:GXML: remove
+
+		GXmlDomXNode *parent = gxml_dom_xnode_get_parent_node (node);
+		gboolean parent_has_ns = (parent != NULL /* TODO:GXML:make sure that the root element does not return the Document as its parent, or we have to check type as well */ ||
+				 gxml_dom_xnode_get_namespace_uri (parent) == NULL || gxml_dom_xnode_get_prefix (parent) == NULL ||
+				 g_strcmp0 (gxml_dom_xnode_get_namespace_uri (parent), "http://www.w3.org/2005/Atom") == 0) ? FALSE : TRUE;
 
 		if (parent_has_ns == TRUE && node_has_ns == TRUE)
-			//return g_strdup_printf ("<%s:%s/%s:%s>", node->parent->ns->prefix, node->parent->name, node->ns->prefix, node->name);// TODO:GXML
-			return g_strdup_printf ("NAMESPACENOTSUPPORTED");
+			return g_strdup_printf ("<%s:%s/%s:%s>", gxml_dom_xnode_get_prefix (parent), gxml_dom_xnode_get_node_name (parent), gxml_dom_xnode_get_prefix (node), gxml_dom_xnode_get_node_name (node));
 		else if (parent_has_ns == FALSE && node_has_ns == TRUE)
-			//return g_strdup_printf ("<%s/%s:%s>", node->parent->name, node->ns->prefix, node->name);// TODO:GXML
-			return g_strdup_printf ("NAMESPACENOTSUPPORTED");
+			return g_strdup_printf ("<%s/%s:%s>", gxml_dom_xnode_get_node_name (parent), gxml_dom_xnode_get_prefix (node), gxml_dom_xnode_get_node_name (node));
 		else
 			return g_strdup_printf ("<%s/%s>", gxml_dom_xnode_get_node_name (parent), gxml_dom_xnode_get_node_name (node));
 	}
@@ -327,10 +324,12 @@ gdata_parser_boolean_from_property (GXmlDomXNode *element, const gchar *property
 gboolean
 gdata_parser_is_namespace (GXmlDomXNode *element, const gchar *namespace_uri)
 {
-	// TODO:GXML: namespace support
-	/* if ((element->ns != NULL && xmlStrcmp (element->ns->href, (const xmlChar*) namespace_uri) == 0) || */
-	/*     (element->ns == NULL && strcmp (namespace_uri, "http://www.w3.org/2005/Atom") == 0)) */
-	/* 	return TRUE; */
+	const gchar *uri = gxml_dom_xnode_get_namespace_uri (element);
+
+	if ((uri != NULL && g_strcmp0 (uri, namespace_uri) == 0) ||
+	    (uri == NULL && g_strcmp0 ("http://www.w3.org/2005/Atom", namespace_uri) == 0))
+		return TRUE;
+
 	return FALSE;
 }
 
