@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-04 11:05+0300\n"
-"PO-Revision-Date: 2011-07-04 11:08+0300\n"
+"POT-Creation-Date: 2011-09-23 10:43+0300\n"
+"PO-Revision-Date: 2011-09-23 10:43+0300\n"
 "Last-Translator: Tommi Vainikainen <thv@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: \n"
@@ -46,7 +46,7 @@ msgstr "Pyydettyä resurssia ei löytynyt: %s"
 #. Translators: the parameter is an error message returned by the server.
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr "Alkiota on muokattu lataamisen jälkeen: %s"
+msgstr "Merkintää on muokattu lataamisen jälkeen: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -103,6 +103,20 @@ msgstr "Tällä tunnuksella pääsy tähän palvelu on kytketty pois käytöstä
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Tämä palvelu ei ole saatavilla tällä hetkellä. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+msgid "This entry does not support comments."
+msgstr "Tämä merkintä ei tue kommentteja."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+msgid "Comments may not be added to this entry."
+msgstr "Kommentteja ei välttämättä lisätty tähän merkintään."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+msgid "This comment may not be deleted."
+msgstr "Tätä kommenttia ei välttämättä poistettu."
 
 #. Tried to seek too far
 msgid "Invalid seek request"
