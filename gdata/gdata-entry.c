@@ -415,7 +415,7 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	/* Extract the ETag */
-	GDATA_ENTRY (parsable)->priv->etag = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (root_node), "etag");
+	GDATA_ENTRY (parsable)->priv->etag = gdata_parser_get_attribute (GXML_DOM_ELEMENT (root_node), "etag");
 
 	return TRUE;
 }
@@ -444,7 +444,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			return success;
 		} else if (g_strcmp0 (gxml_dom_xnode_get_node_name (node), "content") == 0) {
 			/* atom:content */
-			priv->content = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "src");
+			priv->content = gdata_parser_get_attribute (GXML_DOM_ELEMENT (node), "src");
 			priv->content_is_uri = TRUE;
 
 			if (priv->content == NULL) {

@@ -791,7 +791,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			gchar *recorded;
 			gint64 recorded_int64;
 
-			recorded = gxml_dom_element_get_content (elem);
+			recorded = gdata_parser_element_get_content (elem);
 			if (gdata_parser_int64_from_date ((gchar*) recorded, &recorded_int64) == FALSE) {
 				/* Error */
 				gdata_parser_error_not_iso8601_format (node, (gchar*) recorded, error);

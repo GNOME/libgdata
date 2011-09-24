@@ -235,7 +235,7 @@ gdata_gcontact_website_set_property (GObject *object, guint property_id, const G
 static gboolean
 pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
-	gchar *uri, *rel;
+	gchar *uri, *rel, *label;
 	gboolean primary_bool;
 	GDataGContactWebsitePrivate *priv = GDATA_GCONTACT_WEBSITE (parsable)->priv;
 	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
@@ -252,27 +252,18 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 	/* NOTE: We allow both rel and label to be present when we should probably be asserting that they're mutually exclusive. See the comment in
 	 * pre_get_xml() for details. */
-	rel = xmlGetProp (root_node, (xmlChar*) "rel");
-	label = xmlGetProp (root_node, (xmlChar*) "label");
-	if ((rel == NULL || *rel == '\0') && (label == NULL || *label == '\0')) {
-		xmlFree (rel);
-		xmlFree (label);
-		return gdata_parser_error_required_property_missing (root_node, "rel", error);
-	}
-
-	priv->relation_type = (gchar*) rel;
-	priv->label = (gchar*) label;
-	priv->uri = (gchar*) uri;
 	rel = gxml_dom_element_get_attribute (root_elem, "rel");
-	if (rel == NULL || *rel == '\0') {
+	label = gxml_dom_element_get_attribute (root_elem, "label");
+	if ((rel == NULL || *rel == '\0') && (label == NULL || *label == '\0')) {
 		g_free (uri);
 		g_free (rel);
+		g_free (label);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	priv->uri = uri;
 	priv->relation_type = rel;
-	priv->label = gxml_dom_element_get_attribute (root_elem, "label");
+	priv->label = label;
+	priv->uri = uri;
 	priv->is_primary = primary_bool;
 
 	return TRUE;

@@ -82,6 +82,9 @@ gboolean gdata_parser_object_from_element (GXmlDomXNode *element, const gchar *e
 void gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 gchar *gdata_parser_utf8_trim_whitespace (const gchar *s) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
+gchar *gdata_parser_get_attribute (GXmlDomElement *element, const gchar *attr_name);
+gchar *gdata_parser_element_get_content (GXmlDomElement *elem);
+
 G_END_DECLS
 
 #endif /* !GDATA_PARSER_H */

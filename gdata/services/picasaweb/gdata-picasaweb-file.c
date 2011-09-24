@@ -922,17 +922,17 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			return success;
 		} else if (g_strcmp0 (node_name, "width") == 0) {
 			/* gphoto:width */
-			gchar *width = gxml_dom_element_get_content (elem);
+			gchar *width = gdata_parser_element_get_content (elem);
 			self->priv->width = strtoul ((gchar*) width, NULL, 10);
 			g_free (width);
 		} else if (g_strcmp0 (node_name, "height") == 0) {
 			/* gphoto:height */
-			gchar *height = gxml_dom_element_get_content (elem);
+			gchar *height = gdata_parser_element_get_content (elem);
 			self->priv->height = strtoul ((gchar*) height, NULL, 10);
 			g_free (height);
 		} else if (g_strcmp0 (node_name, "size") == 0) {
 			/* gphoto:size */
-			gchar *size = gxml_dom_element_get_content (elem);
+			gchar *size = gdata_parser_element_get_content (elem);
 			self->priv->size = strtoul ((gchar*) size, NULL, 10);
 			g_free (size);
 		} else if (g_strcmp0 (node_name, "timestamp") == 0) {
@@ -940,21 +940,21 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			gchar *timestamp_str;
 			guint64 milliseconds;
 
-			timestamp_str = gxml_dom_element_get_content (elem);
+			timestamp_str = gdata_parser_element_get_content (elem);
 			milliseconds = g_ascii_strtoull ((gchar*) timestamp_str, NULL, 10);
 			g_free (timestamp_str);
 
 			gdata_picasaweb_file_set_timestamp (self, (gint64) milliseconds);
 		} else if (g_strcmp0 (node_name, "commentingEnabled") == 0) {
 			/* gphoto:commentingEnabled */
-			gchar *is_commenting_enabled = gxml_dom_element_get_content (elem);
+			gchar *is_commenting_enabled = gdata_parser_element_get_content (elem);
 			if (is_commenting_enabled == NULL)
 				return gdata_parser_error_required_content_missing (node, error);
 			self->priv->is_commenting_enabled = (g_strcmp0 (is_commenting_enabled, "true") == 0 ? TRUE : FALSE);
 			g_free (is_commenting_enabled);
 		} else if (g_strcmp0 (node_name, "commentCount") == 0) {
 			/* gphoto:commentCount */
-			gchar *comment_count = gxml_dom_element_get_content (elem);
+			gchar *comment_count = gdata_parser_element_get_content (elem);
 			self->priv->comment_count = strtoul ((gchar*) comment_count, NULL, 10);
 			g_free (comment_count);
 		} else if (g_strcmp0 (node_name, "access") == 0) {
@@ -964,7 +964,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			 * See https://bugzilla.gnome.org/show_bug.cgi?id=589858 */
 		} else if (g_strcmp0 (node_name, "rotation") == 0) {
 			/* gphoto:rotation */
-			gchar *rotation = gxml_dom_element_get_content (elem);
+			gchar *rotation = gdata_parser_element_get_content (elem);
 			gdata_picasaweb_file_set_rotation (self, strtoul ((gchar*) rotation, NULL, 10));
 			g_free (rotation);
 		} else {

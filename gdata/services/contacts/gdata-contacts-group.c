@@ -329,7 +329,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		 * changes. This fixes bugs caused by referring to contacts by the base projection, rather than the full projection; such as
 		 * http://code.google.com/p/gdata-issues/issues/detail?id=2129. */
 		gchar *base;
-		gchar *id = gxml_dom_element_get_content (elem);
+		gchar *id = gdata_parser_element_get_content (elem);
 
 		if (id != NULL) {
 			base = strstr (id, "/base/");

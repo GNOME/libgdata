@@ -251,16 +251,16 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
 	/* Get the width and height */
-	width = gxml_dom_element_get_attribute (root_elem, "width");
+	width = gdata_parser_get_attribute (root_elem, "width");
 	width_uint = (width == NULL) ? 0 : strtoul (width, NULL, 10);
 	g_free (width);
 
-	height = gxml_dom_element_get_attribute (root_elem, "height");
+	height = gdata_parser_get_attribute (root_elem, "height");
 	height_uint = (height == NULL) ? 0 : strtoul (height, NULL, 10);
 	g_free (height);
 
 	/* Get and parse the time */
-	_time = gxml_dom_element_get_attribute (root_elem, "time");
+	_time = gdata_parser_get_attribute (root_elem, "time");
 	if (_time == NULL) {
 		time_int64 = -1;
 	} else {
@@ -274,7 +274,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	}
 
 	/* Get the URI */
-	uri = gxml_dom_element_get_attribute (root_elem, "url");
+	uri = gdata_parser_get_attribute (root_elem, "url");
 	if (uri == NULL || *uri == '\0') {
 		g_free (uri);
 		return gdata_parser_error_required_property_missing (root_node, "url", error);

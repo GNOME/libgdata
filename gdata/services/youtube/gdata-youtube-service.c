@@ -342,7 +342,7 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 {
 	GXmlDomDocument *doc;
 	GXmlDomXNode *node;
-	const gchar *node_name; 
+	const gchar *node_name;
 
 	if (response_body == NULL)
 		goto parent;
@@ -396,11 +396,11 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 			GXmlDomElement *child_elem = GXML_DOM_ELEMENT (child_node);
 
 			if (g_strcmp0 (child_node_name, "domain") == 0)
-				domain = gxml_dom_element_get_content (child_elem);
+				domain = gdata_parser_element_get_content (child_elem);
 			else if (g_strcmp0 (child_node_name, "code") == 0)
-				code = gxml_dom_element_get_content (child_elem);
+				code = gdata_parser_element_get_content (child_elem);
 			else if (g_strcmp0 (child_node_name, "location") == 0)
-				location = gxml_dom_element_get_content (child_elem);
+				location = gdata_parser_element_get_content (child_elem);
 			else if (g_strcmp0 (child_node_name, "internalReason") != 0) {
 				/* Unknown element (ignore internalReason) */
 				g_message ("Unhandled <error/%s> element.", child_node_name);

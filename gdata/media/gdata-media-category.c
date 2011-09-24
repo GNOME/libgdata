@@ -196,13 +196,13 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	gchar *category, *scheme;
 	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	category = gxml_dom_element_get_content (root_elem);
+	category = gdata_parser_element_get_content (root_elem);
 	if (category == NULL || *category == '\0') {
 		g_free (category);
 		return gdata_parser_error_required_content_missing (root_node, error);
 	}
 
-	scheme = gxml_dom_element_get_attribute (root_elem, "scheme");
+	scheme = gdata_parser_get_attribute (root_elem, "scheme");
 	if (scheme != NULL && *scheme == '\0') {
 		g_free (scheme);
 		g_free (category);
@@ -214,7 +214,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 	priv->category = category;
 	priv->scheme = scheme;
-	priv->label = gxml_dom_element_get_attribute (root_elem, "label");
+	priv->label = gdata_parser_get_attribute (root_elem, "label");
 
 	return TRUE;
 }

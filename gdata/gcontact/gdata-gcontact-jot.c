@@ -179,7 +179,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	priv->content = gxml_dom_element_get_content (root_elem);
+	priv->content = gdata_parser_element_get_content (root_elem);
 	priv->relation_type = (gchar*) rel;
 
 	return TRUE;

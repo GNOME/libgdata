@@ -202,7 +202,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	priv->name = (gchar*) name;
 	priv->reason_code = (gchar*) gxml_dom_element_get_attribute (root_elem, "reasonCode");
 	priv->help_uri = (gchar*) gxml_dom_element_get_attribute (root_elem, "helpUrl");
-	priv->message = gxml_dom_element_get_content (root_elem);
+	priv->message = gdata_parser_element_get_content (root_elem);
 
 	return TRUE;
 }

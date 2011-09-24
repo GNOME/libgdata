@@ -90,11 +90,11 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 				gchar *status_code_string;
 				GXmlDomXNode *child_node;
 
-				status_code_string = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (entry_node), "code");
+				status_code_string = gdata_parser_get_attribute (GXML_DOM_ELEMENT (entry_node), "code");
 				status_code = strtoul ((char*) status_code_string, NULL, 10);
 				g_free (status_code_string); // TODO:GXML: do we want to free this?
 
-				status_reason = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (entry_node), "reason");
+				status_reason = gdata_parser_get_attribute (GXML_DOM_ELEMENT (entry_node), "reason");
 
 				/* Dump the content of the status node, since it's service-specific, and could be anything from plain text to XML */
 

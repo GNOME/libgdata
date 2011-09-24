@@ -287,7 +287,7 @@ gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time)
 gboolean
 gdata_parser_boolean_from_property (GXmlDomXNode *element, const gchar *property_name, gboolean *output, gint default_output, GError **error)
 {
-	gchar *value = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (element), property_name);
+	gchar *value = gdata_parser_get_attribute (GXML_DOM_ELEMENT (element), property_name);
 
 	if (value == NULL) {
 		/* Missing property */
@@ -388,8 +388,10 @@ gdata_parser_string_from_element (GXmlDomXNode *element, const gchar *element_na
 	}
 
 	/* Success! */
-	g_free (*output);
-	*output = (gchar*) text;
+	if (g_strcmp0 (text, "") != 0) { // Added because historically, libgdata would get a NULL if an element had no content, but GXml returns "" then
+		g_free (*output);
+		*output = text;
+	}
 	*success = TRUE;
 	// TODO:GXML: is gdata failing to free text now?  I think so
 
@@ -693,4 +695,28 @@ gdata_parser_utf8_trim_whitespace (const gchar *s)
 	_s = g_utf8_next_char (_s);
 
 	return g_strndup (s, _s - s);
+}
+
+/* DOM Level 1 API wants us to return "" when not set, but libxml2
+   used to return NULL, so libgdata expects NULL all over the place. */
+gchar *gdata_parser_get_attribute (GXmlDomElement *element, const gchar *attr_name)
+{
+	GXmlDomAttr *attr = gxml_dom_element_get_attribute_node (element, attr_name);
+
+	if (attr == NULL) {
+		return NULL;
+	} else {
+		// We duplicate it, because attribute values are const gchar*s, since their memory life cycle is supposed to be managed by GXml, and not by its users.  However, libgdata assumes it needs to since libxml2
+		return g_strdup (gxml_dom_attr_get_value (attr));
+	}
+}
+
+gchar *gdata_parser_element_get_content (GXmlDomElement *elem) {
+	gchar *text = gxml_dom_element_get_content (elem);
+
+	if (g_strcmp0 (text, "") == 0) {
+		return NULL;
+	} else {
+		return text;
+	}
 }

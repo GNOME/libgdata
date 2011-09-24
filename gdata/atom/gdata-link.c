@@ -318,6 +318,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	language = gxml_dom_element_get_attribute (root_elem, "hreflang");
 	if (gxml_dom_element_get_attribute_node (root_elem, "hreflang") != NULL && *language == '\0') {
 		g_free (language);
+
 		return gdata_parser_error_required_property_missing (root_node, "hreflang", error);
 	}
 	self->priv->language = language;

@@ -548,7 +548,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			self->priv->transparency = value;
 		} else if (g_strcmp0 (node_name, "recurrence") == 0) {
 			/* gd:recurrence */
-			self->priv->recurrence = gxml_dom_element_get_content (elem);
+			self->priv->recurrence = gdata_parser_element_get_content (elem);
 		} else if (g_strcmp0 (node_name, "originalEvent") == 0) {
 			/* gd:originalEvent */
 			self->priv->original_event_id = gxml_dom_element_get_attribute (elem, "id");

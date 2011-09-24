@@ -778,7 +778,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		 * the changes. This fixes bugs caused by referring to contacts by the base projection, rather than the full projection;
 		 * such as http://code.google.com/p/gdata-issues/issues/detail?id=2129. */
 		gchar *base;
-		gchar *id = gxml_dom_element_get_content (elem);
+		gchar *id = gdata_parser_element_get_content (elem);
 
 		if (id != NULL) {
 			base = strstr (id, "/base/");
@@ -817,7 +817,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			value = gxml_dom_element_get_attribute (elem, "value");
 			if (value == NULL) {
 				GXmlDomXNode *child_node;
-				
+
 				/* Use the element's content instead (arbitrary XML) */
 				for (child_node = gxml_dom_xnode_get_first_child (node); child_node != NULL; child_node = gxml_dom_xnode_get_next_sibling (child_node)) {
 					value_new = g_strconcat (value, gxml_dom_xnode_to_string (child_node, 0, 0), NULL);
@@ -884,7 +884,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			/* gContact:hobby */
 			gchar *hobby;
 
-			hobby = gxml_dom_element_get_content (elem);
+			hobby = gdata_parser_element_get_content (elem);
 			if (hobby == NULL || *hobby == '\0') {
 				g_free (hobby);
 				return gdata_parser_error_required_content_missing (node, error);

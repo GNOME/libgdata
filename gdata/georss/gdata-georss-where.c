@@ -93,7 +93,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 
 		for (child = gxml_dom_xnode_get_first_child (node); child != NULL; child = gxml_dom_xnode_get_next_sibling (child)) {
 			if (g_strcmp0 (gxml_dom_xnode_get_node_name (child), "pos") == 0) {
-				gchar *pos = gxml_dom_element_get_content (GXML_DOM_ELEMENT (child));
+				gchar *pos = gdata_parser_element_get_content (GXML_DOM_ELEMENT (child));
 				gchar *endptr;
 
 				self->priv->latitude = g_ascii_strtod (pos, &endptr);

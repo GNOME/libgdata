@@ -433,7 +433,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			if (self->priv->document_id != NULL)
 				return gdata_parser_error_duplicate_element (node, error);
 
-			resource_id = gxml_dom_element_get_content (elem);
+			resource_id = gdata_parser_element_get_content (elem);
 			if (resource_id == NULL || *resource_id == '\0') {
 				g_free (resource_id);
 				return gdata_parser_error_required_content_missing (node, error);

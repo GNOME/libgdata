@@ -172,13 +172,13 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	guint i;
 	GXmlDomElement *root_elem = GXML_DOM_ELEMENT (root_node);
 
-	credit = gxml_dom_element_get_content (root_elem);
+	credit = gdata_parser_element_get_content (root_elem);
 	if (credit == NULL || *credit == '\0') {
 		g_free (credit);
 		return gdata_parser_error_required_content_missing (root_node, error);
 	}
 
-	scheme = gxml_dom_element_get_attribute (root_elem, "scheme");
+	scheme = gdata_parser_get_attribute (root_elem, "scheme");
 	if (scheme != NULL && *scheme == '\0') {
 		g_free (scheme);
 		g_free (credit);
@@ -190,7 +190,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 	priv->credit = credit;
 	priv->scheme = scheme;
-	priv->role = gxml_dom_element_get_attribute (root_elem, "role");
+	priv->role = gdata_parser_get_attribute (root_elem, "role");
 
 	/* Convert the role to lower case */
 	if (priv->role != NULL) {

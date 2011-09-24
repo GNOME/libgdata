@@ -102,7 +102,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
 	    g_strcmp0 (node_name, "draft") == 0) {
 		/* app:draft */
-		gchar *draft = gxml_dom_element_get_content (GXML_DOM_ELEMENT (gxml_dom_xnode_get_parent_node (node)));
+		gchar *draft = gdata_parser_element_get_content (GXML_DOM_ELEMENT (gxml_dom_xnode_get_parent_node (node)));
 		if (g_strcmp0 (draft, "no") == 0)
 			self->priv->is_draft = FALSE;
 		else

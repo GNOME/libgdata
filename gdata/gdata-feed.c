@@ -413,7 +413,7 @@ static gboolean
 pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root_node, gpointer user_data, GError **error)
 {
 	/* Extract the ETag */
-	GDATA_FEED (parsable)->priv->etag = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (root_node), "etag");
+	GDATA_FEED (parsable)->priv->etag = gdata_parser_get_attribute (GXML_DOM_ELEMENT (root_node), "etag");
 	return TRUE;
 }
 

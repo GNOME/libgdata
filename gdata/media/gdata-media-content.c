@@ -302,7 +302,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 		return FALSE;
 
 	/* Parse expression */
-	expression = gxml_dom_element_get_attribute (root_elem, "expression");
+	expression = gdata_parser_get_attribute (root_elem, "expression");
 	if (expression == NULL || g_strcmp0 (expression, "full") == 0) {
 		expression_enum = GDATA_MEDIA_EXPRESSION_FULL;
 	} else if (g_strcmp0 (expression, "sample") == 0) {
@@ -317,7 +317,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	g_free (expression);
 
 	/* Parse medium */
-	medium = gxml_dom_element_get_attribute (root_elem, "medium");
+	medium = gdata_parser_get_attribute (root_elem, "medium");
 	if (medium == NULL) {
 		medium_enum = GDATA_MEDIA_UNKNOWN;
 	} else if (g_strcmp0 (medium, "image") == 0) {
@@ -338,26 +338,26 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	g_free (medium);
 
 	/* Parse duration */
-	duration = gxml_dom_element_get_attribute (root_elem, "duration");
+	duration = gdata_parser_get_attribute (root_elem, "duration");
 	duration_int64 = (duration == NULL) ? 0 : strtol (duration, NULL, 10);
 	g_free (duration);
 
 	/* Parse filesize */
-	filesize = gxml_dom_element_get_attribute (root_elem, "fileSize");
+	filesize = gdata_parser_get_attribute (root_elem, "fileSize");
 	filesize_ulong = (filesize == NULL) ? 0 : strtoul (filesize, NULL, 10);
 	g_free (filesize);
 
 	/* Parse height and width */
-	height = gxml_dom_element_get_attribute (root_elem, "height");
+	height = gdata_parser_get_attribute (root_elem, "height");
 	height_uint = (height == NULL) ? 0 : strtoul (height, NULL, 10);
 	g_free (height);
 
-	width = gxml_dom_element_get_attribute (root_elem, "width");
+	width = gdata_parser_get_attribute (root_elem, "width");
 	width_uint = (width == NULL) ? 0 : strtoul (width, NULL, 10);
 	g_free (width);
 
 	/* Other properties */
-	uri = gxml_dom_element_get_attribute (root_elem, "url");
+	uri = gdata_parser_get_attribute (root_elem, "url");
 	if (uri != NULL && *uri == '\0') {
 		g_free (uri);
 		return gdata_parser_error_required_property_missing (root_node, "url", error);
@@ -365,7 +365,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 
 	priv->uri = uri;
 	priv->filesize = filesize_ulong;
-	priv->content_type = gxml_dom_element_get_attribute (root_elem, "type");
+	priv->content_type = gdata_parser_get_attribute (root_elem, "type");
 	priv->medium = medium_enum;
 	priv->is_default = is_default_bool;
 	priv->expression = expression_enum;

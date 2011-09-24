@@ -293,7 +293,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		node_name = gxml_dom_xnode_get_node_name (node);
 		if (g_strcmp0 (node_name, "role") == 0) {
 			/* gAcl:role */
-			gchar *role = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "value");
+			gchar *role = gdata_parser_get_attribute (GXML_DOM_ELEMENT (node), "value");
 			if (role == NULL)
 				return gdata_parser_error_required_property_missing (node, "value", error);
 			self->priv->role = role;
@@ -301,11 +301,11 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			/* gAcl:scope */
 			gchar *scope_type, *scope_value;
 
-			scope_type = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "type");
+			scope_type = gdata_parser_get_attribute (GXML_DOM_ELEMENT (node), "type");
 			if (scope_type == NULL)
 				return gdata_parser_error_required_property_missing (node, "type", error);
 
-			scope_value = gxml_dom_element_get_attribute (GXML_DOM_ELEMENT (node), "value");
+			scope_value = gdata_parser_get_attribute (GXML_DOM_ELEMENT (node), "value");
 
 			if (g_strcmp0 (scope_type, GDATA_ACCESS_SCOPE_DEFAULT) == 0 && scope_value == NULL) {
 				g_free (scope_type); // TODO:GXML: should scope_type be dealloc'd from get_attribute? should not scope_value be as well?

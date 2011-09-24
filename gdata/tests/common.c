@@ -475,7 +475,7 @@ compare_xml_nodes (GXmlDomXNode *node1, GXmlDomXNode *node2)
 		       gxml_dom_element_get_content (GXML_DOM_ELEMENT (node2))) != 0) {
 		return FALSE;
 	}
-	
+
 	/* Compare their attributes. This is done in document order,
 	 * which isn't strictly correct, since XML specifically does
 	 * not apply an ordering over attributes. However, it suffices
@@ -513,18 +513,18 @@ compare_xml_nodes (GXmlDomXNode *node1, GXmlDomXNode *node2)
 		if (attr1 == NULL || attr2 == NULL) {
 			return FALSE;
 		}
-		
+
 		if (g_strcmp0 (gxml_dom_xnode_get_node_name (attr1),
 			       gxml_dom_xnode_get_node_name (attr2)) != 0
 		    || compare_xml_namespaces (attr1, attr2) == FALSE) {
 			return FALSE;
 		}
-		
+
 		if (compare_xml_node_lists (gxml_dom_xnode_get_child_nodes (attr1),
 					    gxml_dom_xnode_get_child_nodes (attr2)) == FALSE)
 			return FALSE;
 	}
-	
+
 	// no straglers like we once had, since we now check list size
 
 	/* /\* Compare their namespace definitions regardless of order. Do this by inserting all the definitions from node1 into a hash table, then running */
@@ -534,7 +534,7 @@ compare_xml_nodes (GXmlDomXNode *node1, GXmlDomXNode *node2)
 	/* The above doesn't reply for now, because, because we only
 	   have one namespace per node right now, while the code here
 	   used to iterate over a list of namespaces.  Here is what we
-	   used to do: 
+	   used to do:
   	     made sure all the prefixes used by node1 were unique
 	     remembered them all
 	     went through all the prefixes for node2
@@ -572,7 +572,7 @@ gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboo
 
 	/* Parse both the XML strings */
 	parsable_doc = gxml_dom_document_new_from_string (parsable_xml, &error);
-	expected_doc = gxml_dom_document_new_from_string (expected_xml, &error); // TODO:GXML; grep for 'gxml.*_new_' and make sure we g_object_unref () everything! 
+	expected_doc = gxml_dom_document_new_from_string (expected_xml, &error); // TODO:GXML; grep for 'gxml.*_new_' and make sure we g_object_unref () everything!
 
 	g_assert (parsable_doc != NULL && expected_doc != NULL);
 

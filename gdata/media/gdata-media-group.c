@@ -163,7 +163,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		} else if (g_strcmp0 (node_name, "keywords") == 0) {
 			/* media:keywords */
 			guint i;
-			gchar *text = gxml_dom_element_get_content (elem);
+			gchar *text = gdata_parser_element_get_content (elem);
 
 			g_strfreev (self->priv->keywords);
 			if (text == NULL) {
@@ -197,21 +197,56 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			}
 		} else if (g_strcmp0 (node_name, "player") == 0) {
 			/* media:player */
-			gchar *player_uri = gxml_dom_element_get_attribute (elem, "url");
+			gchar *player_uri = gdata_parser_get_attribute (elem, "url");
 			g_free (self->priv->player_uri);
 			self->priv->player_uri = player_uri;
 		} else if (g_strcmp0 (node_name, "rating") == 0) {
 			/* media:rating */
-			gchar *countries;
+			gchar *scheme;
 
-			countries = gxml_dom_element_get_attribute (elem, "country");
+			/* The possible schemes are defined here:
+			 *  • http://video.search.yahoo.com/mrss
+			 *  • http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:rating
+			 */
+			scheme = gdata_parser_get_attribute (elem, "scheme");
 
-			if (countries != NULL) {
-				gchar **country_list, **country;
+			if (scheme == NULL || g_strcmp0 (scheme, "urn:simple") == 0) {
+				/* Options: adult, nonadult */
+				gdata_parser_string_from_element (node, "rating", P_REQUIRED | P_NON_EMPTY, &(self->priv->simple_rating),
+				                                  &success, error);
+			} else if (g_strcmp0 (scheme, "urn:mpaa") == 0) {
+				/* Options: g, pg, pg-13, r, nc-17 */
+				gdata_parser_string_from_element (node, "rating", P_REQUIRED | P_NON_EMPTY, &(self->priv->mpaa_rating),
+				                                  &success, error);
+			} else if (g_strcmp0 (scheme, "urn:v-chip") == 0) {
+				/* Options: tv-y, tv-y7, tv-y7-fv, tv-g, tv-pg, tv-14, tv-ma */
+				gdata_parser_string_from_element (node, "rating", P_REQUIRED | P_NON_EMPTY, &(self->priv->v_chip_rating),
+				                                  &success, error);
+			} else if (g_strcmp0 (scheme, "http://gdata.youtube.com/schemas/2007#mediarating") == 0) {
+				/* No content, but we do get a list of countries. There's nothing like overloading the semantics of XML elements
+				 * to brighten up one's day. */
 
-				/* It's either a comma-separated list of countries, or the value "all" */
-				country_list = g_strsplit (countries, ",", -1);
-				g_free (countries);
+				gchar *countries;
+
+				countries = gdata_parser_get_attribute (elem, "country");
+
+				if (countries != NULL) {
+					gchar **country_list, **country;
+
+					/* It's either a comma-separated list of countries, or the value "all" */
+					country_list = g_strsplit (countries, ",", -1);
+					g_free (countries);
+
+					/* Add all the listed countries to the restricted countries table */
+					for (country = country_list; *country != NULL; country++) {
+						g_hash_table_insert (self->priv->restricted_countries, *country, GUINT_TO_POINTER (TRUE));
+					}
+
+					g_free (country_list);
+				} else {
+					/* Assume it's restricted in all countries */
+					g_hash_table_insert (self->priv->restricted_countries, g_strdup ("all"), GUINT_TO_POINTER (TRUE));
+				}
 
 				success = TRUE;
 			} else {
@@ -219,6 +254,10 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 				gdata_parser_error_unknown_property_value (node, "scheme", (gchar*) scheme, error);
 				success = FALSE;
 			}
+
+			g_free (scheme); // TODO:GXML: make sure that get_attribute and friend return de-allocatable memory
+
+			return success;
 		} else if (g_strcmp0 (node_name, "restriction") == 0) {
 			/* media:restriction */
 			gchar *type, *countries, *relationship;
@@ -226,7 +265,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			gboolean relationship_bool;
 
 			/* Check the type property is "country" */
-			type = gxml_dom_element_get_attribute (elem, "type");
+			type = gdata_parser_get_attribute (elem, "type");
 			if (g_strcmp0 (type, "country") != 0) {
 				gdata_parser_error_unknown_property_value (node, "type", type, error);
 				g_free (type);
@@ -234,7 +273,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			}
 			g_free (type);
 
-			relationship = gxml_dom_element_get_attribute (elem, "relationship");
+			relationship = gdata_parser_get_attribute (elem, "relationship");
 			if (g_strcmp0 (relationship, "allow") == 0) {
 				relationship_bool = FALSE; /* it's *not* a restricted country */
 			} else if (g_strcmp0 (relationship, "deny") == 0) {
@@ -246,7 +285,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			}
 			g_free (relationship);
 
-			countries = gxml_dom_element_get_content (elem);
+			countries = gdata_parser_element_get_content (elem);
 			country_list = g_strsplit (countries, " ", -1);
 			g_free (countries);
 

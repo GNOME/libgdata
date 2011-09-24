@@ -240,17 +240,17 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 		return success;
 	} else if (g_strcmp0 (node_name, "quotacurrent") == 0) {
 		/* gphoto:quota-current */
-		gchar *quota_current = gxml_dom_element_get_content (elem);
+		gchar *quota_current = gdata_parser_element_get_content (elem);
 		self->priv->quota_current = g_ascii_strtoll ((const gchar*) quota_current, NULL, 10);
 		g_free (quota_current);
 	} else if (g_strcmp0 (node_name, "quotalimit") == 0) {
 		/* gphoto:quota-limit */
-		gchar *quota_limit = gxml_dom_element_get_content (elem);
+		gchar *quota_limit = gdata_parser_element_get_content (elem);
 		self->priv->quota_limit = g_ascii_strtoll ((const gchar*) quota_limit, NULL, 10);
 		g_free (quota_limit);
 	} else if (g_strcmp0 (node_name, "maxPhotosPerAlbum") == 0) {
 		/* gphoto:max-photos-per-album */
-		gchar *max_photos_per_album = gxml_dom_element_get_content (elem);
+		gchar *max_photos_per_album = gdata_parser_element_get_content (elem);
 		self->priv->max_photos_per_album = strtol ((char*) max_photos_per_album, NULL, 10);
 		g_free (max_photos_per_album);
 	} else if (g_strcmp0 (node_name, "x-allowDownloads") == 0) { /* RHSTODO: see if this comes with the user */

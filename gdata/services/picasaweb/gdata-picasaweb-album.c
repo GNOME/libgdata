@@ -681,7 +681,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			return success;
 		} else if (g_strcmp0 (node_name, "access") == 0) {
 			/* gphoto:access */
-			gchar *access_level = gxml_dom_element_get_content (elem);
+			gchar *access_level = gdata_parser_element_get_content (elem);
 			if (g_strcmp0 (access_level, "public") == 0) {
 				gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PUBLIC);
 			} else if (g_strcmp0 (access_level, "private") == 0) {
@@ -697,14 +697,14 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			gchar *timestamp_str;
 			guint64 milliseconds;
 
-			timestamp_str = gxml_dom_element_get_content (elem);
+			timestamp_str = gdata_parser_element_get_content (elem);
 			milliseconds = g_ascii_strtoull (timestamp_str, NULL, 10);
 			g_free (timestamp_str);
 
 			gdata_picasaweb_album_set_timestamp (self, (gint64) milliseconds);
 		} else if (g_strcmp0 (node_name, "numphotos") == 0) {
 			/* gphoto:numphotos */
-			gchar *num_photos = gxml_dom_element_get_content (elem);
+			gchar *num_photos = gdata_parser_element_get_content (elem);
 			if (num_photos == NULL || *num_photos == '\0') {
 				g_free (num_photos);
 				return gdata_parser_error_required_content_missing (node, error);
@@ -714,7 +714,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			g_free (num_photos);
 		} else if (g_strcmp0 (node_name, "numphotosremaining") == 0) {
 			/* gphoto:numphotosremaining */
-			gchar *num_photos_remaining = gxml_dom_element_get_content (elem);
+			gchar *num_photos_remaining = gdata_parser_element_get_content (elem);
 			if (num_photos_remaining == NULL || *num_photos_remaining == '\0') {
 				g_free (num_photos_remaining);
 				return gdata_parser_error_required_content_missing (node, error);
@@ -724,7 +724,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			g_free (num_photos_remaining);
 		} else if (g_strcmp0 (node_name, "bytesUsed") == 0) {
 			/* gphoto:bytesUsed */
-			gchar *bytes_used = gxml_dom_element_get_content (elem);
+			gchar *bytes_used = gdata_parser_element_get_content (elem);
 			if (bytes_used == NULL || *bytes_used == '\0') {
 				g_free (bytes_used);
 				return gdata_parser_error_required_content_missing (node, error);
@@ -734,7 +734,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			g_free (bytes_used);
 		} else if (g_strcmp0 (node_name, "commentingEnabled") == 0) {
 			/* gphoto:commentingEnabled */
-			gchar *commenting_enabled = gxml_dom_element_get_content (elem);
+			gchar *commenting_enabled = gdata_parser_element_get_content (elem);
 			if (commenting_enabled == NULL || *commenting_enabled == '\0') {
 				g_free (commenting_enabled);
 				return gdata_parser_error_required_content_missing (node, error);
@@ -745,7 +745,7 @@ parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *node, gp
 			g_free (commenting_enabled);
 		} else if (g_strcmp0 (node_name, "commentCount") == 0) {
 			/* gphoto:commentCount */
-			gchar *comment_count = gxml_dom_element_get_content (elem);
+			gchar *comment_count = gdata_parser_element_get_content (elem);
 			if (comment_count == NULL || *comment_count == '\0') {
 				g_free (comment_count);
 				return gdata_parser_error_required_content_missing (node, error);

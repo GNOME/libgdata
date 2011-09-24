@@ -837,13 +837,14 @@ static void
 set_up_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 {
 	GDataPicasaWebAlbum *album;
+	GError *error = NULL;
 
 	/* First album */
 	album = gdata_picasaweb_album_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (album), "Test album 1 for QueryAllAlbums");
 
-	data->album1 = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, NULL);
-	g_assert (data->album1 != NULL);
+	data->album1 = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), album, NULL, &error);
+	g_assert (data->album1 != NULL && error == NULL);
 
 	g_object_unref (album);
 

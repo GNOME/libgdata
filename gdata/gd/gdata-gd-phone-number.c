@@ -268,7 +268,7 @@ pre_parse_xml (GDataParsable *parsable, GXmlDomDocument *doc, GXmlDomXNode *root
 	if (gdata_parser_boolean_from_property (root_node, "primary", &primary_bool, 0, error) == FALSE)
 		return FALSE;
 
-	number = gxml_dom_element_get_content (root_elem);
+	number = gdata_parser_element_get_content (root_elem);
 	if (number == NULL || *number == '\0') {
 		g_free (number);
 		return gdata_parser_error_required_content_missing (root_node, error);
