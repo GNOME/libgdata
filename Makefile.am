@@ -180,7 +180,8 @@ private_headers = \
 gdatainclude_HEADERS = \
 	$(gdata_headers)	\
 	gdata/gdata-enums.h	\
-	gdata/gdata-types.h
+	gdata/gdata-types.h \
+	gdata/gdata-version.h
 
 gdataatomincludedir = $(gdataincludedir)/atom
 gdataatominclude_HEADERS = \
@@ -609,7 +610,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libgdata.pc
 
 CLEANFILES += $(pkgconfig_DATA)
-EXTRA_DIST += libgdata.pc.in
+EXTRA_DIST += libgdata.pc.in \
+	gdata/gdata-version.h.in
 
 # ChangeLog
 ChangeLog: $(srcdir)/ChangeLog

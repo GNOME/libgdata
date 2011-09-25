@@ -41,6 +41,7 @@
 #include <gdata/gdata-oauth1-authorizer.h>
 #include <gdata/gdata-commentable.h>
 #include <gdata/gdata-comment.h>
+#include <gdata/gdata-version.h>
 
 /* Namespaces */
 
