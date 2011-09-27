@@ -378,7 +378,7 @@ gdata_parser_string_from_element (GXmlDomXNode *element, const gchar *element_na
 	}
 
 	/* Get the string and check it for NULLness or emptiness */
-	text = gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (element), TRUE);
+	text = gxml_dom_element_get_content (GXML_DOM_ELEMENT (element));
 	if ((options & P_REQUIRED && text == NULL) || (options & P_NON_EMPTY && text != NULL && *text == '\0')) {
 		g_free (text); // TODO:GXML: make sure return value of node_list_to_string (and other to_strings) is alloc'd
 		*success = gdata_parser_error_required_content_missing (element, error);
