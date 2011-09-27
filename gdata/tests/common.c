@@ -398,8 +398,8 @@ compare_xml_namespaces (GXmlDomXNode *node1, GXmlDomXNode *node2)
 	if (g_strcmp0 (gxml_dom_xnode_get_namespace_uri (node1),
 		       gxml_dom_xnode_get_namespace_uri (node2)) != 0 ||
 	    g_strcmp0 (gxml_dom_xnode_get_prefix (node1),
-		       gxml_dom_xnode_get_prefix (node2)) != 0 ||
-	    gxml_dom_xnode_get_owner_document (node1) != gxml_dom_xnode_get_owner_document (node2)) {
+		       gxml_dom_xnode_get_prefix (node2)) != 0) {
+		/* GXml: we used to also compare libxml2 xmlNs's context, but that doesn't translate to GXml well */
 		return FALSE;
 	}
 
@@ -471,8 +471,8 @@ compare_xml_nodes (GXmlDomXNode *node1, GXmlDomXNode *node2)
 	if (gxml_dom_xnode_get_node_type (node1) != gxml_dom_xnode_get_node_type (node2) ||
 	    g_strcmp0 (gxml_dom_xnode_get_node_name (node1), gxml_dom_xnode_get_node_name (node2)) != 0 ||
 	    compare_xml_namespaces (node1, node2) == FALSE ||
-	    g_strcmp0 (gxml_dom_element_get_content (GXML_DOM_ELEMENT (node1)),
-		       gxml_dom_element_get_content (GXML_DOM_ELEMENT (node2))) != 0) {
+	    g_strcmp0 (gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (node1), FALSE),
+		       gxml_dom_node_list_to_string (gxml_dom_xnode_get_child_nodes (node1), FALSE)) != 0) {
 		return FALSE;
 	}
 
@@ -498,31 +498,34 @@ compare_xml_nodes (GXmlDomXNode *node1, GXmlDomXNode *node2)
 	attrs1 = gxml_dom_xnode_get_attributes (node1);
 	attrs2 = gxml_dom_xnode_get_attributes (node2);
 
-	if (g_hash_table_size (attrs1) != g_hash_table_size (attrs2)) {
-		return FALSE;
-	}
-
-	keys1 = g_hash_table_get_keys (attrs1);
-
-	for (key1 = keys1; key1 != NULL; key1 = key1->next) {
-		attr1name = (gchar*)key1->data;
-
-		attr1 = (GXmlDomXNode*)g_hash_table_lookup (attrs1 ,attr1name);
-		attr2 = (GXmlDomXNode*)g_hash_table_lookup (attrs2 ,attr1name);
-
-		if (attr1 == NULL || attr2 == NULL) {
+	// GXml returns NULL for attributes if you're not an Element
+	if (attrs1 != NULL || attrs2 != NULL) {
+		if (g_hash_table_size (attrs1) != g_hash_table_size (attrs2)) {
 			return FALSE;
 		}
 
-		if (g_strcmp0 (gxml_dom_xnode_get_node_name (attr1),
-			       gxml_dom_xnode_get_node_name (attr2)) != 0
-		    || compare_xml_namespaces (attr1, attr2) == FALSE) {
-			return FALSE;
-		}
+		keys1 = g_hash_table_get_keys (attrs1);
 
-		if (compare_xml_node_lists (gxml_dom_xnode_get_child_nodes (attr1),
-					    gxml_dom_xnode_get_child_nodes (attr2)) == FALSE)
-			return FALSE;
+		for (key1 = keys1; key1 != NULL; key1 = key1->next) {
+			attr1name = (gchar*)key1->data;
+
+			attr1 = (GXmlDomXNode*)g_hash_table_lookup (attrs1 ,attr1name);
+			attr2 = (GXmlDomXNode*)g_hash_table_lookup (attrs2 ,attr1name);
+
+			if (attr1 == NULL || attr2 == NULL) {
+				return FALSE;
+			}
+
+			if (g_strcmp0 (gxml_dom_xnode_get_node_name (attr1),
+				       gxml_dom_xnode_get_node_name (attr2)) != 0
+			    || compare_xml_namespaces (attr1, attr2) == FALSE) {
+				return FALSE;
+			}
+
+			if (compare_xml_node_lists (gxml_dom_xnode_get_child_nodes (attr1),
+						    gxml_dom_xnode_get_child_nodes (attr2)) == FALSE)
+				return FALSE;
+		}
 	}
 
 	// no straglers like we once had, since we now check list size
