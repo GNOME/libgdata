@@ -66,7 +66,7 @@ typedef struct _ScrapData {
 	gint			currentCol;
 	gint			currentRow[5];
 	GtkWidget		*box1;
-	GtkWidget		*table;
+	GtkWidget *grid;
 	GtkWidget		*scrollWindow;
 	ScrapYTSearch	*yt_search;
 	ScrapPSearch	*p_search;

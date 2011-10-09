@@ -19,7 +19,7 @@
 
 /*
  * This is an extremely simple example program to query youtube videos
- * and picasa pictures and add them to a table.
+ * and picasa pictures and add them to a grid.
  * It was coded as part of the 2010 Google Code-In.
  * Click on Properties to change the window's title, or authenticate
  * yourself (it's assumed that your google and picasa ids are the same)
@@ -69,10 +69,12 @@ picture_selected (GtkTreeView *tree, GtkTreePath *path, GtkTreeViewColumn *colum
 	gtk_container_add 					(GTK_CONTAINER (button), image);
 	/*g_signal_connect 					(button, "clicked", G_CALLBACK (open_in_web_browser), gdata_entry_get_id (pic));
 	 * commented out, I can't seem to find anything that will give me a picture's URI */
-	gtk_table_attach_defaults 			(GTK_TABLE(self->main_data->table), button,
-										 self->main_data->currentRow[self->main_data->currentCol],
-										 self->main_data->currentRow[self->main_data->currentCol]+1,
-										 self->main_data->currentCol, self->main_data->currentCol+1);
+
+	gtk_grid_attach (GTK_GRID (self->main_data->grid), button,
+	                 self->main_data->currentCol,
+	                 self->main_data->currentRow[self->main_data->currentCol],
+	                 1, 1);
+
 	gtk_widget_show (button);
 	self->main_data->currentRow[self->main_data->currentCol]++;
 }
@@ -108,10 +110,12 @@ video_selected (GtkTreeView *tree, GtkTreePath *path, GtkTreeViewColumn *column,
 	gtk_container_add 	(GTK_CONTAINER (button), image);
 	g_signal_connect (button, "clicked", G_CALLBACK (open_in_web_browser),
 	                  (gpointer) gdata_youtube_video_get_player_uri (GDATA_YOUTUBE_VIDEO (video)));
-	gtk_table_attach_defaults (GTK_TABLE(self->main_data->table), button,
-										 self->main_data->currentRow[self->main_data->currentCol],
-										 self->main_data->currentRow[self->main_data->currentCol]+1,
-										 self->main_data->currentCol, self->main_data->currentCol+1);
+
+	gtk_grid_attach (GTK_GRID (self->main_data->grid), button,
+	                 self->main_data->currentCol,
+	                 self->main_data->currentRow[self->main_data->currentCol],
+	                 1, 1);
+
 	gtk_widget_show (button);
 	self->main_data->currentRow[self->main_data->currentCol]++;
 }
@@ -680,7 +684,7 @@ main(int argc, char **argv)
 	fUpload->main_data			= scrapbook;
 
 	scrapbook->box1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	scrapbook->table	= gtk_table_new		(5,5,FALSE);
+	scrapbook->grid = gtk_grid_new ();
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
 
@@ -708,8 +712,8 @@ main(int argc, char **argv)
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (scrapbook->box1), vbox, FALSE, FALSE, 5);
 
-	gtk_box_pack_start	(GTK_BOX (scrapbook->box1), scrapbook->table, TRUE, TRUE, 0);
-	gtk_widget_show		(scrapbook->table);
+	gtk_box_pack_start (GTK_BOX (scrapbook->box1), scrapbook->grid, TRUE, TRUE, 0);
+	gtk_widget_show (scrapbook->grid);
 	gtk_widget_show		(scrapbook->box1);
 	gtk_container_add	(GTK_CONTAINER (scrapbook->window), scrapbook->box1);
 	gtk_widget_show		(scrapbook->window);

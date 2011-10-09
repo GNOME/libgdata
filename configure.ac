@@ -35,6 +35,7 @@ GLIB_REQS=2.19.0
 GIO_REQS=2.17.3
 SOUP_REQS=2.26.1
 OAUTH_REQS=0.9.4
+GTK_REQS=2.91.2
 
 # Before making a release, the GDATA_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:
 #
@@ -74,7 +75,7 @@ fi
 AC_SUBST(GDK_PIXBUF_CFLAGS)
 AC_SUBST(GDK_PIXBUF_LIBS)
 
-PKG_CHECK_MODULES([GTK], [gtk+-3.0], [have_gtk=yes], [have_gtk=no])
+PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= $GTK_REQS], [have_gtk=yes], [have_gtk=no])
 AM_CONDITIONAL([HAVE_GTK], [test "x$have_gtk" = "xyes"])
 
 # GNOME support, which pulls in libsoup-gnome-2.4 to provide transparent proxy support
