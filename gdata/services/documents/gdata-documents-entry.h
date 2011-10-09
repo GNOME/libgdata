@@ -94,7 +94,11 @@ GType gdata_documents_entry_get_type (void) G_GNUC_CONST;
 
 gchar *gdata_documents_entry_get_path (GDataDocumentsEntry *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-const gchar *gdata_documents_entry_get_document_id (GDataDocumentsEntry *self) G_GNUC_PURE;
+const gchar *gdata_documents_entry_get_resource_id (GDataDocumentsEntry *self) G_GNUC_PURE;
+
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+const gchar *gdata_documents_entry_get_document_id (GDataDocumentsEntry *self) G_GNUC_PURE G_GNUC_DEPRECATED_FOR(gdata_documents_entry_get_resource_id);
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 gint64 gdata_documents_entry_get_edited (GDataDocumentsEntry *self);
 gint64 gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self);

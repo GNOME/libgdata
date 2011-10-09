@@ -1078,7 +1078,7 @@ _test_download_document (GDataDocumentsDocument *document, GDataService *service
 	g_clear_error (&error);
 
 	/* Find a destination file */
-	destination_file_name = g_strdup_printf ("%s.%s", gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (document)),
+	destination_file_name = g_strdup_printf ("%s.%s", gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (document)),
 	                                         destination_file_extension);
 	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
 	g_free (destination_file_name);

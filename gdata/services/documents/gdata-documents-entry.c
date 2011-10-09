@@ -30,6 +30,11 @@
  * access roles defined for the base #GDataAccessRule (e.g. %GDATA_ACCESS_ROLE_NONE), #GDataDocumentsEntry has its own, such as
  * %GDATA_DOCUMENTS_ACCESS_ROLE_OWNER and %GDATA_DOCUMENTS_ACCESS_ROLE_READER.
  *
+ * Documents can (confusingly) be referenced by three different types of IDs: their entry ID, their resource ID and their document ID. Each is a
+ * substring of the previous ones (i.e. the entry ID contains the resource ID, which in turn contains the document ID). The resource ID and document ID
+ * should almost always be considered as internal, and thus entry IDs (#GDataEntry:id) should normally be used to uniquely identify documents. For more
+ * information, see #GDataDocumentsEntry:resource-id.
+ *
  * For more details of Google Documents' GData API, see the
  * <ulink type="http" url="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
  *
@@ -116,10 +121,12 @@ static void gdata_documents_entry_get_property (GObject *object, guint property_
 static void gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 
+static const gchar *_get_document_id (GDataDocumentsEntry *self) G_GNUC_PURE;
+
 struct _GDataDocumentsEntryPrivate {
 	gint64 edited;
 	gint64 last_viewed;
-	gchar *document_id;
+	gchar *resource_id;
 	gboolean writers_can_invite;
 	gboolean is_deleted;
 	GDataAuthor *last_modified_by;
@@ -133,6 +140,7 @@ enum {
 	PROP_IS_DELETED,
 	PROP_WRITERS_CAN_INVITE,
 	PROP_ID,
+	PROP_RESOURCE_ID,
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
@@ -213,11 +221,31 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
+	 * GDataDocumentsEntry:resource-id
+	 *
+	 * The resource ID of the document. This should not normally need to be used in client code, and is mostly for internal use. To uniquely
+	 * identify a given document or folder, use its #GDataEntry:id.
+	 *
+	 * Resource IDs have the form:
+	 * <literal><replaceable>document|spreadsheet|presentation|folder</replaceable>:<replaceable>document ID</replaceable></literal>; whereas entry
+	 * IDs have the form:
+	 * <literal>https://docs.google.com/feeds/documents/private/full/<replaceable>resource ID</replaceable></literal>.
+	 *
+	 * Since: 0.11.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_RESOURCE_ID,
+	                                 g_param_spec_string ("resource-id",
+	                                                      "Resource ID", "The resource ID of the document.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * GDataDocumentsEntry:document-id
 	 *
 	 * The document ID of the document, which is different from its entry ID (GDataEntry:id).
 	 *
 	 * Since: 0.4.0
+	 * Deprecated: This a substring of the #GDataDocumentsEntry:resource-id, which is more general and should be used instead. (Since: 0.11.0.)
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DOCUMENT_ID,
 	                                 g_param_spec_string ("document-id",
@@ -240,8 +268,8 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 
 	/* Override the ID property since the server returns two different forms of ID depending on how you form a query on an entry. These two forms
 	 * of ID are:
-	 *  - Document ID: /feeds/documents/private/full/document%3A[document_id]
-	 *  - Folder ID: /feeds/folders/private/full/folder%3A[folder_id]/document%3A[document_id]
+	 *  - Document ID: /feeds/documents/private/full/[resource_id]
+	 *  - Folder ID: /feeds/folders/private/full/[folder_id]/[resource_id]
 	 * The former is the ID we want; the latter should only ever be used for manipulating the location of documents (i.e. adding them to and
 	 * removing them from folders). The latter will, however, work fine for operations such as updating documents. It's only when one comes to
 	 * try and delete a document that it becomes a problem: sending a DELETE request to the folder ID will only remove the document from that
@@ -318,7 +346,7 @@ gdata_documents_entry_finalize (GObject *object)
 {
 	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
 
-	g_free (priv->document_id);
+	g_free (priv->resource_id);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->finalize (object);
@@ -330,8 +358,11 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
 
 	switch (property_id) {
+		case PROP_RESOURCE_ID:
+			g_value_set_string (value, priv->resource_id);
+			break;
 		case PROP_DOCUMENT_ID:
-			g_value_set_string (value, priv->document_id);
+			g_value_set_string (value, _get_document_id (GDATA_DOCUMENTS_ENTRY (object)));
 			break;
 		case PROP_WRITERS_CAN_INVITE:
 			g_value_set_boolean (value, priv->writers_can_invite);
@@ -352,29 +383,15 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 			gchar *uri;
 
 			/* Is it unset? */
-			if (priv->document_id == NULL) {
+			if (priv->resource_id == NULL) {
 				g_value_set_string (value, NULL);
 				break;
 			}
 
 			/* Build the ID */
-			if (GDATA_IS_DOCUMENTS_PRESENTATION (object)) {
-				uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/presentation%%3A%s",
-				                                priv->document_id);
-			} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (object)) {
-				uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/spreadsheet%%3A%s",
-				                                priv->document_id);
-			} else if (GDATA_IS_DOCUMENTS_TEXT (object)) {
-				uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/document%%3A%s",
-				                                priv->document_id);
-			} else if (GDATA_IS_DOCUMENTS_FOLDER (object)) {
-				uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/folder%%3A%s",
-				                                priv->document_id);
-			} else {
-				g_assert_not_reached ();
-			}
-
+			uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/%s", priv->resource_id);
 			g_value_take_string (value, uri);
+
 			break;
 		}
 		default:
@@ -418,35 +435,14 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
 		                                             gdata_entry_add_link, self,  &success, error) == TRUE ||
 		    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
-		                                      &(self->priv->last_modified_by), &success, error) == TRUE) {
+		                                      &(self->priv->last_modified_by), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "resourceId", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES, &(self->priv->resource_id),
+		                                      &success, error) == TRUE) {
 			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
 			/* <gd:deleted> */
 			/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */
 			self->priv->is_deleted = TRUE;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "resourceId") ==  0) {
-			gchar **document_id_parts;
-			xmlChar *resource_id;
-
-			if (self->priv->document_id != NULL)
-				return gdata_parser_error_duplicate_element (node, error);
-
-			resource_id = xmlNodeListGetString (doc, node->children, TRUE);
-			if (resource_id == NULL || *resource_id == '\0') {
-				xmlFree (resource_id);
-				return gdata_parser_error_required_content_missing (node, error);
-			}
-
-			document_id_parts = g_strsplit ((gchar*) resource_id, ":", 2);
-			if (document_id_parts == NULL) {
-				gdata_parser_error_unknown_content (node, (gchar*) resource_id, error);
-				xmlFree (resource_id);
-				return FALSE;
-			}
-			xmlFree (resource_id);
-
-			self->priv->document_id = g_strdup (document_id_parts[1]);
-			g_strfreev (document_id_parts);
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
@@ -475,6 +471,10 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		g_string_append (xml_string, "<docs:writersCanInvite value='true'/>");
 	else
 		g_string_append (xml_string, "<docs:writersCanInvite value='false'/>");
+
+	if (priv->resource_id != NULL) {
+		gdata_parser_string_append_escaped (xml_string, "<gd:resourceId>", priv->resource_id, "</gd:resourceId>");
+	}
 }
 
 static void
@@ -582,9 +582,28 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 	}
 
 	/* Append the document ID */
-	g_string_append (path, self->priv->document_id);
+	g_string_append (path, _get_document_id (self));
 
 	return g_string_free (path, FALSE);
+}
+
+/* Static version so that we can use it internally without triggering deprecation warnings. */
+static const gchar *
+_get_document_id (GDataDocumentsEntry *self)
+{
+	const gchar *colon;
+
+	/* Document ID should be NULL iff resource ID is. */
+	if (self->priv->resource_id == NULL) {
+		return NULL;
+	}
+
+	/* Resource ID is of the form "document:[document_id]" (or "spreadsheet:[document_id]", etc.),
+	 * so we want to return the portion after the colon. */
+	colon = g_utf8_strchr (self->priv->resource_id, -1, ':');
+	g_assert (colon != NULL);
+
+	return colon + 1;
 }
 
 /**
@@ -596,12 +615,31 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
  * Return value: the document's document ID
  *
  * Since: 0.4.0
+ * Deprecated: Use gdata_documents_entry_get_resource_id() instead. See #GDataDocumentsEntry:document-id. (Since: 0.11.0.)
  **/
 const gchar *
 gdata_documents_entry_get_document_id (GDataDocumentsEntry *self )
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
-	return self->priv->document_id;
+
+	return _get_document_id (self);
+}
+
+/**
+ * gdata_documents_entry_get_resource_id:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:resource-id property.
+ *
+ * Return value: the document's resource ID
+ *
+ * Since: 0.11.0
+ */
+const gchar *
+gdata_documents_entry_get_resource_id (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
+	return self->priv->resource_id;
 }
 
 /**

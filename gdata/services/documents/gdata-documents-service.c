@@ -666,9 +666,9 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	}
 
 	/* NOTE: adding a document to a folder doesn't have server-side ETag support (throws "noPostConcurrency" error) */
-	folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
+	folder_id = gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder));
 	g_assert (folder_id != NULL);
-	uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
+	uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/", folder_id, NULL);
 	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST, uri, NULL, TRUE);
 	g_free (uri);
 
@@ -851,27 +851,12 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	}
 
 	/* Get the document ID */
-	folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
-	entry_id = gdata_documents_entry_get_document_id (entry);
+	folder_id = gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder));
+	entry_id = gdata_documents_entry_get_resource_id (entry);
 	g_assert (folder_id != NULL);
 	g_assert (entry_id != NULL);
 
-	if (GDATA_IS_DOCUMENTS_PRESENTATION (entry)) {
-		uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/presentation%%3A%s",
-		                                folder_id, entry_id);
-	} else if (GDATA_IS_DOCUMENTS_SPREADSHEET (entry)) {
-		uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/spreadsheet%%3A%s",
-		                                folder_id, entry_id);
-	} else if (GDATA_IS_DOCUMENTS_TEXT (entry)) {
-		uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/document%%3A%s",
-		                                folder_id, entry_id);
-	} else if (GDATA_IS_DOCUMENTS_FOLDER (entry)) {
-		uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/folder%%3A%s/folder%%3A%s",
-		                                folder_id, entry_id);
-	} else {
-		g_assert_not_reached ();
-	}
-
+	uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/%s/%s", folder_id, entry_id);
 	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_DELETE, uri,
 	                                        gdata_entry_get_etag (GDATA_ENTRY (entry)), TRUE);
 	g_free (uri);
@@ -1031,9 +1016,9 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 
 	/* If we have a folder, return the folder's upload URI */
 	if (folder != NULL) {
-		const gchar *folder_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (folder));
+		const gchar *folder_id = gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder));
 		g_assert (folder_id != NULL);
-		return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/folder%3A", folder_id, NULL);
+		return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/", folder_id, NULL);
 	}
 
 	/* Otherwise return the default upload URI */

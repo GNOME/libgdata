@@ -38,17 +38,13 @@
 #include "gdata-documents-presentation.h"
 #include "gdata-parser.h"
 
-static void get_xml (GDataParsable *parsable, GString *xml_string);
-
 G_DEFINE_TYPE (GDataDocumentsPresentation, gdata_documents_presentation, GDATA_TYPE_DOCUMENTS_DOCUMENT)
 
 static void
 gdata_documents_presentation_class_init (GDataDocumentsPresentationClass *klass)
 {
-	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
-	parsable_class->get_xml = get_xml;
 	entry_class->kind_term = "http://schemas.google.com/docs/2007#presentation";
 }
 
@@ -56,19 +52,6 @@ static void
 gdata_documents_presentation_init (GDataDocumentsPresentation *self)
 {
 	/* Why am I writing it? */
-}
-
-static void
-get_xml (GDataParsable *parsable, GString *xml_string)
-{
-	const gchar *document_id;
-
-	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_documents_presentation_parent_class)->get_xml (parsable, xml_string);
-
-	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (parsable));
-	if (document_id != NULL)
-		gdata_parser_string_append_escaped (xml_string, "<gd:resourceId>presentation:", document_id, "</gd:resourceId>");
 }
 
 /**
