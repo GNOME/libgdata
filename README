@@ -33,6 +33,12 @@ values, libgdata will give debug output (at various levels):
  3: Output debug messages and full network traffic logs
 If LIBGDATA_DEBUG is unset, no debug output will be produced.
 
+Deprecation guards
+==================
+
+If LIBGDATA_DISABLE_DEPRECATED is defined when compiling against libgdata, all
+deprecated API will be removed from included headers.
+
 Licensing
 =========
 

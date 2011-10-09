@@ -6,6 +6,7 @@ INCLUDES = \
 	$(GDK_PIXBUF_CFLAGS)				\
 	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\""\
 	-DG_LOG_DOMAIN=\"libgdata\"			\
+	-DLIBGDATA_DISABLE_DEPRECATED			\
 	$(DISABLE_DEPRECATED)				\
 	$(WARN_CFLAGS)					\
 	$(GDATA_CFLAGS)

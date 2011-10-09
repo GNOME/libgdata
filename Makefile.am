@@ -544,6 +544,7 @@ demos_scrapbook_scrapbook_CPPFLAGS = \
 	-I$(top_srcdir)/ \
 	-I$(top_srcdir)/gdata \
 	-DG_LOG_DOMAIN=\"scrapbook\" \
+	-DLIBGDATA_DISABLE_DEPRECATED \
 	$(DISABLE_DEPRECATED) \
 	$(AM_CPPFLAGS) \
 	$(NULL)

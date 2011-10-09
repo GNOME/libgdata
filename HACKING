@@ -137,6 +137,27 @@ In general, use common sense. However, there are some specific cases where a sta
  - In general, try to keep API named similarly to the actual GData API constructs. In certain cases, however, it might make more sense to rename pieces
    of API to be less cryptic (e.g. "timezone" instead of "ctz": http://code.google.com/apis/calendar/docs/2.0/reference.html#Parameters).
 
+Deprecating public API
+======================
+
+As libgdata moves towards API stability, old API should be deprecated rather than broken or removed entirely. The following should be ensured when
+deprecating API:
+
+ - G_GNUC_DEPRECATED_FOR is added to the API in the public header file.
+
+ - A “Deprecated:” line is added to the gtk-doc comment for the API. This should mention what API replaces it, give a brief explanation of why the
+   API has been deprecated, and finish with “(Since: [version].)” to list the version the API was deprecated.
+
+ - “#ifndef LIBGDATA_DISABLE_DEPRECATED” should be wrapped around the API in the public header file.
+
+ - All references to the API/uses of the API in libgdata code (including demos and the test suite) should be ported to use the replacement API instead.
+   If this isn't possible, the deprecated function should be split into a static function which contains all the code, and the public symbol should
+   become a simple wrapper of this static function. This allows the static function to be used inside libgdata without causing deprecation warnings.
+
+ - Don't remove deprecated symbols from gdata.symbols.
+
+ - Don't forget to also deprecate related symbols, such as the getter/setter for a property (or vice-versa).
+
 Commit messages
 ===============
 
