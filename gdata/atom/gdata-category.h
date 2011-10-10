@@ -27,6 +27,26 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_CATEGORY_SCHEMA_LABELS:
+ *
+ * A schema for categories which label the entry they're applied to in some way, such as starring it. The semantics of the various labels
+ * (such as %GDATA_CATEGORY_SCHEMA_LABELS_STARRED) are service-specific.
+ *
+ * Since: 0.11.0
+ */
+#define GDATA_CATEGORY_SCHEMA_LABELS "http://schemas.google.com/g/2005/labels"
+
+/**
+ * GDATA_CATEGORY_SCHEMA_LABELS_STARRED:
+ *
+ * A term for categories of the %GDATA_CATEGORY_SCHEMA_LABELS schema which labels an entry as being “starred”. The semantics of this label are
+ * service-specific, but are obvious for services such as Google Documents.
+ *
+ * Since: 0.11.0
+ */
+#define GDATA_CATEGORY_SCHEMA_LABELS_STARRED GDATA_CATEGORY_SCHEMA_LABELS"#starred"
+
 #define GDATA_TYPE_CATEGORY		(gdata_category_get_type ())
 #define GDATA_CATEGORY(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_CATEGORY, GDataCategory))
 #define GDATA_CATEGORY_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_CATEGORY, GDataCategoryClass))

@@ -756,6 +756,8 @@ GDataCalendarFeedPrivate
 <SECTION>
 <FILE>gdata-category</FILE>
 <TITLE>GDataCategory</TITLE>
+GDATA_CATEGORY_SCHEMA_LABELS
+GDATA_CATEGORY_SCHEMA_LABELS_STARRED
 GDataCategory
 GDataCategoryClass
 gdata_category_new

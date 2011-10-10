@@ -205,6 +205,46 @@
  * 	</programlisting>
  * </example>
  *
+ * Starred documents are denoted by being in the %GDATA_CATEGORY_SCHEMA_LABELS_STARRED category of the %GDATA_CATEGORY_SCHEMA_LABELS schema. Documents
+ * can be starred or unstarred simply by adding or removing this category from them and updating the document:
+ *
+ * <example>
+ * 	<title>Starring a Document</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsEntry *document, *updated_document;
+ *	GDataCategory *starred_category;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service and retrieve the document to be starred *<!-- -->/
+ *	service = create_documents_service ();
+ *	document = get_document_to_be_starred (service);
+ *
+ *	/<!-- -->* Add the “starred” category to the document *<!-- -->/
+ *	starred_category = gdata_category_new (GDATA_CATEGORY_SCHEMA_LABELS_STARRED, GDATA_CATEGORY_SCHEMA_LABELS, "starred");
+ *	gdata_entry_add_category (GDATA_ENTRY (document), starred_category);
+ *	g_object_unref (starred_category);
+ *
+ *	/<!-- -->* Propagate the updated document to the server *<!-- -->/
+ *	updated_document = GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (service),
+ *	                                                                      gdata_documents_service_get_primary_authorization_domain (),
+ *	                                                                      GDATA_ENTRY (document), NULL, &error));
+ *
+ *	g_object_unref (document);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error starring document: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the newly-starred document, like update it in the UI *<!-- -->/
+ *
+ *	g_object_unref (updated_document);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.4.0
  **/
 
