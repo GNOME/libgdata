@@ -76,8 +76,12 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
+ * Deprecated: SWF export has been deprecated in the protocol due to low demand for it; PDF export (using %GDATA_DOCUMENTS_PRESENTATION_PDF) is
+ * recommended instead. (Since: 0.11.0.)
  **/
+#ifndef LIBGDATA_DISABLE_DEPRECATED
 #define GDATA_DOCUMENTS_PRESENTATION_SWF "swf"
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 /**
  * GDATA_DOCUMENTS_PRESENTATION_TXT:
