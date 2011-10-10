@@ -96,6 +96,26 @@ typedef enum {
 	GDATA_YOUTUBE_UPLOADER_PARTNER
 } GDataYouTubeUploader;
 
+/**
+ * GDATA_YOUTUBE_LICENSE_CC:
+ *
+ * Value for #GDataYouTubeVideo:license to restrict search results to only videos which are Creative Commons licensed. Specifically, the license
+ * is the Creative Commons Attribution 3.0 Unported license; see the
+ * <ulink type="http" url="http://www.google.com/support/youtube/bin/answer.py?hl=en&answer=1284989">YouTube Help</ulink> for more information.
+ *
+ * Since: 0.11.0
+ */
+#define GDATA_YOUTUBE_LICENSE_CC "cc"
+
+/**
+ * GDATA_YOUTUBE_LICENSE_STANDARD:
+ *
+ * Value for #GDataYouTubeVideo:license to restrict search results to only videos which are under the standard YouTube license.
+ *
+ * Since: 0.11.0
+ */
+#define GDATA_YOUTUBE_LICENSE_STANDARD "youtube"
+
 #define GDATA_TYPE_YOUTUBE_QUERY		(gdata_youtube_query_get_type ())
 #define GDATA_YOUTUBE_QUERY(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_YOUTUBE_QUERY, GDataYouTubeQuery))
 #define GDATA_YOUTUBE_QUERY_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_YOUTUBE_QUERY, GDataYouTubeQueryClass))
@@ -151,6 +171,8 @@ GDataYouTubeAge gdata_youtube_query_get_age (GDataYouTubeQuery *self) G_GNUC_PUR
 void gdata_youtube_query_set_age (GDataYouTubeQuery *self, GDataYouTubeAge age);
 GDataYouTubeUploader gdata_youtube_query_get_uploader (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_uploader (GDataYouTubeQuery *self, GDataYouTubeUploader uploader);
+const gchar *gdata_youtube_query_get_license (GDataYouTubeQuery *self) G_GNUC_PURE;
+void gdata_youtube_query_set_license (GDataYouTubeQuery *self, const gchar *license);
 
 G_END_DECLS
 

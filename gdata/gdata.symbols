@@ -936,3 +936,5 @@ GDATA_YOUTUBE_RATING_TYPE_MPAA
 GDATA_YOUTUBE_RATING_TYPE_V_CHIP
 gdata_youtube_video_get_media_rating
 gdata_documents_entry_get_resource_id
+gdata_youtube_query_get_license
+gdata_youtube_query_set_license

@@ -1279,14 +1279,17 @@ test_query_uri (void)
 	gdata_youtube_query_set_uploader (query, GDATA_YOUTUBE_UPLOADER_PARTNER);
 	g_assert_cmpuint (gdata_youtube_query_get_uploader (query), ==, GDATA_YOUTUBE_UPLOADER_PARTNER);
 
+	gdata_youtube_query_set_license (query, GDATA_YOUTUBE_LICENSE_CC);
+	g_assert_cmpstr (gdata_youtube_query_get_license (query), ==, GDATA_YOUTUBE_LICENSE_CC);
+
 	/* Check the built URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=this_week&safeSearch=strict&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1&sortorder=ascending&uploader=partner");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=this_week&safeSearch=strict&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1&sortorder=ascending&uploader=partner&license=cc");
 	g_free (query_uri);
 
 	/* …and with a feed URI with pre-existing arguments */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com?foobar=shizzle");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?foobar=shizzle&q=q&time=this_week&safeSearch=strict&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1&sortorder=ascending&uploader=partner");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?foobar=shizzle&q=q&time=this_week&safeSearch=strict&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1&sortorder=ascending&uploader=partner&license=cc");
 	g_free (query_uri);
 
 	g_object_unref (query);
@@ -1314,6 +1317,7 @@ test_query_etag (void)
 	CHECK_ETAG (gdata_youtube_query_set_sort_order (query, GDATA_YOUTUBE_SORT_DESCENDING))
 	CHECK_ETAG (gdata_youtube_query_set_age (query, GDATA_YOUTUBE_AGE_THIS_WEEK))
 	CHECK_ETAG (gdata_youtube_query_set_uploader (query, GDATA_YOUTUBE_UPLOADER_PARTNER))
+	CHECK_ETAG (gdata_youtube_query_set_license (query, GDATA_YOUTUBE_LICENSE_STANDARD))
 
 #undef CHECK_ETAG
 

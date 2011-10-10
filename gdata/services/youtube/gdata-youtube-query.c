@@ -59,6 +59,7 @@ struct _GDataYouTubeQueryPrivate {
 	GDataYouTubeSortOrder sort_order;
 	GDataYouTubeAge age;
 	GDataYouTubeUploader uploader;
+	gchar *license;
 };
 
 enum {
@@ -73,7 +74,8 @@ enum {
 	PROP_SAFE_SEARCH,
 	PROP_SORT_ORDER,
 	PROP_AGE,
-	PROP_UPLOADER
+	PROP_UPLOADER,
+	PROP_LICENSE,
 };
 
 G_DEFINE_TYPE (GDataYouTubeQuery, gdata_youtube_query, GDATA_TYPE_QUERY)
@@ -299,6 +301,24 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	                                                    "Uploader", "Restricts the search to videos from the specified type of uploader.",
 	                                                    GDATA_TYPE_YOUTUBE_UPLOADER, GDATA_YOUTUBE_UPLOADER_ALL,
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataYouTubeQuery:license:
+	 *
+	 * The content license which should be used to filter search results. If set to, for example, %GDATA_YOUTUBE_LICENSE_CC, only videos which
+	 * are Creative Commons licensed will be returned in search results. Set this to %NULL to return videos under any license.
+	 *
+	 * For more information, see the <ulink type="http"
+	 * url="http://code.google.com/apis/youtube/2.0/reference.html#licensesp">online documentation</ulink>.
+	 *
+	 * Since: 0.11.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_LICENSE,
+	                                 g_param_spec_string ("license",
+	                                                      "License", "The content license which should be used to filter search results.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 }
 
 static void
@@ -315,6 +335,7 @@ gdata_youtube_query_finalize (GObject *object)
 	g_free (priv->language);
 	g_free (priv->order_by);
 	g_free (priv->restriction);
+	g_free (priv->license);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_query_parent_class)->finalize (object);
@@ -361,6 +382,9 @@ gdata_youtube_query_get_property (GObject *object, guint property_id, GValue *va
 			break;
 		case PROP_UPLOADER:
 			g_value_set_enum (value, priv->uploader);
+			break;
+		case PROP_LICENSE:
+			g_value_set_string (value, priv->license);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -410,6 +434,9 @@ gdata_youtube_query_set_property (GObject *object, guint property_id, const GVal
 			break;
 		case PROP_UPLOADER:
 			gdata_youtube_query_set_uploader (self, g_value_get_enum (value));
+			break;
+		case PROP_LICENSE:
+			gdata_youtube_query_set_license (self, g_value_get_string (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -506,6 +533,11 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	if (priv->uploader != GDATA_YOUTUBE_UPLOADER_ALL)
 		g_string_append (query_uri, "&uploader=partner");
+
+	if (priv->license != NULL) {
+		g_string_append (query_uri, "&license=");
+		g_string_append_uri_escaped (query_uri, priv->license, NULL, FALSE);
+	}
 }
 
 /**
@@ -890,6 +922,46 @@ gdata_youtube_query_set_uploader (GDataYouTubeQuery *self, GDataYouTubeUploader 
 	g_return_if_fail (GDATA_IS_YOUTUBE_QUERY (self));
 	self->priv->uploader = uploader;
 	g_object_notify (G_OBJECT (self), "uploader");
+
+	/* Our current ETag will no longer be relevant */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
+}
+
+/**
+ * gdata_youtube_query_get_license:
+ * @self: a #GDataYouTubeQuery
+ *
+ * Gets the #GDataYouTubeQuery:license property.
+ *
+ * Return value: the license property, or %NULL if it is unset
+ *
+ * Since: 0.11.0
+ */
+const gchar *
+gdata_youtube_query_get_license (GDataYouTubeQuery *self)
+{
+	g_return_val_if_fail (GDATA_IS_YOUTUBE_QUERY (self), NULL);
+	return self->priv->license;
+}
+
+/**
+ * gdata_youtube_query_set_license:
+ * @self: a #GDataYouTubeQuery
+ * @license: (allow-none): a new license value, or %NULL
+ *
+ * Sets the #GDataYouTubeQuery:license property of the #GDataYouTubeQuery to the new license value, @license.
+ *
+ * Set @license to %NULL to unset the property in the query URI.
+ *
+ * Since: 0.11.0
+ */
+void
+gdata_youtube_query_set_license (GDataYouTubeQuery *self, const gchar *license)
+{
+	g_return_if_fail (GDATA_IS_YOUTUBE_QUERY (self));
+	g_free (self->priv->license);
+	self->priv->license = g_strdup (license);
+	g_object_notify (G_OBJECT (self), "license");
 
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);
