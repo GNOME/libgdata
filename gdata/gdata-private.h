@@ -33,7 +33,10 @@ G_BEGIN_DECLS
  * @GDATA_LOG_NONE: Output no debug messages or network logs
  * @GDATA_LOG_MESSAGES: Output debug messages, but not network logs
  * @GDATA_LOG_HEADERS: Output debug messages and network traffic headers
- * @GDATA_LOG_FULL: Output debug messages and full network traffic logs
+ * @GDATA_LOG_FULL: Output debug messages and full network traffic logs,
+ * redacting usernames, passwords and auth. tokens
+ * @GDATA_LOG_FULL_UNREDACTED: Output debug messages and full network traffic
+ * logs, and don't redact usernames, passwords and auth. tokens
  *
  * Logging level.
  **/
@@ -41,7 +44,8 @@ typedef enum {
 	GDATA_LOG_NONE = 0,
 	GDATA_LOG_MESSAGES = 1,
 	GDATA_LOG_HEADERS = 2,
-	GDATA_LOG_FULL = 3
+	GDATA_LOG_FULL = 3,
+	GDATA_LOG_FULL_UNREDACTED = 4,
 } GDataLogLevel;
 
 #include "gdata-service.h"

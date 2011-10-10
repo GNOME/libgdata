@@ -74,7 +74,7 @@ gdata_test_init (int argc, char **argv)
 	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
 
 	/* Enable full debugging */
-	g_setenv ("LIBGDATA_DEBUG", "3", FALSE);
+	g_setenv ("LIBGDATA_DEBUG", "3" /* GDATA_LOG_FULL */, FALSE);
 }
 
 /*

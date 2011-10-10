@@ -30,7 +30,10 @@ values, libgdata will give debug output (at various levels):
  0: Output no debug messages or network logs
  1: Output debug messages, but not network logs
  2: Output debug messages and network traffic headers
- 3: Output debug messages and full network traffic logs
+ 3: Output debug messages and full network traffic logs, redacting usernames,
+    passwords and auth. tokens
+ 4: Output debug messages and full network traffic logs, and don't redact
+    usernames, passwords and auth. tokens
 If LIBGDATA_DEBUG is unset, no debug output will be produced.
 
 Deprecation guards
