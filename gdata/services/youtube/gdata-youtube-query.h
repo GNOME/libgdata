@@ -99,7 +99,7 @@ typedef enum {
 /**
  * GDATA_YOUTUBE_LICENSE_CC:
  *
- * Value for #GDataYouTubeVideo:license to restrict search results to only videos which are Creative Commons licensed. Specifically, the license
+ * Value for #GDataYouTubeQuery:license to restrict search results to only videos which are Creative Commons licensed. Specifically, the license
  * is the Creative Commons Attribution 3.0 Unported license; see the
  * <ulink type="http" url="http://www.google.com/support/youtube/bin/answer.py?hl=en&answer=1284989">YouTube Help</ulink> for more information.
  *
@@ -110,7 +110,7 @@ typedef enum {
 /**
  * GDATA_YOUTUBE_LICENSE_STANDARD:
  *
- * Value for #GDataYouTubeVideo:license to restrict search results to only videos which are under the standard YouTube license.
+ * Value for #GDataYouTubeQuery:license to restrict search results to only videos which are under the standard YouTube license.
  *
  * Since: 0.11.0
  */
