@@ -130,7 +130,7 @@ struct _GDataClientLoginAuthorizerPrivate {
 	GStaticRecMutex mutex;
 
 	gchar *username;
-	gchar *password;
+	GDataSecureString password; /* must be allocated by _gdata_service_secure_strdup() */
 
 	/* Mapping from GDataAuthorizationDomain to string? auth_token; auth_token is NULL for domains which aren't authorised at the moment */
 	GHashTable *auth_tokens;
@@ -209,6 +209,10 @@ gdata_client_login_authorizer_class_init (GDataClientLoginAuthorizerClass *klass
 	 * then be set to the password passed to gdata_client_login_authorizer_authenticate(), and a #GObject::notify signal will be emitted. If
 	 * authentication fails, it will be set to %NULL.
 	 *
+	 * If libgdata is compiled with libgnome-keyring support, the password will be stored in non-pageable memory. However, if it is retrieved
+	 * using g_object_get() (or related functions) it will be copied to non-pageable memory and could end up being written to disk. Accessing
+	 * the password using gdata_client_login_authorizer_get_password() will not perform any copies, and so maintains privacy.
+	 *
 	 * Since: 0.9.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_PASSWORD,
@@ -281,7 +285,7 @@ gdata_client_login_authorizer_init (GDataClientLoginAuthorizer *self)
 
 	/* Set up the authentication mutex */
 	g_static_rec_mutex_init (&(self->priv->mutex));
-	self->priv->auth_tokens = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_free);
+	self->priv->auth_tokens = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, (GDestroyNotify) _gdata_service_secure_strfree);
 
 	/* Set up the session */
 	self->priv->session = _gdata_service_build_session ();
@@ -311,7 +315,7 @@ finalize (GObject *object)
 	GDataClientLoginAuthorizerPrivate *priv = GDATA_CLIENT_LOGIN_AUTHORIZER (object)->priv;
 
 	g_free (priv->username);
-	g_free (priv->password);
+	_gdata_service_secure_strfree (priv->password);
 	g_free (priv->client_id);
 	g_hash_table_destroy (priv->auth_tokens);
 	g_static_rec_mutex_free (&(priv->mutex));
@@ -339,6 +343,7 @@ get_property (GObject *object, guint property_id, GValue *value, GParamSpec *psp
 			g_static_rec_mutex_unlock (&(priv->mutex));
 			break;
 		case PROP_PASSWORD:
+			/* NOTE: This takes a pageable copy of non-pageable memory and thus could result in the password hitting disk. */
 			g_static_rec_mutex_lock (&(priv->mutex));
 			g_value_set_string (value, priv->password);
 			g_static_rec_mutex_unlock (&(priv->mutex));
@@ -381,7 +386,7 @@ set_property (GObject *object, guint property_id, const GValue *value, GParamSpe
 static void
 process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMessage *message)
 {
-	const gchar *auth_token;
+	GDataConstSecureString auth_token; /* privacy sensitive */
 	GDataClientLoginAuthorizerPrivate *priv = GDATA_CLIENT_LOGIN_AUTHORIZER (self)->priv;
 
 	/* If the domain's NULL, return immediately */
@@ -392,7 +397,7 @@ process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMe
 	/* Set the authorisation header */
 	g_static_rec_mutex_lock (&(priv->mutex));
 
-	auth_token = (const gchar*) g_hash_table_lookup (priv->auth_tokens, domain);
+	auth_token = (GDataConstSecureString) g_hash_table_lookup (priv->auth_tokens, domain);
 
 	if (auth_token != NULL) {
 		/* Ensure that we're using HTTPS: if not, we shouldn't set the Authorization header or we could be revealing the auth token to
@@ -400,8 +405,12 @@ process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMe
 		if (soup_message_get_uri (message)->scheme != SOUP_URI_SCHEME_HTTPS) {
 			g_warning ("Not authorizing a non-HTTPS message with the user's ClientLogin auth token as the connection isn't secure.");
 		} else {
+			/* Ideally, authorisation_header would be allocated in non-pageable memory. However, it's copied by
+			 * soup_message_headers_replace() immediately anyway, so there's not much point. However, we do ensure we zero it out before
+			 * freeing. */
 			gchar *authorisation_header = g_strdup_printf ("GoogleLogin auth=%s", auth_token);
 			soup_message_headers_replace (message->request_headers, "Authorization", authorisation_header);
+			memset (authorisation_header, 0, strlen (authorisation_header));
 			g_free (authorisation_header);
 		}
 	}
@@ -522,8 +531,8 @@ set_authentication_details (GDataClientLoginAuthorizer *self, const gchar *usern
 		priv->username = g_strdup (username);
 	}
 
-	g_free (priv->password);
-	priv->password = g_strdup (password);
+	_gdata_service_secure_strfree (priv->password);
+	priv->password = _gdata_service_secure_strdup (password);
 
 	g_static_rec_mutex_unlock (&(priv->mutex));
 
@@ -544,7 +553,8 @@ parse_authentication_response (GDataClientLoginAuthorizer *self, GDataAuthorizat
                                const gchar *response_body, gint length, GError **error)
 {
 	GDataClientLoginAuthorizerPrivate *priv = self->priv;
-	gchar *auth_start, *auth_end, *auth_token;
+	gchar *auth_start, *auth_end;
+	GDataSecureString auth_token; /* NOTE: auth_token must be allocated using _gdata_service_secure_strdup() and friends */
 
 	/* Parse the response */
 	auth_start = strstr (response_body, "Auth=");
@@ -558,9 +568,9 @@ parse_authentication_response (GDataClientLoginAuthorizer *self, GDataAuthorizat
 		goto protocol_error;
 	}
 
-	auth_token = g_strndup (auth_start, auth_end - auth_start);
+	auth_token = _gdata_service_secure_strndup (auth_start, auth_end - auth_start);
 	if (auth_token == NULL || strlen (auth_token) == 0) {
-		g_free (auth_token);
+		_gdata_service_secure_strfree (auth_token);
 		goto protocol_error;
 	}
 
@@ -646,7 +656,9 @@ authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain
 	guint status;
 	gboolean retval;
 
-	/* Prepare the request */
+	/* Prepare the request.
+	 * NOTE: At this point, our non-pageable password is copied into a pageable HTTP request structure. We can't do much about this
+	 * except note that the request is transient and so the chance of it getting paged out is low (but still positive). */
 	service_name = gdata_authorization_domain_get_service_name (domain);
 	request_body = soup_form_encode ("accountType", "HOSTED_OR_GOOGLE",
 	                                 "Email", username,
@@ -840,6 +852,10 @@ login_error:
 
 	retval = parse_authentication_response (self, domain, status, message->response_body->data, message->response_body->length, error);
 
+	/* Zero out the response body to lower the chance of it (with all the juicy passwords and auth. tokens it contains) hitting disk or getting
+	 * leaked in free memory. */
+	memset ((void*) message->response_body->data, 0, message->response_body->length);
+
 	g_object_unref (message);
 
 	return retval;
@@ -854,14 +870,14 @@ protocol_error:
 
 typedef struct {
 	gchar *username;
-	gchar *password;
+	GDataSecureString password; /* NOTE: This must be allocated in non-pageable memory using _gdata_service_secure_strdup(). */
 } AuthenticateAsyncData;
 
 static void
 authenticate_async_data_free (AuthenticateAsyncData *self)
 {
 	g_free (self->username);
-	g_free (self->password);
+	_gdata_service_secure_strfree (self->password);
 
 	g_slice_free (AuthenticateAsyncData, self);
 }
@@ -945,7 +961,7 @@ gdata_client_login_authorizer_authenticate_async (GDataClientLoginAuthorizer *se
 
 	data = g_slice_new (AuthenticateAsyncData);
 	data->username = g_strdup (username);
-	data->password = g_strdup (password);
+	data->password = _gdata_service_secure_strdup (password);
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_client_login_authorizer_authenticate_async);
 	g_simple_async_result_set_handle_cancellation (result, FALSE); /* we handle our own cancellation so we can set ::username and ::password */
@@ -1209,6 +1225,10 @@ gdata_client_login_authorizer_get_username (GDataClientLoginAuthorizer *self)
  * Returns the password of the currently authenticated user, or %NULL if nobody is authenticated.
  *
  * It is not safe to call this while an authentication operation is ongoing.
+ *
+ * If libgdata is compiled with libgnome-keyring support, the password will be stored in non-pageable memory. Since this function doesn't return
+ * a copy of the password, the returned value is guaranteed to not hit disk. It's advised that any copies of the password made in client programs
+ * also use non-pageable memory.
  *
  * Return value: the password of the currently authenticated user, or %NULL
  *

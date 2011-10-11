@@ -46,6 +46,7 @@
 
 #ifdef HAVE_GNOME
 #include <libsoup/soup-gnome-features.h>
+#include <gnome-keyring-memory.h>
 #endif /* HAVE_GNOME */
 
 #include "gdata-service.h"
@@ -2179,4 +2180,84 @@ gdata_service_set_locale (GDataService *self, const gchar *locale)
 	g_free (self->priv->locale);
 	self->priv->locale = g_strdup (locale);
 	g_object_notify (G_OBJECT (self), "locale");
+}
+
+/*
+ * _gdata_service_secure_strdup:
+ * @str: string (which may be in pageable memory) to be duplicated, or %NULL
+ *
+ * Duplicate a string into non-pageable memory (if libgdata has been compiled with HAVE_GNOME) or just fall back to g_strdup() (if libgdata hasn't).
+ * Passing %NULL to this function will cause %NULL to be returned.
+ *
+ * Strings allocated using this function must be freed using _gdata_service_secure_strfree().
+ *
+ * Return value: non-pageable copy of @str, or %NULL
+ * Since: 0.11.0
+ */
+GDataSecureString
+_gdata_service_secure_strdup (const gchar *str)
+{
+#ifdef HAVE_GNOME
+	return gnome_keyring_memory_strdup (str);
+#else /* if !HAVE_GNOME */
+	return g_strdup (str);
+#endif /* !HAVE_GNOME */
+}
+
+/*
+ * _gdata_service_secure_strndup:
+ * @str: string (which may be in pageable memory) to be duplicated, or %NULL
+ * @n_bytes: maximum number of bytes to copy from @str
+ *
+ * Duplicate at most @n_bytes bytes from @str into non-pageable memory. See _gdata_service_secure_strdup() for more information; this function is just
+ * a version of that with the same semantics as strndup().
+ *
+ * Return value: non-pageable copy of at most the first @n_bytes bytes of @str, or %NULL
+ * Since: 0.11.0
+ */
+GDataSecureString
+_gdata_service_secure_strndup (const gchar *str, gsize n_bytes)
+{
+#ifdef HAVE_GNOME
+	gsize str_len;
+	GDataSecureString duped_str;
+
+	if (str == NULL) {
+		return NULL;
+	}
+
+	str_len = MIN (strlen (str), n_bytes);
+	duped_str = (GDataSecureString) gnome_keyring_memory_alloc (str_len + 1);
+	strncpy (duped_str, str, str_len);
+	*(duped_str + str_len) = '\0';
+
+	return duped_str;
+#else /* if !HAVE_GNOME */
+	return g_strndup (str, n_bytes);
+#endif /* !HAVE_GNOME */
+}
+
+/*
+ * _gdata_service_secure_strfree:
+ * @str: a string to free, or %NULL
+ *
+ * Free a string which was allocated securely using _gdata_service_secure_strdup().
+ * Passing %NULL to this function is safe.
+ *
+ * Since: 0.11.0
+ */
+void
+_gdata_service_secure_strfree (GDataSecureString str)
+{
+#ifdef HAVE_GNOME
+	gnome_keyring_memory_free (str);
+#else /* if !HAVE_GNOME */
+	/* Poor man's approximation to non-pageable memory: the best we can do is ensure that we don't leak it in free memory.
+	 * This can't guarantee that it hasn't hit disk at some point, but does mean it can't hit disk in future. */
+	if (str != NULL) {
+		memset (str, 0, strlen (str));
+	}
+
+	g_free (str);
+#endif /* !HAVE_GNOME */
 }

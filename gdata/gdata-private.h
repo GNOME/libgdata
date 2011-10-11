@@ -62,6 +62,13 @@ G_GNUC_INTERNAL gchar *_gdata_service_fix_uri_scheme (const gchar *uri) G_GNUC_W
 G_GNUC_INTERNAL GDataLogLevel _gdata_service_get_log_level (void) G_GNUC_CONST;
 G_GNUC_INTERNAL SoupSession *_gdata_service_build_session (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
+typedef gchar *GDataSecureString;
+typedef const gchar *GDataConstSecureString;
+
+G_GNUC_INTERNAL GDataSecureString _gdata_service_secure_strdup (const gchar *str) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL GDataSecureString _gdata_service_secure_strndup (const gchar *str, gsize n_bytes) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL void _gdata_service_secure_strfree (GDataSecureString str);
+
 #include "gdata-query.h"
 G_GNUC_INTERNAL void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
 G_GNUC_INTERNAL void _gdata_query_set_previous_uri (GDataQuery *self, const gchar *previous_uri);

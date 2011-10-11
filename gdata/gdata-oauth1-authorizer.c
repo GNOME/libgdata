@@ -101,6 +101,12 @@
  *		g_free (verifier);
  *		g_free (authentication_uri);
  *		g_free (token);
+ *
+ *		/<!-- -->* Zero out the secret before freeing. *<!-- -->/
+ *		if (token_secret != NULL) {
+ *			memset (token_secret, 0, strlen (token_secret));
+ *		}
+ *
  *		g_free (token_secret);
  *	}
  *
@@ -166,7 +172,7 @@ struct _GDataOAuth1AuthorizerPrivate {
 	/* Note: This is the access token, not the request token returned by gdata_oauth1_authorizer_request_authentication_uri().
 	 * It's NULL iff the authorizer isn't authenticated. token_secret must be NULL iff token is NULL. */
 	gchar *token;
-	gchar *token_secret;
+	GDataSecureString token_secret; /* must be allocated by _gdata_service_secure_strdup() */
 
 	/* Mapping from GDataAuthorizationDomain to itself; a set of domains for which ->access_token is valid. */
 	GHashTable *authorization_domains;
@@ -311,6 +317,9 @@ finalize (GObject *object)
 	if (priv->proxy_uri != NULL) {
 		soup_uri_free (priv->proxy_uri);
 	}
+
+	g_free (priv->token);
+	_gdata_service_secure_strfree (priv->token_secret);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_oauth1_authorizer_parent_class)->finalize (object);
@@ -535,6 +544,9 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	/*g_debug ("Signing message using Signature Base String: “%s” and key “%s” using method “%s” to give signature: “%s”.",
 	         signature_base_string->str, secret_string->str, signature_method, signature);*/
 
+	/* Zero out the secret_string before freeing it, to reduce the chance of secrets hitting disk. */
+	memset (secret_string->str, 0, secret_string->allocated_len);
+
 	g_string_free (secret_string, TRUE);
 	g_string_free (signature_base_string, TRUE);
 
@@ -655,6 +667,15 @@ gdata_oauth1_authorizer_new_for_authorization_domains (const gchar *application_
  * This method implements <ulink type="http" url="http://tools.ietf.org/html/rfc5849#section-2.1">Section 2.1</ulink> and
  * <ulink type="http" url="http://tools.ietf.org/html/rfc5849#section-2.2">Section 2.2</ulink> of the
  * <ulink type="http" url="http://tools.ietf.org/html/rfc5849">OAuth 1.0 protocol</ulink>.
+ *
+ * When freeing @token_secret, it's advisable to set it to all zeros first, to reduce the chance of the sensitive token being recoverable from the
+ * free memory pool and (accidentally) leaked by a different part of the process. This can be achieved with the following code:
+ * |[
+ *	if (token_secret != NULL) {
+ *		memset (token_secret, 0, strlen (token_secret));
+ *		g_free (token_secret);
+ *	}
+ * ]|
  *
  * Return value: (transfer full): the URI of an authentication page for the user to use; free with g_free()
  *
@@ -787,7 +808,7 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 
 	/* Return the token and token secret */
 	*token = g_strdup (_token);
-	*token_secret = g_strdup (_token_secret);
+	*token_secret = g_strdup (_token_secret); /* NOTE: Ideally this would be allocated in non-pageable memory, but changing that would break API */
 
 	g_hash_table_destroy (response_details);
 
@@ -797,7 +818,7 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 typedef struct {
 	/* All return values */
 	gchar *token;
-	gchar *token_secret;
+	gchar *token_secret; /* NOTE: Ideally this would be allocated in non-pageable memory, but changing that would break API */
 	gchar *authentication_uri;
 } RequestAuthenticationUriAsyncData;
 
@@ -880,6 +901,15 @@ gdata_oauth1_authorizer_request_authentication_uri_async (GDataOAuth1Authorizer 
  *
  * This method can fail if the server has returned an error, but this is unlikely. If it does happen, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR will be
  * raised, @token and @token_secret will be set to %NULL and %NULL will be returned.
+ *
+ * When freeing @token_secret, it's advisable to set it to all zeros first, to reduce the chance of the sensitive token being recoverable from the
+ * free memory pool and (accidentally) leaked by a different part of the process. This can be achieved with the following code:
+ * |[
+ *	if (token_secret != NULL) {
+ *		memset (token_secret, 0, strlen (token_secret));
+ *		g_free (token_secret);
+ *	}
+ * ]|
  *
  * Return value: (transfer full): the URI of an authentication page for the user to use; free with g_free()
  *
@@ -1018,6 +1048,10 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	 * http://tools.ietf.org/html/rfc5849#section-2.3 for details. */
 	response_details = soup_form_decode (message->response_body->data);
 
+	/* Zero out the response body to lower the chance of it (with all the auth. tokens it contains) hitting disk or getting leaked in
+	 * free memory. */
+	memset ((void*) message->response_body->data, 0, message->response_body->length);
+
 	g_object_unref (message);
 
 	_token = g_hash_table_lookup (response_details, "oauth_token");
@@ -1038,10 +1072,13 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	g_free (priv->token);
 	priv->token = g_strdup (_token);
 
-	g_free (priv->token_secret);
-	priv->token_secret = g_strdup (_token_secret);
+	_gdata_service_secure_strfree (priv->token_secret);
+	priv->token_secret = _gdata_service_secure_strdup (_token_secret);
 
 	g_static_mutex_unlock (&(priv->mutex));
+
+	/* Zero out the secret token before freeing the hash table, to reduce the chance of it hitting disk later. */
+	memset ((void*) _token_secret, 0, strlen (_token_secret));
 
 	g_hash_table_destroy (response_details);
 
@@ -1051,7 +1088,7 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 typedef struct {
 	/* Input */
 	gchar *token;
-	gchar *token_secret;
+	GDataSecureString token_secret; /* must be allocated by _gdata_service_secure_strdup() */
 	gchar *verifier;
 } RequestAuthorizationAsyncData;
 
@@ -1059,7 +1096,7 @@ static void
 request_authorization_async_data_free (RequestAuthorizationAsyncData *data)
 {
 	g_free (data->token);
-	g_free (data->token_secret);
+	_gdata_service_secure_strfree (data->token_secret);
 	g_free (data->verifier);
 
 	g_slice_free (RequestAuthorizationAsyncData, data);
@@ -1119,7 +1156,7 @@ gdata_oauth1_authorizer_request_authorization_async (GDataOAuth1Authorizer *self
 
 	data = g_slice_new (RequestAuthorizationAsyncData);
 	data->token = g_strdup (token);
-	data->token_secret = g_strdup (token_secret);
+	data->token_secret = _gdata_service_secure_strdup (token_secret);
 	data->verifier = g_strdup (verifier);
 
 	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_oauth1_authorizer_request_authorization_async);

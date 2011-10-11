@@ -78,18 +78,15 @@ AC_SUBST(GDK_PIXBUF_LIBS)
 PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= $GTK_REQS], [have_gtk=yes], [have_gtk=no])
 AM_CONDITIONAL([HAVE_GTK], [test "x$have_gtk" = "xyes"])
 
-# GNOME support, which pulls in libsoup-gnome-2.4 to provide transparent proxy support
+# GNOME support, which pulls in libsoup-gnome-2.4 to provide transparent proxy support and gnome-keyring-1 to provide non-pageable memory
 AC_MSG_CHECKING(whether to build with GNOME support)
 AC_ARG_ENABLE(gnome, AS_HELP_STRING([--enable-gnome], [Whether to enable GNOME support]),, enable_gnome=yes)
 AC_MSG_RESULT($enable_gnome)
 
 if test "x$enable_gnome" = "xyes"; then
 	AC_DEFINE(HAVE_GNOME, 1, [Defined if GNOME support is enabled])
-	PKG_CHECK_MODULES(GNOME, [libsoup-gnome-2.4])
+	PKG_CHECK_MODULES([GNOME], [libsoup-gnome-2.4 gnome-keyring-1])
 fi
-
-AC_SUBST(GNOME_CFLAGS)
-AC_SUBST(GNOME_LIBS)
 
 # Various necessary functions and headers
 AC_CHECK_FUNCS([strchr])
