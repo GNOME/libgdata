@@ -175,5 +175,38 @@
 				</figure>
 			</para>
 		</refsect2>
+
+		<refsect2>
+			<title>Privacy</title>
+			<para>Privacy is an important consideration with code such as libgdata's, which handles valuable data such as people's
+				address books and Google Account login details.</para>
+			<para>Unfortunately, it's infeasible for libgdata to ensure that no private data is ever leaked from a process. To do this
+				properly would require almost all the data allocated by libgdata (and all the libraries it depends on, all the way down
+				to the TLS implementation) to use non-pageable memory for all network requests and responses, and to be careful about
+				zeroing them before freeing them. There isn't enough support for this level of paranoia in the lower levels of the
+				stack (such as libsoup).</para>
+			<para>However, it is feasible to ensure that the user's password and authentication/authorization tokens aren't leaked. This
+				is done in several ways in libgdata:</para>
+			<itemizedlist>
+				<listitem>
+					<para>If libgdata is compiled with libgnome-keyring support enabled (using the
+						<code class="literal">--enable-gnome</code> configuration flag), it will use gnome-keyring's support for
+						non-pageable memory. This will try hard to avoid passwords and auth. tokens being paged out to disk at
+						any point (although there are circumstances, such as when hibernating, where this is
+						unavoidable).</para>
+					<para>Otherwise, libgdata will ensure that passwords and auth. tokens are zeroed out in memory before being
+						freed, which lowers the chance of them reaching disk at a later stage.</para>
+				</listitem>
+				<listitem>
+					<para>Unless run with <envar>LIBGDATA_DEBUG</envar> set to <literal>4</literal>, libgdata will attempt to
+						redact all usernames, passwords and auth. tokens from debug log output. This aims to prevent accidental
+						disclosure of passwords, etc. in bug reports. Currently, this is implemented using a fixed set of
+						search patterns, so it's possible that certain bits of private information will not be redacted; any
+						such occurrence is a bug which should be reported on
+						<ulink type="http" url="https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata">GNOME
+						Bugzilla</ulink>.</para>
+				</listitem>
+			</itemizedlist>
+		</refsect2>
 	</refsect1>
 </refentry>
