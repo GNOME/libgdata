@@ -1995,6 +1995,50 @@ test_gd_name (void)
 }
 
 static void
+test_gd_name_empty_strings (void)
+{
+	GDataGDName *name;
+	GError *error = NULL;
+
+	g_test_bug ("662290");
+
+	/* Test that empty full names get treated as NULL correctly. */
+	name = GDATA_GD_NAME (gdata_parsable_new_from_xml (GDATA_TYPE_GD_NAME,
+		"<gd:name xmlns:gd='http://schemas.google.com/g/2005'>"
+			"<gd:fullName></gd:fullName>"
+		"</gd:name>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_GD_NAME (name));
+	g_clear_error (&error);
+
+	/* Check the properties */
+	g_assert_cmpstr (gdata_gd_name_get_given_name (name), ==, NULL);
+	g_assert_cmpstr (gdata_gd_name_get_additional_name (name), ==, NULL);
+	g_assert_cmpstr (gdata_gd_name_get_family_name (name), ==, NULL);
+	g_assert_cmpstr (gdata_gd_name_get_prefix (name), ==, NULL);
+	g_assert_cmpstr (gdata_gd_name_get_suffix (name), ==, NULL);
+	g_assert_cmpstr (gdata_gd_name_get_full_name (name), ==, NULL);
+
+	g_object_unref (name);
+
+	/* Build a name with an empty string full name and check the serialisation */
+	name = gdata_gd_name_new ("Georgey", "Porgey");
+	gdata_gd_name_set_full_name (name, "");
+
+	g_assert_cmpstr (gdata_gd_name_get_full_name (name), ==, NULL);
+
+	/* Check the outputted XML is the same */
+	gdata_test_assert_xml (name,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<gd:name xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
+			"<gd:givenName>Georgey</gd:givenName>"
+			"<gd:familyName>Porgey</gd:familyName>"
+		"</gd:name>");
+
+	g_object_unref (name);
+}
+
+static void
 test_gd_organization (void)
 {
 	GDataGDOrganization *org, *org2;
@@ -3746,6 +3790,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/im_address", test_gd_im_address);
 	g_test_add_func ("/gd/im_address/escaping", test_gd_im_address_escaping);
 	g_test_add_func ("/gd/name", test_gd_name);
+	g_test_add_func ("/gd/name/empty_strings", test_gd_name_empty_strings);
 	g_test_add_func ("/gd/organization", test_gd_organization);
 	g_test_add_func ("/gd/organization/escaping", test_gd_organization_escaping);
 	g_test_add_func ("/gd/phone_number", test_gd_phone_number);

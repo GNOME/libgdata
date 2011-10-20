@@ -326,7 +326,11 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	OUTPUT_STRING_ELEMENT ("familyName", family_name)
 	OUTPUT_STRING_ELEMENT ("namePrefix", prefix)
 	OUTPUT_STRING_ELEMENT ("nameSuffix", suffix)
-	OUTPUT_STRING_ELEMENT ("fullName", full_name)
+
+	/* We can't guarantee that priv->full_name is non-empty without breaking API. */
+	if (priv->full_name != NULL && *(priv->full_name) != '\0') {
+		gdata_parser_string_append_escaped (xml_string, "<gd:fullName>", priv->full_name, "</gd:fullName>");
+	}
 
 #undef OUTPUT_STRING_ELEMENT
 }
@@ -572,6 +576,12 @@ void
 gdata_gd_name_set_full_name (GDataGDName *self, const gchar *full_name)
 {
 	g_return_if_fail (GDATA_IS_GD_NAME (self));
+
+	/* Coerce empty strings to NULL. Ideally, we should have this as a precondition (as all the other setters in GDataGDName have) but that would
+	 * break API. */
+	if (full_name != NULL && *full_name == '\0') {
+		full_name = NULL;
+	}
 
 	g_free (self->priv->full_name);
 	self->priv->full_name = g_strdup (full_name);
