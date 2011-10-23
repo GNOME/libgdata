@@ -146,6 +146,8 @@
 #include "gdata-oauth1-authorizer.h"
 #include "gdata-private.h"
 
+#define HMAC_SHA1_LEN 20 /* bytes, raw */
+
 static void authorizer_init (GDataAuthorizerInterface *iface);
 static void dispose (GObject *object);
 static void finalize (GObject *object);
@@ -434,6 +436,9 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	char *nonce;
 	gboolean is_first = TRUE;
 	GTimeVal time_val;
+	guchar signature_buf[HMAC_SHA1_LEN];
+	gsize signature_buf_len;
+	GHmac *signature_hmac;
 
 	g_return_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self));
 	g_return_if_fail (SOUP_IS_MESSAGE (message));
@@ -539,7 +544,15 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	}
 
 	/* Create the signature as described here: http://tools.ietf.org/html/rfc5849#section-3.4.2 */
-	signature = oauth_sign_hmac_sha1 (signature_base_string->str, secret_string->str);
+	signature_hmac = g_hmac_new (G_CHECKSUM_SHA1, (const guchar*) secret_string->str, secret_string->len);
+	g_hmac_update (signature_hmac, (const guchar*) signature_base_string->str, signature_base_string->len);
+
+	signature_buf_len = G_N_ELEMENTS (signature_buf);
+	g_hmac_get_digest (signature_hmac, signature_buf, &signature_buf_len);
+
+	g_hmac_unref (signature_hmac);
+
+	signature = g_base64_encode (signature_buf, signature_buf_len);
 
 	/*g_debug ("Signing message using Signature Base String: “%s” and key “%s” using method “%s” to give signature: “%s”.",
 	         signature_base_string->str, secret_string->str, signature_method, signature);*/
