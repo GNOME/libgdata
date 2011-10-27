@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2010, 2011 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -166,6 +166,9 @@ void gdata_contacts_contact_set_name (GDataContactsContact *self, GDataGDName *n
 
 const gchar *gdata_contacts_contact_get_nickname (GDataContactsContact *self) G_GNUC_PURE;
 void gdata_contacts_contact_set_nickname (GDataContactsContact *self, const gchar *nickname);
+
+const gchar *gdata_contacts_contact_get_file_as (GDataContactsContact *self) G_GNUC_PURE;
+void gdata_contacts_contact_set_file_as (GDataContactsContact *self, const gchar *file_as);
 
 gboolean gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday) G_GNUC_PURE;
 void gdata_contacts_contact_set_birthday (GDataContactsContact *self, GDate *birthday, gboolean birthday_has_year);

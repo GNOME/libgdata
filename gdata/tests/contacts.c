@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2010, 2011 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -319,6 +319,7 @@ test_contact_insert (InsertData *data, gconstpointer service)
 	g_object_unref (name2);
 
 	gdata_contacts_contact_set_nickname (contact, "Big J");
+	gdata_contacts_contact_set_file_as (contact, "J, Big");
 	g_date_set_dmy (&date, 1, 1, 1900);
 	gdata_contacts_contact_set_birthday (contact, &date, FALSE);
 	gdata_entry_set_content (GDATA_ENTRY (contact), "Notes");
@@ -419,6 +420,7 @@ test_contact_insert (InsertData *data, gconstpointer service)
 
 	/* Various properties */
 	g_assert_cmpstr (gdata_contacts_contact_get_nickname (new_contact), ==, "Big J");
+	g_assert_cmpstr (gdata_contacts_contact_get_file_as (new_contact), ==, "J, Big");
 	g_assert (gdata_contacts_contact_get_birthday (new_contact, &date) == FALSE);
 	g_assert (g_date_valid (&date) == TRUE);
 	g_assert_cmpuint (g_date_get_month (&date), ==, 1);
@@ -788,7 +790,7 @@ test_contact_properties (void)
 	GDataGContactCalendar *calendar;
 	GDataGContactExternalID *external_id;
 	GDataGContactLanguage *language;
-	gchar *nickname, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
+	gchar *nickname, *file_as, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
 	gchar *priority, *sensitivity, *short_name, *subject, *photo_etag;
 	GDate date, *date2;
 	GTimeVal current_time;
@@ -816,6 +818,7 @@ test_contact_properties (void)
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (contact)), ==, "John Smith");
 
 	gdata_contacts_contact_set_nickname (contact, "Big J");
+	gdata_contacts_contact_set_file_as (contact, "J, Big");
 	g_date_set_dmy (&date, 1, 1, 1900);
 	gdata_contacts_contact_set_birthday (contact, &date, FALSE);
 	gdata_entry_set_content (GDATA_ENTRY (contact), "Notes");
@@ -908,6 +911,7 @@ test_contact_properties (void)
 	              "photo-etag", &photo_etag,
 	              "name", &name,
 	              "nickname", &nickname,
+	              "file-as", &file_as,
 	              "birthday", &date2,
 	              "birthday-has-year", &birthday_has_year,
 	              "billing-information", &billing_information,
@@ -928,6 +932,7 @@ test_contact_properties (void)
 	g_assert (photo_etag == NULL);
 	g_assert (name2 == name);
 	g_assert_cmpstr (nickname, ==, "Big J");
+	g_assert_cmpstr (file_as, ==, "J, Big");
 	g_assert (g_date_valid (date2) == TRUE);
 	g_assert_cmpuint (g_date_get_month (date2), ==, 1);
 	g_assert_cmpuint (g_date_get_day (date2), ==, 1);
@@ -947,6 +952,7 @@ test_contact_properties (void)
 	g_object_unref (name2);
 	g_free (date2);
 	g_free (nickname);
+	g_free (file_as);
 	g_free (billing_information);
 	g_free (directory_server);
 	g_free (gender);
@@ -1002,6 +1008,7 @@ test_contact_properties (void)
 			"<gContact:userDefinedField key='' value='Foo'/>" /* bgo#648058 */
 			"<gContact:hobby>Rowing</gContact:hobby>"
 			"<gContact:nickname>Big J</gContact:nickname>"
+			"<gContact:fileAs>J, Big</gContact:fileAs>"
 			"<gContact:birthday when='--01-01'/>"
 			"<gContact:billingInformation>Big J Enterprises, Ltd.</gContact:billingInformation>"
 			"<gContact:directoryServer>This is a server</gContact:directoryServer>"
@@ -1071,6 +1078,7 @@ test_contact_escaping (void)
 
 	contact = gdata_contacts_contact_new (NULL);
 	gdata_contacts_contact_set_nickname (contact, "Nickname & stuff");
+	gdata_contacts_contact_set_file_as (contact, "Stuff, & Nickname");
 	gdata_contacts_contact_set_billing_information (contact, "Billing information & stuff");
 	gdata_contacts_contact_set_directory_server (contact, "http://foo.com?foo&bar");
 	gdata_contacts_contact_set_gender (contact, "Misc. & other");
@@ -1102,6 +1110,7 @@ test_contact_escaping (void)
 			"<gContact:groupMembershipInfo href='http://foo.com?foo&amp;bar'/>"
 			"<gContact:hobby>Escaping &amp;s</gContact:hobby>"
 			"<gContact:nickname>Nickname &amp; stuff</gContact:nickname>"
+			"<gContact:fileAs>Stuff, &amp; Nickname</gContact:fileAs>"
 			"<gContact:billingInformation>Billing information &amp; stuff</gContact:billingInformation>"
 			"<gContact:directoryServer>http://foo.com?foo&amp;bar</gContact:directoryServer>"
 			"<gContact:gender value='Misc. &amp; other'/>"
@@ -1287,6 +1296,7 @@ test_contact_parser_minimal (void)
 	/* TODO: Check the other properties */
 
 	g_assert (gdata_contacts_contact_get_nickname (contact) == NULL);
+	g_assert (gdata_contacts_contact_get_file_as (contact) == NULL);
 	g_assert (gdata_contacts_contact_get_birthday (contact, &birthday) == FALSE);
 	g_assert (g_date_valid (&birthday) == FALSE);
 	g_assert (gdata_contacts_contact_get_billing_information (contact) == NULL);
@@ -1346,6 +1356,7 @@ test_contact_parser_normal (void)
 			"<gContact:groupMembershipInfo href='http://www.google.com/feeds/contacts/groups/jo%40gmail.com/base/1234b'/>"
 			"<gd:deleted/>"
 			"<gContact:nickname>Agent Smith</gContact:nickname>"
+			"<gContact:fileAs>Smith, Agent</gContact:fileAs>"
 			"<gContact:birthday when='2010-12-03'/>"
 			"<gContact:billingInformation>Foo &amp; Bar Inc.</gContact:billingInformation>"
 			"<gContact:directoryServer>Directory &amp; server</gContact:directoryServer>"
@@ -1387,6 +1398,7 @@ test_contact_parser_normal (void)
 	/* TODO: Check the other properties */
 
 	g_assert_cmpstr (gdata_contacts_contact_get_nickname (contact), ==, "Agent Smith");
+	g_assert_cmpstr (gdata_contacts_contact_get_file_as (contact), ==, "Smith, Agent");
 	g_assert_cmpstr (gdata_contacts_contact_get_billing_information (contact), ==, "Foo & Bar Inc.");
 	g_assert_cmpstr (gdata_contacts_contact_get_directory_server (contact), ==, "Directory & server");
 	g_assert_cmpstr (gdata_contacts_contact_get_gender (contact), ==, GDATA_CONTACTS_GENDER_FEMALE);
@@ -1591,6 +1603,10 @@ test_contact_parser_error_handling (void)
 	/* gContact:nickname */
 	TEST_XML_ERROR_HANDLING ("<gContact:nickname/>"); /* missing content */
 	TEST_XML_ERROR_HANDLING ("<gContact:nickname>Nickname 1</gContact:nickname><gContact:nickname>Duplicate!</gContact:nickname>"); /* duplicate */
+
+	/* gContact:fileAs */
+	TEST_XML_ERROR_HANDLING ("<gContact:fileAs/>"); /* missing content */
+	TEST_XML_ERROR_HANDLING ("<gContact:fileAs>File As 1</gContact:fileAs><gContact:fileAs>Duplicate!</gContact:fileAs>"); /* duplicate */
 
 	/* gContact:birthday */
 	TEST_XML_ERROR_HANDLING ("<gContact:birthday/>"); /* missing "when" attribute */

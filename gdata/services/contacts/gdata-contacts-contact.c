@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2010, 2011 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -189,6 +189,7 @@ struct _GDataContactsContactPrivate {
 	gchar *photo_etag;
 	GList *jots; /* GDataGContactJot */
 	gchar *nickname;
+	gchar *file_as;
 	GDate birthday;
 	gboolean birthday_has_year; /* contacts can choose to just give the month and day of their birth */
 	GList *relations; /* GDataGContactRelation */
@@ -229,7 +230,8 @@ enum {
 	PROP_SENSITIVITY,
 	PROP_SHORT_NAME,
 	PROP_SUBJECT,
-	PROP_PHOTO_ETAG
+	PROP_PHOTO_ETAG,
+	PROP_FILE_AS,
 };
 
 G_DEFINE_TYPE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
@@ -321,6 +323,19 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	g_object_class_install_property (gobject_class, PROP_NICKNAME,
 	                                 g_param_spec_string ("nickname",
 	                                                      "Nickname", "The contact's chosen nickname.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataContactsContact:file-as:
+	 *
+	 * The name to file the contact under for sorting purposes.
+	 *
+	 * Since: 0.11.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_FILE_AS,
+	                                 g_param_spec_string ("file-as",
+	                                                      "File As", "The name to file the contact under for sorting purposes.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -616,6 +631,7 @@ gdata_contacts_contact_finalize (GObject *object)
 	g_hash_table_destroy (priv->groups);
 	g_free (priv->photo_etag);
 	g_free (priv->nickname);
+	g_free (priv->file_as);
 	g_free (priv->billing_information);
 	g_free (priv->directory_server);
 	g_free (priv->gender);
@@ -657,6 +673,9 @@ gdata_contacts_contact_get_property (GObject *object, guint property_id, GValue 
 			break;
 		case PROP_NICKNAME:
 			g_value_set_string (value, priv->nickname);
+			break;
+		case PROP_FILE_AS:
+			g_value_set_string (value, priv->file_as);
 			break;
 		case PROP_BIRTHDAY:
 			g_value_set_boxed (value, &(priv->birthday));
@@ -715,6 +734,9 @@ gdata_contacts_contact_set_property (GObject *object, guint property_id, const G
 			break;
 		case PROP_NICKNAME:
 			gdata_contacts_contact_set_nickname (self, g_value_get_string (value));
+			break;
+		case PROP_FILE_AS:
+			gdata_contacts_contact_set_file_as (self, g_value_get_string (value));
 			break;
 		case PROP_BIRTHDAY:
 			gdata_contacts_contact_set_birthday (self, g_value_get_boxed (value), self->priv->birthday_has_year);
@@ -852,6 +874,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_object_from_element_setter (node, "language", P_REQUIRED, GDATA_TYPE_GCONTACT_LANGUAGE,
 		                                             gdata_contacts_contact_add_language, self, &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NO_DUPES, &(self->priv->nickname), &success, error) == TRUE ||
+		    gdata_parser_string_from_element (node, "fileAs", P_REQUIRED | P_NO_DUPES, &(self->priv->file_as), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "billingInformation", P_REQUIRED | P_NO_DUPES | P_NON_EMPTY,
 		                                      &(self->priv->billing_information), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "directoryServer", P_REQUIRED | P_NO_DUPES | P_NON_EMPTY,
@@ -1094,6 +1117,11 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	if (priv->nickname != NULL)
 		gdata_parser_string_append_escaped (xml_string, "<gContact:nickname>", priv->nickname, "</gContact:nickname>");
 
+	/* gContact:fileAs */
+	if (priv->file_as != NULL) {
+		gdata_parser_string_append_escaped (xml_string, "<gContact:fileAs>", priv->file_as, "</gContact:fileAs>");
+	}
+
 	/* gContact:birthday */
 	if (g_date_valid (&(priv->birthday)) == TRUE) {
 		if (priv->birthday_has_year == TRUE) {
@@ -1308,6 +1336,44 @@ gdata_contacts_contact_set_nickname (GDataContactsContact *self, const gchar *ni
 	g_free (self->priv->nickname);
 	self->priv->nickname = g_strdup (nickname);
 	g_object_notify (G_OBJECT (self), "nickname");
+}
+
+/**
+ * gdata_contacts_contact_get_file_as:
+ * @self: a #GDataContactsContact
+ *
+ * Gets the #GDataContactsContact:file-as property.
+ *
+ * Return value: the name the contact's filed under, or %NULL
+ *
+ * Since: 0.11.0
+ */
+const gchar *
+gdata_contacts_contact_get_file_as (GDataContactsContact *self)
+{
+	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
+	return self->priv->file_as;
+}
+
+/**
+ * gdata_contacts_contact_set_file_as:
+ * @self: a #GDataContactsContact
+ * @file_as: (allow-none): the new name to file the contact under, or %NULL
+ *
+ * Sets the #GDataContactsContact:file-as property to @file_as.
+ *
+ * If @file_as is %NULL, the contact will be filed under their full name.
+ *
+ * Since: 0.7.0
+ **/
+void
+gdata_contacts_contact_set_file_as (GDataContactsContact *self, const gchar *file_as)
+{
+	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
+
+	g_free (self->priv->file_as);
+	self->priv->file_as = g_strdup (file_as);
+	g_object_notify (G_OBJECT (self), "file-as");
 }
 
 /**
