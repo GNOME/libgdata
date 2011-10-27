@@ -414,7 +414,8 @@ test_contact_insert (InsertData *data, gconstpointer service)
 	/* Check its edited date */
 	edited = gdata_contacts_contact_get_edited (contact);
 	creation_time = gdata_contacts_contact_get_edited (new_contact);
-	g_assert_cmpint (creation_time, >=, edited);
+	g_assert_cmpint (creation_time + 5, >=, edited);
+	g_assert_cmpint (creation_time, <=, edited);
 
 	/* Various properties */
 	g_assert_cmpstr (gdata_contacts_contact_get_nickname (new_contact), ==, "Big J");
