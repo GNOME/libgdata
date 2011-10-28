@@ -27,7 +27,7 @@
  * #GDataDocumentsService is a subclass of #GDataService for communicating with the GData API of Google Documents. It supports querying
  * for, inserting, editing and deleting documents, as well as a folder hierarchy.
  *
- * For more details of Google Documents' GData API, see the <ulink type="http" url="http://code.google.com/apis/document/docs/2.0/reference.html">
+ * For more details of Google Documents' GData API, see the <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">
  * online documentation</ulink>.
  *
  * Fore more details about the spreadsheet downloads handling, see the
@@ -281,6 +281,8 @@ gdata_documents_service_class_init (GDataDocumentsServiceClass *klass)
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
 	service_class->feed_type = GDATA_TYPE_DOCUMENTS_FEED;
 	service_class->get_authorization_domains = get_authorization_domains;
+
+	service_class->api_version = "3";
 }
 
 static void
