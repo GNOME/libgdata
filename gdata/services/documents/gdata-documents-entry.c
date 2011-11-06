@@ -30,10 +30,10 @@
  * access roles defined for the base #GDataAccessRule (e.g. %GDATA_ACCESS_ROLE_NONE), #GDataDocumentsEntry has its own, such as
  * %GDATA_DOCUMENTS_ACCESS_ROLE_OWNER and %GDATA_DOCUMENTS_ACCESS_ROLE_READER.
  *
- * Documents can (confusingly) be referenced by three different types of IDs: their entry ID, their resource ID and their document ID. Each is a
- * substring of the previous ones (i.e. the entry ID contains the resource ID, which in turn contains the document ID). The resource ID and document ID
- * should almost always be considered as internal, and thus entry IDs (#GDataEntry:id) should normally be used to uniquely identify documents. For more
- * information, see #GDataDocumentsEntry:resource-id.
+ * Documents can (confusingly) be referenced by three different types of IDs: their entry ID, their resource ID and their document ID (untyped resource
+ * ID). Each is a substring of the previous ones (i.e. the entry ID contains the resource ID, which in turn contains the document ID). The resource ID
+ * and document ID should almost always be considered as internal, and thus entry IDs (#GDataEntry:id) should normally be used to uniquely identify
+ * documents. For more information, see #GDataDocumentsEntry:resource-id.
  *
  * For more details of Google Documents' GData API, see the
  * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
@@ -120,8 +120,9 @@ static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gchar *get_entry_uri (const gchar *id);
 
-static const gchar *_get_document_id (GDataDocumentsEntry *self) G_GNUC_PURE;
+static const gchar *_get_untyped_resource_id (GDataDocumentsEntry *self) G_GNUC_PURE;
 
 struct _GDataDocumentsEntryPrivate {
 	gint64 edited;
@@ -151,6 +152,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataDocumentsEntryPrivate));
 
@@ -163,6 +165,8 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
+
+	entry_class->get_entry_uri = get_entry_uri;
 
 	/**
 	 * GDataDocumentsEntry:edited
@@ -227,9 +231,13 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * identify a given document or folder, use its #GDataEntry:id.
 	 *
 	 * Resource IDs have the form:
-	 * <literal><replaceable>document|spreadsheet|presentation|folder</replaceable>:<replaceable>document ID</replaceable></literal>; whereas entry
-	 * IDs have the form:
-	 * <literal>https://docs.google.com/feeds/documents/private/full/<replaceable>resource ID</replaceable></literal>.
+	 * <literal><replaceable>document|spreadsheet|presentation|folder</replaceable>:<replaceable>untyped resource ID</replaceable></literal>; whereas
+	 * entry IDs have the form:
+	 * <literal>https://docs.google.com/feeds/id/<replaceable>resource ID</replaceable></literal> in version 3 of the API.
+	 *
+	 * For more information, see the
+	 * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#resource_ids_explained">Google Documents
+	 * API reference</ulink>.
 	 *
 	 * Since: 0.11.0
 	 */
@@ -242,7 +250,9 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	/**
 	 * GDataDocumentsEntry:document-id
 	 *
-	 * The document ID of the document, which is different from its entry ID (GDataEntry:id).
+	 * The document ID of the document, which is different from its entry ID (GDataEntry:id). The
+	 * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#terminology_used_in_this_guide">online GData
+	 * Documentation</ulink> refers to these as “untyped resource IDs”.
 	 *
 	 * Since: 0.4.0
 	 * Deprecated: This a substring of the #GDataDocumentsEntry:resource-id, which is more general and should be used instead. (Since: 0.11.0.)
@@ -267,9 +277,9 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/* Override the ID property since the server returns two different forms of ID depending on how you form a query on an entry. These two forms
-	 * of ID are:
-	 *  - Document ID: /feeds/documents/private/full/[resource_id]
-	 *  - Folder ID: /feeds/folders/private/full/[folder_id]/[resource_id]
+	 * of ID are (for version 3 of the API):
+	 *  - Document ID: /feeds/id/[resource_id]
+	 *  - Folder ID: /feeds/default/private/full/[folder_id]/[resource_id]
 	 * The former is the ID we want; the latter should only ever be used for manipulating the location of documents (i.e. adding them to and
 	 * removing them from folders). The latter will, however, work fine for operations such as updating documents. It's only when one comes to
 	 * try and delete a document that it becomes a problem: sending a DELETE request to the folder ID will only remove the document from that
@@ -362,7 +372,7 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_string (value, priv->resource_id);
 			break;
 		case PROP_DOCUMENT_ID:
-			g_value_set_string (value, _get_document_id (GDATA_DOCUMENTS_ENTRY (object)));
+			g_value_set_string (value, _get_untyped_resource_id (GDATA_DOCUMENTS_ENTRY (object)));
 			break;
 		case PROP_WRITERS_CAN_INVITE:
 			g_value_set_boolean (value, priv->writers_can_invite);
@@ -389,7 +399,7 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 			}
 
 			/* Build the ID */
-			uri = _gdata_service_build_uri ("https://docs.google.com/feeds/documents/private/full/%s", priv->resource_id);
+			uri = _gdata_service_build_uri ("https://docs.google.com/feeds/id/%s", priv->resource_id);
 			g_value_take_string (value, uri);
 
 			break;
@@ -484,6 +494,23 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 	GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->get_namespaces (parsable, namespaces);
 
 	g_hash_table_insert (namespaces, (gchar*) "docs", (gchar*) "http://schemas.google.com/docs/2007");
+}
+
+static gchar *
+get_entry_uri (const gchar *id)
+{
+	const gchar *resource_id;
+
+	/* Version 3: We get an ID similar to “https://docs.google.com/feeds/id/[resource_id]” and want an entry URI
+	 * similar to “https://docs.google.com/feeds/default/private/full/[resource_id]”. */
+	resource_id = g_strrstr (id, "/");
+
+	if (resource_id == NULL) {
+		/* Bail! */
+		return g_strdup (id);
+	}
+
+	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full", resource_id, NULL);
 }
 
 /**
@@ -582,23 +609,24 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 	}
 
 	/* Append the document ID */
-	g_string_append (path, _get_document_id (self));
+	g_string_append (path, _get_untyped_resource_id (self));
 
 	return g_string_free (path, FALSE);
 }
 
-/* Static version so that we can use it internally without triggering deprecation warnings. */
+/* Static version so that we can use it internally without triggering deprecation warnings.
+ * Note that this is what libgdata used to call a "document ID". */
 static const gchar *
-_get_document_id (GDataDocumentsEntry *self)
+_get_untyped_resource_id (GDataDocumentsEntry *self)
 {
 	const gchar *colon;
 
-	/* Document ID should be NULL iff resource ID is. */
+	/* Untyped resource ID should be NULL iff resource ID is. */
 	if (self->priv->resource_id == NULL) {
 		return NULL;
 	}
 
-	/* Resource ID is of the form "document:[document_id]" (or "spreadsheet:[document_id]", etc.),
+	/* Resource ID is of the form "document:[untyped_resource_id]" (or "spreadsheet:[untyped_resource_id]", etc.),
 	 * so we want to return the portion after the colon. */
 	colon = g_utf8_strchr (self->priv->resource_id, -1, ':');
 	g_assert (colon != NULL);
@@ -610,7 +638,9 @@ _get_document_id (GDataDocumentsEntry *self)
  * gdata_documents_entry_get_document_id:
  * @self: a #GDataDocumentsEntry
  *
- * Gets the #GDataDocumentsEntry:document-id property.
+ * Gets the #GDataDocumentsEntry:document-id property. The
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#terminology_used_in_this_guide">online GData Documentation</ulink>
+ * refers to these as “untyped resource IDs”.
  *
  * Return value: the document's document ID
  *
@@ -622,7 +652,7 @@ gdata_documents_entry_get_document_id (GDataDocumentsEntry *self )
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 
-	return _get_document_id (self);
+	return _get_untyped_resource_id (self);
 }
 
 /**

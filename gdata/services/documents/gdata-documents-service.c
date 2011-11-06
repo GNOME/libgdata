@@ -359,6 +359,14 @@ gdata_documents_service_get_spreadsheet_authorization_domain (void)
 	return get_spreadsheets_authorization_domain ();
 }
 
+static gchar *
+_query_documents_build_request_uri (GDataDocumentsQuery *query)
+{
+	/* If we want to query for documents contained in a folder, the URI is different.
+	 * The "/[folder:id]" suffix is added by the GDataQuery later. */
+	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full", NULL);
+}
+
 /**
  * gdata_documents_service_query_documents:
  * @self: a #GDataDocumentsService
@@ -398,12 +406,7 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
 		return NULL;
 	}
 
-	/* If we want to query for documents contained in a folder, the URI is different */
-	if (query != NULL && gdata_documents_query_get_folder_id (query) != NULL)
-		request_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full", NULL);
-	else
-		request_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/documents/private/full", NULL);
-
+	request_uri = _query_documents_build_request_uri (query);
 	feed = gdata_service_query (GDATA_SERVICE (self), get_documents_authorization_domain (), request_uri, GDATA_QUERY (query),
 	                            GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data, error);
 	g_free (request_uri);
@@ -456,7 +459,7 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 		return;
 	}
 
-	request_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/documents/private/full", NULL);
+	request_uri = _query_documents_build_request_uri (query);
 	gdata_service_query_async (GDATA_SERVICE (self), get_documents_authorization_domain (), request_uri, GDATA_QUERY (query),
 	                           GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data,
 	                           destroy_progress_user_data, callback, user_data);
@@ -1054,13 +1057,6 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 {
 	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
 
-	/* If we have a folder, return the folder's upload URI */
-	if (folder != NULL) {
-		const gchar *folder_id = gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder));
-		g_assert (folder_id != NULL);
-		return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/", folder_id, NULL);
-	}
-
-	/* Otherwise return the default upload URI */
-	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/documents/private/full", NULL);
+	/* Use resumable upload. */
+	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/upload/create-session/default/private/full", NULL);
 }
