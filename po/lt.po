@@ -3,18 +3,24 @@
 # This file is distributed under the same license as the libgdata package.
 # Aurimas Černius <aurisc4@gmail.com>, 2010.
 # Aurimas Černius <aurisc4@gmail.com>, 2010.
+# Žygimantas Beručka <zygis@gnome.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgda"
+"ta&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-07-10 11:51+0000\n"
-"PO-Revision-Date: 2011-07-16 16:45+0300\n"
-"Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
-"Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
+"PO-Revision-Date: 2011-12-06 17:36+0300\n"
+"Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
+"Language-Team: Lithuanian\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.0\n"
+"X-Project-Style: gnome\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:575
 #: ../gdata/gdata-oauth1-authorizer.c:770
@@ -46,21 +52,21 @@ msgstr "Netinkama užklausos URI, antraštė arba nepalaikomas nestandartinis pa
 #: ../gdata/gdata-service.c:333
 #, c-format
 msgid "Authentication required: %s"
-msgstr "Būtina autentikacija: %s"
+msgstr "Reikia patvirtinti tapatybę: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:617
 #: ../gdata/gdata-service.c:338
 #, c-format
 msgid "The requested resource was not found: %s"
-msgstr "Prašomas resursas nerastas: %s"
+msgstr "Užklaustas išteklius nerastas: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:623
 #: ../gdata/gdata-service.c:344
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr "Įrašas buvo pakeistas nuo tada, kai buvo atsiųstas: %s"
+msgstr "Įrašas nuo tada, kai buvo atsiųstas, buvo pakeistas: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -68,17 +74,17 @@ msgstr "Įrašas buvo pakeistas nuo tada, kai buvo atsiųstas: %s"
 #: ../gdata/gdata-service.c:358
 #, c-format
 msgid "Error code %u when authenticating: %s"
-msgstr "Autentikacijos klaidos kodas %u: %s"
+msgstr "Tapatybės patvirtinimo metu grąžintas klaidos kodas %u: %s"
 
 #: ../gdata/gdata-client-login-authorizer.c:728
 msgid "A CAPTCHA must be filled out to log in."
-msgstr "Prisijungimui turi būti užpildyta CAPTCHA."
+msgstr "Norint prisijungti, reikia įrašyti CAPTCHA."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:766
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
-msgstr "Ši paskyra reikalauja programai specifinio slaptažodžio. (%s)"
+msgstr "Ši paskyra reikalauja konkrečios programos slaptažodžio. (%s)"
 
 #: ../gdata/gdata-client-login-authorizer.c:773
 msgid "Your username or password were incorrect."
@@ -437,12 +443,15 @@ msgstr "Turite prisijungti šio veiksmo atlikimui."
 #: ../gdata/services/youtube/gdata-youtube-service.c:426
 #, c-format
 msgid "You have made too many API calls recently. Please wait a few minutes and try again."
-msgstr "Jūs neseniai atlikote per daug API iškvietimų. Palaukite keletą minučių ir bandykite vėl."
+msgstr ""
+"Jūs neseniai padarėte per daug API kreipinių. Palaukite keletą minučių ir "
+"bandykite vėl."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:429
 #, c-format
 msgid "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "Jūs perkopėte savo įrašų kvotą. Ištrinkite keletą įrašų ir bandykite vėl."
+msgstr ""
+"Jūs perkopėte savo įrašų kvotą. Ištrinkite keletą įrašų ir bandykite vėl."
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
@@ -456,16 +465,16 @@ msgstr "Nežinomas klaidos kodas „%s“ srityje „%s“, vietoje „%s“."
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
 msgid "Unknown and unparsable error received."
-msgstr "Gauta nežinoma neperskaitoma klaida."
+msgstr "Gauta nežinoma ir neperskaitoma klaida."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:724
 #: ../gdata/services/youtube/gdata-youtube-service.c:781
 msgid "The video did not have a related videos <link>."
-msgstr "Filmas neturi susijusių filmų <link>."
+msgstr "Vaizdos įrašas neturi susijusių vaizdo įrašų <link>."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:843
 msgid "You must be authenticated to upload a video."
-msgstr "Turite prisijungti, jei norite nusiųsti filmą."
+msgstr "Turite prisijungti, jei norite nusiųsti vaizdo įrašą."
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "Pateiktas dokumentas turi netinkamą turinio tipą."
