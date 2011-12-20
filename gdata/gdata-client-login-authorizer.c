@@ -555,9 +555,11 @@ notify_authentication_details_cb (GDataClientLoginAuthorizer *self)
 }
 
 static void
-set_authentication_details (GDataClientLoginAuthorizer *self, const gchar *username, const gchar *password, gboolean is_async)
+set_authentication_details (GDataClientLoginAuthorizer *self, const gchar *username, const gchar *password, GHashTable *new_auth_tokens,
+                            gboolean is_async)
 {
 	GDataClientLoginAuthorizerPrivate *priv = self->priv;
+	GHashTableIter iter;
 
 #if GLIB_CHECK_VERSION (2, 31, 0)
 	g_rec_mutex_lock (&(priv->mutex));
@@ -575,6 +577,21 @@ set_authentication_details (GDataClientLoginAuthorizer *self, const gchar *usern
 
 	_gdata_service_secure_strfree (priv->password);
 	priv->password = _gdata_service_secure_strdup (password);
+
+	/* Transfer all successful auth. tokens to the object-wide auth. token store. */
+	if (new_auth_tokens == NULL) {
+		/* Reset ->auth_tokens to contain no auth. tokens, just the domains. */
+		g_hash_table_iter_init (&iter, priv->auth_tokens);
+
+		while (g_hash_table_iter_next (&iter, NULL, NULL) == TRUE) {
+			g_hash_table_iter_replace (&iter, NULL);
+		}
+	} else {
+		/* Replace the existing ->auth_tokens with the new one, which contains all the shiny new auth. tokens. */
+		g_hash_table_ref (new_auth_tokens);
+		g_hash_table_unref (priv->auth_tokens);
+		priv->auth_tokens = new_auth_tokens;
+	}
 
 #if GLIB_CHECK_VERSION (2, 31, 0)
 	g_rec_mutex_unlock (&(priv->mutex));
@@ -594,11 +611,10 @@ set_authentication_details (GDataClientLoginAuthorizer *self, const gchar *usern
 	}
 }
 
-static gboolean
+static GDataSecureString
 parse_authentication_response (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain, guint status,
                                const gchar *response_body, gint length, GError **error)
 {
-	GDataClientLoginAuthorizerPrivate *priv = self->priv;
 	gchar *auth_start, *auth_end;
 	GDataSecureString auth_token; /* NOTE: auth_token must be allocated using _gdata_service_secure_strdup() and friends */
 
@@ -620,22 +636,12 @@ parse_authentication_response (GDataClientLoginAuthorizer *self, GDataAuthorizat
 		goto protocol_error;
 	}
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
-	g_rec_mutex_lock (&(priv->mutex));
-	g_hash_table_insert (priv->auth_tokens, g_object_ref (domain), auth_token);
-	g_rec_mutex_unlock (&(priv->mutex));
-#else
-	g_static_rec_mutex_lock (&(priv->mutex));
-	g_hash_table_insert (priv->auth_tokens, g_object_ref (domain), auth_token);
-	g_static_rec_mutex_unlock (&(priv->mutex));
-#endif
-
-	return TRUE;
+	return auth_token;
 
 protocol_error:
 	g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
 	                     _("The server returned a malformed response."));
-	return FALSE;
+	return NULL;
 }
 
 static void
@@ -697,7 +703,7 @@ parse_error_response (GDataClientLoginAuthorizer *self, guint status, const gcha
 	             _("Error code %u when authenticating: %s"), status, response_body);
 }
 
-static gboolean
+static GDataSecureString
 authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain, const gchar *username, const gchar *password,
               gchar *captcha_token, gchar *captcha_answer, GCancellable *cancellable, GError **error)
 {
@@ -706,7 +712,7 @@ authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain
 	gchar *request_body;
 	const gchar *service_name;
 	guint status;
-	gboolean retval;
+	GDataSecureString auth_token;
 
 	/* Prepare the request.
 	 * NOTE: At this point, our non-pageable password is copied into a pageable HTTP request structure. We can't do much about this
@@ -736,7 +742,7 @@ authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain
 	if (status == SOUP_STATUS_CANCELLED) {
 		/* Cancelled (the error has already been set) */
 		g_object_unref (message);
-		return FALSE;
+		return NULL;
 	} else if (status != SOUP_STATUS_OK) {
 		const gchar *response_body = message->response_body->data;
 		gchar *error_start, *error_end, *uri_start, *uri_end, *uri = NULL;
@@ -897,12 +903,12 @@ login_error:
 		g_free (uri);
 		g_object_unref (message);
 
-		return FALSE;
+		return NULL;
 	}
 
 	g_assert (message->response_body->data != NULL);
 
-	retval = parse_authentication_response (self, domain, status, message->response_body->data, message->response_body->length, error);
+	auth_token = parse_authentication_response (self, domain, status, message->response_body->data, message->response_body->length, error);
 
 	/* Zero out the response body to lower the chance of it (with all the juicy passwords and auth. tokens it contains) hitting disk or getting
 	 * leaked in free memory. */
@@ -910,14 +916,72 @@ login_error:
 
 	g_object_unref (message);
 
-	return retval;
+	return auth_token;
 
 protocol_error:
 	parse_error_response (self, status, message->reason_phrase, message->response_body->data, message->response_body->length, error);
 
 	g_object_unref (message);
 
-	return FALSE;
+	return NULL;
+}
+
+static gboolean
+authenticate_loop (GDataClientLoginAuthorizer *authorizer, gboolean is_async, const gchar *username, const gchar *password, GCancellable *cancellable,
+                   GError **error)
+{
+	GDataClientLoginAuthorizerPrivate *priv = authorizer->priv;
+	gboolean cumulative_success = TRUE;
+	GHashTable *new_auth_tokens;
+	GHashTableIter iter;
+	GDataAuthorizationDomain *domain;
+	GDataSecureString auth_token;
+
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_lock (&(priv->mutex));
+#else
+	g_static_rec_mutex_lock (&(priv->mutex));
+#endif
+
+	/* Authenticate and authorize against each of the services registered with the authorizer */
+	new_auth_tokens = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, (GDestroyNotify) _gdata_service_secure_strfree);
+	g_hash_table_iter_init (&iter, priv->auth_tokens);
+
+	while (g_hash_table_iter_next (&iter, (gpointer*) &domain, NULL) == TRUE) {
+		GError *authenticate_error = NULL;
+
+		auth_token = authenticate (authorizer, domain, username, password, NULL, NULL, cancellable, &authenticate_error);
+
+		if (auth_token == NULL && cumulative_success == TRUE) {
+			/* Only propagate the first error which occurs. */
+			g_propagate_error (error, authenticate_error);
+			authenticate_error = NULL;
+		}
+
+		cumulative_success = (auth_token != NULL) && cumulative_success;
+
+		/* Store the auth. token (or lack thereof if authentication failed). */
+		g_hash_table_insert (new_auth_tokens, g_object_ref (domain), auth_token);
+
+		g_clear_error (&authenticate_error);
+	}
+
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_unlock (&(priv->mutex));
+#else
+	g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
+
+	/* Set or clear the authentication details and return now that we're done */
+	if (cumulative_success == TRUE) {
+		set_authentication_details (authorizer, username, password, new_auth_tokens, is_async);
+	} else {
+		set_authentication_details (authorizer, NULL, NULL, NULL, is_async);
+	}
+
+	g_hash_table_unref (new_auth_tokens);
+
+	return cumulative_success;
 }
 
 typedef struct {
@@ -937,48 +1001,11 @@ authenticate_async_data_free (AuthenticateAsyncData *self)
 static void
 authenticate_thread (GSimpleAsyncResult *result, GDataClientLoginAuthorizer *authorizer, GCancellable *cancellable)
 {
-	GDataClientLoginAuthorizerPrivate *priv = authorizer->priv;
 	GError *error = NULL;
-	gboolean success = TRUE;
-	GHashTableIter iter;
-	GDataAuthorizationDomain *domain;
+	gboolean success;
 	AuthenticateAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
-	g_rec_mutex_lock (&(priv->mutex));
-#else
-	g_static_rec_mutex_lock (&(priv->mutex));
-#endif
-
-	/* Authenticate and authorize against each of the services registered with the authorizer */
-	g_hash_table_iter_init (&iter, priv->auth_tokens);
-
-	while (g_hash_table_iter_next (&iter, (gpointer*) &domain, NULL) == TRUE) {
-		GError *authenticate_error = NULL;
-
-		success = authenticate (authorizer, domain, data->username, data->password, NULL, NULL, cancellable, &authenticate_error) && success;
-
-		/* Only propagate the first error which occurs. */
-		if (success == FALSE && error == NULL) {
-			g_propagate_error (&error, authenticate_error);
-			authenticate_error = NULL;
-		}
-
-		g_clear_error (&authenticate_error);
-	}
-
-#if GLIB_CHECK_VERSION (2, 31, 0)
-	g_rec_mutex_unlock (&(priv->mutex));
-#else
-	g_static_rec_mutex_unlock (&(priv->mutex));
-#endif
-
-	/* Set or clear the authentication details and return now that we're done */
-	if (success == TRUE) {
-		set_authentication_details (authorizer, data->username, data->password, TRUE);
-	} else {
-		set_authentication_details (authorizer, NULL, NULL, TRUE);
-	}
+	success = authenticate_loop (authorizer, TRUE, data->username, data->password, cancellable, &error);
 
 	g_simple_async_result_set_op_res_gboolean (result, success);
 
@@ -1074,6 +1101,9 @@ gdata_client_login_authorizer_authenticate_finish (GDataClientLoginAuthorizer *s
  * If @cancellable is not %NULL, then the operation can be cancelled by triggering the @cancellable object from another thread.
  * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
  *
+ * If the operation errors or is cancelled part-way through, gdata_authorizer_is_authorized_for_domain() is guaranteed to return %FALSE
+ * for all #GDataAuthorizationDomain<!-- -->s, even if authentication has succeeded for some of them already.
+ *
  * A %GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_BAD_AUTHENTICATION will be returned if authentication failed due to an incorrect username or password.
  * Other #GDataClientLoginAuthorizerError errors can be returned for other conditions.
  *
@@ -1092,46 +1122,13 @@ gboolean
 gdata_client_login_authorizer_authenticate (GDataClientLoginAuthorizer *self, const gchar *username, const gchar *password,
                                             GCancellable *cancellable, GError **error)
 {
-	GDataClientLoginAuthorizerPrivate *priv;
-	gboolean retval = TRUE;
-	GHashTableIter iter;
-	GDataAuthorizationDomain *domain;
-
 	g_return_val_if_fail (GDATA_IS_CLIENT_LOGIN_AUTHORIZER (self), FALSE);
 	g_return_val_if_fail (username != NULL, FALSE);
 	g_return_val_if_fail (password != NULL, FALSE);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	priv = self->priv;
-
-#if GLIB_CHECK_VERSION (2, 31, 0)
-	g_rec_mutex_lock (&(priv->mutex));
-#else
-	g_static_rec_mutex_lock (&(priv->mutex));
-#endif
-
-	/* Authenticate and authorize against each of the services registered with the authorizer */
-	g_hash_table_iter_init (&iter, self->priv->auth_tokens);
-
-	while (g_hash_table_iter_next (&iter, (gpointer*) &domain, NULL) == TRUE) {
-		retval = authenticate (self, domain, username, password, NULL, NULL, cancellable, error) && retval;
-	}
-
-#if GLIB_CHECK_VERSION (2, 31, 0)
-	g_rec_mutex_unlock (&(priv->mutex));
-#else
-	g_static_rec_mutex_unlock (&(priv->mutex));
-#endif
-
-	/* Set or clear the authentication details */
-	if (retval == TRUE) {
-		set_authentication_details (self, username, password, FALSE);
-	} else {
-		set_authentication_details (self, NULL, NULL, FALSE);
-	}
-
-	return retval;
+	return authenticate_loop (self, FALSE, username, password, cancellable, error);
 }
 
 static void
