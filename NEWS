@@ -1,3 +1,61 @@
+Overview of changes from libgdata 0.10.0 to libgdata 0.11.0
+===========================================================
+
+Major changes:
+* Added version checking macros (thanks to Holger Berndt)
+* Ported scrapbook demo to GtkGrid; this sets our GTK+ dependency to 2.91.2
+* Added a LIBGDATA_DISABLE_DEPRECATED macro for disabling deprecated API in headers
+* Sensitive details (passwords, auth. tokens, etc.) are now redacted from logs unless LIBGDATA_DEBUG=4 is set (which is a new logging level)
+* Sensitive details are also now stored in non-pageable memory as much as possible to reduce the risk of them being leaked
+  NOTE: This has not been formally certified or reviewed, and is a precaution rather than a guarantee of security
+  This adds a dependency on libgnome-keyring when libgdata is configured with --enable-gnome (and is disabled otherwise)
+* Use GHmac instead of liboauth's HMAC; this bumps our GLib dependency to 2.30.0
+* Use the new GLib threading API iff compiled with GLib ≥ 2.31.0 (this doesn't bump the hard dependency, though)
+
+API changes:
+* Added GDATA_MAJOR_VERSION, GDATA_MINOR_VERSION, GDATA_MICRO_VERSION, GDATA_CHECK_VERSION
+* Added GDataDocumentsEntry:resource-id, gdata_documents_entry_get_resource_id()
+* Deprecated GDataDocumentsEntry:document-id, gdata_documents_entry_get_document_id()
+* Added GDataYouTubeQuery:license, gdata_youtube_query_get_license(), gdata_youtube_query_set_license()
+* Deprecated GDATA_DOCUMENTS_PRESENTATION_SWF
+* Added GDATA_CATEGORY_SCHEMA_LABELS, GDATA_CATEGORY_SCHEMA_LABELS_STARRED
+* Added GDataContactsContact:file-as, gdata_contacts_contact_get_file_as(), gdata_contacts_contact_set_file_as()
+
+Bugs fixed:
+* Bug 659016 — @rel not mandatory in website references
+* Bug 660038 — Add preprocessor macro for version checking
+* Bug 656972 — Tidy up document IDs
+* Bug 658865 — Add support for the license query parameter
+* Bug 660174 — Deprecate SWF export of presentations
+* Bug 659148 — Add search-term query example to documentation
+* Bug 656973 — Add an example of starring a document
+* Bug 656783 — Review security of memory storing authentication details
+* Bug 662290 — Can't update contact that has no full name
+
+Updated translations:
+* as (Nilamdyuti Goswami)
+* da (Aputsiaq Niels Janussen)
+* eu (Iñaki Larrañaga Murgoitio)
+* fi (Tommi Vainikainen)
+* hu (Gabor Kelemen)
+* it (Claudio Arseni)
+* ja (Jiro Matsuzawa)
+* kn (Shankar Prasad)
+* ko (Changwoo Ryu)
+* lt (Žygimantas Beručka)
+* lv (Rūdofls Mazurs)
+* or (Manoj Kumar Giri)
+* pa (A S Alam)
+* pl (Piotr Drąg)
+* pt (António Lima)
+* pt_BR (Flamarion Jorge)
+* sr (Мирослав Николић)
+* ta (I Felix)
+* vi (Nguyễn Thái Ngọc Duy)
+* zh_CN (YunQiang Su)
+* zh_HK (Chao-Hsiung Liao)
+* zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.9.1 to libgdata 0.10.0
 ==========================================================
 
