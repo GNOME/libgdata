@@ -538,14 +538,10 @@ compare_xml_nodes (xmlNode *node1, xmlNode *node2)
 }
 
 gboolean
-gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboolean print_error)
+gdata_test_compare_xml_strings (const gchar *parsable_xml, const gchar *expected_xml, gboolean print_error)
 {
 	gboolean success;
-	gchar *parsable_xml;
 	xmlDoc *parsable_doc, *expected_doc;
-
-	/* Get an XML string for the GDataParsable */
-	parsable_xml = gdata_parsable_get_xml (parsable);
 
 	/* Parse both the XML strings */
 	parsable_doc = xmlReadMemory (parsable_xml, strlen (parsable_xml), "/dev/null", NULL, 0);
@@ -562,6 +558,19 @@ gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboo
 
 	xmlFreeDoc (expected_doc);
 	xmlFreeDoc (parsable_doc);
+
+	return success;
+}
+
+gboolean
+gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboolean print_error)
+{
+	gboolean success;
+	gchar *parsable_xml;
+
+	/* Get an XML string for the GDataParsable */
+	parsable_xml = gdata_parsable_get_xml (parsable);
+	success = gdata_test_compare_xml_strings (parsable_xml, expected_xml, print_error);
 	g_free (parsable_xml);
 
 	return success;

@@ -29,6 +29,32 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_LINK_RESUMABLE_CREATE_MEDIA:
+ *
+ * The relation type URI of the resumable upload location for resources attached to this resource.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/resumable_upload.html#ResumableUploadInitiate">GData resumable upload protocol
+ * specification</ulink>.
+ *
+ * Since: 0.11.2
+ */
+#define GDATA_LINK_RESUMABLE_CREATE_MEDIA "http://schemas.google.com/g/2005#resumable-create-media"
+
+/**
+ * GDATA_LINK_RESUMABLE_EDIT_MEDIA:
+ *
+ * The relation type URI of the resumable update location for resources attached to this resource.
+ *
+ * For more information, see the
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/resumable_upload.html#ResumableUploadInitiate">GData resumable upload protocol
+ * specification</ulink>.
+ *
+ * Since: 0.11.2
+ */
+#define GDATA_LINK_RESUMABLE_EDIT_MEDIA "http://schemas.google.com/g/2005#resumable-edit-media"
+
 #define GDATA_TYPE_UPLOAD_STREAM		(gdata_upload_stream_get_type ())
 #define GDATA_UPLOAD_STREAM(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_UPLOAD_STREAM, GDataUploadStream))
 #define GDATA_UPLOAD_STREAM_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_UPLOAD_STREAM, GDataUploadStreamClass))
@@ -67,6 +93,9 @@ GType gdata_upload_stream_get_type (void) G_GNUC_CONST;
 GOutputStream *gdata_upload_stream_new (GDataService *service, GDataAuthorizationDomain *domain, const gchar *method, const gchar *upload_uri,
                                         GDataEntry *entry, const gchar *slug, const gchar *content_type,
                                         GCancellable *cancellable) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GOutputStream *gdata_upload_stream_new_resumable (GDataService *service, GDataAuthorizationDomain *domain, const gchar *method, const gchar *upload_uri,
+                                                  GDataEntry *entry, const gchar *slug, const gchar *content_type, goffset content_length,
+                                                  GCancellable *cancellable) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_upload_stream_get_response (GDataUploadStream *self, gssize *length);
 
@@ -77,6 +106,7 @@ const gchar *gdata_upload_stream_get_upload_uri (GDataUploadStream *self) G_GNUC
 GDataEntry *gdata_upload_stream_get_entry (GDataUploadStream *self) G_GNUC_PURE;
 const gchar *gdata_upload_stream_get_slug (GDataUploadStream *self) G_GNUC_PURE;
 const gchar *gdata_upload_stream_get_content_type (GDataUploadStream *self) G_GNUC_PURE;
+goffset gdata_upload_stream_get_content_length (GDataUploadStream *self) G_GNUC_PURE;
 GCancellable *gdata_upload_stream_get_cancellable (GDataUploadStream *self) G_GNUC_PURE;
 
 G_END_DECLS

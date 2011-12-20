@@ -53,6 +53,7 @@ guint gdata_test_batch_operation_deletion (GDataBatchOperation *operation, GData
 gboolean gdata_test_batch_operation_run (GDataBatchOperation *operation, GCancellable *cancellable, GError **error);
 gboolean gdata_test_batch_operation_run_finish (GDataBatchOperation *operation, GAsyncResult *async_result, GError **error);
 
+gboolean gdata_test_compare_xml_strings (const gchar *parsable_xml, const gchar *expected_xml, gboolean print_error);
 gboolean gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboolean print_error);
 
 /* Convenience macro */

@@ -78,7 +78,8 @@
  *
  *	/<!-- -->* Get the file to upload *<!-- -->/
  *	file = get_file_to_upload ();
- *	file_info = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+ *	file_info = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+ *	                               G_FILE_ATTRIBUTE_STANDARD_SIZE,
  *	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
  *
  *	if (file_info == NULL) {
@@ -102,8 +103,9 @@
  *	service = create_my_service ();
  *	domain = get_my_authorization_domain_from_service (service);
  *	cancellable = g_cancellable_new (); /<!-- -->* cancel this to cancel the entire upload operation *<!-- -->/
- *	upload_stream = gdata_upload_stream_new (service, domain, SOUP_METHOD_POST, upload_uri, NULL, g_file_info_get_display_name (file_info),
- *	                                         g_file_info_get_content_type (file_info), cancellable);
+ *	upload_stream = gdata_upload_stream_new_resumable (service, domain, SOUP_METHOD_POST, upload_uri, NULL,
+ *	                                                   g_file_info_get_display_name (file_info), g_file_info_get_content_type (file_info),
+ *	                                                   g_file_info_get_size (file_info), cancellable);
  *	g_object_unref (file_info);
  *
  *	/<!-- -->* Perform the upload asynchronously *<!-- -->/
@@ -174,6 +176,7 @@
 #include "gdata-private.h"
 
 #define BOUNDARY_STRING "0003Z5W789deadbeefRTE456KlemsnoZV"
+#define MAX_RESUMABLE_CHUNK_SIZE (512 * 1024) /* bytes = 512 KiB */
 
 static GObject *gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_upload_stream_dispose (GObject *object);
@@ -187,6 +190,12 @@ static gboolean gdata_upload_stream_close (GOutputStream *stream, GCancellable *
 
 static void create_network_thread (GDataUploadStream *self, GError **error);
 
+typedef enum {
+	STATE_INITIAL_REQUEST, /* initial POST request to the resumable-create-media link (unused for non-resumable uploads) */
+	STATE_DATA_REQUESTS, /* one or more subsequent PUT requests (only state used for non-resumable uploads) */
+	STATE_FINISHED, /* finished successfully or in error */
+} UploadState;
+
 struct _GDataUploadStreamPrivate {
 	gchar *method;
 	gchar *upload_uri;
@@ -195,6 +204,7 @@ struct _GDataUploadStreamPrivate {
 	GDataEntry *entry;
 	gchar *slug;
 	gchar *content_type;
+	goffset content_length; /* -1 for non-resumable uploads; 0 or greater for resumable ones */
 	SoupSession *session;
 	SoupMessage *message;
 	GDataBuffer *buffer;
@@ -202,15 +212,20 @@ struct _GDataUploadStreamPrivate {
 	GCancellable *cancellable;
 	GThread *network_thread;
 
+	UploadState state; /* protected by write_mutex */
 	GMutex write_mutex; /* mutex for write operations (specifically, write_finished) */
+	/* This persists across all resumable upload chunks. Note that it doesn't count bytes from the entry XML. */
+	gsize total_network_bytes_written; /* the number of bytes which have been written to the network in STATE_DATA_REQUESTS */
+
+	/* All of the following apply only to the current resumable upload chunk. */
 	gsize message_bytes_outstanding; /* the number of bytes which have been written to the buffer but not libsoup (signalled by write_cond) */
 	gsize network_bytes_outstanding; /* the number of bytes which have been written to libsoup but not the network (signalled by write_cond) */
 	gsize network_bytes_written; /* the number of bytes which have been written to the network (signalled by write_cond) */
+	gsize chunk_size; /* the size of the current chunk (in bytes); 0 iff content_length <= 0; must be <= MAX_RESUMABLE_CHUNK_SIZE */
 	GCond write_cond; /* signalled when a chunk has been written (protected by write_mutex) */
 
-	gboolean finished; /* set once the upload thread has finished (protected by response_mutex) */
-	guint response_status; /* set once we finish receiving the response (SOUP_STATUS_NONE otherwise) (protected by response_mutex) */
 	GCond finished_cond; /* signalled when sending the message (and receiving the response) is finished (protected by response_mutex) */
+	guint response_status; /* set once we finish receiving the response (SOUP_STATUS_NONE otherwise) (protected by response_mutex) */
 	GError *response_error; /* error asynchronously set by the network thread, and picked up by the main thread when appropriate */
 	GMutex response_mutex; /* mutex for ->response_error, ->response_status and ->finished_cond */
 };
@@ -224,6 +239,7 @@ enum {
 	PROP_METHOD,
 	PROP_CANCELLABLE,
 	PROP_AUTHORIZATION_DOMAIN,
+	PROP_CONTENT_LENGTH,
 };
 
 G_DEFINE_TYPE (GDataUploadStream, gdata_upload_stream, G_TYPE_OUTPUT_STREAM)
@@ -328,6 +344,22 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
+	 * GDataUploadStream:content-length:
+	 *
+	 * The content length (in bytes) of the file being uploaded (i.e. as returned by g_file_info_get_size()). Note that this does not include the
+	 * length of the XML serialisation of #GDataUploadStream:entry, if set.
+	 *
+	 * If this is <code class="literal">-1</code> the upload will be non-resumable; if it is non-negative, the upload will be resumable.
+	 *
+	 * Since: 0.11.2
+	 */
+	g_object_class_install_property (gobject_class, PROP_CONTENT_LENGTH,
+	                                 g_param_spec_int64 ("content-length",
+	                                                     "Content length", "The content length (in bytes) of the file being uploaded.",
+	                                                     -1, G_MAXINT64, -1,
+	                                                     G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * GDataUploadStream:content-type:
 	 *
 	 * The content type of the file being uploaded (i.e. as returned by g_file_info_get_content_type()).
@@ -373,11 +405,34 @@ gdata_upload_stream_init (GDataUploadStream *self)
 	g_mutex_init (&(self->priv->response_mutex));
 }
 
+static SoupMessage *
+build_message (GDataUploadStream *self, const gchar *method, const gchar *upload_uri)
+{
+	GDataUploadStreamPrivate *priv;
+	GDataServiceClass *klass;
+	SoupMessage *new_message;
+
+	priv = self->priv;
+
+	/* Build the message */
+	new_message = soup_message_new (method, upload_uri);
+
+	/* Make sure the headers are set */
+	klass = GDATA_SERVICE_GET_CLASS (priv->service);
+	if (klass->append_query_headers != NULL) {
+		klass->append_query_headers (priv->service, priv->authorization_domain, new_message);
+	}
+
+	/* We don't want to accumulate chunks */
+	soup_message_body_set_accumulate (new_message->request_body, FALSE);
+
+	return new_message;
+}
+
 static GObject *
 gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
 {
 	GDataUploadStreamPrivate *priv;
-	GDataServiceClass *klass;
 	GObject *object;
 
 	/* Chain up to the parent class */
@@ -389,28 +444,70 @@ gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectCo
 		priv->cancellable = g_cancellable_new ();
 
 	/* Build the message */
-	priv->message = soup_message_new (priv->method, priv->upload_uri);
-
-	/* Make sure the headers are set */
-	klass = GDATA_SERVICE_GET_CLASS (priv->service);
-	if (klass->append_query_headers != NULL) {
-		klass->append_query_headers (priv->service, priv->authorization_domain, priv->message);
-	}
+	priv->message = build_message (GDATA_UPLOAD_STREAM (object), priv->method, priv->upload_uri);
 
 	if (priv->slug != NULL)
 		soup_message_headers_append (priv->message->request_headers, "Slug", priv->slug);
 
-	/* We don't want to accumulate chunks */
-	soup_message_body_set_accumulate (priv->message->request_body, FALSE);
-	soup_message_headers_set_encoding (priv->message->request_headers, SOUP_ENCODING_CHUNKED);
+	if (priv->content_length == -1) {
+		/* Non-resumable upload */
+		soup_message_headers_set_encoding (priv->message->request_headers, SOUP_ENCODING_CHUNKED);
 
-	/* The Content-Type should be multipart/related if we're also uploading the metadata (entry != NULL),
-	 * and the given content_type otherwise.
-	 * Note that the Content-Length header is set when we first start writing to the network. */
-	if (priv->entry != NULL)
-		soup_message_headers_set_content_type (priv->message->request_headers, "multipart/related; boundary=" BOUNDARY_STRING, NULL);
-	else
-		soup_message_headers_set_content_type (priv->message->request_headers, priv->content_type, NULL);
+		/* The Content-Type should be multipart/related if we're also uploading the metadata (entry != NULL),
+		 * and the given content_type otherwise. */
+		if (priv->entry != NULL) {
+			const gchar *first_part_header;
+			gchar *entry_xml, *second_part_header;
+
+			soup_message_headers_set_content_type (priv->message->request_headers, "multipart/related; boundary=" BOUNDARY_STRING, NULL);
+
+			/* Start by writing out the entry; then the thread has something to write to the network when it's created */
+			first_part_header = "--" BOUNDARY_STRING "\nContent-Type: application/atom+xml; charset=UTF-8\n\n";
+			entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (priv->entry));
+			second_part_header = g_strdup_printf ("\n--" BOUNDARY_STRING "\nContent-Type: %s\nContent-Transfer-Encoding: binary\n\n",
+			                                      priv->content_type);
+
+			/* Push the message parts onto the message body; we can skip the buffer, since the network thread hasn't yet been created,
+			 * so we're the sole thread accessing the SoupMessage. */
+			soup_message_body_append (priv->message->request_body, SOUP_MEMORY_STATIC, first_part_header, strlen (first_part_header));
+			soup_message_body_append (priv->message->request_body, SOUP_MEMORY_TAKE, entry_xml, strlen (entry_xml));
+			soup_message_body_append (priv->message->request_body, SOUP_MEMORY_TAKE, second_part_header, strlen (second_part_header));
+
+			priv->network_bytes_outstanding = priv->message->request_body->length;
+		} else {
+			soup_message_headers_set_content_type (priv->message->request_headers, priv->content_type, NULL);
+		}
+
+		/* Non-resumable uploads start with the data requests immediately. */
+		priv->state = STATE_DATA_REQUESTS;
+	} else {
+		gchar *content_length_str;
+
+		/* Resumable upload's initial request */
+		soup_message_headers_set_encoding (priv->message->request_headers, SOUP_ENCODING_CONTENT_LENGTH);
+		soup_message_headers_replace (priv->message->request_headers, "X-Upload-Content-Type", priv->content_type);
+
+		content_length_str = g_strdup_printf ("%" G_GOFFSET_FORMAT, priv->content_length);
+		soup_message_headers_replace (priv->message->request_headers, "X-Upload-Content-Length", content_length_str);
+		g_free (content_length_str);
+
+		if (priv->entry != NULL) {
+			const gchar *entry_xml;
+
+			soup_message_headers_set_content_type (priv->message->request_headers, "application/atom+xml; charset=UTF-8", NULL);
+
+			entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (priv->entry));
+			soup_message_body_append (priv->message->request_body, SOUP_MEMORY_TAKE, entry_xml, strlen (entry_xml));
+
+			priv->network_bytes_outstanding = priv->message->request_body->length;
+		} else {
+			soup_message_headers_set_content_length (priv->message->request_headers, 0);
+		}
+
+		/* Resumable uploads always start with an initial request, which either contains the XML or is empty. */
+		priv->state = STATE_INITIAL_REQUEST;
+		priv->chunk_size = MIN (priv->content_length, MAX_RESUMABLE_CHUNK_SIZE);
+	}
 
 	/* If the entry exists and has an ETag, we assume we're updating the entry, so we can set the If-Match header */
 	if (priv->entry != NULL && gdata_entry_get_etag (priv->entry) != NULL)
@@ -501,6 +598,9 @@ gdata_upload_stream_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_CONTENT_TYPE:
 			g_value_set_string (value, priv->content_type);
 			break;
+		case PROP_CONTENT_LENGTH:
+			g_value_set_int64 (value, priv->content_length);
+			break;
 		case PROP_CANCELLABLE:
 			g_value_set_object (value, priv->cancellable);
 			break;
@@ -539,6 +639,9 @@ gdata_upload_stream_set_property (GObject *object, guint property_id, const GVal
 		case PROP_CONTENT_TYPE:
 			priv->content_type = g_value_dup_string (value);
 			break;
+		case PROP_CONTENT_LENGTH:
+			priv->content_length = g_value_get_int64 (value);
+			break;
 		case PROP_CANCELLABLE:
 			/* Construction only */
 			priv->cancellable = g_value_dup_object (value);
@@ -568,14 +671,15 @@ write_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 }
 
 static gssize
-gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize count, GCancellable *cancellable, GError **error)
+gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize count, GCancellable *cancellable, GError **error_out)
 {
 	GDataUploadStreamPrivate *priv = GDATA_UPLOAD_STREAM (stream)->priv;
 	gssize length_written = -1;
 	gulong cancelled_signal = 0, global_cancelled_signal = 0;
 	gboolean cancelled = FALSE; /* must only be touched with ->write_mutex held */
-	gsize old_network_bytes_written;
+	gsize old_total_network_bytes_written;
 	CancelledData data;
+	GError *error = NULL;
 
 	/* Listen for cancellation events */
 	data.upload_stream = GDATA_UPLOAD_STREAM (stream);
@@ -590,20 +694,20 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 	g_mutex_lock (&(priv->write_mutex));
 
 	if (cancelled == TRUE) {
-		g_assert (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE ||
-		          g_cancellable_set_error_if_cancelled (priv->cancellable, error) == TRUE);
+		g_assert (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE ||
+		          g_cancellable_set_error_if_cancelled (priv->cancellable, &error) == TRUE);
 		g_mutex_unlock (&(priv->write_mutex));
 
 		length_written = -1;
 		goto done;
 	}
 
+	g_mutex_unlock (&(priv->write_mutex));
+
 	/* Increment the number of bytes outstanding for the new write, and keep a record of the old number written so we know if the write's
 	 * finished before we reach write_cond. */
-	old_network_bytes_written = priv->network_bytes_written;
+	old_total_network_bytes_written = priv->total_network_bytes_written;
 	priv->message_bytes_outstanding += count;
-
-	g_mutex_unlock (&(priv->write_mutex));
 
 	/* Handle the more common case of the network thread already having been created first */
 	if (priv->network_thread != NULL) {
@@ -612,33 +716,11 @@ gdata_upload_stream_write (GOutputStream *stream, const void *buffer, gsize coun
 		goto write;
 	}
 
-	/* We're lazy about starting the network operation so we don't time out before we've even started */
-	if (priv->entry != NULL) {
-		/* Start by writing out the entry; then the thread has something to write to the network when it's created */
-		const gchar *first_part_header;
-		gchar *entry_xml, *second_part_header;
-
-		first_part_header = "--" BOUNDARY_STRING "\nContent-Type: application/atom+xml; charset=UTF-8\n\n";
-		entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (priv->entry));
-		second_part_header = g_strdup_printf ("\n--" BOUNDARY_STRING "\nContent-Type: %s\nContent-Transfer-Encoding: binary\n\n",
-		                                      priv->content_type);
-
-		/* Push the message parts onto the message body; we can skip the buffer, since the network thread hasn't yet been created,
-		 * so we're the sole thread accessing the SoupMessage. */
-		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_STATIC, first_part_header, strlen (first_part_header));
-		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_TAKE, entry_xml, strlen (entry_xml));
-		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_TAKE, second_part_header, strlen (second_part_header));
-
-		g_mutex_lock (&(priv->write_mutex));
-		priv->network_bytes_outstanding += priv->message->request_body->length;
-		g_mutex_unlock (&(priv->write_mutex));
-	}
-
-	/* Also write out the first chunk of data, so there's guaranteed to be something in the buffer */
+	/* Write out the first chunk of data, so there's guaranteed to be something in the buffer */
 	gdata_buffer_push_data (priv->buffer, buffer, count);
 
 	/* Create the thread and let the writing commence! */
-	create_network_thread (GDATA_UPLOAD_STREAM (stream), error);
+	create_network_thread (GDATA_UPLOAD_STREAM (stream), &error);
 	if (priv->network_thread == NULL) {
 		length_written = -1;
 		goto done;
@@ -648,15 +730,20 @@ write:
 	g_mutex_lock (&(priv->write_mutex));
 
 	/* Wait for it to be written */
-	while (priv->network_bytes_written - old_network_bytes_written < count && cancelled == FALSE) {
+	while (priv->total_network_bytes_written - old_total_network_bytes_written < count && cancelled == FALSE && priv->state != STATE_FINISHED) {
 		g_cond_wait (&(priv->write_cond), &(priv->write_mutex));
 	}
-	length_written = MIN (count, priv->network_bytes_written - old_network_bytes_written);
+	length_written = MIN (count, priv->total_network_bytes_written - old_total_network_bytes_written);
 
 	/* Check for an error and return if necessary */
 	if (cancelled == TRUE && length_written < 1) {
-		g_assert (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE ||
-		          g_cancellable_set_error_if_cancelled (priv->cancellable, error) == TRUE);
+		/* Cancellation. */
+		g_assert (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE ||
+		          g_cancellable_set_error_if_cancelled (priv->cancellable, &error) == TRUE);
+		length_written = -1;
+	} else if (priv->state == STATE_FINISHED && (length_written < 0 || (gsize) length_written < count)) {
+		/* Resumable upload error. */
+		g_set_error (&error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Error received from server after uploading a resumable upload chunk."));
 		length_written = -1;
 	}
 
@@ -670,7 +757,11 @@ done:
 	if (global_cancelled_signal != 0)
 		g_cancellable_disconnect (priv->cancellable, global_cancelled_signal);
 
-	g_assert (cancelled == TRUE || length_written > 0);
+	g_assert (error != NULL || length_written > 0);
+
+	if (error != NULL) {
+		g_propagate_error (error_out, error);
+	}
 
 	return length_written;
 }
@@ -710,11 +801,20 @@ gdata_upload_stream_flush (GOutputStream *stream, GCancellable *cancellable, GEr
 	if (cancellable != NULL)
 		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) flush_cancelled_cb, &data, NULL);
 
+	/* Create the thread if it hasn't been created already. This can happen if flush() is called immediately after creating the stream. */
+	if (priv->network_thread == NULL) {
+		create_network_thread (GDATA_UPLOAD_STREAM (stream), error);
+		if (priv->network_thread == NULL) {
+			success = FALSE;
+			goto done;
+		}
+	}
+
 	/* Start the flush operation proper */
 	g_mutex_lock (&(priv->write_mutex));
 
 	/* Wait for all outstanding bytes to be written to the network */
-	while (priv->network_bytes_outstanding > 0 && cancelled == FALSE) {
+	while (priv->network_bytes_outstanding > 0 && cancelled == FALSE && priv->state != STATE_FINISHED) {
 		g_cond_wait (&(priv->write_cond), &(priv->write_mutex));
 	}
 
@@ -723,10 +823,15 @@ gdata_upload_stream_flush (GOutputStream *stream, GCancellable *cancellable, GEr
 		g_assert (g_cancellable_set_error_if_cancelled (cancellable, error) == TRUE ||
 		          g_cancellable_set_error_if_cancelled (priv->cancellable, error) == TRUE);
 		success = FALSE;
+	} else if (priv->state == STATE_FINISHED && priv->network_bytes_outstanding > 0) {
+		/* Resumable upload error. */
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Error received from server after uploading a resumable upload chunk."));
+		success = FALSE;
 	}
 
 	g_mutex_unlock (&(priv->write_mutex));
 
+done:
 	/* Disconnect from the cancelled signals. Note that we have to do this without @write_mutex held, as g_cancellable_disconnect() blocks
 	 * until any outstanding cancellation callbacks return, and they will block on @write_mutex. */
 	if (cancelled_signal != 0)
@@ -774,6 +879,7 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 	gboolean cancelled = FALSE; /* must only be touched with ->response_mutex held */
 	gulong cancelled_signal = 0, global_cancelled_signal = 0;
 	CancelledData data;
+	gboolean is_finished;
 	GError *child_error = NULL;
 
 	/* If the operation was never started, return successfully immediately */
@@ -802,8 +908,12 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 
 	g_mutex_lock (&(priv->response_mutex));
 
+	g_mutex_lock (&(priv->write_mutex));
+	is_finished = (priv->state == STATE_FINISHED);
+	g_mutex_unlock (&(priv->write_mutex));
+
 	/* If an operation is still in progress, the upload thread hasn't finished yet… */
-	if (priv->finished == FALSE) {
+	if (!is_finished) {
 		/* We've reached the end of the stream, so append the footer if the entire operation hasn't been cancelled. */
 		if (priv->entry != NULL && g_cancellable_is_cancelled (priv->cancellable) == FALSE) {
 			const gchar *footer = "\n--" BOUNDARY_STRING "--";
@@ -830,10 +940,14 @@ gdata_upload_stream_close (GOutputStream *stream, GCancellable *cancellable, GEr
 	g_assert (priv->response_status == SOUP_STATUS_NONE);
 	g_assert (priv->response_error == NULL);
 
+	g_mutex_lock (&(priv->write_mutex));
+	is_finished = (priv->state == STATE_FINISHED);
+	g_mutex_unlock (&(priv->write_mutex));
+
 	/* Error handling */
-	if (priv->finished == FALSE && cancelled == TRUE) {
-		/* Cancelled? If ->finished == TRUE, the network activity finished before the gdata_upload_stream_close() operation was cancelled, so
-		 * we don't need to return an error. */
+	if (!is_finished && cancelled == TRUE) {
+		/* Cancelled? If ->state == STATE_FINISHED, the network activity finished before the gdata_upload_stream_close() operation was
+		 * cancelled, so we don't need to return an error. */
 		g_assert (g_cancellable_set_error_if_cancelled (cancellable, &child_error) == TRUE ||
 		          g_cancellable_set_error_if_cancelled (priv->cancellable, &child_error) == TRUE);
 		priv->response_status = SOUP_STATUS_CANCELLED;
@@ -885,44 +999,64 @@ write_next_chunk (GDataUploadStream *self, SoupMessage *message)
 	#define CHUNK_SIZE 8192 /* 8KiB */
 
 	GDataUploadStreamPrivate *priv = self->priv;
+	gboolean has_network_bytes_outstanding, is_complete;
 	gsize length;
 	gboolean reached_eof = FALSE;
 	guint8 next_buffer[CHUNK_SIZE];
 
 	g_mutex_lock (&(priv->write_mutex));
+	has_network_bytes_outstanding = (priv->network_bytes_outstanding > 0);
+	is_complete = (priv->state == STATE_INITIAL_REQUEST ||
+	               (priv->content_length != -1 && priv->network_bytes_written + priv->network_bytes_outstanding == priv->chunk_size));
+	g_mutex_unlock (&(priv->write_mutex));
 
-	/* If there are still bytes in libsoup's buffer, don't block on getting new bytes into the stream */
-	if (priv->network_bytes_outstanding > 0) {
-		g_mutex_unlock (&(priv->write_mutex));
+	/* If there are still bytes in libsoup's buffer, don't block on getting new bytes into the stream. Also, if we're making the initial request
+	 * of a resumable upload, don't push new data onto the network, since all of the XML was pushed into the buffer when we started. */
+	if (has_network_bytes_outstanding) {
+		return;
+	} else if (is_complete) {
+		soup_message_body_complete (priv->message->request_body);
+
 		return;
 	}
 
-	g_mutex_unlock (&(priv->write_mutex));
-
 	/* Append the next chunk to the message body so it can join in the fun.
-	 * Note that this call isn't blocking, and can return less than the CHUNK_SIZE. This is because
+	 * Note that this call isn't necessarily blocking, and can return less than the CHUNK_SIZE. This is because
 	 * we could deadlock if we block on getting CHUNK_SIZE bytes at the end of the stream. write() could
 	 * easily be called with fewer bytes, but has no way to notify us that we've reached the end of the
-	 * stream, so we'd happily block on receiving more bytes which weren't forthcoming. */
-	length = gdata_buffer_pop_data_limited (priv->buffer, next_buffer, CHUNK_SIZE, &reached_eof);
+	 * stream, so we'd happily block on receiving more bytes which weren't forthcoming.
+	 *
+	 * Note also that we can't block on this call with write_mutex locked, or we could get into a deadlock if the stream is flushed at the same
+	 * time (in the case that we don't know the content length ahead of time). */
+	if (priv->content_length == -1) {
+		/* Non-resumable upload. */
+		length = gdata_buffer_pop_data_limited (priv->buffer, next_buffer, CHUNK_SIZE, &reached_eof);
+	} else {
+		/* Resumable upload. Ensure we don't exceed the chunk size. */
+		length = gdata_buffer_pop_data_limited (priv->buffer, next_buffer,
+		                                        MIN (CHUNK_SIZE, priv->chunk_size - (priv->network_bytes_written +
+		                                                                             priv->network_bytes_outstanding)), &reached_eof);
+	}
 
 	g_mutex_lock (&(priv->write_mutex));
+
 	priv->message_bytes_outstanding -= length;
 	priv->network_bytes_outstanding += length;
-	g_mutex_unlock (&(priv->write_mutex));
 
 	/* Append whatever data was returned */
 	if (length > 0)
 		soup_message_body_append (priv->message->request_body, SOUP_MEMORY_COPY, next_buffer, length);
 
-	/* Finish off the request body if we've reached EOF (i.e. the stream has been closed) */
-	if (reached_eof == TRUE) {
-		g_mutex_lock (&(priv->write_mutex));
-		g_assert (priv->message_bytes_outstanding == 0);
-		g_mutex_unlock (&(priv->write_mutex));
+	/* Finish off the request body if we've reached EOF (i.e. the stream has been closed), or if we're doing a resumable upload and we reach
+	 * the maximum chunk size. */
+	if (reached_eof == TRUE ||
+	    (priv->content_length != -1 && priv->network_bytes_written + priv->network_bytes_outstanding == priv->chunk_size)) {
+		g_assert (reached_eof == FALSE || priv->message_bytes_outstanding == 0);
 
 		soup_message_body_complete (priv->message->request_body);
 	}
+
+	g_mutex_unlock (&(priv->write_mutex));
 
 	soup_session_unpause_message (priv->session, priv->message);
 }
@@ -951,6 +1085,11 @@ wrote_body_data_cb (SoupMessage *message, SoupBuffer *buffer, GDataUploadStream 
 	g_assert (priv->network_bytes_outstanding > 0);
 	priv->network_bytes_outstanding -= buffer->length;
 	priv->network_bytes_written += buffer->length;
+
+	if (priv->state == STATE_DATA_REQUESTS) {
+		priv->total_network_bytes_written += buffer->length;
+	}
+
 	g_cond_signal (&(priv->write_cond));
 	g_mutex_unlock (&(priv->write_mutex));
 
@@ -967,22 +1106,131 @@ upload_thread (GDataUploadStream *self)
 
 	g_assert (priv->cancellable != NULL);
 
-	/* Connect to the wrote-* signals so we can prepare the next chunk for transmission */
-	g_signal_connect (priv->message, "wrote-headers", (GCallback) wrote_headers_cb, self);
-	g_signal_connect (priv->message, "wrote-body-data", (GCallback) wrote_body_data_cb, self);
+	while (TRUE) {
+		gulong wrote_headers_signal, wrote_body_data_signal;
+		gchar *new_uri;
+		SoupMessage *new_message;
+		gsize next_chunk_length;
 
-	_gdata_service_actually_send_message (priv->session, priv->message, priv->cancellable, NULL);
+		/* Connect to the wrote-* signals so we can prepare the next chunk for transmission */
+		wrote_headers_signal = g_signal_connect (priv->message, "wrote-headers", (GCallback) wrote_headers_cb, self);
+		wrote_body_data_signal = g_signal_connect (priv->message, "wrote-body-data", (GCallback) wrote_body_data_cb, self);
 
-	/* Signal write_cond, just in case we errored out and finished sending in the middle of a write */
-	g_mutex_lock (&(priv->response_mutex));
-	g_mutex_lock (&(priv->write_mutex));
-	if (priv->message_bytes_outstanding > 0 || priv->network_bytes_outstanding > 0) {
-		g_cond_signal (&(priv->write_cond));
+		_gdata_service_actually_send_message (priv->session, priv->message, priv->cancellable, NULL);
+
+		g_mutex_lock (&(priv->write_mutex));
+
+		/* If this is a resumable upload, continue to the next chunk. If it's a non-resumable upload, we're done. We have several cases:
+		 *  • Non-resumable upload:
+		 *     - Content only: STATE_DATA_REQUESTS → STATE_FINISHED
+		 *     - Metadata only: not supported
+		 *     - Content and metadata: STATE_DATA_REQUESTS → STATE_FINISHED
+		 *  • Resumable upload:
+		 *     - Content only:
+		 *        * STATE_INITIAL_REQUEST → STATE_DATA_REQUESTS
+		 *        * STATE_DATA_REQUESTS → STATE_DATA_REQUESTS
+		 *        * STATE_DATA_REQUESTS → STATE_FINISHED
+		 *     - Metadata only: STATE_INITIAL_REQUEST → STATE_FINISHED
+		 *     - Content and metadata:
+		 *        * STATE_INITIAL_REQUEST → STATE_DATA_REQUESTS
+		 *        * STATE_DATA_REQUESTS → STATE_DATA_REQUESTS
+		 *        * STATE_DATA_REQUESTS → STATE_FINISHED
+		 */
+		switch (priv->state) {
+			case STATE_INITIAL_REQUEST:
+				/* We're either a content-only or a content-and-metadata resumable upload. */
+				priv->state = STATE_DATA_REQUESTS;
+
+				/* Check the response. On success it should be empty, status 200, with a Location header telling us where to upload
+				 * next. If it's an error response, bail out and let the code in gdata_upload_stream_close() parse the error..*/
+				if (!SOUP_STATUS_IS_SUCCESSFUL (priv->message->status_code)) {
+					goto finished;
+				} else if (priv->content_length == 0 && priv->message->status_code == SOUP_STATUS_CREATED) {
+					/* If this was a metadata-only upload, we're done. */
+					goto finished;
+				}
+
+				/* Fall out and prepare the next message */
+				g_assert (priv->total_network_bytes_written == 0); /* haven't written any data yet */
+
+				break;
+			case STATE_DATA_REQUESTS:
+				/* Check the response. On completion it should contain the resulting entry's XML, status 201. On continuation it should
+				 * be empty, status 308, with a Range header and potentially a Location header telling us what/where to upload next.
+				 * If it's an error response, bail out and let the code in gdata_upload_stream_close() parse the error..*/
+				if (priv->message->status_code == 308) {
+					/* Continuation: fall out and prepare the next message */
+					g_assert (priv->content_length == -1 || priv->total_network_bytes_written < (gsize) priv->content_length);
+				} else if (SOUP_STATUS_IS_SUCCESSFUL (priv->message->status_code)) {
+					/* Completion. Check the server isn't misbehaving. */
+					g_assert (priv->content_length == -1 || priv->total_network_bytes_written == (gsize) priv->content_length);
+
+					goto finished;
+				} else {
+					/* Error */
+					goto finished;
+				}
+
+				/* Fall out and prepare the next message */
+				g_assert (priv->total_network_bytes_written > 0);
+
+				break;
+			case STATE_FINISHED:
+			default:
+				g_assert_not_reached ();
+		}
+
+		/* Prepare the next message. */
+		g_assert (priv->content_length != -1);
+
+		next_chunk_length = MIN (priv->content_length - priv->total_network_bytes_written, MAX_RESUMABLE_CHUNK_SIZE);
+
+		new_uri = g_strdup (soup_message_headers_get_one (priv->message->response_headers, "Location"));
+		if (new_uri == NULL) {
+			new_uri = soup_uri_to_string (soup_message_get_uri (priv->message), FALSE);
+		}
+
+		new_message = build_message (self, SOUP_METHOD_PUT, new_uri);
+
+		g_free (new_uri);
+
+		soup_message_headers_set_encoding (new_message->request_headers, SOUP_ENCODING_CONTENT_LENGTH);
+		soup_message_headers_set_content_type (new_message->request_headers, priv->content_type, NULL);
+		soup_message_headers_set_content_length (new_message->request_headers, next_chunk_length);
+		soup_message_headers_set_content_range (new_message->request_headers, priv->total_network_bytes_written,
+		                                        priv->total_network_bytes_written + next_chunk_length - 1, priv->content_length);
+
+		g_signal_handler_disconnect (priv->message, wrote_body_data_signal);
+		g_signal_handler_disconnect (priv->message, wrote_headers_signal);
+
+		g_object_unref (priv->message);
+		priv->message = new_message;
+
+		/* Reset various counters for the next upload. Note that message_bytes_outstanding may be > 0 at this point, since the client may
+		 * have pushed some content into the buffer while we were waiting for the response to this request. */
+		g_assert (priv->network_bytes_outstanding == 0);
+		priv->chunk_size = next_chunk_length;
+		priv->network_bytes_written = 0;
+
+		/* Loop round and upload this chunk now. */
+		g_mutex_unlock (&(priv->write_mutex));
+
+		continue;
+
+finished:
+		g_mutex_unlock (&(priv->write_mutex));
+
+		goto finished_outer;
 	}
+
+finished_outer:
+	/* Signal that the operation has finished (either successfully or in error).
+	 * Also signal write_cond, just in case we errored out and finished sending in the middle of a write. */
+	g_mutex_lock (&(priv->write_mutex));
+	priv->state = STATE_FINISHED;
+	g_cond_signal (&(priv->write_cond));
 	g_mutex_unlock (&(priv->write_mutex));
 
-	/* Signal that the operation has finished */
-	priv->finished = TRUE;
 	g_cond_signal (&(priv->finished_cond));
 	g_mutex_unlock (&(priv->response_mutex));
 
@@ -1060,6 +1308,77 @@ gdata_upload_stream_new (GDataService *service, GDataAuthorizationDomain *domain
 	                                      "entry", entry,
 	                                      "slug", slug,
 	                                      "content-type", content_type,
+	                                      "cancellable", cancellable,
+	                                      NULL));
+}
+
+/**
+ * gdata_upload_stream_new_resumable:
+ * @service: a #GDataService
+ * @domain: (allow-none): the #GDataAuthorizationDomain to authorize the upload, or %NULL
+ * @method: the HTTP method to use
+ * @upload_uri: the URI to upload
+ * @entry: (allow-none): the entry to upload as metadata, or %NULL
+ * @slug: the file's slug (filename)
+ * @content_type: the content type of the file being uploaded
+ * @content_length: the size (in bytes) of the file being uploaded
+ * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
+ *
+ * Creates a new resumable #GDataUploadStream, allowing a file to be uploaded from a GData service using standard #GOutputStream API. The upload will
+ * use GData's resumable upload API, so should be more reliable than a normal upload (especially if the file is large). See the
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/resumable_upload.html">GData documentation on resumable uploads</ulink> for more
+ * information.
+ *
+ * The HTTP method to use should be specified in @method, and will typically be either %SOUP_METHOD_POST (for insertions) or %SOUP_METHOD_PUT
+ * (for updates), according to the server and the @upload_uri.
+ *
+ * If @entry is specified, it will be attached to the upload as the entry to which the file being uploaded belongs. Otherwise, just the file
+ * written to the stream will be uploaded, and given a default entry as determined by the server.
+ *
+ * @slug, @content_type and @content_length must be specified before the upload begins, as they describe the file being streamed. @slug is the filename
+ * given to the file, which will typically be stored on the server and made available when downloading the file again. @content_type must be the
+ * correct content type for the file, and should be in the service's list of acceptable content types. @content_length must be the size of the file
+ * being uploaded (not including the XML for any associated #GDataEntry) in bytes. Zero is accepted if a metadata-only upload is being performed.
+ *
+ * As well as the standard GIO errors, calls to the #GOutputStream API on a #GDataUploadStream can also return any relevant specific error from
+ * #GDataServiceError, or %GDATA_SERVICE_ERROR_PROTOCOL_ERROR in the general case.
+ *
+ * If a #GCancellable is provided in @cancellable, the upload operation may be cancelled at any time from another thread using g_cancellable_cancel().
+ * In this case, any ongoing network activity will be stopped, and any pending or future calls to #GOutputStream API on the #GDataUploadStream will
+ * return %G_IO_ERROR_CANCELLED. Note that the #GCancellable objects which can be passed to individual #GOutputStream operations will not cancel the
+ * upload operation proper if cancelled — they will merely cancel that API call. The only way to cancel the upload operation completely is using this
+ * @cancellable.
+ *
+ * Note that network communication won't begin until the first call to g_output_stream_write() on the #GDataUploadStream.
+ *
+ * Return value: a new #GOutputStream, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.11.2
+ */
+GOutputStream *
+gdata_upload_stream_new_resumable (GDataService *service, GDataAuthorizationDomain *domain, const gchar *method, const gchar *upload_uri,
+                                   GDataEntry *entry, const gchar *slug, const gchar *content_type, goffset content_length, GCancellable *cancellable)
+{
+	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
+	g_return_val_if_fail (method != NULL, NULL);
+	g_return_val_if_fail (upload_uri != NULL, NULL);
+	g_return_val_if_fail (entry == NULL || GDATA_IS_ENTRY (entry), NULL);
+	g_return_val_if_fail (slug != NULL, NULL);
+	g_return_val_if_fail (content_type != NULL, NULL);
+	g_return_val_if_fail (content_length >= 0, NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+
+	/* Create the upload stream */
+	return G_OUTPUT_STREAM (g_object_new (GDATA_TYPE_UPLOAD_STREAM,
+	                                      "method", method,
+	                                      "upload-uri", upload_uri,
+	                                      "service", service,
+	                                      "authorization-domain", domain,
+	                                      "entry", entry,
+	                                      "slug", slug,
+	                                      "content-type", content_type,
+	                                      "content-length", content_length,
 	                                      "cancellable", cancellable,
 	                                      NULL));
 }
@@ -1235,6 +1554,24 @@ gdata_upload_stream_get_content_type (GDataUploadStream *self)
 {
 	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (self), NULL);
 	return self->priv->content_type;
+}
+
+/**
+ * gdata_upload_stream_get_content_length:
+ * @self: a #GDataUploadStream
+ *
+ * Gets the size (in bytes) of the file being uploaded. This will be <code class="literal">-1</code> for a non-resumable upload, and zero or greater
+ * for a resumable upload.
+ *
+ * Return value: the size of the file being uploaded
+ *
+ * Since: 0.11.2
+ */
+goffset
+gdata_upload_stream_get_content_length (GDataUploadStream *self)
+{
+	g_return_val_if_fail (GDATA_IS_UPLOAD_STREAM (self), -1);
+	return self->priv->content_length;
 }
 
 /**
