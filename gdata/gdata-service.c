@@ -555,7 +555,11 @@ _gdata_service_build_message (GDataService *self, GDataAuthorizationDomain *doma
 }
 
 typedef struct {
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	GMutex mutex; /* mutex to prevent cancellation before the message has been added to the session's message queue */
+#else
 	GStaticMutex mutex; /* mutex to prevent cancellation before the message has been added to the session's message queue */
+#endif
 	SoupSession *session;
 	SoupMessage *message;
 } MessageData;
@@ -563,16 +567,27 @@ typedef struct {
 static void
 message_cancel_cb (GCancellable *cancellable, MessageData *data)
 {
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_lock (&(data->mutex));
+	soup_session_cancel_message (data->session, data->message, SOUP_STATUS_CANCELLED);
+	g_mutex_unlock (&(data->mutex));
+#else
 	g_static_mutex_lock (&(data->mutex));
 	soup_session_cancel_message (data->session, data->message, SOUP_STATUS_CANCELLED);
 	g_static_mutex_unlock (&(data->mutex));
+#endif
 }
 
 static void
 message_request_queued_cb (SoupSession *session, SoupMessage *message, MessageData *data)
 {
-	if (message == data->message)
+	if (message == data->message) {
+#if GLIB_CHECK_VERSION (2, 31, 0)
+		g_mutex_unlock (&(data->mutex));
+#else
 		g_static_mutex_unlock (&(data->mutex));
+#endif
+	}
 }
 
 /* Synchronously send @message via @service, handling asynchronous cancellation as best we can. If @cancellable has been cancelled before we start
@@ -594,7 +609,11 @@ _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message
 
 	/* Listen for cancellation */
 	if (cancellable != NULL) {
+#if GLIB_CHECK_VERSION (2, 31, 0)
+		g_mutex_init (&(data.mutex));
+#else
 		g_static_mutex_init (&(data.mutex));
+#endif
 		data.session = session;
 		data.message = message;
 
@@ -607,7 +626,11 @@ _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message
 		 * This is a little ugly, but is the only way I can think of to avoid a race condition between calling soup_session_cancel_message()
 		 * and soup_session_send_message(), as the former doesn't have any effect until the request has been queued, and once the latter has
 		 * returned, all network activity has been finished so cancellation is pointless. */
+#if GLIB_CHECK_VERSION (2, 31, 0)
+		g_mutex_lock (&(data.mutex));
+#else
 		g_static_mutex_lock (&(data.mutex));
+#endif
 	}
 
 	/* Only send the message if it hasn't already been cancelled. There is no race condition here for the above reasons: if the cancellable has
@@ -627,7 +650,11 @@ _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message
 		if (cancel_signal != 0)
 			g_cancellable_disconnect (cancellable, cancel_signal);
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+		g_mutex_clear (&(data.mutex));
+#else
 		g_static_mutex_free (&(data.mutex));
+#endif
 	}
 
 	/* Set the cancellation error if applicable. We can't assume that our GCancellable has been cancelled just because the message has;
