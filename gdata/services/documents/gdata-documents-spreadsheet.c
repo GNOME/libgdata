@@ -150,14 +150,19 @@ gdata_documents_spreadsheet_new (const gchar *id)
 gchar *
 gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, const gchar *export_format, gint gid)
 {
-	const gchar *document_id;
+	const gchar *resource_id, *document_id;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SPREADSHEET (self), NULL);
 	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
 	g_return_val_if_fail (gid >= -1, NULL);
 
-	document_id = gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (self));
+	/* Extract the document ID from the resource ID. */
+	resource_id = gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (self));
+	g_assert (resource_id != NULL);
+
+	document_id = g_utf8_strchr (resource_id, -1, ':');
 	g_assert (document_id != NULL);
+	document_id++; /* skip over the colon */
 
 	if (gid != -1) {
 		return _gdata_service_build_uri ("http://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s&gid=%d",
