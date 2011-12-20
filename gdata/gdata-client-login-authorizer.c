@@ -127,7 +127,11 @@ struct _GDataClientLoginAuthorizerPrivate {
 	/* Mutex for username, password and auth_tokens. It has to be recursive as the top-level authentication functions need to hold a lock on
 	 * auth_tokens while looping over it, but lower-level functions also need to modify auth_tokens to add the auth_tokens themselves once they're
 	 * returned by the online service. */
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	GRecMutex mutex;
+#else
 	GStaticRecMutex mutex;
+#endif
 
 	gchar *username;
 	gchar *password;
@@ -280,7 +284,11 @@ gdata_client_login_authorizer_init (GDataClientLoginAuthorizer *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CLIENT_LOGIN_AUTHORIZER, GDataClientLoginAuthorizerPrivate);
 
 	/* Set up the authentication mutex */
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_init (&(self->priv->mutex));
+#else
 	g_static_rec_mutex_init (&(self->priv->mutex));
+#endif
 	self->priv->auth_tokens = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_free);
 
 	/* Set up the session */
@@ -314,7 +322,11 @@ finalize (GObject *object)
 	g_free (priv->password);
 	g_free (priv->client_id);
 	g_hash_table_destroy (priv->auth_tokens);
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_clear (&(priv->mutex));
+#else
 	g_static_rec_mutex_free (&(priv->mutex));
+#endif
 
 	if (priv->proxy_uri != NULL) {
 		soup_uri_free (priv->proxy_uri);
@@ -334,14 +346,26 @@ get_property (GObject *object, guint property_id, GValue *value, GParamSpec *psp
 			g_value_set_string (value, priv->client_id);
 			break;
 		case PROP_USERNAME:
+#if GLIB_CHECK_VERSION (2, 31, 0)
+			g_rec_mutex_lock (&(priv->mutex));
+			g_value_set_string (value, priv->username);
+			g_rec_mutex_unlock (&(priv->mutex));
+#else
 			g_static_rec_mutex_lock (&(priv->mutex));
 			g_value_set_string (value, priv->username);
 			g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
 			break;
 		case PROP_PASSWORD:
+#if GLIB_CHECK_VERSION (2, 31, 0)
+			g_rec_mutex_lock (&(priv->mutex));
+			g_value_set_string (value, priv->password);
+			g_rec_mutex_unlock (&(priv->mutex));
+#else
 			g_static_rec_mutex_lock (&(priv->mutex));
 			g_value_set_string (value, priv->password);
 			g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
 			break;
 		case PROP_PROXY_URI:
 			g_value_set_boxed (value, gdata_client_login_authorizer_get_proxy_uri (GDATA_CLIENT_LOGIN_AUTHORIZER (object)));
@@ -390,7 +414,11 @@ process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMe
 	}
 
 	/* Set the authorisation header */
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_lock (&(priv->mutex));
+#else
 	g_static_rec_mutex_lock (&(priv->mutex));
+#endif
 
 	auth_token = (const gchar*) g_hash_table_lookup (priv->auth_tokens, domain);
 
@@ -406,7 +434,11 @@ process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMe
 		}
 	}
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_unlock (&(priv->mutex));
+#else
 	g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
 }
 
 static gboolean
@@ -415,9 +447,15 @@ is_authorized_for_domain (GDataAuthorizer *self, GDataAuthorizationDomain *domai
 	GDataClientLoginAuthorizerPrivate *priv = GDATA_CLIENT_LOGIN_AUTHORIZER (self)->priv;
 	gpointer result;
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_lock (&(priv->mutex));
+	result = g_hash_table_lookup (priv->auth_tokens, domain);
+	g_rec_mutex_unlock (&(priv->mutex));
+#else
 	g_static_rec_mutex_lock (&(priv->mutex));
 	result = g_hash_table_lookup (priv->auth_tokens, domain);
 	g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
 
 	return (result != NULL) ? TRUE : FALSE;
 }
@@ -512,7 +550,11 @@ set_authentication_details (GDataClientLoginAuthorizer *self, const gchar *usern
 {
 	GDataClientLoginAuthorizerPrivate *priv = self->priv;
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_lock (&(priv->mutex));
+#else
 	g_static_rec_mutex_lock (&(priv->mutex));
+#endif
 
 	/* Ensure the username is always a full e-mail address */
 	g_free (priv->username);
@@ -525,7 +567,11 @@ set_authentication_details (GDataClientLoginAuthorizer *self, const gchar *usern
 	g_free (priv->password);
 	priv->password = g_strdup (password);
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_unlock (&(priv->mutex));
+#else
 	g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
 
 	/* Notify of the property changes in the main thread; i.e. if we're running an async operation, schedule the notification in an idle
 	 * callback; but if we're running a sync operation, emit them immediately.
@@ -564,9 +610,15 @@ parse_authentication_response (GDataClientLoginAuthorizer *self, GDataAuthorizat
 		goto protocol_error;
 	}
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_lock (&(priv->mutex));
+	g_hash_table_insert (priv->auth_tokens, g_object_ref (domain), auth_token);
+	g_rec_mutex_unlock (&(priv->mutex));
+#else
 	g_static_rec_mutex_lock (&(priv->mutex));
 	g_hash_table_insert (priv->auth_tokens, g_object_ref (domain), auth_token);
 	g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
 
 	return TRUE;
 
@@ -876,7 +928,11 @@ authenticate_thread (GSimpleAsyncResult *result, GDataClientLoginAuthorizer *aut
 	GDataAuthorizationDomain *domain;
 	AuthenticateAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_lock (&(priv->mutex));
+#else
 	g_static_rec_mutex_lock (&(priv->mutex));
+#endif
 
 	/* Authenticate and authorize against each of the services registered with the authorizer */
 	g_hash_table_iter_init (&iter, priv->auth_tokens);
@@ -895,7 +951,11 @@ authenticate_thread (GSimpleAsyncResult *result, GDataClientLoginAuthorizer *aut
 		g_clear_error (&authenticate_error);
 	}
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_unlock (&(priv->mutex));
+#else
 	g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
 
 	/* Set or clear the authentication details and return now that we're done */
 	if (success == TRUE) {
@@ -1029,7 +1089,11 @@ gdata_client_login_authorizer_authenticate (GDataClientLoginAuthorizer *self, co
 
 	priv = self->priv;
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_lock (&(priv->mutex));
+#else
 	g_static_rec_mutex_lock (&(priv->mutex));
+#endif
 
 	/* Authenticate and authorize against each of the services registered with the authorizer */
 	g_hash_table_iter_init (&iter, self->priv->auth_tokens);
@@ -1038,7 +1102,11 @@ gdata_client_login_authorizer_authenticate (GDataClientLoginAuthorizer *self, co
 		retval = authenticate (self, domain, username, password, NULL, NULL, cancellable, error) && retval;
 	}
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_rec_mutex_unlock (&(priv->mutex));
+#else
 	g_static_rec_mutex_unlock (&(priv->mutex));
+#endif
 
 	/* Set or clear the authentication details */
 	if (retval == TRUE) {

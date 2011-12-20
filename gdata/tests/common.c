@@ -38,7 +38,9 @@ gdata_test_init (int argc, char **argv)
 	gint i;
 
 	g_type_init ();
+#if !GLIB_CHECK_VERSION (2, 31, 0)
 	g_thread_init (NULL);
+#endif
 
 	/* Parse the --no-internet and --no-interactive options */
 	for (i = 1; i < argc; i++) {

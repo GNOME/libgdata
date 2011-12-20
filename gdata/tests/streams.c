@@ -32,6 +32,23 @@ run_server_thread (SoupServer *server)
 	return NULL;
 }
 
+static GThread *
+run_server (SoupServer *server)
+{
+	GThread *thread;
+	GError *error = NULL;
+
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	thread = g_thread_try_new ("server-thread", (GThreadFunc) run_server_thread, server, &error);
+#else
+	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
+#endif
+	g_assert_no_error (error);
+	g_assert (thread != NULL);
+
+	return thread;
+}
+
 static gboolean
 quit_server_cb (SoupServer *server)
 {
@@ -104,9 +121,7 @@ test_download_stream_download_content_length (void)
 	g_assert (server != NULL);
 
 	/* Create a thread for the server */
-	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
-	g_assert_no_error (error);
-	g_assert (thread != NULL);
+	thread = run_server (server);
 
 	/* Create a new download stream connected to the server */
 	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
@@ -199,9 +214,7 @@ test_download_stream_download_seek_before_start (void)
 	g_assert (server != NULL);
 
 	/* Create a thread for the server */
-	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
-	g_assert_no_error (error);
-	g_assert (thread != NULL);
+	thread = run_server (server);
 
 	/* Create a new download stream connected to the server */
 	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
@@ -304,9 +317,7 @@ test_download_stream_download_seek_after_start_forwards (void)
 	g_assert (server != NULL);
 
 	/* Create a thread for the server */
-	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
-	g_assert_no_error (error);
-	g_assert (thread != NULL);
+	thread = run_server (server);
 
 	/* Create a new download stream connected to the server */
 	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
@@ -409,9 +420,7 @@ test_download_stream_download_seek_after_start_backwards (void)
 	g_assert (server != NULL);
 
 	/* Create a thread for the server */
-	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
-	g_assert_no_error (error);
-	g_assert (thread != NULL);
+	thread = run_server (server);
 
 	/* Create a new download stream connected to the server */
 	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
@@ -535,9 +544,7 @@ test_upload_stream_upload_no_entry_content_length (void)
 	g_assert (server != NULL);
 
 	/* Create a thread for the server */
-	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
-	g_assert_no_error (error);
-	g_assert (thread != NULL);
+	thread = run_server (server);
 
 	/* Create a new upload stream uploading to the server */
 	upload_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));

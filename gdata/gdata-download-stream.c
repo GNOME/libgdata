@@ -162,13 +162,22 @@ struct _GDataDownloadStreamPrivate {
 	GCancellable *network_cancellable; /* see the comment in gdata_download_stream_constructor() about the relationship between these two */
 
 	gboolean finished;
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	GCond finished_cond;
+	GMutex finished_mutex; /* mutex for ->finished, protected by ->finished_cond */
+#else
 	GCond *finished_cond;
 	GStaticMutex finished_mutex; /* mutex for ->finished, protected by ->finished_cond */
+#endif
 
 	/* Cached data from the SoupMessage */
 	gchar *content_type;
 	gssize content_length;
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	GMutex content_mutex; /* mutex to protect them */
+#else
 	GStaticMutex content_mutex; /* mutex to protect them */
+#endif
 };
 
 enum {
@@ -317,12 +326,21 @@ gdata_download_stream_init (GDataDownloadStream *self)
 	self->priv->buffer = NULL; /* created when the network thread is started and destroyed when the stream is closed */
 
 	self->priv->finished = FALSE;
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_cond_init (&(self->priv->finished_cond));
+	g_mutex_init (&(self->priv->finished_mutex));
+#else
 	self->priv->finished_cond = g_cond_new ();
 	g_static_mutex_init (&(self->priv->finished_mutex));
+#endif
 
 	self->priv->content_type = NULL;
 	self->priv->content_length = -1;
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_init (&(self->priv->content_mutex));
+#else
 	g_static_mutex_init (&(self->priv->content_mutex));
+#endif
 }
 
 static void
@@ -409,10 +427,17 @@ gdata_download_stream_finalize (GObject *object)
 
 	reset_network_thread (GDATA_DOWNLOAD_STREAM (object));
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_cond_clear (&(priv->finished_cond));
+	g_mutex_clear (&(priv->finished_mutex));
+
+	g_mutex_clear (&(priv->content_mutex));
+#else
 	g_cond_free (priv->finished_cond);
 	g_static_mutex_free (&(priv->finished_mutex));
 
 	g_static_mutex_free (&(priv->content_mutex));
+#endif
 
 	g_free (priv->download_uri);
 	g_free (priv->content_type);
@@ -437,14 +462,26 @@ gdata_download_stream_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_string (value, priv->download_uri);
 			break;
 		case PROP_CONTENT_TYPE:
+#if GLIB_CHECK_VERSION (2, 31, 0)
+			g_mutex_lock (&(priv->content_mutex));
+			g_value_set_string (value, priv->content_type);
+			g_mutex_unlock (&(priv->content_mutex));
+#else
 			g_static_mutex_lock (&(priv->content_mutex));
 			g_value_set_string (value, priv->content_type);
 			g_static_mutex_unlock (&(priv->content_mutex));
+#endif
 			break;
 		case PROP_CONTENT_LENGTH:
+#if GLIB_CHECK_VERSION (2, 31, 0)
+			g_mutex_lock (&(priv->content_mutex));
+			g_value_set_long (value, priv->content_length);
+			g_mutex_unlock (&(priv->content_mutex));
+#else
 			g_static_mutex_lock (&(priv->content_mutex));
 			g_value_set_long (value, priv->content_length);
 			g_static_mutex_unlock (&(priv->content_mutex));
+#endif
 			break;
 		case PROP_CANCELLABLE:
 			g_value_set_object (value, priv->cancellable);
@@ -580,10 +617,17 @@ close_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 {
 	GDataDownloadStreamPrivate *priv = data->download_stream->priv;
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_lock (&(priv->finished_mutex));
+	*(data->cancelled) = TRUE;
+	g_cond_signal (&(priv->finished_cond));
+	g_mutex_unlock (&(priv->finished_mutex));
+#else
 	g_static_mutex_lock (&(priv->finished_mutex));
 	*(data->cancelled) = TRUE;
 	g_cond_signal (priv->finished_cond);
 	g_static_mutex_unlock (&(priv->finished_mutex));
+#endif
 }
 
 /* Even though calling g_input_stream_close() multiple times on this stream is guaranteed to call gdata_download_stream_close() at most once, other
@@ -623,7 +667,11 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 	if (cancellable != NULL)
 		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) close_cancelled_cb, &data, NULL);
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_lock (&(priv->finished_mutex));
+#else
 	g_static_mutex_lock (&(priv->finished_mutex));
+#endif
 
 	/* If the operation has started but hasn't already finished, cancel the network thread and wait for it to finish before returning */
 	if (priv->finished == FALSE) {
@@ -631,8 +679,13 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 
 		/* Allow the close() call to be cancelled by cancelling either @cancellable or ->cancellable. Note that this won't prevent the stream
 		 * from continuing to be closed in the background — it'll just stop waiting on the operation to finish being cancelled. */
-		if (cancelled == FALSE)
+		if (cancelled == FALSE) {
+#if GLIB_CHECK_VERSION (2, 31, 0)
+			g_cond_wait (&(priv->finished_cond), &(priv->finished_mutex));
+#else
 			g_cond_wait (priv->finished_cond, g_static_mutex_get_mutex (&(priv->finished_mutex)));
+#endif
+		}
 	}
 
 	/* Error handling */
@@ -644,7 +697,11 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 		success = FALSE;
 	}
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_unlock (&(priv->finished_mutex));
+#else
 	g_static_mutex_unlock (&(priv->finished_mutex));
+#endif
 
 	/* Disconnect from the signal handlers. Note that we have to do this without @finished_mutex held, as g_cancellable_disconnect() blocks
 	 * until any outstanding cancellation callbacks return, and they will block on @finished_mutex. */
@@ -655,13 +712,21 @@ gdata_download_stream_close (GInputStream *stream, GCancellable *cancellable, GE
 
 done:
 	/* If we were successful, tidy up various bits of state */
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_lock (&(priv->finished_mutex));
+#else
 	g_static_mutex_lock (&(priv->finished_mutex));
+#endif
 
 	if (success == TRUE && priv->finished == TRUE) {
 		reset_network_thread (GDATA_DOWNLOAD_STREAM (stream));
 	}
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_unlock (&(priv->finished_mutex));
+#else
 	g_static_mutex_unlock (&(priv->finished_mutex));
+#endif
 
 	g_assert ((success == TRUE && child_error == NULL) || (success == FALSE && child_error != NULL));
 
@@ -769,9 +834,15 @@ gdata_download_stream_seek (GSeekable *seekable, goffset offset, GSeekType type,
 		priv->offset = offset;
 
 		/* Mark the thread as unfinished */
+#if GLIB_CHECK_VERSION (2, 31, 0)
+		g_mutex_lock (&(priv->finished_mutex));
+		priv->finished = FALSE;
+		g_mutex_unlock (&(priv->finished_mutex));
+#else
 		g_static_mutex_lock (&(priv->finished_mutex));
 		priv->finished = FALSE;
 		g_static_mutex_unlock (&(priv->finished_mutex));
+#endif
 
 		goto done;
 	}
@@ -808,10 +879,17 @@ got_headers_cb (SoupMessage *message, GDataDownloadStream *self)
 	if (SOUP_STATUS_IS_SUCCESSFUL (message->status_code) == FALSE)
 		return;
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_lock (&(self->priv->content_mutex));
+	self->priv->content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
+	self->priv->content_length = soup_message_headers_get_content_length (message->response_headers);
+	g_mutex_unlock (&(self->priv->content_mutex));
+#else
 	g_static_mutex_lock (&(self->priv->content_mutex));
 	self->priv->content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
 	self->priv->content_length = soup_message_headers_get_content_length (message->response_headers);
 	g_static_mutex_unlock (&(self->priv->content_mutex));
+#endif
 
 	/* Emit the notifications for the Content-Length and -Type properties */
 	g_object_freeze_notify (G_OBJECT (self));
@@ -859,10 +937,17 @@ download_thread (GDataDownloadStream *self)
 	gdata_buffer_push_data (priv->buffer, NULL, 0);
 
 	/* Mark the download as finished */
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_lock (&(priv->finished_mutex));
+	priv->finished = TRUE;
+	g_cond_signal (&(priv->finished_cond));
+	g_mutex_unlock (&(priv->finished_mutex));
+#else
 	g_static_mutex_lock (&(priv->finished_mutex));
 	priv->finished = TRUE;
 	g_cond_signal (priv->finished_cond);
 	g_static_mutex_unlock (&(priv->finished_mutex));
+#endif
 
 	g_object_unref (self);
 
@@ -878,7 +963,11 @@ create_network_thread (GDataDownloadStream *self, GError **error)
 	priv->buffer = gdata_buffer_new ();
 
 	g_assert (priv->network_thread == NULL);
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	priv->network_thread = g_thread_try_new ("download-thread", (GThreadFunc) download_thread, self, error);
+#else
 	priv->network_thread = g_thread_create ((GThreadFunc) download_thread, self, TRUE, error);
+#endif
 }
 
 static void
@@ -1012,9 +1101,15 @@ gdata_download_stream_get_content_type (GDataDownloadStream *self)
 
 	g_return_val_if_fail (GDATA_IS_DOWNLOAD_STREAM (self), NULL);
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_lock (&(self->priv->content_mutex));
+	content_type = self->priv->content_type;
+	g_mutex_unlock (&(self->priv->content_mutex));
+#else
 	g_static_mutex_lock (&(self->priv->content_mutex));
 	content_type = self->priv->content_type;
 	g_static_mutex_unlock (&(self->priv->content_mutex));
+#endif
 
 	/* It's safe to return this, even though we're not taking a copy of it, as it's immutable once set. */
 	return content_type;
@@ -1038,9 +1133,15 @@ gdata_download_stream_get_content_length (GDataDownloadStream *self)
 
 	g_return_val_if_fail (GDATA_IS_DOWNLOAD_STREAM (self), -1);
 
+#if GLIB_CHECK_VERSION (2, 31, 0)
+	g_mutex_lock (&(self->priv->content_mutex));
+	content_length = self->priv->content_length;
+	g_mutex_unlock (&(self->priv->content_mutex));
+#else
 	g_static_mutex_lock (&(self->priv->content_mutex));
 	content_length = self->priv->content_length;
 	g_static_mutex_unlock (&(self->priv->content_mutex));
+#endif
 
 	g_assert (content_length >= -1);
 
