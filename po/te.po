@@ -1,9 +1,7 @@
 # Telugu translation for libgdata.
-# Copyright (C) 2011 libgdata's COPYRIGHT HOLDER
+# Copyright (C) 2011 Swecha Localisation Team.
 # This file is distributed under the same license as the libgdata package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # Hari krishna <hari@swecha.net>, 2011.
-# Praveen Illa <mail2ipn@gmail.com>, 2012.
 #
 msgid ""
 msgstr ""
@@ -11,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-10-27 07:56+0000\n"
-"PO-Revision-Date: 2012-01-11 23:55+0530\n"
+"PO-Revision-Date: 2012-01-12 00:00+0530\n"
 "Last-Translator: Praveen Illa <mail2ipn@gmail.com>\n"
 "Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
