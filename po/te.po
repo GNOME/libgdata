@@ -1,0 +1,471 @@
+# Telugu translation for libgdata.
+# Copyright (C) 2011 libgdata's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgdata package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Hari krishna <hari@swecha.net>, 2011.
+# Praveen Illa <mail2ipn@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgdata master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-10-27 07:56+0000\n"
+"PO-Revision-Date: 2012-01-11 23:55+0530\n"
+"Last-Translator: Praveen Illa <mail2ipn@gmail.com>\n"
+"Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: ../gdata/gdata-client-login-authorizer.c:585
+#: ../gdata/gdata-oauth1-authorizer.c:804
+#: ../gdata/gdata-oauth1-authorizer.c:1076
+msgid "The server returned a malformed response."
+msgstr "వైకల్య  ఉత్తరమును సర్వరు తిరుగి పంపినది."
+
+#: ../gdata/gdata-client-login-authorizer.c:605 ../gdata/gdata-service.c:320
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "సర్వీసు యొక్క సర్వరునకు అనుబంధించుట కుదురుటలేదు."
+
+#: ../gdata/gdata-client-login-authorizer.c:610 ../gdata/gdata-service.c:325
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "ప్రాక్సీ సర్వరునకు అనుసంధానించుట కుదురుటలేదు."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:616 ../gdata/gdata-service.c:331
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr "నిస్సారమైన అభ్యర్దించిన URI లేదా హెడ్డర్, లేదా సహకరించని ప్రమాణములేని పారామీటరు: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:337
+#, c-format
+msgid "Authentication required: %s"
+msgstr "ధ్రువీకరణ అవసరము: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:627 ../gdata/gdata-service.c:342
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "అభ్యర్ధించిన వనరు దొరకలేదు: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:633 ../gdata/gdata-service.c:348
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "దిగుమతి చేయబదినది కాబట్టీ ప్రవేశము మార్పుచేయబడినది: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:362
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "ధ్రువీకరించునపుడు %u దొషము సంకేతం : %s"
+
+#: ../gdata/gdata-client-login-authorizer.c:740
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "లాగిన్ అవుటకు క్యాప్ చా ను నింపవలెను."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:778
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "ఈ ఖాతాకు అనువర్తన సంబంధిత సంకేతపదం అవసరం. (%s)"
+
+#: ../gdata/gdata-client-login-authorizer.c:785
+msgid "Your username or password were incorrect."
+msgstr "మీ వినియోగదారునినామము లేదా రహస్య పదము తప్పు."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:806
+#, c-format
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "మీ ఖాతా యొక్క ఈ మేయిల్ చిరునామా సరిచూడ లేదు. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:811
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr "మీరు సేవయొక్క నిబంధనలు మరియు షరుతులను అంగీకరించలేదు. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:817
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"ఈ అకౌంట్ తరలించబడినది. మీ కొత్త సంకేతపదము మరియు రహస్యపదము పొందుటకు దయచేసి ఆంలైన్ లాగిన్ అవ్వండి."
+"(%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:822
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "ఈ ఖాతా తొలగించబడినది.(%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:827
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "ఈ ఖాతాను నిరుపయోగము చెయబడినది. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:832
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "ఈ సేవకు ఈ ఖాతా యొక్క సాంగిత్యమును తొలగించబడినది. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:837
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "ప్రస్తుతము ఈ సేవ అందుబాటులో లేదు. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "ఈ నమోదు వాఖ్యానములను సహకరించదు."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "ఈ నమోదునకు వాఖ్యానములను జతపరుచుట కుదరకపోవచ్చును."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+msgid "This comment may not be deleted."
+msgstr "ఈ వాఖ్యానము తొలగించకపోవచ్చు."
+
+#. Tried to seek too far
+#: ../gdata/gdata-download-stream.c:751
+msgid "Invalid seek request"
+msgstr "అర్ధించు అభ్యర్ధన నిస్సారం "
+
+#: ../gdata/gdata-oauth1-authorizer.c:779
+msgid "The server rejected the temporary credentials request."
+msgstr "సర్వరు తాత్కాలికమైన అధికారముల మనవిని తిరస్కరించినది."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: ../gdata/gdata-oauth1-authorizer.c:1050
+msgid "Access was denied by the user or server."
+msgstr "వినియోగదారుడు లేదా సర్వరు వలన సాగత్యము తిరస్కరించబడినది."
+
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
+#, c-format
+msgid "Error parsing XML: %s"
+msgstr "XML పార్సగుటలో దోషము: %s"
+
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: ../gdata/gdata-parsable.c:258
+msgid "Empty document."
+msgstr "ఖాళీ పత్రము."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#: ../gdata/gdata-parser.c:66
+#, c-format
+msgid "A %s element was missing required content."
+msgstr " %s మూలకములో కావలసిన సారము తప్పినది."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:82
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgstr "%s మూలకములోని సారము(\"%s\") ISO 8601 రూపములలొ లేదు."
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#: ../gdata/gdata-parser.c:102
+#, c-format
+msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgstr "%s ఎలిమెంట్ యొక్క %s గుణం యొక్క విలువ (\"%s\") తెలియలేదు."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#: ../gdata/gdata-parser.c:120
+#, c-format
+msgid "The content of a %s element (\"%s\") was unknown."
+msgstr "%s మూలకము యొక్క సారము  (\"%s\") తెలియదు."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: ../gdata/gdata-parser.c:140
+#, c-format
+msgid "A required property of a %s element (%s) was not present."
+msgstr "%s ఎలిమెంట్ యొక్క గుణం (%s) లేదు."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"%s ఎలిమెంట్ యొక్క %s మరియు  %s అభీష్టాలు రెండిటిలో ఒకటి అనుమతించినపుడు వాటిలో విలువలు ఉన్నవి."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#: ../gdata/gdata-parser.c:182
+#, c-format
+msgid "A required element (%s) was not present."
+msgstr "ఒక అవసరమైన మూలకము (%s) దొరకలేదు."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#: ../gdata/gdata-parser.c:197
+#, c-format
+msgid "A singleton element (%s) was duplicated."
+msgstr "సింగల్ టన్ ఎలిమెంట్ (%s) నకలు చేయబడినది."
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:368
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "క్వయరీ జరుగుతుండగా దోష సంకేతము %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:374
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "ఎంట్రీని చేరుస్తుండగా దోష సంకేతము %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:380
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "ఎంట్రీని అప్ డేట్ చేస్తుండగా దోష సంకేతము %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:386
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "ఎంట్రీని తోలగిస్తుండగా దోష సంకేతము %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:392
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "డౌన్ లోడ్ జరుగుతుండగా దోష సంకేతము %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:398
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "అప్ లోడ్ జరుగుతుండగా దోష సంకేతము %u: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:404
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "బ్యాచ్ ఆపరేషన్ జరుగుతుండగా దోష సంకేతము %u: %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:684
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "URI రీడైరక్ట్: %s"
+
+#: ../gdata/gdata-service.c:1336
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:875
+msgid "The entry has already been inserted."
+msgstr "కొత్త నమోదు అప్పటికే ప్రవేశపెట్టబడినది."
+
+#: ../gdata/gdata-upload-stream.c:785
+msgid "Stream is already closed"
+msgstr "ప్రవాహము మూసివెయబడినది"
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgstr "%s మూలకం యొక్క విషయం (\"%s\") హెక్సాడెసిమల్ RGB ఫార్మేటులో లేదు."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:315
+#: ../gdata/services/calendar/gdata-calendar-service.c:366
+msgid "You must be authenticated to query all calendars."
+msgstr "అన్నీ క్యాలెండర్ లపై క్వయరీ చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:412
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:508
+#: ../gdata/services/calendar/gdata-calendar-service.c:568
+msgid "You must be authenticated to query your own calendars."
+msgstr "మీ స్వంత క్యాలెండర్ లను క్వయరీ చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:517
+#: ../gdata/services/calendar/gdata-calendar-service.c:581
+msgid "The calendar did not have a content URI."
+msgstr "క్యాలెండరులో URI సారము లేదు"
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:258
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
+msgid "You must be authenticated to query contacts."
+msgstr "సంపర్కములను క్వయరీ చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:424
+#: ../gdata/services/contacts/gdata-contacts-service.c:474
+msgid "You must be authenticated to query contact groups."
+msgstr "సంపర్క గుంపులను క్వయరీ చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:514
+msgid "The group has already been inserted."
+msgstr "గుంపు ముందే ప్రవేశింపబడినది."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:521
+msgid "You must be authenticated to insert a group."
+msgstr "ఒక గుంపును ప్రవేశపెట్టుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
+
+#: ../gdata/services/documents/gdata-documents-document.c:274
+msgid "You must be authenticated to download documents."
+msgstr "పత్రములను దిగిమతి చేసుకొనుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
+
+#: ../gdata/services/documents/gdata-documents-service.c:397
+#: ../gdata/services/documents/gdata-documents-service.c:452
+msgid "You must be authenticated to query documents."
+msgstr "పత్రములను క్వయరీ చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
+
+#: ../gdata/services/documents/gdata-documents-service.c:531
+msgid "You must be authenticated to upload documents."
+msgstr "పత్రములను ఎగుమతి చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
+
+#: ../gdata/services/documents/gdata-documents-service.c:537
+msgid "The document has already been uploaded."
+msgstr "పత్రము ముందే ఎగుమతి చేయబడినది."
+
+#: ../gdata/services/documents/gdata-documents-service.c:592
+msgid "You must be authenticated to update documents."
+msgstr "పత్రములను ఎగుమతి చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
+
+#: ../gdata/services/documents/gdata-documents-service.c:655
+#, c-format
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
+msgstr "('%s')పత్రము యొక్క సమాచార రకము గుర్తించబడలేదు."
+
+#: ../gdata/services/documents/gdata-documents-service.c:704
+#: ../gdata/services/documents/gdata-documents-service.c:889
+msgid "You must be authenticated to move documents and folders."
+msgstr "పత్రములు మరియు సంచయములను కదుపుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
+msgid "You must specify a username or be authenticated to query a user."
+msgstr "ఒక వినియోగదారుడిని క్వయరీ చేయుటకు మీరు వినియోగదారునినామము తెలియచేయాలి లేదా   ధ్రువీకరించబడి ఉండాలి "
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
+msgid "Query parameter not allowed for albums."
+msgstr "ఆల్బములకు క్వయరీ పారామీటరు అనుమతించబడలేదు"
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr "అన్నీ ఆల్బములను క్వయరీ చేయుటకు మీరు వినియోగదారునినామము తెలియచేయాలి లేదా   ధ్రువీకరించబడి ఉండాలి."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
+msgid "The album did not have a feed link."
+msgstr "ఆల్బములో ఫీడు లింక్ లేదు."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+msgid "You must be authenticated to upload a file."
+msgstr "ఈ దస్త్రముఏయుటకు మీరు ధ్రువీకరించబడి ఉండాలి."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+msgid "The album has already been inserted."
+msgstr "ఈ ఆల్బము ముందే ప్రవేశించబడినది."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+msgid "You must be authenticated to insert an album."
+msgstr "ఈ ఆల్బమును ప్రవేశపెట్టుటకు మీరు ధ్రువీకరించబడి ఉండాలి."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:456
+#, c-format
+msgid "This service is not available at the moment."
+msgstr "ప్రస్తుతము ఈ సేవ లభించుటలేదు."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "మీరు ఇది చేయుటకు ధ్రువీకరించబడి ఉండాలి."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:465
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr "మీరు ఈమధ్య కాలములో API కు చాలా ఎక్కువ కాల్స్ చేశారు.దయచేసి కొంచం సేపు ఆగి ప్రయత్నించండి."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:468
+#, c-format
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr "మీ నమోదు కోటాను అతిక్రమించినారు. దయచేసి కొన్ని నమోదులను తొలగించి మరల ప్రయత్నించండి."
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:475
+#: ../gdata/services/youtube/gdata-youtube-service.c:481
+#, c-format
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr "\"%s\" అధికారక్షేత్రము నందలి \"%s\" స్థానమున తెలియని దోష సంకేతము \"%s\" దొరికినది."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:499
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr "తెలియని మరియు పార్స్ చేయలేని దోషము అందినది."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:763
+#: ../gdata/services/youtube/gdata-youtube-service.c:820
+msgid "The video did not have a related videos <link>."
+msgstr "సంబంధించిన వీడియోలు ఈ వీడియోలో లేవు<link>."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:882
+msgid "You must be authenticated to upload a video."
+msgstr "ఒక వీడియోను ఎగుమతి చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి."
