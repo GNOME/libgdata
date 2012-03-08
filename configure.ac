@@ -97,6 +97,13 @@ AC_CHECK_FUNCS([strtol])
 AC_CHECK_FUNCS([strtoul])
 AC_CHECK_HEADERS([sys/time.h])
 
+# System SSL CA certificates
+AC_ARG_WITH(ca-certs,
+            AS_HELP_STRING([--with-ca-certs=PATH],[location of SSL CA certificates (default: /etc/ssl/certs/ca-certificates.crt)]),
+            ca_certs="$withval",
+            ca_certs="/etc/ssl/certs/ca-certificates.crt")
+AC_DEFINE_UNQUOTED(CA_CERTS, "$ca_certs", [Where to look for SSL CA certificates])
+
 # Internationalisation support
 GETTEXT_PACKAGE=gdata
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define to the Gettext package name])
