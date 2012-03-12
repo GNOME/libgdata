@@ -1,3 +1,20 @@
+Overview of changes from libgdata 0.11.0 to libgdata 0.11.1
+===========================================================
+
+Major changes:
+* Add a --with-ca-certs configure argument to allow specifying the system CA cert file — an important security fix to allow libgdata to verify all TLS
+  certificates before accepting them
+
+Bugs fixed:
+* Bug 667577 — fix introspection for srcdir != builddir builds
+* Bug 668365 — libgdata 0.10.x link error because of exported symbols that don't exist
+* Bug 671535 — Security issue in libgdata
+
+Updated translations:
+* be (Kasia Bondarava)
+* te (Praveen Illa)
+* uk (Korostil Daniel)
+
 Overview of changes from libgdata 0.10.0 to libgdata 0.11.0
 ===========================================================
 
