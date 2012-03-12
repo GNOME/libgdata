@@ -2,8 +2,9 @@ Overview of changes from libgdata 0.11.0 to libgdata 0.11.1
 ===========================================================
 
 Major changes:
-* Add a --with-ca-certs configure argument to allow specifying the system CA cert file — an important security fix to allow libgdata to verify all TLS
-  certificates before accepting them
+* Bump libsoup dependency to 2.37.91 in order to ensure it checks the validity of TLS certificates before accepting them
+  (Note that this was implemented in 0.10.2 using a --with-ca-certs configure argument. This argument isn't necessary with 0.11.1, since the newer
+   libsoup version which 0.11.1 requires already knows where the system CA cert file is.)
 
 Bugs fixed:
 * Bug 667577 — fix introspection for srcdir != builddir builds
