@@ -1,0 +1,494 @@
+# Arabic translation for libgdata.
+# Copyright (C) 2011 libgdata's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgdata package.
+# IBRAHIM <mradonadiego@hotmail.fr>, 2011.
+# Abderrahim Kitouni <a.kitouni@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: libgdata master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgda"
+"ta&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-12-20 23:35+0000\n"
+"PO-Revision-Date: 2012-03-20 08:51+0100\n"
+"Last-Translator: Abderrahim Kitouni <a.kitouni@gmail.com>\n"
+"Language-Team: Arabic <doc@arabeyes.org>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Virtaal 0.7.1\n"
+"X-Project-Style: gnome\n"
+
+#: ../gdata/gdata-client-login-authorizer.c:643
+#: ../gdata/gdata-oauth1-authorizer.c:839
+#: ../gdata/gdata-oauth1-authorizer.c:1111
+msgid "The server returned a malformed response."
+msgstr "أرجع الخادوم ردّا مشوّها."
+
+#: ../gdata/gdata-client-login-authorizer.c:663 ../gdata/gdata-service.c:320
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "تعذَّر الاتصال بخادوم الخدمة."
+
+#: ../gdata/gdata-client-login-authorizer.c:668 ../gdata/gdata-service.c:325
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "تعذَّر الاتصال بالخادوم الوسيط."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:674 ../gdata/gdata-service.c:331
+#, c-format
+#| msgid ""
+#| "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:680 ../gdata/gdata-service.c:337
+#, c-format
+msgid "Authentication required: %s"
+msgstr "الاستيثاق مطلوب: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:685 ../gdata/gdata-service.c:342
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "لم يعثر على المورد المطلوب: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:691 ../gdata/gdata-service.c:348
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "عُدّلت المدخلة منذ أن تم تحميلها: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:703 ../gdata/gdata-service.c:362
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "رمز الخطأ %u عند الاستيثاق: %s"
+
+#: ../gdata/gdata-client-login-authorizer.c:798
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "يجب ملأ CAPTCHA للولوج."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:836
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "يتطلب هذا الحساب كلمة سر لكل تطبيق. (%s)"
+
+#: ../gdata/gdata-client-login-authorizer.c:843
+msgid "Your username or password were incorrect."
+msgstr "اسم المستخدم أو كلمة السر غير صحيح."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:864
+#, c-format
+#| msgid "Your account's e-mail address has not been verified. (%s)"
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "لم يتم التحقق من عنوان البريد الإلكتروني لحسابك. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:869
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr "لم توافق على أحكام و شروط الخدمة. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:875
+#, c-format
+#| msgid ""
+#| "This account has been migrated. Please log in online to receive your new "
+#| "username and password. (%s)"
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:880
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "حُذف هذا الحساب. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:885
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "عُطّل هذا الحساب. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:890
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "عُطّل نفاذ هذا الحساب إلى هذه الخدمة. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:895
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "هذه الخدمة غير متوفرة حاليا. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "هذه المدخلة لا تدعم التعليقات."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "لا يمكن إضافة تعليقات لهذه المدخلة."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+msgid "This comment may not be deleted."
+msgstr "لا يمكن حذف هذا التعليق."
+
+#. Tried to seek too far
+#: ../gdata/gdata-download-stream.c:816
+msgid "Invalid seek request"
+msgstr "طلب سعي غير صالح"
+
+#: ../gdata/gdata-oauth1-authorizer.c:814
+msgid "The server rejected the temporary credentials request."
+msgstr ""
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: ../gdata/gdata-oauth1-authorizer.c:1085
+msgid "Access was denied by the user or server."
+msgstr "رُفض النفاذ من طرف المستخدم أو الخادوم."
+
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
+#, c-format
+msgid "Error parsing XML: %s"
+msgstr "خطأ في تحليل XML: ‏%s"
+
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: ../gdata/gdata-parsable.c:258
+msgid "Empty document."
+msgstr "المستند فارغ."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#: ../gdata/gdata-parser.c:66
+#, c-format
+#| msgid "A %s element was missing required content."
+msgid "A %s element was missing required content."
+msgstr ""
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:82
+#, c-format
+#| msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgstr ""
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#: ../gdata/gdata-parser.c:102
+#, c-format
+#| msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgstr ""
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#: ../gdata/gdata-parser.c:120
+#, c-format
+#| msgid "The content of a %s element (\"%s\") was unknown."
+msgid "The content of a %s element (\"%s\") was unknown."
+msgstr ""
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: ../gdata/gdata-parser.c:140
+#, c-format
+#| msgid "A required property of a %s element (%s) was not present."
+msgid "A required property of a %s element (%s) was not present."
+msgstr ""
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: ../gdata/gdata-parser.c:163
+#, c-format
+#| msgid ""
+#| "Values were present for properties %s and %s of a %s element when only "
+#| "one of the two is allowed."
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#: ../gdata/gdata-parser.c:182
+#, c-format
+#| msgid "A required element (%s) was not present."
+msgid "A required element (%s) was not present."
+msgstr ""
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#: ../gdata/gdata-parser.c:197
+#, c-format
+#| msgid "A singleton element (%s) was duplicated."
+msgid "A singleton element (%s) was duplicated."
+msgstr ""
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:368
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "رمز الخطأ %u عند الاستعلام: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:374
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "رمز الخطأ %u عند إدراج مدخلة: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:380
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "رمز الخطأ %u عند تحديث مدخلة: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:386
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "رمز الخطأ %u عند حذف مدخلة: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:392
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "رمز الخطأ %u عند التنزيل: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:398
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "رمز الخطأ %u عند الرفع: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:404
+#, c-format
+#| msgid "Error code %u when running a batch operation: %s"
+msgid "Error code %u when running a batch operation: %s"
+msgstr "رمز الخطأ %u عند تنفيذ دُفعة عمليات: %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:711
+#, c-format
+#| msgid "Invalid redirect URI: %s"
+msgid "Invalid redirect URI: %s"
+msgstr ""
+
+#: ../gdata/gdata-service.c:1363
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:875
+msgid "The entry has already been inserted."
+msgstr "سبق إدراج المدخلة."
+
+#: ../gdata/gdata-upload-stream.c:889
+msgid "Stream is already closed"
+msgstr "التدفق سبق غلقه."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
+#, c-format
+#| msgid ""
+#| "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgstr ""
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:315
+#: ../gdata/services/calendar/gdata-calendar-service.c:366
+msgid "You must be authenticated to query all calendars."
+msgstr "يجب أن تكون مستوثقا للاستعلام عن كل التقويمات."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:412
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:508
+#: ../gdata/services/calendar/gdata-calendar-service.c:568
+msgid "You must be authenticated to query your own calendars."
+msgstr "يجب أن تكون مستوثقا للاستعلام عن تقويماتك الخاصة."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:517
+#: ../gdata/services/calendar/gdata-calendar-service.c:581
+msgid "The calendar did not have a content URI."
+msgstr "التقويم لم يكن لديه محتوى URI."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:258
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
+msgid "You must be authenticated to query contacts."
+msgstr "يجب أن تكون مستوثقا للاستعلام عن المراسلين."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:424
+#: ../gdata/services/contacts/gdata-contacts-service.c:474
+msgid "You must be authenticated to query contact groups."
+msgstr "يجب أن تكون مستوثقا للاستعلام عن مجموعات المراسلين."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:514
+msgid "The group has already been inserted."
+msgstr "سبق إدراج المجموعة."
+
+#: ../gdata/services/contacts/gdata-contacts-service.c:521
+msgid "You must be authenticated to insert a group."
+msgstr "يجب أن تكون مستوثقا لإدراج مجموعة."
+
+#: ../gdata/services/documents/gdata-documents-document.c:274
+msgid "You must be authenticated to download documents."
+msgstr "يجب أن تكون مستوثقا لتنزيل المستندات."
+
+#: ../gdata/services/documents/gdata-documents-service.c:397
+#: ../gdata/services/documents/gdata-documents-service.c:452
+msgid "You must be authenticated to query documents."
+msgstr "يجب أن تكون مستوثقا للاستعلام عن المستندات."
+
+#: ../gdata/services/documents/gdata-documents-service.c:531
+msgid "You must be authenticated to upload documents."
+msgstr "يجب أن تكون مستوثقا لرفع المستندات."
+
+#: ../gdata/services/documents/gdata-documents-service.c:537
+msgid "The document has already been uploaded."
+msgstr "سبق رفع المستند."
+
+#: ../gdata/services/documents/gdata-documents-service.c:592
+msgid "You must be authenticated to update documents."
+msgstr "يجب أن تكون مستوثقا لتحديث المستندات."
+
+#: ../gdata/services/documents/gdata-documents-service.c:655
+#, c-format
+#| msgid ""
+#| "The content type of the supplied document ('%s') could not be recognized."
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
+msgstr ""
+
+#: ../gdata/services/documents/gdata-documents-service.c:704
+#: ../gdata/services/documents/gdata-documents-service.c:889
+msgid "You must be authenticated to move documents and folders."
+msgstr "يجب أن تكون مستوثقا لنقل المستندات والمجلّدات."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
+msgid "You must specify a username or be authenticated to query a user."
+msgstr "يجب أن تحدّد اسم مستخدم أو أن تكون مستوثقا للاستعلام عن مستخدم."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
+msgid "Query parameter not allowed for albums."
+msgstr "لا يُسمح بمُعامِل الاستعلام للألبومات."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr "يجب أن تحدد اسم مستخدم أو أن تكون مستوثقا للاستعلام عن كل الألبومات."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
+msgid "The album did not have a feed link."
+msgstr ""
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+msgid "You must be authenticated to upload a file."
+msgstr "يجب أن تكون مستوثقا لرفع ملف."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+msgid "The album has already been inserted."
+msgstr "سبق إدراج الألبوم."
+
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+msgid "You must be authenticated to insert an album."
+msgstr "يجب أن تكون مستوثقا لإدراج ألبوم."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:456
+#, c-format
+msgid "This service is not available at the moment."
+msgstr "الخدمة غير متوفرة حاليا."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "يجب أن تكون مستوثقا لقيام بهذا."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:465
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr "قمت بالعديد من استدعاءات API مؤخرا. انتظر قليلا ثم حاول مرة أخرى."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:468
+#, c-format
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:475
+#: ../gdata/services/youtube/gdata-youtube-service.c:481
+#, c-format
+#| msgid ""
+#| "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr ""
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:499
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr ""
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:763
+#: ../gdata/services/youtube/gdata-youtube-service.c:820
+msgid "The video did not have a related videos <link>."
+msgstr ""
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:882
+msgid "You must be authenticated to upload a video."
+msgstr "يجب أن تكون مستوثقا لرفع فيديو."
