@@ -3,24 +3,163 @@
 # Copyright (C) 2011 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
 #
-# Sandeep Shedmake <sshedmak@redhat.com>, 2011.
+# Sandeep Shedmake <sshedmak@redhat.com>, 2011, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-03-22 21:49+0000\n"
-"PO-Revision-Date: 2011-03-23 19:24+0530\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-07-10 11:51+0000\n"
+"PO-Revision-Date: 2012-03-20 12:44+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.2\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Language: mr\n"
 
-#: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
-msgid "Stream is already closed"
-msgstr "श्रृंखला आधिपासूनच बंद आहे"
+#: ../gdata/gdata-client-login-authorizer.c:575
+#: ../gdata/gdata-oauth1-authorizer.c:770
+#: ../gdata/gdata-oauth1-authorizer.c:1029
+msgid "The server returned a malformed response."
+msgstr "सर्व्हरने सदोषीत प्रतिसाद पुरवला."
+
+#: ../gdata/gdata-client-login-authorizer.c:595 ../gdata/gdata-service.c:316
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "सर्व्हिसेस् सर्वरशी जोडणी करणे अशक्य."
+
+#: ../gdata/gdata-client-login-authorizer.c:600 ../gdata/gdata-service.c:321
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "प्रॉक्सी सर्व्हरशी जोडणी करणे अशक्य."
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:606 ../gdata/gdata-service.c:327
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr "अवैध रिक्वेस्ट URI किंवा हेड्डर, किंवा असमर्थीत घटक: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:612 ../gdata/gdata-service.c:333
+#, c-format
+msgid "Authentication required: %s"
+msgstr "ओळख पटवणे आवश्यक: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:338
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "विनंती केलेले स्रोत आढळले नाही: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:623 ../gdata/gdata-service.c:344
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "डाऊनलोड केल्यापासून नोंद संपादित केली आहे: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:635 ../gdata/gdata-service.c:358
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "ओळख पटवतेवेळी एरर कोड %u: %s"
+
+#: ../gdata/gdata-client-login-authorizer.c:728
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "प्रवेश करण्यासाठी CAPTCHA भरणे आवश्यक."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:766
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "या खात्याला ॲप्लिकेशन-निर्देशीत पासवर्ड आवश्यक आहे. (%s)"
+
+#: ../gdata/gdata-client-login-authorizer.c:773
+msgid "Your username or password were incorrect."
+msgstr "तुमचे वापकर्तानाव किंवा पासवर्ड चुकिचे आहे."
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:794
+#, c-format
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "खात्याशी संबंधित ईमेल पत्ता तपासले नाही. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:799
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr "तुम्ही सर्व्हिसच्या अटी व परिस्थिती मान्य करण्यास नकार दिला आहे. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:805
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"हे खाते स्थानांतरीत केले आहे. कृपया नवीन वापरकर्तानाव व पासवर्ड प्राप्त "
+"करण्यासाठी ऑनलाइन "
+"प्रवेश करा. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:810
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "हे खाते नष्ट केले आहे. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:815
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "हे खाते बंद केले आहे. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:820
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "या सर्व्हिसकरीता या खात्याचे प्रवेश बंद केले आहे. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:825
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "हि सर्व्हिस याक्षणी उपलब्ध नाही. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+msgid "This entry does not support comments."
+msgstr "हि नोंदणी टिपण्णींकरीता समर्थन पुरवत नाही."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+msgid "Comments may not be added to this entry."
+msgstr "टिपण्णीला ह्या नोंदणीमध्ये समाविष्ट करणे अशक्य."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+#| msgid "This account has been deleted. (%s)"
+msgid "This comment may not be deleted."
+msgstr "या टिपण्णीला नष्ट करणे अशक्य."
+
+#. Tried to seek too far
+#: ../gdata/gdata-download-stream.c:751
+msgid "Invalid seek request"
+msgstr "अवैध सीक विनंती"
+
+#: ../gdata/gdata-oauth1-authorizer.c:745
+msgid "The server rejected the temporary credentials request."
+msgstr "सर्व्हरने तात्पुर्ती श्रेय विनंती नकारली."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: ../gdata/gdata-oauth1-authorizer.c:1007
+msgid "Access was denied by the user or server."
+msgstr "वापरकर्ता किंवा सर्व्हरतर्फे प्रवेश नकारले."
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -93,7 +232,10 @@ msgstr "%s घटकाचे आवश्यक गुणधर्म (%s) उ�
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
-msgstr "दोन पैकी एकच घटक स्वीकार्य असल्यावर गुणधर्म %1$s व %3$s पैकी %2$s घटकांकरीता लागू होण्याजोगी मूल्ये."
+msgstr ""
+"दोन पैकी एकच घटक स्वीकार्य असल्यावर गुणधर्म %1$s व %3$s पैकी %2$s घटकांकरीता "
+"लागू "
+"होण्याजोगी मूल्ये."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -113,169 +255,70 @@ msgstr "आवश्यक घटक (%s) आढळले नाही."
 msgid "A singleton element (%s) was duplicated."
 msgstr "एक घटक (%s) याचे हुबेहुब प्रत बनवले."
 
-#: ../gdata/gdata-service.c:430
-msgid "The server returned a malformed response."
-msgstr "सर्व्हरने सदोषीत प्रतिसाद पुरवला."
-
-#: ../gdata/gdata-service.c:473
-#, c-format
-msgid "Cannot connect to the service's server."
-msgstr "सर्व्हिसेस् सर्वरशी जोडणी करणे अशक्य."
-
-#: ../gdata/gdata-service.c:478
-#, c-format
-msgid "Cannot connect to the proxy server."
-msgstr "प्रॉक्सी सर्व्हरशी जोडणी करणे अशक्य."
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:484
-#, c-format
-msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr "अवैध रिक्वेस्ट URI किंवा हेड्डर, किंवा असमर्थीत घटक: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:490
-#, c-format
-msgid "Authentication required: %s"
-msgstr "ओळख पटवणे आवश्यक: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:495
-#, c-format
-msgid "The requested resource was not found: %s"
-msgstr "विनंती केलेले स्रोत आढळले नाही: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:501
-#, c-format
-msgid "The entry has been modified since it was downloaded: %s"
-msgstr "डाऊनलोड केल्यापासून नोंद संपादित केली आहे: %s"
-
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:515
-#, c-format
-msgid "Error code %u when authenticating: %s"
-msgstr "ओळख पटवतेवेळी एरर कोड %u: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:521
+#: ../gdata/gdata-service.c:364
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "चौकशीकरतेवेळी एरर कोड %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:527
+#: ../gdata/gdata-service.c:370
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "नोंद समाविष्ट करतेवेळी एरर कोड %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:533
+#: ../gdata/gdata-service.c:376
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "नोंद सुधारित करतेवेळी एरर कोड %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:539
+#: ../gdata/gdata-service.c:382
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "नोंदणी नष्ट करतेवेळी एरर कोड %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:545
+#: ../gdata/gdata-service.c:388
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "डाऊनलोड करतेवेळी एरर कोड %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:551
+#: ../gdata/gdata-service.c:394
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "अपलोड करतेवेळी एरर कोड %u: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:557
+#: ../gdata/gdata-service.c:400
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "बॅच् कार्य चालवतेवेळी एरर कोड %u: %s"
 
-#: ../gdata/gdata-service.c:686
-msgid "A CAPTCHA must be filled out to log in."
-msgstr "प्रवेश करण्यासाठी CAPTCHA भरणे आवश्यक."
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:721
-#, c-format
-msgid "This account requires an application-specific password. (%s)"
-msgstr "या खात्याला ॲप्लिकेशन-निर्देशीत पासवर्ड आवश्यक आहे. (%s)"
-
-#: ../gdata/gdata-service.c:728
-msgid "Your username or password were incorrect."
-msgstr "तुमचे वापकर्तानाव किंवा पासवर्ड चुकिचे आहे."
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:747
-#, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "खात्याशी संबंधित ईमेल पत्ता तपासले नाही. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:752
-#, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "तुम्ही सर्व्हिसच्या अटी व परिस्थिती मान्य करण्यास नकार दिला आहे. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:758
-#, c-format
-msgid ""
-"This account has been migrated. Please log in online to receive your new "
-"username and password. (%s)"
-msgstr "हे खाते स्थानांतरीत केले आहे. कृपया नवीन वापरकर्तानाव व पासवर्ड प्राप्त करण्यासाठी ऑनलाइन प्रवेश करा. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:763
-#, c-format
-msgid "This account has been deleted. (%s)"
-msgstr "हे खाते नष्ट केले आहे. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:768
-#, c-format
-msgid "This account has been disabled. (%s)"
-msgstr "हे खाते बंद केले आहे. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:773
-#, c-format
-msgid "This account's access to this service has been disabled. (%s)"
-msgstr "या सर्व्हिसकरीता या खात्याचे प्रवेश बंद केले आहे. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:778
-#, c-format
-msgid "This service is not available at the moment. (%s)"
-msgstr "हि सर्व्हिस याक्षणी उपलब्ध नाही. (%s)"
-
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1083
+#: ../gdata/gdata-service.c:674
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "अवैध रिडायरेक्ट URI: %s"
 
-#: ../gdata/gdata-service.c:1659
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
-#: ../gdata/services/youtube/gdata-youtube-service.c:778
+#: ../gdata/gdata-service.c:1325
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:836
 msgid "The entry has already been inserted."
 msgstr "नोंदणी आधिपासूनच समाविष्ट केली आहे."
+
+#: ../gdata/gdata-upload-stream.c:785
+msgid "Stream is already closed"
+msgstr "श्रृंखला आधिपासूनच बंद आहे"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -283,43 +326,43 @@ msgstr "नोंदणी आधिपासूनच समाविष्ट 
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "%s घटक (\"%s\") मधील अंतर्भूत माहिती हेक्जाडेसिमल RGB स्वरूपात नाही."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:281
-#: ../gdata/services/calendar/gdata-calendar-service.c:326
+#: ../gdata/services/calendar/gdata-calendar-service.c:315
+#: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
 msgstr "सर्व दिनदर्शिकांची चौकशी करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:368
-#: ../gdata/services/calendar/gdata-calendar-service.c:413
-#: ../gdata/services/calendar/gdata-calendar-service.c:454
-#: ../gdata/services/calendar/gdata-calendar-service.c:510
+#: ../gdata/services/calendar/gdata-calendar-service.c:412
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:508
+#: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
 msgstr "सर्व दिनदर्शिकांची चौकशी करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:463
-#: ../gdata/services/calendar/gdata-calendar-service.c:519
+#: ../gdata/services/calendar/gdata-calendar-service.c:517
+#: ../gdata/services/calendar/gdata-calendar-service.c:581
 msgid "The calendar did not have a content URI."
 msgstr "दिनदर्शिकामध्ये अंतर्भूतमाहिती URI समाविष्टीत नाही."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:229
-#: ../gdata/services/contacts/gdata-contacts-service.c:275
+#: ../gdata/services/contacts/gdata-contacts-service.c:258
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
 msgstr "संपर्कांची चौकशी करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:384
-#: ../gdata/services/contacts/gdata-contacts-service.c:430
+#: ../gdata/services/contacts/gdata-contacts-service.c:424
+#: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
 msgstr "संपर्क गटांची चौकशीकरीता ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:466
+#: ../gdata/services/contacts/gdata-contacts-service.c:514
 msgid "The group has already been inserted."
 msgstr "गट आधिपासूनच समाविष्ट केले आहे."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:472
+#: ../gdata/services/contacts/gdata-contacts-service.c:521
 msgid "You must be authenticated to insert a group."
 msgstr "गट समाविष्ट करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
@@ -327,64 +370,67 @@ msgstr "गट समाविष्ट करण्यासाठी ओळख
 msgid "You must be authenticated to download documents."
 msgstr "दस्तऐवज डाऊनलोड करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/documents/gdata-documents-service.c:369
-#: ../gdata/services/documents/gdata-documents-service.c:420
+#: ../gdata/services/documents/gdata-documents-service.c:357
+#: ../gdata/services/documents/gdata-documents-service.c:412
 msgid "You must be authenticated to query documents."
 msgstr "दस्तऐवजांची चौकशी करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/documents/gdata-documents-service.c:527
+#: ../gdata/services/documents/gdata-documents-service.c:491
 msgid "You must be authenticated to upload documents."
 msgstr "दस्तऐवज अपलोड करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/documents/gdata-documents-service.c:533
+#: ../gdata/services/documents/gdata-documents-service.c:497
 msgid "The document has already been uploaded."
 msgstr "दस्तऐवज आधिपासूनच अपलोड केले आहे."
 
-#: ../gdata/services/documents/gdata-documents-service.c:587
+#: ../gdata/services/documents/gdata-documents-service.c:552
 msgid "You must be authenticated to update documents."
 msgstr "दस्तऐवज सुधारित करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/documents/gdata-documents-service.c:650
+#: ../gdata/services/documents/gdata-documents-service.c:615
 #, c-format
-msgid "The content type of the supplied document ('%s') could not be recognized."
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
 msgstr "पुरवलेल्या दस्तऐवजाची अंतर्भूत माहिती ('%s') ओळखणे अशक्य."
 
-#: ../gdata/services/documents/gdata-documents-service.c:698
-#: ../gdata/services/documents/gdata-documents-service.c:882
+#: ../gdata/services/documents/gdata-documents-service.c:664
+#: ../gdata/services/documents/gdata-documents-service.c:849
 msgid "You must be authenticated to move documents and folders."
 msgstr "दस्तऐवज व फोल्डर्स हलवण्याकरीता ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "वापरकर्त्याची चौकशी करण्यसाठी वापरकर्तानाव किंवा ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
 msgstr "अल्बम्सकरीता चौकशी घटक स्वीकारले जात नाही."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "सर्व अल्बम्स्ची चौकशी करण्यासाठी वापरकर्तानाव निर्देशीत करणे किंवा ओळख पटवणे आवश्यक आहे."
+msgstr ""
+"सर्व अल्बम्स्ची चौकशी करण्यासाठी वापरकर्तानाव निर्देशीत करणे किंवा ओळख पटवणे "
+"आवश्यक आहे."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
 msgstr "अल्बममध्ये फीड दुवा आढळली नाही."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
 msgstr "फाइल अपलोड करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
 msgstr "अल्बम आधिपासूनच समाविष्ट केले आहे."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "अल्बम समाविष्ट करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:416
+#: ../gdata/services/youtube/gdata-youtube-service.c:417
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "ही सेवा याक्षणी उपलब्ध नाही."
@@ -399,12 +445,16 @@ msgstr "असे करण्यासाठी ओळख पटवणे आ�
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
-msgstr "तुम्ही नुकतेच एकापेक्षाजास्त API कॉल्स् केले. कृपया काहिक मिनिटे थांबा व पुनःप्रयत्न करा."
+msgstr ""
+"तुम्ही नुकतेच एकापेक्षाजास्त API कॉल्स् केले. कृपया काहिक मिनिटे थांबा व "
+"पुनःप्रयत्न करा."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:429
 #, c-format
-msgid "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "नोंदणी कोटाची मर्यादा पोहचली. कृपया काहिक नोंदणी नष्ट करा व पुनः प्रयत्न करा."
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"नोंदणी कोटाची मर्यादा पोहचली. कृपया काहिक नोंदणी नष्ट करा व पुनः प्रयत्न करा."
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
@@ -412,7 +462,8 @@ msgstr "नोंदणी कोटाची मर्यादा पोहच
 #: ../gdata/services/youtube/gdata-youtube-service.c:436
 #: ../gdata/services/youtube/gdata-youtube-service.c:442
 #, c-format
-msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "ठिकाण \"%3$s\" सह डोमेन \"%2$s\" मध्ये अपरिचीत त्रुटी कोड \"%1$s\"."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
@@ -420,12 +471,12 @@ msgstr "ठिकाण \"%3$s\" सह डोमेन \"%2$s\" मध्ये
 msgid "Unknown and unparsable error received."
 msgstr "अपरिचीत व वाचनअशक्य त्रुटी प्राप्त झाले."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:682
-#: ../gdata/services/youtube/gdata-youtube-service.c:729
+#: ../gdata/services/youtube/gdata-youtube-service.c:724
+#: ../gdata/services/youtube/gdata-youtube-service.c:781
 msgid "The video did not have a related videos <link>."
 msgstr "व्हिडीओसह संबंधित व्हिडीओज आढळले नाही <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:784
+#: ../gdata/services/youtube/gdata-youtube-service.c:843
 msgid "You must be authenticated to upload a video."
 msgstr "व्हिडीओ अपलोड करण्यासाठी ओळख पटवणे आवश्यक आहे."
 
