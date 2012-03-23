@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-07-13 18:07+0000\n"
-"PO-Revision-Date: 2011-07-14 07:53+0100\n"
+"PO-Revision-Date: 2012-03-23 22:31+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr ""
 #: ../gdata/gdata-oauth1-authorizer.c:770
 #: ../gdata/gdata-oauth1-authorizer.c:1029
 msgid "The server returned a malformed response."
-msgstr "Strežnik je vrnil izmaličen odgovor."
+msgstr "Strežnik je vrnil nepravilno oblikovan odgovor."
 
 #: ../gdata/gdata-client-login-authorizer.c:595
 #: ../gdata/gdata-service.c:316
