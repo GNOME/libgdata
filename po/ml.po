@@ -5,11 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-12 22:12+0000\n"
-"PO-Revision-Date: 2012-03-12 23:41+0530\n"
-"Last-Translator: Anish A <aneesh.nl@gmail.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-03-23 21:31+0000\n"
+"PO-Revision-Date: 2012-03-26 13:10+0530\n"
+"Last-Translator: Praveen Arimbrathodiyil <pravi.a@gmail.com>\n"
 "Language-Team: Swatantra Malayalam Computing <discuss@lists.smc.org.in>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,94 +22,99 @@ msgstr ""
 #: ../gdata/gdata-oauth1-authorizer.c:839
 #: ../gdata/gdata-oauth1-authorizer.c:1111
 msgid "The server returned a malformed response."
-msgstr "സേവകന്‍ സാധുവല്ലാത്ത മറുപടി അയച്ചു."
+msgstr "സേവകന്‍ സാധുതയില്ലാത്ത മറുപടി അയച്ചു."
 
-#: ../gdata/gdata-client-login-authorizer.c:663 ../gdata/gdata-service.c:320
+#: ../gdata/gdata-client-login-authorizer.c:663
+#: ../gdata/gdata-service.c:320
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "അവസ്ഥ പാലകനുമായ് ബന്ധപ്പെടാന് കഴിയുന്നില്ല."
 
-#: ../gdata/gdata-client-login-authorizer.c:668 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:668
+#: ../gdata/gdata-service.c:325
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "പ്രോക്സി സേവകനുമായി ബന്ധപ്പെടാന് കഴിയുന്നില്ല."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:674 ../gdata/gdata-service.c:331
+#: ../gdata/gdata-client-login-authorizer.c:674
+#: ../gdata/gdata-service.c:331
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:680 ../gdata/gdata-service.c:337
+#: ../gdata/gdata-client-login-authorizer.c:680
+#: ../gdata/gdata-service.c:337
 #, c-format
 msgid "Authentication required: %s"
 msgstr "തിരിച്ചറിയല്‍ ആവശ്യമാണു്: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:685 ../gdata/gdata-service.c:342
+#: ../gdata/gdata-client-login-authorizer.c:685
+#: ../gdata/gdata-service.c:342
 #, c-format
 msgid "The requested resource was not found: %s"
-msgstr ""
+msgstr "അപേക്ഷിച്ച വിഭവം കാണുന്നില്ല: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:691 ../gdata/gdata-service.c:348
+#: ../gdata/gdata-client-login-authorizer.c:691
+#: ../gdata/gdata-service.c:348
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr ""
+msgstr "ഡൌണ്‍ലോഡ് ചെയ്ത ശേഷം ഈ എന്‍ട്രി മാറ്റി: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:703 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:703
+#: ../gdata/gdata-service.c:362
 #, c-format
 msgid "Error code %u when authenticating: %s"
-msgstr ""
+msgstr "അധികാരപ്പെടുത്തുമ്പോള്‍ %u പിഴവ് : %s"
 
 #: ../gdata/gdata-client-login-authorizer.c:798
 msgid "A CAPTCHA must be filled out to log in."
-msgstr ""
+msgstr "പ്രവേശിക്കുവാന്‍ ക്യാപ്ച പൂരിപ്പിക്കണം."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:836
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
-msgstr ""
+msgstr "ഈ അക്കൌണ്ടിന് ഒരു പ്രയോഗത്തിന് അധിഷ്ഠിതമായ രഹസ്യ വാക്ക് വേണം. (%s)"
 
 #: ../gdata/gdata-client-login-authorizer.c:843
 msgid "Your username or password were incorrect."
-msgstr ""
+msgstr "താങ്കളുടെ ഉപയോക്തൃനാമം അല്ലെങ്കില്‍ രഹസ്യവാക്ക് തെറ്റാണ്."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:864
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr ""
+msgstr "താങ്കളുടെ അക്കൌണ്ടിന്റെ ഇമെയില്‍ വിലാസം സ്ഥിരികരിച്ചില്ല. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:869
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr ""
+msgstr "ഈ സേവനത്തിന്റെ ഉപയോഗ വ്യവസ്തകള്‍ താങ്കള്‍ അംഗീകരിച്ചിട്ടില്ല. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:875
 #, c-format
-msgid ""
-"This account has been migrated. Please log in online to receive your new "
-"username and password. (%s)"
+msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
 msgstr ""
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
 msgid "This account has been deleted. (%s)"
-msgstr ""
+msgstr "ഈ അക്കൌണ്ട് നീക്കം ചെയ്തിരിക്കുന്നു. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:885
 #, c-format
 msgid "This account has been disabled. (%s)"
-msgstr ""
+msgstr "ഈ അക്കൌണ്ട് പ്രവര്‍ത്തന രഹിതമാക്കിയിരിക്കുന്നു. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:890
@@ -126,25 +130,28 @@ msgstr ""
 
 #. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
 #. * support comments.
-#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+#: ../gdata/gdata-commentable.c:172
+#: ../gdata/gdata-commentable.c:262
 msgid "This entry does not support comments."
-msgstr ""
+msgstr "ഈ കളത്തില്‍ കുറിപ്പെഴുതുന്നതിനു് പിന്തുണയില്ല."
 
 #. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
 #. * comments.
-#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+#: ../gdata/gdata-commentable.c:349
+#: ../gdata/gdata-commentable.c:435
 msgid "Comments may not be added to this entry."
 msgstr ""
 
 #. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
-#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+#: ../gdata/gdata-commentable.c:518
+#: ../gdata/gdata-commentable.c:594
 msgid "This comment may not be deleted."
-msgstr ""
+msgstr "ഈ കുറിപ്പു് നീക്കം ചെയ്യുവാന്‍ പാടില്ല."
 
 #. Tried to seek too far
 #: ../gdata/gdata-download-stream.c:816
 msgid "Invalid seek request"
-msgstr ""
+msgstr "അസാധുവായ seek ആവശ്യപ്പെട്ടിരിക്കുന്നു"
 
 #: ../gdata/gdata-oauth1-authorizer.c:814
 msgid "The server rejected the temporary credentials request."
@@ -157,7 +164,8 @@ msgid "Access was denied by the user or server."
 msgstr ""
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
+#: ../gdata/gdata-parsable.c:245
+#: ../gdata/gdata-parsable.c:256
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "​XML പാഴ്സ് ചെയ്യുന്നതില്‍ പിഴവ്: %s"
@@ -192,9 +200,9 @@ msgstr ""
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
 #: ../gdata/gdata-parser.c:102
-#, c-format
+#, fuzzy, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr ""
+msgstr "<%s> എന്ന എലമെന്‍റില്‍ \"%s\" ആട്ട്രിബ്യൂട്ടിന് \"%s\" എന്ന അപരിചിതമായ മൂല്ല്യം"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -202,9 +210,9 @@ msgstr ""
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
 #: ../gdata/gdata-parser.c:120
-#, c-format
+#, fuzzy, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
-msgstr ""
+msgstr "അപരിചിതമായ നിര %d-ല്‍ മാറ്റം വരുത്തിയിരിക്കുന്നു"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -224,9 +232,7 @@ msgstr ""
 #. *  two is allowed.
 #: ../gdata/gdata-parser.c:163
 #, c-format
-msgid ""
-"Values were present for properties %s and %s of a %s element when only one "
-"of the two is allowed."
+msgid "Values were present for properties %s and %s of a %s element when only one of the two is allowed."
 msgstr ""
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
@@ -243,16 +249,16 @@ msgstr ""
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
 #: ../gdata/gdata-parser.c:197
-#, c-format
+#, fuzzy, c-format
 msgid "A singleton element (%s) was duplicated."
-msgstr ""
+msgstr "\"%s\" എന്ന വിശേഷത രണ്ടു് തവണ <%s> എലമെന്റില്‍ ലഭ്യമായി"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:368
-#, c-format
+#, fuzzy, c-format
 msgid "Error code %u when querying: %s"
-msgstr ""
+msgstr "LDAP സര്‍വറിലെ സംശയങ്ങള്‍ പരിഹരിക്കുന്നതിനിടെയില്‍ പിശക് സംഭവിച്ചിരിക്കുന്നു: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -278,16 +284,18 @@ msgstr ""
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:392
-#, c-format
+#, fuzzy, c-format
 msgid "Error code %u when downloading: %s"
 msgstr ""
+"%1 ഡൌണ്‍ലോഡ് ചെയ്യുന്നതില്‍ പിഴവ്:\n"
+"പ്രമാണം ദുഷിച്ചിരിക്കുന്നു."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:398
-#, c-format
+#, fuzzy, c-format
 msgid "Error code %u when uploading: %s"
-msgstr ""
+msgstr "NNTP സര്‍വര്‍ %s പിശക് കോഡ് %d നല്‍കിയിരിക്കുന്നു: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
@@ -298,19 +306,20 @@ msgstr ""
 
 #. Translators: the parameter is the URI which is invalid.
 #: ../gdata/gdata-service.c:711
-#, c-format
+#, fuzzy, c-format
 msgid "Invalid redirect URI: %s"
-msgstr ""
+msgstr "തെറ്റായ സര്‍വര്‍ URI\n"
 
 #: ../gdata/gdata-service.c:1363
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
+#, fuzzy
 msgid "The entry has already been inserted."
-msgstr ""
+msgstr "കോണ്‍സ്റ്റന്റ് \"%s\" നിലവില്‍ നിഷ്കര്‍ഷിച്ചിട്ടുണ്ടു്"
 
 #: ../gdata/gdata-upload-stream.c:889
 msgid "Stream is already closed"
-msgstr ""
+msgstr "സ്ട്രീം നിലവില്‍ അടച്ചിരിക്കുന്നു"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -351,8 +360,9 @@ msgid "You must be authenticated to query contact groups."
 msgstr ""
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:514
+#, fuzzy
 msgid "The group has already been inserted."
-msgstr ""
+msgstr "കോണ്‍സ്റ്റന്റ് \"%s\" നിലവില്‍ നിഷ്കര്‍ഷിച്ചിട്ടുണ്ടു്"
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:521
 msgid "You must be authenticated to insert a group."
@@ -381,8 +391,7 @@ msgstr ""
 
 #: ../gdata/services/documents/gdata-documents-service.c:655
 #, c-format
-msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
+msgid "The content type of the supplied document ('%s') could not be recognized."
 msgstr ""
 
 #: ../gdata/services/documents/gdata-documents-service.c:704
@@ -413,8 +422,9 @@ msgid "You must be authenticated to upload a file."
 msgstr ""
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+#, fuzzy
 msgid "The album has already been inserted."
-msgstr ""
+msgstr "കോണ്‍സ്റ്റന്റ് \"%s\" നിലവില്‍ നിഷ്കര്‍ഷിച്ചിട്ടുണ്ടു്"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
@@ -426,21 +436,18 @@ msgid "This service is not available at the moment."
 msgstr ""
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
-#, c-format
+#, fuzzy, c-format
 msgid "You must be authenticated to do this."
-msgstr ""
+msgstr "ഈ ആജ്ഞ പ്രവര്‍ത്തിപ്പിയ്ക്കാന്‍ നിങ്ങളൊരു വാക്കിനുള്ളിലായിരിയ്ക്കണം"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:465
 #, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
+msgid "You have made too many API calls recently. Please wait a few minutes and try again."
 msgstr ""
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:468
 #, c-format
-msgid ""
-"You have exceeded your entry quota. Please delete some entries and try again."
+msgid "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
 
 #. Translators: the first parameter is an error code, which is a coded string.
@@ -449,8 +456,7 @@ msgstr ""
 #: ../gdata/services/youtube/gdata-youtube-service.c:475
 #: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:499
@@ -466,3 +472,4 @@ msgstr ""
 #: ../gdata/services/youtube/gdata-youtube-service.c:882
 msgid "You must be authenticated to upload a video."
 msgstr ""
+
