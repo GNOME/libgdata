@@ -169,11 +169,7 @@ struct _GDataOAuth1AuthorizerPrivate {
 	gchar *application_name;
 	gchar *locale;
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	GMutex mutex; /* mutex for token, token_secret and authorization_domains */
-#else
-	GStaticMutex mutex; /* mutex for token, token_secret and authorization_domains */
-#endif
 
 	/* Note: This is the access token, not the request token returned by gdata_oauth1_authorizer_request_authentication_uri().
 	 * It's NULL iff the authorizer isn't authenticated. token_secret must be NULL iff token is NULL. */
@@ -285,11 +281,7 @@ gdata_oauth1_authorizer_init (GDataOAuth1Authorizer *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_OAUTH1_AUTHORIZER, GDataOAuth1AuthorizerPrivate);
 
 	/* Set up the authorizer's mutex */
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_init (&(self->priv->mutex));
-#else
-	g_static_mutex_init (&(self->priv->mutex));
-#endif
 	self->priv->authorization_domains = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
 
 	/* Set up the session */
@@ -322,11 +314,7 @@ finalize (GObject *object)
 	g_free (priv->locale);
 
 	g_hash_table_destroy (priv->authorization_domains);
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_clear (&(priv->mutex));
-#else
-	g_static_mutex_free (&(priv->mutex));
-#endif
 
 	if (priv->proxy_uri != NULL) {
 		soup_uri_free (priv->proxy_uri);
@@ -403,11 +391,7 @@ process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMe
 	GDataOAuth1AuthorizerPrivate *priv = GDATA_OAUTH1_AUTHORIZER (self)->priv;
 
 	/* Set the authorisation header */
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_lock (&(priv->mutex));
-#else
-	g_static_mutex_lock (&(priv->mutex));
-#endif
 
 	/* Sanity check */
 	g_assert ((priv->token == NULL) == (priv->token_secret == NULL));
@@ -416,11 +400,7 @@ process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMe
 		sign_message (GDATA_OAUTH1_AUTHORIZER (self), message, priv->token, priv->token_secret, NULL);
 	}
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_unlock (&(priv->mutex));
-#else
-	g_static_mutex_unlock (&(priv->mutex));
-#endif
 }
 
 static gboolean
@@ -430,17 +410,10 @@ is_authorized_for_domain (GDataAuthorizer *self, GDataAuthorizationDomain *domai
 	gpointer result;
 	const gchar *token;
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_lock (&(priv->mutex));
 	token = priv->token;
 	result = g_hash_table_lookup (priv->authorization_domains, domain);
 	g_mutex_unlock (&(priv->mutex));
-#else
-	g_static_mutex_lock (&(priv->mutex));
-	token = priv->token;
-	result = g_hash_table_lookup (priv->authorization_domains, domain);
-	g_static_mutex_unlock (&(priv->mutex));
-#endif
 
 	/* Sanity check */
 	g_assert (result == NULL || result == domain);
@@ -757,11 +730,7 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 	*token_secret = NULL;
 
 	/* Build up the space-separated list of scopes we're requesting authorisation for */
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_lock (&(priv->mutex));
-#else
-	g_static_mutex_lock (&(priv->mutex));
-#endif
 
 	scope_string = g_string_new (NULL);
 	g_hash_table_iter_init (&iter, priv->authorization_domains);
@@ -777,11 +746,7 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 		is_first = FALSE;
 	}
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_unlock (&(priv->mutex));
-#else
-	g_static_mutex_unlock (&(priv->mutex));
-#endif
 
 	/* Build the request body and the set of parameters to be signed */
 	parameters = g_hash_table_new (g_str_hash, g_str_equal);
@@ -1115,11 +1080,7 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	}
 
 	/* Store the token and token secret in the authoriser */
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_lock (&(priv->mutex));
-#else
-	g_static_mutex_lock (&(priv->mutex));
-#endif
 
 	g_free (priv->token);
 	priv->token = g_strdup (_token);
@@ -1127,11 +1088,7 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	_gdata_service_secure_strfree (priv->token_secret);
 	priv->token_secret = _gdata_service_secure_strdup (_token_secret);
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_unlock (&(priv->mutex));
-#else
-	g_static_mutex_unlock (&(priv->mutex));
-#endif
 
 	/* Zero out the secret token before freeing the hash table, to reduce the chance of it hitting disk later. */
 	memset ((void*) _token_secret, 0, strlen (_token_secret));

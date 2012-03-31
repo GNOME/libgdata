@@ -84,9 +84,6 @@ main (int argc, char *argv[])
 	#define ITERATIONS 10000
 
 	g_type_init ();
-#if !GLIB_CHECK_VERSION (2, 31, 0)
-	g_thread_init (NULL);
-#endif
 
 	/* Test feed parsing time */
 	g_get_current_time (&start_time);

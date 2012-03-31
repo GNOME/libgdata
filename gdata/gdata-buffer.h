@@ -43,13 +43,8 @@ typedef struct {
 	gboolean reached_eof; /* set to TRUE only once we've reached EOF */
 	GDataBufferChunk **tail; /* pointer to the GDataBufferChunk->next field of the current tail chunk */
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	GMutex mutex; /* mutex protecting the entire structure on push and pop */
 	GCond cond; /* a GCond to allow a popping thread to block on data being pushed into the buffer */
-#else
-	GStaticMutex mutex; /* mutex protecting the entire structure on push and pop */
-	GCond *cond; /* a GCond to allow a popping thread to block on data being pushed into the buffer */
-#endif
 } GDataBuffer;
 
 GDataBuffer *gdata_buffer_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

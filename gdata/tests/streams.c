@@ -38,11 +38,7 @@ run_server (SoupServer *server)
 	GThread *thread;
 	GError *error = NULL;
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	thread = g_thread_try_new ("server-thread", (GThreadFunc) run_server_thread, server, &error);
-#else
-	thread = g_thread_create ((GThreadFunc) run_server_thread, server, TRUE, &error);
-#endif
 	g_assert_no_error (error);
 	g_assert (thread != NULL);
 

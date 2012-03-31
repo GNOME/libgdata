@@ -56,13 +56,8 @@ gdata_buffer_new (void)
 {
 	GDataBuffer *buffer = g_slice_new0 (GDataBuffer);
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_init (&(buffer->mutex));
 	g_cond_init (&(buffer->cond));
-#else
-	g_static_mutex_init (&(buffer->mutex));
-	buffer->cond = g_cond_new ();
-#endif
 
 	return buffer;
 }
@@ -88,13 +83,8 @@ gdata_buffer_free (GDataBuffer *self)
 		g_free (chunk);
 	}
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_cond_clear (&(self->cond));
 	g_mutex_clear (&(self->mutex));
-#else
-	g_cond_free (self->cond);
-	g_static_mutex_free (&(self->mutex));
-#endif
 
 	g_slice_free (GDataBuffer, self);
 }
@@ -125,31 +115,18 @@ gdata_buffer_push_data (GDataBuffer *self, const guint8 *data, gsize length)
 
 	g_return_val_if_fail (self != NULL, 0);
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_lock (&(self->mutex));
-#else
-	g_static_mutex_lock (&(self->mutex));
-#endif
 
 	if (G_UNLIKELY (self->reached_eof == TRUE)) {
 		/* If we're marked as having reached EOF, don't accept any more data */
-#if GLIB_CHECK_VERSION (2, 31, 0)
 		g_mutex_unlock (&(self->mutex));
-#else
-		g_static_mutex_unlock (&(self->mutex));
-#endif
 		return FALSE;
 	} else if (G_UNLIKELY (data == NULL && length == 0)) {
 		/* If @data is NULL and @length is 0, mark the buffer as having reached EOF,
 		 * and signal any waiting threads. */
 		self->reached_eof = TRUE;
-#if GLIB_CHECK_VERSION (2, 31, 0)
 		g_cond_signal (&(self->cond));
 		g_mutex_unlock (&(self->mutex));
-#else
-		g_cond_signal (self->cond);
-		g_static_mutex_unlock (&(self->mutex));
-#endif
 		return FALSE;
 	}
 
@@ -172,15 +149,9 @@ gdata_buffer_push_data (GDataBuffer *self, const guint8 *data, gsize length)
 	self->total_length += length;
 
 	/* Signal any threads waiting to pop that data is available */
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_cond_signal (&(self->cond));
 
 	g_mutex_unlock (&(self->mutex));
-#else
-	g_cond_signal (self->cond);
-
-	g_static_mutex_unlock (&(self->mutex));
-#endif
 
 	return TRUE;
 }
@@ -194,17 +165,10 @@ static void
 pop_cancelled_cb (GCancellable *cancellable, CancelledData *data)
 {
 	/* Signal the pop_data function that it should stop blocking and cancel */
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_lock (&(data->buffer->mutex));
 	*(data->cancelled) = TRUE;
 	g_cond_signal (&(data->buffer->cond));
 	g_mutex_unlock (&(data->buffer->mutex));
-#else
-	g_static_mutex_lock (&(data->buffer->mutex));
-	*(data->cancelled) = TRUE;
-	g_cond_signal (data->buffer->cond);
-	g_static_mutex_unlock (&(data->buffer->mutex));
-#endif
 }
 
 /**
@@ -265,11 +229,7 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 		cancelled_signal = g_cancellable_connect (cancellable, (GCallback) pop_cancelled_cb, &cancelled_data, NULL);
 	}
 
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_lock (&(self->mutex));
-#else
-	g_static_mutex_lock (&(self->mutex));
-#endif
 
 	/* Set reached_eof */
 	if (reached_eof != NULL)
@@ -283,11 +243,7 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 		while (length_requested > self->total_length) {
 			/* If we've already been cancelled, don't wait on @self->cond, since it'll never be signalled again. */
 			if (cancelled == FALSE) {
-#if GLIB_CHECK_VERSION (2, 31, 0)
 				g_cond_wait (&(self->cond), &(self->mutex));
-#else
-				g_cond_wait (self->cond, g_static_mutex_get_mutex (&(self->mutex)));
-#endif
 			}
 
 			/* If the g_cond_wait() returned because it was signalled from the GCancellable callback (rather than from
@@ -350,11 +306,7 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	self->total_length -= return_length;
 
 done:
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_unlock (&(self->mutex));
-#else
-	g_static_mutex_unlock (&(self->mutex));
-#endif
 
 	/* Disconnect from the cancelled signal. Note that this has to be done without @self->mutex held, or deadlock can occur.
 	 * (g_cancellable_disconnect() waits for any in-progress signal handler call to finish, which can't happen until the mutex is released.) */
@@ -388,18 +340,11 @@ gdata_buffer_pop_data_limited (GDataBuffer *self, guint8 *data, gsize maximum_le
 	g_return_val_if_fail (maximum_length > 0, 0);
 
 	/* If there's no data in the buffer, block until some is available */
-#if GLIB_CHECK_VERSION (2, 31, 0)
 	g_mutex_lock (&(self->mutex));
 	if (self->total_length == 0 && self->reached_eof == FALSE) {
 		g_cond_wait (&(self->cond), &(self->mutex));
 	}
 	g_mutex_unlock (&(self->mutex));
-#else
-	g_static_mutex_lock (&(self->mutex));
-	if (self->total_length == 0 && self->reached_eof == FALSE)
-		g_cond_wait (self->cond, g_static_mutex_get_mutex (&(self->mutex)));
-	g_static_mutex_unlock (&(self->mutex));
-#endif
 
 	return gdata_buffer_pop_data (self, data, MIN (maximum_length, self->total_length), reached_eof, NULL);
 }
