@@ -408,20 +408,10 @@ gdata_upload_stream_init (GDataUploadStream *self)
 static SoupMessage *
 build_message (GDataUploadStream *self, const gchar *method, const gchar *upload_uri)
 {
-	GDataUploadStreamPrivate *priv;
-	GDataServiceClass *klass;
 	SoupMessage *new_message;
-
-	priv = self->priv;
 
 	/* Build the message */
 	new_message = soup_message_new (method, upload_uri);
-
-	/* Make sure the headers are set */
-	klass = GDATA_SERVICE_GET_CLASS (priv->service);
-	if (klass->append_query_headers != NULL) {
-		klass->append_query_headers (priv->service, priv->authorization_domain, new_message);
-	}
 
 	/* We don't want to accumulate chunks */
 	soup_message_body_set_accumulate (new_message->request_body, FALSE);
@@ -433,6 +423,7 @@ static GObject *
 gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
 {
 	GDataUploadStreamPrivate *priv;
+	GDataServiceClass *klass;
 	GObject *object;
 
 	/* Chain up to the parent class */
@@ -507,6 +498,13 @@ gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectCo
 		/* Resumable uploads always start with an initial request, which either contains the XML or is empty. */
 		priv->state = STATE_INITIAL_REQUEST;
 		priv->chunk_size = MIN (priv->content_length, MAX_RESUMABLE_CHUNK_SIZE);
+	}
+
+	/* Make sure the headers are set. HACK: This should actually be in build_message(), but we have to work around
+	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3033 in GDataDocumentsService's append_query_headers(). */
+	klass = GDATA_SERVICE_GET_CLASS (priv->service);
+	if (klass->append_query_headers != NULL) {
+		klass->append_query_headers (priv->service, priv->authorization_domain, priv->message);
 	}
 
 	/* If the entry exists and has an ETag, we assume we're updating the entry, so we can set the If-Match header */
@@ -1107,6 +1105,7 @@ upload_thread (GDataUploadStream *self)
 	g_assert (priv->cancellable != NULL);
 
 	while (TRUE) {
+		GDataServiceClass *klass;
 		gulong wrote_headers_signal, wrote_body_data_signal;
 		gchar *new_uri;
 		SoupMessage *new_message;
@@ -1199,6 +1198,13 @@ upload_thread (GDataUploadStream *self)
 		soup_message_headers_set_content_length (new_message->request_headers, next_chunk_length);
 		soup_message_headers_set_content_range (new_message->request_headers, priv->total_network_bytes_written,
 		                                        priv->total_network_bytes_written + next_chunk_length - 1, priv->content_length);
+
+		/* Make sure the headers are set. HACK: This should actually be in build_message(), but we have to work around
+		 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3033 in GDataDocumentsService's append_query_headers(). */
+		klass = GDATA_SERVICE_GET_CLASS (priv->service);
+		if (klass->append_query_headers != NULL) {
+			klass->append_query_headers (priv->service, priv->authorization_domain, new_message);
+		}
 
 		g_signal_handler_disconnect (priv->message, wrote_body_data_signal);
 		g_signal_handler_disconnect (priv->message, wrote_headers_signal);

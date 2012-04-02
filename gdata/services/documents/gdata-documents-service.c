@@ -269,7 +269,10 @@ gdata_documents_service_error_quark (void)
 	return g_quark_from_static_string ("gdata-documents-service-error-quark");
 }
 
+static void append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message);
 static GList *get_authorization_domains (void);
+
+static gchar *_build_v2_upload_uri (GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (documents, "writely", "https://docs.google.com/feeds/")
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (spreadsheets, "wise", "https://spreadsheets.google.com/feeds/")
@@ -280,6 +283,8 @@ gdata_documents_service_class_init (GDataDocumentsServiceClass *klass)
 {
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
 	service_class->feed_type = GDATA_TYPE_DOCUMENTS_FEED;
+
+	service_class->append_query_headers = append_query_headers;
 	service_class->get_authorization_domains = get_authorization_domains;
 
 	service_class->api_version = "3";
@@ -291,6 +296,49 @@ gdata_documents_service_init (GDataDocumentsService *self)
 	/* Nothing to see here */
 }
 
+static void
+append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message)
+{
+	g_assert (message != NULL);
+
+	if (message->method == SOUP_METHOD_POST && soup_message_headers_get_one (message->request_headers, "X-Upload-Content-Length") == NULL) {
+		gchar *upload_uri;
+		const gchar *v3_pos;
+
+		upload_uri = soup_uri_to_string (soup_message_get_uri (message), FALSE);
+		v3_pos = strstr (upload_uri, "://docs.google.com/feeds/upload/create-session/default/private/full");
+
+		if (v3_pos != NULL) {
+			gchar *v2_upload_uri;
+			SoupURI *_v2_upload_uri;
+
+			/* Content length header for resumable uploads. Only set it if this looks like the initial request of a resumable upload, and
+			 * if no content length has been set previously.
+			 * This allows methods like gdata_service_insert_entry() (which aren't resumable-upload-aware) to continue working for creating
+			 * documents with metadata only, by simulating the initial request of a resumable upload as described here:
+			 * https://developers.google.com/google-apps/documents-list/#creating_a_new_document_or_file_with_metadata_only */
+			soup_message_headers_replace (message->request_headers, "X-Upload-Content-Length", "0");
+
+			/* Also set the encoding to be content length encoding. */
+			soup_message_headers_set_encoding (message->request_headers, SOUP_ENCODING_CONTENT_LENGTH);
+
+			/* HACK: Work around http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3033 by changing the upload URI
+			 * to the v2 API's upload URI. Grrr. */
+			v2_upload_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full",
+			                             v3_pos + strlen ("://docs.google.com/feeds/upload/create-session/default/private/full"), NULL);
+			_v2_upload_uri = soup_uri_new (v2_upload_uri);
+			soup_message_set_uri (message, _v2_upload_uri);
+			soup_uri_free (_v2_upload_uri);
+			g_free (v2_upload_uri);
+		}
+
+		g_free (upload_uri);
+	}
+
+	/* Chain up to the parent class */
+	GDATA_SERVICE_CLASS (gdata_documents_service_parent_class)->append_query_headers (self, domain, message);
+}
+
 static GList *
 get_authorization_domains (void)
 {
@@ -300,6 +348,12 @@ get_authorization_domains (void)
 	authorization_domains = g_list_prepend (authorization_domains, get_spreadsheets_authorization_domain ());
 
 	return authorization_domains;
+}
+
+static gchar *
+escape_for_uri (const gchar *unescaped_component)
+{
+	return g_uri_escape_string (unescaped_component, NULL, TRUE);
 }
 
 /**
@@ -470,9 +524,9 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 
 static GDataUploadStream *
 upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
-                        const gchar *method, const gchar *upload_uri, GCancellable *cancellable)
+                        goffset content_length, const gchar *method, const gchar *upload_uri, GCancellable *cancellable)
 {
-	/* Corrects a bug on spreadsheet content types handling
+	/* HACK: Corrects a bug on spreadsheet content types handling
 	 * The content type for ODF spreadsheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
 	 * but Google Documents' spreadsheet service is waiting for "application/x-vnd.oasis.opendocument.spreadsheet"
 	 * and nothing else.
@@ -481,8 +535,35 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
 		content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
 
 	/* We need streaming file I/O: GDataUploadStream */
-	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), get_documents_authorization_domain (), method, upload_uri,
-	                                                     GDATA_ENTRY (document), slug, content_type, cancellable));
+	if (content_length == -1) {
+		/* Non-resumable upload. */
+		return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), get_documents_authorization_domain (), method, upload_uri,
+	                                                             GDATA_ENTRY (document), slug, content_type, cancellable));
+	} else {
+		/* Resumable upload. */
+		return GDATA_UPLOAD_STREAM (gdata_upload_stream_new_resumable (GDATA_SERVICE (self), get_documents_authorization_domain (), method,
+		                                                               upload_uri, GDATA_ENTRY (document), slug, content_type, content_length,
+		                                                               cancellable));
+	}
+}
+
+static gboolean
+_upload_checks (GDataDocumentsService *self, GDataDocumentsDocument *document, GError **error)
+{
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                     _("You must be authenticated to upload documents."));
+		return FALSE;
+	}
+
+	if (document != NULL && gdata_entry_is_inserted (GDATA_ENTRY (document)) == TRUE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
+		                     _("The document has already been uploaded."));
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /**
@@ -498,6 +579,10 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
  * Uploads a document to Google Documents, using the properties from @document and the document data written to the resulting #GDataUploadStream. If
  * the document data does not need to be provided at the moment, just the metadata, use gdata_service_insert_entry() instead (e.g. in the case of
  * creating a new, empty file to be edited at a later date).
+ *
+ * This performs a non-resumable upload, unlike gdata_documents_service_upload_document(). This means that errors during transmission will cause the
+ * upload to fail, and the entire document will have to be re-uploaded. It is recommended that gdata_documents_service_upload_document_resumable()
+ * be used instead.
  *
  * If @document is %NULL, only the document data will be uploaded. The new document entry will be named using @slug, and will have default metadata.
  *
@@ -530,24 +615,92 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
-	                                               get_documents_authorization_domain ()) == FALSE) {
-		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                     _("You must be authenticated to upload documents."));
+	if (_upload_checks (self, document, error) == FALSE) {
 		return NULL;
 	}
 
-	if (document != NULL && gdata_entry_is_inserted (GDATA_ENTRY (document)) == TRUE) {
-		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED,
-		                     _("The document has already been uploaded."));
+	/* HACK: Since we're using non-resumable upload, we have to use the v2 API upload URI to work around
+	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3033 */
+	upload_uri = _build_v2_upload_uri (folder);
+	upload_stream = upload_update_document (self, document, slug, content_type, -1, SOUP_METHOD_POST, upload_uri, cancellable);
+	g_free (upload_uri);
+
+	return upload_stream;
+}
+
+/**
+ * gdata_documents_service_upload_document_resumable:
+ * @self: an authenticated #GDataDocumentsService
+ * @document: (allow-none): the #GDataDocumentsDocument to insert, or %NULL
+ * @slug: the filename to give to the uploaded document
+ * @content_type: the content type of the uploaded data
+ * @content_length: the size (in bytes) of the file being uploaded
+ * @folder: (allow-none): the folder to which the document should be uploaded, or %NULL
+ * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Uploads a document to Google Documents, using the properties from @document and the document data written to the resulting #GDataUploadStream. If
+ * the document data does not need to be provided at the moment, just the metadata, use gdata_service_insert_entry() instead (e.g. in the case of
+ * creating a new, empty file to be edited at a later date).
+ *
+ * Unlike gdata_documents_service_upload_document(), this method performs a
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/resumable_upload.html">resumable upload</ulink> which allows for correction of
+ * transmission errors without re-uploading the entire file. Use of this method is preferred over gdata_documents_service_upload_document().
+ *
+ * If @document is %NULL, only the document data will be uploaded. The new document entry will be named using @slug, and will have default metadata.
+ *
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
+ * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
+ *
+ * In order to cancel the upload, a #GCancellable passed in to @cancellable must be cancelled using g_cancellable_cancel(). Cancelling the individual
+ * #GOutputStream operations on the #GDataUploadStream will not cancel the entire upload; merely the write or close operation in question. See the
+ * #GDataUploadStream:cancellable for more details.
+ *
+ * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
+ *
+ * Return value: (transfer full): a #GDataUploadStream to write the document data to, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.11.2
+ */
+GDataUploadStream *
+gdata_documents_service_upload_document_resumable (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
+                                                   const gchar *content_type, goffset content_length, GDataDocumentsFolder *folder,
+                                                   GCancellable *cancellable, GError **error)
+{
+	GDataUploadStream *upload_stream;
+	gchar *upload_uri;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (document == NULL || GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
+	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
+	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
+	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	if (_upload_checks (self, document, error) == FALSE) {
 		return NULL;
 	}
 
 	upload_uri = gdata_documents_service_get_upload_uri (folder);
-	upload_stream = upload_update_document (self, document, slug, content_type, SOUP_METHOD_POST, upload_uri, cancellable);
+	upload_stream = upload_update_document (self, document, slug, content_type, content_length, SOUP_METHOD_POST, upload_uri, cancellable);
 	g_free (upload_uri);
 
 	return upload_stream;
+}
+
+static gboolean
+_update_checks (GDataDocumentsService *self, GError **error)
+{
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                     _("You must be authenticated to update documents."));
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /**
@@ -561,6 +714,10 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  *
  * Update the document using the properties from @document and the document data written to the resulting #GDataUploadStream. If the document data does
  * not need to be changed, just the metadata, use gdata_service_update_entry() instead.
+ *
+ * This performs a non-resumable upload, unlike gdata_documents_service_update_document(). This means that errors during transmission will cause the
+ * upload to fail, and the entire document will have to be re-uploaded. It is recommended that gdata_documents_service_update_document_resumable()
+ * be used instead.
  *
  * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
@@ -591,17 +748,72 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
-	                                               get_documents_authorization_domain ()) == FALSE) {
-		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                     _("You must be authenticated to update documents."));
+	if (_update_checks (self, error) == FALSE) {
 		return NULL;
 	}
 
 	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
 	g_assert (update_link != NULL);
 
-	return upload_update_document (self, document, slug, content_type, SOUP_METHOD_PUT, gdata_link_get_uri (update_link), cancellable);
+	return upload_update_document (self, document, slug, content_type, -1, SOUP_METHOD_PUT, gdata_link_get_uri (update_link),
+	                               cancellable);
+}
+
+/**
+ * gdata_documents_service_update_document_resumable:
+ * @self: a #GDataDocumentsService
+ * @document: the #GDataDocumentsDocument to update
+ * @slug: the filename to give to the uploaded document
+ * @content_type: the content type of the uploaded data
+ * @content_length: the size (in bytes) of the file being uploaded
+ * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Update the document using the properties from @document and the document data written to the resulting #GDataUploadStream. If the document data does
+ * not need to be changed, just the metadata, use gdata_service_update_entry() instead.
+ *
+ * Unlike gdata_documents_service_update_document(), this method performs a
+ * <ulink type="http" url="http://code.google.com/apis/gdata/docs/resumable_upload.html">resumable upload</ulink> which allows for correction of
+ * transmission errors without re-uploading the entire file. Use of this method is preferred over gdata_documents_service_update_document().
+ *
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
+ * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
+ *
+ * In order to cancel the update, a #GCancellable passed in to @cancellable must be cancelled using g_cancellable_cancel(). Cancelling the individual
+ * #GOutputStream operations on the #GDataUploadStream will not cancel the entire update; merely the write or close operation in question. See the
+ * #GDataUploadStream:cancellable for more details.
+ *
+ * Any upload errors will be thrown by the stream methods, and may come from the #GDataServiceError domain.
+ *
+ * For more information, see gdata_service_update_entry().
+ *
+ * Return value: (transfer full): a #GDataUploadStream to write the document data to; unref with g_object_unref()
+ *
+ * Since: 0.11.2
+ */
+GDataUploadStream *
+gdata_documents_service_update_document_resumable (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
+                                                   const gchar *content_type, goffset content_length, GCancellable *cancellable, GError **error)
+{
+	GDataLink *update_link;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
+	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
+	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	if (_update_checks (self, error) == FALSE) {
+		return NULL;
+	}
+
+	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_RESUMABLE_EDIT_MEDIA);
+	g_assert (update_link != NULL);
+
+	return upload_update_document (self, document, slug, content_type, content_length, SOUP_METHOD_PUT, gdata_link_get_uri (update_link),
+	                               cancellable);
 }
 
 /**
@@ -1042,6 +1254,28 @@ gdata_documents_service_remove_entry_from_folder_finish (GDataDocumentsService *
 	g_assert_not_reached ();
 }
 
+/* HACK: Work around http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3033 by also using the upload URI for the v2 API. Grrr. */
+static gchar *
+_build_v2_upload_uri (GDataDocumentsFolder *folder)
+{
+	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
+
+	/* If we have a folder, return the folder's upload URI */
+	if (folder != NULL) {
+		gchar *upload_uri, *escaped_resource_id;
+
+		escaped_resource_id = escape_for_uri (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)));
+		upload_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full/", escaped_resource_id,
+		                          "/contents", NULL);
+		g_free (escaped_resource_id);
+
+		return upload_uri;
+	}
+
+	/* Otherwise return the default upload URI */
+	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full", NULL);
+}
+
 /**
  * gdata_documents_service_get_upload_uri:
  * @folder: (allow-none): the #GDataDocumentsFolder into which to upload the document, or %NULL
@@ -1058,6 +1292,27 @@ gchar *
 gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 {
 	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
+
+	if (folder != NULL) {
+		GDataLink *upload_link;
+
+		/* Get the folder's upload URI. */
+		upload_link = gdata_entry_look_up_link (GDATA_ENTRY (folder), GDATA_LINK_RESUMABLE_CREATE_MEDIA);
+
+		if (upload_link == NULL) {
+			gchar *upload_uri, *escaped_resource_id;
+
+			/* Fall back to building a URI manually. */
+			escaped_resource_id = escape_for_uri (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)));
+			upload_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/upload/create-session/default/private/full/",
+			                          escaped_resource_id, "/contents", NULL);
+			g_free (escaped_resource_id);
+
+			return upload_uri;
+		}
+
+		return g_strdup (gdata_link_get_uri (upload_link));
+	}
 
 	/* Use resumable upload. */
 	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/upload/create-session/default/private/full", NULL);
