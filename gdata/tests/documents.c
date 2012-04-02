@@ -1200,6 +1200,9 @@ test_query_etag (void)
 	g_object_unref (query);
 }
 
+/* Here we hardcode the feed URI, but it should really be extracted from a document feed, as the GDATA_LINK_BATCH link */
+#define BATCH_URI "https://docs.google.com/feeds/default/private/full/batch"
+
 static void
 test_batch (gconstpointer service)
 {
@@ -1211,13 +1214,12 @@ test_batch (gconstpointer service)
 	guint op_id, op_id2, op_id3;
 	GError *error = NULL, *entry_error = NULL;
 
-	/* Here we hardcode the feed URI, but it should really be extracted from a document feed, as the GDATA_LINK_BATCH link */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 
 	/* Check the properties of the operation */
 	g_assert (gdata_batch_operation_get_service (operation) == service);
-	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, "https://docs.google.com/feeds/documents/private/full/batch");
+	g_assert_cmpstr (gdata_batch_operation_get_feed_uri (operation), ==, BATCH_URI);
 
 	g_object_get (operation,
 	              "service", &service2,
@@ -1225,7 +1227,7 @@ test_batch (gconstpointer service)
 	              NULL);
 
 	g_assert (service2 == service);
-	g_assert_cmpstr (feed_uri, ==, "https://docs.google.com/feeds/documents/private/full/batch");
+	g_assert_cmpstr (feed_uri, ==, BATCH_URI);
 
 	g_object_unref (service2);
 	g_free (feed_uri);
@@ -1247,7 +1249,7 @@ test_batch (gconstpointer service)
 	gdata_entry_set_title (GDATA_ENTRY (doc2), "I'm a poet and I didn't know it");
 
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 	op_id = gdata_test_batch_operation_insertion (operation, GDATA_ENTRY (doc2), &inserted_entry2, NULL);
 	op_id2 = gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry, NULL,
 	                                           NULL);
@@ -1263,7 +1265,7 @@ test_batch (gconstpointer service)
 	/* Run another batch operation to query one of the entries we just created, since it seems that the ETags for documents change for no
 	 * apparent reason when you're not looking. */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry,
 	                                  &inserted_entry_updated, NULL);
 
@@ -1278,7 +1280,7 @@ test_batch (gconstpointer service)
 	 * one, seeing as we're testing _batch_ functionality. Funnily enough, the combination of two idempotent operations changes the ETags and
 	 * makes the whole effort worthless. */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (inserted_entry2), GDATA_TYPE_DOCUMENTS_TEXT, inserted_entry2,
 	                                  &inserted_entry2_updated, NULL);
 
@@ -1293,7 +1295,7 @@ test_batch (gconstpointer service)
 	doc3 = gdata_documents_text_new ("foobar");
 
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 	op_id = gdata_test_batch_operation_deletion (operation, inserted_entry_updated, NULL);
 	op_id2 = gdata_test_batch_operation_deletion (operation, GDATA_ENTRY (doc3), &entry_error);
 	op_id3 = gdata_test_batch_operation_update (operation, inserted_entry2_updated, &inserted_entry3, NULL);
@@ -1316,7 +1318,7 @@ test_batch (gconstpointer service)
 	/* Run another batch operation to update the second entry with the wrong ETag (i.e. pass the old version of the entry to the batch operation
 	 * to test error handling */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 	gdata_test_batch_operation_update (operation, inserted_entry2, NULL, &entry_error);
 	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -1330,7 +1332,7 @@ test_batch (gconstpointer service)
 
 	/* Run a final batch operation to delete the second entry */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 	gdata_test_batch_operation_deletion (operation, inserted_entry3, NULL);
 	g_assert (gdata_test_batch_operation_run (operation, NULL, &error) == TRUE);
 	g_assert_no_error (error);
@@ -1391,7 +1393,7 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 
 	/* Run an async query operation on the document */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), GDATA_TYPE_DOCUMENTS_TEXT,
 	                                  GDATA_ENTRY (data->new_doc), NULL, NULL);
 
@@ -1429,7 +1431,7 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 
 	/* Run an async query operation on the document */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_documents_service_get_primary_authorization_domain (),
-	                                              "https://docs.google.com/feeds/documents/private/full/batch");
+	                                              BATCH_URI);
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (GDATA_ENTRY (data->new_doc)), GDATA_TYPE_DOCUMENTS_TEXT,
 	                                  GDATA_ENTRY (data->new_doc), NULL, &error);
 
