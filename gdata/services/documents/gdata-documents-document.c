@@ -27,7 +27,7 @@
  * #GDataDocumentsPresentation, #GDataDocumentsText and #GDataDocumentsSpreadsheet, which are instantiable.
  *
  * For more details of Google Documents' GData API, see the
- * <ulink type="http" url="http://code.google.com/apis/document/docs/2.0/developers_guide_protocol.html">online documentation</ulink>.
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
  *
  * <example>
  * 	<title>Downloading a Document</title>
@@ -87,9 +87,9 @@
  * </example>
  *
  * Each document accessible through the service has an access control list (ACL) which defines the level of access to the document to each user, and
- * which users the document is shared with. For more information about ACLs for documents, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#AccessControlLists">online documentation on
- * sharing documents</ulink>.
+ * which users the document is shared with. For more information about ACLs for documents, see the <ulink type="http"
+ * url="https://developers.google.com/google-apps/documents-list/#managing_sharing_permissions_of_resources_via_access_control_lists_acls">online
+ * documentation on sharing documents</ulink>.
  *
  * <example>
  * 	<title>Retrieving the Access Control List for a Document</title>
@@ -228,7 +228,7 @@ gdata_documents_document_init (GDataDocumentsDocument *self)
  *
  * If @self is a #GDataDocumentsSpreadsheet, only the first grid, or sheet, in the spreadsheet will be downloaded for some export formats. To download
  * a specific a specific grid, use gdata_documents_spreadsheet_get_download_uri() with #GDataDownloadStream to download the grid manually. See the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingSpreadsheets">GData protocol
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#downloading_spreadsheets">GData protocol
  * specification</ulink> for more information.
  *
  * To get the content type of the downloaded file, gdata_download_stream_get_content_type() can be called on the returned #GDataDownloadStream.

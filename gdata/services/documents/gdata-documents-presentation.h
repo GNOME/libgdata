@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The export format for Portable Document Format (PDF).
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_presentations">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  * The export format for Portable Network Graphics (PNG) image format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_presentations">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -59,7 +59,7 @@ G_BEGIN_DECLS
  * The export format for Microsoft PowerPoint (PPT) format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_presentations">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -72,7 +72,7 @@ G_BEGIN_DECLS
  * The export format for Adobe Flash (SWF) format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_presentations">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -89,7 +89,7 @@ G_BEGIN_DECLS
  * The export format for plain text format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingDocsAndPresentations">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_presentations">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0

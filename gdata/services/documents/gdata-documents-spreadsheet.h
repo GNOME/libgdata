@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The export format for Comma-Separated Values (CSV) format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingSpreadsheets">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_spreadsheets">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  * The export format for OpenDocument Spreadsheet (ODS) format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingSpreadsheets">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_spreadsheets">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -59,7 +59,7 @@ G_BEGIN_DECLS
  * The export format for Portable Document Format (PDF).
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingSpreadsheets">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_spreadsheets">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -72,7 +72,7 @@ G_BEGIN_DECLS
  * The export format for Tab-Separated Values (TSV) format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingSpreadsheets">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_spreadsheets">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -85,7 +85,7 @@ G_BEGIN_DECLS
  * The export format for Microsoft Excel spreadsheet (XLS) format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingSpreadsheets">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_spreadsheets">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
@@ -98,7 +98,7 @@ G_BEGIN_DECLS
  * The export format for HyperText Markup Language (HTML) format.
  *
  * For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#DownloadingSpreadsheets">
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_formats_for_spreadsheets">
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0

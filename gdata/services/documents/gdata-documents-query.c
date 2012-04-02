@@ -28,7 +28,7 @@
  * those catered for by #GDataQuery.
  *
  * For more information on the custom GData query parameters supported by #GDataDocumentsQuery, see the <ulink type="http"
- * url="http://code.google.com/apis/documents/docs/2.0/reference.html#Parameters">online documentation</ulink>.
+ * url="https://developers.google.com/google-apps/documents-list/#searching_for_documents_and_files">online documentation</ulink>.
  *
  * <example>
  * 	<title>Querying for Documents</title>

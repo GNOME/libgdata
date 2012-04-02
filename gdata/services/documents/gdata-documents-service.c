@@ -136,7 +136,7 @@
  * </example>
  *
  * The Documents service can be manipulated using batch operations, too. See the
- * <ulink type="http" url="http://code.google.com/apis/documents/docs/2.0/developers_guide_protocol.html#ACLBatch">online documentation on batch
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#batching_acl_requests">online documentation on batch
  * operations</ulink> for more information.
  *
  * <example>
