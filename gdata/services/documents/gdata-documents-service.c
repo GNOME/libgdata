@@ -904,8 +904,8 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
                                              GCancellable *cancellable, GError **error)
 {
 	GDataDocumentsEntry *new_entry;
-	gchar *uri, *upload_data;
-	const gchar *folder_id;
+	gchar *upload_data;
+	const gchar *uri;
 	SoupMessage *message;
 	guint status;
 
@@ -923,11 +923,9 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	}
 
 	/* NOTE: adding a document to a folder doesn't have server-side ETag support (throws "noPostConcurrency" error) */
-	folder_id = gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder));
-	g_assert (folder_id != NULL);
-	uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/folders/private/full/", folder_id, NULL);
+	uri = gdata_entry_get_content_uri (GDATA_ENTRY (folder));
+	g_assert (uri != NULL);
 	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST, uri, NULL, TRUE);
-	g_free (uri);
 
 	/* Append the data */
 	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
@@ -1092,7 +1090,7 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	const gchar *folder_id, *entry_id;
 	SoupMessage *message;
 	guint status;
-	gchar *uri;
+	gchar *uri, *escaped_folder_id, *escaped_entry_id;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
@@ -1113,10 +1111,15 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	g_assert (folder_id != NULL);
 	g_assert (entry_id != NULL);
 
-	uri = _gdata_service_build_uri ("http://docs.google.com/feeds/folders/private/full/%s/%s", folder_id, entry_id);
+	escaped_folder_id = escape_for_uri (folder_id);
+	escaped_entry_id = escape_for_uri (entry_id);
+	uri = _gdata_service_build_uri ("%s://docs.google.com/feeds/default/private/full/%s/contents/%s", _gdata_service_get_scheme (),
+	                                escaped_folder_id, escaped_entry_id);
 	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_DELETE, uri,
 	                                        gdata_entry_get_etag (GDATA_ENTRY (entry)), TRUE);
 	g_free (uri);
+	g_free (escaped_entry_id);
+	g_free (escaped_folder_id);
 
 	/* Send the message */
 	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
@@ -1137,7 +1140,7 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 
 	g_object_unref (message);
 
-	/* Google's servers don't return an updated copy of the entry, so we have to query for it again.
+	/* HACK: Google's servers don't return an updated copy of the entry, so we have to query for it again.
 	 * See: http://code.google.com/p/gdata-issues/issues/detail?id=1380 */
 	return GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (self), get_documents_authorization_domain (),
 	                                                                gdata_entry_get_id (GDATA_ENTRY (entry)), NULL,
