@@ -661,7 +661,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  *
  * Return value: (transfer full): a #GDataUploadStream to write the document data to, or %NULL; unref with g_object_unref()
  *
- * Since: 0.11.2
+ * Since: 0.13.0
  */
 GDataUploadStream *
 gdata_documents_service_upload_document_resumable (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
@@ -790,7 +790,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
  *
  * Return value: (transfer full): a #GDataUploadStream to write the document data to; unref with g_object_unref()
  *
- * Since: 0.11.2
+ * Since: 0.13.0
  */
 GDataUploadStream *
 gdata_documents_service_update_document_resumable (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,

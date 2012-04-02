@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/resumable_upload.html#ResumableUploadInitiate">GData resumable upload protocol
  * specification</ulink>.
  *
- * Since: 0.11.2
+ * Since: 0.13.0
  */
 #define GDATA_LINK_RESUMABLE_CREATE_MEDIA "http://schemas.google.com/g/2005#resumable-create-media"
 
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/resumable_upload.html#ResumableUploadInitiate">GData resumable upload protocol
  * specification</ulink>.
  *
- * Since: 0.11.2
+ * Since: 0.13.0
  */
 #define GDATA_LINK_RESUMABLE_EDIT_MEDIA "http://schemas.google.com/g/2005#resumable-edit-media"
 

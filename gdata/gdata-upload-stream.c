@@ -351,7 +351,7 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	 *
 	 * If this is <code class="literal">-1</code> the upload will be non-resumable; if it is non-negative, the upload will be resumable.
 	 *
-	 * Since: 0.11.2
+	 * Since: 0.13.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_CONTENT_LENGTH,
 	                                 g_param_spec_int64 ("content-length",
@@ -1359,7 +1359,7 @@ gdata_upload_stream_new (GDataService *service, GDataAuthorizationDomain *domain
  *
  * Return value: a new #GOutputStream, or %NULL; unref with g_object_unref()
  *
- * Since: 0.11.2
+ * Since: 0.13.0
  */
 GOutputStream *
 gdata_upload_stream_new_resumable (GDataService *service, GDataAuthorizationDomain *domain, const gchar *method, const gchar *upload_uri,
@@ -1571,7 +1571,7 @@ gdata_upload_stream_get_content_type (GDataUploadStream *self)
  *
  * Return value: the size of the file being uploaded
  *
- * Since: 0.11.2
+ * Since: 0.13.0
  */
 goffset
 gdata_upload_stream_get_content_length (GDataUploadStream *self)
