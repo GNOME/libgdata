@@ -169,7 +169,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	entry_class->get_entry_uri = get_entry_uri;
 
 	/**
-	 * GDataDocumentsEntry:edited
+	 * GDataDocumentsEntry:edited:
 	 *
 	 * The last time the document was edited. If the document has not been edited yet, the content indicates the time it was created.
 	 *
@@ -185,7 +185,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataDocumentsEntry:last-viewed
+	 * GDataDocumentsEntry:last-viewed:
 	 *
 	 * The last time the document was viewed.
 	 *
@@ -225,7 +225,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataDocumentsEntry:resource-id
+	 * GDataDocumentsEntry:resource-id:
 	 *
 	 * The resource ID of the document. This should not normally need to be used in client code, and is mostly for internal use. To uniquely
 	 * identify a given document or folder, use its #GDataEntry:id.
@@ -248,7 +248,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataDocumentsEntry:document-id
+	 * GDataDocumentsEntry:document-id:
 	 *
 	 * The document ID of the document, which is different from its entry ID (GDataEntry:id). The
 	 * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#terminology_used_in_this_guide">online GData
@@ -264,7 +264,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataDocumentsEntry:last-modified-by
+	 * GDataDocumentsEntry:last-modified-by:
 	 *
 	 * Indicates the author of the last modification.
 	 *

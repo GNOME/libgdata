@@ -171,7 +171,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	entry_class->kind_term = "http://schemas.google.com/photos/2007#album";
 
 	/**
-	 * GDataPicasaWebAlbum:album-id
+	 * GDataPicasaWebAlbum:album-id:
 	 *
 	 * The ID of the album. This is a substring of the ID returned by gdata_entry_get_id() for #GDataPicasaWebAlbum<!-- -->s; for example,
 	 * if gdata_entry_get_id() returned "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249" for a
@@ -189,7 +189,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWebAlbum:user
+	 * GDataPicasaWebAlbum:user:
 	 *
 	 * The username of the album owner.
 	 *
@@ -205,7 +205,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWebAlbum:nickname
+	 * GDataPicasaWebAlbum:nickname:
 	 *
 	 * The user's nickname. This is a user-specified value that should be used when referring to the user by name.
 	 *
@@ -221,7 +221,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWebAlbum:edited
+	 * GDataPicasaWebAlbum:edited:
 	 *
 	 * The time this album was last edited. If the album has not been edited yet, the content indicates the time it was created.
 	 *
@@ -237,7 +237,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWebAlbum:location
+	 * GDataPicasaWebAlbum:location:
 	 *
 	 * The user-specified location associated with the album. A place name.
 	 *
@@ -253,7 +253,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWebAlbum:visibility
+	 * GDataPicasaWebAlbum:visibility:
 	 *
 	 * The visibility (or access rights) of the album.
 	 *
@@ -269,7 +269,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataPicasaWebAlbum:timestamp
+	 * GDataPicasaWebAlbum:timestamp:
 	 *
 	 * The timestamp of when the album occurred, settable by the user. This a UNIX timestamp in milliseconds (not seconds) since the epoch.
 	 *
@@ -286,7 +286,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 
 	/* TODO: Change to photo-count? */
 	/**
-	 * GDataPicasaWebAlbum:num-photos
+	 * GDataPicasaWebAlbum:num-photos:
 	 *
 	 * The number of photos and videos in the album.
 	 *
@@ -303,7 +303,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 
 	/* TODO: Change to remaining-photos-count? */
 	/**
-	 * GDataPicasaWebAlbum:num-photos-remaining
+	 * GDataPicasaWebAlbum:num-photos-remaining:
 	 *
 	 * The number of photos and videos that can still be uploaded to this album.
 	 * This doesn't account for quota, just a hardcoded maximum number per album set by Google.
