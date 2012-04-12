@@ -631,13 +631,22 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 				                                                         g_file_info_get_content_type (file_info), data->folder,
 				                                                         NULL, &error);
 				break;
-			case UPLOAD_RESUMABLE:
+			case UPLOAD_RESUMABLE: {
+				GDataDocumentsUploadQuery *upload_query;
+
+				upload_query = gdata_documents_upload_query_new ();
+				gdata_documents_upload_query_set_folder (upload_query, data->folder);
+
 				upload_stream = gdata_documents_service_upload_document_resumable (test_params->service, document,
 				                                                                   g_file_info_get_display_name (file_info),
 				                                                                   g_file_info_get_content_type (file_info),
-				                                                                   g_file_info_get_size (file_info), data->folder,
+				                                                                   g_file_info_get_size (file_info), upload_query,
 				                                                                   NULL, &error);
+
+				g_object_unref (upload_query);
+
 				break;
+			}
 			default:
 				g_assert_not_reached ();
 		}

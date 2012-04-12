@@ -273,6 +273,8 @@ static void append_query_headers (GDataService *self, GDataAuthorizationDomain *
 static GList *get_authorization_domains (void);
 
 static gchar *_build_v2_upload_uri (GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+static gchar *_get_upload_uri_for_query_and_folder (GDataDocumentsUploadQuery *query,
+                                                    GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (documents, "writely", "https://docs.google.com/feeds/")
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (spreadsheets, "wise", "https://spreadsheets.google.com/feeds/")
@@ -629,7 +631,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * @slug: the filename to give to the uploaded document
  * @content_type: the content type of the uploaded data
  * @content_length: the size (in bytes) of the file being uploaded
- * @folder: (allow-none): the folder to which the document should be uploaded, or %NULL
+ * @query: (allow-none): a query specifying parameters for the upload, or %NULL
  * @cancellable: (allow-none): a #GCancellable for the entire upload stream, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -642,6 +644,10 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * transmission errors without re-uploading the entire file. Use of this method is preferred over gdata_documents_service_upload_document().
  *
  * If @document is %NULL, only the document data will be uploaded. The new document entry will be named using @slug, and will have default metadata.
+ *
+ * If non-%NULL, the @query specifies parameters for the upload, such as a #GDataDocumentsFolder to upload the document into; and whether to treat
+ * the document as an opaque file, or convert it to a standard format. If @query is %NULL, the document will be uploaded into the root folder, and
+ * automatically converted to a standard format. No OCR or automatic language translation will be performed by default.
  *
  * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
@@ -659,7 +665,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  */
 GDataUploadStream *
 gdata_documents_service_upload_document_resumable (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
-                                                   const gchar *content_type, goffset content_length, GDataDocumentsFolder *folder,
+                                                   const gchar *content_type, goffset content_length, GDataDocumentsUploadQuery *query,
                                                    GCancellable *cancellable, GError **error)
 {
 	GDataUploadStream *upload_stream;
@@ -669,7 +675,7 @@ gdata_documents_service_upload_document_resumable (GDataDocumentsService *self, 
 	g_return_val_if_fail (document == NULL || GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
 	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
 	g_return_val_if_fail (content_type != NULL && *content_type != '\0', NULL);
-	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_DOCUMENTS_UPLOAD_QUERY (query), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
@@ -677,7 +683,7 @@ gdata_documents_service_upload_document_resumable (GDataDocumentsService *self, 
 		return NULL;
 	}
 
-	upload_uri = gdata_documents_service_get_upload_uri (folder);
+	upload_uri = _get_upload_uri_for_query_and_folder (query, NULL);
 	upload_stream = upload_update_document (self, document, slug, content_type, content_length, SOUP_METHOD_POST, upload_uri, cancellable);
 	g_free (upload_uri);
 
@@ -1263,6 +1269,21 @@ _build_v2_upload_uri (GDataDocumentsFolder *folder)
 	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full", NULL);
 }
 
+/* NOTE: query may be NULL. */
+static gchar *
+_get_upload_uri_for_query_and_folder (GDataDocumentsUploadQuery *query, GDataDocumentsFolder *folder)
+{
+	if (query == NULL) {
+		query = gdata_documents_upload_query_new ();
+	}
+
+	if (folder != NULL) {
+		gdata_documents_upload_query_set_folder (query, folder);
+	}
+
+	return gdata_documents_upload_query_build_uri (query);
+}
+
 /**
  * gdata_documents_service_get_upload_uri:
  * @folder: (allow-none): the #GDataDocumentsFolder into which to upload the document, or %NULL
@@ -1280,22 +1301,5 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 {
 	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
 
-	if (folder != NULL) {
-		GDataLink *upload_link;
-
-		/* Get the folder's upload URI. */
-		upload_link = gdata_entry_look_up_link (GDATA_ENTRY (folder), GDATA_LINK_RESUMABLE_CREATE_MEDIA);
-
-		if (upload_link == NULL) {
-			/* Fall back to building a URI manually. */
-			return _gdata_service_build_uri ("%s://docs.google.com/feeds/upload/create-session/default/private/full/%s/contents",
-			                                 _gdata_service_get_scheme (),
-			                                 gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)));
-		}
-
-		return g_strdup (gdata_link_get_uri (upload_link));
-	}
-
-	/* Use resumable upload. */
-	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/upload/create-session/default/private/full", NULL);
+	return _get_upload_uri_for_query_and_folder (NULL, folder);
 }

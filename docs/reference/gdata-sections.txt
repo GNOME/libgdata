@@ -2371,3 +2371,24 @@ gdata_picasaweb_comment_get_type
 <SUBSECTION Private>
 GDataPicasaWebCommentPrivate
 </SECTION>
+
+<SECTION>
+<FILE>gdata-documents-upload-query</FILE>
+<TITLE>GDataDocumentsUploadQuery</TITLE>
+GDataDocumentsUploadQuery
+GDataDocumentsUploadQueryClass
+gdata_documents_upload_query_new
+gdata_documents_upload_query_build_uri
+gdata_documents_upload_query_get_folder
+gdata_documents_upload_query_set_folder
+<SUBSECTION Standard>
+gdata_documents_upload_query_get_type
+GDATA_DOCUMENTS_UPLOAD_QUERY
+GDATA_DOCUMENTS_UPLOAD_QUERY_CLASS
+GDATA_DOCUMENTS_UPLOAD_QUERY_GET_CLASS
+GDATA_IS_DOCUMENTS_UPLOAD_QUERY
+GDATA_IS_DOCUMENTS_UPLOAD_QUERY_CLASS
+GDATA_TYPE_DOCUMENTS_UPLOAD_QUERY
+<SUBSECTION Private>
+GDataDocumentsUploadQueryPrivate
+</SECTION>

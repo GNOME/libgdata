@@ -129,5 +129,6 @@
 #include <gdata/services/documents/gdata-documents-service.h>
 #include <gdata/services/documents/gdata-documents-feed.h>
 #include <gdata/services/documents/gdata-documents-enums.h>
+#include <gdata/services/documents/gdata-documents-upload-query.h>
 
 #endif /* !GDATA_H */

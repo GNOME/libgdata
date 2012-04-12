@@ -95,12 +95,14 @@ void gdata_documents_service_query_documents_async (GDataDocumentsService *self,
 
 #include <gdata/services/documents/gdata-documents-document.h>
 #include <gdata/services/documents/gdata-documents-folder.h>
+#include <gdata/services/documents/gdata-documents-upload-query.h>
 
 GDataUploadStream *gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
                                                             const gchar *content_type, GDataDocumentsFolder *folder,
                                                             GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataUploadStream *gdata_documents_service_upload_document_resumable (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
-                                                                      const gchar *content_type, goffset content_length, GDataDocumentsFolder *folder,
+                                                                      const gchar *content_type, goffset content_length,
+                                                                      GDataDocumentsUploadQuery *query,
                                                                       GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataUploadStream *gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug,
