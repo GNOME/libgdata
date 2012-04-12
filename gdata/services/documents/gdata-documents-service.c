@@ -350,12 +350,6 @@ get_authorization_domains (void)
 	return authorization_domains;
 }
 
-static gchar *
-escape_for_uri (const gchar *unescaped_component)
-{
-	return g_uri_escape_string (unescaped_component, NULL, TRUE);
-}
-
 /**
  * gdata_documents_service_new:
  * @authorizer: (allow-none): a #GDataAuthorizer to authorize the service's requests, or %NULL
@@ -1090,7 +1084,7 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	const gchar *folder_id, *entry_id;
 	SoupMessage *message;
 	guint status;
-	gchar *uri, *escaped_folder_id, *escaped_entry_id;
+	gchar *uri;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
@@ -1111,15 +1105,11 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	g_assert (folder_id != NULL);
 	g_assert (entry_id != NULL);
 
-	escaped_folder_id = escape_for_uri (folder_id);
-	escaped_entry_id = escape_for_uri (entry_id);
 	uri = _gdata_service_build_uri ("%s://docs.google.com/feeds/default/private/full/%s/contents/%s", _gdata_service_get_scheme (),
-	                                escaped_folder_id, escaped_entry_id);
+	                                folder_id, entry_id);
 	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_DELETE, uri,
 	                                        gdata_entry_get_etag (GDATA_ENTRY (entry)), TRUE);
 	g_free (uri);
-	g_free (escaped_entry_id);
-	g_free (escaped_folder_id);
 
 	/* Send the message */
 	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
@@ -1265,14 +1255,8 @@ _build_v2_upload_uri (GDataDocumentsFolder *folder)
 
 	/* If we have a folder, return the folder's upload URI */
 	if (folder != NULL) {
-		gchar *upload_uri, *escaped_resource_id;
-
-		escaped_resource_id = escape_for_uri (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)));
-		upload_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full/", escaped_resource_id,
-		                          "/contents", NULL);
-		g_free (escaped_resource_id);
-
-		return upload_uri;
+		return _gdata_service_build_uri ("%s://docs.google.com/feeds/default/private/full/%s/contents",
+		                                 _gdata_service_get_scheme (), gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)));
 	}
 
 	/* Otherwise return the default upload URI */
@@ -1303,15 +1287,10 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 		upload_link = gdata_entry_look_up_link (GDATA_ENTRY (folder), GDATA_LINK_RESUMABLE_CREATE_MEDIA);
 
 		if (upload_link == NULL) {
-			gchar *upload_uri, *escaped_resource_id;
-
 			/* Fall back to building a URI manually. */
-			escaped_resource_id = escape_for_uri (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)));
-			upload_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/upload/create-session/default/private/full/",
-			                          escaped_resource_id, "/contents", NULL);
-			g_free (escaped_resource_id);
-
-			return upload_uri;
+			return _gdata_service_build_uri ("%s://docs.google.com/feeds/upload/create-session/default/private/full/%s/contents",
+			                                 _gdata_service_get_scheme (),
+			                                 gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)));
 		}
 
 		return g_strdup (gdata_link_get_uri (upload_link));
