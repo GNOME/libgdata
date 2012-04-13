@@ -30,6 +30,110 @@
  * #GDataDocumentsUploadQuery is designed as an object (rather than a fixed struct or set of function arguments) to allow for easy additions of new
  * Google Documents features in the future.
  *
+ * <example>
+ * 	<title>Uploading an Arbitrary File from Disk</title>
+ * 	<programlisting>
+ *	GDataDocumentsService *service;
+ *	GDataDocumentsDocument *document, *uploaded_document;
+ *	GFile *arbitrary_file;
+ *	GFileInfo *file_info;
+ *	const gchar *slug, *content_type;
+ *	goffset file_size;
+ *	GDataDocumentsUploadQuery *upload_query;
+ *	GFileInputStream *file_stream;
+ *	GDataUploadStream *upload_stream;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Create a service. *<!-- -->/
+ *	service = create_documents_service ();
+ *
+ *	/<!-- -->* Get the file to upload. *<!-- -->/
+ *	arbitrary_file = g_file_new_for_path ("arbitrary-file.bin");
+ *
+ *	/<!-- -->* Get the file's display name, content type and size. *<!-- -->/
+ *	file_info = g_file_query_info (arbitrary_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+ *	                               G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, NULL, &error);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting arbitrary file information: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (arbitrary_file);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	slug = g_file_info_get_display_name (file_info);
+ *	content_type = g_file_info_get_content_type (file_info);
+ *	file_size = g_file_info_get_size (file_info);
+ *
+ *	/<!-- -->* Get an input stream for the file. *<!-- -->/
+ *	file_stream = g_file_read (arbitrary_file, NULL, &error);
+ *
+ *	g_object_unref (arbitrary_file);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting arbitrary file stream: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (file_info);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Create the file metadata to upload. *<!-- -->/
+ *	document = gdata_documents_document_new (NULL);
+ *	gdata_entry_set_title (GDATA_ENTRY (document), "Title for My Arbitrary File");
+ *
+ *	/<!-- -->* Build the upload query and set the upload to not be converted to a standard format. *<!-- -->/
+ *	upload_query = gdata_documents_upload_query_new ();
+ *	gdata_documents_upload_query_set_convert (upload_query, FALSE);
+ *
+ *	/<!-- -->* Get an upload stream for the file. *<!-- -->/
+ *	upload_stream = gdata_documents_service_upload_document_resumable (service, document, slug, content_type, file_size, upload_query, NULL, &error);
+ *
+ *	g_object_unref (upload_query);
+ *	g_object_unref (document);
+ *	g_object_unref (file_info);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error getting upload stream: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (file_stream);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Upload the document. This is a blocking operation, and should normally be done asynchronously. *<!-- -->/
+ *	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+ *	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+ *
+ *	g_object_unref (file_stream);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error splicing streams: %s", error->message);
+ *		g_error_free (error);
+ *		g_object_unref (upload_stream);
+ *		g_object_unref (service);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Finish off the upload by parsing the returned updated document metadata entry. *<!-- -->/
+ *	uploaded_document = gdata_documents_service_finish_upload (service, upload_stream, &error);
+ *
+ *	g_object_unref (upload_stream);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error uploading file: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Do something with the uploaded document. *<!-- -->/
+ *
+ *	g_object_unref (uploaded_document);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.13.0
  */
 
@@ -45,10 +149,12 @@ static void gdata_documents_upload_query_set_property (GObject *object, guint pr
 
 struct _GDataDocumentsUploadQueryPrivate {
 	GDataDocumentsFolder *folder;
+	gboolean convert;
 };
 
 enum {
 	PROP_FOLDER = 1,
+	PROP_CONVERT,
 };
 
 G_DEFINE_TYPE (GDataDocumentsUploadQuery, gdata_documents_upload_query, G_TYPE_OBJECT)
@@ -76,6 +182,28 @@ gdata_documents_upload_query_class_init (GDataDocumentsUploadQueryClass *klass)
 	                                                      "Folder", "Folder to upload the document into.",
 	                                                      GDATA_TYPE_DOCUMENTS_FOLDER,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsUploadQuery:convert:
+	 *
+	 * %TRUE to automatically convert the uploaded document into a standard format (such as a text document, spreadsheet, presentation, etc.).
+	 * %FALSE to upload the document without converting it; this allows for arbitrary files to be uploaded to Google Documents.
+	 *
+	 * For more information, see the
+	 * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#creating_or_uploading_files">online documentation</ulink>.
+	 *
+	 * Note that uploading with this property set to %FALSE will only have an effect when using gdata_documents_service_update_document_resumable()
+	 * and not gdata_documents_service_update_document(). Additionally, the #GDataDocumentsDocument passed to
+	 * gdata_documents_service_update_document_resumable() must be a #GDataDocumentsDocument if this property is %FALSE, and a subclass of it
+	 * otherwise.
+	 *
+	 * Since: 0.13.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_CONVERT,
+	                                 g_param_spec_boolean ("convert",
+	                                                       "Convert?", "Whether to automatically convert uploaded documents into a standard format.",
+	                                                       TRUE,
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -104,6 +232,9 @@ gdata_documents_upload_query_get_property (GObject *object, guint property_id, G
 		case PROP_FOLDER:
 			g_value_set_object (value, priv->folder);
 			break;
+		case PROP_CONVERT:
+			g_value_set_boolean (value, priv->convert);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -119,6 +250,9 @@ gdata_documents_upload_query_set_property (GObject *object, guint property_id, c
 	switch (property_id) {
 		case PROP_FOLDER:
 			gdata_documents_upload_query_set_folder (self, g_value_get_object (value));
+			break;
+		case PROP_CONVERT:
+			gdata_documents_upload_query_set_convert (self, g_value_get_boolean (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -159,6 +293,7 @@ gchar *
 gdata_documents_upload_query_build_uri (GDataDocumentsUploadQuery *self)
 {
 	gchar *base_uri;
+	GString *upload_uri;
 	GDataDocumentsUploadQueryPrivate *priv;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_UPLOAD_QUERY (self), NULL);
@@ -184,7 +319,19 @@ gdata_documents_upload_query_build_uri (GDataDocumentsUploadQuery *self)
 		base_uri = g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/upload/create-session/default/private/full", NULL);
 	}
 
-	return base_uri;
+	/* Document format conversion. See: https://developers.google.com/google-apps/documents-list/#creating_or_uploading_files */
+	upload_uri = g_string_new (base_uri);
+	g_free (base_uri);
+
+	if (priv->convert == TRUE) {
+		/* Convert documents to standard formats on upload. */
+		g_string_append (upload_uri, "?convert=true");
+	} else {
+		/* Don't convert them — this permits uploading of arbitrary files. */
+		g_string_append (upload_uri, "?convert=false");
+	}
+
+	return g_string_free (upload_uri, FALSE);
 }
 
 /**
@@ -232,4 +379,44 @@ gdata_documents_upload_query_set_folder (GDataDocumentsUploadQuery *self, GDataD
 	self->priv->folder = folder;
 
 	g_object_notify (G_OBJECT (self), "folder");
+}
+
+/**
+ * gdata_documents_upload_query_get_convert:
+ * @self: a #GDataDocumentsUploadQuery
+ *
+ * Gets #GDataDocumentsUploadQuery:convert.
+ *
+ * Return value: %TRUE to convert documents to common formats, %FALSE to upload them unmodified
+ *
+ * Since: 0.13.0
+ */
+gboolean
+gdata_documents_upload_query_get_convert (GDataDocumentsUploadQuery *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_UPLOAD_QUERY (self), TRUE);
+
+	return self->priv->convert;
+}
+
+/**
+ * gdata_documents_upload_query_set_convert:
+ * @self: a #GDataDocumentsUploadQuery
+ * @convert: %TRUE to convert documents to common formats, %FALSE to upload them unmodified
+ *
+ * Sets #GDataDocumentsUploadQuery:convert to @convert.
+ *
+ * Since: 0.13.0
+ */
+void
+gdata_documents_upload_query_set_convert (GDataDocumentsUploadQuery *self, gboolean convert)
+{
+	g_return_if_fail (GDATA_IS_DOCUMENTS_UPLOAD_QUERY (self));
+
+	if (convert == self->priv->convert) {
+		return;
+	}
+
+	self->priv->convert = convert;
+	g_object_notify (G_OBJECT (self), "convert");
 }

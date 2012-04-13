@@ -70,6 +70,9 @@ gchar *gdata_documents_upload_query_build_uri (GDataDocumentsUploadQuery *self) 
 GDataDocumentsFolder *gdata_documents_upload_query_get_folder (GDataDocumentsUploadQuery *self) G_GNUC_PURE;
 void gdata_documents_upload_query_set_folder (GDataDocumentsUploadQuery *self, GDataDocumentsFolder *folder);
 
+gboolean gdata_documents_upload_query_get_convert (GDataDocumentsUploadQuery *self) G_GNUC_PURE;
+void gdata_documents_upload_query_set_convert (GDataDocumentsUploadQuery *self, gboolean convert);
+
 G_END_DECLS
 
 #endif /* !GDATA_DOCUMENTS_UPLOAD_QUERY_H */

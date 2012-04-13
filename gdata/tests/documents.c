@@ -503,10 +503,24 @@ const gchar *resumable_type_names[] = {
 	"non-resumable",
 };
 
+typedef enum {
+	UPLOAD_ODT_CONVERT,
+	UPLOAD_ODT_NO_CONVERT,
+	UPLOAD_BIN_NO_CONVERT,
+} DocumentType;
+#define UPLOAD_DOCUMENT_TYPE_MAX UPLOAD_BIN_NO_CONVERT
+
+const gchar *document_type_names[] = {
+	"odt-convert",
+	"odt-no-convert",
+	"bin-no-convert",
+};
+
 typedef struct {
 	PayloadType payload_type;
 	FolderType folder_type;
 	ResumableType resumable_type;
+	DocumentType document_type;
 	gchar *test_name;
 
 	GDataDocumentsService *service;
@@ -564,24 +578,56 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 	const UploadDocumentTestParams *test_params = _test_params;
 
 	GDataDocumentsDocument *document = NULL;
+	const gchar *document_filename = NULL;
 	GFile *document_file = NULL;
 	GFileInfo *file_info = NULL;
+	GDataDocumentsUploadQuery *upload_query = NULL;
+	GDataLink *edit_media_link;
 	GError *error = NULL;
+
+	upload_query = gdata_documents_upload_query_new ();
+
+	/* File to upload. (Ignored if we're doing a metadata-only upload.) Also set the conversion type (ignored for non-resumable uploads). */
+	switch (test_params->document_type) {
+		case UPLOAD_ODT_CONVERT:
+			/* ODT file. */
+			document_filename = "test.odt";
+			gdata_documents_upload_query_set_convert (upload_query, TRUE);
+			break;
+		case UPLOAD_ODT_NO_CONVERT:
+			/* ODT file. */
+			document_filename = "test.odt";
+			gdata_documents_upload_query_set_convert (upload_query, FALSE);
+			break;
+		case UPLOAD_BIN_NO_CONVERT:
+			/* Arbitrary binary file. */
+			document_filename = "sample.ogg";
+			gdata_documents_upload_query_set_convert (upload_query, FALSE);
+			break;
+		default:
+			g_assert_not_reached ();
+	}
 
 	/* Upload content? */
 	switch (test_params->payload_type) {
 		case UPLOAD_METADATA_ONLY:
+			document_filename = NULL;
 			document_file = NULL;
 			file_info = NULL;
 			break;
 		case UPLOAD_CONTENT_ONLY:
-		case UPLOAD_CONTENT_AND_METADATA:
-			document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
+		case UPLOAD_CONTENT_AND_METADATA: {
+			gchar *document_file_path = g_strconcat (TEST_FILE_DIR, document_filename, NULL);
+			document_file = g_file_new_for_path (document_file_path);
+			g_free (document_file_path);
+
 			file_info = g_file_query_info (document_file,
 			                               G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
 			                               G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, NULL, &error);
 			g_assert_no_error (error);
+
 			break;
+		}
 		default:
 			g_assert_not_reached ();
 	}
@@ -595,7 +641,17 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 		case UPLOAD_CONTENT_AND_METADATA: {
 			gchar *title;
 
-			document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_text_new (NULL));
+			switch (test_params->document_type) {
+				case UPLOAD_ODT_CONVERT:
+					document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_text_new (NULL));
+					break;
+				case UPLOAD_ODT_NO_CONVERT:
+				case UPLOAD_BIN_NO_CONVERT:
+					document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_document_new (NULL));
+					break;
+				default:
+					g_assert_not_reached ();
+			}
 
 			/* Build a title including the test details. */
 			title = g_strdup_printf ("Test Upload file (%s)", test_params->test_name);
@@ -631,10 +687,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 				                                                         g_file_info_get_content_type (file_info), data->folder,
 				                                                         NULL, &error);
 				break;
-			case UPLOAD_RESUMABLE: {
-				GDataDocumentsUploadQuery *upload_query;
-
-				upload_query = gdata_documents_upload_query_new ();
+			case UPLOAD_RESUMABLE:
 				gdata_documents_upload_query_set_folder (upload_query, data->folder);
 
 				upload_stream = gdata_documents_service_upload_document_resumable (test_params->service, document,
@@ -643,10 +696,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 				                                                                   g_file_info_get_size (file_info), upload_query,
 				                                                                   NULL, &error);
 
-				g_object_unref (upload_query);
-
 				break;
-			}
 			default:
 				g_assert_not_reached ();
 		}
@@ -673,7 +723,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 		g_object_unref (file_stream);
 	}
 
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->new_document));
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (data->new_document)); /* note that this isn't entirely specific */
 
 	/* Verify the uploaded document is the same as the original */
 	switch (test_params->payload_type) {
@@ -684,11 +734,34 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 		case UPLOAD_CONTENT_ONLY:
 			/* HACK: The title returned by the server varies depending on how we uploaded the document. */
 			if (test_params->resumable_type == UPLOAD_NON_RESUMABLE) {
-				g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->new_document)), ==, "test.odt");
+				g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->new_document)), ==, document_filename);
 			} else {
 				g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->new_document)), ==, "Untitled");
 			}
 
+			break;
+		default:
+			g_assert_not_reached ();
+	}
+
+	/* Check it's been correctly converted/not converted and is of the right document type. */
+	edit_media_link = gdata_entry_look_up_link (GDATA_ENTRY (data->new_document), GDATA_LINK_EDIT_MEDIA);
+
+	switch (test_params->document_type) {
+		case UPLOAD_ODT_CONVERT:
+			g_assert (GDATA_IS_DOCUMENTS_TEXT (data->new_document));
+			g_assert (g_str_has_prefix (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (data->new_document)), "document:"));
+			g_assert_cmpstr (gdata_link_get_content_type (edit_media_link), ==, "text/html");
+			break;
+		case UPLOAD_ODT_NO_CONVERT:
+			g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (data->new_document));
+			g_assert (g_str_has_prefix (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (data->new_document)), "file:"));
+			g_assert_cmpstr (gdata_link_get_content_type (edit_media_link), ==, "application/vnd.oasis.opendocument.text");
+			break;
+		case UPLOAD_BIN_NO_CONVERT:
+			g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (data->new_document));
+			g_assert (g_str_has_prefix (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (data->new_document)), "file:"));
+			g_assert_cmpstr (gdata_link_get_content_type (edit_media_link), ==, "video/x-theora+ogg");
 			break;
 		default:
 			g_assert_not_reached ();
@@ -712,6 +785,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 	}
 
 	g_clear_error (&error);
+	g_clear_object (&upload_query);
 	g_clear_object (&document_file);
 	g_clear_object (&document);
 }
@@ -1497,34 +1571,42 @@ main (int argc, char *argv[])
 			PayloadType i;
 			FolderType j;
 			ResumableType k;
+			DocumentType l;
 
 			for (i = 0; i < UPLOAD_PAYLOAD_TYPE_MAX + 1; i++) {
 				for (j = 0; j < UPLOAD_FOLDER_TYPE_MAX + 1; j++) {
 					for (k = 0; k < UPLOAD_RESUMABLE_TYPE_MAX + 1; k++) {
-						UploadDocumentTestParams *test_params;
-						gchar *test_name;
+						for (l = 0; l < UPLOAD_DOCUMENT_TYPE_MAX + 1; l++) {
+							UploadDocumentTestParams *test_params;
+							gchar *test_name;
 
-						/* Resumable metadata-only uploads don't make sense. */
-						if (i == UPLOAD_METADATA_ONLY && k == UPLOAD_RESUMABLE) {
-							continue;
+							/* Resumable metadata-only uploads don't make sense. */
+							if (i == UPLOAD_METADATA_ONLY && k == UPLOAD_RESUMABLE) {
+								continue;
+							}
+							/* Non-resumable non-conversion uploads don't make sense. */
+							if (k == UPLOAD_NON_RESUMABLE && l != UPLOAD_ODT_CONVERT) {
+								continue;
+							}
+
+							test_name = g_strdup_printf ("/documents/upload/%s/%s/%s/%s",
+							                             payload_type_names[i], folder_type_names[j],
+							                             resumable_type_names[k], document_type_names[l]);
+
+							/* Allocate a new struct. We leak this. */
+							test_params = g_slice_new0 (UploadDocumentTestParams);
+							test_params->payload_type = i;
+							test_params->folder_type = j;
+							test_params->resumable_type = k;
+							test_params->document_type = l;
+							test_params->test_name = g_strdup (test_name);
+							test_params->service = GDATA_DOCUMENTS_SERVICE (service);
+
+							g_test_add (test_name, UploadDocumentData, test_params, set_up_upload_document, test_upload,
+							            tear_down_upload_document);
+
+							g_free (test_name);
 						}
-
-						test_name = g_strdup_printf ("/documents/upload/%s/%s/%s",
-						                             payload_type_names[i], folder_type_names[j],
-						                             resumable_type_names[k]);
-
-						/* Allocate a new struct. We leak this. */
-						test_params = g_slice_new0 (UploadDocumentTestParams);
-						test_params->payload_type = i;
-						test_params->folder_type = j;
-						test_params->resumable_type = k;
-						test_params->test_name = g_strdup (test_name);
-						test_params->service = GDATA_DOCUMENTS_SERVICE (service);
-
-						g_test_add (test_name, UploadDocumentData, test_params, set_up_upload_document, test_upload,
-						            tear_down_upload_document);
-
-						g_free (test_name);
 					}
 				}
 			}

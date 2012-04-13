@@ -649,6 +649,9 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * the document as an opaque file, or convert it to a standard format. If @query is %NULL, the document will be uploaded into the root folder, and
  * automatically converted to a standard format. No OCR or automatic language translation will be performed by default.
  *
+ * If @query is non-%NULL and #GDataDocumentsUploadQuery:convert is %FALSE, @document must be an instance of #GDataDocumentsDocument. Otherwise,
+ * @document must be a subclass of it, such as #GDataDocumentsPresentation.
+ *
  * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
  * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
@@ -840,43 +843,44 @@ gdata_documents_service_update_document_resumable (GDataDocumentsService *self, 
 GDataDocumentsDocument *
 gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadStream *upload_stream, GError **error)
 {
-	const gchar *response_body, *content_type;
+	const gchar *response_body, *term_pos;
 	gssize response_length;
-	GDataEntry *entry;
 	GType new_document_type = G_TYPE_INVALID;
-
-	/* Determine the type of the document we've uploaded */
-	entry = gdata_upload_stream_get_entry (upload_stream);
-	content_type = gdata_upload_stream_get_content_type (upload_stream);
-
-	if (entry != NULL) {
-		new_document_type = G_OBJECT_TYPE (entry);
-	} else if (strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
-	           strcmp (content_type, "text/tab-separated-values") == 0 ||
-	           strcmp (content_type, "application/x-vnd.oasis.opendocument.spreadsheet") == 0 ||
-	           strcmp (content_type, "application/vnd.ms-excel") == 0) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
-	} else if (strcmp (content_type, "application/msword") == 0 ||
-	           strcmp (content_type, "application/vnd.oasis.opendocument.text") == 0 ||
-	           strcmp (content_type, "application/rtf") == 0 ||
-	           strcmp (content_type, "text/html") == 0 ||
-	           strcmp (content_type, "application/vnd.sun.xml.writer") == 0 ||
-	           strcmp (content_type, "text/plain") == 0) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
-	} else if (strcmp (content_type, "application/vnd.ms-powerpoint") == 0) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
-	}
-
-	if (g_type_is_a (new_document_type, GDATA_TYPE_DOCUMENTS_DOCUMENT) == FALSE) {
-		g_set_error (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
-		             _("The content type of the supplied document ('%s') could not be recognized."), content_type);
-		return NULL;
-	}
 
 	/* Get and parse the response from the server */
 	response_body = gdata_upload_stream_get_response (upload_stream, &response_length);
-	if (response_body == NULL || response_length == 0)
+	if (response_body == NULL || response_length == 0) {
+		/* Error will have been set by the upload stream. */
 		return NULL;
+	}
+
+	/* Hackily determine the document format the server chose, and then parse the XML accordingly. The full parse will pick up any errors in
+	 * our choice of format. */
+	#define TERM_MARKER "<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/docs/2007#"
+	term_pos = g_strstr_len (response_body, response_length, TERM_MARKER);
+	if (term_pos == NULL) {
+		goto done;
+	}
+
+	term_pos += strlen (TERM_MARKER);
+
+	if (g_str_has_prefix (term_pos, "file'") == TRUE) {
+		new_document_type = GDATA_TYPE_DOCUMENTS_DOCUMENT;
+	} else if (g_str_has_prefix (term_pos, "spreadsheet'") == TRUE) {
+		new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
+	} else if (g_str_has_prefix (term_pos, "presentation'") == TRUE) {
+		new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
+	} else if (g_str_has_prefix (term_pos, "document'") == TRUE) {
+		new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
+	}
+
+done:
+	if (g_type_is_a (new_document_type, GDATA_TYPE_DOCUMENTS_DOCUMENT) == FALSE) {
+		g_set_error (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
+		             _("The content type of the supplied document ('%s') could not be recognized."),
+		             gdata_upload_stream_get_content_type (upload_stream));
+		return NULL;
+	}
 
 	return GDATA_DOCUMENTS_DOCUMENT (gdata_parsable_new_from_xml (new_document_type, response_body, (gint) response_length, error));
 }
