@@ -56,6 +56,8 @@ gboolean gdata_test_batch_operation_run_finish (GDataBatchOperation *operation, 
 gboolean gdata_test_compare_xml_strings (const gchar *parsable_xml, const gchar *expected_xml, gboolean print_error);
 gboolean gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboolean print_error);
 
+gboolean gdata_test_compare_kind (GDataEntry *entry, const gchar *expected_term, const gchar *expected_label);
+
 /* Convenience macro */
 #define gdata_test_assert_xml(Parsable, XML) \
 	G_STMT_START { \

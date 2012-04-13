@@ -24,24 +24,6 @@
 #include "gdata.h"
 #include "common.h"
 
-static void
-check_kind (GDataEntry *entry, const gchar *expected_kind)
-{
-	GList *list;
-	gboolean has_kind = FALSE;
-
-	/* Check the contact's kind category is present and correct */
-	for (list = gdata_entry_get_categories (entry); list != NULL; list = list->next) {
-		GDataCategory *category = GDATA_CATEGORY (list->data);
-
-		if (g_strcmp0 (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
-			g_assert_cmpstr (gdata_category_get_term (category), ==, expected_kind);
-			has_kind = TRUE;
-		}
-	}
-	g_assert (has_kind == TRUE);
-}
-
 typedef struct {
 	GDataContactsContact *contact;
 } TempContactData;
@@ -58,7 +40,7 @@ set_up_temp_contact (TempContactData *data, gconstpointer service)
 	/* Insert the contact */
 	data->contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (data->contact));
-	check_kind (GDATA_ENTRY (data->contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (data->contact), "http://schemas.google.com/contact/2008#contact", NULL);
 
 	g_object_unref (contact);
 }
@@ -306,7 +288,7 @@ test_contact_insert (InsertData *data, gconstpointer service)
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact", NULL);
 
 	/* Set and check the name (to check if the title of the entry is updated) */
 	gdata_entry_set_title (GDATA_ENTRY (contact), "Elizabeth Bennet");
@@ -409,7 +391,7 @@ test_contact_insert (InsertData *data, gconstpointer service)
 	new_contact = data->new_contact = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
-	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact", NULL);
 	g_clear_error (&error);
 
 	/* Check its edited date */
@@ -562,7 +544,7 @@ test_contact_update (TempContactData *data, gconstpointer service)
 	                                                                  GDATA_ENTRY (data->contact), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (new_contact));
-	check_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact", NULL);
 	g_clear_error (&error);
 
 	/* Check a few properties */
@@ -712,7 +694,7 @@ test_group_insert (InsertGroupData *data, gconstpointer service)
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_GROUP (group));
-	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+	gdata_test_compare_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group", NULL);
 
 	/* Set various properties */
 	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
@@ -722,7 +704,7 @@ test_group_insert (InsertGroupData *data, gconstpointer service)
 	new_group = data->new_group = gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (service), group, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_GROUP (new_group));
-	check_kind (GDATA_ENTRY (new_group), "http://schemas.google.com/contact/2008#group");
+	gdata_test_compare_kind (GDATA_ENTRY (new_group), "http://schemas.google.com/contact/2008#group", NULL);
 	g_clear_error (&error);
 
 	/* Check the properties */
@@ -748,7 +730,7 @@ G_STMT_START {
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_GROUP (group));
-	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+	gdata_test_compare_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group", NULL);
 
 	/* Set various properties */
 	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
@@ -802,7 +784,7 @@ test_contact_properties (void)
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact", NULL);
 
 	/* Set and check the name (to check if the title of the entry is updated) */
 	gdata_entry_set_title (GDATA_ENTRY (contact), "Elizabeth Bennet");
@@ -1286,7 +1268,7 @@ test_contact_parser_minimal (void)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact", NULL);
 	g_clear_error (&error);
 
 	/* Check the contact's properties */
@@ -1392,7 +1374,7 @@ test_contact_parser_normal (void)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact", NULL);
 	g_clear_error (&error);
 
 	/* TODO: Check the other properties */
@@ -1702,7 +1684,7 @@ test_group_properties (void)
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_GROUP (group));
-	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+	gdata_test_compare_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group", NULL);
 
 	/* Set various properties */
 	gdata_entry_set_title (GDATA_ENTRY (group), "New Group!");
@@ -1777,7 +1759,7 @@ test_group_parser_normal (void)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_GROUP (group));
-	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+	gdata_test_compare_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group", NULL);
 	g_clear_error (&error);
 
 	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, 1136073600);
@@ -1817,7 +1799,7 @@ test_group_parser_system (void)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_GROUP (group));
-	check_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group");
+	gdata_test_compare_kind (GDATA_ENTRY (group), "http://schemas.google.com/contact/2008#group", NULL);
 	g_clear_error (&error);
 
 	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, 1136073600);
@@ -1880,7 +1862,7 @@ test_photo_has_photo (gconstpointer service)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact", NULL);
 	g_clear_error (&error);
 
 	/* Check for no photo */
@@ -1908,7 +1890,7 @@ test_photo_has_photo (gconstpointer service)
 		"</entry>", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
-	check_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact");
+	gdata_test_compare_kind (GDATA_ENTRY (contact), "http://schemas.google.com/contact/2008#contact", NULL);
 	g_clear_error (&error);
 
 	g_assert (gdata_contacts_contact_get_photo_etag (contact) != NULL);

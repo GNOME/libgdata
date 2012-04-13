@@ -576,6 +576,26 @@ gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboo
 	return success;
 }
 
+gboolean
+gdata_test_compare_kind (GDataEntry *entry, const gchar *expected_term, const gchar *expected_label)
+{
+	GList *list;
+
+	/* Check the entry's kind category is present and correct */
+	for (list = gdata_entry_get_categories (entry); list != NULL; list = list->next) {
+		GDataCategory *category = GDATA_CATEGORY (list->data);
+
+		if (g_strcmp0 (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
+			/* Found the kind category; check its term and label. */
+			return (g_strcmp0 (gdata_category_get_term (category), expected_term) == 0) &&
+			       (g_strcmp0 (gdata_category_get_label (category), expected_label) == 0);
+		}
+	}
+
+	/* No kind! */
+	return FALSE;
+}
+
 /* Common code for tests of async query functions that have progress callbacks */
 
 void
