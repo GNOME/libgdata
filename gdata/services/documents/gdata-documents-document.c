@@ -23,8 +23,16 @@
  * @stability: Unstable
  * @include: gdata/services/documents/gdata-documents-document.h
  *
- * #GDataDocumentsDocument is an abstract subclass of #GDataDocumentsEntry to represent a Google Documents document. It is subclassed by
- * #GDataDocumentsPresentation, #GDataDocumentsText and #GDataDocumentsSpreadsheet, which are instantiable.
+ * #GDataDocumentsDocument is a subclass of #GDataDocumentsEntry to represent an arbitrary Google Documents document (i.e. an arbitrary file which
+ * isn't a Google Documents presentation, text document or spreadsheet). It is subclassed by #GDataDocumentsPresentation, #GDataDocumentsText and
+ * #GDataDocumentsSpreadsheet, which represent those specific types of Google Document, respectively.
+ *
+ * #GDataDocumentsDocument used to be abstract, but was made instantiable in version 0.13.0 to allow for arbitrary file uploads. This can be achieved
+ * by setting #GDataDocumentsUploadQuery:convert to %FALSE when making an upload using gdata_documents_service_upload_document_resumable(). See the
+ * documentation for #GDataDocumentsUploadQuery for an example.
+ *
+ * It should be noted that #GDataDocumentsDocument should only be used to represent arbitrary files; its subclasses should be used any time a standard
+ * Google Document (spreadsheet, text document, presentation, etc.) is to be represented.
  *
  * For more details of Google Documents' GData API, see the
  * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
@@ -198,18 +206,36 @@
 #include "gdata-private.h"
 #include "gdata-service.h"
 
-G_DEFINE_ABSTRACT_TYPE (GDataDocumentsDocument, gdata_documents_document, GDATA_TYPE_DOCUMENTS_ENTRY)
+G_DEFINE_TYPE (GDataDocumentsDocument, gdata_documents_document, GDATA_TYPE_DOCUMENTS_ENTRY)
 
 static void
 gdata_documents_document_class_init (GDataDocumentsDocumentClass *klass)
 {
-	/* Nothing to see here. */
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
+
+	entry_class->kind_term = "http://schemas.google.com/docs/2007#file";
 }
 
 static void
 gdata_documents_document_init (GDataDocumentsDocument *self)
 {
 	/* Nothing to see here. */
+}
+
+/**
+ * gdata_documents_document_new:
+ * @id: (allow-none): the entry's ID (not the document ID), or %NULL
+ *
+ * Creates a new #GDataDocumentsDocument with the given entry ID (#GDataEntry:id).
+ *
+ * Return value: (transfer full): a new #GDataDocumentsDocument, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.13.0
+ */
+GDataDocumentsDocument *
+gdata_documents_document_new (const gchar *id)
+{
+	return GDATA_DOCUMENTS_DOCUMENT (g_object_new (GDATA_TYPE_DOCUMENTS_DOCUMENT, "id", id, NULL));
 }
 
 /**

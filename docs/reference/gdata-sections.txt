@@ -1618,6 +1618,7 @@ GDataDocumentsFolderPrivate
 <TITLE>GDataDocumentsDocument</TITLE>
 GDataDocumentsDocument
 GDataDocumentsDocumentClass
+gdata_documents_document_new
 gdata_documents_document_download
 gdata_documents_document_get_download_uri
 <SUBSECTION Standard>

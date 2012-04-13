@@ -946,3 +946,4 @@ gdata_documents_upload_query_new
 gdata_documents_upload_query_build_uri
 gdata_documents_upload_query_get_folder
 gdata_documents_upload_query_set_folder
+gdata_documents_document_new
