@@ -73,6 +73,8 @@ gboolean gdata_parser_string_from_element (xmlNode *element, const gchar *elemen
                                            gchar **output, gboolean *success, GError **error);
 gboolean gdata_parser_int64_time_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
                                                gint64 *output, gboolean *success, GError **error);
+gboolean gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+                                          gint64 *output, gint64 default_output, gboolean *success, GError **error);
 gboolean gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
                                                   gpointer /* GDataParserSetterFunc */ _setter, gpointer /* GDataParsable * */ _parent_parsable,
                                                   gboolean *success, GError **error);

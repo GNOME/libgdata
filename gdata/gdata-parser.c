@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <errno.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <sys/time.h>
@@ -449,6 +450,82 @@ gdata_parser_int64_time_from_element (xmlNode *element, const gchar *element_nam
 	}
 
 	*output = time_val.tv_sec;
+
+	/* Success! */
+	xmlFree (text);
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
+ * gdata_parser_int64_from_element:
+ * @element: the element to check against
+ * @element_name: the name of the element to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions, or %P_NONE
+ * @output: (out caller-allocates): the return location for the parsed integer value
+ * @default_output: default value for the property, used with %P_NO_DUPES to detect duplicates
+ * @success: the return location for a value which is %TRUE if the integer was parsed successfully, %FALSE if an error was encountered,
+ * and undefined if @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the integer value of @element if its name is @element_name, subject to various checks specified by @options. It expects the text content
+ * of @element to be an integer in base 10 format.
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by @options fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by @options pass, %TRUE will be returned, @error will be unset and
+ * @success will be set to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_int64_from_element() can be chained
+ * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
+ * a given @element. If any of the calls to gdata_parser_int64_from_element() return %TRUE, the value of @success can be examined.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: 0.13.0
+ */
+gboolean
+gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options,
+                                 gint64 *output, gint64 default_output, gboolean *success, GError **error)
+{
+	xmlChar *text;
+	gchar *end_ptr;
+	gint64 val;
+
+	/* Check it's the right element */
+	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0) {
+		return FALSE;
+	}
+
+	/* Check if the output value has already been set */
+	if (options & P_NO_DUPES && *output != default_output) {
+		*success = gdata_parser_error_duplicate_element (element, error);
+		return TRUE;
+	}
+
+	/* Get the string and check it for NULLness */
+	text = xmlNodeListGetString (element->doc, element->children, TRUE);
+	if (options & P_REQUIRED && (text == NULL || *text == '\0')) {
+		xmlFree (text);
+		*success = gdata_parser_error_required_content_missing (element, error);
+		return TRUE;
+	}
+
+	/* Attempt to parse the string as a 64-bit integer */
+	errno = 0;
+	val = g_ascii_strtoll ((const gchar*) text, &end_ptr, 10);
+
+	if (errno != 0 || end_ptr == (gchar*) text) {
+		*success = gdata_parser_error_unknown_content (element, (gchar*) text, error);
+		xmlFree (text);
+		return TRUE;
+	}
+
+	*output = val;
 
 	/* Success! */
 	xmlFree (text);

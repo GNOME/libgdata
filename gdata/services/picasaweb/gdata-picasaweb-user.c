@@ -234,18 +234,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 	if (gdata_parser_string_from_element (node, "user", P_REQUIRED | P_NON_EMPTY, &(self->priv->user), &success, error) == TRUE ||
 	    gdata_parser_string_from_element (node, "nickname", P_REQUIRED | P_NON_EMPTY, &(self->priv->nickname), &success, error) == TRUE ||
-	    gdata_parser_string_from_element (node, "thumbnail", P_REQUIRED | P_NON_EMPTY, &(self->priv->thumbnail_uri), &success, error) == TRUE) {
+	    gdata_parser_string_from_element (node, "thumbnail", P_REQUIRED | P_NON_EMPTY, &(self->priv->thumbnail_uri), &success, error) == TRUE ||
+	    gdata_parser_int64_from_element (node, "quotacurrent", P_REQUIRED | P_NO_DUPES, &(self->priv->quota_current), -1, &success, error) == TRUE ||
+	    gdata_parser_int64_from_element (node, "quotalimit", P_REQUIRED | P_NO_DUPES, &(self->priv->quota_limit), -1, &success, error) == TRUE) {
 		return success;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "quotacurrent") == 0) {
-		/* gphoto:quota-current */
-		xmlChar *quota_current = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->quota_current = g_ascii_strtoll ((const gchar*) quota_current, NULL, 10);
-		xmlFree (quota_current);
-	} else if (xmlStrcmp (node->name, (xmlChar*) "quotalimit") == 0) {
-		/* gphoto:quota-limit */
-		xmlChar *quota_limit = xmlNodeListGetString (doc, node->children, TRUE);
-		self->priv->quota_limit = g_ascii_strtoll ((const gchar*) quota_limit, NULL, 10);
-		xmlFree (quota_limit);
 	} else if (xmlStrcmp (node->name, (xmlChar*) "maxPhotosPerAlbum") == 0) {
 		/* gphoto:max-photos-per-album */
 		xmlChar *max_photos_per_album = xmlNodeListGetString (doc, node->children, TRUE);
