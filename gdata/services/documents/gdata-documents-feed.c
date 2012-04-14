@@ -106,6 +106,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_PRESENTATION, doc, node, NULL, error));
 		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#folder") == 0) {
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_FOLDER, doc, node, NULL, error));
+		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#file") == 0) {
+			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_DOCUMENT, doc, node, NULL, error));
 		} else {
 			g_message ("%s documents are not handled yet", kind);
 			g_free (kind);
