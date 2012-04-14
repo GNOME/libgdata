@@ -131,6 +131,7 @@ struct _GDataDocumentsEntryPrivate {
 	gboolean writers_can_invite;
 	gboolean is_deleted;
 	GDataAuthor *last_modified_by;
+	goffset quota_used; /* bytes */
 };
 
 enum {
@@ -142,6 +143,7 @@ enum {
 	PROP_WRITERS_CAN_INVITE,
 	PROP_ID,
 	PROP_RESOURCE_ID,
+	PROP_QUOTA_USED,
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
@@ -276,6 +278,22 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                      GDATA_TYPE_AUTHOR,
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * GDataDocumentsEntry:quota-used:
+	 *
+	 * The amount of user quota the document is occupying. Currently, only arbitrary files consume file space quota (whereas standard document
+	 * formats, such as #GDataDocumentsText, #GDataDocumentsSpreadsheet and #GDataDocumentsFolder don't). Measured in bytes.
+	 *
+	 * This property will be <code class="literal">0</code> for documents which aren't consuming any quota.
+	 *
+	 * Since: 0.13.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_QUOTA_USED,
+	                                 g_param_spec_int64 ("quota-used",
+	                                                     "Quota used", "The amount of user quota the document is occupying.",
+	                                                     0, G_MAXINT64, 0,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 	/* Override the ID property since the server returns two different forms of ID depending on how you form a query on an entry. These two forms
 	 * of ID are (for version 3 of the API):
 	 *  - Document ID: /feeds/id/[resource_id]
@@ -389,6 +407,9 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 		case PROP_LAST_MODIFIED_BY:
 			g_value_set_object (value, priv->last_modified_by);
 			break;
+		case PROP_QUOTA_USED:
+			g_value_set_int64 (value, priv->quota_used);
+			break;
 		case PROP_ID: {
 			gchar *uri;
 
@@ -423,6 +444,8 @@ gdata_documents_entry_set_property (GObject *object, guint property_id, const GV
 		case PROP_ID:
 			/* Never set an ID (note that this doesn't stop it being set in GDataEntry due to XML parsing) */
 			break;
+		case PROP_QUOTA_USED:
+			/* Read only. */
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -447,7 +470,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
 		                                      &(self->priv->last_modified_by), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "resourceId", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES, &(self->priv->resource_id),
-		                                      &success, error) == TRUE) {
+		                                      &success, error) == TRUE ||
+		    gdata_parser_int64_from_element (node, "quotaBytesUsed", P_REQUIRED | P_NO_DUPES,
+		                                     &(self->priv->quota_used), 0, &success, error) == TRUE) {
 			return success;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
 			/* <gd:deleted> */
@@ -721,6 +746,24 @@ gdata_documents_entry_get_last_modified_by (GDataDocumentsEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 	return self->priv->last_modified_by;
+}
+
+/**
+ * gdata_documents_entry_get_quota_used:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:quota-used property.
+ *
+ * Return value: the number of quota bytes used by the document
+ *
+ * Since: 0.13.0
+ */
+goffset
+gdata_documents_entry_get_quota_used (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), 0);
+
+	return self->priv->quota_used;
 }
 
 /**

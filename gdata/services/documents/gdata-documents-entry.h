@@ -108,6 +108,8 @@ gboolean gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self) G_
 
 GDataAuthor *gdata_documents_entry_get_last_modified_by (GDataDocumentsEntry *self) G_GNUC_PURE;
 
+goffset gdata_documents_entry_get_quota_used (GDataDocumentsEntry *self) G_GNUC_PURE;
+
 gboolean gdata_documents_entry_is_deleted (GDataDocumentsEntry *self) G_GNUC_PURE;
 
 G_END_DECLS
