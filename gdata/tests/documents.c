@@ -326,6 +326,7 @@ typedef struct {
 	GDataDocumentsSpreadsheet *spreadsheet_document;
 	GDataDocumentsPresentation *presentation_document;
 	GDataDocumentsText *text_document;
+	GDataDocumentsDocument *arbitrary_document;
 } TempDocumentsData;
 
 static void
@@ -367,6 +368,15 @@ set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->text_document));
 	g_object_unref (document);
 
+	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_document_new (NULL));
+	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Arbitrary Document");
+	data->arbitrary_document = GDATA_DOCUMENTS_DOCUMENT (
+		gdata_service_insert_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
+		                            upload_uri, GDATA_ENTRY (document), NULL, NULL)
+	);
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (data->arbitrary_document));
+	g_object_unref (document);
+
 	g_free (upload_uri);
 }
 
@@ -382,6 +392,9 @@ tear_down_temp_documents (TempDocumentsData *data, gconstpointer service)
 
 	delete_entry (GDATA_DOCUMENTS_ENTRY (data->text_document), GDATA_SERVICE (service));
 	g_object_unref (data->text_document);
+
+	delete_entry (GDATA_DOCUMENTS_ENTRY (data->arbitrary_document), GDATA_SERVICE (service));
+	g_object_unref (data->arbitrary_document);
 
 	/* Delete the folder */
 	tear_down_temp_folder ((TempFolderData*) data, service);
@@ -1226,6 +1239,7 @@ test_download_document (TempDocumentsData *data, gconstpointer service)
 	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->spreadsheet_document), GDATA_SERVICE (service));
 	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->presentation_document), GDATA_SERVICE (service));
 	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->text_document), GDATA_SERVICE (service));
+	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->arbitrary_document), GDATA_SERVICE (service));
 }
 
 static void
