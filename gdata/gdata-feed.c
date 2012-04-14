@@ -463,8 +463,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                                    _gdata_feed_add_author, self, &success, error) == TRUE ||
 		           gdata_parser_object_from_element (node, "generator", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GENERATOR,
 		                                             &(self->priv->generator), &success, error) == TRUE ||
-		           gdata_parser_int64_from_element (node, "updated", P_REQUIRED | P_NO_DUPES,
-		                                            &(self->priv->updated), &success, error) == TRUE ||
+		           gdata_parser_int64_time_from_element (node, "updated", P_REQUIRED | P_NO_DUPES,
+		                                                 &(self->priv->updated), &success, error) == TRUE ||
 		           gdata_parser_string_from_element (node, "rights", P_NONE, &(self->priv->rights), &success, error) == TRUE) {
 			return success;
 		} else {

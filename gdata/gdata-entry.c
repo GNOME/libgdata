@@ -431,8 +431,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		    gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES, &(priv->id), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "summary", P_NONE, &(priv->summary), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "rights", P_NONE, &(priv->rights), &success, error) == TRUE ||
-		    gdata_parser_int64_from_element (node, "updated", P_REQUIRED | P_NO_DUPES, &(priv->updated), &success, error) == TRUE ||
-		    gdata_parser_int64_from_element (node, "published", P_REQUIRED | P_NO_DUPES, &(priv->published), &success, error) == TRUE ||
+		    gdata_parser_int64_time_from_element (node, "updated", P_REQUIRED | P_NO_DUPES, &(priv->updated), &success, error) == TRUE ||
+		    gdata_parser_int64_time_from_element (node, "published", P_REQUIRED | P_NO_DUPES, &(priv->published), &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
 		                                             gdata_entry_add_category, parsable, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "link", P_REQUIRED, GDATA_TYPE_LINK,

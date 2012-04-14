@@ -660,7 +660,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	/* TODO: media:group should also be P_NO_DUPES, but we can't, as priv->media_group has to be pre-populated
 	 * in order for things like gdata_picasaweb_album_get_tags() to work. */
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_time_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
 	           gdata_parser_object_from_element (node, "group", P_REQUIRED, GDATA_TYPE_MEDIA_GROUP,

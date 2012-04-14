@@ -437,11 +437,11 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_int64_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
+	    gdata_parser_int64_time_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
 		return success;
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
-		if (gdata_parser_int64_from_element (node, "lastViewed", P_REQUIRED | P_NO_DUPES,
-		                                     &(self->priv->last_viewed), &success, error) == TRUE ||
+		if (gdata_parser_int64_time_from_element (node, "lastViewed", P_REQUIRED | P_NO_DUPES,
+		                                          &(self->priv->last_viewed), &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
 		                                             gdata_entry_add_link, self,  &success, error) == TRUE ||
 		    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
