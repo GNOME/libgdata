@@ -96,18 +96,19 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE &&
 	    xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
 		GDataEntry *entry = NULL;
+		GType entry_type = G_TYPE_INVALID;
 		gchar *kind = get_kind (doc, node);
 
 		if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#spreadsheet") == 0) {
-			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_SPREADSHEET, doc, node, NULL, error));
+			entry_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
 		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#document") == 0) {
-			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_TEXT, doc, node, NULL, error));
+			entry_type = GDATA_TYPE_DOCUMENTS_TEXT;
 		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#presentation") == 0) {
-			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_PRESENTATION, doc, node, NULL, error));
+			entry_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
 		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#folder") == 0) {
-			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_FOLDER, doc, node, NULL, error));
+			entry_type = GDATA_TYPE_DOCUMENTS_FOLDER;
 		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#file") == 0) {
-			entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (GDATA_TYPE_DOCUMENTS_DOCUMENT, doc, node, NULL, error));
+			entry_type = GDATA_TYPE_DOCUMENTS_DOCUMENT;
 		} else {
 			g_message ("%s documents are not handled yet", kind);
 			g_free (kind);
@@ -115,12 +116,16 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		}
 		g_free (kind);
 
-		if (entry == NULL)
+		if (g_type_is_a (entry_type, GDATA_TYPE_DOCUMENTS_ENTRY) == FALSE) {
 			return FALSE;
+		}
+
+		entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (entry_type, doc, node, NULL, error));
 
 		/* Call the progress callback in the main thread */
 		_gdata_feed_call_progress_callback (GDATA_FEED (self), user_data, entry);
 		_gdata_feed_add_entry (GDATA_FEED (self), entry);
+
 		g_object_unref (entry);
 
 		return TRUE;
