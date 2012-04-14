@@ -54,6 +54,19 @@ G_BEGIN_DECLS
 #define GDATA_DOCUMENTS_TEXT_HTML "html"
 
 /**
+ * GDATA_DOCUMENTS_TEXT_JPEG:
+ *
+ * The export format for JPEG image format.
+ *
+ * For more information, see the
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#valid_download_formats_for_text_documents">
+ * GData protocol specification</ulink>.
+ *
+ * Since: 0.13.0
+ */
+#define GDATA_DOCUMENTS_TEXT_JPEG "jpeg"
+
+/**
  * GDATA_DOCUMENTS_TEXT_ODT:
  *
  * The export format for OpenDocument Text (ODT) format.
