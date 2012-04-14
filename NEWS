@@ -1,3 +1,36 @@
+Overview of changes from libgdata 0.12.0 to libgdata 0.13.0
+===========================================================
+
+Major changes:
+ • Bump GLib dependency to 2.31.0 in order to use its new threading primitives
+ • Add basic support for resumable uploads to GDataUploadStream (bug #607272)
+ • Update support for Google Documents to v3 of the API
+ • Add support for arbitrary file uploads to Google Documents (using GDataDocumentsDocuemtn),
+   and document conversion on upload (using GDataDocumentsUploadQuery)
+
+API changes:
+ • Added gdata_upload_stream_new_resumable()
+ • Added GDataUploadStream:content-length, gdata_upload_stream_get_content_length()
+ • Added gdata_documents_service_upload_document_resumable()
+ • Added gdata_documents_service_update_document_resumable()
+ • Added GDataDocumentsUploadQuery
+ • Made GDataDocumentsDocument instantiable (this isn’t a real API break, though)
+ • Added GDATA_DOCUMENTS_TEXT_JPEG
+ • GDataDocumentsEntry:quota-used, gdata_documents_entry_get_quota_used()
+
+Bugs fixed:
+ • Bug 593537 — Upgrade Documents service to version 3.0
+ • Bug 607616 — Permit the uploading of documents of any type
+ • Bug 656971 — Deprecate GDataDocumentsDocument subclasses
+ • Bug 588714 — <gd:quotaBytesUsed> handling in GDataDocumentsEntry
+
+Updated translations:
+ • ca (Jordi Serratosa)
+ • en_GB (Philip Withnall)
+ • es (Daniel Mustieles)
+ • he (Yaron Shahrabani)
+ • sv (Daniel Nylander)
+
 Overview of changes from libgdata 0.11.0 to libgdata 0.11.1
 ===========================================================
 
