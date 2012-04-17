@@ -1,125 +1,125 @@
 # Telugu translation for libgdata.
-# Copyright (C) 2011 Swecha Localisation Team.
+# Copyright (C) 2011, 2012 Swecha Localisation Team <localization@swecha.net>
 # This file is distributed under the same license as the libgdata package.
 # Hari krishna <hari@swecha.net>, 2011.
-#
+# Sasi Bhushan Boddepalli <sasi@swecha.net>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-27 07:56+0000\n"
-"PO-Revision-Date: 2012-01-12 00:00+0530\n"
-"Last-Translator: Praveen Illa <mail2ipn@gmail.com>\n"
+"POT-Creation-Date: 2012-04-02 14:33+0000\n"
+"PO-Revision-Date: 2012-04-17 15:52+0530\n"
+"Last-Translator: Sasi Bhushan Boddepalli <sasi@swecha.net>\n"
 "Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:585
+#: ../gdata/gdata-client-login-authorizer.c:597
 #: ../gdata/gdata-oauth1-authorizer.c:804
 #: ../gdata/gdata-oauth1-authorizer.c:1076
 msgid "The server returned a malformed response."
 msgstr "వైకల్య  ఉత్తరమును సర్వరు తిరుగి పంపినది."
 
-#: ../gdata/gdata-client-login-authorizer.c:605 ../gdata/gdata-service.c:320
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:320
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "సర్వీసు యొక్క సర్వరునకు అనుబంధించుట కుదురుటలేదు."
 
-#: ../gdata/gdata-client-login-authorizer.c:610 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:325
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "ప్రాక్సీ సర్వరునకు అనుసంధానించుట కుదురుటలేదు."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:616 ../gdata/gdata-service.c:331
+#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:331
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "నిస్సారమైన అభ్యర్దించిన URI లేదా హెడ్డర్, లేదా సహకరించని ప్రమాణములేని పారామీటరు: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:337
+#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:337
 #, c-format
 msgid "Authentication required: %s"
 msgstr "ధ్రువీకరణ అవసరము: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:627 ../gdata/gdata-service.c:342
+#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:342
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "అభ్యర్ధించిన వనరు దొరకలేదు: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:633 ../gdata/gdata-service.c:348
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:348
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "దిగుమతి చేయబదినది కాబట్టీ ప్రవేశము మార్పుచేయబడినది: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:362
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "ధ్రువీకరించునపుడు %u దొషము సంకేతం : %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:740
+#: ../gdata/gdata-client-login-authorizer.c:752
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "లాగిన్ అవుటకు క్యాప్ చా ను నింపవలెను."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:778
+#: ../gdata/gdata-client-login-authorizer.c:790
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "ఈ ఖాతాకు అనువర్తన సంబంధిత సంకేతపదం అవసరం. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:785
+#: ../gdata/gdata-client-login-authorizer.c:797
 msgid "Your username or password were incorrect."
 msgstr "మీ వినియోగదారునినామము లేదా రహస్య పదము తప్పు."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:806
+#: ../gdata/gdata-client-login-authorizer.c:818
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "మీ ఖాతా యొక్క ఈ మేయిల్ చిరునామా సరిచూడ లేదు. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:811
+#: ../gdata/gdata-client-login-authorizer.c:823
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "మీరు సేవయొక్క నిబంధనలు మరియు షరుతులను అంగీకరించలేదు. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:817
+#: ../gdata/gdata-client-login-authorizer.c:829
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"ఈ అకౌంట్ తరలించబడినది. మీ కొత్త సంకేతపదము మరియు రహస్యపదము పొందుటకు దయచేసి ఆంలైన్ లాగిన్ అవ్వండి."
-"(%s)"
+"ఈ అకౌంట్ తరలించబడినది. మీ కొత్త సంకేతపదము మరియు రహస్యపదము పొందుటకు దయచేసి ఆంలైన్ లాగిన్ అవ్వండి.(%"
+"s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:822
+#: ../gdata/gdata-client-login-authorizer.c:834
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "ఈ ఖాతా తొలగించబడినది.(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:827
+#: ../gdata/gdata-client-login-authorizer.c:839
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "ఈ ఖాతాను నిరుపయోగము చెయబడినది. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:832
+#: ../gdata/gdata-client-login-authorizer.c:844
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "ఈ సేవకు ఈ ఖాతా యొక్క సాంగిత్యమును తొలగించబడినది. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:837
+#: ../gdata/gdata-client-login-authorizer.c:849
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "ప్రస్తుతము ఈ సేవ అందుబాటులో లేదు. (%s)"
@@ -142,7 +142,7 @@ msgid "This comment may not be deleted."
 msgstr "ఈ వాఖ్యానము తొలగించకపోవచ్చు."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:751
+#: ../gdata/gdata-download-stream.c:752
 msgid "Invalid seek request"
 msgstr "అర్ధించు అభ్యర్ధన నిస్సారం "
 
@@ -298,18 +298,24 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "బ్యాచ్ ఆపరేషన్ జరుగుతుండగా దోష సంకేతము %u: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:684
+#: ../gdata/gdata-service.c:685
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "URI రీడైరక్ట్: %s"
 
-#: ../gdata/gdata-service.c:1336
+#: ../gdata/gdata-service.c:1337
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
 msgstr "కొత్త నమోదు అప్పటికే ప్రవేశపెట్టబడినది."
 
-#: ../gdata/gdata-upload-stream.c:785
+#. Resumable upload error.
+#: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr " ఒక అప్లోడ్ భాగం ఈ అప్లోడ్ తర్వాత సర్వర్ నుండి దోషమును  పొందింది."
+
+#: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
 msgstr "ప్రవాహము మూసివెయబడినది"
 
@@ -363,31 +369,31 @@ msgstr "ఒక గుంపును ప్రవేశపెట్టుటక�
 msgid "You must be authenticated to download documents."
 msgstr "పత్రములను దిగిమతి చేసుకొనుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-service.c:397
-#: ../gdata/services/documents/gdata-documents-service.c:452
+#: ../gdata/services/documents/gdata-documents-service.c:461
+#: ../gdata/services/documents/gdata-documents-service.c:511
 msgid "You must be authenticated to query documents."
 msgstr "పత్రములను క్వయరీ చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-service.c:531
+#: ../gdata/services/documents/gdata-documents-service.c:556
 msgid "You must be authenticated to upload documents."
 msgstr "పత్రములను ఎగుమతి చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-service.c:537
+#: ../gdata/services/documents/gdata-documents-service.c:562
 msgid "The document has already been uploaded."
 msgstr "పత్రము ముందే ఎగుమతి చేయబడినది."
 
-#: ../gdata/services/documents/gdata-documents-service.c:592
+#: ../gdata/services/documents/gdata-documents-service.c:699
 msgid "You must be authenticated to update documents."
 msgstr "పత్రములను ఎగుమతి చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-service.c:655
+#: ../gdata/services/documents/gdata-documents-service.c:872
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "('%s')పత్రము యొక్క సమాచార రకము గుర్తించబడలేదు."
 
-#: ../gdata/services/documents/gdata-documents-service.c:704
-#: ../gdata/services/documents/gdata-documents-service.c:889
+#: ../gdata/services/documents/gdata-documents-service.c:921
+#: ../gdata/services/documents/gdata-documents-service.c:1104
 msgid "You must be authenticated to move documents and folders."
 msgstr "పత్రములు మరియు సంచయములను కదుపుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
