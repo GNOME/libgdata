@@ -1,15 +1,17 @@
 # Dutch translation for libgdata.
-# Copyright (C) 2012 libgdata's COPYRIGHT HOLDER
+#
 # This file is distributed under the same license as the libgdata package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+# Willem Heppe <heppew@yahoo.com>, 2012
+# Wouter Bolsterlee <wbolster@gnome.org>, 2012
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-15 21:08+0200\n"
-"PO-Revision-Date: 2012-05-02 09:29+0000\n"
-"Last-Translator: Willem Heppe <heppew@yahoo.com>\n"
+"POT-Creation-Date: 2012-05-15 22:08+0200\n"
+"PO-Revision-Date: 2012-05-15 21:28+0200\n"
+"Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -21,12 +23,12 @@ msgstr ""
 #: ../gdata/gdata-oauth1-authorizer.c:804
 #: ../gdata/gdata-oauth1-authorizer.c:1076
 msgid "The server returned a malformed response."
-msgstr "De server gaf een vervormd antwoord"
+msgstr "De server gaf een onjuist antwoord."
 
 #: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:320
 #, c-format
 msgid "Cannot connect to the service's server."
-msgstr "Kan geen verbinding maken met de service's server"
+msgstr "Kan geen verbinding maken met de server van deze service."
 
 #: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:325
 #, c-format
@@ -38,7 +40,7 @@ msgstr "Kan geen verbinding maken met de proxyserver"
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"Ongeldige grvraagde URI of kopregels, of niet-ondersteunde niet-standaard "
+"URI of header van request ongeldig, of niet-ondersteunde niet-standaard "
 "parameter: %s"
 
 #. Translators: the parameter is an error message returned by the server.
@@ -51,13 +53,13 @@ msgstr "Authenticatie verplicht: %s"
 #: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:342
 #, c-format
 msgid "The requested resource was not found: %s"
-msgstr "De gevraagde hulpbron is niet gevonden: %s"
+msgstr "De gevraagde resource is niet gevonden: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:348
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr "De invoer is gewijzigd sinds de download: %s"
+msgstr "Het item is gewijzigd sinds de download: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -68,29 +70,29 @@ msgstr "Foutcode %u bij authenticatie: %s"
 
 #: ../gdata/gdata-client-login-authorizer.c:752
 msgid "A CAPTCHA must be filled out to log in."
-msgstr "Een CAPTCHA moet ingevuld worden om in te loggen."
+msgstr "Om in te loggen moet een CAPTCHA ingevuld worden."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:790
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
-msgstr "Voor dit account is een toepassing-specifiek wachtwoord nodig. (%s)"
+msgstr "Voor dit account is een toepassingsspecifiek wachtwoord nodig. (%s)"
 
 #: ../gdata/gdata-client-login-authorizer.c:797
 msgid "Your username or password were incorrect."
-msgstr "Je gebruikersnaam of wachtwoord zijn niet correct."
+msgstr "Gebruikersnaam of wachtwoord is onjuist."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:818
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "Het e-mailadres van je account is niet geverifieerd. (%s)"
+msgstr "Het e-mailadres van dit account is niet geverifieerd. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:823
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "Je bent niet accoord gegaan met de service's gebruiksvoorwaarden. (%s)"
+msgstr "U bent niet akkoord gegaan met de service's gebruiksvoorwaarden. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:829
@@ -99,26 +101,26 @@ msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"Het account is gemigreerd. Log in online om je nieuwe gebruikernaam en "
+"Dit account is gemigreerd. Log online in om een nieuwe gebruikernaam en "
 "wachtwoord te ontvangen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:834
 #, c-format
 msgid "This account has been deleted. (%s)"
-msgstr "Dit  account is opgeheven. (%s)"
+msgstr "Dit account is verwijderd. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:839
 #, c-format
 msgid "This account has been disabled. (%s)"
-msgstr "Dit account is vergrendeld. (%s)"
+msgstr "Dit account is uitgeschakeld. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:844
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
-msgstr "Voor toegang tot deze service is dit account vergrendeld. (%s)"
+msgstr "Toegang tot deze service is uitgeschakeld voor dit account. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:849
@@ -130,13 +132,13 @@ msgstr "Deze service is op dit moment niet beschikbaar. (%s)"
 #. * support comments.
 #: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
 msgid "This entry does not support comments."
-msgstr "Deze invoer ondersteunt geen commentaren."
+msgstr "Dit item ondersteunt geen commentaar."
 
 #. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
 #. * comments.
 #: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
 msgid "Comments may not be added to this entry."
-msgstr "Commentaar kan bij deze invoer niet worden toegevoegd."
+msgstr "Er kan geen toegevoegd worden bij dit item."
 
 #. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
 #: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
@@ -146,7 +148,7 @@ msgstr "Dit commentaar kan niet worden verwijderd."
 #. Tried to seek too far
 #: ../gdata/gdata-download-stream.c:752
 msgid "Invalid seek request"
-msgstr "Ongeldige zoekvraag"
+msgstr "Ongeldige seek-aanvraag"
 
 #: ../gdata/gdata-oauth1-authorizer.c:779
 msgid "The server rejected the temporary credentials request."
@@ -156,7 +158,7 @@ msgstr "De server verwierp de tijdelijke toegangsaanvraag."
 #. * or the user denied authorization to the token on the authorization web page.
 #: ../gdata/gdata-oauth1-authorizer.c:1050
 msgid "Access was denied by the user or server."
-msgstr "Toegang is door de gebruiker of de server afgewezen."
+msgstr "De gebruiker of server heeft geen toegang verleend."
 
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
@@ -176,7 +178,7 @@ msgstr "Leeg document"
 #: ../gdata/gdata-parser.c:67
 #, c-format
 msgid "A %s element was missing required content."
-msgstr "Een %s element miste verplichte inhoud."
+msgstr "Een element ‘%s’ miste verplichte inhoud."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -186,7 +188,7 @@ msgstr "Een %s element miste verplichte inhoud."
 #: ../gdata/gdata-parser.c:83
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "De inhoud van een %s element (\"%s\") was niet in ISO 8601 formaat."
+msgstr "De inhoud van een element ‘%s’ (‘%s’) was niet in ISO 8601-formaat."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -197,7 +199,7 @@ msgstr "De inhoud van een %s element (\"%s\") was niet in ISO 8601 formaat."
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr ""
-"De waarde van de %s eigenschap van een %s element (\"%s\") was onbekend."
+"De waarde van de eigenschap ‘%s’ van een element ‘%s’ (‘%s’) was onbekend."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -207,7 +209,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:121
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
-msgstr "De inhoud van een %s element (\"%s\") was onbekend."
+msgstr "De inhoud van een element ‘%s’ (‘%s’) was onbekend."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -217,7 +219,7 @@ msgstr "De inhoud van een %s element (\"%s\") was onbekend."
 #: ../gdata/gdata-parser.c:141
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
-msgstr "Een verplichte eigenschap van een %s element (%s) was niet aanwezig."
+msgstr "Een verplichte eigenschap van een element ‘%s’ (%s) ontbrak."
 
 #. Translators: the first two parameters are the names of XML properties of an XML element given in the third
 #. * parameter (including the angle brackets ("<" and ">")).
@@ -231,7 +233,7 @@ msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
 msgstr ""
-"Waarden voor eigenschappen %s en %s van een %s element waren aanwezig "
+"Waarden voor eigenschappen ‘%s’ en ‘%s’ van een element ‘%s’ waren aanwezig "
 "terwijl alleen één van de twee is toegestaan."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
@@ -250,7 +252,7 @@ msgstr "Een verplicht element (%s) was niet aanwezig."
 #: ../gdata/gdata-parser.c:198
 #, c-format
 msgid "A singleton element (%s) was duplicated."
-msgstr "Een singleton element (%s) was gedupliciceerd."
+msgstr "Een singleton element (%s) kwam meermaals voor."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -264,21 +266,21 @@ msgstr "Foutcode %u bij opvragen: %s"
 #: ../gdata/gdata-service.c:374
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
-msgstr "Foutcode %u bij invoegen van een regel: %s"
+msgstr "Foutcode %u bij invoegen van een item: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:380
 #, c-format
 msgid "Error code %u when updating an entry: %s"
-msgstr "Foutcode %u bij bijwerken van een regel: %s"
+msgstr "Foutcode %u bij bijwerken van een item: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:386
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
-msgstr ""
+msgstr "Foutcode %u bij verwijderen van een item: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -299,26 +301,26 @@ msgstr "Foutcode %u bij uploaden: %s"
 #: ../gdata/gdata-service.c:404
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
-msgstr "Foutcode %u bij draaien van een batch operatie: %s"
+msgstr "Foutcode %u bij draaien van een batch-operatie: %s"
 
 #. Translators: the parameter is the URI which is invalid.
 #: ../gdata/gdata-service.c:685
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "Ongeldige redirect URI: %s"
+msgstr "Ongeldige doorverwijzing-URI: %s"
 
 #: ../gdata/gdata-service.c:1337
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
-msgstr "De regel is al ingevoerd."
+msgstr "Het item is al ingevoerd."
 
 #. Resumable upload error.
 #: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr ""
-"Fout van de server ontvangen na uploaden van een voortzetbaar upload-deel"
+"Serverfout ontvangen na uploaden van een te hervatten gedeeltelijke upload"
 
 #: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
@@ -334,34 +336,34 @@ msgstr "Stroom is al gesloten"
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
-"De inhoud van een %s element (\"%s\") was niet in hexadecimal RGB formaat."
+"De inhoud van een element ‘%s’ (‘%s’) was niet in hexadecimaal RGB-formaat."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:315
 #: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
-msgstr "Je moet geauthenticeerd zijn om alle agenda's op te vragen."
+msgstr "U moet zich authenticeren zijn om alle agenda's op te vragen."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:412
 #: ../gdata/services/calendar/gdata-calendar-service.c:463
 #: ../gdata/services/calendar/gdata-calendar-service.c:508
 #: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
-msgstr "Je moet geauthenticeerd zijn om je eigen agenda's op te vragen."
+msgstr "U moet zich authenticeren zijn om uw eigen agenda's op te vragen."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:517
 #: ../gdata/services/calendar/gdata-calendar-service.c:581
 msgid "The calendar did not have a content URI."
-msgstr "De agenda heeft geen inhoud URI."
+msgstr "De agenda heeft geen inhoud-URI."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
 #: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
-msgstr "Je moet geauthenticeerd zijn om contacten op te vragen."
+msgstr "U moet zich authenticeren om contacten op te vragen."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:424
 #: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
-msgstr "Je moet geauthenticeerd zijn om contactgroepen op te vragen."
+msgstr "U moet zich authenticeren om contactgroepen op te vragen."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:514
 msgid "The group has already been inserted."
@@ -369,20 +371,20 @@ msgstr "De groep is al ingevoerd."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:521
 msgid "You must be authenticated to insert a group."
-msgstr "Je moet geauthenticeerd zijn om een groep in te voeren."
+msgstr "U moet zich authenticeren om een groep in te voeren."
 
 #: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
-msgstr "Je moet geauthenticeerd zijn om documenten te downloaden."
+msgstr "U moet zich authenticeren om documenten te downloaden."
 
 #: ../gdata/services/documents/gdata-documents-service.c:459
 #: ../gdata/services/documents/gdata-documents-service.c:509
 msgid "You must be authenticated to query documents."
-msgstr "Je moet geauthenticeerd zijn om documenten op te vragen."
+msgstr "U moet zich authenticeren om documenten op te vragen."
 
 #: ../gdata/services/documents/gdata-documents-service.c:554
 msgid "You must be authenticated to upload documents."
-msgstr "Je moet geauthenticeerd zijn om documenten te uploaden."
+msgstr "U moet zich authenticeren om documenten te uploaden."
 
 #: ../gdata/services/documents/gdata-documents-service.c:560
 msgid "The document has already been uploaded."
@@ -390,44 +392,44 @@ msgstr "Het document is al geüpload."
 
 #: ../gdata/services/documents/gdata-documents-service.c:704
 msgid "You must be authenticated to update documents."
-msgstr "Je moet geauthenticeerd zijn om documenten te updaten."
+msgstr "U moet zich authenticeren om documenten bij te werken."
 
 #: ../gdata/services/documents/gdata-documents-service.c:882
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
-msgstr "Het inhoudtype van het aangeleverde document ('%s') is niet herkend."
+msgstr "Het type van het aangeleverde document (‘%s’) werd niet herkend."
 
 #: ../gdata/services/documents/gdata-documents-service.c:927
 #: ../gdata/services/documents/gdata-documents-service.c:1110
 msgid "You must be authenticated to move documents and folders."
-msgstr "Je moet geauthenticeerd zijn om documenten en folders te verplaatsen."
+msgstr "U moet zich authenticeren om documenten en folders te verplaatsen."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
-"Je moet een gebruikernaam geven of geauthenticeerd zijn om een gebruiker op "
-"te vragen."
+"U moet een gebruikernaam geven zich authenticeren om een gebruiker op te "
+"vragen."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
-msgstr "Opvraag parameter niet toegestaan voor albums."
+msgstr "Query-parameter niet toegestaan voor albums."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
-"Je moet een gebruikernaam opgeven of geauthenticeerd zijn om alle albums op "
-"te vragen."
+"U moet een gebruikernaam opgeven of zich authenticeren zijn om alle albums "
+"op te vragen."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
-msgstr "Het album had geen feed link."
+msgstr "Het album bevatte geen verwijzing naar een feed."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
-msgstr "Je moet geauthenticeerd zijn om een bestand te uploaden."
+msgstr "U moet zich authenticeren om een bestand te uploaden."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
@@ -435,17 +437,17 @@ msgstr "Het album is al ingevoerd."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
-msgstr "Je moet geauthenticeerd zijn om een album in te voeren."
+msgstr "U moet zich authenticeren om een album in te voeren."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:456
 #, c-format
 msgid "This service is not available at the moment."
-msgstr "Deze service is op dit moment niet beschikbaar"
+msgstr "Deze service is op dit moment niet beschikbaar."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "Je moet geauthenticeerd zijn om dit te doen."
+msgstr "U moet zich authenticeren om dit te doen."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:465
 #, c-format
@@ -453,14 +455,16 @@ msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr ""
-"Je hebt de laatste tijd te veel API calls gemaakt. Wacht een paar minuten en "
-"probeer opnieuw."
+"U heeft de laatste tijd te veel API-aanroepen uitgevoerd. Wacht een paar "
+"minuten en probeer opnieuw."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:468
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "Je invoerquota is overschreden. Verwijder enkele en probeer opnieuw."
+msgstr ""
+"Uw heeft het item-quota overschreden. Verwijder enkele items en probeer dan "
+"opnieuw."
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
@@ -470,19 +474,18 @@ msgstr "Je invoerquota is overschreden. Verwijder enkele en probeer opnieuw."
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr ""
-"Onbekende foutcode \"%s\" in domein \"%s\" ontvangen met locatie \"%s\"."
+msgstr "Onbekende foutcode ‘%s’ in domein ‘%s’ ontvangen met locatie ‘%s’."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:499
 #, c-format
 msgid "Unknown and unparsable error received."
-msgstr "Onbekende en niet-parsbare fout ontvangen."
+msgstr "Onbekende en niet-verwerkbare fout ontvangen."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:763
 #: ../gdata/services/youtube/gdata-youtube-service.c:820
 msgid "The video did not have a related videos <link>."
-msgstr "De video heeft geen gerelateerde videos <link>."
+msgstr "De video heeft geen <link> naar gerelateerde video's."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:882
 msgid "You must be authenticated to upload a video."
-msgstr "Je moet geauthenticeerd zijn om een video te uploaden."
+msgstr "U moet zich authenticeren om een video te uploaden."
