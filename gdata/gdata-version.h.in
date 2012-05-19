@@ -17,6 +17,9 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef GDATA_VERSION_H
+#define GDATA_VERSION_H
+
 /**
  * SECTION:gdata-version
  * @Short_description: Macros to check the libgdata version
@@ -26,9 +29,6 @@
  *
  * Since: 0.11.0
  */
-
-#ifndef GDATA_VERSION_H
-#define GDATA_VERSION_H
 
 /**
  * GDATA_MAJOR_VERSION:
