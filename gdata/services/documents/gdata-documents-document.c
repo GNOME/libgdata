@@ -24,8 +24,8 @@
  * @include: gdata/services/documents/gdata-documents-document.h
  *
  * #GDataDocumentsDocument is a subclass of #GDataDocumentsEntry to represent an arbitrary Google Documents document (i.e. an arbitrary file which
- * isn't a Google Documents presentation, text document or spreadsheet). It is subclassed by #GDataDocumentsPresentation, #GDataDocumentsText and
- * #GDataDocumentsSpreadsheet, which represent those specific types of Google Document, respectively.
+ * isn't a Google Documents presentation, text document, drawing or spreadsheet). It is subclassed by #GDataDocumentsPresentation, #GDataDocumentsText,
+ * #GDataDocumentsDrawing and #GDataDocumentsSpreadsheet, which represent those specific types of Google Document, respectively.
  *
  * #GDataDocumentsDocument used to be abstract, but was made instantiable in version 0.13.0 to allow for arbitrary file uploads. This can be achieved
  * by setting #GDataDocumentsUploadQuery:convert to %FALSE when making an upload using gdata_documents_service_upload_document_resumable(). See the

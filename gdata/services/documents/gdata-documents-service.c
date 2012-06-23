@@ -257,6 +257,7 @@
 #include "gdata-documents-service.h"
 #include "gdata-documents-spreadsheet.h"
 #include "gdata-documents-text.h"
+#include "gdata-documents-drawing.h"
 #include "gdata-documents-presentation.h"
 #include "gdata-batchable.h"
 #include "gdata-service.h"
@@ -874,6 +875,8 @@ gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadS
 		new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
 	} else if (g_str_has_prefix (term_pos, "document'") == TRUE) {
 		new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
+	} else if (g_str_has_prefix (term_pos, "drawing'") == TRUE) {
+		new_document_type = GDATA_TYPE_DOCUMENTS_DRAWING;
 	}
 
 done:

@@ -45,6 +45,7 @@
 #include "gdata-documents-text.h"
 #include "gdata-documents-presentation.h"
 #include "gdata-documents-folder.h"
+#include "gdata-documents-drawing.h"
 #include "gdata-types.h"
 #include "gdata-private.h"
 #include "gdata-service.h"
@@ -109,6 +110,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			entry_type = GDATA_TYPE_DOCUMENTS_FOLDER;
 		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#file") == 0) {
 			entry_type = GDATA_TYPE_DOCUMENTS_DOCUMENT;
+		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#drawing") == 0) {
+			entry_type = GDATA_TYPE_DOCUMENTS_DRAWING;
 		} else {
 			g_message ("%s documents are not handled yet", kind);
 			g_free (kind);

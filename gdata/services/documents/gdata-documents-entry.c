@@ -233,7 +233,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * identify a given document or folder, use its #GDataEntry:id.
 	 *
 	 * Resource IDs have the form:
-	 * <literal><replaceable>document|spreadsheet|presentation|folder</replaceable>:<replaceable>untyped resource ID</replaceable></literal>; whereas
+	 * <literal><replaceable>document|drawing|spreadsheet|presentation|folder</replaceable>:<replaceable>untyped resource ID</replaceable></literal>; whereas
 	 * entry IDs have the form:
 	 * <literal>https://docs.google.com/feeds/id/<replaceable>resource ID</replaceable></literal> in version 3 of the API.
 	 *
