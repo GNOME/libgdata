@@ -128,7 +128,6 @@ G_STMT_START {
 typedef struct {
 	GDataCalendarCalendar *calendar1;
 	GDataCalendarCalendar *calendar2;
-	GDataCalendarCalendar *calendar3;
 } QueryCalendarsData;
 
 static void
@@ -159,16 +158,6 @@ set_up_query_calendars (QueryCalendarsData *data, gconstpointer service)
 	                                                                       GDATA_ENTRY (calendar), NULL, NULL));
 	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar2));
 	g_object_unref (calendar);
-
-	calendar = gdata_calendar_calendar_new (NULL);
-	gdata_entry_set_title (GDATA_ENTRY (calendar), "Test Calendar 3");
-	gdata_calendar_calendar_set_color (calendar, &colour);
-	data->calendar3 = GDATA_CALENDAR_CALENDAR (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                                       gdata_calendar_service_get_primary_authorization_domain (),
-	                                                                       "https://www.google.com/calendar/feeds/default/owncalendars/full",
-	                                                                       GDATA_ENTRY (calendar), NULL, NULL));
-	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar3));
-	g_object_unref (calendar);
 }
 
 static void
@@ -182,10 +171,6 @@ tear_down_query_calendars (QueryCalendarsData *data, gconstpointer service)
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
 	                                      GDATA_ENTRY (data->calendar2), NULL, NULL) == TRUE);
 	g_object_unref (data->calendar2);
-
-	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
-	                                      GDATA_ENTRY (data->calendar3), NULL, NULL) == TRUE);
-	g_object_unref (data->calendar3);
 }
 
 static void
