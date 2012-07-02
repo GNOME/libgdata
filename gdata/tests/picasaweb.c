@@ -188,10 +188,12 @@ assert_files_equal (GDataPicasaWebFile *file1, GDataPicasaWebFile *file2, gboole
 	if (compare_inserted_data == TRUE) {
 		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (file1)), ==, gdata_entry_get_id (GDATA_ENTRY (file2)));
 		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (file1)), !=, NULL);
-		g_assert_cmpstr (gdata_entry_get_etag (GDATA_ENTRY (file1)), ==, gdata_entry_get_etag (GDATA_ENTRY (file2)));
+		/* Note: We don't check the ETags are equal, because Google like to randomly change ETags without warning. */
 		g_assert_cmpstr (gdata_entry_get_etag (GDATA_ENTRY (file1)), !=, NULL);
-		g_assert_cmpint (gdata_entry_get_updated (GDATA_ENTRY (file1)), ==, gdata_entry_get_updated (GDATA_ENTRY (file2)));
+		g_assert_cmpstr (gdata_entry_get_etag (GDATA_ENTRY (file2)), !=, NULL);
+		/* Same for the updated times. */
 		g_assert_cmpint (gdata_entry_get_updated (GDATA_ENTRY (file1)), >, 0);
+		g_assert_cmpint (gdata_entry_get_updated (GDATA_ENTRY (file2)), >, 0);
 		g_assert_cmpint (gdata_entry_get_published (GDATA_ENTRY (file1)), ==, gdata_entry_get_published (GDATA_ENTRY (file2)));
 		g_assert_cmpint (gdata_entry_get_published (GDATA_ENTRY (file1)), >, 0);
 	}
@@ -228,8 +230,9 @@ assert_files_equal (GDataPicasaWebFile *file1, GDataPicasaWebFile *file2, gboole
 	if (compare_inserted_data == TRUE) {
 		GList *contents1, *contents2, *thumbnails1, *thumbnails2, *i1, *i2;
 
-		g_assert_cmpint (gdata_picasaweb_file_get_edited (file1), ==, gdata_picasaweb_file_get_edited (file2));
+		/* Same as above; don't compare the edited times. */
 		g_assert_cmpint (gdata_picasaweb_file_get_edited (file1), >, 0);
+		g_assert_cmpint (gdata_picasaweb_file_get_edited (file2), >, 0);
 		g_assert_cmpstr (gdata_picasaweb_file_get_version (file1), ==, gdata_picasaweb_file_get_version (file2));
 		g_assert_cmpuint (strlen (gdata_picasaweb_file_get_version (file1)), >, 0);
 		g_assert_cmpstr (gdata_picasaweb_file_get_album_id (file1), ==, gdata_picasaweb_file_get_album_id (file2));
