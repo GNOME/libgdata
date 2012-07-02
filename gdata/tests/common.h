@@ -36,7 +36,7 @@ G_BEGIN_DECLS
 #define INCORRECT_USERNAME "libgdata.test.invalid@gmail.com"
 
 /* These two must not match (obviously) */
-#define PASSWORD "gdata-libgdata"
+#define PASSWORD "libgdata-gdata"
 #define INCORRECT_PASSWORD "bad-password"
 
 void gdata_test_init (int argc, char **argv);
