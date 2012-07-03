@@ -394,11 +394,12 @@ test_contact_insert (InsertData *data, gconstpointer service)
 	gdata_test_compare_kind (GDATA_ENTRY (new_contact), "http://schemas.google.com/contact/2008#contact", NULL);
 	g_clear_error (&error);
 
-	/* Check its edited date */
+	/* Check its edited date. Yes, we have to allow the edited time to possibly precede the creation time because Google's
+	 * servers can allow this to happen. Somehow. */
 	edited = gdata_contacts_contact_get_edited (contact);
 	creation_time = gdata_contacts_contact_get_edited (new_contact);
-	g_assert_cmpint (creation_time + 5, >=, edited);
-	g_assert_cmpint (creation_time, <=, edited);
+	g_assert_cmpint (creation_time + TIME_FUZZINESS, >=, edited);
+	g_assert_cmpint (creation_time - TIME_FUZZINESS, <=, edited);
 
 	/* Various properties */
 	g_assert_cmpstr (gdata_contacts_contact_get_nickname (new_contact), ==, "Big J");

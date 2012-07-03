@@ -39,6 +39,11 @@ G_BEGIN_DECLS
 #define PASSWORD "libgdata-gdata"
 #define INCORRECT_PASSWORD "bad-password"
 
+/* The amount of fuzziness (in seconds) used in comparisons between times which should (theoretically) be equal.
+ * Due to the weak consistency used in Google's servers, it's hard to guarantee that timestamps which should be equal,
+ * actually are. */
+#define TIME_FUZZINESS 5
+
 void gdata_test_init (int argc, char **argv);
 
 gboolean gdata_test_internet (void);
