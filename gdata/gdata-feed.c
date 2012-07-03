@@ -532,8 +532,12 @@ post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
 	GDataFeedPrivate *priv = GDATA_FEED (parsable)->priv;
 
 	/* Check for missing required elements */
-	if (priv->title == NULL)
-		return gdata_parser_error_required_element_missing ("title", "feed", error);
+	/* FIXME: The YouTube comments feed seems to have lost its <feed/title> element, making it an invalid Atom feed and meaning
+	 * the check below has to be commented out.
+	 * Filed as: https://code.google.com/p/gdata-issues/issues/detail?id=2908.
+	 * Discovered in: https://bugzilla.gnome.org/show_bug.cgi?id=679072#c12. */
+	/*if (priv->title == NULL)
+		return gdata_parser_error_required_element_missing ("title", "feed", error);*/
 	if (priv->id == NULL)
 		return gdata_parser_error_required_element_missing ("id", "feed", error);
 	if (priv->updated == -1)
