@@ -1958,6 +1958,11 @@ add_photo_to_contact (GDataContactsService *service, GDataContactsContact *conta
 	g_assert (gdata_contacts_contact_set_photo (contact, service, photo_data, length, "image/jpeg", NULL, NULL) == TRUE);
 
 	g_free (photo_data);
+
+	/* HACK: It fairly consistently seems to take the Google servers about 3 seconds to process uploaded photos. Before this
+	 * time, a query for the photo will return an error.
+	 * Helps: bgo#679072 */
+	sleep (3);
 }
 
 typedef TempContactData TempContactWithPhotoData;
