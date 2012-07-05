@@ -812,7 +812,12 @@ test_feed_error_handling (void)
 
 	/* title */
 	TEST_XML_ERROR_HANDLING ("<title>First title</title><title>Second title</title>"); /* duplicate title */
+#if 0
+	/* FIXME: Removed due to the YouTube comments feed not being a valid Atom feed.
+	 * See: https://code.google.com/p/gdata-issues/issues/detail?id=2908
+	 * and: https://bugzilla.gnome.org/show_bug.cgi?id=679072 */
 	TEST_XML_ERROR_HANDLING ("<id>ID</id><updated>2009-01-25T14:07:37.880860Z</updated>"); /* missing title */
+#endif
 
 	/* subtitle */
 	TEST_XML_ERROR_HANDLING ("<subtitle>First subtitle</subtitle><subtitle>Second subtitle</subtitle>"); /* duplicate subtitle */
