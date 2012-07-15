@@ -891,6 +891,163 @@ done:
 }
 
 /**
+ * gdata_documents_service_copy_document:
+ * @self: an authenticated #GDataDocumentsService
+ * @document: the #GDataDocumentsDocument to copy
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Copy the given @document, producing a duplicate document in the same folder and returning its #GDataDocumentsDocument. Note that @document
+ * may only be a document, not an arbitrary file; i.e. @document must be an instance of a subclass of #GDataDocumentsDocument.
+ *
+ * Errors from #GDataServiceError can be returned for exceptional conditions, as determined by the server.
+ *
+ * Return value: (transfer full): the duplicate #GDataDocumentsDocument, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.13.1
+ */
+GDataDocumentsDocument *
+gdata_documents_service_copy_document (GDataDocumentsService *self, GDataDocumentsDocument *document, GCancellable *cancellable, GError **error)
+{
+	GDataDocumentsDocument *new_document;
+	gchar *upload_data;
+	SoupMessage *message;
+	guint status;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                     _("You must be authenticated to copy documents."));
+		return NULL;
+	}
+
+	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST,
+	                                        "https://docs.google.com/feeds/default/private/full", NULL, TRUE);
+
+	/* Append the data */
+	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (document));
+	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+
+	/* Send the message */
+	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
+		g_object_unref (message);
+		return NULL;
+	} else if (status != SOUP_STATUS_CREATED) {
+		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (klass->parse_error_response != NULL);
+		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase,
+		                             message->response_body->data, message->response_body->length, error);
+		g_object_unref (message);
+		return NULL;
+	}
+
+	/* Parse the XML; and update the entry */
+	g_assert (message->response_body->data != NULL);
+	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_parsable_new_from_xml (G_OBJECT_TYPE (document), message->response_body->data,
+	                                                                      message->response_body->length, error));
+	g_object_unref (message);
+
+	return new_document;
+}
+
+static void
+copy_document_thread (GSimpleAsyncResult *result, GDataDocumentsService *service, GCancellable *cancellable)
+{
+	GDataDocumentsDocument *document, *new_document;
+	GError *error = NULL;
+
+	document = g_simple_async_result_get_op_res_gpointer (result);
+
+	/* Copy the document and return */
+	new_document = gdata_documents_service_copy_document (service, document, cancellable, &error);
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+		return;
+	}
+
+	/* Return the document copy */
+	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (new_document), (GDestroyNotify) g_object_unref);
+}
+
+/**
+ * gdata_documents_service_copy_document_async:
+ * @self: a #GDataDocumentsService
+ * @document: the #GDataDocumentsDocument to copy
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the operation is finished, or %NULL
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Copy the given @document, producing a duplicate document in the same folder and returning its #GDataDocumentsDocument. @self and @document are
+ * both reffed when this function is called, so can safely be unreffed after this function returns.
+ *
+ * For more details, see gdata_documents_service_copy_document(), which is the synchronous version of this function.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_documents_service_copy_document_finish() to get the results
+ * of the operation.
+ *
+ * Since: 0.13.1
+ */
+void
+gdata_documents_service_copy_document_async (GDataDocumentsService *self, GDataDocumentsDocument *document, GCancellable *cancellable,
+                                             GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+
+	g_return_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self));
+	g_return_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (document));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_documents_service_copy_document_async);
+	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (document), (GDestroyNotify) g_object_unref);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) copy_document_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_documents_service_copy_document_finish:
+ * @self: a #GDataDocumentsService
+ * @async_result: a #GAsyncResult
+ * @error: a #GError, or %NULL
+ *
+ * Finish an asynchronous operation to copy a #GDataDocumentsDocument started with gdata_documents_service_copy_document_async().
+ *
+ * Return value: (transfer full): the duplicate #GDataDocumentsDocument, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.13.1
+ */
+GDataDocumentsDocument *
+gdata_documents_service_copy_document_finish (GDataDocumentsService *self, GAsyncResult *async_result, GError **error)
+{
+	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	GDataDocumentsDocument *new_document;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_documents_service_copy_document_async);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE) {
+		return NULL;
+	}
+
+	new_document = g_simple_async_result_get_op_res_gpointer (result);
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (new_document));
+
+	return new_document;
+}
+
+/**
  * gdata_documents_service_add_entry_to_folder:
  * @self: an authenticated #GDataDocumentsService
  * @entry: the #GDataDocumentsEntry to move

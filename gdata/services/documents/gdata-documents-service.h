@@ -115,6 +115,13 @@ GDataUploadStream *gdata_documents_service_update_document_resumable (GDataDocum
 GDataDocumentsDocument *gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadStream *upload_stream,
                                                                GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
+GDataDocumentsDocument *gdata_documents_service_copy_document (GDataDocumentsService *self, GDataDocumentsDocument *document,
+                                                               GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_documents_service_copy_document_async (GDataDocumentsService *self, GDataDocumentsDocument *document, GCancellable *cancellable,
+                                                  GAsyncReadyCallback callback, gpointer user_data);
+GDataDocumentsDocument *gdata_documents_service_copy_document_finish (GDataDocumentsService *self, GAsyncResult *async_result,
+                                                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
 GDataDocumentsEntry *gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry,
                                                                   GDataDocumentsFolder *folder, GCancellable *cancellable,
                                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

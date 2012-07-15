@@ -961,6 +961,46 @@ test_update (UpdateDocumentData *data, gconstpointer _test_params)
 }
 
 typedef struct {
+	TempDocumentData parent;
+	GDataDocumentsDocument *new_document;
+} TempCopyDocumentData;
+
+static void
+set_up_copy_document (TempCopyDocumentData *data, gconstpointer service)
+{
+	/* Create a temporary document. */
+	set_up_temp_document_spreadsheet ((TempDocumentData*) data, service);
+
+	data->new_document = NULL;
+}
+
+static void
+tear_down_copy_document (TempCopyDocumentData *data, gconstpointer service)
+{
+	/* Delete the copied document */
+	delete_entry (GDATA_DOCUMENTS_ENTRY (data->new_document), GDATA_SERVICE (service));
+	g_object_unref (data->new_document);
+
+	/* Delete the folder */
+	tear_down_temp_document ((TempDocumentData*) data, service);
+}
+
+static void
+test_copy_document (TempCopyDocumentData *data, gconstpointer service)
+{
+	GError *error = NULL;
+
+	/* Copy the document */
+	data->new_document = gdata_documents_service_copy_document (GDATA_DOCUMENTS_SERVICE (service), data->parent.document, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (data->new_document));
+
+	/* Check their IDs are different but that their other properties (e.g. title) are the same. */
+	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (data->parent.document)), !=, gdata_entry_get_id (GDATA_ENTRY (data->new_document)));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->parent.document)), ==, gdata_entry_get_title (GDATA_ENTRY (data->new_document)));
+}
+
+typedef struct {
 	GDataDocumentsFolder *folder;
 	GDataDocumentsDocument *document;
 } FoldersData;
@@ -1745,6 +1785,12 @@ main (int argc, char *argv[])
 		            test_query_all_documents_async_progress_closure, tear_down_temp_documents);
 		g_test_add ("/documents/query/all_documents/async/cancellation", GDataAsyncTestData, service, set_up_temp_documents_async,
 		            test_query_all_documents_async_cancellation, tear_down_temp_documents_async);
+
+		g_test_add ("/documents/copy", TempCopyDocumentData, service, set_up_copy_document, test_copy_document, tear_down_copy_document);
+		/*g_test_add ("/documents/copy/async", GDataAsyncTestData, service, set_up_folders_add_to_folder_async,
+		            test_folders_add_to_folder_async, tear_down_folders_add_to_folder_async);
+		g_test_add ("/documents/copy/async/cancellation", GDataAsyncTestData, service, set_up_folders_add_to_folder_async,
+		            test_folders_add_to_folder_async_cancellation, tear_down_folders_add_to_folder_async);*/
 
 		g_test_add ("/documents/folders/add_to_folder", FoldersData, service, set_up_folders_add_to_folder,
 		            test_folders_add_to_folder, tear_down_folders_add_to_folder);
