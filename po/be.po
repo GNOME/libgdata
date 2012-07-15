@@ -2,9 +2,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-27 13:58+0300\n"
-"PO-Revision-Date: 2012-02-27 13:58+0300\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-07-15 10:02+0000\n"
+"PO-Revision-Date: 2012-07-15 14:36+0300\n"
 "Last-Translator: Kasia Bondarava <kasia.bondarava@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -16,24 +17,24 @@ msgstr ""
 "X-Generator: Virtaal 0.7.0\n"
 "X-Project-Style: gnome\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:643
-#: ../gdata/gdata-oauth1-authorizer.c:839
-#: ../gdata/gdata-oauth1-authorizer.c:1111
+#: ../gdata/gdata-client-login-authorizer.c:597
+#: ../gdata/gdata-oauth1-authorizer.c:804
+#: ../gdata/gdata-oauth1-authorizer.c:1076
 msgid "The server returned a malformed response."
 msgstr "Сервер вярнуў адказ няправільнага фармату."
 
-#: ../gdata/gdata-client-login-authorizer.c:663 ../gdata/gdata-service.c:320
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:320
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Не ўдалося злучыцца з серверам паслугі."
 
-#: ../gdata/gdata-client-login-authorizer.c:668 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:325
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Не ўдалося злучыцца з проксі-серверам."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:674 ../gdata/gdata-service.c:331
+#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:331
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -41,58 +42,58 @@ msgstr ""
 "не адпавядае стандарту: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:680 ../gdata/gdata-service.c:337
+#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:337
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Неабходна ідэнтыфікацыя: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:685 ../gdata/gdata-service.c:342
+#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:342
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Запатрабаваны рэсурс не знойдзены: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:691 ../gdata/gdata-service.c:348
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:348
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Запіс быў мадыфікаваны з часоў апошняга сцягвання: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:703 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:362
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Хібны код %u падчас ідэнтыфікацыі: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:798
+#: ../gdata/gdata-client-login-authorizer.c:752
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Каб увайсці, неабходна запоўніць CAPTCHA."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:836
+#: ../gdata/gdata-client-login-authorizer.c:790
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Гэты конт патрабуе асаблівы пароль для гэтай праграмы. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:843
+#: ../gdata/gdata-client-login-authorizer.c:797
 msgid "Your username or password were incorrect."
 msgstr "Пададзенае імя карыстальніка ці пароль хібныя."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:864
+#: ../gdata/gdata-client-login-authorizer.c:818
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Адрас электроннай пошты для вашага конта не прайшоў праверку. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:869
+#: ../gdata/gdata-client-login-authorizer.c:823
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Вы не згадзіліся з умовамі карыстання паслугай. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:875
+#: ../gdata/gdata-client-login-authorizer.c:829
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -102,25 +103,25 @@ msgstr ""
 "карыстальніка і пароль. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:880
+#: ../gdata/gdata-client-login-authorizer.c:834
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Ваш конт быў выдалены. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:885
+#: ../gdata/gdata-client-login-authorizer.c:839
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Ваш конт быў выключаны. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:890
+#: ../gdata/gdata-client-login-authorizer.c:844
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Доступ да конта гэтай паслугі быў выключаны. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:895
+#: ../gdata/gdata-client-login-authorizer.c:849
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "У дадзены момант гэта паслуга недаступна. (%s)"
@@ -143,17 +144,17 @@ msgid "This comment may not be deleted."
 msgstr "Немагчыма выдаліць гэты каментарый."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:816
+#: ../gdata/gdata-download-stream.c:752
 msgid "Invalid seek request"
 msgstr "Хібны запыт пракруткі"
 
-#: ../gdata/gdata-oauth1-authorizer.c:814
+#: ../gdata/gdata-oauth1-authorizer.c:779
 msgid "The server rejected the temporary credentials request."
 msgstr "Сервер адхіліў часовы запыт мандата."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1085
+#: ../gdata/gdata-oauth1-authorizer.c:1050
 msgid "Access was denied by the user or server."
 msgstr "Доступ быў адхілены карыстальнікам ці серверам."
 
@@ -172,7 +173,7 @@ msgstr "Пусты дакумент."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:66
+#: ../gdata/gdata-parser.c:67
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "У элеменце %s адсутнічае запатрабаванае змесціва."
@@ -182,7 +183,7 @@ msgstr "У элеменце %s адсутнічае запатрабаванае
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:82
+#: ../gdata/gdata-parser.c:83
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "Змесціва элемента %s (\"%s\") не закадавана ў фармаце ISO 8601."
@@ -192,7 +193,7 @@ msgstr "Змесціва элемента %s (\"%s\") не закадавана 
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:102
+#: ../gdata/gdata-parser.c:103
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "Значэнне ўласцівасці %s элемента %s (\"%s\") невядома."
@@ -202,7 +203,7 @@ msgstr "Значэнне ўласцівасці %s элемента %s (\"%s\") 
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:120
+#: ../gdata/gdata-parser.c:121
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Змесціва элемента %s (\"%s\") невядома."
@@ -212,7 +213,7 @@ msgstr "Змесціва элемента %s (\"%s\") невядома."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:140
+#: ../gdata/gdata-parser.c:141
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Запатрабаваная ўласцівасць элемента %s (%s) не знойдзена."
@@ -223,7 +224,7 @@ msgstr "Запатрабаваная ўласцівасць элемента %s 
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:163
+#: ../gdata/gdata-parser.c:164
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -236,7 +237,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:182
+#: ../gdata/gdata-parser.c:183
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Запатрабаваны элемент (%s) не знойдзены."
@@ -245,7 +246,7 @@ msgstr "Запатрабаваны элемент (%s) не знойдзены."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:197
+#: ../gdata/gdata-parser.c:198
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Быў створаны дублікат адзінкавага элемента (%s)."
@@ -300,18 +301,24 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "Памылковы код %u падчас запуску групавой аперацыі: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:711
+#: ../gdata/gdata-service.c:685
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Хібны URI-адрас перанакіравання: %s"
 
-#: ../gdata/gdata-service.c:1363
+#: ../gdata/gdata-service.c:1337
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
 msgstr "Запіс ужо ўстаўлены."
 
-#: ../gdata/gdata-upload-stream.c:889
+#. Resumable upload error.
+#: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr "Пасля пасылкі аднаўляльнага блока даных сервер вярнуў памылку."
+
+#: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
 msgstr "Струмень ужо закрыты"
 
@@ -365,36 +372,41 @@ msgstr "Група ўжо ўстаўлена."
 msgid "You must be authenticated to insert a group."
 msgstr "Вам трэба прайсці ідэнтыфікацыю, каб уставіць групу."
 
-#: ../gdata/services/documents/gdata-documents-document.c:274
+#: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
 msgstr "Вам трэба прайсці ідэнтыфікацыю, каб сцягваць дакументы."
 
-#: ../gdata/services/documents/gdata-documents-service.c:397
-#: ../gdata/services/documents/gdata-documents-service.c:452
+#: ../gdata/services/documents/gdata-documents-service.c:460
+#: ../gdata/services/documents/gdata-documents-service.c:510
 msgid "You must be authenticated to query documents."
 msgstr ""
 "Вам трэба прайсці ідэнтыфікацыю, каб мець магчымасць запыту дакументаў."
 
-#: ../gdata/services/documents/gdata-documents-service.c:531
+#: ../gdata/services/documents/gdata-documents-service.c:555
 msgid "You must be authenticated to upload documents."
 msgstr "Вам трэба прайсці ідэнтыфікацыю, каб публікаваць дакументы."
 
-#: ../gdata/services/documents/gdata-documents-service.c:537
+#: ../gdata/services/documents/gdata-documents-service.c:561
 msgid "The document has already been uploaded."
 msgstr "Дакумент ужо апублікаваны на серверы."
 
-#: ../gdata/services/documents/gdata-documents-service.c:592
+#: ../gdata/services/documents/gdata-documents-service.c:705
 msgid "You must be authenticated to update documents."
 msgstr "Вам трэба прайсці ідэнтыфікацыю, каб абнаўляць дакументы."
 
-#: ../gdata/services/documents/gdata-documents-service.c:655
+#: ../gdata/services/documents/gdata-documents-service.c:885
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Не ўдалося пазнаць тып змесціва пададзенага дакумента (\"%s\")."
 
-#: ../gdata/services/documents/gdata-documents-service.c:704
-#: ../gdata/services/documents/gdata-documents-service.c:889
+#: ../gdata/services/documents/gdata-documents-service.c:925
+msgid "You must be authenticated to copy documents."
+msgstr ""
+"Вам трэба прайсці ідэнтыфікацыю, каб магчы капіраваць дакументы."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1087
+#: ../gdata/services/documents/gdata-documents-service.c:1270
 msgid "You must be authenticated to move documents and folders."
 msgstr "Вам трэба прайсці ідэнтыфікацыю, каб перамяшчаць дакументы і папкі."
 
