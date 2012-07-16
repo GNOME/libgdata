@@ -9,14 +9,15 @@ msgstr ""
 "Project-Id-Version: libgdata.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-04-02 14:33+0000\n"
-"PO-Revision-Date: 2012-04-08 12:56+0200\n"
+"POT-Creation-Date: 2012-07-15 10:02+0000\n"
+"PO-Revision-Date: 2012-07-16 14:19+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:597
 #: ../gdata/gdata-oauth1-authorizer.c:804
@@ -173,7 +174,7 @@ msgstr "Documento vacío."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:66
+#: ../gdata/gdata-parser.c:67
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "A un elemento %s le faltaba el contenido requerido."
@@ -183,7 +184,7 @@ msgstr "A un elemento %s le faltaba el contenido requerido."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:82
+#: ../gdata/gdata-parser.c:83
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "El contenido del un elemento %s («%s») no está en formato ISO 8601."
@@ -193,7 +194,7 @@ msgstr "El contenido del un elemento %s («%s») no está en formato ISO 8601."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:102
+#: ../gdata/gdata-parser.c:103
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "Se desconoce el valor de la propiedad %s de un elemento %s («%s»)."
@@ -203,7 +204,7 @@ msgstr "Se desconoce el valor de la propiedad %s de un elemento %s («%s»)."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:120
+#: ../gdata/gdata-parser.c:121
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Se desconocía el contenido del elemento %s («%s»)."
@@ -213,7 +214,7 @@ msgstr "Se desconocía el contenido del elemento %s («%s»)."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:140
+#: ../gdata/gdata-parser.c:141
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Una propiedad necesaria de un elemento %s («%s») no estaba presente."
@@ -224,7 +225,7 @@ msgstr "Una propiedad necesaria de un elemento %s («%s») no estaba presente."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:163
+#: ../gdata/gdata-parser.c:164
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -237,7 +238,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:182
+#: ../gdata/gdata-parser.c:183
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Un elemento necesario (%s) no estaba presente."
@@ -246,7 +247,7 @@ msgstr "Un elemento necesario (%s) no estaba presente."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:197
+#: ../gdata/gdata-parser.c:198
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Un elemento (%s) estaba duplicado."
@@ -369,36 +370,41 @@ msgstr "Ya se ha introducido el grupo."
 msgid "You must be authenticated to insert a group."
 msgstr "Debe estar autenticado para introducir un grupo."
 
-#: ../gdata/services/documents/gdata-documents-document.c:274
+#: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
 msgstr "Debe estar autenticado para descargar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:461
-#: ../gdata/services/documents/gdata-documents-service.c:511
+#: ../gdata/services/documents/gdata-documents-service.c:460
+#: ../gdata/services/documents/gdata-documents-service.c:510
 msgid "You must be authenticated to query documents."
 msgstr "Debe estar autenticado para consultar sus documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:556
+#: ../gdata/services/documents/gdata-documents-service.c:555
 msgid "You must be authenticated to upload documents."
 msgstr "Debe estar autenticado para subir documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:562
+#: ../gdata/services/documents/gdata-documents-service.c:561
 msgid "The document has already been uploaded."
 msgstr "El documento ya se ha subido."
 
-#: ../gdata/services/documents/gdata-documents-service.c:699
+#: ../gdata/services/documents/gdata-documents-service.c:705
 msgid "You must be authenticated to update documents."
 msgstr "Debe estar autenticado para actualizar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:872
+#: ../gdata/services/documents/gdata-documents-service.c:885
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr ""
 "No se pudo reconocer el tipo de contenido del documento proporcionado («%s»)."
 
-#: ../gdata/services/documents/gdata-documents-service.c:921
-#: ../gdata/services/documents/gdata-documents-service.c:1104
+#: ../gdata/services/documents/gdata-documents-service.c:925
+#| msgid "You must be authenticated to query documents."
+msgid "You must be authenticated to copy documents."
+msgstr "Debe estar autenticado para copiar documentos."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1087
+#: ../gdata/services/documents/gdata-documents-service.c:1270
 msgid "You must be authenticated to move documents and folders."
 msgstr "Debe estar autenticado para mover documentos y carpetas."
 
@@ -472,8 +478,8 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
-"Código de error «%s» desconocido en el dominio «%s», recibido con la "
-"ubicación «%s»."
+"Código de error «%s» desconocido en el dominio «%s», recibido con la ubicación "
+"«%s»."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:499
 #, c-format
