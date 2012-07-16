@@ -36,6 +36,7 @@ GIO_REQS=2.17.3
 SOUP_REQS=2.37.91
 OAUTH_REQS=0.9.4
 GTK_REQS=2.91.2
+GOA_REQS=3.2
 
 # Before making a release, the GDATA_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:
 #
@@ -61,8 +62,10 @@ AC_SUBST(GDATA_API_VERSION)
 AC_SUBST(GDATA_API_VERSION_MAJOR)
 AC_SUBST(GDATA_API_VERSION_MINOR)
 
-pkg_modules="glib-2.0 >= $GLIB_REQS libxml-2.0 gthread-2.0 gio-2.0 >= $GIO_REQS libsoup-2.4 >= $SOUP_REQS oauth >= $OAUTH_REQS"
-PKG_CHECK_MODULES(GDATA, [$pkg_modules])
+GDATA_PACKAGES="glib-2.0 >= $GLIB_REQS libxml-2.0 gthread-2.0 gio-2.0 >= $GIO_REQS libsoup-2.4 >= $SOUP_REQS oauth >= $OAUTH_REQS"
+AC_SUBST([GDATA_PACKAGES])
+
+PKG_CHECK_MODULES(GDATA, [$GDATA_PACKAGES])
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
@@ -82,10 +85,14 @@ AM_CONDITIONAL([HAVE_GTK], [test "x$have_gtk" = "xyes"])
 AC_MSG_CHECKING(whether to build with GNOME support)
 AC_ARG_ENABLE(gnome, AS_HELP_STRING([--enable-gnome], [Whether to enable GNOME support]),, enable_gnome=yes)
 AC_MSG_RESULT($enable_gnome)
+AM_CONDITIONAL([ENABLE_GNOME], [test "x$enable_gnome" = "xyes"])
+
+GNOME_PACKAGES="libsoup-gnome-2.4 gnome-keyring-1 goa-1.0 >= $GOA_REQS"
+AC_SUBST([GNOME_PACKAGES])
 
 if test "x$enable_gnome" = "xyes"; then
 	AC_DEFINE(HAVE_GNOME, 1, [Defined if GNOME support is enabled])
-	PKG_CHECK_MODULES([GNOME], [libsoup-gnome-2.4 gnome-keyring-1])
+	PKG_CHECK_MODULES([GNOME], [$GNOME_PACKAGES])
 fi
 
 # Various necessary functions and headers

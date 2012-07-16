@@ -9,12 +9,14 @@ INCLUDES = \
 	-DLIBGDATA_DISABLE_DEPRECATED			\
 	$(DISABLE_DEPRECATED)				\
 	$(WARN_CFLAGS)					\
-	$(GDATA_CFLAGS)
+	$(GDATA_CFLAGS)					\
+	$(GNOME_CFLAGS)
 
 LIBS = \
 	$(top_builddir)/gdata/libgdata.la	\
 	$(GDK_PIXBUF_LIBS)			\
-	$(GDATA_LIBS)
+	$(GDATA_LIBS)				\
+	$(GNOME_LIBS)
 
 noinst_PROGRAMS = $(TEST_PROGS)
 

@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: libgdata
 Description: GData client library
 Version: @VERSION@
-Requires: libsoup-2.4 libxml-2.0
+Requires: @GDATA_PACKAGES@ @GNOME_PACKAGES@
 Libs: -L${libdir} -lgdata
 Cflags: -I${includedir}/libgdata

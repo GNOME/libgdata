@@ -2323,6 +2323,26 @@ GDataOAuth1AuthorizerPrivate
 </SECTION>
 
 <SECTION>
+<FILE>gdata-goa-authorizer</FILE>
+<TITLE>GDataGoaAuthorizer</TITLE>
+GDataGoaAuthorizer
+GDataGoaAuthorizerClass
+gdata_goa_authorizer_new
+gdata_goa_authorizer_get_goa_object
+<SUBSECTION Standard>
+GDATA_TYPE_GOA_AUTHORIZER
+GDATA_GOA_AUTHORIZER
+GDATA_GOA_AUTHORIZER_CLASS
+GDATA_IS_GOA_AUTHORIZER
+GDATA_IS_GOA_AUTHORIZER_CLASS
+GDATA_GOA_AUTHORIZER_GET_CLASS
+gdata_goa_authorizer_get_type
+<SUBSECTION Private>
+GDataGoaAuthorizerPrivate
+GOA_API_IS_SUBJECT_TO_CHANGE
+</SECTION>
+
+<SECTION>
 <FILE>gdata-commentable</FILE>
 <TITLE>GDataCommentable</TITLE>
 GDataCommentable

@@ -39,6 +39,10 @@
 #include <gdata/gdata-authorization-domain.h>
 #include <gdata/gdata-client-login-authorizer.h>
 #include <gdata/gdata-oauth1-authorizer.h>
+#ifdef GOA_API_IS_SUBJECT_TO_CHANGE
+/* You need to define GOA_API_IS_SUBJECT_TO_CHANGE in order to use the GOA authoriser. */
+#include <gdata/gdata-goa-authorizer.h>
+#endif /* GOA_API_IS_SUBJECT_TO_CHANGE */
 #include <gdata/gdata-commentable.h>
 #include <gdata/gdata-comment.h>
 #include <gdata/gdata-version.h>

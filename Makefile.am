@@ -167,6 +167,13 @@ gdata_headers = \
 	gdata/gdata-authorization-domain.h	\
 	gdata/gdata-client-login-authorizer.h	\
 	gdata/gdata-oauth1-authorizer.h
+
+if ENABLE_GNOME
+gdata_headers += \
+	gdata/gdata-goa-authorizer.h \
+	$(NULL)
+endif
+
 # The following headers are private, and shouldn't be installed:
 private_headers = \
 	gdata/gdata-private.h		\
@@ -393,6 +400,12 @@ gdata_sources = \
 	gdata/services/youtube/gdata-youtube-category.c		\
 	gdata/services/youtube/gdata-youtube-comment.c
 
+if ENABLE_GNOME
+gdata_sources += \
+	gdata/gdata-goa-authorizer.c \
+	$(NULL)
+endif
+
 main_header = gdata/gdata.h
 public_headers = \
 	$(gdatainclude_HEADERS)			\
@@ -473,7 +486,10 @@ EXTRA_DIST += introspection.m4
 if HAVE_INTROSPECTION
 gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir: gdata/libgdata.la
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_INCLUDES = GObject-2.0 libxml2-2.0 Soup-2.4
-gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_CFLAGS = $(GDATA_CFLAGS) $(gdata_libgdata_la_CPPFLAGS)
+if ENABLE_GNOME
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_INCLUDES += Goa-1.0
+endif
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_CFLAGS = $(GDATA_CFLAGS) $(GNOME_CFLAGS) $(gdata_libgdata_la_CPPFLAGS)
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_LIBS = gdata/libgdata.la
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_FILES = $(gdata_sources) $(public_headers)
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_NAMESPACE = GData
@@ -557,6 +573,7 @@ demos_scrapbook_scrapbook_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GDATA_CFLAGS) \
+	$(GNOME_CFLAGS) \
 	$(AM_CFLAGS) \
 	$(NULL)
 
@@ -564,6 +581,7 @@ demos_scrapbook_scrapbook_LDADD = \
 	$(top_builddir)/gdata/libgdata.la \
 	$(GTK_LIBS) \
 	$(GDATA_LIBS) \
+	$(GNOME_LIBS) \
 	$(AM_LDADD) \
 	$(NULL)
 
