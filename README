@@ -21,7 +21,7 @@ Dependencies
 
 If compiling with --enable-gnome (for GNOME support):
  * libsoup-gnome-2.4
- * gnome-keyring-1
+ * gcr-base-3
 
 Environment variables
 =====================

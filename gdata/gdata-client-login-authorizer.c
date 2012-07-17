@@ -209,7 +209,7 @@ gdata_client_login_authorizer_class_init (GDataClientLoginAuthorizerClass *klass
 	 * then be set to the password passed to gdata_client_login_authorizer_authenticate(), and a #GObject::notify signal will be emitted. If
 	 * authentication fails, it will be set to %NULL.
 	 *
-	 * If libgdata is compiled with libgnome-keyring support, the password will be stored in non-pageable memory. However, if it is retrieved
+	 * If libgdata is compiled with libgcr support, the password will be stored in non-pageable memory. However, if it is retrieved
 	 * using g_object_get() (or related functions) it will be copied to non-pageable memory and could end up being written to disk. Accessing
 	 * the password using gdata_client_login_authorizer_get_password() will not perform any copies, and so maintains privacy.
 	 *
@@ -1237,7 +1237,7 @@ gdata_client_login_authorizer_get_username (GDataClientLoginAuthorizer *self)
  *
  * It is not safe to call this while an authentication operation is ongoing.
  *
- * If libgdata is compiled with libgnome-keyring support, the password will be stored in non-pageable memory. Since this function doesn't return
+ * If libgdata is compiled with libgcr support, the password will be stored in non-pageable memory. Since this function doesn't return
  * a copy of the password, the returned value is guaranteed to not hit disk. It's advised that any copies of the password made in client programs
  * also use non-pageable memory.
  *

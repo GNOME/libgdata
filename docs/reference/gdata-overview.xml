@@ -189,8 +189,8 @@
 				is done in several ways in libgdata:</para>
 			<itemizedlist>
 				<listitem>
-					<para>If libgdata is compiled with libgnome-keyring support enabled (using the
-						<code class="literal">--enable-gnome</code> configuration flag), it will use gnome-keyring's support for
+					<para>If libgdata is compiled with libgcr support enabled (using the
+						<code class="literal">--enable-gnome</code> configuration flag), it will use libgcr's support for
 						non-pageable memory. This will try hard to avoid passwords and auth. tokens being paged out to disk at
 						any point (although there are circumstances, such as when hibernating, where this is
 						unavoidable).</para>

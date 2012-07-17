@@ -46,7 +46,8 @@
 
 #ifdef HAVE_GNOME
 #include <libsoup/soup-gnome-features.h>
-#include <gnome-keyring-memory.h>
+#define GCR_API_SUBJECT_TO_CHANGE
+#include <gcr/gcr-base.h>
 #endif /* HAVE_GNOME */
 
 #include "gdata-service.h"
@@ -2199,7 +2200,7 @@ GDataSecureString
 _gdata_service_secure_strdup (const gchar *str)
 {
 #ifdef HAVE_GNOME
-	return gnome_keyring_memory_strdup (str);
+	return gcr_secure_memory_strdup (str);
 #else /* if !HAVE_GNOME */
 	return g_strdup (str);
 #endif /* !HAVE_GNOME */
@@ -2228,7 +2229,7 @@ _gdata_service_secure_strndup (const gchar *str, gsize n_bytes)
 	}
 
 	str_len = MIN (strlen (str), n_bytes);
-	duped_str = (GDataSecureString) gnome_keyring_memory_alloc (str_len + 1);
+	duped_str = (GDataSecureString) gcr_secure_memory_alloc (str_len + 1);
 	strncpy (duped_str, str, str_len);
 	*(duped_str + str_len) = '\0';
 
@@ -2251,7 +2252,7 @@ void
 _gdata_service_secure_strfree (GDataSecureString str)
 {
 #ifdef HAVE_GNOME
-	gnome_keyring_memory_free (str);
+	gcr_secure_memory_free (str);
 #else /* if !HAVE_GNOME */
 	/* Poor man's approximation to non-pageable memory: the best we can do is ensure that we don't leak it in free memory.
 	 * This can't guarantee that it hasn't hit disk at some point, but does mean it can't hit disk in future. */
