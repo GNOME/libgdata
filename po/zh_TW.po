@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-14 14:15+0800\n"
-"PO-Revision-Date: 2012-07-14 11:41+0800\n"
+"POT-Creation-Date: 2012-07-18 19:35+0800\n"
+"PO-Revision-Date: 2012-07-18 14:03+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Taiwan) <zh-l10n@lists.linux.org.tw>\n"
 "Language: \n"
@@ -24,43 +24,43 @@ msgstr ""
 msgid "The server returned a malformed response."
 msgstr "伺服器傳回格式錯誤的回應。"
 
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:320
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "無法連接服務的伺服器。"
 
-#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "無法連接代理伺服器。"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:331
+#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "要求無效的 URI 或標頭，或不支援的非標準參數：%s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:337
+#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
 msgstr "要求驗證：%s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:342
+#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "找不到要求的資源：%s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:348
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "此項目從上次下載後已被修改過：%s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "在驗證時出現錯誤代碼 %u：%s"
@@ -248,60 +248,60 @@ msgstr "singleton 元素 (%s) 已重複。"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "在查詢時出現錯誤代碼 %u：%s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "在插入項目時出現錯誤代碼 %u：%s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "在更新項目時出現錯誤代碼 %u：%s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "在刪除項目時出現錯誤代碼 %u：%s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:393
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "下載時出現錯誤代碼 %u：%s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "上傳時出現錯誤代碼 %u：%s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
+#: ../gdata/gdata-service.c:405
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "在執行批次操作時出現錯誤代碼 %u：%s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:685
+#: ../gdata/gdata-service.c:686
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "無效的重新導向 URI：%s"
 
-#: ../gdata/gdata-service.c:1337
+#: ../gdata/gdata-service.c:1338
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
@@ -311,7 +311,7 @@ msgstr "該項目已經插入了。"
 #: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "在上傳了可續傳區塊後從伺服器收到錯誤。"
+msgstr "在上傳可繼續上載區塊後從伺服器收到錯誤。"
 
 #: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
@@ -390,8 +390,14 @@ msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "無法辨識提供文件 ('%s') 的內容類型。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:930
-#: ../gdata/services/documents/gdata-documents-service.c:1113
+#: ../gdata/services/documents/gdata-documents-service.c:925
+#, fuzzy
+#| msgid "You must be authenticated to query documents."
+msgid "You must be authenticated to copy documents."
+msgstr "您必須被驗證才能查詢文件。"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1087
+#: ../gdata/services/documents/gdata-documents-service.c:1270
 msgid "You must be authenticated to move documents and folders."
 msgstr "您必須被驗證才能移動文件和資料夾。"
 
