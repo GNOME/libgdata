@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-04-18 07:27+0000\n"
-"PO-Revision-Date: 2012-04-21 13:03+0100\n"
+"POT-Creation-Date: 2012-07-18 11:36+0000\n"
+"PO-Revision-Date: 2012-07-19 09:49+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -28,41 +28,41 @@ msgid "The server returned a malformed response."
 msgstr "Strežnik je vrnil nepravilno oblikovan odgovor."
 
 #: ../gdata/gdata-client-login-authorizer.c:617
-#: ../gdata/gdata-service.c:320
+#: ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Ni se mogoče povezati s strežnikom storitev."
 
 #: ../gdata/gdata-client-login-authorizer.c:622
-#: ../gdata/gdata-service.c:325
+#: ../gdata/gdata-service.c:326
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Ni se mogoče povezati s posredniškim strežnikom."
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:628
-#: ../gdata/gdata-service.c:331
+#: ../gdata/gdata-service.c:332
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "Neveljavna zahteva naslova URI, glave ali pa neobičajen parameter ni podprt: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:634
-#: ../gdata/gdata-service.c:337
+#: ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Zahtevana je overitev: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:639
-#: ../gdata/gdata-service.c:342
+#: ../gdata/gdata-service.c:343
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Zahtevanega vira ni mogoče najti: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:645
-#: ../gdata/gdata-service.c:348
+#: ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Vnos je bil spremenjen odkar je bil prejet: %s"
@@ -70,7 +70,7 @@ msgstr "Vnos je bil spremenjen odkar je bil prejet: %s"
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:657
-#: ../gdata/gdata-service.c:362
+#: ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Koda napake %u med overitvijo: %s"
@@ -258,60 +258,60 @@ msgstr "Enkratni predmet (%s) je podvojen."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Koda napake %u med poizvedovanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Koda napake %u med vstavljanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Koda napake %u med posodabljanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Koda napake %u med brisanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:393
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Koda napake %u med prejemanjem vnosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Koda napake %u med pošiljanjem vnosa: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
+#: ../gdata/gdata-service.c:405
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Koda napake %u med izvajanjem paketnih ukazov: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:685
+#: ../gdata/gdata-service.c:686
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neveljaven preusmeritveni naslov URI: %s"
 
-#: ../gdata/gdata-service.c:1337
+#: ../gdata/gdata-service.c:1338
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
@@ -342,14 +342,14 @@ msgstr "Vsebina predmeta %s (\"%s\") ni v osmiškem RGB zapisu."
 #: ../gdata/services/calendar/gdata-calendar-service.c:315
 #: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
-msgstr "Za poizvedovanje vseh koledarjev  imajo dovoljenje le pooblaščene osebe."
+msgstr "Za poizvedovanje po vnosih vseh koledarjev imajo dovoljenje le pooblaščene osebe."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:412
 #: ../gdata/services/calendar/gdata-calendar-service.c:463
 #: ../gdata/services/calendar/gdata-calendar-service.c:508
 #: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
-msgstr "Za poizvedovanje koledarjev imajo dovoljenje le pooblaščene osebe."
+msgstr "Za poizvedovanje  po vnosih koledarjev imajo dovoljenje le pooblaščene osebe."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:517
 #: ../gdata/services/calendar/gdata-calendar-service.c:581
@@ -359,12 +359,12 @@ msgstr "Koledar nima naslova URI vsebine."
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
 #: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
-msgstr "Za poizvedovanje stikov imajo dovoljenje le pooblaščene osebe."
+msgstr "Za poizvedovanje med podatki stikov imajo dovoljenje le pooblaščene osebe."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:424
 #: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
-msgstr "Za poizvedovanje skupin stikov imajo dovoljenje le pooblaščene osebe."
+msgstr "Za poizvedovanje med skupinami stikov imajo dovoljenje le pooblaščene osebe."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:514
 msgid "The group has already been inserted."
@@ -378,30 +378,34 @@ msgstr "Za vstavljanje skupin imajo dovoljenje le pooblaščene osebe."
 msgid "You must be authenticated to download documents."
 msgstr "Za prejemanje dokumentov imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-service.c:459
-#: ../gdata/services/documents/gdata-documents-service.c:509
+#: ../gdata/services/documents/gdata-documents-service.c:460
+#: ../gdata/services/documents/gdata-documents-service.c:510
 msgid "You must be authenticated to query documents."
 msgstr "Za poizvedovanje dokumentov imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-service.c:554
+#: ../gdata/services/documents/gdata-documents-service.c:555
 msgid "You must be authenticated to upload documents."
 msgstr "Za pošiljanje dokumentov imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-service.c:560
+#: ../gdata/services/documents/gdata-documents-service.c:561
 msgid "The document has already been uploaded."
 msgstr "Dokument je že poslan."
 
-#: ../gdata/services/documents/gdata-documents-service.c:704
+#: ../gdata/services/documents/gdata-documents-service.c:705
 msgid "You must be authenticated to update documents."
 msgstr "Za posodabljanje dokumentov imajo dovoljenje le pooblaščene osebe."
 
-#: ../gdata/services/documents/gdata-documents-service.c:882
+#: ../gdata/services/documents/gdata-documents-service.c:885
 #, c-format
 msgid "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Vsebinske vrste dokumenta ('%s') ni mogoče določiti."
 
-#: ../gdata/services/documents/gdata-documents-service.c:927
-#: ../gdata/services/documents/gdata-documents-service.c:1110
+#: ../gdata/services/documents/gdata-documents-service.c:925
+msgid "You must be authenticated to copy documents."
+msgstr "Za kopiranje dokumentov imajo dovoljenje le pooblaščene osebe."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1087
+#: ../gdata/services/documents/gdata-documents-service.c:1270
 msgid "You must be authenticated to move documents and folders."
 msgstr "Za premikanje dokumentov in map imajo dovoljenje le pooblaščene osebe."
 
