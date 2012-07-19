@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-07-18 11:36+0000\n"
-"PO-Revision-Date: 2012-07-19 09:49+0100\n"
+"PO-Revision-Date: 2012-07-19 13:01+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -342,14 +342,14 @@ msgstr "Vsebina predmeta %s (\"%s\") ni v osmiškem RGB zapisu."
 #: ../gdata/services/calendar/gdata-calendar-service.c:315
 #: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
-msgstr "Za poizvedovanje po vnosih vseh koledarjev imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za poizvedovanje po vnosih vseh koledarjev imajo le pooblaščene osebe."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:412
 #: ../gdata/services/calendar/gdata-calendar-service.c:463
 #: ../gdata/services/calendar/gdata-calendar-service.c:508
 #: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
-msgstr "Za poizvedovanje  po vnosih koledarjev imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za poizvedovanje po vnosih koledarjev imajo le pooblaščene osebe."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:517
 #: ../gdata/services/calendar/gdata-calendar-service.c:581
@@ -359,12 +359,12 @@ msgstr "Koledar nima naslova URI vsebine."
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
 #: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
-msgstr "Za poizvedovanje med podatki stikov imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za poizvedovanje med podatki stikov imajo le pooblaščene osebe."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:424
 #: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
-msgstr "Za poizvedovanje med skupinami stikov imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za poizvedovanje med skupinami stikov imajo le pooblaščene osebe."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:514
 msgid "The group has already been inserted."
@@ -372,20 +372,20 @@ msgstr "Skupina je že vstavljena."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:521
 msgid "You must be authenticated to insert a group."
-msgstr "Za vstavljanje skupin imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za vstavljanje skupin imajo le pooblaščene osebe."
 
 #: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
-msgstr "Za prejemanje dokumentov imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za prejemanje dokumentov imajo le pooblaščene osebe."
 
 #: ../gdata/services/documents/gdata-documents-service.c:460
 #: ../gdata/services/documents/gdata-documents-service.c:510
 msgid "You must be authenticated to query documents."
-msgstr "Za poizvedovanje dokumentov imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za poizvedovanje dokumentov imajo le pooblaščene osebe."
 
 #: ../gdata/services/documents/gdata-documents-service.c:555
 msgid "You must be authenticated to upload documents."
-msgstr "Za pošiljanje dokumentov imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za pošiljanje dokumentov imajo le pooblaščene osebe."
 
 #: ../gdata/services/documents/gdata-documents-service.c:561
 msgid "The document has already been uploaded."
@@ -393,7 +393,7 @@ msgstr "Dokument je že poslan."
 
 #: ../gdata/services/documents/gdata-documents-service.c:705
 msgid "You must be authenticated to update documents."
-msgstr "Za posodabljanje dokumentov imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za posodabljanje dokumentov imajo le pooblaščene osebe."
 
 #: ../gdata/services/documents/gdata-documents-service.c:885
 #, c-format
@@ -402,16 +402,16 @@ msgstr "Vsebinske vrste dokumenta ('%s') ni mogoče določiti."
 
 #: ../gdata/services/documents/gdata-documents-service.c:925
 msgid "You must be authenticated to copy documents."
-msgstr "Za kopiranje dokumentov imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za kopiranje dokumentov imajo le pooblaščene osebe."
 
 #: ../gdata/services/documents/gdata-documents-service.c:1087
 #: ../gdata/services/documents/gdata-documents-service.c:1270
 msgid "You must be authenticated to move documents and folders."
-msgstr "Za premikanje dokumentov in map imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za premikanje dokumentov in map imajo le pooblaščene osebe."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "Vpisati je treba uporabniško ime ali pa je treba biti pooblaščen za poizvedovanje med stiki."
+msgstr "Dovoljenje za poizvedovanje o uporabniku imajo le pooblaščene osebe in osebe, ki navedejo uporabniško ime."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
@@ -421,7 +421,7 @@ msgstr "Parametri poizvedbe niso dovoljeni za albume."
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Vpisati je treba uporabniško ime ali pa je treba biti pooblaščen za poizvedovanje med vsemi albumi."
+msgstr "Dovoljenje za poizvedovanje o vsebini albumov imajo le pooblaščene osebe in osebe, ki navedejo uporabniško ime."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
@@ -429,7 +429,7 @@ msgstr "Album nima povezave vira."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
-msgstr "Za pošiljanje datotek imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za pošiljanje datotek imajo le pooblaščene osebe."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
@@ -437,7 +437,7 @@ msgstr "Album je že vstavljen."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
-msgstr "Za vstavljanje albuma imajo dovoljenje le pooblaščene osebe.."
+msgstr "Dovoljenje za vstavljanje albuma imajo le pooblaščene osebe."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:456
 #, c-format
@@ -447,7 +447,7 @@ msgstr "Storitev trenutno ni na voljo."
 #: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "Za to dejanje imajo dovoljenje le pooblaščene osebe."
+msgstr "Dovoljenje za to dejanje imajo le pooblaščene osebe."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:465
 #, c-format
@@ -480,7 +480,7 @@ msgstr "Posnetek nima <povezave> do sorodnih posnetkov."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:882
 msgid "You must be authenticated to upload a video."
-msgstr "Za pošiljanje video posnetkov imajo dovoljenje le pooblaščene osebe.."
+msgstr "Dovoljenje za pošiljanje video posnetkov imajo le pooblaščene osebe."
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "Ponujeni dokument ima neveljavno vrsto vsebine."
