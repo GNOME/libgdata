@@ -211,17 +211,44 @@ typedef struct {
 } TempDocumentData;
 
 static GDataDocumentsDocument *
-_set_up_temp_document (GDataDocumentsEntry *entry, GDataService *service)
+_set_up_temp_document (GDataDocumentsEntry *entry, GDataService *service, GFile *document_file)
 {
 	GDataDocumentsDocument *document, *new_document;
-	gchar *upload_uri;
+	GFileInfo *file_info;
+	GFileInputStream *file_stream;
+	GDataUploadStream *upload_stream;
+	GError *error = NULL;
 
-	/* Insert the document */
-	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_insert_entry (service, gdata_documents_service_get_primary_authorization_domain (),
-	                                                                 upload_uri, GDATA_ENTRY (entry), NULL, NULL));
-	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (document));
-	g_free (upload_uri);
+	/* Query for information on the file. */
+	file_info = g_file_query_info (document_file,
+	                               G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+	                               G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Prepare the upload stream */
+	upload_stream = gdata_documents_service_upload_document_resumable (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_DOCUMENT (entry),
+	                                                                   g_file_info_get_display_name (file_info),
+	                                                                   g_file_info_get_content_type (file_info), g_file_info_get_size (file_info),
+	                                                                   NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
+
+	g_object_unref (file_info);
+
+	/* Open the file */
+	file_stream = g_file_read (document_file, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Upload the document */
+	g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
+	                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Finish the upload */
+	document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (upload_stream);
 
 	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back when creating the document:
 	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before trying this to allow the
@@ -233,6 +260,8 @@ _set_up_temp_document (GDataDocumentsEntry *entry, GDataService *service)
 	                                                                           G_OBJECT_TYPE (document), NULL, NULL));
 	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (new_document));
 
+	g_object_unref (document);
+
 	return new_document;
 }
 
@@ -240,13 +269,20 @@ static void
 set_up_temp_document_spreadsheet (TempDocumentData *data, gconstpointer service)
 {
 	GDataDocumentsSpreadsheet *document;
+	gchar *document_file_path;
+	GFile *document_file;
 
 	/* Create a document */
 	document = gdata_documents_spreadsheet_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Document (Spreadsheet)");
 
-	data->document = _set_up_temp_document (GDATA_DOCUMENTS_ENTRY (document), GDATA_SERVICE (service));
+	document_file_path = g_strconcat (TEST_FILE_DIR, "test.ods", NULL);
+	document_file = g_file_new_for_path (document_file_path);
+	g_free (document_file_path);
 
+	data->document = _set_up_temp_document (GDATA_DOCUMENTS_ENTRY (document), GDATA_SERVICE (service), document_file);
+
+	g_object_unref (document_file);
 	g_object_unref (document);
 }
 
@@ -820,7 +856,8 @@ set_up_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 {
 	const UpdateDocumentTestParams *test_params = _test_params;
 	GDataDocumentsText *document;
-	gchar *title;
+	gchar *title, *document_file_path;
+	GFile *document_file;
 
 	/* Create a document */
 	document = gdata_documents_text_new (NULL);
@@ -828,8 +865,13 @@ set_up_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 	gdata_entry_set_title (GDATA_ENTRY (document), title);
 	g_free (title);
 
-	data->document = _set_up_temp_document (GDATA_DOCUMENTS_ENTRY (document), GDATA_SERVICE (test_params->service));
+	document_file_path = g_strconcat (TEST_FILE_DIR, "test.odt", NULL);
+	document_file = g_file_new_for_path (document_file_path);
+	g_free (document_file_path);
 
+	data->document = _set_up_temp_document (GDATA_DOCUMENTS_ENTRY (document), GDATA_SERVICE (test_params->service), document_file);
+
+	g_object_unref (document_file);
 	g_object_unref (document);
 }
 
