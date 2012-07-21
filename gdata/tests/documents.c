@@ -22,6 +22,11 @@
 #include <unistd.h>
 #include <string.h>
 
+/* For the thumbnail size tests in test_download_thumbnail() */
+#ifdef HAVE_GDK_PIXBUF
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#endif
+
 #include "gdata.h"
 #include "common.h"
 
@@ -1325,6 +1330,80 @@ test_download_document (TempDocumentsData *data, gconstpointer service)
 }
 
 static void
+test_download_thumbnail (TempDocumentData *data, gconstpointer service)
+{
+	const gchar *thumbnail_uri;
+	GDataDownloadStream *download_stream;
+	gchar *destination_file_name, *destination_file_path;
+	GFile *destination_file;
+	GFileOutputStream *file_stream;
+	gssize transfer_size;
+	GError *error = NULL;
+
+	thumbnail_uri = gdata_documents_document_get_thumbnail_uri (data->document);
+
+	/* Google takes many minutes to generate thumbnails for uploaded documents, so with our current testing strategy of creating fresh documents
+	 * for each test, this particular test is fairly useless. */
+	if (thumbnail_uri == NULL) {
+		g_test_message ("Skipping thumbnail download test because document ‘%s’ doesn’t have a thumbnail.",
+		                gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (data->document)));
+		return;
+	}
+
+	/* Download the thumbnail to a file for testing (in case we weren't compiled with GdkPixbuf support) */
+	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (GDATA_SERVICE (service), NULL, thumbnail_uri, NULL));
+	g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
+
+	/* Prepare a file to write the data to */
+	destination_file_name = g_strdup_printf ("%s_thumbnail.jpg", gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (data->document)));
+	destination_file_path = g_build_filename (g_get_tmp_dir (), destination_file_name, NULL);
+	g_free (destination_file_name);
+	destination_file = g_file_new_for_path (destination_file_path);
+	g_free (destination_file_path);
+
+	/* Download the file */
+	file_stream = g_file_replace (destination_file, NULL, FALSE, G_FILE_CREATE_REPLACE_DESTINATION, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_OUTPUT_STREAM (file_stream));
+
+	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (file_stream), G_INPUT_STREAM (download_stream),
+	                                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (transfer_size, >, 0);
+
+	g_object_unref (file_stream);
+	g_object_unref (download_stream);
+
+	/* Delete the file (shouldn't cause the test to fail if this fails) */
+	g_file_delete (destination_file, NULL, NULL);
+	g_object_unref (destination_file);
+
+#ifdef HAVE_GDK_PIXBUF
+	/* Test downloading all thumbnails directly into GdkPixbufs, and check that they're all the correct size */
+	{
+		GdkPixbuf *pixbuf;
+
+		/* Prepare a new download stream */
+		download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (GDATA_SERVICE (service), NULL, thumbnail_uri, NULL));
+		g_assert (GDATA_IS_DOWNLOAD_STREAM (download_stream));
+
+		/* Download into a new GdkPixbuf */
+		pixbuf = gdk_pixbuf_new_from_stream (G_INPUT_STREAM (download_stream), NULL, &error);
+		g_assert_no_error (error);
+		g_assert (GDK_IS_PIXBUF (pixbuf));
+
+		g_object_unref (download_stream);
+
+		/* Check the dimensions are as expected. */
+		g_assert_cmpint (gdk_pixbuf_get_width (pixbuf), ==, 10);
+		g_assert_cmpint (gdk_pixbuf_get_height (pixbuf), ==, 10);
+
+		g_object_unref (pixbuf);
+	}
+#endif /* HAVE_GDK_PIXBUF */
+}
+
+static void
 test_access_rule_insert (TempDocumentData *data, gconstpointer service)
 {
 	GDataAccessRule *access_rule, *new_access_rule;
@@ -1781,6 +1860,8 @@ main (int argc, char *argv[])
 
 		g_test_add ("/documents/download/document", TempDocumentsData, service, set_up_temp_documents, test_download_document,
 		            tear_down_temp_documents);
+		g_test_add ("/documents/download/thumbnail", TempDocumentData, service, set_up_temp_document_spreadsheet, test_download_thumbnail,
+		            tear_down_temp_document);
 
 		/* Test all possible combinations of conditions for resumable updates. */
 		{

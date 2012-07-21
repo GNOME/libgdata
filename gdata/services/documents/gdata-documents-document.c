@@ -333,3 +333,68 @@ gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const g
 
 	return _gdata_service_build_uri ("%p&exportFormat=%s", gdata_entry_get_content_uri (GDATA_ENTRY (self)), export_format);
 }
+
+/**
+ * gdata_documents_document_download_thumbnail:
+ * @self: a #GDataDocumentsDocument
+ * @service: the #GDataDocumentsService
+ * @cancellable: (allow-none): a #GCancellable for the entire download stream, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Gets the URI of the thumbnail for the #GDataDocumentsDocument. If no thumbnail exists for the document, %NULL will be returned.
+ *
+ * The thumbnail may then be downloaded using a #GDataDownloadStream.
+ *
+ * <example>
+ *	<title></title>
+ *	<programlisting>
+ *	GDataDocumentsService *service;
+ *	const gchar *thumbnail_uri;
+ *	GCancellable *cancellable;
+ *	GdkPixbuf *pixbuf;
+ *	GError *error = NULL;
+ *
+ *	service = get_my_documents_service ();
+ *	thumbnail_uri = gdata_documents_document_get_thumbnail_uri (my_document);
+ *	cancellable = g_cancellable_new ();
+ *
+ *	/<!-- -->* Prepare a download stream *<!-- -->/
+ *	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (GDATA_SERVICE (service), NULL, thumbnail_uri, cancellable));
+ *
+ *	/<!-- -->* Download into a new GdkPixbuf. This can be cancelled using 'cancellable'. *<!-- -->/
+ *	pixbuf = gdk_pixbuf_new_from_stream (G_INPUT_STREAM (download_stream), NULL, &error);
+ *
+ *	if (error != NULL) {
+ *		/<!-- -->* Handle the error. *<!-- -->/
+ *		g_error_free (error);
+ *	}
+ *
+ *	g_object_unref (download_stream);
+ *	g_object_unref (cancellable);
+ *
+ *	/<!-- -->* Do something with the GdkPixbuf. *<!-- -->/
+ *
+ *	g_object_unref (pixbuf);
+ *	</programlisting>
+ * </example>
+ *
+ * Return value: (allow-none): the URI of the document's thumbnail, or %NULL
+ *
+ * Since: 0.13.1
+ */
+const gchar *
+gdata_documents_document_get_thumbnail_uri (GDataDocumentsDocument *self)
+{
+	GDataLink *thumbnail_link;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (self), NULL);
+
+	/* Get the thumbnail URI (if it exists). */
+	thumbnail_link = gdata_entry_look_up_link (GDATA_ENTRY (self), "http://schemas.google.com/docs/2007/thumbnail");
+
+	if (thumbnail_link == NULL) {
+		return NULL;
+	}
+
+	return gdata_link_get_uri (thumbnail_link);
+}

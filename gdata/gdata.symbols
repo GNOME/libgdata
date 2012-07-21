@@ -958,3 +958,4 @@ gdata_documents_service_copy_document_finish
 gdata_goa_authorizer_get_type
 gdata_goa_authorizer_new
 gdata_goa_authorizer_get_goa_object
+gdata_documents_document_get_thumbnail_uri

@@ -1622,6 +1622,7 @@ GDataDocumentsDocumentClass
 gdata_documents_document_new
 gdata_documents_document_download
 gdata_documents_document_get_download_uri
+gdata_documents_document_get_thumbnail_uri
 <SUBSECTION Standard>
 gdata_documents_document_get_type
 GDATA_DOCUMENTS_DOCUMENT
