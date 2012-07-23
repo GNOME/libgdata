@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 0.8.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-18 09:28+0200\n"
-"PO-Revision-Date: 2012-04-18 09:29+0200\n"
+"POT-Creation-Date: 2012-07-23 11:47+0200\n"
+"PO-Revision-Date: 2012-07-23 11:47+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
-"Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
+"Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,18 +22,18 @@ msgstr ""
 msgid "The server returned a malformed response."
 msgstr "Tjeneren returnerte et feilutformet svar."
 
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:320
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Kan ikke koble til tjenestens tjener."
 
-#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Kan ikke koble til proxy-tjener."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:331
+#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -41,26 +41,26 @@ msgstr ""
 "standardisert parameter: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:337
+#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Autentisering kreves: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:342
+#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Forespurt ressurs ble ikke funnet: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:348
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Oppføringen er endret siden den ble lastet ned: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Feilkode %u under autentisering: %s"
@@ -252,60 +252,60 @@ msgstr "Et enkelt element (%s) var duplisert."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Feilkode %u under spørring: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Feilkode %u under innsetting av en oppføring: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Feilkode %u under oppdatering av en oppføring: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Feilkode %u under sletting av en oppføring: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:393
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Feilkode %u under nedlasting: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Feilkode %u under opplasting: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
+#: ../gdata/gdata-service.c:405
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Feilkode %u under kjøring av en batch-operasjon: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:685
+#: ../gdata/gdata-service.c:686
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ugyldig URI for omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1337
+#: ../gdata/gdata-service.c:1338
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
@@ -315,7 +315,9 @@ msgstr "Oppføringen er allerede satt inn."
 #: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "Feil mottatt fra tjener etter opplasting av en gjenopptagbar del av en opplasting."
+msgstr ""
+"Feil mottatt fra tjener etter opplasting av en gjenopptagbar del av en "
+"opplasting."
 
 #: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
@@ -371,31 +373,35 @@ msgstr "Du må være autentisert for å sette inn en gruppe."
 msgid "You must be authenticated to download documents."
 msgstr "Du må være autentisert for å laste ned dokumenter."
 
-#: ../gdata/services/documents/gdata-documents-service.c:459
-#: ../gdata/services/documents/gdata-documents-service.c:509
+#: ../gdata/services/documents/gdata-documents-service.c:460
+#: ../gdata/services/documents/gdata-documents-service.c:510
 msgid "You must be authenticated to query documents."
 msgstr "Du må være autentisert for å spørre på dokumenter."
 
-#: ../gdata/services/documents/gdata-documents-service.c:554
+#: ../gdata/services/documents/gdata-documents-service.c:555
 msgid "You must be authenticated to upload documents."
 msgstr "Du må være autentisert for å laste opp dokumenter."
 
-#: ../gdata/services/documents/gdata-documents-service.c:560
+#: ../gdata/services/documents/gdata-documents-service.c:561
 msgid "The document has already been uploaded."
 msgstr "Dokumentet er allerede lastet opp."
 
-#: ../gdata/services/documents/gdata-documents-service.c:704
+#: ../gdata/services/documents/gdata-documents-service.c:705
 msgid "You must be authenticated to update documents."
 msgstr "Du må være autentisert for å oppdatere dokumenter."
 
-#: ../gdata/services/documents/gdata-documents-service.c:882
+#: ../gdata/services/documents/gdata-documents-service.c:885
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Innholdstype av oppgitt dokument («%s») ble ikke gjenkjent."
 
-#: ../gdata/services/documents/gdata-documents-service.c:927
-#: ../gdata/services/documents/gdata-documents-service.c:1110
+#: ../gdata/services/documents/gdata-documents-service.c:925
+msgid "You must be authenticated to copy documents."
+msgstr "Du må være autentisert for å kopiere dokumenter."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1087
+#: ../gdata/services/documents/gdata-documents-service.c:1270
 msgid "You must be authenticated to move documents and folders."
 msgstr "Du må være autentisert for å flytte dokumenter og mapper."
 
