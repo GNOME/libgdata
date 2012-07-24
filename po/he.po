@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-13 01:02+0300\n"
-"PO-Revision-Date: 2012-04-13 01:03+0200\n"
+"POT-Creation-Date: 2012-07-24 22:37+0300\n"
+"PO-Revision-Date: 2012-07-24 22:37+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -27,41 +27,41 @@ msgid "The server returned a malformed response."
 msgstr "השרת החזיר תגובה פגומה."
 
 #: ../gdata/gdata-client-login-authorizer.c:617
-#: ../gdata/gdata-service.c:320
+#: ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "לא ניתן להתחבר לשרת השירות."
 
 #: ../gdata/gdata-client-login-authorizer.c:622
-#: ../gdata/gdata-service.c:325
+#: ../gdata/gdata-service.c:326
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "לא ניתן להתחבר לשרת המתווך."
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:628
-#: ../gdata/gdata-service.c:331
+#: ../gdata/gdata-service.c:332
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "הכותרת או הכתובת של הבקשה שגויים או שנוסף משתנה בלתי תקני שאינו נתמך: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:634
-#: ../gdata/gdata-service.c:337
+#: ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
 msgstr "נדרשת הזדהות: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:639
-#: ../gdata/gdata-service.c:342
+#: ../gdata/gdata-service.c:343
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "המשאב המבוקש לא נמצא: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:645
-#: ../gdata/gdata-service.c:348
+#: ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "הרשומה עברה שינויים מאז שהתקבלה: %s"
@@ -69,7 +69,7 @@ msgstr "הרשומה עברה שינויים מאז שהתקבלה: %s"
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:657
-#: ../gdata/gdata-service.c:362
+#: ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "התקבל קוד השגיאה %u בעת ההזדהות: %s"
@@ -181,7 +181,7 @@ msgstr "מסמך ריק."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:66
+#: ../gdata/gdata-parser.c:67
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "לרכיב מסוג %s חסר תוכן הכרחי."
@@ -191,7 +191,7 @@ msgstr "לרכיב מסוג %s חסר תוכן הכרחי."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:82
+#: ../gdata/gdata-parser.c:83
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "התוכן של רכיב מסוג %s‏ (\"%s\") לא היה במבנה ISO 8601."
@@ -201,7 +201,7 @@ msgstr "התוכן של רכיב מסוג %s‏ (\"%s\") לא היה במבנה 
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:102
+#: ../gdata/gdata-parser.c:103
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "הערך של המאפיין %s של הרכיב  %s‏ (\"%s\") אינו ידוע."
@@ -211,7 +211,7 @@ msgstr "הערך של המאפיין %s של הרכיב  %s‏ (\"%s\") אינו
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:120
+#: ../gdata/gdata-parser.c:121
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "התוכן של הרכיב מסוג %s‏ (\"%s\") אינו ידוע."
@@ -221,7 +221,7 @@ msgstr "התוכן של הרכיב מסוג %s‏ (\"%s\") אינו ידוע."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:140
+#: ../gdata/gdata-parser.c:141
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "ערך הכרחי של רכיב מסוג %s‏ (%s) לא נמצא."
@@ -232,7 +232,7 @@ msgstr "ערך הכרחי של רכיב מסוג %s‏ (%s) לא נמצא."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:163
+#: ../gdata/gdata-parser.c:164
 #, c-format
 msgid "Values were present for properties %s and %s of a %s element when only one of the two is allowed."
 msgstr "הופיעו ערכים עבור המאפיינים %s ו־%s של רכיב מסוג %s כאשר רק אחד מהשניים מורשה לשימוש."
@@ -241,7 +241,7 @@ msgstr "הופיעו ערכים עבור המאפיינים %s ו־%s של רכ�
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:182
+#: ../gdata/gdata-parser.c:183
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "רכיב הכרחי (%s) לא נמצא."
@@ -250,67 +250,67 @@ msgstr "רכיב הכרחי (%s) לא נמצא."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:197
+#: ../gdata/gdata-parser.c:198
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "פריט יחידני (%s) שוחזר."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "התקבל קוד השגיאה %u בעת ביצוע השאילתה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "התקבל קוד השגיאה %u בעת הוספת רשומה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "התקבל קוד השגיאה %u בעת עדכון רשומה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "התקבל קוד השגיאה %u בעת מחיקת רשומה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:393
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "התקבל קוד השגיאה %u במהלך הורדה: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "התקבל קוד השגיאה %u במהלך העלאה: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
+#: ../gdata/gdata-service.c:405
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "התקבל קוד השגיאה %u במהלך פעולה הכמותית: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:685
+#: ../gdata/gdata-service.c:686
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "כתובת הפנייה שגויה: %s"
 
-#: ../gdata/gdata-service.c:1337
+#: ../gdata/gdata-service.c:1338
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
@@ -373,34 +373,38 @@ msgstr "הקבוצה כבר נוספה."
 msgid "You must be authenticated to insert a group."
 msgstr "עליך להזדהות כדי להוסיף קבוצה."
 
-#: ../gdata/services/documents/gdata-documents-document.c:274
+#: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
 msgstr "עליך להזדהות כדי להוריד מסמכים."
 
-#: ../gdata/services/documents/gdata-documents-service.c:461
-#: ../gdata/services/documents/gdata-documents-service.c:511
+#: ../gdata/services/documents/gdata-documents-service.c:460
+#: ../gdata/services/documents/gdata-documents-service.c:510
 msgid "You must be authenticated to query documents."
 msgstr "עליך להזדהות כדי לתשאל מסמכים."
 
-#: ../gdata/services/documents/gdata-documents-service.c:556
+#: ../gdata/services/documents/gdata-documents-service.c:555
 msgid "You must be authenticated to upload documents."
 msgstr "עליך להזדהות כדי להעלות מסמכים."
 
-#: ../gdata/services/documents/gdata-documents-service.c:562
+#: ../gdata/services/documents/gdata-documents-service.c:561
 msgid "The document has already been uploaded."
 msgstr "המסמך כבר הועלה."
 
-#: ../gdata/services/documents/gdata-documents-service.c:699
+#: ../gdata/services/documents/gdata-documents-service.c:705
 msgid "You must be authenticated to update documents."
 msgstr "עליך להזדהות כדי להעלות מסמכים."
 
-#: ../gdata/services/documents/gdata-documents-service.c:872
+#: ../gdata/services/documents/gdata-documents-service.c:885
 #, c-format
 msgid "The content type of the supplied document ('%s') could not be recognized."
 msgstr "לא ניתן לזהות את סוג התוכן של המסמך שסופק ('%s')."
 
-#: ../gdata/services/documents/gdata-documents-service.c:921
-#: ../gdata/services/documents/gdata-documents-service.c:1104
+#: ../gdata/services/documents/gdata-documents-service.c:925
+msgid "You must be authenticated to copy documents."
+msgstr "עליך להזדהות כדי להעתיק מסמכים."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1087
+#: ../gdata/services/documents/gdata-documents-service.c:1270
 msgid "You must be authenticated to move documents and folders."
 msgstr "עליך להזדהות כדי להעביר מסמכים ותיקיות."
 
