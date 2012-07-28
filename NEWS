@@ -1,3 +1,44 @@
+Overview of changes from libgdata 0.13.0 to libgdata 0.13.1
+===========================================================
+
+Major changes:
+ • Add support for Google Drawings
+ • Fix some of the test suite
+ • Add support for copying Google documents
+ • Moved GOA authoriser from EDS/GNOME Documents into libgdata (adding a GOA dependency)
+ • Remove libgnome-keyring dependency in favour of libgcr-base
+
+API changes:
+ • Added GDataDocumentsDrawing
+ • Added gdata_documents_service_copy_document(), gdata_documents_service_copy_document_async(), gdata_documents_service_copy_document_finish()
+ • Added GDataGoaAuthorizer
+ • Added gdata_documents_document_get_download_uri()
+
+Bugs fixed:
+ • Bug 633548 — Add Google Drawings support
+ • Bug 679072 — Tests for all Google services fail
+ • Bug 607270 — Support copying documents
+ • Bug 656976 — Merge eds and GNOME Documents GOA authorisers
+ • Bug 679867 — Use libgcr-base instead of libgnome-keyring for secure memory
+ • Bug 656970 — Add thumbnail support
+
+Updated translations:
+ • be (Ihar Hrachyshka)
+ • bg (Alexander Shopov)
+ • el (Γιώργος Στεφανάκης, Tom Tryfonidis)
+ • en_GB (Philip Withnall)
+ • es (Daniel Mustieles)
+ • gl (Fran Dieguez)
+ • he (Yaron Shahrabani)
+ • id (Andika Triwidada)
+ • nb (Kjartan Maraas)
+ • nl (Willem Heppe, Wouter Bolsterlee)
+ • sl (Matej Urbančič)
+ • sr (Мирослав Николић)
+ • te (Sasi Bhushan Boddepalli)
+ • zh_HK (Chao-Hsiung Liao)
+ • zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.12.0 to libgdata 0.13.0
 ===========================================================
 
