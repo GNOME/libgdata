@@ -335,18 +335,15 @@ gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const g
 }
 
 /**
- * gdata_documents_document_download_thumbnail:
+ * gdata_documents_document_get_thumbnail_uri:
  * @self: a #GDataDocumentsDocument
- * @service: the #GDataDocumentsService
- * @cancellable: (allow-none): a #GCancellable for the entire download stream, or %NULL
- * @error: a #GError, or %NULL
  *
  * Gets the URI of the thumbnail for the #GDataDocumentsDocument. If no thumbnail exists for the document, %NULL will be returned.
  *
  * The thumbnail may then be downloaded using a #GDataDownloadStream.
  *
  * <example>
- *	<title></title>
+ *	<title>Downloading a Document Thumbnail</title>
  *	<programlisting>
  *	GDataDocumentsService *service;
  *	const gchar *thumbnail_uri;
