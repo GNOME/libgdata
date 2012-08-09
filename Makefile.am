@@ -596,7 +596,6 @@ CLEANFILES += \
 	`find "$(srcdir)" -type f -name .dirstamp -print`
 
 DISTCLEANFILES = \
-	gnome-doc-utils.make	\
 	gtk-doc.make
 
 MAINTAINERCLEANFILES += \
