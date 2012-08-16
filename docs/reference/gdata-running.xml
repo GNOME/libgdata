@@ -41,7 +41,44 @@
 						</varlistentry>
 					</variablelist>
 				</para>
+				<para>So, to debug a program which uses libgdata, run it from a terminal with the following command:</para>
+				<screen><prompt>$</prompt><userinput>LIBGDATA_DEBUG=3 ./my-program-name &amp;> libgdata.log</userinput></screen>
 			</formalpara>
+		</refsect2>
+
+		<refsect2>
+			<title>Debugging Advice</title>
+			<para>The easiest way to debug problems with libgdata is to use the
+			      <link linkend="LIBGDATA_DEBUG"><envar>LIBGDATA_DEBUG</envar></link> environment variable to observe all the network
+			      traffic being transmitted and received by libgdata. Typically, any problems will occur in the final network
+			      request/response, which is the last one in the log output.</para>
+			<para>If debugging using the environment variables and log output is not possible, it is sometimes possible to diagnose problems
+			      by examining the error responses sent by the Google servers to libgdata. These are exposed as the error messages returned
+			      by libgdata methods; so when handling errors from libgdata method calls, it is a good idea to output the message from
+			      the <link linkend="GError"><type>GError</type></link> to a debug log, or even as a warning in the user's
+			      <filename>.xsession-errors</filename> file.</para>
+			<example>
+				<title>Error Handling when Uploading a Document</title>
+				<programlisting>
+				GDataUploadStream *upload_stream;
+				GError *error = NULL; /<!-- -->* make sure to initialise the GError to NULL *<!-- -->/
+
+				/<!-- -->* Other code goes here. *<!-- -->/
+
+				upload_stream = gdata_documents_service_upload_document (service, document, slug, content_type, destination_folder, NULL,
+				                                                         &amp;error);
+
+				/<!-- -->* Handle any errors. *<!-- -->/
+				if (error != NULL) {
+					/<!-- -->* Note that the error message is outputted to the terminal/logs.
+					 * It will contain important debugging information from the Google servers. *<!-- -->/
+					g_error ("Error getting upload stream: %s", error->message);
+					g_error_free (error);
+
+					return;
+				}
+				</programlisting>
+			</example>
 		</refsect2>
 	</refsect1>
 </refentry>

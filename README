@@ -41,6 +41,11 @@ values, libgdata will give debug output (at various levels):
     usernames, passwords and auth. tokens
 If LIBGDATA_DEBUG is unset, no debug output will be produced.
 
+So, to debug a program which uses libgdata, run it from a terminal with the
+following command:
+
+$ LIBGDATA_DEBUG=3 ./my-program-name &> libgdata.log
+
 Deprecation guards
 ==================
 
