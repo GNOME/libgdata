@@ -445,14 +445,14 @@ gdata_libgdata_la_CPPFLAGS = \
 gdata_libgdata_la_CFLAGS = \
 	$(GDATA_CFLAGS)	\
 	$(GNOME_CFLAGS)	\
-	$(GCOV_CFLAGS)	\
+	$(CODE_COVERAGE_CFLAGS)	\
 	$(WARN_CFLAGS)	\
 	$(AM_CFLAGS)
 
 gdata_libgdata_la_LIBADD = \
 	$(GDATA_LIBS)	\
 	$(GNOME_LIBS)	\
-	$(GCOV_LIBS)	\
+	$(CODE_COVERAGE_LIBS)	\
 	$(AM_LIBADD)
 
 gdata_libgdata_la_LDFLAGS = \
@@ -513,40 +513,10 @@ DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
 EXTRA_DIST += introspection.m4
 endif
 
-# gcov
-if GCOV_ENABLED
-gcov-report.txt: gcov-clean all check
-	$(AM_V_GEN)(rm -f $@; \
-	echo -e "Test coverage for libgdata:\n" >> $@; \
-	total_covered=0; total_actual=0; \
-	for file in $(filter %.c,$(gdata_libgdata_la_SOURCES)); do \
-	  file2=$${file##*/}; \
-	  cd $(abs_srcdir)/$${file%/*}; \
-	  gcov -o `find -newer $$file2 -name "*-$${file2/.c/.gcda}" -print0 | sed -e 's/\.gcda/\.o/'` $$file2 > /dev/null; \
-	  if test -f $$file2.gcov; then \
-	    actual=`grep -v '        -:' $$file2.gcov  | wc -l`; \
-	    uncovered=`grep '#####:' $$file2.gcov | wc -l`; \
-	    covered=$$((actual - uncovered)); \
-	    total_covered=$$((total_covered + covered)); \
-	    total_actual=$$((total_actual + actual)); \
-	    echo -e "$$file:\t$$covered / $$actual\t($$((($$covered * 100) / $$actual))%)"; \
-	  fi \
-	done >> $@; \
-	cd $(abs_srcdir); \
-	echo -e "\nSource lines: $$total_actual\nCovered statements: $$total_covered\nTotal coverage: $$((($$total_covered * 100) / $$total_actual))%" >> $@)
-
-gcov: gcov-report.txt
-	@cat gcov-report.txt
-
-clean: gcov-clean
-gcov-clean:
-	@find . -name "*.gcda" -o -name "*.gcov" -delete
-
-MAINTAINERCLEANFILES += gcov-report.txt
-else
-gcov:
-	@echo "Need to reconfigure with --enable-gcov"
-endif
+# Code coverage
+@GNOME_CODE_COVERAGE_RULES@
+CODE_COVERAGE_DIRECTORY = $(top_builddir)/gdata
+CODE_COVERAGE_LCOV_OPTIONS = --base-directory $(abs_top_srcdir)
 
 # Demo programs
 noinst_PROGRAMS =
@@ -651,7 +621,7 @@ $(srcdir)/ChangeLog:
 	  (echo A git checkout and git-log is required to generate ChangeLog >&2 && \
 	  echo A git checkout and git-log is required to generate this file >> $@); \
 	fi
-.PHONY: $(srcdir)/ChangeLog gcov gcov-clean gcov-report.txt
+.PHONY: $(srcdir)/ChangeLog
 
 MAINTAINERCLEANFILES += ChangeLog
 

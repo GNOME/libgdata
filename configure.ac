@@ -108,24 +108,8 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define to the Gettext
 AC_SUBST(GETTEXT_PACKAGE)
 IT_PROG_INTLTOOL([0.40.0])
 
-# Code testing coverage with gcov
-AC_MSG_CHECKING(whether to build with gcov testing)
-AC_ARG_ENABLE(gcov, AS_HELP_STRING([--enable-gcov], [Whether to enable gcov testing]),, enable_gcov=no)
-			
-if test "x$enable_gcov" = "xyes"; then
-	if test "$GCC" = "no"; then
-		AC_MSG_ERROR(not compiling with gcc, which is required for gcov testing)
-	fi
-
-	GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
-	GCOV_LIBS="-lgcov"
-
-	AC_SUBST(GCOV_CFLAGS)
-	AC_SUBST(GCOV_LIBS)
-fi
-
-AM_CONDITIONAL(GCOV_ENABLED, test x$enable_gcov = xyes)
-AC_MSG_RESULT($enable_gcov)
+# Code coverage
+GNOME_CODE_COVERAGE
 
 # General GNOME macros
 GNOME_DEBUG_CHECK
