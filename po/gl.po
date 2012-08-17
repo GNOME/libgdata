@@ -1,31 +1,27 @@
-# translation of libgdata-master-po-gl.po to Galician
-# Galician translations for PACKAGE package.
-# Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
+# Galician translation of libgdata.
+# Copyright (C) 2012 Leandro Regueiro
 # This file is distributed under the same license as the PACKAGE package.
 #
-#
 # Proxecto Trasno - Adaptación do software libre á lingua galega:  Se desexas
-# colaborar connosco, podes atopar máis información en <http://trasno.net>
+# colaborar connosco, podes atopar máis información en http://www.trasno.net
 #
 # Antón Méixome <meixome@mancomun.org>, 2009.
-# Leandro Regueiro <leandro.regueiro@gmail.com>, 2011.
-# Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011.
-# Fran Dieguez <frandieguez@gnome.org>, 2009, 2012.
-#
+# Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
+# Leandro Regueiro <leandro.regueiro@gmail.com>, 2011, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata-master-po-gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-30 02:42+0200\n"
-"PO-Revision-Date: 2012-07-30 02:43+0200\n"
-"Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
+"POT-Creation-Date: 2012-08-17 23:22+0200\n"
+"PO-Revision-Date: 2012-08-17 17:26+0200\n"
+"Last-Translator: Leandro Regueiro <leandro.regueiro@gmail.com>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Gtranslator 2.91.5\n"
+"X-Generator: Lokalize 1.0\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:597
 #: ../gdata/gdata-oauth1-authorizer.c:804
@@ -67,7 +63,7 @@ msgstr "O recurso solicitado non foi atopado: %s"
 #: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
-msgstr "A entrada foi modificada desde que foi subida: %s"
+msgstr "A entrada modificouse desde que se descargou: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -172,7 +168,7 @@ msgstr "O acceso foi denegado polo usuario ou o servidor."
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
 #, c-format
 msgid "Error parsing XML: %s"
-msgstr "Acounteceu un erro ao analizar o XML: %s"
+msgstr "Produciuse un erro ao analizar o XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
 #: ../gdata/gdata-parsable.c:258
@@ -301,7 +297,7 @@ msgstr "Código de erro %u ao descargar: %s"
 #: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
-msgstr "Código de erro %u ao subir: %s"
+msgstr "Código de erro %u ao enviar: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
@@ -326,7 +322,9 @@ msgstr "A entrada xa foi inserida."
 #: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "Erro do servidor despois de subir un fragmento de carga reanudábel."
+msgstr ""
+"Recibiuse un erro do servidor despois de enviar un fragmento de carga "
+"reanudábel."
 
 #: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
@@ -391,11 +389,11 @@ msgstr "Debe autenticarse para consultar os documentos."
 
 #: ../gdata/services/documents/gdata-documents-service.c:555
 msgid "You must be authenticated to upload documents."
-msgstr "Debe estar autenticado para subir documentos."
+msgstr "Debe estar autenticado para enviar documentos."
 
 #: ../gdata/services/documents/gdata-documents-service.c:561
 msgid "The document has already been uploaded."
-msgstr "O documento xa foi subido."
+msgstr "O documento xa se enviou."
 
 #: ../gdata/services/documents/gdata-documents-service.c:705
 msgid "You must be authenticated to update documents."
@@ -442,7 +440,7 @@ msgstr "O álbum non ten unha ligazón fonte."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
-msgstr "Debe estar autenticado para subir un ficheiro."
+msgstr "Debe estar autenticado para enviar un ficheiro."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
@@ -502,7 +500,7 @@ msgstr "O vídeo non ten vídeos relacionados <link>."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:882
 msgid "You must be authenticated to upload a video."
-msgstr "Debe estar autenticado para subir un vídeo."
+msgstr "Debe estar autenticado para enviar un vídeo."
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "O documento proporcionado ten un tipo de contido incorrecto."
