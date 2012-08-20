@@ -1137,6 +1137,44 @@ test_access_rule_get_xml (void)
 
 	g_object_unref (rule);
 	g_object_unref (rule2);
+
+	/* Check that a rule with scope type 'default' doesn't have a value.
+	 * See: https://developers.google.com/google-apps/calendar/v2/reference#gacl_reference */
+	rule = gdata_access_rule_new ("another-id");
+	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE);
+	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_DEFAULT, NULL);
+
+	/* Check the generated XML's OK */
+	gdata_test_assert_xml (rule,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>another-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:role value='none'/>"
+			"<gAcl:scope type='default'/>"
+		"</entry>");
+
+	/* Check by re-parsing the XML to a GDataAccessRule */
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (rule));
+	rule2 = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (GDATA_TYPE_ACCESS_RULE, xml, -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ACCESS_RULE (rule2));
+	g_clear_error (&error);
+	g_free (xml);
+
+	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, gdata_access_rule_get_role (rule2));
+	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
+	gdata_access_rule_get_scope (rule2, &scope_type2, &scope_value2);
+	g_assert_cmpstr (scope_type, ==, scope_type2);
+	g_assert_cmpstr (scope_value, ==, scope_value2);
+	edited = gdata_access_rule_get_edited (rule2);
+	g_assert_cmpuint (edited, ==, -1); /* unspecified in XML */
+
+	g_object_unref (rule);
+	g_object_unref (rule2);
 }
 
 static void
@@ -1158,6 +1196,8 @@ test_access_rule_error_handling (void)
 
 	/* scope */
 	TEST_XML_ERROR_HANDLING ("<gAcl:scope/>"); /* missing type */
+	TEST_XML_ERROR_HANDLING ("<gAcl:scope type='user'/>"); /* missing value */
+	TEST_XML_ERROR_HANDLING ("<gAcl:scope type='domain'/>"); /* missing value */
 
 	/* edited */
 	TEST_XML_ERROR_HANDLING ("<app:edited/>"); /* missing date */

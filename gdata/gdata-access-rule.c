@@ -122,6 +122,8 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * A value representing the user who is represented by the access rule, such as an
 	 * e-mail address for users, or a domain name for domains.
 	 *
+	 * This must be %NULL if and only if #GDataAccessRule:scope-type is %GDATA_ACCESS_SCOPE_DEFAULT.
+	 *
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SCOPE_VALUE,
@@ -305,7 +307,9 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 			scope_value = xmlGetProp (node, (xmlChar*) "value");
 
-			if (xmlStrcmp (scope_type, (xmlChar*) GDATA_ACCESS_SCOPE_DEFAULT) == 0 && scope_value == NULL) {
+			/* The @value property is required for all scope types except "default".
+			 * See: https://developers.google.com/google-apps/calendar/v2/reference#gacl_reference */
+			if (xmlStrcmp (scope_type, (xmlChar*) GDATA_ACCESS_SCOPE_DEFAULT) != 0 && scope_value == NULL) {
 				xmlFree (scope_type);
 				return gdata_parser_error_required_property_missing (node, "value", error);
 			}
@@ -343,6 +347,10 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 		} else {
 			gdata_parser_string_append_escaped (xml_string, "<gAcl:scope value='", priv->scope_value, "'/>");
 		}
+	} else {
+		/* gAcl:scope of type GDATA_ACCESS_SCOPE_DEFAULT. */
+		g_assert (priv->scope_type != NULL && strcmp (priv->scope_type, GDATA_ACCESS_SCOPE_DEFAULT) == 0);
+		g_string_append (xml_string, "<gAcl:scope type='default'/>");
 	}
 }
 
@@ -414,7 +422,7 @@ gdata_access_rule_get_role (GDataAccessRule *self)
  * gdata_access_rule_set_scope:
  * @self: a #GDataAccessRule
  * @type: a new scope type
- * @value: a new scope value, or %NULL
+ * @value: (allow-none): a new scope value, or %NULL
  *
  * Sets the #GDataAccessRule:scope-type property to @type and the #GDataAccessRule:scope-value property to @value.
  *
@@ -448,8 +456,8 @@ gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gch
 /**
  * gdata_access_rule_get_scope:
  * @self: a #GDataAccessRule
- * @type: (out callee-allocates) (transfer none): return location for the scope type, or %NULL
- * @value: (out callee-allocates) (transfer none): return location for the scope value, or %NULL
+ * @type: (out callee-allocates) (transfer none) (allow-none): return location for the scope type, or %NULL
+ * @value: (out callee-allocates) (transfer none) (allow-none): return location for the scope value, or %NULL
  *
  * Gets the #GDataAccessRule:scope-type and #GDataAccessRule:scope-value properties.
  *
