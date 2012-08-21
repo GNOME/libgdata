@@ -1526,7 +1526,7 @@ assert_comments_equal (GDataComment *new_comment, GDataYouTubeComment *original_
 	author = GDATA_AUTHOR (authors->data);
 
 	g_assert_cmpstr (gdata_author_get_name (author), ==, "GDataTest");
-	g_assert_cmpstr (gdata_author_get_uri (author), ==, "http://gdata.youtube.com/feeds/api/users/gdatatest");
+	g_assert_cmpstr (gdata_author_get_uri (author), ==, "http://gdata.youtube.com/feeds/api/users/GDataTest");
 }
 
 static void
