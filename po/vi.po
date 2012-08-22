@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-07-15 10:02+0000\n"
-"PO-Revision-Date: 2012-08-22 08:49+0700\n"
+"PO-Revision-Date: 2012-08-22 08:50+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "Language: vi\n"
@@ -317,7 +317,7 @@ msgstr "Mục này đã được thêm rồi."
 #: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr ""
+msgstr "Lỗi nhận từ máy chủ sau khi đưa lên một đoạn có thể đưa lên từng phần."
 
 #: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
@@ -397,10 +397,9 @@ msgid ""
 msgstr "Nội dung tài liệu bổ sung ('%s') không nhận dạng được."
 
 #: ../gdata/services/documents/gdata-documents-service.c:925
-#, fuzzy
 #| msgid "You must be authenticated to query documents."
 msgid "You must be authenticated to copy documents."
-msgstr "Bạn phải xác thực để truy vấn tài liệu."
+msgstr "Bạn phải xác thực để chép tài liệu."
 
 #: ../gdata/services/documents/gdata-documents-service.c:1087
 #: ../gdata/services/documents/gdata-documents-service.c:1270
