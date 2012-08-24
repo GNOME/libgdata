@@ -30,6 +30,48 @@
  * Access rules should be inserted to the %GDATA_LINK_ACCESS_CONTROL_LIST URI of the feed or entry they should be applied to. This will return a
  * %GDATA_SERVICE_ERROR_CONFLICT error if a rule already exists on that feed or entry for that scope type and value.
  *
+ * <example>
+ * 	<title>Adding a Rule to the Access Control List for an Entry</title>
+ * 	<programlisting>
+ *	GDataService *service;
+ *	GDataEntry *entry;
+ *	GDataFeed *acl_feed;
+ *	GDataAccessRule *rule, *new_rule;
+ *	GError *error = NULL;
+ *
+ *	/<!-- -->* Retrieve a GDataEntry which will have a new rule inserted into its ACL. *<!-- -->/
+ *	service = build_my_service ();
+ *	entry = get_the_entry (service);
+ *
+ *	/<!-- -->* Create and insert a new access rule for example@gmail.com which grants them _no_ permissions on the entry.
+ *	 * In a real application, the GDataEntry subclass would define its own access roles which are more useful. For example,
+ *	 * GDataDocumentsEntry defines access roles for users who can read (but not write) a Google Document, and users who
+ *	 * can also write to the document. *<!-- -->/
+ *	rule = gdata_access_rule_new (NULL);
+ *	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE); /<!-- -->* or, for example, GDATA_DOCUMENTS_ACCESS_ROLE_READER *<!-- -->/
+ *	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "example@gmail.com"); /<!-- -->* e-mail address of the user the ACL applies to *<!-- -->/
+ *
+ *	acl_link = gdata_entry_look_up_link (entry, GDATA_LINK_ACCESS_CONTROL_LIST);
+ *	new_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_link_get_uri (acl_link), GDATA_ENTRY (rule),
+ *	                                                          NULL, &error));
+ *	g_object_unref (acl_link);
+ *
+ *	g_object_unref (rule);
+ *	g_object_unref (entry);
+ *	g_object_unref (service);
+ *
+ *	if (error != NULL) {
+ *		g_error ("Error inserting access rule: %s", error->message);
+ *		g_error_free (error);
+ *		return;
+ *	}
+ *
+ *	/<!-- -->* Potentially do something with the new_rule here, such as store its ID for later use. *<!-- -->/
+ *
+ *	g_object_unref (new_rule);
+ * 	</programlisting>
+ * </example>
+ *
  * Since: 0.3.0
  **/
 
