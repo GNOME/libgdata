@@ -28,6 +28,8 @@
 #include <gdata/gdata-service.h>
 #include <gdata/gdata-comment.h>
 
+G_BEGIN_DECLS
+
 #define GDATA_TYPE_COMMENTABLE			(gdata_commentable_get_type ())
 #define GDATA_COMMENTABLE(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_COMMENTABLE, GDataCommentable))
 #define GDATA_COMMENTABLE_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_COMMENTABLE, GDataCommentableInterface))
