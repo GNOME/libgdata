@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: libgdata.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-07-15 10:02+0000\n"
+"POT-Creation-Date: 2012-07-16 14:45+0000\n"
 "PO-Revision-Date: 2012-07-16 14:19+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
@@ -107,7 +107,7 @@ msgstr ""
 #: ../gdata/gdata-client-login-authorizer.c:834
 #, c-format
 msgid "This account has been deleted. (%s)"
-msgstr "Esta cuenta se ha borrado. (%s)"
+msgstr "Esta cuenta se ha eliminado. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:839
@@ -278,7 +278,7 @@ msgstr "Código de error %u al actualizar una entrada: %s"
 #: ../gdata/gdata-service.c:386
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
-msgstr "Código de error %u al borrar una entrada: %s"
+msgstr "Código de error %u al eliminar una entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -399,7 +399,6 @@ msgstr ""
 "No se pudo reconocer el tipo de contenido del documento proporcionado («%s»)."
 
 #: ../gdata/services/documents/gdata-documents-service.c:925
-#| msgid "You must be authenticated to query documents."
 msgid "You must be authenticated to copy documents."
 msgstr "Debe estar autenticado para copiar documentos."
 
@@ -478,8 +477,8 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr ""
-"Código de error «%s» desconocido en el dominio «%s», recibido con la ubicación "
-"«%s»."
+"Código de error «%s» desconocido en el dominio «%s», recibido con la "
+"ubicación «%s»."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:499
 #, c-format
