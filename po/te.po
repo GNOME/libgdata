@@ -2,20 +2,23 @@
 # Copyright (C) 2011, 2012 Swecha Localisation Team <localization@swecha.net>
 # This file is distributed under the same license as the libgdata package.
 # Hari krishna <hari@swecha.net>, 2011.
-# Sasi Bhushan Boddepalli <sasi@swecha.net>, 2012
+# Sasi Bhushan Boddepalli <sasi@swecha.net>, 2012.
+# Krishnababu Krothapalli <kkrothap@redhat.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-04-02 14:33+0000\n"
-"PO-Revision-Date: 2012-04-17 15:52+0530\n"
-"Last-Translator: Sasi Bhushan Boddepalli <sasi@swecha.net>\n"
-"Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
+"POT-Creation-Date: 2012-07-15 10:02+0000\n"
+"PO-Revision-Date: 2012-09-19 01:06+0530\n"
+"Last-Translator: Krishnababu Krothapalli <kkrothap@redhat.com>\n"
+"Language-Team: Telugu <Fedora-trans-te@redhat.com>\n"
+"Language: te\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Lokalize 1.4\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:597
 #: ../gdata/gdata-oauth1-authorizer.c:804
@@ -37,7 +40,9 @@ msgstr "ప్రాక్సీ సర్వరునకు అనుసంధ�
 #: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:331
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr "నిస్సారమైన అభ్యర్దించిన URI లేదా హెడ్డర్, లేదా సహకరించని ప్రమాణములేని పారామీటరు: %s"
+msgstr ""
+"నిస్సారమైన అభ్యర్దించిన URI లేదా హెడ్డర్, లేదా సహకరించని ప్రమాణములేని "
+"పారామీటరు: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:337
@@ -97,8 +102,9 @@ msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"ఈ అకౌంట్ తరలించబడినది. మీ కొత్త సంకేతపదము మరియు రహస్యపదము పొందుటకు దయచేసి ఆంలైన్ లాగిన్ అవ్వండి.(%"
-"s)"
+"ఈ అకౌంట్ తరలించబడినది. మీ కొత్త సంకేతపదము మరియు రహస్యపదము పొందుటకు దయచేసి "
+"ఆంలైన్ లాగిన్ అవ్వండి."
+"(%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:834
@@ -171,7 +177,7 @@ msgstr "ఖాళీ పత్రము."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:66
+#: ../gdata/gdata-parser.c:67
 #, c-format
 msgid "A %s element was missing required content."
 msgstr " %s మూలకములో కావలసిన సారము తప్పినది."
@@ -181,7 +187,7 @@ msgstr " %s మూలకములో కావలసిన సారము త�
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:82
+#: ../gdata/gdata-parser.c:83
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "%s మూలకములోని సారము(\"%s\") ISO 8601 రూపములలొ లేదు."
@@ -191,7 +197,7 @@ msgstr "%s మూలకములోని సారము(\"%s\") ISO 8601 ర�
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:102
+#: ../gdata/gdata-parser.c:103
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "%s ఎలిమెంట్ యొక్క %s గుణం యొక్క విలువ (\"%s\") తెలియలేదు."
@@ -201,7 +207,7 @@ msgstr "%s ఎలిమెంట్ యొక్క %s గుణం యొక్
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:120
+#: ../gdata/gdata-parser.c:121
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "%s మూలకము యొక్క సారము  (\"%s\") తెలియదు."
@@ -211,7 +217,7 @@ msgstr "%s మూలకము యొక్క సారము  (\"%s\") తె�
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:140
+#: ../gdata/gdata-parser.c:141
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "%s ఎలిమెంట్ యొక్క గుణం (%s) లేదు."
@@ -222,19 +228,20 @@ msgstr "%s ఎలిమెంట్ యొక్క గుణం (%s) లేద�
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:163
+#: ../gdata/gdata-parser.c:164
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
 msgstr ""
-"%s ఎలిమెంట్ యొక్క %s మరియు  %s అభీష్టాలు రెండిటిలో ఒకటి అనుమతించినపుడు వాటిలో విలువలు ఉన్నవి."
+"%s ఎలిమెంట్ యొక్క %s మరియు  %s అభీష్టాలు రెండిటిలో ఒకటి అనుమతించినపుడు వాటిలో "
+"విలువలు ఉన్నవి."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:182
+#: ../gdata/gdata-parser.c:183
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "ఒక అవసరమైన మూలకము (%s) దొరకలేదు."
@@ -243,7 +250,7 @@ msgstr "ఒక అవసరమైన మూలకము (%s) దొరకలే�
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:197
+#: ../gdata/gdata-parser.c:198
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "సింగల్ టన్ ఎలిమెంట్ (%s) నకలు చేయబడినది."
@@ -365,41 +372,48 @@ msgstr "గుంపు ముందే ప్రవేశింపబడిన�
 msgid "You must be authenticated to insert a group."
 msgstr "ఒక గుంపును ప్రవేశపెట్టుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-document.c:274
+#: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
 msgstr "పత్రములను దిగిమతి చేసుకొనుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-service.c:461
-#: ../gdata/services/documents/gdata-documents-service.c:511
+#: ../gdata/services/documents/gdata-documents-service.c:460
+#: ../gdata/services/documents/gdata-documents-service.c:510
 msgid "You must be authenticated to query documents."
 msgstr "పత్రములను క్వయరీ చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-service.c:556
+#: ../gdata/services/documents/gdata-documents-service.c:555
 msgid "You must be authenticated to upload documents."
 msgstr "పత్రములను ఎగుమతి చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-service.c:562
+#: ../gdata/services/documents/gdata-documents-service.c:561
 msgid "The document has already been uploaded."
 msgstr "పత్రము ముందే ఎగుమతి చేయబడినది."
 
-#: ../gdata/services/documents/gdata-documents-service.c:699
+#: ../gdata/services/documents/gdata-documents-service.c:705
 msgid "You must be authenticated to update documents."
 msgstr "పత్రములను ఎగుమతి చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
-#: ../gdata/services/documents/gdata-documents-service.c:872
+#: ../gdata/services/documents/gdata-documents-service.c:885
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "('%s')పత్రము యొక్క సమాచార రకము గుర్తించబడలేదు."
 
-#: ../gdata/services/documents/gdata-documents-service.c:921
-#: ../gdata/services/documents/gdata-documents-service.c:1104
+#: ../gdata/services/documents/gdata-documents-service.c:925
+#| msgid "You must be authenticated to query documents."
+msgid "You must be authenticated to copy documents."
+msgstr "పత్రములను నకలుతీయుటకు మీరు తప్పక దృవీకరించబడాలి."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1087
+#: ../gdata/services/documents/gdata-documents-service.c:1270
 msgid "You must be authenticated to move documents and folders."
 msgstr "పత్రములు మరియు సంచయములను కదుపుటకు మీరు ధ్రువీకరించబడి ఉండాలి"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "ఒక వినియోగదారుడిని క్వయరీ చేయుటకు మీరు వినియోగదారునినామము తెలియచేయాలి లేదా   ధ్రువీకరించబడి ఉండాలి "
+msgstr ""
+"ఒక వినియోగదారుడిని క్వయరీ చేయుటకు మీరు వినియోగదారునినామము తెలియచేయాలి లేదా   "
+"ధ్రువీకరించబడి ఉండాలి "
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
@@ -409,7 +423,9 @@ msgstr "ఆల్బములకు క్వయరీ పారామీటర�
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "అన్నీ ఆల్బములను క్వయరీ చేయుటకు మీరు వినియోగదారునినామము తెలియచేయాలి లేదా   ధ్రువీకరించబడి ఉండాలి."
+msgstr ""
+"అన్నీ ఆల్బములను క్వయరీ చేయుటకు మీరు వినియోగదారునినామము తెలియచేయాలి లేదా   "
+"ధ్రువీకరించబడి ఉండాలి."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
@@ -442,13 +458,17 @@ msgstr "మీరు ఇది చేయుటకు ధ్రువీకరి
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
-msgstr "మీరు ఈమధ్య కాలములో API కు చాలా ఎక్కువ కాల్స్ చేశారు.దయచేసి కొంచం సేపు ఆగి ప్రయత్నించండి."
+msgstr ""
+"మీరు ఈమధ్య కాలములో API కు చాలా ఎక్కువ కాల్స్ చేశారు.దయచేసి కొంచం సేపు ఆగి "
+"ప్రయత్నించండి."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:468
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "మీ నమోదు కోటాను అతిక్రమించినారు. దయచేసి కొన్ని నమోదులను తొలగించి మరల ప్రయత్నించండి."
+msgstr ""
+"మీ నమోదు కోటాను అతిక్రమించినారు. దయచేసి కొన్ని నమోదులను తొలగించి మరల "
+"ప్రయత్నించండి."
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
@@ -458,7 +478,9 @@ msgstr "మీ నమోదు కోటాను అతిక్రమించ
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr "\"%s\" అధికారక్షేత్రము నందలి \"%s\" స్థానమున తెలియని దోష సంకేతము \"%s\" దొరికినది."
+msgstr ""
+"\"%s\" అధికారక్షేత్రము నందలి \"%s\" స్థానమున తెలియని దోష సంకేతము \"%s\" "
+"దొరికినది."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:499
 #, c-format
@@ -473,3 +495,4 @@ msgstr "సంబంధించిన వీడియోలు ఈ వీడి
 #: ../gdata/services/youtube/gdata-youtube-service.c:882
 msgid "You must be authenticated to upload a video."
 msgstr "ఒక వీడియోను ఎగుమతి చేయుటకు మీరు ధ్రువీకరించబడి ఉండాలి."
+
