@@ -87,7 +87,7 @@ AC_ARG_ENABLE(gnome, AS_HELP_STRING([--enable-gnome], [Whether to enable GNOME s
 AC_MSG_RESULT($enable_gnome)
 AM_CONDITIONAL([ENABLE_GNOME], [test "x$enable_gnome" = "xyes"])
 
-GNOME_PACKAGES="libsoup-gnome-2.4 gcr-base-3 goa-1.0 >= $GOA_REQS"
+GNOME_PACKAGES="libsoup-gnome-2.4 gcr-base-3 libxml-2.0 goa-1.0 >= $GOA_REQS"
 AC_SUBST([GNOME_PACKAGES])
 
 if test "x$enable_gnome" = "xyes"; then
