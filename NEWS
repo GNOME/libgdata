@@ -1,3 +1,44 @@
+Overview of changes from libgdata 0.13.1 to libgdata 0.13.2
+===========================================================
+
+Major changes:
+ • Expand the documentation and add more examples
+ • Explicitly check for libxml2 in configure
+ • Port code coverage support to use gnome-common
+
+Bugs fixed:
+ • Bug 683209 — Port to gnome-common code coverage macros
+
+Updated translations:
+ • as (Nilamdyuti Goswami)
+ • bg (Alexander Shopov)
+ • ca (Joan Duran)
+ • cs (Marek Černocký)
+ • da (Ask H. Larsen)
+ • de (Mario Blättermann)
+ • el (Tom Tryfonidis)
+ • es (Daniel Mustieles)
+ • fr (Alexandre Franke)
+ • gl (Fran Dieguez, Leandro Regueiro)
+ • hi (Rajesh Ranjan)
+ • hu (Gabor Kelemen)
+ • it (Milo Casagrande)
+ • ko (Changwoo Ryu)
+ • lt (Aurimas Černius)
+ • lv (Rūdolfs Mazurs)
+ • ml (Anish A)
+ • pa (A S Alam)
+ • pl (Piotr Drąg)
+ • pt (António Lima)
+ • pt_BR (Rafael Ferreira)
+ • ru (Yuri Kozlov)
+ • te (Krishnababu Krothapalli)
+ • th (Akom Chotiphantawanon)
+ • tr (Muhammet Kara)
+ • vi (Nguyễn Thái Ngọc Duy)
+ • zh_HK (Chao-Hsiung Liao)
+ • zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.13.0 to libgdata 0.13.1
 ===========================================================
 
