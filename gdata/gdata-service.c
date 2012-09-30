@@ -2055,6 +2055,9 @@ soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char direction, 
 			_data = soup_form_encode_hash (params);
 
 			g_hash_table_destroy (params);
+		} else if (direction == '>' && g_str_has_prefix (data, "X-GData-Key: key=") == TRUE) {
+			/* Looks like: "> X-GData-Key: key=[dev key in hex]". */
+			_data = g_strdup ("X-GData-Key: key=<redacted>");
 		} else {
 			/* Nothing to redact. */
 			_data = g_strdup (data);
