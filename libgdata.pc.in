@@ -6,6 +6,7 @@ includedir=@includedir@
 Name: libgdata
 Description: GData client library
 Version: @VERSION@
-Requires: @GDATA_PACKAGES@ @GNOME_PACKAGES@
+Requires: @GDATA_PACKAGES_PUBLIC@ @GNOME_PACKAGES_PUBLIC@
+Requires.private: @GDATA_PACKAGES_PRIVATE@ @GNOME_PACKAGES_PRIVATE@
 Libs: -L${libdir} -lgdata
 Cflags: -I${includedir}/libgdata
