@@ -83,7 +83,9 @@ main (int argc, char *argv[])
 
 	#define ITERATIONS 10000
 
+#if !GLIB_CHECK_VERSION (2, 35, 0)
 	g_type_init ();
+#endif
 
 	/* Test feed parsing time */
 	g_get_current_time (&start_time);

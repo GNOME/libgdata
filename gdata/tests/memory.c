@@ -64,7 +64,9 @@ main (int argc, char *argv[])
 {
 	g_mem_set_vtable (glib_mem_profiler_table);
 
+#if !GLIB_CHECK_VERSION (2, 35, 0)
 	g_type_init ();
+#endif
 
 	test_query_events ();
 
