@@ -1,0 +1,396 @@
+# Estonian translation for libgdata.
+# Copyright (C) 2012 libgdata's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgdata package.
+#
+# Mattias Põldaru <mahfiaz@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgdata master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-10-21 11:00+0000\n"
+"PO-Revision-Date: 2012-10-30 00:18+0300\n"
+"Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
+"Language-Team: Estonian <>\n"
+"Language: et\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "The server returned a malformed response."
+msgstr "Server andis vigase vastuse."
+
+#, c-format
+msgid "Cannot connect to the service's server."
+msgstr "Selle teenuse serverisse ei suudetud ühenduda."
+
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "Proksiserverisse ei suudetud ühenduda."
+
+#. Translators: the parameter is an error message returned by the server.
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+"Vigane päringu URI või päis või toetamata mittestandardne parameeter: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#, c-format
+msgid "Authentication required: %s"
+msgstr "Autentimine on vajalik: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "Päritud allikat ei leitud: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "Kirjet on muudetud pärast selle allalaadimist: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Autentimisel esines veakood %u: %s"
+
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "Sisselogimiseks tuleb CAPTCHA täita."
+
+#. Translators: the parameter is a URI for further information.
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Selle konto jaoks on vaja rakenduse-spetsiifilist parooli. (%s)"
+
+msgid "Your username or password were incorrect."
+msgstr "Kasutajanimi või parool olid valed."
+
+#. Translators: the parameter is a URI for further information.
+#, c-format
+msgid "Your account's e-mail address has not been verified. (%s)"
+msgstr "Sinu konto meiliaadress ei ole kinnitatud. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#, c-format
+msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgstr "Sa ei ole nõustunud teenusetingimustega. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"See konto on üle kantud. Oma uue kasutajanime ja parooli saamiseks logi "
+"sisse veebis. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "See konto on kustutatud. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "See konto on keelatud. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#, c-format
+msgid "This account's access to this service has been disabled. (%s)"
+msgstr "Selle konto ligipääs sellele teenusele on keelatud. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "See teenus pole praegu saadaval. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+msgid "This entry does not support comments."
+msgstr "See kirje ei toeta kommentaare."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+msgid "Comments may not be added to this entry."
+msgstr "Sellele kirjele ei tohi kommentaare lisada."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+msgid "This comment may not be deleted."
+msgstr "Kommentaari pole võimalik kustutada."
+
+#. Tried to seek too far
+msgid "Invalid seek request"
+msgstr "Sobimatu kerimispäring"
+
+msgid "The server rejected the temporary credentials request."
+msgstr "Server keeldus ajutiste sisselogimisandmete päringust."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+msgid "Access was denied by the user or server."
+msgstr "Ligipääsu on keelanud kasutaja või server."
+
+#. Translators: the parameter is an error message
+#, c-format
+msgid "Error parsing XML: %s"
+msgstr "Viga XML-i töötlemisel: %s"
+
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+msgid "Empty document."
+msgstr "Tühi dokument."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#, c-format
+msgid "A %s element was missing required content."
+msgstr "%s elemendil puudus vajalik sisu."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgstr "%s elemendi sisu (\"%s\") ei olnud ISO 8601 vormingus."
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#, c-format
+msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgstr "Omaduse %s väärtus elemendil %s (\"%s\") on tundmatu."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#, c-format
+msgid "The content of a %s element (\"%s\") was unknown."
+msgstr "Elemendi %s (\"%s\") sisu on tundmatu."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#, c-format
+msgid "A required property of a %s element (%s) was not present."
+msgstr "Elemendi %s nõutud omadust ei olnud (%s)."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"Mõlemale omadusele %s ja %s olid olemas väärtused elemendil %s, kuigi "
+"lubatud on määrata ainult emb-kumb."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#, c-format
+msgid "A required element (%s) was not present."
+msgstr "Nõutud elementi (%s) ei olnud."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#, c-format
+msgid "A singleton element (%s) was duplicated."
+msgstr "Singleton elemendist (%s) oli duplikaat."
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "Päringule vastati veakoodiga %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Kande sisestamisel vastati veakoodiga %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Kande uuendamisel vastati veakoodiga %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Kande kustutamisel vastati veakoodiga %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "Allalaadimisel vastati veakoodiga %u: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Üleslaadimisel vastati veakoodiga %u: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "Pakktöötluse toimingule vastati veakoodiga %u: %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "Sobimatu edasisuunamise URI: %s"
+
+msgid "The entry has already been inserted."
+msgstr "Kanne on juba sisestatud."
+
+#. Resumable upload error.
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr ""
+"Pärast jätkatava üleslaadimise osa ülesaadimist saadi serverist veateade."
+
+msgid "Stream is already closed"
+msgstr "Voog on juba suletud"
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#, c-format
+msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgstr "Elemendi %s (\"%s\") sisu ei ole RGB kuueteistkümnendvormingus."
+
+msgid "You must be authenticated to query all calendars."
+msgstr "Kõigi kalendrite pärimiseks pead olema sisse loginud."
+
+msgid "You must be authenticated to query your own calendars."
+msgstr "Oma kalendrite pärimiseks pead olema sisse loginud."
+
+msgid "The calendar did not have a content URI."
+msgstr "Kalendril ei olnud sisu URI-d."
+
+msgid "You must be authenticated to query contacts."
+msgstr "Kontaktide pärimiseks pead olema sisse loginud."
+
+msgid "You must be authenticated to query contact groups."
+msgstr "Kontaktigruppide pärimiseks pead olema sisse loginud."
+
+msgid "The group has already been inserted."
+msgstr "Grupp on juba sisestatud."
+
+msgid "You must be authenticated to insert a group."
+msgstr "Grupi sisestamiseks pead olema sisse loginud."
+
+msgid "You must be authenticated to download documents."
+msgstr "Dokumentide allalaadimiseks pead olema sisse loginud."
+
+msgid "You must be authenticated to query documents."
+msgstr "Dokumentide pärimiseks pead olema sisse loginud."
+
+msgid "You must be authenticated to upload documents."
+msgstr "Dokumentide üleslaadimiseks pead olema sisse loginud."
+
+msgid "The document has already been uploaded."
+msgstr "See dokument on juba üles laaditud."
+
+msgid "You must be authenticated to update documents."
+msgstr "Dokumentide uuendamiseks pead olema sisse loginud."
+
+#, c-format
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
+msgstr "Antud dokumendi ('%s') sisu tüüpi ei suudetud tuvastada."
+
+msgid "You must be authenticated to copy documents."
+msgstr "Dokumentide kopeerimiseks pead olema sisse loginud."
+
+msgid "You must be authenticated to move documents and folders."
+msgstr "Dokumentide ja kataloogide liigutamiseks pead olema sisse loginud."
+
+msgid "You must specify a username or be authenticated to query a user."
+msgstr "Kasutaja pärimiseks pead määrama kasutajanime või olema sisse loginud."
+
+msgid "Query parameter not allowed for albums."
+msgstr "Päringu parameeter ei ole albumite jaoks lubatud."
+
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr ""
+"Kõigi albumite pärimiseks pead määrama kasutajanime või olema sisse loginud."
+
+msgid "The album did not have a feed link."
+msgstr "Albumil ei olnud voo linki."
+
+msgid "You must be authenticated to upload a file."
+msgstr "Faili üleslaadimiseks pead olema autenditud."
+
+msgid "The album has already been inserted."
+msgstr "Album on juba sisestatud."
+
+msgid "You must be authenticated to insert an album."
+msgstr "Albumi sisestamiseks pead olema sisse loginud."
+
+#, c-format
+msgid "This service is not available at the moment."
+msgstr "Teenus pole hetkel saadaval."
+
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Selle tegemiseks pead olema sisse loginud."
+
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Sa oled teinud hiljuti liiga palju API päringuid. Oota mõni minut ja proovi "
+"uuesti."
+
+#, c-format
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Oled ületanud oma sissekannete kvoodi. Kustuta mõned sissekanded ja proovi "
+"uuesti."
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#, c-format
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr "Tundmatu veakood \"%s\" saadi domeenilt \"%s\" asukohas \"%s\"."
+
+#, c-format
+msgid "Unknown and unparsable error received."
+msgstr "Saadi tundmatu viga, mida ei suudetud analüüsida."
+
+msgid "The video did not have a related videos <link>."
+msgstr "Videol ei olnud seonduvate videote <link>-i."
+
+msgid "You must be authenticated to upload a video."
+msgstr "Video üleslaadimiseks pead olema sisse loginud."
