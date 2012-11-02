@@ -684,8 +684,6 @@ gdata_download_stream_can_seek (GSeekable *seekable)
 	return TRUE;
 }
 
-extern void soup_message_io_cleanup (SoupMessage *msg);
-
 static gboolean
 gdata_download_stream_seek (GSeekable *seekable, goffset offset, GSeekType type, GCancellable *cancellable, GError **error)
 {
@@ -895,7 +893,7 @@ reset_network_thread (GDataDownloadStream *self)
 	}
 
 	if (priv->message != NULL) {
-		soup_message_io_cleanup (priv->message);
+		soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
 	}
 
 	priv->offset = 0;
