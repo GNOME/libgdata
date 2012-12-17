@@ -91,9 +91,22 @@ AC_ARG_ENABLE(gnome, AS_HELP_STRING([--enable-gnome], [Whether to enable GNOME s
 AC_MSG_RESULT($enable_gnome)
 AM_CONDITIONAL([ENABLE_GNOME], [test "x$enable_gnome" = "xyes"])
 
+# GNOME Online Accounts support -- only used if GNOME support is also enabled
+# Pulls in gdata/gdata-goa-authorizer.[ch]
+AC_MSG_CHECKING(whether to build with GOA support)
+AC_ARG_ENABLE(goa, AS_HELP_STRING([--enable-goa], [Whether to enable GOA support]),, enable_goa=yes)
+AC_MSG_RESULT($enable_goa)
+AM_CONDITIONAL([ENABLE_GOA], [test "x$enable_goa" = "xyes" -a "x$enable_gnome" = "xyes"])
+
 if test "x$enable_gnome" = "xyes"; then
 	GNOME_PACKAGES_PUBLIC=""
-	GNOME_PACKAGES_PRIVATE="libsoup-gnome-2.4 gcr-base-3 libxml-2.0 goa-1.0 >= $GOA_REQS"
+	GNOME_PACKAGES_PRIVATE="libsoup-gnome-2.4 gcr-base-3 libxml-2.0"
+	if test "x$enable_goa" = "xyes"; then
+		GNOME_PACKAGES_PUBLIC="$GNOME_PACKAGES_PUBLIC"
+		GNOME_PACKAGES_PRIVATE="$GNOME_PACKAGES_PRIVATE goa-1.0 >= $GOA_REQS"
+		GOA_ENABLED="true"
+		AC_DEFINE(HAVE_GOA, 1, [Define if GOA support is enabled])
+	fi
 	GNOME_PACKAGES="$GNOME_PACKAGES_PUBLIC $GNOME_PACKAGES_PRIVATE"
 	AC_DEFINE(HAVE_GNOME, 1, [Defined if GNOME support is enabled])
 	PKG_CHECK_MODULES([GNOME], [$GNOME_PACKAGES])
@@ -105,6 +118,7 @@ fi
 AC_SUBST([GNOME_PACKAGES_PUBLIC])
 AC_SUBST([GNOME_PACKAGES_PRIVATE])
 AC_SUBST([GNOME_PACKAGES])
+AC_SUBST([GOA_ENABLED])
 
 # Various necessary functions and headers
 AC_CHECK_FUNCS([strchr])

@@ -168,7 +168,7 @@ gdata_headers = \
 	gdata/gdata-client-login-authorizer.h	\
 	gdata/gdata-oauth1-authorizer.h
 
-if ENABLE_GNOME
+if ENABLE_GOA
 gdata_headers += \
 	gdata/gdata-goa-authorizer.h \
 	$(NULL)
@@ -400,7 +400,7 @@ gdata_sources = \
 	gdata/services/youtube/gdata-youtube-category.c		\
 	gdata/services/youtube/gdata-youtube-comment.c
 
-if ENABLE_GNOME
+if ENABLE_GOA
 gdata_sources += \
 	gdata/gdata-goa-authorizer.c \
 	$(NULL)
@@ -486,7 +486,7 @@ EXTRA_DIST += introspection.m4
 if HAVE_INTROSPECTION
 gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir: gdata/libgdata.la
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_INCLUDES = GObject-2.0 libxml2-2.0 Soup-2.4
-if ENABLE_GNOME
+if ENABLE_GOA
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_INCLUDES += Goa-1.0
 endif
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_CFLAGS = $(GDATA_CFLAGS) $(GNOME_CFLAGS) $(gdata_libgdata_la_CPPFLAGS)
