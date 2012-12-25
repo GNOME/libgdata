@@ -108,7 +108,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				/* Unhandled XML */
 				buffer = xmlBufferCreate ();
 				xmlNodeDump (buffer, doc, child, 0, 0);
-				g_message ("Unhandled XML in <gml:Point>: %s", (gchar*) xmlBufferContent (buffer));
+				g_debug ("Unhandled XML in <gml:Point>: %s", (gchar*) xmlBufferContent (buffer));
 				xmlBufferFree (buffer);
 			}
 		}

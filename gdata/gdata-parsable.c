@@ -156,7 +156,7 @@ real_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer us
 	buffer = xmlBufferCreate ();
 	xmlNodeDump (buffer, doc, node, 0, 0);
 	g_string_append (parsable->priv->extra_xml, (gchar*) xmlBufferContent (buffer));
-	g_message ("Unhandled XML in %s: %s", G_OBJECT_TYPE_NAME (parsable), (gchar*) xmlBufferContent (buffer));
+	g_debug ("Unhandled XML in %s: %s", G_OBJECT_TYPE_NAME (parsable), (gchar*) xmlBufferContent (buffer));
 	xmlBufferFree (buffer);
 
 	/* Get the namespaces */
