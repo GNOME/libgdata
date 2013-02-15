@@ -3132,7 +3132,7 @@ gdata_contacts_contact_get_photo_etag (GDataContactsContact *self)
  *
  * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
  *
- * Return value: the image data, or %NULL; free with g_free()
+ * Return value: (transfer full) (array length=length): the image data, or %NULL; free with g_free()
  *
  * Since: 0.8.0
  **/
@@ -3289,7 +3289,7 @@ gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataContact
  * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned. @length will be set to
  * <code class="literal">0</code> and @content_type will be set to %NULL.
  *
- * Return value: the image data, or %NULL; free with g_free()
+ * Return value: (transfer full) (array length=length): the image data, or %NULL; free with g_free()
  *
  * Since: 0.8.0
  **/
