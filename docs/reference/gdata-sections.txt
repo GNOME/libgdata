@@ -1765,6 +1765,24 @@ GDataDocumentsDrawingPrivate
 </SECTION>
 
 <SECTION>
+<FILE>gdata-documents-pdf</FILE>
+<TITLE>GDataDocumentsPdf</TITLE>
+GDataDocumentsPdf
+GDataDocumentsPdfClass
+gdata_documents_pdf_new
+<SUBSECTION Standard>
+gdata_documents_pdf_get_type
+GDATA_DOCUMENTS_PDF
+GDATA_DOCUMENTS_PDF_CLASS
+GDATA_DOCUMENTS_PDF_GET_CLASS
+GDATA_IS_DOCUMENTS_PDF
+GDATA_IS_DOCUMENTS_PDF_CLASS
+GDATA_TYPE_DOCUMENTS_PDF
+<SUBSECTION Private>
+GDataDocumentsPdfPrivate
+</SECTION>
+
+<SECTION>
 <FILE>gdata-documents-service</FILE>
 <TITLE>GDataDocumentsService</TITLE>
 GDataDocumentsService

@@ -133,6 +133,7 @@
 #include <gdata/services/documents/gdata-documents-service.h>
 #include <gdata/services/documents/gdata-documents-feed.h>
 #include <gdata/services/documents/gdata-documents-drawing.h>
+#include <gdata/services/documents/gdata-documents-pdf.h>
 #include <gdata/services/documents/gdata-documents-enums.h>
 #include <gdata/services/documents/gdata-documents-upload-query.h>
 

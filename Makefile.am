@@ -86,7 +86,7 @@ gdata/services/documents/gdata-documents-enums.h: $(gdata_documents_headers) Mak
 
 gdata/services/documents/gdata-documents-enums.c: $(gdata_documents_headers) Makefile gdata/services/documents/gdata-documents-enums.h
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
-			--fhead "#include \"gdata-documents-service.h\"\n#include \"gdata-documents-text.h\"\n#include \"gdata-documents-spreadsheet.h\"\n#include \"gdata-documents-drawing.h\"\n#include \"gdata-documents-presentation.h\"\n#include \"gdata-documents-enums.h\"" \
+			--fhead "#include \"gdata-documents-service.h\"\n#include \"gdata-documents-text.h\"\n#include \"gdata-documents-spreadsheet.h\"\n#include \"gdata-documents-drawing.h\"\n#include \"gdata-documents-pdf.h\"\n#include \"gdata-documents-presentation.h\"\n#include \"gdata-documents-enums.h\"" \
 			--fprod "\n/* enumerations from \"@filename@\" */" \
 			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
@@ -261,6 +261,7 @@ gdata_documents_headers = \
 	gdata/services/documents/gdata-documents-presentation.h	\
 	gdata/services/documents/gdata-documents-folder.h	\
 	gdata/services/documents/gdata-documents-drawing.h	\
+	gdata/services/documents/gdata-documents-pdf.h		\
 	gdata/services/documents/gdata-documents-spreadsheet.h	\
 	gdata/services/documents/gdata-documents-upload-query.h
 gdatadocumentsinclude_HEADERS = \
@@ -378,6 +379,7 @@ gdata_sources = \
 	gdata/services/documents/gdata-documents-spreadsheet.c	\
 	gdata/services/documents/gdata-documents-folder.c	\
 	gdata/services/documents/gdata-documents-drawing.c	\
+	gdata/services/documents/gdata-documents-pdf.c	\
 	gdata/services/documents/gdata-documents-query.c	\
 	gdata/services/documents/gdata-documents-upload-query.c	\
 	\
