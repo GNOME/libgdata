@@ -5,7 +5,6 @@ srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
 PKG_NAME=libgdata
-REQUIRED_M4MACROS=introspection.m4
 
 (test -f $srcdir/configure.ac) || {
     echo "**Error**: Directory "\`$srcdir\'" does not look like the top-level $PKG_NAME directory"
