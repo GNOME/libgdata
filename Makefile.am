@@ -513,6 +513,33 @@ CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
 EXTRA_DIST += introspection.m4
+
+if ENABLE_VAPIGEN
+-include $(VAPIGEN_MAKEFILE)
+
+# Note: The VAPI file name has to match the pkg-config file name.
+# If we break API and add a version number to the pkg-config file name, the VAPI can be changed to match.
+# See: https://bugzilla.gnome.org/show_bug.cgi?id=693865
+gdata/libgdata.vapi: gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.metadata
+
+VAPIGEN_VAPIS = gdata/libgdata.vapi
+
+gdata_libgdata_vapi_DEPS = libxml-2.0 libsoup-2.4
+gdata_libgdata_vapi_METADATADIRS = $(srcdir)/gdata
+gdata_libgdata_vapi_FILES = gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir
+
+gdata/libgdata.deps:
+	$(AM_V_GEN) for pkg in $(libgdata_vapi_DEPS); do \
+		echo $$pkg >> $@; \
+	done
+
+vapidir = $(datadir)/vala/vapi
+vapi_DATA = $(VAPIGEN_VAPIS) $(VAPIGEN_VAPIS:.vapi=.deps)
+
+CLEANFILES += $(vapi_DATA)
+
+EXTRA_DIST += gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.metadata
+endif
 endif
 
 # Code coverage

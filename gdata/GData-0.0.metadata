@@ -1,0 +1,11 @@
+Color struct
+
+Parsable.get_xml#method skip
+Query.get_query_uri#method skip
+DOCUMENTS_PRESENTATION_* name="DOCUMENTS_PRESENTATION_(.+)" parent="GData.DocumentsPresentationFormat"
+DOCUMENTS_TEXT_* name="DOCUMENTS_TEXT_(.+)" parent="GData.DocumentsTextFormat"
+DOCUMENTS_SPREADSHEET_* name="DOCUMENTS_SPREADSHEET_(.+)" parent="GData.DocumentsSpreadsheetFormat"
+CONTACTS_GENDER_* name="CONTACTS_GENDER_(.+)" parent="GData.ContactsGender"
+CONTACTS_GROUP_* name="CONTACTS_GROUP_(.+)" parent="GData.ContactsGroupType"
+CONTACTS_PRIORITY_* name="CONTACTS_PRIORITY_(.+)" parent="GData.ContactsPriority"
+CONTACTS_SENSITIVITY_* name="CONTACTS_SENSITIVITY_(.+)" parent="GData.ContactsSensitivity"
