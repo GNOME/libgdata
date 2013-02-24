@@ -529,7 +529,7 @@ gdata_libgdata_vapi_METADATADIRS = $(srcdir)/gdata
 gdata_libgdata_vapi_FILES = gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir
 
 gdata/libgdata.deps:
-	$(AM_V_GEN) for pkg in $(libgdata_vapi_DEPS); do \
+	$(AM_V_GEN) for pkg in $(gdata_libgdata_vapi_DEPS); do \
 		echo $$pkg >> $@; \
 	done
 
