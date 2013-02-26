@@ -483,7 +483,7 @@ INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = --warn-all
 INTROSPECTION_COMPILER_ARGS =
 DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
-EXTRA_DIST += introspection.m4
+EXTRA_DIST += m4/introspection.m4
 
 if HAVE_INTROSPECTION
 gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir: gdata/libgdata.la
@@ -510,9 +510,6 @@ typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
 CLEANFILES += $(gir_DATA) $(typelib_DATA)
-
-DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
-EXTRA_DIST += introspection.m4
 
 if ENABLE_VAPIGEN
 -include $(VAPIGEN_MAKEFILE)
