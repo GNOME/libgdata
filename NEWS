@@ -1,3 +1,31 @@
+Overview of changes from libgdata 0.13.2 to libgdata 0.13.3
+===========================================================
+
+Major changes:
+ • Fix dependencies in pkg-config file
+ • Add OAuth 2.0 support to the GOA authoriser
+ • Fix some licencing inconsistencies (libgdata is entirely licenced under
+   LGPLv2.1+)
+ • Add support for PDF documents in Google Documents
+ • Add in-tree Vala bindings (they were previously in Vala’s tree)
+
+Bugs fixed:
+ • Bug 685464 — [PATCH] Package config file depends on too much
+ • Bug 685289 — GOA now uses OAuth 2.0 for Calendar, Contacts and Documents
+ • Bug 690281 — do not add unused gnome dependencies to libgdata.pc when
+   configured with --disable-gnome
+ • Bug 690225 — [patch] Make GOA optional
+ • Bug 690656 — unhandled XML warnings from totem youtube plugin
+ • Bug 693855 — Port introspection fixes from Vala bindings
+ • Bug 693958 — Add PDF support
+ • Bug 693865 — Add Vala bindings
+ • Bug 694415 — Don't require introspection.m4 to be installed system-wide
+
+Updated translations:
+ • et (Mattias Põldaru)
+ • sk (Ján Kyselica)
+ • ug (Gheyret Kenji)
+
 Overview of changes from libgdata 0.13.1 to libgdata 0.13.2
 ===========================================================
 
