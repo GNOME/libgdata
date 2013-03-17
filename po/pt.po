@@ -1,14 +1,13 @@
 # Portuguese translation for libgdata.
-# Copyright © 2009, 2010, 2011 libgdata
+# Copyright © 2009, 2010, 2011, 2013 libgdata
 # This file is distributed under the same license as the libgdata package.
-# António Lima <amrlima@gmail.com>, 2009, 2010, 2011, 2012.
+# António Lima <amrlima@gmail.com>, 2009, 2010, 2011, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgda"
-"ta&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-07-15 10:02+0000\n"
-"PO-Revision-Date: 2012-09-06 11:47+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-17 00:51+0000\n"
+"PO-Revision-Date: 2013-03-17 00:55+0000\n"
 "Last-Translator: António Lima <amrlima@gmail.com>\n"
 "Language-Team: gnome_pt@yahoogroups.com\n"
 "Language: pt\n"
@@ -25,44 +24,44 @@ msgstr ""
 msgid "The server returned a malformed response."
 msgstr "O servidor devolveu uma resposta mal formada."
 
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:320
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Incapaz de ligar ao ao serviço do servidor."
 
-#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Incapaz de ligar ao servidor proxy."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:331
+#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
 "Pedido URI ou cabeçalho inválido, ou parâmetro não padrão não suportado: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:337
+#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Autenticação requerida: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:342
+#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "O recurso requerido não foi encontrado: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:348
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "A entrada foi modificada desde que foi transferida: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Código de erro %u ao autenticar: %s"
@@ -79,7 +78,7 @@ msgstr "Essa conta requer uma senha específica da aplicação. (%s)"
 
 #: ../gdata/gdata-client-login-authorizer.c:797
 msgid "Your username or password were incorrect."
-msgstr "O seu nome de utilizador ou senha estavam incorrectos."
+msgstr "O seu nome de utilizador ou senha estavam incorretos."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:818
@@ -113,13 +112,13 @@ msgstr "Esta conta foi apagada. (%s)"
 #: ../gdata/gdata-client-login-authorizer.c:839
 #, c-format
 msgid "This account has been disabled. (%s)"
-msgstr "Esta conta foi desactivada. (%s)"
+msgstr "Esta conta foi desativada. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:844
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
-msgstr "O acesso desta conta a este serviço foi desactivado. (%s)"
+msgstr "O acesso desta conta a este serviço foi desativado. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:849
@@ -145,7 +144,7 @@ msgid "This comment may not be deleted."
 msgstr "Este comentário não pode ser apagado."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:752
+#: ../gdata/gdata-download-stream.c:750
 msgid "Invalid seek request"
 msgstr "Pedido de procura inválido"
 
@@ -254,60 +253,60 @@ msgstr "Um elemento singleton (%s) estava duplicado."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Erro de código %u ao consultar: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Erro de código %u ao inserir uma entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Error code %u when updating an entry: %s"
-msgstr "Erro de código %u ao actualizar uma entrada: %s"
+msgstr "Erro de código %u ao atualizar uma entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Erro de código %u ao apagar uma entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:393
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Erro de código %u ao transferir: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Erro de código %u ao enviar: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
+#: ../gdata/gdata-service.c:405
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Código de erro %u ao executar uma operação em lote: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:685
+#: ../gdata/gdata-service.c:686
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "URI de redireccionamento inválido: %s"
 
-#: ../gdata/gdata-service.c:1337
+#: ../gdata/gdata-service.c:1338
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
@@ -317,7 +316,8 @@ msgstr "A entrada já foi inserida."
 #: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "Erro recebido do servidor após o envio de um pedaço de envio retomável."
+msgstr ""
+"Erro recebido do servidor após o envio de um pedaço de envio retomável."
 
 #: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
@@ -374,24 +374,24 @@ msgstr "Tem de estar autenticado para inserir um grupo."
 msgid "You must be authenticated to download documents."
 msgstr "Tem de estar autenticado para transferir documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:460
-#: ../gdata/services/documents/gdata-documents-service.c:510
+#: ../gdata/services/documents/gdata-documents-service.c:461
+#: ../gdata/services/documents/gdata-documents-service.c:511
 msgid "You must be authenticated to query documents."
 msgstr "Tem de estar autenticado para consultar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:555
+#: ../gdata/services/documents/gdata-documents-service.c:556
 msgid "You must be authenticated to upload documents."
 msgstr "Tem de estar autenticado para enviar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:561
+#: ../gdata/services/documents/gdata-documents-service.c:562
 msgid "The document has already been uploaded."
 msgstr "O documento já foi enviado."
 
-#: ../gdata/services/documents/gdata-documents-service.c:705
+#: ../gdata/services/documents/gdata-documents-service.c:706
 msgid "You must be authenticated to update documents."
-msgstr "Tem de estar autenticado para actualizar documentos."
+msgstr "Tem de estar autenticado para atualizar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:885
+#: ../gdata/services/documents/gdata-documents-service.c:888
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
@@ -399,13 +399,12 @@ msgstr ""
 "Não foi possível reconhecer o tipo de conteúdo do documento fornecido "
 "('% s')."
 
-#: ../gdata/services/documents/gdata-documents-service.c:925
-#| msgid "You must be authenticated to query documents."
+#: ../gdata/services/documents/gdata-documents-service.c:928
 msgid "You must be authenticated to copy documents."
 msgstr "Tem de estar autenticado para copiar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1087
-#: ../gdata/services/documents/gdata-documents-service.c:1270
+#: ../gdata/services/documents/gdata-documents-service.c:1090
+#: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "Tem de estar autenticado para mover documentos e pastas."
 
