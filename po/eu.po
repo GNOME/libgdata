@@ -3,41 +3,41 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2009, 2010, 2011.
-# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2010, 2011.
+# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-21 17:23+0200\n"
-"PO-Revision-Date: 2011-09-16 16:43+0200\n"
+"POT-Creation-Date: 2013-03-20 11:12+0100\n"
+"PO-Revision-Date: 2013-03-04 23:33+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:575
-#: ../gdata/gdata-oauth1-authorizer.c:770
-#: ../gdata/gdata-oauth1-authorizer.c:1029
+#: ../gdata/gdata-client-login-authorizer.c:597
+#: ../gdata/gdata-oauth1-authorizer.c:804
+#: ../gdata/gdata-oauth1-authorizer.c:1076
 msgid "The server returned a malformed response."
 msgstr "Zerbitzariak gaizki osatutako erantzuna itzuli du."
 
-#: ../gdata/gdata-client-login-authorizer.c:595 ../gdata/gdata-service.c:319
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Ezin da zerbitzuaren zerbitzariarekin konektatu."
 
-#: ../gdata/gdata-client-login-authorizer.c:600 ../gdata/gdata-service.c:324
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Ezin da proxy zerbitzariarekin konektatu."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:606 ../gdata/gdata-service.c:330
+#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -45,58 +45,58 @@ msgstr ""
 "estandarra: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:612 ../gdata/gdata-service.c:336
+#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Autentifikazioa behar da: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:341
+#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Eskatutako baliabidea ez da aurkitu: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:623 ../gdata/gdata-service.c:347
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Sarrera aldatu egin da deskargatu zenetik: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:635 ../gdata/gdata-service.c:361
+#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Errorearen %u kodea autentifikatzean: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:728
+#: ../gdata/gdata-client-login-authorizer.c:752
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "CAPTCHA bete behar da saioa hasteko."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:766
+#: ../gdata/gdata-client-login-authorizer.c:790
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Kontu honek aplikazio zehatzaren pasahitza eskatzen du (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:773
+#: ../gdata/gdata-client-login-authorizer.c:797
 msgid "Your username or password were incorrect."
 msgstr "Zure erabiltzaile-izena edo pasahitza oker dago."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:794
+#: ../gdata/gdata-client-login-authorizer.c:818
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Zure kontuaren helbide elektronikoa ez da egiaztatu. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:799
+#: ../gdata/gdata-client-login-authorizer.c:823
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Ez zaude ados zerbitzuaren termino eta baldintzekin. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:805
+#: ../gdata/gdata-client-login-authorizer.c:829
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -106,25 +106,25 @@ msgstr ""
 "eta pasahitz berria jasotzeko. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:810
+#: ../gdata/gdata-client-login-authorizer.c:834
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Kontu hau ezabatu egin da. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:815
+#: ../gdata/gdata-client-login-authorizer.c:839
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Kontu hau desgaitu egin da. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:820
+#: ../gdata/gdata-client-login-authorizer.c:844
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Kontu honen zerbitzuaren sarbidetza desgaitu egin da. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:825
+#: ../gdata/gdata-client-login-authorizer.c:849
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Zerbitzu hau ez dago unean erabilgarri. (%s)"
@@ -147,17 +147,17 @@ msgid "This comment may not be deleted."
 msgstr "Iruzkin hau ezin da ezabatu."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:751
+#: ../gdata/gdata-download-stream.c:750
 msgid "Invalid seek request"
 msgstr "Baliogabeko bilaketa eskaera"
 
-#: ../gdata/gdata-oauth1-authorizer.c:745
+#: ../gdata/gdata-oauth1-authorizer.c:779
 msgid "The server rejected the temporary credentials request."
 msgstr "Zerbitzariak uko egin dio aldi baterako kredentzialen eskaerari."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1007
+#: ../gdata/gdata-oauth1-authorizer.c:1050
 msgid "Access was denied by the user or server."
 msgstr "Erabiltzaileak edo zerbitzariak sarbidetza debekatu du."
 
@@ -176,7 +176,7 @@ msgstr "Dokumentu hutsa."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:66
+#: ../gdata/gdata-parser.c:67
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "%s elementua bati beharrezko edukia falta zaio."
@@ -186,7 +186,7 @@ msgstr "%s elementua bati beharrezko edukia falta zaio."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:82
+#: ../gdata/gdata-parser.c:83
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "%s elementu baten (\"%s\") edukia ez dago ISO 8601 formatuan."
@@ -196,7 +196,7 @@ msgstr "%s elementu baten (\"%s\") edukia ez dago ISO 8601 formatuan."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:102
+#: ../gdata/gdata-parser.c:103
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "%2$s elementu baten (\"%3$s\") %1$s propietatea ezezaguna da."
@@ -206,7 +206,7 @@ msgstr "%2$s elementu baten (\"%3$s\") %1$s propietatea ezezaguna da."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:120
+#: ../gdata/gdata-parser.c:121
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "%s elementu baten (\"%s\") edukia ezezaguna da."
@@ -216,7 +216,7 @@ msgstr "%s elementu baten (\"%s\") edukia ezezaguna da."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:140
+#: ../gdata/gdata-parser.c:141
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "%s elementu baten (\"%s\") beharrezko propietate bat ez dago."
@@ -227,7 +227,7 @@ msgstr "%s elementu baten (\"%s\") beharrezko propietate bat ez dago."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:163
+#: ../gdata/gdata-parser.c:164
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -240,7 +240,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:182
+#: ../gdata/gdata-parser.c:183
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Beharrezkoa den elementu bat (\"%s\") ez dago."
@@ -249,73 +249,79 @@ msgstr "Beharrezkoa den elementu bat (\"%s\") ez dago."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:197
+#: ../gdata/gdata-parser.c:198
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Elementu bakun bat (%s) bikoiztuta dago."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:367
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Errorearen %u kodea kontsultatzean: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:373
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Errorearen %u kodea sarrera bat txertatzean: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:379
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Errorearen %u kodea sarrera bat eguneratzean: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:385
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Errorearen %u kodea sarrera bat ezabatzean: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:391
+#: ../gdata/gdata-service.c:393
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Errorearen %u kodea deskargatzean: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:397
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Errorearen %u kodea igotzean: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:403
+#: ../gdata/gdata-service.c:405
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Errorearen %u kodea batch-eko eragiketa exekutatzean: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:683
+#: ../gdata/gdata-service.c:686
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Birbideratutako URIa ez da baliozkoa: %s"
 
-#: ../gdata/gdata-service.c:1335
+#: ../gdata/gdata-service.c:1338
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:836
+#: ../gdata/services/youtube/gdata-youtube-service.c:875
 msgid "The entry has already been inserted."
 msgstr "Sarrera jadanik txertatuta dago."
 
-#: ../gdata/gdata-upload-stream.c:785
+#. Resumable upload error.
+#: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr "Errorea jaso da zerbitzaritik igoerako zati laburgarria igo ondoren."
+
+#: ../gdata/gdata-upload-stream.c:892
 msgid "Stream is already closed"
 msgstr "Korrontea jadanik itxita dago"
 
@@ -365,35 +371,39 @@ msgstr "Taldea jadanik txertatuta dago."
 msgid "You must be authenticated to insert a group."
 msgstr "Autentifikatu egin behar zara talde bat txertatzeko."
 
-#: ../gdata/services/documents/gdata-documents-document.c:274
+#: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
 msgstr "Autentifikatu egin behar zara dokumentuak deskargatzeko."
 
-#: ../gdata/services/documents/gdata-documents-service.c:357
-#: ../gdata/services/documents/gdata-documents-service.c:412
+#: ../gdata/services/documents/gdata-documents-service.c:461
+#: ../gdata/services/documents/gdata-documents-service.c:511
 msgid "You must be authenticated to query documents."
 msgstr "Autentifikatu egin behar zara dokumentuak kontsultatzeko."
 
-#: ../gdata/services/documents/gdata-documents-service.c:491
+#: ../gdata/services/documents/gdata-documents-service.c:556
 msgid "You must be authenticated to upload documents."
 msgstr "Autentifikatu egin behar zara dokumentuak igotzeko."
 
-#: ../gdata/services/documents/gdata-documents-service.c:497
+#: ../gdata/services/documents/gdata-documents-service.c:562
 msgid "The document has already been uploaded."
 msgstr "Dokumentua jadanik igo da."
 
-#: ../gdata/services/documents/gdata-documents-service.c:552
+#: ../gdata/services/documents/gdata-documents-service.c:706
 msgid "You must be authenticated to update documents."
 msgstr "Autentifikatu egin behar zara dokumentuak igotzeko."
 
-#: ../gdata/services/documents/gdata-documents-service.c:615
+#: ../gdata/services/documents/gdata-documents-service.c:888
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Emandako dokumentuaren ('%s') eduki mota ezin izan da ezagutu."
 
-#: ../gdata/services/documents/gdata-documents-service.c:664
-#: ../gdata/services/documents/gdata-documents-service.c:849
+#: ../gdata/services/documents/gdata-documents-service.c:928
+msgid "You must be authenticated to copy documents."
+msgstr "Autentifikatu egin behar zara dokumentuak kopiatzeko."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1090
+#: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "Autentifikatu egin behar zara dokumentu eta karpetak lekuz aldatzeko."
 
@@ -431,17 +441,17 @@ msgstr "Albuma jadanik txertatuta dago."
 msgid "You must be authenticated to insert an album."
 msgstr "Autentifikatu egin behar zara album bat txertatzeko."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:417
+#: ../gdata/services/youtube/gdata-youtube-service.c:456
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Zerbitzu hau ez dago erabilgarri unean."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:421
+#: ../gdata/services/youtube/gdata-youtube-service.c:460
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Autentifikatu egin behar zara hori egiteko."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:426
+#: ../gdata/services/youtube/gdata-youtube-service.c:465
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -450,7 +460,7 @@ msgstr ""
 "APIaren dei gehiegi egin dituzu azkienaldian. Itxaron minutu gutxi batzuk "
 "eta saiatu berriro."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:429
+#: ../gdata/services/youtube/gdata-youtube-service.c:468
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -460,8 +470,8 @@ msgstr ""
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
 #. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:436
-#: ../gdata/services/youtube/gdata-youtube-service.c:442
+#: ../gdata/services/youtube/gdata-youtube-service.c:475
+#: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
@@ -469,16 +479,16 @@ msgstr ""
 "Errorearen \"%s\" kodea ezezaguna da \"%s\" domeinuan, \"%s\" kokalekuarekin "
 "hartutakoa."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:460
+#: ../gdata/services/youtube/gdata-youtube-service.c:499
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "Errore ezezaguna eta analizakaitza jaso da."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:724
-#: ../gdata/services/youtube/gdata-youtube-service.c:781
+#: ../gdata/services/youtube/gdata-youtube-service.c:763
+#: ../gdata/services/youtube/gdata-youtube-service.c:820
 msgid "The video did not have a related videos <link>."
 msgstr "Bideoak ez dauka erlazionatutako bideorik <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:843
+#: ../gdata/services/youtube/gdata-youtube-service.c:882
 msgid "You must be authenticated to upload a video."
 msgstr "Autentifikatu egin behar zara bideo bat igotzeko."
