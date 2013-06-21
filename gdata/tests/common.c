@@ -32,6 +32,15 @@ static gboolean no_internet = FALSE;
 /* %TRUE if interactive tests should be skipped because we're running automatically (for example) */
 static gboolean no_interactive = FALSE;
 
+/* declaration of debug handler */
+static void gdata_test_debug_handler (const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data);
+
+/* declaration of printerr handler */
+static void gdata_test_assert_handler (const gchar *message);
+
+/* global list of debugging messages */
+static GSList *message_list = NULL;
+
 void
 gdata_test_init (int argc, char **argv)
 {
@@ -73,6 +82,12 @@ gdata_test_init (int argc, char **argv)
 
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
+
+	/* Set handler of debug information */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, (GLogFunc) gdata_test_debug_handler, message_list);
+
+	/* Set handler for printerr */
+	g_set_printerr_handler ((GPrintFunc) gdata_test_assert_handler);
 
 	/* Enable full debugging */
 	g_setenv ("LIBGDATA_DEBUG", "3" /* GDATA_LOG_FULL */, FALSE);
@@ -650,4 +665,56 @@ gdata_tear_down_async_test_data (GDataAsyncTestData *async_data, gconstpointer t
 
 	g_object_unref (async_data->cancellable);
 	g_main_loop_unref (async_data->main_loop);
+}
+
+void
+gdata_test_debug_output (void)
+{
+	if (message_list == NULL) {
+		/* No debugging messages */
+		return;
+	}
+	do {
+		gchar *message = (gchar*) message_list->data;
+		if (message != NULL) {
+			if (strlen (message) > 2 && message[2] == '<') {
+				/* As debug string starts with direction indicator and space, t.i. "< ", */
+				/* we need access string starting from third character and see if it's   */
+				/* looks like xml - t.i. it starts with '<' */
+				xmlChar *xml_buff;
+				int buffer_size;
+				xmlDocPtr xml_doc;
+				/* we need to cut to the begining of XML string */
+				message = message + 2;
+				/* create xml document and dump it to string buffer */
+				xml_doc = xmlParseDoc ((const xmlChar*) message);
+				xmlDocDumpFormatMemory (xml_doc, &xml_buff, &buffer_size, 1);
+				/* print out structured xml - if it's not xml, it will get error in output */
+				printf("%s", (gchar*) xml_buff);
+				/* free xml structs */
+				xmlFree (xml_buff);
+				xmlFreeDoc (xml_doc);
+			} else {
+				printf ("%s\n", (gchar*) message);
+			}
+			/* free gchar */
+			g_free ((gpointer) message_list->data);
+		}
+		/* free GSList node */
+		message_list = g_slist_delete_link (message_list, message_list);
+	} while (message_list != NULL);
+}
+
+static void
+gdata_test_debug_handler (const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
+{
+	/* storing debugging messages in GSList for displaying them in case of error */
+	message_list = g_slist_append (message_list, g_strdup (message));
+}
+
+static void
+gdata_test_assert_handler (const gchar *message)
+{
+	gdata_test_debug_output ();
+	printf ("%s", (gchar*) message);
 }
