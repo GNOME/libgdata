@@ -313,7 +313,6 @@ typedef struct {
 	GFile *video_file;
 	gchar *slug;
 	gchar *content_type;
-	GFileInputStream *file_stream;
 } UploadData;
 
 static void
@@ -350,11 +349,6 @@ set_up_upload (UploadData *data, gconstpointer service)
 	data->content_type = g_strdup (g_file_info_get_content_type (file_info));
 
 	g_object_unref (file_info);
-
-	/* Get an input stream for the file */
-	data->file_stream = g_file_read (data->video_file, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (G_IS_FILE_INPUT_STREAM (data->file_stream));
 }
 
 static void
@@ -371,7 +365,6 @@ tear_down_upload (UploadData *data, gconstpointer service)
 	g_object_unref (data->video_file);
 	g_free (data->slug);
 	g_free (data->content_type);
-	g_object_unref (data->file_stream);
 	g_object_unref (data->service);
 }
 
@@ -379,6 +372,7 @@ static void
 test_upload_simple (UploadData *data, gconstpointer service)
 {
 	GDataUploadStream *upload_stream;
+	GFileInputStream *file_stream;
 	const gchar * const *tags, * const *tags2;
 	gssize transfer_size;
 	GError *error = NULL;
@@ -389,8 +383,13 @@ test_upload_simple (UploadData *data, gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
+	/* Get an input stream for the file */
+	file_stream = g_file_read (data->video_file, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_INPUT_STREAM (file_stream));
+
 	/* Upload the video */
-	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->file_stream),
+	transfer_size = g_output_stream_splice (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
 	                                        G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE | G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (transfer_size, >, 0);
@@ -399,6 +398,9 @@ test_upload_simple (UploadData *data, gconstpointer service)
 	data->updated_video = gdata_youtube_service_finish_video_upload (GDATA_YOUTUBE_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->updated_video));
+
+	g_object_unref (file_stream);
+	g_object_unref (upload_stream);
 
 	/* Check the video's properties */
 	g_assert (gdata_entry_is_inserted (GDATA_ENTRY (data->updated_video)));
@@ -420,6 +422,7 @@ GDATA_ASYNC_CLOSURE_FUNCTIONS (upload, UploadData);
 GDATA_ASYNC_TEST_FUNCTIONS (upload, UploadData,
 G_STMT_START {
 	GDataUploadStream *upload_stream;
+	GFileInputStream *file_stream;
 	GError *error = NULL;
 
 	/* Prepare the upload stream */
@@ -428,15 +431,18 @@ G_STMT_START {
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
+	/* Get an input stream for the file */
+	file_stream = g_file_read (data->video_file, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (G_IS_FILE_INPUT_STREAM (file_stream));
+
 	/* Upload the video asynchronously */
-	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (data->file_stream),
+	g_output_stream_splice_async (G_OUTPUT_STREAM (upload_stream), G_INPUT_STREAM (file_stream),
 	                              G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, G_PRIORITY_DEFAULT, NULL,
 	                              async_ready_callback, async_data);
 
+	g_object_unref (file_stream);
 	g_object_unref (upload_stream);
-
-	/* Reset the input stream to the beginning. */
-	g_assert (g_seekable_seek (G_SEEKABLE (data->file_stream), 0, G_SEEK_SET, NULL, NULL) == TRUE);
 } G_STMT_END,
 G_STMT_START {
 	GOutputStream *stream = G_OUTPUT_STREAM (obj);
