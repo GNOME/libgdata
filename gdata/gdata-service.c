@@ -639,7 +639,9 @@ _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message
 	g_assert (message->status_code != SOUP_STATUS_NONE);
 
 	if (message->status_code == SOUP_STATUS_CANCELLED ||
-	    (message->status_code == SOUP_STATUS_IO_ERROR && cancellable != NULL && g_cancellable_is_cancelled (cancellable) == TRUE)) {
+	    ((message->status_code == SOUP_STATUS_IO_ERROR || message->status_code == SOUP_STATUS_SSL_FAILED ||
+	      message->status_code == SOUP_STATUS_CANT_CONNECT || message->status_code == SOUP_STATUS_CANT_RESOLVE) &&
+	     cancellable != NULL && g_cancellable_is_cancelled (cancellable) == TRUE)) {
 		/* We hackily create and cancel a new GCancellable so that we can set the error using it and therefore save ourselves a translatable
 		 * string and the associated maintenance. */
 		GCancellable *error_cancellable = g_cancellable_new ();
