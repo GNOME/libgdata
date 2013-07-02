@@ -411,10 +411,13 @@ _gdata_batch_operation_run_callback (GDataBatchOperation *self, BatchOperation *
 
 	/* Only dispatch it in the main thread if the request was run with *_run_async(). This allows applications to run batch operations entirely in
 	 * application-owned threads if desired. */
-	if (self->priv->is_async == TRUE)
-		g_idle_add ((GSourceFunc) run_callback_cb, op);
-	else
+	if (self->priv->is_async == TRUE) {
+		/* Send the callback; use G_PRIORITY_DEFAULT rather than G_PRIORITY_DEFAULT_IDLE
+		 * to contend with the priorities used by the callback functions in GAsyncResult */
+		g_idle_add_full (G_PRIORITY_DEFAULT, (GSourceFunc) run_callback_cb, op, NULL);
+	} else {
 		run_callback_cb (op);
+	}
 }
 
 /* Free a #BatchOperation */
