@@ -36,7 +36,7 @@ G_BEGIN_DECLS
 #define INCORRECT_USERNAME "libgdata.test.invalid@gmail.com"
 
 /* These two must not match (obviously) */
-#define PASSWORD "libgdata-gdata"
+#define PASSWORD "gdata-gdata"
 #define INCORRECT_PASSWORD "bad-password"
 
 /* The amount of fuzziness (in seconds) used in comparisons between times which should (theoretically) be equal.
