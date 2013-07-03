@@ -1910,7 +1910,7 @@ main (int argc, char *argv[])
 
 		g_test_add ("/youtube/upload/simple", UploadData, service, set_up_upload, test_upload_simple, tear_down_upload);
 		g_test_add ("/youtube/upload/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_async, tear_down_upload_async);
-		g_test_add ("/youtube/upload/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_async_cancellation,
+		g_test_add ("/youtube/upload/async/cancellation", GDataAsyncTestData, service, set_up_upload_async, test_upload_async_cancellation,
 		            tear_down_upload_async);
 
 		g_test_add_data_func ("/youtube/query/single", service, test_query_single);
