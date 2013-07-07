@@ -58,6 +58,7 @@ G_GNUC_INTERNAL SoupMessage *_gdata_service_query (GDataService *self, GDataAuth
                                                    GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL const gchar *_gdata_service_get_scheme (void) G_GNUC_CONST;
 G_GNUC_INTERNAL gchar *_gdata_service_build_uri (const gchar *format, ...) G_GNUC_PRINTF (1, 2) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL guint _gdata_service_get_https_port (void);
 G_GNUC_INTERNAL gchar *_gdata_service_fix_uri_scheme (const gchar *uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL GDataLogLevel _gdata_service_get_log_level (void) G_GNUC_CONST;
 G_GNUC_INTERNAL SoupSession *_gdata_service_build_session (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

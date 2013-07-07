@@ -337,6 +337,7 @@ gdata_download_stream_constructor (GType type, guint n_construct_params, GObject
 	GDataDownloadStreamPrivate *priv;
 	GDataServiceClass *klass;
 	GObject *object;
+	SoupURI *_uri;
 
 	/* Chain up to the parent class */
 	object = G_OBJECT_CLASS (gdata_download_stream_parent_class)->constructor (type, n_construct_params, construct_params);
@@ -354,7 +355,10 @@ gdata_download_stream_constructor (GType type, guint n_construct_params, GObject
 	g_cancellable_connect (priv->cancellable, (GCallback) cancellable_cancel_cb, priv->network_cancellable, NULL);
 
 	/* Build the message */
-	priv->message = soup_message_new (SOUP_METHOD_GET, priv->download_uri);
+	_uri = soup_uri_new (priv->download_uri);
+	soup_uri_set_port (_uri, _gdata_service_get_https_port ());
+	priv->message = soup_message_new_from_uri (SOUP_METHOD_GET, _uri);
+	soup_uri_free (_uri);
 
 	/* Make sure the headers are set */
 	klass = GDATA_SERVICE_GET_CLASS (priv->service);

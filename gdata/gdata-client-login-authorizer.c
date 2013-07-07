@@ -667,6 +667,7 @@ authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain
 	const gchar *service_name;
 	guint status;
 	GDataSecureString auth_token;
+	SoupURI *_uri;
 
 	/* Prepare the request.
 	 * NOTE: At this point, our non-pageable password is copied into a pageable HTTP request structure. We can't do much about this
@@ -686,7 +687,10 @@ authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain
 	g_free (captcha_answer);
 
 	/* Build the message */
-	message = soup_message_new (SOUP_METHOD_POST, "https://www.google.com/accounts/ClientLogin");
+	_uri = soup_uri_new ("https://www.google.com/accounts/ClientLogin");
+	soup_uri_set_port (_uri, _gdata_service_get_https_port ());
+	message = soup_message_new_from_uri (SOUP_METHOD_POST, _uri);
+	soup_uri_free (_uri);
 	soup_message_set_request (message, "application/x-www-form-urlencoded", SOUP_MEMORY_TAKE, request_body, strlen (request_body));
 
 	/* Send the message */

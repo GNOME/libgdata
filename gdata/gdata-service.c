@@ -539,9 +539,13 @@ _gdata_service_build_message (GDataService *self, GDataAuthorizationDomain *doma
 {
 	SoupMessage *message;
 	GDataServiceClass *klass;
+	SoupURI *_uri;
 
-	/* Create the message */
-	message = soup_message_new (method, uri);
+	/* Create the message. Allow changing the HTTPS port just for testing. */
+	_uri = soup_uri_new (uri);
+	soup_uri_set_port (_uri, _gdata_service_get_https_port ());
+	message = soup_message_new_from_uri (method, _uri);
+	soup_uri_free (_uri);
 
 	/* Make sure subclasses set their headers */
 	klass = GDATA_SERVICE_GET_CLASS (self);
@@ -1957,6 +1961,40 @@ _gdata_service_fix_uri_scheme (const gchar *uri)
 	}
 
 	return g_strdup (uri);
+}
+
+/**
+ * _gdata_service_get_https_port:
+ *
+ * Gets the destination TCP/IP port number which libgdata should use for all outbound HTTPS traffic.
+ * This defaults to 443, but may be overridden using the <code class="literal">LIBGDATA_HTTPS_PORT</code>
+ * environment variable. This is intended to allow network traffic to be redirected to a local server for
+ * unit testing, with a listening port above 1024 so the tests don't need root privileges.
+ *
+ * The value returned by this function may change at any time (e.g. between unit tests), so callers must not cache the result.
+ *
+ * Return value: port number to use for HTTPS traffic
+ */
+guint
+_gdata_service_get_https_port (void)
+{
+	const gchar *port_string;
+
+	/* Allow changing the HTTPS port just for testing. */
+	port_string = g_getenv ("LIBGDATA_HTTPS_PORT");
+	if (port_string != NULL) {
+		const gchar *end;
+
+		guint64 port = g_ascii_strtoull (port_string, (gchar **) &end, 10);
+
+		if (port != 0 && *end == '\0') {
+			g_debug ("Overriding message port to %" G_GUINT64_FORMAT ".", port);
+			return port;
+		}
+	}
+
+	/* Return the default. */
+	return 443;
 }
 
 /*

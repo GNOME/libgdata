@@ -409,9 +409,13 @@ static SoupMessage *
 build_message (GDataUploadStream *self, const gchar *method, const gchar *upload_uri)
 {
 	SoupMessage *new_message;
+	SoupURI *_uri;
 
 	/* Build the message */
-	new_message = soup_message_new (method, upload_uri);
+	_uri = soup_uri_new (upload_uri);
+	soup_uri_set_port (_uri, _gdata_service_get_https_port ());
+	new_message = soup_message_new_from_uri (method, _uri);
+	soup_uri_free (_uri);
 
 	/* We don't want to accumulate chunks */
 	soup_message_body_set_accumulate (new_message->request_body, FALSE);

@@ -709,6 +709,7 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 	GDataAuthorizationDomain *domain;
 	GHashTable *response_details;
 	const gchar *callback_uri, *_token, *_token_secret, *callback_confirmed;
+	SoupURI *_uri;
 
 	g_return_val_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self), NULL);
 	g_return_val_if_fail (token != NULL, NULL);
@@ -756,7 +757,11 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 	request_body = soup_form_encode_hash (parameters);
 
 	/* Build the message */
-	message = soup_message_new (SOUP_METHOD_POST, "https://www.google.com/accounts/OAuthGetRequestToken");
+	_uri = soup_uri_new ("https://www.google.com/accounts/OAuthGetRequestToken");
+	soup_uri_set_port (_uri, _gdata_service_get_https_port ());
+	message = soup_message_new_from_uri (SOUP_METHOD_POST, _uri);
+	soup_uri_free (_uri);
+
 	soup_message_set_request (message, "application/x-www-form-urlencoded", SOUP_MEMORY_TAKE, request_body, strlen (request_body));
 
 	sign_message (self, message, NULL, NULL, parameters);
@@ -1007,6 +1012,7 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	GHashTable *parameters;
 	GHashTable *response_details;
 	const gchar *_token, *_token_secret;
+	SoupURI *_uri;
 
 	g_return_val_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self), FALSE);
 	g_return_val_if_fail (token != NULL && *token != '\0', FALSE);
@@ -1029,7 +1035,10 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	request_body = soup_form_encode_hash (parameters);
 
 	/* Build the message */
-	message = soup_message_new (SOUP_METHOD_POST, "https://www.google.com/accounts/OAuthGetAccessToken");
+	_uri = soup_uri_new ("https://www.google.com/accounts/OAuthGetAccessToken");
+	soup_uri_set_port (_uri, _gdata_service_get_https_port ());
+	message = soup_message_new_from_uri (SOUP_METHOD_POST, _uri);
+	soup_uri_free (_uri);
 	soup_message_set_request (message, "application/x-www-form-urlencoded", SOUP_MEMORY_TAKE, request_body, strlen (request_body));
 
 	sign_message (self, message, token, token_secret, parameters);
