@@ -65,12 +65,16 @@ typedef enum {
  * GDataYouTubeServiceError:
  * @GDATA_YOUTUBE_SERVICE_ERROR_API_QUOTA_EXCEEDED: the API request quota for this developer account has been exceeded
  * @GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED: the entry (e.g. video) quota for this user account has been exceeded
+ * @GDATA_YOUTUBE_SERVICE_ERROR_CHANNEL_REQUIRED: the currently authenticated user doesn't have a YouTube channel, but the current action requires one;
+ * if this error is received, inform the user that they need a YouTube channel, and provide a link to
+ * <ulink type="http" url="https://www.youtube.com/create_channel">https://www.youtube.com/create_channel</ulink>
  *
  * Error codes for #GDataYouTubeService operations.
  **/
 typedef enum {
 	GDATA_YOUTUBE_SERVICE_ERROR_API_QUOTA_EXCEEDED,
-	GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED
+	GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED,
+	GDATA_YOUTUBE_SERVICE_ERROR_CHANNEL_REQUIRED,
 } GDataYouTubeServiceError;
 
 #define GDATA_TYPE_YOUTUBE_SERVICE		(gdata_youtube_service_get_type ())

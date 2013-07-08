@@ -450,10 +450,23 @@ parse_error_response (GDataService *self, GDataOperationType operation_type, gui
 		/* Create an error message, but only for the first error */
 		if (error == NULL || *error == NULL) {
 			/* See http://code.google.com/apis/youtube/2.0/developers_guide_protocol.html#Error_responses */
-			if (xmlStrcmp (domain, (xmlChar*) "yt:service") == 0 && xmlStrcmp (code, (xmlChar*) "disabled_in_maintenance_mode") == 0) {
-				/* Service disabled */
-				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
-				             _("This service is not available at the moment."));
+			if (xmlStrcmp (domain, (xmlChar*) "yt:service") == 0) {
+				if (xmlStrcmp (code, (xmlChar*) "disabled_in_maintenance_mode") == 0) {
+					/* Service disabled */
+					g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
+					             _("This service is not available at the moment."));
+				} else if (xmlStrcmp (code, (xmlChar*) "youtube_signup_required") == 0) {
+					/* Tried to authenticate with a Google Account which hasn't yet had a YouTube channel created for it. */
+					g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR, GDATA_YOUTUBE_SERVICE_ERROR_CHANNEL_REQUIRED,
+					             /* Translators: the parameter is a URI. */
+					             _("Your Google Account must be associated with a YouTube channel to do this. Visit %s to create one."),
+					             "https://www.youtube.com/create_channel");
+				} else {
+					/* Protocol error */
+					g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+					             _("Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."),
+					             code, domain, location);
+				}
 			} else if (xmlStrcmp (domain, (xmlChar*) "yt:authentication") == 0) {
 				/* Authentication problem */
 				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
