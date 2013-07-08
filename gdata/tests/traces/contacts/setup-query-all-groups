@@ -1,0 +1,96 @@
+> POST /m8/feeds/groups/default/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375363470
+> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 22 (0x844460), SoupSocket 10 (0x8f33e0)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAAA8mPvhNGE-jJP2si5Hm0QdulqULfifDPolWHjOKLlxd2YLRzsE7It5Cr31q7NYMk1fYHKYBOoOFHZtlqyPu2_0ui_i2GKjj5ltAZxojvss1QJriJ5cdCRtMfIGV620jdp6BshoRtUYoCVLwcTLeyniROXrfyIVaZF7cn2z6dZ2D_6zi45FNAaR57jS4wTDt50MSEHYaiPQVvkuWhhqGir6M0igoQ67LHHO76-MnLu69LB-oi-yZIlCRTzshjg0vFebEbvHGtiardyGk1gs3RWb9_9OroE_zLLdLjMd12GSrQ
+> GData-Version: 3
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Test Group 1</title><content type='text'>Test Group 1</content><category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375363470
+< Soup-Debug: SoupMessage 22 (0x844460)
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Expires: Thu, 01 Aug 2013 13:24:30 GMT
+< Date: Thu, 01 Aug 2013 13:24:30 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 3.1
+< ETag: "QXo9ezVSLit7I2A9WhFWE0sJQwM."
+< Location: https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/4acbf0b68dc2aa64
+< Content-Location: https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/4acbf0b68dc2aa64
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;QXo9ezVSLit7I2A9WhFWE0sJQwM.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/4acbf0b68dc2aa64</id><updated>2013-08-01T13:24:30.463Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:24:30.463Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>Test Group 1</title><content>Test Group 1</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/4acbf0b68dc2aa64'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/4acbf0b68dc2aa64'/></entry>
+  
+> POST /m8/feeds/groups/default/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375363470
+> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 23 (0x844460), SoupSocket 11 (0x8f3320)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAAA8mPvhNGE-jJP2si5Hm0QdulqULfifDPolWHjOKLlxd2YLRzsE7It5Cr31q7NYMk1fYHKYBOoOFHZtlqyPu2_0ui_i2GKjj5ltAZxojvss1QJriJ5cdCRtMfIGV620jdp6BshoRtUYoCVLwcTLeyniROXrfyIVaZF7cn2z6dZ2D_6zi45FNAaR57jS4wTDt50MSEHYaiPQVvkuWhhqGir6M0igoQ67LHHO76-MnLu69LB-oi-yZIlCRTzshjg0vFebEbvHGtiardyGk1gs3RWb9_9OroE_zLLdLjMd12GSrQ
+> GData-Version: 3
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Test Group 2</title><content type='text'>Test Group 2</content><category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375363470
+< Soup-Debug: SoupMessage 23 (0x844460)
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Expires: Thu, 01 Aug 2013 13:24:30 GMT
+< Date: Thu, 01 Aug 2013 13:24:30 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 3.1
+< ETag: "QXg9cDVSLit7I2A9WhFWE0sJQwM."
+< Location: https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/31334ff58d460e9c
+< Content-Location: https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/31334ff58d460e9c
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;QXg9cDVSLit7I2A9WhFWE0sJQwM.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/31334ff58d460e9c</id><updated>2013-08-01T13:24:30.668Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:24:30.668Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>Test Group 2</title><content>Test Group 2</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/31334ff58d460e9c'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/31334ff58d460e9c'/></entry>
+  
+> POST /m8/feeds/groups/default/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375363470
+> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 24 (0x844280), SoupSocket 12 (0x8f3260)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAAA8mPvhNGE-jJP2si5Hm0QdulqULfifDPolWHjOKLlxd2YLRzsE7It5Cr31q7NYMk1fYHKYBOoOFHZtlqyPu2_0ui_i2GKjj5ltAZxojvss1QJriJ5cdCRtMfIGV620jdp6BshoRtUYoCVLwcTLeyniROXrfyIVaZF7cn2z6dZ2D_6zi45FNAaR57jS4wTDt50MSEHYaiPQVvkuWhhqGir6M0igoQ67LHHO76-MnLu69LB-oi-yZIlCRTzshjg0vFebEbvHGtiardyGk1gs3RWb9_9OroE_zLLdLjMd12GSrQ
+> GData-Version: 3
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Test Group 3</title><content type='text'>Test Group 3</content><category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375363470
+< Soup-Debug: SoupMessage 24 (0x844280)
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Expires: Thu, 01 Aug 2013 13:24:30 GMT
+< Date: Thu, 01 Aug 2013 13:24:30 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 3.1
+< ETag: "QXYzfDVSLit7I2A9WhFWE0sJQwM."
+< Location: https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/2fde485a09fdbe59
+< Content-Location: https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/2fde485a09fdbe59
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;QXYzfDVSLit7I2A9WhFWE0sJQwM.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/2fde485a09fdbe59</id><updated>2013-08-01T13:24:30.884Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:24:30.884Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>Test Group 3</title><content>Test Group 3</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/2fde485a09fdbe59'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/2fde485a09fdbe59'/></entry>
+  

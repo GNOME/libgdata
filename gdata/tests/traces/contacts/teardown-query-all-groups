@@ -1,0 +1,75 @@
+> DELETE /m8/feeds/groups/libgdata.test%40googlemail.com/full/4acbf0b68dc2aa64 HTTP/1.1
+> Soup-Debug-Timestamp: 1375363482
+> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 28 (0x8440a0), SoupSocket 13 (0x8f3320)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAAA8mPvhNGE-jJP2si5Hm0QdulqULfifDPolWHjOKLlxd2YLRzsE7It5Cr31q7NYMk1fYHKYBOoOFHZtlqyPu2_0ui_i2GKjj5ltAZxojvss1QJriJ5cdCRtMfIGV620jdp6BshoRtUYoCVLwcTLeyniROXrfyIVaZF7cn2z6dZ2D_6zi45FNAaR57jS4wTDt50MSEHYaiPQVvkuWhhqGir6M0igoQ67LHHO76-MnLu69LB-oi-yZIlCRTzshjg0vFebEbvHGtiardyGk1gs3RWb9_9OroE_zLLdLjMd12GSrQ
+> GData-Version: 3
+> If-Match: "QXo9ezVSLit7I2A9WhFWE0sJQwM."
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375363482
+< Soup-Debug: SoupMessage 28 (0x8440a0)
+< GData-Version: 3.1
+< Date: Thu, 01 Aug 2013 13:24:42 GMT
+< Expires: Thu, 01 Aug 2013 13:24:42 GMT
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  
+> DELETE /m8/feeds/groups/libgdata.test%40googlemail.com/full/31334ff58d460e9c HTTP/1.1
+> Soup-Debug-Timestamp: 1375363482
+> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 29 (0x8440a0), SoupSocket 13 (0x8f3320)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAAA8mPvhNGE-jJP2si5Hm0QdulqULfifDPolWHjOKLlxd2YLRzsE7It5Cr31q7NYMk1fYHKYBOoOFHZtlqyPu2_0ui_i2GKjj5ltAZxojvss1QJriJ5cdCRtMfIGV620jdp6BshoRtUYoCVLwcTLeyniROXrfyIVaZF7cn2z6dZ2D_6zi45FNAaR57jS4wTDt50MSEHYaiPQVvkuWhhqGir6M0igoQ67LHHO76-MnLu69LB-oi-yZIlCRTzshjg0vFebEbvHGtiardyGk1gs3RWb9_9OroE_zLLdLjMd12GSrQ
+> GData-Version: 3
+> If-Match: "QXg9cDVSLit7I2A9WhFWE0sJQwM."
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375363482
+< Soup-Debug: SoupMessage 29 (0x8440a0)
+< GData-Version: 3.1
+< Date: Thu, 01 Aug 2013 13:24:42 GMT
+< Expires: Thu, 01 Aug 2013 13:24:42 GMT
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  
+> DELETE /m8/feeds/groups/libgdata.test%40googlemail.com/full/2fde485a09fdbe59 HTTP/1.1
+> Soup-Debug-Timestamp: 1375363482
+> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 30 (0x844280), SoupSocket 13 (0x8f3320)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAAA8mPvhNGE-jJP2si5Hm0QdulqULfifDPolWHjOKLlxd2YLRzsE7It5Cr31q7NYMk1fYHKYBOoOFHZtlqyPu2_0ui_i2GKjj5ltAZxojvss1QJriJ5cdCRtMfIGV620jdp6BshoRtUYoCVLwcTLeyniROXrfyIVaZF7cn2z6dZ2D_6zi45FNAaR57jS4wTDt50MSEHYaiPQVvkuWhhqGir6M0igoQ67LHHO76-MnLu69LB-oi-yZIlCRTzshjg0vFebEbvHGtiardyGk1gs3RWb9_9OroE_zLLdLjMd12GSrQ
+> GData-Version: 3
+> If-Match: "QXYzfDVSLit7I2A9WhFWE0sJQwM."
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375363482
+< Soup-Debug: SoupMessage 30 (0x844280)
+< GData-Version: 3.1
+< Date: Thu, 01 Aug 2013 13:24:42 GMT
+< Expires: Thu, 01 Aug 2013 13:24:42 GMT
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  

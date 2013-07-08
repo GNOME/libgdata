@@ -1,0 +1,34 @@
+> DELETE /m8/feeds/photos/media/libgdata.test%40googlemail.com/465577d88b0afee8 HTTP/1.1
+> Soup-Debug-Timestamp: 1375362290
+> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 52 (0x7d2e50), SoupSocket 15 (0x70d480)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAAABD9I2qzuaphzCwqlPN1nD-UVlDvXxpCfZZs2DpQs8CyuKugZr-827LLW6Se0g49UTlhYYurHxHCMNk3l9iJjeGlq6ZYd51VYAKkGzvyTnwj1fvWfFIkrj53HVYeTy0ER0oRBCi1BISjJtxb_EeYStuDF4mfHC9FSeHXqNUW_Qf3gtQl1WytVURmYC_H89IVrQB8UOZEzZXgjh3jNv1w9cQv8j3_dszdG0F6dLOehzkyPgckEHapxSOoFFvUzbawNaGQcNgFx1RVALkHKkBga-7PnPzzUEMfj7snBhGt53LQ
+> GData-Version: 3
+> If-Match: "VDd2MAY7Sit7I2BuKnEXWjN4L2wpH1IffSY."
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+> Soup-Debug-Timestamp: 1375362290
+> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 52 (0x7d2e50), SoupSocket 16 (0x70d480), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAAABD9I2qzuaphzCwqlPN1nD-UVlDvXxpCfZZs2DpQs8CyuKugZr-827LLW6Se0g49UTlhYYurHxHCMNk3l9iJjeGlq6ZYd51VYAKkGzvyTnwj1fvWfFIkrj53HVYeTy0ER0oRBCi1BISjJtxb_EeYStuDF4mfHC9FSeHXqNUW_Qf3gtQl1WytVURmYC_H89IVrQB8UOZEzZXgjh3jNv1w9cQv8j3_dszdG0F6dLOehzkyPgckEHapxSOoFFvUzbawNaGQcNgFx1RVALkHKkBga-7PnPzzUEMfj7snBhGt53LQ
+> GData-Version: 3
+> If-Match: "VDd2MAY7Sit7I2BuKnEXWjN4L2wpH1IffSY."
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375362290
+< Soup-Debug: SoupMessage 52 (0x7d2e50)
+< GData-Version: 3.1
+< Date: Thu, 01 Aug 2013 13:04:50 GMT
+< Expires: Thu, 01 Aug 2013 13:04:50 GMT
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  
