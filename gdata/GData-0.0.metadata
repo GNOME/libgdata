@@ -1,6 +1,7 @@
 Color struct
 
 Parsable.get_xml#method skip
+Parsable.get_json#method skip
 Query.get_query_uri#method skip
 DOCUMENTS_PRESENTATION_* name="DOCUMENTS_PRESENTATION_(.+)" parent="GData.DocumentsPresentationFormat"
 DOCUMENTS_TEXT_* name="DOCUMENTS_TEXT_(.+)" parent="GData.DocumentsTextFormat"

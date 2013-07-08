@@ -630,6 +630,167 @@ gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboo
 	return success;
 }
 
+static gboolean
+compare_json_nodes (JsonNode *node1, JsonNode *node2)
+{
+	if (node1 == node2)
+		return TRUE;
+
+	if (JSON_NODE_TYPE (node1) != JSON_NODE_TYPE (node2))
+		return FALSE;
+
+	switch (JSON_NODE_TYPE (node1)) {
+		case JSON_NODE_OBJECT: {
+			JsonObject *object1, *object2;
+			guint size1, size2;
+			GList *members, *i;
+
+			object1 = json_node_get_object (node1);
+			object2 = json_node_get_object (node2);
+
+			size1 = json_object_get_size (object1);
+			size2 = json_object_get_size (object2);
+
+			if (size1 != size2)
+				return FALSE;
+
+			/* Iterate over the first object, checking that every member is also present in the second object. */
+			members = json_object_get_members (object1);
+
+			for (i = members; i != NULL; i = i->next) {
+				JsonNode *child_node1, *child_node2;
+
+				child_node1 = json_object_get_member (object1, i->data);
+				child_node2 = json_object_get_member (object2, i->data);
+
+				g_assert (child_node1 != NULL);
+				if (child_node2 == NULL) {
+					g_list_free (members);
+					return FALSE;
+				}
+
+				if (compare_json_nodes (child_node1, child_node2) == FALSE) {
+					g_list_free (members);
+					return FALSE;
+				}
+			}
+
+			g_list_free (members);
+
+			return TRUE;
+		}
+		case JSON_NODE_ARRAY: {
+			JsonArray *array1, *array2;
+			guint length1, length2, i;
+
+			array1 = json_node_get_array (node1);
+			array2 = json_node_get_array (node2);
+
+			length1 = json_array_get_length (array1);
+			length2 = json_array_get_length (array2);
+
+			if (length1 != length2)
+				return FALSE;
+
+			/* Iterate over both arrays, checking the elements at each index are identical. */
+			for (i = 0; i < length1; i++) {
+				JsonNode *child_node1, *child_node2;
+
+				child_node1 = json_array_get_element (array1, i);
+				child_node2 = json_array_get_element (array2, i);
+
+				if (compare_json_nodes (child_node1, child_node2) == FALSE)
+					return FALSE;
+			}
+
+			return TRUE;
+		}
+		case JSON_NODE_VALUE: {
+			GType type1, type2;
+
+			type1 = json_node_get_value_type (node1);
+			type2 = json_node_get_value_type (node2);
+
+			if (type1 != type2)
+				return FALSE;
+
+			switch (type1) {
+				case G_TYPE_BOOLEAN:
+					return (json_node_get_boolean (node1) == json_node_get_boolean (node2)) ? TRUE : FALSE;
+				case G_TYPE_DOUBLE:
+					/* Note: This doesn't need an epsilon-based comparison because we only want to return
+					 * true if the string representation of the two values is equal — and if it is, their
+					 * parsed values should be binary identical too. */
+					return (json_node_get_double (node1) == json_node_get_double (node2)) ? TRUE : FALSE;
+				case G_TYPE_INT64:
+					return (json_node_get_int (node1) == json_node_get_int (node2)) ? TRUE : FALSE;
+				case G_TYPE_STRING:
+					return (g_strcmp0 (json_node_get_string (node1), json_node_get_string (node2)) == 0) ? TRUE : FALSE;
+				default:
+					/* JSON doesn't support any other types. */
+					g_assert_not_reached ();
+			}
+
+			return TRUE;
+		}
+		case JSON_NODE_NULL:
+			return TRUE;
+		default:
+			g_assert_not_reached ();
+	}
+}
+
+gboolean
+gdata_test_compare_json_strings (const gchar *parsable_json, const gchar *expected_json, gboolean print_error)
+{
+	gboolean success;
+	JsonParser *parsable_parser, *expected_parser;
+	GError *child_error = NULL;
+
+	/* Parse both strings. */
+	parsable_parser = json_parser_new ();
+	expected_parser = json_parser_new ();
+
+	json_parser_load_from_data (parsable_parser, parsable_json, -1, &child_error);
+	if (child_error != NULL) {
+		if (print_error == TRUE) {
+			g_message ("\n\nParsable: %s\n\nNot valid JSON: %s", parsable_json, child_error->message);
+		}
+
+		g_error_free (child_error);
+		return FALSE;
+	}
+
+	json_parser_load_from_data (expected_parser, expected_json, -1, &child_error);
+	g_assert_no_error (child_error); /* this really should never fail; or the test has encoded bad JSON */
+
+	/* Recursively compare the two JSON nodes. */
+	success = compare_json_nodes (json_parser_get_root (parsable_parser), json_parser_get_root (expected_parser));
+	if (success == FALSE && print_error == TRUE) {
+		/* The comparison has failed, so print out the two JSON strings for ease of debugging */
+		g_message ("\n\nParsable: %s\n\nExpected: %s\n\n", parsable_json, expected_json);
+	}
+
+	g_object_unref (expected_parser);
+	g_object_unref (parsable_parser);
+
+	return success;
+}
+
+gboolean
+gdata_test_compare_json (GDataParsable *parsable, const gchar *expected_json, gboolean print_error)
+{
+	gboolean success;
+	gchar *parsable_json;
+
+	/* Get a JSON string for the GDataParsable. */
+	parsable_json = gdata_parsable_get_json (parsable);
+	success = gdata_test_compare_json_strings (parsable_json, expected_json, print_error);
+	g_free (parsable_json);
+
+	return success;
+}
+
 gboolean
 gdata_test_compare_kind (GDataEntry *entry, const gchar *expected_term, const gchar *expected_label)
 {

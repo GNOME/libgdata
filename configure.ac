@@ -39,6 +39,7 @@ SOUP_REQS=2.37.91
 OAUTH_REQS=0.9.4
 GTK_REQS=2.91.2
 GOA_REQS=3.2
+JSON_GLIB_REQS=0.15
 
 # Before making a release, the GDATA_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:
 #
@@ -64,7 +65,7 @@ AC_SUBST(GDATA_API_VERSION)
 AC_SUBST(GDATA_API_VERSION_MAJOR)
 AC_SUBST(GDATA_API_VERSION_MINOR)
 
-GDATA_PACKAGES_PUBLIC="gobject-2.0 glib-2.0 >= $GLIB_REQS gio-2.0 >= $GIO_REQS libxml-2.0 libsoup-2.4 >= $SOUP_REQS"
+GDATA_PACKAGES_PUBLIC="gobject-2.0 glib-2.0 >= $GLIB_REQS gio-2.0 >= $GIO_REQS libxml-2.0 libsoup-2.4 >= $SOUP_REQS json-glib-1.0 >= $JSON_GLIB_REQS"
 GDATA_PACKAGES_PRIVATE="gthread-2.0 oauth >= $OAUTH_REQS"
 GDATA_PACKAGES="$GDATA_PACKAGES_PUBLIC $GDATA_PACKAGES_PRIVATE"
 AC_SUBST([GDATA_PACKAGES_PUBLIC])

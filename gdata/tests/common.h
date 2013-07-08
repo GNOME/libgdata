@@ -64,12 +64,21 @@ gboolean gdata_test_batch_operation_run_finish (GDataBatchOperation *operation, 
 gboolean gdata_test_compare_xml_strings (const gchar *parsable_xml, const gchar *expected_xml, gboolean print_error);
 gboolean gdata_test_compare_xml (GDataParsable *parsable, const gchar *expected_xml, gboolean print_error);
 
+gboolean gdata_test_compare_json_strings (const gchar *parsable_json, const gchar *expected_json, gboolean print_error);
+gboolean gdata_test_compare_json (GDataParsable *parsable, const gchar *expected_json, gboolean print_error);
+
 gboolean gdata_test_compare_kind (GDataEntry *entry, const gchar *expected_term, const gchar *expected_label);
 
-/* Convenience macro */
+/* Convenience macros. */
 #define gdata_test_assert_xml(Parsable, XML) \
 	G_STMT_START { \
 		gboolean _test_success = gdata_test_compare_xml (GDATA_PARSABLE (Parsable), XML, TRUE); \
+		g_assert (_test_success == TRUE); \
+	} G_STMT_END
+
+#define gdata_test_assert_json(Parsable, JSON) \
+	G_STMT_START { \
+		gboolean _test_success = gdata_test_compare_json (GDATA_PARSABLE (Parsable), JSON, TRUE); \
 		g_assert (_test_success == TRUE); \
 	} G_STMT_END
 

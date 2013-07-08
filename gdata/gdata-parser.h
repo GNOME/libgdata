@@ -35,6 +35,10 @@ gboolean gdata_parser_error_mutexed_properties (xmlNode *element, const gchar *p
 gboolean gdata_parser_error_required_element_missing (const gchar *element_name, const gchar *parent_element_name, GError **error);
 gboolean gdata_parser_error_duplicate_element (xmlNode *element, GError **error);
 
+gboolean gdata_parser_error_duplicate_json_element (JsonReader *reader, GError **error);
+gboolean gdata_parser_error_required_json_content_missing (JsonReader *reader, GError **error);
+gboolean gdata_parser_error_not_iso8601_format_json (JsonReader *reader, const gchar *actual_value, GError **error);
+
 gboolean gdata_parser_int64_from_date (const gchar *date, gint64 *_time);
 gchar *gdata_parser_date_from_int64 (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_parser_int64_to_iso8601 (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
@@ -80,6 +84,12 @@ gboolean gdata_parser_object_from_element_setter (xmlNode *element, const gchar 
                                                   gboolean *success, GError **error);
 gboolean gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, GDataParserOptions options, GType object_type,
                                            gpointer /* GDataParsable ** */ _output, gboolean *success, GError **error);
+gboolean gdata_parser_string_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options,
+                                               gchar **output, gboolean *success, GError **error);
+gboolean gdata_parser_int64_time_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options,
+                                                   gint64 *output, gboolean *success, GError **error);
+gboolean gdata_parser_boolean_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options,
+                                                gboolean *output, gboolean *success, GError **error);
 
 void gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 gchar *gdata_parser_utf8_trim_whitespace (const gchar *s) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

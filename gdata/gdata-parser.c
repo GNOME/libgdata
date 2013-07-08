@@ -23,7 +23,9 @@
 #include <glib/gi18n-lib.h>
 #include <sys/time.h>
 #include <time.h>
+#include <string.h>
 #include <libxml/parser.h>
+#include <json-glib/json-glib.h>
 
 #include "gdata-parser.h"
 #include "gdata-service.h"
@@ -255,6 +257,60 @@ gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time)
 		*_time = time_val.tv_sec;
 		return TRUE;
 	}
+
+	return FALSE;
+}
+
+gboolean
+gdata_parser_error_required_json_content_missing (JsonReader *reader, GError **error)
+{
+	const gchar *element_string = json_reader_get_member_name (reader);
+
+	/* Translators: the parameter is the name of an JSON element.
+	 *
+	 * For example:
+	 *  A 'title' element was missing required content. */
+	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, _("A \'%s\' element was missing required content."), element_string);
+
+	return FALSE;
+}
+
+gboolean
+gdata_parser_error_duplicate_json_element (JsonReader *reader, GError **error)
+{
+	const gchar *element_string = json_reader_get_member_name (reader);
+
+	/* Translators: the parameter is the name of an JSON element.
+	 *
+	 * For example:
+	 *  A singleton element (title) was duplicated. */
+	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, _("A singleton element (%s) was duplicated."), element_string);
+
+	return FALSE;
+}
+
+gboolean
+gdata_parser_error_not_iso8601_format_json (JsonReader *reader, const gchar *actual_value, GError **error)
+{
+	const gchar *element_string = json_reader_get_member_name (reader);
+
+	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+	             /* Translators: the first parameter is the name of an JSON element,
+	              * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+	              *
+	              * For example:
+	              *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format. */
+	             _("The content of a \'%s\' element (\"%s\") was not in ISO 8601 format."), element_string, actual_value);
+
+	return FALSE;
+}
+
+static gboolean
+parser_error_from_json_error (JsonReader *reader, const GError *json_error, GError **error)
+{
+	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+	             /* Translators: the parameter is an error message. */
+	             _("Invalid JSON was received from the server: %s"), json_error->message);
 
 	return FALSE;
 }
@@ -668,6 +724,193 @@ gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, G
 	if (*output != NULL)
 		g_object_unref (*output);
 	*output = parsable;
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
+ * gdata_parser_string_from_json_member:
+ * @reader: #JsonReader cursor object to read JSON node from
+ * @member_name: the name of the member to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions, or %P_NONE
+ * @output: the return location for the parsed string content
+ * @success: the return location for a value which is %TRUE if the string was parsed successfully, %FALSE if an error was encountered,
+ * and undefined if @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the string content of @element if its name is @element_name, subject to various checks specified by @options.
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by @options fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by @options pass, %TRUE will be returned, @error will be unset and
+ * @success will be set to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_string_from_element() can be chained
+ * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
+ * a given @element. If any of the calls to gdata_parser_string_from_element() return %TRUE, the value of @success can be examined.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: UNRELEASED
+ */
+gboolean
+gdata_parser_string_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options,
+                                      gchar **output, gboolean *success, GError **error)
+{
+	const gchar *text;
+	const GError *child_error = NULL;
+
+	/* Check if there's such element */
+	if (g_strcmp0 (json_reader_get_member_name (reader), member_name) != 0) {
+		return FALSE;
+	}
+
+	/* Check if the output string has already been set. The JSON parser guarantees this can't happen. */
+	g_assert (!(options & P_NO_DUPES) || *output == NULL);
+
+	/* Get the string and check it for NULLness or emptiness. Check for parser errors first. */
+	text = json_reader_get_string_value (reader);
+	child_error = json_reader_get_error (reader);
+	if (child_error != NULL) {
+		*success = parser_error_from_json_error (reader, child_error, error);
+		return TRUE;
+	} else if ((options & P_REQUIRED && text == NULL) || (options & P_NON_EMPTY && text != NULL && *text == '\0')) {
+		*success = gdata_parser_error_required_json_content_missing (reader, error);
+		return TRUE;
+	} else if (options & P_DEFAULT && (text == NULL || *text == '\0')) {
+		text = "";
+	}
+
+	/* Success! */
+	g_free (*output);
+	*output = g_strdup (text);
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
+ * gdata_parser_int64_time_from_json_member:
+ * @reader: #JsonReader cursor object to read JSON node from
+ * @element_name: the name of the element to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions, or %P_NONE
+ * @output: (out caller-allocates): the return location for the parsed time value
+ * @success: the return location for a value which is %TRUE if the time val was parsed successfully, %FALSE if an error was encountered,
+ * and undefined if @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the time value of @element if its name is @element_name, subject to various checks specified by @options. It expects the text content
+ * of @element to be a date or time value in ISO 8601 format. The returned time value will be a UNIX timestamp (seconds since the epoch).
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error will be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by @options fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by @options pass, %TRUE will be returned, @error will be unset and
+ * @success will be set to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_int64_time_from_element() can be chained
+ * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
+ * a given @element. If any of the calls to gdata_parser_int64_time_from_element() return %TRUE, the value of @success can be examined.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: UNRELEASED
+ */
+gboolean
+gdata_parser_int64_time_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options,
+                                          gint64 *output, gboolean *success, GError **error)
+{
+	const gchar *text;
+	GTimeVal time_val;
+	const GError *child_error = NULL;
+
+	/* Check if there's such element */
+	if (g_strcmp0 (json_reader_get_member_name (reader), member_name) != 0) {
+		return FALSE;
+	}
+
+	/* Check if the output time val has already been set. The JSON parser guarantees this can't happen. */
+	g_assert (!(options & P_NO_DUPES) || *output == -1);
+
+	/* Get the string and check it for NULLness. Check for errors first. */
+	text = json_reader_get_string_value (reader);
+	child_error = json_reader_get_error (reader);
+	if (child_error != NULL) {
+		*success = parser_error_from_json_error (reader, child_error, error);
+		return TRUE;
+	} else if (options & P_REQUIRED && (text == NULL || *text == '\0')) {
+		*success = gdata_parser_error_required_json_content_missing (reader, error);
+		return TRUE;
+	}
+
+	/* Attempt to parse the string as a GTimeVal */
+	if (g_time_val_from_iso8601 ((gchar*) text, &time_val) == FALSE) {
+		*success = gdata_parser_error_not_iso8601_format_json (reader, text, error);
+		return TRUE;
+	}
+
+	/* Success! */
+	*output = time_val.tv_sec;
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
+ * gdata_parser_boolean_from_json_member:
+ * @reader: #JsonReader cursor object to read the JSON node from
+ * @member_name: the name of the JSON object member to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions, or %P_NONE
+ * @output: (out caller-allocates): the return location for the parsed boolean value
+ * @success: (out caller-allocates): the return location for a value which is %TRUE if the boolean was parsed successfully, %FALSE if an error was encountered,
+ * and undefined if @member_name was not found in the current object in @reader
+ * @error: (allow-none): a #GError, or %NULL
+ *
+ * Gets the boolean value of the @member_name member of the current object in the #JsonReader, subject to various checks specified by @options.
+ *
+ * If no member matching @member_name can be found in the current @reader JSON object, %FALSE will be returned, @error will be unset and @success will be unset. @output will be undefined.
+ *
+ * If @member_name is found but one of the checks specified by @options fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE. @output will be undefined.
+ *
+ * If @member_name is found and all of the checks specified by @options pass, %TRUE will be returned, @error will be unset and
+ * @success will be set to %TRUE. @output will be set to the parsed value.
+ *
+ * The reason for returning the success of the parsing in @success is so that calls to gdata_parser_boolean_from_json_node() can be chained
+ * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
+ * a given JSON node. If any of the calls to gdata_parser_boolean_from_json_node() return %TRUE, the value of @success can be examined.
+ *
+ * Return value: %TRUE if @member_name was found, %FALSE otherwise
+ *
+ * Since: UNRELEASED
+ */
+gboolean
+gdata_parser_boolean_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options, gboolean *output, gboolean *success, GError **error)
+{
+	gboolean val;
+	const GError *child_error = NULL;
+
+	/* Check if there's such an element. */
+	if (g_strcmp0 (json_reader_get_member_name (reader), member_name) != 0) {
+		return FALSE;
+	}
+
+	/* Get the boolean. Check for parse errors. */
+	val = json_reader_get_boolean_value (reader);
+	child_error = json_reader_get_error (reader);
+	if (child_error != NULL) {
+		*success = parser_error_from_json_error (reader, child_error, error);
+		return TRUE;
+	}
+
+	/* Success! */
+	*output = val;
 	*success = TRUE;
 
 	return TRUE;

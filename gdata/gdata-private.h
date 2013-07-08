@@ -79,13 +79,21 @@ G_GNUC_INTERNAL GDataParsable *_gdata_parsable_new_from_xml (GType parsable_type
                                                              GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL GDataParsable *_gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *node, gpointer user_data,
                                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL GDataParsable *_gdata_parsable_new_from_json (GType parsable_type, const gchar *json, gint length, gpointer user_data,
+                                                              GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL GDataParsable *_gdata_parsable_new_from_json_node (GType parsable_type, JsonReader *reader, gpointer user_data,
+                                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL void _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean declare_namespaces);
+G_GNUC_INTERNAL void _gdata_parsable_get_json (GDataParsable *self, JsonBuilder *builder);
 G_GNUC_INTERNAL void _gdata_parsable_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 G_GNUC_INTERNAL gboolean _gdata_parsable_is_constructed_from_xml (GDataParsable *self);
 
 #include "gdata-feed.h"
 G_GNUC_INTERNAL GDataFeed *_gdata_feed_new (const gchar *title, const gchar *id, gint64 updated) G_GNUC_WARN_UNUSED_RESULT;
 G_GNUC_INTERNAL GDataFeed *_gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,
+                                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data, gboolean is_async,
+                                                     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_GNUC_INTERNAL GDataFeed *_gdata_feed_new_from_json (GType feed_type, const gchar *json, gint length, GType entry_type,
                                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, gboolean is_async,
                                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL void _gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry);

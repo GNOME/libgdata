@@ -487,7 +487,7 @@ EXTRA_DIST += m4/introspection.m4
 
 if HAVE_INTROSPECTION
 gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir: gdata/libgdata.la
-gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_INCLUDES = GObject-2.0 libxml2-2.0 Soup-2.4
+gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_INCLUDES = GObject-2.0 libxml2-2.0 Soup-2.4 Json-1.0
 if ENABLE_GOA
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_INCLUDES += Goa-1.0
 endif
@@ -521,7 +521,7 @@ gdata/libgdata.vapi: gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MI
 
 VAPIGEN_VAPIS = gdata/libgdata.vapi
 
-gdata_libgdata_vapi_DEPS = libxml-2.0 libsoup-2.4
+gdata_libgdata_vapi_DEPS = libxml-2.0 libsoup-2.4 json-glib-1.0
 gdata_libgdata_vapi_METADATADIRS = $(srcdir)/gdata
 gdata_libgdata_vapi_FILES = gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir
 

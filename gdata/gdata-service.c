@@ -914,8 +914,10 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
                        gboolean is_async)
 {
 	GDataServiceClass *klass;
-	GDataFeed *feed;
+	GDataFeed *feed = NULL;
 	SoupMessage *message;
+	SoupMessageHeaders *headers;
+	const gchar *content_type;
 
 	message = _gdata_service_query (self, domain, feed_uri, query, cancellable, error);
 	if (message == NULL)
@@ -923,8 +925,23 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
 
 	g_assert (message->response_body->data != NULL);
 	klass = GDATA_SERVICE_GET_CLASS (self);
-	feed = _gdata_feed_new_from_xml (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
-	                                 progress_callback, progress_user_data, is_async, error);
+
+	headers = message->response_headers;
+	content_type = soup_message_headers_get_content_type (headers, NULL);
+
+	if (content_type != NULL && strcmp (content_type, "application/json") == 0) {
+		/* Definitely JSON. */
+		g_debug("JSON content type detected.");
+		feed = _gdata_feed_new_from_json (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
+		                                  progress_callback, progress_user_data, is_async, error);
+	} else {
+		/* Potentially XML. Don't bother checking the Content-Type, since the parser
+		 * will fail gracefully if the response body is not valid XML. */
+		g_debug("XML content type detected.");
+		feed = _gdata_feed_new_from_xml (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
+		                                 progress_callback, progress_user_data, is_async, error);
+	}
+
 	g_object_unref (message);
 
 	if (feed == NULL)

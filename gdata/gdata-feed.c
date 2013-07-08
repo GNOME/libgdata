@@ -36,6 +36,7 @@
 #include <glib/gi18n-lib.h>
 #include <libxml/parser.h>
 #include <string.h>
+#include <json-glib/json-glib.h>
 
 #include "gdata-feed.h"
 #include "gdata-entry.h"
@@ -56,6 +57,9 @@ static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static void _gdata_feed_add_category (GDataFeed *self, GDataCategory *category);
 static void _gdata_feed_add_link (GDataFeed *self, GDataLink *link);
 static void _gdata_feed_add_author (GDataFeed *self, GDataAuthor *author);
+
+static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+static gboolean post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
 
 struct _GDataFeedPrivate {
 	GList *entries;
@@ -111,6 +115,9 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
 	parsable_class->element_name = "feed";
+
+	parsable_class->parse_json = parse_json;
+	parsable_class->post_parse_json = post_parse_json;
 
 	/**
 	 * GDataFeed:title:
@@ -584,6 +591,57 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 		GDATA_PARSABLE_GET_CLASS (i->data)->get_namespaces (GDATA_PARSABLE (i->data), namespaces);
 }
 
+static gboolean
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
+{
+	GDataFeed *self = GDATA_FEED (parsable);
+	ParseData *data = user_data;
+
+	if (g_strcmp0 (json_reader_get_member_name (reader), "items") == 0) {
+		gint i, elements;
+
+		/* Loop through the elements array. */
+		for (i = 0, elements = json_reader_count_elements (reader); i < elements; i++) {
+			GDataEntry *entry;
+			GType entry_type;
+
+			json_reader_read_element (reader, i);
+
+			/* Allow @data to be %NULL, and assume we're parsing a vanilla feed, so that we can test #GDataFeed in tests/general.c.
+			 * A little hacky, but not too much so, and valuable for testing. */
+			entry_type = (data != NULL) ? data->entry_type : GDATA_TYPE_ENTRY;
+
+			/* Parse the node, passing it the reader cursor. */
+			entry = GDATA_ENTRY (_gdata_parsable_new_from_json_node (entry_type, reader, NULL, error));
+			if (entry == NULL)
+				return FALSE;
+
+			/* Calls the callbacks in the main thread */
+			if (data != NULL)
+				_gdata_feed_call_progress_callback (self, data, entry);
+			_gdata_feed_add_entry (self, entry);
+			g_object_unref (entry);
+
+			json_reader_end_element (reader);
+		}
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_json (parsable, reader, user_data, error);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	GDataFeedPrivate *priv = GDATA_FEED (parsable)->priv;
+
+	/* Reverse our lists of stuff. */
+	priv->entries = g_list_reverse (priv->entries);
+
+	return TRUE;
+}
+
 /*
  * _gdata_feed_new:
  * @title: the feed's title
@@ -627,6 +685,25 @@ _gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType 
 
 	data = _gdata_feed_parse_data_new (entry_type, progress_callback, progress_user_data, is_async);
 	feed = GDATA_FEED (_gdata_parsable_new_from_xml (feed_type, xml, length, data, error));
+	_gdata_feed_parse_data_free (data);
+
+	return feed;
+}
+
+GDataFeed *
+_gdata_feed_new_from_json (GType feed_type, const gchar *json, gint length, GType entry_type,
+                          GDataQueryProgressCallback progress_callback, gpointer progress_user_data, gboolean is_async, GError **error)
+{
+	ParseData *data;
+	GDataFeed *feed;
+
+	g_return_val_if_fail (g_type_is_a (feed_type, GDATA_TYPE_FEED), NULL);
+	g_return_val_if_fail (json != NULL, NULL);
+	g_return_val_if_fail (g_type_is_a (entry_type, GDATA_TYPE_ENTRY), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	data = _gdata_feed_parse_data_new (entry_type, progress_callback, progress_user_data, is_async);
+	feed = GDATA_FEED (_gdata_parsable_new_from_json (feed_type, json, length, data, error));
 	_gdata_feed_parse_data_free (data);
 
 	return feed;

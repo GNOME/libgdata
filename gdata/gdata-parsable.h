@@ -23,6 +23,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <libxml/parser.h>
+#include <json-glib/json-glib.h>
 
 G_BEGIN_DECLS
 
@@ -73,10 +74,14 @@ typedef struct {
  * XML node to be added to @xml_string
  * @get_xml: a function to build an XML representation of the #GDataParsable in its current state, appending it to the provided #GString
  * @get_namespaces: a function to return a string containing the namespace declarations used by the @parsable when represented in XML form
+ * @parse_json: a function to parse a JSON representation of the #GDataParsable to set the properties of the @parsable
+ * @post_parse_json: a function called after parsing a JSON object, to allow the @parsable to validate the parsed properties
+ * @get_json: a function to build a JSON representation of the #GDataParsable in its current state, appending it to the provided #JsonBuilder
  * @element_name: the name of the XML element which represents this parsable
  * @element_namespace: the prefix of the XML namespace used for the parsable
  *
- * The class structure for the #GDataParsable class.
+ * The class structure for the #GDataParsable class. Note that JSON and XML functions are mutually exclusive:
+ * a given implementation of #GDataParsable is represented as exactly one of JSON and XML.
  *
  * Since: 0.3.0
  **/
@@ -91,6 +96,10 @@ typedef struct {
 	void (*get_xml) (GDataParsable *parsable, GString *xml_string);
 	void (*get_namespaces) (GDataParsable *parsable, GHashTable *namespaces);
 
+	gboolean (*parse_json) (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+	gboolean (*post_parse_json) (GDataParsable *parsable, gpointer user_data, GError **error);
+	void (*get_json) (GDataParsable *parsable, JsonBuilder *builder);
+
 	const gchar *element_name;
 	const gchar *element_namespace;
 } GDataParsableClass;
@@ -100,6 +109,10 @@ GType gdata_parsable_get_type (void) G_GNUC_CONST;
 GDataParsable *gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length,
                                             GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_parsable_get_xml (GDataParsable *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
+GDataParsable *gdata_parsable_new_from_json (GType parsable_type, const gchar *json, gint length,
+                                             GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+gchar *gdata_parsable_get_json (GDataParsable *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 G_END_DECLS
 

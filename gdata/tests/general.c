@@ -456,6 +456,53 @@ test_entry_get_xml (void)
 }
 
 static void
+test_entry_get_json (void)
+{
+	gint64 updated, published, updated2, published2;
+	GDataEntry *entry, *entry2;
+	gchar *json;
+	GError *error = NULL;
+
+	entry = gdata_entry_new (NULL);
+
+	/* Set the properties more conventionally */
+	gdata_entry_set_title (entry, "Testing title & \"escaping\"");
+	gdata_entry_set_summary (entry, NULL);
+	gdata_entry_set_content (entry, NULL);
+	gdata_entry_set_rights (entry, NULL);
+
+	/* Check the generated JSON's OK */
+	gdata_test_assert_json (entry,
+		"{"
+			"\"title\":\"Testing title & \\\"escaping\\\"\""
+		"}");
+
+	/* Check again by re-parsing the JSON to a GDataEntry. */
+	json = gdata_parsable_get_json (GDATA_PARSABLE (entry));
+	entry2 = GDATA_ENTRY (gdata_parsable_new_from_json (GDATA_TYPE_ENTRY, json, -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (entry2));
+	g_clear_error (&error);
+	g_free (json);
+
+	g_assert_cmpstr (gdata_entry_get_title (entry), ==, gdata_entry_get_title (entry2));
+	g_assert_cmpstr (gdata_entry_get_id (entry), ==, gdata_entry_get_id (entry2)); /* should both be NULL */
+	g_assert_cmpstr (gdata_entry_get_content (entry), ==, gdata_entry_get_content (entry2));
+	g_assert_cmpstr (gdata_entry_get_content_uri (entry), ==, gdata_entry_get_content_uri (entry2)); /* should both be NULL */
+
+	updated = gdata_entry_get_updated (entry);
+	updated2 = gdata_entry_get_updated (entry2);
+	g_assert_cmpuint (updated, ==, updated2);
+
+	published = gdata_entry_get_published (entry);
+	published2 = gdata_entry_get_published (entry2);
+	g_assert_cmpuint (published, ==, published2);
+
+	g_object_unref (entry);
+	g_object_unref (entry2);
+}
+
+static void
 test_entry_parse_xml (void)
 {
 	GDataEntry *entry;
@@ -492,7 +539,76 @@ test_entry_parse_xml (void)
 }
 
 static void
-test_entry_error_handling (void)
+test_entry_parse_json (void)
+{
+	GDataEntry *entry;
+	GError *error = NULL;
+
+	/* Create an entry from JSON with unhandled nodes. */
+	entry = GDATA_ENTRY (gdata_parsable_new_from_json (GDATA_TYPE_ENTRY,
+		"{"
+			"\"title\":\"A title\","
+			"\"updated\":\"2009-01-25T14:07:37Z\","
+			"\"selfLink\":\"http://example.com/\","
+			"\"etag\":\"some-etag\","
+			"\"id\":\"some-id\","
+			"\"kind\":\"kind#kind\","
+			"\"unhandled-boolean\":false,"
+			"\"unhandled-string\":\"this-is-a-string---sometimes\","
+			"\"unhandled-int\":15,"
+			"\"unhandled-double\":42.42,"
+			"\"unhandled-object\":{"
+				"\"a\":true,"
+				"\"b\":true"
+			"},"
+			"\"unhandled-array\":["
+				"1,"
+				"2,"
+				"3"
+			"],"
+			"\"unhandled-null\":null"
+		 "}", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (entry));
+
+	/* Now check the outputted JSON from the entry still has the unhandled nodes. */
+	gdata_test_assert_json (entry,
+		"{"
+			"\"title\":\"A title\","
+			"\"id\":\"some-id\","
+			"\"updated\":\"2009-01-25T14:07:37Z\","
+			"\"etag\":\"some-etag\","
+			"\"selfLink\":\"http://example.com/\","
+			"\"kind\":\"kind#kind\","
+			"\"unhandled-boolean\":false,"
+			"\"unhandled-string\":\"this-is-a-string---sometimes\","
+			"\"unhandled-int\":15,"
+			"\"unhandled-double\":42.42,"
+			"\"unhandled-object\":{"
+				"\"a\":true,"
+				"\"b\":true"
+			"},"
+			"\"unhandled-array\":["
+				"1,"
+				"2,"
+				"3"
+			"],"
+			"\"unhandled-null\":null"
+		 "}");
+	g_object_unref (entry);
+
+	/* Test parsing of empty titles. */
+	entry = GDATA_ENTRY (gdata_parsable_new_from_json (GDATA_TYPE_ENTRY,
+		"{"
+			"\"title\":\"\""
+		 "}", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (entry));
+	g_object_unref (entry);
+}
+
+static void
+test_entry_error_handling_xml (void)
 {
 	GDataEntry *entry;
 	GError *error = NULL;
@@ -521,6 +637,56 @@ test_entry_error_handling (void)
 	TEST_XML_ERROR_HANDLING ("<author/>"); /* invalid author */
 
 #undef TEST_XML_ERROR_HANDLING
+}
+
+static void
+test_entry_error_handling_json (void)
+{
+	GDataEntry *entry;
+	GError *error = NULL;
+
+#define TEST_JSON_ERROR_HANDLING(x) \
+	entry = GDATA_ENTRY (gdata_parsable_new_from_json (GDATA_TYPE_ENTRY,x, -1, &error));\
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
+	g_assert (entry == NULL);\
+	g_clear_error (&error)
+#define TEST_JSON_ERROR_HANDLING_PARSER(x) \
+	entry = GDATA_ENTRY (gdata_parsable_new_from_json (GDATA_TYPE_ENTRY,x, -1, &error));\
+	g_assert_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_PARSING_STRING);\
+	g_assert (entry == NULL);\
+	g_clear_error (&error)
+
+	/* General structure. */
+	TEST_JSON_ERROR_HANDLING_PARSER ("[true,false,true]"); /* root node is not an object */
+	TEST_JSON_ERROR_HANDLING_PARSER ("false"); /* root node is not an object */
+	TEST_JSON_ERROR_HANDLING_PARSER ("invalid json"); /* totally invalid JSON */
+
+	/* id */
+	TEST_JSON_ERROR_HANDLING ("{\"id\":\"\"}"); /* empty */
+	TEST_JSON_ERROR_HANDLING ("{\"id\":null}"); /* invalid type */
+
+	/* updated */
+	TEST_JSON_ERROR_HANDLING ("{\"updated\":\"not correct\"}"); /* incorrect format */
+	TEST_JSON_ERROR_HANDLING ("{\"updated\":false}"); /* invalid type */
+	TEST_JSON_ERROR_HANDLING ("{\"updated\":\"\"}"); /* empty */
+
+	/* title */
+	TEST_JSON_ERROR_HANDLING ("{\"title\":false}"); /* invalid type */
+
+	/* etag */
+	TEST_JSON_ERROR_HANDLING ("{\"etag\":\"\"}"); /* empty */
+	TEST_JSON_ERROR_HANDLING ("{\"etag\":false}"); /* invalid type */
+
+	/* selfLink */
+	TEST_JSON_ERROR_HANDLING ("{\"selfLink\":\"\"}"); /* empty */
+	TEST_JSON_ERROR_HANDLING ("{\"selfLink\":false}"); /* invalid type */
+
+	/* kind */
+	TEST_JSON_ERROR_HANDLING ("{\"kind\":\"\"}"); /* empty */
+	TEST_JSON_ERROR_HANDLING ("{\"kind\":false}"); /* invalid type */
+
+#undef TEST_JSON_ERROR_HANDLING_PARSER
+#undef TEST_JSON_ERROR_HANDLING
 }
 
 static void
@@ -3997,8 +4163,11 @@ main (int argc, char *argv[])
 	g_test_add_func ("/service/locale", test_service_locale);
 
 	g_test_add_func ("/entry/get_xml", test_entry_get_xml);
+	g_test_add_func ("/entry/get_json", test_entry_get_json);
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);
-	g_test_add_func ("/entry/error_handling", test_entry_error_handling);
+	g_test_add_func ("/entry/parse_json", test_entry_parse_json);
+	g_test_add_func ("/entry/error_handling/xml", test_entry_error_handling_xml);
+	g_test_add_func ("/entry/error_handling/json", test_entry_error_handling_json);
 	g_test_add_func ("/entry/escaping", test_entry_escaping);
 	g_test_add_func ("/entry/links/remove", test_entry_links_remove);
 

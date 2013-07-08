@@ -308,6 +308,8 @@ gdata_access_rule_get_edited
 gdata_parsable_get_type
 gdata_parsable_new_from_xml
 gdata_parsable_get_xml
+gdata_parsable_new_from_json
+gdata_parsable_get_json
 gdata_calendar_feed_get_type
 gdata_calendar_feed_get_timezone
 gdata_calendar_feed_get_times_cleaned
