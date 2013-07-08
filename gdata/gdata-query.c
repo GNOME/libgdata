@@ -1026,7 +1026,7 @@ gdata_query_previous_page (GDataQuery *self)
 
 	g_return_val_if_fail (GDATA_IS_QUERY (self), FALSE);
 
-	if (priv->next_uri != NULL) {
+	if (priv->previous_uri != NULL) {
 		priv->use_previous_uri = TRUE;
 		priv->use_next_uri = FALSE;
 	} else if (priv->start_index <= priv->max_results) {
