@@ -1286,10 +1286,9 @@ gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_resul
 		return NULL;
 
 	entry = g_simple_async_result_get_op_res_gpointer (result);
-	if (entry != NULL)
-		return g_object_ref (entry);
+	g_assert (entry != NULL);
 
-	g_assert_not_reached ();
+	return g_object_ref (entry);
 }
 
 /**
@@ -1482,10 +1481,9 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
 		return NULL;
 
 	entry = g_simple_async_result_get_op_res_gpointer (result);
-	if (entry != NULL)
-		return g_object_ref (entry);
+	g_assert (entry != NULL);
 
-	g_assert_not_reached ();
+	return g_object_ref (entry);
 }
 
 /**
