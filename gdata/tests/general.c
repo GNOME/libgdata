@@ -936,6 +936,206 @@ test_query_categories (void)
 }
 
 static void
+test_query_dates (void)
+{
+	GDataQuery *query;
+	gchar *query_uri;
+
+	query = gdata_query_new ("baz");
+
+	/* updated-min */
+	gdata_query_set_updated_min (query, 1373280114); /* 2013-07-08T10:41:54Z */
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&updated-min=2013-07-08T10:41:54Z");
+	g_free (query_uri);
+	gdata_query_set_updated_min (query, -1);
+
+	/* updated-max */
+	gdata_query_set_updated_max (query, 1373280114); /* 2013-07-08T10:41:54Z */
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&updated-max=2013-07-08T10:41:54Z");
+	g_free (query_uri);
+	gdata_query_set_updated_max (query, -1);
+
+	/* published-min */
+	gdata_query_set_published_min (query, 1373280114); /* 2013-07-08T10:41:54Z */
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&published-min=2013-07-08T10:41:54Z");
+	g_free (query_uri);
+	gdata_query_set_published_min (query, -1);
+
+	/* published-max */
+	gdata_query_set_published_max (query, 1373280114); /* 2013-07-08T10:41:54Z */
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&published-max=2013-07-08T10:41:54Z");
+	g_free (query_uri);
+	gdata_query_set_published_max (query, -1);
+
+	g_object_unref (query);
+}
+
+static void
+test_query_strict (void)
+{
+	GDataQuery *query;
+	gchar *query_uri;
+
+	query = gdata_query_new ("bar");
+
+	gdata_query_set_is_strict (query, TRUE);
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=bar&strict=true");
+	g_free (query_uri);
+
+	gdata_query_set_is_strict (query, FALSE);
+	query_uri = gdata_query_get_query_uri (query, "http://example.com");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=bar");
+	g_free (query_uri);
+
+	g_object_unref (query);
+}
+
+static void
+test_query_pagination (void)
+{
+	GDataQuery *query;
+	gchar *query_uri;
+
+	query = gdata_query_new ("test");
+	gdata_query_set_max_results (query, 15);
+	gdata_query_set_etag (query, "etag"); /* this should be cleared by pagination */
+
+	query_uri = gdata_query_get_query_uri (query, "http://example.com/");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=test&max-results=15");
+	g_free (query_uri);
+
+	/* Try the next and previous pages. */
+	gdata_query_next_page (query);
+	g_assert (gdata_query_get_etag (query) == NULL);
+
+	query_uri = gdata_query_get_query_uri (query, "http://example.com/");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=test&start-index=16&max-results=15");
+	g_free (query_uri);
+
+	gdata_query_set_etag (query, "etag");
+	g_assert (gdata_query_previous_page (query) == TRUE);
+	g_assert (gdata_query_get_etag (query) == NULL);
+
+	query_uri = gdata_query_get_query_uri (query, "http://example.com/");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=test&max-results=15");
+	g_free (query_uri);
+
+	/* Try another previous page. This should fail, and the ETag should be untouched. */
+	gdata_query_set_etag (query, "etag");
+	g_assert (gdata_query_previous_page (query) == FALSE);
+	g_assert_cmpstr (gdata_query_get_etag (query), ==, "etag");
+
+	g_object_unref (query);
+
+	/* Try the alternate constructor. */
+	query = gdata_query_new_with_limits ("test", 40, 10);
+
+	query_uri = gdata_query_get_query_uri (query, "http://example.com/");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=test&start-index=40&max-results=10");
+	g_free (query_uri);
+
+	/* Try the next and previous pages again. */
+	gdata_query_next_page (query);
+
+	query_uri = gdata_query_get_query_uri (query, "http://example.com/");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=test&start-index=50&max-results=10");
+	g_free (query_uri);
+
+	g_assert (gdata_query_previous_page (query) == TRUE);
+
+	query_uri = gdata_query_get_query_uri (query, "http://example.com/");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=test&start-index=40&max-results=10");
+	g_free (query_uri);
+
+	g_assert (gdata_query_previous_page (query) == TRUE);
+
+	query_uri = gdata_query_get_query_uri (query, "http://example.com/");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=test&start-index=30&max-results=10");
+	g_free (query_uri);
+}
+
+static void
+notify_cb (GObject *obj, GParamSpec *pspec, gpointer user_data)
+{
+	gboolean *notification_received = user_data;
+	g_assert (*notification_received == FALSE);
+	*notification_received = TRUE;
+}
+
+static void
+test_query_properties (void)
+{
+	GDataQuery *query;
+	gboolean notification_received = FALSE;
+	gulong handler_id;
+
+	query = gdata_query_new ("default");
+
+#define CHECK_PROPERTY(cmptype, name_hyphens, name_underscores, default_val, new_val, new_val2, val_type, free_val) \
+	{ \
+		val_type val; \
+ \
+		handler_id = g_signal_connect (query, "notify::" name_hyphens, (GCallback) notify_cb, &notification_received); \
+ \
+		g_assert_##cmptype (gdata_query_get_##name_underscores (query), ==, default_val); \
+		g_object_get (query, name_hyphens, &val, NULL); \
+		g_assert_##cmptype (val, ==, default_val); \
+		if (free_val == TRUE) { \
+			g_free ((gpointer) ((guintptr) val)); \
+		} \
+ \
+		notification_received = FALSE; \
+		gdata_query_set_##name_underscores (query, new_val); \
+		g_assert (notification_received == TRUE); \
+ \
+		g_assert_##cmptype (gdata_query_get_##name_underscores (query), ==, new_val); \
+ \
+		notification_received = FALSE; \
+		g_object_set (query, name_hyphens, new_val2, NULL); \
+		g_assert (notification_received == TRUE); \
+ \
+		g_assert_##cmptype (gdata_query_get_##name_underscores (query), ==, new_val2); \
+ \
+		g_signal_handler_disconnect (query, handler_id); \
+	}
+#define CHECK_PROPERTY_STR(name_hyphens, name_underscores, default_val) \
+	CHECK_PROPERTY (cmpstr, name_hyphens, name_underscores, default_val, "new", "new2", gchar*, TRUE)
+#define CHECK_PROPERTY_INT64(name_hyphens, name_underscores, default_val) \
+	CHECK_PROPERTY (cmpint, name_hyphens, name_underscores, default_val, 123, 5134132, gint64, FALSE)
+#define CHECK_PROPERTY_UINT(name_hyphens, name_underscores, default_val) \
+	CHECK_PROPERTY (cmpuint, name_hyphens, name_underscores, default_val, 535, 123, guint, FALSE)
+#define CHECK_PROPERTY_BOOLEAN(name_hyphens, name_underscores, default_val) \
+	CHECK_PROPERTY (cmpuint, name_hyphens, name_underscores, default_val, TRUE, FALSE, gboolean, FALSE)
+
+	CHECK_PROPERTY_STR ("q", q, "default");
+	CHECK_PROPERTY_STR ("categories", categories, NULL);
+	CHECK_PROPERTY_STR ("author", author, NULL);
+	CHECK_PROPERTY_INT64 ("updated-min", updated_min, -1);
+	CHECK_PROPERTY_INT64 ("updated-max", updated_max, -1);
+	CHECK_PROPERTY_INT64 ("published-min", published_min, -1);
+	CHECK_PROPERTY_INT64 ("published-max", published_max, -1);
+	CHECK_PROPERTY_UINT ("start-index", start_index, 0);
+#define gdata_query_get_is_strict gdata_query_is_strict
+	CHECK_PROPERTY_BOOLEAN ("is-strict", is_strict, FALSE);
+#undef gdata_query_get_is_strict
+	CHECK_PROPERTY_UINT ("max-results", max_results, 0);
+	CHECK_PROPERTY_STR ("etag", etag, NULL);
+
+#undef CHECK_PROPERTY_BOOLEAN
+#undef CHECK_PROPERTY_UINT
+#undef CHECK_PROPERTY_INT64
+#undef CHECK_PROPERTY_STR
+#undef CHECK_PROPERTY
+
+	g_object_unref (query);
+}
+
+static void
 test_query_unicode (void)
 {
 	GDataQuery *query;
@@ -3804,6 +4004,10 @@ main (int argc, char *argv[])
 	g_test_add_func ("/feed/escaping", test_feed_escaping);
 
 	g_test_add_func ("/query/categories", test_query_categories);
+	g_test_add_func ("/query/dates", test_query_dates);
+	g_test_add_func ("/query/strict", test_query_strict);
+	g_test_add_func ("/query/pagination", test_query_pagination);
+	g_test_add_func ("/query/properties", test_query_properties);
 	g_test_add_func ("/query/unicode", test_query_unicode);
 	g_test_add_func ("/query/etag", test_query_etag);
 
