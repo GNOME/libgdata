@@ -1085,8 +1085,8 @@ check_authenticated_user_details (GDataPicasaWebUser *user)
 
 	g_assert_cmpstr (gdata_picasaweb_user_get_user (user), ==, "libgdata.picasaweb");
 	g_assert_cmpstr (gdata_picasaweb_user_get_nickname (user), ==, "libgdata.picasaweb");
-	/* 1GiB: it'll be a beautiful day when this assert gets tripped */
-	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 1073741824);
+	/* 15GiB: it'll be a beautiful day when this assert gets tripped */
+	g_assert_cmpint (gdata_picasaweb_user_get_quota_limit (user), ==, 16106127360);
 	g_assert_cmpint (gdata_picasaweb_user_get_quota_current (user), >=, 0);
 	/* now it's 1000, testing this weakly to avoid having to regularly update it */
 	g_assert_cmpint (gdata_picasaweb_user_get_max_photos_per_album (user), >, 0);
