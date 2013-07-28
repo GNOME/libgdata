@@ -1,0 +1,101 @@
+> GET /-poVqadt-OAg/Ufp0oeB9woI/AAAAAAAAMsU/tsfWY3JagZk/s288/Test%252520file%2525203.jpg HTTP/1.1
+> Soup-Debug-Timestamp: 1375371675
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 14 (0x98c0b0), SoupSocket 12 (0x783240)
+> Host: lh3.googleusercontent.com
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375371676
+< Soup-Debug: SoupMessage 14 (0x98c0b0)
+< Access-Control-Allow-Origin: *
+< ETag: "v3333"
+< Expires: Fri, 02 Aug 2013 15:41:16 GMT
+< Cache-control: public, max-age=86400, no-transform
+< Content-Disposition: inline;filename="Test file 3.jpg"
+< Content-Type: image/jpeg
+< X-Content-Type-Options: nosniff
+< Date: Thu, 01 Aug 2013 15:41:16 GMT
+< Server: fife
+< Content-Length: 5993
+< X-XSS-Protection: 1; mode=block
+< 
+< ÿØÿà
+  
+> GET /-poVqadt-OAg/Ufp0oeB9woI/AAAAAAAAMsU/tsfWY3JagZk/s288/Test%252520file%2525203.jpg HTTP/1.1
+> Soup-Debug-Timestamp: 1375371676
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 15 (0x98c290), SoupSocket 12 (0x783240)
+> Host: lh3.googleusercontent.com
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375371676
+< Soup-Debug: SoupMessage 15 (0x98c290)
+< Access-Control-Allow-Origin: *
+< ETag: "v3333"
+< Expires: Fri, 02 Aug 2013 15:41:16 GMT
+< Content-Disposition: inline;filename="Test file 3.jpg"
+< Content-Type: image/jpeg
+< X-Content-Type-Options: nosniff
+< Date: Thu, 01 Aug 2013 15:41:16 GMT
+< Server: fife
+< Content-Length: 5993
+< X-XSS-Protection: 1; mode=block
+< Cache-control: public, max-age=86400, no-transform
+< Age: 0
+< 
+< ÿØÿà
+  
+> GET /-poVqadt-OAg/Ufp0oeB9woI/AAAAAAAAMsU/tsfWY3JagZk/s144/Test%252520file%2525203.jpg HTTP/1.1
+> Soup-Debug-Timestamp: 1375371676
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 16 (0x98c1a0), SoupSocket 12 (0x783240)
+> Host: lh3.googleusercontent.com
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375371676
+< Soup-Debug: SoupMessage 16 (0x98c1a0)
+< Access-Control-Allow-Origin: *
+< ETag: "v3333"
+< Expires: Fri, 02 Aug 2013 15:41:16 GMT
+< Cache-control: public, max-age=86400, no-transform
+< Content-Disposition: inline;filename="Test file 3.jpg"
+< Content-Type: image/jpeg
+< X-Content-Type-Options: nosniff
+< Date: Thu, 01 Aug 2013 15:41:16 GMT
+< Server: fife
+< Content-Length: 5993
+< X-XSS-Protection: 1; mode=block
+< 
+< ÿØÿà
+  
+> GET /-poVqadt-OAg/Ufp0oeB9woI/AAAAAAAAMsU/tsfWY3JagZk/s72/Test%252520file%2525203.jpg HTTP/1.1
+> Soup-Debug-Timestamp: 1375371676
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 17 (0x98c380), SoupSocket 12 (0x783240)
+> Host: lh3.googleusercontent.com
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375371677
+< Soup-Debug: SoupMessage 17 (0x98c380)
+< Access-Control-Allow-Origin: *
+< ETag: "v3333"
+< Expires: Fri, 02 Aug 2013 15:41:16 GMT
+< Cache-control: public, max-age=86400, no-transform
+< Content-Disposition: inline;filename="Test file 3.jpg"
+< Content-Type: image/jpeg
+< X-Content-Type-Options: nosniff
+< Date: Thu, 01 Aug 2013 15:41:16 GMT
+< Server: fife
+< Content-Length: 3634
+< X-XSS-Protection: 1; mode=block
+< 
+< ÿØÿà
+  

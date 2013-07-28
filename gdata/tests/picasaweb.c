@@ -33,6 +33,8 @@
 
 #define PW_USERNAME "libgdata.picasaweb@gmail.com"
 
+static GDataMockServer *mock_server = NULL;
+
 /* Assert that two albums have equal properties, but aren't the same object instance. For use in, e.g., comparing an inserted album from the server
  * to the original instance which was inserted. */
 static void
@@ -346,6 +348,8 @@ test_authentication (void)
 	GDataClientLoginAuthorizer *authorizer;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "authentication");
+
 	/* Create an authorizer */
 	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE);
 
@@ -365,6 +369,8 @@ test_authentication (void)
 	                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == TRUE);
 
 	g_object_unref (authorizer);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
@@ -470,6 +476,8 @@ set_up_query_files (QueryFilesData *data, gconstpointer service)
 {
 	GDataPicasaWebAlbum *album;
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-query-files");
+
 	/* Album */
 	album = gdata_picasaweb_album_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (album), "Test album for QueryFiles");
@@ -484,6 +492,8 @@ set_up_query_files (QueryFilesData *data, gconstpointer service)
 	data->file2 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 2", data->album);
 	data->file3 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 3", data->album);
 	data->file4 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 4", data->album);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -498,7 +508,11 @@ tear_down_query_files (QueryFilesData *data, gconstpointer service)
 	g_object_unref (data->file1);
 
 	/* HACK! Wait for the distributed Google servers to synchronise. */
-	sleep (10);
+	if (gdata_mock_server_get_enable_online (mock_server) == FALSE) {
+		sleep (10);
+	}
+
+	gdata_test_mock_server_start_trace (mock_server, "teardown-query-files");
 
 	/* We have to re-query for the album, since its ETag will be out of date */
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, NULL);
@@ -510,6 +524,8 @@ tear_down_query_files (QueryFilesData *data, gconstpointer service)
 
 	g_object_unref (album_feed);
 	g_object_unref (data->album);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 /* Checks to perform on a photo feed from test_query_files() or test_query_files_async(). */
@@ -552,6 +568,8 @@ test_query_files (QueryFilesData *data, gconstpointer service)
 	GDataFeed *photo_feed;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "query-files");
+
 	photo_feed = gdata_picasaweb_service_query_files (GDATA_PICASAWEB_SERVICE (service), data->album, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (photo_feed));
@@ -560,6 +578,8 @@ test_query_files (QueryFilesData *data, gconstpointer service)
 	_test_query_files (photo_feed, data);
 
 	g_object_unref (photo_feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_files, QueryFilesData);
@@ -592,6 +612,8 @@ test_query_files_async_progress_closure (QueryFilesData *query_data, gconstpoint
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
+	gdata_test_mock_server_start_trace (mock_server, "query-files-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_picasaweb_service_query_files_async (GDATA_PICASAWEB_SERVICE (service), query_data->album, NULL, NULL,
@@ -607,6 +629,8 @@ test_query_files_async_progress_closure (QueryFilesData *query_data, gconstpoint
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -614,6 +638,8 @@ test_query_files_single (QueryFilesData *data, gconstpointer service)
 {
 	GDataEntry *file;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "query-files-single");
 
 	file = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
 	                                         gdata_entry_get_id (GDATA_ENTRY (data->file1)), NULL, GDATA_TYPE_PICASAWEB_FILE, NULL, &error);
@@ -624,6 +650,8 @@ test_query_files_single (QueryFilesData *data, gconstpointer service)
 	assert_files_equal (GDATA_PICASAWEB_FILE (file), data->file1, TRUE);
 
 	g_object_unref (file);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -638,6 +666,8 @@ test_download_thumbnails (QueryFilesData *data, gconstpointer service)
 	GFileOutputStream *file_stream;
 	gssize transfer_size;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "download-thumbnails");
 
 	photo = GDATA_PICASAWEB_FILE (data->file3);
 
@@ -681,6 +711,12 @@ test_download_thumbnails (QueryFilesData *data, gconstpointer service)
 
 		thumbnail = GDATA_MEDIA_THUMBNAIL (node->data);
 
+		/* FIXME. The mock server currently doesn't support binary data, so we can't get JPEG files
+		 * from it. Hence, only perform the GdkPixbuf tests when running tests online. */
+		if (gdata_mock_server_get_enable_online (mock_server) == FALSE) {
+			break;
+		}
+
 		/* Prepare a download stream */
 		download_stream = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), NULL, &error);
 		g_assert_no_error (error);
@@ -700,6 +736,8 @@ test_download_thumbnails (QueryFilesData *data, gconstpointer service)
 		g_object_unref (pixbuf);
 	}
 #endif /* HAVE_GDK_PIXBUF */
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -714,6 +752,8 @@ test_download_photo (QueryFilesData *data, gconstpointer service)
 	GFileOutputStream *file_stream;
 	gssize transfer_size;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "download-photo");
 
 	photo = GDATA_PICASAWEB_FILE (data->file3);
 
@@ -749,6 +789,8 @@ test_download_photo (QueryFilesData *data, gconstpointer service)
 	/* Delete the file (shouldn't cause the test to fail if this fails) */
 	g_file_delete (destination_file, NULL, NULL);
 	g_object_unref (destination_file);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -775,12 +817,16 @@ set_up_insert_album (InsertAlbumData *data, gconstpointer service)
 static void
 tear_down_insert_album (InsertAlbumData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-insert-album");
+
 	/* Clean up the evidence */
 	gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
 	                            GDATA_ENTRY (data->inserted_album), NULL, NULL);
 
 	g_object_unref (data->album);
 	g_object_unref (data->inserted_album);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -789,6 +835,8 @@ test_insert_album (InsertAlbumData *data, gconstpointer service)
 	GDataPicasaWebAlbum *inserted_album;
 	GDataFeed *album_feed;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "insert-album");
 
 	/* Insert the album synchronously */
 	inserted_album = gdata_picasaweb_service_insert_album (GDATA_PICASAWEB_SERVICE (service), data->album, NULL, &error);
@@ -811,6 +859,8 @@ test_insert_album (InsertAlbumData *data, gconstpointer service)
 	g_object_unref (album_feed);
 
 	g_object_unref (inserted_album);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_album, InsertAlbumData);
@@ -849,6 +899,8 @@ set_up_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 {
 	GDataPicasaWebAlbum *album;
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-query-all-albums");
+
 	/* First album */
 	album = gdata_picasaweb_album_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (album), "Test album 1 for QueryAllAlbums");
@@ -884,11 +936,15 @@ set_up_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 	g_assert (data->album4 != NULL);
 
 	g_object_unref (album);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
 tear_down_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-query-all-albums");
+
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
 	                                      GDATA_ENTRY (data->album1), NULL, NULL) == TRUE);
 	g_object_unref (data->album1);
@@ -904,6 +960,8 @@ tear_down_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
 	                                      GDATA_ENTRY (data->album4), NULL, NULL) == TRUE);
 	g_object_unref (data->album4);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -983,6 +1041,8 @@ test_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 	GDataFeed *album_feed;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "query-all-albums");
+
 	/* Try a proper query */
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -991,6 +1051,8 @@ test_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 	_test_query_all_albums (album_feed, data);
 
 	g_object_unref (album_feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1000,6 +1062,8 @@ test_query_all_albums_with_limits (QueryAllAlbumsData *data, gconstpointer servi
 	GDataFeed *album_feed_1, *album_feed_2;
 	GError *error = NULL;
 	GList *albums_1, *albums_2;
+
+	gdata_test_mock_server_start_trace (mock_server, "query-all-albums-with-limits");
 
 	/* Test that two queries starting at different indices don't return the same content */
 	query = GDATA_QUERY (gdata_picasaweb_query_new_with_limits (NULL, 1, 1));
@@ -1036,6 +1100,8 @@ test_query_all_albums_with_limits (QueryAllAlbumsData *data, gconstpointer servi
 	g_assert_cmpint (g_list_length (albums_1), ==, 3);
 
 	g_object_unref (album_feed_1);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_all_albums, QueryAllAlbumsData);
@@ -1069,6 +1135,8 @@ test_query_all_albums_async_progress_closure (QueryAllAlbumsData *unused_data, g
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
+	gdata_test_mock_server_start_trace (mock_server, "query-all-albums-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_picasaweb_service_query_all_albums_async (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL,
@@ -1084,6 +1152,8 @@ test_query_all_albums_async_progress_closure (QueryAllAlbumsData *unused_data, g
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1117,6 +1187,8 @@ set_up_query_comments (QueryCommentsData *data, gconstpointer service)
 	/* Set up some test albums and files. */
 	set_up_query_files ((QueryFilesData*) data, service);
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-query-comments");
+
 	/* Insert four test comments on the first test file. */
 	comment_ = gdata_picasaweb_comment_new (NULL);
 	gdata_entry_set_content (GDATA_ENTRY (comment_), "Test comment 1.");
@@ -1138,11 +1210,15 @@ set_up_query_comments (QueryCommentsData *data, gconstpointer service)
 	                                                                            GDATA_COMMENT (comment_), NULL, NULL));
 	g_assert (GDATA_IS_PICASAWEB_COMMENT (data->comment1));
 	g_object_unref (comment_);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
 tear_down_query_comments (QueryCommentsData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-query-comments");
+
 	/* Delete the test comments. */
 	if (data->comment1 != NULL) {
 		gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
@@ -1161,6 +1237,8 @@ tear_down_query_comments (QueryCommentsData *data, gconstpointer service)
 		                                  GDATA_COMMENT (data->comment3), NULL, NULL);
 		g_object_unref (data->comment3);
 	}
+
+	gdata_mock_server_end_trace (mock_server);
 
 	/* Delete the test files and albums. */
 	tear_down_query_files ((QueryFilesData*) data, service);
@@ -1219,6 +1297,8 @@ test_comment_query (QueryCommentsData *data, gconstpointer service)
 	GDataFeed *comments_feed;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "comment-query");
+
 	comments_feed = gdata_commentable_query_comments (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service), NULL, NULL, NULL, NULL,
 	                                                  &error);
 	g_assert_no_error (error);
@@ -1227,6 +1307,8 @@ test_comment_query (QueryCommentsData *data, gconstpointer service)
 	assert_comments_feed (data, comments_feed);
 
 	g_object_unref (comments_feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_comments, QueryCommentsData);
@@ -1260,6 +1342,8 @@ test_comment_query_async_progress_closure (QueryCommentsData *query_data, gconst
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
+	gdata_test_mock_server_start_trace (mock_server, "comment-query-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (query_data->parent.file1), GDATA_SERVICE (service), NULL, NULL,
@@ -1275,6 +1359,8 @@ test_comment_query_async_progress_closure (QueryCommentsData *query_data, gconst
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1300,6 +1386,8 @@ set_up_insert_comment (InsertCommentData *data, gconstpointer service)
 static void
 tear_down_insert_comment (InsertCommentData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-insert-comment");
+
 	/* Delete the inserted comment. */
 	if (data->new_comment != NULL) {
 		g_assert (gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service),
@@ -1310,6 +1398,8 @@ tear_down_insert_comment (InsertCommentData *data, gconstpointer service)
 	if (data->comment != NULL) {
 		g_object_unref (data->comment);
 	}
+
+	gdata_mock_server_end_trace (mock_server);
 
 	tear_down_query_files ((QueryFilesData*) data, service);
 }
@@ -1342,6 +1432,8 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 	GDataComment *new_comment;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "comment-insert");
+
 	new_comment = gdata_commentable_insert_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service), GDATA_COMMENT (data->comment),
 	                                                NULL, &error);
 	g_assert_no_error (error);
@@ -1350,6 +1442,8 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 	assert_comments_equal (new_comment, data->comment);
 
 	data->new_comment = GDATA_PICASAWEB_COMMENT (new_comment);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_comment, InsertCommentData);
@@ -1379,6 +1473,8 @@ test_comment_delete (QueryCommentsData *data, gconstpointer service)
 	gboolean success;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "comment-delete");
+
 	success = gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.file1), GDATA_SERVICE (service), GDATA_COMMENT (data->comment1),
 	                                            NULL, &error);
 	g_assert_no_error (error);
@@ -1387,6 +1483,8 @@ test_comment_delete (QueryCommentsData *data, gconstpointer service)
 
 	g_object_unref (data->comment1);
 	data->comment1 = NULL;
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (comment_delete, QueryCommentsData,
@@ -1424,6 +1522,8 @@ test_query_user (gconstpointer service)
 	GDataPicasaWebUser *user;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "query-user");
+
 	user = gdata_picasaweb_service_get_user (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_clear_error (&error);
@@ -1431,6 +1531,8 @@ test_query_user (gconstpointer service)
 	check_authenticated_user_details (user);
 
 	g_object_unref (user);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 /* Check that asynchronously querying for the currently authenticated user's details works and returns the correct details. */
@@ -1498,6 +1600,8 @@ set_up_upload (UploadData *data, gconstpointer service)
 	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-upload");
+
 	data->service = g_object_ref ((gpointer) service);
 
 	/* Build the photo */
@@ -1525,11 +1629,15 @@ set_up_upload (UploadData *data, gconstpointer service)
 	data->file_stream = g_file_read (data->photo_file, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (G_IS_FILE_INPUT_STREAM (data->file_stream));
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
 tear_down_upload (UploadData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-upload");
+
 	/* Delete the uploaded photo (don't worry if this fails) */
 	if (data->updated_photo != NULL) {
 		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
@@ -1543,6 +1651,8 @@ tear_down_upload (UploadData *data, gconstpointer service)
 	g_free (data->content_type);
 	g_object_unref (data->file_stream);
 	g_object_unref (data->service);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1552,6 +1662,8 @@ test_upload_default_album (UploadData *data, gconstpointer service)
 	const gchar * const *tags, * const *tags2;
 	gssize transfer_size;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "upload-default-album");
 
 	/* Prepare the upload stream */
 	/* TODO right now, it will just go to the default album, we want an uploading one :| */
@@ -1582,6 +1694,8 @@ test_upload_default_album (UploadData *data, gconstpointer service)
 	g_assert_cmpstr (tags2[0], ==, tags[0]);
 	g_assert_cmpstr (tags2[1], ==, tags[1]);
 	g_assert_cmpstr (tags2[2], ==, tags[2]);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (upload, UploadData);
@@ -1953,93 +2067,98 @@ main (int argc, char *argv[])
 	gint retval;
 	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
+	GFile *trace_directory;
 
 	gdata_test_init (argc, argv);
 
-	if (gdata_test_internet () == TRUE) {
-		authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE));
-		gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), PW_USERNAME, PASSWORD, NULL, NULL);
+	mock_server = gdata_test_get_mock_server ();
+	trace_directory = g_file_new_for_path ("traces/picasaweb");
+	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	g_object_unref (trace_directory);
 
-		service = GDATA_SERVICE (gdata_picasaweb_service_new (authorizer));
+	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
+	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE));
+	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), PW_USERNAME, PASSWORD, NULL, NULL);
+	gdata_mock_server_end_trace (mock_server);
 
-		g_test_add_func ("/picasaweb/authentication", test_authentication);
-		g_test_add ("/picasaweb/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
-		            gdata_tear_down_async_test_data);
-		g_test_add ("/picasaweb/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
-		            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
+	service = GDATA_SERVICE (gdata_picasaweb_service_new (authorizer));
 
-		g_test_add ("/picasaweb/query/all_albums", QueryAllAlbumsData, service, set_up_query_all_albums, test_query_all_albums,
-		            tear_down_query_all_albums);
-		g_test_add ("/picasaweb/query/all_albums/with_limits", QueryAllAlbumsData, service, set_up_query_all_albums,
-		            test_query_all_albums_with_limits, tear_down_query_all_albums);
-		g_test_add ("/picasaweb/query/all_albums/async", GDataAsyncTestData, service, set_up_query_all_albums_async,
-		            test_query_all_albums_async, tear_down_query_all_albums_async);
-		g_test_add ("/picasaweb/query/all_albums/async/progress_closure", QueryAllAlbumsData, service, set_up_query_all_albums,
-		            test_query_all_albums_async_progress_closure, tear_down_query_all_albums);
-		g_test_add ("/picasaweb/query/all_albums/async/cancellation", GDataAsyncTestData, service, set_up_query_all_albums_async,
-		            test_query_all_albums_async_cancellation, tear_down_query_all_albums_async);
-		g_test_add_data_func ("/picasaweb/query/all_albums/bad_query", service, test_query_all_albums_bad_query);
-		g_test_add_data_func ("/picasaweb/query/all_albums/bad_query/with_limits", service, test_query_all_albums_bad_query_with_limits);
+	g_test_add_func ("/picasaweb/authentication", test_authentication);
+	g_test_add ("/picasaweb/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
+	            gdata_tear_down_async_test_data);
+	g_test_add ("/picasaweb/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
+	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
-		g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
-		g_test_add ("/picasaweb/query/user/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_user_async,
-		            gdata_tear_down_async_test_data);
-		g_test_add ("/picasaweb/query/user/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-		            test_query_user_async_cancellation, gdata_tear_down_async_test_data);
-		g_test_add ("/picasaweb/query/user/by-username/async", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-		            test_query_user_by_username_async, gdata_tear_down_async_test_data);
-		g_test_add ("/picasaweb/query/user/by-username/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-		            test_query_user_by_username_async_cancellation, gdata_tear_down_async_test_data);
+	g_test_add ("/picasaweb/query/all_albums", QueryAllAlbumsData, service, set_up_query_all_albums, test_query_all_albums,
+	            tear_down_query_all_albums);
+	g_test_add ("/picasaweb/query/all_albums/with_limits", QueryAllAlbumsData, service, set_up_query_all_albums,
+	            test_query_all_albums_with_limits, tear_down_query_all_albums);
+	g_test_add ("/picasaweb/query/all_albums/async", GDataAsyncTestData, service, set_up_query_all_albums_async,
+	            test_query_all_albums_async, tear_down_query_all_albums_async);
+	g_test_add ("/picasaweb/query/all_albums/async/progress_closure", QueryAllAlbumsData, service, set_up_query_all_albums,
+	            test_query_all_albums_async_progress_closure, tear_down_query_all_albums);
+	g_test_add ("/picasaweb/query/all_albums/async/cancellation", GDataAsyncTestData, service, set_up_query_all_albums_async,
+	            test_query_all_albums_async_cancellation, tear_down_query_all_albums_async);
+	g_test_add_data_func ("/picasaweb/query/all_albums/bad_query", service, test_query_all_albums_bad_query);
+	g_test_add_data_func ("/picasaweb/query/all_albums/bad_query/with_limits", service, test_query_all_albums_bad_query_with_limits);
+	g_test_add_data_func ("/picasaweb/query/user", service, test_query_user);
+	g_test_add ("/picasaweb/query/user/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_user_async,
+	            gdata_tear_down_async_test_data);
+	g_test_add ("/picasaweb/query/user/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+	            test_query_user_async_cancellation, gdata_tear_down_async_test_data);
+	g_test_add ("/picasaweb/query/user/by-username/async", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+	            test_query_user_by_username_async, gdata_tear_down_async_test_data);
+	g_test_add ("/picasaweb/query/user/by-username/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+	            test_query_user_by_username_async_cancellation, gdata_tear_down_async_test_data);
 
-		g_test_add ("/picasaweb/insert/album", InsertAlbumData, service, set_up_insert_album, test_insert_album, tear_down_insert_album);
-		g_test_add ("/picasaweb/insert/album/async", GDataAsyncTestData, service, set_up_insert_album_async, test_insert_album_async,
-		            tear_down_insert_album_async);
-		g_test_add ("/picasaweb/insert/album/async/cancellation", GDataAsyncTestData, service, set_up_insert_album_async,
-		            test_insert_album_async_cancellation, tear_down_insert_album_async);
+	g_test_add ("/picasaweb/insert/album", InsertAlbumData, service, set_up_insert_album, test_insert_album, tear_down_insert_album);
+	g_test_add ("/picasaweb/insert/album/async", GDataAsyncTestData, service, set_up_insert_album_async, test_insert_album_async,
+	            tear_down_insert_album_async);
+	g_test_add ("/picasaweb/insert/album/async/cancellation", GDataAsyncTestData, service, set_up_insert_album_async,
+	            test_insert_album_async_cancellation, tear_down_insert_album_async);
 
-		g_test_add ("/picasaweb/query/files", QueryFilesData, service, set_up_query_files, test_query_files, tear_down_query_files);
-		g_test_add ("/picasaweb/query/files/async", GDataAsyncTestData, service, set_up_query_files_async, test_query_files_async,
-		            tear_down_query_files_async);
-		g_test_add ("/picasaweb/query/files/async/progress_closure", QueryFilesData, service, set_up_query_files,
-		            test_query_files_async_progress_closure, tear_down_query_files);
-		g_test_add ("/picasaweb/query/files/async/cancellation", GDataAsyncTestData, service, set_up_query_files_async,
-		            test_query_files_async_cancellation, tear_down_query_files_async);
-		g_test_add ("/picasaweb/query/files/single", QueryFilesData, service, set_up_query_files, test_query_files_single,
-		            tear_down_query_files);
+	g_test_add ("/picasaweb/query/files", QueryFilesData, service, set_up_query_files, test_query_files, tear_down_query_files);
+	g_test_add ("/picasaweb/query/files/async", GDataAsyncTestData, service, set_up_query_files_async, test_query_files_async,
+	            tear_down_query_files_async);
+	g_test_add ("/picasaweb/query/files/async/progress_closure", QueryFilesData, service, set_up_query_files,
+	            test_query_files_async_progress_closure, tear_down_query_files);
+	g_test_add ("/picasaweb/query/files/async/cancellation", GDataAsyncTestData, service, set_up_query_files_async,
+	            test_query_files_async_cancellation, tear_down_query_files_async);
+	g_test_add ("/picasaweb/query/files/single", QueryFilesData, service, set_up_query_files, test_query_files_single,
+	            tear_down_query_files);
 
-		g_test_add ("/picasaweb/comment/query", QueryCommentsData, service, set_up_query_comments, test_comment_query,
-		            tear_down_query_comments);
-		g_test_add ("/picasaweb/comment/query/async", GDataAsyncTestData, service, set_up_query_comments_async, test_comment_query_async,
-		            tear_down_query_comments_async);
-		g_test_add ("/picasaweb/comment/query/async/cancellation", GDataAsyncTestData, service, set_up_query_comments_async,
-		            test_comment_query_async_cancellation, tear_down_query_comments_async);
-		g_test_add ("/picasaweb/comment/query/progress_closure", QueryCommentsData, service, set_up_query_comments,
-		            test_comment_query_async_progress_closure, tear_down_query_comments);
+	g_test_add ("/picasaweb/comment/query", QueryCommentsData, service, set_up_query_comments, test_comment_query,
+	            tear_down_query_comments);
+	g_test_add ("/picasaweb/comment/query/async", GDataAsyncTestData, service, set_up_query_comments_async, test_comment_query_async,
+	            tear_down_query_comments_async);
+	g_test_add ("/picasaweb/comment/query/async/cancellation", GDataAsyncTestData, service, set_up_query_comments_async,
+	            test_comment_query_async_cancellation, tear_down_query_comments_async);
+	g_test_add ("/picasaweb/comment/query/progress_closure", QueryCommentsData, service, set_up_query_comments,
+	            test_comment_query_async_progress_closure, tear_down_query_comments);
 
-		g_test_add ("/picasaweb/comment/insert", InsertCommentData, service, set_up_insert_comment, test_comment_insert,
-		            tear_down_insert_comment);
-		g_test_add ("/picasaweb/comment/insert/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_insert_async,
-		            tear_down_insert_comment_async);
-		g_test_add ("/picasaweb/comment/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
-		            test_comment_insert_async_cancellation, tear_down_insert_comment_async);
+	g_test_add ("/picasaweb/comment/insert", InsertCommentData, service, set_up_insert_comment, test_comment_insert,
+	            tear_down_insert_comment);
+	g_test_add ("/picasaweb/comment/insert/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_insert_async,
+	            tear_down_insert_comment_async);
+	g_test_add ("/picasaweb/comment/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
+	            test_comment_insert_async_cancellation, tear_down_insert_comment_async);
 
-		g_test_add ("/picasaweb/comment/delete", QueryCommentsData, service, set_up_query_comments, test_comment_delete,
-		            tear_down_query_comments);
-		g_test_add ("/picasaweb/comment/delete/async", GDataAsyncTestData, service, set_up_query_comments_async, test_comment_delete_async,
-		            tear_down_query_comments_async);
-		g_test_add ("/picasaweb/comment/delete/async/cancellation", GDataAsyncTestData, service, set_up_query_comments_async,
-		            test_comment_delete_async_cancellation, tear_down_query_comments_async);
+	g_test_add ("/picasaweb/comment/delete", QueryCommentsData, service, set_up_query_comments, test_comment_delete,
+	            tear_down_query_comments);
+	g_test_add ("/picasaweb/comment/delete/async", GDataAsyncTestData, service, set_up_query_comments_async, test_comment_delete_async,
+	            tear_down_query_comments_async);
+	g_test_add ("/picasaweb/comment/delete/async/cancellation", GDataAsyncTestData, service, set_up_query_comments_async,
+	            test_comment_delete_async_cancellation, tear_down_query_comments_async);
 
-		g_test_add ("/picasaweb/upload/default_album", UploadData, service, set_up_upload, test_upload_default_album, tear_down_upload);
-		g_test_add ("/picasaweb/upload/default_album/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_default_album_async,
-		            tear_down_upload_async);
-		g_test_add ("/picasaweb/upload/default_album/async/cancellation", GDataAsyncTestData, service, set_up_upload_async,
-		            test_upload_default_album_async_cancellation, tear_down_upload_async);
+	g_test_add ("/picasaweb/upload/default_album", UploadData, service, set_up_upload, test_upload_default_album, tear_down_upload);
+	g_test_add ("/picasaweb/upload/default_album/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_default_album_async,
+	            tear_down_upload_async);
+	g_test_add ("/picasaweb/upload/default_album/async/cancellation", GDataAsyncTestData, service, set_up_upload_async,
+	            test_upload_default_album_async_cancellation, tear_down_upload_async);
 
-		g_test_add ("/picasaweb/download/photo", QueryFilesData, service, set_up_query_files, test_download_photo, tear_down_query_files);
-		g_test_add ("/picasaweb/download/thumbnails", QueryFilesData, service, set_up_query_files, test_download_thumbnails,
-		            tear_down_query_files);
-	}
+	g_test_add ("/picasaweb/download/photo", QueryFilesData, service, set_up_query_files, test_download_photo, tear_down_query_files);
+	g_test_add ("/picasaweb/download/thumbnails", QueryFilesData, service, set_up_query_files, test_download_thumbnails,
+	            tear_down_query_files);
 
 	g_test_add_func ("/picasaweb/album/new", test_album_new);
 	g_test_add_func ("/picasaweb/album/escaping", test_album_escaping);

@@ -1,0 +1,25 @@
+> GET /-poVqadt-OAg/Ufp0oeB9woI/AAAAAAAAMsU/tsfWY3JagZk/Test%252520file%2525203.jpg HTTP/1.1
+> Soup-Debug-Timestamp: 1375371652
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 6 (0x98c290), SoupSocket 6 (0x7fffe40038e0)
+> Host: lh6.googleusercontent.com
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375371652
+< Soup-Debug: SoupMessage 6 (0x98c290)
+< Access-Control-Allow-Origin: *
+< ETag: "v3329"
+< Expires: Fri, 02 Aug 2013 15:40:52 GMT
+< Cache-control: public, max-age=86400, no-transform
+< Content-Disposition: inline;filename="Test file 3.jpg"
+< Content-Type: image/jpeg
+< X-Content-Type-Options: nosniff
+< Date: Thu, 01 Aug 2013 15:40:52 GMT
+< Server: fife
+< Content-Length: 8896
+< X-XSS-Protection: 1; mode=block
+< 
+< ÿØÿà
+  

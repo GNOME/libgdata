@@ -1,0 +1,102 @@
+> POST /data/feed/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314?authkey=Gv1sRgCKKx5unfo4qvuAE HTTP/1.1
+> Soup-Debug-Timestamp: 1375367397
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 48 (0x79ed80), SoupSocket 30 (0x706a60)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANoAAAAOuUYXwRBAHgNEEbEl4k3Pfxl9EMLyqMFS6XDPU8V6x6UdXPfUNk8406bdjrbicpY09aRzdq5P_E2B4rdPeJG9iMU-Fcapg-QZcFs_CnJpq66uXpvAcZ2y_TSvFzzliXnxvIIPeU-8ofrMKG3STiGssYg2SkpME_sUu4LOpsBmcP8380ZMY-7PFQZYzZ1VmwB58hmU34NecZY4b3nngnRI4EKZiMseyudbDXuE-X6KIJp4SVY1RVvMCu5oRTHw5vd6C0s3JM-n9_u9xDsXBn-3xdKvPeGBINjX33DeqFvIgw
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'><title type='text'></title><content type='text'>Test comment 1.</content><category term='http://schemas.google.com/photos/2007#comment' scheme='http://schemas.google.com/g/2005#kind'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375367398
+< Soup-Debug: SoupMessage 48 (0x79ed80)
+< Expires: Thu, 01 Aug 2013 14:29:58 GMT
+< Date: Thu, 01 Aug 2013 14:29:58 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=_VC_nego1CsM; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=ZOFeHmsgsEugfLRgQiqO5g; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: W/"DUQNRnY4eCp7ImA9WhFWE0s."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907157991014140692?authkey=Gv1sRgCKKx5unfo4qvuAE
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907157991014140692?authkey=Gv1sRgCKKx5unfo4qvuAE
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;DUQNRnY4eCp7ImA9WhFWE0s.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907157991014140692</id><published>2013-08-01T14:29:57.830Z</published><updated>2013-08-01T14:29:57.830Z</updated><app:edited>2013-08-01T14:29:57.830Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#comment'/><title>libgdata.picasaweb</title><content>Test comment 1.</content><link rel='alternate' type='text/html' href='https://picasaweb.google.com/lh/photo/tvuFAuI-9TZljsqogrDrzd62mdOu5-4lWildw13I8AE'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907157991014140692?authkey=Gv1sRgCKKx5unfo4qvuAE'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907157991014140692?authkey=Gv1sRgCKKx5unfo4qvuAE'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><gphoto:thumbnail>https://lh6.googleusercontent.com/-1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAADJo/Aka-7qukB7s/s48-c/libgdata.picasaweb.jpg</gphoto:thumbnail><gphoto:user>libgdata.picasaweb</gphoto:user></author><gphoto:id>5907157991014140692</gphoto:id><gphoto:photoid>5907162035673007314</gphoto:photoid></entry>
+  
+> POST /data/feed/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314?authkey=Gv1sRgCKKx5unfo4qvuAE HTTP/1.1
+> Soup-Debug-Timestamp: 1375367398
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 49 (0x79ed80), SoupSocket 31 (0x706b20)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANoAAAAOuUYXwRBAHgNEEbEl4k3Pfxl9EMLyqMFS6XDPU8V6x6UdXPfUNk8406bdjrbicpY09aRzdq5P_E2B4rdPeJG9iMU-Fcapg-QZcFs_CnJpq66uXpvAcZ2y_TSvFzzliXnxvIIPeU-8ofrMKG3STiGssYg2SkpME_sUu4LOpsBmcP8380ZMY-7PFQZYzZ1VmwB58hmU34NecZY4b3nngnRI4EKZiMseyudbDXuE-X6KIJp4SVY1RVvMCu5oRTHw5vd6C0s3JM-n9_u9xDsXBn-3xdKvPeGBINjX33DeqFvIgw
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'><title type='text'></title><content type='text'>Test comment 2.</content><category term='http://schemas.google.com/photos/2007#comment' scheme='http://schemas.google.com/g/2005#kind'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375367399
+< Soup-Debug: SoupMessage 49 (0x79ed80)
+< Expires: Thu, 01 Aug 2013 14:29:59 GMT
+< Date: Thu, 01 Aug 2013 14:29:59 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=V4zy3O6a1rSi; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=keTNJ9gehkgUI79QkmmhrA; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: W/"DUQNSXczeSp7ImA9WhFWE0s."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158001023135444?authkey=Gv1sRgCKKx5unfo4qvuAE
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158001023135444?authkey=Gv1sRgCKKx5unfo4qvuAE
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;DUQNSXczeSp7ImA9WhFWE0s.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158001023135444</id><published>2013-08-01T14:29:58.981Z</published><updated>2013-08-01T14:29:58.981Z</updated><app:edited>2013-08-01T14:29:58.981Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#comment'/><title>libgdata.picasaweb</title><content>Test comment 2.</content><link rel='alternate' type='text/html' href='https://picasaweb.google.com/lh/photo/tvuFAuI-9TZljsqogrDrzd62mdOu5-4lWildw13I8AE'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158001023135444?authkey=Gv1sRgCKKx5unfo4qvuAE'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158001023135444?authkey=Gv1sRgCKKx5unfo4qvuAE'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><gphoto:thumbnail>https://lh6.googleusercontent.com/-1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAADJo/Aka-7qukB7s/s48-c/libgdata.picasaweb.jpg</gphoto:thumbnail><gphoto:user>libgdata.picasaweb</gphoto:user></author><gphoto:id>5907158001023135444</gphoto:id><gphoto:photoid>5907162035673007314</gphoto:photoid></entry>
+  
+> POST /data/feed/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314?authkey=Gv1sRgCKKx5unfo4qvuAE HTTP/1.1
+> Soup-Debug-Timestamp: 1375367400
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 50 (0x79eab0), SoupSocket 32 (0x7068e0)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANoAAAAOuUYXwRBAHgNEEbEl4k3Pfxl9EMLyqMFS6XDPU8V6x6UdXPfUNk8406bdjrbicpY09aRzdq5P_E2B4rdPeJG9iMU-Fcapg-QZcFs_CnJpq66uXpvAcZ2y_TSvFzzliXnxvIIPeU-8ofrMKG3STiGssYg2SkpME_sUu4LOpsBmcP8380ZMY-7PFQZYzZ1VmwB58hmU34NecZY4b3nngnRI4EKZiMseyudbDXuE-X6KIJp4SVY1RVvMCu5oRTHw5vd6C0s3JM-n9_u9xDsXBn-3xdKvPeGBINjX33DeqFvIgw
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'><title type='text'></title><content type='text'>Test comment 3.</content><category term='http://schemas.google.com/photos/2007#comment' scheme='http://schemas.google.com/g/2005#kind'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375367401
+< Soup-Debug: SoupMessage 50 (0x79eab0)
+< Expires: Thu, 01 Aug 2013 14:30:01 GMT
+< Date: Thu, 01 Aug 2013 14:30:01 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=93HAa1Vg4hES; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=NJlYj7ysIUI7Sd2JDduLpA; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: W/"DUMEQXc6fCp7ImA9WhFWE0s."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158005467377316?authkey=Gv1sRgCKKx5unfo4qvuAE
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158005467377316?authkey=Gv1sRgCKKx5unfo4qvuAE
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;DUMEQXc6fCp7ImA9WhFWE0s.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158005467377316</id><published>2013-08-01T14:30:00.914Z</published><updated>2013-08-01T14:30:00.914Z</updated><app:edited>2013-08-01T14:30:00.914Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#comment'/><title>libgdata.picasaweb</title><content>Test comment 3.</content><link rel='alternate' type='text/html' href='https://picasaweb.google.com/lh/photo/tvuFAuI-9TZljsqogrDrzd62mdOu5-4lWildw13I8AE'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158005467377316?authkey=Gv1sRgCKKx5unfo4qvuAE'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907158005467377316?authkey=Gv1sRgCKKx5unfo4qvuAE'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><gphoto:thumbnail>https://lh6.googleusercontent.com/-1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAADJo/Aka-7qukB7s/s48-c/libgdata.picasaweb.jpg</gphoto:thumbnail><gphoto:user>libgdata.picasaweb</gphoto:user></author><gphoto:id>5907158005467377316</gphoto:id><gphoto:photoid>5907162035673007314</gphoto:photoid></entry>
+  

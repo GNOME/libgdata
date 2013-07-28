@@ -1,0 +1,34 @@
+> POST /data/feed/api/user/default/albumid/default HTTP/1.1
+> Soup-Debug-Timestamp: 1375371412
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 1 (0x7cc290), SoupSocket 1 (0x8d16c0)
+> Host: picasaweb.google.com
+> Slug: photo.jpg
+> Transfer-Encoding: chunked
+> Content-Type: multipart/related; boundary=0003Z5W789deadbeefRTE456KlemsnoZV
+> Authorization: GoogleLogin auth=DQAAANoAAACZva9KQ-ijLNwhVRPaKyaAvfQFJ-sSRQOzXypYgYTorQq4irPd_fTLzizl7OrjFxgudgtT98sAs1egYqk0OZjiKjq0sqOLvppK0fevGxEO8EEwBP52_0QAL_ygGW7JqFTq836TMfNx6n3SjFp8aU7WbgFQY6OX_adGtpZTmXjMmSKnRac2kOoGcf6xuGW-_qFuUomxHy917G7DFhkyGmPiomDpFLv8gvyH7RznvZt9ubdNTw8TtIEbLjoYbBeufNLv-KedkVVz8lyxHephwIUyjZ7mIdhOFWqEsrlb79GrrA
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375371415
+< Soup-Debug: SoupMessage 1 (0x7cc290)
+< Expires: Thu, 01 Aug 2013 15:36:55 GMT
+< Date: Thu, 01 Aug 2013 15:36:55 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=QAQbKsmoipxM; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=DIGGuPkU5mc4xRHVVl0kRw; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: "YD0qeyI."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907174027540672513/photoid/5907175242186045490?authkey=Gv1sRgCO-m15DWp4ah_gE
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907174027540672513/photoid/5907175242186045490?authkey=Gv1sRgCO-m15DWp4ah_gE
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:exif='http://schemas.google.com/photos/exif/2007' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' xmlns:gml='http://www.opengis.net/gml' xmlns:georss='http://www.georss.org/georss' gd:etag='&quot;YD0qeyI.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5907174027540672513/photoid/5907175242186045490</id><published>2013-08-01T15:36:53.000Z</published><updated>2013-08-01T15:36:53.761Z</updated><app:edited>2013-08-01T15:36:53.761Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#photo'/><title>Photo Entry Title</title><summary>Photo Summary</summary><content type='image/jpeg' src='https://lh3.googleusercontent.com/-58kNdEYSlwM/UfqAldB7ODI/AAAAAAAAMxg/I2fVmwVza-I/Photo%252520Entry%252520Title.jpg'/><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb/albumid/5907174027540672513/photoid/5907175242186045490?authkey=Gv1sRgCO-m15DWp4ah_gE'/><link rel='alternate' type='text/html' href='https://picasaweb.google.com/libgdata.picasaweb/DropBox02?authkey=Gv1sRgCO-m15DWp4ah_gE#5907175242186045490'/><link rel='http://schemas.google.com/photos/2007#canonical' type='text/html' href='https://picasaweb.google.com/lh/photo/hFnr2vLPAnwymlNd9jXSC_Z3FpWmmtg91ParBYTtppo'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907174027540672513/photoid/5907175242186045490?authkey=Gv1sRgCO-m15DWp4ah_gE'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5907174027540672513/photoid/5907175242186045490?authkey=Gv1sRgCO-m15DWp4ah_gE'/><link rel='edit-media' type='image/jpeg' href='https://picasaweb.google.com/data/media/api/user/libgdata.picasaweb/albumid/5907174027540672513/photoid/5907175242186045490?authkey=Gv1sRgCO-m15DWp4ah_gE'/><link rel='http://schemas.google.com/photos/2007#report' type='text/html' href='https://picasaweb.google.com/lh/reportAbuse?uname=libgdata.picasaweb&amp;aid=5907174027540672513&amp;iid=5907175242186045490'/><gphoto:id>5907175242186045490</gphoto:id><gphoto:albumid>5907174027540672513</gphoto:albumid><gphoto:access>private</gphoto:access><gphoto:width>100</gphoto:width><gphoto:height>92</gphoto:height><gphoto:size>17660</gphoto:size><gphoto:checksum/><gphoto:timestamp>1154823228000</gphoto:timestamp><gphoto:imageVersion>13080</gphoto:imageVersion><gphoto:commentingEnabled>true</gphoto:commentingEnabled><gphoto:commentCount>0</gphoto:commentCount><gphoto:streamId>shared_group_5907175242186045490</gphoto:streamId><gphoto:license id='2' name='Attribution-Noncommercial' url='http://creativecommons.org/licenses/by-nc/3.0'>ATTRIBUTION_NON_COMMERCIAL</gphoto:license><gphoto:shapes faces='done'/><exif:tags><exif:fstop>3.9</exif:fstop><exif:make>Panasonic</exif:make><exif:model>DMC-TZ1</exif:model><exif:exposure>0.01</exif:exposure><exif:flash>false</exif:flash><exif:focallength>16.6</exif:focallength><exif:iso>80</exif:iso><exif:time>1154798028000</exif:time><exif:imageUniqueID>b62dec53eb93fc15ce39d7eb2e66dd3a</exif:imageUniqueID></exif:tags><media:group><media:content url='https://lh3.googleusercontent.com/-58kNdEYSlwM/UfqAldB7ODI/AAAAAAAAMxg/I2fVmwVza-I/Photo%252520Entry%252520Title.jpg' height='92' width='100' type='image/jpeg' medium='image'/><media:credit>libgdata.picasaweb</media:credit><media:description type='plain'>Photo Summary</media:description><media:keywords>foo, bar, %2C%2Cbaz%2Cbaz</media:keywords><media:thumbnail url='https://lh3.googleusercontent.com/-58kNdEYSlwM/UfqAldB7ODI/AAAAAAAAMxg/I2fVmwVza-I/s72/Photo%252520Entry%252520Title.jpg' height='67' width='72'/><media:thumbnail url='https://lh3.googleusercontent.com/-58kNdEYSlwM/UfqAldB7ODI/AAAAAAAAMxg/I2fVmwVza-I/s144/Photo%252520Entry%252520Title.jpg' height='92' width='100'/><media:thumbnail url='https://lh3.googleusercontent.com/-58kNdEYSlwM/UfqAldB7ODI/AAAAAAAAMxg/I2fVmwVza-I/s288/Photo%252520Entry%252520Title.jpg' height='92' width='100'/><media:title type='plain'>Photo Entry Title</media:title></media:group><georss:where><gml:Point><gml:pos>17.127 -110.35</gml:pos></gml:Point></georss:where></entry>
+  

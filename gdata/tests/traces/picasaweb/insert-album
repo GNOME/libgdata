@@ -1,0 +1,64 @@
+> POST /data/feed/api/user/default HTTP/1.1
+> Soup-Debug-Timestamp: 1375193224
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 60 (0x7fffe40191d0), SoupSocket 27 (0x7cbdf0)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANsAAACBRkzDssWFvAbsJ__WhogKQOB1hOdZ-V7TTzopLOdrYUCoOa9HrmeNJp5iha8I-J-YTle_CcHcfDVOcXqR5x439iCm1fiMPcoABzsfdLTKLKU2avMGICiYQ4M8donG0cblZbUDOW31-6bwXScW_yvDNARuAj0KQcJBCLpc3-WqhraDgc6ELRTI5TxhGmwu4XUFs6hDSd5UH9c9b79Qin0no0kBdLyj1cKXI-l5tH_oWOVvZfXCB_XQd_dRkFL12iPvfKmjIfa18ETXQbhPwKBOl737cGye_Xd4emswaoB4Ew
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app' xmlns:media='http://search.yahoo.com/mrss/'><title type='text'>Thanksgiving photos</title><summary type='text'>Family photos of the feast!</summary><rights>private</rights><category term='http://schemas.google.com/photos/2007#album' scheme='http://schemas.google.com/g/2005#kind'/><gphoto:location>Winnipeg, MN</gphoto:location><gphoto:access>private</gphoto:access><gphoto:timestamp>1034589539000</gphoto:timestamp><gphoto:commentingEnabled>false</gphoto:commentingEnabled><media:group><media:title type='plain'>Thanksgiving photos</media:title><media:description type='plain'>Family photos of the feast!</media:description></media:group></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375193224
+< Soup-Debug: SoupMessage 60 (0x7fffe40191d0)
+< Expires: Tue, 30 Jul 2013 14:07:04 GMT
+< Date: Tue, 30 Jul 2013 14:07:04 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=1EyCoJwu_n78; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=YvA5qIylphVzW0GxwNdVDw; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: "YD0qeyI."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409926225606689?authkey=Gv1sRgCIHX18X_kLpH
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409926225606689?authkey=Gv1sRgCIHX18X_kLpH
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;YD0qeyI.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5906409926225606689</id><published>2002-10-14T09:58:59.000Z</published><updated>2013-07-30T14:07:04.400Z</updated><app:edited>2013-07-30T14:07:04.400Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#album'/><title>Thanksgiving photos</title><summary>Family photos of the feast!</summary><rights>private</rights><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb/albumid/5906409926225606689?authkey=Gv1sRgCIHX18X_kLpH'/><link rel='alternate' type='text/html' href='https://picasaweb.google.com/libgdata.picasaweb/ThanksgivingPhotos98?authkey=Gv1sRgCIHX18X_kLpH'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409926225606689?authkey=Gv1sRgCIHX18X_kLpH'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409926225606689?authkey=Gv1sRgCIHX18X_kLpH'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409926225606689/acl?authkey=Gv1sRgCIHX18X_kLpH'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri></author><gphoto:id>5906409926225606689</gphoto:id><gphoto:name>ThanksgivingPhotos98</gphoto:name><gphoto:location>Winnipeg, MN</gphoto:location><gphoto:access>private</gphoto:access><gphoto:timestamp>1034589539000</gphoto:timestamp><gphoto:numphotos>0</gphoto:numphotos><gphoto:numphotosremaining>1000</gphoto:numphotosremaining><gphoto:bytesUsed>0</gphoto:bytesUsed><gphoto:user>libgdata.picasaweb</gphoto:user><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><media:group><media:content url='https://lh3.googleusercontent.com/-5KM4I5kjnq0/UffIiM6EuCE/AAAAAAAAMe4/qtNcFWlEVkU/ThanksgivingPhotos98.jpg' type='image/jpeg' medium='image'/><media:credit>libgdata.picasaweb</media:credit><media:description type='plain'>Family photos of the feast!</media:description><media:keywords/><media:thumbnail url='https://lh3.googleusercontent.com/-5KM4I5kjnq0/UffIiM6EuCE/AAAAAAAAMe4/qtNcFWlEVkU/s160-c/ThanksgivingPhotos98.jpg' height='160' width='160'/><media:title type='plain'>Thanksgiving photos</media:title></media:group></entry>
+  
+> GET /data/feed/api/user/default HTTP/1.1
+> Soup-Debug-Timestamp: 1375193224
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 61 (0x7fffd800eca0), SoupSocket 27 (0x7cbdf0)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANsAAACBRkzDssWFvAbsJ__WhogKQOB1hOdZ-V7TTzopLOdrYUCoOa9HrmeNJp5iha8I-J-YTle_CcHcfDVOcXqR5x439iCm1fiMPcoABzsfdLTKLKU2avMGICiYQ4M8donG0cblZbUDOW31-6bwXScW_yvDNARuAj0KQcJBCLpc3-WqhraDgc6ELRTI5TxhGmwu4XUFs6hDSd5UH9c9b79Qin0no0kBdLyj1cKXI-l5tH_oWOVvZfXCB_XQd_dRkFL12iPvfKmjIfa18ETXQbhPwKBOl737cGye_Xd4emswaoB4Ew
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375193225
+< Soup-Debug: SoupMessage 61 (0x7fffd800eca0)
+< Expires: Tue, 30 Jul 2013 14:07:05 GMT
+< Date: Tue, 30 Jul 2013 14:07:05 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=GC-ICG7ox22z; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=-YaNUbgF96-m_Y-BBNzWPQ; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=feed
+< Vary: Accept, X-GData-Authorization, GData-Version, Cookie
+< GData-Version: 2.0
+< ETag: W/"CUUGRXo7eCp7ImA9WhFWEUQ."
+< Last-Modified: Tue, 30 Jul 2013 14:07:04 GMT
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:media='http://search.yahoo.com/mrss/' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;CUUGRXo7eCp7ImA9WhFWEUQ.&quot;'><id>https://picasaweb.google.com/data/feed/user/libgdata.picasaweb</id><updated>2013-07-30T14:07:04.400Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#user'/><title>libgdata.picasaweb</title><subtitle/><icon>https://lh6.googleusercontent.com/-1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAADJo/Aka-7qukB7s/s64-c/libgdata.picasaweb.jpg</icon><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb'/><link rel='http://schemas.google.com/g/2005#post' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb'/><link rel='alternate' type='text/html' href='https://picasaweb.google.com/libgdata.picasaweb'/><link rel='http://schemas.google.com/photos/2007#slideshow' type='application/x-shockwave-flash' href='https://static.googleusercontent.com/external_content/picasaweb.googleusercontent.com/slideshow.swf?host=picasaweb.google.com&amp;RGB=0x000000&amp;feed=https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb?alt%3Drss'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb?start-index=1&amp;max-results=1000'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri></author><generator version='1.00' uri='http://picasaweb.google.com/'>Picasaweb</generator><openSearch:totalResults>1</openSearch:totalResults><openSearch:startIndex>1</openSearch:startIndex><openSearch:itemsPerPage>1000</openSearch:itemsPerPage><gphoto:user>libgdata.picasaweb</gphoto:user><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><gphoto:thumbnail>https://lh6.googleusercontent.com/-1kdcGyvOb8c/AAAAAAAAAAA/AAAAAAAADJo/Aka-7qukB7s/s64-c/libgdata.picasaweb.jpg</gphoto:thumbnail><gphoto:quotalimit>16106127360</gphoto:quotalimit><gphoto:quotacurrent>1796070</gphoto:quotacurrent><gphoto:maxPhotosPerAlbum>1000</gphoto:maxPhotosPerAlbum><entry gd:etag='&quot;YD0qeyI.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5906409926225606689</id><published>2002-10-14T09:58:59.000Z</published><updated>2013-07-30T14:07:04.400Z</updated><app:edited>2013-07-30T14:07:04.400Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#album'/><title>Thanksgiving photos</title><summary>Family photos of the feast!</summary><rights>private</rights><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb/albumid/5906409926225606689?authkey=Gv1sRgCIHX18X_kLpH'/><link rel='alternate' type='text/html' href='https://picasaweb.google.com/libgdata.picasaweb/ThanksgivingPhotos98?authkey=Gv1sRgCIHX18X_kLpH'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409926225606689?authkey=Gv1sRgCIHX18X_kLpH'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409926225606689?authkey=Gv1sRgCIHX18X_kLpH'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409926225606689/acl?authkey=Gv1sRgCIHX18X_kLpH'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri></author><gphoto:id>5906409926225606689</gphoto:id><gphoto:name>ThanksgivingPhotos98</gphoto:name><gphoto:location>Winnipeg, MN</gphoto:location><gphoto:access>private</gphoto:access><gphoto:timestamp>1034589539000</gphoto:timestamp><gphoto:numphotos>0</gphoto:numphotos><gphoto:numphotosremaining>1000</gphoto:numphotosremaining><gphoto:bytesUsed>0</gphoto:bytesUsed><gphoto:user>libgdata.picasaweb</gphoto:user><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><media:group><media:content url='https://lh3.googleusercontent.com/-5KM4I5kjnq0/UffIiM6EuCE/AAAAAAAAMe4/qtNcFWlEVkU/ThanksgivingPhotos98.jpg' type='image/jpeg' medium='image'/><media:credit>libgdata.picasaweb</media:credit><media:description type='plain'>Family photos of the feast!</media:description><media:keywords/><media:thumbnail url='https://lh3.googleusercontent.com/-5KM4I5kjnq0/UffIiM6EuCE/AAAAAAAAMe4/qtNcFWlEVkU/s160-c/ThanksgivingPhotos98.jpg' height='160' width='160'/><media:title type='plain'>Thanksgiving photos</media:title></media:group></entry></feed>
+  

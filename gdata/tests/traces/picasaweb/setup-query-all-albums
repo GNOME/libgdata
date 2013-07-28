@@ -1,0 +1,136 @@
+> POST /data/feed/api/user/default HTTP/1.1
+> Soup-Debug-Timestamp: 1375193211
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 40 (0x78d550), SoupSocket 17 (0x7cba30)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANsAAACBRkzDssWFvAbsJ__WhogKQOB1hOdZ-V7TTzopLOdrYUCoOa9HrmeNJp5iha8I-J-YTle_CcHcfDVOcXqR5x439iCm1fiMPcoABzsfdLTKLKU2avMGICiYQ4M8donG0cblZbUDOW31-6bwXScW_yvDNARuAj0KQcJBCLpc3-WqhraDgc6ELRTI5TxhGmwu4XUFs6hDSd5UH9c9b79Qin0no0kBdLyj1cKXI-l5tH_oWOVvZfXCB_XQd_dRkFL12iPvfKmjIfa18ETXQbhPwKBOl737cGye_Xd4emswaoB4Ew
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app' xmlns:media='http://search.yahoo.com/mrss/'><title type='text'>Test album 1 for QueryAllAlbums</title><rights>private</rights><category term='http://schemas.google.com/photos/2007#album' scheme='http://schemas.google.com/g/2005#kind'/><gphoto:access>private</gphoto:access><gphoto:timestamp>1375193211000</gphoto:timestamp><gphoto:commentingEnabled>false</gphoto:commentingEnabled><media:group><media:title type='plain'>Test album 1 for QueryAllAlbums</media:title></media:group></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375193212
+< Soup-Debug: SoupMessage 40 (0x78d550)
+< Expires: Tue, 30 Jul 2013 14:06:52 GMT
+< Date: Tue, 30 Jul 2013 14:06:52 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=Oz5kBY9r-bOe; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=uHYyW_yk_rtx3oUjvBOZYg; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: "YD0qeyI."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409867090978209?authkey=Gv1sRgCMGwmsnnoJ6GgAE
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409867090978209?authkey=Gv1sRgCMGwmsnnoJ6GgAE
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;YD0qeyI.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5906409867090978209</id><published>2013-07-30T14:06:51.000Z</published><updated>2013-07-30T14:06:51.971Z</updated><app:edited>2013-07-30T14:06:51.971Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#album'/><title>Test album 1 for QueryAllAlbums</title><summary/><rights>private</rights><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb/albumid/5906409867090978209?authkey=Gv1sRgCMGwmsnnoJ6GgAE'/><link rel='alternate' type='text/html' href='https://picasaweb.google.com/libgdata.picasaweb/TestAlbum1ForQueryAllAlbums72?authkey=Gv1sRgCMGwmsnnoJ6GgAE'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409867090978209?authkey=Gv1sRgCMGwmsnnoJ6GgAE'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409867090978209?authkey=Gv1sRgCMGwmsnnoJ6GgAE'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409867090978209/acl?authkey=Gv1sRgCMGwmsnnoJ6GgAE'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri></author><gphoto:id>5906409867090978209</gphoto:id><gphoto:name>TestAlbum1ForQueryAllAlbums72</gphoto:name><gphoto:location/><gphoto:access>private</gphoto:access><gphoto:timestamp>1375193211000</gphoto:timestamp><gphoto:numphotos>0</gphoto:numphotos><gphoto:numphotosremaining>1000</gphoto:numphotosremaining><gphoto:bytesUsed>0</gphoto:bytesUsed><gphoto:user>libgdata.picasaweb</gphoto:user><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><media:group><media:content url='https://lh3.googleusercontent.com/-dghQiMuTN2c/UffIewnR5aE/AAAAAAAAMeY/1BIIg4oW3qw/TestAlbum1ForQueryAllAlbums72.jpg' type='image/jpeg' medium='image'/><media:credit>libgdata.picasaweb</media:credit><media:description type='plain'/><media:keywords/><media:thumbnail url='https://lh3.googleusercontent.com/-dghQiMuTN2c/UffIewnR5aE/AAAAAAAAMeY/1BIIg4oW3qw/s160-c/TestAlbum1ForQueryAllAlbums72.jpg' height='160' width='160'/><media:title type='plain'>Test album 1 for QueryAllAlbums</media:title></media:group></entry>
+  
+> POST /data/feed/api/user/default HTTP/1.1
+> Soup-Debug-Timestamp: 1375193212
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 41 (0x78d550), SoupSocket 18 (0x7fffdc0043c0)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANsAAACBRkzDssWFvAbsJ__WhogKQOB1hOdZ-V7TTzopLOdrYUCoOa9HrmeNJp5iha8I-J-YTle_CcHcfDVOcXqR5x439iCm1fiMPcoABzsfdLTKLKU2avMGICiYQ4M8donG0cblZbUDOW31-6bwXScW_yvDNARuAj0KQcJBCLpc3-WqhraDgc6ELRTI5TxhGmwu4XUFs6hDSd5UH9c9b79Qin0no0kBdLyj1cKXI-l5tH_oWOVvZfXCB_XQd_dRkFL12iPvfKmjIfa18ETXQbhPwKBOl737cGye_Xd4emswaoB4Ew
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app' xmlns:media='http://search.yahoo.com/mrss/'><title type='text'>Test album 2 for QueryAllAlbums</title><rights>private</rights><category term='http://schemas.google.com/photos/2007#album' scheme='http://schemas.google.com/g/2005#kind'/><gphoto:access>private</gphoto:access><gphoto:timestamp>1375193212000</gphoto:timestamp><gphoto:commentingEnabled>false</gphoto:commentingEnabled><media:group><media:title type='plain'>Test album 2 for QueryAllAlbums</media:title></media:group></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375193213
+< Soup-Debug: SoupMessage 41 (0x78d550)
+< Expires: Tue, 30 Jul 2013 14:06:53 GMT
+< Date: Tue, 30 Jul 2013 14:06:53 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=CFnNibO9gAqe; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=YFVu1qVaPdljemBM2wHzOg; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: "YD0qeyI."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409873513866033?authkey=Gv1sRgCMLm1Ljg2tqqIA
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409873513866033?authkey=Gv1sRgCMLm1Ljg2tqqIA
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;YD0qeyI.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5906409873513866033</id><published>2013-07-30T14:06:52.000Z</published><updated>2013-07-30T14:06:52.851Z</updated><app:edited>2013-07-30T14:06:52.851Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#album'/><title>Test album 2 for QueryAllAlbums</title><summary/><rights>private</rights><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb/albumid/5906409873513866033?authkey=Gv1sRgCMLm1Ljg2tqqIA'/><link rel='alternate' type='text/html' href='https://picasaweb.google.com/libgdata.picasaweb/TestAlbum2ForQueryAllAlbums70?authkey=Gv1sRgCMLm1Ljg2tqqIA'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409873513866033?authkey=Gv1sRgCMLm1Ljg2tqqIA'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409873513866033?authkey=Gv1sRgCMLm1Ljg2tqqIA'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409873513866033/acl?authkey=Gv1sRgCMLm1Ljg2tqqIA'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri></author><gphoto:id>5906409873513866033</gphoto:id><gphoto:name>TestAlbum2ForQueryAllAlbums70</gphoto:name><gphoto:location/><gphoto:access>private</gphoto:access><gphoto:timestamp>1375193212000</gphoto:timestamp><gphoto:numphotos>0</gphoto:numphotos><gphoto:numphotosremaining>1000</gphoto:numphotosremaining><gphoto:bytesUsed>0</gphoto:bytesUsed><gphoto:user>libgdata.picasaweb</gphoto:user><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><media:group><media:content url='https://lh6.googleusercontent.com/-4Whv1UHATRo/UffIfIinYzE/AAAAAAAAMec/PtrYZnVuv6Y/TestAlbum2ForQueryAllAlbums70.jpg' type='image/jpeg' medium='image'/><media:credit>libgdata.picasaweb</media:credit><media:description type='plain'/><media:keywords/><media:thumbnail url='https://lh6.googleusercontent.com/-4Whv1UHATRo/UffIfIinYzE/AAAAAAAAMec/PtrYZnVuv6Y/s160-c/TestAlbum2ForQueryAllAlbums70.jpg' height='160' width='160'/><media:title type='plain'>Test album 2 for QueryAllAlbums</media:title></media:group></entry>
+  
+> POST /data/feed/api/user/default HTTP/1.1
+> Soup-Debug-Timestamp: 1375193213
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 42 (0x78d0a0), SoupSocket 19 (0x7cbc70)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANsAAACBRkzDssWFvAbsJ__WhogKQOB1hOdZ-V7TTzopLOdrYUCoOa9HrmeNJp5iha8I-J-YTle_CcHcfDVOcXqR5x439iCm1fiMPcoABzsfdLTKLKU2avMGICiYQ4M8donG0cblZbUDOW31-6bwXScW_yvDNARuAj0KQcJBCLpc3-WqhraDgc6ELRTI5TxhGmwu4XUFs6hDSd5UH9c9b79Qin0no0kBdLyj1cKXI-l5tH_oWOVvZfXCB_XQd_dRkFL12iPvfKmjIfa18ETXQbhPwKBOl737cGye_Xd4emswaoB4Ew
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app' xmlns:media='http://search.yahoo.com/mrss/'><title type='text'>Test album 3 for QueryAllAlbums</title><rights>private</rights><category term='http://schemas.google.com/photos/2007#album' scheme='http://schemas.google.com/g/2005#kind'/><gphoto:access>private</gphoto:access><gphoto:timestamp>1375193213000</gphoto:timestamp><gphoto:commentingEnabled>false</gphoto:commentingEnabled><media:group><media:title type='plain'>Test album 3 for QueryAllAlbums</media:title></media:group></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375193214
+< Soup-Debug: SoupMessage 42 (0x78d0a0)
+< Expires: Tue, 30 Jul 2013 14:06:54 GMT
+< Date: Tue, 30 Jul 2013 14:06:54 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=vBpQdJXcxFY3; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=J3KSb9f0pAjHbbrNDUM9CA; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: "YD0qeyI."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409876619235281?authkey=Gv1sRgCPmiyez0rYT-Qg
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409876619235281?authkey=Gv1sRgCPmiyez0rYT-Qg
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;YD0qeyI.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5906409876619235281</id><published>2013-07-30T14:06:53.000Z</published><updated>2013-07-30T14:06:53.653Z</updated><app:edited>2013-07-30T14:06:53.653Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#album'/><title>Test album 3 for QueryAllAlbums</title><summary/><rights>private</rights><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb/albumid/5906409876619235281?authkey=Gv1sRgCPmiyez0rYT-Qg'/><link rel='alternate' type='text/html' href='https://picasaweb.google.com/libgdata.picasaweb/TestAlbum3ForQueryAllAlbums69?authkey=Gv1sRgCPmiyez0rYT-Qg'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409876619235281?authkey=Gv1sRgCPmiyez0rYT-Qg'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409876619235281?authkey=Gv1sRgCPmiyez0rYT-Qg'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409876619235281/acl?authkey=Gv1sRgCPmiyez0rYT-Qg'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri></author><gphoto:id>5906409876619235281</gphoto:id><gphoto:name>TestAlbum3ForQueryAllAlbums69</gphoto:name><gphoto:location/><gphoto:access>private</gphoto:access><gphoto:timestamp>1375193213000</gphoto:timestamp><gphoto:numphotos>0</gphoto:numphotos><gphoto:numphotosremaining>1000</gphoto:numphotosremaining><gphoto:bytesUsed>0</gphoto:bytesUsed><gphoto:user>libgdata.picasaweb</gphoto:user><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><media:group><media:content url='https://lh3.googleusercontent.com/-NWEN_d_Rhf4/UffIfUG_j9E/AAAAAAAAMeg/GF0PsCeCr-A/TestAlbum3ForQueryAllAlbums69.jpg' type='image/jpeg' medium='image'/><media:credit>libgdata.picasaweb</media:credit><media:description type='plain'/><media:keywords/><media:thumbnail url='https://lh3.googleusercontent.com/-NWEN_d_Rhf4/UffIfUG_j9E/AAAAAAAAMeg/GF0PsCeCr-A/s160-c/TestAlbum3ForQueryAllAlbums69.jpg' height='160' width='160'/><media:title type='plain'>Test album 3 for QueryAllAlbums</media:title></media:group></entry>
+  
+> POST /data/feed/api/user/default HTTP/1.1
+> Soup-Debug-Timestamp: 1375193214
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 43 (0x78d190), SoupSocket 20 (0x7cbbb0)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANsAAACBRkzDssWFvAbsJ__WhogKQOB1hOdZ-V7TTzopLOdrYUCoOa9HrmeNJp5iha8I-J-YTle_CcHcfDVOcXqR5x439iCm1fiMPcoABzsfdLTKLKU2avMGICiYQ4M8donG0cblZbUDOW31-6bwXScW_yvDNARuAj0KQcJBCLpc3-WqhraDgc6ELRTI5TxhGmwu4XUFs6hDSd5UH9c9b79Qin0no0kBdLyj1cKXI-l5tH_oWOVvZfXCB_XQd_dRkFL12iPvfKmjIfa18ETXQbhPwKBOl737cGye_Xd4emswaoB4Ew
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app' xmlns:media='http://search.yahoo.com/mrss/'><title type='text'>Test album 4 for QueryAllAlbums</title><rights>private</rights><category term='http://schemas.google.com/photos/2007#album' scheme='http://schemas.google.com/g/2005#kind'/><gphoto:access>private</gphoto:access><gphoto:timestamp>1375193214000</gphoto:timestamp><gphoto:commentingEnabled>false</gphoto:commentingEnabled><media:group><media:title type='plain'>Test album 4 for QueryAllAlbums</media:title></media:group></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375193215
+< Soup-Debug: SoupMessage 43 (0x78d190)
+< Expires: Tue, 30 Jul 2013 14:06:55 GMT
+< Date: Tue, 30 Jul 2013 14:06:55 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Set-Cookie: _rtok=tJdUCcJ5mrOd; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=8DO6vtUhqhM2zmMYchOFBg; Domain=.google.com; Path=/; Secure; HttpOnly
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.0
+< ETag: "YD0qeyI."
+< Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409880413253681?authkey=Gv1sRgCOSEzMfX0feeQA
+< Content-Location: https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409880413253681?authkey=Gv1sRgCOSEzMfX0feeQA
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;YD0qeyI.&quot;'><id>https://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5906409880413253681</id><published>2013-07-30T14:06:54.000Z</published><updated>2013-07-30T14:06:54.614Z</updated><app:edited>2013-07-30T14:06:54.614Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#album'/><title>Test album 4 for QueryAllAlbums</title><summary/><rights>private</rights><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://picasaweb.google.com/data/feed/api/user/libgdata.picasaweb/albumid/5906409880413253681?authkey=Gv1sRgCOSEzMfX0feeQA'/><link rel='alternate' type='text/html' href='https://picasaweb.google.com/libgdata.picasaweb/TestAlbum4ForQueryAllAlbums68?authkey=Gv1sRgCOSEzMfX0feeQA'/><link rel='self' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409880413253681?authkey=Gv1sRgCOSEzMfX0feeQA'/><link rel='edit' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409880413253681?authkey=Gv1sRgCOSEzMfX0feeQA'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://picasaweb.google.com/data/entry/api/user/libgdata.picasaweb/albumid/5906409880413253681/acl?authkey=Gv1sRgCOSEzMfX0feeQA'/><author><name>libgdata.picasaweb</name><uri>https://picasaweb.google.com/libgdata.picasaweb</uri></author><gphoto:id>5906409880413253681</gphoto:id><gphoto:name>TestAlbum4ForQueryAllAlbums68</gphoto:name><gphoto:location/><gphoto:access>private</gphoto:access><gphoto:timestamp>1375193214000</gphoto:timestamp><gphoto:numphotos>0</gphoto:numphotos><gphoto:numphotosremaining>1000</gphoto:numphotosremaining><gphoto:bytesUsed>0</gphoto:bytesUsed><gphoto:user>libgdata.picasaweb</gphoto:user><gphoto:nickname>libgdata.picasaweb</gphoto:nickname><media:group><media:content url='https://lh4.googleusercontent.com/-Dj-tuEB-sz4/UffIfiPjsDE/AAAAAAAAMek/VnTLegFlzSc/TestAlbum4ForQueryAllAlbums68.jpg' type='image/jpeg' medium='image'/><media:credit>libgdata.picasaweb</media:credit><media:description type='plain'/><media:keywords/><media:thumbnail url='https://lh4.googleusercontent.com/-Dj-tuEB-sz4/UffIfiPjsDE/AAAAAAAAMek/VnTLegFlzSc/s160-c/TestAlbum4ForQueryAllAlbums68.jpg' height='160' width='160'/><media:title type='plain'>Test album 4 for QueryAllAlbums</media:title></media:group></entry>
+  

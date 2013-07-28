@@ -1,0 +1,78 @@
+> DELETE /data/entry/api/user/libgdata.picasaweb/albumid/5907157944010797329/photoid/5907157956185170690/commentid/5907157991014140692?authkey=Gv1sRgCJq36rbq0by77gE HTTP/1.1
+> Soup-Debug-Timestamp: 1375367408
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 55 (0x79e9c0), SoupSocket 34 (0x7068e0)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANoAAAAOuUYXwRBAHgNEEbEl4k3Pfxl9EMLyqMFS6XDPU8V6x6UdXPfUNk8406bdjrbicpY09aRzdq5P_E2B4rdPeJG9iMU-Fcapg-QZcFs_CnJpq66uXpvAcZ2y_TSvFzzliXnxvIIPeU-8ofrMKG3STiGssYg2SkpME_sUu4LOpsBmcP8380ZMY-7PFQZYzZ1VmwB58hmU34NecZY4b3nngnRI4EKZiMseyudbDXuE-X6KIJp4SVY1RVvMCu5oRTHw5vd6C0s3JM-n9_u9xDsXBn-3xdKvPeGBINjX33DeqFvIgw
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375367409
+< Soup-Debug: SoupMessage 55 (0x79e9c0)
+< Expires: Thu, 01 Aug 2013 14:30:08 GMT
+< Date: Thu, 01 Aug 2013 14:30:08 GMT
+< Cache-control: private, max-age=0, must-revalidate
+< Set-Cookie: _rtok=4E5u3Yr2WUlJ; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=Sf9JkdQWsvm05zmwXbcXTg; Domain=.google.com; Path=/; Secure; HttpOnly
+< GData-Version: 2.0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  
+> DELETE /data/entry/api/user/libgdata.picasaweb/albumid/5907157944010797329/photoid/5907157956185170690/commentid/5907158001023135444?authkey=Gv1sRgCJq36rbq0by77gE HTTP/1.1
+> Soup-Debug-Timestamp: 1375367409
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 56 (0x79e9c0), SoupSocket 34 (0x7068e0)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANoAAAAOuUYXwRBAHgNEEbEl4k3Pfxl9EMLyqMFS6XDPU8V6x6UdXPfUNk8406bdjrbicpY09aRzdq5P_E2B4rdPeJG9iMU-Fcapg-QZcFs_CnJpq66uXpvAcZ2y_TSvFzzliXnxvIIPeU-8ofrMKG3STiGssYg2SkpME_sUu4LOpsBmcP8380ZMY-7PFQZYzZ1VmwB58hmU34NecZY4b3nngnRI4EKZiMseyudbDXuE-X6KIJp4SVY1RVvMCu5oRTHw5vd6C0s3JM-n9_u9xDsXBn-3xdKvPeGBINjX33DeqFvIgw
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375367410
+< Soup-Debug: SoupMessage 56 (0x79e9c0)
+< Expires: Thu, 01 Aug 2013 14:30:09 GMT
+< Date: Thu, 01 Aug 2013 14:30:09 GMT
+< Cache-control: private, max-age=0, must-revalidate
+< Set-Cookie: _rtok=YpxgBBFu6JYN; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=KejD0X_urRXbohBLbA5nKQ; Domain=.google.com; Path=/; Secure; HttpOnly
+< GData-Version: 2.0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  
+> DELETE /data/entry/api/user/libgdata.picasaweb/albumid/5907157944010797329/photoid/5907157956185170690/commentid/5907158005467377316?authkey=Gv1sRgCJq36rbq0by77gE HTTP/1.1
+> Soup-Debug-Timestamp: 1375367410
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 57 (0x79eab0), SoupSocket 34 (0x7068e0)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANoAAAAOuUYXwRBAHgNEEbEl4k3Pfxl9EMLyqMFS6XDPU8V6x6UdXPfUNk8406bdjrbicpY09aRzdq5P_E2B4rdPeJG9iMU-Fcapg-QZcFs_CnJpq66uXpvAcZ2y_TSvFzzliXnxvIIPeU-8ofrMKG3STiGssYg2SkpME_sUu4LOpsBmcP8380ZMY-7PFQZYzZ1VmwB58hmU34NecZY4b3nngnRI4EKZiMseyudbDXuE-X6KIJp4SVY1RVvMCu5oRTHw5vd6C0s3JM-n9_u9xDsXBn-3xdKvPeGBINjX33DeqFvIgw
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375367410
+< Soup-Debug: SoupMessage 57 (0x79eab0)
+< Expires: Thu, 01 Aug 2013 14:30:10 GMT
+< Date: Thu, 01 Aug 2013 14:30:10 GMT
+< Cache-control: private, max-age=0, must-revalidate
+< Set-Cookie: _rtok=5osU0qKKcq5B; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=VGDcwjuURtoHOZxB8knHcA; Domain=.google.com; Path=/; Secure; HttpOnly
+< GData-Version: 2.0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  

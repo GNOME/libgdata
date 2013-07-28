@@ -1,0 +1,26 @@
+> DELETE /data/entry/api/user/libgdata.picasaweb/albumid/5907162005897469553/photoid/5907162035673007314/commentid/5907161876232206500?authkey=Gv1sRgCKKx5unfo4qvuAE HTTP/1.1
+> Soup-Debug-Timestamp: 1375368361
+> Soup-Debug: SoupSession 1 (0x6682e0), SoupMessage 25 (0x98c0b0), SoupSocket 18 (0x7fffe4003e20)
+> Host: picasaweb.google.com
+> Authorization: GoogleLogin auth=DQAAANoAAABqfAP7BRwUl4NRRp09PQSGS8uM-ZHOZSba6D-hWAtvmHRVj-ck_2T9BM_92VDR_pDDGg2bApfteDk1ITzABtR_40EhsW_nXzefXLRJERXTVaZl9fs1z3wuPIApugLt5Vf5-wimwxfqmsGz_45loIQFnyvJ3i0jPnvGutxhdAD7OxQHugZ6U_79W74suTD6wqP8JTcAlbyAVDcA7cdyLccjx6Pz_EgrD72AYxCCrQTKlX-d4Wv1PEbNKxXSP1g1JM2ugqZF-JBLWh5SAjyTpKK9Igbs7M1DeVrhPb4DQMfsdg
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375368362
+< Soup-Debug: SoupMessage 25 (0x98c0b0)
+< Expires: Thu, 01 Aug 2013 14:46:01 GMT
+< Date: Thu, 01 Aug 2013 14:46:01 GMT
+< Cache-control: private, max-age=0, must-revalidate
+< Set-Cookie: _rtok=pMALuboq7UlO; Path=/; Secure; HttpOnly
+< Set-Cookie: S=photos_html=TQglgyLXWhM56m9zTRicHw; Domain=.google.com; Path=/; Secure; HttpOnly
+< GData-Version: 2.0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  
