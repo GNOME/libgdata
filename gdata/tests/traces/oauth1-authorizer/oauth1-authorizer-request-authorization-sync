@@ -1,0 +1,25 @@
+> POST /accounts/OAuthGetAccessToken HTTP/1.1
+> Soup-Debug-Timestamp: 1375114421
+> Soup-Debug: SoupSession 1 (0x6504e0), SoupMessage 2 (0x9753b0), SoupSocket 2 (0x993470)
+> Host: www.google.com
+> Content-Type: application/x-www-form-urlencoded
+> Authorization: OAuth oauth_consumer_key="anonymous",oauth_token="4%2FT27iiKNpM8PHQ2ztKzZBywZ2uKnO",oauth_signature_method="HMAC-SHA1",oauth_signature="gZChlEpXlBLy8bYjktVEfRh4XhA%3D",oauth_timestamp="1375114421",oauth_nonce="W8iIqbvygOUYCkuQdp",oauth_version="1.0"
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> oauth%5Fverifier=7MQzdhPyajVrbVUBnaQRgj73
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375114422
+< Soup-Debug: SoupMessage 2 (0x9753b0)
+< Content-Type: text/plain; charset=UTF-8
+< Date: Mon, 29 Jul 2013 16:13:41 GMT
+< Expires: Mon, 29 Jul 2013 16:13:41 GMT
+< Cache-Control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 103
+< Server: GSE
+< 
+< oauth_token=1%2FkJjrwN7c2Vzx387AQP2jL3BYQHXssRU0w3XeZq4H2Mw&oauth_token_secret=98SsHIgW-Sn8Ix0Klk3wv4oy
+  

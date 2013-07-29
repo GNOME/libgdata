@@ -1,0 +1,50 @@
+> POST /accounts/OAuthGetRequestToken HTTP/1.1
+> Soup-Debug-Timestamp: 1375114396
+> Soup-Debug: SoupSession 1 (0x6501b0), SoupMessage 1 (0x975590), SoupSocket 1 (0x993230)
+> Host: www.google.com
+> Content-Type: application/x-www-form-urlencoded
+> Authorization: OAuth oauth_consumer_key="anonymous",oauth_signature_method="HMAC-SHA1",oauth_signature="VfeOs%2BWTIJRUkCErU1zxKqH38oQ%3D",oauth_timestamp="1375114396",oauth_nonce="9VmUWSVrJu_zhF2cwFRdWrZFl8WUGy",oauth_version="1.0"
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> xoauth%5Fdisplayname=Application+name&scope=https%3A%2F%2Fwww%2Egoogle%2Ecom%2Fm8%2Ffeeds%2F&oauth%5Fcallback=oob
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375114396
+< Soup-Debug: SoupMessage 1 (0x975590)
+< Content-Type: text/plain; charset=UTF-8
+< Date: Mon, 29 Jul 2013 16:13:16 GMT
+< Expires: Mon, 29 Jul 2013 16:13:16 GMT
+< Cache-Control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 118
+< Server: GSE
+< 
+< oauth_token=4%2F-hFowsVMagtdWjX8hTFUGw0de9nL&oauth_token_secret=kuu2KlszmJhimCI8C7uNbV6z&oauth_callback_confirmed=true
+  
+> POST /accounts/OAuthGetAccessToken HTTP/1.1
+> Soup-Debug-Timestamp: 1375114407
+> Soup-Debug: SoupSession 1 (0x6501b0), SoupMessage 2 (0x9752c0), SoupSocket 2 (0x9932f0)
+> Host: www.google.com
+> Content-Type: application/x-www-form-urlencoded
+> Authorization: OAuth oauth_consumer_key="anonymous",oauth_token="4%2F-hFowsVMagtdWjX8hTFUGw0de9nL",oauth_signature_method="HMAC-SHA1",oauth_signature="lWSS%2BTKHABoDsZuVU6LFxVgBrsM%3D",oauth_timestamp="1375114407",oauth_nonce="P1LCHSMETyO0IpQnTCVc",oauth_version="1.0"
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> oauth%5Fverifier=qT64ktZBdmUVwpRClZmO6s7j
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375114408
+< Soup-Debug: SoupMessage 2 (0x9752c0)
+< Content-Type: text/plain; charset=UTF-8
+< Date: Mon, 29 Jul 2013 16:13:28 GMT
+< Expires: Mon, 29 Jul 2013 16:13:28 GMT
+< Cache-Control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 103
+< Server: GSE
+< 
+< oauth_token=1%2F17nuamcqEOCaMMCg9Oc9ekcfGEzkepP5_5ANtDkuwks&oauth_token_secret=wUozdZTGrBPaGKTEB9lfK61J
+  

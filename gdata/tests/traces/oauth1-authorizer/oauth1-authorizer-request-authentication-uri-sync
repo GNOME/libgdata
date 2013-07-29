@@ -1,0 +1,25 @@
+> POST /accounts/OAuthGetRequestToken HTTP/1.1
+> Soup-Debug-Timestamp: 1375114409
+> Soup-Debug: SoupSession 1 (0x6505f0), SoupMessage 1 (0x975590), SoupSocket 1 (0x993530)
+> Host: www.google.com
+> Content-Type: application/x-www-form-urlencoded
+> Authorization: OAuth oauth_consumer_key="anonymous",oauth_signature_method="HMAC-SHA1",oauth_signature="tfOHmtfJ3fBhyQK9pvma4kx6OlM%3D",oauth_timestamp="1375114409",oauth_nonce="X4sZD_njIKcgSr6paHPVByY8LOjFA",oauth_version="1.0"
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> xoauth%5Fdisplayname=Application+name&scope=https%3A%2F%2Fwww%2Egoogle%2Ecom%2Fm8%2Ffeeds%2F&oauth%5Fcallback=oob
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375114409
+< Soup-Debug: SoupMessage 1 (0x975590)
+< Content-Type: text/plain; charset=UTF-8
+< Date: Mon, 29 Jul 2013 16:13:29 GMT
+< Expires: Mon, 29 Jul 2013 16:13:29 GMT
+< Cache-Control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 118
+< Server: GSE
+< 
+< oauth_token=4%2F12bPxj_QaPxom9ALAmIMn5-ZU3wR&oauth_token_secret=Kiuy8Zz-8SzZJ8jQU_83nk9w&oauth_callback_confirmed=true
+  
