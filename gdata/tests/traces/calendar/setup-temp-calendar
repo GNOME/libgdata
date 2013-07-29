@@ -1,0 +1,75 @@
+> POST /calendar/feeds/default/owncalendars/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202833
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 119 (0x7fffe40158e0), SoupSocket 108 (0x775250)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Temp Test Calendar</title><category term='http://schemas.google.com/gCal/2005#calendarmeta' scheme='http://schemas.google.com/g/2005#kind'/><gCal:hidden value='false'/><gCal:color value='#7a367a'/><gCal:selected value='false'/></entry>
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202833
+< Soup-Debug: SoupMessage 119 (0x7fffe40158e0)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_lzf1dm9Ue8N3SJp2J6o695WrE5nMbNLIXgO1GwYSOH0dinvA7V6dAhAIAEim2gLMsmbC2ddMnDUzaVKIGr3_JWCh97kMTIAR1M2IeSsu02b7EZA-X4HjICLw-x5pMnXhR8i08nLbVHSLT_No8fvB518lPWszfELKmW9TYG0-BAxXFzn9IKi_SmDnEv70WeTVk9AKBXEZK8GgbVvG2jwg9IxQwwSgxxH2Am-wKlw1Xh28Ocyi9bXsxw2zvbHLluu_emFBzQJ8Ds6aIurEQIryfg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:47:15 GMT
+< Set-Cookie: S=calendar=-kHvfZmLSg-swDZiGpo5Lw;Expires=Mon, 12-Aug-2013 23:24:30 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:47:14 GMT
+< Date: Tue, 30 Jul 2013 16:47:14 GMT
+< Location: https://www.google.com/calendar/feeds/default/owncalendars/full?gsessionid=-kHvfZmLSg-swDZiGpo5Lw
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/default/owncalendars/full?gsessionid=-kHvfZmLSg-swDZiGpo5Lw">here</A>.
+< </BODY>
+< </HTML>
+  
+> POST /calendar/feeds/default/owncalendars/full?gsessionid=-kHvfZmLSg-swDZiGpo5Lw HTTP/1.1
+> Soup-Debug-Timestamp: 1375202834
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 119 (0x7fffe40158e0), SoupSocket 109 (0x775310), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> Content-Length: 467
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Temp Test Calendar</title><category term='http://schemas.google.com/gCal/2005#calendarmeta' scheme='http://schemas.google.com/g/2005#kind'/><gCal:hidden value='false'/><gCal:color value='#7a367a'/><gCal:selected value='false'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375202835
+< Soup-Debug: SoupMessage 119 (0x7fffe40158e0)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_QMIIFxw1-89I4fIiltp3toM_OQPaV-s2Op5YfNNKqskJ-elHTN3M2YrIdeRcj84Q94sPukowimpQydy5Tbb14G3YJ4S-NHM8cpqZJBifvXkyktCQOlLQS03AMrw1-u6qvRouqxtCMYd1apUUU9kXVWwoSYowH2iqScUeke9qp_ZEetMmdoQ61WwPB5gd4Of34y2qjfi6BC-i8q-4AfecimYdMpxx-Z7ncnkPEftWV84VyvVUhWfLM8oWcP3zT943b_FOzjNl76pHK1Za70lHtw
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:47:15 GMT
+< Set-Cookie: S=calendar=WDyL_96_JmfwHLNGQg_bqw;Expires=Sun, 11-Aug-2013 04:02:02 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:47:15 GMT
+< Date: Tue, 30 Jul 2013 16:47:15 GMT
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.6
+< ETag: W/"CE8HRH47eCp7JGA9WhFWEk0."
+< Location: https://www.google.com/calendar/feeds/default/owncalendars/full/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com
+< Content-Location: https://www.google.com/calendar/feeds/default/owncalendars/full/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;CE8HRH47eCp7JGA9WhFWEk0.&quot;' gd:kind='calendar#calendar'><id>http://www.google.com/calendar/feeds/default/calendars/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com</id><published>2013-07-30T16:47:15.997Z</published><updated>2013-07-30T16:47:15.000Z</updated><app:edited>2013-07-30T16:47:15.000Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/gCal/2005#calendarmeta'/><title>Temp Test Calendar</title><content type='application/atom+xml;type=feed' src='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='alternate' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/gCal/2005#eventFeed' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/acl/full'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com'/><author><name>Temp Test Calendar</name></author><gCal:accesslevel value='owner'/><gCal:color value='#7A367A'/><gCal:hidden value='false'/><gCal:selected value='false'/><gCal:timezone value='UTC'/><gCal:timesCleaned value='0'/></entry>
+  

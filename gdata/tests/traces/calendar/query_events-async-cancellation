@@ -1,0 +1,237 @@
+> GET /calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202789
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 84 (0x7fffe003f280), SoupSocket 79 (0x775490)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202789
+< Soup-Debug: SoupMessage 84 (0x7fffe003f280)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_lzf1dm9Ue8N3SJp2J6o695WrE5nMbNLIXgO1GwYSOH0dinvA7V6dAhAIAEim2gLMsmbC2ddMnDUzaVKIGr3_JWCh97kMTIAR1M2IeSsu02b7EZA-X4HjICLw-x5pMnXhR8i08nLbVHSLT_No8fvB518lPWszfELKmW9TYG0-BAxXFzn9IKi_SmDnEv70WeTVk9AKBXEZK8GgbVvG2jwg9IxQwwSgxxH2Am-wKlw1Xh28Ocyi9bXsxw2zvbHLluu_emFBzQJ8Ds6aIurEQIryfg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:30 GMT
+< Set-Cookie: S=calendar=Rm0OvTPGUldJoCTW5xxjEA;Expires=Thu, 08-Aug-2013 22:43:11 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:29 GMT
+< Date: Tue, 30 Jul 2013 16:46:29 GMT
+< Location: https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=Rm0OvTPGUldJoCTW5xxjEA
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=Rm0OvTPGUldJoCTW5xxjEA">here</A>.
+< </BODY>
+< </HTML>
+  
+> GET /calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=Rm0OvTPGUldJoCTW5xxjEA HTTP/1.1
+> Soup-Debug-Timestamp: 1375202790
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 86 (0x7fffe4010380), SoupSocket 81 (0x775490), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375202790
+< Soup-Debug: SoupMessage 86 (0x7fffe4010380)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_QMIIFxw1-89I4fIiltp3toM_OQPaV-s2Op5YfNNKqskJ-elHTN3M2YrIdeRcj84Q94sPukowimpQydy5Tbb14G3YJ4S-NHM8cpqZJBifvXkyktCQOlLQS03AMrw1-u6qvRouqxtCMYd1apUUU9kXVWwoSYowH2iqScUeke9qp_ZEetMmdoQ61WwPB5gd4Of34y2qjfi6BC-i8q-4AfecimYdMpxx-Z7ncnkPEftWV84VyvVUhWfLM8oWcP3zT943b_FOzjNl76pHK1Za70lHtw
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:31 GMT
+< Set-Cookie: S=calendar=DNyu1fBu5BZbeqMI0QC35g;Expires=Sun, 11-Aug-2013 08:32:53 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:30 GMT
+< Date: Tue, 30 Jul 2013 16:46:30 GMT
+< Content-Type: application/atom+xml; charset=UTF-8; type=feed
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.6
+< ETag: W/"CEAMRH47eCp7JGA9WhFWEk0."
+< Last-Modified: Tue, 30 Jul 2013 16:46:25 GMT
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;CEAMRH47eCp7JGA9WhFWEk0.&quot;' gd:kind='calendar#eventFeed'><id>http://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full</id><updated>2013-07-30T16:46:25.000Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'/><title>Temp Test Calendar</title><subtitle>Temp Test Calendar</subtitle><link rel='alternate' type='text/html' href='https://www.google.com/calendar/embed?src=i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com'/><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/g/2005#post' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/g/2005#batch' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full/batch'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?max-results=25'/><author><name>Temp Test Calendar</name></author><generator version='1.0' uri='http://www.google.com/calendar'>Google Calendar</generator><openSearch:totalResults>0</openSearch:totalResults><openSearch:startIndex>1</openSearch:startIndex><openSearch:itemsPerPage>25</openSearch:itemsPerPage><gCal:timezone value='UTC'/><gCal:timesCleaned value='0'/></feed>
+  
+> GET /calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202789
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 85 (0x7fffe003f730), SoupSocket 80 (0x775490)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202790
+< Soup-Debug: SoupMessage 85 (0x7fffe003f730)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_lzf1dm9Ue8N3SJp2J6o695WrE5nMbNLIXgO1GwYSOH0dinvA7V6dAhAIAEim2gLMsmbC2ddMnDUzaVKIGr3_JWCh97kMTIAR1M2IeSsu02b7EZA-X4HjICLw-x5pMnXhR8i08nLbVHSLT_No8fvB518lPWszfELKmW9TYG0-BAxXFzn9IKi_SmDnEv70WeTVk9AKBXEZK8GgbVvG2jwg9IxQwwSgxxH2Am-wKlw1Xh28Ocyi9bXsxw2zvbHLluu_emFBzQJ8Ds6aIurEQIryfg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:31 GMT
+< Set-Cookie: S=calendar=APwq7KMgNEvxfdl1xWGHkA;Expires=Mon, 12-Aug-2013 12:21:49 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:30 GMT
+< Date: Tue, 30 Jul 2013 16:46:30 GMT
+< Location: https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=APwq7KMgNEvxfdl1xWGHkA
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=APwq7KMgNEvxfdl1xWGHkA">here</A>.
+< </BODY>
+< </HTML>
+  
+> GET /calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202790
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 86 (0x7fffe4010380), SoupSocket 81 (0x775490)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202790
+< Soup-Debug: SoupMessage 86 (0x7fffe4010380)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_lzf1dm9Ue8N3SJp2J6o695WrE5nMbNLIXgO1GwYSOH0dinvA7V6dAhAIAEim2gLMsmbC2ddMnDUzaVKIGr3_JWCh97kMTIAR1M2IeSsu02b7EZA-X4HjICLw-x5pMnXhR8i08nLbVHSLT_No8fvB518lPWszfELKmW9TYG0-BAxXFzn9IKi_SmDnEv70WeTVk9AKBXEZK8GgbVvG2jwg9IxQwwSgxxH2Am-wKlw1Xh28Ocyi9bXsxw2zvbHLluu_emFBzQJ8Ds6aIurEQIryfg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:31 GMT
+< Set-Cookie: S=calendar=WMVUagnRJLjVEymdLfMUhg;Expires=Fri, 09-Aug-2013 11:56:21 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:30 GMT
+< Date: Tue, 30 Jul 2013 16:46:30 GMT
+< Location: https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=WMVUagnRJLjVEymdLfMUhg
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=WMVUagnRJLjVEymdLfMUhg">here</A>.
+< </BODY>
+< </HTML>
+  
+> GET /calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=WMVUagnRJLjVEymdLfMUhg HTTP/1.1
+> Soup-Debug-Timestamp: 1375202790
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 86 (0x7fffe4010380), SoupSocket 81 (0x775490), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375202790
+< Soup-Debug: SoupMessage 86 (0x7fffe4010380)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_QMIIFxw1-89I4fIiltp3toM_OQPaV-s2Op5YfNNKqskJ-elHTN3M2YrIdeRcj84Q94sPukowimpQydy5Tbb14G3YJ4S-NHM8cpqZJBifvXkyktCQOlLQS03AMrw1-u6qvRouqxtCMYd1apUUU9kXVWwoSYowH2iqScUeke9qp_ZEetMmdoQ61WwPB5gd4Of34y2qjfi6BC-i8q-4AfecimYdMpxx-Z7ncnkPEftWV84VyvVUhWfLM8oWcP3zT943b_FOzjNl76pHK1Za70lHtw
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:31 GMT
+< Set-Cookie: S=calendar=DNyu1fBu5BZbeqMI0QC35g;Expires=Sun, 11-Aug-2013 08:32:53 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:30 GMT
+< Date: Tue, 30 Jul 2013 16:46:30 GMT
+< Content-Type: application/atom+xml; charset=UTF-8; type=feed
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.6
+< ETag: W/"CEAMRH47eCp7JGA9WhFWEk0."
+< Last-Modified: Tue, 30 Jul 2013 16:46:25 GMT
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;CEAMRH47eCp7JGA9WhFWEk0.&quot;' gd:kind='calendar#eventFeed'><id>http://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full</id><updated>2013-07-30T16:46:25.000Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'/><title>Temp Test Calendar</title><subtitle>Temp Test Calendar</subtitle><link rel='alternate' type='text/html' href='https://www.google.com/calendar/embed?src=i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com'/><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/g/2005#post' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/g/2005#batch' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full/batch'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?max-results=25'/><author><name>Temp Test Calendar</name></author><generator version='1.0' uri='http://www.google.com/calendar'>Google Calendar</generator><openSearch:totalResults>0</openSearch:totalResults><openSearch:startIndex>1</openSearch:startIndex><openSearch:itemsPerPage>25</openSearch:itemsPerPage><gCal:timezone value='UTC'/><gCal:timesCleaned value='0'/></feed>
+  
+> GET /calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202790
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 87 (0x8c28c0), SoupSocket 82 (0x775490)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202790
+< Soup-Debug: SoupMessage 87 (0x8c28c0)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_lzf1dm9Ue8N3SJp2J6o695WrE5nMbNLIXgO1GwYSOH0dinvA7V6dAhAIAEim2gLMsmbC2ddMnDUzaVKIGr3_JWCh97kMTIAR1M2IeSsu02b7EZA-X4HjICLw-x5pMnXhR8i08nLbVHSLT_No8fvB518lPWszfELKmW9TYG0-BAxXFzn9IKi_SmDnEv70WeTVk9AKBXEZK8GgbVvG2jwg9IxQwwSgxxH2Am-wKlw1Xh28Ocyi9bXsxw2zvbHLluu_emFBzQJ8Ds6aIurEQIryfg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:31 GMT
+< Set-Cookie: S=calendar=5q7rqCQ-BsgH2H3ikzMJxg;Expires=Tue, 13-Aug-2013 03:25:52 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:30 GMT
+< Date: Tue, 30 Jul 2013 16:46:30 GMT
+< Location: https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=5q7rqCQ-BsgH2H3ikzMJxg
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=5q7rqCQ-BsgH2H3ikzMJxg">here</A>.
+< </BODY>
+< </HTML>
+  
+> GET /calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?gsessionid=5q7rqCQ-BsgH2H3ikzMJxg HTTP/1.1
+> Soup-Debug-Timestamp: 1375202790
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 87 (0x8c28c0), SoupSocket 82 (0x775490), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375202791
+< Soup-Debug: SoupMessage 87 (0x8c28c0)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_q4NwI2V8UT-SSEMjiblkY8jTSCIGQJCo_ZFavemirrG0G2jzg3jjEVC3CQauPSZoNTFtDCw6Eu1-1S6nOyDK2J9zwLcpKLPHGuWk8fzL5JjKgN0Z0HbdhVtGaldMU2XCoc4_I0dsAZNFNzMl12pQ2IhlOpKYk_syrjXgbEIFWB07e6wSu6Mp1XswtWQL95nokCfWJkTHf4YGsR2zpy2736UplfLIVHDJLz7fiJzKG-5nUmoz2a5jdwopbkQ6flW44tTL7okPm_2Y6nqlPi74Mg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:32 GMT
+< Set-Cookie: S=calendar=4CJYADT5Ok39om1leHy2Fw;Expires=Tue, 06-Aug-2013 22:35:18 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:31 GMT
+< Date: Tue, 30 Jul 2013 16:46:31 GMT
+< Content-Type: application/atom+xml; charset=UTF-8; type=feed
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.6
+< ETag: W/"CEAMRH47eCp7JGA9WhFWEk0."
+< Last-Modified: Tue, 30 Jul 2013 16:46:25 GMT
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;CEAMRH47eCp7JGA9WhFWEk0.&quot;' gd:kind='calendar#eventFeed'><id>http://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full</id><updated>2013-07-30T16:46:25.000Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'/><title>Temp Test Calendar</title><subtitle>Temp Test Calendar</subtitle><link rel='alternate' type='text/html' href='https://www.google.com/calendar/embed?src=i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com'/><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/g/2005#post' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/g/2005#batch' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full/batch'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com/private/full?max-results=25'/><author><name>Temp Test Calendar</name></author><generator version='1.0' uri='http://www.google.com/calendar'>Google Calendar</generator><openSearch:totalResults>0</openSearch:totalResults><openSearch:startIndex>1</openSearch:startIndex><openSearch:itemsPerPage>25</openSearch:itemsPerPage><gCal:timezone value='UTC'/><gCal:timesCleaned value='0'/></feed>
+  

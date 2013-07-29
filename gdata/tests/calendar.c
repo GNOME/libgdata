@@ -24,6 +24,8 @@
 #include "gdata.h"
 #include "common.h"
 
+static GDataMockServer *mock_server = NULL;
+
 typedef struct {
 	GDataCalendarCalendar *calendar;
 } TempCalendarData;
@@ -33,6 +35,8 @@ set_up_temp_calendar (TempCalendarData *data, gconstpointer service)
 {
 	GDataCalendarCalendar *calendar;
 	GDataColor colour;
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-temp-calendar");
 
 	g_assert (gdata_color_from_hexadecimal ("#7A367A", &colour) == TRUE);
 
@@ -46,15 +50,21 @@ set_up_temp_calendar (TempCalendarData *data, gconstpointer service)
 	                                                                      GDATA_ENTRY (calendar), NULL, NULL));
 	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar));
 	g_object_unref (calendar);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
 tear_down_temp_calendar (TempCalendarData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-temp-calendar");
+
 	/* Delete the calendar */
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
 	                                      GDATA_ENTRY (data->calendar), NULL, NULL) == TRUE);
 	g_object_unref (data->calendar);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -63,6 +73,8 @@ test_authentication (void)
 	gboolean retval;
 	GDataClientLoginAuthorizer *authorizer;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "authentication");
 
 	/* Create an authorizer */
 	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CALENDAR_SERVICE);
@@ -83,6 +95,8 @@ test_authentication (void)
 	                                                     gdata_calendar_service_get_primary_authorization_domain ()) == TRUE);
 
 	g_object_unref (authorizer);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
@@ -136,6 +150,8 @@ set_up_query_calendars (QueryCalendarsData *data, gconstpointer service)
 	GDataCalendarCalendar *calendar;
 	GDataColor colour;
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-query-calendars");
+
 	g_assert (gdata_color_from_hexadecimal ("#7A367A", &colour) == TRUE);
 
 	/* Create some new calendars for queries */
@@ -158,11 +174,15 @@ set_up_query_calendars (QueryCalendarsData *data, gconstpointer service)
 	                                                                       GDATA_ENTRY (calendar), NULL, NULL));
 	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar2));
 	g_object_unref (calendar);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
 tear_down_query_calendars (QueryCalendarsData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-query-calendars");
+
 	/* Delete the calendars */
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
 	                                      GDATA_ENTRY (data->calendar1), NULL, NULL) == TRUE);
@@ -171,6 +191,8 @@ tear_down_query_calendars (QueryCalendarsData *data, gconstpointer service)
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
 	                                      GDATA_ENTRY (data->calendar2), NULL, NULL) == TRUE);
 	g_object_unref (data->calendar2);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -178,6 +200,8 @@ test_query_all_calendars (QueryCalendarsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "query-all-calendars");
 
 	feed = gdata_calendar_service_query_all_calendars (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -187,6 +211,8 @@ test_query_all_calendars (QueryCalendarsData *data, gconstpointer service)
 	/* TODO: check entries and feed properties */
 
 	g_object_unref (feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_calendars, QueryCalendarsData);
@@ -216,6 +242,8 @@ test_query_all_calendars_async_progress_closure (QueryCalendarsData *query_data,
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
+	gdata_test_mock_server_start_trace (mock_server, "query-all-calendars-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_calendar_service_query_all_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL,
@@ -231,6 +259,8 @@ test_query_all_calendars_async_progress_closure (QueryCalendarsData *query_data,
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -238,6 +268,8 @@ test_query_own_calendars (QueryCalendarsData *data, gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "query-own-calendars");
 
 	feed = gdata_calendar_service_query_own_calendars (GDATA_CALENDAR_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -247,6 +279,8 @@ test_query_own_calendars (QueryCalendarsData *data, gconstpointer service)
 	/* TODO: check entries and feed properties */
 
 	g_object_unref (feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (query_own_calendars, QueryCalendarsData,
@@ -274,6 +308,8 @@ test_query_own_calendars_async_progress_closure (QueryCalendarsData *query_data,
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
+	gdata_test_mock_server_start_trace (mock_server, "query-own-calendars-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_calendar_service_query_own_calendars_async (GDATA_CALENDAR_SERVICE (service), NULL, NULL,
@@ -289,6 +325,8 @@ test_query_own_calendars_async_progress_closure (QueryCalendarsData *query_data,
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -305,6 +343,8 @@ set_up_query_events (QueryEventsData *data, gconstpointer service)
 
 	/* Set up a temporary calendar */
 	set_up_temp_calendar ((TempCalendarData*) data, service);
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-query-events");
 
 	/* Add some test events to it */
 	event = gdata_calendar_event_new (NULL);
@@ -324,11 +364,15 @@ set_up_query_events (QueryEventsData *data, gconstpointer service)
 	data->event3 = gdata_calendar_service_insert_event (GDATA_CALENDAR_SERVICE (service), event, NULL, NULL);
 	g_assert (GDATA_IS_CALENDAR_EVENT (data->event3));
 	g_object_unref (event);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
 tear_down_query_events (QueryEventsData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-query-events");
+
 	/* Delete the events */
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
 	                                      GDATA_ENTRY (data->event1), NULL, NULL) == TRUE);
@@ -342,6 +386,8 @@ tear_down_query_events (QueryEventsData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->event3), NULL, NULL) == TRUE);
 	g_object_unref (data->event3);
 
+	gdata_mock_server_end_trace (mock_server);
+
 	/* Delete the calendar */
 	tear_down_temp_calendar ((TempCalendarData*) data, service);
 }
@@ -352,6 +398,8 @@ test_query_events (QueryEventsData *data, gconstpointer service)
 	GDataFeed *feed;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "query-events");
+
 	/* Get the entry feed */
 	feed = gdata_calendar_service_query_events (GDATA_CALENDAR_SERVICE (service), data->parent.calendar, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -361,6 +409,8 @@ test_query_events (QueryEventsData *data, gconstpointer service)
 	/* TODO: check entries and feed properties */
 
 	g_object_unref (feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_events, QueryEventsData);
@@ -389,6 +439,8 @@ test_query_events_async_progress_closure (QueryEventsData *query_data, gconstpoi
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
+	gdata_test_mock_server_start_trace (mock_server, "query-events-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_calendar_service_query_events_async (GDATA_CALENDAR_SERVICE (service), query_data->parent.calendar, NULL, NULL,
@@ -404,6 +456,8 @@ test_query_events_async_progress_closure (QueryEventsData *query_data, gconstpoi
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -421,10 +475,14 @@ set_up_insert_event (InsertEventData *data, gconstpointer service)
 static void
 tear_down_insert_event (InsertEventData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-insert-event");
+
 	/* Delete the new event */
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
 	                                      GDATA_ENTRY (data->new_event), NULL, NULL) == TRUE);
 	g_object_unref (data->new_event);
+
+	gdata_mock_server_end_trace (mock_server);
 
 	/* Delete the calendar too */
 	tear_down_temp_calendar ((TempCalendarData*) data, service);
@@ -439,6 +497,8 @@ test_event_insert (InsertEventData *data, gconstpointer service)
 	GDataGDWhen *when;
 	GTimeVal start_time, end_time;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "event-insert");
 
 	event = gdata_calendar_event_new (NULL);
 
@@ -467,6 +527,8 @@ test_event_insert (InsertEventData *data, gconstpointer service)
 	/* TODO: check entries and feed properties */
 
 	g_object_unref (event);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_event, InsertEventData);
@@ -941,6 +1003,8 @@ set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 	/* Set up a calendar */
 	set_up_temp_calendar ((TempCalendarData*) data, service);
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-temp-calendar-acls");
+
 	/* Add an access rule to the calendar */
 	rule = gdata_access_rule_new (NULL);
 
@@ -957,6 +1021,8 @@ set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 	g_assert (GDATA_IS_ACCESS_RULE (data->rule));
 
 	g_object_unref (rule);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -969,12 +1035,16 @@ set_up_temp_calendar_acls_no_insertion (TempCalendarAclsData *data, gconstpointe
 static void
 tear_down_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-temp-calendar-acls");
+
 	/* Delete the access rule if it still exists */
 	if (data->rule != NULL) {
 		g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
 		                                      GDATA_ENTRY (data->rule), NULL, NULL) == TRUE);
 		g_object_unref (data->rule);
 	}
+
+	gdata_mock_server_end_trace (mock_server);
 
 	/* Delete the calendar */
 	tear_down_temp_calendar ((TempCalendarData*) data, service);
@@ -986,6 +1056,8 @@ test_access_rule_get (TempCalendarAclsData *data, gconstpointer service)
 	GDataFeed *feed;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "access-rule-get");
+
 	/* Get the rules */
 	feed = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (data->parent.calendar), GDATA_SERVICE (service), NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -995,6 +1067,8 @@ test_access_rule_get (TempCalendarAclsData *data, gconstpointer service)
 	/* TODO: check rules and feed properties */
 
 	g_object_unref (feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1007,6 +1081,8 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 	GList *categories;
 	gint64 edited;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "access-rule-insert");
 
 	rule = gdata_access_rule_new (NULL);
 
@@ -1044,6 +1120,8 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 	/* TODO: Check more properties? */
 
 	g_object_unref (rule);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1053,6 +1131,8 @@ test_access_rule_update (TempCalendarAclsData *data, gconstpointer service)
 	const gchar *scope_type, *scope_value;
 	gint64 edited;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "access-rule-update");
 
 	/* Update the rule */
 	gdata_access_rule_set_role (data->rule, GDATA_CALENDAR_ACCESS_ROLE_READ);
@@ -1073,6 +1153,8 @@ test_access_rule_update (TempCalendarAclsData *data, gconstpointer service)
 	g_assert_cmpuint (edited, >, 0);
 
 	g_object_unref (new_rule);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1080,6 +1162,8 @@ test_access_rule_delete (TempCalendarAclsData *data, gconstpointer service)
 {
 	gboolean success;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "access-rule-delete");
 
 	/* Delete the rule */
 	success = gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
@@ -1090,6 +1174,8 @@ test_access_rule_delete (TempCalendarAclsData *data, gconstpointer service)
 
 	g_object_unref (data->rule);
 	data->rule = NULL;
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1102,6 +1188,8 @@ test_batch (gconstpointer service)
 	gchar *feed_uri;
 	guint op_id, op_id2, op_id3;
 	GError *error = NULL, *entry_error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "batch");
 
 	/* Here we hardcode the feed URI, but it should really be extracted from an event feed, as the GDATA_LINK_BATCH link */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
@@ -1201,6 +1289,8 @@ test_batch (gconstpointer service)
 	g_clear_error (&error);
 	g_object_unref (operation);
 	g_object_unref (inserted_entry3);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1213,6 +1303,8 @@ setup_batch_async (BatchAsyncData *data, gconstpointer service)
 	GDataCalendarEvent *event;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-batch-async");
+
 	/* Insert a new event which we can query asyncly */
 	event = gdata_calendar_event_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (event), "Party 'Til You Puke");
@@ -1223,6 +1315,8 @@ setup_batch_async (BatchAsyncData *data, gconstpointer service)
 	g_clear_error (&error);
 
 	g_object_unref (event);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1246,6 +1340,8 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	GDataBatchOperation *operation;
 	GMainLoop *main_loop;
 
+	gdata_test_mock_server_start_trace (mock_server, "batch-async");
+
 	/* Run an async query operation on the event */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
 	                                              "https://www.google.com/calendar/feeds/default/private/full/batch");
@@ -1259,6 +1355,8 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 
 	g_main_loop_unref (main_loop);
 	g_object_unref (operation);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1284,6 +1382,8 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	GCancellable *cancellable;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "batch-async-cancellation");
+
 	/* Run an async query operation on the event */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_calendar_service_get_primary_authorization_domain (),
 	                                              "https://www.google.com/calendar/feeds/default/private/full/batch");
@@ -1304,12 +1404,16 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_main_loop_unref (main_loop);
 	g_object_unref (cancellable);
 	g_object_unref (operation);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
 teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 {
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "teardown-batch-async");
 
 	/* Delete the event */
 	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
@@ -1318,6 +1422,8 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 	g_clear_error (&error);
 
 	g_object_unref (data->new_event);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 int
@@ -1326,67 +1432,73 @@ main (int argc, char *argv[])
 	gint retval;
 	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
+	GFile *trace_directory;
 
 	gdata_test_init (argc, argv);
 
-	if (gdata_test_internet () == TRUE) {
-		authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CALENDAR_SERVICE));
-		gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
+	mock_server = gdata_test_get_mock_server ();
+	trace_directory = g_file_new_for_path ("traces/calendar");
+	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	g_object_unref (trace_directory);
 
-		service = GDATA_SERVICE (gdata_calendar_service_new (authorizer));
+	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
+	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CALENDAR_SERVICE));
+	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
+	gdata_mock_server_end_trace (mock_server);
 
-		g_test_add_func ("/calendar/authentication", test_authentication);
-		g_test_add ("/calendar/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
-		            gdata_tear_down_async_test_data);
-		g_test_add ("/calendar/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
-		            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
+	service = GDATA_SERVICE (gdata_calendar_service_new (authorizer));
 
-		g_test_add ("/calendar/query/all_calendars", QueryCalendarsData, service, set_up_query_calendars, test_query_all_calendars,
-		            tear_down_query_calendars);
-		g_test_add ("/calendar/query/all_calendars/async", GDataAsyncTestData, service, set_up_query_calendars_async,
-		            test_query_all_calendars_async, tear_down_query_calendars_async);
-		g_test_add ("/calendar/query/all_calendars/async/progress_closure", QueryCalendarsData, service, set_up_query_calendars,
-		            test_query_all_calendars_async_progress_closure, tear_down_query_calendars);
-		g_test_add ("/calendar/query/all_calendars/async/cancellation", GDataAsyncTestData, service, set_up_query_calendars_async,
-		            test_query_all_calendars_async_cancellation, tear_down_query_calendars_async);
+	g_test_add_func ("/calendar/authentication", test_authentication);
+	g_test_add ("/calendar/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
+	            gdata_tear_down_async_test_data);
+	g_test_add ("/calendar/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
+	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
-		g_test_add ("/calendar/query/own_calendars", QueryCalendarsData, service, set_up_query_calendars, test_query_own_calendars,
-		            tear_down_query_calendars);
-		g_test_add ("/calendar/query/own_calendars/async", GDataAsyncTestData, service, set_up_query_calendars_async,
+	g_test_add ("/calendar/query/all_calendars", QueryCalendarsData, service, set_up_query_calendars, test_query_all_calendars,
+	            tear_down_query_calendars);
+	g_test_add ("/calendar/query/all_calendars/async", GDataAsyncTestData, service, set_up_query_calendars_async,
+	            test_query_all_calendars_async, tear_down_query_calendars_async);
+	g_test_add ("/calendar/query/all_calendars/async/progress_closure", QueryCalendarsData, service, set_up_query_calendars,
+	            test_query_all_calendars_async_progress_closure, tear_down_query_calendars);
+	g_test_add ("/calendar/query/all_calendars/async/cancellation", GDataAsyncTestData, service, set_up_query_calendars_async,
+	            test_query_all_calendars_async_cancellation, tear_down_query_calendars_async);
+
+	g_test_add ("/calendar/query/own_calendars", QueryCalendarsData, service, set_up_query_calendars, test_query_own_calendars,
+	            tear_down_query_calendars);
+	g_test_add ("/calendar/query/own_calendars/async", GDataAsyncTestData, service, set_up_query_calendars_async,
 		            test_query_own_calendars_async, tear_down_query_calendars_async);
-		g_test_add ("/calendar/query/own_calendars/async/progress_closure", QueryCalendarsData, service, set_up_query_calendars,
-		            test_query_own_calendars_async_progress_closure, tear_down_query_calendars);
-		g_test_add ("/calendar/query/own_calendars/async/cancellation", GDataAsyncTestData, service, set_up_query_calendars_async,
-		            test_query_own_calendars_async_cancellation, tear_down_query_calendars_async);
+	g_test_add ("/calendar/query/own_calendars/async/progress_closure", QueryCalendarsData, service, set_up_query_calendars,
+	            test_query_own_calendars_async_progress_closure, tear_down_query_calendars);
+	g_test_add ("/calendar/query/own_calendars/async/cancellation", GDataAsyncTestData, service, set_up_query_calendars_async,
+	            test_query_own_calendars_async_cancellation, tear_down_query_calendars_async);
 
-		g_test_add ("/calendar/query/events", QueryEventsData, service, set_up_query_events, test_query_events, tear_down_query_events);
-		g_test_add ("/calendar/query/events/async", GDataAsyncTestData, service, set_up_query_events_async, test_query_events_async,
-		            tear_down_query_events_async);
-		g_test_add ("/calendar/query/events/async/progress_closure", QueryEventsData, service, set_up_query_events,
-		            test_query_events_async_progress_closure, tear_down_query_events);
-		g_test_add ("/calendar/query/events/async/cancellation", GDataAsyncTestData, service, set_up_query_events_async,
-		            test_query_events_async_cancellation, tear_down_query_events_async);
+	g_test_add ("/calendar/query/events", QueryEventsData, service, set_up_query_events, test_query_events, tear_down_query_events);
+	g_test_add ("/calendar/query/events/async", GDataAsyncTestData, service, set_up_query_events_async, test_query_events_async,
+	            tear_down_query_events_async);
+	g_test_add ("/calendar/query/events/async/progress_closure", QueryEventsData, service, set_up_query_events,
+	            test_query_events_async_progress_closure, tear_down_query_events);
+	g_test_add ("/calendar/query/events/async/cancellation", GDataAsyncTestData, service, set_up_query_events_async,
+	            test_query_events_async_cancellation, tear_down_query_events_async);
 
-		g_test_add ("/calendar/event/insert", InsertEventData, service, set_up_insert_event, test_event_insert, tear_down_insert_event);
-		g_test_add ("/calendar/event/insert/async", GDataAsyncTestData, service, set_up_insert_event_async, test_event_insert_async,
-		            tear_down_insert_event_async);
-		g_test_add ("/calendar/event/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_event_async,
-		            test_event_insert_async_cancellation, tear_down_insert_event_async);
+	g_test_add ("/calendar/event/insert", InsertEventData, service, set_up_insert_event, test_event_insert, tear_down_insert_event);
+	g_test_add ("/calendar/event/insert/async", GDataAsyncTestData, service, set_up_insert_event_async, test_event_insert_async,
+	            tear_down_insert_event_async);
+	g_test_add ("/calendar/event/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_event_async,
+	            test_event_insert_async_cancellation, tear_down_insert_event_async);
 
-		g_test_add ("/calendar/access-rule/get", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_get,
-		            tear_down_temp_calendar_acls);
-		g_test_add ("/calendar/access-rule/insert", TempCalendarAclsData, service, set_up_temp_calendar_acls_no_insertion,
-		            test_access_rule_insert, tear_down_temp_calendar_acls);
-		g_test_add ("/calendar/access-rule/update", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_update,
-		            tear_down_temp_calendar_acls);
-		g_test_add ("/calendar/access-rule/delete", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_delete,
-		            tear_down_temp_calendar_acls);
+	g_test_add ("/calendar/access-rule/get", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_get,
+	            tear_down_temp_calendar_acls);
+	g_test_add ("/calendar/access-rule/insert", TempCalendarAclsData, service, set_up_temp_calendar_acls_no_insertion,
+	            test_access_rule_insert, tear_down_temp_calendar_acls);
+	g_test_add ("/calendar/access-rule/update", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_update,
+	            tear_down_temp_calendar_acls);
+	g_test_add ("/calendar/access-rule/delete", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_delete,
+	            tear_down_temp_calendar_acls);
 
-		g_test_add_data_func ("/calendar/batch", service, test_batch);
-		g_test_add ("/calendar/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
-		g_test_add ("/calendar/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
-		            teardown_batch_async);
-	}
+	g_test_add_data_func ("/calendar/batch", service, test_batch);
+	g_test_add ("/calendar/batch/async", BatchAsyncData, service, setup_batch_async, test_batch_async, teardown_batch_async);
+	g_test_add ("/calendar/batch/async/cancellation", BatchAsyncData, service, setup_batch_async, test_batch_async_cancellation,
+	            teardown_batch_async);
 
 	g_test_add_func ("/calendar/event/xml", test_event_xml);
 	g_test_add_func ("/calendar/event/xml/dates", test_event_xml_dates);

@@ -1,0 +1,63 @@
+> DELETE /calendar/feeds/default/owncalendars/full/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com HTTP/1.1
+> Soup-Debug-Timestamp: 1375202838
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 122 (0x7fffe003f640), SoupSocket 111 (0x7fffe0040970)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202838
+< Soup-Debug: SoupMessage 122 (0x7fffe003f640)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_lzf1dm9Ue8N3SJp2J6o695WrE5nMbNLIXgO1GwYSOH0dinvA7V6dAhAIAEim2gLMsmbC2ddMnDUzaVKIGr3_JWCh97kMTIAR1M2IeSsu02b7EZA-X4HjICLw-x5pMnXhR8i08nLbVHSLT_No8fvB518lPWszfELKmW9TYG0-BAxXFzn9IKi_SmDnEv70WeTVk9AKBXEZK8GgbVvG2jwg9IxQwwSgxxH2Am-wKlw1Xh28Ocyi9bXsxw2zvbHLluu_emFBzQJ8Ds6aIurEQIryfg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:47:19 GMT
+< Set-Cookie: S=calendar=IwHNge3C9dN10mD3wPg4lA;Expires=Sat, 10-Aug-2013 19:22:45 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:47:18 GMT
+< Date: Tue, 30 Jul 2013 16:47:18 GMT
+< Location: https://www.google.com/calendar/feeds/default/owncalendars/full/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com?gsessionid=IwHNge3C9dN10mD3wPg4lA
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/default/owncalendars/full/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com?gsessionid=IwHNge3C9dN10mD3wPg4lA">here</A>.
+< </BODY>
+< </HTML>
+  
+> DELETE /calendar/feeds/default/owncalendars/full/i4jqlr6fcg9obf3qucemmcm1m0%40group.calendar.google.com?gsessionid=IwHNge3C9dN10mD3wPg4lA HTTP/1.1
+> Soup-Debug-Timestamp: 1375202838
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 122 (0x7fffe003f640), SoupSocket 111 (0x7fffe0040970), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375202839
+< Soup-Debug: SoupMessage 122 (0x7fffe003f640)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_x9DCxs6Yn1ShR7x5wx1k6e37TbqaZyvZnHbBDD5MjDqIwu2doXjOCD97mfXE8YE20iZQLD52PYbtpDGgujgmHXXGW1wlvqMs94qpgxdE8eYecbfbso9UjfaO5uqfvsRXIhKhe7zV2m0bacHn0JcyH7mkYYXHxHv7XZ_tjZftH-i5SVfC5OZaKOQXxynRfd_Yz5PzuJngGrHUxv5bViZFI3gQCqJikX_t9TXaydAiNvFoCzIgXcLmw11rsBONKvKvzka6NqtM8xqoAdhWs62jAQ
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:47:19 GMT
+< Set-Cookie: S=calendar=NJ7wyAqYpz_8dzic7TTqoA;Expires=Mon, 12-Aug-2013 14:12:22 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:47:19 GMT
+< Date: Tue, 30 Jul 2013 16:47:19 GMT
+< GData-Version: 2.6
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  

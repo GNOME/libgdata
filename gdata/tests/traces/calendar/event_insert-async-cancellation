@@ -1,0 +1,166 @@
+> POST /calendar/feeds/default/private/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202808
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 101 (0x7fffe4010380), SoupSocket 93 (0x7fffdc0043b0)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Tennis with Beth</title><content type='text'>Meet for a quick lesson.</content><category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/><gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/><gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/><gCal:guestsCanModify value='false'/><gCal:guestsCanInviteOthers value='false'/><gCal:guestsCanSeeGuests value='false'/><gCal:anyoneCanAddSelf value='false'/><gd:when startTime='2009-04-17T15:00:00Z' endTime='2009-04-17T17:00:00Z'/><gd:who email='john.smith@example.com' rel='http://schemas.google.com/g/2005#event.organizer' valueString='John Smith‽'/><gd:where valueString='Rolling Lawn Courts'/></entry>
+  
+< HTTP/1.1 1 Cancelled
+< Soup-Debug-Timestamp: 1375202808
+< Soup-Debug: SoupMessage 101 (0x7fffe4010380)
+  
+> POST /calendar/feeds/default/private/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202808
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 102 (0x8c2b90), SoupSocket 94 (0x775790)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Tennis with Beth</title><content type='text'>Meet for a quick lesson.</content><category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/><gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/><gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/><gCal:guestsCanModify value='false'/><gCal:guestsCanInviteOthers value='false'/><gCal:guestsCanSeeGuests value='false'/><gCal:anyoneCanAddSelf value='false'/><gd:when startTime='2009-04-17T15:00:00Z' endTime='2009-04-17T17:00:00Z'/><gd:who email='john.smith@example.com' rel='http://schemas.google.com/g/2005#event.organizer' valueString='John Smith‽'/><gd:where valueString='Rolling Lawn Courts'/></entry>
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202808
+< Soup-Debug: SoupMessage 102 (0x8c2b90)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_lzf1dm9Ue8N3SJp2J6o695WrE5nMbNLIXgO1GwYSOH0dinvA7V6dAhAIAEim2gLMsmbC2ddMnDUzaVKIGr3_JWCh97kMTIAR1M2IeSsu02b7EZA-X4HjICLw-x5pMnXhR8i08nLbVHSLT_No8fvB518lPWszfELKmW9TYG0-BAxXFzn9IKi_SmDnEv70WeTVk9AKBXEZK8GgbVvG2jwg9IxQwwSgxxH2Am-wKlw1Xh28Ocyi9bXsxw2zvbHLluu_emFBzQJ8Ds6aIurEQIryfg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:49 GMT
+< Set-Cookie: S=calendar=1R8F1pQ3_HK-ksz_9_fJcw;Expires=Thu, 08-Aug-2013 23:57:31 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:48 GMT
+< Date: Tue, 30 Jul 2013 16:46:48 GMT
+< Location: https://www.google.com/calendar/feeds/default/private/full?gsessionid=1R8F1pQ3_HK-ksz_9_fJcw
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/default/private/full?gsessionid=1R8F1pQ3_HK-ksz_9_fJcw">here</A>.
+< </BODY>
+< </HTML>
+  
+> POST /calendar/feeds/default/private/full?gsessionid=1R8F1pQ3_HK-ksz_9_fJcw HTTP/1.1
+> Soup-Debug-Timestamp: 1375202808
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 102 (0x8c2b90), SoupSocket 95 (0x7fffe0040a30), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> Content-Length: 969
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Tennis with Beth</title><content type='text'>Meet for a quick lesson.</content><category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/><gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/><gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/><gCal:guestsCanModify value='false'/><gCal:guestsCanInviteOthers value='false'/><gCal:guestsCanSeeGuests value='false'/><gCal:anyoneCanAddSelf value='false'/><gd:when startTime='2009-04-17T15:00:00Z' endTime='2009-04-17T17:00:00Z'/><gd:who email='john.smith@example.com' rel='http://schemas.google.com/g/2005#event.organizer' valueString='John Smith‽'/><gd:where valueString='Rolling Lawn Courts'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375202809
+< Soup-Debug: SoupMessage 102 (0x8c2b90)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_x9DCxs6Yn1ShR7x5wx1k6e37TbqaZyvZnHbBDD5MjDqIwu2doXjOCD97mfXE8YE20iZQLD52PYbtpDGgujgmHXXGW1wlvqMs94qpgxdE8eYecbfbso9UjfaO5uqfvsRXIhKhe7zV2m0bacHn0JcyH7mkYYXHxHv7XZ_tjZftH-i5SVfC5OZaKOQXxynRfd_Yz5PzuJngGrHUxv5bViZFI3gQCqJikX_t9TXaydAiNvFoCzIgXcLmw11rsBONKvKvzka6NqtM8xqoAdhWs62jAQ
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:49 GMT
+< Set-Cookie: S=calendar=M6symLc287DwtP4khAjq6Q;Expires=Sat, 10-Aug-2013 01:37:52 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:49 GMT
+< Date: Tue, 30 Jul 2013 16:46:49 GMT
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.6
+< ETag: "EEUCQQRBdyp7JGA6WhNS"
+< Location: https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk
+< Content-Location: https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;EEUCQQRBdyp7JGA6WhNS&quot;' gd:kind='calendar#event'><id>http://www.google.com/calendar/feeds/default/events/oqb4030l7frkp05mse8u33pqgk</id><published>2013-07-30T16:46:49.000Z</published><updated>2013-07-30T16:46:49.000Z</updated><app:edited>2013-07-30T16:46:49.000Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'/><title>Tennis with Beth</title><content>Meet for a quick lesson.</content><link rel='alternate' type='text/html' href='https://www.google.com/calendar/event?eid=ODE5OGhpMWpzczNuaWowM21uY3QwY2Z2Z3MgbGliZ2RhdGEudGVzdEBnb29nbGVtYWlsLmNvbQ' title='alternate'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk'/><author><name>GData Test</name><email>libgdata.test@googlemail.com</email></author><gd:comments><gd:feedLink href='https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk/comments'/></gd:comments><gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/><gd:where valueString='Rolling Lawn Courts'/><gd:who email='libgdata.test@googlemail.com' rel='http://schemas.google.com/g/2005#event.organizer' valueString='GData Test'/><gd:when endTime='2009-04-17T18:00:00.000+01:00' startTime='2009-04-17T16:00:00.000+01:00'/><gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/><gd:visibility value='http://schemas.google.com/g/2005#event.default'/><gCal:anyoneCanAddSelf value='false'/><gCal:guestsCanInviteOthers value='false'/><gCal:guestsCanModify value='false'/><gCal:guestsCanSeeGuests value='false'/><gCal:sequence value='0'/><gCal:uid value='oqb4030l7frkp05mse8u33pqgk@google.com'/></entry>
+  
+> POST /calendar/feeds/default/private/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202808
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 102 (0x8c2b90), SoupSocket 94 (0x775790)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Tennis with Beth</title><content type='text'>Meet for a quick lesson.</content><category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/><gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/><gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/><gCal:guestsCanModify value='false'/><gCal:guestsCanInviteOthers value='false'/><gCal:guestsCanSeeGuests value='false'/><gCal:anyoneCanAddSelf value='false'/><gd:when startTime='2009-04-17T15:00:00Z' endTime='2009-04-17T17:00:00Z'/><gd:who email='john.smith@example.com' rel='http://schemas.google.com/g/2005#event.organizer' valueString='John Smith‽'/><gd:where valueString='Rolling Lawn Courts'/></entry>
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202808
+< Soup-Debug: SoupMessage 102 (0x8c2b90)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_lzf1dm9Ue8N3SJp2J6o695WrE5nMbNLIXgO1GwYSOH0dinvA7V6dAhAIAEim2gLMsmbC2ddMnDUzaVKIGr3_JWCh97kMTIAR1M2IeSsu02b7EZA-X4HjICLw-x5pMnXhR8i08nLbVHSLT_No8fvB518lPWszfELKmW9TYG0-BAxXFzn9IKi_SmDnEv70WeTVk9AKBXEZK8GgbVvG2jwg9IxQwwSgxxH2Am-wKlw1Xh28Ocyi9bXsxw2zvbHLluu_emFBzQJ8Ds6aIurEQIryfg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:49 GMT
+< Set-Cookie: S=calendar=1R8F1pQ3_HK-ksz_9_fJcw;Expires=Thu, 08-Aug-2013 23:57:31 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:48 GMT
+< Date: Tue, 30 Jul 2013 16:46:48 GMT
+< Location: https://www.google.com/calendar/feeds/default/private/full?gsessionid=1R8F1pQ3_HK-ksz_9_fJcw
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/default/private/full?gsessionid=1R8F1pQ3_HK-ksz_9_fJcw">here</A>.
+< </BODY>
+< </HTML>
+  
+> POST /calendar/feeds/default/private/full?gsessionid=1R8F1pQ3_HK-ksz_9_fJcw HTTP/1.1
+> Soup-Debug-Timestamp: 1375202808
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 102 (0x8c2b90), SoupSocket 95 (0x7fffe0040a30), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> Content-Length: 969
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Tennis with Beth</title><content type='text'>Meet for a quick lesson.</content><category term='http://schemas.google.com/g/2005#event' scheme='http://schemas.google.com/g/2005#kind'/><gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/><gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/><gCal:guestsCanModify value='false'/><gCal:guestsCanInviteOthers value='false'/><gCal:guestsCanSeeGuests value='false'/><gCal:anyoneCanAddSelf value='false'/><gd:when startTime='2009-04-17T15:00:00Z' endTime='2009-04-17T17:00:00Z'/><gd:who email='john.smith@example.com' rel='http://schemas.google.com/g/2005#event.organizer' valueString='John Smith‽'/><gd:where valueString='Rolling Lawn Courts'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375202809
+< Soup-Debug: SoupMessage 102 (0x8c2b90)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_x9DCxs6Yn1ShR7x5wx1k6e37TbqaZyvZnHbBDD5MjDqIwu2doXjOCD97mfXE8YE20iZQLD52PYbtpDGgujgmHXXGW1wlvqMs94qpgxdE8eYecbfbso9UjfaO5uqfvsRXIhKhe7zV2m0bacHn0JcyH7mkYYXHxHv7XZ_tjZftH-i5SVfC5OZaKOQXxynRfd_Yz5PzuJngGrHUxv5bViZFI3gQCqJikX_t9TXaydAiNvFoCzIgXcLmw11rsBONKvKvzka6NqtM8xqoAdhWs62jAQ
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:46:49 GMT
+< Set-Cookie: S=calendar=M6symLc287DwtP4khAjq6Q;Expires=Sat, 10-Aug-2013 01:37:52 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:46:49 GMT
+< Date: Tue, 30 Jul 2013 16:46:49 GMT
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.6
+< ETag: "EEUCQQRBdyp7JGA6WhNS"
+< Location: https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk
+< Content-Location: https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;EEUCQQRBdyp7JGA6WhNS&quot;' gd:kind='calendar#event'><id>http://www.google.com/calendar/feeds/default/events/oqb4030l7frkp05mse8u33pqgk</id><published>2013-07-30T16:46:49.000Z</published><updated>2013-07-30T16:46:49.000Z</updated><app:edited>2013-07-30T16:46:49.000Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'/><title>Tennis with Beth</title><content>Meet for a quick lesson.</content><link rel='alternate' type='text/html' href='https://www.google.com/calendar/event?eid=ODE5OGhpMWpzczNuaWowM21uY3QwY2Z2Z3MgbGliZ2RhdGEudGVzdEBnb29nbGVtYWlsLmNvbQ' title='alternate'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk'/><author><name>GData Test</name><email>libgdata.test@googlemail.com</email></author><gd:comments><gd:feedLink href='https://www.google.com/calendar/feeds/default/private/full/oqb4030l7frkp05mse8u33pqgk/comments'/></gd:comments><gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'/><gd:where valueString='Rolling Lawn Courts'/><gd:who email='libgdata.test@googlemail.com' rel='http://schemas.google.com/g/2005#event.organizer' valueString='GData Test'/><gd:when endTime='2009-04-17T18:00:00.000+01:00' startTime='2009-04-17T16:00:00.000+01:00'/><gd:transparency value='http://schemas.google.com/g/2005#event.opaque'/><gd:visibility value='http://schemas.google.com/g/2005#event.default'/><gCal:anyoneCanAddSelf value='false'/><gCal:guestsCanInviteOthers value='false'/><gCal:guestsCanModify value='false'/><gCal:guestsCanSeeGuests value='false'/><gCal:sequence value='0'/><gCal:uid value='oqb4030l7frkp05mse8u33pqgk@google.com'/></entry>
+  

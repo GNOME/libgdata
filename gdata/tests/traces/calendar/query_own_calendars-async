@@ -1,0 +1,67 @@
+> GET /calendar/feeds/default/owncalendars/full HTTP/1.1
+> Soup-Debug-Timestamp: 1375202737
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 45 (0x7fffe4010650), SoupSocket 43 (0x7753d0)
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 302 Moved Temporarily
+< Soup-Debug-Timestamp: 1375202737
+< Soup-Debug: SoupMessage 45 (0x7fffe4010650)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_t4EurujSJEVz4Oz9mAIOytzvk2x5HxgdMhjgmIZQyEhJEVxBkGa9tYZB61Yy8JtAPaktxoTLVkhp854Pjz3Lu2nGX3VFkbf3hmep1Z77H5UUPxIsLyYKJ-XIqF26WY8xy6o6N8-w_azdQg_R57FuB6O-GUgGUKDr2aKE9iTWpO0XsB7-zCP0UEx7yuXEnbLb7XVAw5KqOV1FqKEA6grSKkAqUaQftC9ppmNnCTUl0XskgKlvQxIBg-580Pa1-4yjY5tacPmBQVR42znpOSUkcg
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:45:38 GMT
+< Set-Cookie: S=calendar=2LkaUmgNqlqQgTVl3-Vm9g;Expires=Sat, 10-Aug-2013 00:32:11 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:45:37 GMT
+< Date: Tue, 30 Jul 2013 16:45:37 GMT
+< Location: https://www.google.com/calendar/feeds/default/owncalendars/full?gsessionid=2LkaUmgNqlqQgTVl3-Vm9g
+< Content-Type: text/html; charset=UTF-8
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <HTML>
+< <HEAD>
+< <TITLE>Moved Temporarily</TITLE>
+< </HEAD>
+< <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+< <H1>Moved Temporarily</H1>
+< The document has moved <A HREF="https://www.google.com/calendar/feeds/default/owncalendars/full?gsessionid=2LkaUmgNqlqQgTVl3-Vm9g">here</A>.
+< </BODY>
+< </HTML>
+  
+> GET /calendar/feeds/default/owncalendars/full?gsessionid=2LkaUmgNqlqQgTVl3-Vm9g HTTP/1.1
+> Soup-Debug-Timestamp: 1375202737
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 45 (0x7fffe4010650), SoupSocket 43 (0x7753d0), restarted
+> Host: www.google.com
+> Authorization: GoogleLogin auth=DQAAANUAAACtQA4YYe986jGVKTRKjvf_LQKCUZ-IrhGFxQuS1Zfjc3yd5y6Y5AHV3CUuKKT-NheGlvH_Hh7TOXLccehoG2zbN5TDNxZ-TDfe29rhXBteyCMVj5DvD7eNA2g8k8tM1sbnqitPfsPs-kbfR6iXisr9Yp_3Vt3LqvpmmxJI6AKoXpC08YhV24rZiqJZMMHhxxFr_TeYYtgiPL9vOqjnfhJJI6rGgNQ6eYvVaKo7TzLgbhWkg6Sikn3hbkowxi8_rA9_Bvwwxs77T15OWlsObAigagTJyjsQoAUGISPhESplZQ
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375202737
+< Soup-Debug: SoupMessage 45 (0x7fffe4010650)
+< Update-Client-Auth: DQAAANYAAACtQA4YYe986jGVKTRKjvf_QMIIFxw1-89I4fIiltp3toM_OQPaV-s2Op5YfNNKqskJ-elHTN3M2YrIdeRcj84Q94sPukowimpQydy5Tbb14G3YJ4S-NHM8cpqZJBifvXkyktCQOlLQS03AMrw1-u6qvRouqxtCMYd1apUUU9kXVWwoSYowH2iqScUeke9qp_ZEetMmdoQ61WwPB5gd4Of34y2qjfi6BC-i8q-4AfecimYdMpxx-Z7ncnkPEftWV84VyvVUhWfLM8oWcP3zT943b_FOzjNl76pHK1Za70lHtw
+< Set-Cookie: DO_NOT_CACHE_RESPONSE=true;Expires=Tue, 30-Jul-2013 16:45:38 GMT
+< Set-Cookie: S=calendar=PMCUvvZc8BEET8CUAuuUsQ;Expires=Wed, 07-Aug-2013 23:54:03 GMT;Secure
+< Expires: Tue, 30 Jul 2013 16:45:37 GMT
+< Date: Tue, 30 Jul 2013 16:45:37 GMT
+< Content-Type: application/atom+xml; charset=UTF-8; type=feed
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 2.6
+< ETag: W/"CEAHRnYyfCp7JGA9WhFWEk0."
+< Last-Modified: Tue, 30 Jul 2013 16:45:37 GMT
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:app='http://www.w3.org/2007/app' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;CEAHRnYyfCp7JGA9WhFWEk0.&quot;' gd:kind='calendar#calendarFeed'><id>http://www.google.com/calendar/feeds/default/owncalendars/full</id><updated>2013-07-30T16:45:37.894Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/gCal/2005#calendarmeta'/><title>GData Test's Calendar List</title><link rel='alternate' type='text/html' href='https://www.google.com/calendar/render'/><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full'/><link rel='http://schemas.google.com/g/2005#post' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full'/><author><name>libgdata.test@googlemail.com</name><email>libgdata.test@googlemail.com</email></author><generator version='1.0' uri='http://www.google.com/calendar'>Google Calendar</generator><openSearch:startIndex>1</openSearch:startIndex><entry gd:etag='W/&quot;CEAHR347eCp7JGA9WhFWEk0.&quot;' gd:kind='calendar#calendar'><id>http://www.google.com/calendar/feeds/default/calendars/libgdata.test%40googlemail.com</id><published>2013-07-30T16:45:37.804Z</published><updated>2013-07-30T16:45:36.000Z</updated><app:edited>2013-07-30T16:45:36.000Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/gCal/2005#calendarmeta'/><title type='text'>libgdata.test@googlemail.com</title><content type='application/atom+xml' src='https://www.google.com/calendar/feeds/libgdata.test%40googlemail.com/private/full'/><link rel='alternate' type='application/atom+xml' href='https://www.google.com/calendar/feeds/libgdata.test%40googlemail.com/private/full'/><link rel='http://schemas.google.com/gCal/2005#eventFeed' type='application/atom+xml' href='https://www.google.com/calendar/feeds/libgdata.test%40googlemail.com/private/full'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://www.google.com/calendar/feeds/libgdata.test%40googlemail.com/acl/full'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full/libgdata.test%40googlemail.com'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full/libgdata.test%40googlemail.com'/><author><name>libgdata.test@googlemail.com</name><email>libgdata.test@googlemail.com</email></author><gCal:accesslevel value='owner'/><gCal:color value='#2952A3'/><gCal:hidden value='false'/><gCal:selected value='true'/><gCal:timezone value='Europe/London'/><gCal:timesCleaned value='4'/></entry><entry gd:etag='W/&quot;CEAHRX47eCp7JGA9WhFWEk0.&quot;' gd:kind='calendar#calendar'><id>http://www.google.com/calendar/feeds/default/calendars/adam2vqp6q4htengjmhs9oc258%40group.calendar.google.com</id><published>2013-07-30T16:45:37.865Z</published><updated>2013-07-30T16:45:34.000Z</updated><app:edited>2013-07-30T16:45:34.000Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/gCal/2005#calendarmeta'/><title type='text'>Test Calendar 1</title><content type='application/atom+xml' src='https://www.google.com/calendar/feeds/adam2vqp6q4htengjmhs9oc258%40group.calendar.google.com/private/full'/><link rel='alternate' type='application/atom+xml' href='https://www.google.com/calendar/feeds/adam2vqp6q4htengjmhs9oc258%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/gCal/2005#eventFeed' type='application/atom+xml' href='https://www.google.com/calendar/feeds/adam2vqp6q4htengjmhs9oc258%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://www.google.com/calendar/feeds/adam2vqp6q4htengjmhs9oc258%40group.calendar.google.com/acl/full'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full/adam2vqp6q4htengjmhs9oc258%40group.calendar.google.com'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full/adam2vqp6q4htengjmhs9oc258%40group.calendar.google.com'/><author><name>Test Calendar 1</name></author><gCal:accesslevel value='owner'/><gCal:color value='#7A367A'/><gCal:hidden value='false'/><gCal:selected value='false'/><gCal:timezone value='UTC'/><gCal:timesCleaned value='0'/></entry><entry gd:etag='W/&quot;CEAHR347eCp7JGA9WhFWEk0.&quot;' gd:kind='calendar#calendar'><id>http://www.google.com/calendar/feeds/default/calendars/aik77skiu8dmq5r4lhh75d5af0%40group.calendar.google.com</id><published>2013-07-30T16:45:37.805Z</published><updated>2013-07-30T16:45:36.000Z</updated><app:edited>2013-07-30T16:45:36.000Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/gCal/2005#calendarmeta'/><title type='text'>Test Calendar 2</title><content type='application/atom+xml' src='https://www.google.com/calendar/feeds/aik77skiu8dmq5r4lhh75d5af0%40group.calendar.google.com/private/full'/><link rel='alternate' type='application/atom+xml' href='https://www.google.com/calendar/feeds/aik77skiu8dmq5r4lhh75d5af0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/gCal/2005#eventFeed' type='application/atom+xml' href='https://www.google.com/calendar/feeds/aik77skiu8dmq5r4lhh75d5af0%40group.calendar.google.com/private/full'/><link rel='http://schemas.google.com/acl/2007#accessControlList' type='application/atom+xml' href='https://www.google.com/calendar/feeds/aik77skiu8dmq5r4lhh75d5af0%40group.calendar.google.com/acl/full'/><link rel='self' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full/aik77skiu8dmq5r4lhh75d5af0%40group.calendar.google.com'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/calendar/feeds/default/owncalendars/full/aik77skiu8dmq5r4lhh75d5af0%40group.calendar.google.com'/><author><name>Test Calendar 2</name></author><gCal:accesslevel value='owner'/><gCal:color value='#7A367A'/><gCal:hidden value='false'/><gCal:selected value='false'/><gCal:timezone value='UTC'/><gCal:timesCleaned value='0'/></entry></feed>
+  
