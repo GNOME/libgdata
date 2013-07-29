@@ -1,0 +1,27 @@
+> POST /accounts/ClientLogin HTTP/1.1
+> Soup-Debug-Timestamp: 1375110167
+> Soup-Debug: SoupSession 1 (0x64f2a0), SoupMessage 1 (0x94f590), SoupSocket 1 (0x973220)
+> Host: www.google.com
+> Content-Type: application/x-www-form-urlencoded
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> accountType=HOSTED%5FOR%5FGOOGLE&Email=libgdata%2Etest%40gmail%2Ecom&Passwd=gdata%2Dgdata&service=youtube&source=client%2Did
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375110167
+< Soup-Debug: SoupMessage 1 (0x94f590)
+< Content-Type: text/plain
+< Cache-control: no-cache, no-store
+< Pragma: no-cache
+< Expires: Mon, 01-Jan-1990 00:00:00 GMT
+< Date: Mon, 29 Jul 2013 15:02:47 GMT
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 881
+< Server: GSE
+< 
+< SID=DQAAAM0AAACQTYSnz2Te6_o7SkZ8vWPjLzvf4aGTBxrnTulW9ykw2-PYoWl88PxNZgQmXsLCC043mMKsR2DNzjfoM7-rOrCDP609kiKrVzhcP0FobCYJLHK-aZIzq7vovAq-DJG2LjSHjqf0HYkGhYLodiGRYZKEDnOOhr03RWKWzl2DQS7acyq_F1uVXLEtc6YXRWp2n1DBmoSmmmFnp8pvC8onimc1Zcha9cnjuSLE3tbDrLBA8ps1CJHK5bWl3nELNRrwisrei_iw6LAHtq6BIpB-lnl1
+< LSID=DQAAAM4AAACb6htOq1itKNd5LVXNJx2kfaRm7mP3FHlVMie2h7vxaylu1rqnq7v7WhNl0d-bI6jZEthh-vndHPnHkGgSDPXXht1jr52P34ze8P1ztZoD_-l1inTHr9IE0y31sBUXP7oiPPecehau_AuIJ_-PJPYskG5ibwBX42mkee7y7uzulU9Gl6J_vxrZblIMzzMb331vRfheCTnNoE9PBYDSWEPCdMk6z5I_QbO2qRa-qXbd4kJuzSn_HKvVlK3Isy96JqXfyremEc643DwdutwIwMMG
+< Auth=DQAAAM8AAACb6htOq1itKNd5LVXNJx2kfaRm7mP3FHlVMie2h7vxaylu1rqnq7v7WhNl0d-bI6jpJUWjFYRNWcd1jrcC9Yx1DREDvZfTWHftUNcZDEciKLKBXtNd2zzYKe7-Z7hL3tYOebD8ulI1Ql_xhaeQPtARdYoSRs_G3bjfrajKcDrtZMBmpxJgB3qs2l0XRRJpV-OZtad-PMyv7CBm1j2LYQindXcTq8GVliYmZIvM9wah4XsrxPM3xXTBv_aHl-R6AHq86iD0KNvNVEl7z3oonr61
+  
