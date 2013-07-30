@@ -374,7 +374,8 @@ static void
 set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 {
 	GDataDocumentsEntry *document;
-	gchar *upload_uri;
+	gchar *upload_uri, *document_file_path;
+	GFile *document_file;
 
 	upload_uri = gdata_documents_service_get_upload_uri (NULL);
 
@@ -409,15 +410,17 @@ set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->text_document));
 	g_object_unref (document);
 
+	document_file_path = g_strconcat (TEST_FILE_DIR, "test.odt", NULL);
+	document_file = g_file_new_for_path (document_file_path);
+	g_free (document_file_path);
+
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_document_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Arbitrary Document");
-	data->arbitrary_document = GDATA_DOCUMENTS_DOCUMENT (
-		gdata_service_insert_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-		                            upload_uri, GDATA_ENTRY (document), NULL, NULL)
-	);
+	data->arbitrary_document = _set_up_temp_document (document, GDATA_SERVICE (service), document_file);
 	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (data->arbitrary_document));
 	g_object_unref (document);
 
+	g_object_unref (document_file);
 	g_free (upload_uri);
 }
 
