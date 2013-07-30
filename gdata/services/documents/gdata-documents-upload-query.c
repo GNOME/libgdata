@@ -210,6 +210,7 @@ static void
 gdata_documents_upload_query_init (GDataDocumentsUploadQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_UPLOAD_QUERY, GDataDocumentsUploadQueryPrivate);
+	self->priv->convert = TRUE;
 }
 
 static void

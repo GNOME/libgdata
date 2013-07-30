@@ -1529,6 +1529,31 @@ test_query_etag (void)
 	g_object_unref (query);
 }
 
+/* Test getting and setting the GDataDocumentsUploadQuery:convert property */
+static void
+test_upload_query_properties_convert (void)
+{
+	gboolean convert;
+	GDataDocumentsUploadQuery *query;
+
+	/* Verifying the normal state of the property in a newly-constructed instance of GDataDocumentsUploadQuery */
+	query = gdata_documents_upload_query_new ();
+	g_assert (gdata_documents_upload_query_get_convert (query) == TRUE);
+
+	g_object_get (query, "convert", &convert, NULL);
+	g_assert (convert == TRUE);
+
+	/* Setting the property. */
+	gdata_documents_upload_query_set_convert (query, FALSE);
+	g_assert (gdata_documents_upload_query_get_convert (query) == FALSE);
+
+	/* Setting it another way. */
+	g_object_set (query, "convert", TRUE, NULL);
+	g_assert (gdata_documents_upload_query_get_convert (query) == TRUE);
+
+	g_object_unref (query);
+}
+
 /* Here we hardcode the feed URI, but it should really be extracted from a document feed, as the GDATA_LINK_BATCH link */
 #define BATCH_URI "https://docs.google.com/feeds/default/private/full/batch"
 
@@ -1939,6 +1964,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/documents/folder/parser/normal", test_folder_parser_normal);
 
 	g_test_add_func ("/documents/query/etag", test_query_etag);
+	g_test_add_func ("/documents/upload-query/properties/convert", test_upload_query_properties_convert);
 
 	retval = g_test_run ();
 
