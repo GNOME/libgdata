@@ -176,6 +176,10 @@ tear_down_##CLOSURE_NAME##_async (GDataAsyncTestData *async_data, gconstpointer 
  * <function>test_<replaceable>TEST_NAME</replaceable>_async</function> and
  * <function>test_<replaceable>TEST_NAME</replaceable>_async_cancellation</function>.
  *
+ * These functions assume the existence of a <varname>mock_server</varname> variable which points to the current #GDataMockServer instance. They
+ * will automatically use traces <varname><replaceable>TEST_NAME</replaceable>-async</varname> and
+ * <varname><replaceable>TEST_NAME</replaceable>-async-cancellation</varname>.
+ *
  * Since: 0.10.0
  */
 #define GDATA_ASYNC_TEST_FUNCTIONS(TEST_NAME, TestStructType, TEST_BEGIN_CODE, TEST_END_CODE) \
@@ -222,11 +226,15 @@ test_##TEST_NAME##_async (GDataAsyncTestData *async_data, gconstpointer service)
  \
 	g_test_message ("Running normal operation test…"); \
  \
+	gdata_test_mock_server_start_trace (mock_server, G_STRINGIFY (TEST_NAME) "-async"); \
+ \
 	{ \
 		TEST_BEGIN_CODE; \
 	} \
  \
 	g_main_loop_run (async_data->main_loop); \
+ \
+	gdata_mock_server_end_trace (mock_server); \
 } \
  \
 static void \
@@ -242,6 +250,8 @@ test_##TEST_NAME##_async_cancellation (GDataAsyncTestData *async_data, gconstpoi
 		GCancellable *cancellable = async_data->cancellable; \
 		GAsyncReadyCallback async_ready_callback = (GAsyncReadyCallback) test_##TEST_NAME##_async_cb; \
 		TestStructType *data = (TestStructType*) async_data->test_data; \
+ \
+		gdata_test_mock_server_start_trace (mock_server, G_STRINGIFY (TEST_NAME) "-async-cancellation"); \
  \
 		(void) data; /* hide potential unused variable warning */ \
  \
@@ -276,6 +286,8 @@ test_##TEST_NAME##_async_cancellation (GDataAsyncTestData *async_data, gconstpoi
 		} else { \
 			async_data->cancellation_timeout *= GDATA_ASYNC_TIMEOUT_MULTIPLIER; \
 		} \
+ \
+		gdata_mock_server_end_trace (mock_server); \
 	} while (async_data->cancellation_successful == TRUE); \
  \
 	/* Clean up the last timeout callback */ \
