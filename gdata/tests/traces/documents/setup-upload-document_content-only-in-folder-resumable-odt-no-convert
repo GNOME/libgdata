@@ -1,0 +1,33 @@
+> POST /feeds/upload/create-session/default/private/full?convert=true HTTP/1.1
+> Soup-Debug-Timestamp: 1375342485
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 17 (0x8620a0), SoupSocket 6 (0x7dbdf0)
+> Host: docs.google.com
+> X-Upload-Content-Length: 0
+> Authorization: GoogleLogin auth=DQAAANAAAADhGYUNttFD0Fwaup933dQXvgNOt92KYZlZ3DBRyP1ESbjPFjjpyPby7dKkYQ9-hWy9XFqfyzTN9iRTUQ9LmgxyXXOhR56QLpveZ9NRUK57V0-AGl33barp2sndESkOldb7XsP1okN12iwn1n_Qy5RsPtAxBRNRJ_P8Fm53wo4FMl4bDxR7VHF_aQviFKp0iNrFDT1AnQCk_QMGtknBz7taDdZBL60yvIHLgs8DqB00BK2fYtq8CPluPsXLRmXbL8NpU4HKfWT0oPkWt7J3h3Ry
+> GData-Version: 3
+> Content-Type: application/atom+xml
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+> 
+> <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:docs='http://schemas.google.com/docs/2007' xmlns:gd='http://schemas.google.com/g/2005'><title type='text'>Temporary Folder for Uploading Documents</title><category term='http://schemas.google.com/docs/2007#folder' scheme='http://schemas.google.com/g/2005#kind'/><docs:writersCanInvite value='false'/></entry>
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375342486
+< Soup-Debug: SoupMessage 17 (0x8620a0)
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Expires: Thu, 01 Aug 2013 07:34:46 GMT
+< Date: Thu, 01 Aug 2013 07:34:46 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 3.0
+< ETag: "A1INRRFMESt7ImBk"
+< Location: https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM
+< Content-Location: https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:docs='http://schemas.google.com/docs/2007' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;A1INRRFMESt7ImBk&quot;'><id>https://docs.google.com/feeds/id/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM</id><published>2013-08-01T07:34:45.549Z</published><updated>2013-08-01T07:34:45.549Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T07:34:45.819Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/docs/2007#folder' label='folder'/><title>Temporary Folder for Uploading Documents</title><content type='application/atom+xml;type=feed' src='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents'/><link rel='alternate' type='text/html' href='https://docs.google.com/folderview?id=0BzY2jgHHwMwYYk9PVDB5Q0FaanM&amp;usp=docslist_api'/><link rel='http://schemas.google.com/docs/2007#icon' type='image/png' href='https://ssl.gstatic.com/docs/doclist/images/icon_11_collection_list.png'/><link rel='http://schemas.google.com/g/2005#resumable-create-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/create-session/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents'/><link rel='http://schemas.google.com/docs/2007#alt-post' type='application/atom+xml' href='https://docs.google.com/feeds/upload/file/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents'/><link rel='self' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM'/><link rel='edit' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM'/><author><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></author><gd:resourceId>folder:0BzY2jgHHwMwYYk9PVDB5Q0FaanM</gd:resourceId><docs:isShareable value='true'/><docs:isShareableByMe value='true'/><gd:lastModifiedBy><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></gd:lastModifiedBy><gd:quotaBytesUsed>0</gd:quotaBytesUsed><docs:writersCanInvite value='false'/><gd:feedLink rel='http://schemas.google.com/acl/2007#accessControlList' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/acl'/></entry>
+  

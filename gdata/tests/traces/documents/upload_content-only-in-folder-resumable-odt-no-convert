@@ -1,0 +1,52 @@
+> POST /feeds/upload/create-session/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents?convert=false HTTP/1.1
+> Soup-Debug-Timestamp: 1375342486
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 18 (0x862460), SoupSocket 7 (0x7dbdf0)
+> Host: docs.google.com
+> Slug: test.odt
+> X-Upload-Content-Type: application/vnd.oasis.opendocument.text
+> X-Upload-Content-Length: 8033
+> Content-Length: 0
+> Authorization: GoogleLogin auth=DQAAANAAAADhGYUNttFD0Fwaup933dQXvgNOt92KYZlZ3DBRyP1ESbjPFjjpyPby7dKkYQ9-hWy9XFqfyzTN9iRTUQ9LmgxyXXOhR56QLpveZ9NRUK57V0-AGl33barp2sndESkOldb7XsP1okN12iwn1n_Qy5RsPtAxBRNRJ_P8Fm53wo4FMl4bDxR7VHF_aQviFKp0iNrFDT1AnQCk_QMGtknBz7taDdZBL60yvIHLgs8DqB00BK2fYtq8CPluPsXLRmXbL8NpU4HKfWT0oPkWt7J3h3Ry
+> GData-Version: 3
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375342486
+< Soup-Debug: SoupMessage 18 (0x862460)
+< Location: https://docs.google.com/feeds/upload/create-session/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents?convert=false&upload_id=AEnB2UpWk5WhMYW_mephbG_2VTBwdoZp6MJoEv2XQOHWU0Xv-L1Nza1OrUO6ifMJy6bckdXD5gkVwM6lgK3f1Mw7JamLCfo3qA
+< Date: Thu, 01 Aug 2013 07:34:46 GMT
+< Server: HTTP Upload Server Built on Jul 24 2013 17:20:01 (1374711601)
+< Content-Length: 0
+< Content-Type: text/html; charset=UTF-8
+< 
+  
+> PUT /feeds/upload/create-session/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents?convert=false&upload_id=AEnB2UpWk5WhMYW_mephbG_2VTBwdoZp6MJoEv2XQOHWU0Xv-L1Nza1OrUO6ifMJy6bckdXD5gkVwM6lgK3f1Mw7JamLCfo3qA HTTP/1.1
+> Soup-Debug-Timestamp: 1375342486
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 19 (0x862280), SoupSocket 7 (0x7dbdf0)
+> Host: docs.google.com
+> Content-Type: application/vnd.oasis.opendocument.text
+> Content-Length: 8033
+> Content-Range: bytes 0-8032/8033
+> Authorization: GoogleLogin auth=DQAAANAAAADhGYUNttFD0Fwaup933dQXvgNOt92KYZlZ3DBRyP1ESbjPFjjpyPby7dKkYQ9-hWy9XFqfyzTN9iRTUQ9LmgxyXXOhR56QLpveZ9NRUK57V0-AGl33barp2sndESkOldb7XsP1okN12iwn1n_Qy5RsPtAxBRNRJ_P8Fm53wo4FMl4bDxR7VHF_aQviFKp0iNrFDT1AnQCk_QMGtknBz7taDdZBL60yvIHLgs8DqB00BK2fYtq8CPluPsXLRmXbL8NpU4HKfWT0oPkWt7J3h3Ry
+> GData-Version: 3
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 201 Created
+< Soup-Debug-Timestamp: 1375342487
+< Soup-Debug: SoupMessage 19 (0x862280)
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Expires: Thu, 01 Aug 2013 07:34:47 GMT
+< Date: Thu, 01 Aug 2013 07:34:47 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 3.0
+< ETag: "A1INRRMJASt7ImBk"
+< Location: https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0
+< Content-Location: https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0
+< Content-Length: 3684
+< Server: HTTP Upload Server Built on Jul 24 2013 17:20:01 (1374711601)
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:docs='http://schemas.google.com/docs/2007' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;A1INRRMJASt7ImBk&quot;'><id>https://docs.google.com/feeds/id/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0</id><published>2013-08-01T07:34:47.419Z</published><updated>2013-08-01T07:34:47.419Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T07:34:47.419Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/docs/2007#file' label='application/vnd.oasis.opendocument.text'/><category scheme='http://schemas.google.com/g/2005/labels' term='http://schemas.google.com/g/2005/labels#modified-by-me' label='modified-by-me'/><title>Untitled</title><content type='application/vnd.oasis.opendocument.text' src='https://doc-14-4o-docs.googleusercontent.com/docs/securesc/p3gkcpm4vekih3vn1285g2jn1spuiriq/rd5tjnth56o158hnjorg1fipv0n5rlus/1375336800000/04693666875216770588/04693666875216770588/0BzY2jgHHwMwYXzFVWlJ4MXMyRE0?h=16653014193614665626&amp;e=download&amp;gd=true'/><link rel='http://schemas.google.com/docs/2007#parent' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM' title='Temporary Folder for Uploading Documents'/><link rel='alternate' type='text/html' href='https://docs.google.com/file/d/0BzY2jgHHwMwYXzFVWlJ4MXMyRE0/edit?usp=docslist_api'/><link rel='http://schemas.google.com/docs/2007#icon' type='image/png' href='https://ssl.gstatic.com/docs/doclist/images/icon_10_generic_list.png'/><link rel='http://schemas.google.com/g/2005#resumable-edit-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/create-session/default/private/full/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0'/><link rel='http://schemas.google.com/docs/2007#alt-edit-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/file/default/private/full/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0'/><link rel='self' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0'/><link rel='edit' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/contents/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0'/><link rel='edit-media' type='application/vnd.oasis.opendocument.text' href='https://docs.google.com/feeds/default/contentmedia/folder%3A0BzY2jgHHwMwYYk9PVDB5Q0FaanM/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0'/><author><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></author><gd:resourceId>file:0BzY2jgHHwMwYXzFVWlJ4MXMyRE0</gd:resourceId><docs:isShareable value='true'/><docs:isShareableByMe value='true'/><docs:modifiedByMeDate>2013-08-01T07:34:47.412Z</docs:modifiedByMeDate><gd:lastModifiedBy><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></gd:lastModifiedBy><gd:quotaBytesUsed>8033</gd:quotaBytesUsed><docs:writersCanInvite value='true'/><docs:md5Checksum>95439a6d6456a79d43980c05c9f25c7d</docs:md5Checksum><docs:filename>Untitled</docs:filename><docs:suggestedFilename>Untitled</docs:suggestedFilename><docs:size>8033</docs:size><gd:feedLink rel='http://schemas.google.com/acl/2007#accessControlList' href='https://docs.google.com/feeds/default/private/full/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0/acl'/><gd:feedLink rel='http://schemas.google.com/docs/2007/revisions' href='https://docs.google.com/feeds/default/private/full/file%3A0BzY2jgHHwMwYXzFVWlJ4MXMyRE0/revisions'/></entry>
+  

@@ -1,0 +1,106 @@
+> GET /feeds/default/private/full/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk HTTP/1.1
+> Soup-Debug-Timestamp: 1375342501
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 27 (0x862280), SoupSocket 9 (0x7dbdf0)
+> Host: docs.google.com
+> Authorization: GoogleLogin auth=DQAAANAAAADhGYUNttFD0Fwaup933dQXvgNOt92KYZlZ3DBRyP1ESbjPFjjpyPby7dKkYQ9-hWy9XFqfyzTN9iRTUQ9LmgxyXXOhR56QLpveZ9NRUK57V0-AGl33barp2sndESkOldb7XsP1okN12iwn1n_Qy5RsPtAxBRNRJ_P8Fm53wo4FMl4bDxR7VHF_aQviFKp0iNrFDT1AnQCk_QMGtknBz7taDdZBL60yvIHLgs8DqB00BK2fYtq8CPluPsXLRmXbL8NpU4HKfWT0oPkWt7J3h3Ry
+> GData-Version: 3
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375342501
+< Soup-Debug: SoupMessage 27 (0x862280)
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Expires: Thu, 01 Aug 2013 07:35:01 GMT
+< Date: Thu, 01 Aug 2013 07:35:01 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 3.0
+< ETag: "A1INRQhbDit7ImBk"
+< Last-Modified: Thu, 01 Aug 2013 07:34:56 GMT
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:docs='http://schemas.google.com/docs/2007' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;A1INRQhbDit7ImBk&quot;'><id>https://docs.google.com/feeds/id/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk</id><published>2013-08-01T07:34:56.202Z</published><updated>2013-08-01T07:34:56.202Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T07:34:56.746Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/docs/2007#file' label='video/x-theora+ogg'/><category scheme='http://schemas.google.com/g/2005/labels' term='http://schemas.google.com/g/2005/labels#modified-by-me' label='modified-by-me'/><title>Untitled</title><content type='video/x-theora+ogg' src='https://doc-0k-4o-docs.googleusercontent.com/docs/securesc/p3gkcpm4vekih3vn1285g2jn1spuiriq/5pc9cr4ce7l80mnv6jqbjaqsr48vh5k5/1375336800000/04693666875216770588/04693666875216770588/0BzY2jgHHwMwYWlhZaTZMemhfWkk?h=16653014193614665626&amp;e=download&amp;gd=true'/><link rel='http://schemas.google.com/docs/2007#parent' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms' title='Temporary Folder for Uploading Documents'/><link rel='alternate' type='text/html' href='https://docs.google.com/file/d/0BzY2jgHHwMwYWlhZaTZMemhfWkk/edit?usp=docslist_api'/><link rel='http://schemas.google.com/docs/2007#embed' type='text/html' href='https://video.google.com/get_player?ps=docs&amp;partnerid=30&amp;docid=0BzY2jgHHwMwYWlhZaTZMemhfWkk&amp;BASE_URL=https://docs.google.com/'/><link rel='http://schemas.google.com/docs/2007#icon' type='image/png' href='https://ssl.gstatic.com/docs/doclist/images/icon_11_video_list.png'/><link rel='http://schemas.google.com/g/2005#resumable-edit-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/create-session/default/private/full/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk'/><link rel='http://schemas.google.com/docs/2007#alt-edit-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/file/default/private/full/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk'/><link rel='self' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk'/><link rel='edit' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk'/><link rel='edit-media' type='video/x-theora+ogg' href='https://docs.google.com/feeds/default/media/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk'/><author><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></author><gd:resourceId>file:0BzY2jgHHwMwYWlhZaTZMemhfWkk</gd:resourceId><docs:isShareable value='true'/><docs:isShareableByMe value='true'/><docs:modifiedByMeDate>2013-08-01T07:34:56.192Z</docs:modifiedByMeDate><gd:lastModifiedBy><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></gd:lastModifiedBy><gd:quotaBytesUsed>96839</gd:quotaBytesUsed><docs:writersCanInvite value='true'/><docs:md5Checksum>75ad4a55b679b86502ccc0ecd1731622</docs:md5Checksum><docs:filename>Untitled</docs:filename><docs:suggestedFilename>Untitled</docs:suggestedFilename><docs:size>96839</docs:size><gd:feedLink rel='http://schemas.google.com/acl/2007#accessControlList' href='https://docs.google.com/feeds/default/private/full/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk/acl'/><gd:feedLink rel='http://schemas.google.com/docs/2007/revisions' href='https://docs.google.com/feeds/default/private/full/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk/revisions'/></entry>
+  
+> DELETE /feeds/default/private/full/file%3A0BzY2jgHHwMwYWlhZaTZMemhfWkk HTTP/1.1
+> Soup-Debug-Timestamp: 1375342501
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 28 (0x862730), SoupSocket 9 (0x7dbdf0)
+> Host: docs.google.com
+> Authorization: GoogleLogin auth=DQAAANAAAADhGYUNttFD0Fwaup933dQXvgNOt92KYZlZ3DBRyP1ESbjPFjjpyPby7dKkYQ9-hWy9XFqfyzTN9iRTUQ9LmgxyXXOhR56QLpveZ9NRUK57V0-AGl33barp2sndESkOldb7XsP1okN12iwn1n_Qy5RsPtAxBRNRJ_P8Fm53wo4FMl4bDxR7VHF_aQviFKp0iNrFDT1AnQCk_QMGtknBz7taDdZBL60yvIHLgs8DqB00BK2fYtq8CPluPsXLRmXbL8NpU4HKfWT0oPkWt7J3h3Ry
+> GData-Version: 3
+> If-Match: "A1INRQhbDit7ImBk"
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375342502
+< Soup-Debug: SoupMessage 28 (0x862730)
+< GData-Version: 3.0
+< Date: Thu, 01 Aug 2013 07:35:02 GMT
+< Expires: Thu, 01 Aug 2013 07:35:02 GMT
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  
+> GET /feeds/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms HTTP/1.1
+> Soup-Debug-Timestamp: 1375342502
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 29 (0x862370), SoupSocket 9 (0x7dbdf0)
+> Host: docs.google.com
+> Authorization: GoogleLogin auth=DQAAANAAAADhGYUNttFD0Fwaup933dQXvgNOt92KYZlZ3DBRyP1ESbjPFjjpyPby7dKkYQ9-hWy9XFqfyzTN9iRTUQ9LmgxyXXOhR56QLpveZ9NRUK57V0-AGl33barp2sndESkOldb7XsP1okN12iwn1n_Qy5RsPtAxBRNRJ_P8Fm53wo4FMl4bDxR7VHF_aQviFKp0iNrFDT1AnQCk_QMGtknBz7taDdZBL60yvIHLgs8DqB00BK2fYtq8CPluPsXLRmXbL8NpU4HKfWT0oPkWt7J3h3Ry
+> GData-Version: 3
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375342502
+< Soup-Debug: SoupMessage 29 (0x862370)
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< Expires: Thu, 01 Aug 2013 07:35:02 GMT
+< Date: Thu, 01 Aug 2013 07:35:02 GMT
+< Cache-control: private, max-age=0, must-revalidate, no-transform
+< Vary: Accept, X-GData-Authorization, GData-Version
+< GData-Version: 3.0
+< ETag: "A1INRQ5LGit7ImBk"
+< Last-Modified: Thu, 01 Aug 2013 07:34:54 GMT
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Transfer-Encoding: chunked
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:docs='http://schemas.google.com/docs/2007' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;A1INRQ5LGit7ImBk&quot;'><id>https://docs.google.com/feeds/id/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms</id><published>2013-08-01T07:34:54.426Z</published><updated>2013-08-01T07:34:54.426Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T07:34:54.718Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/docs/2007#folder' label='folder'/><title>Temporary Folder for Uploading Documents</title><content type='application/atom+xml;type=feed' src='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms/contents'/><link rel='alternate' type='text/html' href='https://docs.google.com/folderview?id=0BzY2jgHHwMwYd1htUDJKMlA4Yms&amp;usp=docslist_api'/><link rel='http://schemas.google.com/docs/2007#icon' type='image/png' href='https://ssl.gstatic.com/docs/doclist/images/icon_11_collection_list.png'/><link rel='http://schemas.google.com/g/2005#resumable-create-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/create-session/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms/contents'/><link rel='http://schemas.google.com/docs/2007#alt-post' type='application/atom+xml' href='https://docs.google.com/feeds/upload/file/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms/contents'/><link rel='self' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms'/><link rel='edit' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms'/><author><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></author><gd:resourceId>folder:0BzY2jgHHwMwYd1htUDJKMlA4Yms</gd:resourceId><docs:isShareable value='true'/><docs:isShareableByMe value='true'/><gd:lastModifiedBy><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></gd:lastModifiedBy><gd:quotaBytesUsed>0</gd:quotaBytesUsed><docs:writersCanInvite value='false'/><gd:feedLink rel='http://schemas.google.com/acl/2007#accessControlList' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms/acl'/></entry>
+  
+> DELETE /feeds/default/private/full/folder%3A0BzY2jgHHwMwYd1htUDJKMlA4Yms HTTP/1.1
+> Soup-Debug-Timestamp: 1375342502
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 30 (0x8620a0), SoupSocket 9 (0x7dbdf0)
+> Host: docs.google.com
+> Authorization: GoogleLogin auth=DQAAANAAAADhGYUNttFD0Fwaup933dQXvgNOt92KYZlZ3DBRyP1ESbjPFjjpyPby7dKkYQ9-hWy9XFqfyzTN9iRTUQ9LmgxyXXOhR56QLpveZ9NRUK57V0-AGl33barp2sndESkOldb7XsP1okN12iwn1n_Qy5RsPtAxBRNRJ_P8Fm53wo4FMl4bDxR7VHF_aQviFKp0iNrFDT1AnQCk_QMGtknBz7taDdZBL60yvIHLgs8DqB00BK2fYtq8CPluPsXLRmXbL8NpU4HKfWT0oPkWt7J3h3Ry
+> GData-Version: 3
+> If-Match: "A1INRQ5LGit7ImBk"
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375342502
+< Soup-Debug: SoupMessage 30 (0x8620a0)
+< GData-Version: 3.0
+< Date: Thu, 01 Aug 2013 07:35:02 GMT
+< Expires: Thu, 01 Aug 2013 07:35:02 GMT
+< Cache-control: private, max-age=0
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Content-Length: 0
+< Server: GSE
+< Content-Type: text/html; charset=UTF-8
+< 
+  

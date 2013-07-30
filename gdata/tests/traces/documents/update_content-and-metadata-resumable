@@ -1,0 +1,48 @@
+> PUT /feeds/upload/create-session/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g HTTP/1.1
+> Soup-Debug-Timestamp: 1375344861
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 23 (0x6d1770), SoupSocket 4 (0x7fffe40038a0)
+> Host: docs.google.com
+> Slug: test_updated.odt
+> X-Upload-Content-Type: application/vnd.oasis.opendocument.text
+> X-Upload-Content-Length: 8649
+> Content-Type: application/atom+xml; charset=UTF-8
+> Authorization: GoogleLogin auth=DQAAANEAAADRNtZr3AZvZtW6zFslWzd9AXn2SUrE86_HRiEdstiT_V0cMfFHsi0SKwtglmDDbKHd7cnIchEiHIbjgXwUDc56qs_W5wRDVaZeliaoyE12dd-Cy6NE-LkxNdGNljUI9kF1xV_6BUPYTKrAeb0ic5QTEONO318WscbxrA6r5eetLMlIl-8VJZE0A_U0sbwZMRQZ_lUCr4sNieZx8qhw4RCb_8kE74oVJbsQjvG7B0UNHyuhqPgFCFlRrufDoLpmd4lyYPrAAVOCPEOeTPESqXilq2owTlLlrYj1DfEAStnIyw
+> GData-Version: 3
+> If-Match: "A1IMVBhRFit7ImBk"
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375344861
+< Soup-Debug: SoupMessage 23 (0x6d1770)
+< Location: https://docs.google.com/feeds/upload/create-session/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g?upload_id=AEnB2UrKqsrIs8PDH5V6NbSUg5rpHDv9ehZltQtxQEsSc29SUwHoOYB6eFvJJlLEdz3gXnUoVSorUmx0O-PXGSGvPq1oprDb1A
+< Date: Thu, 01 Aug 2013 08:14:21 GMT
+< Server: HTTP Upload Server Built on Jul 24 2013 17:20:01 (1374711601)
+< Content-Length: 0
+< Content-Type: text/html; charset=UTF-8
+< 
+  
+> PUT /feeds/upload/create-session/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g?upload_id=AEnB2UrKqsrIs8PDH5V6NbSUg5rpHDv9ehZltQtxQEsSc29SUwHoOYB6eFvJJlLEdz3gXnUoVSorUmx0O-PXGSGvPq1oprDb1A HTTP/1.1
+> Soup-Debug-Timestamp: 1375344861
+> Soup-Debug: SoupSession 1 (0x65a2e0), SoupMessage 24 (0x6d13b0), SoupSocket 4 (0x7fffe40038a0)
+> Host: docs.google.com
+> Content-Type: application/vnd.oasis.opendocument.text
+> Content-Length: 8649
+> Content-Range: bytes 0-8648/8649
+> Authorization: GoogleLogin auth=DQAAANEAAADRNtZr3AZvZtW6zFslWzd9AXn2SUrE86_HRiEdstiT_V0cMfFHsi0SKwtglmDDbKHd7cnIchEiHIbjgXwUDc56qs_W5wRDVaZeliaoyE12dd-Cy6NE-LkxNdGNljUI9kF1xV_6BUPYTKrAeb0ic5QTEONO318WscbxrA6r5eetLMlIl-8VJZE0A_U0sbwZMRQZ_lUCr4sNieZx8qhw4RCb_8kE74oVJbsQjvG7B0UNHyuhqPgFCFlRrufDoLpmd4lyYPrAAVOCPEOeTPESqXilq2owTlLlrYj1DfEAStnIyw
+> GData-Version: 3
+> Accept-Encoding: gzip, deflate
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1375344862
+< Soup-Debug: SoupMessage 24 (0x6d13b0)
+< Content-Type: application/atom+xml; charset=UTF-8; type=entry
+< GData-Version: 3.0
+< ETag: "A1IMVBdcDyt7ImBk"
+< Content-Length: 3767
+< Date: Thu, 01 Aug 2013 08:14:22 GMT
+< Server: HTTP Upload Server Built on Jul 24 2013 17:20:01 (1374711601)
+< 
+< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:docs='http://schemas.google.com/docs/2007' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;A1IMVBdcDyt7ImBk&quot;'><id>https://docs.google.com/feeds/id/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g</id><published>2013-08-01T08:14:14.275Z</published><updated>2013-08-01T08:14:22.122Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T08:14:22.125Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/docs/2007#document' label='document'/><category scheme='http://schemas.google.com/g/2005/labels' term='http://schemas.google.com/g/2005/labels#viewed' label='viewed'/><category scheme='http://schemas.google.com/g/2005/labels' term='http://schemas.google.com/g/2005/labels#modified-by-me' label='modified-by-me'/><title>Updated Test Update file (/documents/update/content-and-metadata/resumable)</title><content type='text/html' src='https://docs.google.com/feeds/download/documents/export/Export?id=1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g'/><link rel='alternate' type='text/html' href='https://docs.google.com/document/d/1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g/edit?usp=docslist_api'/><link rel='http://schemas.google.com/docs/2007#embed' type='text/html' href='https://docs.google.com/document/d/1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g/preview'/><link rel='http://schemas.google.com/docs/2007#icon' type='image/png' href='https://ssl.gstatic.com/docs/doclist/images/icon_11_document_list.png'/><link rel='http://schemas.google.com/g/2005#resumable-edit-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/create-session/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g'/><link rel='http://schemas.google.com/docs/2007#alt-edit-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/file/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g'/><link rel='http://schemas.google.com/docs/2007/thumbnail' type='image/png' href='https://docs.google.com/feeds/vt?authuser=0&amp;gd=true&amp;id=1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g&amp;v=2&amp;s=AMedNnoAAAAAUfo0_g0xOpgyccQt0qoUGMklZdC1TtDg&amp;sz=s220'/><link rel='self' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g'/><link rel='edit' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g'/><link rel='edit-media' type='text/html' href='https://docs.google.com/feeds/default/media/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g'/><author><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></author><gd:resourceId>document:1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g</gd:resourceId><docs:isShareable value='true'/><docs:isShareableByMe value='true'/><docs:modifiedByMeDate>2013-08-01T08:14:22.122Z</docs:modifiedByMeDate><gd:lastModifiedBy><name>libgdata.documents</name><email>libgdata.documents@gmail.com</email></gd:lastModifiedBy><gd:lastViewed>2013-08-01T08:14:15.414Z</gd:lastViewed><gd:quotaBytesUsed>0</gd:quotaBytesUsed><docs:writersCanInvite value='false'/><gd:feedLink rel='http://schemas.google.com/acl/2007#accessControlList' href='https://docs.google.com/feeds/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g/acl'/><gd:feedLink rel='http://schemas.google.com/docs/2007/revisions' href='https://docs.google.com/feeds/default/private/full/document%3A1wLNBe0rXIW9ShlQB7d1nCN6Igd_aYGVarz_xo8Zod4g/revisions'/></entry>
+  
