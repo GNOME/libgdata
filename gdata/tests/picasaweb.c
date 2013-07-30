@@ -768,11 +768,12 @@ set_up_insert_album (InsertAlbumData *data, gconstpointer service)
 static void
 tear_down_insert_album (InsertAlbumData *data, gconstpointer service)
 {
-	g_object_unref (data->album);
-
 	/* Clean up the evidence */
 	gdata_service_delete_entry (GDATA_SERVICE (service), gdata_picasaweb_service_get_primary_authorization_domain (),
 	                            GDATA_ENTRY (data->inserted_album), NULL, NULL);
+
+	g_object_unref (data->album);
+	g_object_unref (data->inserted_album);
 }
 
 static void
