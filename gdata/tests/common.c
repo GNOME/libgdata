@@ -27,9 +27,6 @@
 #include "common.h"
 #include "mock-server.h"
 
-/* %TRUE if there's no Internet connection, so we should only run local tests */
-static gboolean no_internet = FALSE;
-
 /* %TRUE if interactive tests should be skipped because we're running automatically (for example) */
 static gboolean no_interactive = FALSE;
 
@@ -65,10 +62,7 @@ gdata_test_init (int argc, char **argv)
 
 	/* Parse the custom options */
 	for (i = 1; i < argc; i++) {
-		if (strcmp ("--no-internet", argv[i]) == 0 || strcmp ("-n", argv[i]) == 0) {
-			no_internet = TRUE;
-			argv[i] = (char*) "";
-		} else if (strcmp ("--no-interactive", argv[i]) == 0 || strcmp ("-i", argv[i]) == 0) {
+		if (strcmp ("--no-interactive", argv[i]) == 0 || strcmp ("-i", argv[i]) == 0) {
 			no_interactive = TRUE;
 			argv[i] = (char*) "";
 		} else if (strcmp ("--trace-dir", argv[i]) == 0 || strcmp ("-t", argv[i]) == 0) {
@@ -89,7 +83,7 @@ gdata_test_init (int argc, char **argv)
 			compare_traces = TRUE;
 			argv[i] = (char*) "";
 		} else if (strcmp ("-?", argv[i]) == 0 || strcmp ("--help", argv[i]) == 0 || strcmp ("-h" , argv[i]) == 0) {
-			/* We have to override --help in order to document --no-internet and --no-interactive */
+			/* We have to override --help in order to document --no-interactive and the trace flags. */
 			printf ("Usage:\n"
 			          "  %s [OPTION...]\n\n"
 			          "Help Options:\n"
@@ -103,7 +97,6 @@ gdata_test_init (int argc, char **argv)
 			          "  -p TESTPATH                    Execute all tests matching TESTPATH\n"
 			          "  -m {perf|slow|thorough|quick}  Execute tests according modes\n"
 			          "  --debug-log                    Debug test logging output\n"
-			          "  -n, --no-internet              Only execute tests which don't require Internet connectivity\n"
 			          "  -i, --no-interactive           Only execute tests which don't require user interaction\n"
 			          "  -t, --trace-dir [directory]    Read/Write trace files in the specified directory\n"
 			          "  -w, --write-traces             Work online and write trace files to --trace-dir\n"
@@ -151,21 +144,6 @@ GDataMockServer *
 gdata_test_get_mock_server (void)
 {
 	return mock_server;
-}
-
-/*
- * gdata_test_internet:
- *
- * Returns whether tests which require Internet access should be run.
- *
- * Return value: %TRUE if Internet-requiring tests should be run, %FALSE otherwise
- *
- * Since: 0.7.0
- */
-gboolean
-gdata_test_internet (void)
-{
-	return (no_internet == FALSE) ? TRUE : FALSE;
 }
 
 /*
