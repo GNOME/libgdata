@@ -1,16 +1,19 @@
 include $(top_srcdir)/gtester.mk
 
-INCLUDES = \
-	-I$(top_srcdir)/				\
-	-I$(top_srcdir)/gdata				\
-	$(GDK_PIXBUF_CFLAGS)				\
-	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\""\
-	-DG_LOG_DOMAIN=\"libgdata\"			\
-	-DLIBGDATA_DISABLE_DEPRECATED			\
-	$(DISABLE_DEPRECATED)				\
-	$(WARN_CFLAGS)					\
-	$(GDATA_CFLAGS)					\
-	$(GNOME_CFLAGS)
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/ \
+	-I$(top_srcdir)/gdata \
+	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\"" \
+	-DG_LOG_DOMAIN=\"libgdata\" \
+	-DLIBGDATA_DISABLE_DEPRECATED \
+	$(DISABLE_DEPRECATED) \
+	$(NULL)
+AM_CFLAGS = \
+	$(GDK_PIXBUF_CFLAGS) \
+	$(WARN_CFLAGS) \
+	$(GDATA_CFLAGS) \
+	$(GNOME_CFLAGS) \
+	$(NULL)
 
 LIBS = \
 	$(top_builddir)/gdata/libgdata.la	\
