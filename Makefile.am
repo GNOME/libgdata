@@ -595,20 +595,13 @@ DISTCLEANFILES = \
 	gtk-doc.make
 
 MAINTAINERCLEANFILES += \
-	INSTALL		\
-	aclocal.m4	\
-	compile		\
-	config.guess	\
-	config.h.in	\
-	config.sub	\
-	depcomp		\
-	install-sh	\
-	ltmain.sh	\
-	missing		\
-	mkinstalldirs	\
-	omf.make	\
-	gtk-doc.make	\
-	`find "$(srcdir)" -type f -name Makefile.in -print` \
+	$(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_MAKEFILE_IN) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_M4_LIBTOOL) \
+	build-aux/ \
+	INSTALL \
+	omf.make \
+	gtk-doc.make \
 	ABOUT-NLS \
 	config.rpath \
 	po/Makevars.template \
@@ -619,6 +612,8 @@ MAINTAINERCLEANFILES += \
 	po/insert-header.sin \
 	po/quot.sed \
 	po/remove-potcdate.sin \
+	m4/gtk-doc.m4 \
+	m4/intltool.m4 \
 	$(NULL)
 
 DISTCHECK_CONFIGURE_FLAGS += --enable-gtk-doc
