@@ -20,6 +20,10 @@
 #include <glib.h>
 #include <locale.h>
 #include <string.h>
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 #include "gdata.h"
 #include "common.h"
@@ -36,11 +40,17 @@ static GThread *
 run_server (SoupServer *server)
 {
 	GThread *thread;
+	gchar *port_string;
 	GError *error = NULL;
 
 	thread = g_thread_try_new ("server-thread", (GThreadFunc) run_server_thread, server, &error);
 	g_assert_no_error (error);
 	g_assert (thread != NULL);
+
+	/* Set the port so that libgdata doesn't override it. */
+	port_string = g_strdup_printf ("%u", soup_server_get_port (server));
+	g_setenv ("LIBGDATA_HTTPS_PORT", port_string, TRUE);
+	g_free (port_string);
 
 	return thread;
 }
@@ -86,12 +96,51 @@ test_download_stream_download_server_content_length_handler_cb (SoupServer *serv
 	soup_message_body_append (message->response_body, SOUP_MEMORY_TAKE, test_string, test_string_length);
 }
 
+static SoupServer *
+create_server (SoupServerCallback callback, gpointer user_data, GMainContext **async_context)
+{
+	struct sockaddr_in sock;
+	SoupAddress *addr;
+	SoupServer *server;
+
+	g_assert (async_context != NULL);
+
+	/* Create the server */
+	memset (&sock, 0, sizeof (sock));
+	sock.sin_family = AF_INET;
+	sock.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
+	sock.sin_port = htons (0); /* random port */
+
+	addr = soup_address_new_from_sockaddr ((struct sockaddr *) &sock, sizeof (sock));
+	g_assert (addr != NULL);
+
+	*async_context = g_main_context_new ();
+
+	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
+	                          SOUP_SERVER_ASYNC_CONTEXT, *async_context,
+	                          NULL);
+	soup_server_add_handler (server, NULL, callback, user_data, NULL);
+
+	g_object_unref (addr);
+
+	g_assert (server != NULL);
+
+	return server;
+}
+
+static gchar *
+build_server_uri (SoupServer *server)
+{
+	return g_strdup_printf ("http://%s:%u/",
+	                        soup_address_get_physical (soup_socket_get_local_address (soup_server_get_listener (server))),
+	                        soup_server_get_port (server));
+}
+
 static void
 test_download_stream_download_content_length (void)
 {
 	SoupServer *server;
 	GMainContext *async_context;
-	SoupAddress *addr;
 	GThread *thread;
 	gchar *download_uri, *test_string;
 	GDataService *service;
@@ -102,25 +151,12 @@ test_download_stream_download_content_length (void)
 	gboolean success;
 	GError *error = NULL;
 
-	/* Create the server */
-	async_context = g_main_context_new ();
-	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
-	soup_address_resolve_sync (addr, NULL);
-
-	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
-	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
-	                          NULL);
-	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_server_content_length_handler_cb, NULL, NULL);
-
-	g_object_unref (addr);
-
-	g_assert (server != NULL);
-
-	/* Create a thread for the server */
+	/* Create and run the server */
+	server = create_server ((SoupServerCallback) test_download_stream_download_server_content_length_handler_cb, NULL, &async_context);
 	thread = run_server (server);
 
 	/* Create a new download stream connected to the server */
-	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	download_uri = build_server_uri (server);
 	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
 	download_stream = gdata_download_stream_new (service, NULL, download_uri, NULL);
 	g_object_unref (service);
@@ -183,7 +219,6 @@ test_download_stream_download_seek_before_start (void)
 {
 	SoupServer *server;
 	GMainContext *async_context;
-	SoupAddress *addr;
 	GThread *thread;
 	gchar *download_uri, *test_string;
 	goffset test_string_offset = 0;
@@ -195,25 +230,12 @@ test_download_stream_download_seek_before_start (void)
 	gboolean success;
 	GError *error = NULL;
 
-	/* Create the server */
-	async_context = g_main_context_new ();
-	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
-	soup_address_resolve_sync (addr, NULL);
-
-	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
-	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
-	                          NULL);
-	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, NULL);
-
-	g_object_unref (addr);
-
-	g_assert (server != NULL);
-
-	/* Create a thread for the server */
+	/* Create and run the server */
+	server = create_server ((SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, &async_context);
 	thread = run_server (server);
 
 	/* Create a new download stream connected to the server */
-	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	download_uri = build_server_uri (server);
 	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
 	download_stream = gdata_download_stream_new (service, NULL, download_uri, NULL);
 	g_object_unref (service);
@@ -286,7 +308,6 @@ test_download_stream_download_seek_after_start_forwards (void)
 {
 	SoupServer *server;
 	GMainContext *async_context;
-	SoupAddress *addr;
 	GThread *thread;
 	gchar *download_uri, *test_string;
 	goffset test_string_offset = 0;
@@ -298,25 +319,12 @@ test_download_stream_download_seek_after_start_forwards (void)
 	gboolean success;
 	GError *error = NULL;
 
-	/* Create the server */
-	async_context = g_main_context_new ();
-	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
-	soup_address_resolve_sync (addr, NULL);
-
-	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
-	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
-	                          NULL);
-	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, NULL);
-
-	g_object_unref (addr);
-
-	g_assert (server != NULL);
-
-	/* Create a thread for the server */
+	/* Create and run the server */
+	server = create_server ((SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, &async_context);
 	thread = run_server (server);
 
 	/* Create a new download stream connected to the server */
-	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	download_uri = build_server_uri (server);
 	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
 	download_stream = gdata_download_stream_new (service, NULL, download_uri, NULL);
 	g_object_unref (service);
@@ -389,7 +397,6 @@ test_download_stream_download_seek_after_start_backwards (void)
 {
 	SoupServer *server;
 	GMainContext *async_context;
-	SoupAddress *addr;
 	GThread *thread;
 	gchar *download_uri, *test_string;
 	goffset test_string_offset = 0;
@@ -401,25 +408,12 @@ test_download_stream_download_seek_after_start_backwards (void)
 	gboolean success;
 	GError *error = NULL;
 
-	/* Create the server */
-	async_context = g_main_context_new ();
-	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
-	soup_address_resolve_sync (addr, NULL);
-
-	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
-	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
-	                          NULL);
-	soup_server_add_handler (server, NULL, (SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, NULL);
-
-	g_object_unref (addr);
-
-	g_assert (server != NULL);
-
-	/* Create a thread for the server */
+	/* Create and run the server */
+	server = create_server ((SoupServerCallback) test_download_stream_download_server_seek_handler_cb, NULL, &async_context);
 	thread = run_server (server);
 
 	/* Create a new download stream connected to the server */
-	download_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	download_uri = build_server_uri (server);
 	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
 	download_stream = gdata_download_stream_new (service, NULL, download_uri, NULL);
 	g_object_unref (service);
@@ -514,7 +508,6 @@ test_upload_stream_upload_no_entry_content_length (void)
 {
 	SoupServer *server;
 	GMainContext *async_context;
-	SoupAddress *addr;
 	GThread *thread;
 	gchar *upload_uri, *test_string;
 	GDataService *service;
@@ -525,25 +518,12 @@ test_upload_stream_upload_no_entry_content_length (void)
 	gboolean success;
 	GError *error = NULL;
 
-	/* Create the server */
-	async_context = g_main_context_new ();
-	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
-	soup_address_resolve_sync (addr, NULL);
-
-	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
-	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
-	                          NULL);
-	soup_server_add_handler (server, NULL, (SoupServerCallback) test_upload_stream_upload_no_entry_content_length_server_handler_cb, NULL, NULL);
-
-	g_object_unref (addr);
-
-	g_assert (server != NULL);
-
-	/* Create a thread for the server */
+	/* Create and run the server */
+	server = create_server ((SoupServerCallback) test_upload_stream_upload_no_entry_content_length_server_handler_cb, NULL, &async_context);
 	thread = run_server (server);
 
 	/* Create a new upload stream uploading to the server */
-	upload_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	upload_uri = build_server_uri (server);
 	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
 	upload_stream = gdata_upload_stream_new (service, NULL, SOUP_METHOD_POST, upload_uri, NULL, "slug", "text/plain", NULL);
 	g_object_unref (service);
@@ -799,7 +779,10 @@ continuation: {
 			soup_message_set_status (message, 308);
 		}
 
-		upload_uri = g_strdup_printf ("http://127.0.0.1:%u/%u", soup_server_get_port (server), ++server_data->next_path_index);
+		upload_uri = g_strdup_printf ("http://%s:%u/%u",
+		                              soup_address_get_physical (soup_socket_get_local_address (soup_server_get_listener (server))),
+		                              soup_server_get_port (server),
+		                              ++server_data->next_path_index);
 		soup_message_headers_replace (message->response_headers, "Location", upload_uri);
 		g_free (upload_uri);
 	}
@@ -852,7 +835,6 @@ test_upload_stream_resumable (gconstpointer user_data)
 	UploadStreamResumableServerData server_data;
 	SoupServer *server;
 	GMainContext *async_context;
-	SoupAddress *addr;
 	GThread *thread;
 	gchar *upload_uri;
 	GDataService *service;
@@ -878,27 +860,14 @@ test_upload_stream_resumable (gconstpointer user_data)
 
 	test_string_length = test_params->file_size;
 
-	/* Create the server */
+	/* Create and run the server */
 	server_data.test_params = test_params;
 	server_data.next_range_start = 0;
 	server_data.next_range_end = MIN (test_params->file_size, 512 * 1024 /* 512 KiB */) - 1;
 	server_data.next_path_index = 0;
 	server_data.test_string = test_string;
 
-	async_context = g_main_context_new ();
-	addr = soup_address_new ("127.0.0.1", SOUP_ADDRESS_ANY_PORT);
-	soup_address_resolve_sync (addr, NULL);
-
-	server = soup_server_new (SOUP_SERVER_INTERFACE, addr,
-	                          SOUP_SERVER_ASYNC_CONTEXT, async_context,
-	                          NULL);
-	soup_server_add_handler (server, NULL, (SoupServerCallback) test_upload_stream_resumable_server_handler_cb, &server_data, NULL);
-
-	g_object_unref (addr);
-
-	g_assert (server != NULL);
-
-	/* Create a thread for the server */
+	server = create_server ((SoupServerCallback) test_upload_stream_resumable_server_handler_cb, &server_data, &async_context);
 	thread = run_server (server);
 
 	/* Create a new upload stream uploading to the server */
@@ -908,7 +877,7 @@ test_upload_stream_resumable (gconstpointer user_data)
 		gdata_entry_set_title (entry, "Test title!");
 	}
 
-	upload_uri = g_strdup_printf ("http://127.0.0.1:%u/", soup_server_get_port (server));
+	upload_uri = build_server_uri (server);
 	service = GDATA_SERVICE (gdata_youtube_service_new ("developer-key", NULL));
 	upload_stream = gdata_upload_stream_new_resumable (service, NULL, SOUP_METHOD_POST, upload_uri, entry, "slug", "text/plain",
 	                                                   test_params->file_size, NULL);
