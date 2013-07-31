@@ -18,6 +18,7 @@
  */
 
 #include <glib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "gdata.h"
@@ -25,12 +26,38 @@
 
 #define DEVELOPER_KEY "AI39si7Me3Q7zYs6hmkFvpRBD2nrkVjYYsUO5lh_3HdOkGRc9g6Z4nzxZatk_aAo2EsA21k7vrda0OO6oFg2rnhMedZXPyXoEw"
 
+static GDataMockServer *mock_server = NULL;
+
+/* Effectively gdata_test_mock_server_start_trace() but calling gdata_mock_server_run() instead of gdata_mock_server_start_trace(). */
+static void
+gdata_test_mock_server_run (GDataMockServer *server)
+{
+	const gchar *ip_address;
+	GDataMockResolver *resolver;
+
+	gdata_mock_server_run (server);
+	gdata_test_set_https_port (server);
+
+	if (gdata_mock_server_get_enable_online (server) == FALSE) {
+		/* Set up the expected domain names here. This should technically be split up between
+		 * the different unit test suites, but that's too much effort. */
+		ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+		resolver = gdata_mock_server_get_resolver (server);
+
+		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
+		gdata_mock_resolver_add_A (resolver, "gdata.youtube.com", ip_address);
+		gdata_mock_resolver_add_A (resolver, "uploads.gdata.youtube.com", ip_address);
+	}
+}
+
 static void
 test_authentication (void)
 {
 	gboolean retval;
 	GDataClientLoginAuthorizer *authorizer;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "authentication");
 
 	/* Create an authorizer */
 	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE);
@@ -51,6 +78,148 @@ test_authentication (void)
 	                                                     gdata_youtube_service_get_primary_authorization_domain ()) == TRUE);
 
 	g_object_unref (authorizer);
+
+	gdata_mock_server_end_trace (mock_server);
+}
+
+/* HTTP message responses and the expected associated GData error domain/code. */
+static const GDataTestRequestErrorData authentication_errors[] = {
+	/* Generic network errors. */
+	{ SOUP_STATUS_BAD_REQUEST, "Bad Request", "Invalid parameter ‘foobar’.",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_NOT_FOUND, "Not Found", "Login page wasn't found for no good reason at all.",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_NOT_FOUND },
+	{ SOUP_STATUS_PRECONDITION_FAILED, "Precondition Failed", "Not allowed to log in at this time, possibly.",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_CONFLICT },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Internal Server Error", "Whoops.",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	/* Specific authentication errors. */
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=BadAuthentication\n",
+	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_BAD_AUTHENTICATION },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=BadAuthentication\nInfo=InvalidSecondFactor\n",
+	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_INVALID_SECOND_FACTOR },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=NotVerified\nUrl=http://example.com/\n",
+	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_NOT_VERIFIED },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=TermsNotAgreed\nUrl=http://example.com/\n",
+	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_TERMS_NOT_AGREED },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=Unknown\nUrl=http://example.com/\n",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=AccountDeleted\nUrl=http://example.com/\n",
+	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_ACCOUNT_DELETED },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=AccountDisabled\nUrl=http://example.com/\n",
+	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_ACCOUNT_DISABLED },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=AccountMigrated\nUrl=http://example.com/\n",
+	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_ACCOUNT_MIGRATED },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=ServiceDisabled\nUrl=http://example.com/\n",
+	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_SERVICE_DISABLED },
+	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=ServiceUnavailable\nUrl=http://example.com/\n",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_UNAVAILABLE },
+	/* Malformed authentication errors to test parser error handling. */
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Access Forbidden", "Error=BadAuthentication", /* missing Error delimiter */
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Access Forbidden", "Error=AccountDeleted\n", /* missing Url */
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Access Forbidden", "Error=AccountDeleted\nUrl=http://example.com/", /* missing Url delimiter */
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Access Forbidden", "", /* missing Error */
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Access Forbidden", "Error=", /* missing Error */
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Access Forbidden", "Error=Foobar\nUrl=http://example.com/\n", /* unknown Error */
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+};
+
+static void
+test_authentication_error (void)
+{
+	gboolean retval;
+	GDataClientLoginAuthorizer *authorizer;
+	GError *error = NULL;
+	gulong handler_id;
+	guint i;
+
+	if (gdata_mock_server_get_enable_logging (mock_server) == TRUE) {
+		g_test_message ("Ignoring test due to logging being enabled.");
+		return;
+	} else if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+		g_test_message ("Ignoring test due to running online and test not being reproducible.");
+		return;
+	}
+
+	for (i = 0; i < G_N_ELEMENTS (authentication_errors); i++) {
+		const GDataTestRequestErrorData *data = &authentication_errors[i];
+
+		handler_id = g_signal_connect (mock_server, "handle-message", (GCallback) gdata_test_mock_server_handle_message_error, (gpointer) data);
+		gdata_test_mock_server_run (mock_server);
+
+		/* Create an authorizer */
+		authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE);
+
+		g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
+
+		/* Log in */
+		retval = gdata_client_login_authorizer_authenticate (authorizer, USERNAME, PASSWORD, NULL, &error);
+		g_assert_error (error, data->error_domain_func (), data->error_code);
+		g_assert (retval == FALSE);
+		g_clear_error (&error);
+
+		/* Check nothing's changed in the authoriser. */
+		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
+		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
+
+		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+		                                                     gdata_youtube_service_get_primary_authorization_domain ()) == FALSE);
+
+		g_object_unref (authorizer);
+
+		gdata_mock_server_stop (mock_server);
+		g_signal_handler_disconnect (mock_server, handler_id);
+	}
+}
+
+static void
+test_authentication_timeout (void)
+{
+	gboolean retval;
+	GDataClientLoginAuthorizer *authorizer;
+	GError *error = NULL;
+	gulong handler_id;
+
+	if (gdata_mock_server_get_enable_logging (mock_server) == TRUE) {
+		g_test_message ("Ignoring test due to logging being enabled.");
+		return;
+	} else if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+		g_test_message ("Ignoring test due to running online and test not being reproducible.");
+		return;
+	}
+
+	handler_id = g_signal_connect (mock_server, "handle-message", (GCallback) gdata_test_mock_server_handle_message_timeout, NULL);
+	gdata_mock_server_run (mock_server);
+	gdata_test_set_https_port (mock_server);
+
+	/* Create an authorizer and set its timeout as low as possible (1 second). */
+	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE);
+	gdata_client_login_authorizer_set_timeout (authorizer, 1);
+
+	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
+
+	/* Log in */
+	retval = gdata_client_login_authorizer_authenticate (authorizer, USERNAME, PASSWORD, NULL, &error);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR);
+	g_assert (retval == FALSE);
+	g_clear_error (&error);
+
+	/* Check nothing's changed in the authoriser. */
+	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
+	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
+
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_youtube_service_get_primary_authorization_domain ()) == FALSE);
+
+	g_object_unref (authorizer);
+
+	gdata_mock_server_stop (mock_server);
+	g_signal_handler_disconnect (mock_server, handler_id);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
@@ -109,19 +278,202 @@ test_service_properties (void)
 }
 
 static void
+test_query_standard_feeds (gconstpointer service)
+{
+	GDataFeed *feed;
+	GError *error = NULL;
+	guint i;
+	struct {
+		GDataYouTubeStandardFeedType feed_type;
+		const gchar *expected_title;
+	} feeds[] = {
+		/* This must be kept up-to-date with GDataYouTubeStandardFeedType. */
+		{ GDATA_YOUTUBE_TOP_RATED_FEED, "Top Rated" },
+		{ GDATA_YOUTUBE_TOP_FAVORITES_FEED, "Top Favorites" },
+		{ GDATA_YOUTUBE_MOST_VIEWED_FEED, "Most Popular" },
+		{ GDATA_YOUTUBE_MOST_POPULAR_FEED, "Most Popular" },
+		{ GDATA_YOUTUBE_MOST_RECENT_FEED, "Most Recent" },
+		{ GDATA_YOUTUBE_MOST_DISCUSSED_FEED, "Most Discussed" },
+		{ GDATA_YOUTUBE_MOST_LINKED_FEED, NULL },
+		{ GDATA_YOUTUBE_MOST_RESPONDED_FEED, "Most Responded" },
+		{ GDATA_YOUTUBE_RECENTLY_FEATURED_FEED, "Spotlight Videos" },
+		{ GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED, NULL },
+	};
+
+	gdata_test_mock_server_start_trace (mock_server, "query-standard-feeds");
+
+	for (i = 0; i < G_N_ELEMENTS (feeds); i++) {
+		feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), feeds[i].feed_type, NULL, NULL, NULL, NULL, &error);
+		g_assert_no_error (error);
+		g_assert (GDATA_IS_FEED (feed));
+		g_clear_error (&error);
+
+		g_assert_cmpstr (gdata_feed_get_title (feed), ==, feeds[i].expected_title);
+
+		g_object_unref (feed);
+	}
+
+	gdata_mock_server_end_trace (mock_server);
+}
+
+static void
 test_query_standard_feed (gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "query-standard-feed");
 
 	feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
 
-	/* TODO: check entries and feed properties */
+	g_assert_cmpstr (gdata_feed_get_title (feed), ==, "Top Rated");
 
 	g_object_unref (feed);
+
+	gdata_mock_server_end_trace (mock_server);
+}
+
+static void
+test_query_standard_feed_with_query (gconstpointer service)
+{
+	GDataYouTubeQuery *query;
+	GDataFeed *feed;
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "query-standard-feed-with-query");
+
+	query = gdata_youtube_query_new (NULL);
+	gdata_youtube_query_set_language (query, "fr");
+
+	feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, GDATA_QUERY (query), NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_FEED (feed));
+	g_clear_error (&error);
+
+	g_assert_cmpstr (gdata_feed_get_title (feed), ==, "Top Rated");
+
+	g_object_unref (query);
+	g_object_unref (feed);
+
+	gdata_mock_server_end_trace (mock_server);
+}
+
+/* HTTP message responses and the expected associated GData error domain/code. */
+static const GDataTestRequestErrorData query_standard_feed_errors[] = {
+	/* Generic network errors. */
+	{ SOUP_STATUS_BAD_REQUEST, "Bad Request", "Invalid parameter ‘foobar’.",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_NOT_FOUND, "Not Found", "Login page wasn't found for no good reason at all.",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_NOT_FOUND },
+	{ SOUP_STATUS_PRECONDITION_FAILED, "Precondition Failed", "Not allowed to log in at this time, possibly.",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_CONFLICT },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Internal Server Error", "Whoops.",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	/* Specific query errors. */
+	{ SOUP_STATUS_FORBIDDEN, "Too Many Calls",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:quota</domain><code>too_many_recent_calls</code></error></errors>",
+	  gdata_youtube_service_error_quark, GDATA_YOUTUBE_SERVICE_ERROR_API_QUOTA_EXCEEDED },
+	{ SOUP_STATUS_FORBIDDEN, "Too Many Entries",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:quota</domain><code>too_many_entries</code></error></errors>",
+	  gdata_youtube_service_error_quark, GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED },
+	{ SOUP_STATUS_SERVICE_UNAVAILABLE, "Maintenance",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:service</domain><code>disabled_in_maintenance_mode</code></error></errors>",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_UNAVAILABLE },
+	{ SOUP_STATUS_FORBIDDEN, "YouTube Signup Required",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:service</domain><code>youtube_signup_required</code></error></errors>",
+	  gdata_youtube_service_error_quark, GDATA_YOUTUBE_SERVICE_ERROR_CHANNEL_REQUIRED },
+	{ SOUP_STATUS_FORBIDDEN, "Forbidden",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:authentication</domain><code>TokenExpired</code>"
+	  "<location type='header'>Authorization: GoogleLogin</location></error></errors>",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED },
+	/* Malformed YouTube errors to test parser error handling. */
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Malformed XML",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors>",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_FORBIDDEN, "Empty Response", "",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Unknown Element",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors> <error> <foobar /> </error> </errors>",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Wrong Top-Level Element",
+	  "<?xml version='1.0' encoding='UTF-8'?><nonerrors></nonerrors>",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_FORBIDDEN, "Unknown Error Code (Service)",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:service</domain><code>UnknownCode</code></error></errors>",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_FORBIDDEN, "Unknown Error Code (Quota)",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:quota</domain><code>UnknownCode</code></error></errors>",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+	{ SOUP_STATUS_FORBIDDEN, "Unknown Error Domain",
+	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:foobaz</domain><code>TokenExpired</code></error></errors>",
+	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+};
+
+static void
+test_query_standard_feed_error (gconstpointer service)
+{
+	GDataFeed *feed;
+	GError *error = NULL;
+	gulong handler_id;
+	guint i;
+
+	if (gdata_mock_server_get_enable_logging (mock_server) == TRUE) {
+		g_test_message ("Ignoring test due to logging being enabled.");
+		return;
+	} else if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+		g_test_message ("Ignoring test due to running online and test not being reproducible.");
+		return;
+	}
+
+	for (i = 0; i < G_N_ELEMENTS (query_standard_feed_errors); i++) {
+		const GDataTestRequestErrorData *data = &query_standard_feed_errors[i];
+
+		handler_id = g_signal_connect (mock_server, "handle-message", (GCallback) gdata_test_mock_server_handle_message_error, (gpointer) data);
+		gdata_test_mock_server_run (mock_server);
+
+		/* Query the feed. */
+		feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL, NULL, NULL, &error);
+		g_assert_error (error, data->error_domain_func (), data->error_code);
+		g_assert (feed == NULL);
+		g_clear_error (&error);
+
+		gdata_mock_server_stop (mock_server);
+		g_signal_handler_disconnect (mock_server, handler_id);
+	}
+}
+
+static void
+test_query_standard_feed_timeout (gconstpointer service)
+{
+	GDataFeed *feed;
+	GError *error = NULL;
+	gulong handler_id;
+
+	if (gdata_mock_server_get_enable_logging (mock_server) == TRUE) {
+		g_test_message ("Ignoring test due to logging being enabled.");
+		return;
+	} else if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+		g_test_message ("Ignoring test due to running online and test not being reproducible.");
+		return;
+	}
+
+	handler_id = g_signal_connect (mock_server, "handle-message", (GCallback) gdata_test_mock_server_handle_message_timeout, NULL);
+	gdata_test_mock_server_run (mock_server);
+
+	/* Set the service's timeout as low as possible (1 second). */
+	gdata_service_set_timeout (GDATA_SERVICE (service), 1);
+
+	/* Query the feed. */
+	feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL, NULL, NULL, &error);
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR);
+	g_assert (feed == NULL);
+	g_clear_error (&error);
+
+	gdata_mock_server_stop (mock_server);
+	g_signal_handler_disconnect (mock_server, handler_id);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (query_standard_feed, void,
@@ -151,6 +503,8 @@ test_query_standard_feed_async_progress_closure (gconstpointer service)
 
 	g_assert (service != NULL);
 
+	gdata_test_mock_server_start_trace (mock_server, "query-standard-feed-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_youtube_service_query_standard_feed_async (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL,
@@ -165,6 +519,8 @@ test_query_standard_feed_async_progress_closure (gconstpointer service)
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static GDataYouTubeVideo *
@@ -243,6 +599,8 @@ test_query_related (gconstpointer service)
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "query-related");
+
 	video = get_video_for_related ();
 	feed = gdata_youtube_service_query_related (GDATA_YOUTUBE_SERVICE (service), video, NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -253,6 +611,8 @@ test_query_related (gconstpointer service)
 
 	g_object_unref (video);
 	g_object_unref (feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (query_related, void,
@@ -287,6 +647,8 @@ test_query_related_async_progress_closure (gconstpointer service)
 
 	g_assert (service != NULL);
 
+	gdata_test_mock_server_start_trace (mock_server, "query-related-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 	video = get_video_for_related ();
 
@@ -304,6 +666,8 @@ test_query_related_async_progress_closure (gconstpointer service)
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -354,6 +718,8 @@ set_up_upload (UploadData *data, gconstpointer service)
 static void
 tear_down_upload (UploadData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-upload");
+
 	/* Delete the uploaded video, if possible */
 	if (data->updated_video != NULL) {
 		gdata_service_delete_entry (GDATA_SERVICE (service), gdata_youtube_service_get_primary_authorization_domain (),
@@ -366,6 +732,8 @@ tear_down_upload (UploadData *data, gconstpointer service)
 	g_free (data->slug);
 	g_free (data->content_type);
 	g_object_unref (data->service);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -376,6 +744,8 @@ test_upload_simple (UploadData *data, gconstpointer service)
 	const gchar * const *tags, * const *tags2;
 	gssize transfer_size;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "upload-simple");
 
 	/* Prepare the upload stream */
 	upload_stream = gdata_youtube_service_upload_video (GDATA_YOUTUBE_SERVICE (service), data->video, data->slug, data->content_type, NULL,
@@ -415,6 +785,8 @@ test_upload_simple (UploadData *data, gconstpointer service)
 	g_assert_cmpstr (tags2[0], ==, tags[0]);
 	g_assert_cmpstr (tags2[1], ==, tags[1]);
 	g_assert_cmpstr (tags2[2], ==, tags[2]);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (upload, UploadData);
@@ -1336,6 +1708,8 @@ test_query_single (gconstpointer service)
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "query-single");
+
 	video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry (GDATA_SERVICE (service),
 	                                                               gdata_youtube_service_get_primary_authorization_domain (),
 	                                                               "tag:youtube.com,2008:video:_LeQuMpwbW4", NULL,
@@ -1349,6 +1723,8 @@ test_query_single (gconstpointer service)
 	g_clear_error (&error);
 
 	g_object_unref (video);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (query_single, void,
@@ -1380,12 +1756,16 @@ typedef struct {
 static void
 set_up_comment (CommentData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "setup-comment");
+
 	/* Get a video known to have comments on it. */
 	data->video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry (GDATA_SERVICE (service),
 	                                                                     gdata_youtube_service_get_primary_authorization_domain (),
 	                                                                     "tag:youtube.com,2008:video:RzR2k8yo4NY", NULL,
 	                                                                     GDATA_TYPE_YOUTUBE_VIDEO, NULL, NULL));
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->video));
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1428,6 +1808,8 @@ test_comment_query (CommentData *data, gconstpointer service)
 	GDataFeed *comments_feed;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "comment-query");
+
 	/* Get the comments feed for the video */
 	comments_feed = gdata_commentable_query_comments (GDATA_COMMENTABLE (data->video), GDATA_SERVICE (service), NULL, NULL, NULL, NULL, &error);
 	g_assert_no_error (error);
@@ -1436,6 +1818,8 @@ test_comment_query (CommentData *data, gconstpointer service)
 	assert_comments_feed (comments_feed);
 
 	g_object_unref (comments_feed);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (comment, CommentData);
@@ -1467,6 +1851,8 @@ test_comment_query_async_progress_closure (CommentData *query_data, gconstpointe
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
 
+	gdata_test_mock_server_start_trace (mock_server, "comment-query-async-progress-closure");
+
 	data->main_loop = g_main_loop_new (NULL, TRUE);
 
 	gdata_commentable_query_comments_async (GDATA_COMMENTABLE (query_data->video), GDATA_SERVICE (service), NULL, NULL,
@@ -1482,6 +1868,8 @@ test_comment_query_async_progress_closure (CommentData *query_data, gconstpointe
 	g_assert_cmpuint (data->async_ready_notify_count, ==, 1);
 
 	g_slice_free (GDataAsyncProgressClosure, data);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1494,21 +1882,29 @@ set_up_insert_comment (InsertCommentData *data, gconstpointer service)
 {
 	set_up_comment ((CommentData*) data, service);
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-insert-comment");
+
 	/* Create a test comment to be inserted. */
 	data->comment = gdata_youtube_comment_new (NULL);
 	g_assert (GDATA_IS_YOUTUBE_COMMENT (data->comment));
 
 	gdata_entry_set_content (GDATA_ENTRY (data->comment), "This is a test comment.");
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
 tear_down_insert_comment (InsertCommentData *data, gconstpointer service)
 {
+	gdata_test_mock_server_start_trace (mock_server, "teardown-insert-comment");
+
 	if (data->comment != NULL) {
 		g_object_unref (data->comment);
 	}
 
 	tear_down_comment ((CommentData*) data, service);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1541,6 +1937,8 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 	GDataComment *new_comment;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "comment-insert");
+
 	new_comment = gdata_commentable_insert_comment (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service), GDATA_COMMENT (data->comment),
 	                                                NULL, &error);
 	g_assert_no_error (error);
@@ -1549,6 +1947,8 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 	assert_comments_equal (new_comment, data->comment);
 
 	g_object_unref (new_comment);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_comment, InsertCommentData);
@@ -1578,6 +1978,8 @@ test_comment_delete (InsertCommentData *data, gconstpointer service)
 	gboolean success;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "comment-delete");
+
 	/* We attempt to delete a comment which hasn't been inserted here, but that doesn't matter as the function should always immediately
 	 * return an error because deleting YouTube comments isn't allowed. */
 	success = gdata_commentable_delete_comment (GDATA_COMMENTABLE (data->parent.video), GDATA_SERVICE (service), GDATA_COMMENT (data->comment),
@@ -1585,6 +1987,8 @@ test_comment_delete (InsertCommentData *data, gconstpointer service)
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN);
 	g_assert (success == FALSE);
 	g_clear_error (&error);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (comment_delete, InsertCommentData,
@@ -1650,6 +2054,8 @@ test_categories (gconstpointer service)
 	GError *error = NULL;
 	gchar *category_label, *old_locale;
 
+	gdata_test_mock_server_start_trace (mock_server, "categories");
+
 	app_categories = gdata_youtube_service_get_categories (GDATA_YOUTUBE_SERVICE (service), NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_APP_CATEGORIES (app_categories));
@@ -1686,6 +2092,8 @@ test_categories (gconstpointer service)
 	/* Reset the locale */
 	gdata_service_set_locale (GDATA_SERVICE (service), old_locale);
 	g_free (old_locale);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (categories, void,
@@ -1722,6 +2130,8 @@ setup_batch (BatchData *data, gconstpointer service)
 	GDataEntry *video;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "setup-batch");
+
 	/* We can't insert new videos as they'd just hit the moderation queue and cause tests to fail. Instead, we rely on two videos already existing
 	 * on the server with the given IDs. */
 	video = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_youtube_service_get_primary_authorization_domain (),
@@ -1739,6 +2149,8 @@ setup_batch (BatchData *data, gconstpointer service)
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 
 	data->new_video2 = video;
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1749,6 +2161,8 @@ test_batch (BatchData *data, gconstpointer service)
 	gchar *feed_uri;
 	guint op_id, op_id2;
 	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "batch");
 
 	/* Here we hardcode the feed URI, but it should really be extracted from a video feed, as the GDATA_LINK_BATCH link.
 	 * It looks like this feed is read-only, so we can only test querying. */
@@ -1793,6 +2207,8 @@ test_batch (BatchData *data, gconstpointer service)
 
 	g_clear_error (&error);
 	g_object_unref (operation);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1813,6 +2229,8 @@ test_batch_async (BatchData *data, gconstpointer service)
 	GDataBatchOperation *operation;
 	GMainLoop *main_loop;
 
+	gdata_test_mock_server_start_trace (mock_server, "batch-async");
+
 	/* Run an async query operation on the video */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_youtube_service_get_primary_authorization_domain (),
 	                                              "https://gdata.youtube.com/feeds/api/videos/batch");
@@ -1824,6 +2242,8 @@ test_batch_async (BatchData *data, gconstpointer service)
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1846,6 +2266,8 @@ test_batch_async_cancellation (BatchData *data, gconstpointer service)
 	GCancellable *cancellable;
 	GError *error = NULL;
 
+	gdata_test_mock_server_start_trace (mock_server, "batch-async-cancellation");
+
 	/* Run an async query operation on the video */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_youtube_service_get_primary_authorization_domain (),
 	                                              "https://gdata.youtube.com/feeds/api/videos/batch");
@@ -1865,6 +2287,8 @@ test_batch_async_cancellation (BatchData *data, gconstpointer service)
 	g_main_loop_unref (main_loop);
 	g_object_unref (cancellable);
 	g_object_unref (operation);
+
+	gdata_mock_server_end_trace (mock_server);
 }
 
 static void
@@ -1880,77 +2304,89 @@ main (int argc, char *argv[])
 	gint retval;
 	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
+	GFile *trace_directory;
 
 	gdata_test_init (argc, argv);
 
-	if (gdata_test_internet () == TRUE) {
-		authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE));
-		gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
+	mock_server = gdata_test_get_mock_server ();
+	trace_directory = g_file_new_for_path ("traces/youtube");
+	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	g_object_unref (trace_directory);
 
-		service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, authorizer));
+	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
+	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE));
+	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
+	gdata_mock_server_end_trace (mock_server);
 
-		g_test_add_func ("/youtube/authentication", test_authentication);
-		g_test_add ("/youtube/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
-		            gdata_tear_down_async_test_data);
-		g_test_add ("/youtube/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
-		            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
+	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, authorizer));
 
-		g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
-		g_test_add ("/youtube/query/standard_feed/async", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-		            test_query_standard_feed_async, gdata_tear_down_async_test_data);
-		g_test_add_data_func ("/youtube/query/standard_feed/async/progress_closure", service, test_query_standard_feed_async_progress_closure);
-		g_test_add ("/youtube/query/standard_feed/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-		            test_query_standard_feed_async_cancellation, gdata_tear_down_async_test_data);
-		g_test_add_data_func ("/youtube/query/related", service, test_query_related);
-		g_test_add ("/youtube/query/related/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_related_async,
-		            gdata_tear_down_async_test_data);
-		g_test_add_data_func ("/youtube/query/related/async/progress_closure", service, test_query_related_async_progress_closure);
-		g_test_add ("/youtube/query/related/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-		            test_query_related_async_cancellation, gdata_tear_down_async_test_data);
+	g_test_add_func ("/youtube/authentication", test_authentication);
+	g_test_add_func ("/youtube/authentication/error", test_authentication_error);
+	g_test_add_func ("/youtube/authentication/timeout", test_authentication_timeout);
+	g_test_add ("/youtube/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
+	            gdata_tear_down_async_test_data);
+	g_test_add ("/youtube/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
+	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
-		g_test_add ("/youtube/upload/simple", UploadData, service, set_up_upload, test_upload_simple, tear_down_upload);
-		g_test_add ("/youtube/upload/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_async, tear_down_upload_async);
-		g_test_add ("/youtube/upload/async/cancellation", GDataAsyncTestData, service, set_up_upload_async, test_upload_async_cancellation,
-		            tear_down_upload_async);
+	g_test_add_data_func ("/youtube/query/standard_feeds", service, test_query_standard_feeds);
+	g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
+	g_test_add_data_func ("/youtube/query/standard_feed/with_query", service, test_query_standard_feed_with_query);
+	g_test_add_data_func ("/youtube/query/standard_feed/error", service, test_query_standard_feed_error);
+	g_test_add_data_func ("/youtube/query/standard_feed/timeout", service, test_query_standard_feed_timeout);
+	g_test_add ("/youtube/query/standard_feed/async", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+	            test_query_standard_feed_async, gdata_tear_down_async_test_data);
+	g_test_add_data_func ("/youtube/query/standard_feed/async/progress_closure", service, test_query_standard_feed_async_progress_closure);
+	g_test_add ("/youtube/query/standard_feed/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+	            test_query_standard_feed_async_cancellation, gdata_tear_down_async_test_data);
+	g_test_add_data_func ("/youtube/query/related", service, test_query_related);
+	g_test_add ("/youtube/query/related/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_related_async,
+	            gdata_tear_down_async_test_data);
+	g_test_add_data_func ("/youtube/query/related/async/progress_closure", service, test_query_related_async_progress_closure);
+	g_test_add ("/youtube/query/related/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+	            test_query_related_async_cancellation, gdata_tear_down_async_test_data);
 
-		g_test_add_data_func ("/youtube/query/single", service, test_query_single);
-		g_test_add ("/youtube/query/single/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_single_async,
-		            gdata_tear_down_async_test_data);
-		g_test_add ("/youtube/query/single/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-		            test_query_single_async_cancellation, gdata_tear_down_async_test_data);
+	g_test_add ("/youtube/upload/simple", UploadData, service, set_up_upload, test_upload_simple, tear_down_upload);
+	g_test_add ("/youtube/upload/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_async, tear_down_upload_async);
+	g_test_add ("/youtube/upload/async/cancellation", GDataAsyncTestData, service, set_up_upload_async, test_upload_async_cancellation,
+	            tear_down_upload_async);
 
-		g_test_add ("/youtube/comment/query", CommentData, service, set_up_comment, test_comment_query, tear_down_comment);
-		g_test_add ("/youtube/comment/query/async", GDataAsyncTestData, service, set_up_comment_async, test_comment_query_async,
-		            tear_down_comment_async);
-		g_test_add ("/youtube/comment/query/async/cancellation", GDataAsyncTestData, service, set_up_comment_async,
-		            test_comment_query_async_cancellation, tear_down_comment_async);
-		g_test_add ("/youtube/comment/query/async/progress_closure", CommentData, service, set_up_comment,
-		            test_comment_query_async_progress_closure, tear_down_comment);
+	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
+	g_test_add ("/youtube/query/single/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_single_async,
+	            gdata_tear_down_async_test_data);
+	g_test_add ("/youtube/query/single/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+	            test_query_single_async_cancellation, gdata_tear_down_async_test_data);
 
-		g_test_add ("/youtube/comment/insert", InsertCommentData, service, set_up_insert_comment, test_comment_insert,
-		            tear_down_insert_comment);
-		g_test_add ("/youtube/comment/insert/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_insert_async,
-		            tear_down_insert_comment_async);
-		g_test_add ("/youtube/comment/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
-		            test_comment_insert_async_cancellation, tear_down_insert_comment_async);
+	g_test_add ("/youtube/comment/query", CommentData, service, set_up_comment, test_comment_query, tear_down_comment);
+	g_test_add ("/youtube/comment/query/async", GDataAsyncTestData, service, set_up_comment_async, test_comment_query_async,
+	            tear_down_comment_async);
+	g_test_add ("/youtube/comment/query/async/cancellation", GDataAsyncTestData, service, set_up_comment_async,
+	            test_comment_query_async_cancellation, tear_down_comment_async);
+	g_test_add ("/youtube/comment/query/async/progress_closure", CommentData, service, set_up_comment,
+	            test_comment_query_async_progress_closure, tear_down_comment);
 
-		g_test_add ("/youtube/comment/delete", InsertCommentData, service, set_up_insert_comment, test_comment_delete,
-		            tear_down_insert_comment);
-		g_test_add ("/youtube/comment/delete/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_delete_async,
-		            tear_down_insert_comment_async);
-		g_test_add ("/youtube/comment/delete/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
-		            test_comment_delete_async_cancellation, tear_down_insert_comment_async);
+	g_test_add ("/youtube/comment/insert", InsertCommentData, service, set_up_insert_comment, test_comment_insert,
+	            tear_down_insert_comment);
+	g_test_add ("/youtube/comment/insert/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_insert_async,
+	            tear_down_insert_comment_async);
+	g_test_add ("/youtube/comment/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
+	            test_comment_insert_async_cancellation, tear_down_insert_comment_async);
 
-		g_test_add_data_func ("/youtube/categories", service, test_categories);
-		g_test_add ("/youtube/categories/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_categories_async,
-		            gdata_tear_down_async_test_data);
-		g_test_add ("/youtube/categories/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-		            test_categories_async_cancellation, gdata_tear_down_async_test_data);
+	g_test_add ("/youtube/comment/delete", InsertCommentData, service, set_up_insert_comment, test_comment_delete,
+	            tear_down_insert_comment);
+	g_test_add ("/youtube/comment/delete/async", GDataAsyncTestData, service, set_up_insert_comment_async, test_comment_delete_async,
+	            tear_down_insert_comment_async);
+	g_test_add ("/youtube/comment/delete/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
+	            test_comment_delete_async_cancellation, tear_down_insert_comment_async);
 
-		g_test_add ("/youtube/batch", BatchData, service, setup_batch, test_batch, teardown_batch);
-		g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);
-		g_test_add ("/youtube/batch/async/cancellation", BatchData, service, setup_batch, test_batch_async_cancellation, teardown_batch);
-	}
+	g_test_add_data_func ("/youtube/categories", service, test_categories);
+	g_test_add ("/youtube/categories/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_categories_async,
+	            gdata_tear_down_async_test_data);
+	g_test_add ("/youtube/categories/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
+	            test_categories_async_cancellation, gdata_tear_down_async_test_data);
+
+	g_test_add ("/youtube/batch", BatchData, service, setup_batch, test_batch, teardown_batch);
+	g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);
+	g_test_add ("/youtube/batch/async/cancellation", BatchData, service, setup_batch, test_batch_async_cancellation, teardown_batch);
 
 	g_test_add_func ("/youtube/service/properties", test_service_properties);
 
