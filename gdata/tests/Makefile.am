@@ -24,8 +24,13 @@ LIBS = \
 noinst_PROGRAMS = $(TEST_PROGS)
 
 TEST_SRCS = \
-	common.c	\
-	common.h
+	common.c \
+	common.h \
+	mock-resolver.c \
+	mock-resolver.h \
+	mock-server.c \
+	mock-server.h \
+	$(NULL)
 
 TEST_PROGS			+= general
 general_SOURCES			 = general.c $(TEST_SRCS)

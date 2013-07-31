@@ -48,6 +48,8 @@ CFILE_GLOB=$(top_srcdir)/gdata/*.c $(top_srcdir)/gdata/services/*/*.c
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES = \
 	common.h		\
+	mock-resolver.h		\
+	mock-server.h		\
 	gdata-private.h		\
 	gdata-parser.h		\
 	gdata-marshal.h		\
