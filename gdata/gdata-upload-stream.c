@@ -1075,32 +1075,10 @@ wrote_headers_cb (SoupMessage *message, GDataUploadStream *self)
 	write_next_chunk (self, message);
 }
 
-typedef struct {
-	GDataUploadStream *upload_stream;
-	SoupMessage *message;
-} WriteNextChunkData;
-
-static void
-write_next_chunk_data_free (WriteNextChunkData *data)
-{
-	g_object_unref (data->message);
-	g_object_unref (data->upload_stream);
-	g_slice_free (WriteNextChunkData, data);
-}
-
-static gboolean
-write_next_chunk_cb (gpointer user_data)
-{
-	WriteNextChunkData *data = user_data;
-	write_next_chunk (data->upload_stream, data->message);
-	return FALSE;
-}
-
 static void
 wrote_body_data_cb (SoupMessage *message, SoupBuffer *buffer, GDataUploadStream *self)
 {
 	GDataUploadStreamPrivate *priv = self->priv;
-	WriteNextChunkData *data;
 
 	/* Signal the main thread that the chunk has been written */
 	g_mutex_lock (&(priv->write_mutex));
@@ -1115,12 +1093,8 @@ wrote_body_data_cb (SoupMessage *message, SoupBuffer *buffer, GDataUploadStream 
 	g_cond_signal (&(priv->write_cond));
 	g_mutex_unlock (&(priv->write_mutex));
 
-	/* Send the next chunk to libsoup. Do so in an idle callback to avoid overflowing the stack. */
-	data = g_slice_new (WriteNextChunkData);
-	data->message = g_object_ref (message);
-	data->upload_stream = g_object_ref (self);
-
-	g_idle_add_full (G_PRIORITY_DEFAULT, write_next_chunk_cb, data, (GDestroyNotify) write_next_chunk_data_free);
+	/* Send the next chunk to libsoup */
+	write_next_chunk (self, message);
 }
 
 static gpointer
