@@ -161,6 +161,9 @@ set_up_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
 	gdata_contacts_contact_set_nickname (contact, "Test Contact 3");
 	data->contact3 = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
 	g_object_unref (contact);
+
+	/* It takes a few seconds for the contacts to reliably propagate around Google's servers. Distributed systems are so fun. Not. */
+	g_usleep (G_USEC_PER_SEC * 5);
 }
 
 static void
