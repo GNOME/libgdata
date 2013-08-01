@@ -1337,8 +1337,7 @@ remove_entry_from_folder_thread (GSimpleAsyncResult *result, GDataDocumentsServi
 	/* Remove the entry from the folder and return */
 	updated_entry = gdata_documents_service_remove_entry_from_folder (service, data->entry, data->folder, cancellable, &error);
 	if (error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
+		g_simple_async_result_take_error (result, error);
 		return;
 	}
 
