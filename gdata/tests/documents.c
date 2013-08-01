@@ -1240,6 +1240,7 @@ G_STMT_START {
 } G_STMT_END,
 G_STMT_START {
 	GDataDocumentsEntry *entry;
+	GDataEntry *new_entry;
 
 	entry = gdata_documents_service_remove_entry_from_folder_finish (GDATA_DOCUMENTS_SERVICE (obj), async_result, &error);
 
@@ -1254,6 +1255,17 @@ G_STMT_START {
 	} else {
 		g_assert (entry == NULL);
 	}
+
+	/* With the longer cancellation timeouts, the server can somehow modify the document without getting around to completely
+	 * deleting it; hence its ETag changes, but it isn't marked as deleted. Joy of joys. Re-query for the document after every
+	 * attempt to ensure we've always got the latest ETag value. */
+	new_entry = gdata_service_query_single_entry (GDATA_SERVICE (obj), gdata_documents_service_get_primary_authorization_domain (),
+	                                              gdata_entry_get_id (GDATA_ENTRY (data->document)), NULL,
+	                                              G_OBJECT_TYPE (data->document), NULL, NULL);
+	g_assert (GDATA_IS_DOCUMENTS_ENTRY (new_entry));
+
+	g_object_unref (data->document);
+	data->document = new_entry;
 } G_STMT_END);
 
 static void
