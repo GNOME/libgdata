@@ -45,8 +45,9 @@ picasaweb_SOURCES		 = picasaweb.c $(TEST_SRCS)
 TEST_PROGS			+= documents
 documents_SOURCES		 = documents.c $(TEST_SRCS)
 
-TEST_PROGS			+= memory
-memory_SOURCES			 = memory.c $(TEST_SRCS)
+# FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
+#TEST_PROGS			+= memory
+#memory_SOURCES			 = memory.c $(TEST_SRCS)
 
 TEST_PROGS			+= perf
 perf_SOURCES			 = perf.c $(TEST_SRCS)
