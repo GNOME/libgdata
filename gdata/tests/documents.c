@@ -271,8 +271,11 @@ _set_up_temp_document (GDataDocumentsEntry *entry, GDataService *service, GFile 
 
 	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back when creating the document:
 	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before trying this to allow the
-	 * various Google servers to catch up with each other. */
-	g_usleep (5 * G_USEC_PER_SEC);
+	 * various Google servers to catch up with each other. Thankfully, we don't have to wait when running against the mock server. */
+	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+		g_usleep (5 * G_USEC_PER_SEC);
+	}
+
 	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_query_single_entry (service,
 	                                                                           gdata_documents_service_get_primary_authorization_domain (),
 	                                                                           gdata_entry_get_id (GDATA_ENTRY (document)), NULL,
@@ -689,7 +692,10 @@ tear_down_upload_document (UploadDocumentData *data, gconstpointer _test_params)
 		/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data
 		 * when creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few
 		 * seconds before trying this to allow the various Google servers to catch up with each other. */
-		g_usleep (5 * G_USEC_PER_SEC);
+		if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+			g_usleep (5 * G_USEC_PER_SEC);
+		}
+
 		delete_entry (GDATA_DOCUMENTS_ENTRY (data->new_document), GDATA_SERVICE (test_params->service));
 		g_object_unref (data->new_document);
 	}
@@ -1000,7 +1006,10 @@ tear_down_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 		/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't update both metadata and data
 		 * when creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few
 		 * seconds before trying this to allow the various Google servers to catch up with each other. */
-		g_usleep (5 * G_USEC_PER_SEC);
+		if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+			g_usleep (5 * G_USEC_PER_SEC);
+		}
+
 		delete_entry (GDATA_DOCUMENTS_ENTRY (data->document), GDATA_SERVICE (test_params->service));
 		g_object_unref (data->document);
 	}
@@ -1250,7 +1259,10 @@ set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean init
 	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back when creating the document:
 	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before trying this to allow the
 	 * various Google servers to catch up with each other. */
-	g_usleep (5 * G_USEC_PER_SEC);
+	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+		g_usleep (5 * G_USEC_PER_SEC);
+	}
+
 	data->document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_query_single_entry (GDATA_SERVICE (service),
 	                                                                             gdata_documents_service_get_primary_authorization_domain (),
 	                                                                             gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
