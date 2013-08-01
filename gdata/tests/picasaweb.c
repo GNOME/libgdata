@@ -181,7 +181,8 @@ assert_files_equal (GDataPicasaWebFile *file1, GDataPicasaWebFile *file2, gboole
 	g_assert_cmpstr (gdata_entry_get_summary (GDATA_ENTRY (file1)), ==, gdata_entry_get_summary (GDATA_ENTRY (file2)));
 	g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (file1)), ==, gdata_entry_get_content (GDATA_ENTRY (file2)));
 	g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (file1)), ==, NULL);
-	g_assert_cmpstr (gdata_entry_get_content_uri (GDATA_ENTRY (file1)), ==, gdata_entry_get_content_uri (GDATA_ENTRY (file2)));
+	/* Apparently Google will arbitrarily change content URIs for things at various times. */
+	/*g_assert_cmpstr (gdata_entry_get_content_uri (GDATA_ENTRY (file1)), ==, gdata_entry_get_content_uri (GDATA_ENTRY (file2)));*/
 	g_assert (strstr (gdata_entry_get_content_uri (GDATA_ENTRY (file1)), "googleusercontent.com") != NULL);
 	g_assert_cmpstr (gdata_entry_get_rights (GDATA_ENTRY (file1)), ==, gdata_entry_get_rights (GDATA_ENTRY (file2)));
 
@@ -233,7 +234,8 @@ assert_files_equal (GDataPicasaWebFile *file1, GDataPicasaWebFile *file2, gboole
 		/* Same as above; don't compare the edited times. */
 		g_assert_cmpint (gdata_picasaweb_file_get_edited (file1), >, 0);
 		g_assert_cmpint (gdata_picasaweb_file_get_edited (file2), >, 0);
-		g_assert_cmpstr (gdata_picasaweb_file_get_version (file1), ==, gdata_picasaweb_file_get_version (file2));
+		/* See ETags and content URIs above. */
+		/*g_assert_cmpstr (gdata_picasaweb_file_get_version (file1), ==, gdata_picasaweb_file_get_version (file2));*/
 		g_assert_cmpuint (strlen (gdata_picasaweb_file_get_version (file1)), >, 0);
 		g_assert_cmpstr (gdata_picasaweb_file_get_album_id (file1), ==, gdata_picasaweb_file_get_album_id (file2));
 		g_assert_cmpuint (strlen (gdata_picasaweb_file_get_album_id (file1)), >, 0);
@@ -262,7 +264,8 @@ assert_files_equal (GDataPicasaWebFile *file1, GDataPicasaWebFile *file2, gboole
 			content1 = GDATA_MEDIA_CONTENT (i1->data);
 			content2 = GDATA_MEDIA_CONTENT (i2->data);
 
-			g_assert_cmpstr (gdata_media_content_get_uri (content1), ==, gdata_media_content_get_uri (content2));
+			/* And here: Google can arbitrarily change content URIs. */
+			/*g_assert_cmpstr (gdata_media_content_get_uri (content1), ==, gdata_media_content_get_uri (content2));*/
 			g_assert (strstr (gdata_media_content_get_uri (content1), "googleusercontent.com") != NULL);
 			g_assert_cmpstr (gdata_media_content_get_content_type (content1), ==, gdata_media_content_get_content_type (content2));
 			g_assert_cmpstr (gdata_media_content_get_content_type (content1), ==, "image/jpeg");
@@ -300,7 +303,8 @@ assert_files_equal (GDataPicasaWebFile *file1, GDataPicasaWebFile *file2, gboole
 			thumbnail1 = GDATA_MEDIA_THUMBNAIL (i1->data);
 			thumbnail2 = GDATA_MEDIA_THUMBNAIL (i2->data);
 
-			g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail1), ==, gdata_media_thumbnail_get_uri (thumbnail2));
+			/* And here: Google can arbitrarily change thumbnail URIs. */
+			/*g_assert_cmpstr (gdata_media_thumbnail_get_uri (thumbnail1), ==, gdata_media_thumbnail_get_uri (thumbnail2));*/
 			g_assert (strstr (gdata_media_thumbnail_get_uri (thumbnail1), "googleusercontent.com") != NULL);
 			g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail1), ==, gdata_media_thumbnail_get_time (thumbnail2));
 			g_assert_cmpint (gdata_media_thumbnail_get_time (thumbnail1), ==, -1); /* PicasaWeb doesn't set anything better */
