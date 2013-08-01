@@ -1128,8 +1128,6 @@ upload_thread (GDataUploadStream *self)
 {
 	GDataUploadStreamPrivate *priv = self->priv;
 
-	g_object_ref (self);
-
 	g_assert (priv->cancellable != NULL);
 
 	while (TRUE) {
@@ -1268,6 +1266,7 @@ finished_outer:
 	g_cond_signal (&(priv->finished_cond));
 	g_mutex_unlock (&(priv->response_mutex));
 
+	/* Referenced in create_network_thread(). */
 	g_object_unref (self);
 
 	return NULL;
@@ -1279,6 +1278,7 @@ create_network_thread (GDataUploadStream *self, GError **error)
 	GDataUploadStreamPrivate *priv = self->priv;
 
 	g_assert (priv->network_thread == NULL);
+	g_object_ref (self); /* ownership transferred to thread */
 	priv->network_thread = g_thread_try_new ("upload-thread", (GThreadFunc) upload_thread, self, error);
 }
 
