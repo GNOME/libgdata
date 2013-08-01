@@ -635,7 +635,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 	const UploadDocumentTestParams *test_params = _test_params;
 
 	GDataDocumentsDocument *document = NULL;
-	const gchar *document_filename = NULL;
+	const gchar *document_filename = NULL, *document_title = NULL;
 	GFile *document_file = NULL;
 	GFileInfo *file_info = NULL;
 	GDataDocumentsUploadQuery *upload_query = NULL;
@@ -649,16 +649,19 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 		case UPLOAD_ODT_CONVERT:
 			/* ODT file. */
 			document_filename = "test.odt";
+			document_title = "test";
 			gdata_documents_upload_query_set_convert (upload_query, TRUE);
 			break;
 		case UPLOAD_ODT_NO_CONVERT:
 			/* ODT file. */
 			document_filename = "test.odt";
+			document_title = "test";
 			gdata_documents_upload_query_set_convert (upload_query, FALSE);
 			break;
 		case UPLOAD_BIN_NO_CONVERT:
 			/* Arbitrary binary file. */
 			document_filename = "sample.ogg";
+			document_title = "sample";
 			gdata_documents_upload_query_set_convert (upload_query, FALSE);
 			break;
 		default:
@@ -669,6 +672,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 	switch (test_params->payload_type) {
 		case UPLOAD_METADATA_ONLY:
 			document_filename = NULL;
+			document_title = NULL;
 			document_file = NULL;
 			file_info = NULL;
 			break;
@@ -791,7 +795,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 		case UPLOAD_CONTENT_ONLY:
 			/* HACK: The title returned by the server varies depending on how we uploaded the document. */
 			if (test_params->resumable_type == UPLOAD_NON_RESUMABLE) {
-				g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->new_document)), ==, document_filename);
+				g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->new_document)), ==, document_title);
 			} else {
 				g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->new_document)), ==, "Untitled");
 			}
