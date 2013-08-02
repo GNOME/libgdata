@@ -1,3 +1,27 @@
+Overview of changes from libgdata 0.13.3 to libgdata 0.13.4
+===========================================================
+
+Major changes:
+ • Fixes to request cancellation and progress notification
+ • Fix tests to be more reliable in the face of distributed system
+   non-synchronisation
+ • Add support for running tests offline using stored HTTP request traces
+
+API changes:
+ • Added GDATA_YOUTUBE_SERVICE_ERROR_CHANNEL_REQUIRED
+
+Bugs fixed:
+ • Bug 627895 — Pretty-print XML in test output
+ • Bug 703192 — The global log handler interferes with other application
+ • Bug 705266 — make check fails
+
+Updated translations:
+ • eu (Iñaki Larrañaga Murgoitio)
+ • gl (Fran Diéguez)
+ • pl (Piotr Drąg)
+ • pt (António Lima)
+ • tg (Victor Ibragimov)
+
 Overview of changes from libgdata 0.13.2 to libgdata 0.13.3
 ===========================================================
 
