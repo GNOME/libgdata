@@ -508,7 +508,7 @@ tear_down_query_files (QueryFilesData *data, gconstpointer service)
 	g_object_unref (data->file1);
 
 	/* HACK! Wait for the distributed Google servers to synchronise. */
-	if (gdata_mock_server_get_enable_online (mock_server) == FALSE) {
+	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
 		sleep (10);
 	}
 
