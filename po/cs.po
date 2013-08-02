@@ -4,42 +4,42 @@
 #
 # Petr Kovar <pknbe@volny.cz>, 2010.
 # Andre Klapper <ak-47@gmx.net>, 2011.
-# Marek Černocký <marek@manet.cz>, 2009, 2010, 2011, 2012.
+# Marek Černocký <marek@manet.cz>, 2009, 2010, 2011, 2012, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-07-15 10:02+0000\n"
-"PO-Revision-Date: 2012-09-08 01:00+0200\n"
-"Last-Translator: Andre Klapper <ak-47@gmx.net>\n"
+"POT-Creation-Date: 2013-08-02 10:09+0000\n"
+"PO-Revision-Date: 2013-08-02 20:37+0200\n"
+"Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:597
-#: ../gdata/gdata-oauth1-authorizer.c:804
-#: ../gdata/gdata-oauth1-authorizer.c:1076
+#: ../gdata/gdata-oauth1-authorizer.c:809
+#: ../gdata/gdata-oauth1-authorizer.c:1085
 msgid "The server returned a malformed response."
 msgstr "Server vrátil chybnou odpověď."
 
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:320
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Nelze se připojit k serveru poskytujícímu službu."
 
-#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Nelze se připojit k serveru proxy."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:331
+#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -47,58 +47,58 @@ msgstr ""
 "parametr: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:337
+#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Vyžadováno ověření: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:342
+#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Vyžadovaný zdroj nebyl nalezen: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:348
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Záznam byl od doby svého stažení změněn: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Kód chyby %u při ověřování: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:752
+#: ../gdata/gdata-client-login-authorizer.c:756
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Pro přihlášení se musí vyplnit CAPTCHA."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:790
+#: ../gdata/gdata-client-login-authorizer.c:794
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Tento účet vyžaduje heslo specifické pro aplikaci. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:797
+#: ../gdata/gdata-client-login-authorizer.c:801
 msgid "Your username or password were incorrect."
 msgstr "Vaše uživatelské jméno nebo heslo byly nesprávné."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:818
+#: ../gdata/gdata-client-login-authorizer.c:822
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "E-mailová adresa vašeho účtu nebyla ověřena. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:823
+#: ../gdata/gdata-client-login-authorizer.c:827
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Neodsouhlasili jste pravidla a podmínky služby. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:829
+#: ../gdata/gdata-client-login-authorizer.c:833
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -108,25 +108,25 @@ msgstr ""
 "nové uživatelské jméno a heslo. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:834
+#: ../gdata/gdata-client-login-authorizer.c:838
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Tento účet byl smazán. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:839
+#: ../gdata/gdata-client-login-authorizer.c:843
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Tento účet byl zablokován. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:844
+#: ../gdata/gdata-client-login-authorizer.c:848
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Účet pro přístup k této službě byl zablokován. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:849
+#: ../gdata/gdata-client-login-authorizer.c:853
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Tato služba není v tuto chvíli dostupná. (%s)"
@@ -149,17 +149,17 @@ msgid "This comment may not be deleted."
 msgstr "Tento komentář nemůže být smazán."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:752
+#: ../gdata/gdata-download-stream.c:754
 msgid "Invalid seek request"
 msgstr "Neplatný požadavek na hledání"
 
-#: ../gdata/gdata-oauth1-authorizer.c:779
+#: ../gdata/gdata-oauth1-authorizer.c:784
 msgid "The server rejected the temporary credentials request."
 msgstr "Server zamítl požadavek na dočasné pověření."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1050
+#: ../gdata/gdata-oauth1-authorizer.c:1059
 msgid "Access was denied by the user or server."
 msgstr "Přístup byl odepřen uživatelem nebo serverem."
 
@@ -258,74 +258,74 @@ msgstr "Byl zdvojený element (%s), který se může vyskytovat jen jednou."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:368
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Kód chyby %u při dotazu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:374
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Kód chyby %u při vkládání záznamu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:380
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Kód chyby %u při aktualizaci záznamu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:386
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Kód chyby %u při mazání záznamu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:392
+#: ../gdata/gdata-service.c:393
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Kód chyby %u při stahování: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Kód chyby %u při odesílání: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
+#: ../gdata/gdata-service.c:405
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Kód chyby %u při běhu dávkové operace: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:685
+#: ../gdata/gdata-service.c:692
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neplatné přesměrované URI: %s"
 
-#: ../gdata/gdata-service.c:1337
+#: ../gdata/gdata-service.c:1346
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:875
+#: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
 msgstr "Záznam byl již vložen."
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
+#: ../gdata/gdata-upload-stream.c:748 ../gdata/gdata-upload-stream.c:830
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr ""
 "Po odeslání bloku s možností zopakovatelného odeslání byla ze serveru "
 "obdržena chyba."
 
-#: ../gdata/gdata-upload-stream.c:892
+#: ../gdata/gdata-upload-stream.c:896
 msgid "Stream is already closed"
 msgstr "Proud je již zavřen"
 
@@ -379,35 +379,35 @@ msgstr "Abyste mohli vložit skupinu, musíte projít ověřením."
 msgid "You must be authenticated to download documents."
 msgstr "Abyste mohli stáhnout dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:460
-#: ../gdata/services/documents/gdata-documents-service.c:510
+#: ../gdata/services/documents/gdata-documents-service.c:461
+#: ../gdata/services/documents/gdata-documents-service.c:511
 msgid "You must be authenticated to query documents."
 msgstr "Abyste se mohli dotázat na dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:555
+#: ../gdata/services/documents/gdata-documents-service.c:556
 msgid "You must be authenticated to upload documents."
 msgstr "Abyste mohli odeslat dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:561
+#: ../gdata/services/documents/gdata-documents-service.c:562
 msgid "The document has already been uploaded."
 msgstr "Dokument byl již odeslán."
 
-#: ../gdata/services/documents/gdata-documents-service.c:705
+#: ../gdata/services/documents/gdata-documents-service.c:706
 msgid "You must be authenticated to update documents."
 msgstr "Abyste mohli aktualizovat dokument, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:885
+#: ../gdata/services/documents/gdata-documents-service.c:888
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Typ obsahu uvedeného dokumentu („%s“) nebyl rozpoznán."
 
-#: ../gdata/services/documents/gdata-documents-service.c:925
+#: ../gdata/services/documents/gdata-documents-service.c:928
 msgid "You must be authenticated to copy documents."
 msgstr "Abyste mohli kopírovat dokumenty, musíte projít ověřením."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1087
-#: ../gdata/services/documents/gdata-documents-service.c:1270
+#: ../gdata/services/documents/gdata-documents-service.c:1090
+#: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "Abyste mohli přesouvat dokumenty a složky, musíte projít ověřením."
 
@@ -445,17 +445,38 @@ msgstr "Album již bylo vloženo."
 msgid "You must be authenticated to insert an album."
 msgstr "Abyste mohli vložit album, musíte projít ověřením."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:456
+#: ../gdata/services/youtube/gdata-youtube-service.c:457
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Služba není v tuto chvíli dostupná."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:460
+#. Translators: the parameter is a URI.
+#: ../gdata/services/youtube/gdata-youtube-service.c:462
+#, c-format
+msgid ""
+"Your Google Account must be associated with a YouTube channel to do this. "
+"Visit %s to create one."
+msgstr ""
+"Abyste tohle mohli provést, musí být váš účet Google provázaný s kanálem "
+"YouTube. Ten můžete vytvořit na %s."
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:467
+#: ../gdata/services/youtube/gdata-youtube-service.c:488
+#: ../gdata/services/youtube/gdata-youtube-service.c:494
+#, c-format
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr "Neznámý kód chyby „%s“ v doméně „%s“ byl přijat pro umístěním „%s“."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:473
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Abyste mohli toto udělat, musíte projít ověřením."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:465
+#: ../gdata/services/youtube/gdata-youtube-service.c:478
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -464,33 +485,23 @@ msgstr ""
 "V krátké době jste provedli příliš mnoho volání API. Počkejte prosím pár "
 "minut a zkuste to znovu."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:468
+#: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
 "Překročili jste svoji kvótu. Smažte prosím nějaké záznamy a zkuste to znovu."
 
-#. Translators: the first parameter is an error code, which is a coded string.
-#. * The second parameter is an error domain, which is another coded string.
-#. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:475
-#: ../gdata/services/youtube/gdata-youtube-service.c:481
-#, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr "Neznámý kód chyby „%s“ v doméně „%s“ byl přijat pro umístěním „%s“."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:499
+#: ../gdata/services/youtube/gdata-youtube-service.c:512
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "Obdržena neznámá a nezpracovatelná chyba."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:763
-#: ../gdata/services/youtube/gdata-youtube-service.c:820
+#: ../gdata/services/youtube/gdata-youtube-service.c:776
+#: ../gdata/services/youtube/gdata-youtube-service.c:833
 msgid "The video did not have a related videos <link>."
 msgstr "Video nemělo odpovídající element videa <link>."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:882
+#: ../gdata/services/youtube/gdata-youtube-service.c:895
 msgid "You must be authenticated to upload a video."
 msgstr "Abyste mohli odesílat video, musíte projít ověřením."
