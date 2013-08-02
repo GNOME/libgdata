@@ -497,6 +497,9 @@ tear_down_query_files (QueryFilesData *data, gconstpointer service)
 	g_object_unref (data->file2);
 	g_object_unref (data->file1);
 
+	/* HACK! Wait for the distributed Google servers to synchronise. */
+	sleep (10);
+
 	/* We have to re-query for the album, since its ETag will be out of date */
 	album_feed = gdata_picasaweb_service_query_all_albums (GDATA_PICASAWEB_SERVICE (service), NULL, NULL, NULL, NULL, NULL, NULL);
 	album = gdata_feed_look_up_entry (GDATA_FEED (album_feed), gdata_entry_get_id (GDATA_ENTRY (data->album)));
