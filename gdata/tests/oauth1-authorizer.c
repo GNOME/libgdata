@@ -1012,7 +1012,7 @@ main (int argc, char *argv[])
 	gdata_test_init (argc, argv);
 
 	mock_server = gdata_test_get_mock_server ();
-	trace_directory = g_file_new_for_path ("traces/oauth1-authorizer");
+	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/oauth1-authorizer");
 	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
