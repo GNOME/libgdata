@@ -18,7 +18,8 @@ AC_CONFIG_SRCDIR([gdata/gdata.h])
 AC_CONFIG_HEADERS([config.h])
 AC_USE_SYSTEM_EXTENSIONS
 
-AM_INIT_AUTOMAKE([1.9 dist-bzip2 no-dist-gzip check-news subdir-objects])
+# tar-pax is needed for long filename support for trace files
+AM_INIT_AUTOMAKE([1.9 dist-bzip2 no-dist-gzip tar-pax check-news subdir-objects])
 
 # Enable silent build when available (Automake 1.11)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
