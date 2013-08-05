@@ -2061,6 +2061,29 @@ test_query_etag (void)
 /* TODO: test private, public albums, test uploading */
 /* TODO: add queries to update albums, files on the server; test those */
 
+static void
+mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
+{
+	GDataMockServer *server;
+	GDataMockResolver *resolver;
+
+	server = GDATA_MOCK_SERVER (object);
+
+	/* Set up the expected domain names here. This should technically be split up between
+	 * the different unit test suites, but that's too much effort. */
+	resolver = gdata_mock_server_get_resolver (server);
+
+	if (resolver != NULL) {
+		const gchar *ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+
+		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
+		gdata_mock_resolver_add_A (resolver, "picasaweb.google.com", ip_address);
+		gdata_mock_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
+		gdata_mock_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
+		gdata_mock_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
+	}
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -2072,6 +2095,7 @@ main (int argc, char *argv[])
 	gdata_test_init (argc, argv);
 
 	mock_server = gdata_test_get_mock_server ();
+	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/picasaweb");
 	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
