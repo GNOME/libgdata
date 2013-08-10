@@ -1,23 +1,22 @@
 # Dutch translation for libgdata.
-#
 # This file is distributed under the same license as the libgdata package.
-#
 # Willem Heppe <heppew@yahoo.com>, 2012
 # Wouter Bolsterlee <wbolster@gnome.org>, 2012
-#
+# Reinout van Schouwen <reinouts@gnome.org>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-15 22:08+0200\n"
-"PO-Revision-Date: 2012-05-15 21:28+0200\n"
-"Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
-"Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
+"PO-Revision-Date: 2013-08-11 00:17+0200\n"
+"Last-Translator: Reinout van Schouwen <reinouts@gnome.org>\n"
+"Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:597
 #: ../gdata/gdata-oauth1-authorizer.c:804
@@ -92,7 +91,8 @@ msgstr "Het e-mailadres van dit account is niet geverifieerd. (%s)"
 #: ../gdata/gdata-client-login-authorizer.c:823
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "U bent niet akkoord gegaan met de service's gebruiksvoorwaarden. (%s)"
+msgstr ""
+"U bent niet akkoord gegaan met de gebruiksvoorwaarden van de service. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:829
@@ -101,7 +101,7 @@ msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"Dit account is gemigreerd. Log online in om een nieuwe gebruikernaam en "
+"Dit account is gemigreerd. Log online in om een nieuwe gebruikersnaam en "
 "wachtwoord te ontvangen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -341,14 +341,14 @@ msgstr ""
 #: ../gdata/services/calendar/gdata-calendar-service.c:315
 #: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
-msgstr "U moet zich authenticeren zijn om alle agenda's op te vragen."
+msgstr "U moet zich authenticeren om alle agenda's te bevragen."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:412
 #: ../gdata/services/calendar/gdata-calendar-service.c:463
 #: ../gdata/services/calendar/gdata-calendar-service.c:508
 #: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
-msgstr "U moet zich authenticeren zijn om uw eigen agenda's op te vragen."
+msgstr "U moet zich authenticeren om uw eigen agenda's op te vragen."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:517
 #: ../gdata/services/calendar/gdata-calendar-service.c:581
@@ -408,7 +408,7 @@ msgstr "U moet zich authenticeren om documenten en folders te verplaatsen."
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
-"U moet een gebruikernaam geven zich authenticeren om een gebruiker op te "
+"U moet een gebruikersnaam geven of zich authenticeren om een gebruiker op te "
 "vragen."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
@@ -420,8 +420,8 @@ msgstr "Query-parameter niet toegestaan voor albums."
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
-"U moet een gebruikernaam opgeven of zich authenticeren zijn om alle albums "
-"op te vragen."
+"U moet een gebruikersnaam opgeven of zich authenticeren om alle albums te "
+"bevragen."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
@@ -437,7 +437,7 @@ msgstr "Het album is al ingevoerd."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
-msgstr "U moet zich authenticeren om een album in te voeren."
+msgstr "U moet zich authenticeren om een album in te voegen."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:456
 #, c-format
