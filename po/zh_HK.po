@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-07 13:42+0800\n"
-"PO-Revision-Date: 2012-08-07 13:42+0800\n"
+"POT-Creation-Date: 2013-08-16 10:14+0800\n"
+"PO-Revision-Date: 2013-08-16 10:14+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "Language: \n"
@@ -17,10 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:597
-#: ../gdata/gdata-oauth1-authorizer.c:804
-#: ../gdata/gdata-oauth1-authorizer.c:1076
+#: ../gdata/gdata-oauth1-authorizer.c:809
+#: ../gdata/gdata-oauth1-authorizer.c:1085
 msgid "The server returned a malformed response."
 msgstr "伺服器傳回格式錯誤的回應。"
 
@@ -65,34 +66,34 @@ msgstr "此項目從上次下載後已被修改過：%s"
 msgid "Error code %u when authenticating: %s"
 msgstr "在驗證時出現錯誤代碼 %u：%s"
 
-#: ../gdata/gdata-client-login-authorizer.c:752
+#: ../gdata/gdata-client-login-authorizer.c:756
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "必須填入 CAPTCHA 才能登入。"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:790
+#: ../gdata/gdata-client-login-authorizer.c:794
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "這個帳號需要應用程式指定的密碼。(%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:797
+#: ../gdata/gdata-client-login-authorizer.c:801
 msgid "Your username or password were incorrect."
 msgstr "你的使用者名稱或密碼錯誤。"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:818
+#: ../gdata/gdata-client-login-authorizer.c:822
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "你帳號的電子郵件位址尚未驗證。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:823
+#: ../gdata/gdata-client-login-authorizer.c:827
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "你尚未同意此服務的條款和條件。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:829
+#: ../gdata/gdata-client-login-authorizer.c:833
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -100,25 +101,25 @@ msgid ""
 msgstr "這個帳號已經被轉移了。請在網上登入後接收你的新使用者名稱與密碼。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:834
+#: ../gdata/gdata-client-login-authorizer.c:838
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "這個帳號已刪除。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:839
+#: ../gdata/gdata-client-login-authorizer.c:843
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "這個帳號已停用。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:844
+#: ../gdata/gdata-client-login-authorizer.c:848
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "這個帳號對此服務的存取已被停用。(%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:849
+#: ../gdata/gdata-client-login-authorizer.c:853
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "這個服務現在無法使用。(%s)"
@@ -141,17 +142,17 @@ msgid "This comment may not be deleted."
 msgstr "這個評論不能刪除。"
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:752
+#: ../gdata/gdata-download-stream.c:754
 msgid "Invalid seek request"
 msgstr "無效的搜尋要求"
 
-#: ../gdata/gdata-oauth1-authorizer.c:779
+#: ../gdata/gdata-oauth1-authorizer.c:784
 msgid "The server rejected the temporary credentials request."
 msgstr "伺服器拒絕了暫時性證書要求。"
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1050
+#: ../gdata/gdata-oauth1-authorizer.c:1059
 msgid "Access was denied by the user or server."
 msgstr "存取被使用者或伺服器拒絕。"
 
@@ -296,24 +297,24 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "在執行批次操作時出現錯誤代碼 %u：%s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:686
+#: ../gdata/gdata-service.c:692
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "無效的重新導向 URI：%s"
 
-#: ../gdata/gdata-service.c:1338
+#: ../gdata/gdata-service.c:1346
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:875
+#: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
 msgstr "該項目已經插入了。"
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:744 ../gdata/gdata-upload-stream.c:826
+#: ../gdata/gdata-upload-stream.c:748 ../gdata/gdata-upload-stream.c:830
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr "在上傳可繼續上傳區塊後從伺服器收到錯誤。"
 
-#: ../gdata/gdata-upload-stream.c:892
+#: ../gdata/gdata-upload-stream.c:896
 msgid "Stream is already closed"
 msgstr "串流已經關閉"
 
@@ -367,35 +368,35 @@ msgstr "你必須被驗證才能插入羣組。"
 msgid "You must be authenticated to download documents."
 msgstr "你必須被驗證才能下載文件。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:460
-#: ../gdata/services/documents/gdata-documents-service.c:510
+#: ../gdata/services/documents/gdata-documents-service.c:461
+#: ../gdata/services/documents/gdata-documents-service.c:511
 msgid "You must be authenticated to query documents."
 msgstr "你必須被驗證才能查詢文件。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:555
+#: ../gdata/services/documents/gdata-documents-service.c:556
 msgid "You must be authenticated to upload documents."
 msgstr "你必須被驗證才能上傳文件。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:561
+#: ../gdata/services/documents/gdata-documents-service.c:562
 msgid "The document has already been uploaded."
 msgstr "該文件已經更新。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:705
+#: ../gdata/services/documents/gdata-documents-service.c:706
 msgid "You must be authenticated to update documents."
 msgstr "你必須被驗證才能更新文件。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:885
+#: ../gdata/services/documents/gdata-documents-service.c:888
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "無法辨識提供文件 ('%s') 的內容類型。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:925
+#: ../gdata/services/documents/gdata-documents-service.c:928
 msgid "You must be authenticated to copy documents."
 msgstr "你必須被驗證才能複製文件。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1087
-#: ../gdata/services/documents/gdata-documents-service.c:1270
+#: ../gdata/services/documents/gdata-documents-service.c:1090
+#: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "你必須被驗證才能移動文件和資料夾。"
 
@@ -429,50 +430,59 @@ msgstr "這個相簿已被插入。"
 msgid "You must be authenticated to insert an album."
 msgstr "你必須被驗證才能插入相簿。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:456
+#: ../gdata/services/youtube/gdata-youtube-service.c:457
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "這個服務現在無法使用。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:460
+#. Translators: the parameter is a URI.
+#: ../gdata/services/youtube/gdata-youtube-service.c:462
+#, c-format
+msgid ""
+"Your Google Account must be associated with a YouTube channel to do this. "
+"Visit %s to create one."
+msgstr "你的 Google 帳號必須與 YouTube 關聯才能這麼做。請參訪 %s 以建立一個。"
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:467
+#: ../gdata/services/youtube/gdata-youtube-service.c:488
+#: ../gdata/services/youtube/gdata-youtube-service.c:494
+#, c-format
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr "在位置「%3$s」接收到網域「%2$s」中不明的錯誤代碼「%1$s」。"
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:473
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "你必須被驗證才能這麼做。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:465
+#: ../gdata/services/youtube/gdata-youtube-service.c:478
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr "你最近進行太多次 API 呼叫。請稍等幾分鐘後再試一次。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:468
+#: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr "你已經超過了你的項目配額。請刪除一些項目後再試一次。"
 
-#. Translators: the first parameter is an error code, which is a coded string.
-#. * The second parameter is an error domain, which is another coded string.
-#. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:475
-#: ../gdata/services/youtube/gdata-youtube-service.c:481
-#, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr "在位置「%3$s」接收到網域「%2$s」中不明的錯誤代碼「%1$s」。"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:499
+#: ../gdata/services/youtube/gdata-youtube-service.c:512
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "接收到不明且無法解析的錯誤。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:763
-#: ../gdata/services/youtube/gdata-youtube-service.c:820
+#: ../gdata/services/youtube/gdata-youtube-service.c:776
+#: ../gdata/services/youtube/gdata-youtube-service.c:833
 msgid "The video did not have a related videos <link>."
 msgstr "此影片沒有相關的影片 <link>。"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:882
+#: ../gdata/services/youtube/gdata-youtube-service.c:895
 msgid "You must be authenticated to upload a video."
 msgstr "你必須被驗證才能上傳影片。"
 
