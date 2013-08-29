@@ -811,7 +811,7 @@ set_up_insert_album (InsertAlbumData *data, gconstpointer service)
 	gdata_picasaweb_album_set_location (data->album, "Winnipeg, MN");
 
 	g_time_val_from_iso8601 ("2002-10-14T09:58:59.643554Z", &timestamp);
-	gdata_picasaweb_album_set_timestamp (data->album, timestamp.tv_sec * 1000);
+	gdata_picasaweb_album_set_timestamp (data->album, (gint64) timestamp.tv_sec * 1000);
 }
 
 static void

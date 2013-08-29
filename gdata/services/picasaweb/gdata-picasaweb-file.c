@@ -696,7 +696,7 @@ gdata_picasaweb_file_constructor (GType type, guint n_construct_params, GObjectC
 		/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
 		 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
 		g_get_current_time (&time_val);
-		priv->timestamp = time_val.tv_sec * 1000;
+		priv->timestamp = (gint64) time_val.tv_sec * 1000;
 		priv->edited = time_val.tv_sec;
 	}
 
