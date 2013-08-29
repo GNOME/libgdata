@@ -1,3 +1,24 @@
+Overview of changes from libgdata 0.13.4 to libgdata 0.14.0
+===========================================================
+
+Updated translations:
+ • ca (Gil Forcada)
+ • cs (Marek Černocký)
+ • de (Christian Kirbach)
+ • el (Dimitris Spingos)
+ • es (Daniel Mustieles)
+ • fr (Alexandre Franke)
+ • he (Yaron Shahrabani)
+ • it (Claudio Arseni)
+ • lt (Aurimas Černius)
+ • nb (Kjartan Maraas)
+ • nl (Reinout van Schouwen)
+ • pt_BR (Rafael Ferreira)
+ • sl (Matej Urbančič)
+ • th (Akom Chotiphantawanon)
+ • zh_HK (Chao-Hsiung Liao)
+ • zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.13.3 to libgdata 0.13.4
 ===========================================================
 
