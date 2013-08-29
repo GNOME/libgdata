@@ -2,7 +2,7 @@ AC_PREREQ(2.65)
 
 # Release version
 m4_define(gdata_version_major, 0)
-m4_define(gdata_version_minor, 14)
+m4_define(gdata_version_minor, 15)
 m4_define(gdata_version_micro, 0)
 
 # API version
