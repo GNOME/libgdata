@@ -199,8 +199,6 @@ gdata_youtube_service_get_categories_async
 gdata_youtube_service_get_categories_finish
 gdata_youtube_service_get_developer_key
 <SUBSECTION Standard>
-GDATA_TYPE_YOUTUBE_SERVICE_ERROR
-GDATA_TYPE_YOUTUBE_STANDARD_FEED_TYPE
 GDATA_YOUTUBE_SERVICE
 GDATA_YOUTUBE_SERVICE_CLASS
 GDATA_YOUTUBE_SERVICE_ERROR
@@ -209,8 +207,6 @@ GDATA_IS_YOUTUBE_SERVICE
 GDATA_IS_YOUTUBE_SERVICE_CLASS
 GDATA_TYPE_YOUTUBE_SERVICE
 gdata_youtube_service_get_type
-gdata_youtube_standard_feed_type_get_type
-gdata_youtube_service_error_get_type
 gdata_youtube_service_error_quark
 <SUBSECTION Private>
 GDataYouTubeServicePrivate
@@ -277,8 +273,6 @@ GDATA_YOUTUBE_VIDEO
 GDATA_YOUTUBE_VIDEO_CLASS
 GDATA_YOUTUBE_VIDEO_GET_CLASS
 gdata_youtube_video_get_type
-GDATA_TYPE_YOUTUBE_PERMISSION
-gdata_youtube_permission_get_type
 <SUBSECTION Private>
 GDataYouTubeVideoPrivate
 </SECTION>
@@ -654,21 +648,11 @@ gdata_youtube_query_set_uploader
 <SUBSECTION Standard>
 GDATA_IS_YOUTUBE_QUERY
 GDATA_IS_YOUTUBE_QUERY_CLASS
-GDATA_TYPE_YOUTUBE_AGE
-GDATA_TYPE_YOUTUBE_FORMAT
 GDATA_TYPE_YOUTUBE_QUERY
-GDATA_TYPE_YOUTUBE_SAFE_SEARCH
-GDATA_TYPE_YOUTUBE_SORT_ORDER
-GDATA_TYPE_YOUTUBE_UPLOADER
 GDATA_YOUTUBE_QUERY
 GDATA_YOUTUBE_QUERY_CLASS
 GDATA_YOUTUBE_QUERY_GET_CLASS
 gdata_youtube_query_get_type
-gdata_youtube_age_get_type
-gdata_youtube_format_get_type
-gdata_youtube_safe_search_get_type
-gdata_youtube_sort_order_get_type
-gdata_youtube_uploader_get_type
 <SUBSECTION Private>
 GDataYouTubeQueryPrivate
 </SECTION>
@@ -1816,9 +1800,7 @@ GDATA_DOCUMENTS_SERVICE_ERROR
 GDATA_DOCUMENTS_SERVICE_GET_CLASS
 GDATA_IS_DOCUMENTS_SERVICE
 GDATA_IS_DOCUMENTS_SERVICE_CLASS
-GDATA_TYPE_DATA_DOCUMENTS_SERVICE_ERROR
 GDATA_TYPE_DOCUMENTS_SERVICE
-gdata_documents_service_error_get_type
 gdata_documents_service_error_quark
 <SUBSECTION Private>
 GDataDocumentsServicePrivate
@@ -2304,7 +2286,6 @@ GDATA_CLIENT_LOGIN_AUTHORIZER_GET_CLASS
 gdata_client_login_authorizer_get_type
 GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR
 gdata_client_login_authorizer_error_quark
-gdata_client_login_authorizer_error_get_type
 <SUBSECTION Private>
 GDataClientLoginAuthorizerPrivate
 </SECTION>
