@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata-master-po-gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-02 12:46+0200\n"
-"PO-Revision-Date: 2013-08-02 12:47+0200\n"
+"POT-Creation-Date: 2013-08-30 12:38+0200\n"
+"PO-Revision-Date: 2013-08-30 12:39+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
@@ -164,21 +164,31 @@ msgid "Access was denied by the user or server."
 msgstr "O acceso foi denegado polo usuario ou o servidor."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
+#: ../gdata/gdata-parsable.c:342 ../gdata/gdata-parsable.c:353
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Produciuse un erro ao analizar o XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:258
+#: ../gdata/gdata-parsable.c:355
 msgid "Empty document."
 msgstr "Documento baleiro."
+
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:473 ../gdata/gdata-parsable.c:511
+#, c-format
+msgid "Error parsing JSON: %s"
+msgstr "Produciuse un erro ao analizar o JSON: %s"
+
+#: ../gdata/gdata-parsable.c:512
+msgid "Outermost JSON node is not an object."
+msgstr "O nodo externo de JSON non é un obxecto."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:67
+#: ../gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Perdeuse un elemento %s que requiría contido."
@@ -188,7 +198,7 @@ msgstr "Perdeuse un elemento %s que requiría contido."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:83
+#: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "O contido dun elemento %s (\"%s\") non estaba no formato ISO 8601."
@@ -198,7 +208,7 @@ msgstr "O contido dun elemento %s (\"%s\") non estaba no formato ISO 8601."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:103
+#: ../gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "O valor da propiedade %s dun elemento %s (\"%s\") era descoñecido."
@@ -208,7 +218,7 @@ msgstr "O valor da propiedade %s dun elemento %s (\"%s\") era descoñecido."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:121
+#: ../gdata/gdata-parser.c:123
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "O contido do elemento %s (\"%s\") era descoñecido."
@@ -218,7 +228,7 @@ msgstr "O contido do elemento %s (\"%s\") era descoñecido."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:141
+#: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "A propiedade requirida do elemento %s (%s) non estaba presente."
@@ -229,7 +239,7 @@ msgstr "A propiedade requirida do elemento %s (%s) non estaba presente."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:164
+#: ../gdata/gdata-parser.c:166
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -242,7 +252,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:183
+#: ../gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "O elemento %s requirido non está presente."
@@ -251,10 +261,39 @@ msgstr "O elemento %s requirido non está presente."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:198
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A singleton element (title) was duplicated.
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "O elemento singleton (%s) estaba duplicado."
+
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A 'title' element was missing required content.
+#: ../gdata/gdata-parser.c:273
+#, c-format
+msgid "A '%s' element was missing required content."
+msgstr "Ao elemento «%s» fáltanlle contidos requiridos."
+
+#. Translators: the first parameter is the name of an JSON element,
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:303
+#, c-format
+msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+msgstr "O contido dun elemento %s (\"%s\") non estaba no formato ISO 8601."
+
+#. Translators: the parameter is an error message.
+#: ../gdata/gdata-parser.c:313
+#, c-format
+msgid "Invalid JSON was received from the server: %s"
+msgstr "Recibiuse JSON non válido do servidor: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -311,7 +350,7 @@ msgstr "Código de erro %u ao executar unha operación de lote: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "O URI de redirección non é válido: %s"
 
-#: ../gdata/gdata-service.c:1346
+#: ../gdata/gdata-service.c:1363
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
