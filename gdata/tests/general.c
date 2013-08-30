@@ -616,6 +616,7 @@ test_entry_links_remove (void)
 
 	g_object_unref (link2_);
 	g_object_unref (link_);
+	g_object_unref (entry);
 }
 
 static void
@@ -1057,6 +1058,8 @@ test_query_pagination (void)
 	query_uri = gdata_query_get_query_uri (query, "http://example.com/");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=test&start-index=30&max-results=10");
 	g_free (query_uri);
+
+	g_object_unref (query);
 }
 
 static void
