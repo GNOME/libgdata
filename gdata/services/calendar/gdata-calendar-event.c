@@ -111,7 +111,6 @@ struct _GDataCalendarEventPrivate {
 	gchar *uid;
 	guint sequence;
 	GList *times; /* GDataGDWhen */
-	GList *reminders;
 	guint guests_can_modify : 1;
 	guint guests_can_invite_others : 1;
 	guint guests_can_see_guests : 1;
