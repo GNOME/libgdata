@@ -306,6 +306,9 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/gdata/elements.html#gdRecurrence">
 	 * GData specification</ulink>.
 	 *
+	 * Note: gdata_calendar_event_add_time() and gdata_calendar_event_set_recurrence() are mutually
+	 * exclusive. See the documentation for gdata_calendar_event_add_time() for details.
+	 *
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RECURRENCE,
@@ -1088,6 +1091,14 @@ gdata_calendar_event_get_places (GDataCalendarEvent *self)
  *
  * Duplicate times will not be added to the list.
  *
+ * Note: gdata_calendar_event_add_time() and gdata_calendar_event_set_recurrence() are mutually
+ * exclusive, as the server doesn't support positive exceptions to recurrence rules. If recurrences
+ * are required, use gdata_calendar_event_set_recurrence(). Note that this means reminders cannot
+ * be set for the event, as they are only supported by #GDataGDWhen. No checks are performed for
+ * these forbidden conditions, as to do so would break libgdata's API; if both a recurrence is set
+ * and a specific time is added, the server will return an error when the #GDataCalendarEvent is
+ * inserted using gdata_service_insert_entry().
+ *
  * Since: 0.2.0
  **/
 void
@@ -1180,6 +1191,9 @@ gdata_calendar_event_get_recurrence (GDataCalendarEvent *self)
  * Sets the #GDataCalendarEvent:recurrence property to the new recurrence, @recurrence.
  *
  * Set @recurrence to %NULL to unset the property in the event.
+ *
+ * Note: gdata_calendar_event_add_time() and gdata_calendar_event_set_recurrence() are mutually
+ * exclusive. See the documentation for gdata_calendar_event_add_time() for details.
  *
  * Since: 0.3.0
  **/
