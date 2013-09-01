@@ -148,7 +148,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 static gint
 compare_with (GDataComparable *self, GDataComparable *other)
 {
-	gint method_cmp;
+	gint method_cmp, time_cmp;
 	GDataGDReminder *a = (GDataGDReminder*) self, *b = (GDataGDReminder*) other;
 
 	if (gdata_gd_reminder_is_absolute_time (a) != gdata_gd_reminder_is_absolute_time (b))
@@ -156,14 +156,15 @@ compare_with (GDataComparable *self, GDataComparable *other)
 
 	method_cmp = g_strcmp0 (a->priv->method, b->priv->method);
 	if (gdata_gd_reminder_is_absolute_time (a) == TRUE) {
-		if (method_cmp == 0 && a->priv->absolute_time == b->priv->absolute_time)
-			return 0;
+		time_cmp = a->priv->absolute_time - b->priv->absolute_time;
 	} else {
-		if (method_cmp == 0 && a->priv->relative_time == b->priv->relative_time)
-			return 0;
+		time_cmp = a->priv->relative_time - b->priv->relative_time;
 	}
 
-	return method_cmp;
+	if (method_cmp == 0)
+		return time_cmp;
+	else
+		return method_cmp;
 }
 
 static void
