@@ -18,8 +18,16 @@
 			data on the web, designed by Google.</para>
 
 		<refsect2>
-			<title>Protocol</title>
-			<para>The GData protocol is designed by Google to allow interaction with their web services. It is based on the Atom Publishing
+			<title>Protocols</title>
+			<para>Google's services were originally only accessible using an XML-based protocol called <firstterm>GData</firstterm>. However, later additions
+				to the set of available services use a REST-style JSON protocol. libgdata supports both protocols, although specific
+				services use exactly one of the two protocols.</para>
+			<para>The core API in libgdata transparently supports both protocols, so client code need not consider which protocol to use.</para>
+		</refsect2>
+
+		<refsect2>
+			<title>XML protocol</title>
+			<para>The GData XML protocol is designed by Google to allow interaction with their web services. It is based on the Atom Publishing
 				protocol, with namespaced XML additions. Communication between the client and server is broadly achieved through HTTP
 				requests with query parameters, and Atom feeds being returned with result entries. Each <firstterm>service</firstterm>
 				has its own namespaced additions to the GData protocol; for example, the Google Calendar service's API has
@@ -34,6 +42,19 @@
 			<para>Results are always returned in the form of result <firstterm>feeds</firstterm>, containing multiple
 				<firstterm>entries</firstterm>. How the entries are interpreted depends on what was queried of the service, but when
 				using libgdata, this is all taken care of transparently.</para>
+		</refsect2>
+
+		<refsect2>
+			<title>JSON protocol</title>
+			<para>The more recent JSON protocol is similar in architecture to the XML protocol: entries are arranged into feeds, and the core
+				operations available are: listing all entries, getting a specific entry, inserting an entry, updating an entry and deleting an entry.</para>
+			<para>The key difference between the two protocols, apart from the serialisation format, is that the JSON protocol is not namespaced. Each
+				service uses a specific JSON format, and there is no formal sharing of data structures between services. For example, every entry
+				in the XML protocol is required to have a title, ID and update time (as per the Atom specification). Such commonality between
+				JSON entries is purely ad-hoc.</para>
+			<para>Differences between the XML and JSON protocols are hidden by the libgdata API. Both protocols are implemented by the standard
+				<type><link linkend="GDataService">GDataService</link></type>, <type><link linkend="GDataFeed">GDataFeed</link></type> and
+				<type><link linkend="GDataEntry">GDataEntry</link></type> classes.</para>
 		</refsect2>
 
 		<refsect2>
@@ -110,10 +131,10 @@
 				memory-efficient than using arbitrary strings.</para>
 			<para>However, such an implementation would not be forwards-compatible. If a protocol addition was made which added another
 				link relation type, or added supportf or another IM protocol, there would be no way for libgdata to represent some
-				of the data it retrieved from the server. It could return an "other" value from the enum, but that could lead to
+				of the data it retrieved from the server. It could return an “other” value from the enum, but that could lead to
 				data loss in the common case of GData entries being queried from the server, processed, then updated again.</para>
 			<para>For this reason – which is made more troublesome by the fact that it is unpredictable when updates to the protocol are
-				released, or when updated XML will start coming over the wire – libgdata uses enumerated types sparingly; they are
+				released, or when updated XML/JSON will start coming over the wire – libgdata uses enumerated types sparingly; they are
 				only used when it is very improbable (or even impossible) for the property in question to be extended or changed in
 				the future. In any other case, a string value is used instead, with libgdata providing <code>#define</code>d values
 				for the known values of the property. These values should be used as much as possible by applications which use
@@ -126,9 +147,9 @@
 
 		<refsect2>
 			<title>String Constants</title>
-			<para>As the GData protocol is XML-based, it makes extensive use of string constants, typically as
+			<para>As the protocols are XML- or JSON-based, they make extensive use of string constants, typically as
 				<link linkend="enumerable-properties">enumerated types</link> or namespaced URIs. To stop the authors of applications
-				which use libgdata from having to continually look up the correct "magic strings" to use, all such strings should
+				which use libgdata from having to continually look up the correct “magic strings” to use, all such strings should
 				be <code>#define</code>d in libgdata, and referenced in the appropriate function documentation.</para>
 		</refsect2>
 
