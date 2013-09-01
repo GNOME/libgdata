@@ -2091,6 +2091,23 @@ test_gd_email_address_escaping (void)
 }
 
 static void
+test_gd_email_address_comparison (void)
+{
+	GDataGDEmailAddress *email1, *email2;
+
+	/* Should only compare equal if addresses are equal. */
+	email1 = gdata_gd_email_address_new ("foo@example.com", NULL, NULL, TRUE);
+	email2 = gdata_gd_email_address_new ("foo@example.com", NULL, "label", FALSE);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (email1), GDATA_COMPARABLE (email2)), ==, 0);
+
+	gdata_gd_email_address_set_address (email1, "bar@example.com");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (email1), GDATA_COMPARABLE (email2)), !=, 0);
+
+	g_object_unref (email2);
+	g_object_unref (email1);
+}
+
+static void
 test_gd_im_address (void)
 {
 	GDataGDIMAddress *im, *im2;
@@ -2164,6 +2181,29 @@ test_gd_im_address_escaping (void)
 	                        "address='Fubar &lt;fubar@gmail.com&gt;' protocol='http://schemas.google.com/g/2005#GOOGLE_TALK?foo&amp;bar' "
 	                        "rel='http://schemas.google.com/g/2005#home?foo&amp;bar' label='Personal &amp; Private' primary='true'/>");
 	g_object_unref (im);
+}
+
+static void
+test_gd_im_address_comparison (void)
+{
+	GDataGDIMAddress *im_address1, *im_address2;
+
+	/* Should only compare equal if address and protocol are both equal. */
+	im_address1 = gdata_gd_im_address_new ("foo@example.com", GDATA_GD_IM_PROTOCOL_LIVE_MESSENGER, NULL, NULL, TRUE);
+	im_address2 = gdata_gd_im_address_new ("foo@example.com", GDATA_GD_IM_PROTOCOL_LIVE_MESSENGER, NULL, "label", FALSE);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (im_address1), GDATA_COMPARABLE (im_address2)), ==, 0);
+
+	/* Different addresses, same protocol. */
+	gdata_gd_im_address_set_address (im_address1, "bar@example.com");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (im_address1), GDATA_COMPARABLE (im_address2)), !=, 0);
+
+	/* Same address, different protocols. */
+	gdata_gd_im_address_set_address (im_address1, "foo@example.com");
+	gdata_gd_im_address_set_protocol (im_address1, GDATA_GD_IM_PROTOCOL_JABBER);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (im_address1), GDATA_COMPARABLE (im_address2)), !=, 0);
+
+	g_object_unref (im_address2);
+	g_object_unref (im_address1);
 }
 
 static void
@@ -2287,6 +2327,44 @@ test_gd_name_empty_strings (void)
 }
 
 static void
+test_gd_name_comparison (void)
+{
+	GDataGDName *name1, *name2;
+
+	/* Names are only equal if the given, additional and family names are all equal, and the prefixes are equal too. */
+	name1 = gdata_gd_name_new ("Given", "Family");
+	gdata_gd_name_set_additional_name (name1, "Additional");
+	gdata_gd_name_set_prefix (name1, "Mrs");
+	name2 = gdata_gd_name_new ("Given", "Family");
+	gdata_gd_name_set_additional_name (name2, "Additional");
+	gdata_gd_name_set_prefix (name2, "Mrs");
+
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (name1), GDATA_COMPARABLE (name2)), ==, 0);
+
+	/* Different given names. */
+	gdata_gd_name_set_given_name (name1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (name1), GDATA_COMPARABLE (name2)), !=, 0);
+
+	/* Different additional names. */
+	gdata_gd_name_set_given_name (name1, "Given");
+	gdata_gd_name_set_additional_name (name1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (name1), GDATA_COMPARABLE (name2)), !=, 0);
+
+	/* Different family names. */
+	gdata_gd_name_set_additional_name (name1, "Additional");
+	gdata_gd_name_set_family_name (name1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (name1), GDATA_COMPARABLE (name2)), !=, 0);
+
+	/* Different prefixes. */
+	gdata_gd_name_set_family_name (name1, "Family");
+	gdata_gd_name_set_prefix (name1, "Mr");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (name1), GDATA_COMPARABLE (name2)), !=, 0);
+
+	g_object_unref (name2);
+	g_object_unref (name1);
+}
+
+static void
 test_gd_organization (void)
 {
 	GDataGDOrganization *org, *org2;
@@ -2391,6 +2469,37 @@ test_gd_organization_escaping (void)
 	                         "<gd:orgSymbol>&lt;&amp;&gt;</gd:orgSymbol>"
 	                 "</gd:organization>");
 	g_object_unref (org);
+}
+
+static void
+test_gd_organization_comparison (void)
+{
+	GDataGDOrganization *org1, *org2;
+
+	/* Organisation positions are equal if the name, title and department are all equal. */
+	org1 = gdata_gd_organization_new ("Name", "Title", NULL, NULL, TRUE);
+	gdata_gd_organization_set_department (org1, "Department");
+	org2 = gdata_gd_organization_new ("Name", "Title", NULL, "label", FALSE);
+	gdata_gd_organization_set_department (org2, "Department");
+
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (org1), GDATA_COMPARABLE (org2)), ==, 0);
+
+	/* Different name. */
+	gdata_gd_organization_set_name (org1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (org1), GDATA_COMPARABLE (org2)), !=, 0);
+
+	/* Different title. */
+	gdata_gd_organization_set_name (org1, "Name");
+	gdata_gd_organization_set_title (org1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (org1), GDATA_COMPARABLE (org2)), !=, 0);
+
+	/* Different department. */
+	gdata_gd_organization_set_title (org1, "Title");
+	gdata_gd_organization_set_department (org1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (org1), GDATA_COMPARABLE (org2)), !=, 0);
+
+	g_object_unref (org2);
+	g_object_unref (org1);
 }
 
 static void
@@ -2634,6 +2743,48 @@ test_gd_postal_address_escaping (void)
 }
 
 static void
+test_gd_postal_address_comparison (void)
+{
+	GDataGDPostalAddress *address1, *address2;
+
+	/* Postal addresses compare equal if the street, city, PO box and postcode are all equal. */
+	address1 = gdata_gd_postal_address_new (NULL, NULL, TRUE);
+	gdata_gd_postal_address_set_street (address1, "Street");
+	gdata_gd_postal_address_set_city (address1, "City");
+	gdata_gd_postal_address_set_po_box (address1, "PO box");
+	gdata_gd_postal_address_set_postcode (address1, "Postcode");
+	address2 = gdata_gd_postal_address_new (NULL, "label", FALSE);
+	gdata_gd_postal_address_set_street (address2, "Street");
+	gdata_gd_postal_address_set_city (address2, "City");
+	gdata_gd_postal_address_set_po_box (address2, "PO box");
+	gdata_gd_postal_address_set_postcode (address2, "Postcode");
+
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (address1), GDATA_COMPARABLE (address2)), ==, 0);
+
+	/* Different streets. */
+	gdata_gd_postal_address_set_street (address1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (address1), GDATA_COMPARABLE (address2)), !=, 0);
+
+	/* Different cities. */
+	gdata_gd_postal_address_set_street (address1, "Street");
+	gdata_gd_postal_address_set_city (address1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (address1), GDATA_COMPARABLE (address2)), !=, 0);
+
+	/* Different PO box. */
+	gdata_gd_postal_address_set_city (address1, "City");
+	gdata_gd_postal_address_set_po_box (address1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (address1), GDATA_COMPARABLE (address2)), !=, 0);
+
+	/* Different postcode. */
+	gdata_gd_postal_address_set_po_box (address1, "PO box");
+	gdata_gd_postal_address_set_postcode (address1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (address1), GDATA_COMPARABLE (address2)), !=, 0);
+
+	g_object_unref (address2);
+	g_object_unref (address1);
+}
+
+static void
 test_gd_reminder (void)
 {
 	GDataGDReminder *reminder, *reminder2;
@@ -2866,6 +3017,35 @@ test_gd_when_escaping (void)
 }
 
 static void
+test_gd_when_comparison (void)
+{
+	GDataGDWhen *when1, *when2;
+
+	/* Whens are non-equal if one is a date and the other isn't, if their start times differ, or if their end times differ. */
+	when1 = gdata_gd_when_new (0, 1000, FALSE);
+	when2 = gdata_gd_when_new (0, 1000, FALSE);
+
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when1), GDATA_COMPARABLE (when2)), ==, 0);
+
+	/* Different date/time type. */
+	gdata_gd_when_set_is_date (when1, TRUE);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when1), GDATA_COMPARABLE (when2)), !=, 0);
+
+	/* Different start time. */
+	gdata_gd_when_set_is_date (when1, FALSE);
+	gdata_gd_when_set_start_time (when1, 500);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when1), GDATA_COMPARABLE (when2)), !=, 0);
+
+	/* Different end time. */
+	gdata_gd_when_set_start_time (when1, 0);
+	gdata_gd_when_set_end_time (when1, 15000);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when1), GDATA_COMPARABLE (when2)), !=, 0);
+
+	g_object_unref (when2);
+	g_object_unref (when1);
+}
+
+static void
 test_gd_where (void)
 {
 	GDataGDWhere *where, *where2;
@@ -2937,6 +3117,29 @@ test_gd_where_escaping (void)
 }
 
 static void
+test_gd_where_comparison (void)
+{
+	GDataGDWhere *where1, *where2;
+
+	/* Wheres differ if their value or their label differs. */
+	where1 = gdata_gd_where_new (NULL, "Value", "Label");
+	where2 = gdata_gd_where_new (GDATA_GD_WHERE_EVENT, "Value", "Label");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (where1), GDATA_COMPARABLE (where2)), ==, 0);
+
+	/* Different values. */
+	gdata_gd_where_set_value_string (where1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (where1), GDATA_COMPARABLE (where2)), !=, 0);
+
+	/* Different labels. */
+	gdata_gd_where_set_value_string (where1, "Value");
+	gdata_gd_where_set_label (where1, "Different");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (where1), GDATA_COMPARABLE (where2)), !=, 0);
+
+	g_object_unref (where2);
+	g_object_unref (where1);
+}
+
+static void
 test_gd_who (void)
 {
 	GDataGDWho *who, *who2;
@@ -3003,6 +3206,29 @@ test_gd_who_escaping (void)
 	                         "email='John Smith &lt;john.smith@gmail.com&gt;' rel='http://schemas.google.com/g/2005#event.attendee?foo&amp;bar' "
 	                         "valueString='Value string &amp; stuff!'/>");
 	g_object_unref (who);
+}
+
+static void
+test_gd_who_comparison (void)
+{
+	GDataGDWho *who1, *who2;
+
+	/* Whos differ if their value strings or e-mail addresses differ. */
+	who1 = gdata_gd_who_new (NULL, "Jo Bloggs", "email@address");
+	who2 = gdata_gd_who_new (GDATA_GD_WHO_EVENT_ATTENDEE, "Jo Bloggs", "email@address"); /* who knew indeed? */
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (who1), GDATA_COMPARABLE (who2)), ==, 0);
+
+	/* Different value strings. */
+	gdata_gd_who_set_value_string (who1, "Bridget Smith");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (who1), GDATA_COMPARABLE (who2)), !=, 0);
+
+	/* Different e-mail addresses. */
+	gdata_gd_who_set_value_string (who1, "Jo Bloggs");
+	gdata_gd_who_set_email_address (who1, "foo@example.com");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (who1), GDATA_COMPARABLE (who2)), !=, 0);
+
+	g_object_unref (who2);
+	g_object_unref (who1);
 }
 
 static void
@@ -4111,26 +4337,34 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/gd/email_address", test_gd_email_address);
 	g_test_add_func ("/gd/email_address/escaping", test_gd_email_address_escaping);
+	g_test_add_func ("/gd/email_address/comparison", test_gd_email_address_comparison);
 	g_test_add_func ("/gd/im_address", test_gd_im_address);
 	g_test_add_func ("/gd/im_address/escaping", test_gd_im_address_escaping);
+	g_test_add_func ("/gd/im_address/comparison", test_gd_im_address_comparison);
 	g_test_add_func ("/gd/name", test_gd_name);
 	g_test_add_func ("/gd/name/empty_strings", test_gd_name_empty_strings);
+	g_test_add_func ("/gd/name/comparison", test_gd_name_comparison);
 	g_test_add_func ("/gd/organization", test_gd_organization);
 	g_test_add_func ("/gd/organization/escaping", test_gd_organization_escaping);
+	g_test_add_func ("/gd/organization/comparison", test_gd_organization_comparison);
 	g_test_add_func ("/gd/phone_number", test_gd_phone_number);
 	g_test_add_func ("/gd/phone_number/escaping", test_gd_phone_number_escaping);
 	g_test_add_func ("/gd/phone_number/comparison", test_gd_phone_number_comparison);
 	g_test_add_func ("/gd/postal_address", test_gd_postal_address);
 	g_test_add_func ("/gd/postal_address/escaping", test_gd_postal_address_escaping);
+	g_test_add_func ("/gd/postal_address/comparison", test_gd_postal_address_comparison);
 	g_test_add_func ("/gd/reminder", test_gd_reminder);
 	g_test_add_func ("/gd/reminder/escaping", test_gd_reminder_escaping);
 	g_test_add_func ("/gd/reminder/comparison", test_gd_reminder_comparison);
 	g_test_add_func ("/gd/when", test_gd_when);
 	g_test_add_func ("/gd/when/escaping", test_gd_when_escaping);
+	g_test_add_func ("/gd/when/comparison", test_gd_when_comparison);
 	g_test_add_func ("/gd/where", test_gd_where);
 	g_test_add_func ("/gd/where/escaping", test_gd_where_escaping);
+	g_test_add_func ("/gd/where/comparison", test_gd_where_comparison);
 	g_test_add_func ("/gd/who", test_gd_who);
 	g_test_add_func ("/gd/who/escaping", test_gd_who_escaping);
+	g_test_add_func ("/gd/who/comparison", test_gd_who_comparison);
 
 	g_test_add_func ("/media/category", test_media_category);
 	g_test_add_func ("/media/category/escaping", test_media_category_escaping);
