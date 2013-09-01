@@ -2896,6 +2896,40 @@ test_gd_reminder_escaping (void)
 }
 
 static void
+test_gd_reminder_comparison (void)
+{
+	GDataGDReminder *reminder1, *reminder2;
+
+#define ASSERT_COMPARISON(op) \
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (reminder1), GDATA_COMPARABLE (reminder2)), op, 0)
+
+	/* Check for equality. */
+	reminder1 = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, -1, 15);
+	reminder2 = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, -1, 15);
+	ASSERT_COMPARISON(==);
+
+	/* Different methods, same time type, same time. */
+	gdata_gd_reminder_set_method (reminder1, GDATA_GD_REMINDER_SMS);
+	ASSERT_COMPARISON(>);
+
+	/* Same method, different time type, same time. */
+	gdata_gd_reminder_set_method (reminder1, GDATA_GD_REMINDER_ALERT);
+	gdata_gd_reminder_set_relative_time (reminder1, -1);
+	gdata_gd_reminder_set_absolute_time (reminder1, 5);
+	ASSERT_COMPARISON(>);
+
+	/* Same method, same time type, different time. */
+	gdata_gd_reminder_set_absolute_time (reminder1, -1);
+	gdata_gd_reminder_set_relative_time (reminder1, 20);
+	ASSERT_COMPARISON(>);
+
+	g_object_unref (reminder2);
+	g_object_unref (reminder1);
+
+#undef ASSERT_COMPARISON
+}
+
+static void
 test_gd_when (void)
 {
 	GDataGDWhen *when, *when2;
@@ -4259,6 +4293,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/postal_address/escaping", test_gd_postal_address_escaping);
 	g_test_add_func ("/gd/reminder", test_gd_reminder);
 	g_test_add_func ("/gd/reminder/escaping", test_gd_reminder_escaping);
+	g_test_add_func ("/gd/reminder/comparison", test_gd_reminder_comparison);
 	g_test_add_func ("/gd/when", test_gd_when);
 	g_test_add_func ("/gd/when/escaping", test_gd_when_escaping);
 	g_test_add_func ("/gd/where", test_gd_where);
