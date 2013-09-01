@@ -171,7 +171,23 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 static gint
 compare_with (GDataComparable *self, GDataComparable *other)
 {
-	return g_strcmp0 (((GDataGDPhoneNumber*) self)->priv->number, ((GDataGDPhoneNumber*) other)->priv->number);
+	GDataGDPhoneNumber *a = (GDataGDPhoneNumber*) self, *b = (GDataGDPhoneNumber*) other;
+	gint number_comparison, uri_comparison;
+
+	number_comparison = g_strcmp0 (a->priv->number, b->priv->number);
+	uri_comparison = g_strcmp0 (a->priv->uri, b->priv->uri);
+
+	/* NULL URIs should not compare equal. */
+	if (a->priv->uri == NULL && b->priv->uri == NULL) {
+		uri_comparison = 1;
+	}
+
+	/* If the numbers or the URIs are equal, the objects are equal. */
+	if (number_comparison == 0 || uri_comparison == 0) {
+		return 0;
+	}
+
+	return number_comparison;
 }
 
 static void

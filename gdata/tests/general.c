@@ -2420,6 +2420,7 @@ test_gd_phone_number (void)
 
 	/* …and a different one */
 	gdata_gd_phone_number_set_number (phone2, "+1 206 555 1212 666");
+	gdata_gd_phone_number_set_uri (phone2, NULL);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone), GDATA_COMPARABLE (phone2)), !=, 0);
 	g_object_unref (phone2);
 
@@ -2472,6 +2473,43 @@ test_gd_phone_number_escaping (void)
 	                                 "uri='tel:+012345678954?foo&amp;bar' rel='http://schemas.google.com/g/2005#work_mobile?foo&amp;bar' "
 	                                 "label='Personal &amp; Private' primary='true'>0123456789 &lt;54&gt;</gd:phoneNumber>");
 	g_object_unref (phone);
+}
+
+static void
+test_gd_phone_number_comparison (void)
+{
+	GDataGDPhoneNumber *phone1, *phone2;
+
+	/* Phone numbers are equal if the number or the URI matches (NULL URIs cannot match). */
+	phone1 = gdata_gd_phone_number_new ("123", NULL, NULL, "phone://123", TRUE);
+	phone2 = gdata_gd_phone_number_new ("123", NULL, "label", "phone://123", FALSE);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone1), GDATA_COMPARABLE (phone2)), ==, 0);
+
+	/* Same numbers, different URIs. */
+	gdata_gd_phone_number_set_uri (phone1, "phone://+44123");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone1), GDATA_COMPARABLE (phone2)), ==, 0);
+
+	/* Different numbers, same URIs. */
+	gdata_gd_phone_number_set_uri (phone1, "phone://123");
+	gdata_gd_phone_number_set_number (phone1, "+44123");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone1), GDATA_COMPARABLE (phone2)), ==, 0);
+
+	/* Different numbers and URIs. */
+	gdata_gd_phone_number_set_number (phone1, "456");
+	gdata_gd_phone_number_set_uri (phone1, "phone://456");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone1), GDATA_COMPARABLE (phone2)), !=, 0);
+
+	/* Different numbers, NULL URIs. */
+	gdata_gd_phone_number_set_uri (phone1, NULL);
+	gdata_gd_phone_number_set_uri (phone2, NULL);
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone1), GDATA_COMPARABLE (phone2)), !=, 0);
+
+	/* Same numbers, NULL URIs. */
+	gdata_gd_phone_number_set_number (phone1, "123");
+	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone1), GDATA_COMPARABLE (phone2)), ==, 0);
+
+	g_object_unref (phone2);
+	g_object_unref (phone1);
 }
 
 static void
@@ -4047,6 +4085,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/gd/organization/escaping", test_gd_organization_escaping);
 	g_test_add_func ("/gd/phone_number", test_gd_phone_number);
 	g_test_add_func ("/gd/phone_number/escaping", test_gd_phone_number_escaping);
+	g_test_add_func ("/gd/phone_number/comparison", test_gd_phone_number_comparison);
 	g_test_add_func ("/gd/postal_address", test_gd_postal_address);
 	g_test_add_func ("/gd/postal_address/escaping", test_gd_postal_address_escaping);
 	g_test_add_func ("/gd/reminder", test_gd_reminder);
