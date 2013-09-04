@@ -141,7 +141,34 @@ GNOME_CODE_COVERAGE
 
 # General GNOME macros
 GNOME_DEBUG_CHECK
-GNOME_COMPILE_WARNINGS([maximum])
+GNOME_COMPILE_WARNINGS([maximum],[
+	-Wdeclaration-after-statement
+	-Wextra
+	-Winline
+	-Wpacked
+	-Wlarger-than-65500
+	-Wmissing-declarations
+	-Wmissing-format-attribute
+	-Wmissing-noreturn
+	-Wold-style-definition
+	-Wsign-compare
+	-Wstrict-aliasing=2
+	-Wswitch-enum
+	-Wundef
+	-Wunsafe-loop-optimizations
+	-Wwrite-strings
+	-Wno-missing-field-initializers
+	-Wno-unused-parameter
+	-Wshadow
+	-Wcast-align
+	-Wformat-nonliteral
+	-Wswitch-default
+	-Waggregate-return
+	-Wredundant-decls
+	-Wunused-but-set-variable
+	-Warray-bounds
+])
+
 GNOME_MAINTAINER_MODE_DEFINES
 
 GOBJECT_INTROSPECTION_CHECK([0.9.7])
