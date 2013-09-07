@@ -2,147 +2,191 @@
 # Copyright (C) 2011 Tommi Vainikainen
 # This file is distributed under the same license as the libgdata package.
 # Tommi Vainikainen <thv@iki.fi>, 2011.
+# Jiri Grönroos <jiri.gronroos+l10n@iki.fi>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-23 10:43+0300\n"
-"PO-Revision-Date: 2011-09-23 10:43+0300\n"
-"Last-Translator: Tommi Vainikainen <thv@iki.fi>\n"
-"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-08-30 05:22+0000\n"
+"PO-Revision-Date: 2013-09-06 20:20+0300\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
+"Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
+#: ../gdata/gdata-client-login-authorizer.c:597
+#: ../gdata/gdata-oauth1-authorizer.c:809
+#: ../gdata/gdata-oauth1-authorizer.c:1085
 msgid "The server returned a malformed response."
 msgstr "Palvelin palautti epämuodostuneen vastauksen."
 
+#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Palvelun palvelimeen ei saatu yhteyttä."
 
+#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Välityspalvelimeen ei saatu yhteyttä."
 
 #. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
 "Virheellinen pyyntö-URI tai -otsake, tai ei-tuettu epästandardi parametri: %s"
 
 #. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
-msgstr "Todennus vaaditaan: %s"
+msgstr "Tunnistautuminen vaaditaan: %s"
 
 #. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Pyydettyä resurssia ei löytynyt: %s"
 
 #. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Merkintää on muokattu lataamisen jälkeen: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Virhekoodi %u todennettaessa: %s"
 
+#: ../gdata/gdata-client-login-authorizer.c:756
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Sisäänkirjauduttaessa tulee vastata CAPTCHAan."
 
 #. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:794
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Tämä tunnus vaatii sovelluskohtaisen salasanan. (%s)"
 
+#: ../gdata/gdata-client-login-authorizer.c:801
 msgid "Your username or password were incorrect."
 msgstr "Käyttäjätunnus tai salasana on väärä."
 
 #. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:822
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "Tunnuksesi sähköpostiosoitetta ei ole varmennettu. (%s)"
+msgstr "Tilisi sähköpostiosoitetta ei ole varmennettu. (%s)"
 
 #. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:827
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Et ole hyväksynyt palvelun käyttöehtoja. (%s)"
 
 #. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:833
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"Tämä tunnus on sirretty. Ole hyvä ja kirjaudu sisään yhteyden kanssa ja saat "
-"uuden käyttäjätunnuksesi ja salasanan. (%s)"
+"Tämä tili on siirretty. Ole hyvä ja kirjaudu sisään yhteyden kanssa ja saat "
+"uuden käyttäjätunnuksesi sekä salasanan. (%s)"
 
 #. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:838
 #, c-format
 msgid "This account has been deleted. (%s)"
-msgstr "Tämä tunnus on poistettu. (%s)"
+msgstr "Tämä tili on poistettu. (%s)"
 
 #. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:843
 #, c-format
 msgid "This account has been disabled. (%s)"
-msgstr "Tämä tunnus on kytketty pois käytöstä. (%s)"
+msgstr "Tämä tili on kytketty pois käytöstä. (%s)"
 
 #. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:848
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
-msgstr "Tällä tunnuksella pääsy tähän palvelu on kytketty pois käytöstä. (%s)"
+msgstr "Tällä tilillä pääsy tähän palvelu on kytketty pois käytöstä. (%s)"
 
 #. Translators: the parameter is a URI for further information.
+#: ../gdata/gdata-client-login-authorizer.c:853
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Tämä palvelu ei ole saatavilla tällä hetkellä. (%s)"
 
 #. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
 #. * support comments.
+#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
 msgid "This entry does not support comments."
 msgstr "Tämä merkintä ei tue kommentteja."
 
 #. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
 #. * comments.
+#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
 msgid "Comments may not be added to this entry."
 msgstr "Kommentteja ei välttämättä lisätty tähän merkintään."
 
 #. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
 msgid "This comment may not be deleted."
 msgstr "Tätä kommenttia ei välttämättä poistettu."
 
 #. Tried to seek too far
+#: ../gdata/gdata-download-stream.c:754
 msgid "Invalid seek request"
 msgstr "Virheellinen kelauspyyntö"
 
+#: ../gdata/gdata-oauth1-authorizer.c:784
 msgid "The server rejected the temporary credentials request."
 msgstr "Palvelin hylkäsi tilapäisen valtuutuksen pyynnön."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
+#: ../gdata/gdata-oauth1-authorizer.c:1059
 msgid "Access was denied by the user or server."
 msgstr "Käyttäjä tai palvelin kielsi pääsyn."
 
 #. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:342 ../gdata/gdata-parsable.c:353
 #, c-format
 msgid "Error parsing XML: %s"
-msgstr "Virhe jäsennetäessä XML:ää: %s"
+msgstr "Virhe jäsennettäessä XML:ää: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: ../gdata/gdata-parsable.c:355
 msgid "Empty document."
 msgstr "Tyhjä asiakirja."
+
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:473 ../gdata/gdata-parsable.c:511
+#, c-format
+#| msgid "Error parsing XML: %s"
+msgid "Error parsing JSON: %s"
+msgstr "Virhe jäsennettäessä JSONia: %s"
+
+#: ../gdata/gdata-parsable.c:512
+msgid "Outermost JSON node is not an object."
+msgstr ""
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
+#: ../gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Elementistä %s puuttuu vaadittu sisältö."
@@ -152,6 +196,7 @@ msgstr "Elementistä %s puuttuu vaadittu sisältö."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "Elementin %s sisältö (”%s”) ei ole ISO 8601-muotoilun mukainen."
@@ -161,6 +206,7 @@ msgstr "Elementin %s sisältö (”%s”) ei ole ISO 8601-muotoilun mukainen."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#: ../gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "Elementin %2$s ominaisuus %1$s arvo (”%3$s”) on tuntematon."
@@ -170,6 +216,7 @@ msgstr "Elementin %2$s ominaisuus %1$s arvo (”%3$s”) on tuntematon."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
+#: ../gdata/gdata-parser.c:123
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Elementin %s sisältö (”%s”) on tuntematon."
@@ -179,6 +226,7 @@ msgstr "Elementin %s sisältö (”%s”) on tuntematon."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Elementin %s vaadittu ominaisuus (%s) ei ollut mukana."
@@ -189,6 +237,7 @@ msgstr "Elementin %s vaadittu ominaisuus (%s) ei ollut mukana."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
+#: ../gdata/gdata-parser.c:166
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -201,6 +250,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
+#: ../gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Vaadittu lementti (%s) ei ollut mukana."
@@ -209,60 +259,110 @@ msgstr "Vaadittu lementti (%s) ei ollut mukana."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A singleton element (title) was duplicated.
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Ainokaiselementti (%s) esiintyi kahdesti."
 
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A 'title' element was missing required content.
+#: ../gdata/gdata-parser.c:273
+#, fuzzy, c-format
+#| msgid "A %s element was missing required content."
+msgid "A '%s' element was missing required content."
+msgstr "Elementistä %s puuttuu vaadittu sisältö."
+
+#. Translators: the first parameter is the name of an JSON element,
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#: ../gdata/gdata-parser.c:303
+#, fuzzy, c-format
+#| msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+msgstr "Elementin %s sisältö (”%s”) ei ole ISO 8601-muotoilun mukainen."
+
+#. Translators: the parameter is an error message.
+#: ../gdata/gdata-parser.c:313
+#, c-format
+msgid "Invalid JSON was received from the server: %s"
+msgstr "Vastaanotettiin virheellistä JSONia palvelimelta: %s"
+
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:369
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Virhekoodi %u kyselyssä: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:375
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Virhekoodi %u lisättäessä merkintää: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:381
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Virhekoodi %u päivitettäessä merkintää: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:387
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Virhekoodi %u poistettaessa merkintää: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:393
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Virhekoodi %u ladattaessa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:399
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Virhekoodi %u lähetettäessä: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:405
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Virhekoodi %u suoritettaessa eräajo-operaatiota: %s"
 
 #. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:692
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Virheellinen uudelleenohjaus-URI: %s"
 
+#: ../gdata/gdata-service.c:1363
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
 msgstr "Merkintä on lisätty jo aiemmin."
 
+#. Resumable upload error.
+#: ../gdata/gdata-upload-stream.c:748 ../gdata/gdata-upload-stream.c:830
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr ""
+
+#: ../gdata/gdata-upload-stream.c:896
 msgid "Stream is already closed"
 msgstr "Virta on jo suljettu"
 
@@ -272,88 +372,151 @@ msgstr "Virta on jo suljettu"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Elementin %s sisältö (”%s”) ei ollut heksadesimaali-RGB-muodossa."
 
+#: ../gdata/services/calendar/gdata-calendar-service.c:315
+#: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
 msgstr "Sinut täytyy olla todennettu, jotta voit kysellä kaikkia kalentereita."
 
+#: ../gdata/services/calendar/gdata-calendar-service.c:412
+#: ../gdata/services/calendar/gdata-calendar-service.c:463
+#: ../gdata/services/calendar/gdata-calendar-service.c:508
+#: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
 msgstr "Sinut täytyy olla todennettu, jotta voit kysellä omia kalentereitasi."
 
+#: ../gdata/services/calendar/gdata-calendar-service.c:517
+#: ../gdata/services/calendar/gdata-calendar-service.c:581
 msgid "The calendar did not have a content URI."
 msgstr "Kalenterilla ei ollut sisältö-URIa."
 
+#: ../gdata/services/contacts/gdata-contacts-service.c:258
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
 msgstr "Sinut täytyy olla todennettu, jotta voit kysellä yhteystietoja."
 
+#: ../gdata/services/contacts/gdata-contacts-service.c:424
+#: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
 msgstr "Sinut täytyy olla todennettu, jotta voit kysellä yhteystietoryhmiä."
 
+#: ../gdata/services/contacts/gdata-contacts-service.c:514
 msgid "The group has already been inserted."
 msgstr "Ryhmä on lisätty jo aiemmin."
 
+#: ../gdata/services/contacts/gdata-contacts-service.c:521
 msgid "You must be authenticated to insert a group."
 msgstr "Sinut täytyy olla todennettu, jotta voit lisätä ryhmän."
 
+#: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
 msgstr "Sinut täytyy olla todennettu, jotta voit ladata asiakirjoja."
 
+#: ../gdata/services/documents/gdata-documents-service.c:461
+#: ../gdata/services/documents/gdata-documents-service.c:511
 msgid "You must be authenticated to query documents."
 msgstr "Sinut täytyy olla todennettu, jotta voit kysellä asiakirjoja."
 
+#: ../gdata/services/documents/gdata-documents-service.c:556
 msgid "You must be authenticated to upload documents."
 msgstr "Sinut täytyy olla todennettu, jotta voit lähettää asiakirjoja."
 
+#: ../gdata/services/documents/gdata-documents-service.c:562
 msgid "The document has already been uploaded."
 msgstr "Asiakirja on jo lähetetty."
 
+#: ../gdata/services/documents/gdata-documents-service.c:706
 msgid "You must be authenticated to update documents."
 msgstr "Sinut täytyy olla todennettu, jotta voit päivittää asiakirjoja."
 
+#: ../gdata/services/documents/gdata-documents-service.c:888
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Annetun asiakirjan (”%s”) sisältötyyppiä ei tunnistettu."
 
+#: ../gdata/services/documents/gdata-documents-service.c:928
+#| msgid "You must be authenticated to query documents."
+msgid "You must be authenticated to copy documents."
+msgstr "Tunnistaudu kopioidaksesi asiakirjoja."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1090
+#: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Sinut täytyy olla todennettu, jotta voit siirtää asiakirjoja ja kansioita."
 
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
 "Sinut täytyy antaa käyttäjätunnus tai olla todennettu, jotta voit kysellä "
 "käyttäjää."
 
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
 msgstr "Kyselyparametri ei ole sallittu albumeille."
 
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Sinut täytyy antaa käyttäjätunnus tai olla todennettu, jotta voit kysellä "
 "kaikkia albumeita."
 
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
 msgstr "Albumilla ei ollut syötelinkkiä."
 
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
 msgstr "Sinut täytyy olla todennettu, jotta voit lähettää tiedoston."
 
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
 msgstr "Albumi on lisätty jo aiemmin."
 
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "Sinut täytyy olla todennettu, jotta voit lisätä albumin."
 
+#: ../gdata/services/youtube/gdata-youtube-service.c:457
 #, c-format
 msgid "This service is not available at the moment."
 msgstr "Tämä palvelu ei ole saatavilla juuri tällä hetkellä."
 
+#. Translators: the parameter is a URI.
+#: ../gdata/services/youtube/gdata-youtube-service.c:462
+#, c-format
+msgid ""
+"Your Google Account must be associated with a YouTube channel to do this. "
+"Visit %s to create one."
+msgstr ""
+"Google-tilisi täytyy olla liitetty YouTube-kanavaasi tehdäksesi tämän. "
+"Vieraile osoitteessa %s luodaksesi liitoksen."
+
+#. Translators: the first parameter is an error code, which is a coded string.
+#. * The second parameter is an error domain, which is another coded string.
+#. * The third parameter is the location of the error, which is either a URI or an XPath.
+#: ../gdata/services/youtube/gdata-youtube-service.c:467
+#: ../gdata/services/youtube/gdata-youtube-service.c:488
+#: ../gdata/services/youtube/gdata-youtube-service.c:494
+#, c-format
+msgid ""
+"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+msgstr ""
+"Tuntematon virhekoodi ”%s” alueella ”%s” vastaanotettu sijainnissa ”%s”."
+
+#: ../gdata/services/youtube/gdata-youtube-service.c:473
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Sinut täytyy olla todennettu, jotta voit tehdä tämän."
 
+#: ../gdata/services/youtube/gdata-youtube-service.c:478
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -362,6 +525,7 @@ msgstr ""
 "Olet tehnyt liian monta API-kutsua hiljattain. Ole hyvä ja yritä uudelleen "
 "muutaman minuutin kuluttua."
 
+#: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -369,21 +533,16 @@ msgstr ""
 "Olet ylittänyt kiintiösi. Ole hyvä ja poista jotain merkintöjä ja yritä "
 "uudelleen."
 
-#. Translators: the first parameter is an error code, which is a coded string.
-#. * The second parameter is an error domain, which is another coded string.
-#. * The third parameter is the location of the error, which is either a URI or an XPath.
-#, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr ""
-"Tuntematon virhekoodi ”%s” alueella ”%s” vastaanotettu sijainnissa ”%s”."
-
+#: ../gdata/services/youtube/gdata-youtube-service.c:512
 #, c-format
 msgid "Unknown and unparsable error received."
 msgstr "Tuntematon ja jäsentymätön virhe vastaanotettu."
 
+#: ../gdata/services/youtube/gdata-youtube-service.c:776
+#: ../gdata/services/youtube/gdata-youtube-service.c:833
 msgid "The video did not have a related videos <link>."
 msgstr "Videolla ei ollut liittyviä videoita <link>-tagissa."
 
+#: ../gdata/services/youtube/gdata-youtube-service.c:895
 msgid "You must be authenticated to upload a video."
 msgstr "Sinut täytyy olla todennettu, jotta voit lähettää videon."
