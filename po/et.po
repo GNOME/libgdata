@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2013-09-09 14:52+0000\n"
-"PO-Revision-Date: 2013-09-11 23:22+0300\n"
+"PO-Revision-Date: 2013-09-12 18:02+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
 "Language: et\n"
@@ -137,7 +137,7 @@ msgstr "Ligipääsu on keelanud kasutaja või server."
 #. Translators: the parameter is an error message
 #, c-format
 msgid "Error parsing XML: %s"
-msgstr "Viga XML-i töötlemisel: %s"
+msgstr "Viga XML-i parsimisel: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
 msgid "Empty document."
@@ -146,7 +146,7 @@ msgstr "Tühi dokument."
 #. Translators: the parameter is an error message
 #, c-format
 msgid "Error parsing JSON: %s"
-msgstr "Viga JSON-i töötlemisel: %s"
+msgstr "Viga JSON-i parsimisel: %s"
 
 msgid "Outermost JSON node is not an object."
 msgstr "Kõige välimine JSON sõlm ei ole objekt."
@@ -157,7 +157,7 @@ msgstr "Kõige välimine JSON sõlm ei ole objekt."
 #. *  A <title> element was missing required content.
 #, c-format
 msgid "A %s element was missing required content."
-msgstr "%s elemendil puudus vajalik sisu."
+msgstr "Elemendil %s puudus vajalik sisu."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -166,7 +166,7 @@ msgstr "%s elemendil puudus vajalik sisu."
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "%s elemendi sisu (\"%s\") ei olnud ISO 8601 vormingus."
+msgstr "Elemendi %s sisu (\"%s\") ei olnud ISO 8601 vormingus."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -235,7 +235,7 @@ msgstr "Singleton elemendist (%s) oli duplikaat."
 #. *  A 'title' element was missing required content.
 #, c-format
 msgid "A '%s' element was missing required content."
-msgstr "'%s' elemendil puudus vajalik sisu."
+msgstr "Elemendil '%s' puudus vajalik sisu."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -244,7 +244,7 @@ msgstr "'%s' elemendil puudus vajalik sisu."
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr "'%s' elemendi sisu (\"%s\") ei olnud ISO 8601 vormingus."
+msgstr "Elemendi '%s' sisu (\"%s\") ei olnud ISO 8601 vormingus."
 
 #. Translators: the parameter is an error message.
 #, c-format
@@ -399,8 +399,8 @@ msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
 "Visit %s to create one."
 msgstr ""
-"Sinu Google konto peab selle tegemiseks olema YouTube kanaliga seotud. "
-"Külasta lehte %s konto loomiseks."
+"Sinu Google konto peab selle tegemiseks olema YouTube kanaliga seotud. Konto "
+"saad luua aadressil %s."
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
@@ -408,7 +408,7 @@ msgstr ""
 #, c-format
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr "Tundmatu veakood \"%s\" saadi domeenilt \"%s\" asukohas \"%s\"."
+msgstr "Tundmatu veakood \"%s\" domeenilt \"%s\" kohast \"%s\"."
 
 #, c-format
 msgid "You must be authenticated to do this."
