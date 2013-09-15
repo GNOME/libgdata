@@ -33,7 +33,7 @@
 
 #define PW_USERNAME "libgdata.picasaweb@gmail.com"
 
-static GDataMockServer *mock_server = NULL;
+static UhmServer *mock_server = NULL;
 
 /* Assert that two albums have equal properties, but aren't the same object instance. For use in, e.g., comparing an inserted album from the server
  * to the original instance which was inserted. */
@@ -370,7 +370,7 @@ test_authentication (void)
 
 	g_object_unref (authorizer);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
@@ -493,7 +493,7 @@ set_up_query_files (QueryFilesData *data, gconstpointer service)
 	data->file3 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 3", data->album);
 	data->file4 = upload_file (GDATA_PICASAWEB_SERVICE (service), "Test file 4", data->album);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -508,7 +508,7 @@ tear_down_query_files (QueryFilesData *data, gconstpointer service)
 	g_object_unref (data->file1);
 
 	/* HACK! Wait for the distributed Google servers to synchronise. */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		sleep (10);
 	}
 
@@ -525,7 +525,7 @@ tear_down_query_files (QueryFilesData *data, gconstpointer service)
 	g_object_unref (album_feed);
 	g_object_unref (data->album);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Checks to perform on a photo feed from test_query_files() or test_query_files_async(). */
@@ -579,7 +579,7 @@ test_query_files (QueryFilesData *data, gconstpointer service)
 
 	g_object_unref (photo_feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_files, QueryFilesData);
@@ -630,7 +630,7 @@ test_query_files_async_progress_closure (QueryFilesData *query_data, gconstpoint
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -651,7 +651,7 @@ test_query_files_single (QueryFilesData *data, gconstpointer service)
 
 	g_object_unref (file);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -713,7 +713,7 @@ test_download_thumbnails (QueryFilesData *data, gconstpointer service)
 
 		/* FIXME. The mock server currently doesn't support binary data, so we can't get JPEG files
 		 * from it. Hence, only perform the GdkPixbuf tests when running tests online. */
-		if (gdata_mock_server_get_enable_online (mock_server) == FALSE) {
+		if (uhm_server_get_enable_online (mock_server) == FALSE) {
 			break;
 		}
 
@@ -737,7 +737,7 @@ test_download_thumbnails (QueryFilesData *data, gconstpointer service)
 	}
 #endif /* HAVE_GDK_PIXBUF */
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -790,7 +790,7 @@ test_download_photo (QueryFilesData *data, gconstpointer service)
 	g_file_delete (destination_file, NULL, NULL);
 	g_object_unref (destination_file);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -826,7 +826,7 @@ tear_down_insert_album (InsertAlbumData *data, gconstpointer service)
 	g_object_unref (data->album);
 	g_object_unref (data->inserted_album);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -860,7 +860,7 @@ test_insert_album (InsertAlbumData *data, gconstpointer service)
 
 	g_object_unref (inserted_album);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_album, InsertAlbumData);
@@ -937,7 +937,7 @@ set_up_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 
 	g_object_unref (album);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -961,7 +961,7 @@ tear_down_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->album4), NULL, NULL) == TRUE);
 	g_object_unref (data->album4);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1052,7 +1052,7 @@ test_query_all_albums (QueryAllAlbumsData *data, gconstpointer service)
 
 	g_object_unref (album_feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1101,7 +1101,7 @@ test_query_all_albums_with_limits (QueryAllAlbumsData *data, gconstpointer servi
 
 	g_object_unref (album_feed_1);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_all_albums, QueryAllAlbumsData);
@@ -1153,7 +1153,7 @@ test_query_all_albums_async_progress_closure (QueryAllAlbumsData *unused_data, g
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1211,7 +1211,7 @@ set_up_query_comments (QueryCommentsData *data, gconstpointer service)
 	g_assert (GDATA_IS_PICASAWEB_COMMENT (data->comment1));
 	g_object_unref (comment_);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1238,7 +1238,7 @@ tear_down_query_comments (QueryCommentsData *data, gconstpointer service)
 		g_object_unref (data->comment3);
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* Delete the test files and albums. */
 	tear_down_query_files ((QueryFilesData*) data, service);
@@ -1308,7 +1308,7 @@ test_comment_query (QueryCommentsData *data, gconstpointer service)
 
 	g_object_unref (comments_feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_comments, QueryCommentsData);
@@ -1360,7 +1360,7 @@ test_comment_query_async_progress_closure (QueryCommentsData *query_data, gconst
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1399,7 +1399,7 @@ tear_down_insert_comment (InsertCommentData *data, gconstpointer service)
 		g_object_unref (data->comment);
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	tear_down_query_files ((QueryFilesData*) data, service);
 }
@@ -1443,7 +1443,7 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 
 	data->new_comment = GDATA_PICASAWEB_COMMENT (new_comment);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_comment, InsertCommentData);
@@ -1484,7 +1484,7 @@ test_comment_delete (QueryCommentsData *data, gconstpointer service)
 	g_object_unref (data->comment1);
 	data->comment1 = NULL;
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (comment_delete, QueryCommentsData,
@@ -1532,7 +1532,7 @@ test_query_user (gconstpointer service)
 
 	g_object_unref (user);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Check that asynchronously querying for the currently authenticated user's details works and returns the correct details. */
@@ -1630,7 +1630,7 @@ set_up_upload (UploadData *data, gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (G_IS_FILE_INPUT_STREAM (data->file_stream));
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1652,7 +1652,7 @@ tear_down_upload (UploadData *data, gconstpointer service)
 	g_object_unref (data->file_stream);
 	g_object_unref (data->service);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1695,7 +1695,7 @@ test_upload_default_album (UploadData *data, gconstpointer service)
 	g_assert_cmpstr (tags2[1], ==, tags[1]);
 	g_assert_cmpstr (tags2[2], ==, tags[2]);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (upload, UploadData);
@@ -2064,23 +2064,23 @@ test_query_etag (void)
 static void
 mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
-	GDataMockServer *server;
-	GDataMockResolver *resolver;
+	UhmServer *server;
+	UhmResolver *resolver;
 
-	server = GDATA_MOCK_SERVER (object);
+	server = UHM_SERVER (object);
 
 	/* Set up the expected domain names here. This should technically be split up between
 	 * the different unit test suites, but that's too much effort. */
-	resolver = gdata_mock_server_get_resolver (server);
+	resolver = uhm_server_get_resolver (server);
 
 	if (resolver != NULL) {
-		const gchar *ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+		const gchar *ip_address = uhm_server_get_address (server);
 
-		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "picasaweb.google.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "picasaweb.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
 	}
 }
 
@@ -2097,13 +2097,13 @@ main (int argc, char *argv[])
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/picasaweb");
-	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
 	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
 	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE));
 	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), PW_USERNAME, PASSWORD, NULL, NULL);
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	service = GDATA_SERVICE (gdata_picasaweb_service_new (authorizer));
 

@@ -23,7 +23,7 @@
 #include "common.h"
 
 static GThread *main_thread = NULL;
-static GDataMockServer *mock_server = NULL;
+static UhmServer *mock_server = NULL;
 
 static void
 test_client_login_authorizer_constructor (void)
@@ -142,7 +142,7 @@ set_up_client_login_authorizer_data_authenticated (ClientLoginAuthorizerData *da
 	g_assert (gdata_client_login_authorizer_authenticate (data->authorizer, USERNAME, PASSWORD, NULL, NULL) == TRUE);
 	connect_to_client_login_authorizer (data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -342,7 +342,7 @@ test_client_login_authorizer_authenticate_sync (ClientLoginAuthorizerData *data,
 
 	post_test_authentication (data, TRUE);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Test that authentication using an incorrect password fails */
@@ -365,7 +365,7 @@ test_client_login_authorizer_authenticate_sync_bad_password (ClientLoginAuthoriz
 
 	post_test_authentication (data, FALSE);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Test that authentication against multiple authorization domains simultaneously and synchronously works */
@@ -391,7 +391,7 @@ test_client_login_authorizer_authenticate_sync_multiple_domains (ClientLoginAuth
 
 	post_test_authentication (data, TRUE);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Test that synchronous authentication can be cancelled */
@@ -420,7 +420,7 @@ test_client_login_authorizer_authenticate_sync_cancellation (ClientLoginAuthoriz
 
 	g_object_unref (cancellable);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -500,7 +500,7 @@ test_client_login_authorizer_authenticate_async (ClientLoginAuthorizerAsyncData 
 
 	g_main_loop_run (data->main_loop);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -539,7 +539,7 @@ test_client_login_authorizer_authenticate_async_multiple_domains (ClientLoginAut
 
 	g_main_loop_run (data->main_loop);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -582,7 +582,7 @@ test_client_login_authorizer_authenticate_async_cancellation (ClientLoginAuthori
 
 	g_object_unref (cancellable);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Test that gdata_authorizer_refresh_authorization() is a no-op (when authorised or not) */
@@ -705,19 +705,19 @@ test_client_login_authorizer_process_request_insecure (ClientLoginAuthorizerData
 static void
 mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
-	GDataMockServer *server;
-	GDataMockResolver *resolver;
+	UhmServer *server;
+	UhmResolver *resolver;
 
-	server = GDATA_MOCK_SERVER (object);
+	server = UHM_SERVER (object);
 
 	/* Set up the expected domain names here. This should technically be split up between
 	 * the different unit test suites, but that's too much effort. */
-	resolver = gdata_mock_server_get_resolver (server);
+	resolver = uhm_server_get_resolver (server);
 
 	if (resolver != NULL) {
-		const gchar *ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+		const gchar *ip_address = uhm_server_get_address (server);
 
-		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
 	}
 }
 
@@ -731,7 +731,7 @@ main (int argc, char *argv[])
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/client-login-authorizer");
-	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
 	main_thread = g_thread_self ();

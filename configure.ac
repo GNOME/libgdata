@@ -123,6 +123,11 @@ AC_SUBST([GNOME_PACKAGES_PRIVATE])
 AC_SUBST([GNOME_PACKAGES])
 AC_SUBST([GOA_ENABLED])
 
+dnl ****************************
+dnl Check for uhttpmock
+dnl ****************************
+PKG_CHECK_MODULES(UHTTPMOCK, libuhttpmock-0.0)
+
 # Various necessary functions and headers
 AC_CHECK_FUNCS([strchr])
 AC_CHECK_FUNCS([strstr])

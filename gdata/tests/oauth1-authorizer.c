@@ -23,7 +23,7 @@
 #include "common.h"
 
 static GThread *main_thread = NULL;
-static GDataMockServer *mock_server = NULL;
+static UhmServer *mock_server = NULL;
 
 static void
 test_oauth1_authorizer_constructor (void)
@@ -198,7 +198,7 @@ skip_test:
 	g_free (token_secret);
 	g_free (verifier);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -395,7 +395,7 @@ test_oauth1_authorizer_refresh_authorization (OAuth1AuthorizerData *data, gconst
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Test that processing a request with a NULL domain will not change the request. */
@@ -508,7 +508,7 @@ test_oauth1_authorizer_request_authentication_uri_sync (OAuth1AuthorizerData *da
 	g_free (token);
 	g_free (token_secret);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Test that requesting an authentication URI synchronously can be cancelled */
@@ -540,7 +540,7 @@ test_oauth1_authorizer_request_authentication_uri_sync_cancellation (OAuth1Autho
 
 	g_object_unref (cancellable);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -614,7 +614,7 @@ test_oauth1_authorizer_request_authentication_uri_async (OAuth1AuthorizerAsyncDa
 
 	g_main_loop_run (data->main_loop);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -661,7 +661,7 @@ test_oauth1_authorizer_request_authentication_uri_async_cancellation (OAuth1Auth
 
 	g_object_unref (cancellable);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -692,7 +692,7 @@ set_up_oauth1_authorizer_interactive_data (OAuth1AuthorizerInteractiveData *data
 
 	g_free (authentication_uri);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -715,7 +715,7 @@ set_up_oauth1_authorizer_interactive_data_bad_credentials (OAuth1AuthorizerInter
 
 	g_free (authentication_uri);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -759,7 +759,7 @@ test_oauth1_authorizer_request_authorization_sync (OAuth1AuthorizerInteractiveDa
 	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (data->parent.authorizer),
 	          gdata_contacts_service_get_primary_authorization_domain ()) == TRUE);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Test that synchronously authorizing a request token fails if an invalid verifier is provided. */
@@ -786,7 +786,7 @@ test_oauth1_authorizer_request_authorization_sync_bad_credentials (OAuth1Authori
 	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (data->parent.authorizer),
 	          gdata_contacts_service_get_primary_authorization_domain ()) == FALSE);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* Test that cancellation of synchronously authorizing a request token works. Note that this test has to be interactive, as the user has to visit the
@@ -826,7 +826,7 @@ test_oauth1_authorizer_request_authorization_sync_cancellation (OAuth1Authorizer
 
 	g_object_unref (cancellable);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -906,7 +906,7 @@ test_oauth1_authorizer_request_authorization_async (OAuth1AuthorizerInteractiveA
 
 	g_main_loop_run (data->main_loop);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -947,7 +947,7 @@ test_oauth1_authorizer_request_authorization_async_bad_credentials (OAuth1Author
 
 	g_main_loop_run (data->main_loop);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1001,25 +1001,25 @@ test_oauth1_authorizer_request_authorization_async_cancellation (OAuth1Authorize
 
 	g_object_unref (cancellable);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
 mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
-	GDataMockServer *server;
-	GDataMockResolver *resolver;
+	UhmServer *server;
+	UhmResolver *resolver;
 
-	server = GDATA_MOCK_SERVER (object);
+	server = UHM_SERVER (object);
 
 	/* Set up the expected domain names here. This should technically be split up between
 	 * the different unit test suites, but that's too much effort. */
-	resolver = gdata_mock_server_get_resolver (server);
+	resolver = uhm_server_get_resolver (server);
 
 	if (resolver != NULL) {
-		const gchar *ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+		const gchar *ip_address = uhm_server_get_address (server);
 
-		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
 	}
 }
 
@@ -1033,7 +1033,7 @@ main (int argc, char *argv[])
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/oauth1-authorizer");
-	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
 	main_thread = g_thread_self ();

@@ -13,23 +13,21 @@ AM_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(GDATA_CFLAGS) \
 	$(GNOME_CFLAGS) \
+	$(UHTTPMOCK_CFLAGS) \
 	$(NULL)
 
 LIBS = \
 	$(top_builddir)/gdata/libgdata.la	\
 	$(GDK_PIXBUF_LIBS)			\
 	$(GDATA_LIBS)				\
-	$(GNOME_LIBS)
+	$(GNOME_LIBS)				\
+	$(UHTTPMOCK_LIBS)
 
 noinst_PROGRAMS = $(TEST_PROGS)
 
 TEST_SRCS = \
 	common.c \
 	common.h \
-	mock-resolver.c \
-	mock-resolver.h \
-	mock-server.c \
-	mock-server.h \
 	$(NULL)
 
 TEST_PROGS			+= general

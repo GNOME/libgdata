@@ -30,7 +30,7 @@
 #include "gdata.h"
 #include "common.h"
 
-static GDataMockServer *mock_server = NULL;
+static UhmServer *mock_server = NULL;
 
 static gboolean
 check_document_is_in_folder (GDataDocumentsDocument *document, GDataDocumentsFolder *folder)
@@ -137,7 +137,7 @@ test_authentication (void)
 
 	g_object_unref (authorizer);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
@@ -209,7 +209,7 @@ set_up_temp_folder (TempFolderData *data, gconstpointer service)
 	g_free (upload_uri);
 	g_object_unref (folder);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -222,7 +222,7 @@ tear_down_temp_folder (TempFolderData *data, gconstpointer service)
 		g_object_unref (data->folder);
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -272,7 +272,7 @@ _set_up_temp_document (GDataDocumentsEntry *entry, GDataService *service, GFile 
 	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back when creating the document:
 	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before trying this to allow the
 	 * various Google servers to catch up with each other. Thankfully, we don't have to wait when running against the mock server. */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		g_usleep (5 * G_USEC_PER_SEC);
 	}
 
@@ -309,7 +309,7 @@ set_up_temp_document_spreadsheet (TempDocumentData *data, gconstpointer service)
 	g_object_unref (document_file);
 	g_object_unref (document);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -322,7 +322,7 @@ tear_down_temp_document (TempDocumentData *data, gconstpointer service)
 		g_object_unref (data->document);
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -357,7 +357,7 @@ test_delete_folder (TempFolderData *data, gconstpointer service)
 	g_object_unref (data->folder);
 	data->folder = NULL;
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -392,7 +392,7 @@ test_delete_document (TempDocumentData *data, gconstpointer service)
 	g_object_unref (data->document);
 	data->document = NULL;
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -458,7 +458,7 @@ set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 	g_object_unref (document_file);
 	g_free (upload_uri);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -479,7 +479,7 @@ tear_down_temp_documents (TempDocumentsData *data, gconstpointer service)
 	delete_entry (GDATA_DOCUMENTS_ENTRY (data->arbitrary_document), GDATA_SERVICE (service));
 	g_object_unref (data->arbitrary_document);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* Delete the folder */
 	tear_down_temp_folder ((TempFolderData*) data, service);
@@ -507,7 +507,7 @@ test_query_all_documents_with_folder (TempDocumentsData *data, gconstpointer ser
 	g_object_unref (feed);
 	g_object_unref (query);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -527,7 +527,7 @@ test_query_all_documents (TempDocumentsData *data, gconstpointer service)
 
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (temp_documents, TempDocumentsData);
@@ -575,7 +575,7 @@ test_query_all_documents_async_progress_closure (TempDocumentsData *documents_da
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef enum {
@@ -669,7 +669,7 @@ set_up_upload_document (UploadDocumentData *data, gconstpointer _test_params)
 			g_assert_not_reached ();
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -692,7 +692,7 @@ tear_down_upload_document (UploadDocumentData *data, gconstpointer _test_params)
 		/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't upload both metadata and data
 		 * when creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few
 		 * seconds before trying this to allow the various Google servers to catch up with each other. */
-		if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+		if (uhm_server_get_enable_online (mock_server) == TRUE) {
 			g_usleep (5 * G_USEC_PER_SEC);
 		}
 
@@ -706,7 +706,7 @@ tear_down_upload_document (UploadDocumentData *data, gconstpointer _test_params)
 		g_object_unref (data->folder);
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -940,7 +940,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 	g_clear_object (&document_file);
 	g_clear_object (&document);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -985,7 +985,7 @@ set_up_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 	g_object_unref (document_file);
 	g_object_unref (document);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1006,7 +1006,7 @@ tear_down_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 		/* HACK: Query for the new document, as Google's servers appear to modify it behind our back if we don't update both metadata and data
 		 * when creating the document: http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few
 		 * seconds before trying this to allow the various Google servers to catch up with each other. */
-		if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+		if (uhm_server_get_enable_online (mock_server) == TRUE) {
 			g_usleep (5 * G_USEC_PER_SEC);
 		}
 
@@ -1014,7 +1014,7 @@ tear_down_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 		g_object_unref (data->document);
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1134,7 +1134,7 @@ test_update (UpdateDocumentData *data, gconstpointer _test_params)
 	g_free (original_title);
 	g_object_unref (updated_document);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1160,7 +1160,7 @@ tear_down_copy_document (TempCopyDocumentData *data, gconstpointer service)
 	delete_entry (GDATA_DOCUMENTS_ENTRY (data->new_document), GDATA_SERVICE (service));
 	g_object_unref (data->new_document);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* Delete the folder */
 	tear_down_temp_document ((TempDocumentData*) data, service);
@@ -1182,7 +1182,7 @@ test_copy_document (TempCopyDocumentData *data, gconstpointer service)
 	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (data->parent.document)), !=, gdata_entry_get_id (GDATA_ENTRY (data->new_document)));
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (data->parent.document)), ==, gdata_entry_get_title (GDATA_ENTRY (data->new_document)));
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1259,7 +1259,7 @@ set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean init
 	/* HACK: Query for the new document, as Google's servers appear to modify it behind our back when creating the document:
 	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=2337. We have to wait a few seconds before trying this to allow the
 	 * various Google servers to catch up with each other. */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		g_usleep (5 * G_USEC_PER_SEC);
 	}
 
@@ -1275,7 +1275,7 @@ set_up_folders_add_to_folder (FoldersData *data, gconstpointer service)
 {
 	gdata_test_mock_server_start_trace (mock_server, "setup-folders-add-to-folder");
 	set_up_folders (data, GDATA_DOCUMENTS_SERVICE (service), FALSE);
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1289,7 +1289,7 @@ tear_down_folders_add_to_folder (FoldersData *data, gconstpointer service)
 	delete_entry (GDATA_DOCUMENTS_ENTRY (data->folder), GDATA_SERVICE (service));
 	g_object_unref (data->folder);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1313,7 +1313,7 @@ test_folders_add_to_folder (FoldersData *data, gconstpointer service)
 
 	g_object_unref (new_document);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (folders_add_to_folder, FoldersData);
@@ -1347,7 +1347,7 @@ set_up_folders_remove_from_folder (FoldersData *data, gconstpointer service)
 {
 	gdata_test_mock_server_start_trace (mock_server, "setup-folders-remove-from-folder");
 	set_up_folders (data, GDATA_DOCUMENTS_SERVICE (service), TRUE);
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1377,7 +1377,7 @@ test_folders_remove_from_folder (FoldersData *data, gconstpointer service)
 
 	g_object_unref (new_document);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (folders_remove_from_folder, FoldersData);
@@ -1408,7 +1408,7 @@ G_STMT_START {
 
 	/* Since this code is called for the cancellation tests, we don't know exactly how many requests will be made
 	 * before cancellation kicks in; so the epilogue request (below) needs to be in a separate trace file. */
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 	gdata_test_mock_server_start_trace (mock_server, "folders_remove_from_folder-async-epilogue");
 
 	/* With the longer cancellation timeouts, the server can somehow modify the document without getting around to completely
@@ -1504,7 +1504,7 @@ test_download_document (TempDocumentsData *data, gconstpointer service)
 	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->text_document), GDATA_SERVICE (service));
 	_test_download_document (GDATA_DOCUMENTS_DOCUMENT (data->arbitrary_document), GDATA_SERVICE (service));
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1582,7 +1582,7 @@ test_download_thumbnail (TempDocumentData *data, gconstpointer service)
 	}
 #endif /* HAVE_GDK_PIXBUF */
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1616,7 +1616,7 @@ test_access_rule_insert (TempDocumentData *data, gconstpointer service)
 	g_object_unref (access_rule);
 	g_object_unref (new_access_rule);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1883,7 +1883,7 @@ test_batch (gconstpointer service)
 	g_object_unref (operation);
 	g_object_unref (inserted_entry3);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1915,7 +1915,7 @@ set_up_batch_async (BatchAsyncData *data, gconstpointer service)
 
 	g_object_unref (doc);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1955,7 +1955,7 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	g_main_loop_unref (main_loop);
 	g_object_unref (operation);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2004,7 +2004,7 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_object_unref (cancellable);
 	g_object_unref (operation);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2015,29 +2015,29 @@ tear_down_batch_async (BatchAsyncData *data, gconstpointer service)
 	delete_entry (GDATA_DOCUMENTS_ENTRY (data->new_doc), GDATA_SERVICE (service));
 	g_object_unref (data->new_doc);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
 mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
-	GDataMockServer *server;
-	GDataMockResolver *resolver;
+	UhmServer *server;
+	UhmResolver *resolver;
 
-	server = GDATA_MOCK_SERVER (object);
+	server = UHM_SERVER (object);
 
 	/* Set up the expected domain names here. This should technically be split up between
 	 * the different unit test suites, but that's too much effort. */
-	resolver = gdata_mock_server_get_resolver (server);
+	resolver = uhm_server_get_resolver (server);
 
 	if (resolver != NULL) {
-		const gchar *ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+		const gchar *ip_address = uhm_server_get_address (server);
 
-		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "docs.google.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "docs.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
 	}
 }
 
@@ -2054,13 +2054,13 @@ main (int argc, char *argv[])
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/documents");
-	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
 	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
 	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_DOCUMENTS_SERVICE));
 	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), DOCUMENTS_USERNAME, PASSWORD, NULL, NULL);
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	service = GDATA_SERVICE (gdata_documents_service_new (authorizer));
 

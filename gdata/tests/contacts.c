@@ -24,7 +24,7 @@
 #include "gdata.h"
 #include "common.h"
 
-static GDataMockServer *mock_server = NULL;
+static UhmServer *mock_server = NULL;
 
 typedef struct {
 	GDataContactsContact *contact;
@@ -48,10 +48,10 @@ set_up_temp_contact (TempContactData *data, gconstpointer service)
 
 	g_object_unref (contact);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* HACK. Wait for the server to propagate distributed changes. */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		sleep (10);
 	}
 }
@@ -77,7 +77,7 @@ tear_down_temp_contact (TempContactData *data, gconstpointer service)
 
 	g_object_unref (updated_contact);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (temp_contact, TempContactData);
@@ -111,7 +111,7 @@ test_authentication (void)
 
 	g_object_unref (authorizer);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
@@ -183,11 +183,11 @@ set_up_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
 	data->contact3 = gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (service), contact, NULL, NULL);
 	g_object_unref (contact);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* It takes a few seconds for the contacts to reliably propagate around Google's servers. Distributed systems are so fun. Not.
 	 * Thankfully, we don't have to wait when running against the mock server. */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		g_usleep (G_USEC_PER_SEC * 5);
 	}
 }
@@ -210,7 +210,7 @@ tear_down_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->contact3), NULL, NULL) == TRUE);
 	g_object_unref (data->contact3);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -230,7 +230,7 @@ test_query_all_contacts (QueryAllContactsData *data, gconstpointer service)
 
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_all_contacts, QueryAllContactsData);
@@ -277,7 +277,7 @@ test_query_all_contacts_async_progress_closure (QueryAllContactsData *query_data
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -301,7 +301,7 @@ tear_down_insert (InsertData *data, gconstpointer service)
 
 	g_object_unref (data->new_contact);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -445,7 +445,7 @@ test_contact_insert (InsertData *data, gconstpointer service)
 	 * servers can allow this to happen. Somehow.
 	 * This check isn't run when testing against a mock server because the dates in the trace file may be waaaay out of date. */
 	edited = gdata_contacts_contact_get_edited (contact);
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		creation_time = gdata_contacts_contact_get_edited (new_contact);
 		g_assert_cmpint (creation_time + TIME_FUZZINESS, >=, edited);
 		g_assert_cmpint (creation_time - TIME_FUZZINESS, <=, edited);
@@ -578,7 +578,7 @@ test_contact_insert (InsertData *data, gconstpointer service)
 
 	g_object_unref (contact);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -609,7 +609,7 @@ test_contact_update (TempContactData *data, gconstpointer service)
 
 	g_object_unref (new_contact);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -643,10 +643,10 @@ set_up_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
 	g_assert (GDATA_IS_CONTACTS_GROUP (data->group3));
 	g_object_unref (group);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* HACK! Guess what? Distributed system inconsistency strikes again! */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		sleep (10);
 	}
 }
@@ -668,7 +668,7 @@ tear_down_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->group3), NULL, NULL) == TRUE);
 	g_object_unref (data->group3);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -688,7 +688,7 @@ test_query_all_groups (QueryAllGroupsData *data, gconstpointer service)
 
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_all_groups, QueryAllGroupsData);
@@ -736,7 +736,7 @@ test_query_all_groups_async_progress_closure (QueryAllGroupsData *query_data, gc
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -753,7 +753,7 @@ static void
 tear_down_insert_group (InsertGroupData *data, gconstpointer service)
 {
 	/* HACK! Distributed systems suck. */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		sleep (10);
 	}
 
@@ -764,7 +764,7 @@ tear_down_insert_group (InsertGroupData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->new_group), NULL, NULL) == TRUE);
 	g_object_unref (data->new_group);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -798,7 +798,7 @@ test_group_insert (InsertGroupData *data, gconstpointer service)
 
 	/* Check the properties. Time-based properties can't be checked when running against a mock server, since
 	 * the trace files may be quite old. */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		g_assert_cmpint (gdata_contacts_group_get_edited (new_group), >=, time_val.tv_sec);
 	}
 	g_assert (gdata_contacts_group_is_deleted (new_group) == FALSE);
@@ -811,7 +811,7 @@ test_group_insert (InsertGroupData *data, gconstpointer service)
 
 	g_object_unref (group);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_group, InsertGroupData);
@@ -2012,7 +2012,7 @@ test_photo_add (TempContactData *data, gconstpointer service)
 	g_clear_error (&error);
 	g_free (photo_data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (photo_add, TempContactData,
@@ -2067,7 +2067,7 @@ add_photo_to_contact (GDataContactsService *service, GDataContactsContact **cont
 	/* HACK: It fairly consistently seems to take the Google servers about 4 seconds to process uploaded photos. Before this
 	 * time, a query for the photo will return an error. So let's wait for 10.
 	 * Helps: bgo#679072 */
-	if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		sleep (10);
 	}
 
@@ -2090,7 +2090,7 @@ set_up_temp_contact_with_photo (TempContactWithPhotoData *data, gconstpointer se
 
 	gdata_test_mock_server_start_trace (mock_server, "setup-temp-contact-with-photo");
 	add_photo_to_contact (GDATA_CONTACTS_SERVICE (service), &data->contact);
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2126,7 +2126,7 @@ test_photo_get (TempContactData *data, gconstpointer service)
 	g_free (photo_data);
 	g_clear_error (&error);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (photo_get, TempContactData,
@@ -2178,7 +2178,7 @@ test_photo_delete (TempContactData *data, gconstpointer service)
 
 	g_clear_error (&error);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (photo_delete, TempContactData,
@@ -2317,7 +2317,7 @@ test_batch (gconstpointer service)
 	/*g_object_unref (operation);*/
 	g_object_unref (inserted_entry3);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -2343,7 +2343,7 @@ setup_batch_async (BatchAsyncData *data, gconstpointer service)
 
 	g_object_unref (contact);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2383,7 +2383,7 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	g_main_loop_unref (main_loop);
 	g_object_unref (operation);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2432,7 +2432,7 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_object_unref (cancellable);
 	g_object_unref (operation);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2450,7 +2450,7 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 
 	g_object_unref (data->new_contact);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2532,19 +2532,19 @@ test_contact_id (void)
 static void
 mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
-	GDataMockServer *server;
-	GDataMockResolver *resolver;
+	UhmServer *server;
+	UhmResolver *resolver;
 
-	server = GDATA_MOCK_SERVER (object);
+	server = UHM_SERVER (object);
 
 	/* Set up the expected domain names here. This should technically be split up between
 	 * the different unit test suites, but that's too much effort. */
-	resolver = gdata_mock_server_get_resolver (server);
+	resolver = uhm_server_get_resolver (server);
 
 	if (resolver != NULL) {
-		const gchar *ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+		const gchar *ip_address = uhm_server_get_address (server);
 
-		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
 	}
 }
 
@@ -2561,13 +2561,13 @@ main (int argc, char *argv[])
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/contacts");
-	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
 	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
 	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE));
 	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	service = GDATA_SERVICE (gdata_contacts_service_new (authorizer));
 

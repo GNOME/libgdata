@@ -25,7 +25,6 @@
 #include <libxml/xmlsave.h>
 
 #include "common.h"
-#include "mock-server.h"
 
 /* %TRUE if interactive tests should be skipped because we're running automatically (for example) */
 static gboolean no_interactive = FALSE;
@@ -49,11 +48,13 @@ static gboolean write_traces = FALSE;
 static gboolean compare_traces = FALSE;
 
 /* Global mock server instance used by all tests. */
-static GDataMockServer *mock_server = NULL;
+static UhmServer *mock_server = NULL;
 
 void
 gdata_test_init (int argc, char **argv)
 {
+	GTlsCertificate *cert;
+	GError *child_error = NULL;
 	gint i;
 
 #if !GLIB_CHECK_VERSION (2, 35, 0)
@@ -126,21 +127,28 @@ gdata_test_init (int argc, char **argv)
 	g_setenv ("G_MESSAGES_DEBUG", "libgdata", FALSE);
 	g_setenv ("LIBGDATA_LAX_SSL_CERTIFICATES", "1", FALSE);
 
-	mock_server = gdata_mock_server_new ();
-	gdata_mock_server_set_enable_logging (mock_server, write_traces);
-	gdata_mock_server_set_enable_online (mock_server, write_traces || compare_traces);
+	mock_server = uhm_server_new ();
+	uhm_server_set_enable_logging (mock_server, write_traces);
+	uhm_server_set_enable_online (mock_server, write_traces || compare_traces);
+
+	/* Build the certificate. */
+	cert = g_tls_certificate_new_from_files (TEST_FILE_DIR "cert.pem", TEST_FILE_DIR "key.pem", &child_error);
+	g_assert_no_error (child_error);
+	/* Set it as the property. */
+	uhm_server_set_tls_certificate (mock_server, cert);
+	g_object_unref (cert);
 }
 
 /*
  * gdata_test_get_mock_server:
  *
- * Returns the singleton #GDataMockServer instance used throughout the test suite.
+ * Returns the singleton #UhmServer instance used throughout the test suite.
  *
  * Return value: (transfer none): the mock server
  *
  * Since: 0.13.4
  */
-GDataMockServer *
+UhmServer *
 gdata_test_get_mock_server (void)
 {
 	return mock_server;
@@ -911,7 +919,7 @@ gdata_test_debug_handler (const gchar *log_domain, GLogLevelFlags log_level, con
 
 	/* Log to the trace file. */
 	if (message != NULL && (*message == '<' || *message == '>' || *message == ' ') && *(message + 1) == ' ') {
-		gdata_mock_server_received_message_chunk (mock_server, message, strlen (message));
+		uhm_server_received_message_chunk (mock_server, message, strlen (message), NULL);
 	}
 }
 
@@ -924,7 +932,7 @@ gdata_test_assert_handler (const gchar *message)
 
 /**
  * gdata_test_set_https_port:
- * @server: a #GDataMockServer
+ * @server: a #UhmServer
  *
  * Sets the HTTPS port used for all future libgdata requests to that used by the given mock @server,
  * effectively redirecting all client requests to the mock server.
@@ -932,44 +940,44 @@ gdata_test_assert_handler (const gchar *message)
  * Since: 0.13.4
  */
 void
-gdata_test_set_https_port (GDataMockServer *server)
+gdata_test_set_https_port (UhmServer *server)
 {
-	gchar *port_string = g_strdup_printf ("%u", gdata_mock_server_get_port (server));
+	gchar *port_string = g_strdup_printf ("%u", uhm_server_get_port (server));
 	g_setenv ("LIBGDATA_HTTPS_PORT", port_string, TRUE);
 	g_free (port_string);
 }
 
 /**
  * gdata_test_mock_server_start_trace:
- * @server: a #GDataMockServer
+ * @server: a #UhmServer
  * @trace_filename: filename of the trace to load
  *
- * Wrapper around gdata_mock_server_start_trace() which additionally sets the <code class="literal">LIBGDATA_HTTPS_PORT</code>
+ * Wrapper around uhm_server_start_trace() which additionally sets the <code class="literal">LIBGDATA_HTTPS_PORT</code>
  * environment variable to redirect all libgdata requests to the mock server.
  *
  * Since: 0.13.4
  */
 void
-gdata_test_mock_server_start_trace (GDataMockServer *server, const gchar *trace_filename)
+gdata_test_mock_server_start_trace (UhmServer *server, const gchar *trace_filename)
 {
-	gdata_mock_server_start_trace (server, trace_filename);
+	uhm_server_start_trace (server, trace_filename, NULL);
 	gdata_test_set_https_port (server);
 }
 
 /**
  * gdata_test_mock_server_handle_message_error:
- * @server: a #GDataMockServer
+ * @server: a #UhmServer
  * @message: the message whose response should be filled
  * @client: the currently connected client
  * @user_data: user data provided when connecting the signal
  *
- * Handler for #GDataMockServer::handle-message which sets the HTTP response for @message to the HTTP error status
+ * Handler for #UhmServer::handle-message which sets the HTTP response for @message to the HTTP error status
  * specified in a #GDataTestRequestErrorData structure passed to @user_data.
  *
  * Since: 0.13.4
  */
 gboolean
-gdata_test_mock_server_handle_message_error (GDataMockServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data)
+gdata_test_mock_server_handle_message_error (UhmServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data)
 {
 	const GDataTestRequestErrorData *data = user_data;
 
@@ -981,19 +989,19 @@ gdata_test_mock_server_handle_message_error (GDataMockServer *server, SoupMessag
 
 /**
  * gdata_test_mock_server_handle_message_timeout:
- * @server: a #GDataMockServer
+ * @server: a #UhmServer
  * @message: the message whose response should be filled
  * @client: the currently connected client
  * @user_data: user data provided when connecting the signal
  *
- * Handler for #GDataMockServer::handle-message which waits for 2 seconds before returning a %SOUP_STATUS_REQUEST_TIMEOUT status
+ * Handler for #UhmServer::handle-message which waits for 2 seconds before returning a %SOUP_STATUS_REQUEST_TIMEOUT status
  * and appropriate error message body. If used in conjunction with a 1 second timeout in the client code under test, this can
  * simulate network error conditions and timeouts, in order to test the error handling code for such conditions.
  *
  * Since: 0.13.4
  */
 gboolean
-gdata_test_mock_server_handle_message_timeout (GDataMockServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data)
+gdata_test_mock_server_handle_message_timeout (UhmServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data)
 {
 	/* Sleep for longer than the timeout set on the client. */
 	g_usleep (2 * G_USEC_PER_SEC);

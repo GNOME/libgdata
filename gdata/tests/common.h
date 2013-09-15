@@ -20,7 +20,7 @@
 #include <glib.h>
 #include <gdata/gdata.h>
 
-#include "mock-server.h"
+#include <uhttpmock/uhm.h>
 
 #ifndef GDATA_TEST_COMMON_H
 #define GDATA_TEST_COMMON_H
@@ -48,7 +48,7 @@ G_BEGIN_DECLS
 
 void gdata_test_init (int argc, char **argv);
 
-GDataMockServer *gdata_test_get_mock_server (void) G_GNUC_WARN_UNUSED_RESULT;
+UhmServer *gdata_test_get_mock_server (void) G_GNUC_WARN_UNUSED_RESULT;
 
 gboolean gdata_test_interactive (void);
 
@@ -184,7 +184,7 @@ tear_down_##CLOSURE_NAME##_async (GDataAsyncTestData *async_data, gconstpointer 
  * <function>test_<replaceable>TEST_NAME</replaceable>_async</function> and
  * <function>test_<replaceable>TEST_NAME</replaceable>_async_cancellation</function>.
  *
- * These functions assume the existence of a <varname>mock_server</varname> variable which points to the current #GDataMockServer instance. They
+ * These functions assume the existence of a <varname>mock_server</varname> variable which points to the current #UhmServer instance. They
  * will automatically use traces <varname><replaceable>TEST_NAME</replaceable>-async</varname> and
  * <varname><replaceable>TEST_NAME</replaceable>-async-cancellation</varname>.
  *
@@ -242,7 +242,7 @@ test_##TEST_NAME##_async (GDataAsyncTestData *async_data, gconstpointer service)
  \
 	g_main_loop_run (async_data->main_loop); \
  \
-	gdata_mock_server_end_trace (mock_server); \
+	uhm_server_end_trace (mock_server); \
 } \
  \
 static void \
@@ -295,7 +295,7 @@ test_##TEST_NAME##_async_cancellation (GDataAsyncTestData *async_data, gconstpoi
 			async_data->cancellation_timeout *= GDATA_ASYNC_TIMEOUT_MULTIPLIER; \
 		} \
  \
-		gdata_mock_server_end_trace (mock_server); \
+		uhm_server_end_trace (mock_server); \
 	} while (async_data->cancellation_successful == TRUE); \
  \
 	/* Clean up the last timeout callback */ \
@@ -319,7 +319,7 @@ void gdata_test_debug_output (void);
  * @error_domain_func: constant function returning the #GQuark for the expected error domain
  * @error_code: expected error code
  *
- * A mapping between a HTTP response emitted by a #GDataMockServer and the error expected to be thrown by the HTTP client.
+ * A mapping between a HTTP response emitted by a #UhmServer and the error expected to be thrown by the HTTP client.
  * This is designed for testing error handling in the client code, typically by running a single request through an array
  * of these such mappings and testing the client code throws the correct error in each case.
  *
@@ -335,10 +335,10 @@ typedef struct {
 	gint error_code;
 } GDataTestRequestErrorData;
 
-void gdata_test_set_https_port (GDataMockServer *server);
-void gdata_test_mock_server_start_trace (GDataMockServer *server, const gchar *trace_filename);
-gboolean gdata_test_mock_server_handle_message_error (GDataMockServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data);
-gboolean gdata_test_mock_server_handle_message_timeout (GDataMockServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data);
+void gdata_test_set_https_port (UhmServer *server);
+void gdata_test_mock_server_start_trace (UhmServer *server, const gchar *trace_filename);
+gboolean gdata_test_mock_server_handle_message_error (UhmServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data);
+gboolean gdata_test_mock_server_handle_message_timeout (UhmServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data);
 
 G_END_DECLS
 

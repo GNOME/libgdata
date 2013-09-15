@@ -26,27 +26,27 @@
 
 #define DEVELOPER_KEY "AI39si7Me3Q7zYs6hmkFvpRBD2nrkVjYYsUO5lh_3HdOkGRc9g6Z4nzxZatk_aAo2EsA21k7vrda0OO6oFg2rnhMedZXPyXoEw"
 
-static GDataMockServer *mock_server = NULL;
+static UhmServer *mock_server = NULL;
 
-/* Effectively gdata_test_mock_server_start_trace() but calling gdata_mock_server_run() instead of gdata_mock_server_start_trace(). */
+/* Effectively gdata_test_mock_server_start_trace() but calling uhm_server_run() instead of uhm_server_start_trace(). */
 static void
-gdata_test_mock_server_run (GDataMockServer *server)
+gdata_test_mock_server_run (UhmServer *server)
 {
 	const gchar *ip_address;
-	GDataMockResolver *resolver;
+	UhmResolver *resolver;
 
-	gdata_mock_server_run (server);
+	uhm_server_run (server);
 	gdata_test_set_https_port (server);
 
-	if (gdata_mock_server_get_enable_online (server) == FALSE) {
+	if (uhm_server_get_enable_online (server) == FALSE) {
 		/* Set up the expected domain names here. This should technically be split up between
 		 * the different unit test suites, but that's too much effort. */
-		ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
-		resolver = gdata_mock_server_get_resolver (server);
+		ip_address = uhm_server_get_address (server);
+		resolver = uhm_server_get_resolver (server);
 
-		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "gdata.youtube.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "uploads.gdata.youtube.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "gdata.youtube.com", ip_address);
+		uhm_resolver_add_A (resolver, "uploads.gdata.youtube.com", ip_address);
 	}
 }
 
@@ -79,7 +79,7 @@ test_authentication (void)
 
 	g_object_unref (authorizer);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* HTTP message responses and the expected associated GData error domain/code. */
@@ -138,10 +138,10 @@ test_authentication_error (void)
 	gulong handler_id;
 	guint i;
 
-	if (gdata_mock_server_get_enable_logging (mock_server) == TRUE) {
+	if (uhm_server_get_enable_logging (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to logging being enabled.");
 		return;
-	} else if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	} else if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to running online and test not being reproducible.");
 		return;
 	}
@@ -172,7 +172,7 @@ test_authentication_error (void)
 
 		g_object_unref (authorizer);
 
-		gdata_mock_server_stop (mock_server);
+		uhm_server_stop (mock_server);
 		g_signal_handler_disconnect (mock_server, handler_id);
 	}
 }
@@ -185,16 +185,16 @@ test_authentication_timeout (void)
 	GError *error = NULL;
 	gulong handler_id;
 
-	if (gdata_mock_server_get_enable_logging (mock_server) == TRUE) {
+	if (uhm_server_get_enable_logging (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to logging being enabled.");
 		return;
-	} else if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	} else if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to running online and test not being reproducible.");
 		return;
 	}
 
 	handler_id = g_signal_connect (mock_server, "handle-message", (GCallback) gdata_test_mock_server_handle_message_timeout, NULL);
-	gdata_mock_server_run (mock_server);
+	uhm_server_run (mock_server);
 	gdata_test_set_https_port (mock_server);
 
 	/* Create an authorizer and set its timeout as low as possible (1 second). */
@@ -218,7 +218,7 @@ test_authentication_timeout (void)
 
 	g_object_unref (authorizer);
 
-	gdata_mock_server_stop (mock_server);
+	uhm_server_stop (mock_server);
 	g_signal_handler_disconnect (mock_server, handler_id);
 }
 
@@ -313,7 +313,7 @@ test_query_standard_feeds (gconstpointer service)
 		g_object_unref (feed);
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -333,7 +333,7 @@ test_query_standard_feed (gconstpointer service)
 
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -358,7 +358,7 @@ test_query_standard_feed_with_query (gconstpointer service)
 	g_object_unref (query);
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 /* HTTP message responses and the expected associated GData error domain/code. */
@@ -420,10 +420,10 @@ test_query_standard_feed_error (gconstpointer service)
 	gulong handler_id;
 	guint i;
 
-	if (gdata_mock_server_get_enable_logging (mock_server) == TRUE) {
+	if (uhm_server_get_enable_logging (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to logging being enabled.");
 		return;
-	} else if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	} else if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to running online and test not being reproducible.");
 		return;
 	}
@@ -440,7 +440,7 @@ test_query_standard_feed_error (gconstpointer service)
 		g_assert (feed == NULL);
 		g_clear_error (&error);
 
-		gdata_mock_server_stop (mock_server);
+		uhm_server_stop (mock_server);
 		g_signal_handler_disconnect (mock_server, handler_id);
 	}
 }
@@ -452,10 +452,10 @@ test_query_standard_feed_timeout (gconstpointer service)
 	GError *error = NULL;
 	gulong handler_id;
 
-	if (gdata_mock_server_get_enable_logging (mock_server) == TRUE) {
+	if (uhm_server_get_enable_logging (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to logging being enabled.");
 		return;
-	} else if (gdata_mock_server_get_enable_online (mock_server) == TRUE) {
+	} else if (uhm_server_get_enable_online (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to running online and test not being reproducible.");
 		return;
 	}
@@ -472,7 +472,7 @@ test_query_standard_feed_timeout (gconstpointer service)
 	g_assert (feed == NULL);
 	g_clear_error (&error);
 
-	gdata_mock_server_stop (mock_server);
+	uhm_server_stop (mock_server);
 	g_signal_handler_disconnect (mock_server, handler_id);
 }
 
@@ -520,7 +520,7 @@ test_query_standard_feed_async_progress_closure (gconstpointer service)
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static GDataYouTubeVideo *
@@ -612,7 +612,7 @@ test_query_related (gconstpointer service)
 	g_object_unref (video);
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (query_related, void,
@@ -667,7 +667,7 @@ test_query_related_async_progress_closure (gconstpointer service)
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -733,7 +733,7 @@ tear_down_upload (UploadData *data, gconstpointer service)
 	g_free (data->content_type);
 	g_object_unref (data->service);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -786,7 +786,7 @@ test_upload_simple (UploadData *data, gconstpointer service)
 	g_assert_cmpstr (tags2[1], ==, tags[1]);
 	g_assert_cmpstr (tags2[2], ==, tags[2]);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (upload, UploadData);
@@ -1724,7 +1724,7 @@ test_query_single (gconstpointer service)
 
 	g_object_unref (video);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (query_single, void,
@@ -1765,7 +1765,7 @@ set_up_comment (CommentData *data, gconstpointer service)
 	                                                                     GDATA_TYPE_YOUTUBE_VIDEO, NULL, NULL));
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (data->video));
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1819,7 +1819,7 @@ test_comment_query (CommentData *data, gconstpointer service)
 
 	g_object_unref (comments_feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (comment, CommentData);
@@ -1869,7 +1869,7 @@ test_comment_query_async_progress_closure (CommentData *query_data, gconstpointe
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1890,7 +1890,7 @@ set_up_insert_comment (InsertCommentData *data, gconstpointer service)
 
 	gdata_entry_set_content (GDATA_ENTRY (data->comment), "This is a test comment.");
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1904,7 +1904,7 @@ tear_down_insert_comment (InsertCommentData *data, gconstpointer service)
 
 	tear_down_comment ((CommentData*) data, service);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1948,7 +1948,7 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 
 	g_object_unref (new_comment);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_comment, InsertCommentData);
@@ -1988,7 +1988,7 @@ test_comment_delete (InsertCommentData *data, gconstpointer service)
 	g_assert (success == FALSE);
 	g_clear_error (&error);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (comment_delete, InsertCommentData,
@@ -2093,7 +2093,7 @@ test_categories (gconstpointer service)
 	gdata_service_set_locale (GDATA_SERVICE (service), old_locale);
 	g_free (old_locale);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (categories, void,
@@ -2150,7 +2150,7 @@ setup_batch (BatchData *data, gconstpointer service)
 
 	data->new_video2 = video;
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2208,7 +2208,7 @@ test_batch (BatchData *data, gconstpointer service)
 	g_clear_error (&error);
 	g_object_unref (operation);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2243,7 +2243,7 @@ test_batch_async (BatchData *data, gconstpointer service)
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2288,7 +2288,7 @@ test_batch_async_cancellation (BatchData *data, gconstpointer service)
 	g_object_unref (cancellable);
 	g_object_unref (operation);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -2301,24 +2301,24 @@ teardown_batch (BatchData *data, gconstpointer service)
 static void
 mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
-	GDataMockServer *server;
-	GDataMockResolver *resolver;
+	UhmServer *server;
+	UhmResolver *resolver;
 
-	server = GDATA_MOCK_SERVER (object);
+	server = UHM_SERVER (object);
 
 	/* Set up the expected domain names here. This should technically be split up between
 	 * the different unit test suites, but that's too much effort. */
-	resolver = gdata_mock_server_get_resolver (server);
+	resolver = uhm_server_get_resolver (server);
 
 	if (resolver != NULL) {
-		const gchar *ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+		const gchar *ip_address = uhm_server_get_address (server);
 
-		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "gdata.youtube.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "uploads.gdata.youtube.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
-		gdata_mock_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "gdata.youtube.com", ip_address);
+		uhm_resolver_add_A (resolver, "uploads.gdata.youtube.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
 	}
 }
 
@@ -2335,13 +2335,13 @@ main (int argc, char *argv[])
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/youtube");
-	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
 	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
 	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE));
 	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, authorizer));
 

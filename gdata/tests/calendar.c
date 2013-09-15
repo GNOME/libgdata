@@ -24,7 +24,7 @@
 #include "gdata.h"
 #include "common.h"
 
-static GDataMockServer *mock_server = NULL;
+static UhmServer *mock_server = NULL;
 
 typedef struct {
 	GDataCalendarCalendar *calendar;
@@ -51,7 +51,7 @@ set_up_temp_calendar (TempCalendarData *data, gconstpointer service)
 	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar));
 	g_object_unref (calendar);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -64,7 +64,7 @@ tear_down_temp_calendar (TempCalendarData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->calendar), NULL, NULL) == TRUE);
 	g_object_unref (data->calendar);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -96,7 +96,7 @@ test_authentication (void)
 
 	g_object_unref (authorizer);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
@@ -175,7 +175,7 @@ set_up_query_calendars (QueryCalendarsData *data, gconstpointer service)
 	g_assert (GDATA_IS_CALENDAR_CALENDAR (data->calendar2));
 	g_object_unref (calendar);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -192,7 +192,7 @@ tear_down_query_calendars (QueryCalendarsData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->calendar2), NULL, NULL) == TRUE);
 	g_object_unref (data->calendar2);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -212,7 +212,7 @@ test_query_all_calendars (QueryCalendarsData *data, gconstpointer service)
 
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_calendars, QueryCalendarsData);
@@ -260,7 +260,7 @@ test_query_all_calendars_async_progress_closure (QueryCalendarsData *query_data,
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -280,7 +280,7 @@ test_query_own_calendars (QueryCalendarsData *data, gconstpointer service)
 
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (query_own_calendars, QueryCalendarsData,
@@ -326,7 +326,7 @@ test_query_own_calendars_async_progress_closure (QueryCalendarsData *query_data,
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -365,7 +365,7 @@ set_up_query_events (QueryEventsData *data, gconstpointer service)
 	g_assert (GDATA_IS_CALENDAR_EVENT (data->event3));
 	g_object_unref (event);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -386,7 +386,7 @@ tear_down_query_events (QueryEventsData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->event3), NULL, NULL) == TRUE);
 	g_object_unref (data->event3);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* Delete the calendar */
 	tear_down_temp_calendar ((TempCalendarData*) data, service);
@@ -410,7 +410,7 @@ test_query_events (QueryEventsData *data, gconstpointer service)
 
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (query_events, QueryEventsData);
@@ -457,7 +457,7 @@ test_query_events_async_progress_closure (QueryEventsData *query_data, gconstpoi
 
 	g_slice_free (GDataAsyncProgressClosure, data);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -482,7 +482,7 @@ tear_down_insert_event (InsertEventData *data, gconstpointer service)
 	                                      GDATA_ENTRY (data->new_event), NULL, NULL) == TRUE);
 	g_object_unref (data->new_event);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* Delete the calendar too */
 	tear_down_temp_calendar ((TempCalendarData*) data, service);
@@ -528,7 +528,7 @@ test_event_insert (InsertEventData *data, gconstpointer service)
 
 	g_object_unref (event);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 GDATA_ASYNC_CLOSURE_FUNCTIONS (insert_event, InsertEventData);
@@ -1022,7 +1022,7 @@ set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 
 	g_object_unref (rule);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1044,7 +1044,7 @@ tear_down_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 		g_object_unref (data->rule);
 	}
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	/* Delete the calendar */
 	tear_down_temp_calendar ((TempCalendarData*) data, service);
@@ -1068,7 +1068,7 @@ test_access_rule_get (TempCalendarAclsData *data, gconstpointer service)
 
 	g_object_unref (feed);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1121,7 +1121,7 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 
 	g_object_unref (rule);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1154,7 +1154,7 @@ test_access_rule_update (TempCalendarAclsData *data, gconstpointer service)
 
 	g_object_unref (new_rule);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1175,7 +1175,7 @@ test_access_rule_delete (TempCalendarAclsData *data, gconstpointer service)
 	g_object_unref (data->rule);
 	data->rule = NULL;
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1290,7 +1290,7 @@ test_batch (gconstpointer service)
 	g_object_unref (operation);
 	g_object_unref (inserted_entry3);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 typedef struct {
@@ -1316,7 +1316,7 @@ setup_batch_async (BatchAsyncData *data, gconstpointer service)
 
 	g_object_unref (event);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1356,7 +1356,7 @@ test_batch_async (BatchAsyncData *data, gconstpointer service)
 	g_main_loop_unref (main_loop);
 	g_object_unref (operation);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1405,7 +1405,7 @@ test_batch_async_cancellation (BatchAsyncData *data, gconstpointer service)
 	g_object_unref (cancellable);
 	g_object_unref (operation);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
@@ -1423,25 +1423,25 @@ teardown_batch_async (BatchAsyncData *data, gconstpointer service)
 
 	g_object_unref (data->new_event);
 
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 }
 
 static void
 mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
-	GDataMockServer *server;
-	GDataMockResolver *resolver;
+	UhmServer *server;
+	UhmResolver *resolver;
 
-	server = GDATA_MOCK_SERVER (object);
+	server = UHM_SERVER (object);
 
 	/* Set up the expected domain names here. This should technically be split up between
 	 * the different unit test suites, but that's too much effort. */
-	resolver = gdata_mock_server_get_resolver (server);
+	resolver = uhm_server_get_resolver (server);
 
 	if (resolver != NULL) {
-		const gchar *ip_address = soup_address_get_physical (gdata_mock_server_get_address (server));
+		const gchar *ip_address = uhm_server_get_address (server);
 
-		gdata_mock_resolver_add_A (resolver, "www.google.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
 	}
 }
 
@@ -1458,13 +1458,13 @@ main (int argc, char *argv[])
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/calendar");
-	gdata_mock_server_set_trace_directory (mock_server, trace_directory);
+	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
 	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
 	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CALENDAR_SERVICE));
 	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
-	gdata_mock_server_end_trace (mock_server);
+	uhm_server_end_trace (mock_server);
 
 	service = GDATA_SERVICE (gdata_calendar_service_new (authorizer));
 
