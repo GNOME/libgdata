@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-06 16:27+0800\n"
-"PO-Revision-Date: 2013-09-04 16:34+0800\n"
+"POT-Creation-Date: 2013-09-24 19:19+0800\n"
+"PO-Revision-Date: 2013-09-23 21:22+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Taiwan) <zh-l10n@lists.linux.org.tw>\n"
 "Language: \n"
@@ -45,7 +45,7 @@ msgstr "要求無效的 URI 或標頭，或不支援的非標準參數：%s"
 #: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
 #, c-format
 msgid "Authentication required: %s"
-msgstr "要求驗證：%s"
+msgstr "要求核對：%s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
@@ -64,7 +64,7 @@ msgstr "此項目從上次下載後已被修改過：%s"
 #: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
 #, c-format
 msgid "Error code %u when authenticating: %s"
-msgstr "在驗證時出現錯誤代碼 %u：%s"
+msgstr "在核對時出現錯誤代碼 %u：%s"
 
 #: ../gdata/gdata-client-login-authorizer.c:756
 msgid "A CAPTCHA must be filled out to log in."
@@ -371,14 +371,14 @@ msgstr "%s 元素(\"%s\") 的內容不是十六進位 RGB 格式。"
 #: ../gdata/services/calendar/gdata-calendar-service.c:315
 #: ../gdata/services/calendar/gdata-calendar-service.c:366
 msgid "You must be authenticated to query all calendars."
-msgstr "您必須被驗證才能查詢所有的日曆。"
+msgstr "您必須被核對才能查詢所有的日曆。"
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:412
 #: ../gdata/services/calendar/gdata-calendar-service.c:463
 #: ../gdata/services/calendar/gdata-calendar-service.c:508
 #: ../gdata/services/calendar/gdata-calendar-service.c:568
 msgid "You must be authenticated to query your own calendars."
-msgstr "您必須被驗證才能查詢自己的日曆。"
+msgstr "您必須被核對才能查詢自己的日曆。"
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:517
 #: ../gdata/services/calendar/gdata-calendar-service.c:581
@@ -388,12 +388,12 @@ msgstr "該日曆沒有內容 URI。"
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
 #: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
-msgstr "您必須被驗證才能查詢連絡人。"
+msgstr "您必須被核對才能查詢連絡人。"
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:424
 #: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
-msgstr "您必須被驗證才能查詢連絡人群組。"
+msgstr "您必須被核對才能查詢連絡人群組。"
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:514
 msgid "The group has already been inserted."
@@ -401,20 +401,20 @@ msgstr "該群組已經插入了。"
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:521
 msgid "You must be authenticated to insert a group."
-msgstr "您必須被驗證才能插入群組。"
+msgstr "您必須被核對才能插入群組。"
 
 #: ../gdata/services/documents/gdata-documents-document.c:300
 msgid "You must be authenticated to download documents."
-msgstr "您必須被驗證才能下載文件。"
+msgstr "您必須被核對才能下載文件。"
 
 #: ../gdata/services/documents/gdata-documents-service.c:461
 #: ../gdata/services/documents/gdata-documents-service.c:511
 msgid "You must be authenticated to query documents."
-msgstr "您必須被驗證才能查詢文件。"
+msgstr "您必須被核對才能查詢文件。"
 
 #: ../gdata/services/documents/gdata-documents-service.c:556
 msgid "You must be authenticated to upload documents."
-msgstr "您必須被驗證才能上傳文件。"
+msgstr "您必須被核對才能上傳文件。"
 
 #: ../gdata/services/documents/gdata-documents-service.c:562
 msgid "The document has already been uploaded."
@@ -422,7 +422,7 @@ msgstr "該文件已經更新。"
 
 #: ../gdata/services/documents/gdata-documents-service.c:706
 msgid "You must be authenticated to update documents."
-msgstr "您必須被驗證才能更新文件。"
+msgstr "您必須被核對才能更新文件。"
 
 #: ../gdata/services/documents/gdata-documents-service.c:888
 #, c-format
@@ -432,16 +432,16 @@ msgstr "無法辨識提供文件 ('%s') 的內容類型。"
 
 #: ../gdata/services/documents/gdata-documents-service.c:928
 msgid "You must be authenticated to copy documents."
-msgstr "您必須被驗證才能複製文件。"
+msgstr "您必須被核對才能複製文件。"
 
 #: ../gdata/services/documents/gdata-documents-service.c:1090
 #: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
-msgstr "您必須被驗證才能移動文件和資料夾。"
+msgstr "您必須被核對才能移動文件和資料夾。"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "您必須使用者名稱或通過驗證以查詢使用者。"
+msgstr "您必須使用者名稱或通過核對以查詢使用者。"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
@@ -451,7 +451,7 @@ msgstr "查詢引數不適用於相簿。"
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "您必須指定用來驗證的使用者名稱才能查詢所有的相簿。"
+msgstr "您必須指定用來核對的使用者名稱才能查詢所有的相簿。"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
@@ -459,7 +459,7 @@ msgstr "該相簿沒有餵送連結。"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
-msgstr "您必須被驗證才能上傳檔案。"
+msgstr "您必須被核對才能上傳檔案。"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
@@ -467,7 +467,7 @@ msgstr "這個相簿已被插入。"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
-msgstr "您必須被驗證才能插入相簿。"
+msgstr "您必須被核對才能插入相簿。"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:457
 #, c-format
@@ -496,7 +496,7 @@ msgstr "在位置「%3$s」接收到網域「%2$s」中不明的錯誤代碼「%
 #: ../gdata/services/youtube/gdata-youtube-service.c:473
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "您必須被驗證才能這麼做。"
+msgstr "您必須被核對才能這麼做。"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:478
 #, c-format
@@ -523,7 +523,7 @@ msgstr "此影片沒有相關的影片 <link>。"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:895
 msgid "You must be authenticated to upload a video."
-msgstr "您必須被驗證才能上傳影片。"
+msgstr "您必須被核對才能上傳影片。"
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "支援的文件具有無效的內容類型。"
