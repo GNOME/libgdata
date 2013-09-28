@@ -1350,6 +1350,7 @@ gdata_service_insert_entry (GDataService *self, GDataAuthorizationDomain *domain
 	SoupMessage *message;
 	gchar *upload_data;
 	guint status;
+	GDataParsableClass *klass;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
@@ -1367,8 +1368,15 @@ gdata_service_insert_entry (GDataService *self, GDataAuthorizationDomain *domain
 	message = _gdata_service_build_message (self, domain, SOUP_METHOD_POST, upload_uri, NULL, FALSE);
 
 	/* Append the data */
-	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	klass = GDATA_PARSABLE_GET_CLASS (entry);
+	g_assert (klass->get_content_type != NULL);
+	if (g_strcmp0 (klass->get_content_type (), "application/json") == 0) {
+		upload_data = gdata_parsable_get_json (GDATA_PARSABLE (entry));
+		soup_message_set_request (message, "application/json", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	} else {
+		upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+		soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	}
 
 	/* Send the message */
 	status = _gdata_service_send_message (self, message, cancellable, error);
@@ -1377,20 +1385,25 @@ gdata_service_insert_entry (GDataService *self, GDataAuthorizationDomain *domain
 		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	} else if (status != SOUP_STATUS_CREATED) {
-		/* Error */
-		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (self, GDATA_OPERATION_INSERTION, status, message->reason_phrase, message->response_body->data,
-		                             message->response_body->length, error);
+	} else if (status != SOUP_STATUS_CREATED && status != SOUP_STATUS_OK) {
+		/* Error: for XML APIs Google returns CREATED and for JSON it returns OK. */
+		GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (service_klass->parse_error_response != NULL);
+		service_klass->parse_error_response (self, GDATA_OPERATION_INSERTION, status, message->reason_phrase, message->response_body->data,
+		                                     message->response_body->length, error);
 		g_object_unref (message);
 		return NULL;
 	}
 
-	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
+	/* Parse the XML or JSON according to GDataEntry type; create and return a new GDataEntry of the same type as @entry */
 	g_assert (message->response_body->data != NULL);
-	updated_entry = GDATA_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data, message->response_body->length,
-	                                                          error));
+	if (g_strcmp0 (klass->get_content_type (), "application/json") == 0) {
+		updated_entry = GDATA_ENTRY (gdata_parsable_new_from_json (G_OBJECT_TYPE (entry), message->response_body->data,
+		                             message->response_body->length, error));
+	} else {
+		updated_entry = GDATA_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data,
+		                             message->response_body->length, error));
+	}
 	g_object_unref (message);
 
 	return updated_entry;
@@ -1541,6 +1554,7 @@ gdata_service_update_entry (GDataService *self, GDataAuthorizationDomain *domain
 	SoupMessage *message;
 	gchar *upload_data;
 	guint status;
+	GDataParsableClass *klass;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
@@ -1548,14 +1562,24 @@ gdata_service_update_entry (GDataService *self, GDataAuthorizationDomain *domain
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	/* Get the edit URI */
-	_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
-	g_assert (_link != NULL);
-	message = _gdata_service_build_message (self, domain, SOUP_METHOD_PUT, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
-
 	/* Append the data */
-	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	klass = GDATA_PARSABLE_GET_CLASS (entry);
+	g_assert (klass->get_content_type != NULL);
+	if (g_strcmp0 (klass->get_content_type (), "application/json") == 0) {
+		/* Get the edit URI */
+		_link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
+		g_assert (_link != NULL);
+		message = _gdata_service_build_message (self, domain, SOUP_METHOD_PUT, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
+		upload_data = gdata_parsable_get_json (GDATA_PARSABLE (entry));
+		soup_message_set_request (message, "application/json", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	} else {
+		/* Get the edit URI */
+		_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
+		g_assert (_link != NULL);
+		message = _gdata_service_build_message (self, domain, SOUP_METHOD_PUT, gdata_link_get_uri (_link), gdata_entry_get_etag (entry), TRUE);
+		upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+		soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	}
 
 	/* Send the message */
 	status = _gdata_service_send_message (self, message, cancellable, error);
@@ -1566,18 +1590,22 @@ gdata_service_update_entry (GDataService *self, GDataAuthorizationDomain *domain
 		return NULL;
 	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
-		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (self, GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
-		                             message->response_body->length, error);
+		GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (service_klass->parse_error_response != NULL);
+		service_klass->parse_error_response (self, GDATA_OPERATION_UPDATE, status, message->reason_phrase, message->response_body->data,
+		                                     message->response_body->length, error);
 		g_object_unref (message);
 		return NULL;
 	}
 
 	/* Parse the XML; create and return a new GDataEntry of the same type as @entry */
-	g_assert (message->response_body->data != NULL);
-	updated_entry = GDATA_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data, message->response_body->length,
-	                                                          error));
+	if (g_strcmp0 (klass->get_content_type (), "application/json") == 0) {
+		updated_entry = GDATA_ENTRY (gdata_parsable_new_from_json (G_OBJECT_TYPE (entry), message->response_body->data,
+		                         message->response_body->length, error));
+	} else {
+		updated_entry = GDATA_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data,
+		                             message->response_body->length, error));
+	}
 	g_object_unref (message);
 
 	return updated_entry;
@@ -1721,6 +1749,7 @@ gdata_service_delete_entry (GDataService *self, GDataAuthorizationDomain *domain
 	SoupMessage *message;
 	guint status;
 	gchar *fixed_uri;
+	GDataParsableClass *klass;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
 	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), FALSE);
@@ -1729,7 +1758,13 @@ gdata_service_delete_entry (GDataService *self, GDataAuthorizationDomain *domain
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* Get the edit URI. We have to fix it to always use HTTPS as YouTube videos appear to incorrectly return a HTTP URI as their edit URI. */
-	_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
+	klass = GDATA_PARSABLE_GET_CLASS (entry);
+	g_assert (klass->get_content_type != NULL);
+	if (g_strcmp0 (klass->get_content_type (), "application/json") == 0) {
+		_link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
+	} else {
+		_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
+	}
 	g_assert (_link != NULL);
 
 	fixed_uri = _gdata_service_fix_uri_scheme (gdata_link_get_uri (_link));
@@ -1745,10 +1780,10 @@ gdata_service_delete_entry (GDataService *self, GDataAuthorizationDomain *domain
 		return FALSE;
 	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
-		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (self, GDATA_OPERATION_DELETION, status, message->reason_phrase, message->response_body->data,
-		                             message->response_body->length, error);
+		GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (service_klass->parse_error_response != NULL);
+		service_klass->parse_error_response (self, GDATA_OPERATION_DELETION, status, message->reason_phrase, message->response_body->data,
+		                                     message->response_body->length, error);
 		g_object_unref (message);
 		return FALSE;
 	}
