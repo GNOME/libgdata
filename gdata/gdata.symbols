@@ -64,6 +64,8 @@ gdata_service_delete_entry_async
 gdata_service_delete_entry_finish
 gdata_service_get_proxy_uri
 gdata_service_set_proxy_uri
+gdata_service_get_proxy_resolver
+gdata_service_set_proxy_resolver
 gdata_query_get_type
 gdata_query_new
 gdata_query_new_with_limits

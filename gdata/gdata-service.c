@@ -78,10 +78,14 @@ static GDataFeed *__gdata_service_query (GDataService *self, GDataAuthorizationD
                                          GType entry_type, GCancellable *cancellable, GDataQueryProgressCallback progress_callback,
                                          gpointer progress_user_data, GError **error, gboolean is_async);
 
+static SoupURI *_get_proxy_uri (GDataService *self);
+static void _set_proxy_uri (GDataService *self, SoupURI *proxy_uri);
+
 struct _GDataServicePrivate {
 	SoupSession *session;
 	gchar *locale;
 	GDataAuthorizer *authorizer;
+	GProxyResolver *proxy_resolver;
 };
 
 enum {
@@ -89,6 +93,7 @@ enum {
 	PROP_TIMEOUT,
 	PROP_LOCALE,
 	PROP_AUTHORIZER,
+	PROP_PROXY_RESOLVER,
 };
 
 G_DEFINE_TYPE (GDataService, gdata_service, G_TYPE_OBJECT)
@@ -119,6 +124,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its proxy URI setting.
 	 *
 	 * Since: 0.2.0
+	 * Deprecated: Use #GDataService:proxy-resolver instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PROXY_URI,
 	                                 g_param_spec_boxed ("proxy-uri",
@@ -186,6 +192,19 @@ gdata_service_class_init (GDataServiceClass *klass)
 	                                                      "Authorizer", "An authorizer object to provide an authorization token for each request.",
 	                                                      GDATA_TYPE_AUTHORIZER,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataService:proxy-resolver:
+	 *
+	 * The #GProxyResolver used to determine a proxy URI.  Setting this will clear the #GDataService:proxy-uri property.
+	 *
+	 * Since: 0.15.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_PROXY_RESOLVER,
+	                                 g_param_spec_object ("proxy-resolver",
+	                                                      "Proxy Resolver", "A GProxyResolver used to determine a proxy URI.",
+	                                                      G_TYPE_PROXY_RESOLVER,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -200,6 +219,9 @@ gdata_service_init (GDataService *self)
 	/* Proxy the SoupSession's proxy-uri and timeout properties */
 	g_signal_connect (self->priv->session, "notify::proxy-uri", (GCallback) notify_proxy_uri_cb, self);
 	g_signal_connect (self->priv->session, "notify::timeout", (GCallback) notify_timeout_cb, self);
+
+	/* Keep our GProxyResolver synchronized with SoupSession's. */
+	g_object_bind_property (self->priv->session, "proxy-resolver", self, "proxy-resolver", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -214,6 +236,8 @@ gdata_service_dispose (GObject *object)
 	if (priv->session != NULL)
 		g_object_unref (priv->session);
 	priv->session = NULL;
+
+	g_clear_object (&priv->proxy_resolver);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_service_parent_class)->dispose (object);
@@ -237,7 +261,7 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 
 	switch (property_id) {
 		case PROP_PROXY_URI:
-			g_value_set_boxed (value, gdata_service_get_proxy_uri (GDATA_SERVICE (object)));
+			g_value_set_boxed (value, _get_proxy_uri (GDATA_SERVICE (object)));
 			break;
 		case PROP_TIMEOUT:
 			g_value_set_uint (value, gdata_service_get_timeout (GDATA_SERVICE (object)));
@@ -247,6 +271,9 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 			break;
 		case PROP_AUTHORIZER:
 			g_value_set_object (value, priv->authorizer);
+			break;
+		case PROP_PROXY_RESOLVER:
+			g_value_set_object (value, priv->proxy_resolver);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -260,7 +287,7 @@ gdata_service_set_property (GObject *object, guint property_id, const GValue *va
 {
 	switch (property_id) {
 		case PROP_PROXY_URI:
-			gdata_service_set_proxy_uri (GDATA_SERVICE (object), g_value_get_boxed (value));
+			_set_proxy_uri (GDATA_SERVICE (object), g_value_get_boxed (value));
 			break;
 		case PROP_TIMEOUT:
 			gdata_service_set_timeout (GDATA_SERVICE (object), g_value_get_uint (value));
@@ -270,6 +297,9 @@ gdata_service_set_property (GObject *object, guint property_id, const GValue *va
 			break;
 		case PROP_AUTHORIZER:
 			gdata_service_set_authorizer (GDATA_SERVICE (object), g_value_get_object (value));
+			break;
+		case PROP_PROXY_RESOLVER:
+			gdata_service_set_proxy_resolver (GDATA_SERVICE (object), g_value_get_object (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -1799,18 +1829,9 @@ notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *self)
 	g_object_notify (self, "proxy-uri");
 }
 
-/**
- * gdata_service_get_proxy_uri:
- * @self: a #GDataService
- *
- * Gets the proxy URI on the #GDataService's #SoupSession.
- *
- * Return value: (transfer none): the proxy URI, or %NULL
- *
- * Since: 0.2.0
- **/
-SoupURI *
-gdata_service_get_proxy_uri (GDataService *self)
+/* Static function which isn't deprecated so we can continue using it internally. */
+static SoupURI *
+_get_proxy_uri (GDataService *self)
 {
 	SoupURI *proxy_uri;
 
@@ -1820,6 +1841,32 @@ gdata_service_get_proxy_uri (GDataService *self)
 	g_object_unref (proxy_uri); /* remove the ref added by g_object_get */
 
 	return proxy_uri;
+}
+
+/**
+ * gdata_service_get_proxy_uri:
+ * @self: a #GDataService
+ *
+ * Gets the proxy URI on the #GDataService's #SoupSession.
+ *
+ * Return value: (transfer none): the proxy URI, or %NULL
+ *
+ * Since: 0.2.0
+ * Deprecated: Use gdata_service_get_proxy_resolver() instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
+ **/
+SoupURI *
+gdata_service_get_proxy_uri (GDataService *self)
+{
+	return _get_proxy_uri (self);
+}
+
+/* Static function which isn't deprecated so we can continue using it internally. */
+static void
+_set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
+{
+	g_return_if_fail (GDATA_IS_SERVICE (self));
+	g_object_set (self->priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
+	g_object_notify (G_OBJECT (self), "proxy-uri");
 }
 
 /**
@@ -1835,13 +1882,57 @@ gdata_service_get_proxy_uri (GDataService *self)
  * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its proxy URI setting.
  *
  * Since: 0.2.0
+ * Deprecated: Use gdata_service_set_proxy_resolver() instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
  **/
 void
 gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
 {
+	_set_proxy_uri (self, proxy_uri);
+}
+
+/**
+ * gdata_service_get_proxy_resolver:
+ * @self: a #GDataService
+ *
+ * Gets the #GProxyResolver on the #GDataService's #SoupSession.
+ *
+ * Return value: (transfer none) (allow-none): a #GProxyResolver, or %NULL
+ *
+ * Since: 0.15.0
+ */
+GProxyResolver *
+gdata_service_get_proxy_resolver (GDataService *self)
+{
+	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
+
+	return self->priv->proxy_resolver;
+}
+
+/**
+ * gdata_service_set_proxy_resolver:
+ * @self: a #GDataService
+ * @proxy_resolver: (allow-none): a #GProxyResolver, or %NULL
+ *
+ * Sets the #GProxyResolver on the #SoupSession used internally by the given #GDataService.
+ *
+ * Setting this will clear the #GDataService:proxy-uri property.
+ *
+ * Since: 0.15.0
+ */
+void
+gdata_service_set_proxy_resolver (GDataService *self, GProxyResolver *proxy_resolver)
+{
 	g_return_if_fail (GDATA_IS_SERVICE (self));
-	g_object_set (self->priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
-	g_object_notify (G_OBJECT (self), "proxy-uri");
+	g_return_if_fail (proxy_resolver == NULL || G_IS_PROXY_RESOLVER (proxy_resolver));
+
+	if (proxy_resolver != NULL) {
+		g_object_ref (proxy_resolver);
+	}
+
+	g_clear_object (&self->priv->proxy_resolver);
+	self->priv->proxy_resolver = proxy_resolver;
+
+	g_object_notify (G_OBJECT (self), "proxy-resolver");
 }
 
 static void
