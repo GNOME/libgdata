@@ -162,9 +162,13 @@ static void sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, con
 static void notify_proxy_uri_cb (GObject *object, GParamSpec *pspec, GDataOAuth1Authorizer *self);
 static void notify_timeout_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
 
+static SoupURI *_get_proxy_uri (GDataOAuth1Authorizer *self);
+static void _set_proxy_uri (GDataOAuth1Authorizer *self, SoupURI *proxy_uri);
+
 struct _GDataOAuth1AuthorizerPrivate {
 	SoupSession *session;
 	SoupURI *proxy_uri; /* cached version only set if gdata_oauth1_authorizer_get_proxy_uri() is called */
+	GProxyResolver *proxy_resolver;
 
 	gchar *application_name;
 	gchar *locale;
@@ -185,6 +189,7 @@ enum {
 	PROP_LOCALE,
 	PROP_PROXY_URI,
 	PROP_TIMEOUT,
+	PROP_PROXY_RESOLVER,
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataOAuth1Authorizer, gdata_oauth1_authorizer, G_TYPE_OBJECT,
@@ -244,6 +249,7 @@ gdata_oauth1_authorizer_class_init (GDataOAuth1AuthorizerClass *klass)
 	 * The proxy URI used internally for all network requests.
 	 *
 	 * Since: 0.9.0
+	 * Deprecated: Use #GDataClientLoginAuthorizer:proxy-resolver instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
 	 */
 	g_object_class_install_property (gobject_class, PROP_PROXY_URI,
 	                                 g_param_spec_boxed ("proxy-uri",
@@ -266,6 +272,19 @@ gdata_oauth1_authorizer_class_init (GDataOAuth1AuthorizerClass *klass)
 	                                                    "Timeout", "A timeout, in seconds, for network operations.",
 	                                                    0, G_MAXUINT, 0,
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataOAuth1Authorizer:proxy-resolver:
+	 *
+	 * The #GProxyResolver used to determine a proxy URI.  Setting this will clear the #GDataOAuth1Authorizer:proxy-uri property.
+	 *
+	 * Since: 0.15.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_PROXY_RESOLVER,
+	                                 g_param_spec_object ("proxy-resolver",
+	                                                      "Proxy Resolver", "A GProxyResolver used to determine a proxy URI.",
+	                                                      G_TYPE_PROXY_RESOLVER,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -290,6 +309,9 @@ gdata_oauth1_authorizer_init (GDataOAuth1Authorizer *self)
 	/* Proxy the SoupSession's proxy-uri and timeout properties */
 	g_signal_connect (self->priv->session, "notify::proxy-uri", (GCallback) notify_proxy_uri_cb, self);
 	g_signal_connect (self->priv->session, "notify::timeout", (GCallback) notify_timeout_cb, self);
+
+	/* Keep our GProxyResolver synchronized with SoupSession's. */
+	g_object_bind_property (self->priv->session, "proxy-resolver", self, "proxy-resolver", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -300,6 +322,8 @@ dispose (GObject *object)
 	if (priv->session != NULL)
 		g_object_unref (priv->session);
 	priv->session = NULL;
+
+	g_clear_object (&priv->proxy_resolver);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_oauth1_authorizer_parent_class)->dispose (object);
@@ -340,10 +364,13 @@ get_property (GObject *object, guint property_id, GValue *value, GParamSpec *psp
 			g_value_set_string (value, priv->locale);
 			break;
 		case PROP_PROXY_URI:
-			g_value_set_boxed (value, gdata_oauth1_authorizer_get_proxy_uri (GDATA_OAUTH1_AUTHORIZER (object)));
+			g_value_set_boxed (value, _get_proxy_uri (GDATA_OAUTH1_AUTHORIZER (object)));
 			break;
 		case PROP_TIMEOUT:
 			g_value_set_uint (value, gdata_oauth1_authorizer_get_timeout (GDATA_OAUTH1_AUTHORIZER (object)));
+			break;
+		case PROP_PROXY_RESOLVER:
+			g_value_set_object (value, gdata_oauth1_authorizer_get_proxy_resolver (GDATA_OAUTH1_AUTHORIZER (object)));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -373,10 +400,13 @@ set_property (GObject *object, guint property_id, const GValue *value, GParamSpe
 			gdata_oauth1_authorizer_set_locale (GDATA_OAUTH1_AUTHORIZER (object), g_value_get_string (value));
 			break;
 		case PROP_PROXY_URI:
-			gdata_oauth1_authorizer_set_proxy_uri (GDATA_OAUTH1_AUTHORIZER (object), g_value_get_boxed (value));
+			_set_proxy_uri (GDATA_OAUTH1_AUTHORIZER (object), g_value_get_boxed (value));
 			break;
 		case PROP_TIMEOUT:
 			gdata_oauth1_authorizer_set_timeout (GDATA_OAUTH1_AUTHORIZER (object), g_value_get_uint (value));
+			break;
+		case PROP_PROXY_RESOLVER:
+			gdata_oauth1_authorizer_set_proxy_resolver (GDATA_OAUTH1_AUTHORIZER (object), g_value_get_object (value));
 			break;
 		default:
 			/* We don't have any other property... */
@@ -1290,18 +1320,9 @@ notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GDataOAuth1Authorizer 
 	g_object_notify (G_OBJECT (self), "proxy-uri");
 }
 
-/**
- * gdata_oauth1_authorizer_get_proxy_uri:
- * @self: a #GDataOAuth1Authorizer
- *
- * Gets the proxy URI on the #GDataOAuth1Authorizer's #SoupSession.
- *
- * Return value: (transfer full) (allow-none): the proxy URI, or %NULL; free with soup_uri_free()
- *
- * Since: 0.9.0
- */
-SoupURI *
-gdata_oauth1_authorizer_get_proxy_uri (GDataOAuth1Authorizer *self)
+/* Static function which isn't deprecated so we can continue using it internally. */
+static SoupURI *
+_get_proxy_uri (GDataOAuth1Authorizer *self)
 {
 	SoupURI *proxy_uri;
 
@@ -1321,6 +1342,34 @@ gdata_oauth1_authorizer_get_proxy_uri (GDataOAuth1Authorizer *self)
 }
 
 /**
+ * gdata_oauth1_authorizer_get_proxy_uri:
+ * @self: a #GDataOAuth1Authorizer
+ *
+ * Gets the proxy URI on the #GDataOAuth1Authorizer's #SoupSession.
+ *
+ * Return value: (transfer full) (allow-none): the proxy URI, or %NULL; free with soup_uri_free()
+ *
+ * Since: 0.9.0
+ * Deprecated: Use gdata_oauth1_authorizer_get_proxy_resolver() instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
+ */
+SoupURI *
+gdata_oauth1_authorizer_get_proxy_uri (GDataOAuth1Authorizer *self)
+{
+	return _get_proxy_uri (self);
+}
+
+/* Static function which isn't deprecated so we can continue using it internally. */
+static void
+_set_proxy_uri (GDataOAuth1Authorizer *self, SoupURI *proxy_uri)
+{
+	g_return_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self));
+
+	g_object_set (self->priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
+
+	/* Notification is handled in notify_proxy_uri_cb() which is called as a result of setting the property on the session */
+}
+
+/**
  * gdata_oauth1_authorizer_set_proxy_uri:
  * @self: a #GDataOAuth1Authorizer
  * @proxy_uri: (allow-none): the proxy URI, or %NULL
@@ -1330,15 +1379,57 @@ gdata_oauth1_authorizer_get_proxy_uri (GDataOAuth1Authorizer *self)
  * If @proxy_uri is %NULL, no proxy will be used.
  *
  * Since: 0.9.0
+ * Deprecated: Use gdata_oauth1_authorizer_set_proxy_resolver() instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
  */
 void
 gdata_oauth1_authorizer_set_proxy_uri (GDataOAuth1Authorizer *self, SoupURI *proxy_uri)
 {
+	_set_proxy_uri (self, proxy_uri);
+}
+
+/**
+ * gdata_oauth1_authorizer_get_proxy_resolver:
+ * @self: a #GDataOAuth1Authorizer
+ *
+ * Gets the #GProxyResolver on the #GDataOAuth1Authorizer's #SoupSession.
+ *
+ * Return value: (transfer none) (allow-none): a #GProxyResolver, or %NULL
+ *
+ * Since: 0.15.0
+ */
+GProxyResolver *
+gdata_oauth1_authorizer_get_proxy_resolver (GDataOAuth1Authorizer *self)
+{
+	g_return_val_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self), NULL);
+
+	return self->priv->proxy_resolver;
+}
+
+/**
+ * gdata_oauth1_authorizer_set_proxy_resolver:
+ * @self: a #GDataOAuth1Authorizer
+ * @proxy_resolver: (allow-none): a #GProxyResolver, or %NULL
+ *
+ * Sets the #GProxyResolver on the #SoupSession used internally by the given #GDataOAuth1Authorizer.
+ *
+ * Setting this will clear the #GDataOAuth1Authorizer:proxy-uri property.
+ *
+ * Since: 0.15.0
+ */
+void
+gdata_oauth1_authorizer_set_proxy_resolver (GDataOAuth1Authorizer *self, GProxyResolver *proxy_resolver)
+{
 	g_return_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self));
+	g_return_if_fail (proxy_resolver == NULL || G_IS_PROXY_RESOLVER (proxy_resolver));
 
-	g_object_set (self->priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
+	if (proxy_resolver != NULL) {
+		g_object_ref (proxy_resolver);
+	}
 
-	/* Notification is handled in notify_proxy_uri_cb() which is called as a result of setting the property on the session */
+	g_clear_object (&self->priv->proxy_resolver);
+	self->priv->proxy_resolver = proxy_resolver;
+
+	g_object_notify (G_OBJECT (self), "proxy-resolver");
 }
 
 static void

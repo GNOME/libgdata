@@ -86,8 +86,13 @@ const gchar *gdata_oauth1_authorizer_get_application_name (GDataOAuth1Authorizer
 const gchar *gdata_oauth1_authorizer_get_locale (GDataOAuth1Authorizer *self) G_GNUC_PURE;
 void gdata_oauth1_authorizer_set_locale (GDataOAuth1Authorizer *self, const gchar *locale);
 
-SoupURI *gdata_oauth1_authorizer_get_proxy_uri (GDataOAuth1Authorizer *self) G_GNUC_PURE;
-void gdata_oauth1_authorizer_set_proxy_uri (GDataOAuth1Authorizer *self, SoupURI *proxy_uri);
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+SoupURI *gdata_oauth1_authorizer_get_proxy_uri (GDataOAuth1Authorizer *self) G_GNUC_PURE G_GNUC_DEPRECATED_FOR (gdata_oauth1_authorizer_get_proxy_resolver);
+void gdata_oauth1_authorizer_set_proxy_uri (GDataOAuth1Authorizer *self, SoupURI *proxy_uri) G_GNUC_DEPRECATED_FOR (gdata_oauth1_authorizer_set_proxy_resolver);
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
+
+GProxyResolver *gdata_oauth1_authorizer_get_proxy_resolver (GDataOAuth1Authorizer *self) G_GNUC_PURE;
+void gdata_oauth1_authorizer_set_proxy_resolver (GDataOAuth1Authorizer *self, GProxyResolver *proxy_resolver);
 
 guint gdata_oauth1_authorizer_get_timeout (GDataOAuth1Authorizer *self) G_GNUC_PURE;
 void gdata_oauth1_authorizer_set_timeout (GDataOAuth1Authorizer *self, guint timeout);
