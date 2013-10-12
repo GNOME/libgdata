@@ -78,8 +78,8 @@ test_client_login_authorizer_constructor_for_domains (void)
 typedef struct {
 	GDataClientLoginAuthorizer *authorizer;
 
-	guint proxy_uri_notification_count;
-	gulong proxy_uri_signal_handler;
+	guint proxy_resolver_notification_count;
+	gulong proxy_resolver_signal_handler;
 	guint timeout_notification_count;
 	gulong timeout_signal_handler;
 	guint username_notification_count;
@@ -103,8 +103,8 @@ static void
 connect_to_client_login_authorizer (ClientLoginAuthorizerData *data)
 {
 	/* Connect to notifications from the object to verify they're only emitted the correct number of times */
-	data->proxy_uri_signal_handler = g_signal_connect (data->authorizer, "notify::proxy-uri", (GCallback) notify_cb,
-	                                                   &(data->proxy_uri_notification_count));
+	data->proxy_resolver_signal_handler = g_signal_connect (data->authorizer, "notify::proxy-resolver", (GCallback) notify_cb,
+	                                                        &(data->proxy_resolver_notification_count));
 	data->timeout_signal_handler = g_signal_connect (data->authorizer, "notify::timeout", (GCallback) notify_cb,
 	                                                 &(data->timeout_notification_count));
 	data->username_signal_handler = g_signal_connect (data->authorizer, "notify::username", (GCallback) notify_cb,
@@ -152,7 +152,7 @@ tear_down_client_login_authorizer_data (ClientLoginAuthorizerData *data, gconstp
 	g_signal_handler_disconnect (data->authorizer, data->password_signal_handler);
 	g_signal_handler_disconnect (data->authorizer, data->username_signal_handler);
 	g_signal_handler_disconnect (data->authorizer, data->timeout_signal_handler);
-	g_signal_handler_disconnect (data->authorizer, data->proxy_uri_signal_handler);
+	g_signal_handler_disconnect (data->authorizer, data->proxy_resolver_signal_handler);
 
 	g_object_unref (data->authorizer);
 }
@@ -199,52 +199,52 @@ test_client_login_authorizer_properties_password (ClientLoginAuthorizerData *dat
 	g_free (password);
 }
 
-/* Test getting and setting the proxy-uri property */
+/* Test getting and setting the proxy-resolver property */
 static void
-test_client_login_authorizer_properties_proxy_uri (ClientLoginAuthorizerData *data, gconstpointer user_data)
+test_client_login_authorizer_properties_proxy_resolver (ClientLoginAuthorizerData *data, gconstpointer user_data)
 {
-	SoupURI *proxy_uri, *new_proxy_uri;
+	GProxyResolver *proxy_resolver, *new_proxy_resolver;
 
 	/* Verifying the normal state of the property in a newly-constructed instance of GDataClientLoginAuthorizer */
-	g_assert (gdata_client_login_authorizer_get_proxy_uri (data->authorizer) == NULL);
+	g_assert (gdata_client_login_authorizer_get_proxy_resolver (data->authorizer) == NULL);
 
-	g_object_get (data->authorizer, "proxy-uri", &proxy_uri, NULL);
-	g_assert (proxy_uri == NULL);
+	g_object_get (data->authorizer, "proxy-resolver", &proxy_resolver, NULL);
+	g_assert (proxy_resolver == NULL);
 
-	g_assert_cmpuint (data->proxy_uri_notification_count, ==, 0);
+	g_assert_cmpuint (data->proxy_resolver_notification_count, ==, 0);
 
 	/* Check setting it works and emits a notification */
-	new_proxy_uri = soup_uri_new ("http://example.com/");
-	gdata_client_login_authorizer_set_proxy_uri (data->authorizer, new_proxy_uri);
+	new_proxy_resolver = g_object_ref (g_proxy_resolver_get_default ());
+	gdata_client_login_authorizer_set_proxy_resolver (data->authorizer, new_proxy_resolver);
 
-	g_assert_cmpuint (data->proxy_uri_notification_count, ==, 1);
+	g_assert_cmpuint (data->proxy_resolver_notification_count, ==, 1);
 
-	g_assert (gdata_client_login_authorizer_get_proxy_uri (data->authorizer) != NULL);
-	g_assert (soup_uri_equal (gdata_client_login_authorizer_get_proxy_uri (data->authorizer), new_proxy_uri) == TRUE);
+	g_assert (gdata_client_login_authorizer_get_proxy_resolver (data->authorizer) != NULL);
+	g_assert (gdata_client_login_authorizer_get_proxy_resolver (data->authorizer) == new_proxy_resolver);
 
-	g_object_get (data->authorizer, "proxy-uri", &proxy_uri, NULL);
-	g_assert (proxy_uri != NULL);
-	g_assert (soup_uri_equal (gdata_client_login_authorizer_get_proxy_uri (data->authorizer), new_proxy_uri) == TRUE);
-	soup_uri_free (proxy_uri);
+	g_object_get (data->authorizer, "proxy-resolver", &proxy_resolver, NULL);
+	g_assert (proxy_resolver != NULL);
+	g_assert (gdata_client_login_authorizer_get_proxy_resolver (data->authorizer) == new_proxy_resolver);
+	g_object_unref (proxy_resolver);
 
-	soup_uri_free (new_proxy_uri);
+	g_object_unref (new_proxy_resolver);
 
 	/* Check setting it back to NULL works */
-	gdata_client_login_authorizer_set_proxy_uri (data->authorizer, NULL);
+	gdata_client_login_authorizer_set_proxy_resolver (data->authorizer, NULL);
 
-	g_assert_cmpuint (data->proxy_uri_notification_count, ==, 2);
+	g_assert_cmpuint (data->proxy_resolver_notification_count, ==, 2);
 
-	g_assert (gdata_client_login_authorizer_get_proxy_uri (data->authorizer) == NULL);
+	g_assert (gdata_client_login_authorizer_get_proxy_resolver (data->authorizer) == NULL);
 
-	g_object_get (data->authorizer, "proxy-uri", &proxy_uri, NULL);
-	g_assert (proxy_uri == NULL);
+	g_object_get (data->authorizer, "proxy-resolver", &proxy_resolver, NULL);
+	g_assert (proxy_resolver == NULL);
 
 	/* Test that setting it using g_object_set() works */
-	new_proxy_uri = soup_uri_new ("http://example.com/");
-	g_object_set (data->authorizer, "proxy-uri", new_proxy_uri, NULL);
-	soup_uri_free (new_proxy_uri);
+	new_proxy_resolver = g_object_ref (g_proxy_resolver_get_default ());
+	g_object_set (data->authorizer, "proxy-resolver", new_proxy_resolver, NULL);
+	g_object_unref (new_proxy_resolver);
 
-	g_assert (gdata_client_login_authorizer_get_proxy_uri (data->authorizer) != NULL);
+	g_assert (gdata_client_login_authorizer_get_proxy_resolver (data->authorizer) != NULL);
 }
 
 /* Test getting and setting the timeout property */
@@ -745,8 +745,8 @@ main (int argc, char *argv[])
 	            test_client_login_authorizer_properties_username, tear_down_client_login_authorizer_data);
 	g_test_add ("/client-login-authorizer/properties/password", ClientLoginAuthorizerData, NULL, set_up_client_login_authorizer_data,
 	            test_client_login_authorizer_properties_password, tear_down_client_login_authorizer_data);
-	g_test_add ("/client-login-authorizer/properties/proxy-uri", ClientLoginAuthorizerData, NULL, set_up_client_login_authorizer_data,
-	            test_client_login_authorizer_properties_proxy_uri, tear_down_client_login_authorizer_data);
+	g_test_add ("/client-login-authorizer/properties/proxy-resolver", ClientLoginAuthorizerData, NULL, set_up_client_login_authorizer_data,
+	            test_client_login_authorizer_properties_proxy_resolver, tear_down_client_login_authorizer_data);
 	g_test_add ("/client-login-authorizer/properties/timeout", ClientLoginAuthorizerData, NULL, set_up_client_login_authorizer_data,
 	            test_client_login_authorizer_properties_timeout, tear_down_client_login_authorizer_data);
 
