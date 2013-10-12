@@ -576,7 +576,7 @@ test_entry_parse_json (void)
 		"{"
 			"\"title\":\"A title\","
 			"\"id\":\"some-id\","
-			"\"updated\":\"2009-01-25T14:07:37Z\","
+			"\"updated\":\"2009-01-25T14:07:37.000001+00:00\","
 			"\"etag\":\"some-etag\","
 			"\"selfLink\":\"http://example.com/\","
 			"\"kind\":\"kind#kind\","

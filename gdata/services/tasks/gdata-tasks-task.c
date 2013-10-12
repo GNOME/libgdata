@@ -315,11 +315,6 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 	return TRUE;
 }
 
-static gchar*
-iso8601_to_google (gchar* datetime_string) {
-	return g_strjoinv (".000001+00:00", g_strsplit ((const gchar*) datetime_string, "Z", -1));
-}
-
 static void
 get_json (GDataParsable *parsable, JsonBuilder *builder)
 {
@@ -350,13 +345,13 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 		json_builder_add_string_value (builder, priv->status);
 	}
 	if (priv->due != -1) {
-		due = iso8601_to_google (gdata_parser_int64_to_iso8601 (priv->due));
+		due = gdata_parser_int64_to_json_iso8601 (priv->due);
 		json_builder_set_member_name (builder, "due");
 		json_builder_add_string_value (builder, due);
 		g_free (due);
 	}
 	if (priv->completed != -1) {
-		completed = iso8601_to_google (gdata_parser_int64_to_iso8601 (priv->completed));
+		completed = gdata_parser_int64_to_json_iso8601 (priv->completed);
 		json_builder_set_member_name (builder, "completed");
 		json_builder_add_string_value (builder, completed);
 		g_free (completed);

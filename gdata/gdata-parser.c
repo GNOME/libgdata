@@ -248,6 +248,23 @@ gdata_parser_int64_to_iso8601 (gint64 _time)
 	return g_time_val_to_iso8601 (&time_val);
 }
 
+/* FIXME: Work around for Google's incorrect ISO 8601 implementation. */
+gchar *
+gdata_parser_int64_to_json_iso8601 (gint64 _time)
+{
+	gchar *iso8601;
+	gchar **date_time_components;
+	gchar *retval;
+
+	iso8601 = gdata_parser_int64_to_iso8601 (_time);
+
+	date_time_components = g_strsplit (iso8601, "Z", 2);
+	retval = g_strjoinv (".000001+00:00", date_time_components);
+	g_strfreev (date_time_components);
+
+	return retval;
+}
+
 gboolean
 gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time)
 {
