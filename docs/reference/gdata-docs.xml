@@ -175,6 +175,14 @@
 			<xi:include href="xml/gdata-picasaweb-user.xml"/>
 			<xi:include href="xml/gdata-picasaweb-comment.xml"/>
 		</chapter>
+
+		<chapter>
+			<title>Google Tasks API</title>
+			<xi:include href="xml/gdata-tasks-service.xml"/>
+			<xi:include href="xml/gdata-tasks-query.xml"/>
+			<xi:include href="xml/gdata-tasks-tasklist.xml"/>
+			<xi:include href="xml/gdata-tasks-task.xml"/>
+		</chapter>
 	</part>
 
 	<part>
