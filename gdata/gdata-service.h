@@ -205,7 +205,7 @@ SoupURI *gdata_service_get_proxy_uri (GDataService *self) G_GNUC_PURE G_GNUC_DEP
 void gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri) G_GNUC_DEPRECATED_FOR (gdata_service_set_proxy_resolver);
 #endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
-GProxyResolver *gdata_service_get_proxy_resolver (GDataService *self);
+GProxyResolver *gdata_service_get_proxy_resolver (GDataService *self) G_GNUC_PURE;
 void gdata_service_set_proxy_resolver (GDataService *self, GProxyResolver *proxy_resolver);
 
 guint gdata_service_get_timeout (GDataService *self) G_GNUC_PURE;
