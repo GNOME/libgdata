@@ -677,29 +677,37 @@ test_client_login_authorizer_process_request_authenticated (ClientLoginAuthorize
 	g_object_unref (message);
 }
 
-/* Test that processing a HTTP request (as opposed to the more normal HTTPS request) with an authenticated authorizer will abort rather than
- * transmitting the user's private auth token over an insecure HTTP connection. */
 static void
-test_client_login_authorizer_process_request_insecure (ClientLoginAuthorizerData *data, gconstpointer user_data)
+test_client_login_authorizer_process_request_insecure_subprocess (ClientLoginAuthorizerData *data, gconstpointer user_data)
 {
 	SoupMessage *message;
 
 	/* Create a new message which uses HTTP instead of HTTPS */
 	message = soup_message_new (SOUP_METHOD_GET, "http://example.com/");
+	gdata_authorizer_process_request (GDATA_AUTHORIZER (data->authorizer), gdata_youtube_service_get_primary_authorization_domain (),
+	                                  message);
+	g_object_unref (message);
+}
 
+/* Test that processing a HTTP request (as opposed to the more normal HTTPS request) with an authenticated authorizer will abort rather than
+ * transmitting the user's private auth token over an insecure HTTP connection. */
+static void
+test_client_login_authorizer_process_request_insecure (ClientLoginAuthorizerData *data, gconstpointer user_data)
+{
 	/* Process the message */
+#if GLIB_CHECK_VERSION(2, 38, 0)
+	g_test_trap_subprocess ("/client-login-authorizer/process-request/insecure/subprocess", 0, 0);
+#else
 	if (g_test_trap_fork (0, 0) == TRUE) {
-		gdata_authorizer_process_request (GDATA_AUTHORIZER (data->authorizer), gdata_youtube_service_get_primary_authorization_domain (),
-		                                message);
+		test_client_login_authorizer_process_request_insecure_subprocess (data, user_data);
 		exit (0);
 	}
+#endif
 
 	/* Assert that it aborted */
 	g_test_trap_assert_failed ();
 	g_test_trap_assert_stderr_unmatched ("Not authorizing a non-HTTPS message with the user's ClientLogin "
 	                                     "auth token as the connection isn't secure.");
-
-	g_object_unref (message);
 }
 
 static void
@@ -798,6 +806,11 @@ main (int argc, char *argv[])
 	g_test_add ("/client-login-authorizer/process-request/insecure", ClientLoginAuthorizerData, NULL,
 	            set_up_client_login_authorizer_data_authenticated, test_client_login_authorizer_process_request_insecure,
 	            tear_down_client_login_authorizer_data);
+#if GLIB_CHECK_VERSION(2, 38, 0)
+	g_test_add ("/client-login-authorizer/process-request/insecure/subprocess", ClientLoginAuthorizerData, NULL,
+	            set_up_client_login_authorizer_data_authenticated, test_client_login_authorizer_process_request_insecure_subprocess,
+	            tear_down_client_login_authorizer_data);
+#endif
 
 	return g_test_run ();
 }
