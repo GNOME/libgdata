@@ -77,7 +77,7 @@
 static void gdata_goa_authorizer_interface_init (GDataAuthorizerInterface *interface);
 
 /* GDataAuthorizer methods must be thread-safe. */
-static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
+static GMutex mutex;
 
 struct _GDataGoaAuthorizerPrivate {
 	/* GoaObject is already thread-safe. */
@@ -447,13 +447,13 @@ gdata_goa_authorizer_finalize (GObject *object)
 static void
 gdata_goa_authorizer_process_request (GDataAuthorizer *authorizer, GDataAuthorizationDomain *domain, SoupMessage *message)
 {
-	g_static_mutex_lock (&mutex);
+	g_mutex_lock (&mutex);
 
 	if (gdata_goa_authorizer_is_authorized (authorizer, domain)) {
 		gdata_goa_authorizer_add_authorization (authorizer, message);
 	}
 
-	g_static_mutex_unlock (&mutex);
+	g_mutex_unlock (&mutex);
 }
 
 static gboolean
@@ -461,11 +461,11 @@ gdata_goa_authorizer_is_authorized_for_domain (GDataAuthorizer *authorizer, GDat
 {
 	gboolean authorized;
 
-	g_static_mutex_lock (&mutex);
+	g_mutex_lock (&mutex);
 
 	authorized = gdata_goa_authorizer_is_authorized (authorizer, domain);
 
-	g_static_mutex_unlock (&mutex);
+	g_mutex_unlock (&mutex);
 
 	return authorized;
 }
@@ -481,7 +481,7 @@ gdata_goa_authorizer_refresh_authorization (GDataAuthorizer *authorizer, GCancel
 
 	priv = GDATA_GOA_AUTHORIZER (authorizer)->priv;
 
-	g_static_mutex_lock (&mutex);
+	g_mutex_lock (&mutex);
 
 	g_free (priv->access_token);
 	priv->access_token = NULL;
@@ -514,7 +514,7 @@ exit:
 	g_clear_object (&goa_oauth1_based);
 	g_clear_object (&goa_oauth2_based);
 
-	g_static_mutex_unlock (&mutex);
+	g_mutex_unlock (&mutex);
 
 	return success;
 }
