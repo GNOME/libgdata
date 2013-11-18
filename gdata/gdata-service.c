@@ -45,7 +45,6 @@
 #include <stdarg.h>
 
 #ifdef HAVE_GNOME
-#include <libsoup/soup-gnome-features.h>
 #define GCR_API_SUBJECT_TO_CHANGE
 #include <gcr/gcr-base.h>
 #endif /* HAVE_GNOME */
@@ -2165,9 +2164,7 @@ _gdata_service_build_session (void)
 	                                         "timeout", 0,
 	                                         NULL);
 
-#ifdef HAVE_GNOME
-	soup_session_add_feature_by_type (session, SOUP_TYPE_GNOME_FEATURES_2_26);
-#endif /* HAVE_GNOME */
+	soup_session_add_feature_by_type (session, SOUP_TYPE_PROXY_RESOLVER_DEFAULT);
 
 	/* Log all libsoup traffic if debugging's turned on */
 	if (_gdata_service_get_log_level () > GDATA_LOG_MESSAGES) {

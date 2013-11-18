@@ -87,7 +87,7 @@ AC_SUBST(GDK_PIXBUF_LIBS)
 PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= $GTK_REQS], [have_gtk=yes], [have_gtk=no])
 AM_CONDITIONAL([HAVE_GTK], [test "x$have_gtk" = "xyes"])
 
-# GNOME support, which pulls in libsoup-gnome-2.4 to provide transparent proxy support and gcr-base-3 to provide non-pageable memory
+# GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
 AC_MSG_CHECKING(whether to build with GNOME support)
 AC_ARG_ENABLE(gnome, AS_HELP_STRING([--enable-gnome], [Whether to enable GNOME support]),, enable_gnome=yes)
 AC_MSG_RESULT($enable_gnome)
@@ -102,7 +102,7 @@ AM_CONDITIONAL([ENABLE_GOA], [test "x$enable_goa" = "xyes" -a "x$enable_gnome" =
 
 if test "x$enable_gnome" = "xyes"; then
 	GNOME_PACKAGES_PUBLIC=""
-	GNOME_PACKAGES_PRIVATE="libsoup-gnome-2.4 gcr-base-3 libxml-2.0"
+	GNOME_PACKAGES_PRIVATE="gcr-base-3 libxml-2.0"
 	if test "x$enable_goa" = "xyes"; then
 		GNOME_PACKAGES_PUBLIC="$GNOME_PACKAGES_PUBLIC"
 		GNOME_PACKAGES_PRIVATE="$GNOME_PACKAGES_PRIVATE goa-1.0 >= $GOA_REQS"
