@@ -516,7 +516,7 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	gtk_widget_show (box2);
 
 	/* OK button */
-	button = gtk_button_new_from_stock (GTK_STOCK_OK);
+	button = gtk_button_new_with_label ("_OK");
 	g_signal_connect (button, "clicked", (GCallback) properties_set, self);
 	gtk_widget_show (button);
 	gtk_box_pack_start (GTK_BOX (self->box1), button, FALSE, FALSE, 0);
@@ -587,8 +587,8 @@ got_name (GtkWidget *widget, ScrapData *scrap_data)
 	gtk_widget_destroy 	(self->dialog);
 
 	file_dialog = gtk_file_chooser_dialog_new ("Upload Photo", GTK_WINDOW (scrap_data->window), GTK_FILE_CHOOSER_ACTION_SAVE,
-	                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                           GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+	                                           "_Cancel", GTK_RESPONSE_CANCEL,
+	                                           "_Open", GTK_RESPONSE_ACCEPT,
 	                                           NULL);
 
 	if (gtk_dialog_run (GTK_DIALOG (file_dialog)) == GTK_RESPONSE_ACCEPT) {
