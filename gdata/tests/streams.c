@@ -99,7 +99,10 @@ test_download_stream_download_server_content_length_handler_cb (SoupServer *serv
 static SoupServer *
 create_server (SoupServerCallback callback, gpointer user_data, GMainContext **async_context)
 {
-	struct sockaddr_in sock;
+	union {
+		struct sockaddr_in in;
+		struct sockaddr norm;
+	} sock;
 	SoupAddress *addr;
 	SoupServer *server;
 
@@ -107,11 +110,11 @@ create_server (SoupServerCallback callback, gpointer user_data, GMainContext **a
 
 	/* Create the server */
 	memset (&sock, 0, sizeof (sock));
-	sock.sin_family = AF_INET;
-	sock.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
-	sock.sin_port = htons (0); /* random port */
+	sock.in.sin_family = AF_INET;
+	sock.in.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
+	sock.in.sin_port = htons (0); /* random port */
 
-	addr = soup_address_new_from_sockaddr ((struct sockaddr *) &sock, sizeof (sock));
+	addr = soup_address_new_from_sockaddr (&sock.norm, sizeof (sock.norm));
 	g_assert (addr != NULL);
 
 	*async_context = g_main_context_new ();
