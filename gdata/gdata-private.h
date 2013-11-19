@@ -130,7 +130,7 @@ get_##l_n##_authorization_domain (void) \
 { \
 	static volatile GDataAuthorizationDomain *domain__volatile = NULL; \
  \
-	if (g_once_init_enter ((volatile gsize *) &domain__volatile) == TRUE) { \
+	if (g_once_init_enter (&domain__volatile) == TRUE) { \
 		GDataAuthorizationDomain *domain; \
  \
 		domain = g_object_new (GDATA_TYPE_AUTHORIZATION_DOMAIN, \
@@ -138,7 +138,7 @@ get_##l_n##_authorization_domain (void) \
 		                       "scope", SCOPE, \
 		                       NULL); \
  \
-		g_once_init_leave ((volatile gsize *) &domain__volatile, (gsize) domain); \
+		g_once_init_leave (&domain__volatile, domain); \
 	} \
  \
 	return GDATA_AUTHORIZATION_DOMAIN (domain__volatile); \
