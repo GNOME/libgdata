@@ -105,4 +105,6 @@ GDataTasksTasklist *gdata_tasks_service_update_tasklist (GDataTasksService *self
 void gdata_tasks_service_update_tasklist_async (GDataTasksService *self, GDataTasksTasklist *tasklist,
                                                 GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 
+G_END_DECLS
+
 #endif /* !GDATA_TASKS_SERVICE_H */
