@@ -1,3 +1,16 @@
+Overview of changes from libgdata 0.14.0 to libgdata 0.14.1
+===========================================================
+
+Major changes:
+ • Fix build with recent gnome-common versions
+ • Fix build and installed header files for C++
+ • Remove deprecated function calls
+ • Fix compilation with -fstrict-aliasing
+
+Bugs fixed:
+ • Bug 712565 — Fix compilation's warnings
+ • Bug 719647 — gdata-goa-authorizer.h broken for C++
+
 Overview of changes from libgdata 0.13.4 to libgdata 0.14.0
 ===========================================================
 
