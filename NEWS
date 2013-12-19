@@ -1,3 +1,69 @@
+Overview of changes from libgdata 0.14.0 to libgdata 0.15.0
+===========================================================
+
+Major changes:
+ • Add JSON support and a Google Tasks service (thanks to Pēteris Krišjānis)
+  - This adds a dependency on json-glib ≥ 0.15 and breaks ABI (but not API)
+ • Add support for GProxyResolver proxies (thanks to Matthew Barnes)
+ • Fix build with recent gnome-common versions
+ • Fix build and installed header files for C++
+ • Remove deprecated function calls
+ • Fix compilation with -fstrict-aliasing
+ • Port local tests to use libuhttpmock (which is a new dependency)
+
+API changes:
+ • Add gdata_parsable_new_from_json()
+ • Add gdata_parsable_get_json()
+ • Add GDataParsable->get_content_type
+ • Add GDataService:proxy-resolver, gdata_service_get_proxy_resolver(),
+   gdata_service_set_proxy_resolver()
+ • Add GDataClientLoginAuthorizer:proxy-resolver,
+   gdata_client_login_authorizer_get_proxy_resolver(),
+   gdata_client_login_authorizer_set_proxy_resolver()
+ • Add GDataOAuth1Authorizer:proxy-resolver,
+   gdata_oauth1_authorizer_get_proxy_resolver(),
+   gdata_oauth1_authorizer_set_proxy_resolver()
+ • Add Google Tasks service: GDataTasksService, GDataTasksQuery,
+   GDataTasksTasklist, GDataTasksTask
+
+Bugs fixed:
+ • Bug 712565 — Fix compilation's warnings
+ • Bug 719647 — gdata-goa-authorizer.h broken for C++
+
+Updated translations:
+ • as (Nilamdyuti Goswami)
+ • be (Ihar Hrachyshka)
+ • ca (Gil Forcada)
+ • cs (Marek Černocký)
+ • da (Aputsiaq Niels Janussen)
+ • de (Christian Kirbach)
+ • el (Dimitris Spingos, Efstathios Iosifidis)
+ • es (Daniel Mustieles)
+ • et (Mattias Põldaru)
+ • fi (Jiri Grönroos)
+ • fr (Bruno Brouard)
+ • gl (Fran Dieguez)
+ • hu (Gabor Kelemen)
+ • id (Andika Triwidada)
+ • it (Claudio Arseni, Milo Casagrande)
+ • ja (Jiro Matsuzawa)
+ • ko (Changwoo Ryu)
+ • lt (Aurimas Černius)
+ • lv (Rūdolfs Mazurs)
+ • nb (Kjartan Maraas)
+ • pa (A S Alam)
+ • pl (Piotr Drąg)
+ • pt (António Lima)
+ • pt_BR (Enrico Nicoletto)
+ • ru (Yuri Myasoedov)
+ • sk (Ján Kyselica)
+ • sl (Matej Urbančič)
+ • sr (Мирослав Николић)
+ • th (Akom Chotiphantawanon)
+ • zh_CN (甘露)
+ • zh_HK (Chao-Hsiung Liao)
+ • zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.13.4 to libgdata 0.14.0
 ===========================================================
 

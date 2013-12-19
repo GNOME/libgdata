@@ -28,7 +28,7 @@
  * For more details of Google Tasks API, see the <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 
 #include <config.h>
@@ -71,7 +71,7 @@ get_content_type (void)
  *
  * Return value: (transfer full): a new #GDataTasksTasklist; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataTasksTasklist *
 gdata_tasks_tasklist_new (const gchar *id)

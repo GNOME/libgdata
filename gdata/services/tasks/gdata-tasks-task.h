@@ -42,7 +42,7 @@ typedef struct _GDataTasksTaskPrivate	GDataTasksTaskPrivate;
  *
  * All the fields in the #GDataTasksTask structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 typedef struct {
 	GDataEntry parent;
@@ -54,7 +54,7 @@ typedef struct {
  *
  * All the fields in the #GDataTasksTaskClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 typedef struct {
 	/*< private >*/

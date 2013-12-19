@@ -28,7 +28,7 @@
  * For more details of Google Tasks API, see the <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 
 #include <config.h>
@@ -95,7 +95,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 *
 	 * Parent task identifier. This field is omitted if it is a top-level task. This field is read-only.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_PARENT,
 	                                 g_param_spec_string ("parent",
@@ -111,7 +111,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 * according to lexicographical ordering, the task is positioned after the other task under the same
 	 * parent task (or at the top level). This field is read-only.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_STATUS,
 	                                 g_param_spec_string ("position",
@@ -124,7 +124,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 *
 	 * This is where the description of what needs to be done in the task is stored.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_NOTES,
 	                                 g_param_spec_string ("notes",
@@ -137,7 +137,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 *
 	 * Status of the task. This is either "needsAction" or "completed".
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_STATUS,
 	                                 g_param_spec_string ("status",
@@ -151,7 +151,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 * Due date of the task (as a RFC 3339 timestamp).
 	 * This field is <code class="literal">-1</code> if task has not due date asigned.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_DUE,
 	                                 g_param_spec_int64 ("due",
@@ -165,7 +165,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 * Completion date of the task (as a RFC 3339 timestamp).
 	 * This field is <code class="literal">-1</code> if the task has not been completed.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_COMPLETED,
 	                                 g_param_spec_int64 ("completed",
@@ -178,7 +178,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 *
 	 * Flag indicating whether the task has been deleted. The default is %FALSE.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_DELETED,
 	                                 g_param_spec_boolean ("is-deleted",
@@ -193,7 +193,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 * had been marked completed when the task list was last cleared.
 	 * The default is %FALSE. This field is read-only.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_HIDDEN,
 	                                 g_param_spec_boolean ("is-hidden",
@@ -380,7 +380,7 @@ get_content_type (void)
  *
  * Return value: a new #GDataTasksTask; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataTasksTask *
 gdata_tasks_task_new (const gchar *id)
@@ -396,7 +396,7 @@ gdata_tasks_task_new (const gchar *id)
  *
  * Return value: (allow-none): the parent of the task, or %NULL
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 const gchar *
 gdata_tasks_task_get_parent (GDataTasksTask *self)
@@ -413,7 +413,7 @@ gdata_tasks_task_get_parent (GDataTasksTask *self)
  *
  * Return value: (allow-none): the position of the task, or %NULL
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 const gchar *
 gdata_tasks_task_get_position (GDataTasksTask *self)
@@ -430,7 +430,7 @@ gdata_tasks_task_get_position (GDataTasksTask *self)
  *
  * Return value: (allow-none): notes of the task, or %NULL
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 const gchar *
 gdata_tasks_task_get_notes (GDataTasksTask *self)
@@ -448,7 +448,7 @@ gdata_tasks_task_get_notes (GDataTasksTask *self)
  *
  * Set @notes to %NULL to unset the property in the task.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_task_set_notes (GDataTasksTask *self, const gchar *notes)
@@ -470,7 +470,7 @@ gdata_tasks_task_set_notes (GDataTasksTask *self, const gchar *notes)
  *
  * Return value: (allow-none): the status of the task, or %NULL
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 const gchar *
 gdata_tasks_task_get_status (GDataTasksTask *self)
@@ -488,7 +488,7 @@ gdata_tasks_task_get_status (GDataTasksTask *self)
  *
  * Set @status to %NULL to unset the property in the task.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_task_set_status (GDataTasksTask *self, const gchar *status)
@@ -510,7 +510,7 @@ gdata_tasks_task_set_status (GDataTasksTask *self, const gchar *status)
  *
  * Return value: the due property, or <code class="literal">-1</code>
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gint64
 gdata_tasks_task_get_due (GDataTasksTask *self)
@@ -528,7 +528,7 @@ gdata_tasks_task_get_due (GDataTasksTask *self)
  *
  * Set @due to <code class="literal">-1</code> to unset the property in the due time of the task
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_task_set_due (GDataTasksTask *self, gint64 due)
@@ -548,7 +548,7 @@ gdata_tasks_task_set_due (GDataTasksTask *self, gint64 due)
  *
  * Return value: the completed property, or <code class="literal">-1</code>
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gint64
 gdata_tasks_task_get_completed (GDataTasksTask *self)
@@ -566,7 +566,7 @@ gdata_tasks_task_get_completed (GDataTasksTask *self)
  *
  * Set @completed to <code class="literal">-1</code> to unset the property in the completion time of the task
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_task_set_completed (GDataTasksTask *self, gint64 completed)
@@ -586,7 +586,7 @@ gdata_tasks_task_set_completed (GDataTasksTask *self, gint64 completed)
  *
  * Return value: %TRUE if task is deleted, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gboolean
 gdata_tasks_task_is_deleted (GDataTasksTask *self)
@@ -602,7 +602,7 @@ gdata_tasks_task_is_deleted (GDataTasksTask *self)
  *
  * Sets the #GDataTasksTask:is-deleted property to @deleted.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_task_set_is_deleted (GDataTasksTask *self, gboolean deleted)
@@ -620,7 +620,7 @@ gdata_tasks_task_set_is_deleted (GDataTasksTask *self, gboolean deleted)
  *
  * Return value: %TRUE if task is hidden, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gboolean
 gdata_tasks_task_is_hidden (GDataTasksTask *self)

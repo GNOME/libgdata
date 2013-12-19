@@ -29,7 +29,7 @@
  * For more details of Google Tasks API, see the <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 
 #include <config.h>
@@ -77,7 +77,7 @@ get_authorization_domains (void)
  *
  * Return value: a new #GDataTasksService, or %NULL; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataTasksService *
 gdata_tasks_service_new (GDataAuthorizer *authorizer)
@@ -100,7 +100,7 @@ gdata_tasks_service_new (GDataAuthorizer *authorizer)
  *
  * Return value: (transfer none): the service's authorization domain
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataAuthorizationDomain *
 gdata_tasks_service_get_primary_authorization_domain (void)
@@ -124,7 +124,7 @@ gdata_tasks_service_get_primary_authorization_domain (void)
  *
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataFeed *
 gdata_tasks_service_query_all_tasklists (GDataTasksService *self, GDataQuery *query, GCancellable *cancellable,
@@ -173,7 +173,7 @@ gdata_tasks_service_query_all_tasklists (GDataTasksService *self, GDataQuery *qu
  * For more details, see gdata_tasks_service_query_all_tasklists(), which is the synchronous version of
  * this function, and gdata_service_query_async(), which is the base asynchronous query function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_service_query_all_tasklists_async (GDataTasksService *self, GDataQuery *query, GCancellable *cancellable,
@@ -222,7 +222,7 @@ gdata_tasks_service_query_all_tasklists_async (GDataTasksService *self, GDataQue
  *
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataFeed *
 gdata_tasks_service_query_tasks (GDataTasksService *self, GDataTasksTasklist *tasklist, GDataQuery *query, GCancellable *cancellable,
@@ -276,7 +276,7 @@ gdata_tasks_service_query_tasks (GDataTasksService *self, GDataTasksTasklist *ta
  * For more details, see gdata_tasks_service_query_tasks(), which is the synchronous version of this function, and gdata_service_query_async(),
  * which is the base asynchronous query function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_service_query_tasks_async (GDataTasksService *self, GDataTasksTasklist *tasklist, GDataQuery *query, GCancellable *cancellable,
@@ -326,7 +326,7 @@ gdata_tasks_service_query_tasks_async (GDataTasksService *self, GDataTasksTaskli
  *
  * Return value: (transfer full): an updated #GDataTasksTask, or %NULL; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataTasksTask *
 gdata_tasks_service_insert_task (GDataTasksService *self, GDataTasksTask *task, GDataTasksTasklist *tasklist, GCancellable *cancellable, GError **error)
@@ -365,7 +365,7 @@ gdata_tasks_service_insert_task (GDataTasksService *self, GDataTasksTask *task, 
  * For more details, see gdata_tasks_service_insert_task(), which is the synchronous version of this function, and
  * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_service_insert_task_async (GDataTasksService *self, GDataTasksTask *task, GDataTasksTasklist *tasklist, GCancellable *cancellable,
@@ -397,7 +397,7 @@ gdata_tasks_service_insert_task_async (GDataTasksService *self, GDataTasksTask *
  *
  * Return value: (transfer full): an updated #GDataTasksTasklist, or %NULL; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataTasksTasklist *
 gdata_tasks_service_insert_tasklist (GDataTasksService *self, GDataTasksTasklist *tasklist, GCancellable *cancellable, GError **error)
@@ -434,7 +434,7 @@ gdata_tasks_service_insert_tasklist (GDataTasksService *self, GDataTasksTasklist
  * For more details, see gdata_tasks_service_insert_tasklist(), which is the synchronous version of this function, and
  * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_service_insert_tasklist_async (GDataTasksService *self, GDataTasksTasklist *tasklist, GCancellable *cancellable,
@@ -465,7 +465,7 @@ gdata_tasks_service_insert_tasklist_async (GDataTasksService *self, GDataTasksTa
  *
  * Return value: %TRUE on success, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gboolean
 gdata_tasks_service_delete_task (GDataTasksService *self, GDataTasksTask *task, GCancellable *cancellable, GError **error)
@@ -495,7 +495,7 @@ gdata_tasks_service_delete_task (GDataTasksService *self, GDataTasksTask *task, 
  * For more details, see gdata_tasks_service_delete_task(), which is the synchronous version of this function, and
  * gdata_service_delete_entry_async(), which is the base asynchronous insertion function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_service_delete_task_async (GDataTasksService *self, GDataTasksTask *task, GCancellable *cancellable,
@@ -522,7 +522,7 @@ gdata_tasks_service_delete_task_async (GDataTasksService *self, GDataTasksTask *
  *
  * Return value: %TRUE on success, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gboolean
 gdata_tasks_service_delete_tasklist (GDataTasksService *self, GDataTasksTasklist *tasklist, GCancellable *cancellable, GError **error)
@@ -552,7 +552,7 @@ gdata_tasks_service_delete_tasklist (GDataTasksService *self, GDataTasksTasklist
  * For more details, see gdata_tasks_service_delete_tasklist(), which is the synchronous version of this function, and
  * gdata_service_delete_entry_async(), which is the base asynchronous insertion function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_service_delete_tasklist_async (GDataTasksService *self, GDataTasksTasklist *tasklist, GCancellable *cancellable,
@@ -579,7 +579,7 @@ gdata_tasks_service_delete_tasklist_async (GDataTasksService *self, GDataTasksTa
  *
  * Return value: (transfer full): an updated #GDataTasksTask, or %NULL; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataTasksTask *
 gdata_tasks_service_update_task (GDataTasksService *self, GDataTasksTask *task, GCancellable *cancellable, GError **error)
@@ -609,7 +609,7 @@ gdata_tasks_service_update_task (GDataTasksService *self, GDataTasksTask *task, 
  * For more details, see gdata_tasks_service_update_task(), which is the synchronous version of this function, and
  * gdata_service_update_entry_async(), which is the base asynchronous insertion function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_service_update_task_async (GDataTasksService *self, GDataTasksTask *task, GCancellable *cancellable,
@@ -636,7 +636,7 @@ gdata_tasks_service_update_task_async (GDataTasksService *self, GDataTasksTask *
  *
  * Return value: (transfer full): an updated #GDataTasksTasklist, or %NULL; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataTasksTasklist *
 gdata_tasks_service_update_tasklist (GDataTasksService *self, GDataTasksTasklist *tasklist, GCancellable *cancellable, GError **error)
@@ -666,7 +666,7 @@ gdata_tasks_service_update_tasklist (GDataTasksService *self, GDataTasksTasklist
  * For more details, see gdata_tasks_service_update_tasklist(), which is the synchronous version of this function, and
  * gdata_service_update_entry_async(), which is the base asynchronous insertion function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 gdata_tasks_service_update_tasklist_async (GDataTasksService *self, GDataTasksTasklist *tasklist, GCancellable *cancellable,

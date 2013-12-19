@@ -772,7 +772,7 @@ gdata_parser_object_from_element (xmlNode *element, const gchar *element_name, G
  *
  * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gboolean
 gdata_parser_string_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options,
@@ -837,7 +837,7 @@ gdata_parser_string_from_json_member (JsonReader *reader, const gchar *member_na
  *
  * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gboolean
 gdata_parser_int64_time_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options,
@@ -905,7 +905,7 @@ gdata_parser_int64_time_from_json_member (JsonReader *reader, const gchar *membe
  *
  * Return value: %TRUE if @member_name was found, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gboolean
 gdata_parser_boolean_from_json_member (JsonReader *reader, const gchar *member_name, GDataParserOptions options, gboolean *output, gboolean *success, GError **error)

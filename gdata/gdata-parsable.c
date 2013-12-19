@@ -444,7 +444,7 @@ _gdata_parsable_new_from_xml_node (GType parsable_type, xmlDoc *doc, xmlNode *no
  *
  * Return value: a new #GDataParsable, or %NULL; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 GDataParsable *
 gdata_parsable_new_from_json (GType parsable_type, const gchar *json, gint length, GError **error)
@@ -669,7 +669,7 @@ _gdata_parsable_get_xml (GDataParsable *self, GString *xml_string, gboolean decl
  *
  * Return value: the object's JSON; free with g_free()
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 gchar *
 gdata_parsable_get_json (GDataParsable *self)
@@ -705,7 +705,7 @@ gdata_parsable_get_json (GDataParsable *self)
  *
  * Builds a JSON representation of the #GDataParsable in its current state, such that it could be inserted on the server.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 void
 _gdata_parsable_get_json (GDataParsable *self, JsonBuilder *builder)

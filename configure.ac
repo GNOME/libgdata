@@ -49,7 +49,7 @@ JSON_GLIB_REQS=0.15
 #  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
 #
 # Note that versioning started at 2:0:0 to ensure no conflicts with e-d-s' libgdata library, whose maximum version was 1:0:0
-GDATA_LT_VERSION=18:2:5
+GDATA_LT_VERSION=19:0:0
 AC_SUBST(GDATA_LT_VERSION)
 
 GDATA_VERSION_MAJOR=gdata_version_major

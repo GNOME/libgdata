@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * All the fields in the #GDataTasksTasklist structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 typedef struct {
 	GDataEntry parent;
@@ -51,7 +51,7 @@ typedef struct {
  *
  * All the fields in the #GDataTasksTasklistClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.0
  */
 
 typedef struct {
