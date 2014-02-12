@@ -1,14 +1,14 @@
 # Norwegian bokmål translation of libgdata.
 # Copyright (C) 1998-2004, 2005 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 1998-2013.
+# Kjartan Maraas <kmaraas@gnome.org>, 1998-2014.
 # Terance Edward Sola <terance@lyse.net>, 2005.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgdata 0.8.x\n"
+"Project-Id-Version: libgdata 0.15.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-08 19:45+0200\n"
-"PO-Revision-Date: 2013-09-08 19:46+0200\n"
+"POT-Creation-Date: 2014-02-12 19:36+0100\n"
+"PO-Revision-Date: 2014-02-12 19:37+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -16,24 +16,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:597
-#: ../gdata/gdata-oauth1-authorizer.c:809
-#: ../gdata/gdata-oauth1-authorizer.c:1085
+#: ../gdata/gdata-client-login-authorizer.c:627
+#: ../gdata/gdata-oauth1-authorizer.c:839
+#: ../gdata/gdata-oauth1-authorizer.c:1115
 msgid "The server returned a malformed response."
 msgstr "Tjeneren returnerte et feilutformet svar."
 
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
+#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Kan ikke koble til tjenestens tjener."
 
-#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
+#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Kan ikke koble til proxy-tjener."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
+#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -41,58 +41,58 @@ msgstr ""
 "standardisert parameter: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
+#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Autentisering kreves: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
+#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Forespurt ressurs ble ikke funnet: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
+#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Oppføringen er endret siden den ble lastet ned: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
+#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Feilkode %u under autentisering: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:756
+#: ../gdata/gdata-client-login-authorizer.c:786
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "En CAPTCHA må fylles ut for å logge inn."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:794
+#: ../gdata/gdata-client-login-authorizer.c:824
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Denne kontoen krever et programspesifikt passord. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:801
+#: ../gdata/gdata-client-login-authorizer.c:831
 msgid "Your username or password were incorrect."
 msgstr "Feil brukernavn eller passord."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:822
+#: ../gdata/gdata-client-login-authorizer.c:852
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "E-postadressen for din konto er ikke verifisert. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:827
+#: ../gdata/gdata-client-login-authorizer.c:857
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Du har ikke godtatt betingelsene for tjenesten. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:833
+#: ../gdata/gdata-client-login-authorizer.c:863
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -102,25 +102,25 @@ msgstr ""
 "ditt nye brukernavn og passord. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:838
+#: ../gdata/gdata-client-login-authorizer.c:868
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Denne kontoen er slettet. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:843
+#: ../gdata/gdata-client-login-authorizer.c:873
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Denne kontoen er deaktivert. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:848
+#: ../gdata/gdata-client-login-authorizer.c:878
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Denne kontoens tilgang til denne tjenesten er slått av. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:853
+#: ../gdata/gdata-client-login-authorizer.c:883
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Denne tjenesten er ikke tilgjengelig nå. (%s)"
@@ -147,34 +147,34 @@ msgstr "Denne kommentaren kan ikke slettes."
 msgid "Invalid seek request"
 msgstr "Ugyldig søkeforespørsel"
 
-#: ../gdata/gdata-oauth1-authorizer.c:784
+#: ../gdata/gdata-oauth1-authorizer.c:814
 msgid "The server rejected the temporary credentials request."
 msgstr "Tjener avviste midlertidig forespørsel om påloggingsinformasjon."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1059
+#: ../gdata/gdata-oauth1-authorizer.c:1089
 msgid "Access was denied by the user or server."
 msgstr "Tilgang ble nektet av bruker eller tjener."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:342 ../gdata/gdata-parsable.c:353
+#: ../gdata/gdata-parsable.c:349 ../gdata/gdata-parsable.c:360
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Feil under tolking av XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:355
+#: ../gdata/gdata-parsable.c:362
 msgid "Empty document."
 msgstr "Tomt dokument."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:473 ../gdata/gdata-parsable.c:511
+#: ../gdata/gdata-parsable.c:480 ../gdata/gdata-parsable.c:518
 #, c-format
 msgid "Error parsing JSON: %s"
 msgstr "Feil under tolking av JSON: %s"
 
-#: ../gdata/gdata-parsable.c:512
+#: ../gdata/gdata-parsable.c:519
 msgid "Outermost JSON node is not an object."
 msgstr "Ytterste JSON-node er ikke et objekt."
 
@@ -259,7 +259,7 @@ msgstr "Et nødvendig element (%s) var ikke tilstede."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Et enkelt element (%s) var duplisert."
@@ -268,7 +268,7 @@ msgstr "Et enkelt element (%s) var duplisert."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:273
+#: ../gdata/gdata-parser.c:290
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Et «%s»-element manglet nødvendig innhold."
@@ -278,73 +278,73 @@ msgstr "Et «%s»-element manglet nødvendig innhold."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:303
+#: ../gdata/gdata-parser.c:320
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "Innhold av et «%s»-element («%s») var ikke i ISO-8601-format."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:313
+#: ../gdata/gdata-parser.c:330
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Ugyldig JSON ble mottatt fra tjener: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
+#: ../gdata/gdata-service.c:398
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Feilkode %u under spørring: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:375
+#: ../gdata/gdata-service.c:404
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Feilkode %u under innsetting av en oppføring: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:381
+#: ../gdata/gdata-service.c:410
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Feilkode %u under oppdatering av en oppføring: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:387
+#: ../gdata/gdata-service.c:416
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Feilkode %u under sletting av en oppføring: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:393
+#: ../gdata/gdata-service.c:422
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Feilkode %u under nedlasting: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:399
+#: ../gdata/gdata-service.c:428
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Feilkode %u under opplasting: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:405
+#: ../gdata/gdata-service.c:434
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Feilkode %u under kjøring av en batch-operasjon: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:692
+#: ../gdata/gdata-service.c:721
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ugyldig URI for omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1363
+#: ../gdata/gdata-service.c:1393
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -475,6 +475,16 @@ msgstr "Albumet er allerede satt inn."
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "Du må være autentisert for å sette inn et album."
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:145
+#: ../gdata/services/tasks/gdata-tasks-service.c:196
+msgid "You must be authenticated to query all tasklists."
+msgstr "Du må være autentiest for å spørre på alle oppgavelister."
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:244
+#: ../gdata/services/tasks/gdata-tasks-service.c:300
+msgid "You must be authenticated to query your own tasks."
+msgstr "Du må være autentisert for å spørre på dine egne oppgaver."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:457
 #, c-format
