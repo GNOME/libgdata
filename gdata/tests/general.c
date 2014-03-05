@@ -492,6 +492,50 @@ test_entry_parse_xml (void)
 }
 
 static void
+test_entry_parse_xml_kind_category (void)
+{
+	GDataEntry *entry;
+	GError *error = NULL;
+
+	g_test_bug ("707477");
+
+	/* Create an entry from XML with a ‘kind’ category with extra attributes. */
+	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_ENTRY,
+		"<entry xmlns='http://www.w3.org/2005/Atom'>"
+			"<title type='text'>Testing kind categories</title>"
+			"<updated>2009-01-25T14:07:37Z</updated>"
+			"<published>2009-01-23T14:06:37Z</published>"
+			"<content type='text'>Here we test kind categories.</content>"
+			"<category scheme='http://schemas.google.com/g/2005#kind' "
+			          "term='http://schemas.google.com/docs/2007#file' "
+			          "label='application/vnd.oasis.opendocument.presentation'/>"
+			"<category scheme='http://schemas.google.com/g/2005/labels' "
+			          "term='http://schemas.google.com/g/2005/labels#modified-by-me' "
+			          "label='modified-by-me'/>"
+		 "</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (entry));
+	g_clear_error (&error);
+
+	/* Now check the outputted XML from the entry still has the extra attributes */
+	gdata_test_assert_xml (entry,
+			 "<?xml version='1.0' encoding='UTF-8'?>"
+			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
+				"<title type='text'>Testing kind categories</title>"
+				"<updated>2009-01-25T14:07:37Z</updated>"
+				"<published>2009-01-23T14:06:37Z</published>"
+				"<content type='text'>Here we test kind categories.</content>"
+			"<category term='http://schemas.google.com/docs/2007#file' "
+			          "scheme='http://schemas.google.com/g/2005#kind' "
+			          "label='application/vnd.oasis.opendocument.presentation'/>"
+			"<category term='http://schemas.google.com/g/2005/labels#modified-by-me' "
+			          "scheme='http://schemas.google.com/g/2005/labels' "
+			          "label='modified-by-me'/>"
+			 "</entry>");
+	g_object_unref (entry);
+}
+
+static void
 test_entry_error_handling (void)
 {
 	GDataEntry *entry;
@@ -4297,6 +4341,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/entry/get_xml", test_entry_get_xml);
 	g_test_add_func ("/entry/parse_xml", test_entry_parse_xml);
 	g_test_add_func ("/entry/error_handling", test_entry_error_handling);
+	g_test_add_func ("/entry/parse_xml/kind_category", test_entry_parse_xml_kind_category);
 	g_test_add_func ("/entry/escaping", test_entry_escaping);
 	g_test_add_func ("/entry/links/remove", test_entry_links_remove);
 
