@@ -597,7 +597,7 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 
 	path = g_string_new ("/");
-	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (self), "http://schemas.google.com/docs/2007#parent");
+	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (self), GDATA_LINK_PARENT);
 
 	/* We check all the folders contained that are parents of the GDataDocumentsEntry */
 	for (element = parent_folders_list; element != NULL; element = element->next) {

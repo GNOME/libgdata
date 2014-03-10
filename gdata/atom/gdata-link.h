@@ -112,6 +112,21 @@ G_BEGIN_DECLS
  **/
 #define GDATA_LINK_EDIT_MEDIA "http://www.iana.org/assignments/relation/edit-media"
 
+/**
+ * GDATA_LINK_PARENT:
+ *
+ * The relation type URI of the of the location of the parent resource in a
+ * hierarchy of entries.
+ *
+ * This is an undocumented GData-specific addition to the Atom specification,
+ * and is not included in the GData documentation except in examples and in the
+ * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/v2/schema/document_list_atom.rnc">
+ * RelaxNG schema</ulink>.
+ *
+ * Since: UNRELEASED
+ */
+#define GDATA_LINK_PARENT "http://schemas.google.com/docs/2007#parent"
+
 #define GDATA_TYPE_LINK			(gdata_link_get_type ())
 #define GDATA_LINK(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_LINK, GDataLink))
 #define GDATA_LINK_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_LINK, GDataLinkClass))

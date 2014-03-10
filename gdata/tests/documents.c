@@ -42,7 +42,7 @@ check_document_is_in_folder (GDataDocumentsDocument *document, GDataDocumentsFol
 	folder_self_link = gdata_entry_look_up_link (GDATA_ENTRY (folder), GDATA_LINK_SELF);
 	g_assert (folder_self_link != NULL);
 
-	for (links = gdata_entry_look_up_links (GDATA_ENTRY (document), "http://schemas.google.com/docs/2007#parent");
+	for (links = gdata_entry_look_up_links (GDATA_ENTRY (document), GDATA_LINK_PARENT);
 	     links != NULL; links = links->next) {
 		GDataLink *_link = GDATA_LINK (links->data);
 
@@ -62,7 +62,7 @@ check_document_is_in_root_folder (GDataDocumentsDocument *document)
 	GList *links;
 	gboolean is_in_root_folder;
 
-	links = gdata_entry_look_up_links (GDATA_ENTRY (document), "http://schemas.google.com/docs/2007#parent");
+	links = gdata_entry_look_up_links (GDATA_ENTRY (document), GDATA_LINK_PARENT);
 	is_in_root_folder = (links == NULL) ? TRUE : FALSE;
 	g_list_free (links);
 
