@@ -26,6 +26,8 @@ GDATA_ENUM_FILES = \
 	gdata/media/gdata-media-enums.h				\
 	gdata/services/documents/gdata-documents-enums.c	\
 	gdata/services/documents/gdata-documents-enums.h	\
+	gdata/services/freebase/gdata-freebase-enums.c		\
+	gdata/services/freebase/gdata-freebase-enums.h		\
 	gdata/services/picasaweb/gdata-picasaweb-enums.c	\
 	gdata/services/picasaweb/gdata-picasaweb-enums.h	\
 	gdata/services/youtube/gdata-youtube-enums.c		\
@@ -94,6 +96,29 @@ gdata/services/documents/gdata-documents-enums.c: $(gdata_documents_headers) Mak
 		$(addprefix $(srcdir)/,$(gdata_documents_headers)) > gdata/services/documents/gdata-documents-enums.c.tmp \
 	&& sed "s/g_data/gdata/" gdata/services/documents/gdata-documents-enums.c.tmp > gdata/services/documents/gdata-documents-enums.c \
 	&& rm -f gdata/services/documents/gdata-documents-enums.c.tmp)
+
+gdata/services/freebase/gdata-freebase-enums.h: $(gdata_freebase_headers) Makefile
+	$(AM_V_GEN)($(GLIB_MKENUMS) \
+			--fhead "#ifndef GDATA_FREEBASE_ENUMS_H\n#define GDATA_FREEBASE_ENUMS_H\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+			--fprod "/* enumerations from \"@filename@\" */\n" \
+			--vhead "GType @enum_name@_get_type (void) G_GNUC_CONST;\n#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
+			--ftail "G_END_DECLS\n\n#endif /* !GDATA_FREEBASE_ENUMS_H */" \
+		$(addprefix $(srcdir)/,$(gdata_freebase_headers)) > gdata/services/freebase/gdata-freebase-enums.h.tmp \
+	&& sed "s/g_data_freebase/gdata_freebase/" gdata/services/freebase/gdata-freebase-enums.h.tmp > gdata/services/freebase/gdata-freebase-enums.h.tmp2 \
+	&& sed "s/GDATA_TYPE_DATA_FREEBASE/GDATA_TYPE_FREEBASE/" gdata/services/freebase/gdata-freebase-enums.h.tmp2 > gdata/services/freebase/gdata-freebase-enums.h \
+	&& rm -f gdata/services/freebase/gdata-freebase-enums.h.tmp \
+	&& rm -f gdata/services/freebase/gdata-freebase-enums.h.tmp2)
+
+gdata/services/freebase/gdata-freebase-enums.c: $(gdata_freebase_headers) Makefile gdata/services/freebase/gdata-freebase-enums.h
+	$(AM_V_GEN)($(GLIB_MKENUMS) \
+			--fhead "#include \"gdata-freebase-service.h\"\n#include \"gdata-freebase-search-query.h\"\n#include \"gdata-freebase-result.h\"\n#include \"gdata-freebase-enums.h\"" \
+			--fprod "\n/* enumerations from \"@filename@\" */" \
+			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" \
+			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+		$(addprefix $(srcdir)/,$(gdata_freebase_headers)) > gdata/services/freebase/gdata-freebase-enums.c.tmp \
+	&& sed "s/g_data_freebase/gdata_freebase/" gdata/services/freebase/gdata-freebase-enums.c.tmp > gdata/services/freebase/gdata-freebase-enums.c \
+	&& rm -f gdata/services/freebase/gdata-freebase-enums.c.tmp)
 
 gdata/services/picasaweb/gdata-picasaweb-enums.h: $(gdata_picasaweb_headers) Makefile
 	$(AM_V_GEN)($(GLIB_MKENUMS) \
@@ -309,11 +334,14 @@ gdatafreebaseincludedir = $(gdataincludedir)/services/freebase
 gdata_freebase_headers = \
 	gdata/services/freebase/gdata-freebase-service.h		\
 	gdata/services/freebase/gdata-freebase-result.h			\
+	gdata/services/freebase/gdata-freebase-search-query.h		\
+	gdata/services/freebase/gdata-freebase-search-result.h		\
 	gdata/services/freebase/gdata-freebase-topic-query.h		\
 	gdata/services/freebase/gdata-freebase-topic-result.h		\
 	gdata/services/freebase/gdata-freebase-query.h
 gdatafreebaseinclude_HEADERS = 						\
-	$(gdata_freebase_headers)
+	$(gdata_freebase_headers)					\
+	gdata/services/freebase/gdata-freebase-enums.h
 
 gdata_sources = \
 	gdata/gdata-entry.c		\
@@ -426,6 +454,8 @@ gdata_sources = \
 	\
 	gdata/services/freebase/gdata-freebase-service.c		\
 	gdata/services/freebase/gdata-freebase-result.c			\
+	gdata/services/freebase/gdata-freebase-search-query.c		\
+	gdata/services/freebase/gdata-freebase-search-result.c		\
 	gdata/services/freebase/gdata-freebase-topic-query.c		\
 	gdata/services/freebase/gdata-freebase-topic-result.c		\
 	gdata/services/freebase/gdata-freebase-query.c

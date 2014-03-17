@@ -315,3 +315,65 @@ gdata_freebase_service_get_topic_async (GDataFreebaseService *self, GDataFreebas
 	gdata_service_query_single_entry_async (GDATA_SERVICE (self), get_freebase_authorization_domain (), "topic",
 						GDATA_QUERY (query), GDATA_TYPE_FREEBASE_RESULT, cancellable, callback, user_data);
 }
+
+/**
+ * gdata_freebase_service_search:
+ * @self: a #GDataFreebaseService
+ * @query: a #GDataFreebaseSearchQuery containing the topic ID
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): a #GError, or %NULL
+ *
+ * Performs a search for any given search term, filters can be set on @query to narrow down the results. The results returned
+ * are ordered by relevance. You can find out more about topic queries in the
+ * <ulink type="http" url="https://developers.google.com/freebase/v1/search-cookbook">online documentation</ulink>.
+ *
+ * Return value: (transfer full): a #GDataFreebaseSearchResult containing the results for the given search query; unref with g_object_unref()
+ *
+ * Since: UNRELEASED
+ */
+GDataFreebaseSearchResult *
+gdata_freebase_service_search (GDataFreebaseService *self, GDataFreebaseSearchQuery *query, GCancellable *cancellable, GError **error)
+{
+	GDataEntry *entry;
+
+	g_return_val_if_fail (GDATA_IS_FREEBASE_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_FREEBASE_SEARCH_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	entry = gdata_service_query_single_entry (GDATA_SERVICE (self), get_freebase_authorization_domain (), "search",
+						  GDATA_QUERY (query), GDATA_TYPE_FREEBASE_SEARCH_RESULT, cancellable, error);
+	if (entry == NULL)
+		return NULL;
+
+	return GDATA_FREEBASE_SEARCH_RESULT (entry);
+}
+
+/**
+ * gdata_freebase_service_search_async:
+ * @self: a #GDataFreebaseService
+ * @query: a #GDataFreebaseQuery with the MQL query
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when authentication is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Performs a search for any given search term. @self and @query are all reffed when this
+ * function is called, so can safely be unreffed after this function returns.
+ *
+ * For more details, see gdata_freebase_service_search(), which is the synchronous version of
+ * this function.
+ *
+ * Since: UNRELEASED
+ */
+void
+gdata_freebase_service_search_async (GDataFreebaseService *self, GDataFreebaseSearchQuery *query,
+				     GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	g_return_if_fail (GDATA_IS_FREEBASE_SERVICE (self));
+	g_return_if_fail (GDATA_IS_FREEBASE_SEARCH_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	gdata_service_query_single_entry_async (GDATA_SERVICE (self), get_freebase_authorization_domain (), "search",
+						GDATA_QUERY (query), GDATA_TYPE_FREEBASE_SEARCH_RESULT, cancellable, callback, user_data);
+}
