@@ -1099,7 +1099,13 @@ gdata_service_query_single_entry (GDataService *self, GDataAuthorizationDomain *
 	}
 
 	g_assert (message->response_body->data != NULL);
-	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (entry_type, message->response_body->data, message->response_body->length, error));
+
+	if (g_strcmp0 (GDATA_PARSABLE_CLASS (klass)->get_content_type (), "application/json") == 0) {
+		entry = GDATA_ENTRY (gdata_parsable_new_from_json (entry_type, message->response_body->data, message->response_body->length, error));
+	} else {
+		entry = GDATA_ENTRY (gdata_parsable_new_from_xml (entry_type, message->response_body->data, message->response_body->length, error));
+	}
+
 	g_object_unref (message);
 	g_type_class_unref (klass);
 
