@@ -611,7 +611,9 @@ CODE_COVERAGE_LCOV_OPTIONS = --base-directory $(abs_top_srcdir)
 noinst_PROGRAMS =
 
 if HAVE_GTK
-noinst_PROGRAMS += demos/scrapbook/scrapbook
+noinst_PROGRAMS += 			\
+	demos/scrapbook/scrapbook	\
+	demos/freebase/freebase-cli
 endif
 
 demos_scrapbook_scrapbook_SOURCES = \
@@ -643,6 +645,33 @@ demos_scrapbook_scrapbook_LDADD = \
 	$(GNOME_LIBS) \
 	$(AM_LDADD) \
 	$(NULL)
+
+demos_freebase_freebase_cli_SOURCES = \
+        demos/freebase/freebase-cli.c  \
+        $(NULL)
+
+demos_freebase_freebase_cli_CPPFLAGS = \
+        -I$(top_srcdir)/ \
+        -I$(top_srcdir)/gdata \
+        -DG_LOG_DOMAIN=\"freebase\" \
+        -DLIBGDATA_DISABLE_DEPRECATED \
+        $(DISABLE_DEPRECATED) \
+        $(AM_CPPFLAGS) \
+        $(NULL)
+
+demos_freebase_freebase_cli_CFLAGS = \
+        $(WARN_CFLAGS) \
+        $(GDATA_CFLAGS) \
+        $(GNOME_CFLAGS) \
+        $(AM_CFLAGS) \
+        $(NULL)
+
+demos_freebase_freebase_cli_LDADD = \
+        $(top_builddir)/gdata/libgdata.la \
+        $(GDATA_LIBS) \
+        $(GNOME_LIBS) \
+        $(AM_LDADD) \
+        $(NULL)
 
 # Cleaning
 EXTRA_DIST += \
