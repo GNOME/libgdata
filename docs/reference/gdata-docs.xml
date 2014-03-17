@@ -183,6 +183,13 @@
 			<xi:include href="xml/gdata-tasks-tasklist.xml"/>
 			<xi:include href="xml/gdata-tasks-task.xml"/>
 		</chapter>
+
+		<chapter>
+			<title>Google Freebase API</title>
+			<xi:include href="xml/gdata-freebase-service.xml"/>
+			<xi:include href="xml/gdata-freebase-query.xml"/>
+			<xi:include href="xml/gdata-freebase-result.xml"/>
+		</chapter>
 	</part>
 
 	<part>

@@ -305,6 +305,13 @@ gdatatasksinclude_HEADERS = 						\
 	gdata/services/tasks/gdata-tasks-task.h			\
 	gdata/services/tasks/gdata-tasks-query.h
 
+gdatafreebaseincludedir = $(gdataincludedir)/services/freebase
+gdata_freebase_headers = \
+	gdata/services/freebase/gdata-freebase-service.h		\
+	gdata/services/freebase/gdata-freebase-result.h			\
+	gdata/services/freebase/gdata-freebase-query.h
+gdatafreebaseinclude_HEADERS = 						\
+	$(gdata_freebase_headers)
 
 gdata_sources = \
 	gdata/gdata-entry.c		\
@@ -413,7 +420,12 @@ gdata_sources = \
 	gdata/services/tasks/gdata-tasks-service.c			\
 	gdata/services/tasks/gdata-tasks-tasklist.c			\
 	gdata/services/tasks/gdata-tasks-task.c				\
-	gdata/services/tasks/gdata-tasks-query.c
+	gdata/services/tasks/gdata-tasks-query.c			\
+	\
+	gdata/services/freebase/gdata-freebase-service.c		\
+	gdata/services/freebase/gdata-freebase-result.c			\
+	gdata/services/freebase/gdata-freebase-query.c
+
 
 if ENABLE_GOA
 gdata_sources += \
@@ -434,7 +446,8 @@ public_headers = \
 	$(gdatadocumentsinclude_HEADERS)	\
 	$(gdatapicasawebinclude_HEADERS)	\
 	$(gdatayoutubeinclude_HEADERS)		\
-	$(gdatatasksinclude_HEADERS)
+	$(gdatatasksinclude_HEADERS)		\
+	$(gdatafreebaseinclude_HEADERS)
 
 gdata_libgdata_la_SOURCES = \
 	$(GDATA_MARSHAL_FILES)		\
@@ -450,10 +463,12 @@ gdata_libgdata_la_CPPFLAGS = \
 	-I$(top_srcdir)/gdata/services/documents	\
 	-I$(top_srcdir)/gdata/services/picasaweb	\
 	-I$(top_srcdir)/gdata/services/youtube		\
+	-I$(top_srcdir)/gdata/services/freebase		\
 	-I$(top_builddir)/gdata				\
 	-I$(top_builddir)/gdata/media			\
 	-I$(top_builddir)/gdata/services/picasaweb	\
 	-I$(top_builddir)/gdata/services/youtube	\
+	-I$(top_builddir)/gdata/services/freebase	\
 	-DG_LOG_DOMAIN=\"libgdata\"			\
 	$(DISABLE_DEPRECATED)				\
 	$(AM_CPPFLAGS)

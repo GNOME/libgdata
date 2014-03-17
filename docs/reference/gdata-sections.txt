@@ -2565,3 +2565,62 @@ GDATA_IS_TASKS_TASKLIST
 GDATA_IS_TASKS_TASKLIST_CLASS
 GDATA_TYPE_TASKS_TASKLIST
 </SECTION>
+
+<SECTION>
+<FILE>gdata-freebase-service</FILE>
+<TITLE>GDataFreebaseService</TITLE>
+GDataFreebaseService
+GDataFreebaseServiceClass
+gdata_freebase_service_new
+gdata_freebase_service_get_primary_authorization_domain
+gdata_freebase_service_query
+gdata_freebase_service_query_async
+<SUBSECTION Standard>
+gdata_freebase_service_get_type
+GDATA_FREEBASE_SERVICE
+GDATA_FREEBASE_SERVICE_CLASS
+GDATA_FREEBASE_SERVICE_GET_CLASS
+GDATA_IS_FREEBASE_SERVICE
+GDATA_IS_FREEBASE_SERVICE_CLASS
+GDATA_TYPE_FREEBASE_SERVICE
+<SUBSECTION Private>
+GDataFreebaseServicePrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-freebase-query</FILE>
+<TITLE>GDataFreebaseQuery</TITLE>
+GDataFreebaseQuery
+GDataFreebaseQueryClass
+gdata_freebase_query_new
+gdata_freebase_query_new_from_variant
+<SUBSECTION Standard>
+gdata_freebase_query_get_type
+GDATA_FREEBASE_QUERY
+GDATA_FREEBASE_QUERY_CLASS
+GDATA_FREEBASE_QUERY_GET_CLASS
+GDATA_IS_FREEBASE_QUERY
+GDATA_IS_FREEBASE_QUERY_CLASS
+GDATA_TYPE_FREEBASE_QUERY
+<SUBSECTION Private>
+GDataFreebaseQueryPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-freebase-result</FILE>
+<TITLE>GDataFreebaseResult</TITLE>
+GDataFreebaseResult
+GDataFreebaseResultClass
+gdata_freebase_result_new
+gdata_freebase_result_dup_variant
+<SUBSECTION Standard>
+gdata_freebase_result_get_type
+GDATA_FREEBASE_RESULT
+GDATA_FREEBASE_RESULT_CLASS
+GDATA_FREEBASE_RESULT_GET_CLASS
+GDATA_IS_FREEBASE_RESULT
+GDATA_IS_FREEBASE_RESULT_CLASS
+GDATA_TYPE_FREEBASE_RESULT
+<SUBSECTION Private>
+GDataFreebaseResultPrivate
+</SECTION>
