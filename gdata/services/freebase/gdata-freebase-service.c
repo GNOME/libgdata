@@ -42,13 +42,16 @@
 
 #include "gdata-freebase-service.h"
 #include "gdata-freebase-result.h"
+#include "gdata-freebase-search-result.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
 #include "gdata-query.h"
+#include "gdata-feed.h"
 
 /* Standards reference at https://developers.google.com/freebase/v1/ */
 
 #define URLBASE "://www.googleapis.com/freebase/v1"
+#define IMAGE_URI_PREFIX "https://usercontent.googleapis.com/freebase/v1/image"
 
 enum {
 	PROP_DEVELOPER_KEY = 1
@@ -376,4 +379,77 @@ gdata_freebase_service_search_async (GDataFreebaseService *self, GDataFreebaseSe
 
 	gdata_service_query_single_entry_async (GDATA_SERVICE (self), get_freebase_authorization_domain (), "search",
 						GDATA_QUERY (query), GDATA_TYPE_FREEBASE_SEARCH_RESULT, cancellable, callback, user_data);
+}
+
+static gchar *
+compose_image_uri (GDataFreebaseTopicValue *value, guint max_width, guint max_height)
+{
+	GString *uri = g_string_new (IMAGE_URI_PREFIX);
+	const GDataFreebaseTopicObject *object;
+	gboolean first = TRUE;
+
+	object = gdata_freebase_topic_value_get_object (value);
+	g_assert (object != NULL);
+
+	g_string_append (uri, gdata_freebase_topic_object_get_id (object));
+
+#define APPEND_SEP g_string_append_c (uri, first ? '?' : '&'); first = FALSE;
+
+	if (max_width > 0) {
+		APPEND_SEP;
+		g_string_append_printf (uri, "maxwidth=%d", max_width);
+	}
+
+	if (max_height > 0) {
+		APPEND_SEP;
+		g_string_append_printf (uri, "maxheight=%d", max_height);
+	}
+#undef APPEND_SEP
+
+	return g_string_free (uri, FALSE);
+}
+
+/**
+ * gdata_freebase_service_get_image:
+ * @self: a #GDataFreebaseService
+ * @value: a #GDataFreebaseTopicValue from a topic result
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @max_width: maximum width of the image returned, or 0
+ * @max_height: maximum height of the image returned, or 0
+ * @error: (allow-none): a #GError, or %NULL
+ *
+ * Creates an input stream to an image object returned in a topic query. If @max_width and @max_height
+ * are unspecified (i.e. set to 0), the image returned will be the smallest available.
+ *
+ * Return value: (transfer full): a #GInputStream opened to the image; unref with g_object_unref()
+ *
+ * Since: UNRELEASED
+ **/
+GInputStream *
+gdata_freebase_service_get_image (GDataFreebaseService *self, GDataFreebaseTopicValue *value,
+				  GCancellable *cancellable, guint max_width, guint max_height, GError **error)
+{
+	GInputStream *stream;
+	gchar *uri;
+
+	g_return_val_if_fail (GDATA_IS_FREEBASE_SERVICE (self), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (value != NULL, NULL);
+	g_return_val_if_fail (!error || !*error, NULL);
+	g_return_val_if_fail (max_width < 4096 && max_height < 4096, NULL);
+
+	if (!gdata_freebase_topic_value_is_image (value)) {
+		g_set_error (error,
+			     GDATA_SERVICE_ERROR,
+			     GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
+			     _("Property '%s' does not hold an image"),
+			     gdata_freebase_topic_value_get_property (value));
+		return NULL;
+	}
+
+	uri = compose_image_uri (value, max_width, max_height);
+	stream = gdata_download_stream_new (GDATA_SERVICE (self), get_freebase_authorization_domain (), uri, cancellable);
+	g_free (uri);
+
+	return stream;
 }

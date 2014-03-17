@@ -2579,6 +2579,7 @@ gdata_freebase_service_get_topic
 gdata_freebase_service_get_topic_async
 gdata_freebase_service_search
 gdata_freebase_service_search_async
+gdata_freebase_service_get_image
 <SUBSECTION Standard>
 gdata_freebase_service_get_type
 GDATA_FREEBASE_SERVICE

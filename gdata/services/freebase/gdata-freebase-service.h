@@ -90,6 +90,9 @@ GDataFreebaseSearchResult *gdata_freebase_service_search (GDataFreebaseService *
 void gdata_freebase_service_search_async (GDataFreebaseService *self, GDataFreebaseSearchQuery *query,
 					  GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 
+GInputStream *gdata_freebase_service_get_image (GDataFreebaseService *self, GDataFreebaseTopicValue *value,
+						GCancellable *cancellable, guint max_width, guint max_height, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
 G_END_DECLS
 
 #endif /* !GDATA_FREEBASE_SERVICE_H */
