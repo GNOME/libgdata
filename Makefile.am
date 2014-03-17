@@ -309,6 +309,8 @@ gdatafreebaseincludedir = $(gdataincludedir)/services/freebase
 gdata_freebase_headers = \
 	gdata/services/freebase/gdata-freebase-service.h		\
 	gdata/services/freebase/gdata-freebase-result.h			\
+	gdata/services/freebase/gdata-freebase-topic-query.h		\
+	gdata/services/freebase/gdata-freebase-topic-result.h		\
 	gdata/services/freebase/gdata-freebase-query.h
 gdatafreebaseinclude_HEADERS = 						\
 	$(gdata_freebase_headers)
@@ -424,6 +426,8 @@ gdata_sources = \
 	\
 	gdata/services/freebase/gdata-freebase-service.c		\
 	gdata/services/freebase/gdata-freebase-result.c			\
+	gdata/services/freebase/gdata-freebase-topic-query.c		\
+	gdata/services/freebase/gdata-freebase-topic-result.c		\
 	gdata/services/freebase/gdata-freebase-query.c
 
 

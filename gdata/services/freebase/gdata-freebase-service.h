@@ -28,6 +28,8 @@
 #include <gdata/gdata-download-stream.h>
 #include "gdata-freebase-query.h"
 #include "gdata-freebase-result.h"
+#include "gdata-freebase-topic-query.h"
+#include "gdata-freebase-topic-result.h"
 
 G_BEGIN_DECLS
 
@@ -75,6 +77,11 @@ GDataFreebaseResult *gdata_freebase_service_query (GDataFreebaseService *self, G
 						   GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 void gdata_freebase_service_query_async (GDataFreebaseService *self, GDataFreebaseQuery *query,
 					 GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+
+GDataFreebaseTopicResult *gdata_freebase_service_get_topic (GDataFreebaseService *self, GDataFreebaseTopicQuery *query,
+							    GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_freebase_service_get_topic_async (GDataFreebaseService *self, GDataFreebaseTopicQuery *query,
+					     GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 
 G_END_DECLS
 

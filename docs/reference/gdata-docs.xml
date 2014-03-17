@@ -189,6 +189,8 @@
 			<xi:include href="xml/gdata-freebase-service.xml"/>
 			<xi:include href="xml/gdata-freebase-query.xml"/>
 			<xi:include href="xml/gdata-freebase-result.xml"/>
+			<xi:include href="xml/gdata-freebase-topic-query.xml"/>
+			<xi:include href="xml/gdata-freebase-topic-result.xml"/>
 		</chapter>
 	</part>
 

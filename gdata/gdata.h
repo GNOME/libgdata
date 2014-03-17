@@ -147,5 +147,7 @@
 #include <gdata/services/freebase/gdata-freebase-service.h>
 #include <gdata/services/freebase/gdata-freebase-query.h>
 #include <gdata/services/freebase/gdata-freebase-result.h>
+#include <gdata/services/freebase/gdata-freebase-topic-query.h>
+#include <gdata/services/freebase/gdata-freebase-topic-result.h>
 
 #endif /* !GDATA_H */

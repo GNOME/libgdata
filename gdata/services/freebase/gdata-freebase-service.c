@@ -253,3 +253,65 @@ gdata_freebase_service_query_async (GDataFreebaseService *self, GDataFreebaseQue
 	gdata_service_query_single_entry_async (GDATA_SERVICE (self), get_freebase_authorization_domain (), "mqlread",
 						GDATA_QUERY (query), GDATA_TYPE_FREEBASE_RESULT, cancellable, callback, user_data);
 }
+
+/**
+ * gdata_freebase_service_get_topic:
+ * @self: a #GDataFreebaseService
+ * @query: a #GDataFreebaseTopicQuery containing the topic ID
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): a #GError, or %NULL
+ *
+ * Queries information about a topic, identified through a Freebase ID. You can find out more about topic queries in the
+ * <ulink type="http" url="https://developers.google.com/freebase/v1/topic-response">online documentation</ulink>.
+ *
+ * Return value: (transfer full): a #GDataFreebaseTopicResult containing information about the topic; unref with g_object_unref()
+ *
+ * Since: UNRELEASED
+ */
+GDataFreebaseTopicResult *
+gdata_freebase_service_get_topic (GDataFreebaseService *self, GDataFreebaseTopicQuery *query, GCancellable *cancellable, GError **error)
+{
+	GDataEntry *entry;
+
+	g_return_val_if_fail (GDATA_IS_FREEBASE_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_FREEBASE_TOPIC_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	entry = gdata_service_query_single_entry (GDATA_SERVICE (self), get_freebase_authorization_domain (), "topic",
+						  GDATA_QUERY (query), GDATA_TYPE_FREEBASE_TOPIC_RESULT, cancellable, error);
+	if (entry == NULL)
+		return NULL;
+
+	return GDATA_FREEBASE_TOPIC_RESULT (entry);
+}
+
+/**
+ * gdata_freebase_service_get_topic_async:
+ * @self: a #GDataFreebaseService
+ * @query: a #GDataFreebaseQuery with the MQL query
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when authentication is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Queries information about a topic, identified through a Freebase ID. @self and @query are all reffed when this
+ * function is called, so can safely be unreffed after this function returns. When the query is replied, or fails,
+ * @callback will be executed, and the result can be obtained through gdata_service_query_single_entry_finish().
+ *
+ * For more details, see gdata_freebase_service_get_topic(), which is the synchronous version of
+ * this function.
+ *
+ * Since: UNRELEASED
+ */
+void
+gdata_freebase_service_get_topic_async (GDataFreebaseService *self, GDataFreebaseTopicQuery *query,
+					GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	g_return_if_fail (GDATA_IS_FREEBASE_SERVICE (self));
+	g_return_if_fail (GDATA_IS_FREEBASE_TOPIC_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	gdata_service_query_single_entry_async (GDATA_SERVICE (self), get_freebase_authorization_domain (), "topic",
+						GDATA_QUERY (query), GDATA_TYPE_FREEBASE_RESULT, cancellable, callback, user_data);
+}
