@@ -1225,7 +1225,7 @@ test_query_etag (void)
 
 #define CHECK_ETAG(C) \
 	gdata_query_set_etag (query, "foobar");		\
-	(C);						\
+	C;						\
 	g_assert (gdata_query_get_etag (query) == NULL);
 
 	CHECK_ETAG (gdata_query_set_q (query, "q"))
@@ -1239,7 +1239,7 @@ test_query_etag (void)
 	CHECK_ETAG (gdata_query_set_is_strict (query, TRUE))
 	CHECK_ETAG (gdata_query_set_max_results (query, 1000))
 	CHECK_ETAG (gdata_query_next_page (query))
-	CHECK_ETAG (gdata_query_previous_page (query))
+	CHECK_ETAG (g_assert (gdata_query_previous_page (query)))
 
 #undef CHECK_ETAG
 
