@@ -922,7 +922,6 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			/* Note that while we require the property to be present, we don't require it to be non-empty. See bgo#648058 */
 			name = xmlGetProp (node, (xmlChar*) "key");
 			if (name == NULL) {
-				xmlFree (name);
 				return gdata_parser_error_required_property_missing (node, "key", error);
 			}
 
