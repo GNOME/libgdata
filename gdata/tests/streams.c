@@ -725,8 +725,6 @@ test_upload_stream_resumable_server_handler_cb (SoupServer *server, SoupMessage 
 
 		/* Send a response. */
 		switch (test_params->error_type) {
-			case ERROR_ON_INITIAL_REQUEST:
-				g_assert_not_reached ();
 			case ERROR_ON_SUBSEQUENT_REQUEST:
 			case ERROR_ON_FINAL_REQUEST:
 				/* Skip the error if this isn't the final request. */
@@ -745,6 +743,7 @@ test_upload_stream_resumable_server_handler_cb (SoupServer *server, SoupMessage 
 				}
 
 				break;
+			case ERROR_ON_INITIAL_REQUEST:
 			default:
 				g_assert_not_reached ();
 		}
