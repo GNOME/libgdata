@@ -498,7 +498,7 @@ test_oauth1_authorizer_request_authentication_uri_sync (OAuth1AuthorizerData *da
 	g_assert_no_error (error);
 	g_assert (authentication_uri != NULL && *authentication_uri != '\0');
 	g_assert (token != NULL && *token != '\0');
-	g_assert (token_secret != NULL && *token != '\0');
+	g_assert (token_secret != NULL && *token_secret != '\0');
 	g_clear_error (&error);
 
 	g_test_message ("Requesting an authentication URI gave “%s” with request token “%s” and request token secret “%s”.",
@@ -588,7 +588,7 @@ test_oauth1_authorizer_request_authentication_uri_async_cb (GDataOAuth1Authorize
 	g_assert_no_error (error);
 	g_assert (authentication_uri != NULL && *authentication_uri != '\0');
 	g_assert (token != NULL && *token != '\0');
-	g_assert (token_secret != NULL && *token != '\0');
+	g_assert (token_secret != NULL && *token_secret != '\0');
 	g_clear_error (&error);
 
 	g_test_message ("Requesting an authentication URI asynchronously gave “%s” with request token “%s” and request token secret “%s”.",
