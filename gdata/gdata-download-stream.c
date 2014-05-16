@@ -160,6 +160,7 @@ struct _GDataDownloadStreamPrivate {
 	GThread *network_thread;
 	GCancellable *cancellable;
 	GCancellable *network_cancellable; /* see the comment in gdata_download_stream_constructor() about the relationship between these two */
+	gulong network_cancellable_id;
 
 	gboolean finished;
 	GCond finished_cond;
@@ -352,7 +353,7 @@ gdata_download_stream_constructor (GType type, guint n_construct_params, GObject
 	/* Create a #GCancellable for the entire download operation if one wasn't specified for #GDataDownloadStream:cancellable during construction */
 	if (priv->cancellable == NULL)
 		priv->cancellable = g_cancellable_new ();
-	g_cancellable_connect (priv->cancellable, (GCallback) cancellable_cancel_cb, priv->network_cancellable, NULL);
+	priv->network_cancellable_id = g_cancellable_connect (priv->cancellable, (GCallback) cancellable_cancel_cb, priv->network_cancellable, NULL);
 
 	/* Build the message */
 	_uri = soup_uri_new (priv->download_uri);
@@ -382,8 +383,15 @@ gdata_download_stream_dispose (GObject *object)
 	/* Block on closing the stream */
 	g_input_stream_close (G_INPUT_STREAM (object), NULL, NULL);
 
-	if (priv->cancellable != NULL)
+	if (priv->cancellable != NULL) {
+		if (priv->network_cancellable_id != 0) {
+			g_cancellable_disconnect (priv->cancellable, priv->network_cancellable_id);
+		}
+
 		g_object_unref (priv->cancellable);
+	}
+
+	priv->network_cancellable_id = 0;
 	priv->cancellable = NULL;
 
 	if (priv->network_cancellable != NULL)
