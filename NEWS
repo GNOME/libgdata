@@ -1,3 +1,36 @@
+Overview of changes from libgdata 0.15.0 to libgdata 0.15.1
+===========================================================
+
+Major changes:
+ • Add a Freebase service and demo (thanks to Carlos Garnacho)
+ • Various minor fixes to make libgdata compile without Coverity errors
+
+API changes:
+ • Add GDATA_LINK_PARENT
+ • Add GDataFreebase*
+
+Bugs fixed:
+ • Bug 707477 — Fill in GDataCategory::label for GDataDocumentsDocument
+   instances
+ • Bug 725827 — Define GDATA_LINK_PARENT
+ • Bug 726486 — Add support for the Freebase service
+
+Updated translations:
+ • ca (Gil Forcada)
+ • da (Aputsiaq Niels Janussen)
+ • de (Benjamin Steinwender)
+ • eu (Iñaki Larrañaga Murgoitio)
+ • fr (Bruno Brouard)
+ • he (Yosef Or Boczko)
+ • ko (Changwoo Ryu)
+ • lv (Rūdolfs Mazurs)
+ • nb (Kjartan Maraas)
+ • pl (Piotr Drąg, Aviary.pl)
+ • pt (Tiago S.)
+ • ru (Yuri Myasoedov)
+ • zh_HK (Chao-Hsiung Liao)
+ • zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.14.0 to libgdata 0.15.0
 ===========================================================
 
