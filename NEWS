@@ -1,3 +1,20 @@
+Overview of changes from libgdata 0.14.1 to libgdata 0.14.2
+===========================================================
+
+Major changes:
+ • Various minor fixes to make libgdata compile without Coverity errors
+
+Bugs fixed:
+ • Bug 707477 — Fill in GDataCategory::label for GDataDocumentsDocument
+   instances
+
+Updated translations:
+ • hu (Gabor Kelemen)
+ • id (Andika Triwidada)
+ • ru (Stas Solovey)
+ • sr (Мирослав Николић)
+ • zh_CN (甘露(Gan Lu))
+
 Overview of changes from libgdata 0.14.0 to libgdata 0.14.1
 ===========================================================
 
