@@ -85,7 +85,7 @@ struct _GDataFreebaseTopicValue {
 	gchar *creator;
 	gint64 timestamp;
 	GValue value;
-	gint ref_count;
+	volatile gint ref_count;
 };
 
 struct _GDataFreebaseTopicResultPrivate {
