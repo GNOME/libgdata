@@ -4,14 +4,14 @@
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
 # gnomepl@aviary.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2013.
-# Aviary.pl <gnomepl@aviary.pl>, 2009-2013.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2014.
+# Aviary.pl <gnomepl@aviary.pl>, 2009-2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-26 13:12+0200\n"
-"PO-Revision-Date: 2013-10-26 13:13+0200\n"
+"POT-Creation-Date: 2014-05-27 22:00+0200\n"
+"PO-Revision-Date: 2014-05-27 22:01+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -29,18 +29,18 @@ msgstr ""
 msgid "The server returned a malformed response."
 msgstr "Serwer zwrócił błędnie sformatowaną odpowiedź."
 
-#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:351
+#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Nie można połączyć się z serwerem usługi."
 
-#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:356
+#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Nie można połączyć się z serwerem pośrednika."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -48,26 +48,26 @@ msgstr ""
 "niestandardowy parametr: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:368
+#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Uwierzytelnienie jest wymagane: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:373
+#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Nie znaleziono żądanego zasobu: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:379
+#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Wpis został zmodyfikowany po pobraniu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:393
+#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Kod błędu %u podczas uwierzytelniania: %s"
@@ -150,7 +150,7 @@ msgid "This comment may not be deleted."
 msgstr "Ten komentarz nie może zostać usunięty."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Nieprawidłowe żądanie przewinięcia"
 
@@ -298,60 +298,60 @@ msgstr "Otrzymano nieprawidłowy kod JSON z serwera: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:399
+#: ../gdata/gdata-service.c:398
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Kod błędu %u podczas odpytywania: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:405
+#: ../gdata/gdata-service.c:404
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Kod błędu %u podczas umieszczania wpisu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:411
+#: ../gdata/gdata-service.c:410
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Kod błędu %u podczas aktualizowania wpisu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:417
+#: ../gdata/gdata-service.c:416
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Kod błędu %u podczas usuwania wpisu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:423
+#: ../gdata/gdata-service.c:422
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Kod błędu %u podczas pobierania: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:429
+#: ../gdata/gdata-service.c:428
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Kod błędu %u podczas wysyłania: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:435
+#: ../gdata/gdata-service.c:434
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Kod błędu %u podczas wykonywania działania wsadowego: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:722
+#: ../gdata/gdata-service.c:721
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Nieprawidłowy adres URI przekierowania: %s"
 
-#: ../gdata/gdata-service.c:1394
+#: ../gdata/gdata-service.c:1399
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -449,6 +449,11 @@ msgstr "Należy być uwierzytelnionym, aby skopiować dokumenty."
 #: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "Należy być uwierzytelnionym, aby przenieść dokumenty i katalogi."
+
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Własność \"%s\" nie przechowuje obrazu"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
