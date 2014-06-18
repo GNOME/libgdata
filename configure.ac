@@ -38,7 +38,7 @@ GIO_REQS=2.17.3
 SOUP_REQS=2.42.0
 OAUTH_REQS=0.9.4
 GTK_REQS=2.91.2
-GOA_REQS=3.2
+GOA_REQS=3.8
 JSON_GLIB_REQS=0.15
 
 # Before making a release, the GDATA_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:

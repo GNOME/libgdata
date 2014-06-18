@@ -71,6 +71,7 @@
 #include "services/calendar/gdata-calendar-service.h"
 #include "services/contacts/gdata-contacts-service.h"
 #include "services/documents/gdata-documents-service.h"
+#include "services/picasaweb/gdata-picasaweb-service.h"
 
 #define HMAC_SHA1_LEN 20 /* bytes, raw */
 
@@ -384,6 +385,10 @@ gdata_goa_authorizer_set_goa_object (GDataGoaAuthorizer *self, GoaObject *goa_ob
 
 	if (goa_object_peek_documents (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_DOCUMENTS_SERVICE);
+	}
+	
+	if (goa_object_peek_photos (goa_object) != NULL) {
+		add_authorization_domains (self, GDATA_TYPE_PICASAWEB_SERVICE);
 	}
 }
 

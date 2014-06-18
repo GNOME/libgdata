@@ -22,7 +22,7 @@ Dependencies
 
 If compiling with --enable-gnome (for GNOME support):
  • gcr-base-3
- • goa-1.0 ≥ 3.2
+ • goa-1.0 ≥ 3.8
 
 If compiling the demos:
  • gtk+-3.0 ≥ 2.91.2
