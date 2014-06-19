@@ -682,7 +682,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			xmlChar *access_level = xmlNodeListGetString (doc, node->children, TRUE);
 			if (xmlStrcmp (access_level, (xmlChar*) "public") == 0) {
 				gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PUBLIC);
-			} else if (xmlStrcmp (access_level, (xmlChar*) "private") == 0) {
+			} else if (xmlStrcmp (access_level, (xmlChar*) "private") == 0 ||
+			           xmlStrcmp (access_level, (xmlChar*) "protected") == 0) {
 				gdata_picasaweb_album_set_visibility (self, GDATA_PICASAWEB_PRIVATE);
 			} else {
 				gdata_parser_error_unknown_content (node, (gchar*) access_level, error);
