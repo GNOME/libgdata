@@ -262,6 +262,8 @@ gdata_parser_int64_to_json_iso8601 (gint64 _time)
 	retval = g_strjoinv (".000001+00:00", date_time_components);
 	g_strfreev (date_time_components);
 
+	g_free (iso8601);
+
 	return retval;
 }
 
