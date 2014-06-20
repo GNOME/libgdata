@@ -1814,7 +1814,7 @@ gdata_service_delete_entry (GDataService *self, GDataAuthorizationDomain *domain
 		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return FALSE;
-	} else if (status != SOUP_STATUS_OK) {
+	} else if (status != SOUP_STATUS_OK && status != SOUP_STATUS_NO_CONTENT) {
 		/* Error */
 		GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (service_klass->parse_error_response != NULL);
