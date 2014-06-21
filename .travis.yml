@@ -6,10 +6,10 @@ before_install:
  - # Build dependencies for libgdata, libsoup-2.4 and json-glib-1.0
  - sudo apt-get update -qq
  - sudo apt-get install -qq libglib2.0-dev libxml2-dev libsoup2.4-dev libjson-glib-dev liboauth-dev libgdk-pixbuf2.0-dev gnome-common gtk-doc-tools gobject-introspection valac libgcr-3-dev libgoa-1.0-dev
- - # Need automake-1.13 for GLib
- - wget ftp://ftp.gnu.org/gnu/automake/automake-1.13.tar.xz
- - tar -xvJf automake-1.13.tar.xz
- - cd automake-1.13
+ - # Need automake-1.13.4 for GLib
+ - wget ftp://ftp.gnu.org/gnu/automake/automake-1.13.4.tar.xz
+ - tar -xvJf automake-1.13.4.tar.xz
+ - cd automake-1.13.4
  - ./configure && make && sudo make install
  - cd ..
  - # Need GLib 2.36 for libsoup-2.4, but Ubuntu 12.04 only provides 2.32
