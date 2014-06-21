@@ -4,5 +4,5 @@ compiler:
   - clang
 before_install:
  - sudo apt-get update -qq
- - sudo apt-get install -qq libglib2.0-dev libxml2-dev libsoup2.4-dev libjson-glib-dev liboauth-dev libgdk-pixbuf2.0-dev
-script: ./configure && make && make check
+ - sudo apt-get install -qq libglib2.0-dev libxml2-dev libsoup2.4-dev libjson-glib-dev liboauth-dev libgdk-pixbuf2.0-dev gnome-common gtk-doc-tools gobject-introspection valac libgcr-3-dev libgoa-1.0-dev
+script: ./autogen.sh --enable-gnome --enable-goa --enable-compile-warnings=error --enable-introspection --enable-vala --enable-gtk-doc && make && make check
