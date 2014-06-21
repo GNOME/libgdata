@@ -3,6 +3,9 @@ compiler:
   - gcc
   - clang
 before_install:
+ - # Build dependencies for libgdata, libsoup-2.4 and json-glib-1.0
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq libglib2.0-dev libxml2-dev libsoup2.4-dev libjson-glib-dev liboauth-dev libgdk-pixbuf2.0-dev gnome-common gtk-doc-tools gobject-introspection valac libgcr-3-dev libgoa-1.0-dev
  - # Need libsoup-2.4 > 2.42, but Ubuntu 12.04 only provides 2.38
  - wget http://ftp.gnome.org/pub/GNOME/sources/libsoup/2.42/libsoup-2.42.3.tar.xz
  - tar xvJf libsoup-2.42.3.tar.xz
@@ -16,6 +19,4 @@ before_install:
  - ./configure && make && sudo make install
  - cd ..
  - # Actually build libgdata
- - sudo apt-get update -qq
- - sudo apt-get install -qq libglib2.0-dev libxml2-dev libsoup2.4-dev libjson-glib-dev liboauth-dev libgdk-pixbuf2.0-dev gnome-common gtk-doc-tools gobject-introspection valac libgcr-3-dev libgoa-1.0-dev
 script: ./autogen.sh --enable-gnome --enable-goa --enable-compile-warnings=error --enable-introspection --enable-vala --enable-gtk-doc && make && make check
