@@ -1,0 +1,8 @@
+language: c
+compiler:
+  - gcc
+  - clang
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq libglib2.0-dev libxml2-dev libsoup2.4-dev libjson-glib-dev liboauth-dev libgdk-pixbuf2.0-dev
+script: ./configure && make && make check
