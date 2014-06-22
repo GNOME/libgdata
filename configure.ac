@@ -162,8 +162,7 @@ IT_PROG_INTLTOOL([0.40.0])
 # Code coverage
 GNOME_CODE_COVERAGE
 
-# General GNOME macros
-GNOME_DEBUG_CHECK
+# General macros
 GNOME_COMPILE_WARNINGS([maximum],[
 	-Wdeclaration-after-statement
 	-Wextra
@@ -191,8 +190,6 @@ GNOME_COMPILE_WARNINGS([maximum],[
 	-Wunused-but-set-variable
 	-Warray-bounds
 ])
-
-GNOME_MAINTAINER_MODE_DEFINES
 
 GOBJECT_INTROSPECTION_CHECK([0.9.7])
 
