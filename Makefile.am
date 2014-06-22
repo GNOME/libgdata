@@ -603,7 +603,7 @@ endif
 endif
 
 # Code coverage
-@GNOME_CODE_COVERAGE_RULES@
+@CODE_COVERAGE_RULES@
 CODE_COVERAGE_DIRECTORY = $(top_builddir)/gdata
 CODE_COVERAGE_LCOV_OPTIONS = --base-directory $(abs_top_srcdir)
 
@@ -678,7 +678,9 @@ EXTRA_DIST += \
 	autogen.sh		\
 	HACKING			\
 	gtk-doc.make		\
-	libgdata.doap
+	libgdata.doap \
+	m4/ax_code_coverage.m4 \
+	$(NULL)
 
 CLEANFILES += \
 	`find "$(srcdir)" -type f -name .dirstamp -print`
