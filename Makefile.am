@@ -680,6 +680,7 @@ EXTRA_DIST += \
 	gtk-doc.make		\
 	libgdata.doap \
 	m4/ax_code_coverage.m4 \
+	m4/gnome-compiler-flags.m4 \
 	$(NULL)
 
 CLEANFILES += \
