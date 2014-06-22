@@ -225,8 +225,8 @@ build_filter_string (FilterNode *node,
 		const gchar *type_str[] = { "all", "any", "not" };
 		guint i;
 
-		g_assert (node->container.filter_type >=0 &&
-			  node->container.filter_type < G_N_ELEMENTS (type_str));
+		g_assert (/* node->container.filter_type >= 0 && */
+		          node->container.filter_type < G_N_ELEMENTS (type_str));
 
 		g_string_append_printf (str, "(%s", type_str[node->container.type]);
 
