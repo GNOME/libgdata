@@ -2,15 +2,15 @@
 # Copyright (C) 2010 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
 # Žygimantas Beručka <zygis@gnome.org>, 2011.
-# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013.
+# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-10-25 23:58+0000\n"
-"PO-Revision-Date: 2013-10-27 18:20+0200\n"
+"POT-Creation-Date: 2014-07-05 09:25+0000\n"
+"PO-Revision-Date: 2014-07-05 14:06+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -28,18 +28,18 @@ msgstr ""
 msgid "The server returned a malformed response."
 msgstr "Serveris grąžino netinkamai suformuotą atsakymą."
 
-#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:351
+#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Nepavyko prisijungti prie paslaugos serverio."
 
-#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:356
+#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Nepavyko prisijungti prie proxy serverio."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -47,26 +47,26 @@ msgstr ""
 "parametras: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:368
+#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Reikia patvirtinti tapatybę: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:373
+#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Užklaustas išteklius nerastas: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:379
+#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Įrašas nuo tada, kai buvo atsiųstas, buvo pakeistas: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:393
+#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Tapatybės patvirtinimo metu grąžintas klaidos kodas %u: %s"
@@ -149,7 +149,7 @@ msgid "This comment may not be deleted."
 msgstr "Šis komentaras negali būti ištrintas."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Netinkama paieškos užklausa"
 
@@ -265,7 +265,7 @@ msgstr "Privalomas elementas (%s) nerastas."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:306
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Vienetinis elementas (%s) buvo dubliuotas."
@@ -274,7 +274,7 @@ msgstr "Vienetinis elementas (%s) buvo dubliuotas."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:292
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Elementui „%s“ trūksta privalomo turinio."
@@ -284,73 +284,73 @@ msgstr "Elementui „%s“ trūksta privalomo turinio."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:322
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "Elemento „%s“ turinys („%s“) yra ne ISO 8601 formato."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:332
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Iš serverio gauti netinkami JSON duomenys: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:399
+#: ../gdata/gdata-service.c:398
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Užklausos klaidos kodas %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:405
+#: ../gdata/gdata-service.c:404
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Įrašo įterpimo klaidos kodas %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:411
+#: ../gdata/gdata-service.c:410
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Įrašo atnaujinimo klaidos kodas %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:417
+#: ../gdata/gdata-service.c:416
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Įrašo trynimo klaidos kodas %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:423
+#: ../gdata/gdata-service.c:422
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Atsisiuntimo klaidos kodas %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:429
+#: ../gdata/gdata-service.c:428
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Nusiuntimo klaidos kodas %u: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:435
+#: ../gdata/gdata-service.c:434
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Klaidos kodas %u vykdant masinę operacija: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:722
+#: ../gdata/gdata-service.c:721
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Netinkamas nukreipimo URI: %s"
 
-#: ../gdata/gdata-service.c:1394
+#: ../gdata/gdata-service.c:1400
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -448,6 +448,11 @@ msgstr "Turite prisijungti, jei norite kopijuoti dokumentus."
 msgid "You must be authenticated to move documents and folders."
 msgstr "Turite prisijungti, jei norite perkelti dokumentus ir aplankus."
 
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Savybėje „%s“ nėra paveikslėlio"
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
@@ -484,13 +489,11 @@ msgstr "Turite prisijungti, jei norite įterpti albumą."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:145
 #: ../gdata/services/tasks/gdata-tasks-service.c:196
-#| msgid "You must be authenticated to query all calendars."
 msgid "You must be authenticated to query all tasklists."
 msgstr "Turite prisijungti, jei norite peržiūrėti visus užduočių sąrašus."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:244
 #: ../gdata/services/tasks/gdata-tasks-service.c:300
-#| msgid "You must be authenticated to query your own calendars."
 msgid "You must be authenticated to query your own tasks."
 msgstr "Turite prisijungti, jei norite peržiūrėti savo užduotis."
 
