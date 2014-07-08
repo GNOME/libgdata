@@ -739,7 +739,8 @@ _gdata_service_send_message (GDataService *self, SoupMessage *message, GCancella
 	 * Note that we have to re-process the message with the authoriser so that its authorisation headers get updated after the refresh
 	 * (bgo#653535). */
 	if (message->status_code == SOUP_STATUS_UNAUTHORIZED ||
-	    message->status_code == SOUP_STATUS_FORBIDDEN) {
+	    message->status_code == SOUP_STATUS_FORBIDDEN ||
+	    message->status_code == SOUP_STATUS_NOT_FOUND) {
 		GDataAuthorizer *authorizer = self->priv->authorizer;
 
 		if (authorizer != NULL && gdata_authorizer_refresh_authorization (authorizer, cancellable, NULL) == TRUE) {
