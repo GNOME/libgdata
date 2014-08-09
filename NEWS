@@ -1,3 +1,26 @@
+Overview of changes from libgdata 0.15.1 to libgdata 0.15.2
+===========================================================
+
+Major changes:
+ • Support PicasaWeb in the GOA authoriser (thanks to Saurav Agarwalla)
+ • Fix a data corruption bug in the downloads/uploads code
+
+Bugs fixed:
+ • Bug 731269 — Wrong scope information in authorization domain
+ • Bug 731949 — Memory leak from gdata_parser_int64_to_iso8601()
+ • Bug 731946 — Removing a task result in error, but succeeds
+ • Bug 732890 — Refresh authoriser on receiving SOUP_STATUS_NOT_FOUND
+
+Updated translations:
+ • el (Tom Tryfonidis)
+ • en_GB (Philip Withnall)
+ • es (Daniel Mustieles)
+ • eu (Iñaki Larrañaga Murgoitio)
+ • gl (Fran Dieguez)
+ • lt (Aurimas Černius)
+ • pt_BR (Enrico Nicoletto)
+ • sv (Anders Jonsson)
+
 Overview of changes from libgdata 0.15.0 to libgdata 0.15.1
 ===========================================================
 
