@@ -338,21 +338,21 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* Parse duration */
 	duration = xmlGetProp (root_node, (xmlChar*) "duration");
-	duration_int64 = (duration == NULL) ? 0 : strtol ((gchar*) duration, NULL, 10);
+	duration_int64 = (duration == NULL) ? 0 : g_ascii_strtoll ((gchar*) duration, NULL, 10);
 	xmlFree (duration);
 
 	/* Parse filesize */
 	filesize = xmlGetProp (root_node, (xmlChar*) "fileSize");
-	filesize_ulong = (filesize == NULL) ? 0 : strtoul ((gchar*) filesize, NULL, 10);
+	filesize_ulong = (filesize == NULL) ? 0 : g_ascii_strtoull ((gchar*) filesize, NULL, 10);
 	xmlFree (filesize);
 
 	/* Parse height and width */
 	height = xmlGetProp (root_node, (xmlChar*) "height");
-	height_uint = (height == NULL) ? 0 : strtoul ((gchar*) height, NULL, 10);
+	height_uint = (height == NULL) ? 0 : g_ascii_strtoull ((gchar*) height, NULL, 10);
 	xmlFree (height);
 
 	width = xmlGetProp (root_node, (xmlChar*) "width");
-	width_uint = (width == NULL) ? 0 : strtoul ((gchar*) width, NULL, 10);
+	width_uint = (width == NULL) ? 0 : g_ascii_strtoull ((gchar*) width, NULL, 10);
 	xmlFree (width);
 
 	/* Other properties */

@@ -200,11 +200,11 @@ parse_time (const gchar *time_string)
 
 	g_return_val_if_fail (time_string != NULL, 0);
 
-	hours = strtoul (time_string, &end_pointer, 10);
+	hours = g_ascii_strtoull (time_string, &end_pointer, 10);
 	if (end_pointer != time_string + 2)
 		return -1;
 
-	minutes = strtoul (time_string + 3, &end_pointer, 10);
+	minutes = g_ascii_strtoull (time_string + 3, &end_pointer, 10);
 	if (end_pointer != time_string + 5)
 		return -1;
 
@@ -251,11 +251,11 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 
 	/* Get the width and height */
 	width = xmlGetProp (root_node, (xmlChar*) "width");
-	width_uint = (width == NULL) ? 0 : strtoul ((gchar*) width, NULL, 10);
+	width_uint = (width == NULL) ? 0 : g_ascii_strtoull ((gchar*) width, NULL, 10);
 	xmlFree (width);
 
 	height = xmlGetProp (root_node, (xmlChar*) "height");
-	height_uint = (height == NULL) ? 0 : strtoul ((gchar*) height, NULL, 10);
+	height_uint = (height == NULL) ? 0 : g_ascii_strtoull ((gchar*) height, NULL, 10);
 	xmlFree (height);
 
 	/* Get and parse the time */

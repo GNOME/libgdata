@@ -81,7 +81,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (xmlStrcmp (entry_node->name, (xmlChar*) "id") == 0) {
 				/* batch:id */
 				xmlChar *id_string = xmlNodeListGetString (doc, entry_node->children, TRUE);
-				id = strtoul ((char*) id_string, NULL, 10);
+				id = g_ascii_strtoull ((char*) id_string, NULL, 10);
 				xmlFree (id_string);
 			} else if (xmlStrcmp (entry_node->name, (xmlChar*) "status") == 0) {
 				/* batch:status */
@@ -89,7 +89,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				xmlNode *child_node;
 
 				status_code_string = xmlGetProp (entry_node, (xmlChar*) "code");
-				status_code = strtoul ((char*) status_code_string, NULL, 10);
+				status_code = g_ascii_strtoull ((char*) status_code_string, NULL, 10);
 				xmlFree (status_code_string);
 
 				status_reason = (gchar*) xmlGetProp (entry_node, (xmlChar*) "reason");

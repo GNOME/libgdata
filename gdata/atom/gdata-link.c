@@ -329,7 +329,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	if (length == NULL)
 		self->priv->length = -1;
 	else
-		self->priv->length = strtoul ((gchar*) length, NULL, 10);
+		self->priv->length = g_ascii_strtoull ((gchar*) length, NULL, 10);
 	xmlFree (length);
 
 	return TRUE;

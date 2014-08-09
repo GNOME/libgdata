@@ -744,12 +744,12 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			view_count = xmlGetProp (node, (xmlChar*) "viewCount");
 			if (view_count == NULL)
 				return gdata_parser_error_required_property_missing (node, "viewCount", error);
-			self->priv->view_count = strtoul ((gchar*) view_count, NULL, 10);
+			self->priv->view_count = g_ascii_strtoull ((gchar*) view_count, NULL, 10);
 			xmlFree (view_count);
 
 			/* Favourite count */
 			favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
-			self->priv->favorite_count = (favorite_count != NULL) ? strtoul ((gchar*) favorite_count, NULL, 10) : 0;
+			self->priv->favorite_count = (favorite_count != NULL) ? g_ascii_strtoull ((gchar*) favorite_count, NULL, 10) : 0;
 			xmlFree (favorite_count);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
 			/* yt:noembed */
@@ -823,7 +823,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (num_raters == NULL)
 				num_raters_uint = 0;
 			else
-				num_raters_uint = strtoul ((gchar*) num_raters, NULL, 10);
+				num_raters_uint = g_ascii_strtoull ((gchar*) num_raters, NULL, 10);
 			xmlFree (num_raters);
 
 			average = xmlGetProp (node, (xmlChar*) "average");
@@ -833,8 +833,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				average_double = g_ascii_strtod ((gchar*) average, NULL);
 			xmlFree (average);
 
-			self->priv->rating.min = strtoul ((gchar*) min, NULL, 10);
-			self->priv->rating.max = strtoul ((gchar*) max, NULL, 10);
+			self->priv->rating.min = g_ascii_strtoull ((gchar*) min, NULL, 10);
+			self->priv->rating.max = g_ascii_strtoull ((gchar*) max, NULL, 10);
 			self->priv->rating.count = num_raters_uint;
 			self->priv->rating.average = average_double;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {

@@ -572,7 +572,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (value == NULL)
 				return gdata_parser_error_required_property_missing (node, "value", error);
 			else
-				value_uint = strtoul ((gchar*) value, NULL, 10);
+				value_uint = g_ascii_strtoull ((gchar*) value, NULL, 10);
 			xmlFree (value);
 
 			gdata_calendar_event_set_sequence (self, value_uint);

@@ -245,7 +245,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	self->priv->uri = (gchar*) href;
 
 	count_hint = xmlGetProp (root_node, (xmlChar*) "countHint");
-	self->priv->count_hint = (count_hint != NULL) ? strtol ((char*) count_hint, NULL, 10) : -1;
+	self->priv->count_hint = (count_hint != NULL) ? g_ascii_strtoll ((char*) count_hint, NULL, 10) : -1;
 	xmlFree (count_hint);
 
 	return gdata_parser_boolean_from_property (root_node, "readOnly", &(self->priv->is_read_only), 0, error);

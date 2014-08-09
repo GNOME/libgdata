@@ -114,7 +114,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	GDATA_PARSABLE_CLASS (gdata_youtube_content_parent_class)->pre_parse_xml (parsable, doc, root_node, user_data, error);
 
 	format = xmlGetProp (root_node, (xmlChar*) "format");
-	GDATA_YOUTUBE_CONTENT (parsable)->priv->format = (format == NULL) ? GDATA_YOUTUBE_FORMAT_UNKNOWN : strtoul ((gchar*) format, NULL, 10);
+	GDATA_YOUTUBE_CONTENT (parsable)->priv->format = (format == NULL) ? GDATA_YOUTUBE_FORMAT_UNKNOWN : g_ascii_strtoull ((gchar*) format, NULL, 10);
 
 	return TRUE;
 }

@@ -380,7 +380,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			xmlChar *times_cleaned = xmlGetProp (node, (xmlChar*) "value");
 			if (times_cleaned == NULL)
 				return gdata_parser_error_required_property_missing (node, "value", error);
-			self->priv->times_cleaned = strtoul ((gchar*) times_cleaned, NULL, 10);
+			self->priv->times_cleaned = g_ascii_strtoull ((gchar*) times_cleaned, NULL, 10);
 			xmlFree (times_cleaned);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "hidden") == 0) {
 			/* gCal:hidden */

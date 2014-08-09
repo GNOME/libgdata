@@ -709,7 +709,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
-			self->priv->num_photos = strtoul ((char*) num_photos, NULL, 10);
+			self->priv->num_photos = g_ascii_strtoull ((char*) num_photos, NULL, 10);
 			xmlFree (num_photos);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "numphotosremaining") == 0) {
 			/* gphoto:numphotosremaining */
@@ -719,7 +719,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
-			self->priv->num_photos_remaining = strtoul ((char*) num_photos_remaining, NULL, 10);
+			self->priv->num_photos_remaining = g_ascii_strtoull ((char*) num_photos_remaining, NULL, 10);
 			xmlFree (num_photos_remaining);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "bytesUsed") == 0) {
 			/* gphoto:bytesUsed */
@@ -729,7 +729,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
-			self->priv->bytes_used = strtol ((char*) bytes_used, NULL, 10);
+			self->priv->bytes_used = g_ascii_strtoll ((char*) bytes_used, NULL, 10);
 			xmlFree (bytes_used);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "commentingEnabled") == 0) {
 			/* gphoto:commentingEnabled */
@@ -750,7 +750,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				return gdata_parser_error_required_content_missing (node, error);
 			}
 
-			self->priv->comment_count = strtoul ((char*) comment_count, NULL, 10);
+			self->priv->comment_count = g_ascii_strtoull ((char*) comment_count, NULL, 10);
 			xmlFree (comment_count);
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_picasaweb_album_parent_class)->parse_xml (parsable, doc, node, user_data, error);

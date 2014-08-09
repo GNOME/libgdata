@@ -112,7 +112,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (duration == NULL)
 				return gdata_parser_error_required_property_missing (node, "seconds", error);
 
-			self->priv->duration = strtoul ((gchar*) duration, NULL, 10);
+			self->priv->duration = g_ascii_strtoull ((gchar*) duration, NULL, 10);
 			xmlFree (duration);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "private") == 0) {
 			/* yt:private */

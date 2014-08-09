@@ -263,15 +263,15 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	/* Relative time */
 	relative_time = xmlGetProp (root_node, (xmlChar*) "days");
 	if (relative_time != NULL) {
-		relative_time_int = strtol ((gchar*) relative_time, NULL, 10) * 60 * 24;
+		relative_time_int = g_ascii_strtoll ((gchar*) relative_time, NULL, 10) * 60 * 24;
 	} else {
 		relative_time = xmlGetProp (root_node, (xmlChar*) "hours");
 		if (relative_time != NULL) {
-			relative_time_int = strtol ((gchar*) relative_time, NULL, 10) * 60;
+			relative_time_int = g_ascii_strtoll ((gchar*) relative_time, NULL, 10) * 60;
 		} else {
 			relative_time = xmlGetProp (root_node, (xmlChar*) "minutes");
 			if (relative_time != NULL)
-				relative_time_int = strtol ((gchar*) relative_time, NULL, 10);
+				relative_time_int = g_ascii_strtoll ((gchar*) relative_time, NULL, 10);
 		}
 	}
 	xmlFree (relative_time);

@@ -149,8 +149,6 @@ PKG_CHECK_MODULES(UHTTPMOCK, libuhttpmock-0.0)
 # Various necessary functions and headers
 AC_CHECK_FUNCS([strchr])
 AC_CHECK_FUNCS([strstr])
-AC_CHECK_FUNCS([strtol])
-AC_CHECK_FUNCS([strtoul])
 AC_CHECK_HEADERS([sys/time.h])
 
 # Internationalisation support

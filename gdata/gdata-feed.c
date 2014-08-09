@@ -491,7 +491,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (total_results_string == NULL)
 				return gdata_parser_error_required_content_missing (node, error);
 
-			self->priv->total_results = strtoul ((gchar*) total_results_string, NULL, 10);
+			self->priv->total_results = g_ascii_strtoull ((gchar*) total_results_string, NULL, 10);
 			xmlFree (total_results_string);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "startIndex") == 0) {
 			/* openSearch:startIndex */
@@ -506,7 +506,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (start_index_string == NULL)
 				return gdata_parser_error_required_content_missing (node, error);
 
-			self->priv->start_index = strtoul ((gchar*) start_index_string, NULL, 10);
+			self->priv->start_index = g_ascii_strtoull ((gchar*) start_index_string, NULL, 10);
 			xmlFree (start_index_string);
 		} else if (xmlStrcmp (node->name, (xmlChar*) "itemsPerPage") == 0) {
 			/* openSearch:itemsPerPage */
@@ -521,7 +521,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			if (items_per_page_string == NULL)
 				return gdata_parser_error_required_content_missing (node, error);
 
-			self->priv->items_per_page = strtoul ((gchar*) items_per_page_string, NULL, 10);
+			self->priv->items_per_page = g_ascii_strtoull ((gchar*) items_per_page_string, NULL, 10);
 			xmlFree (items_per_page_string);
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
