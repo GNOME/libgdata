@@ -290,13 +290,14 @@ test_oauth1_authorizer_properties_locale (OAuth1AuthorizerData *data, gconstpoin
 static void
 test_oauth1_authorizer_properties_proxy_resolver (OAuth1AuthorizerData *data, gconstpointer user_data)
 {
-	GProxyResolver *proxy_resolver, *new_proxy_resolver;
+	GProxyResolver *old_proxy_resolver, *proxy_resolver, *new_proxy_resolver;
 
-	/* Verifying the normal state of the property in a newly-constructed instance of GDataOAuth1Authorizer */
-	g_assert (gdata_oauth1_authorizer_get_proxy_resolver (data->authorizer) == NULL);
+	/* Verifying the normal state of the property in a newly-constructed instance of GDataOAuth1Authorizer.
+	 * Since the resolver comes from the SoupSession, we don’t know whether it’s initially NULL. */
+	old_proxy_resolver = gdata_oauth1_authorizer_get_proxy_resolver (data->authorizer);
 
 	g_object_get (data->authorizer, "proxy-resolver", &proxy_resolver, NULL);
-	g_assert (proxy_resolver == NULL);
+	g_assert (proxy_resolver == old_proxy_resolver);
 
 	g_assert_cmpuint (data->proxy_resolver_notification_count, ==, 0);
 

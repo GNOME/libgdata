@@ -203,13 +203,14 @@ test_client_login_authorizer_properties_password (ClientLoginAuthorizerData *dat
 static void
 test_client_login_authorizer_properties_proxy_resolver (ClientLoginAuthorizerData *data, gconstpointer user_data)
 {
-	GProxyResolver *proxy_resolver, *new_proxy_resolver;
+	GProxyResolver *old_proxy_resolver, *proxy_resolver, *new_proxy_resolver;
 
-	/* Verifying the normal state of the property in a newly-constructed instance of GDataClientLoginAuthorizer */
-	g_assert (gdata_client_login_authorizer_get_proxy_resolver (data->authorizer) == NULL);
+	/* Verifying the normal state of the property in a newly-constructed instance of GDataClientLoginAuthorizer.
+	 * Since the resolver comes from the SoupSession, we don’t know whether it’s initially NULL. */
+	old_proxy_resolver = gdata_client_login_authorizer_get_proxy_resolver (data->authorizer);
 
 	g_object_get (data->authorizer, "proxy-resolver", &proxy_resolver, NULL);
-	g_assert (proxy_resolver == NULL);
+	g_assert (proxy_resolver == old_proxy_resolver);
 
 	g_assert_cmpuint (data->proxy_resolver_notification_count, ==, 0);
 
@@ -229,7 +230,7 @@ test_client_login_authorizer_properties_proxy_resolver (ClientLoginAuthorizerDat
 
 	g_object_unref (new_proxy_resolver);
 
-	/* Check setting it back to NULL works */
+	/* Check setting it to NULL works */
 	gdata_client_login_authorizer_set_proxy_resolver (data->authorizer, NULL);
 
 	g_assert_cmpuint (data->proxy_resolver_notification_count, ==, 2);
