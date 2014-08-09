@@ -147,9 +147,15 @@ dnl ****************************
 PKG_CHECK_MODULES(UHTTPMOCK, libuhttpmock-0.0)
 
 # Various necessary functions and headers
+AC_CHECK_FUNCS([memset])
+AC_CHECK_FUNCS([setlocale])
 AC_CHECK_FUNCS([strchr])
 AC_CHECK_FUNCS([strstr])
 AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_HEADERS([arpa/inet.h])
+AC_CHECK_HEADERS([locale.h])
+AC_CHECK_HEADERS([netinet/in.h])
+AC_CHECK_HEADERS([sys/socket.h])
 
 # Internationalisation support
 GETTEXT_PACKAGE=gdata
