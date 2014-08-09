@@ -123,7 +123,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/v2/schema/document_list_atom.rnc">
  * RelaxNG schema</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 #define GDATA_LINK_PARENT "http://schemas.google.com/docs/2007#parent"
 
