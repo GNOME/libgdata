@@ -289,7 +289,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (updated_max != -1) {
 		gchar *date_str;
 
-		date_str = gdata_parser_int64_to_json_iso8601 (updated_max);
+		date_str = gdata_parser_int64_to_iso8601 (updated_max);
 
 		APPEND_SEP;
 		g_string_append (query_uri, "as_of_time=");

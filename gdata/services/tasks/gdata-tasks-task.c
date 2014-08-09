@@ -345,13 +345,13 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 		json_builder_add_string_value (builder, priv->status);
 	}
 	if (priv->due != -1) {
-		due = gdata_parser_int64_to_json_iso8601 (priv->due);
+		due = gdata_parser_int64_to_iso8601 (priv->due);
 		json_builder_set_member_name (builder, "due");
 		json_builder_add_string_value (builder, due);
 		g_free (due);
 	}
 	if (priv->completed != -1) {
-		completed = gdata_parser_int64_to_json_iso8601 (priv->completed);
+		completed = gdata_parser_int64_to_iso8601 (priv->completed);
 		json_builder_set_member_name (builder, "completed");
 		json_builder_add_string_value (builder, completed);
 		g_free (completed);

@@ -652,7 +652,7 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 	}
 
 	if (priv->updated != -1) {
-		gchar *updated = gdata_parser_int64_to_json_iso8601 (priv->updated);
+		gchar *updated = gdata_parser_int64_to_iso8601 (priv->updated);
 		json_builder_set_member_name (builder, "updated");
 		json_builder_add_string_value (builder, updated);
 		g_free (updated);

@@ -266,12 +266,6 @@ gdata_parser_int64_to_iso8601 (gint64 _time)
 	return retval;
 }
 
-gchar *
-gdata_parser_int64_to_json_iso8601 (gint64 _time)
-{
-	return gdata_parser_int64_to_iso8601 (_time);
-}
-
 gboolean
 gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time)
 {
