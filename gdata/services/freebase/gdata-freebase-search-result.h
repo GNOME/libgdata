@@ -42,7 +42,7 @@ typedef struct _GDataFreebaseSearchResultPrivate GDataFreebaseSearchResultPrivat
  *
  * Opaque struct holding data for a single search result item.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct _GDataFreebaseSearchResultItem GDataFreebaseSearchResultItem;
 
@@ -51,7 +51,7 @@ typedef struct _GDataFreebaseSearchResultItem GDataFreebaseSearchResultItem;
  *
  * All the fields in the #GDataFreebaseSearchResult structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct {
 	GDataFreebaseResult parent;
@@ -63,7 +63,7 @@ typedef struct {
  *
  * All the fields in the #GDataFreebaseSearchResultClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 typedef struct {

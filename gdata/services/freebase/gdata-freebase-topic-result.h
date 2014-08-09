@@ -46,7 +46,7 @@ typedef struct _GDataFreebaseTopicResultPrivate GDataFreebaseTopicResultPrivate;
  * #GDataFreebaseTopicValue structs, which may in turn contain nested #GDataFreebaseTopicObject
  * structs to express complex data.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct _GDataFreebaseTopicObject GDataFreebaseTopicObject;
 
@@ -56,7 +56,7 @@ typedef struct _GDataFreebaseTopicObject GDataFreebaseTopicObject;
  * Opaque struct containing a value of a Freebase topic object. This struct may contain a simple
  * value (integers, doubles, strings...) or complex values, expressed through a #GDataFreebaseTopicObject.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct _GDataFreebaseTopicValue GDataFreebaseTopicValue;
 
@@ -65,7 +65,7 @@ typedef struct _GDataFreebaseTopicValue GDataFreebaseTopicValue;
  *
  * All the fields in the #GDataFreebaseTopicResult structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct {
 	GDataFreebaseResult parent;
@@ -77,7 +77,7 @@ typedef struct {
  *
  * All the fields in the #GDataFreebaseTopicResultClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct {
 	/*< private >*/

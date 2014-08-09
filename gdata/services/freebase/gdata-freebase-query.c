@@ -30,7 +30,7 @@
  * For more details of Google Freebase API, see the <ulink type="http" url="https://developers.google.com/freebase/v1/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 #include <config.h>
@@ -80,7 +80,7 @@ gdata_freebase_query_class_init (GDataFreebaseQueryClass *klass)
 	 * Variant containing the MQL query. The variant is a very generic container of type "a{smv}",
 	 * containing (possibly nested) Freebase schema types and values.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.1
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VARIANT,
 	                                 g_param_spec_variant ("variant",
@@ -208,7 +208,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  *
  * Return value: (transfer full): a new #GDataFreebaseQuery
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseQuery *
 gdata_freebase_query_new (const gchar *mql)
@@ -232,7 +232,7 @@ gdata_freebase_query_new (const gchar *mql)
  *
  * Return value: (transfer full): a new #GDataFreebaseQuery
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseQuery *
 gdata_freebase_query_new_from_variant (GVariant *variant)

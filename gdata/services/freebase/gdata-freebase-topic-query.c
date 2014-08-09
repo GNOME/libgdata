@@ -33,7 +33,7 @@
  * For more details of Google Freebase API, see the <ulink type="http" url="https://developers.google.com/freebase/v1/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 #include <config.h>
@@ -82,7 +82,7 @@ gdata_freebase_topic_query_class_init (GDataFreebaseTopicQueryClass *klass)
 	 *
 	 * Language used for topic values in the result, in ISO-639-1 format.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.1
 	 */
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
 	                                 g_param_spec_string ("language",
@@ -97,7 +97,7 @@ gdata_freebase_topic_query_class_init (GDataFreebaseTopicQueryClass *klass)
 	 * Array of properties (eg. "/common/topic/description", or "/computer/software/first_released"), or property
 	 * domains (eg. "/common/topic", or "/computer") to be used as filter.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.1
 	 */
 	g_object_class_install_property (gobject_class, PROP_FILTER,
 					 g_param_spec_boxed ("filter",
@@ -234,7 +234,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  *
  * Return value: (transfer full): a new #GDataFreebaseTopicQuery
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseTopicQuery *
 gdata_freebase_topic_query_new (const gchar *id)
@@ -251,7 +251,7 @@ gdata_freebase_topic_query_new (const gchar *id)
  * Sets the language used in the topic query. If unset,
  * the locale preferences will be respected.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_topic_query_set_language (GDataFreebaseTopicQuery *self,
@@ -280,7 +280,7 @@ gdata_freebase_topic_query_set_language (GDataFreebaseTopicQuery *self,
  *
  * Return value: (allow-none): The language used on the query.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_topic_query_get_language (GDataFreebaseTopicQuery *self)
@@ -304,7 +304,7 @@ gdata_freebase_topic_query_get_language (GDataFreebaseTopicQuery *self)
  * If multiple filter strings are set, the result will contain all information necessary to satisfy each of those individually.
  * If no filter is set, the "commons" special value will be implicitly assumed, which returns a reasonably complete data set.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_topic_query_set_filter (GDataFreebaseTopicQuery *self, const gchar * const *filter)
@@ -327,7 +327,7 @@ gdata_freebase_topic_query_set_filter (GDataFreebaseTopicQuery *self, const gcha
  *
  * Return value: (array zero-terminated=1) (transfer none) (allow-none): The filter used on the query.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar * const *
 gdata_freebase_topic_query_get_filter (GDataFreebaseTopicQuery *self)

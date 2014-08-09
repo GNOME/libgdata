@@ -45,7 +45,7 @@ typedef struct _GDataFreebaseSearchQueryPrivate	GDataFreebaseSearchQueryPrivate;
  *
  * Search filter container types.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef enum {
 	GDATA_FREEBASE_SEARCH_FILTER_ALL,
@@ -58,7 +58,7 @@ typedef enum {
  *
  * All the fields in the #GDataFreebaseSearchQuery structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct {
 	GDataQuery parent;
@@ -70,7 +70,7 @@ typedef struct {
  *
  * All the fields in the #GDataFreebaseSearchQueryClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct {
 	/*< private >*/

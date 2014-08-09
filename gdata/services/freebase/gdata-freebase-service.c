@@ -32,7 +32,7 @@
  * For more details of Google Freebase API, see the <ulink type="http" url="https://developers.google.com/freebase/v1/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 #include <config.h>
@@ -90,7 +90,7 @@ gdata_freebase_service_class_init (GDataFreebaseServiceClass *klass)
 	 * The developer key your application has registered with the Freebase API. For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/freebase/v1/how-tos/authorizing">online documentation</ulink>.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.1
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DEVELOPER_KEY,
 	                                 g_param_spec_string ("developer-key",
@@ -163,7 +163,7 @@ gdata_freebase_service_finalize (GObject *self)
  *
  * Return value: (transfer full): a new #GDataFreebaseService; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseService *
 gdata_freebase_service_new (const gchar *developer_key, GDataAuthorizer *authorizer)
@@ -206,7 +206,7 @@ gdata_freebase_service_get_primary_authorization_domain (void)
  *
  * Return value: (transfer full): a #GDataFreebaseResult containing the query result; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseResult *
 gdata_freebase_service_query (GDataFreebaseService *self, GDataFreebaseQuery *query,
@@ -242,7 +242,7 @@ gdata_freebase_service_query (GDataFreebaseService *self, GDataFreebaseQuery *qu
  * For more details, see gdata_freebase_service_query(), which is the synchronous version of
  * this function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 void
 gdata_freebase_service_query_async (GDataFreebaseService *self, GDataFreebaseQuery *query, GCancellable *cancellable,
@@ -269,7 +269,7 @@ gdata_freebase_service_query_async (GDataFreebaseService *self, GDataFreebaseQue
  *
  * Return value: (transfer full): a #GDataFreebaseTopicResult containing information about the topic; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseTopicResult *
 gdata_freebase_service_get_topic (GDataFreebaseService *self, GDataFreebaseTopicQuery *query, GCancellable *cancellable, GError **error)
@@ -304,7 +304,7 @@ gdata_freebase_service_get_topic (GDataFreebaseService *self, GDataFreebaseTopic
  * For more details, see gdata_freebase_service_get_topic(), which is the synchronous version of
  * this function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 void
 gdata_freebase_service_get_topic_async (GDataFreebaseService *self, GDataFreebaseTopicQuery *query,
@@ -332,7 +332,7 @@ gdata_freebase_service_get_topic_async (GDataFreebaseService *self, GDataFreebas
  *
  * Return value: (transfer full): a #GDataFreebaseSearchResult containing the results for the given search query; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseSearchResult *
 gdata_freebase_service_search (GDataFreebaseService *self, GDataFreebaseSearchQuery *query, GCancellable *cancellable, GError **error)
@@ -366,7 +366,7 @@ gdata_freebase_service_search (GDataFreebaseService *self, GDataFreebaseSearchQu
  * For more details, see gdata_freebase_service_search(), which is the synchronous version of
  * this function.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 void
 gdata_freebase_service_search_async (GDataFreebaseService *self, GDataFreebaseSearchQuery *query,
@@ -423,7 +423,7 @@ compose_image_uri (GDataFreebaseTopicValue *value, guint max_width, guint max_he
  *
  * Return value: (transfer full): a #GInputStream opened to the image; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 GInputStream *
 gdata_freebase_service_get_image (GDataFreebaseService *self, GDataFreebaseTopicValue *value,

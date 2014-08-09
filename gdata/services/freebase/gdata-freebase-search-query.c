@@ -32,7 +32,7 @@
  * For more details of Google Freebase API, see the <ulink type="http" url="https://developers.google.com/freebase/v1/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 #include <config.h>
@@ -113,7 +113,7 @@ gdata_freebase_search_query_class_init (GDataFreebaseSearchQueryClass *klass)
 	 *
 	 * Language used for search results, in ISO-639-1 format.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.1
 	 */
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
 	                                 g_param_spec_string ("language",
@@ -128,7 +128,7 @@ gdata_freebase_search_query_class_init (GDataFreebaseSearchQueryClass *klass)
 	 * words like eg. "natural", "naturally" or "nature" would be all reduced to the root "natur"
 	 * for search purposes.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.1
 	 */
 	g_object_class_install_property (gobject_class, PROP_STEMMED,
 	                                 g_param_spec_boolean ("stemmed",
@@ -358,7 +358,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  *
  * Return value: (transfer full): a new #GDataFreebaseSearchQuery; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseSearchQuery *
 gdata_freebase_search_query_new (const gchar *search_terms)
@@ -375,7 +375,7 @@ gdata_freebase_search_query_new (const gchar *search_terms)
  * Opens a container of filter rules, those are applied according to the behavior specified by @filter_type.
  * Every call to this function must be paired by a call to gdata_freebase_search_query_close_filter().
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_search_query_open_filter (GDataFreebaseSearchQuery *self, GDataFreebaseSearchFilterType filter_type)
@@ -410,7 +410,7 @@ gdata_freebase_search_query_open_filter (GDataFreebaseSearchQuery *self, GDataFr
  *
  * Closes a filter level.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_search_query_close_filter (GDataFreebaseSearchQuery *self)
@@ -437,7 +437,7 @@ gdata_freebase_search_query_close_filter (GDataFreebaseSearchQuery *self)
  * containers, opened and closed through gdata_freebase_search_query_open_filter()
  * and gdata_freebase_search_query_close_filter().
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_search_query_add_filter (GDataFreebaseSearchQuery *self, const gchar *property, const gchar *value)
@@ -476,7 +476,7 @@ gdata_freebase_search_query_add_filter (GDataFreebaseSearchQuery *self, const gc
  * containers, opened and closed through gdata_freebase_search_query_open_filter()
  * and gdata_freebase_search_query_close_filter().
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_search_query_add_location (GDataFreebaseSearchQuery *self, guint64 radius, gdouble lat, gdouble lon)
@@ -510,7 +510,7 @@ gdata_freebase_search_query_add_location (GDataFreebaseSearchQuery *self, guint6
  * Sets the language used, both on the search terms and the results. If unset,
  * the locale preferences will be respected.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_search_query_set_language (GDataFreebaseSearchQuery *self,
@@ -539,7 +539,7 @@ gdata_freebase_search_query_set_language (GDataFreebaseSearchQuery *self,
  *
  * Return value: (allow-none): The language used on the query.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_search_query_get_language (GDataFreebaseSearchQuery *self)
@@ -561,7 +561,7 @@ gdata_freebase_search_query_get_language (GDataFreebaseSearchQuery *self)
  * words like eg. "natural", "naturally" or "nature" would be all reduced to the root "natur"
  * for search purposes.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_search_query_set_stemmed (GDataFreebaseSearchQuery *self,
@@ -588,7 +588,7 @@ gdata_freebase_search_query_set_stemmed (GDataFreebaseSearchQuery *self,
  *
  * Return value: %TRUE if the #GDataFreebaseSearchQuery performs stemming
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 gboolean
 gdata_freebase_search_query_get_stemmed (GDataFreebaseSearchQuery *self)

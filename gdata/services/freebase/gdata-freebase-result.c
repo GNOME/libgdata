@@ -28,7 +28,7 @@
  * For more details of Google Freebase API, see the <ulink type="http" url="https://developers.google.com/freebase/v1/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 #include <config.h>
@@ -80,7 +80,7 @@ gdata_freebase_result_class_init (GDataFreebaseResultClass *klass)
 	 * Variant containing the MQL result. The variant is a very generic container of type "a{smv}",
 	 * containing (possibly nested) Freebase schema types and values.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.15.1
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VARIANT,
 	                                 g_param_spec_variant ("variant",
@@ -161,7 +161,7 @@ get_entry_uri (const gchar *id)
  *
  * Return value: (transfer full): a new #GDataFreebaseResult; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseResult *
 gdata_freebase_result_new (void)
@@ -178,7 +178,7 @@ gdata_freebase_result_new (void)
  *
  * Returns: (allow-none) (transfer full): the serialized result, or %NULL; unref with g_variant_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 GVariant *
 gdata_freebase_result_dup_variant (GDataFreebaseResult *self)

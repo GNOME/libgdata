@@ -49,7 +49,7 @@ typedef struct _GDataFreebaseServicePrivate	GDataFreebaseServicePrivate;
  *
  * All the fields in the #GDataFreebaseService structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 typedef struct {
 	GDataService parent;
@@ -62,7 +62,7 @@ typedef struct {
  *
  * All the fields in the #GDataFreebaseServiceClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 typedef struct {
 	/*< private >*/

@@ -42,7 +42,7 @@ typedef struct _GDataFreebaseResultPrivate GDataFreebaseResultPrivate;
  *
  * All the fields in the #GDataFreebaseResult structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct {
 	GDataEntry parent;
@@ -54,7 +54,7 @@ typedef struct {
  *
  * All the fields in the #GDataFreebaseResultClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 typedef struct {

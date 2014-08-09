@@ -42,7 +42,7 @@ typedef struct _GDataFreebaseQueryPrivate	GDataFreebaseQueryPrivate;
  *
  * All the fields in the #GDataFreebaseQuery structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct {
 	GDataQuery parent;
@@ -55,7 +55,7 @@ typedef struct {
  *
  * All the fields in the #GDataFreebaseQueryClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 typedef struct {
 	/*< private >*/

@@ -28,7 +28,7 @@
  * For more details of Google Freebase API, see the <ulink type="http" url="https://developers.google.com/freebase/v1/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 #include <config.h>
@@ -198,7 +198,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
  *
  * Return value: (transfer full): a new #GDataFreebaseSearchResult; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseSearchResult *
 gdata_freebase_search_result_new (void)
@@ -214,7 +214,7 @@ gdata_freebase_search_result_new (void)
  *
  * Returns: The number of items
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 guint
 gdata_freebase_search_result_get_num_items (GDataFreebaseSearchResult *self)
@@ -232,7 +232,7 @@ gdata_freebase_search_result_get_num_items (GDataFreebaseSearchResult *self)
  *
  * Returns: the total number of hits.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 guint
 gdata_freebase_search_result_get_total_hits (GDataFreebaseSearchResult *self)
@@ -251,7 +251,7 @@ gdata_freebase_search_result_get_total_hits (GDataFreebaseSearchResult *self)
  *
  * Returns: (transfer none) (allow-none): a search result item, or %NULL on invalid item.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const GDataFreebaseSearchResultItem *
 gdata_freebase_search_result_get_item (GDataFreebaseSearchResult *self, guint i)
@@ -276,7 +276,7 @@ gdata_freebase_search_result_get_item (GDataFreebaseSearchResult *self, guint i)
  *
  * Returns: (transfer none): The result item MID.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_search_result_item_get_mid (const GDataFreebaseSearchResultItem *item)
@@ -293,7 +293,7 @@ gdata_freebase_search_result_item_get_mid (const GDataFreebaseSearchResultItem *
  *
  * Returns: (transfer none): The search result item Freebase ID.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_search_result_item_get_id (const GDataFreebaseSearchResultItem *item)
@@ -314,7 +314,7 @@ gdata_freebase_search_result_item_get_id (const GDataFreebaseSearchResultItem *i
  *
  * Returns: (transfer none): The human readable name of the item.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_search_result_item_get_name (const GDataFreebaseSearchResultItem *item)
@@ -331,7 +331,7 @@ gdata_freebase_search_result_item_get_name (const GDataFreebaseSearchResultItem 
  *
  * Returns: (transfer none): The language of the search result item.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_search_result_item_get_language (const GDataFreebaseSearchResultItem *item)
@@ -349,7 +349,7 @@ gdata_freebase_search_result_item_get_language (const GDataFreebaseSearchResultI
  *
  * Returns: (transfer none) (allow-none): The topic the result item is most notable of, or %NULL.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_search_result_item_get_notable_id (const GDataFreebaseSearchResultItem *item)
@@ -367,7 +367,7 @@ gdata_freebase_search_result_item_get_notable_id (const GDataFreebaseSearchResul
  *
  * Returns: (transfer none) (allow-none): The human readable topic name, or %NULL
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_search_result_item_get_notable_name (const GDataFreebaseSearchResultItem *item)
@@ -385,7 +385,7 @@ gdata_freebase_search_result_item_get_notable_name (const GDataFreebaseSearchRes
  *
  * Returns: the result item score.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 gdouble
 gdata_freebase_search_result_item_get_score (const GDataFreebaseSearchResultItem *item)

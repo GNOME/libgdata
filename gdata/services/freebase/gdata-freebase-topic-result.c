@@ -29,7 +29,7 @@
  * For more details of Google Freebase API, see the <ulink type="http" url="https://developers.google.com/freebase/v1/">
  * online documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 
 typedef struct _GDataFreebaseTopicValueArray GDataFreebaseTopicValueArray;
@@ -556,7 +556,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
  *
  * Return value: (transfer full): a new #GDataFreebaseTopicResult; unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  */
 GDataFreebaseTopicResult *
 gdata_freebase_topic_result_new (void)
@@ -574,7 +574,7 @@ gdata_freebase_topic_result_new (void)
  * Returns: (transfer full): A new reference on the result object, unref with
  *   gdata_freebase_topic_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 GDataFreebaseTopicObject *
 gdata_freebase_topic_result_dup_object (GDataFreebaseTopicResult *self)
@@ -592,7 +592,7 @@ gdata_freebase_topic_result_dup_object (GDataFreebaseTopicResult *self)
  *
  * Returns: (transfer full): @object, with an extra reference.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 GDataFreebaseTopicObject *
 gdata_freebase_topic_object_ref (GDataFreebaseTopicObject *object)
@@ -610,7 +610,7 @@ gdata_freebase_topic_object_ref (GDataFreebaseTopicObject *object)
  * Removes a reference from @object. If the reference count drops to 0,
  * the object is freed.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_topic_object_unref (GDataFreebaseTopicObject *object)
@@ -632,7 +632,7 @@ gdata_freebase_topic_object_unref (GDataFreebaseTopicObject *object)
  *
  * Returns: (transfer container) (element-type gchar*): An array of property names, free with g_ptr_array_unref().
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 GPtrArray *
 gdata_freebase_topic_object_list_properties (const GDataFreebaseTopicObject *object)
@@ -662,7 +662,7 @@ gdata_freebase_topic_object_list_properties (const GDataFreebaseTopicObject *obj
  *
  * Returns: The number of values contained for @property
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 guint64
 gdata_freebase_topic_object_get_property_count (const GDataFreebaseTopicObject *object, const gchar *property)
@@ -694,7 +694,7 @@ gdata_freebase_topic_object_get_property_count (const GDataFreebaseTopicObject *
  *
  * Returns: the total number of hits for this property
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 guint64
 gdata_freebase_topic_object_get_property_hits (const GDataFreebaseTopicObject *object, const gchar *property)
@@ -724,7 +724,7 @@ gdata_freebase_topic_object_get_property_hits (const GDataFreebaseTopicObject *o
  *
  * Returns: (allow-none) (transfer none): the value for this property/item
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 GDataFreebaseTopicValue *
 gdata_freebase_topic_object_get_property_value (const GDataFreebaseTopicObject *object, const gchar *property, gint64 item)
@@ -752,7 +752,7 @@ gdata_freebase_topic_object_get_property_value (const GDataFreebaseTopicObject *
  *
  * Returns: (transfer none): the Freebase ID of this object
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_topic_object_get_id (const GDataFreebaseTopicObject *object)
@@ -769,7 +769,7 @@ gdata_freebase_topic_object_get_id (const GDataFreebaseTopicObject *object)
  *
  * Returns: (transfer full): @value, with an extra reference.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 GDataFreebaseTopicValue *
 gdata_freebase_topic_value_ref (GDataFreebaseTopicValue *value)
@@ -787,7 +787,7 @@ gdata_freebase_topic_value_ref (GDataFreebaseTopicValue *value)
  * Removes a reference from @value. If the reference count drops to 0,
  * the object is freed.
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_topic_value_unref (GDataFreebaseTopicValue *value)
@@ -806,7 +806,7 @@ gdata_freebase_topic_value_unref (GDataFreebaseTopicValue *value)
  *
  * Returns: the property name of @value
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_topic_value_get_property (GDataFreebaseTopicValue *value)
@@ -825,7 +825,7 @@ gdata_freebase_topic_value_get_property (GDataFreebaseTopicValue *value)
  *
  * Returns: a textual representation of @value
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_topic_value_get_text (GDataFreebaseTopicValue *value)
@@ -842,7 +842,7 @@ gdata_freebase_topic_value_get_text (GDataFreebaseTopicValue *value)
  *
  * Returns: the language @value is written in
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_topic_value_get_language (GDataFreebaseTopicValue *value)
@@ -859,7 +859,7 @@ gdata_freebase_topic_value_get_language (GDataFreebaseTopicValue *value)
  *
  * Returns: the creator of this value, as a Freebase ID
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_topic_value_get_creator (GDataFreebaseTopicValue *value)
@@ -878,7 +878,7 @@ gdata_freebase_topic_value_get_creator (GDataFreebaseTopicValue *value)
  *
  * Returns: The creation time of @value, or -1
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 gint64
 gdata_freebase_topic_value_get_timestamp (GDataFreebaseTopicValue *value)
@@ -895,7 +895,7 @@ gdata_freebase_topic_value_get_timestamp (GDataFreebaseTopicValue *value)
  *
  * Returns: the #GType of the contained value
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 GType
 gdata_freebase_topic_value_get_value_type (GDataFreebaseTopicValue *value)
@@ -911,7 +911,7 @@ gdata_freebase_topic_value_get_value_type (GDataFreebaseTopicValue *value)
  *
  * Copies in @gvalue the value held in @value. the #GValue must be later freed through g_value_unset()
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 void
 gdata_freebase_topic_value_copy_value (GDataFreebaseTopicValue *value, GValue *gvalue)
@@ -929,7 +929,7 @@ gdata_freebase_topic_value_copy_value (GDataFreebaseTopicValue *value, GValue *g
  *
  * Returns: the #gint64 value
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 gint64
 gdata_freebase_topic_value_get_int (GDataFreebaseTopicValue *value)
@@ -948,7 +948,7 @@ gdata_freebase_topic_value_get_int (GDataFreebaseTopicValue *value)
  *
  * Returns: the #gdouble value
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 gdouble
 gdata_freebase_topic_value_get_double (GDataFreebaseTopicValue *value)
@@ -967,7 +967,7 @@ gdata_freebase_topic_value_get_double (GDataFreebaseTopicValue *value)
  *
  * Returns: the string value
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const gchar *
 gdata_freebase_topic_value_get_string (GDataFreebaseTopicValue *value)
@@ -987,7 +987,7 @@ gdata_freebase_topic_value_get_string (GDataFreebaseTopicValue *value)
  *
  * Returns: (transfer none): the compound value as a #GDataFreebaseTopicObject
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 const GDataFreebaseTopicObject *
 gdata_freebase_topic_value_get_object (GDataFreebaseTopicValue *value)
@@ -1008,7 +1008,7 @@ gdata_freebase_topic_value_get_object (GDataFreebaseTopicValue *value)
  *
  * Returns: Whether @value holds a Freebase image object
  *
- * Since: UNRELEASED
+ * Since: 0.15.1
  **/
 gboolean
 gdata_freebase_topic_value_is_image (GDataFreebaseTopicValue *value)
