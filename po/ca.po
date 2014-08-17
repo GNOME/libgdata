@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-02-21 10:19+0000\n"
-"PO-Revision-Date: 2014-02-21 23:13+0100\n"
+"POT-Creation-Date: 2014-08-17 09:24+0000\n"
+"PO-Revision-Date: 2014-08-17 13:33+0200\n"
 "Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -148,7 +148,7 @@ msgid "This comment may not be deleted."
 msgstr "No podeu suprimir aquest missatge."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "La sol·licitud de cerca no és vàlida"
 
@@ -264,7 +264,7 @@ msgstr "No existia un element necessari (%s)."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Un element únic (%s) estava duplicat."
@@ -273,7 +273,7 @@ msgstr "Un element únic (%s) estava duplicat."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "A un element «%s» l'hi falta el contingut necessari."
@@ -283,13 +283,13 @@ msgstr "A un element «%s» l'hi falta el contingut necessari."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "El contingut d'un element «%s» («%s») no estava en el format ISO 8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "S'han rebut unes dades JSON no vàlides del servidor: %s"
@@ -349,7 +349,7 @@ msgstr "Codi d'error %u en executar l'operació massiva: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "URI de redireccionament no vàlid: %s"
 
-#: ../gdata/gdata-service.c:1393
+#: ../gdata/gdata-service.c:1401
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -452,6 +452,11 @@ msgstr "Heu d'estar autenticat per copiar els documents."
 msgid "You must be authenticated to move documents and folders."
 msgstr "Heu d'estar autenticat per moure documents i carpetes."
 
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "En la propietat «%s» no hi ha cap imatge"
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
@@ -488,13 +493,11 @@ msgstr "Heu d'estar autenticat per inserir un àlbum."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:145
 #: ../gdata/services/tasks/gdata-tasks-service.c:196
-#| msgid "You must be authenticated to query all calendars."
 msgid "You must be authenticated to query all tasklists."
 msgstr "Heu d'estar autenticat per consultar totes les llistes de tasques."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:244
 #: ../gdata/services/tasks/gdata-tasks-service.c:300
-#| msgid "You must be authenticated to query your own calendars."
 msgid "You must be authenticated to query your own tasks."
 msgstr "Heu d'estar autenticat per consultar les vostres tasques."
 
@@ -561,17 +564,3 @@ msgstr "El vídeo no tenia vídeos relacionats <link>."
 #: ../gdata/services/youtube/gdata-youtube-service.c:895
 msgid "You must be authenticated to upload a video."
 msgstr "Heu d'estar autenticat per pujar un vídeo."
-
-#~ msgid "The supplied document had an invalid content type."
-#~ msgstr "El tipus de document rebut tenia un tipus de contingut no vàlid."
-
-#~ msgid "Unhandled <%s:%s> element as a child of <%s>."
-#~ msgstr "L'element <%s:%s> no és gestionat com a fill de <%s>."
-
-#~ msgid "Unknown value \"%s\" of a <%s> @%s property."
-#~ msgstr "Valor desconegut «%s» d'un <%s> a la propietat @%s."
-
-#~ msgid ""
-#~ "The @time property (\"%s\") of a <media:thumbnail> could not be parsed."
-#~ msgstr ""
-#~ "No s'ha pogut analitzar la propietat @time («%s») d'un <media:thumbnail>."
