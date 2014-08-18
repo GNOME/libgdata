@@ -1425,6 +1425,7 @@ test_contact_parser_normal (void)
 			"<link rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml' "
 			      "href='http://www.google.com/m8/feeds/contacts/libgdata.test@googlemail.com/full/1b46cdd20bfbee3b'/>"
 			"<gd:email rel='http://schemas.google.com/g/2005#other' address='bob@example.com'/>"
+			"<gd:email rel='http://schemas.google.com/g/2005#other' address=''/>" /* https://bugzilla.gnome.org/show_bug.cgi?id=734863 */
 			"<gd:extendedProperty name='test' value='test value'/>"
 			"<gd:organization rel='http://schemas.google.com/g/2005#work' label='Work' primary='true'/>"
 			"<gContact:groupMembershipInfo href='http://www.google.com/feeds/contacts/groups/jo%40gmail.com/base/1234a' "

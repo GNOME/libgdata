@@ -812,9 +812,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 		return GDATA_PARSABLE_CLASS (gdata_contacts_contact_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
-		if (gdata_parser_object_from_element_setter (node, "email", P_REQUIRED, GDATA_TYPE_GD_EMAIL_ADDRESS,
-		                                             gdata_contacts_contact_add_email_address, self, &success, error) == TRUE ||
-		    gdata_parser_object_from_element_setter (node, "im", P_REQUIRED, GDATA_TYPE_GD_IM_ADDRESS,
+		if (gdata_parser_object_from_element_setter (node, "im", P_REQUIRED, GDATA_TYPE_GD_IM_ADDRESS,
 		                                             gdata_contacts_contact_add_im_address, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "phoneNumber", P_REQUIRED, GDATA_TYPE_GD_PHONE_NUMBER,
 		                                             gdata_contacts_contact_add_phone_number, self, &success, error) == TRUE ||
@@ -824,6 +822,38 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                             gdata_contacts_contact_add_organization, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element (node, "name", P_REQUIRED, GDATA_TYPE_GD_NAME, &(self->priv->name), &success, error) == TRUE) {
 			return success;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "email") == 0) {
+			/* gd:email */
+			GDataParsable *_parsable;
+			xmlChar *address;
+
+			/* Check its address attribute is non-empty. Empty address attributes are apparently allowed, and make the
+			 * gd:email element a no-op. See: https://bugzilla.gnome.org/show_bug.cgi?id=734863 */
+			address = xmlGetProp (node, (xmlChar *) "address");
+			if (address == NULL) {
+				return gdata_parser_error_required_property_missing (node, "address", error);
+			} else if (*address == '\0') {
+				xmlFree (address);
+				success = TRUE;
+				return TRUE;
+			}
+
+			xmlFree (address);
+
+			/* Parse the e-mail address. */
+			_parsable = _gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_EMAIL_ADDRESS, node->doc, node, NULL, error);
+			if (P_REQUIRED & P_REQUIRED && _parsable == NULL) {
+				/* The error has already been set by _gdata_parsable_new_from_xml_node() */
+				success = FALSE;
+				return TRUE;
+			}
+
+			/* Success! */
+			gdata_contacts_contact_add_email_address (self, GDATA_GD_EMAIL_ADDRESS (_parsable));
+			g_object_unref (_parsable);
+			success = TRUE;
+
+			return TRUE;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "extendedProperty") == 0) {
 			/* gd:extendedProperty */
 			xmlChar *name, *value;
