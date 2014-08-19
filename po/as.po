@@ -1,127 +1,127 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Nilamdyuti Goswami <ngoswami@redhat.com>, 2011, 2012, 2013.
+# Nilamdyuti Goswami <ngoswami@redhat.com>, 2011, 2012, 2013, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-30 05:22+0000\n"
-"PO-Revision-Date: 2013-09-13 18:29+0530\n"
+"POT-Creation-Date: 2014-08-19 09:23+0000\n"
+"PO-Revision-Date: 2014-08-19 22:30+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
-"Language-Team: American English <kde-i18n-doc@kde.org>\n"
-"Language: en_US\n"
+"Language-Team: Assamese <kde-i18n-doc@kde.org>\n"
+"Language: as_IN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:597
-#: ../gdata/gdata-oauth1-authorizer.c:809
-#: ../gdata/gdata-oauth1-authorizer.c:1085
+#: ../gdata/gdata-client-login-authorizer.c:627
+#: ../gdata/gdata-oauth1-authorizer.c:839
+#: ../gdata/gdata-oauth1-authorizer.c:1115
 msgid "The server returned a malformed response."
 msgstr "চাৰ্ভাৰে এটা ক্ষতিগ্ৰস্থ প্ৰতিক্ৰিয়া দিছে।"
 
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
+#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "সেৱাৰ চাৰ্ভাৰলে সংযোগ কৰিব নোৱাৰি।"
 
-#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
+#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "প্ৰক্সি চাৰ্ভাৰলে সংযোগ কৰিব নোৱাৰি।"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
+#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "অবৈধ URI অনুৰোধ অথবা হেডাৰ, বা অসমৰ্থিত অপ্ৰামাণিক প্ৰাচল: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
+#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
 #, c-format
 msgid "Authentication required: %s"
 msgstr "প্ৰমাণীকৰণৰ প্ৰয়োজন: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
+#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "অনুৰোধ কৰা সম্পদ পোৱা নগল: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
+#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "প্ৰবিষ্টিটো ডাউনলোডৰ পিছত সলনি কৰা হৈছে: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
+#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "প্ৰমাণীকৰণৰ সময়ত ত্ৰুটি কোড %u: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:756
+#: ../gdata/gdata-client-login-authorizer.c:786
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "লগিন কৰিবলে এটা CAPTCHA পূৰ্ণ কৰিব লাগিব।"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:794
+#: ../gdata/gdata-client-login-authorizer.c:824
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
-msgstr "এই একাওন্টৰ এটা অনুপ্ৰয়োগ ধাৰ্য্য পাছৱাৰ্ডৰ প্ৰয়োজন। (%s)"
+msgstr "এই একাওন্টৰ এটা অনুপ্ৰয়োগ ধাৰ্য্য পাছৱৰ্ডৰ প্ৰয়োজন। (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:801
+#: ../gdata/gdata-client-login-authorizer.c:831
 msgid "Your username or password were incorrect."
-msgstr "আপোনাৰ ব্যৱহাৰকাৰী নাম অথবা পাছৱাৰ্ড ভুল আছিল।"
+msgstr "আপোনাৰ ব্যৱহাৰকাৰী নাম অথবা পাছৱৰ্ড ভুল আছিল।"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:822
+#: ../gdata/gdata-client-login-authorizer.c:852
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "আপোনাৰ একাওন্টৰ ই-মেইল ঠিকনা সতা সত্য নিৰূপণ কৰা হোৱা নাই। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:827
+#: ../gdata/gdata-client-login-authorizer.c:857
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "আপুনি সেৱাৰ নিয়ম আৰু চুক্তিসমূহ মানি লোৱা নাই। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:833
+#: ../gdata/gdata-client-login-authorizer.c:863
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"এই একাওন্ট প্ৰব্ৰজন কৰা হৈছে। আপোনাৰ নতুন ব্যৱহাৰকাৰী নাম আৰু পাছৱাৰ্ডৰ বাবে "
+"এই একাওন্ট প্ৰব্ৰজন কৰা হৈছে। আপোনাৰ নতুন ব্যৱহাৰকাৰী নাম আৰু পাছৱৰ্ডৰ বাবে "
 "অনুগ্ৰহ "
 "কৰি অনলাইন লগিন কৰক। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:838
+#: ../gdata/gdata-client-login-authorizer.c:868
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "এই একাওন্ট মচি পেলোৱা হৈছে। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:843
+#: ../gdata/gdata-client-login-authorizer.c:873
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "এই একাওন্ট অসামৰ্থবান কৰা হৈছে। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:848
+#: ../gdata/gdata-client-login-authorizer.c:878
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "এই একাওন্টৰ এই সেৱালে প্ৰবেশাধিকাৰ অসামৰ্থবান কৰা হৈছে। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:853
+#: ../gdata/gdata-client-login-authorizer.c:883
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "এই সেৱা এই মূহুৰ্তে উপলব্ধ নহয়। (%s)"
@@ -144,39 +144,38 @@ msgid "This comment may not be deleted."
 msgstr "এই মন্তব্য মচা নহব পাৰে।"
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "অবৈধ সন্ধান অনুৰোধ"
 
-#: ../gdata/gdata-oauth1-authorizer.c:784
+#: ../gdata/gdata-oauth1-authorizer.c:814
 msgid "The server rejected the temporary credentials request."
 msgstr "চাৰ্ভাৰে অস্থায়ী তথ্যসমূহৰ অনুৰোধ নাকচ কৰিছে।"
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1059
+#: ../gdata/gdata-oauth1-authorizer.c:1089
 msgid "Access was denied by the user or server."
 msgstr "অভিগম ব্যৱহাৰকাৰী বা চাৰ্ভাৰ দ্বাৰা নাকচ কৰা হৈছিল।"
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:342 ../gdata/gdata-parsable.c:353
+#: ../gdata/gdata-parsable.c:349 ../gdata/gdata-parsable.c:360
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "XML বিশ্লেষন কৰোতে ত্ৰুটি: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:355
+#: ../gdata/gdata-parsable.c:362
 msgid "Empty document."
 msgstr "খালি দস্তাবেজ।"
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:473 ../gdata/gdata-parsable.c:511
+#: ../gdata/gdata-parsable.c:480 ../gdata/gdata-parsable.c:518
 #, c-format
-#| msgid "Error parsing XML: %s"
 msgid "Error parsing JSON: %s"
 msgstr "JSON বিশ্লেষণ কৰোতে ত্ৰুটি: %s"
 
-#: ../gdata/gdata-parsable.c:512
+#: ../gdata/gdata-parsable.c:519
 msgid "Outermost JSON node is not an object."
 msgstr "বহিৰ্তম JSON ন'ড এটা অবজেক্ট নহয়।"
 
@@ -262,7 +261,7 @@ msgstr "এটা প্ৰয়োজনীয় উপাদান (%s) উপস�
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "এটা একক উপাদান (%s) প্ৰতিলিপিত হৈছিল।"
@@ -271,9 +270,8 @@ msgstr "এটা একক উপাদান (%s) প্ৰতিলিপি�
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:273
+#: ../gdata/gdata-parser.c:291
 #, c-format
-#| msgid "A %s element was missing required content."
 msgid "A '%s' element was missing required content."
 msgstr "এটা '%s' উপাদানত প্ৰয়োজনীয় সমল নাছিল।"
 
@@ -282,74 +280,73 @@ msgstr "এটা '%s' উপাদানত প্ৰয়োজনীয় সম�
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:303
+#: ../gdata/gdata-parser.c:321
 #, c-format
-#| msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "এটা '%s' উপাদান (\"%s\") ৰ সমল ISO 8601 বিন্যাসত নাছিল।"
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:313
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "চাৰ্ভাৰৰ পৰা অবৈধ JSON প্ৰাপ্ত হৈছিল: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
+#: ../gdata/gdata-service.c:398
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "প্ৰশ্ন কৰাৰ সময়ত ত্ৰুটি কোড %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:375
+#: ../gdata/gdata-service.c:404
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "এটা প্ৰবিষ্টি সোমোৱাৰ সময়ত ত্ৰুটি কোড %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:381
+#: ../gdata/gdata-service.c:410
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "এটা প্ৰবিষ্টি আপডেইট কৰাৰ সময়ত ত্ৰুটি কোড %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:387
+#: ../gdata/gdata-service.c:416
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "এটা প্ৰবিষ্টি মচাৰ সময়ত ত্ৰুটি কোড %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:393
+#: ../gdata/gdata-service.c:422
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "ডাউনলোড কৰাৰ সময়ত ত্ৰুটি কোড %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:399
+#: ../gdata/gdata-service.c:428
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "আপলোড কৰাৰ সময়ত ত্ৰুটি কোড %u: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:405
+#: ../gdata/gdata-service.c:434
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "এটা ছাম কাৰ্য্য চলোৱাৰ সময়ত ত্ৰুটি কোড %u: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:692
+#: ../gdata/gdata-service.c:721
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "অবৈধ পুনৰদিশা URl: %s"
 
-#: ../gdata/gdata-service.c:1363
+#: ../gdata/gdata-service.c:1401
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -447,6 +444,11 @@ msgstr "আপুনি দস্তাবেজসমূহ কপি কৰি
 msgid "You must be authenticated to move documents and folders."
 msgstr "আপুনি দস্তাবেজ আৰু ফোল্ডাৰসমূহ স্থানান্থৰ কৰিবলে প্ৰমাণীত হব লাগিব।"
 
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "বৈশিষ্ট্য '%s' এ এটা ছবি ধৰি নথয়"
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
@@ -473,7 +475,7 @@ msgstr "এলবামটোৰ এটা ফিড লিঙ্ক নাছ�
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
-msgstr "আপুনি এটা নথিপত্ৰ আপলোড কৰিবলে প্ৰমাণীত হব লাগিব।"
+msgstr "আপুনি এটা ফাইল আপলোড কৰিবলে প্ৰমাণীত হব লাগিব।"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
@@ -482,6 +484,18 @@ msgstr "এলবামটো ইতিমধ্যে সোমোৱা হৈ
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
 msgstr "আপুনি এটা এলবাম সোমাবলে প্ৰমাণীত হব লাগিব।"
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:145
+#: ../gdata/services/tasks/gdata-tasks-service.c:196
+#| msgid "You must be authenticated to query all calendars."
+msgid "You must be authenticated to query all tasklists."
+msgstr "আপুনি সকলো কাৰ্য্যতালিকা প্ৰশ্ন কৰিবলে প্ৰমাণীত হব লাগিব।"
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:244
+#: ../gdata/services/tasks/gdata-tasks-service.c:300
+#| msgid "You must be authenticated to query your own calendars."
+msgid "You must be authenticated to query your own tasks."
+msgstr "আপুনি আপোনাৰ সকলো কাৰ্য্যক প্ৰশ্ন কৰিবলে প্ৰমাণীত হব লাগিব।"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:457
 #, c-format
@@ -496,8 +510,7 @@ msgid ""
 "Visit %s to create one."
 msgstr ""
 "এই কাৰ্য্য কৰিবলৈ আপোনাৰ Google একাওন্ট এটা YouTube চেনেলৰ সৈতে সংযুক্ত থাকিব "
-"লাগিব। "
-"এটা সৃষ্টি কৰিবলৈ %s ত যাওক।"
+"লাগিব। এটা সৃষ্টি কৰিবলৈ %s ত যাওক।"
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
