@@ -4,15 +4,15 @@
 #
 # Petr Kovar <pknbe@volny.cz>, 2010.
 # Andre Klapper <ak-47@gmx.net>, 2011.
-# Marek Černocký <marek@manet.cz>, 2009, 2010, 2011, 2012, 2013.
+# Marek Černocký <marek@manet.cz>, 2009, 2010, 2011, 2012, 2013, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-10-25 23:58+0000\n"
-"PO-Revision-Date: 2013-10-30 07:32+0100\n"
+"POT-Creation-Date: 2014-08-21 21:25+0000\n"
+"PO-Revision-Date: 2014-08-22 07:49+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -28,18 +28,18 @@ msgstr ""
 msgid "The server returned a malformed response."
 msgstr "Server vrátil chybnou odpověď."
 
-#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:351
+#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Nelze se připojit k serveru poskytujícímu službu."
 
-#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:356
+#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Nelze se připojit k serveru proxy."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -47,26 +47,26 @@ msgstr ""
 "parametr: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:368
+#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Vyžadováno ověření: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:373
+#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Vyžadovaný zdroj nebyl nalezen: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:379
+#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Záznam byl od doby svého stažení změněn: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:393
+#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Kód chyby %u při ověřování: %s"
@@ -149,7 +149,7 @@ msgid "This comment may not be deleted."
 msgstr "Tento komentář nemůže být smazán."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Neplatný požadavek na hledání"
 
@@ -265,7 +265,7 @@ msgstr "Schází vyžadovaný element (%s)."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Byl zdvojený element (%s), který se může vyskytovat jen jednou."
@@ -274,7 +274,7 @@ msgstr "Byl zdvojený element (%s), který se může vyskytovat jen jednou."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "V elementu „%s“ schází vyžadovaný obsah."
@@ -284,73 +284,73 @@ msgstr "V elementu „%s“ schází vyžadovaný obsah."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "V elementu „%s“ nebyl obsah („%s“) ve formátu ISO 8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Ze serveru byl obdržen neplatný JSON: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:399
+#: ../gdata/gdata-service.c:398
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Kód chyby %u při dotazu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:405
+#: ../gdata/gdata-service.c:404
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Kód chyby %u při vkládání záznamu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:411
+#: ../gdata/gdata-service.c:410
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Kód chyby %u při aktualizaci záznamu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:417
+#: ../gdata/gdata-service.c:416
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Kód chyby %u při mazání záznamu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:423
+#: ../gdata/gdata-service.c:422
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Kód chyby %u při stahování: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:429
+#: ../gdata/gdata-service.c:428
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Kód chyby %u při odesílání: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:435
+#: ../gdata/gdata-service.c:434
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Kód chyby %u při běhu dávkové operace: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:722
+#: ../gdata/gdata-service.c:721
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neplatné přesměrované URI: %s"
 
-#: ../gdata/gdata-service.c:1394
+#: ../gdata/gdata-service.c:1401
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -449,6 +449,11 @@ msgstr "Abyste mohli kopírovat dokumenty, musíte projít ověřením."
 #: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "Abyste mohli přesouvat dokumenty a složky, musíte projít ověřením."
+
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Vlastnost „%s“ neuchovává obrázek"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
