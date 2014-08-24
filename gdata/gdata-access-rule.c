@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010, 2014 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -99,6 +99,7 @@ struct _GDataAccessRulePrivate {
 	gchar *scope_type;
 	gchar *scope_value;
 	gint64 edited;
+	gchar *key;
 };
 
 enum {
@@ -106,7 +107,8 @@ enum {
 	PROP_SCOPE_TYPE,
 	PROP_SCOPE_VALUE,
 	PROP_EDITED,
-	PROP_ETAG
+	PROP_ETAG,
+	PROP_KEY,
 };
 
 G_DEFINE_TYPE (GDataAccessRule, gdata_access_rule, GDATA_TYPE_ENTRY)
@@ -190,6 +192,22 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * GDataAccessRule:key:
+	 *
+	 * An optional authorisation key required to access this item with the given scope. If set, this restricts
+	 * access to those principals who have a copy of the key. The key is generated server-side and cannot be
+	 * modified by the client. If no authorisation key is set (and hence none is needed for access to the item),
+	 * this will be %NULL.
+	 *
+	 * Since: UNRELEASED
+	 */
+	g_object_class_install_property (gobject_class, PROP_KEY,
+	                                 g_param_spec_string ("key",
+	                                                      "Key", "An optional authorisation key required to access this item.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 	/* Override the ETag property since ETags don't seem to be supported for ACL entries. TODO: Investigate this further (might only be
 	 * unsupported for Google Calendar). */
 	g_object_class_override_property (gobject_class, PROP_ETAG, "etag");
@@ -260,6 +278,7 @@ gdata_access_rule_finalize (GObject *object)
 	g_free (priv->role);
 	g_free (priv->scope_type);
 	g_free (priv->scope_value);
+	g_free (priv->key);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_access_rule_parent_class)->finalize (object);
@@ -286,6 +305,9 @@ gdata_access_rule_get_property (GObject *object, guint property_id, GValue *valu
 		case PROP_ETAG:
 			/* Never return an ETag */
 			g_value_set_string (value, NULL);
+			break;
+		case PROP_KEY:
+			g_value_set_string (value, priv->key);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -315,6 +337,11 @@ gdata_access_rule_set_property (GObject *object, guint property_id, const GValue
 			break;
 		case PROP_ETAG:
 			/* Never set an ETag (note that this doesn't stop it being set in GDataEntry due to XML parsing) */
+			break;
+		case PROP_KEY:
+			g_free (self->priv->key);
+			self->priv->key = g_value_dup_string (value);
+			g_object_notify (object, "key");
 			break;
 		default:
 			/* We don't have any other property... */
@@ -358,6 +385,46 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 			self->priv->scope_type = (gchar*) scope_type;
 			self->priv->scope_value = (gchar*) scope_value;
+		} else if (xmlStrcmp (node->name, (xmlChar*) "withKey") == 0) {
+			/* gAcl:withKey */
+			gboolean found_role = FALSE;
+			xmlNode *child;
+			xmlChar *key;
+
+			/* Extract the key. */
+			key = xmlGetProp (node, (xmlChar *) "key");
+			if (key == NULL) {
+				return gdata_parser_error_required_property_missing (node, "key", error);
+			}
+
+			self->priv->key = (gchar *) key;
+
+			/* Look for a gAcl:role child element. */
+			for (child = node->children; child != NULL; child = child->next) {
+				if (xmlStrcmp (child->name, (xmlChar*) "role") == 0) {
+					xmlChar *role = xmlGetProp (child, (xmlChar *) "value");
+					if (role == NULL) {
+						return gdata_parser_error_required_property_missing (child, "value", error);
+					}
+
+					self->priv->role = (gchar *) role;
+					found_role = TRUE;
+				} else {
+					/* TODO: this logic copied from gdata-parsable.c.  Re-evaluate this at some point in the future.
+					 * If GeoRSS and GML support were to be used more widely, it might due to implement GML objects. */
+					xmlBuffer *buffer;
+
+					/* Unhandled XML */
+					buffer = xmlBufferCreate ();
+					xmlNodeDump (buffer, doc, child, 0, 0);
+					g_debug ("Unhandled XML in <gAcl:withKey>: %s", (gchar *) xmlBufferContent (buffer));
+					xmlBufferFree (buffer);
+				}
+			}
+
+			if (!found_role) {
+				return gdata_parser_error_required_element_missing ("role", "gAcl:withKey", error);
+			}
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
@@ -376,9 +443,18 @@ get_xml (GDataParsable *parsable, GString *xml_string)
 	/* Chain up to the parent class */
 	GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->get_xml (parsable, xml_string);
 
+	if (priv->key != NULL) {
+		/* gAcl:withKey; has to wrap gAcl:role */
+		gdata_parser_string_append_escaped (xml_string, "<gAcl:withKey key='", priv->key, "'>");
+	}
+
 	if (priv->role != NULL) {
 		/* gAcl:role */
 		gdata_parser_string_append_escaped (xml_string, "<gAcl:role value='", priv->role, "'/>");
+	}
+
+	if (priv->key != NULL) {
+		g_string_append (xml_string, "</gAcl:withKey>");
 	}
 
 	if (priv->scope_value != NULL) {
@@ -530,4 +606,21 @@ gdata_access_rule_get_edited (GDataAccessRule *self)
 {
 	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (self), -1);
 	return self->priv->edited;
+}
+
+/**
+ * gdata_access_rule_get_key:
+ * @self: a #GDataAccessRule
+ *
+ * Gets the #GDataAccessRule:key property.
+ *
+ * Return value: the access rule's authorisation key, or %NULL
+ *
+ * Since: UNRELEASED
+ */
+const gchar *
+gdata_access_rule_get_key (GDataAccessRule *self)
+{
+	g_return_val_if_fail (GDATA_IS_ACCESS_RULE (self), NULL);
+	return self->priv->key;
 }

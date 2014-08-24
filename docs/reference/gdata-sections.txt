@@ -691,6 +691,7 @@ gdata_access_rule_set_role
 gdata_access_rule_get_scope
 gdata_access_rule_set_scope
 gdata_access_rule_get_edited
+gdata_access_rule_get_key
 <SUBSECTION Standard>
 gdata_access_rule_get_type
 GDATA_ACCESS_RULE

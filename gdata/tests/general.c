@@ -1471,7 +1471,7 @@ static void
 test_access_rule_get_xml (void)
 {
 	GDataAccessRule *rule, *rule2;
-	gchar *xml, *role, *scope_type3, *scope_value3;
+	gchar *xml, *role, *scope_type3, *scope_value3, *key;
 	gint64 edited, edited2;
 	const gchar *scope_type, *scope_value, *scope_type2, *scope_value2;
 	GError *error = NULL;
@@ -1491,6 +1491,7 @@ test_access_rule_get_xml (void)
 	g_assert_cmpstr (scope_value, ==, "A scope value");
 	edited = gdata_access_rule_get_edited (rule);
 	g_assert_cmpuint (edited, >, 0); /* current time */
+	g_assert_cmpstr (gdata_access_rule_get_key (rule), ==, NULL);
 
 	/* Set the properties more conventionally */
 	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE);
@@ -1524,6 +1525,7 @@ test_access_rule_get_xml (void)
 	g_assert_cmpstr (scope_value, ==, scope_value2);
 	edited = gdata_access_rule_get_edited (rule2);
 	g_assert_cmpuint (edited, ==, -1); /* unspecified in XML */
+	g_assert_cmpstr (gdata_access_rule_get_key (rule), ==, gdata_access_rule_get_key (rule2));
 
 	/* Check properties a different way */
 	g_object_get (G_OBJECT (rule2),
@@ -1531,12 +1533,14 @@ test_access_rule_get_xml (void)
 	              "scope-type", &scope_type3,
 	              "scope-value", &scope_value3,
 	              "edited", &edited2,
+	              "key", &key,
 	              NULL);
 
 	g_assert_cmpstr (role, ==, gdata_access_rule_get_role (rule));
 	g_assert_cmpstr (scope_type, ==, scope_type3);
 	g_assert_cmpstr (scope_value, ==, scope_value3);
 	g_assert_cmpuint (edited2, ==, -1);
+	g_assert_cmpstr (key, ==, NULL);
 
 	g_free (role);
 	g_free (scope_type3);
@@ -1591,6 +1595,53 @@ test_access_rule_get_xml (void)
 }
 
 static void
+test_access_rule_get_xml_with_key (void)
+{
+	GDataAccessRule *rule;
+	gint64 edited;
+	const gchar *scope_type, *scope_value;
+	GError *error = NULL;
+
+	rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (GDATA_TYPE_ACCESS_RULE,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:withKey key='asdasd'><gAcl:role value='none'/></gAcl:withKey>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ACCESS_RULE (rule));
+
+	/* Check the properties. */
+	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, "none");
+	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
+	g_assert_cmpstr (scope_type, ==, "user");
+	g_assert_cmpstr (scope_value, ==, "foo@example.com");
+	edited = gdata_access_rule_get_edited (rule);
+	g_assert_cmpuint (edited, >, 0); /* current time */
+	g_assert_cmpstr (gdata_access_rule_get_key (rule), ==, "asdasd");
+
+	/* Check the outputted XML is the same. */
+	gdata_test_assert_xml (rule,
+		"<?xml version='1.0' encoding='UTF-8'?>"
+		"<entry xmlns='http://www.w3.org/2005/Atom' "
+		       "xmlns:gd='http://schemas.google.com/g/2005' "
+		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
+			"<title type='text'>none</title>"
+			"<id>an-id</id>"
+			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
+			"<gAcl:withKey key='asdasd'><gAcl:role value='none'/></gAcl:withKey>"
+			"<gAcl:scope type='user' value='foo@example.com'/>"
+		"</entry>");
+
+	g_object_unref (rule);
+}
+
+static void
 test_access_rule_error_handling (void)
 {
 	GDataAccessRule *rule;
@@ -1615,6 +1666,11 @@ test_access_rule_error_handling (void)
 	/* edited */
 	TEST_XML_ERROR_HANDLING ("<app:edited/>"); /* missing date */
 	TEST_XML_ERROR_HANDLING ("<app:edited>not a date</app:edited>"); /* bad date */
+
+	/* withKey */
+	TEST_XML_ERROR_HANDLING ("<gAcl:withKey><gAcl:role value='none'/></gAcl:withKey>");  /* missing key */
+	TEST_XML_ERROR_HANDLING ("<gAcl:withKey key='asd'/>");  /* missing role */
+	TEST_XML_ERROR_HANDLING ("<gAcl:withKey key='asd'><gAcl:role/></gAcl:withKey>");  /* missing role */
 
 #undef TEST_XML_ERROR_HANDLING
 }
@@ -4527,6 +4583,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/query/etag", test_query_etag);
 
 	g_test_add_func ("/access-rule/get_xml", test_access_rule_get_xml);
+	g_test_add_func ("/access-rule/get_xml/with_key", test_access_rule_get_xml_with_key);
 	g_test_add_func ("/access-rule/error_handling", test_access_rule_error_handling);
 	g_test_add_func ("/access-rule/escaping", test_access_rule_escaping);
 
