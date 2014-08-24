@@ -308,9 +308,6 @@ gboolean gdata_async_test_cancellation_cb (GDataAsyncTestData *async_data);
 void gdata_set_up_async_test_data (GDataAsyncTestData *async_data, gconstpointer test_data);
 void gdata_tear_down_async_test_data (GDataAsyncTestData *async_data, gconstpointer test_data);
 
-/* Debugging output in case of assert failure */
-void gdata_test_debug_output (void);
-
 /**
  * GDataTestRequestErrorData:
  * @status_code: HTTP response status code
