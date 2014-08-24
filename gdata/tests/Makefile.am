@@ -23,48 +23,48 @@ LIBS = \
 	$(GNOME_LIBS)				\
 	$(UHTTPMOCK_LIBS)
 
-noinst_PROGRAMS = $(TEST_PROGS)
+noinst_PROGRAMS = $(TESTS)
 
 TEST_SRCS = \
 	common.c \
 	common.h \
 	$(NULL)
 
-TEST_PROGS			+= general
+TESTS				 = general
 general_SOURCES			 = general.c $(TEST_SRCS)
 
-TEST_PROGS			+= youtube
+TESTS				+= youtube
 youtube_SOURCES			 = youtube.c $(TEST_SRCS)
 
-TEST_PROGS			+= calendar
+TESTS				+= calendar
 calendar_SOURCES		 = calendar.c $(TEST_SRCS)
 
-TEST_PROGS			+= contacts
+TESTS				+= contacts
 contacts_SOURCES		 = contacts.c $(TEST_SRCS)
 
-TEST_PROGS			+= picasaweb
+TESTS				+= picasaweb
 picasaweb_SOURCES		 = picasaweb.c $(TEST_SRCS)
 
-TEST_PROGS			+= documents
+TESTS				+= documents
 documents_SOURCES		 = documents.c $(TEST_SRCS)
 
 # FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
-#TEST_PROGS			+= memory
+#TESTS				+= memory
 #memory_SOURCES			 = memory.c $(TEST_SRCS)
 
-TEST_PROGS			+= perf
+TESTS				+= perf
 perf_SOURCES			 = perf.c $(TEST_SRCS)
 
-TEST_PROGS			+= streams
+TESTS				+= streams
 streams_SOURCES			 = streams.c $(TEST_SRCS)
 
-TEST_PROGS			+= authorization
+TESTS				+= authorization
 authorization_SOURCES		 = authorization.c $(TEST_SRCS)
 
-TEST_PROGS			+= client-login-authorizer
+TESTS				+= client-login-authorizer
 client_login_authorizer_SOURCES	 = client-login-authorizer.c $(TEST_SRCS)
 
-TEST_PROGS			+= oauth1-authorizer
+TESTS				+= oauth1-authorizer
 oauth1_authorizer_SOURCES	 = oauth1-authorizer.c $(TEST_SRCS)
 
 EXTRA_DIST += \
