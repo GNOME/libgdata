@@ -2290,6 +2290,24 @@ _gdata_service_get_log_level (void)
 	return level;
 }
 
+/* Build a User-Agent value to send to the server.
+ *
+ * If we support gzip, we can request gzip from the server by both including
+ * the appropriate Accept-Encoding header and putting 'gzip' in the User-Agent
+ * header:
+ *  - https://developers.google.com/drive/web/performance#gzip
+ *  - http://googleappsdeveloper.blogspot.co.uk/2011/12/optimizing-bandwidth-usage-with-gzip.html
+ */
+static gchar *
+build_user_agent (gboolean supports_gzip)
+{
+	if (supports_gzip) {
+		return g_strdup_printf ("libgdata/%s - gzip", VERSION);
+	} else {
+		return g_strdup_printf ("libgdata/%s", VERSION);
+	}
+}
+
 /**
  * _gdata_service_build_session:
  *
@@ -2305,6 +2323,7 @@ _gdata_service_build_session (void)
 {
 	SoupSession *session;
 	gboolean ssl_strict = TRUE;
+	gchar *user_agent;
 
 	/* Iff LIBGDATA_LAX_SSL_CERTIFICATES=1, relax SSL certificate validation to allow using invalid/unsigned certificates for testing. */
 	if (g_strcmp0 (g_getenv ("LIBGDATA_LAX_SSL_CERTIFICATES"), "1") == 0) {
@@ -2314,6 +2333,10 @@ _gdata_service_build_session (void)
 	session = soup_session_new_with_options ("ssl-strict", ssl_strict,
 	                                         "timeout", 0,
 	                                         NULL);
+
+	user_agent = build_user_agent (soup_session_has_feature (session, SOUP_TYPE_CONTENT_DECODER));
+	g_object_set (session, "user-agent", user_agent, NULL);
+	g_free (user_agent);
 
 	soup_session_add_feature_by_type (session, SOUP_TYPE_PROXY_RESOLVER_DEFAULT);
 
