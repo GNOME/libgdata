@@ -1,5 +1,20 @@
 include $(top_srcdir)/gtester.mk
 
+# Helper library.
+noinst_LTLIBRARIES = libgdata-test.la
+
+libgdata_test_la_SOURCES = \
+	common.c \
+	common.h \
+	$(NULL)
+
+libgdata_test_la_LIBADD = \
+	$(top_builddir)/gdata/libgdata.la \
+	$(GDATA_LIBS) \
+	$(UHTTPMOCK_LIBS) \
+	$(NULL)
+
+# Flags for the helper library and all test binaries
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/ \
 	-I$(top_srcdir)/gdata \
@@ -16,7 +31,8 @@ AM_CFLAGS = \
 	$(UHTTPMOCK_CFLAGS) \
 	$(NULL)
 
-LIBS = \
+LDADD = \
+	libgdata-test.la \
 	$(top_builddir)/gdata/libgdata.la \
 	$(GDK_PIXBUF_LIBS) \
 	$(GDATA_LIBS) \
@@ -26,47 +42,22 @@ LIBS = \
 
 noinst_PROGRAMS = $(TESTS)
 
-TEST_SRCS = \
-	common.c \
-	common.h \
+TESTS = \
+	general \
+	youtube \
+	calendar \
+	contacts \
+	picasaweb \
+	documents \
+	perf \
+	streams \
+	authorization \
+	client-login-authorizer \
+	oauth1-authorizer \
 	$(NULL)
-
-TESTS = general
-general_SOURCES = general.c $(TEST_SRCS)
-
-TESTS += youtube
-youtube_SOURCES = youtube.c $(TEST_SRCS)
-
-TESTS += calendar
-calendar_SOURCES = calendar.c $(TEST_SRCS)
-
-TESTS += contacts
-contacts_SOURCES = contacts.c $(TEST_SRCS)
-
-TESTS += picasaweb
-picasaweb_SOURCES = picasaweb.c $(TEST_SRCS)
-
-TESTS += documents
-documents_SOURCES = documents.c $(TEST_SRCS)
 
 # FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
 #TESTS += memory
-#memory_SOURCES = memory.c $(TEST_SRCS)
-
-TESTS += perf
-perf_SOURCES = perf.c $(TEST_SRCS)
-
-TESTS += streams
-streams_SOURCES = streams.c $(TEST_SRCS)
-
-TESTS += authorization
-authorization_SOURCES = authorization.c $(TEST_SRCS)
-
-TESTS += client-login-authorizer
-client_login_authorizer_SOURCES = client-login-authorizer.c $(TEST_SRCS)
-
-TESTS += oauth1-authorizer
-oauth1_authorizer_SOURCES = oauth1-authorizer.c $(TEST_SRCS)
 
 EXTRA_DIST += \
 	photo.jpg \
