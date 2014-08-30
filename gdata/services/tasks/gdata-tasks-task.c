@@ -119,7 +119,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 *
 	 * Since: 0.15.0
 	 */
-	g_object_class_install_property (gobject_class, PROP_STATUS,
+	g_object_class_install_property (gobject_class, PROP_POSITION,
 	                                 g_param_spec_string ("position",
 	                                 "Position of task", "Position of the task among sibling tasks using lexicographical order.",
 	                                 NULL,
