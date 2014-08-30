@@ -25,6 +25,9 @@
  *
  * #GDataTasksTask is a subclass of #GDataEntry to represent a task in a tasklist from Google Tasks.
  *
+ * All functionality of Tasks is currently supported except
+ * <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/tasks#links">links</ulink>.
+ *
  * For more details of Google Tasks API, see the <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/">
  * online documentation</ulink>.
  *
