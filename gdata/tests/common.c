@@ -930,7 +930,10 @@ gdata_test_set_https_port (UhmServer *server)
 void
 gdata_test_mock_server_start_trace (UhmServer *server, const gchar *trace_filename)
 {
-	uhm_server_start_trace (server, trace_filename, NULL);
+	GError *child_error = NULL;
+
+	uhm_server_start_trace (server, trace_filename, &child_error);
+	g_assert_no_error (child_error);
 	gdata_test_set_https_port (server);
 }
 
