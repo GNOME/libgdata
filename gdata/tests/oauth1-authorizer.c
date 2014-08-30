@@ -145,26 +145,6 @@ set_up_oauth1_authorizer_data_locale (OAuth1AuthorizerData *data, gconstpointer 
 	connect_to_oauth1_authorizer (data);
 }
 
-/* Given an authentication URI, prompt the user to go to that URI, grant access to the test application and enter the resulting verifier */
-static gchar *
-query_user_for_verifier (const gchar *authentication_uri)
-{
-	char verifier[100];
-
-	/* Wait for the user to retrieve and enter the verifier */
-	g_print ("Please navigate to the following URI and grant access: %s\n", authentication_uri);
-	g_print ("Enter verifier (EOF to skip test): ");
-	if (scanf ("%100s", verifier) != 1) {
-		/* Skip the test */
-		g_test_message ("Skipping test on user request.");
-		return NULL;
-	}
-
-	g_test_message ("Proceeding with user-provided verifier “%s”.", verifier);
-
-	return g_strdup (verifier);
-}
-
 static void
 set_up_oauth1_authorizer_data_authenticated (OAuth1AuthorizerData *data, gconstpointer user_data)
 {
@@ -181,7 +161,7 @@ set_up_oauth1_authorizer_data_authenticated (OAuth1AuthorizerData *data, gconstp
 	g_assert (authentication_uri != NULL);
 
 	/* Get the verifier off the user */
-	verifier = query_user_for_verifier (authentication_uri);
+	verifier = gdata_test_query_user_for_verifier (authentication_uri);
 
 	g_free (authentication_uri);
 
@@ -689,7 +669,7 @@ set_up_oauth1_authorizer_interactive_data (OAuth1AuthorizerInteractiveData *data
 	g_assert (authentication_uri != NULL);
 
 	/* Wait for the user to retrieve and enter the verifier */
-	data->verifier = query_user_for_verifier (authentication_uri);
+	data->verifier = gdata_test_query_user_for_verifier (authentication_uri);
 
 	g_free (authentication_uri);
 

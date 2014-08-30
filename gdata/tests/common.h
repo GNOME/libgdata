@@ -337,6 +337,8 @@ void gdata_test_mock_server_start_trace (UhmServer *server, const gchar *trace_f
 gboolean gdata_test_mock_server_handle_message_error (UhmServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data);
 gboolean gdata_test_mock_server_handle_message_timeout (UhmServer *server, SoupMessage *message, SoupClientContext *client, gpointer user_data);
 
+gchar *gdata_test_query_user_for_verifier (const gchar *authentication_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
 G_END_DECLS
 
 #endif /* !GDATA_TEST_COMMON_H */

@@ -981,3 +981,32 @@ gdata_test_mock_server_handle_message_timeout (UhmServer *server, SoupMessage *m
 
 	return TRUE;
 }
+
+/**
+ * gdata_test_query_user_for_verifier:
+ * @authentication_uri: authentication URI to present
+ *
+ * Given an authentication URI, prompt the user to go to that URI, grant access
+ * to the test application and enter the resulting verifier. This is to be used
+ * with interactive OAuth authorisation requests.
+ *
+ * Returns: (transfer full): verifier from the web page
+ */
+gchar *
+gdata_test_query_user_for_verifier (const gchar *authentication_uri)
+{
+	char verifier[100];
+
+	/* Wait for the user to retrieve and enter the verifier */
+	g_print ("Please navigate to the following URI and grant access: %s\n", authentication_uri);
+	g_print ("Enter verifier (EOF to skip test): ");
+	if (scanf ("%100s", verifier) != 1) {
+		/* Skip the test */
+		g_test_message ("Skipping test on user request.");
+		return NULL;
+	}
+
+	g_test_message ("Proceeding with user-provided verifier “%s”.", verifier);
+
+	return g_strdup (verifier);
+}
