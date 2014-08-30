@@ -155,8 +155,11 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	/**
 	 * GDataTasksTask:due:
 	 *
-	 * Due date of the task (as a RFC 3339 timestamp).
-	 * This field is <code class="literal">-1</code> if task has not due date asigned.
+	 * Due date of the task (as a RFC 3339 timestamp; seconds since the UNIX
+	 * epoch).
+	 *
+	 * This field is <code class="literal">-1</code> if the task has no due
+	 * date assigned.
 	 *
 	 * Since: 0.15.0
 	 */
@@ -169,8 +172,11 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	/**
 	 * GDataTasksTask:completed:
 	 *
-	 * Completion date of the task (as a RFC 3339 timestamp).
-	 * This field is <code class="literal">-1</code> if the task has not been completed.
+	 * Completion date of the task (as a RFC 3339 timestamp; seconds since
+	 * the UNIX epoch).
+	 *
+	 * This field is <code class="literal">-1</code> if the task has not
+	 * been completed.
 	 *
 	 * Since: 0.15.0
 	 */
