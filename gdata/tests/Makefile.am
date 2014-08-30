@@ -17,11 +17,12 @@ AM_CFLAGS = \
 	$(NULL)
 
 LIBS = \
-	$(top_builddir)/gdata/libgdata.la	\
-	$(GDK_PIXBUF_LIBS)			\
-	$(GDATA_LIBS)				\
-	$(GNOME_LIBS)				\
-	$(UHTTPMOCK_LIBS)
+	$(top_builddir)/gdata/libgdata.la \
+	$(GDK_PIXBUF_LIBS) \
+	$(GDATA_LIBS) \
+	$(GNOME_LIBS) \
+	$(UHTTPMOCK_LIBS) \
+	$(NULL)
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -30,52 +31,52 @@ TEST_SRCS = \
 	common.h \
 	$(NULL)
 
-TESTS				 = general
-general_SOURCES			 = general.c $(TEST_SRCS)
+TESTS = general
+general_SOURCES = general.c $(TEST_SRCS)
 
-TESTS				+= youtube
-youtube_SOURCES			 = youtube.c $(TEST_SRCS)
+TESTS += youtube
+youtube_SOURCES = youtube.c $(TEST_SRCS)
 
-TESTS				+= calendar
-calendar_SOURCES		 = calendar.c $(TEST_SRCS)
+TESTS += calendar
+calendar_SOURCES = calendar.c $(TEST_SRCS)
 
-TESTS				+= contacts
-contacts_SOURCES		 = contacts.c $(TEST_SRCS)
+TESTS += contacts
+contacts_SOURCES = contacts.c $(TEST_SRCS)
 
-TESTS				+= picasaweb
-picasaweb_SOURCES		 = picasaweb.c $(TEST_SRCS)
+TESTS += picasaweb
+picasaweb_SOURCES = picasaweb.c $(TEST_SRCS)
 
-TESTS				+= documents
-documents_SOURCES		 = documents.c $(TEST_SRCS)
+TESTS += documents
+documents_SOURCES = documents.c $(TEST_SRCS)
 
 # FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
-#TESTS				+= memory
-#memory_SOURCES			 = memory.c $(TEST_SRCS)
+#TESTS += memory
+#memory_SOURCES = memory.c $(TEST_SRCS)
 
-TESTS				+= perf
-perf_SOURCES			 = perf.c $(TEST_SRCS)
+TESTS += perf
+perf_SOURCES = perf.c $(TEST_SRCS)
 
-TESTS				+= streams
-streams_SOURCES			 = streams.c $(TEST_SRCS)
+TESTS += streams
+streams_SOURCES = streams.c $(TEST_SRCS)
 
-TESTS				+= authorization
-authorization_SOURCES		 = authorization.c $(TEST_SRCS)
+TESTS += authorization
+authorization_SOURCES = authorization.c $(TEST_SRCS)
 
-TESTS				+= client-login-authorizer
-client_login_authorizer_SOURCES	 = client-login-authorizer.c $(TEST_SRCS)
+TESTS += client-login-authorizer
+client_login_authorizer_SOURCES = client-login-authorizer.c $(TEST_SRCS)
 
-TESTS				+= oauth1-authorizer
-oauth1_authorizer_SOURCES	 = oauth1-authorizer.c $(TEST_SRCS)
+TESTS += oauth1-authorizer
+oauth1_authorizer_SOURCES = oauth1-authorizer.c $(TEST_SRCS)
 
 EXTRA_DIST += \
-	photo.jpg		\
-	sample.ogg		\
-	test.doc		\
-	test.ods		\
-	test.odt		\
-	test.ppt		\
-	test.xls		\
-	test_updated.odt	\
+	photo.jpg \
+	sample.ogg \
+	test.doc \
+	test.ods \
+	test.odt \
+	test.ppt \
+	test.xls \
+	test_updated.odt \
 	test_updated_file.ppt \
 	cert.pem \
 	key.pem \
