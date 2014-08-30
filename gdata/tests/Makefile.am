@@ -51,6 +51,7 @@ TESTS = \
 	contacts \
 	picasaweb \
 	documents \
+	tasks \
 	perf \
 	streams \
 	authorization \
@@ -372,6 +373,9 @@ EXTRA_DIST += \
 	traces/youtube/upload-async \
 	traces/youtube/upload-async-cancellation \
 	traces/youtube/upload-simple \
+	\
+	traces/tasks/authentication \
+	traces/tasks/global-authentication \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
