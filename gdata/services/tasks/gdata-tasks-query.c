@@ -54,11 +54,6 @@ struct _GDataTasksQueryPrivate {
 	gboolean show_completed;
 	gboolean show_deleted;
 	gboolean show_hidden;
-
-	/* These params are here not in GDataQuery due of differently named query params for JSON protocols therefore need for different parse_uri */
-	gint max_results;
-	gchar *page_token;
-	gint64 updated_min;
 };
 
 enum {
@@ -69,9 +64,6 @@ enum {
 	PROP_SHOW_COMPLETED,
 	PROP_SHOW_DELETED,
 	PROP_SHOW_HIDDEN,
-	PROP_MAX_RESULTS,
-	PROP_PAGE_TOKEN,
-	PROP_UPDATED_MIN,
 };
 
 G_DEFINE_TYPE (GDataTasksQuery, gdata_tasks_query, GDATA_TYPE_QUERY)
