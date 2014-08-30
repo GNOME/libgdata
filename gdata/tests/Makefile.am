@@ -6,6 +6,8 @@ noinst_LTLIBRARIES = libgdata-test.la
 libgdata_test_la_SOURCES = \
 	common.c \
 	common.h \
+	gdata-dummy-authorizer.c \
+	gdata-dummy-authorizer.h \
 	$(NULL)
 
 libgdata_test_la_LIBADD = \

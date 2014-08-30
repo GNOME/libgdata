@@ -66,7 +66,10 @@ IGNORE_HFILES = \
 	gdata-buffer.h		\
 	gdata-batch-private.h	\
 	gdata-batch-feed.h	\
-	gdata-gd-feed-link.h
+	gdata-gd-feed-link.h \
+	gdata-dummy-authorizer.c \
+	gdata-dummy-authorizer.h \
+	$(NULL)
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
