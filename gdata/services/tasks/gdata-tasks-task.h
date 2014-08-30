@@ -28,6 +28,33 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_TASKS_STATUS_NEEDS_ACTION:
+ *
+ * A value for #GDataTasksTask:status indicating the task still needs action
+ * before it is complete.
+ *
+ * Reference:
+ * <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/tasks#status">
+ * Google Tasks documentation</ulink>.
+ *
+ * Since: UNRELEASED
+ */
+#define GDATA_TASKS_STATUS_NEEDS_ACTION "needsAction"
+
+/**
+ * GDATA_TASKS_STATUS_COMPLETED:
+ *
+ * A value for #GDataTasksTask:status indicating the task has been completed.
+ *
+ * Reference:
+ * <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/tasks#status">
+ * Google Tasks documentation</ulink>.
+ *
+ * Since: UNRELEASED
+ */
+#define GDATA_TASKS_STATUS_COMPLETED "completed"
+
 #define GDATA_TYPE_TASKS_TASK		(gdata_tasks_task_get_type ())
 #define GDATA_TASKS_TASK(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_TASKS_TASK, GDataTasksTask))
 #define GDATA_TASKS_TASK_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_TASKS_TASK, GDataTasksTaskClass))

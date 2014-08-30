@@ -2523,6 +2523,8 @@ GDataTasksQueryPrivate
 <SECTION>
 <FILE>gdata-tasks-task</FILE>
 <TITLE>GDataTasksTask</TITLE>
+GDATA_TASKS_STATUS_NEEDS_ACTION
+GDATA_TASKS_STATUS_COMPLETED
 GDataTasksTask
 GDataTasksTaskClass
 gdata_tasks_task_new

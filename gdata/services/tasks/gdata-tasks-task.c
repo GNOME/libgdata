@@ -135,13 +135,14 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	/**
 	 * GDataTasksTask:status:
 	 *
-	 * Status of the task. This is either "needsAction" or "completed".
+	 * Status of the task. This is either %GDATA_TASKS_STATUS_NEEDS_ACTION
+	 * or %GDATA_TASKS_STATUS_COMPLETED.
 	 *
 	 * Since: 0.15.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_STATUS,
 	                                 g_param_spec_string ("status",
-	                                 "Status of task", "Status of the task. This is either \"needsAction\" or \"completed\".",
+	                                 "Status of task", "Status of the task.",
 	                                 NULL,
 	                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
