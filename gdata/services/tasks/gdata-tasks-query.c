@@ -406,6 +406,9 @@ gdata_tasks_query_set_completed_max (GDataTasksQuery *self, gint64 completed_max
 
 	self->priv->completed_max = completed_max;
 	g_object_notify (G_OBJECT (self), "completed-max");
+
+	/* Our current ETag will no longer be relevant. */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -445,6 +448,9 @@ gdata_tasks_query_set_completed_min (GDataTasksQuery *self, gint64 completed_min
 
 	self->priv->completed_min = completed_min;
 	g_object_notify (G_OBJECT (self), "completed-min");
+
+	/* Our current ETag will no longer be relevant. */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -484,6 +490,9 @@ gdata_tasks_query_set_due_max (GDataTasksQuery *self, gint64 due_max)
 
 	self->priv->due_max = due_max;
 	g_object_notify (G_OBJECT (self), "due-max");
+
+	/* Our current ETag will no longer be relevant. */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 
@@ -524,6 +533,9 @@ gdata_tasks_query_set_due_min (GDataTasksQuery *self, gint64 due_min)
 
 	self->priv->due_min = due_min;
 	g_object_notify (G_OBJECT (self), "due-min");
+
+	/* Our current ETag will no longer be relevant. */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -559,6 +571,9 @@ gdata_tasks_query_set_show_completed (GDataTasksQuery *self, gboolean show_compl
 
 	self->priv->show_completed = show_completed;
 	g_object_notify (G_OBJECT (self), "show-completed");
+
+	/* Our current ETag will no longer be relevant. */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -594,6 +609,9 @@ gdata_tasks_query_set_show_deleted (GDataTasksQuery *self, gboolean show_deleted
 
 	self->priv->show_deleted = show_deleted;
 	g_object_notify (G_OBJECT (self), "show-deleted");
+
+	/* Our current ETag will no longer be relevant. */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
 /**
@@ -629,4 +647,7 @@ gdata_tasks_query_set_show_hidden (GDataTasksQuery *self, gboolean show_hidden)
 
 	self->priv->show_hidden = show_hidden;
 	g_object_notify (G_OBJECT (self), "show-hidden");
+
+	/* Our current ETag will no longer be relevant. */
+	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
