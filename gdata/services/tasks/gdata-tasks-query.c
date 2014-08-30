@@ -355,7 +355,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  * gdata_tasks_query_new:
  * @q: (allow-none): a query string, or %NULL
  *
- * Creates a new #GDataTasksQuery with its #GDataQuery:q property set to @q.
+ * Creates a new #GDataTasksQuery. @q is unused and must be set to %NULL.
  *
  * Return value: a new #GDataTasksQuery
  *
@@ -364,7 +364,9 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 GDataTasksQuery *
 gdata_tasks_query_new (const gchar *q)
 {
-	return g_object_new (GDATA_TYPE_TASKS_QUERY, "q", q, NULL);
+	/* Ignore the q parameter, as it's not used in any of the queries and
+	 * will cause errors. */
+	return g_object_new (GDATA_TYPE_TASKS_QUERY, NULL);
 }
 
 /**
