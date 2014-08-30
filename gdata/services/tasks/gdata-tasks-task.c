@@ -82,6 +82,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataTasksTaskPrivate));
 
@@ -92,6 +93,8 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	parsable_class->parse_json = parse_json;
 	parsable_class->get_json = get_json;
 	parsable_class->get_content_type = get_content_type;
+
+	entry_class->kind_term = "tasks#task";
 
 	/**
 	 * GDataTasksTask:parent:

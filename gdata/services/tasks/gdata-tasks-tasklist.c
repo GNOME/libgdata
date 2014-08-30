@@ -48,7 +48,11 @@ static void
 gdata_tasks_tasklist_class_init (GDataTasksTasklistClass *klass)
 {
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
+	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
+
 	parsable_class->get_content_type = get_content_type;
+
+	entry_class->kind_term = "tasks#taskList";
 }
 
 static void
