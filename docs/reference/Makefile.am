@@ -104,16 +104,6 @@ include $(top_srcdir)/gtk-doc.make
 # --rebuild-types
 SCANOBJ_FILES += $(DOC_MODULE).types
 
-distclean-local: distclean-docs
-distclean-docs:
-	cd $(srcdir) && \
-	  rm -rf xml $(REPORT_FILES) \
-	         $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt
-
-maintainer-clean-local: maintainer-clean-docs
-maintainer-clean-docs: clean
-	cd $(srcdir) && rm -rf xml html
-
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
 EXTRA_DIST += \
