@@ -70,6 +70,9 @@ typedef enum {
  * @GDATA_SERVICE_ERROR_NETWORK_ERROR: The service is unavailable due to local network errors (e.g. no Internet connection)
  * @GDATA_SERVICE_ERROR_PROXY_ERROR: The service is unavailable due to proxy network errors (e.g. proxy unreachable)
  * @GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION: Generic error when running a batch operation and the whole operation fails
+ * @GDATA_SERVICE_ERROR_API_QUOTA_EXCEEDED: The API request quota for this
+ * developer account has been exceeded for the current time period (e.g. day).
+ * Try again later. (Since: UNRELEASED.)
  *
  * Error codes for #GDataService operations.
  **/
@@ -84,7 +87,8 @@ typedef enum {
 	GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
 	GDATA_SERVICE_ERROR_NETWORK_ERROR,
 	GDATA_SERVICE_ERROR_PROXY_ERROR,
-	GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION
+	GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION,
+	GDATA_SERVICE_ERROR_API_QUOTA_EXCEEDED,
 } GDataServiceError;
 
 /**
