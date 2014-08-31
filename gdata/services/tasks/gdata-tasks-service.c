@@ -45,7 +45,13 @@
 
 /* Standards reference here: https://developers.google.com/google-apps/tasks/v1/reference/ */
 
+static void parse_error_response (GDataService *self,
+                                  GDataOperationType operation_type,
+                                  guint status, const gchar *reason_phrase,
+                                  const gchar *response_body, gint length,
+                                  GError **error);
 static GList *get_authorization_domains (void);
+
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (tasks, "tasks", "https://www.googleapis.com/auth/tasks")
 G_DEFINE_TYPE (GDataTasksService, gdata_tasks_service, GDATA_TYPE_SERVICE)
 
@@ -53,7 +59,10 @@ static void
 gdata_tasks_service_class_init (GDataTasksServiceClass *klass)
 {
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
+
 	service_class->feed_type = GDATA_TYPE_FEED;
+
+	service_class->parse_error_response = parse_error_response;
 	service_class->get_authorization_domains = get_authorization_domains;
 }
 
@@ -61,6 +70,181 @@ static void
 gdata_tasks_service_init (GDataTasksService *self)
 {
 	/* Nothing to see here */
+}
+
+/* The error format used by the Google Tasks API doesn’t seem to be documented
+ * anywhere, which is a little frustrating. Here’s an example of it:
+ *     {
+ *      "error": {
+ *       "errors": [
+ *        {
+ *         "domain": "usageLimits",
+ *         "reason": "dailyLimitExceededUnreg",
+ *         "message": "Daily Limit for Unauthenticated Use Exceeded.",
+ *         "extendedHelp": "https://code.google.com/apis/console"
+ *        }
+ *       ],
+ *       "code": 403,
+ *       "message": "Daily Limit for Unauthenticated Use Exceeded."
+ *      }
+ *     }
+ * or:
+ *     {
+ *      "error": {
+ *       "errors": [
+ *        {
+ *         "domain": "global",
+ *         "reason": "authError",
+ *         "message": "Invalid Credentials",
+ *         "locationType": "header",
+ *         "location": "Authorization"
+ *        }
+ *       ],
+ *       "code": 401,
+ *       "message": "Invalid Credentials"
+ *      }
+ *     }
+ */
+static void
+parse_error_response (GDataService *self, GDataOperationType operation_type,
+                      guint status, const gchar *reason_phrase,
+                      const gchar *response_body, gint length, GError **error)
+{
+	JsonParser *parser = NULL;  /* owned */
+	JsonReader *reader = NULL;  /* owned */
+	gint i;
+	GError *child_error = NULL;
+
+	if (response_body == NULL) {
+		goto parent;
+	}
+
+	if (length == -1) {
+		length = strlen (response_body);
+	}
+
+	parser = json_parser_new ();
+	if (!json_parser_load_from_data (parser, response_body, length,
+	                                 &child_error)) {
+		goto parent;
+	}
+
+	reader = json_reader_new (json_parser_get_root (parser));
+
+	/* Check that the outermost node is an object. */
+	if (!json_reader_is_object (reader)) {
+		goto parent;
+	}
+
+	/* Grab the ‘error’ member, then its ‘errors’ member. */
+	if (!json_reader_read_member (reader, "error") ||
+	    !json_reader_is_object (reader) ||
+	    !json_reader_read_member (reader, "errors") ||
+	    !json_reader_is_array (reader)) {
+		goto parent;
+	}
+
+	/* Parse each of the errors. Return the first one, and print out any
+	 * others. */
+	for (i = 0; i < json_reader_count_elements (reader); i++) {
+		const gchar *domain, *reason, *message, *extended_help;
+		const gchar *location_type, *location;
+
+		/* Parse the error. */
+		if (!json_reader_read_element (reader, i) ||
+		    !json_reader_is_object (reader)) {
+			goto parent;
+		}
+
+		json_reader_read_member (reader, "domain");
+		domain = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "reason");
+		reason = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "message");
+		message = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "extendedHelp");
+		extended_help = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "locationType");
+		location_type = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "location");
+		location = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		/* End the error element. */
+		json_reader_end_element (reader);
+
+		/* Create an error message, but only for the first error */
+		if (error == NULL || *error == NULL) {
+			if (g_strcmp0 (domain, "usageLimits") == 0 &&
+			    g_strcmp0 (reason,
+			               "dailyLimitExceededUnreg") == 0) {
+				/* Daily Limit for Unauthenticated Use
+				 * Exceeded. */
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_API_QUOTA_EXCEEDED,
+				             _("You have made too many API "
+				               "calls recently. Please wait a "
+				               "few minutes and try again."));
+			} else if (g_strcmp0 (domain, "global") == 0 &&
+			           g_strcmp0 (reason, "authError") == 0) {
+				/* Authentication problem */
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+				             _("You must be authenticated to "
+				               "do this."));
+			} else {
+				/* Unknown or validation (protocol) error. Fall
+				 * back to working off the HTTP status code. */
+				g_warning ("Unknown error code ‘%s’ in domain "
+				           "‘%s’ received with location type "
+				           "‘%s’, location ‘%s’, extended help "
+				           "‘%s’ and message ‘%s’.",
+				           reason, domain, location_type,
+				           location, extended_help, message);
+
+				goto parent;
+			}
+		} else {
+			/* For all errors after the first, log the error in the
+			 * terminal. */
+			g_debug ("Error message received in response: domain "
+			         "‘%s’, reason ‘%s’, extended help ‘%s’, "
+			         "message ‘%s’, location type ‘%s’, location "
+			         "‘%s’.",
+			         domain, reason, extended_help, message,
+			         location_type, location);
+		}
+	}
+
+	/* End the ‘errors’ and ‘error’ members. */
+	json_reader_end_element (reader);
+	json_reader_end_element (reader);
+
+	g_clear_object (&reader);
+	g_clear_object (&parser);
+
+	/* Ensure we’ve actually set an error message. */
+	g_assert (error == NULL || *error != NULL);
+
+	return;
+
+parent:
+	g_clear_object (&reader);
+	g_clear_object (&parser);
+
+	/* Chain up to the parent class */
+	GDATA_SERVICE_CLASS (gdata_tasks_service_parent_class)->parse_error_response (self, operation_type, status, reason_phrase,
+	                                                                              response_body, length, error);
 }
 
 static GList *
