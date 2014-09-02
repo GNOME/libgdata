@@ -13,11 +13,11 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-03-07 10:20+0000\n"
-"PO-Revision-Date: 2014-03-07 14:25+0100\n"
+"POT-Creation-Date: 2014-09-02 09:27+0000\n"
+"PO-Revision-Date: 2014-09-02 22:54+0200\n"
 "Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -150,7 +150,7 @@ msgid "This comment may not be deleted."
 msgstr "Ce commentaire ne peut pas être supprimé."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Requête de positionnement non valide"
 
@@ -267,7 +267,7 @@ msgstr "Un élément requis (%s) est manquant."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Un élément singleton (%s) est en double."
@@ -276,7 +276,7 @@ msgstr "Un élément singleton (%s) est en double."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Un élément « %s » ne contient pas le contenu requis."
@@ -286,7 +286,7 @@ msgstr "Un élément « %s » ne contient pas le contenu requis."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr ""
@@ -294,7 +294,7 @@ msgstr ""
 "8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "JSON non valide reçu du serveur : %s"
@@ -354,7 +354,7 @@ msgstr "Code d'erreur %u lors du lancement d'un lot d'opérations : %s"
 msgid "Invalid redirect URI: %s"
 msgstr "L'URI redirigé n'est pas valide : %s"
 
-#: ../gdata/gdata-service.c:1393
+#: ../gdata/gdata-service.c:1401
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -455,6 +455,11 @@ msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Vous devez vous authentifier pour déplacer des documents et des dossiers."
 
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "La propriété « %s » ne contient pas une image"
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
@@ -492,7 +497,8 @@ msgstr "Vous devez vous authentifier pour insérer un album."
 #: ../gdata/services/tasks/gdata-tasks-service.c:145
 #: ../gdata/services/tasks/gdata-tasks-service.c:196
 msgid "You must be authenticated to query all tasklists."
-msgstr "Vous devez vous authentifier pour interroger toutes les listes de tâches."
+msgstr ""
+"Vous devez vous authentifier pour interroger toutes les listes de tâches."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:244
 #: ../gdata/services/tasks/gdata-tasks-service.c:300
