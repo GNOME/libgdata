@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 0.15.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-12 19:36+0100\n"
-"PO-Revision-Date: 2014-02-12 19:37+0100\n"
+"POT-Creation-Date: 2014-09-06 14:05+0200\n"
+"PO-Revision-Date: 2014-09-06 14:05+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -143,7 +143,7 @@ msgid "This comment may not be deleted."
 msgstr "Denne kommentaren kan ikke slettes."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Ugyldig søkeforespørsel"
 
@@ -259,7 +259,7 @@ msgstr "Et nødvendig element (%s) var ikke tilstede."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Et enkelt element (%s) var duplisert."
@@ -268,7 +268,7 @@ msgstr "Et enkelt element (%s) var duplisert."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Et «%s»-element manglet nødvendig innhold."
@@ -278,13 +278,13 @@ msgstr "Et «%s»-element manglet nødvendig innhold."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "Innhold av et «%s»-element («%s») var ikke i ISO-8601-format."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Ugyldig JSON ble mottatt fra tjener: %s"
@@ -344,7 +344,7 @@ msgstr "Feilkode %u under kjøring av en batch-operasjon: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "Ugyldig URI for omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1393
+#: ../gdata/gdata-service.c:1401
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -443,6 +443,11 @@ msgstr "Du må være autentisert for å kopiere dokumenter."
 #: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "Du må være autentisert for å flytte dokumenter og mapper."
+
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Egenskap «%s» inneholder ikke et bilde"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
