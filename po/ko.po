@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-03-07 10:20+0000\n"
-"PO-Revision-Date: 2014-03-08 02:49+0900\n"
+"POT-Creation-Date: 2014-09-06 09:24+0000\n"
+"PO-Revision-Date: 2014-09-06 18:27+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -152,7 +152,7 @@ msgid "This comment may not be deleted."
 msgstr "이 댓글은 삭제할 수 없습니다."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "잘못된 seek 요청"
 
@@ -204,7 +204,7 @@ msgstr "%s 엘리먼트에 필요한 내용이 없습니다."
 #: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "%s 엘리먼트의 내용이 (\"%s\") ISO 8601 형식이 아닙니다."
+msgstr "%s 엘리먼트의 내용이(\"%s\") ISO 8601 형식이 아닙니다."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -214,7 +214,7 @@ msgstr "%s 엘리먼트의 내용이 (\"%s\") ISO 8601 형식이 아닙니다."
 #: ../gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr "%s 프로퍼티의 (%s 엘리먼트) 값을 (\"%s\") 알 수 없습니다."
+msgstr "%s 프로퍼티의(%s 엘리먼트) 값을(\"%s\") 알 수 없습니다."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -224,7 +224,7 @@ msgstr "%s 프로퍼티의 (%s 엘리먼트) 값을 (\"%s\") 알 수 없습니�
 #: ../gdata/gdata-parser.c:123
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
-msgstr "%s 엘리먼트의 내용을 (\"%s\") 알 수 없습니다."
+msgstr "%s 엘리먼트의 내용을(\"%s\") 알 수 없습니다."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -234,7 +234,7 @@ msgstr "%s 엘리먼트의 내용을 (\"%s\") 알 수 없습니다."
 #: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
-msgstr "%s 엘리먼트의 필요한 프로퍼티가 (%s) 없습니다."
+msgstr "%s 엘리먼트의 필요한 프로퍼티가(%s) 없습니다."
 
 #. Translators: the first two parameters are the names of XML properties of an XML element given in the third
 #. * parameter (including the angle brackets ("<" and ">")).
@@ -258,7 +258,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
-msgstr "필요한 엘리먼트가 (%s) 없습니다."
+msgstr "필요한 엘리먼트가(%s) 없습니다."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -268,16 +268,16 @@ msgstr "필요한 엘리먼트가 (%s) 없습니다."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
-msgstr "하나만 쓸 수 있는 엘리먼트가 (%s) 중복되었습니다."
+msgstr "하나만 쓸 수 있는 엘리먼트가(%s) 중복되었습니다."
 
 #. Translators: the parameter is the name of an JSON element.
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "'%s' 엘리먼트에 필요한 내용이 없습니다."
@@ -287,13 +287,13 @@ msgstr "'%s' 엘리먼트에 필요한 내용이 없습니다."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr "'%s' 엘리먼트의 내용이 (\"%s\") ISO 8601 형식이 아닙니다."
+msgstr "'%s' 엘리먼트의 내용이(\"%s\") ISO 8601 형식이 아닙니다."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "서버에서 잘못된 JSON을 받았습니다: %s"
@@ -353,7 +353,7 @@ msgstr "일괄 작업을 실행할 때 오류 코드 %u번: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "리다이렉트 URI이 올바르지 않습니다: %s"
 
-#: ../gdata/gdata-service.c:1393
+#: ../gdata/gdata-service.c:1401
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -379,7 +379,7 @@ msgstr "스트림을 이미 닫았습니다"
 #: ../gdata/services/calendar/gdata-calendar-calendar.c:406
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "%s 엘리먼트의 내용이 (\"%s\") RGB 16진수 형식이 아닙니다."
+msgstr "%s 엘리먼트의 내용이(\"%s\") RGB 16진수 형식이 아닙니다."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:315
 #: ../gdata/services/calendar/gdata-calendar-service.c:366
@@ -441,7 +441,7 @@ msgstr "문서를 업데이트하려면 인증해야 합니다."
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
-msgstr "제공한 문서의 content type이 ('%s') 알 수 없는 형식입니다."
+msgstr "제공한 문서의 content type이('%s') 알 수 없는 형식입니다."
 
 #: ../gdata/services/documents/gdata-documents-service.c:928
 msgid "You must be authenticated to copy documents."
@@ -451,6 +451,11 @@ msgstr "문서를 복사하려면 인증해야 합니다."
 #: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "문서와 폴더를 옮기려면 인증해야 합니다."
+
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "'%s' 속성에는 그림이 들어 있지 않습니다"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
