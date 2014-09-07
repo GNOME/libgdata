@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-03-07 10:20+0000\n"
-"PO-Revision-Date: 2014-03-07 17:46+0200\n"
+"POT-Creation-Date: 2014-09-07 09:22+0000\n"
+"PO-Revision-Date: 2014-09-07 17:59+0300\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
@@ -149,7 +149,7 @@ msgid "This comment may not be deleted."
 msgstr "Šo komentāru nevar dzēst."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Nederīgs meklēšanas pieprasījums"
 
@@ -265,7 +265,7 @@ msgstr "Nepieciešamais elements (%s) nebija klātesošs."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Vienpatīgs elements (%s) tika dublēts."
@@ -274,7 +274,7 @@ msgstr "Vienpatīgs elements (%s) tika dublēts."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "“%s” elementam nebija vajadzīgā satura."
@@ -284,13 +284,13 @@ msgstr "“%s” elementam nebija vajadzīgā satura."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "“%s” elementa saturs (“%s”) nebija ISO 8601 formātā."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "No servera saņēma nederīgu JSON — %s"
@@ -350,7 +350,7 @@ msgstr "Kļūdas kods %u, kad izpilda paketes darbību — %s"
 msgid "Invalid redirect URI: %s"
 msgstr "Nederīgs pāradresēšanas URI — %s"
 
-#: ../gdata/gdata-service.c:1393
+#: ../gdata/gdata-service.c:1401
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -450,6 +450,11 @@ msgstr "Jums jāautentificējas, lai kopētu dokumentus."
 msgid "You must be authenticated to move documents and folders."
 msgstr "Jums jāautentificējas, lai pārvietotu dokumentus un mapes."
 
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Īpašība “%s” nesatur attēlu"
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "Jums jānorāda lietotājvārds vai jāautorizējas, lai vaicātu lietotāju."
@@ -483,13 +488,11 @@ msgstr "Jums jāautentificējas, lai ievietotu albumu."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:145
 #: ../gdata/services/tasks/gdata-tasks-service.c:196
-#| msgid "You must be authenticated to query all calendars."
 msgid "You must be authenticated to query all tasklists."
 msgstr "Jums jāautentificējas, lai vaicātu visus uzdevumu sarakstus."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:244
 #: ../gdata/services/tasks/gdata-tasks-service.c:300
-#| msgid "You must be authenticated to query your own calendars."
 msgid "You must be authenticated to query your own tasks."
 msgstr "Jums jāautentificējas, lai vaicātu savus uzdevumus."
 
