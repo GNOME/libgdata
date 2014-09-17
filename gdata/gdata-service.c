@@ -652,8 +652,13 @@ _gdata_service_actually_send_message (SoupSession *session, SoupMessage *message
 	 * sent. */
 	if (cancellable == NULL || g_cancellable_is_cancelled (cancellable) == FALSE)
 		soup_session_send_message (session, message);
-	else
+	else {
+		if (cancellable != NULL) {
+			g_mutex_unlock (&data.mutex);
+		}
+
 		soup_message_set_status (message, SOUP_STATUS_CANCELLED);
+	}
 
 	/* Clean up the cancellation code */
 	if (cancellable != NULL) {

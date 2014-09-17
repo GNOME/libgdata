@@ -1238,7 +1238,6 @@ finished_outer:
 	g_mutex_unlock (&(priv->write_mutex));
 
 	g_cond_signal (&(priv->finished_cond));
-	g_mutex_unlock (&(priv->response_mutex));
 
 	/* Referenced in create_network_thread(). */
 	g_object_unref (self);
