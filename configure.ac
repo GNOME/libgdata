@@ -39,7 +39,7 @@ GLIB_MAX_ALLOWED='(G_ENCODE_VERSION(2, 38))'
 GIO_REQS=2.17.3
 SOUP_REQS=2.42.0
 SOUP_MIN_REQUIRED=SOUP_VERSION_2_42
-SOUP_MAX_ALLOWED=SOUP_VERSION_2_42
+SOUP_MAX_ALLOWED=SOUP_VERSION_2_48
 OAUTH_REQS=0.9.4
 GTK_REQS=2.91.2
 GOA_REQS=3.8
@@ -90,6 +90,14 @@ GDATA_CFLAGS="$GDATA_CFLAGS -DJSON_VERSION_MIN_REQUIRED=$JSON_GLIB_MIN_REQUIRED 
 
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
+
+# libsoup 2.47.3 is needed for the new SoupServer API.
+PKG_CHECK_MODULES([LIBSOUP], [libsoup-2.4 >= 2.47.3],
+                  [have_libsoup_2_47_3=yes], [have_libsoup_2_47_3=no])
+AS_IF([test "x$have_libsoup_2_47_3" = "xyes"], [
+	AC_DEFINE([HAVE_LIBSOUP_2_47_3], [1],
+	          [Define if the new SoupServer API is available])
+])
 
 # Optional dependencies
 PKG_CHECK_MODULES(GDK_PIXBUF, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQS, have_gdk_pixbuf=yes, have_gdk_pixbuf=no)
