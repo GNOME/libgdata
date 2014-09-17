@@ -372,6 +372,9 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 
 	json_builder_set_member_name (builder, "deleted");
 	json_builder_add_boolean_value (builder, priv->deleted);
+
+	json_builder_set_member_name (builder, "hidden");
+	json_builder_add_boolean_value (builder, priv->hidden);
 }
 
 static const gchar *
