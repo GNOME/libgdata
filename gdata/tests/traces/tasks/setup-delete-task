@@ -1,0 +1,80 @@
+> POST /tasks/v1/users/@me/lists HTTP/1.1
+> Soup-Debug-Timestamp: 1411311990
+> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 19 (0xff2460), SoupSocket 11 (0x103a340)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> GData-Version: 2
+> Content-Type: application/json
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+> 
+> {"title":"Some tasklist","kind":"tasks#taskList"}
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1411311993
+< Soup-Debug: SoupMessage 19 (0xff2460)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 15:06:33 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/P0-yzIfqEp8hfY8XeaG0NpnVdEY"
+< Content-Type: application/json; charset=UTF-8
+< Content-Encoding: gzip
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< Transfer-Encoding: chunked
+< 
+< {
+<  "kind": "tasks#taskList",
+<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTYwNzA5MTc3OjA",
+<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/P0-yzIfqEp8hfY8XeaG0NpnVdEY\"",
+<  "title": "Some tasklist",
+<  "updated": "2014-09-21T15:06:32.000Z",
+<  "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTYwNzA5MTc3OjA"
+< }
+  
+> POST /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTYwNzA5MTc3OjA/tasks HTTP/1.1
+> Soup-Debug-Timestamp: 1411311993
+> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 20 (0xff2370), SoupSocket 12 (0x103a4e0)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> GData-Version: 2
+> Content-Type: application/json
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+> 
+> {"title":"Some task","kind":"tasks#task","deleted":false,"hidden":false}
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1411311993
+< Soup-Debug: SoupMessage 20 (0xff2370)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 15:06:33 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTEwMTQ3NjU0MzI"
+< Content-Type: application/json; charset=UTF-8
+< Content-Encoding: gzip
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< Transfer-Encoding: chunked
+< 
+< {
+<  "kind": "tasks#task",
+<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTYwNzA5MTc3OjU1MzM0NDU0Nw",
+<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTEwMTQ3NjU0MzI\"",
+<  "title": "Some task",
+<  "updated": "2014-09-21T15:06:33.000Z",
+<  "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTYwNzA5MTc3OjA/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTYwNzA5MTc3OjU1MzM0NDU0Nw",
+<  "position": "00000000002147483647",
+<  "status": "needsAction"
+< }
+  

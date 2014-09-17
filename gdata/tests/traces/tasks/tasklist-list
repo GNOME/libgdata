@@ -1,0 +1,61 @@
+> GET /tasks/v1/users/@me/lists HTTP/1.1
+> Soup-Debug-Timestamp: 1411306820
+> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 6 (0x1a99550), SoupSocket 4 (0x199fc10)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBNWh8HN9uE1GavhuMocWgGo8JMHW75_WeLz4IIH2wNrn0Vmb1onGuz
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1411306820
+< Soup-Debug: SoupMessage 6 (0x1a99550)
+< Expires: Sun, 21 Sep 2014 13:40:20 GMT
+< Date: Sun, 21 Sep 2014 13:40:20 GMT
+< Cache-Control: private, max-age=0, must-revalidate, no-transform
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/90SjER9vi17HFYtnlu6S6TjNRaU"
+< Content-Type: application/json; charset=UTF-8
+< Content-Encoding: gzip
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< Transfer-Encoding: chunked
+< 
+< {
+<  "kind": "tasks#taskLists",
+<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/90SjER9vi17HFYtnlu6S6TjNRaU\"",
+<  "items": [
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MDow",
+<    "title": "libgdata.test's list",
+<    "updated": "2014-09-21T13:40:18.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MDow"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTM0OTQ3MzMyOjA",
+<    "title": "Tasklist 1",
+<    "updated": "2014-09-21T13:40:16.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTM0OTQ3MzMyOjA"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6NzcyNzY3ODAxOjA",
+<    "title": "Tasklist 2",
+<    "updated": "2014-09-21T13:40:18.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6NzcyNzY3ODAxOjA"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTg1OTU0NTMxOTow",
+<    "title": "Tasklist 2",
+<    "updated": "2014-09-21T13:40:19.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTg1OTU0NTMxOTow"
+<   }
+<  ]
+< }
+  

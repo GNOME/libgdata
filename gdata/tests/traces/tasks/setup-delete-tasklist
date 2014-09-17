@@ -1,6 +1,6 @@
 > POST /tasks/v1/users/@me/lists HTTP/1.1
-> Soup-Debug-Timestamp: 1411306812
-> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 1 (0x1a99190), SoupSocket 1 (0x199fb40)
+> Soup-Debug-Timestamp: 1411306825
+> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 13 (0x1a99190), SoupSocket 8 (0x199fa70)
 > Host: www.googleapis.com
 > Authorization: Bearer ya29.hwBNWh8HN9uE1GavhuMocWgGo8JMHW75_WeLz4IIH2wNrn0Vmb1onGuz
 > GData-Version: 2
@@ -9,16 +9,16 @@
 > User-Agent: libgdata/0.17.0 - gzip
 > Connection: Keep-Alive
 > 
-> {"title":"My list of things","kind":"tasks#taskList"}
+> {"title":"Some tasklist","kind":"tasks#taskList"}
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411306814
-< Soup-Debug: SoupMessage 1 (0x1a99190)
+< Soup-Debug-Timestamp: 1411306827
+< Soup-Debug: SoupMessage 13 (0x1a99190)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
 < Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Sun, 21 Sep 2014 13:40:14 GMT
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/HjwkZTFIW-wjpOLph_icBX6TaiM"
+< Date: Sun, 21 Sep 2014 13:40:27 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/C1YQlR3vXAgqp98al63Zwv69j00"
 < Content-Type: application/json; charset=UTF-8
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
@@ -30,10 +30,10 @@
 < 
 < {
 <  "kind": "tasks#taskList",
-<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTIyMTE2NDk0ODow",
-<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/HjwkZTFIW-wjpOLph_icBX6TaiM\"",
-<  "title": "My list of things",
-<  "updated": "2014-09-21T13:40:14.000Z",
-<  "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTIyMTE2NDk0ODow"
+<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTE0MDkwNzk5Njow",
+<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/C1YQlR3vXAgqp98al63Zwv69j00\"",
+<  "title": "Some tasklist",
+<  "updated": "2014-09-21T13:40:27.000Z",
+<  "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTE0MDkwNzk5Njow"
 < }
   

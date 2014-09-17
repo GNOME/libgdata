@@ -1,0 +1,92 @@
+> DELETE /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMzMyNDAxMTM2 HTTP/1.1
+> Soup-Debug-Timestamp: 1411311983
+> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 10 (0xff2190), SoupSocket 6 (0x103a410)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/MzE3NzgwODgx"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411311984
+< Soup-Debug: SoupMessage 10 (0xff2190)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 15:06:24 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  
+> DELETE /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxNDY3MTQwNDcw HTTP/1.1
+> Soup-Debug-Timestamp: 1411311984
+> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 11 (0xff20a0), SoupSocket 5 (0x103a4e0)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/NTY5MzIxODcx"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411311985
+< Soup-Debug: SoupMessage 11 (0xff20a0)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 15:06:25 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  
+> DELETE /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMTU3NTQzNjg5 HTTP/1.1
+> Soup-Debug-Timestamp: 1411311985
+> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 12 (0xff20a0), SoupSocket 7 (0x103a5b0)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTgxNzc5ODY2Nw"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411311985
+< Soup-Debug: SoupMessage 12 (0xff20a0)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 15:06:25 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  
+> DELETE /tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow HTTP/1.1
+> Soup-Debug-Timestamp: 1411311985
+> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 13 (0xff2190), SoupSocket 8 (0x103a5b0)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/PbVEEtyPldOicyVC8KpBcIrP3co"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411311986
+< Soup-Debug: SoupMessage 13 (0xff2190)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 15:06:26 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  

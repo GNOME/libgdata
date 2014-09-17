@@ -27,6 +27,57 @@
 
 static UhmServer *mock_server = NULL;  /* owned */
 
+#undef CLIENT_ID  /* from common.h */
+
+#define CLIENT_ID "352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com"
+#define CLIENT_SECRET "-fA4pHQJxR3zJ-FyAMPQsikg"
+#define REDIRECT_URI "urn:ietf:wg:oauth:2.0:oob"
+
+static void
+test_authentication (void)
+{
+	GDataOAuth2Authorizer *authorizer = NULL;  /* owned */
+	gchar *authentication_uri, *authorisation_code;
+
+	gdata_test_mock_server_start_trace (mock_server, "authentication");
+
+	authorizer = gdata_oauth2_authorizer_new (CLIENT_ID, CLIENT_SECRET,
+	                                          REDIRECT_URI,
+	                                          GDATA_TYPE_TASKS_SERVICE);
+
+	/* Get an authentication URI. */
+	authentication_uri = gdata_oauth2_authorizer_build_authentication_uri (authorizer, NULL, FALSE);
+	g_assert (authentication_uri != NULL);
+
+	/* Get the authorisation code off the user. */
+	if (uhm_server_get_enable_online (mock_server)) {
+		authorisation_code = gdata_test_query_user_for_verifier (authentication_uri);
+	} else {
+		/* Hard coded, extracted from the trace file. */
+		authorisation_code = g_strdup ("4/OEX-S1iMbOA_dOnNgUlSYmGWh3TK.QrR73axcNMkWoiIBeO6P2m_su7cwkQI");
+	}
+
+	g_free (authentication_uri);
+
+	if (authorisation_code == NULL) {
+		/* Skip tests. */
+		goto skip_test;
+	}
+
+	/* Authorise the token */
+	g_assert (gdata_oauth2_authorizer_request_authorization (authorizer, authorisation_code, NULL, NULL) == TRUE);
+
+	/* Check all is as it should be */
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_tasks_service_get_primary_authorization_domain ()) == TRUE);
+
+skip_test:
+	g_free (authorisation_code);
+	g_object_unref (authorizer);
+
+	uhm_server_end_trace (mock_server);
+}
+
 /* Test that building a query URI works with the various parameters. */
 static void
 test_query_uri (void)
@@ -468,6 +519,633 @@ test_task_parser_normal (void)
 	g_object_unref (task);
 }
 
+/* Test that inserting a tasklist works. */
+typedef struct {
+	GDataTasksTasklist *new_tasklist;
+} InsertTasklistData;
+
+static void
+set_up_insert_tasklist (InsertTasklistData *data, gconstpointer service)
+{
+	data->new_tasklist = NULL;
+}
+
+static void
+tear_down_insert_tasklist (InsertTasklistData *data, gconstpointer service)
+{
+	gdata_test_mock_server_start_trace (mock_server, "teardown-insert-tasklist");
+
+	/* Delete the new tasklist. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_tasklist), NULL, NULL) == TRUE);
+
+	g_object_unref (data->new_tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_tasklist_insert (InsertTasklistData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GDataEntry *new_entry;  /* unowned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "tasklist-insert");
+
+	/* Create the tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "My list of things");
+
+	/* Insert it. */
+	data->new_tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                          tasklist,
+	                                                          NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_TASKS_TASKLIST (data->new_tasklist));
+	gdata_test_compare_kind (GDATA_ENTRY (data->new_tasklist),
+	                         "tasks#taskList", NULL);
+
+	new_entry = GDATA_ENTRY (data->new_tasklist);
+
+	/* Check properties. */
+	g_assert_cmpstr (gdata_entry_get_id (new_entry), !=, NULL);
+	g_assert_cmpstr (gdata_entry_get_etag (new_entry), !=, NULL);
+	g_assert_cmpstr (gdata_entry_get_title (new_entry), ==,
+	                 gdata_entry_get_title (GDATA_ENTRY (tasklist)));
+	g_assert_cmpint (gdata_entry_get_updated (new_entry), >, -1);
+
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_tasklist_insert_unauthorised (gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GDataTasksTasklist *new_tasklist = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server,
+	                                    "tasklist-insert-unauthorised");
+
+	/* Create the tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "My list of things");
+
+	/* Insert it. */
+	new_tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                    tasklist,
+	                                                    NULL, &error);
+	g_assert_error (error, GDATA_SERVICE_ERROR,
+	                GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED);
+	g_assert (new_tasklist == NULL);
+
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+/* Test that listing tasklists works. */
+typedef struct {
+	GDataTasksTasklist *tasklist1;
+	GDataTasksTasklist *tasklist2;
+	GDataTasksTasklist *tasklist3;
+} ListTasklistData;
+
+static void
+set_up_list_tasklist (ListTasklistData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-list-tasklist");
+
+	/* Create the tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+
+	/* Insert it. */
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Tasklist 1");
+	data->tasklist1 = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                       tasklist,
+	                                                       NULL, &error);
+	g_assert_no_error (error);
+
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Tasklist 2");
+	data->tasklist2 = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                       tasklist,
+	                                                       NULL, &error);
+	g_assert_no_error (error);
+
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Tasklist 3");
+	data->tasklist3 = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                       tasklist,
+	                                                       NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+tear_down_list_tasklist (ListTasklistData *data, gconstpointer service)
+{
+	gdata_test_mock_server_start_trace (mock_server, "teardown-list-tasklist");
+
+	/* Delete the tasklists. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->tasklist1), NULL, NULL) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->tasklist2), NULL, NULL) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->tasklist3), NULL, NULL) == TRUE);
+
+	g_object_unref (data->tasklist1);
+	g_object_unref (data->tasklist2);
+	g_object_unref (data->tasklist3);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_tasklist_list (ListTasklistData *data, gconstpointer service)
+{
+	GDataFeed *feed = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "tasklist-list");
+
+	feed = gdata_tasks_service_query_all_tasklists (GDATA_TASKS_SERVICE (service),
+	                                                NULL, NULL, NULL, NULL,
+	                                                &error);
+	g_assert_no_error (error);
+
+	/* Check the three tasklists are present. */
+	g_assert (gdata_feed_look_up_entry (feed, gdata_entry_get_id (GDATA_ENTRY (data->tasklist1))) != NULL);
+	g_assert (gdata_feed_look_up_entry (feed, gdata_entry_get_id (GDATA_ENTRY (data->tasklist2))) != NULL);
+	g_assert (gdata_feed_look_up_entry (feed, gdata_entry_get_id (GDATA_ENTRY (data->tasklist3))) != NULL);
+
+	g_object_unref (feed);
+
+	uhm_server_end_trace (mock_server);
+}
+
+/* Test that updating a single tasklist works. */
+typedef struct {
+	GDataTasksTasklist *tasklist;
+} UpdateTasklistData;
+
+static void
+set_up_update_tasklist (UpdateTasklistData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-update-tasklist");
+
+	/* Create the tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+
+	/* Insert it. */
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Some tasklist");
+	data->tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                      tasklist,
+	                                                      NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+tear_down_update_tasklist (UpdateTasklistData *data, gconstpointer service)
+{
+	gdata_test_mock_server_start_trace (mock_server, "teardown-update-tasklist");
+
+	/* Delete the tasklist. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->tasklist), NULL, NULL) == TRUE);
+	g_object_unref (data->tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_tasklist_update (UpdateTasklistData *data, gconstpointer service)
+{
+	GDataTasksTasklist *updated_tasklist = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "tasklist-update");
+
+	/* Update the tasklist. */
+	gdata_entry_set_title (GDATA_ENTRY (data->tasklist), "New Title!");
+
+	updated_tasklist = gdata_tasks_service_update_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                        data->tasklist,
+	                                                        NULL, &error);
+	g_assert_no_error (error);
+
+	/* Check the updated tasklist. */
+	g_assert (GDATA_IS_TASKS_TASKLIST (updated_tasklist));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (updated_tasklist)),
+	                 ==, "New Title!");
+
+	g_object_unref (data->tasklist);
+	data->tasklist = updated_tasklist;
+
+	uhm_server_end_trace (mock_server);
+}
+
+/* Test that deleting a single tasklist works. */
+typedef struct {
+	GDataTasksTasklist *tasklist;
+} DeleteTasklistData;
+
+static void
+set_up_delete_tasklist (DeleteTasklistData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-delete-tasklist");
+
+	/* Create the tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+
+	/* Insert it. */
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Some tasklist");
+	data->tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                      tasklist,
+	                                                      NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+tear_down_delete_tasklist (DeleteTasklistData *data, gconstpointer service)
+{
+	g_object_unref (data->tasklist);
+}
+
+static void
+test_tasklist_delete (DeleteTasklistData *data, gconstpointer service)
+{
+	gboolean retval;
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "tasklist-delete");
+
+	/* Delete the tasklist. */
+	retval = gdata_tasks_service_delete_tasklist (GDATA_TASKS_SERVICE (service),
+	                                              data->tasklist,
+	                                              NULL, &error);
+	g_assert_no_error (error);
+	g_assert (retval);
+
+	uhm_server_end_trace (mock_server);
+}
+
+/* Test that inserting a task works. */
+typedef struct {
+	GDataTasksTasklist *tasklist;
+	GDataTasksTask *new_task;
+} InsertTaskData;
+
+static void
+set_up_insert_task (InsertTaskData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-insert-task");
+
+	/* Create a tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Some tasklist");
+	data->tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                      tasklist,
+	                                                      NULL, &error);
+	g_assert_no_error (error);
+
+	data->new_task = NULL;
+
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+tear_down_insert_task (InsertTaskData *data, gconstpointer service)
+{
+	gdata_test_mock_server_start_trace (mock_server, "teardown-insert-task");
+
+	/* Delete the new task. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_task), NULL, NULL) == TRUE);
+	g_object_unref (data->new_task);
+
+	/* Delete the tasklist. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->tasklist), NULL, NULL) == TRUE);
+	g_object_unref (data->tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_task_insert (InsertTaskData *data, gconstpointer service)
+{
+	GDataTasksTask *task = NULL;  /* owned */
+	GDataEntry *new_entry;  /* unowned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "task-insert");
+
+	/* Create the task. */
+	task = gdata_tasks_task_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (task), "My list of things");
+
+	/* Insert it. */
+	data->new_task = gdata_tasks_service_insert_task (GDATA_TASKS_SERVICE (service),
+	                                                  task, data->tasklist,
+	                                                  NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_TASKS_TASK (data->new_task));
+	gdata_test_compare_kind (GDATA_ENTRY (data->new_task),
+	                         "tasks#task", NULL);
+
+	new_entry = GDATA_ENTRY (data->new_task);
+
+	/* Check properties. */
+	g_assert_cmpstr (gdata_entry_get_id (new_entry), !=, NULL);
+	g_assert_cmpstr (gdata_entry_get_etag (new_entry), !=, NULL);
+	g_assert_cmpstr (gdata_entry_get_title (new_entry), ==,
+	                 gdata_entry_get_title (GDATA_ENTRY (task)));
+	g_assert_cmpint (gdata_entry_get_updated (new_entry), >, -1);
+
+	g_object_unref (task);
+
+	uhm_server_end_trace (mock_server);
+}
+
+/* Test that listing tasks works. */
+typedef struct {
+	GDataTasksTasklist *tasklist;
+	GDataTasksTask *task1;
+	GDataTasksTask *task2;
+	GDataTasksTask *task3;
+} ListTaskData;
+
+static void
+set_up_list_task (ListTaskData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GDataTasksTask *task = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-list-task");
+
+	/* Create a tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Some tasklist");
+	data->tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                      tasklist,
+	                                                      NULL, &error);
+	g_assert_no_error (error);
+
+	/* Create the task. */
+	task = gdata_tasks_task_new (NULL);
+
+	/* Insert it. */
+	gdata_entry_set_title (GDATA_ENTRY (task), "Task 1");
+	data->task1 = gdata_tasks_service_insert_task (GDATA_TASKS_SERVICE (service),
+	                                               task, data->tasklist,
+	                                               NULL, &error);
+	g_assert_no_error (error);
+
+	gdata_entry_set_title (GDATA_ENTRY (task), "Task 2");
+	data->task2 = gdata_tasks_service_insert_task (GDATA_TASKS_SERVICE (service),
+	                                               task, data->tasklist,
+	                                               NULL, &error);
+	g_assert_no_error (error);
+
+	gdata_entry_set_title (GDATA_ENTRY (task), "Task 3");
+	data->task3 = gdata_tasks_service_insert_task (GDATA_TASKS_SERVICE (service),
+	                                               task, data->tasklist,
+	                                               NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (task);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+tear_down_list_task (ListTaskData *data, gconstpointer service)
+{
+	gdata_test_mock_server_start_trace (mock_server, "teardown-list-task");
+
+	/* Delete the tasks. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->task1), NULL, NULL) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->task2), NULL, NULL) == TRUE);
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->task3), NULL, NULL) == TRUE);
+
+	g_object_unref (data->task1);
+	g_object_unref (data->task2);
+	g_object_unref (data->task3);
+
+	/* Delete the tasklist. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->tasklist), NULL, NULL) == TRUE);
+	g_object_unref (data->tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_task_list (ListTaskData *data, gconstpointer service)
+{
+	GDataFeed *feed = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "task-list");
+
+	feed = gdata_tasks_service_query_tasks (GDATA_TASKS_SERVICE (service),
+	                                        data->tasklist, NULL, NULL,
+	                                        NULL, NULL, &error);
+	g_assert_no_error (error);
+
+	/* Check the three tasks are present. */
+	g_assert (gdata_feed_look_up_entry (feed, gdata_entry_get_id (GDATA_ENTRY (data->task1))) != NULL);
+	g_assert (gdata_feed_look_up_entry (feed, gdata_entry_get_id (GDATA_ENTRY (data->task2))) != NULL);
+	g_assert (gdata_feed_look_up_entry (feed, gdata_entry_get_id (GDATA_ENTRY (data->task3))) != NULL);
+
+	g_object_unref (feed);
+
+	uhm_server_end_trace (mock_server);
+}
+
+/* Test that updating a single task works. */
+typedef struct {
+	GDataTasksTasklist *tasklist;
+	GDataTasksTask *task;
+} UpdateTaskData;
+
+static void
+set_up_update_task (UpdateTaskData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GDataTasksTask *task = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-update-task");
+
+	/* Create a tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Some tasklist");
+	data->tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                      tasklist,
+	                                                      NULL, &error);
+	g_assert_no_error (error);
+
+	/* Create the task. */
+	task = gdata_tasks_task_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (task), "Some task");
+	data->task = gdata_tasks_service_insert_task (GDATA_TASKS_SERVICE (service),
+	                                              task, data->tasklist,
+	                                              NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (task);
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+tear_down_update_task (UpdateTaskData *data, gconstpointer service)
+{
+	gdata_test_mock_server_start_trace (mock_server, "teardown-update-task");
+
+	/* Delete the task. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->task), NULL, NULL) == TRUE);
+	g_object_unref (data->task);
+
+	/* Delete the tasklist. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->tasklist), NULL, NULL) == TRUE);
+	g_object_unref (data->tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_task_update (UpdateTaskData *data, gconstpointer service)
+{
+	GDataTasksTask *updated_task = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "task-update");
+
+	/* Update the task. */
+	gdata_entry_set_title (GDATA_ENTRY (data->task), "New Title!");
+
+	updated_task = gdata_tasks_service_update_task (GDATA_TASKS_SERVICE (service),
+	                                                data->task,
+	                                                NULL, &error);
+	g_assert_no_error (error);
+
+	/* Check the updated task. */
+	g_assert (GDATA_IS_TASKS_TASK (updated_task));
+	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (updated_task)),
+	                 ==, "New Title!");
+
+	g_object_unref (data->task);
+	data->task = updated_task;
+
+	uhm_server_end_trace (mock_server);
+}
+
+/* Test that deleting a single task works. */
+typedef struct {
+	GDataTasksTasklist *tasklist;
+	GDataTasksTask *task;
+} DeleteTaskData;
+
+static void
+set_up_delete_task (DeleteTaskData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GDataTasksTask *task = NULL;  /* owned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "setup-delete-task");
+
+	/* Create a tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "Some tasklist");
+	data->tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                      tasklist,
+	                                                      NULL, &error);
+	g_assert_no_error (error);
+
+	/* Create the task. */
+	task = gdata_tasks_task_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (task), "Some task");
+	data->task = gdata_tasks_service_insert_task (GDATA_TASKS_SERVICE (service),
+	                                              task, data->tasklist,
+	                                              NULL, &error);
+	g_assert_no_error (error);
+
+	g_object_unref (task);
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+tear_down_delete_task (DeleteTaskData *data, gconstpointer service)
+{
+	gdata_test_mock_server_start_trace (mock_server, "teardown-delete-task");
+
+	g_object_unref (data->task);
+
+	/* Delete the tasklist. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->tasklist), NULL, NULL) == TRUE);
+	g_object_unref (data->tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_task_delete (DeleteTaskData *data, gconstpointer service)
+{
+	gboolean retval;
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "task-delete");
+
+	/* Delete the task. */
+	retval = gdata_tasks_service_delete_task (GDATA_TASKS_SERVICE (service),
+	                                          data->task, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (retval);
+
+	uhm_server_end_trace (mock_server);
+}
+
 /* Test that getting/setting tasklist properties works. */
 static void
 test_tasklist_properties (void)
@@ -606,6 +1284,8 @@ mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec,
 
 		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
 		uhm_resolver_add_A (resolver, "www.googleapis.com", ip_address);
+		uhm_resolver_add_A (resolver,
+		                    "accounts.google.com", ip_address);
 	}
 }
 
@@ -617,8 +1297,8 @@ mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec,
 static GDataAuthorizer *
 create_global_authorizer (void)
 {
-	GDataOAuth1Authorizer *authorizer = NULL;  /* owned */
-	gchar *authentication_uri, *token, *token_secret, *verifier;
+	GDataOAuth2Authorizer *authorizer = NULL;  /* owned */
+	gchar *authentication_uri, *authorisation_code;
 	GError *error = NULL;
 
 	/* If not online, just return a dummy authoriser. */
@@ -628,24 +1308,25 @@ create_global_authorizer (void)
 
 	/* Otherwise, go through the interactive OAuth dance. */
 	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
-	authorizer = gdata_oauth1_authorizer_new ("Application name",
+	authorizer = gdata_oauth2_authorizer_new (CLIENT_ID, CLIENT_SECRET,
+	                                          REDIRECT_URI,
 	                                          GDATA_TYPE_TASKS_SERVICE);
 
 	/* Get an authentication URI */
-	authentication_uri = gdata_oauth1_authorizer_request_authentication_uri (authorizer, &token, &token_secret, NULL, &error);
-	g_assert_no_error (error);
+	authentication_uri = gdata_oauth2_authorizer_build_authentication_uri (authorizer, NULL, FALSE);
 	g_assert (authentication_uri != NULL);
 
-	/* Get the verifier off the user.
-	 *
-	 * FIXME: Won’t work due to nonces in the OAuth protocol. */
+	/* Get the authorisation code off the user. */
 	if (uhm_server_get_enable_online (mock_server)) {
-		verifier = gdata_test_query_user_for_verifier (authentication_uri);
+		authorisation_code = gdata_test_query_user_for_verifier (authentication_uri);
+	} else {
+		/* Hard coded, extracted from the trace file. */
+		authorisation_code = g_strdup ("4/hmXZtrXmXMqK1hwiWPZs9F_N6DK-.Ap4OICAUIe0WoiIBeO6P2m8IDoMxkQI");
 	}
 
 	g_free (authentication_uri);
 
-	if (verifier == NULL) {
+	if (authorisation_code == NULL) {
 		/* Skip tests. */
 		g_object_unref (authorizer);
 		authorizer = NULL;
@@ -653,13 +1334,11 @@ create_global_authorizer (void)
 	}
 
 	/* Authorise the token */
-	g_assert (gdata_oauth1_authorizer_request_authorization (authorizer, token, token_secret, verifier, NULL, &error));
+	g_assert (gdata_oauth2_authorizer_request_authorization (authorizer, authorisation_code, NULL, &error));
 	g_assert_no_error (error);
 
 skip_test:
-	g_free (token);
-	g_free (token_secret);
-	g_free (verifier);
+	g_free (authorisation_code);
 
 	uhm_server_end_trace (mock_server);
 
@@ -671,7 +1350,9 @@ main (int argc, char *argv[])
 {
 	gint retval;
 	GDataAuthorizer *authorizer = NULL;  /* owned */
+	GDataAuthorizer *unauthorised_authorizer = NULL;  /* owned */
 	GDataService *service = NULL;  /* owned */
+	GDataService *unauthorised_service = NULL;  /* owned */
 	GFile *trace_directory = NULL;  /* owned */
 
 	gdata_test_init (argc, argv);
@@ -684,8 +1365,45 @@ main (int argc, char *argv[])
 	g_object_unref (trace_directory);
 
 	authorizer = create_global_authorizer ();
+	unauthorised_authorizer = GDATA_AUTHORIZER (gdata_oauth2_authorizer_new (CLIENT_ID,
+	                                                                         CLIENT_SECRET,
+	                                                                         REDIRECT_URI,
+	                                                                         GDATA_TYPE_TASKS_SERVICE));
 
 	service = GDATA_SERVICE (gdata_tasks_service_new (authorizer));
+	unauthorised_service = GDATA_SERVICE (gdata_tasks_service_new (unauthorised_authorizer));
+
+	g_test_add_func ("/tasks/authentication", test_authentication);
+
+	g_test_add_data_func ("/tasks/tasklist/insert/unauthorised",
+	                      unauthorised_service,
+	                      test_tasklist_insert_unauthorised);
+
+	g_test_add ("/tasks/tasklist/insert", InsertTasklistData, service,
+	            set_up_insert_tasklist, test_tasklist_insert,
+	            tear_down_insert_tasklist);
+	g_test_add ("/tasks/tasklist/list", ListTasklistData, service,
+	            set_up_list_tasklist, test_tasklist_list,
+	            tear_down_list_tasklist);
+	g_test_add ("/tasks/tasklist/update", UpdateTasklistData, service,
+	            set_up_update_tasklist, test_tasklist_update,
+	            tear_down_update_tasklist);
+	g_test_add ("/tasks/tasklist/delete", DeleteTasklistData, service,
+	            set_up_delete_tasklist, test_tasklist_delete,
+	            tear_down_delete_tasklist);
+
+	g_test_add ("/tasks/task/insert", InsertTaskData, service,
+	            set_up_insert_task, test_task_insert,
+	            tear_down_insert_task);
+	g_test_add ("/tasks/task/list", ListTaskData, service,
+	            set_up_list_task, test_task_list,
+	            tear_down_list_task);
+	g_test_add ("/tasks/task/update", UpdateTaskData, service,
+	            set_up_update_task, test_task_update,
+	            tear_down_update_task);
+	g_test_add ("/tasks/task/delete", DeleteTaskData, service,
+	            set_up_delete_task, test_task_delete,
+	            tear_down_delete_task);
 
 	g_test_add_func ("/tasks/task/properties", test_task_properties);
 	g_test_add_func ("/tasks/task/escaping", test_task_escaping);
@@ -705,7 +1423,9 @@ main (int argc, char *argv[])
 
 	retval = g_test_run ();
 
+	g_clear_object (&unauthorised_service);
 	g_clear_object (&service);
+	g_clear_object (&unauthorised_authorizer);
 	g_clear_object (&authorizer);
 
 	return retval;

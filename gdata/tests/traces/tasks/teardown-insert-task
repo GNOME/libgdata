@@ -1,0 +1,46 @@
+> DELETE /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6NDA1MjA2NTQ6MA/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6NDA1MjA2NTQ6MTgxODA5NjI4Mg HTTP/1.1
+> Soup-Debug-Timestamp: 1411311978
+> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 3 (0xff2370), SoupSocket 2 (0x103a5b0)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTUyODk4MTc1Mg"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411311979
+< Soup-Debug: SoupMessage 3 (0xff2370)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 15:06:19 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  
+> DELETE /tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6NDA1MjA2NTQ6MA HTTP/1.1
+> Soup-Debug-Timestamp: 1411311979
+> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 4 (0xff2460), SoupSocket 1 (0x103a340)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/_OP1nZig6T24458ddfbOXnBLhjE"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411311980
+< Soup-Debug: SoupMessage 4 (0xff2460)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 15:06:20 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  

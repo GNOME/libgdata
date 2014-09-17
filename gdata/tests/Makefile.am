@@ -387,6 +387,29 @@ EXTRA_DIST += \
 	\
 	traces/tasks/authentication \
 	traces/tasks/global-authentication \
+	traces/tasks/setup-delete-task \
+	traces/tasks/setup-delete-tasklist \
+	traces/tasks/setup-insert-task \
+	traces/tasks/setup-list-task \
+	traces/tasks/setup-list-tasklist \
+	traces/tasks/setup-update-task \
+	traces/tasks/setup-update-tasklist \
+	traces/tasks/task-delete \
+	traces/tasks/task-insert \
+	traces/tasks/task-list \
+	traces/tasks/tasklist-delete \
+	traces/tasks/tasklist-insert \
+	traces/tasks/tasklist-insert-unauthorised \
+	traces/tasks/tasklist-list \
+	traces/tasks/tasklist-update \
+	traces/tasks/task-update \
+	traces/tasks/teardown-delete-task \
+	traces/tasks/teardown-insert-task \
+	traces/tasks/teardown-insert-tasklist \
+	traces/tasks/teardown-list-task \
+	traces/tasks/teardown-list-tasklist \
+	traces/tasks/teardown-update-task \
+	traces/tasks/teardown-update-tasklist \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk

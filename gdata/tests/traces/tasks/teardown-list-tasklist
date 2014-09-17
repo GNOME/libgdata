@@ -1,0 +1,69 @@
+> DELETE /tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTM0OTQ3MzMyOjA HTTP/1.1
+> Soup-Debug-Timestamp: 1411306820
+> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 7 (0x1a99460), SoupSocket 4 (0x199fc10)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBNWh8HN9uE1GavhuMocWgGo8JMHW75_WeLz4IIH2wNrn0Vmb1onGuz
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/mcdH7OfYcOU1vkq49QoOeZ4viZ0"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411306821
+< Soup-Debug: SoupMessage 7 (0x1a99460)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 13:40:21 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  
+> DELETE /tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6NzcyNzY3ODAxOjA HTTP/1.1
+> Soup-Debug-Timestamp: 1411306821
+> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 8 (0x1a99370), SoupSocket 5 (0x199fa70)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBNWh8HN9uE1GavhuMocWgGo8JMHW75_WeLz4IIH2wNrn0Vmb1onGuz
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/1JlVECn_cMPg1pMhl7jB4_Mvo5k"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411306821
+< Soup-Debug: SoupMessage 8 (0x1a99370)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 13:40:21 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  
+> DELETE /tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTg1OTU0NTMxOTow HTTP/1.1
+> Soup-Debug-Timestamp: 1411306821
+> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 9 (0x1a99280), SoupSocket 6 (0x199fc10)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBNWh8HN9uE1GavhuMocWgGo8JMHW75_WeLz4IIH2wNrn0Vmb1onGuz
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/gP8XnbCGmgmZCm0q7Wmqsl8zt74"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411306822
+< Soup-Debug: SoupMessage 9 (0x1a99280)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 13:40:22 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  

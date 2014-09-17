@@ -1,0 +1,23 @@
+> DELETE /tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTIyMTE2NDk0ODow HTTP/1.1
+> Soup-Debug-Timestamp: 1411306814
+> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 2 (0x1a99280), SoupSocket 1 (0x199fb40)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.hwBNWh8HN9uE1GavhuMocWgGo8JMHW75_WeLz4IIH2wNrn0Vmb1onGuz
+> GData-Version: 2
+> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/HjwkZTFIW-wjpOLph_icBX6TaiM"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1411306814
+< Soup-Debug: SoupMessage 2 (0x1a99280)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 21 Sep 2014 13:40:14 GMT
+< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.002
+< 
+  
