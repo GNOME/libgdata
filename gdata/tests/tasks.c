@@ -27,6 +27,47 @@
 
 static UhmServer *mock_server = NULL;  /* owned */
 
+static void
+test_authentication (void)
+{
+	GDataOAuth1Authorizer *authorizer = NULL;  /* owned */
+	gchar *authentication_uri, *token, *token_secret, *verifier;
+
+	gdata_test_mock_server_start_trace (mock_server, "authentication");
+
+	authorizer = gdata_oauth1_authorizer_new ("Application name",
+	                                          GDATA_TYPE_TASKS_SERVICE);
+
+	/* Get an authentication URI */
+	authentication_uri = gdata_oauth1_authorizer_request_authentication_uri (authorizer, &token, &token_secret, NULL, NULL);
+	g_assert (authentication_uri != NULL);
+
+	/* Get the verifier off the user */
+	verifier = gdata_test_query_user_for_verifier (authentication_uri);
+
+	g_free (authentication_uri);
+
+	if (verifier == NULL) {
+		/* Skip tests. */
+		goto skip_test;
+	}
+
+	/* Authorise the token */
+	g_assert (gdata_oauth1_authorizer_request_authorization (authorizer, token, token_secret, verifier, NULL, NULL) == TRUE);
+
+	/* Check all is as it should be */
+	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
+	                                                     gdata_tasks_service_get_primary_authorization_domain ()) == TRUE);
+
+skip_test:
+	g_free (token);
+	g_free (token_secret);
+	g_free (verifier);
+	g_object_unref (authorizer);
+
+	uhm_server_end_trace (mock_server);
+}
+
 /* Test that building a query URI works with the various parameters. */
 static void
 test_query_uri (void)
@@ -468,6 +509,67 @@ test_task_parser_normal (void)
 	g_object_unref (task);
 }
 
+/* Test that inserting a tasklist works. */
+typedef struct {
+	GDataTasksTasklist *new_tasklist;
+} InsertTasklistData;
+
+static void
+set_up_insert_tasklist (InsertTasklistData *data, gconstpointer service)
+{
+	data->new_tasklist = NULL;
+}
+
+static void
+tear_down_insert_tasklist (InsertTasklistData *data, gconstpointer service)
+{
+	gdata_test_mock_server_start_trace (mock_server, "teardown-insert-tasklist");
+
+	/* Delete the new tasklist. */
+	g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_tasks_service_get_primary_authorization_domain (),
+	                                      GDATA_ENTRY (data->new_tasklist), NULL, NULL) == TRUE);
+
+	g_object_unref (data->new_tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
+static void
+test_tasklist_insert (InsertTasklistData *data, gconstpointer service)
+{
+	GDataTasksTasklist *tasklist = NULL;  /* owned */
+	GDataEntry *new_entry;  /* unowned */
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, "tasklist-insert");
+
+	/* Create the tasklist. */
+	tasklist = gdata_tasks_tasklist_new (NULL);
+	gdata_entry_set_title (GDATA_ENTRY (tasklist), "My list of things");
+
+	/* Insert it. */
+	data->new_tasklist = gdata_tasks_service_insert_tasklist (GDATA_TASKS_SERVICE (service),
+	                                                          tasklist,
+	                                                          NULL, &error);
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_TASKS_TASKLIST (data->new_tasklist));
+	gdata_test_compare_kind (GDATA_ENTRY (data->new_tasklist),
+	                         "tasks#taskList", NULL);
+
+	new_entry = GDATA_ENTRY (data->new_tasklist);
+
+	/* Check properties. */
+	g_assert_cmpstr (gdata_entry_get_id (new_entry), !=, NULL);
+	g_assert_cmpstr (gdata_entry_get_etag (new_entry), !=, NULL);
+	g_assert_cmpstr (gdata_entry_get_title (new_entry), ==,
+	                 gdata_entry_get_title (GDATA_ENTRY (tasklist)));
+	g_assert_cmpint (gdata_entry_get_updated (new_entry), >, -1);
+
+	g_object_unref (tasklist);
+
+	uhm_server_end_trace (mock_server);
+}
+
 /* Test that getting/setting tasklist properties works. */
 static void
 test_tasklist_properties (void)
@@ -686,6 +788,14 @@ main (int argc, char *argv[])
 	authorizer = create_global_authorizer ();
 
 	service = GDATA_SERVICE (gdata_tasks_service_new (authorizer));
+
+/* TODO: fix and re-enable; broken due to nonces
+	g_test_add_func ("/tasks/authentication", test_authentication);
+*/
+
+	g_test_add ("/tasks/tasklist/insert", InsertTasklistData, service,
+	            set_up_insert_tasklist, test_tasklist_insert,
+	            tear_down_insert_tasklist);
 
 	g_test_add_func ("/tasks/task/properties", test_task_properties);
 	g_test_add_func ("/tasks/task/escaping", test_task_escaping);
