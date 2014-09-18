@@ -200,7 +200,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * modified by the client. If no authorisation key is set (and hence none is needed for access to the item),
 	 * this will be %NULL.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.16.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_KEY,
 	                                 g_param_spec_string ("key",
@@ -616,7 +616,7 @@ gdata_access_rule_get_edited (GDataAccessRule *self)
  *
  * Return value: the access rule's authorisation key, or %NULL
  *
- * Since: UNRELEASED
+ * Since: 0.16.0
  */
 const gchar *
 gdata_access_rule_get_key (GDataAccessRule *self)

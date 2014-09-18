@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/tasks#status">
  * Google Tasks documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.16.0
  */
 #define GDATA_TASKS_STATUS_NEEDS_ACTION "needsAction"
 
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="https://developers.google.com/google-apps/tasks/v1/reference/tasks#status">
  * Google Tasks documentation</ulink>.
  *
- * Since: UNRELEASED
+ * Since: 0.16.0
  */
 #define GDATA_TASKS_STATUS_COMPLETED "completed"
 

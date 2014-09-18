@@ -72,7 +72,7 @@ typedef enum {
  * @GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION: Generic error when running a batch operation and the whole operation fails
  * @GDATA_SERVICE_ERROR_API_QUOTA_EXCEEDED: The API request quota for this
  * developer account has been exceeded for the current time period (e.g. day).
- * Try again later. (Since: UNRELEASED.)
+ * Try again later. (Since: 0.16.0.)
  *
  * Error codes for #GDataService operations.
  **/

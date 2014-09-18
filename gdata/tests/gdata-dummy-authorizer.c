@@ -32,7 +32,7 @@
  * requests for other domains have no header added, and are considered
  * non-authorized.
  *
- * Since: UNRELEASED
+ * Since: 0.16.0
  */
 
 #include <config.h>
@@ -157,7 +157,7 @@ is_authorized_for_domain (GDataAuthorizer *self,
  * Return value: (transfer full): a new #GDataDummyAuthorizer; unref with
  * g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.16.0
  */
 GDataDummyAuthorizer *
 gdata_dummy_authorizer_new (GType service_type)
@@ -191,7 +191,7 @@ gdata_dummy_authorizer_new (GType service_type)
  * Return value: (transfer full): a new #GDataDummyAuthorizer; unref with
  * g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.16.0
  */
 GDataDummyAuthorizer *
 gdata_dummy_authorizer_new_for_authorization_domains (GList *authorization_domains)

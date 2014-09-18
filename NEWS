@@ -1,3 +1,48 @@
+Overview of changes from libgdata 0.15.2 to libgdata 0.16.0
+===========================================================
+
+Major changes:
+ • Update date parsing to handle recent changes in Google’s servers
+ • Support ACLs with keys (e.g. for link-only sharing of documents)
+ • Add gzip encoding support for network packet compression
+ • Support for libsoup ≥ 2.47.3 (but the dependency has not been bumped)
+ • Basic test suite for the Google Tasks service
+ • Fix mutex warnings with new GLib versions
+
+API changes:
+ • Add GDataAccessRule:key
+ • Add gdata_access_rule_get_key()
+ • Add GDATA_TASKS_STATUS_NEEDS_ACTION
+ • Add GDATA_TASKS_STATUS_COMPLETED
+ • Deprecate the ‘q’ parameter of gdata_tasks_query_new()
+ • Add GDATA_SERVICE_ERROR_API_QUOTA_EXCEEDED
+
+Bugs fixed:
+ • Bug 732809 — evolution-3.12.3: cannot edit google contact due to invalid
+   format of timestamp
+ • Bug 734863 — Google contacts without email address block search/autocomplete
+ • Bug 690628 — <gAcl:withKey/> element Not Handled by libgdata
+ • Bug 703192 — The global log handler interferes with other application
+ • Bug 666623 — Add gzip encoding support
+
+Updated translations:
+ • as (Nilamdyuti Goswami)
+ • ca (Gil Forcada)
+ • cs (Marek Černocký)
+ • fr (Bruno Brouard)
+ • gu (Sweta Kothari)
+ • he (Yosef Or Boczko)
+ • hu (Balázs Úr)
+ • id (Andika Triwidada)
+ • it (Claudio Arseni)
+ • ko (Changwoo Ryu)
+ • lv (Rūdolfs Mazurs)
+ • nb (Kjartan Maraas)
+ • ru (Yuri Myasoedov)
+ • sl (Matej Urbančič)
+ • zh_HK (Chao-Hsiung Liao)
+ • zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.15.1 to libgdata 0.15.2
 ===========================================================
 

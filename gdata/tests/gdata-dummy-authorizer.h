@@ -41,7 +41,7 @@ typedef struct _GDataDummyAuthorizerPrivate	GDataDummyAuthorizerPrivate;
  *
  * All the fields in the #GDataDummyAuthorizer structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.16.0
  */
 typedef struct {
 	/*< private >*/
@@ -54,7 +54,7 @@ typedef struct {
  *
  * All the fields in the #GDataDummyAuthorizerClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.16.0
  */
 typedef struct {
 	/*< private >*/
