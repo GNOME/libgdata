@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-05-16 09:16+0000\n"
-"PO-Revision-Date: 2014-05-26 15:23+0100\n"
-"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
+"POT-Creation-Date: 2014-09-15 09:24+0000\n"
+"PO-Revision-Date: 2014-09-15 19:51+0100\n"
+"Last-Translator: Mattias Eriksson <snaggen@gmail.com>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:627
 #: ../gdata/gdata-oauth1-authorizer.c:839
@@ -146,7 +146,7 @@ msgid "This comment may not be deleted."
 msgstr "Denna kommentar kan inte tas bort."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Ogiltig sökbegäran"
 
@@ -174,7 +174,6 @@ msgstr "Tomt dokument."
 #. Translators: the parameter is an error message
 #: ../gdata/gdata-parsable.c:480 ../gdata/gdata-parsable.c:518
 #, c-format
-#| msgid "Error parsing XML: %s"
 msgid "Error parsing JSON: %s"
 msgstr "Fel vid tolkning av JSON: %s"
 
@@ -263,7 +262,7 @@ msgstr "Ett nödvändigt element (%s) hittades inte."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Ett singleton-element (%s) var duplicerat."
@@ -272,9 +271,8 @@ msgstr "Ett singleton-element (%s) var duplicerat."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
-#| msgid "A %s element was missing required content."
 msgid "A '%s' element was missing required content."
 msgstr "Ett ”%s”-element saknade nödvändigt innehåll."
 
@@ -283,14 +281,13 @@ msgstr "Ett ”%s”-element saknade nödvändigt innehåll."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
-#| msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "Innehållet för ett ”%s”-element (”%s”) var inte i ISO 8601-format."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Ogiltig JSON mottogs från servern: %s"
@@ -350,7 +347,7 @@ msgstr "Felkod %u vid körning av en satsoperation: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "Ogiltig URI för omdirigering: %s"
 
-#: ../gdata/gdata-service.c:1399
+#: ../gdata/gdata-service.c:1401
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -442,7 +439,6 @@ msgstr ""
 "Innehållstypen för det angivna dokumentet (”%s”) gick inte att känna igen."
 
 #: ../gdata/services/documents/gdata-documents-service.c:928
-#| msgid "You must be authenticated to query documents."
 msgid "You must be authenticated to copy documents."
 msgstr "Du måste vara autentiserad för att kopiera dokument."
 
@@ -450,6 +446,11 @@ msgstr "Du måste vara autentiserad för att kopiera dokument."
 #: ../gdata/services/documents/gdata-documents-service.c:1273
 msgid "You must be authenticated to move documents and folders."
 msgstr "Du måste vara autentiserad för att flytta dokument och mappar."
+
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Egenskap ”%s” innehåller ingen bild"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
@@ -487,13 +488,11 @@ msgstr "Du måste vara autentiserad för att infoga ett album."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:145
 #: ../gdata/services/tasks/gdata-tasks-service.c:196
-#| msgid "You must be authenticated to query all calendars."
 msgid "You must be authenticated to query all tasklists."
 msgstr "Du måste vara autentiserad för att söka i alla uppgiftslistor."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:244
 #: ../gdata/services/tasks/gdata-tasks-service.c:300
-#| msgid "You must be authenticated to query your own calendars."
 msgid "You must be authenticated to query your own tasks."
 msgstr "Du måste vara autentiserad för att söka i dina egna uppgifter."
 
