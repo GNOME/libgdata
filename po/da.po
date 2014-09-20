@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-19 22:32+0100\n"
-"PO-Revision-Date: 2014-03-15 13:50+0100\n"
+"POT-Creation-Date: 2014-09-20 17:21+0200\n"
+"PO-Revision-Date: 2014-09-19 20:40+0200\n"
 "Last-Translator: Aputsiaq Niels Janussen <aj@isit.gl>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -145,7 +145,7 @@ msgid "This comment may not be deleted."
 msgstr "Denne kommentar må ikke slettes."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Ugyldig søgeforespørgsel"
 
@@ -262,7 +262,7 @@ msgstr "Et nødvendigt element (%s) var ikke til stede."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Et singleton-element (%s) blev duplikeret."
@@ -271,7 +271,7 @@ msgstr "Et singleton-element (%s) blev duplikeret."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Et \"%s\"-element manglede nødvendigt indhold."
@@ -281,13 +281,13 @@ msgstr "Et \"%s\"-element manglede nødvendigt indhold."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "Indholdet af et \"%s\"-element (\"%s\") var ikke i ISO 8601-formatet."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Der blev modtaget ugyldig JSON fra serveren: %s"
@@ -342,12 +342,12 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "Fejlkode %u under kørsel af batchoperation: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:721
+#: ../gdata/gdata-service.c:726
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Ugyldig omdirigeringsadresse: %s"
 
-#: ../gdata/gdata-service.c:1393
+#: ../gdata/gdata-service.c:1406
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -446,6 +446,11 @@ msgstr "Du skal være godkendt for at kopiere dokumenter."
 msgid "You must be authenticated to move documents and folders."
 msgstr "Du skal være godkendt for at flytte dokumenter og mapper."
 
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Egenskaben \"%s\" indeholder ikke et billede"
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
@@ -478,13 +483,29 @@ msgstr "Albummet er allerede blevet indsat."
 msgid "You must be authenticated to insert an album."
 msgstr "Du skal være godkendt for at indsætte et album."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:145
-#: ../gdata/services/tasks/gdata-tasks-service.c:196
+#: ../gdata/services/tasks/gdata-tasks-service.c:195
+#: ../gdata/services/youtube/gdata-youtube-service.c:478
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Du har lavet for mange API-kald for nylig. Vent venligst et par minutter og "
+"prøv igen."
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:203
+#: ../gdata/services/youtube/gdata-youtube-service.c:473
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Du skal være godkendt for at gøre dette."
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:329
+#: ../gdata/services/tasks/gdata-tasks-service.c:380
 msgid "You must be authenticated to query all tasklists."
 msgstr "Du skal være godkendt for at forespørge alle opgavelister."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:244
-#: ../gdata/services/tasks/gdata-tasks-service.c:300
+#: ../gdata/services/tasks/gdata-tasks-service.c:428
+#: ../gdata/services/tasks/gdata-tasks-service.c:484
 msgid "You must be authenticated to query your own tasks."
 msgstr "Du skal være godkendt for at forespørge dine egne opgaver."
 
@@ -513,20 +534,6 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Ukendt fejlkode \"%s\" i domæne \"%s\" modtaget med lokation \"%s\"."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:473
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "Du skal være godkendt for at gøre dette."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:478
-#, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
-msgstr ""
-"Du har lavet for mange API-kald for nylig. Vent venligst et par minutter og "
-"prøv igen."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
