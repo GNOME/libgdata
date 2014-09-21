@@ -196,7 +196,8 @@ parse_error_response (GDataService *self, GDataOperationType operation_type,
 				               "calls recently. Please wait a "
 				               "few minutes and try again."));
 			} else if (g_strcmp0 (domain, "global") == 0 &&
-			           g_strcmp0 (reason, "authError") == 0) {
+			           (g_strcmp0 (reason, "authError") == 0 ||
+			            g_strcmp0 (reason, "required") == 0)) {
 				/* Authentication problem */
 				g_set_error (error, GDATA_SERVICE_ERROR,
 				             GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
