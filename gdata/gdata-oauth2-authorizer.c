@@ -977,8 +977,10 @@ done:
 	g_free (priv->access_token);
 	priv->access_token = g_strdup (access_token);
 
-	g_free (priv->refresh_token);
-	priv->refresh_token = g_strdup (refresh_token);
+	if (refresh_token != NULL) {
+		g_free (priv->refresh_token);
+		priv->refresh_token = g_strdup (refresh_token);
+	}
 
 	g_mutex_unlock (&priv->mutex);
 
