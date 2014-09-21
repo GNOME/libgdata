@@ -445,7 +445,7 @@ msgid "You must be authenticated to move documents and folders."
 msgstr "认证后才能移动文档和目录。"
 
 #: ../gdata/services/freebase/gdata-freebase-service.c:445
-#, fuzzy, c-format
+#, c-format
 msgid "Property '%s' does not hold an image"
 msgstr "属性 '%s' 没有存有图片"
 
