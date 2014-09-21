@@ -418,6 +418,7 @@ gdata_tasks_service_query_tasks (GDataTasksService *self, GDataTasksTasklist *ta
 
 	g_return_val_if_fail (GDATA_IS_TASKS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_TASKS_TASKLIST (tasklist), NULL);
+	g_return_val_if_fail (gdata_entry_get_id (GDATA_ENTRY (tasklist)) != NULL, NULL);
 	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -473,6 +474,7 @@ gdata_tasks_service_query_tasks_async (GDataTasksService *self, GDataTasksTaskli
 
 	g_return_if_fail (GDATA_IS_TASKS_SERVICE (self));
 	g_return_if_fail (GDATA_IS_TASKS_TASKLIST (tasklist));
+	g_return_if_fail (gdata_entry_get_id (GDATA_ENTRY (tasklist)) != NULL);
 	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
@@ -522,6 +524,7 @@ gdata_tasks_service_insert_task (GDataTasksService *self, GDataTasksTask *task, 
 	g_return_val_if_fail (GDATA_IS_TASKS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_TASKS_TASK (task), NULL);
 	g_return_val_if_fail (GDATA_IS_TASKS_TASKLIST (tasklist), NULL);
+	g_return_val_if_fail (gdata_entry_get_id (GDATA_ENTRY (tasklist)) != NULL, NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
@@ -561,6 +564,7 @@ gdata_tasks_service_insert_task_async (GDataTasksService *self, GDataTasksTask *
 	g_return_if_fail (GDATA_IS_TASKS_SERVICE (self));
 	g_return_if_fail (GDATA_IS_TASKS_TASK (task));
 	g_return_if_fail (GDATA_IS_TASKS_TASKLIST (tasklist));
+	g_return_if_fail (gdata_entry_get_id (GDATA_ENTRY (tasklist)) != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.googleapis.com/tasks/v1/lists/", gdata_entry_get_id (GDATA_ENTRY (tasklist)), "/tasks", NULL);
