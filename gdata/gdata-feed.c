@@ -624,6 +624,10 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 			json_reader_end_element (reader);
 		}
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "kind") == 0) {
+		/* Ignore. */
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "etag") == 0) {
+		GDATA_FEED (parsable)->priv->etag = g_strdup (json_reader_get_string_value (reader));
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_json (parsable, reader, user_data, error);
 	}
