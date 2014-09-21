@@ -19,6 +19,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <locale.h>
 #include <stdio.h>
 #include <string.h>
 #include <libxml/parser.h>
@@ -50,6 +51,8 @@ gdata_test_init (int argc, char **argv)
 	GTlsCertificate *cert;
 	GError *child_error = NULL;
 	gint i;
+
+	setlocale (LC_ALL, "");
 
 #if !GLIB_CHECK_VERSION (2, 35, 0)
 	g_type_init ();
