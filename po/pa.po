@@ -2,14 +2,14 @@
 # Copyright (C) 2009 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
 #
-# A S Alam <aalam@users.sf.net>, 2009, 2011, 2012, 2013.
+# A S Alam <aalam@users.sf.net>, 2009, 2011, 2012, 2013, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-30 05:22+0000\n"
-"PO-Revision-Date: 2013-09-18 09:02-0500\n"
+"POT-Creation-Date: 2014-09-21 09:20+0000\n"
+"PO-Revision-Date: 2014-09-21 08:42-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
 "Language: pa\n"
@@ -19,81 +19,81 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:597
-#: ../gdata/gdata-oauth1-authorizer.c:809
-#: ../gdata/gdata-oauth1-authorizer.c:1085
+#: ../gdata/gdata-client-login-authorizer.c:627
+#: ../gdata/gdata-oauth1-authorizer.c:839
+#: ../gdata/gdata-oauth1-authorizer.c:1115
 msgid "The server returned a malformed response."
 msgstr "ਸਰਵਰ ਨੇ ਨਿਕਾਰਾ ਜਵਾਬ ਦਿੱਤਾ ਹੈ।"
 
-#: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:321
+#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "ਸਰਵਿਸ ਦੇ ਸਰਵਰ ਨਾਲ ਕੁਨੈਕਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"
 
-#: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:326
+#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "ਪਰਾਕਸੀ ਸਰਵਰ ਨਾਲ ਕੁਨੈਕਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:332
+#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "ਗਲਤ ਮੰਗਿਆ URI ਜਾਂ ਹੈੱਡਰ ਹੈ, ਜਾਂ ਨਾ-ਸਹਾਇਕ ਗ਼ੈਰ-ਸਟੈਂਡਰਡ ਪੈਰਾਮੀਟਰ: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:338
+#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
 #, c-format
 msgid "Authentication required: %s"
 msgstr "ਪਰਮਾਣਕਿਤਾ ਲੋੜੀਦੀ: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:639 ../gdata/gdata-service.c:343
+#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "ਮੰਗਿਆ ਸਰੋਤ ਨਹੀਂ ਲੱਭਿਆ: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:645 ../gdata/gdata-service.c:349
+#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "ਡਾਊਨਲੋਡ ਕਰਨ ਦੇ ਬਾਅਦ ਐਂਟਰੀ ਨੂੰ ਬਦਲਿਆ ਗਿਆ ਹੈ: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:657 ../gdata/gdata-service.c:363
+#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "ਪਰਮਾਣਿਤ ਹੋਣ ਦੌਰਾਨ ਗਲਤੀ ਕੋਡ %u : %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:756
+#: ../gdata/gdata-client-login-authorizer.c:786
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "ਲਾਗਇਨ ਕਰਨ ਲਈ CAPTCHA ਭਰਨਾ ਲਾਜ਼ਮੀ ਹੈ।"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:794
+#: ../gdata/gdata-client-login-authorizer.c:824
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "ਇਹ ਅਕਾਊਂਟ ਲਈ ਐਪਲੀਕੇਸ਼ਨ ਲਈ ਪਾਸਵਰਡ ਚਾਹੀਦਾ ਹੈ। (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:801
+#: ../gdata/gdata-client-login-authorizer.c:831
 msgid "Your username or password were incorrect."
 msgstr "ਤੁਹਾਡਾ ਯੂਜ਼ਰ-ਨਾਂ ਜਾਂ ਪਾਸਵਰਡ ਠੀਕ ਨਹੀਂ ਹੈ।"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:822
+#: ../gdata/gdata-client-login-authorizer.c:852
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "ਤੁਹਾਡਾ ਅਕਾਊਂਟ ਦੇ ਈਮੇਲ ਐਡਰੈੱਸ ਨੂੰ ਜਾਂਚਿਆ ਨਹੀਂ ਜਾ ਚੁੱਕਿਆ ਹੈ। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:827
+#: ../gdata/gdata-client-login-authorizer.c:857
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "ਤੁਸੀਂ ਸਰਵਿਸ ਦੀਆਂ ਸ਼ਰਤਾਂ ਅਤੇ ਇਕਰਾਰਨਾਮੇ ਨਾਲ ਸਹਿਮਤ ਨਹੀਂ ਹੋਏ ਹੋ। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:833
+#: ../gdata/gdata-client-login-authorizer.c:863
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -104,25 +104,25 @@ msgstr ""
 "ਕਰੋ ਜੀ। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:838
+#: ../gdata/gdata-client-login-authorizer.c:868
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "ਇਹ ਅਕਾਊਂਟ ਹਟਾਇਆ ਗਿਆ (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:843
+#: ../gdata/gdata-client-login-authorizer.c:873
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "ਇਹ ਅਕਾਊਂਟ ਆਯੋਗ ਹੈ। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:848
+#: ../gdata/gdata-client-login-authorizer.c:878
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "ਇਸ ਅਕਾਊਂਟ ਲਈ ਇਸ ਸਰਵਿਸ ਲਈ ਪਹੁੰਚ ਆਯੋਗ ਕੀਤੀ ਜਾ ਚੁੱਕੀ ਹੈ। (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:853
+#: ../gdata/gdata-client-login-authorizer.c:883
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "ਇਹ ਸਰਵਿਸ ਇਸ ਸਮੇਂ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ। (%s)"
@@ -145,39 +145,38 @@ msgid "This comment may not be deleted."
 msgstr "ਇਹ ਟਿੱਪਣੀ ਸ਼ਾਇਦ ਹਟਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ।"
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "ਸੀਕ ਮੰਗ ਗਲਤ ਹੈ"
 
-#: ../gdata/gdata-oauth1-authorizer.c:784
+#: ../gdata/gdata-oauth1-authorizer.c:814
 msgid "The server rejected the temporary credentials request."
 msgstr "ਸਰਵਰ ਨੇ ਆਰਜ਼ੀ ਸਨਦ (credentials) ਮੰਗ ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ ਹੈ।"
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1059
+#: ../gdata/gdata-oauth1-authorizer.c:1089
 msgid "Access was denied by the user or server."
 msgstr "ਯੂਜ਼ਰ ਜਾਂ ਸਰਵਰ ਵਲੋਂ ਅਸੈਸ ਤੋਂ ਇਨਕਾਰ ਕੀਤਾ ਗਿਆ ਸੀ।"
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:342 ../gdata/gdata-parsable.c:353
+#: ../gdata/gdata-parsable.c:349 ../gdata/gdata-parsable.c:360
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "XML ਪਾਰਸਿੰਗ ਗਲਤੀ: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:355
+#: ../gdata/gdata-parsable.c:362
 msgid "Empty document."
 msgstr "ਖਾਲੀ ਡੌਕੂਮੈਂਟ ਹੈ। "
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:473 ../gdata/gdata-parsable.c:511
+#: ../gdata/gdata-parsable.c:480 ../gdata/gdata-parsable.c:518
 #, c-format
-#| msgid "Error parsing XML: %s"
 msgid "Error parsing JSON: %s"
 msgstr "JSON ਵਜੋਂ ਪਾਰਸਿੰਗ ਗਲਤੀ: %s"
 
-#: ../gdata/gdata-parsable.c:512
+#: ../gdata/gdata-parsable.c:519
 msgid "Outermost JSON node is not an object."
 msgstr "ਸਭ ਤੋਂ ਬਾਹਰੀ JSON ਨੋਡ ਆਬਜੈਕਟ ਨਹੀਂ ਹੈ।"
 
@@ -263,7 +262,7 @@ msgstr "ਲੋੜੀਦਾ ਐਲੀਮੈਂਟ (%s) ਮੌਜੂਦ ਨਹੀ�
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "ਸਿਗਲਟੋਨ ਐਲੀਮੈਂਟ (%s) ਡੁਪਲੀਕੇਟ ਸੀ।"
@@ -272,9 +271,8 @@ msgstr "ਸਿਗਲਟੋਨ ਐਲੀਮੈਂਟ (%s) ਡੁਪਲੀਕੇ�
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:273
+#: ../gdata/gdata-parser.c:291
 #, c-format
-#| msgid "A %s element was missing required content."
 msgid "A '%s' element was missing required content."
 msgstr "'%s' ਐਲੀਮੈਂਟ ਲੋੜੀਦੀ ਸਮੱਗਰੀ ਵਿੱਚੋਂ ਗੁੰਮ ਹੈ।"
 
@@ -283,74 +281,73 @@ msgstr "'%s' ਐਲੀਮੈਂਟ ਲੋੜੀਦੀ ਸਮੱਗਰੀ ਵਿ�
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:303
+#: ../gdata/gdata-parser.c:321
 #, c-format
-#| msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "'%s' ਐਲੀਮੈਂਟ (\"%s\") ਦੀ ਸਮੱਗਰੀ ISO 8601 ਫਾਰਮੈਟ ਵਿੱਚ ਨਹੀਂ ਹੈ।"
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:313
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "ਸਰਵਰ ਤੋਂ ਗਲਤੀ JSON ਮਿਲਿਆ: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:369
+#: ../gdata/gdata-service.c:398
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "ਕਿਊਰੀ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ ਕੋਡ %u : %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:375
+#: ../gdata/gdata-service.c:404
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "ਐਂਟਰੀ ਸ਼ਾਮਲ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ ਕੋਡ %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:381
+#: ../gdata/gdata-service.c:410
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "ਐਂਟਰੀ ਅੱਪਡੇਟ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ ਕੋਡ %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:387
+#: ../gdata/gdata-service.c:416
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "ਐਂਟਰੀ ਹਟਾਉਣ ਦੌਰਾਨ ਗਲਤੀ ਕੋਡ %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:393
+#: ../gdata/gdata-service.c:422
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "ਅੱਪਲੋਡ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ ਕੋਡ %u: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:399
+#: ../gdata/gdata-service.c:428
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "ਅੱਪਲੋਡ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ ਕੋਡ %u : %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:405
+#: ../gdata/gdata-service.c:434
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "ਬੈਂਚ ਕਾਰਵਾਈ ਚਲਾਉਣ ਦੌਰਾਨ ਗਲਤੀ ਕੋਡ %u ਮਿਲਿਆ: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:692
+#: ../gdata/gdata-service.c:726
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "ਅਢੁੱਕਵਾਂ ਰੀਡਾਇਰੈਕਟ URI: %s"
 
-#: ../gdata/gdata-service.c:1363
+#: ../gdata/gdata-service.c:1406
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -449,6 +446,11 @@ msgstr "ਡੌਕੂਮੈਂਟ ਕਾਪੀ ਕਰਨ ਲਈ ਤੁਹਾਨ�
 msgid "You must be authenticated to move documents and folders."
 msgstr "ਤੁਹਾਨੂੰ ਡੌਕੂਮੈਂਟ ਅਤੇ ਫੋਲਡਰ ਹਿਲਾਉਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣਾ ਪਵੇਗਾ।"
 
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "ਵਿਸ਼ੇਸ਼ਤਾ '%s' ਵਿੱਚ ਚਿੱਤਰ ਨਹੀਂ ਹੈ"
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
@@ -483,6 +485,34 @@ msgstr "ਐਲਬਮ ਪਹਿਲਾਂ ਹੀ ਸ਼ਾਮਲ ਕੀਤੀ ਜ�
 msgid "You must be authenticated to insert an album."
 msgstr "ਤੁਹਾਨੂੰ ਐਲਬਮ ਸ਼ਾਮਲ ਕਰਨ ਲਈ ਪਰਮਾਣਿਤ ਹੋਵੇਗਾ।"
 
+#: ../gdata/services/tasks/gdata-tasks-service.c:195
+#: ../gdata/services/youtube/gdata-youtube-service.c:478
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"ਤੁਸੀਂ ਹੁਣੇ ਹੁਣੇ ਬਹੁਤ ਜ਼ਿਆਦਾ API ਕਾਲ ਕੀਤੀਆਂ ਹਨ। ਕੁਝ ਮਿੰਟ ਲਈ ਉਡੀਕ ਕਰਨ ਦੇ ਬਾਅਦ "
+"ਮੁੜ-ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:203
+#: ../gdata/services/youtube/gdata-youtube-service.c:473
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "ਤੁਹਾਨੂੰ ਇਹ ਕਰਨ ਲਈ ਪਰਮਾਣਿਤ ਹੋਵੇਗਾ।"
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:329
+#: ../gdata/services/tasks/gdata-tasks-service.c:380
+#| msgid "You must be authenticated to query all calendars."
+msgid "You must be authenticated to query all tasklists."
+msgstr "ਸਭ ਟਾਸਕ-ਸੂਚੀਆਂ ਬਾਰੇ ਜਾਣਕਾਰੀ ਲੈਣ ਲਈ ਤੁਹਾਨੂੰ ਪਰਮਾਣਿਤ ਹੋਣਾ ਪਵੇਗਾ।"
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:428
+#: ../gdata/services/tasks/gdata-tasks-service.c:484
+#| msgid "You must be authenticated to query your own calendars."
+msgid "You must be authenticated to query your own tasks."
+msgstr "ਤੁਹਾਨੂੰ ਆਪਣੇ ਟਾਸਕ ਲਈ ਜਾਣਕਾਰੀ ਲੈਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣਾ ਪਵੇਗਾ।"
+
 #: ../gdata/services/youtube/gdata-youtube-service.c:457
 #, c-format
 msgid "This service is not available at the moment."
@@ -495,8 +525,8 @@ msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
 "Visit %s to create one."
 msgstr ""
-"ਇਹ ਕਰਨ ਲਈ ਤੁਹਾਡਾ ਗੂਗਲ ਖਾਤਾ ਯੂਟਿਊਬ ਚੈਨਲ ਨਾਲ ਸਬੰਧਿਤ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ। "
-"ਬਣਾਉਣ ਲਈ %s ਵੇਖੋ।"
+"ਇਹ ਕਰਨ ਲਈ ਤੁਹਾਡਾ ਗੂਗਲ ਖਾਤਾ ਯੂਟਿਊਬ ਚੈਨਲ ਨਾਲ ਸਬੰਧਿਤ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ। ਬਣਾਉਣ ਲਈ %s "
+"ਵੇਖੋ।"
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
@@ -508,20 +538,6 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "\"%3$s\" ਟਿਕਾਣੇ ਨਾਲ ਡੋਮੇਨ \"%2$s\" ਵਿੱਚ ਅਣਜਾਣ ਗਲਤੀ ਕੋਡ \"%1$s\" ਮਿਲਿਆ"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:473
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "ਤੁਹਾਨੂੰ ਇਹ ਕਰਨ ਲਈ ਪਰਮਾਣਿਤ ਹੋਵੇਗਾ।"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:478
-#, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
-msgstr ""
-"ਤੁਸੀਂ ਹੁਣੇ ਹੁਣੇ ਬਹੁਤ ਜ਼ਿਆਦਾ API ਕਾਲ ਕੀਤੀਆਂ ਹਨ। ਕੁਝ ਮਿੰਟ ਲਈ ਉਡੀਕ ਕਰਨ ਦੇ ਬਾਅਦ "
-"ਮੁੜ-ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
