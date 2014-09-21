@@ -13,16 +13,16 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-11-24 18:27+0000\n"
-"PO-Revision-Date: 2013-11-30 17:55+0800\n"
-"Last-Translator: 甘露(Gan Lu) <rhythm.gan@gmail.com>\n"
+"POT-Creation-Date: 2014-09-17 23:22+0000\n"
+"PO-Revision-Date: 2014-08-27 10:17+0800\n"
+"Last-Translator: irisgyq <gouyingqiyanxuan321@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../gdata/gdata-client-login-authorizer.c:627
 #: ../gdata/gdata-oauth1-authorizer.c:839
@@ -147,7 +147,7 @@ msgid "This comment may not be deleted."
 msgstr "此注释不可以被删除。"
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "无效的定位请求"
 
@@ -261,7 +261,7 @@ msgstr "一个必需的元素(%s)不存在。"
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "一个单独元素(%s)重复了。"
@@ -270,7 +270,7 @@ msgstr "一个单独元素(%s)重复了。"
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:291
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "某个 %s 元素丢失了要求的内容。"
@@ -280,13 +280,13 @@ msgstr "某个 %s 元素丢失了要求的内容。"
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:321
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "某个 %s 元素(“%s”)的内容不是 ISO 8601 格式的。"
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:331
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "从服务器处接收到无效的 JSON：%s"
@@ -341,12 +341,12 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "在进行批处理操作时的错误代码 %u：%s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:721
+#: ../gdata/gdata-service.c:726
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "无效的重定向：%s"
 
-#: ../gdata/gdata-service.c:1393
+#: ../gdata/gdata-service.c:1406
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -444,6 +444,11 @@ msgstr "您必须通过认证才能复制文档。"
 msgid "You must be authenticated to move documents and folders."
 msgstr "认证后才能移动文档和目录。"
 
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, fuzzy, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "属性 '%s' 没有存有图片"
+
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "您必须指定一个用户名或者通过认证才能查询一个用户。"
@@ -474,13 +479,27 @@ msgstr "专辑已经插入。"
 msgid "You must be authenticated to insert an album."
 msgstr "您必须通过认证才能插入专辑。"
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:145
-#: ../gdata/services/tasks/gdata-tasks-service.c:196
+#: ../gdata/services/tasks/gdata-tasks-service.c:195
+#: ../gdata/services/youtube/gdata-youtube-service.c:478
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr "您最近已经产生了太多 API 呼叫。请等待几分钟，然后再重新尝试。"
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:203
+#: ../gdata/services/youtube/gdata-youtube-service.c:473
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "您必须通过认证才能这样做。"
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:329
+#: ../gdata/services/tasks/gdata-tasks-service.c:380
 msgid "You must be authenticated to query all tasklists."
 msgstr "您必须通过认证才能查询全部任务列表。"
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:244
-#: ../gdata/services/tasks/gdata-tasks-service.c:300
+#: ../gdata/services/tasks/gdata-tasks-service.c:428
+#: ../gdata/services/tasks/gdata-tasks-service.c:484
 msgid "You must be authenticated to query your own tasks."
 msgstr "您必须通过认证才能查询您自己的任务。"
 
@@ -508,18 +527,6 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "接收到域 “%2$s” 中未知的错误代码 “%1$s”，并带有位置 “%3$s”。"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:473
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "您必须通过认证才能这样做。"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:478
-#, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
-msgstr "您最近已经产生了太多 API 呼叫。请等待几分钟，然后再重新尝试。"
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
