@@ -246,9 +246,15 @@ build_filter_string (FilterNode *node,
 		break;
 	}
 	case NODE_LOCATION:
-		g_string_append_printf (str, "(within radius:%" G_GUINT64_FORMAT "m lon:%.4f lat:%.4f)",
-					node->location.radius, node->location.lon, node->location.lat);
+	{
+		gchar lon_str[G_ASCII_DTOSTR_BUF_SIZE], lat_str[G_ASCII_DTOSTR_BUF_SIZE];
+
+		g_ascii_formatd (lon_str, G_ASCII_DTOSTR_BUF_SIZE, "%.4f", node->location.lon);
+		g_ascii_formatd (lat_str, G_ASCII_DTOSTR_BUF_SIZE, "%.4f", node->location.lat);
+		g_string_append_printf (str, "(within radius:%" G_GUINT64_FORMAT "m lon:%s lat:%s)",
+					node->location.radius, lon_str, lat_str);
 		break;
+	}
 	default:
 		g_assert_not_reached ();
 		break;
