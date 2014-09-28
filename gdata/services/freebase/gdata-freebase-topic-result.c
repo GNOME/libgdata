@@ -346,7 +346,7 @@ reader_fill_object_gvalue (JsonReader *reader, TopicValueType type, GValue *valu
 {
 	GDataFreebaseTopicObject *object;
 
-	if (type != TYPE_OBJECT && type != TYPE_COMPOUND)
+	if (type != TYPE_OBJECT)
 		return FALSE;
 
 	object = reader_create_object (reader, type);
