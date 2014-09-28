@@ -369,7 +369,7 @@ reader_fill_compound_gvalue (JsonReader *reader, TopicValueType type, GValue *va
 
 	object = reader_create_object (reader, type);
 
-	if (object != NULL)
+	if (object == NULL)
 		return FALSE;
 
 	json_reader_read_member (reader, "property");
