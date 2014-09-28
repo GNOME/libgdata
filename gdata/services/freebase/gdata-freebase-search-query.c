@@ -228,7 +228,7 @@ build_filter_string (FilterNode *node,
 		g_assert (/* node->container.filter_type >= 0 && */
 		          node->container.filter_type < G_N_ELEMENTS (type_str));
 
-		g_string_append_printf (str, "(%s", type_str[node->container.type]);
+		g_string_append_printf (str, "(%s", type_str[node->container.filter_type]);
 
 		for (i = 0; i < node->container.child_nodes->len; i++)
 			build_filter_string (g_ptr_array_index (node->container.child_nodes, i), str);
