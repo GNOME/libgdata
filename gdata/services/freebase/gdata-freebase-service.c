@@ -316,7 +316,7 @@ gdata_freebase_service_get_topic_async (GDataFreebaseService *self, GDataFreebas
 	g_return_if_fail (callback != NULL);
 
 	gdata_service_query_single_entry_async (GDATA_SERVICE (self), get_freebase_authorization_domain (), "topic",
-						GDATA_QUERY (query), GDATA_TYPE_FREEBASE_RESULT, cancellable, callback, user_data);
+						GDATA_QUERY (query), GDATA_TYPE_FREEBASE_TOPIC_RESULT, cancellable, callback, user_data);
 }
 
 /**
