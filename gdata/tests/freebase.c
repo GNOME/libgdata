@@ -61,6 +61,135 @@ async_ready_callback (GObject      *object,
 	g_main_loop_quit (closure->main_loop);
 }
 
+/* Search */
+static GDataFreebaseSearchResult *
+freebase_search (GDataFreebaseSearchQuery *query, const gchar *trace)
+{
+	GDataFreebaseSearchResult *result;
+	GError *error = NULL;
+
+	gdata_test_mock_server_start_trace (mock_server, trace);
+	result = gdata_freebase_service_search (GDATA_FREEBASE_SERVICE (service), query, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (result != NULL);
+	uhm_server_end_trace (mock_server);
+
+	return result;
+}
+
+static GDataFreebaseSearchResult *
+freebase_search_async (GDataFreebaseSearchQuery *query, const gchar *trace)
+{
+	AsyncClosure closure = { 0 };
+
+	gdata_test_mock_server_start_trace (mock_server, trace);
+	closure.main_loop = g_main_loop_new (NULL, TRUE);
+
+	gdata_freebase_service_search_async (GDATA_FREEBASE_SERVICE (service), query, NULL,
+					     async_ready_callback, &closure);
+
+	g_main_loop_run (closure.main_loop);
+	g_assert_no_error (closure.error);
+	g_assert (closure.data != NULL);
+	g_assert (GDATA_IS_FREEBASE_SEARCH_RESULT (closure.data));
+
+	g_main_loop_unref (closure.main_loop);
+	uhm_server_end_trace (mock_server);
+
+	return closure.data;
+}
+
+static void
+test_freebase_search_query_sync (void)
+{
+	GDataFreebaseSearchQuery *query; /* owned */
+	GDataFreebaseSearchResult *result;  /* owned */
+
+	query = gdata_freebase_search_query_new ("prado museum");
+	gdata_freebase_search_query_set_language (query, "en");
+
+	result = freebase_search (query, "search");
+	g_object_unref (query);
+
+	g_assert_cmpint (gdata_freebase_search_result_get_num_items (result), ==, 20);
+	g_assert_cmpint (gdata_freebase_search_result_get_total_hits (result), ==, 235);
+
+	g_object_unref (result);
+}
+
+static void
+test_freebase_search_query_async (void)
+{
+	GDataFreebaseSearchQuery *query; /* owned */
+	GDataFreebaseSearchResult *result;  /* owned */
+
+	query = gdata_freebase_search_query_new ("prado museum");
+	gdata_freebase_search_query_set_language (query, "en");
+
+	result = freebase_search_async (query, "search");
+	g_object_unref (query);
+
+	g_assert_cmpint (gdata_freebase_search_result_get_num_items (result), ==, 20);
+	g_assert_cmpint (gdata_freebase_search_result_get_total_hits (result), ==, 235);
+
+	g_object_unref (result);
+}
+
+static void
+test_freebase_search_query_complex (void)
+{
+	GDataFreebaseSearchQuery *query; /* owned */
+	GDataFreebaseSearchResult *result;  /* owned */
+
+	query = gdata_freebase_search_query_new ("prado");
+	gdata_freebase_search_query_set_language (query, "en");
+	gdata_query_set_max_results (GDATA_QUERY (query), 1);
+
+	gdata_freebase_search_query_open_filter (query, GDATA_FREEBASE_SEARCH_FILTER_ALL);
+	gdata_freebase_search_query_add_location (query, 10000, 40.413889, -3.6925);
+
+	gdata_freebase_search_query_open_filter (query, GDATA_FREEBASE_SEARCH_FILTER_ANY);
+	gdata_freebase_search_query_add_filter (query, "type", "/travel/tourist_attraction");
+	gdata_freebase_search_query_add_filter (query, "type", "/architecture/museum");
+
+	gdata_freebase_search_query_open_filter (query, GDATA_FREEBASE_SEARCH_FILTER_NOT);
+	gdata_freebase_search_query_add_filter (query, "type", "/protected_sites/protected_site");
+
+	gdata_freebase_search_query_close_filter (query);
+	gdata_freebase_search_query_close_filter (query);
+	gdata_freebase_search_query_close_filter (query);
+
+	result = freebase_search (query, "search-complex");
+	g_object_unref (query);
+
+	g_assert_cmpint (gdata_freebase_search_result_get_num_items (result), ==, 1);
+	g_assert_cmpint (gdata_freebase_search_result_get_total_hits (result), ==, 27);
+
+	g_object_unref (result);
+}
+
+static void
+test_freebase_search_reply_items (void)
+{
+	GDataFreebaseSearchQuery *query; /* owned */
+	GDataFreebaseSearchResult *result;  /* owned */
+	const GDataFreebaseSearchResultItem *item;
+
+	query = gdata_freebase_search_query_new ("prado museum");
+	gdata_freebase_search_query_set_language (query, "en");
+
+	result = freebase_search (query, "search");
+	g_object_unref (query);
+
+	item = gdata_freebase_search_result_get_item (result, 19);
+	g_assert_cmpstr (gdata_freebase_search_result_item_get_mid (item), ==, "/m/05h1sls");
+	g_assert_cmpstr (gdata_freebase_search_result_item_get_name (item), ==, "Visitation");
+	g_assert_cmpstr (gdata_freebase_search_result_item_get_notable_name (item), ==, "History Painting");
+	g_assert_cmpfloat (gdata_freebase_search_result_item_get_score (item), ==, 19.286610);
+
+	g_object_unref (result);
+}
+
 /* Topic */
 static GDataFreebaseTopicResult *
 freebase_topic (GDataFreebaseTopicQuery *query, const gchar *trace)
@@ -278,6 +407,16 @@ main (int argc, char *argv[])
 	g_object_unref (trace_directory);
 
 	service = GDATA_SERVICE (gdata_freebase_service_new (NULL, NULL));
+
+	/* Search */
+	g_test_add_func ("/freebase/search/query/sync",
+			 test_freebase_search_query_sync);
+	g_test_add_func ("/freebase/search/query/async",
+			 test_freebase_search_query_async);
+	g_test_add_func ("/freebase/search/query/complex",
+			 test_freebase_search_query_complex);
+	g_test_add_func ("/freebase/search/reply/items",
+			 test_freebase_search_reply_items);
 
 	/* Topic */
 	g_test_add_func ("/freebase/topic/query/sync",

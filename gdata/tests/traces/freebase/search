@@ -1,0 +1,28 @@
+> GET /freebase/v1/search?query=prado%20museum&lang=en HTTP/1.1
+> Soup-Debug-Timestamp: 1412519720
+> Soup-Debug: SoupSession 1 (0x21c0110), SoupMessage 1 (0x25d00c0), SoupSocket 1 (0x23cd910)
+> Host: www.googleapis.com
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1412519720
+< Soup-Debug: SoupMessage 1 (0x25d00c0)
+< Expires: Sun, 05 Oct 2014 14:35:20 GMT
+< Date: Sun, 05 Oct 2014 14:35:20 GMT
+< Cache-Control: private, max-age=0, must-revalidate, no-transform
+< Content-Disposition: attachment
+< ETag: "VaUFyVE5DtoMHwqA6ftX69x4w8Y/tuBTotVarxUvPdnjjBoc370krE0"
+< Content-Type: application/json; charset=UTF-8
+< Content-Encoding: gzip
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.01
+< Transfer-Encoding: chunked
+< 
+< {"status":"200 OK","result":[{"mid":"/m/01hlq3","id":"/en/prado_museum","name":"Museo Nacional Del Prado","notable":{"name":"Art Gallery","id":"/m/0hhbr"},"lang":"en","score":603.212463},{"mid":"/m/0jzpgw_","name":"Prado Museum Guard","notable":{"name":"Film character","id":"/film/film_character"},"lang":"en","score":75.608864},{"mid":"/m/04pz69t","name":"Prado Museum, Velazquez entrance.","lang":"en","score":65.479202},{"mid":"/m/0jzpgj1","name":"Antonio, Prado Museum Guard","notable":{"name":"Film character","id":"/film/film_character"},"lang":"en","score":65.479202},{"mid":"/m/0d9p6vc","id":"/authority/stanford/control/48509","name":"Velazquez in the Prado museum","notable":{"name":"Book Edition","id":"/book/book_edition"},"lang":"en","score":58.566372},{"mid":"/m/0br6qr2","id":"/en/a_guide_book_to_the_prado_museum","name":"A guide-book to the Prado Museum","notable":{"name":"Book","id":"/book/book"},"lang":"en","score":55.680264},{"mid":"/m/0cryg0p","id":"/authority/netflix/tiny/BVPnR","name":"The Glory of Spain: Music & Masterpieces from Madrid's El Prado Museum","notable":{"name":"Music Film","id":"/m/04rlf"},"lang":"en","score":50.219574},{"mid":"/m/03tmb3c","name":"Madonna and Child, by Luis de Morales. Prado Museum.","lang":"en","score":44.560253},{"mid":"/m/0c70lx2","id":"/authority/stanford/control/2262848","name":"A guide-book of the Prado Museum; a critical and historical study","notable":{"name":"Book Edition","id":"/book/book_edition"},"lang":"en","score":43.854767},{"mid":"/m/0brtkm1","id":"/authority/stanford/control/194915","name":"A guide-book to the Prado Museum : including a commentary and general historical information","notable":{"name":"Book Edition","id":"/book/book_edition"},"lang":"en","score":41.805313},{"mid":"/m/03rsy9z","name":"Paul de Vos, Dear Hunt, mid-17th century, 212 \u00d7 347 cm, Oil on canvas, Prado Museum, Madrid","lang":"en","score":31.762075},{"mid":"/m/02z5_vj","id":"/en/prado_montevideo","name":"Prado, Montevideo","notable":{"name":"Location","id":"/location/location"},"lang":"en","score":25.294312},{"mid":"/m/0c0tclx","name":"Those paintings, which have survived a number of fires over the centuries, form the core of the collection of the Prado Museum in Madrid.","lang":"en","score":24.764435},{"mid":"/m/03frxr","id":"/en/luis_de_morales","name":"Luis de Morales","notable":{"name":"Painting Artist","id":"/m/05qdh"},"lang":"en","score":22.030073},{"mid":"/m/0kjg2","id":"/en/thalia","name":"Thalia","notable":{"name":"Fictional Character","id":"/fictional_universe/fictional_character"},"lang":"en","score":21.522394},{"mid":"/m/0fcj0d","id":"/en/la_maja_vestida","name":"La maja vestida","notable":{"name":"Painting Artwork","id":"/m/05qdh"},"lang":"en","score":21.183151},{"mid":"/m/04rq60","id":"/en/rafael_moneo","name":"Rafael Moneo","notable":{"name":"Architect","id":"/architecture/architect"},"lang":"en","score":20.858194},{"mid":"/m/05f56h3","id":"/en/the_jester_calabacillas","name":"The Jester Calabacillas","notable":{"name":"Artwork","id":"/visual_art/artwork"},"lang":"en","score":20.233606},{"mid":"/m/0fr_0v","id":"/en/meadows_museum","name":"Meadows Museum","notable":{"name":"Art Museum","id":"/m/0hhbr"},"lang":"en","score":20.220625},{"mid":"/m/05h1sls","name":"Visitation","notable":{"name":"History Painting","id":"/m/03n77"},"lang":"en","score":19.286610}],"cursor":20,"cost":7,"hits":235}
+  
