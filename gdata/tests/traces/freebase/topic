@@ -1,0 +1,3758 @@
+> GET /freebase/v1/topic/en/prado_museum?lang=en HTTP/1.1
+> Soup-Debug-Timestamp: 1412523466
+> Soup-Debug: SoupSession 1 (0x1a56110), SoupMessage 1 (0x1a868c0), SoupSocket 1 (0x1b92110)
+> Host: www.googleapis.com
+> GData-Version: 2
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
+> Connection: Keep-Alive
+  
+< HTTP/1.1 200 OK
+< Soup-Debug-Timestamp: 1412523466
+< Soup-Debug: SoupMessage 1 (0x1a868c0)
+< Expires: Sun, 05 Oct 2014 15:37:46 GMT
+< Date: Sun, 05 Oct 2014 15:37:46 GMT
+< Cache-Control: private, max-age=0, must-revalidate, no-transform
+< ETag: "xNaAEFSOLDdQLGJrZlnp8VulLUM/PTjuonmPh7l0uMa8J_ZGVSBJeLM"
+< Content-Type: application/json; charset=UTF-8
+< Content-Encoding: gzip
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-XSS-Protection: 1; mode=block
+< Server: GSE
+< Alternate-Protocol: 443:quic,p=0.01
+< Transfer-Encoding: chunked
+< 
+< {
+<  "id": "/m/01hlq3",
+<  "property": {
+<   "/architecture/building/building_function": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Museum",
+<      "lang": "en",
+<      "id": "/m/09cmq",
+<      "creator": "/user/crox",
+<      "timestamp": "2014-03-26T01:06:18.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/architecture/building/occupant": {
+<    "valuetype": "compound",
+<    "values": [
+<     {
+<      "text": "Museo Nacional Del Prado - nchapman - Occupancy",
+<      "lang": "en",
+<      "id": "/m/0jk49b7",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.000Z",
+<      "property": {
+<       "/architecture/occupancy/occupant": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Museo Nacional Del Prado",
+<          "lang": "en",
+<          "id": "/m/01hlq3",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-06T16:48:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "nchapman",
+<          "lang": "en",
+<          "id": "/m/0j5dvhc",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-06T16:48:03.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Occupancy",
+<          "lang": "en",
+<          "id": "/architecture/occupancy",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-06T16:48:03.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/architecture/building_occupant/buildings_occupied": {
+<    "valuetype": "compound",
+<    "values": [
+<     {
+<      "text": "Museo Nacional Del Prado - nchapman - Occupancy",
+<      "lang": "en",
+<      "id": "/m/0jk49b7",
+<      "creator": "/user/nchapman",
+<      "timestamp": "2012-05-06T16:48:03.001Z",
+<      "property": {
+<       "/architecture/occupancy/building": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Museo Nacional Del Prado",
+<          "lang": "en",
+<          "id": "/m/01hlq3",
+<          "creator": "/user/merge_bot",
+<          "timestamp": "2012-05-25T22:35:20.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "nchapman",
+<          "lang": "en",
+<          "id": "/m/0j5dvhc",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-06T16:48:03.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Occupancy",
+<          "lang": "en",
+<          "id": "/architecture/occupancy",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-06T16:48:03.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/architecture/museum/address": {
+<    "valuetype": "compound",
+<    "values": [
+<     {
+<      "text": "Location - Madrid - 28014 - Community of Madrid - Calle Ruiz de Alarcón, 23 - nchapman - Address",
+<      "lang": "en",
+<      "id": "/m/0jhd1cs",
+<      "creator": "/user/nchapman",
+<      "timestamp": "2012-05-04T23:13:57.001Z",
+<      "property": {
+<       "/common/topic/notable_types": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Location",
+<          "lang": "en",
+<          "id": "/location/location"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/location/mailing_address/citytown": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Madrid",
+<          "lang": "en",
+<          "id": "/m/056_y",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-04T23:13:57.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/location/mailing_address/postal_code": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "28014",
+<          "lang": "en",
+<          "id": "/m/09s4n68",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-06T16:55:25.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/location/mailing_address/state_province_region": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Community of Madrid",
+<          "lang": "en",
+<          "id": "/m/0j4xg",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-06T16:55:25.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/location/mailing_address/street_address": {
+<        "valuetype": "string",
+<        "values": [
+<         {
+<          "text": "Calle Ruiz de Alarcón, 23",
+<          "lang": "en",
+<          "value": "Calle Ruiz de Alarcón, 23",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-06T16:55:25.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "nchapman",
+<          "lang": "en",
+<          "id": "/m/0j5dvhc",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-04T23:13:57.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Address",
+<          "lang": "en",
+<          "id": "/location/mailing_address",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-04T23:13:57.001Z"
+<         },
+<         {
+<          "text": "Location",
+<          "lang": "en",
+<          "id": "/location/location",
+<          "creator": "/user/nchapman",
+<          "timestamp": "2012-05-04T23:13:57.001Z"
+<         },
+<         {
+<          "text": "Inanimate",
+<          "lang": "en",
+<          "id": "/base/type_ontology/inanimate",
+<          "creator": "/user/nchapman"
+<         }
+<        ],
+<        "count": 3.0
+<       }
+<      }
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/architecture/museum/director": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Miguel Zugaza",
+<      "lang": "en",
+<      "id": "/m/0j14wb4",
+<      "creator": "/user/mjrecampo",
+<      "timestamp": "2012-02-07T23:16:29.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/architecture/museum/type_of_museum": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Art Gallery",
+<      "lang": "en",
+<      "id": "/m/0hhbr",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2008-05-22T01:54:12.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/architecture/structure/architect": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Rafael Moneo",
+<      "lang": "en",
+<      "id": "/m/04rq60",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.001Z"
+<     },
+<     {
+<      "text": "Juan de Villanueva",
+<      "lang": "en",
+<      "id": "/m/0fpbmp",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.001Z"
+<     }
+<    ],
+<    "count": 2.0
+<   },
+<   "/architecture/structure/architectural_style": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Neoclassical architecture",
+<      "lang": "en",
+<      "id": "/m/07xnmw",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:19.001Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/architecture/structure/opened": {
+<    "valuetype": "datetime",
+<    "values": [
+<     {
+<      "text": "1819-11",
+<      "lang": "",
+<      "value": "1819-11",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:19.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/book/author/openlibrary_id": {
+<    "valuetype": "string",
+<    "values": [
+<     {
+<      "text": "OL2349017A",
+<      "lang": "",
+<      "value": "OL2349017A",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2009-05-27T09:01:56.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/book/author/works_written": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "The Prado",
+<      "lang": "en",
+<      "id": "/m/06926y4",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-12T15:33:56.000Z"
+<     },
+<     {
+<      "text": "Treasures of the Prado",
+<      "lang": "en",
+<      "id": "/m/06b2dfh",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-13T10:19:42.000Z"
+<     },
+<     {
+<      "text": "Un mecenas póstumo",
+<      "lang": "en",
+<      "id": "/m/06bt6vj",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-13T23:45:01.000Z"
+<     },
+<     {
+<      "text": "xiquets en la pintura",
+<      "lang": "en",
+<      "id": "/m/06cnwvm",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-14T17:03:43.000Z"
+<     },
+<     {
+<      "text": "Catalogo de las pinturas",
+<      "lang": "en",
+<      "id": "/m/06d8rhf",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-15T05:01:46.000Z"
+<     },
+<     {
+<      "text": "De Barnaba da Modena a Francisco de Goya",
+<      "lang": "en",
+<      "id": "/m/06hp0_j",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-18T01:46:11.002Z"
+<     },
+<     {
+<      "text": "Artistas pintados",
+<      "lang": "en",
+<      "id": "/m/06kt6xw",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-19T22:54:59.001Z"
+<     },
+<     {
+<      "text": "El Retrato Espa~nol: del Greco a Picasso",
+<      "lang": "en",
+<      "id": "/m/06ltsz8",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-20T21:14:48.001Z"
+<     },
+<     {
+<      "text": "Dibujos españoles",
+<      "lang": "en",
+<      "id": "/m/06mf1cy",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-21T10:26:48.000Z"
+<     },
+<     {
+<      "text": "Adquisiciones de 1978 a 1981",
+<      "lang": "en",
+<      "id": "/m/06ms6t0",
+<      "creator": "/user/book_bot",
+<      "timestamp": "2009-07-21T19:07:23.000Z"
+<     }
+<    ],
+<    "count": 13.0
+<   },
+<   "/common/topic/alias": {
+<    "valuetype": "string",
+<    "values": [
+<     {
+<      "text": "Prado Museum",
+<      "lang": "en",
+<      "value": "Prado Museum",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2011-05-12T17:35:24.000Z"
+<     },
+<     {
+<      "text": "Museo del Prado, Madrid",
+<      "lang": "en",
+<      "value": "Museo del Prado, Madrid",
+<      "creator": "/user/spencermountain",
+<      "timestamp": "2011-12-06T13:34:18.002Z"
+<     },
+<     {
+<      "text": "Museo del Prado",
+<      "lang": "en",
+<      "value": "Museo del Prado",
+<      "creator": "/user/wikirecon_bot"
+<     }
+<    ],
+<    "count": 7.0
+<   },
+<   "/common/topic/article": {
+<    "valuetype": "compound",
+<    "values": [
+<     {
+<      "text": "The Museo del Prado is the main Spanish national art museum, located in central Madrid. It...",
+<      "lang": "en",
+<      "id": "/m/01hlqf",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2006-10-22T13:30:31.003Z",
+<      "property": {
+<       "/common/document/source_uri": {
+<        "valuetype": "uri",
+<        "values": [
+<         {
+<          "text": "http://wp/en/230962",
+<          "lang": "",
+<          "value": "http://wp/en/230962",
+<          "creator": "/user/mwcl_wikipedia_en",
+<          "timestamp": "2006-10-22T13:30:31.003Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/common/document/text": {
+<        "valuetype": "string",
+<        "values": [
+<         {
+<          "text": "The Museo del Prado is the main Spanish national art museum, located in central Madrid. It...",
+<          "lang": "en",
+<          "value": "The Museo del Prado is the main Spanish national art museum, located in central Madrid. It features one of the world's finest collections of European art, from the 12th century to the early 19th century, based on the former Spanish Royal Collection, and unquestionably the best single collection of Spanish art. Founded as a museum of paintings and sculpture, it also contains important collections of other types of works. A new, recently opened wing enlarged the display area by about 400 paintings, and it is currently used mainly for temporary expositions. El Prado is one of the most visited sites in the world, and it is considered to be among the greatest museums of art. The large numbers of works by Velázquez and Francisco de Goya (the artist more extensively represented in the collection), Titian, Rubens and Bosch are among the highlights of the collection.\nThe collection currently comprises around 7,600 paintings, 1,000 sculptures, 4,800 prints and 8,200 drawings, in addition to a large number of other works of art and historic documents. By 2012 the Museum will be displaying about 1300 works in the main buildings, while around 3,100 works are on temporary loan to various museums",
+<          "creator": "/user/mwcl_wikipedia_en",
+<          "timestamp": "2006-10-22T13:30:31.003Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Freebase Data Team",
+<          "lang": "",
+<          "id": "/m/0gs8",
+<          "creator": "/user/mwcl_wikipedia_en",
+<          "timestamp": "2006-10-22T13:30:31.003Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Document",
+<          "lang": "",
+<          "id": "/common/document",
+<          "creator": "/user/mwcl_wikipedia_en",
+<          "timestamp": "2006-10-22T13:30:31.003Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/common/topic/description": {
+<    "valuetype": "string",
+<    "values": [
+<     {
+<      "text": "The Museo del Prado is the main Spanish national art museum, located in central Madrid. It...",
+<      "lang": "en",
+<      "value": "The Museo del Prado is the main Spanish national art museum, located in central Madrid. It features one of the world's finest collections of European art, dating from the 12th century to the early 19th century, based on the former Spanish Royal Collection, and unquestionably the best single collection of Spanish art. Founded as a museum of paintings and sculpture in 1819, it also contains important collections of other types of works. El Prado is one of the most visited sites in the world, and is considered one the greatest museums of art in the world. The numerous works by Francisco de Goya, the single most extensively represented artist, as well as by Diego Velázquez, El Greco, Titian, Peter Paul Rubens and Hieronymus Bosch are some of the highlights of the collection.\nThe collection currently comprises around 7,600 paintings, 1,000 sculptures, 4,800 prints and 8,200 drawings, in addition to a large number of other works of art and historic documents. By 2012 the Museum will be displaying about 1,300 works in the main buildings, while around 3,100 works are on temporary loan to various museums and official institutions. The remainder are in storage.",
+<      "creator": "/user/wikirecon_bot"
+<     }
+<    ],
+<    "count": 36.0
+<   },
+<   "/common/topic/image": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Madrid-prado",
+<      "lang": "en",
+<      "id": "/m/029hjlp",
+<      "creator": "/user/mwcl_images",
+<      "timestamp": "2007-04-15T02:53:32.003Z"
+<     },
+<     {
+<      "text": "A picture of a white war elephant from 11th century Spain",
+<      "lang": "en",
+<      "id": "/m/03s44qc",
+<      "creator": "/user/mwcl_images",
+<      "timestamp": "2008-05-08T09:36:13.000Z"
+<     },
+<     {
+<      "text": "Museo del Prado-front",
+<      "lang": "en",
+<      "id": "/m/04rdydd",
+<      "creator": "/user/mwcl_images",
+<      "timestamp": "2008-10-29T19:50:00.001Z"
+<     }
+<    ],
+<    "count": 3.0
+<   },
+<   "/common/topic/notable_for": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Art Gallery",
+<      "lang": "en",
+<      "id": ""
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/common/topic/notable_types": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Museum",
+<      "lang": "en",
+<      "id": "/architecture/museum"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/common/topic/official_website": {
+<    "valuetype": "uri",
+<    "values": [
+<     {
+<      "text": "http://www.museodelprado.es/",
+<      "lang": "",
+<      "value": "http://www.museodelprado.es/",
+<      "creator": "/user/gardening_bot",
+<      "timestamp": "2011-10-08T06:16:01.001Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/common/topic/social_media_presence": {
+<    "valuetype": "uri",
+<    "values": [
+<     {
+<      "text": "http://plus.google.com/115830398964495071362",
+<      "lang": "",
+<      "value": "http://plus.google.com/115830398964495071362",
+<      "creator": "/user/googlebot",
+<      "timestamp": "2012-12-18T11:25:31.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/common/topic/topic_equivalent_webpage": {
+<    "valuetype": "uri",
+<    "values": [
+<     {
+<      "text": "http://en.wikipedia.org/wiki/index.html?curid=230962",
+<      "lang": "",
+<      "value": "http://en.wikipedia.org/wiki/index.html?curid=230962",
+<      "creator": "/user/metaweb",
+<      "timestamp": "2006-10-22T13:30:31.002Z"
+<     },
+<     {
+<      "text": "http://openlibrary.org/authors/OL2349017A",
+<      "lang": "",
+<      "value": "http://openlibrary.org/authors/OL2349017A",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2009-05-27T09:01:56.000Z"
+<     },
+<     {
+<      "text": "http://pt.wikipedia.org/wiki/index.html?curid=63691",
+<      "lang": "",
+<      "value": "http://pt.wikipedia.org/wiki/index.html?curid=63691",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-24T10:02:49.000Z"
+<     },
+<     {
+<      "text": "http://fr.wikipedia.org/wiki/index.html?curid=54591",
+<      "lang": "",
+<      "value": "http://fr.wikipedia.org/wiki/index.html?curid=54591",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-25T14:28:51.000Z"
+<     },
+<     {
+<      "text": "http://it.wikipedia.org/wiki/index.html?curid=1153368",
+<      "lang": "",
+<      "value": "http://it.wikipedia.org/wiki/index.html?curid=1153368",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-27T14:27:41.000Z"
+<     },
+<     {
+<      "text": "http://de.wikipedia.org/wiki/index.html?curid=143747",
+<      "lang": "",
+<      "value": "http://de.wikipedia.org/wiki/index.html?curid=143747",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-29T04:58:37.000Z"
+<     },
+<     {
+<      "text": "http://ja.wikipedia.org/wiki/プラド美術館",
+<      "lang": "",
+<      "value": "http://ja.wikipedia.org/wiki/プラド美術館",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2011-05-22T03:51:34.002Z"
+<     },
+<     {
+<      "text": "http://es.wikipedia.org/wiki/Museo_del_Prado",
+<      "lang": "",
+<      "value": "http://es.wikipedia.org/wiki/Museo_del_Prado",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2011-05-23T07:48:06.001Z"
+<     },
+<     {
+<      "text": "http://en.wikipedia.org/wiki/Museo_del_Prado",
+<      "lang": "",
+<      "value": "http://en.wikipedia.org/wiki/Museo_del_Prado",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2011-05-24T03:20:22.000Z"
+<     },
+<     {
+<      "text": "http://fr.wikipedia.org/wiki/Musée_du_Prado",
+<      "lang": "",
+<      "value": "http://fr.wikipedia.org/wiki/Musée_du_Prado",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2011-05-24T23:43:19.000Z"
+<     }
+<    ],
+<    "count": 92.0
+<   },
+<   "/common/topic/topical_webpage": {
+<    "valuetype": "uri",
+<    "values": [
+<     {
+<      "text": "http://topics.nytimes.com/top/reference/timestopics/organizations/p/prado_museum/index.html",
+<      "lang": "",
+<      "value": "http://topics.nytimes.com/top/reference/timestopics/organizations/p/prado_museum/index.html",
+<      "creator": "/user/gardening_bot",
+<      "timestamp": "2011-10-31T22:56:39.000Z"
+<     },
+<     {
+<      "text": "http://museoprado.mcu.es/",
+<      "lang": "",
+<      "value": "http://museoprado.mcu.es/",
+<      "creator": "/user/gardening_bot",
+<      "timestamp": "2011-11-01T03:53:56.000Z"
+<     }
+<    ],
+<    "count": 2.0
+<   },
+<   "/exhibitions/exhibition_venue/exhibitions_at_this_venue": {
+<    "valuetype": "compound",
+<    "values": [
+<     {
+<      "text": "2010-04-11 - Dutch Painters at the Prado - 2009-12-03 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b79x",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.001Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2010-04-11",
+<          "lang": "",
+<          "value": "2010-04-11",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:04.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Dutch Painters at the Prado",
+<          "lang": "en",
+<          "id": "/m/0c0b77p",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:05.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-12-03",
+<          "lang": "",
+<          "value": "2009-12-03",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:04.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.002Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.002Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2010-11-01 - View and Plan of Toledo - 2009-06-02 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b79n",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.002Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2010-11-01",
+<          "lang": "",
+<          "value": "2010-11-01",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:04.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "View and Plan of Toledo",
+<          "lang": "en",
+<          "id": "/m/0c0b77h",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:06.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-06-02",
+<          "lang": "",
+<          "value": "2009-06-02",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:04.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.002Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.002Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2010-01-17 - Juan Bautista Maíno (1581-1649) - 2009-10-20 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b79s",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.002Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2010-01-17",
+<          "lang": "",
+<          "value": "2010-01-17",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:04.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Juan Bautista Maíno (1581-1649)",
+<          "lang": "en",
+<          "id": "/m/0c0b77l",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:06.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-10-20",
+<          "lang": "",
+<          "value": "2009-10-20",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:04.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.002Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.002Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2009-09-13 - Joaquín Sorolla (1863-1923) - 2009-05-26 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b79j",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.002Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-09-13",
+<          "lang": "",
+<          "value": "2009-09-13",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:04.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Joaquín Sorolla (1863-1923)",
+<          "lang": "en",
+<          "id": "/m/0c0b77d",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:06.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-05-26",
+<          "lang": "",
+<          "value": "2009-05-26",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2009-01-06 - Rembrandt. History Painter - 2008-10-15 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b790",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:21.000Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-01-06",
+<          "lang": "",
+<          "value": "2009-01-06",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Rembrandt. History Painter",
+<          "lang": "en",
+<          "id": "/m/0c0b770",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:05.002Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2008-10-15",
+<          "lang": "",
+<          "value": "2008-10-15",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2009-04-19 - Francis Bacon - 2009-02-03 - frankieroberto - Topic",
+<      "lang": "en",
+<      "id": "/m/04sg179",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:21.000Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-04-19",
+<          "lang": "",
+<          "value": "2009-04-19",
+<          "creator": "/user/frankieroberto",
+<          "timestamp": "2008-10-30T20:34:51.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Francis Bacon",
+<          "lang": "en",
+<          "id": "/m/04sg135",
+<          "creator": "/user/frankieroberto",
+<          "timestamp": "2008-10-30T20:34:51.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-02-03",
+<          "lang": "",
+<          "value": "2009-02-03",
+<          "creator": "/user/frankieroberto",
+<          "timestamp": "2008-10-30T20:34:51.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "frankieroberto",
+<          "lang": "en",
+<          "id": "/m/03zwwyx",
+<          "creator": "/user/frankieroberto",
+<          "timestamp": "2008-10-30T20:34:51.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Topic",
+<          "lang": "en",
+<          "id": "/common/topic",
+<          "creator": "/user/frankieroberto",
+<          "timestamp": "2008-10-30T20:34:51.000Z"
+<         },
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/frankieroberto",
+<          "timestamp": "2008-10-30T20:34:51.000Z"
+<         }
+<        ],
+<        "count": 2.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2009-06-21 - The Sleeping Beauty. Victorian Painting from The Museo de Arte de Ponce - 2009-02-24 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b79d",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:21.000Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-06-21",
+<          "lang": "",
+<          "value": "2009-06-21",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "The Sleeping Beauty. Victorian Painting from The Museo de Arte de Ponce",
+<          "lang": "en",
+<          "id": "/m/0c0b779",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:06.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-02-24",
+<          "lang": "",
+<          "value": "2009-02-24",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2009-03-15 - The Purification of the Virgin in the Temple by Pedro de Campaña - 2008-12-02 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b798",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:21.000Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-03-15",
+<          "lang": "",
+<          "value": "2009-03-15",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "The Purification of the Virgin in the Temple by Pedro de Campaña",
+<          "lang": "en",
+<          "id": "/m/0c0b776",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:05.002Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2008-12-02",
+<          "lang": "",
+<          "value": "2008-12-02",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2009-04-12 - Among Gods and Men - 2008-11-04 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b794",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:21.000Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2009-04-12",
+<          "lang": "",
+<          "value": "2009-04-12",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Among Gods and Men",
+<          "lang": "en",
+<          "id": "/m/0c0b773",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:06.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2008-11-04",
+<          "lang": "",
+<          "value": "2008-11-04",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "2008-09-07 - The Renaissance Portrait - 2008-06-03 - krsalis - Exhibition run",
+<      "lang": "en",
+<      "id": "/m/0c0b78j",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:21.001Z",
+<      "property": {
+<       "/exhibitions/exhibition_run/closed_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2008-09-07",
+<          "lang": "",
+<          "value": "2008-09-07",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/exhibition": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "The Renaissance Portrait",
+<          "lang": "en",
+<          "id": "/m/0c0b76n",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:05.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/exhibitions/exhibition_run/opened_on": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "2008-06-03",
+<          "lang": "",
+<          "value": "2008-06-03",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:03.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:01.004Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Exhibition run",
+<          "lang": "en",
+<          "id": "/exhibitions/exhibition_run",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2010-06-11T07:43:01.004Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     }
+<    ],
+<    "count": 35.0
+<   },
+<   "/location/location/containedby": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Madrid",
+<      "lang": "en",
+<      "id": "/m/056_y",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:23.001Z"
+<     },
+<     {
+<      "text": "Spain",
+<      "lang": "en",
+<      "id": "/m/06mkj",
+<      "creator": "/user/goddess888",
+<      "timestamp": "2012-11-18T07:27:53.000Z"
+<     }
+<    ],
+<    "count": 2.0
+<   },
+<   "/location/location/geolocation": {
+<    "valuetype": "compound",
+<    "values": [
+<     {
+<      "text": "40.413889 - -3.6925 - /namespace/kgraph-dev/wikimappers/experiments/frankchen/geocode/2013-07-29 - Geocode",
+<      "lang": "en",
+<      "id": "/m/0wmjj02",
+<      "creator": "/user/geocode_bot",
+<      "timestamp": "2013-08-16T19:55:26.028Z",
+<      "property": {
+<       "/location/geocode/latitude": {
+<        "valuetype": "float",
+<        "values": [
+<         {
+<          "text": "40.413889",
+<          "lang": "en",
+<          "value": 40.413889,
+<          "creator": "/user/geocode_bot",
+<          "timestamp": "2013-08-16T19:55:26.028Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/location/geocode/longitude": {
+<        "valuetype": "float",
+<        "values": [
+<         {
+<          "text": "-3.6925",
+<          "lang": "en",
+<          "value": -3.6925,
+<          "creator": "/user/geocode_bot",
+<          "timestamp": "2013-08-16T19:55:26.027Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "/namespace/kgraph-dev/wikimappers/experiments/frankchen/geocode/2013-07-29",
+<          "lang": "en",
+<          "id": "/m/0wjjk0m",
+<          "creator": "/user/geocode_bot",
+<          "timestamp": "2013-08-16T19:55:26.027Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Geocode",
+<          "lang": "en",
+<          "id": "/location/geocode",
+<          "creator": "/user/geocode_bot",
+<          "timestamp": "2013-08-16T19:55:26.028Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/location/location/time_zones": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Central European Time Zone",
+<      "lang": "en",
+<      "id": "/m/02llzg",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.001Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/organization/organization/founders": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Ferdinand VII of Spain",
+<      "lang": "en",
+<      "id": "/m/01346d",
+<      "creator": "/user/fact_farm",
+<      "timestamp": "2012-12-21T19:51:13.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/travel/tourist_attraction/near_travel_destination": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Madrid",
+<      "lang": "en",
+<      "id": "/m/056_y",
+<      "creator": "/user/nanette",
+<      "timestamp": "2013-09-19T02:56:33.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/type/object/attribution": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "mjrecampo",
+<      "lang": "en",
+<      "id": "/m/0hgfdbb",
+<      "creator": "/user/mjrecampo",
+<      "timestamp": "2012-02-22T04:35:09.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/type/object/key": {
+<    "valuetype": "key",
+<    "values": [
+<     {
+<      "text": "/wikipedia/en_id/230962",
+<      "lang": "",
+<      "value": "/wikipedia/en_id/230962",
+<      "creator": "/user/metaweb",
+<      "timestamp": "2006-10-22T13:30:31.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/en/Museo_del_Prado$002C_Madrid",
+<      "lang": "",
+<      "value": "/wikipedia/en/Museo_del_Prado$002C_Madrid",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2007-07-28T05:52:16.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/en/Museo_del_Prado_in_Madrid",
+<      "lang": "",
+<      "value": "/wikipedia/en/Museo_del_Prado_in_Madrid",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2007-07-28T07:14:49.001Z"
+<     },
+<     {
+<      "text": "/en/museo_del_prado",
+<      "lang": "",
+<      "value": "/en/museo_del_prado",
+<      "creator": "/user/topicns_loader",
+<      "timestamp": "2007-08-13T21:07:28.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/en/Museum_of_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/en/Museum_of_Prado",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2007-12-15T13:37:27.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/en/El_Prado_Museum",
+<      "lang": "",
+<      "value": "/wikipedia/en/El_Prado_Museum",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2008-04-04T22:34:05.000Z"
+<     },
+<     {
+<      "text": "/authority/openlibrary/author/OL2349017A",
+<      "lang": "",
+<      "value": "/authority/openlibrary/author/OL2349017A",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2009-05-27T09:01:56.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/en/Museo_de_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/en/Museo_de_Prado",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2009-12-18T04:41:23.002Z"
+<     },
+<     {
+<      "text": "/user/avh/ellerdale/0081-6423",
+<      "lang": "",
+<      "value": "/user/avh/ellerdale/0081-6423",
+<      "creator": "/user/avh",
+<      "timestamp": "2010-01-05T03:52:18.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/pt/Museu_do_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pt/Museu_do_Prado",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-23T13:44:11.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/pt_id/63691",
+<      "lang": "",
+<      "value": "/wikipedia/pt_id/63691",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-24T10:02:49.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/ru_id/48719",
+<      "lang": "",
+<      "value": "/wikipedia/ru_id/48719",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-25T08:09:40.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/ja/$30D7$30E9$30C9$7F8E$8853$9928",
+<      "lang": "",
+<      "value": "/wikipedia/ja/$30D7$30E9$30C9$7F8E$8853$9928",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-25T19:25:27.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/ja_id/84263",
+<      "lang": "",
+<      "value": "/wikipedia/ja_id/84263",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-26T16:28:18.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/bg/$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/bg/$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-27T11:52:34.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/de/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/de/Museo_del_Prado",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2010-09-27T20:51:29.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/en/Madrid_Gallery",
+<      "lang": "",
+<      "value": "/wikipedia/en/Madrid_Gallery",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2010-11-09T22:40:06.001Z"
+<     },
+<     {
+<      "text": "/en/prado_museum",
+<      "lang": "",
+<      "value": "/en/prado_museum",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2011-05-12T17:35:24.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/pt_title/Museu_do_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pt_title/Museu_do_Prado",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2011-05-21T11:49:03.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/ja_title/$30D7$30E9$30C9$7F8E$8853$9928",
+<      "lang": "",
+<      "value": "/wikipedia/ja_title/$30D7$30E9$30C9$7F8E$8853$9928",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2011-05-22T03:51:34.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/it_title/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/it_title/Museo_del_Prado",
+<      "creator": "/user/wikipedia_intl",
+<      "timestamp": "2011-05-23T02:09:46.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/en_title/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/en_title/Museo_del_Prado",
+<      "creator": "/user/mwcl_wikipedia_en",
+<      "timestamp": "2011-05-24T03:20:22.000Z"
+<     },
+<     {
+<      "text": "/user/hangy/viaf/147181932",
+<      "lang": "",
+<      "value": "/user/hangy/viaf/147181932",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2011-12-13T20:56:06.000Z"
+<     },
+<     {
+<      "text": "/base/ranker/rankerurlname/museo-del-prado$002F1632316",
+<      "lang": "",
+<      "value": "/base/ranker/rankerurlname/museo-del-prado$002F1632316",
+<      "creator": "/user/ravi_ranker",
+<      "timestamp": "2012-01-01T13:30:33.000Z"
+<     },
+<     {
+<      "text": "/authority/google/google_plus_page/115830398964495071362",
+<      "lang": "",
+<      "value": "/authority/google/google_plus_page/115830398964495071362",
+<      "creator": "/user/googlebot",
+<      "timestamp": "2012-12-18T11:25:31.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/el/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/el/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:00.008Z"
+<     },
+<     {
+<      "text": "/wikipedia/el_title/$039C$03BF$03C5$03C3$03B5$03AF$03BF_$03BD$03C4$03B5$03BB_$03A0$03C1$03AC$03B4$03BF",
+<      "lang": "",
+<      "value": "/wikipedia/el_title/$039C$03BF$03C5$03C3$03B5$03AF$03BF_$03BD$03C4$03B5$03BB_$03A0$03C1$03AC$03B4$03BF",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:01.004Z"
+<     },
+<     {
+<      "text": "/wikipedia/ru/$041F$0440$0430$0434$043E_$0028$0445$0443$0434$043E$0436$0435$0441$0442$0432$002E_$043C$0443$0437$0435$0439_$0432_$041C$0430$0434$0440$0438$0434$0435$0029",
+<      "lang": "",
+<      "value": "/wikipedia/ru/$041F$0440$0430$0434$043E_$0028$0445$0443$0434$043E$0436$0435$0441$0442$0432$002E_$043C$0443$0437$0435$0439_$0432_$041C$0430$0434$0440$0438$0434$0435$0029",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:01.006Z"
+<     },
+<     {
+<      "text": "/wikipedia/ru/$041C$0443$0437$0435$0439_$041F$0440$0430$0434$043E$002C_$041C$0430$0434$0440$0438$0434",
+<      "lang": "",
+<      "value": "/wikipedia/ru/$041C$0443$0437$0435$0439_$041F$0440$0430$0434$043E$002C_$041C$0430$0434$0440$0438$0434",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:05.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/ro/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ro/Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:06.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/da/Pradomuseet",
+<      "lang": "",
+<      "value": "/wikipedia/da/Pradomuseet",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:07.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/ro/Muzeul_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ro/Muzeul_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:08.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/fa_id/645460",
+<      "lang": "",
+<      "value": "/wikipedia/fa_id/645460",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:08.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/it/Il_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/it/Il_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:10.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/hr_title/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/hr_title/Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:15.005Z"
+<     },
+<     {
+<      "text": "/wikipedia/sv/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/sv/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:16.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-tw_id/72041",
+<      "lang": "",
+<      "value": "/wikipedia/zh-tw_id/72041",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:16.006Z"
+<     },
+<     {
+<      "text": "/wikipedia/ru_title/$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/ru_title/$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:21.005Z"
+<     },
+<     {
+<      "text": "/wikipedia/fi/Pradon_museo",
+<      "lang": "",
+<      "value": "/wikipedia/fi/Pradon_museo",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:22.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/hu_title/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/hu_title/Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:22.008Z"
+<     },
+<     {
+<      "text": "/wikipedia/sk_title/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/sk_title/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:22.009Z"
+<     },
+<     {
+<      "text": "/wikipedia/sr/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/sr/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:24.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/el/$039C$03BF$03C5$03C3$03B5$03AF$03BF_$03C4$03BF$03C5_$03A0$03C1$03AC$03B4$03BF",
+<      "lang": "",
+<      "value": "/wikipedia/el/$039C$03BF$03C5$03C3$03B5$03AF$03BF_$03C4$03BF$03C5_$03A0$03C1$03AC$03B4$03BF",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:26.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/sv_id/90447",
+<      "lang": "",
+<      "value": "/wikipedia/sv_id/90447",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:27.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/da_id/267217",
+<      "lang": "",
+<      "value": "/wikipedia/da_id/267217",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:27.004Z"
+<     },
+<     {
+<      "text": "/wikipedia/pt/Museo_do_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pt/Museo_do_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:27.008Z"
+<     },
+<     {
+<      "text": "/wikipedia/sl/Muzej_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/sl/Muzej_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:28.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/he/$05DE$05D5$05D6$05D9$05D0$05D5$05DF_$05D4$05E4$05E8$05D0$05D3$05D5",
+<      "lang": "",
+<      "value": "/wikipedia/he/$05DE$05D5$05D6$05D9$05D0$05D5$05DF_$05D4$05E4$05E8$05D0$05D3$05D5",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:28.006Z"
+<     },
+<     {
+<      "text": "/wikipedia/no/Prado-museet",
+<      "lang": "",
+<      "value": "/wikipedia/no/Prado-museet",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:28.010Z"
+<     },
+<     {
+<      "text": "/wikipedia/tr/Prado_M$00FCzesi",
+<      "lang": "",
+<      "value": "/wikipedia/tr/Prado_M$00FCzesi",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:31.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/cs_id/329060",
+<      "lang": "",
+<      "value": "/wikipedia/cs_id/329060",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:33.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/ru/$041F$0440$0430$0434$043E_$0028$043C$0443$0437$0435$0439$0029",
+<      "lang": "",
+<      "value": "/wikipedia/ru/$041F$0440$0430$0434$043E_$0028$043C$0443$0437$0435$0439$0029",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:34.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/ko/$D504$B77C$B3C4_$BBF8$C220$AD00",
+<      "lang": "",
+<      "value": "/wikipedia/ko/$D504$B77C$B3C4_$BBF8$C220$AD00",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:36.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-cn/$666E$62C9$591A$535A$7269$9986",
+<      "lang": "",
+<      "value": "/wikipedia/zh-cn/$666E$62C9$591A$535A$7269$9986",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:37.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/cs/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/cs/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:41.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/fi_title/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/fi_title/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:42.005Z"
+<     },
+<     {
+<      "text": "/wikipedia/ro_title/Muzeul_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ro_title/Muzeul_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:52.006Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-tw/$666E$62C9$591A$535A$7269$9986",
+<      "lang": "",
+<      "value": "/wikipedia/zh-tw/$666E$62C9$591A$535A$7269$9986",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:53.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/tr/Prado_m$00FCzesi",
+<      "lang": "",
+<      "value": "/wikipedia/tr/Prado_m$00FCzesi",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:55.005Z"
+<     },
+<     {
+<      "text": "/wikipedia/hu/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/hu/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:56.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/fa/$0645$0648$0632$0647_$062F$0644_$067E$0631$0627$062F$0648",
+<      "lang": "",
+<      "value": "/wikipedia/fa/$0645$0648$0632$0647_$062F$0644_$067E$0631$0627$062F$0648",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:57.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/fr/Musee_du_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/fr/Musee_du_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:57.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/nl/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/nl/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:58.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/pt/Museu_do_prado",
+<      "lang": "",
+<      "value": "/wikipedia/pt/Museu_do_prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:17:59.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/he/$05DE$05D5$05D6$05D9$05D0$05D5_$05D3$05DC_$05E4$05E8$05D0$05D3$05D5",
+<      "lang": "",
+<      "value": "/wikipedia/he/$05DE$05D5$05D6$05D9$05D0$05D5_$05D3$05DC_$05E4$05E8$05D0$05D3$05D5",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:00.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/sv_title/Pradomuseet",
+<      "lang": "",
+<      "value": "/wikipedia/sv_title/Pradomuseet",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:01.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/hr/Museo_Nacional_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/hr/Museo_Nacional_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:09.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/vi_id/269762",
+<      "lang": "",
+<      "value": "/wikipedia/vi_id/269762",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:10.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/el/$039C$03BF$03C5$03C3$03B5$03AF$03BF_$03BD$03C4$03B5$03BB_$03A0$03C1$03AC$03B4$03BF",
+<      "lang": "",
+<      "value": "/wikipedia/el/$039C$03BF$03C5$03C3$03B5$03AF$03BF_$03BD$03C4$03B5$03BB_$03A0$03C1$03AC$03B4$03BF",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:11.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/ru/$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/ru/$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:12.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/fi/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/fi/Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:13.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/hr/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/hr/Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:14.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/hu_id/431207",
+<      "lang": "",
+<      "value": "/wikipedia/hu_id/431207",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:17.004Z"
+<     },
+<     {
+<      "text": "/wikipedia/ru/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ru/Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:18.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-cn_title/$666E$62C9$591A$535A$7269$9986",
+<      "lang": "",
+<      "value": "/wikipedia/zh-cn_title/$666E$62C9$591A$535A$7269$9986",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:18.006Z"
+<     },
+<     {
+<      "text": "/wikipedia/sl/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/sl/Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:18.008Z"
+<     },
+<     {
+<      "text": "/wikipedia/fi/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/fi/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:19.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-cn/$666E$62C9$591A$7F8E$8853$9928",
+<      "lang": "",
+<      "value": "/wikipedia/zh-cn/$666E$62C9$591A$7F8E$8853$9928",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:19.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-tw_title/$666E$62C9$591A$535A$7269$9986",
+<      "lang": "",
+<      "value": "/wikipedia/zh-tw_title/$666E$62C9$591A$535A$7269$9986",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:20.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/fr/Mus$00E9e_Du_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/fr/Mus$00E9e_Du_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:20.006Z"
+<     },
+<     {
+<      "text": "/wikipedia/da/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/da/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:21.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/ro/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ro/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:25.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/fi/Museo_del_prado",
+<      "lang": "",
+<      "value": "/wikipedia/fi/Museo_del_prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:27.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/ro_id/22860",
+<      "lang": "",
+<      "value": "/wikipedia/ro_id/22860",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:28.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/da_title/Pradomuseet",
+<      "lang": "",
+<      "value": "/wikipedia/da_title/Pradomuseet",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:30.006Z"
+<     },
+<     {
+<      "text": "/wikipedia/th/$0E1E$0E34$0E1E$0E34$0E18$0E20$0E31$0E13$0E11$0E4C$0E1B$0E23$0E32$0E42$0E14",
+<      "lang": "",
+<      "value": "/wikipedia/th/$0E1E$0E34$0E1E$0E34$0E18$0E20$0E31$0E13$0E11$0E4C$0E1B$0E23$0E32$0E42$0E14",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:31.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/sk/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/sk/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:32.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/he/$05DE$05D5$05D6$05D0$05D5_$05D3$05DC_$05E4$05E8$05D0$05D3$05D5",
+<      "lang": "",
+<      "value": "/wikipedia/he/$05DE$05D5$05D6$05D0$05D5_$05D3$05DC_$05E4$05E8$05D0$05D3$05D5",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-02-09T10:18:33.004Z"
+<     },
+<     {
+<      "text": "/wikipedia/ca/Museu_d$0027El_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ca/Museu_d$0027El_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-04-06T04:56:36.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/et_title/Prado_muuseum",
+<      "lang": "",
+<      "value": "/wikipedia/et_title/Prado_muuseum",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-04-20T10:04:48.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/et/El_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/et/El_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-04-20T10:04:54.008Z"
+<     },
+<     {
+<      "text": "/wikipedia/et/Prado_muuseum",
+<      "lang": "",
+<      "value": "/wikipedia/et/Prado_muuseum",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-04-20T10:05:01.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/es/Museo_Real_de_Pintura_y_Escultura",
+<      "lang": "",
+<      "value": "/wikipedia/es/Museo_Real_de_Pintura_y_Escultura",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-07-04T01:10:00.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/es/MNP",
+<      "lang": "",
+<      "value": "/wikipedia/es/MNP",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-08-16T02:07:15.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/uk_title/$041D$0430$0446$0456$043E$043D$0430$043B$044C$043D$0438$0439_$043C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/uk_title/$041D$0430$0446$0456$043E$043D$0430$043B$044C$043D$0438$0439_$043C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-10-17T05:49:59.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/ru/$041D$0430$0446$0438$043E$043D$0430$043B$044C$043D$044B$0439_$043C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/ru/$041D$0430$0446$0438$043E$043D$0430$043B$044C$043D$044B$0439_$043C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2013-12-16T20:41:02.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/da/El_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/da/El_Prado",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-01-14T00:16:54.000Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-cn/$666E$62C9$591A$7F8E$672F$9986",
+<      "lang": "",
+<      "value": "/wikipedia/zh-cn/$666E$62C9$591A$7F8E$672F$9986",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:16.002Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-tw/$666E$62C9$591A$535A$7269$9928",
+<      "lang": "",
+<      "value": "/wikipedia/zh-tw/$666E$62C9$591A$535A$7269$9928",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:18.004Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-tw/$666E$62C9$591A$7F8E$672F$9986",
+<      "lang": "",
+<      "value": "/wikipedia/zh-tw/$666E$62C9$591A$7F8E$672F$9986",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:21.006Z"
+<     },
+<     {
+<      "text": "/wikipedia/zh-cn/$666E$62C9$591A$535A$7269$9928",
+<      "lang": "",
+<      "value": "/wikipedia/zh-cn/$666E$62C9$591A$535A$7269$9928",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:30.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/uk/$041F$0440$0430$0434$043E_$0028$043C$0443$0437$0435$0439$0029",
+<      "lang": "",
+<      "value": "/wikipedia/uk/$041F$0440$0430$0434$043E_$0028$043C$0443$0437$0435$0439$0029",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:30.005Z"
+<     },
+<     {
+<      "text": "/wikipedia/uk/$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/uk/$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:33.008Z"
+<     },
+<     {
+<      "text": "/wikipedia/uk_id/363968",
+<      "lang": "",
+<      "value": "/wikipedia/uk_id/363968",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:34.005Z"
+<     },
+<     {
+<      "text": "/wikipedia/uk/$041C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/uk/$041C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:38.003Z"
+<     },
+<     {
+<      "text": "/wikipedia/uk/$0414$0435$043B$044C-$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/uk/$0414$0435$043B$044C-$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-07-25T00:14:41.005Z"
+<     },
+<     {
+<      "text": "/wikipedia/lt/Nacionalinis_Prado_muziejus",
+<      "lang": "",
+<      "value": "/wikipedia/lt/Nacionalinis_Prado_muziejus",
+<      "creator": "/user/wikirecon_bot",
+<      "timestamp": "2014-09-04T09:39:11.001Z"
+<     },
+<     {
+<      "text": "/wikipedia/ar/$0645$062A$062D$0641_$062F$064A$0644_$0628$0631$0627$062F$0648",
+<      "lang": "",
+<      "value": "/wikipedia/ar/$0645$062A$062D$0641_$062F$064A$0644_$0628$0631$0627$062F$0648",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/en/Prado_Museum",
+<      "lang": "",
+<      "value": "/wikipedia/en/Prado_Museum",
+<      "creator": "/user/mwcl_wikipedia_en"
+<     },
+<     {
+<      "text": "/wikipedia/pl/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pl/Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/es/Museo_del_prado",
+<      "lang": "",
+<      "value": "/wikipedia/es/Museo_del_prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/cs_title/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/cs_title/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ar_title/$0645$062A$062D$0641_$062F$064A$0644_$0628$0631$0627$062F$0648",
+<      "lang": "",
+<      "value": "/wikipedia/ar_title/$0645$062A$062D$0641_$062F$064A$0644_$0628$0631$0627$062F$0648",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/sv/Pradomuseet",
+<      "lang": "",
+<      "value": "/wikipedia/sv/Pradomuseet",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/lt_id/444803",
+<      "lang": "",
+<      "value": "/wikipedia/lt_id/444803",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ar_id/298390",
+<      "lang": "",
+<      "value": "/wikipedia/ar_id/298390",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/bg_id/264966",
+<      "lang": "",
+<      "value": "/wikipedia/bg_id/264966",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/fa_title/$0645$0648$0632$0647_$062F$0644_$067E$0631$0627$062F$0648",
+<      "lang": "",
+<      "value": "/wikipedia/fa_title/$0645$0648$0632$0647_$062F$0644_$067E$0631$0627$062F$0648",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/pl/Muzeum_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pl/Muzeum_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/fr/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/fr/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/pl_id/18658",
+<      "lang": "",
+<      "value": "/wikipedia/pl_id/18658",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ca_title/Museu_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ca_title/Museu_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/nl_title/Museo_Nacional_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/nl_title/Museo_Nacional_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/sl_title/Muzej_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/sl_title/Muzej_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/sr/$041C$0443$0437$0435$0458_$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/sr/$041C$0443$0437$0435$0458_$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/et/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/et/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/en/The_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/en/The_Prado",
+<      "creator": "/user/mwcl_wikipedia_en"
+<     },
+<     {
+<      "text": "/wikipedia/ko_id/33171",
+<      "lang": "",
+<      "value": "/wikipedia/ko_id/33171",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ko/$D504$B77C$B3C4$BC15$BB3C$AD00",
+<      "lang": "",
+<      "value": "/wikipedia/ko/$D504$B77C$B3C4$BC15$BB3C$AD00",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/lt_title/Prado_muziejus",
+<      "lang": "",
+<      "value": "/wikipedia/lt_title/Prado_muziejus",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/uk/$041D$0430$0446$0456$043E$043D$0430$043B$044C$043D$0438$0439_$043C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/uk/$041D$0430$0446$0456$043E$043D$0430$043B$044C$043D$0438$0439_$043C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/bg_title/$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/bg_title/$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/he_title/$05DE$05D5$05D6$05D9$05D0$05D5$05DF_$05D4$05E4$05E8$05D0$05D3$05D5",
+<      "lang": "",
+<      "value": "/wikipedia/he_title/$05DE$05D5$05D6$05D9$05D0$05D5$05DF_$05D4$05E4$05E8$05D0$05D3$05D5",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/fr/Mus$00E9e_du_prado",
+<      "lang": "",
+<      "value": "/wikipedia/fr/Mus$00E9e_du_prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/th_title/$0E1E$0E34$0E1E$0E34$0E18$0E20$0E31$0E13$0E11$0E4C$0E1B$0E23$0E32$0E42$0E14",
+<      "lang": "",
+<      "value": "/wikipedia/th_title/$0E1E$0E34$0E1E$0E34$0E18$0E20$0E31$0E13$0E11$0E4C$0E1B$0E23$0E32$0E42$0E14",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/el/$039C$03BF$03C5$03C3$03B5$03AF$03BF_$03A0$03C1$03AC$03B4$03BF",
+<      "lang": "",
+<      "value": "/wikipedia/el/$039C$03BF$03C5$03C3$03B5$03AF$03BF_$03A0$03C1$03AC$03B4$03BF",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/es_id/42011",
+<      "lang": "",
+<      "value": "/wikipedia/es_id/42011",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/pl/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pl/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/tr_title/Prado_M$00FCzesi",
+<      "lang": "",
+<      "value": "/wikipedia/tr_title/Prado_M$00FCzesi",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/vi/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/vi/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/fr_title/Mus$00E9e_du_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/fr_title/Mus$00E9e_du_Prado",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/pl_title/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pl_title/Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/fa/$0645$0648$0632$0647$0654_$062F$0644_$067E$0631$0627$062F$0648",
+<      "lang": "",
+<      "value": "/wikipedia/fa/$0645$0648$0632$0647$0654_$062F$0644_$067E$0631$0627$062F$0648",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/he/$05E4$05E8$05D0$05D3$05D5",
+<      "lang": "",
+<      "value": "/wikipedia/he/$05E4$05E8$05D0$05D3$05D5",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ca_id/139257",
+<      "lang": "",
+<      "value": "/wikipedia/ca_id/139257",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/no_title/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/no_title/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/th/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/th/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/es/Museo_de_El_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/es/Museo_de_El_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/es/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/es/Museo_del_Prado",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/no/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/no/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/it_id/1153368",
+<      "lang": "",
+<      "value": "/wikipedia/it_id/1153368",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/et/Museo_Nacional_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/et/Museo_Nacional_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/sr/$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/sr/$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/nl/Museo_Nacional_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/nl/Museo_Nacional_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ar/$0645$062A$062D$0641_$0628$0631$0627$062F$0648",
+<      "lang": "",
+<      "value": "/wikipedia/ar/$0645$062A$062D$0641_$0628$0631$0627$062F$0648",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/sk_id/294642",
+<      "lang": "",
+<      "value": "/wikipedia/sk_id/294642",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/pt/Museo_do_prado",
+<      "lang": "",
+<      "value": "/wikipedia/pt/Museo_do_prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/nl_id/157544",
+<      "lang": "",
+<      "value": "/wikipedia/nl_id/157544",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/sr_title/$041C$0443$0437$0435$0458_$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/sr_title/$041C$0443$0437$0435$0458_$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/no/Pradomuseet",
+<      "lang": "",
+<      "value": "/wikipedia/no/Pradomuseet",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/no_id/60228",
+<      "lang": "",
+<      "value": "/wikipedia/no_id/60228",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/it/Il_prado",
+<      "lang": "",
+<      "value": "/wikipedia/it/Il_prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/it/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/it/Museo_del_Prado",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/cs/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/cs/Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/fr/Mus$00E9e_du_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/fr/Mus$00E9e_du_Prado",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/zh-cn_id/72041",
+<      "lang": "",
+<      "value": "/wikipedia/zh-cn_id/72041",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/fi_id/58417",
+<      "lang": "",
+<      "value": "/wikipedia/fi_id/58417",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/en/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/en/Museo_del_Prado",
+<      "creator": "/user/mwcl_wikipedia_en"
+<     },
+<     {
+<      "text": "/wikipedia/de/Museo_del_prado",
+<      "lang": "",
+<      "value": "/wikipedia/de/Museo_del_prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/hu/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/hu/Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/en/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/en/Prado",
+<      "creator": "/user/mwcl_wikipedia_en"
+<     },
+<     {
+<      "text": "/wikipedia/th_id/214417",
+<      "lang": "",
+<      "value": "/wikipedia/th_id/214417",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/es/Museo_Nacional_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/es/Museo_Nacional_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/he/$05DE$05D5$05E1$05D0$05D5_$05D3$05DC_$05E4$05E8$05D0$05D3$05D5",
+<      "lang": "",
+<      "value": "/wikipedia/he/$05DE$05D5$05E1$05D0$05D5_$05D3$05DC_$05E4$05E8$05D0$05D3$05D5",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/el/$03A0$03C1$03AC$03B4$03BF",
+<      "lang": "",
+<      "value": "/wikipedia/el/$03A0$03C1$03AC$03B4$03BF",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/sr_id/147588",
+<      "lang": "",
+<      "value": "/wikipedia/sr_id/147588",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ar/$0645$062A$062D$0641_$0627$0644$0628$0631$0627$062F$0648",
+<      "lang": "",
+<      "value": "/wikipedia/ar/$0645$062A$062D$0641_$0627$0644$0628$0631$0627$062F$0648",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/it/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/it/Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/vi/Museo_Nacional_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/vi/Museo_Nacional_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/en/Prado_Madrid",
+<      "lang": "",
+<      "value": "/wikipedia/en/Prado_Madrid",
+<      "creator": "/user/mwcl_wikipedia_en"
+<     },
+<     {
+<      "text": "/wikipedia/it/Museo_del_Prado_di_Madrid",
+<      "lang": "",
+<      "value": "/wikipedia/it/Museo_del_Prado_di_Madrid",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/he_id/227849",
+<      "lang": "",
+<      "value": "/wikipedia/he_id/227849",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/el_id/63824",
+<      "lang": "",
+<      "value": "/wikipedia/el_id/63824",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ko/$D504$B77C$B3C4_$BC15$BB3C$AD00",
+<      "lang": "",
+<      "value": "/wikipedia/ko/$D504$B77C$B3C4_$BC15$BB3C$AD00",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/tr/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/tr/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/de_title/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/de_title/Museo_del_Prado",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/hr/Muzej_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/hr/Muzej_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/lt/Prado_muziejus",
+<      "lang": "",
+<      "value": "/wikipedia/lt/Prado_muziejus",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/hr_id/116447",
+<      "lang": "",
+<      "value": "/wikipedia/hr_id/116447",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ca/Museu_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ca/Museu_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/de_id/143747",
+<      "lang": "",
+<      "value": "/wikipedia/de_id/143747",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/ko_title/$D504$B77C$B3C4_$BBF8$C220$AD00",
+<      "lang": "",
+<      "value": "/wikipedia/ko_title/$D504$B77C$B3C4_$BBF8$C220$AD00",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ca/Museo_Nacional_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ca/Museo_Nacional_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/es_title/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/es_title/Museo_del_Prado",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/tr_id/174570",
+<      "lang": "",
+<      "value": "/wikipedia/tr_id/174570",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/pl/El_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pl/El_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ru/$041C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "lang": "",
+<      "value": "/wikipedia/ru/$041C$0443$0437$0435$0439_$041F$0440$0430$0434$043E",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/sl_id/120035",
+<      "lang": "",
+<      "value": "/wikipedia/sl_id/120035",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/et_id/270748",
+<      "lang": "",
+<      "value": "/wikipedia/et_id/270748",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ar/$062F$064A$0644_$0628$0631$0627$062F$0648",
+<      "lang": "",
+<      "value": "/wikipedia/ar/$062F$064A$0644_$0628$0631$0627$062F$0648",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/et/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/et/Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/fr_id/54591",
+<      "lang": "",
+<      "value": "/wikipedia/fr_id/54591",
+<      "creator": "/user/wikipedia_intl"
+<     },
+<     {
+<      "text": "/wikipedia/en/Prado_museum",
+<      "lang": "",
+<      "value": "/wikipedia/en/Prado_museum",
+<      "creator": "/user/tristan"
+<     },
+<     {
+<      "text": "/wikipedia/vi_title/B$1EA3o_t$00E0ng_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/vi_title/B$1EA3o_t$00E0ng_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/en/Museo_Nacional_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/en/Museo_Nacional_del_Prado",
+<      "creator": "/user/mwcl_wikipedia_en"
+<     },
+<     {
+<      "text": "/wikipedia/he/$05DE$05D5$05D6$05D9$05D0$05D5$05DF_$05E4$05E8$05D0$05D3$05D5",
+<      "lang": "",
+<      "value": "/wikipedia/he/$05DE$05D5$05D6$05D9$05D0$05D5$05DF_$05E4$05E8$05D0$05D3$05D5",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/th/Prado_Museum",
+<      "lang": "",
+<      "value": "/wikipedia/th/Prado_Museum",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/zh-tw/$666E$62C9$591A$7F8E$8853$9928",
+<      "lang": "",
+<      "value": "/wikipedia/zh-tw/$666E$62C9$591A$7F8E$8853$9928",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/sv/Prado",
+<      "lang": "",
+<      "value": "/wikipedia/sv/Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/pt/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/pt/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/ca/Museo_del_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/ca/Museo_del_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     },
+<     {
+<      "text": "/wikipedia/vi/B$1EA3o_t$00E0ng_Prado",
+<      "lang": "",
+<      "value": "/wikipedia/vi/B$1EA3o_t$00E0ng_Prado",
+<      "creator": "/user/wikirecon_bot"
+<     }
+<    ],
+<    "count": 212.0
+<   },
+<   "/type/object/mid": {
+<    "valuetype": "key",
+<    "values": [
+<     {
+<      "text": "/m/01hlq3",
+<      "lang": "",
+<      "value": "/m/01hlq3"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/type/object/name": {
+<    "valuetype": "string",
+<    "values": [
+<     {
+<      "text": "Museo Nacional Del Prado",
+<      "lang": "en",
+<      "value": "Museo Nacional Del Prado",
+<      "creator": "/user/amita",
+<      "timestamp": "2013-06-27T07:53:13.000Z"
+<     }
+<    ],
+<    "count": 38.0
+<   },
+<   "/type/object/type": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "Museum",
+<      "lang": "en",
+<      "id": "/architecture/museum",
+<      "creator": "/user/mw_typer_bot",
+<      "timestamp": "2008-02-25T20:07:39.001Z"
+<     },
+<     {
+<      "text": "Art owner",
+<      "lang": "en",
+<      "id": "/visual_art/art_owner",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2008-05-22T01:38:19.000Z"
+<     },
+<     {
+<      "text": "Author",
+<      "lang": "en",
+<      "id": "/book/author",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2009-05-27T09:01:55.000Z"
+<     },
+<     {
+<      "text": "Intézmények",
+<      "lang": "en",
+<      "id": "/base/arthist/int_zm_nyek",
+<      "creator": "/user/endrodig",
+<      "timestamp": "2009-12-04T20:46:33.000Z"
+<     },
+<     {
+<      "text": "Topic",
+<      "lang": "en",
+<      "id": "/base/creativemindsatwork/topic",
+<      "creator": "/user/loveyou2madly",
+<      "timestamp": "2010-04-21T23:56:58.008Z"
+<     },
+<     {
+<      "text": "Place",
+<      "lang": "en",
+<      "id": "/base/tagit/place",
+<      "creator": "/user/tagasauris",
+<      "timestamp": "2010-07-22T07:25:26.000Z"
+<     },
+<     {
+<      "text": "Organization",
+<      "lang": "en",
+<      "id": "/organization/organization",
+<      "creator": "/user/mjrecampo",
+<      "timestamp": "2012-02-22T04:34:48.000Z"
+<     },
+<     {
+<      "text": "Topic",
+<      "lang": "en",
+<      "id": "/base/artbase1/topic",
+<      "creator": "/user/ellesse",
+<      "timestamp": "2012-04-28T06:54:32.001Z"
+<     },
+<     {
+<      "text": "Building Occupant",
+<      "lang": "en",
+<      "id": "/architecture/building_occupant",
+<      "creator": "/user/supergmackenz",
+<      "timestamp": "2012-05-03T23:04:39.002Z"
+<     },
+<     {
+<      "text": "Project focus",
+<      "lang": "en",
+<      "id": "/projects/project_focus",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:19.000Z"
+<     },
+<     {
+<      "text": "Location",
+<      "lang": "en",
+<      "id": "/location/location",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:19.001Z"
+<     },
+<     {
+<      "text": "Structure",
+<      "lang": "en",
+<      "id": "/architecture/structure",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:19.001Z"
+<     },
+<     {
+<      "text": "Building",
+<      "lang": "en",
+<      "id": "/architecture/building",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.000Z"
+<     },
+<     {
+<      "text": "Tourist attraction",
+<      "lang": "en",
+<      "id": "/travel/tourist_attraction",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.000Z"
+<     },
+<     {
+<      "text": "Exhibition venue",
+<      "lang": "en",
+<      "id": "/exhibitions/exhibition_venue",
+<      "creator": "/user/merge_bot",
+<      "timestamp": "2012-05-25T22:35:20.000Z"
+<     },
+<     {
+<      "text": "Organization extra",
+<      "lang": "en",
+<      "id": "/base/schemastaging/organization_extra",
+<      "creator": "/user/aambatali",
+<      "timestamp": "2014-05-10T11:41:32.000Z"
+<     },
+<     {
+<      "text": "Topic",
+<      "lang": "en",
+<      "id": "/common/topic",
+<      "creator": "/user/metaweb"
+<     },
+<     {
+<      "text": "Inanimate",
+<      "lang": "en",
+<      "id": "/base/type_ontology/inanimate",
+<      "creator": "/user/mjrecampo"
+<     },
+<     {
+<      "text": "Physically Instantiable",
+<      "lang": "en",
+<      "id": "/base/type_ontology/physically_instantiable",
+<      "creator": "/user/merge_bot"
+<     },
+<     {
+<      "text": "Abstract",
+<      "lang": "en",
+<      "id": "/base/type_ontology/abstract",
+<      "creator": "/user/mjrecampo"
+<     },
+<     {
+<      "text": "Agent",
+<      "lang": "en",
+<      "id": "/base/type_ontology/agent",
+<      "creator": "/user/mjrecampo"
+<     },
+<     {
+<      "text": "Non-Agent",
+<      "lang": "en",
+<      "id": "/base/type_ontology/non_agent",
+<      "creator": "/user/merge_bot"
+<     }
+<    ],
+<    "count": 22.0
+<   },
+<   "/visual_art/art_owner/artworks_owned": {
+<    "valuetype": "compound",
+<    "values": [
+<     {
+<      "text": "krsalis - Topic - Danaë with Nursemaid",
+<      "lang": "en",
+<      "id": "/m/043zgzc",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2008-05-22T01:38:19.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T01:38:19.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Topic",
+<          "lang": "en",
+<          "id": "/common/topic",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T01:38:19.000Z"
+<         },
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T01:38:19.000Z"
+<         }
+<        ],
+<        "count": 2.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Danaë with Nursemaid",
+<          "lang": "en",
+<          "id": "/m/043zgy7",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T01:38:19.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "krsalis - Topic - Portrait of Prince Philip of Spain",
+<      "lang": "en",
+<      "id": "/m/043zh15",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2008-05-22T01:51:10.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T01:51:10.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Topic",
+<          "lang": "en",
+<          "id": "/common/topic",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T01:51:10.000Z"
+<         },
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T01:51:10.000Z"
+<         }
+<        ],
+<        "count": 2.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Portrait of Prince Philip of Spain",
+<          "lang": "en",
+<          "id": "/m/043zg_8",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T01:51:10.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "krsalis - Artwork/owner relationship - Las Meninas",
+<      "lang": "en",
+<      "id": "/m/043zkyk",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2008-05-22T15:48:44.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T15:48:44.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T15:48:44.000Z"
+<         },
+<         {
+<          "text": "Topic",
+<          "lang": "en",
+<          "id": "/common/topic",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T15:48:44.000Z"
+<         }
+<        ],
+<        "count": 2.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Las Meninas",
+<          "lang": "en",
+<          "id": "/m/01gd_c",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T15:48:44.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "krsalis - Artwork/owner relationship - Infanta Margarita Terésa of Spain in mourning dress",
+<      "lang": "en",
+<      "id": "/m/043zwfm",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2008-05-22T17:17:15.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T17:17:15.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T17:17:15.000Z"
+<         },
+<         {
+<          "text": "Topic",
+<          "lang": "en",
+<          "id": "/common/topic",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T17:17:15.000Z"
+<         }
+<        ],
+<        "count": 2.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Infanta Margarita Terésa of Spain in mourning dress",
+<          "lang": "en",
+<          "id": "/m/043zwf5",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-05-22T17:17:15.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "faye - Artwork/owner relationship - Leda and the Swan",
+<      "lang": "en",
+<      "id": "/m/04mbqp2",
+<      "creator": "/user/faye",
+<      "timestamp": "2008-10-09T08:05:07.001Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "faye",
+<          "lang": "en",
+<          "id": "/m/01y0st2",
+<          "creator": "/user/faye",
+<          "timestamp": "2008-10-09T08:05:07.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/faye",
+<          "timestamp": "2008-10-09T08:05:07.000Z"
+<         },
+<         {
+<          "text": "Topic",
+<          "lang": "en",
+<          "id": "/common/topic",
+<          "creator": "/user/faye",
+<          "timestamp": "2008-10-09T08:05:07.000Z"
+<         }
+<        ],
+<        "count": 2.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Leda and the Swan",
+<          "lang": "en",
+<          "id": "/m/04m9z9r",
+<          "creator": "/user/faye",
+<          "timestamp": "2008-10-09T08:05:07.001Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "krsalis - Artwork/owner relationship - David and Goliath",
+<      "lang": "en",
+<      "id": "/m/04v73n2",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2008-11-12T09:33:38.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-11-12T09:33:38.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-11-12T09:33:38.000Z"
+<         },
+<         {
+<          "text": "Topic",
+<          "lang": "en",
+<          "id": "/common/topic",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-11-12T09:33:38.000Z"
+<         }
+<        ],
+<        "count": 2.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "David and Goliath",
+<          "lang": "en",
+<          "id": "/m/091y6t",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2008-11-12T09:33:38.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "krsalis - Artwork/owner relationship - And They Still Say Fish are Expensive!",
+<      "lang": "en",
+<      "id": "/m/05bvr29",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2009-01-29T21:17:09.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:17:09.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:17:09.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "And They Still Say Fish are Expensive!",
+<          "lang": "en",
+<          "id": "/m/05bvq_p",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:17:09.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "krsalis - Artwork/owner relationship - The Garden of Earthly Delights - 1939",
+<      "lang": "en",
+<      "id": "/m/05bvrtx",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2009-01-29T21:35:28.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:35:28.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:35:28.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "The Garden of Earthly Delights",
+<          "lang": "en",
+<          "id": "/m/05fpzk",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:35:28.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/visual_art/artwork_owner_relationship/date_acquired": {
+<        "valuetype": "datetime",
+<        "values": [
+<         {
+<          "text": "1939",
+<          "lang": "",
+<          "value": "1939",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:35:28.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "krsalis - Artwork/owner relationship - The Surrender of Breda",
+<      "lang": "en",
+<      "id": "/m/05bvrzc",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2009-01-29T21:38:47.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:38:47.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:38:47.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "The Surrender of Breda",
+<          "lang": "en",
+<          "id": "/m/03cyrsl",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:38:47.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     },
+<     {
+<      "text": "krsalis - Artwork/owner relationship - Charles IV of Spain and His Family",
+<      "lang": "en",
+<      "id": "/m/05bvshq",
+<      "creator": "/user/krsalis",
+<      "timestamp": "2009-01-29T21:46:02.000Z",
+<      "property": {
+<       "/type/object/attribution": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "krsalis",
+<          "lang": "en",
+<          "id": "/m/02ws9p2",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:46:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/type/object/type": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Artwork/owner relationship",
+<          "lang": "en",
+<          "id": "/visual_art/artwork_owner_relationship",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:46:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       },
+<       "/visual_art/artwork_owner_relationship/artwork": {
+<        "valuetype": "object",
+<        "values": [
+<         {
+<          "text": "Charles IV of Spain and His Family",
+<          "lang": "en",
+<          "id": "/m/03gy268",
+<          "creator": "/user/krsalis",
+<          "timestamp": "2009-01-29T21:46:02.000Z"
+<         }
+<        ],
+<        "count": 1.0
+<       }
+<      }
+<     }
+<    ],
+<    "count": 75.0
+<   },
+<   "/type/object/guid": {
+<    "valuetype": "string",
+<    "values": [
+<     {
+<      "text": "#9202a8c04000641f800000000017cac3",
+<      "lang": "",
+<      "value": "#9202a8c04000641f800000000017cac3"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/type/object/id": {
+<    "valuetype": "key",
+<    "values": [
+<     {
+<      "text": "/en/museo_del_prado",
+<      "lang": "",
+<      "value": "/en/museo_del_prado"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/type/object/creator": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "mjrecampo",
+<      "lang": "",
+<      "id": "/user/mjrecampo",
+<      "timestamp": "2012-02-22T04:35:09.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/type/object/timestamp": {
+<    "valuetype": "datetime",
+<    "values": [
+<     {
+<      "text": "2012-02-22T04:35:09.000Z",
+<      "lang": "en",
+<      "value": "2012-02-22T04:35:09.000Z"
+<     }
+<    ],
+<    "count": 1.0
+<   },
+<   "/type/object/permission": {
+<    "valuetype": "object",
+<    "values": [
+<     {
+<      "text": "/boot/all_permission",
+<      "lang": "",
+<      "id": "/boot/all_permission"
+<     }
+<    ],
+<    "count": 1.0
+<   }
+<  }
+< }
+  

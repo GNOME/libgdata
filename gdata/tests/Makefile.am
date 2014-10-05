@@ -52,6 +52,7 @@ TESTS = \
 	picasaweb \
 	documents \
 	tasks \
+	freebase \
 	perf \
 	streams \
 	authorization \
