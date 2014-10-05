@@ -59,6 +59,10 @@ struct _GDataFreebaseSearchResultPrivate {
 
 static void gdata_freebase_search_result_finalize (GObject *self);
 static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+static GDataFreebaseSearchResultItem * item_copy (const GDataFreebaseSearchResultItem *item);
+static void item_free (GDataFreebaseSearchResultItem *item);
+
+G_DEFINE_BOXED_TYPE (GDataFreebaseSearchResultItem, gdata_freebase_search_result_item, item_copy, item_free)
 
 G_DEFINE_TYPE (GDataFreebaseSearchResult, gdata_freebase_search_result, GDATA_TYPE_FREEBASE_RESULT)
 
@@ -90,6 +94,23 @@ item_free (GDataFreebaseSearchResultItem *item)
 	g_free (item->notable_id);
 	g_free (item->notable_name);
 	g_slice_free (GDataFreebaseSearchResultItem, item);
+}
+
+static GDataFreebaseSearchResultItem *
+item_copy (const GDataFreebaseSearchResultItem *item)
+{
+	GDataFreebaseSearchResultItem *copy;
+
+	copy = item_new ();
+	copy->mid = g_strdup (item->mid);
+	copy->id = g_strdup (item->id);
+	copy->name = g_strdup (item->name);
+	copy->lang = g_strdup (item->lang);
+	copy->notable_id = g_strdup (item->notable_id);
+	copy->notable_name = g_strdup (item->notable_name);
+	copy->score = item->score;
+
+	return copy;
 }
 
 static void

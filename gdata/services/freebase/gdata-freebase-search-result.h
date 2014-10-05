@@ -28,6 +28,7 @@
 
 G_BEGIN_DECLS
 
+#define GDATA_TYPE_FREEBASE_SEARCH_RESULT_ITEM		(gdata_freebase_search_result_item_get_type ())
 #define GDATA_TYPE_FREEBASE_SEARCH_RESULT		(gdata_freebase_search_result_get_type ())
 #define GDATA_FREEBASE_SEARCH_RESULT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_FREEBASE_SEARCH_RESULT, GDataFreebaseSearchResult))
 #define GDATA_FREEBASE_SEARCH_RESULT_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_FREEBASE_SEARCH_RESULT, GDataFreebaseSearchResultClass))
@@ -76,6 +77,7 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataFreebaseSearchResultClass;
 
+GType gdata_freebase_search_result_item_get_type (void) G_GNUC_CONST;
 GType gdata_freebase_search_result_get_type (void) G_GNUC_CONST;
 
 GDataFreebaseSearchResult *gdata_freebase_search_result_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
