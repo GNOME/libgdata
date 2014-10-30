@@ -149,10 +149,14 @@ AC_SUBST([GNOME_PACKAGES_PRIVATE])
 AC_SUBST([GNOME_PACKAGES])
 AC_SUBST([GOA_ENABLED])
 
-dnl ****************************
-dnl Check for uhttpmock
-dnl ****************************
-PKG_CHECK_MODULES(UHTTPMOCK, libuhttpmock-0.0)
+AC_MSG_CHECKING([whether to build tests])
+AC_ARG_ENABLE([tests], AS_HELP_STRING([--enable-tests], [Enable building of tests]),, [enable_tests=yes])
+AC_MSG_RESULT($enable_tests)
+AM_CONDITIONAL([ENABLE_TESTS], [test "x$enable_tests" = "xyes"])
+
+if test "x$enable_tests" = "xyes"; then
+	PKG_CHECK_MODULES(UHTTPMOCK, libuhttpmock-0.0)
+fi
 
 # Various necessary functions and headers
 AC_CHECK_FUNCS([memset])
