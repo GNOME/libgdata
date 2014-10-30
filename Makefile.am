@@ -1,4 +1,8 @@
-SUBDIRS = . gdata/tests po docs
+SUBDIRS = . po docs
+
+if ENABLE_TESTS
+SUBDIRS += gdata/tests
+endif
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
