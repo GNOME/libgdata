@@ -895,7 +895,7 @@ gdata_test_debug_handler (const gchar *log_domain, GLogLevelFlags log_level, con
 	output_log_message (message);
 
 	/* Log to the trace file. */
-	if (message != NULL && (*message == '<' || *message == '>' || *message == ' ') && *(message + 1) == ' ') {
+	if ((*message == '<' || *message == '>' || *message == ' ') && *(message + 1) == ' ') {
 		uhm_server_received_message_chunk (mock_server, message, strlen (message), NULL);
 	}
 }
