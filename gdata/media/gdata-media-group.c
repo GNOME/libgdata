@@ -20,7 +20,7 @@
 /*
  * SECTION:gdata-media-group
  * @short_description: Media RSS group element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/media/gdata-media-group.h
  *
  * #GDataMediaGroup represents a "group" element from the

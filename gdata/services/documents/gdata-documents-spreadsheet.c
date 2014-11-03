@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-documents-spreadsheet
  * @short_description: GData Documents spreadsheet object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-spreadsheet.h
  *
  * #GDataDocumentsSpreadsheet is a subclass of #GDataDocumentsDocument to represent a spreadsheet from Google Documents.

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-oauth1-authorizer
  * @short_description: GData OAuth 1.0 authorization interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-oauth1-authorizer.h
  *
  * #GDataOAuth1Authorizer provides an implementation of the #GDataAuthorizer interface for authentication and authorization using the

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-author
  * @short_description: Atom author element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/atom/gdata-author.h
  *
  * #GDataAuthor represents a "author" element from the

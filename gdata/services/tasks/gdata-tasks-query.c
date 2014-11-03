@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-tasks-query
  * @short_description: GData Tasks query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/tasks/gdata-tasks-query.h
  *
  * #GDataTasksQuery represents a collection of query parameters specific to the Google Tasks service, which go above and beyond

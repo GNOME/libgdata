@@ -21,7 +21,7 @@
 /*
  * SECTION:gdata-gd-feed-link
  * @short_description: GD feed link element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-feed-link.h
  *
  * #GDataGDFeedLink represents a "feedLink" element from the

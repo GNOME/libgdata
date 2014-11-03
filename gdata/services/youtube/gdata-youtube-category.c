@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-youtube-category
  * @short_description: YouTube category element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-category.h
  *
  * #GDataYouTubeCategory represents the YouTube-specific customizations to #GDataCategory. For more information,

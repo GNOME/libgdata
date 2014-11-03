@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-picasaweb-query
  * @short_description: GData PicasaWeb query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/picasaweb/gdata-picasaweb-query.h
  *
  * #GDataPicasaWebQuery represents a collection of query parameters specific to the Google PicasaWeb service, which go above and beyond

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-youtube-state
  * @short_description: YouTube state element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-state.h
  *
  * #GDataYouTubeState represents a "state" element from the

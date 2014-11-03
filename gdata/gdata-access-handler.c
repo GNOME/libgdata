@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-access-handler
  * @short_description: GData access handler interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-access-handler.h
  *
  * #GDataAccessHandler is an interface which can be implemented by #GDataEntry<!-- -->s which can have their permissions controlled by an

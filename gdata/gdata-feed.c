@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-feed
  * @short_description: GData feed object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-feed.h
  *
  * #GDataFeed is a list of entries (#GDataEntry) returned as the result of a query to a #GDataService, or given as the input to another

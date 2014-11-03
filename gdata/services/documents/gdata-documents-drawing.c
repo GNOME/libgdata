@@ -22,7 +22,7 @@
 /**
  * SECTION:gdata-documents-drawing
  * @short_description: GData Documents drawing object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-drawing.h
  *
  * #GDataDocumentsDrawing is a subclass of #GDataDocumentsDocument to represent a drawing document from Google Documents.

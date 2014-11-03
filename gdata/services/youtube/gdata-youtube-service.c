@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-youtube-service
  * @short_description: GData YouTube service object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-service.h
  *
  * #GDataYouTubeService is a subclass of #GDataService for communicating with the GData API of YouTube. It supports querying for and

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-name
  * @short_description: GData name element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-name.h
  *
  * #GDataGDName represents a "name" element from the

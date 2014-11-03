@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-documents-query
  * @short_description: GData Documents query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-query.h
  *
  * #GDataDocumentsQuery represents a collection of query parameters specific to the Google Documents service, which go above and beyond

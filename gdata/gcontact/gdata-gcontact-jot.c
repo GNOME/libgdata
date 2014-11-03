@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gcontact-jot
  * @short_description: gContact jot element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gcontact/gdata-gcontact-jot.h
  *
  * #GDataGContactJot represents a "jot" element from the

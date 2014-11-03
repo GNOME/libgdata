@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-download-stream
  * @short_description: GData download stream object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-download-stream.h
  *
  * #GDataDownloadStream is a #GInputStream subclass to allow downloading of files from GData services with authorization from a #GDataService under

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-calendar-calendar
  * @short_description: GData Calendar calendar object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/calendar/gdata-calendar-calendar.h
  *
  * #GDataCalendarCalendar is a subclass of #GDataEntry to represent a calendar from Google Calendar.

@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-picasaweb-user
  * @short_description: GData PicasaWeb User object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/picasaweb/gdata-picasaweb-user.h
  *
  * #GDataPicasaWebUser is a subclass of #GDataEntry to represent properties for a PicasaWeb user. It adds a couple of

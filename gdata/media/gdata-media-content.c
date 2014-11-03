@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-media-content
  * @short_description: Media RSS content element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/media/gdata-media-content.h
  *
  * #GDataMediaContent represents a "content" element from the

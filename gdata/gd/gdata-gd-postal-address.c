@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-postal-address
  * @short_description: GData postal address element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-postal-address.h
  *
  * #GDataGDPostalAddress represents a "structuredPostalAddress" element from the

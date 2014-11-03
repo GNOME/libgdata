@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-media-credit
  * @short_description: Media RSS credit element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/media/gdata-media-credit.h
  *
  * #GDataMediaCredit represents a "credit" element from the

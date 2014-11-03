@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-documents-presentation
  * @short_description: GData documents presentation object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-presentation.h
  *
  * #GDataDocumentsPresentation is a subclass of #GDataDocumentsDocument to represent a Google Documents presentation.

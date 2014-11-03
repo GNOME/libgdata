@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-upload-stream
  * @short_description: GData upload stream object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-upload-stream.h
  *
  * #GDataUploadStream is a #GOutputStream subclass to allow uploading of files from GData services with authorization from a #GDataService under

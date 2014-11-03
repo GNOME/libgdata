@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-authorizer
  * @short_description: GData authorization interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-authorizer.h
  *
  * The #GDataAuthorizer interface provides a uniform way to implement authentication and authorization processes for use by #GDataService<!-- -->s.

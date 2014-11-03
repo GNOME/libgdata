@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-contacts-contact
  * @short_description: GData Contacts contact object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/contacts/gdata-contacts-contact.h
  *
  * #GDataContactsContact is a subclass of #GDataEntry to represent a contact from a Google address book.

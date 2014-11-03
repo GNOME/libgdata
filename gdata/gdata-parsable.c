@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-parsable
  * @short_description: GData parsable object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-parsable.h
  *
  * #GDataParsable is an abstract class allowing easy implementation of an extensible parser. It is primarily extended by #GDataFeed and #GDataEntry,

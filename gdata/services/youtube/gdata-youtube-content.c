@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-youtube-content
  * @short_description: YouTube content element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-content.h
  *
  * #GDataYouTubeContent represents the YouTube-specific customizations to #GDataMediaContent. For more information,

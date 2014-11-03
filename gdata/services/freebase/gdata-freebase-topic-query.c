@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-freebase-topic-query
  * @short_description: GData Freebase topic query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/freebase/gdata-freebase-topic-query.h
  *
  * #GDataFreebaseTopicQuery represents a Freebase topic query. The topic query happens on a single Freebase ID,

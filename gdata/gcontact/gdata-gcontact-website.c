@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gcontact-website
  * @short_description: gContact website element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gcontact/gdata-gcontact-website.h
  *
  * #GDataGContactWebsite represents a "website" element from the

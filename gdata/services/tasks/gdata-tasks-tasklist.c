@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-tasks-tasklist
  * @short_description: GData Tasks tasklist object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/tasks/gdata-tasks-tasklist.h
  *
  * #GDataTasksTasklist is a subclass of #GDataEntry to represent a tasklist from Google Tasks.

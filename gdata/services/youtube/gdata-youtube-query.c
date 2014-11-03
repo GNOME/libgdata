@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-youtube-query
  * @short_description: GData YouTube query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-query.h
  *
  * #GDataYouTubeQuery represents a collection of query parameters specific to the YouTube service, which go above and beyond

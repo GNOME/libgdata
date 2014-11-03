@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-documents-upload-query
  * @short_description: GData Documents upload query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-upload-query.h
  *
  * #GDataDocumentsUploadQuery is a collection of parameters for document uploads to Google Documents, allowing various options to be set when uploading

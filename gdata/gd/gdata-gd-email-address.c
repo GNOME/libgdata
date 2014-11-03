@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-email-address
  * @short_description: GData e-mail address element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-email-address.h
  *
  * #GDataGDEmailAddress represents an "email" element from the

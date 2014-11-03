@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-access-rule
  * @short_description: GData access rule object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-access-rule.h
  *
  * #GDataAccessRule is a subclass of #GDataEntry to represent a generic access rule from an access control list (ACL).

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-youtube-comment
  * @short_description: GData YouTube comment object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-comment.h
  *
  * #GDataYouTubeComment is a subclass of #GDataComment to represent a comment on a #GDataYouTubeVideo. It is returned by the #GDataCommentable

@@ -20,7 +20,7 @@
 /*
  * SECTION:gdata-youtube-group
  * @short_description: YouTube group element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-group.h
  *
  * #GDataYouTubeGroup represents the YouTube-specific customizations to #GDataMediaGroup. For more information,

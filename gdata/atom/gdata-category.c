@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-category
  * @short_description: Atom category element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/atom/gdata-category.h
  *
  * #GDataCategory represents a "category" element from the

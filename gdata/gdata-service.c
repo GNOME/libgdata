@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-service
  * @short_description: GData service object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-service.h
  *
  * #GDataService represents a GData API service, typically a website using the GData API, such as YouTube or Google Calendar. One

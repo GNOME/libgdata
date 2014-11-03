@@ -20,7 +20,7 @@
 /*
  * SECTION:gdata-dummy-authorizer
  * @short_description: GData dummy authorization interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: tests/gdata-dummy-authorizer.h
  *
  * #GDataDummyAuthorizer is a dummy #GDataAuthorizer implementation intended for

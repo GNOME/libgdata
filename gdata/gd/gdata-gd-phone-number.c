@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-phone-number
  * @short_description: GData phone number element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-phone-number.h
  *
  * #GDataGDPhoneNumber represents a "phoneNumber" element from the

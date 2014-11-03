@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-documents-folder
  * @short_description: GData documents folder object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-folder.h
  *
  * #GDataDocumentsFolder is a subclass of #GDataDocumentsEntry to represent a folder from Google Documents.

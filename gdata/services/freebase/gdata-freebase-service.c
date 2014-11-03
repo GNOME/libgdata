@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-freebase-service
  * @short_description: GData Freebase service object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/freebase/gdata-freebase-service.h
  *
  * #GDataFreebaseService is a subclass of #GDataService for communicating with the Google Freebase API. It supports queries

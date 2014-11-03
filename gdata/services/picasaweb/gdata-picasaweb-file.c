@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-picasaweb-file
  * @short_description: GData PicasaWeb file object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/picasaweb/gdata-picasaweb-file.h
  *
  * #GDataPicasaWebFile is a subclass of #GDataEntry to represent a file (photo or video) in an album on Google PicasaWeb.

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-documents-document
  * @short_description: GData documents document object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-document.h
  *
  * #GDataDocumentsDocument is a subclass of #GDataDocumentsEntry to represent an arbitrary Google Documents document (i.e. an arbitrary file which

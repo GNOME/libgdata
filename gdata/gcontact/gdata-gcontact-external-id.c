@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gcontact-external-id
  * @short_description: gContact externalId element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gcontact/gdata-gcontact-external-id.h
  *
  * #GDataGContactExternalID represents an "externalId" element from the

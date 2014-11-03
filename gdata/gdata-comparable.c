@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-comparable
  * @short_description: GData comparable interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-comparable.h
  *
  * #GDataComparable is an interface which can be implemented by any object which needs to be compared to another object of the same type or of a

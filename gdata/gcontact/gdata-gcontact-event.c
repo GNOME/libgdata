@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gcontact-event
  * @short_description: gContact event element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gcontact/gdata-gcontact-event.h
  *
  * #GDataGContactEvent represents a "event" element from the

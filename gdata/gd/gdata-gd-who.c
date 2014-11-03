@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-who
  * @short_description: GData who element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-who.h
  *
  * #GDataGDWho represents an "who" element from the

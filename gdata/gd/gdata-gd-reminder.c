@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-reminder
  * @short_description: GData reminder element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-reminder.h
  *
  * #GDataGDReminder represents a "reminder" element from the

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gcontact-calendar
  * @short_description: gContact calendar element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gcontact/gdata-gcontact-calendar.h
  *
  * #GDataGContactCalendar represents a "calendarLink" element from the

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-batch-operation
  * @short_description: GData batch operation object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-batch-operation.h
  *
  * #GDataBatchOperation is a transient standalone class which represents and handles a single batch operation request to a service. To make a batch

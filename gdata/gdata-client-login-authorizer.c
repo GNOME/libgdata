@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-client-login-authorizer
  * @short_description: GData ClientLogin authorization interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-client-login-authorizer.h
  *
  * #GDataClientLoginAuthorizer provides an implementation of the #GDataAuthorizer interface for authentication and authorization using the deprecated

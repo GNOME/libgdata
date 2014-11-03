@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-calendar-query
  * @short_description: GData Calendar query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/calendar/gdata-calendar-query.h
  *
  * #GDataCalendarQuery represents a collection of query parameters specific to the Google Calendar service, which go above and beyond

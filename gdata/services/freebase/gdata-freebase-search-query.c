@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-freebase-search-query
  * @short_description: GData Freebase query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/freebase/gdata-freebase-query.h
  *
  * #GDataFreebaseQuery represents a collection of query parameters specific to the Google Freebase service.

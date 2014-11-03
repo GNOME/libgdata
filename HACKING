@@ -124,6 +124,9 @@ Adding public API
  - Any async function which uses non-async-scope callbacks as well as the async ready callback should provide GDestroyNotify callbacks for destroying
    the user data for those callbacks. See https://bugzilla.gnome.org/show_bug.cgi?id=649728 for details.
 
+ - Any new class’ class structure (e.g. GDataServiceClass) must have reserved slots to allow future API additions of virtual functions without
+   breaking ABI.
+
 Choosing function names
 =======================
 
@@ -205,7 +208,9 @@ Versioning
 ==========
 
 Starting with version 0.9.0, libgdata has adopted an even–odd/stable–unstable versioning policy, where odd minor version numbers are unstable releases,
-released periodically (with increasing micro version numbers) and leading to a stable release with the next even minor version number. API breaks are
-allowed in micro releases with an odd minor version number, but not in micro releases with an even minor version number.
+released periodically (with increasing micro version numbers) and leading to a stable release with the next even minor version number. API breaks of
+new API are allowed in micro releases with an odd minor version number, but not in micro releases with an even minor version number.
+
+ABI and API backwards compatibility must be preserved unless the major version number is changed. libgdata is now ABI-stable.
 
 It is encouraged to make a new micro release of an odd minor series after each large API addition or break.

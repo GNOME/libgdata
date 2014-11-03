@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-documents-text
  * @short_description: GData Documents text object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-text.h
  *
  * #GDataDocumentsText is a subclass of #GDataDocumentsDocument to represent a text document from Google Documents.

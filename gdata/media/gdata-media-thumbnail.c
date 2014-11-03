@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-media-thumbnail
  * @short_description: Media RSS thumbnail element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/media/gdata-media-thumbnail.h
  *
  * #GDataMediaThumbnail represents a "thumbnail" element from the

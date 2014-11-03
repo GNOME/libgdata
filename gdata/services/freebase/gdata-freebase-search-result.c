@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-freebase-search-result
  * @short_description: GData Freebase search result object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/freebase/gdata-freebase-result.h
  *
  * #GDataFreebaseSearchResult is a subclass of #GDataEntry to represent the result of a Freebase search query.

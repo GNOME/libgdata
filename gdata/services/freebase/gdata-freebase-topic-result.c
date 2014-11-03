@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-freebase-topic-result
  * @short_description: GData Freebase topic result object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/freebase/gdata-freebase-topic-result.h
  *
  * #GDataFreebaseTopicResult is a subclass of #GDataFreebaseResult that contains all or a subset of the information

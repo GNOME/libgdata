@@ -20,7 +20,7 @@
 /*
  * SECTION:gdata-exif-tags
  * @short_description: EXIF tags element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/exif/gdata-exif-tags.h
  *
  * #GDataExifTags represents a "tags" element from the

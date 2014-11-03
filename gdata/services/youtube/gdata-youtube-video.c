@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-youtube-video
  * @short_description: GData YouTube video object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-video.h
  *
  * #GDataYouTubeVideo is a subclass of #GDataEntry to represent a single video on YouTube, either when uploading or querying.

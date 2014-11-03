@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-documents-feed
  * @short_description: GData documents feed object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-feed.h
  *
  * #GDataDocumentsFeed is a list of entries (#GDataDocumentsEntry subclasses) returned as the result of a query to a #GDataDocumentsService,

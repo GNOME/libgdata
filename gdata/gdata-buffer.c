@@ -20,7 +20,7 @@
 /*
  * SECTION:gdata-buffer
  * @short_description: GData buffer to allow threadsafe buffering
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-buffer.h
  *
  * #GDataBuffer is a simple object which allows threadsafe buffering of data meaning, for example, data can be received from

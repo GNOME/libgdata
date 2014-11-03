@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-authorization-domain
  * @short_description: GData authorization domain
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-authorization-domain.h
  *
  * A #GDataAuthorizationDomain represents a single data domain which a user can authorize libgdata to access. This might be a domain covering the

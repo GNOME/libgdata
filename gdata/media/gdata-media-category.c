@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-media-category
  * @short_description: Media RSS category element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/media/gdata-media-category.h
  *
  * #GDataMediaCategory represents a "category" element from the

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-picasaweb-comment
  * @short_description: GData PicasaWeb comment object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/picasaweb/gdata-picasaweb-comment.h
  *
  * #GDataPicasaWebComment is a subclass of #GDataComment to represent a comment on a #GDataPicasaWebFile. It is returned by the #GDataCommentable

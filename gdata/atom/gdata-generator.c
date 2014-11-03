@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-generator
  * @short_description: Atom generator element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/atom/gdata-generator.h
  *
  * #GDataGenerator represents a "generator" element from the

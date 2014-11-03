@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-app-categories
  * @short_description: GData APP categories object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/app/gdata-app-categories.h
  *
  * #GDataAPPCategories is a list of categories (#GDataCategory) returned as the result of querying an

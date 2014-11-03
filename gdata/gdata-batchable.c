@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-batchable
  * @short_description: GData batch service interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-batchable.h
  *
  * #GDataBatchable is an interface which can be implemented by #GDataService<!-- -->s which support batch operations on their entries. It allows the

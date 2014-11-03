@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gcontact-relation
  * @short_description: gContact relation element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gcontact/gdata-gcontact-relation.h
  *
  * #GDataGContactRelation represents a "relation" element from the

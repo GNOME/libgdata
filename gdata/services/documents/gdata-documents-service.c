@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-documents-service
  * @short_description: GData Documents service object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-service.h
  *
  * #GDataDocumentsService is a subclass of #GDataService for communicating with the GData API of Google Documents. It supports querying

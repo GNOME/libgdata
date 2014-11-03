@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-query
  * @short_description: GData query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-query.h
  *
  * #GDataQuery represents a collection of query parameters used in a series of queries on a #GDataService. It allows the query parameters to be

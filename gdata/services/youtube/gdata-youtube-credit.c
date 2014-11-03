@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-youtube-credit
  * @short_description: YouTube credit element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-credit.h
  *
  * #GDataYouTubeCredit represents the YouTube-specific customizations to #GDataMediaCredit. For more information,

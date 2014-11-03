@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-commentable
  * @short_description: GData commentable interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-commentable.h
  *
  * #GDataCommentable is an interface which can be implemented by commentable objects: objects which support having comments added to them by users,

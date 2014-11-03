@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-documents-entry
  * @short_description: GData document object abstract class
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-entry.h
  *
  * #GDataDocumentsEntry is a subclass of #GDataEntry to represent a Google Documents entry, which is then further subclassed

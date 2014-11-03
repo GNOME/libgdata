@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-freebase-result
  * @short_description: GData Freebase result object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/freebase/gdata-freebase-result.h
  *
  * #GDataFreebaseResult is a subclass of #GDataEntry to represent the result of a Google Freebase MQL query.

@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-organization
  * @short_description: GData organization element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-organization.h
  *
  * #GDataGDOrganization represents an "organization" element from the

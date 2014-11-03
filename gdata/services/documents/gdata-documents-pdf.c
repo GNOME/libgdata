@@ -22,7 +22,7 @@
 /**
  * SECTION:gdata-documents-pdf
  * @short_description: GData Documents pdf object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-pdf.h
  *
  * #GDataDocumentsPdf is a subclass of #GDataDocumentsDocument to represent a PDF document from Google Documents.

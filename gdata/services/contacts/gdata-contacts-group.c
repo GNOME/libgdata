@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-contacts-group
  * @short_description: GData Contacts group object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/contacts/gdata-contacts-group.h
  *
  * #GDataContactsGroup is a subclass of #GDataEntry to represent a group from a Google address book.

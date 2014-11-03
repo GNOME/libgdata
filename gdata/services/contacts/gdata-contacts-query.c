@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-contacts-query
  * @short_description: GData Contacts query object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/contacts/gdata-contacts-query.h
  *
  * #GDataContactsQuery represents a collection of query parameters specific to the Google Contacts service, which go above and beyond

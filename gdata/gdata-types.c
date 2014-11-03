@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-types
  * @short_description: miscellaneous data types
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-types.h
  *
  * The structures here are used haphazardly across the library, describing

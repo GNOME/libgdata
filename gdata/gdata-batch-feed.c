@@ -20,7 +20,7 @@
 /*
  * SECTION:gdata-batch-feed
  * @short_description: GData batch feed helper object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-batch-feed.h
  *
  * Helper class to parse the feed returned from a batch operation and instantiate different types of #GDataEntry according to the batch operation

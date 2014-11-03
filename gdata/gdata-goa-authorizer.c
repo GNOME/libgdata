@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-goa-authorizer
  * @short_description: GData GOA authorization interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-goa-authorizer.h
  *
  * #GDataGoaAuthorizer provides an implementation of the #GDataAuthorizer interface for authentication and authorization using GNOME Online Accounts

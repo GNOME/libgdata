@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-comment
  * @short_description: GData comment object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-comment.h
  *
  * #GDataComment is a subclass of #GDataEntry to represent a generic comment on an entry. It is returned by the methods implemented in the

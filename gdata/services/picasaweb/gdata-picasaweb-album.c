@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-picasaweb-album
  * @short_description: GData PicasaWeb album object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/picasaweb/gdata-picasaweb-album.h
  *
  * #GDataPicasaWebAlbum is a subclass of #GDataEntry to represent an album from Google PicasaWeb.

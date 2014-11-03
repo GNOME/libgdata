@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-calendar-event
  * @short_description: GData Calendar event object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/calendar/gdata-calendar-event.h
  *
  * #GDataCalendarEvent is a subclass of #GDataEntry to represent an event on a calendar from Google Calendar.

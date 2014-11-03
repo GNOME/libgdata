@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-calendar-feed
  * @short_description: GData Calendar feed object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/calendar/gdata-calendar-feed.h
  *
  * #GDataCalendarFeed is a subclass of #GDataFeed to represent a results feed from Google Calendar. It adds a couple of

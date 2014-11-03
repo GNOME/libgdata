@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-entry
  * @short_description: GData entry object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-entry.h
  *
  * #GDataEntry represents a single object on the online service, such as a playlist, video or calendar event. It is a snapshot of the

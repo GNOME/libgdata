@@ -20,7 +20,7 @@
 /*
  * SECTION:gdata-youtube-control
  * @short_description: Atom Publishing Protocol control element with YouTube-specific modifications
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/youtube/gdata-youtube-control.h
  *
  * #GDataYouTubeControl represents a "control" element from the

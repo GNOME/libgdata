@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gcontact-language
  * @short_description: gContact language element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gcontact/gdata-gcontact-language.h
  *
  * #GDataGContactLanguage represents a "language" element from the

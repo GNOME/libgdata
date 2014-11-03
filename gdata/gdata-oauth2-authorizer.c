@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-oauth2-authorizer
  * @short_description: GData OAuth 2.0 authorization interface
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gdata-oauth2-authorizer.h
  *
  * #GDataOAuth2Authorizer provides an implementation of the #GDataAuthorizer

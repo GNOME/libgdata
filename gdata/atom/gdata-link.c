@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-link
  * @short_description: Atom link element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/atom/gdata-link.h
  *
  * #GDataLink represents a "link" element from the

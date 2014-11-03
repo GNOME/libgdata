@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-picasaweb-service
  * @short_description: GData PicasaWeb service object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/picasaweb/gdata-picasaweb-service.h
  *
  * #GDataPicasaWebService is a subclass of #GDataService for communicating with the GData API of Google PicasaWeb. It supports querying for files

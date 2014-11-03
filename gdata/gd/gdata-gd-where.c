@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-where
  * @short_description: GData where element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-where.h
  *
  * #GDataGDWhere represents a "where" element from the

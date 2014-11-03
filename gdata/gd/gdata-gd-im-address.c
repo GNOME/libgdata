@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-im-address
  * @short_description: GData instant messaging address element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-im-address.h
  *
  * #GDataGDIMAddress represents an "im" element from the

@@ -21,7 +21,7 @@
 /**
  * SECTION:gdata-picasaweb-feed
  * @short_description: GData PicasaWeb Feed object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/picasaweb/gdata-picasaweb-feed.h
  *
  * #GDataPicasaWebFeed is a subclass of #GDataFeed to represent properties for a PicasaWeb feed. It adds a couple of

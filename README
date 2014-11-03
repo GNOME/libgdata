@@ -8,7 +8,7 @@ the common Google services, and has full asynchronous support.
 See the test programs in gdata/tests/ for simple examples of how to use the
 code.
 
-libgdata's API is currently unstable and is likely to change wildly.
+libgdata is API and ABI stable.
 
 Dependencies
 ============

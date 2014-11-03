@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-calendar-service
  * @short_description: GData Calendar service object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/calendar/gdata-calendar-service.h
  *
  * #GDataCalendarService is a subclass of #GDataService for communicating with the GData API of Google Calendar. It supports querying

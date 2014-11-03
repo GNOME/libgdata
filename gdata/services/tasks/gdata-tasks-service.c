@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-tasks-service
  * @short_description: GData Tasks service object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/tasks/gdata-tasks-service.h
  *
  * #GDataTasksService is a subclass of #GDataService for communicating with the API of Google Tasks. It supports querying

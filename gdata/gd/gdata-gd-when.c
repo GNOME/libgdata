@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-gd-when
  * @short_description: GData when element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/gd/gdata-gd-when.h
  *
  * #GDataGDWhen represents a "when" element from the

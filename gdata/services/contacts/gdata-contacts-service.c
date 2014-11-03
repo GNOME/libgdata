@@ -20,7 +20,7 @@
 /**
  * SECTION:gdata-contacts-service
  * @short_description: GData Contacts service object
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/services/contacts/gdata-contacts-service.h
  *
  * #GDataContactsService is a subclass of #GDataService for communicating with the GData API of Google Contacts. It supports querying

@@ -21,7 +21,7 @@
 /*
  * SECTION:gdata-georss-where
  * @short_description: GeoRSS where element
- * @stability: Unstable
+ * @stability: Stable
  * @include: gdata/georss/gdata-georss-where.h
  *
  * #GDataGeoRSSWhere represents a "where" element from the
