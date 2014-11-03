@@ -58,6 +58,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataExifTagsClass;
 
 GType gdata_exif_tags_get_type (void) G_GNUC_CONST;

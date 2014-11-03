@@ -68,6 +68,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataMediaCreditClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataYouTubeCreditClass;
 
 GType gdata_youtube_credit_get_type (void) G_GNUC_CONST;

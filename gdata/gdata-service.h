@@ -154,6 +154,17 @@ typedef struct {
 	void (*parse_error_response) (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
 	                              const gchar *response_body, gint length, GError **error);
 	GList *(*get_authorization_domains) (void);
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
+	void (*_g_reserved2) (void);
+	void (*_g_reserved3) (void);
+	void (*_g_reserved4) (void);
+	void (*_g_reserved5) (void);
+	void (*_g_reserved6) (void);
+	void (*_g_reserved7) (void);
 } GDataServiceClass;
 
 GType gdata_service_get_type (void) G_GNUC_CONST;

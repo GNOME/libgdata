@@ -58,6 +58,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataCommentClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataYouTubeCommentClass;
 
 GType gdata_youtube_comment_get_type (void) G_GNUC_CONST;

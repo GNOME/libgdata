@@ -78,6 +78,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataMediaContentClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataYouTubeContentClass;
 
 GType gdata_youtube_content_get_type (void) G_GNUC_CONST;

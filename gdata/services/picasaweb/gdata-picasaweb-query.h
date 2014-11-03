@@ -60,6 +60,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataQueryClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataPicasaWebQueryClass;
 
 GType gdata_picasaweb_query_get_type (void) G_GNUC_CONST;

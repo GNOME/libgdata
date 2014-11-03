@@ -59,6 +59,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataDocumentsEntryClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataDocumentsFolderClass;
 
 GType gdata_documents_folder_get_type (void) G_GNUC_CONST;

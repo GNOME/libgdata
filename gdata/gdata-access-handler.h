@@ -74,6 +74,15 @@ typedef struct {
 
 	gboolean (*is_owner_rule) (GDataAccessRule *rule);
 	GDataAuthorizationDomain *(*get_authorization_domain) (GDataAccessHandler *self);
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
+	void (*_g_reserved2) (void);
+	void (*_g_reserved3) (void);
+	void (*_g_reserved4) (void);
+	void (*_g_reserved5) (void);
 } GDataAccessHandlerIface;
 
 GType gdata_access_handler_get_type (void) G_GNUC_CONST;

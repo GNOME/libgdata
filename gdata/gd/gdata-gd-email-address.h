@@ -85,6 +85,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataGDEmailAddressClass;
 
 GType gdata_gd_email_address_get_type (void) G_GNUC_CONST;

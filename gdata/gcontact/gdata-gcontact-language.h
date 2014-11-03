@@ -58,6 +58,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataGContactLanguageClass;
 
 GType gdata_gcontact_language_get_type (void) G_GNUC_CONST;

@@ -56,6 +56,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataGeneratorClass;
 
 GType gdata_generator_get_type (void) G_GNUC_CONST;

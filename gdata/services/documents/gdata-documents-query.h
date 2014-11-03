@@ -60,6 +60,11 @@ typedef struct {
 	/*< private >*/
 	GDataQueryClass parent;
 	GDataDocumentsQueryPrivate *priv;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataDocumentsQueryClass;
 
 GType gdata_documents_query_get_type (void) G_GNUC_CONST;

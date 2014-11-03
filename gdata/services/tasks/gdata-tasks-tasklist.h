@@ -57,6 +57,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataTasksTasklistClass;
 
 GType gdata_tasks_tasklist_get_type (void) G_GNUC_CONST;

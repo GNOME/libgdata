@@ -63,6 +63,17 @@ typedef struct {
 
 	gchar *(*get_entry_uri) (const gchar *id); /* G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC */
 	const gchar *kind_term;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
+	void (*_g_reserved2) (void);
+	void (*_g_reserved3) (void);
+	void (*_g_reserved4) (void);
+	void (*_g_reserved5) (void);
+	void (*_g_reserved6) (void);
+	void (*_g_reserved7) (void);
 } GDataEntryClass;
 
 GType gdata_entry_get_type (void) G_GNUC_CONST;

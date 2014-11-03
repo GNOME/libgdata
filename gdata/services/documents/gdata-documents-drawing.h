@@ -113,6 +113,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataDocumentsDocumentClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataDocumentsDrawingClass;
 
 GType gdata_documents_drawing_get_type (void) G_GNUC_CONST;

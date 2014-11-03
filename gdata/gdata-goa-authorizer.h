@@ -61,6 +61,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GObjectClass parent_class;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataGoaAuthorizerClass;
 
 GType gdata_goa_authorizer_get_type (void) G_GNUC_CONST;

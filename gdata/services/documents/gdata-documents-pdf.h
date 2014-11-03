@@ -60,6 +60,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataDocumentsDocumentClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataDocumentsPdfClass;
 
 GType gdata_documents_pdf_get_type (void) G_GNUC_CONST;

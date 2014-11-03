@@ -118,6 +118,15 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GObjectClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
+	void (*_g_reserved2) (void);
+	void (*_g_reserved3) (void);
+	void (*_g_reserved4) (void);
+	void (*_g_reserved5) (void);
 } GDataBatchOperationClass;
 
 GType gdata_batch_operation_get_type (void) G_GNUC_CONST;

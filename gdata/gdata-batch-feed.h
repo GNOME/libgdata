@@ -59,6 +59,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataFeedClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataBatchFeedClass;
 
 GType gdata_batch_feed_get_type (void) G_GNUC_CONST;

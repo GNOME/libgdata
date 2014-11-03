@@ -105,6 +105,17 @@ typedef struct {
 
 	const gchar *element_name;
 	const gchar *element_namespace;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
+	void (*_g_reserved2) (void);
+	void (*_g_reserved3) (void);
+	void (*_g_reserved4) (void);
+	void (*_g_reserved5) (void);
+	void (*_g_reserved6) (void);
+	void (*_g_reserved7) (void);
 } GDataParsableClass;
 
 GType gdata_parsable_get_type (void) G_GNUC_CONST;

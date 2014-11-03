@@ -55,6 +55,15 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataServiceClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
+	void (*_g_reserved2) (void);
+	void (*_g_reserved3) (void);
+	void (*_g_reserved4) (void);
+	void (*_g_reserved5) (void);
 } GDataCalendarServiceClass;
 
 GType gdata_calendar_service_get_type (void) G_GNUC_CONST;

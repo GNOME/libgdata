@@ -74,6 +74,11 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;
+
+	/*< private >*/
+	/* Padding for future expansion */
+	void (*_g_reserved0) (void);
+	void (*_g_reserved1) (void);
 } GDataPicasaWebAlbumClass;
 
 GType gdata_picasaweb_album_get_type (void) G_GNUC_CONST;
