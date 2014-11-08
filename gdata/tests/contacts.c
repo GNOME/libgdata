@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009, 2010, 2011 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2010, 2011, 2014 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,46 +113,6 @@ test_authentication (void)
 
 	uhm_server_end_trace (mock_server);
 }
-
-GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
-G_STMT_START {
-	GDataClientLoginAuthorizer *authorizer;
-
-	/* Create an authorizer */
-	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE);
-
-	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
-
-	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, cancellable, async_ready_callback, async_data);
-
-	g_object_unref (authorizer);
-} G_STMT_END,
-G_STMT_START {
-	gboolean retval;
-	GDataClientLoginAuthorizer *authorizer = GDATA_CLIENT_LOGIN_AUTHORIZER (obj);
-
-	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
-
-	if (error == NULL) {
-		g_assert (retval == TRUE);
-
-		/* Check all is as it should be */
-		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
-		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
-		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-		                                                     gdata_contacts_service_get_primary_authorization_domain ()) == TRUE);
-	} else {
-		g_assert (retval == FALSE);
-
-		/* Check nothing's changed */
-		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
-		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
-
-		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-		                                                     gdata_contacts_service_get_primary_authorization_domain ()) == FALSE);
-	}
-} G_STMT_END);
 
 typedef struct {
 	GDataContactsContact *contact1;
@@ -2573,10 +2533,6 @@ main (int argc, char *argv[])
 	service = GDATA_SERVICE (gdata_contacts_service_new (authorizer));
 
 	g_test_add_func ("/contacts/authentication", test_authentication);
-	g_test_add ("/contacts/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
-	            gdata_tear_down_async_test_data);
-	g_test_add ("/contacts/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
-	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
 	g_test_add ("/contacts/contact/insert", InsertData, service, set_up_insert, test_contact_insert, tear_down_insert);
 	g_test_add ("/contacts/contact/update", TempContactData, service, set_up_temp_contact, test_contact_update, tear_down_temp_contact);
