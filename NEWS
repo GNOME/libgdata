@@ -1,3 +1,23 @@
+Overview of changes from libgdata 0.16.0 to libgdata 0.16.1
+===========================================================
+
+Major changes:
+ • Add a --disable-tests configure option to build without uhttpmock
+ • Remove downstream fix for ISO 8601 dates which was breaking Contacts
+ • Various fixes for the Google Tasks service
+
+Bugs fixed:
+ • Bug 739395 — Add an option to build without uhttpmock
+ • Bug 737799 — Error while updating google address book
+
+Updated translations:
+ • da (Aputsiaq Niels Janussen)
+ • de (Wolfgang Stöggl)
+ • pa (A S Alam)
+ • sr (Мирослав Николић)
+ • sv (Mattias Eriksson)
+ • zh_CN (Iris Gou)
+
 Overview of changes from libgdata 0.15.2 to libgdata 0.16.0
 ===========================================================
 
