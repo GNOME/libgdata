@@ -465,8 +465,9 @@ test_contact_insert (InsertData *data, gconstpointer service)
 	g_assert_cmpstr (gdata_contacts_contact_get_maiden_name (new_contact), ==, "Smith");
 	g_assert_cmpstr (gdata_contacts_contact_get_mileage (new_contact), ==, "12km");
 	g_assert_cmpstr (gdata_contacts_contact_get_occupation (new_contact), ==, "Professional bum");
-	g_assert_cmpstr (gdata_contacts_contact_get_priority (new_contact), ==, GDATA_CONTACTS_PRIORITY_HIGH);
-	g_assert_cmpstr (gdata_contacts_contact_get_sensitivity (new_contact), ==, GDATA_CONTACTS_SENSITIVITY_PERSONAL);
+	/* FIXME: https://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3662
+	 * g_assert_cmpstr (gdata_contacts_contact_get_priority (new_contact), ==, GDATA_CONTACTS_PRIORITY_HIGH);
+	 * g_assert_cmpstr (gdata_contacts_contact_get_sensitivity (new_contact), ==, GDATA_CONTACTS_SENSITIVITY_PERSONAL); */
 	g_assert_cmpstr (gdata_contacts_contact_get_short_name (new_contact), ==, "Jon");
 	g_assert_cmpstr (gdata_contacts_contact_get_subject (new_contact), ==, "Charity work");
 
