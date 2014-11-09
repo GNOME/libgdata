@@ -3,7 +3,7 @@ AC_PREREQ(2.65)
 # Release version
 m4_define(gdata_version_major, 0)
 m4_define(gdata_version_minor, 16)
-m4_define(gdata_version_micro, 1)
+m4_define(gdata_version_micro, 2)
 
 # API version
 # TODO: This currently isn't used in the library name; once we hit gdata_version_major=1, that should be changed
