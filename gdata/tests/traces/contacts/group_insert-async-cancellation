@@ -1,32 +1,45 @@
 > POST /m8/feeds/groups/default/full HTTP/1.1
-> Soup-Debug-Timestamp: 1375363905
-> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 6 (0x7fffe00299c0), SoupSocket 4 (0x8f3190)
+> Soup-Debug-Timestamp: 1415490553
+> Soup-Debug: SoupSession 1 (0x1c05240), SoupMessage 50 (0x7f451000f2c0), SoupSocket 24 (0x7f4510044dd0)
 > Host: www.google.com
-> Authorization: GoogleLogin auth=DQAAANUAAADtjTOJJU3aN2xxS0RFYXiikPITkpt4b3hR1fQ9TbQlx-Cgsdk1AW48YqFLPUdI1ykyKbaS_VSAfv5B_IGEi3Wa1McgCuVz7nIjv_OMYVERFthN0-Nj95PWV19GJMPKDhcOwzN_W2wjFTXSyHmhy6pNoc48jWohDPHCzv6G9jsEj9KOTlHT6F9pGe3H3bGf0ga0s6bPJ6Yv2orycMebH1EDv5crVSPRx6e7Uy50qDXVTJH1zXUXShunNRKTm09H_Tmfwn1fdBVj6GshI4GoLbir6j-SD4YXN7PWJEmHVsyBYg
+> Authorization: Bearer ya29.uAB1RRhn3TKLPSfFZeRgrzf68-Gb9tby5F20urDCBwC6B94UqINs1Hvh_iKX3FagPwd0QkLnrSyVRw
 > GData-Version: 3
 > Content-Type: application/atom+xml
 > Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
 > Connection: Keep-Alive
 > 
 > <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>New Group!</title><content type='text'>New Group!</content><category term='http://schemas.google.com/contact/2008#group' scheme='http://schemas.google.com/g/2005#kind'/><gd:extendedProperty name='foobar'>barfoo</gd:extendedProperty></entry>
   
 < HTTP/1.1 201 Created
-< Soup-Debug-Timestamp: 1375363905
-< Soup-Debug: SoupMessage 6 (0x7fffe00299c0)
-< Content-Type: application/atom+xml; charset=UTF-8; type=entry
-< Expires: Thu, 01 Aug 2013 13:31:45 GMT
-< Date: Thu, 01 Aug 2013 13:31:45 GMT
-< Cache-control: private, max-age=0, must-revalidate, no-transform
-< Vary: Accept, X-GData-Authorization, GData-Version
-< GData-Version: 3.1
-< ETag: "RHk5ezVSLit7I2A9WhFWE0sJTgQ."
-< Location: https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/1fff1bc78f083ca0
-< Content-Location: https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/1fff1bc78f083ca0
+< Soup-Debug-Timestamp: 1415490553
+< Soup-Debug: SoupMessage 50 (0x7f451000f2c0)
+< ETag: "Qnw6fzVSLit7I2A9XRdWFEQKQgE."
+< Vary: Origin
+< Vary: Referer
+< Vary: X-Origin
+< Content-Type: application/atom+xml; charset=UTF-8
+< Date: Sat, 08 Nov 2014 23:49:13 GMT
+< Expires: Sat, 08 Nov 2014 23:49:13 GMT
+< Cache-Control: private, max-age=0
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
+< Content-Encoding: gzip
+< Alternate-Protocol: 443:quic,p=0.01
 < Transfer-Encoding: chunked
 < 
-< <?xml version='1.0' encoding='UTF-8'?><entry xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;RHk5ezVSLit7I2A9WhFWE0sJTgQ.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/1fff1bc78f083ca0</id><updated>2013-08-01T13:31:45.723Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:31:45.723Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>New Group!</title><content>New Group!</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/1fff1bc78f083ca0'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/1fff1bc78f083ca0'/><gd:extendedProperty name='foobar'>barfoo</gd:extendedProperty></entry>
+< <?xml version="1.0" encoding="UTF-8"?>
+< <entry gd:etag="&quot;Qnw6fzVSLit7I2A9XRdWFEQKQgE.&quot;" xmlns="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gContact="http://schemas.google.com/contact/2008" xmlns:gd="http://schemas.google.com/g/2005">
+<  <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/6beff9268d4dbc1f</id>
+<  <updated>2014-11-08T23:49:13.217Z</updated>
+<  <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:49:13.217Z</app:edited>
+<  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<  <title>New Group!</title>
+<  <content>New Group!</content>
+<  <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/6beff9268d4dbc1f"/>
+<  <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/6beff9268d4dbc1f"/>
+<  <gd:extendedProperty name="foobar">barfoo</gd:extendedProperty>
+< </entry>
   

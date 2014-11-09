@@ -1,28 +1,166 @@
 > GET /m8/feeds/groups/default/full HTTP/1.1
-> Soup-Debug-Timestamp: 1375363445
-> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 4 (0x844280), SoupSocket 3 (0x8f3320)
+> Soup-Debug-Timestamp: 1415490491
+> Soup-Debug: SoupSession 1 (0x1c05240), SoupMessage 18 (0x1ce9490), SoupSocket 10 (0x1e32c40)
 > Host: www.google.com
-> Authorization: GoogleLogin auth=DQAAANUAAAA8mPvhNGE-jJP2si5Hm0QdulqULfifDPolWHjOKLlxd2YLRzsE7It5Cr31q7NYMk1fYHKYBOoOFHZtlqyPu2_0ui_i2GKjj5ltAZxojvss1QJriJ5cdCRtMfIGV620jdp6BshoRtUYoCVLwcTLeyniROXrfyIVaZF7cn2z6dZ2D_6zi45FNAaR57jS4wTDt50MSEHYaiPQVvkuWhhqGir6M0igoQ67LHHO76-MnLu69LB-oi-yZIlCRTzshjg0vFebEbvHGtiardyGk1gs3RWb9_9OroE_zLLdLjMd12GSrQ
+> Authorization: Bearer ya29.uAB1RRhn3TKLPSfFZeRgrzf68-Gb9tby5F20urDCBwC6B94UqINs1Hvh_iKX3FagPwd0QkLnrSyVRw
 > GData-Version: 3
 > Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1375363445
-< Soup-Debug: SoupMessage 4 (0x844280)
-< Content-Type: application/atom+xml; charset=UTF-8; type=feed
-< Expires: Thu, 01 Aug 2013 13:24:05 GMT
-< Date: Thu, 01 Aug 2013 13:24:05 GMT
-< Cache-control: private, max-age=0, must-revalidate, no-transform
-< Vary: Accept, X-GData-Authorization, GData-Version
-< GData-Version: 3.1
-< ETag: W/"CUMARHs5fCt7I2A9WhFWE0s."
-< Last-Modified: Thu, 01 Aug 2013 13:24:05 GMT
+< Soup-Debug-Timestamp: 1415490491
+< Soup-Debug: SoupMessage 18 (0x1ce9490)
+< Expires: Sat, 08 Nov 2014 23:48:11 GMT
+< Date: Sat, 08 Nov 2014 23:48:11 GMT
+< Cache-Control: private, max-age=0, must-revalidate, no-transform
+< ETag: "QHo_cDVSLyt7I2A9XRdWFEQKQw0."
+< Vary: Origin
+< Vary: Referer
+< Vary: X-Origin
+< Content-Type: application/atom+xml; charset=UTF-8
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
+< Content-Encoding: gzip
+< Alternate-Protocol: 443:quic,p=0.01
 < Transfer-Encoding: chunked
 < 
-< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='W/&quot;CUMARHs5fCt7I2A9WhFWE0s.&quot;'><id>libgdata.test@googlemail.com</id><updated>2013-08-01T13:24:05.524Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>GData Test's Contact Groups</title><link rel='alternate' type='text/html' href='http://www.google.com/'/><link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full'/><link rel='http://schemas.google.com/g/2005#post' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full'/><link rel='http://schemas.google.com/g/2005#batch' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/batch'/><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full?max-results=25'/><author><name>GData Test</name><email>libgdata.test@googlemail.com</email></author><generator version='1.0' uri='http://www.google.com/m8/feeds'>Contacts</generator><openSearch:totalResults>7</openSearch:totalResults><openSearch:startIndex>1</openSearch:startIndex><openSearch:itemsPerPage>25</openSearch:itemsPerPage><entry gd:etag='&quot;YDwreyM.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/6</id><updated>1970-01-01T00:00:00.000Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>System Group: My Contacts</title><content>System Group: My Contacts</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/6'/><gContact:systemGroup id='Contacts'/></entry><entry gd:etag='&quot;YDwreyM.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/d</id><updated>1970-01-01T00:00:00.000Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>System Group: Friends</title><content>System Group: Friends</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/d'/><gContact:systemGroup id='Friends'/></entry><entry gd:etag='&quot;YDwreyM.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/e</id><updated>1970-01-01T00:00:00.000Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>System Group: Family</title><content>System Group: Family</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/e'/><gContact:systemGroup id='Family'/></entry><entry gd:etag='&quot;YDwreyM.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/f</id><updated>1970-01-01T00:00:00.000Z</updated><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>System Group: Coworkers</title><content>System Group: Coworkers</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/f'/><gContact:systemGroup id='Coworkers'/></entry><entry gd:etag='&quot;RH05eDVSLit7I2A9WhFWE0sJQwc.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/54e3ce689463892</id><updated>2013-08-01T13:23:55.320Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:23:55.320Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>Test Group 3</title><content>Test Group 3</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/54e3ce689463892'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/54e3ce689463892'/></entry><entry gd:etag='&quot;RH46ejVSLit7I2A9WhFWE0sJQwc.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/26cfdebe0a0840fe</id><updated>2013-08-01T13:23:55.012Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:23:55.012Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>Test Group 2</title><content>Test Group 2</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/26cfdebe0a0840fe'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/26cfdebe0a0840fe'/></entry><entry gd:etag='&quot;RXk4eTVSLit7I2A9WhFWE0sJQwc.&quot;'><id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/79e69f5a8f487596</id><updated>2013-08-01T13:23:54.731Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:23:54.731Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#group'/><title>Test Group 1</title><content>Test Group 1</content><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/79e69f5a8f487596'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/79e69f5a8f487596'/></entry></feed>
+< <?xml version="1.0" encoding="UTF-8"?>
+< <feed gd:etag="&quot;QHo_cDVSLyt7I2A9XRdWFEQKQw0.&quot;" xmlns="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gContact="http://schemas.google.com/contact/2008" xmlns:gd="http://schemas.google.com/g/2005" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
+<  <id>libgdata.test@googlemail.com</id>
+<  <updated>2014-11-08T23:48:11.448Z</updated>
+<  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<  <title>GData Test's Contact Groups</title>
+<  <link rel="alternate" type="text/html" href="https://www.google.com/"/>
+<  <link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full"/>
+<  <link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full"/>
+<  <link rel="http://schemas.google.com/g/2005#batch" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/batch"/>
+<  <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full?max-results=25"/>
+<  <author>
+<   <name>GData Test</name>
+<   <email>libgdata.test@googlemail.com</email>
+<  </author>
+<  <generator version="1.0" uri="http://www.google.com/m8/feeds">Contacts</generator>
+<  <openSearch:totalResults>12</openSearch:totalResults>
+<  <openSearch:startIndex>1</openSearch:startIndex>
+<  <openSearch:itemsPerPage>25</openSearch:itemsPerPage>
+<  <entry gd:etag="&quot;YDwreyM.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/6</id>
+<   <updated>1970-01-01T00:00:00.000Z</updated>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>System Group: My Contacts</title>
+<   <content>System Group: My Contacts</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/6"/>
+<   <gContact:systemGroup id="Contacts"/>
+<  </entry>
+<  <entry gd:etag="&quot;YDwreyM.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/d</id>
+<   <updated>1970-01-01T00:00:00.000Z</updated>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>System Group: Friends</title>
+<   <content>System Group: Friends</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/d"/>
+<   <gContact:systemGroup id="Friends"/>
+<  </entry>
+<  <entry gd:etag="&quot;YDwreyM.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/e</id>
+<   <updated>1970-01-01T00:00:00.000Z</updated>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>System Group: Family</title>
+<   <content>System Group: Family</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/e"/>
+<   <gContact:systemGroup id="Family"/>
+<  </entry>
+<  <entry gd:etag="&quot;YDwreyM.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/f</id>
+<   <updated>1970-01-01T00:00:00.000Z</updated>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>System Group: Coworkers</title>
+<   <content>System Group: Coworkers</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/f"/>
+<   <gContact:systemGroup id="Coworkers"/>
+<  </entry>
+<  <entry gd:etag="&quot;QX0zfjVSLyt7I2A9XRdWFEQKQww.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/1d5fa390c9a7fe3</id>
+<   <updated>2014-11-08T23:48:00.386Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:48:00.386Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>Test Group 1</title>
+<   <content>Test Group 1</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/1d5fa390c9a7fe3"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/1d5fa390c9a7fe3"/>
+<  </entry>
+<  <entry gd:etag="&quot;QH49fzVSLit7I2A9XRdWFEQKQww.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/218e0110860fcd3</id>
+<   <updated>2014-11-08T23:48:01.067Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:48:01.067Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>Test Group 3</title>
+<   <content>Test Group 3</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/218e0110860fcd3"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/218e0110860fcd3"/>
+<  </entry>
+<  <entry gd:etag="&quot;RXg9fTVSLit7I2A9Wh9XGUwNRAc.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/115d0c4d0cd6f616</id>
+<   <updated>2014-03-15T21:02:14.665Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-03-15T21:02:14.665Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>D</title>
+<   <content>D</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/115d0c4d0cd6f616"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/115d0c4d0cd6f616"/>
+<  </entry>
+<  <entry gd:etag="&quot;R3s6ejVSLit7I2A9Wh9XGUwCQgw.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/4558a0fc0f98a74a</id>
+<   <updated>2014-03-15T21:23:06.512Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-03-15T21:23:06.512Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>A</title>
+<   <content>A</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/4558a0fc0f98a74a"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/4558a0fc0f98a74a"/>
+<  </entry>
+<  <entry gd:etag="&quot;QXk5fzVSLit7I2A9XRdWFEQKQww.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/52ccac800d63785b</id>
+<   <updated>2014-11-08T23:48:00.727Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:48:00.727Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>Test Group 2</title>
+<   <content>Test Group 2</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/52ccac800d63785b"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/52ccac800d63785b"/>
+<  </entry>
+<  <entry gd:etag="&quot;Q34zeTVSLit7I2A9Wh9XGUwCQAY.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/5a5615828e8c12dc</id>
+<   <updated>2014-03-15T21:25:22.081Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-03-15T21:25:22.081Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>B</title>
+<   <content>B</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/5a5615828e8c12dc"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/5a5615828e8c12dc"/>
+<  </entry>
+<  <entry gd:etag="&quot;R3kyfzVSLyt7I2A9Wh9XGUwCQAI.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/5aa4ff9a0de39ade</id>
+<   <updated>2014-03-15T21:26:06.797Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-03-15T21:26:06.797Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>E</title>
+<   <content>E</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/5aa4ff9a0de39ade"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/5aa4ff9a0de39ade"/>
+<  </entry>
+<  <entry gd:etag="&quot;Q3Y_fzVSLyt7I2A9Wh9XGUwCQAA.&quot;">
+<   <id>http://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/base/7b25d4e38c3f32b5</id>
+<   <updated>2014-03-15T21:25:42.847Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-03-15T21:25:42.847Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#group"/>
+<   <title>C</title>
+<   <content>C</content>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/7b25d4e38c3f32b5"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/groups/libgdata.test%40googlemail.com/full/7b25d4e38c3f32b5"/>
+<  </entry>
+< </feed>
   

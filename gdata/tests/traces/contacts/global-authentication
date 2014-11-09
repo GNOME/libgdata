@@ -1,27 +1,35 @@
-> POST /accounts/ClientLogin HTTP/1.1
-> Soup-Debug-Timestamp: 1375363883
-> Soup-Debug: SoupSession 1 (0x66f1d0), SoupMessage 1 (0x8a20c0), SoupSocket 1 (0x8f30d0)
-> Host: www.google.com
+> POST /o/oauth2/token HTTP/1.1
+> Soup-Debug-Timestamp: 1415490454
+> Soup-Debug: SoupSession 1 (0x1c05110), SoupMessage 1 (0x1ce90d0), SoupSocket 1 (0x1e32900)
+> Host: accounts.google.com
 > Content-Type: application/x-www-form-urlencoded
 > Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
 > Connection: Keep-Alive
 > 
-> accountType=HOSTED%5FOR%5FGOOGLE&Email=libgdata%2Etest%40gmail%2Ecom&Passwd=gdata%2Dgdata&service=cp&source=ytapi%2DGNOME%2Dlibgdata%2D444fubtt%2D0
+> client_id=352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com&client_secret=-fA4pHQJxR3zJ-FyAMPQsikg&code=4%2FnMGN3dwZKY3b-GGcpyYpncY-GvKwp5cmM0lVqaJz1k0.knZS65dvk9gToiIBeO6P2m-IH6AjkwI&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&grant_type=authorization_code
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1375363883
-< Soup-Debug: SoupMessage 1 (0x8a20c0)
-< Content-Type: text/plain
-< Cache-control: no-cache, no-store
+< Soup-Debug-Timestamp: 1415490455
+< Soup-Debug: SoupMessage 1 (0x1ce90d0)
+< Content-Type: application/json; charset=utf-8
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
-< Expires: Mon, 01-Jan-1990 00:00:00 GMT
-< Date: Thu, 01 Aug 2013 13:31:23 GMT
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sat, 08 Nov 2014 23:47:35 GMT
+< Content-Disposition: attachment; filename="json.txt"; filename*=UTF-8''json.txt
+< Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
-< Content-Length: 947
 < Server: GSE
+< Alternate-Protocol: 443:quic,p=0.01
+< Transfer-Encoding: chunked
 < 
-< SID=DQAAANQAAACpgx1jJWZrMRCNj1beNPAWmn0jBFgPa1Pehnurr7JLhgCAQwo8fyM7uvBxflnbgU-mX9bBntVKK5JWqGqmQLFTWQf0fsa5oMS8YOb2r3nyS9080jv4WMiqo2It1eBZ6Jd_fRLz6rS-ikxj7GaFcNFgU4UoVZQz-uFktY-hcmrALg_GNYR9JO97m90YBs-Y6nPmHMufAYa88K-HD8GleExE7gWwUjRuCyeUjifxTRcUooJofDwyu0oGsoLP_W8KAJLJoDWrjijHOR_VqSxk8tJMGVnHwqCX3IZMyGV6p_38MQ
-< LSID=DQAAANYAAADtjTOJJU3aN2xxS0RFYXiikPITkpt4b3hR1fQ9TbQlx-Cgsdk1AW48YqFLPUdI1yl4jCrrpq4RMa_PjxX8MS-QcBmWVF_KmdnPY9D0OiCUzGdbCSpXW8DJhvSzTPUn7NuLJtpFSnO686d6Ga9WmsF4VMahl_aRU8Xr8AMeoBb2Hg3yagjNgFhlyHReigIJEQLNq7FPI9kqqGmHDWEAOEtsfEIOe3fQG1c4JE5NzfU3dAn1Ppf73MXfSWZInY-jg4Fhzrm-6P3_LiG6Oy56zNRtIp9Cyy8KGaX2solLGSB06A
-< Auth=DQAAANUAAADtjTOJJU3aN2xxS0RFYXiikPITkpt4b3hR1fQ9TbQlx-Cgsdk1AW48YqFLPUdI1ykyKbaS_VSAfv5B_IGEi3Wa1McgCuVz7nIjv_OMYVERFthN0-Nj95PWV19GJMPKDhcOwzN_W2wjFTXSyHmhy6pNoc48jWohDPHCzv6G9jsEj9KOTlHT6F9pGe3H3bGf0ga0s6bPJ6Yv2orycMebH1EDv5crVSPRx6e7Uy50qDXVTJH1zXUXShunNRKTm09H_Tmfwn1fdBVj6GshI4GoLbir6j-SD4YXN7PWJEmHVsyBYg
+< {
+<   "access_token" : "ya29.uAB1RRhn3TKLPSfFZeRgrzf68-Gb9tby5F20urDCBwC6B94UqINs1Hvh_iKX3FagPwd0QkLnrSyVRw",
+<   "token_type" : "Bearer",
+<   "expires_in" : 3600,
+<   "refresh_token" : "1/OxplJowxtPHiKob9htjgcEh6VihajS9Zomx7y9ljWOI"
+< }
   

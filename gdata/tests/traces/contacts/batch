@@ -1,84 +1,242 @@
 > POST /m8/feeds/contacts/default/full/batch HTTP/1.1
-> Soup-Debug-Timestamp: 1375362975
-> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 1 (0x8a22a0), SoupSocket 1 (0x8f3190)
+> Soup-Debug-Timestamp: 1415490455
+> Soup-Debug: SoupSession 1 (0x1c05240), SoupMessage 1 (0x1ce91c0), SoupSocket 1 (0x1e32c40)
 > Host: www.google.com
-> Authorization: GoogleLogin auth=DQAAANYAAACEVu1_bRDNe9RgSD9ZBpOd3wrIlCGMT5j4obkMZr9xzaecCbh7Ad88EHTPx_-XXUENDehvQ4HWMlCeXcfB9dwJ3b18s7PWnls2aHGTGVYopRnLzMKvEdl4E2cyU4OZuMcgVVLVwro91w4JG_RSnZmd8J7IEj83YnoNbBiv4x8yjOcPb5WO3wEoyNzGKwcPvEu9b_NOF7EsbiC0nIOY4Lr4MZCkFzK3iUr1OKGLXZHB2HOFyuJHaMDpIUfubYW4M3w1YlkGBCBCfxr18lGeMluMVL2D9u6rELYQwCWwBkeyeg
+> Authorization: Bearer ya29.uAB1RRhn3TKLPSfFZeRgrzf68-Gb9tby5F20urDCBwC6B94UqINs1Hvh_iKX3FagPwd0QkLnrSyVRw
 > GData-Version: 3
 > Content-Type: application/atom+xml
 > Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
 > Connection: Keep-Alive
 > 
-> <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Batch operation feed</title><id>batch1</id><updated>2013-08-01T13:16:15Z</updated><entry><title type='text'>Fooish Bar</title><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><batch:id>1</batch:id><batch:operation type='insert'/><gd:name><gd:fullName>Fooish Bar</gd:fullName></gd:name></entry></feed>
+> <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Batch operation feed</title><id>batch1</id><updated>2014-11-08T23:47:35Z</updated><entry><title type='text'>Fooish Bar</title><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><batch:id>1</batch:id><batch:operation type='insert'/><gd:name><gd:fullName>Fooish Bar</gd:fullName></gd:name></entry></feed>
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1375362975
-< Soup-Debug: SoupMessage 1 (0x8a22a0)
-< Content-Type: application/atom+xml; charset=UTF-8; type=feed
-< GData-Version: 3.1
-< Date: Thu, 01 Aug 2013 13:16:15 GMT
-< Expires: Thu, 01 Aug 2013 13:16:15 GMT
-< Cache-control: private, max-age=0
+< Soup-Debug-Timestamp: 1415490455
+< Soup-Debug: SoupMessage 1 (0x1ce91c0)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sat, 08 Nov 2014 23:47:35 GMT
+< Vary: Origin
+< Vary: Referer
+< Vary: X-Origin
+< Content-Type: application/atom+xml; charset=UTF-8
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
+< Content-Encoding: gzip
+< Alternate-Protocol: 443:quic,p=0.01
 < Transfer-Encoding: chunked
 < 
-< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005'><id>https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/batch/1375362975314</id><updated>2013-08-01T13:16:15.339Z</updated><title>Batch operation feed</title><entry gd:etag='&quot;RH05eTVSLit7I2A9WhFWE0sITgM.&quot;'><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/base/77f272e18a99d7b0</id><updated>2013-08-01T13:16:15.321Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:16:15.321Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/><title>Fooish Bar</title><link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' href='https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/77f272e18a99d7b0'/><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0'/><gd:name><gd:fullName>Fooish Bar</gd:fullName><gd:givenName>Fooish</gd:givenName><gd:familyName>Bar</gd:familyName></gd:name><batch:id>1</batch:id><batch:status code='201' reason='Created'/><batch:operation type='insert'/></entry></feed>
+< <?xml version="1.0" encoding="UTF-8"?>
+< <feed xmlns="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gContact="http://schemas.google.com/contact/2008" xmlns:gd="http://schemas.google.com/g/2005">
+<  <id>https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/batch/1415490455683000</id>
+<  <updated>2014-11-08T23:47:35.683Z</updated>
+<  <title type="text">Batch operation feed</title>
+<  <entry gd:etag="&quot;RHs-fzVSLit7I2A9XRdWFEQKQwE.&quot;">
+<   <batch:id>1</batch:id>
+<   <batch:operation type="insert"/>
+<   <batch:status code="201" reason="Created."/>
+<   <id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/base/124aa0c708271161</id>
+<   <updated>2014-11-08T23:47:35.557Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:47:35.557Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+<   <title>Fooish Bar</title>
+<   <link rel="http://schemas.google.com/contacts/2008/rel#photo" type="image/*" href="https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/124aa0c708271161"/>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161"/>
+<   <gd:name>
+<    <gd:fullName>Fooish Bar</gd:fullName>
+<    <gd:givenName>Fooish</gd:givenName>
+<    <gd:familyName>Bar</gd:familyName>
+<   </gd:name>
+<  </entry>
+< </feed>
   
 > POST /m8/feeds/contacts/default/full/batch HTTP/1.1
-> Soup-Debug-Timestamp: 1375362975
-> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 2 (0x8a2480), SoupSocket 2 (0x8f3310)
+> Soup-Debug-Timestamp: 1415490455
+> Soup-Debug: SoupSession 1 (0x1c05240), SoupMessage 2 (0x1ce92b0), SoupSocket 2 (0x1e32b70)
 > Host: www.google.com
-> Authorization: GoogleLogin auth=DQAAANYAAACEVu1_bRDNe9RgSD9ZBpOd3wrIlCGMT5j4obkMZr9xzaecCbh7Ad88EHTPx_-XXUENDehvQ4HWMlCeXcfB9dwJ3b18s7PWnls2aHGTGVYopRnLzMKvEdl4E2cyU4OZuMcgVVLVwro91w4JG_RSnZmd8J7IEj83YnoNbBiv4x8yjOcPb5WO3wEoyNzGKwcPvEu9b_NOF7EsbiC0nIOY4Lr4MZCkFzK3iUr1OKGLXZHB2HOFyuJHaMDpIUfubYW4M3w1YlkGBCBCfxr18lGeMluMVL2D9u6rELYQwCWwBkeyeg
+> Authorization: Bearer ya29.uAB1RRhn3TKLPSfFZeRgrzf68-Gb9tby5F20urDCBwC6B94UqINs1Hvh_iKX3FagPwd0QkLnrSyVRw
 > GData-Version: 3
 > Content-Type: application/atom+xml
 > Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
 > Connection: Keep-Alive
 > 
-> <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Batch operation feed</title><id>batch1</id><updated>2013-08-01T13:16:15Z</updated><entry><title type='text'>Batch operation query</title><id>https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0</id><updated>2013-08-01T13:16:15Z</updated><batch:id>2</batch:id><batch:operation type='query'/></entry><entry><title type='text'>Brian</title><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><batch:id>1</batch:id><batch:operation type='insert'/><gd:name><gd:fullName>Brian</gd:fullName></gd:name></entry></feed>
+> <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Batch operation feed</title><id>batch1</id><updated>2014-11-08T23:47:35Z</updated><entry><title type='text'>Batch operation query</title><id>https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161</id><updated>2014-11-08T23:47:35Z</updated><batch:id>2</batch:id><batch:operation type='query'/></entry><entry><title type='text'>Brian</title><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><batch:id>1</batch:id><batch:operation type='insert'/><gd:name><gd:fullName>Brian</gd:fullName></gd:name></entry></feed>
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1375362975
-< Soup-Debug: SoupMessage 2 (0x8a2480)
-< Content-Type: application/atom+xml; charset=UTF-8; type=feed
-< GData-Version: 3.1
-< Date: Thu, 01 Aug 2013 13:16:15 GMT
-< Expires: Thu, 01 Aug 2013 13:16:15 GMT
-< Cache-control: private, max-age=0
+< Soup-Debug-Timestamp: 1415490456
+< Soup-Debug: SoupMessage 2 (0x1ce92b0)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sat, 08 Nov 2014 23:47:36 GMT
+< Vary: Origin
+< Vary: Referer
+< Vary: X-Origin
+< Content-Type: application/atom+xml; charset=UTF-8
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
+< Content-Encoding: gzip
+< Alternate-Protocol: 443:quic,p=0.01
 < Transfer-Encoding: chunked
 < 
-< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005'><id>https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/batch/1375362975482</id><updated>2013-08-01T13:16:15.509Z</updated><title>Batch operation feed</title><entry gd:etag='&quot;RHozcDVSLit7I2A9WhFWE0sITgM.&quot;'><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/base/2e8ff7630eb55498</id><updated>2013-08-01T13:16:15.488Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:16:15.488Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/><title>Brian</title><link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' href='https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/2e8ff7630eb55498'/><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/2e8ff7630eb55498'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/2e8ff7630eb55498'/><gd:name><gd:fullName>Brian</gd:fullName><gd:givenName>Brian</gd:givenName></gd:name><batch:id>1</batch:id><batch:status code='201' reason='Created'/><batch:operation type='insert'/></entry><entry gd:etag='&quot;RH05eTVSLit7I2A9WhFWE0sITgM.&quot;'><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/base/77f272e18a99d7b0</id><updated>2013-08-01T13:16:15.321Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:16:15.321Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/><title>Fooish Bar</title><link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' href='https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/77f272e18a99d7b0'/><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0'/><gd:name><gd:fullName>Fooish Bar</gd:fullName><gd:givenName>Fooish</gd:givenName><gd:familyName>Bar</gd:familyName></gd:name><batch:id>2</batch:id><batch:status code='200' reason='Success'/><batch:operation type='query'/></entry></feed>
+< <?xml version="1.0" encoding="UTF-8"?>
+< <feed xmlns="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gContact="http://schemas.google.com/contact/2008" xmlns:gd="http://schemas.google.com/g/2005">
+<  <id>https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/batch/1415490456062000</id>
+<  <updated>2014-11-08T23:47:36.062Z</updated>
+<  <title type="text">Batch operation feed</title>
+<  <entry gd:etag="&quot;RHs-fzVSLit7I2A9XRdWFEQKQwE.&quot;">
+<   <batch:id>2</batch:id>
+<   <batch:operation type="query"/>
+<   <batch:status code="200" reason="Success"/>
+<   <id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/base/124aa0c708271161</id>
+<   <updated>2014-11-08T23:47:35.557Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:47:35.557Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+<   <title>Fooish Bar</title>
+<   <link rel="http://schemas.google.com/contacts/2008/rel#photo" type="image/*" href="https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/124aa0c708271161"/>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161"/>
+<   <gd:name>
+<    <gd:fullName>Fooish Bar</gd:fullName>
+<    <gd:givenName>Fooish</gd:givenName>
+<    <gd:familyName>Bar</gd:familyName>
+<   </gd:name>
+<  </entry>
+<  <entry gd:etag="&quot;RHc4cDVSLyt7I2A9XRdWFEQKQwE.&quot;">
+<   <batch:id>1</batch:id>
+<   <batch:operation type="insert"/>
+<   <batch:status code="201" reason="Created."/>
+<   <id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/base/703f874088829e7d</id>
+<   <updated>2014-11-08T23:47:35.938Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:47:35.938Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+<   <title>Brian</title>
+<   <link rel="http://schemas.google.com/contacts/2008/rel#photo" type="image/*" href="https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/703f874088829e7d"/>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/703f874088829e7d"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/703f874088829e7d"/>
+<   <gd:name>
+<    <gd:fullName>Brian</gd:fullName>
+<    <gd:givenName>Brian</gd:givenName>
+<   </gd:name>
+<  </entry>
+< </feed>
   
 > POST /m8/feeds/contacts/default/full/batch HTTP/1.1
-> Soup-Debug-Timestamp: 1375362975
-> Soup-Debug: SoupSession 1 (0x66f2e0), SoupMessage 3 (0x8a2480), SoupSocket 3 (0x8f33d0)
+> Soup-Debug-Timestamp: 1415490456
+> Soup-Debug: SoupSession 1 (0x1c05240), SoupMessage 3 (0x1ce93a0), SoupSocket 3 (0x1e32d10)
 > Host: www.google.com
-> Authorization: GoogleLogin auth=DQAAANYAAACEVu1_bRDNe9RgSD9ZBpOd3wrIlCGMT5j4obkMZr9xzaecCbh7Ad88EHTPx_-XXUENDehvQ4HWMlCeXcfB9dwJ3b18s7PWnls2aHGTGVYopRnLzMKvEdl4E2cyU4OZuMcgVVLVwro91w4JG_RSnZmd8J7IEj83YnoNbBiv4x8yjOcPb5WO3wEoyNzGKwcPvEu9b_NOF7EsbiC0nIOY4Lr4MZCkFzK3iUr1OKGLXZHB2HOFyuJHaMDpIUfubYW4M3w1YlkGBCBCfxr18lGeMluMVL2D9u6rELYQwCWwBkeyeg
+> Authorization: Bearer ya29.uAB1RRhn3TKLPSfFZeRgrzf68-Gb9tby5F20urDCBwC6B94UqINs1Hvh_iKX3FagPwd0QkLnrSyVRw
 > GData-Version: 3
 > Content-Type: application/atom+xml
 > Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.0 - gzip
 > Connection: Keep-Alive
 > 
-> <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Batch operation feed</title><id>batch1</id><updated>2013-08-01T13:16:15Z</updated><entry gd:etag='&quot;RHozcDVSLit7I2A9WhFWE0sITgM.&quot;'><title type='text'>Toby</title><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/2e8ff7630eb55498</id><updated>2013-08-01T13:16:15Z</updated><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><link href='https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/2e8ff7630eb55498' rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*'/><link href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/2e8ff7630eb55498' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/><link href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/2e8ff7630eb55498' rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml'/><batch:id>3</batch:id><batch:operation type='update'/><gd:name><gd:givenName>Brian</gd:givenName><gd:fullName>Toby</gd:fullName></gd:name></entry><entry><title type='text'></title><id>foobar</id><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><batch:id>2</batch:id><batch:operation type='delete'/><gd:name/></entry><entry gd:etag='&quot;RH05eTVSLit7I2A9WhFWE0sITgM.&quot;'><title type='text'>Fooish Bar</title><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0</id><updated>2013-08-01T13:16:15Z</updated><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><link href='https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/77f272e18a99d7b0' rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*'/><link href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/><link href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0' rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml'/><batch:id>1</batch:id><batch:operation type='delete'/><gd:name><gd:givenName>Fooish</gd:givenName><gd:familyName>Bar</gd:familyName><gd:fullName>Fooish Bar</gd:fullName></gd:name></entry></feed>
+> <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' xmlns:app='http://www.w3.org/2007/app'><title type='text'>Batch operation feed</title><id>batch1</id><updated>2014-11-08T23:47:36Z</updated><entry xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;RHc4cDVSLyt7I2A9XRdWFEQKQwE.&quot;'><title type='text'>Toby</title><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/703f874088829e7d</id><updated>2014-11-08T23:47:35Z</updated><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><link href='https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/703f874088829e7d' rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*'/><link href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/703f874088829e7d' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/><link href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/703f874088829e7d' rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml'/><batch:id>3</batch:id><batch:operation type='update'/><gd:name xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005'><gd:givenName>Brian</gd:givenName><gd:fullName>Toby</gd:fullName>
+>    
+>    
+>   </gd:name>
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>  </entry><entry><title type='text'></title><id>foobar</id><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><batch:id>2</batch:id><batch:operation type='delete'/><gd:name/></entry><entry xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' gd:etag='&quot;RHs-fzVSLit7I2A9XRdWFEQKQwE.&quot;'><title type='text'>Fooish Bar</title><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161</id><updated>2014-11-08T23:47:35Z</updated><category term='http://schemas.google.com/contact/2008#contact' scheme='http://schemas.google.com/g/2005#kind'/><link href='https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/124aa0c708271161' rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*'/><link href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/><link href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161' rel='http://www.iana.org/assignments/relation/edit' type='application/atom+xml'/><batch:id>1</batch:id><batch:operation type='delete'/><gd:name xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005'><gd:givenName>Fooish</gd:givenName><gd:familyName>Bar</gd:familyName><gd:fullName>Fooish Bar</gd:fullName>
+>    
+>    
+>    
+>   </gd:name>
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>   
+>  </entry></feed>
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1375362976
-< Soup-Debug: SoupMessage 3 (0x8a2480)
-< Content-Type: application/atom+xml; charset=UTF-8; type=feed
-< GData-Version: 3.1
-< Date: Thu, 01 Aug 2013 13:16:16 GMT
-< Expires: Thu, 01 Aug 2013 13:16:16 GMT
-< Cache-control: private, max-age=0
+< Soup-Debug-Timestamp: 1415490456
+< Soup-Debug: SoupMessage 3 (0x1ce93a0)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Sat, 08 Nov 2014 23:47:36 GMT
+< Vary: Origin
+< Vary: Referer
+< Vary: X-Origin
+< Content-Type: application/atom+xml; charset=UTF-8
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
+< Content-Encoding: gzip
+< Alternate-Protocol: 443:quic,p=0.01
 < Transfer-Encoding: chunked
 < 
-< <?xml version='1.0' encoding='UTF-8'?><feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearch/1.1/' xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005'><id>https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/batch/1375362975747</id><updated>2013-08-01T13:16:15.748Z</updated><title>Batch operation feed</title><entry><id>foobar</id><updated>2013-08-01T13:16:15.748Z</updated><title>Error</title><content>Invalid entry Id/Uri</content><batch:id>2</batch:id><batch:status code='400' reason='Invalid entry Id/Uri'/><batch:operation type='delete'/></entry><entry><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/77f272e18a99d7b0</id><updated>2013-08-01T13:16:16.103Z</updated><title>Fooish Bar</title><content>Deleted</content><batch:id>1</batch:id><batch:status code='200' reason='Success'/><batch:operation type='delete'/></entry><entry gd:etag='&quot;R386fDVSLit7I2A9WhFWE0sITgM.&quot;'><id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/base/2e8ff7630eb55498</id><updated>2013-08-01T13:16:16.114Z</updated><app:edited xmlns:app='http://www.w3.org/2007/app'>2013-08-01T13:16:16.114Z</app:edited><category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact'/><title>Toby</title><link rel='http://schemas.google.com/contacts/2008/rel#photo' type='image/*' href='https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/2e8ff7630eb55498'/><link rel='self' type='application/atom+xml' href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/2e8ff7630eb55498'/><link rel='edit' type='application/atom+xml' href='https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/2e8ff7630eb55498'/><gd:name><gd:fullName>Toby</gd:fullName><gd:givenName>Brian</gd:givenName></gd:name><batch:id>3</batch:id><batch:status code='200' reason='Success'/><batch:operation type='update'/></entry></feed>
+< <?xml version="1.0" encoding="UTF-8"?>
+< <feed xmlns="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gContact="http://schemas.google.com/contact/2008" xmlns:gd="http://schemas.google.com/g/2005">
+<  <id>https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/batch/1415490456389000</id>
+<  <updated>2014-11-08T23:47:36.389Z</updated>
+<  <title type="text">Batch operation feed</title>
+<  <entry gd:etag="&quot;R3w9fDVSLit7I2A9XRdWFEQKQwE.&quot;">
+<   <batch:id>3</batch:id>
+<   <batch:operation type="update"/>
+<   <batch:status code="200" reason="Success"/>
+<   <id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/base/703f874088829e7d</id>
+<   <updated>2014-11-08T23:47:36.264Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:47:36.264Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+<   <title>Toby</title>
+<   <link rel="http://schemas.google.com/contacts/2008/rel#photo" type="image/*" href="https://www.google.com/m8/feeds/photos/media/libgdata.test%40googlemail.com/703f874088829e7d"/>
+<   <link rel="self" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/703f874088829e7d"/>
+<   <link rel="edit" type="application/atom+xml" href="https://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/703f874088829e7d"/>
+<   <gd:name>
+<    <gd:fullName>Toby</gd:fullName>
+<    <gd:givenName>Brian</gd:givenName>
+<   </gd:name>
+<  </entry>
+<  <entry>
+<   <batch:id>2</batch:id>
+<   <batch:operation type="delete"/>
+<   <batch:status code="400" reason="Invalid entry Id/Uri"/>
+<   <id>foobar</id>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+<  </entry>
+<  <entry gd:etag="&quot;RHs-fzVSLit7I2A9XRdWFEQKQwE.&quot;">
+<   <batch:id>1</batch:id>
+<   <batch:operation type="delete"/>
+<   <batch:status code="200" reason="Success"/>
+<   <id>http://www.google.com/m8/feeds/contacts/libgdata.test%40googlemail.com/full/124aa0c708271161</id>
+<   <updated>2014-11-08T23:47:35Z</updated>
+<   <app:edited xmlns:app="http://www.w3.org/2007/app">2014-11-08T23:47:35Z</app:edited>
+<   <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/contact/2008#contact"/>
+<   <title>Fooish Bar</title>
+<   <gd:name>
+<    <gd:fullName>Fooish Bar</gd:fullName>
+<    <gd:givenName>Fooish</gd:givenName>
+<    <gd:familyName>Bar</gd:familyName>
+<   </gd:name>
+<  </entry>
+< </feed>
   
