@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008, 2009, 2010, 2014 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -68,6 +68,16 @@ static void gdata_service_set_property (GObject *object, guint property_id, cons
 static void real_append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message);
 static void real_parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
                                        const gchar *response_body, gint length, GError **error);
+static GDataFeed *
+real_parse_feed (GDataService *self,
+                 GDataAuthorizationDomain *domain,
+                 GDataQuery *query,
+                 GType entry_type,
+                 SoupMessage *message,
+                 GCancellable *cancellable,
+                 GDataQueryProgressCallback progress_callback,
+                 gpointer progress_user_data,
+                 GError **error);
 static void notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
 static void notify_timeout_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
 static void debug_handler (const char *log_domain, GLogLevelFlags log_level, const char *message, gpointer user_data);
@@ -113,6 +123,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	klass->feed_type = GDATA_TYPE_FEED;
 	klass->append_query_headers = real_append_query_headers;
 	klass->parse_error_response = real_parse_error_response;
+	klass->parse_feed = real_parse_feed;
 	klass->get_authorization_domains = NULL; /* equivalent to returning an empty list of domains */
 
 	/**
@@ -949,10 +960,8 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
                        GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataServiceClass *klass;
-	GDataFeed *feed = NULL;
 	SoupMessage *message;
-	SoupMessageHeaders *headers;
-	const gchar *content_type;
+	GDataFeed *feed;
 
 	message = _gdata_service_query (self, domain, feed_uri, query, cancellable, error);
 	if (message == NULL)
@@ -960,7 +969,34 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
 
 	g_assert (message->response_body->data != NULL);
 	klass = GDATA_SERVICE_GET_CLASS (self);
+	g_assert (klass->parse_feed != NULL);
 
+	feed = klass->parse_feed (self, domain, query, entry_type,
+	                          message, cancellable, progress_callback,
+	                          progress_user_data, error);
+
+	g_object_unref (message);
+
+	return feed;
+}
+
+static GDataFeed *
+real_parse_feed (GDataService *self,
+                 GDataAuthorizationDomain *domain,
+                 GDataQuery *query,
+                 GType entry_type,
+                 SoupMessage *message,
+                 GCancellable *cancellable,
+                 GDataQueryProgressCallback progress_callback,
+                 gpointer progress_user_data,
+                 GError **error)
+{
+	GDataServiceClass *klass;
+	GDataFeed *feed = NULL;
+	SoupMessageHeaders *headers;
+	const gchar *content_type;
+
+	klass = GDATA_SERVICE_GET_CLASS (self);
 	headers = message->response_headers;
 	content_type = soup_message_headers_get_content_type (headers, NULL);
 
@@ -976,11 +1012,6 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
 		feed = _gdata_feed_new_from_xml (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
 		                                 progress_callback, progress_user_data, error);
 	}
-
-	g_object_unref (message);
-
-	if (feed == NULL)
-		return NULL;
 
 	/* Update the query with the feed's ETag */
 	if (query != NULL && feed != NULL && gdata_feed_get_etag (feed) != NULL)

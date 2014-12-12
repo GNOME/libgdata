@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008, 2009, 2010, 2014 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,7 @@
 
 #include <gdata/gdata-authorizer.h>
 #include <gdata/gdata-feed.h>
+#include <gdata/gdata-query.h>
 
 G_BEGIN_DECLS
 
@@ -139,6 +140,8 @@ typedef struct {
  * @get_authorization_domains: a function to return a newly-allocated list of all the #GDataAuthorizationDomain<!-- -->s the service makes use of;
  * while the list should be newly-allocated, the individual domains should not be; not implementing this function is equivalent to returning an
  * empty list; new in version 0.9.0
+ * @parse_feed: a function to parse feed responses to queries from the online
+ * service; new in version UNRELEASED
  *
  * The class structure for the #GDataService type.
  *
@@ -154,10 +157,18 @@ typedef struct {
 	void (*parse_error_response) (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase,
 	                              const gchar *response_body, gint length, GError **error);
 	GList *(*get_authorization_domains) (void);
+	GDataFeed *(*parse_feed) (GDataService *self,
+	                          GDataAuthorizationDomain *domain,
+	                          GDataQuery *query,
+	                          GType entry_type,
+	                          SoupMessage *message,
+	                          GCancellable *cancellable,
+	                          GDataQueryProgressCallback progress_callback,
+	                          gpointer progress_user_data,
+	                          GError **error);
 
 	/*< private >*/
 	/* Padding for future expansion */
-	void (*_g_reserved0) (void);
 	void (*_g_reserved1) (void);
 	void (*_g_reserved2) (void);
 	void (*_g_reserved3) (void);
