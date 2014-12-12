@@ -28,7 +28,7 @@
 #include "common.h"
 
 /* %TRUE if interactive tests should be skipped because we're running automatically (for example) */
-static gboolean no_interactive = FALSE;
+static gboolean no_interactive = TRUE;
 
 /* declaration of debug handler */
 static void gdata_test_debug_handler (const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data);
@@ -60,8 +60,11 @@ gdata_test_init (int argc, char **argv)
 
 	/* Parse the custom options */
 	for (i = 1; i < argc; i++) {
-		if (strcmp ("--no-interactive", argv[i]) == 0 || strcmp ("-i", argv[i]) == 0) {
+		if (strcmp ("--no-interactive", argv[i]) == 0 || strcmp ("-ni", argv[i]) == 0) {
 			no_interactive = TRUE;
+			argv[i] = (char*) "";
+		} else if (strcmp ("--interactive", argv[i]) == 0 || strcmp ("-i", argv[i]) == 0) {
+			no_interactive = FALSE;
 			argv[i] = (char*) "";
 		} else if (strcmp ("--trace-dir", argv[i]) == 0 || strcmp ("-t", argv[i]) == 0) {
 			if (i >= argc - 1) {
@@ -95,7 +98,8 @@ gdata_test_init (int argc, char **argv)
 			          "  -p TESTPATH                    Execute all tests matching TESTPATH\n"
 			          "  -m {perf|slow|thorough|quick}  Execute tests according modes\n"
 			          "  --debug-log                    Debug test logging output\n"
-			          "  -i, --no-interactive           Only execute tests which don't require user interaction\n"
+			          "  -ni, --no-interactive          Only execute tests which don't require user interaction\n"
+			          "  -i, --interactive              Execute tests including those requiring user interaction\n"
 			          "  -t, --trace-dir [directory]    Read/Write trace files in the specified directory\n"
 			          "  -w, --write-traces             Work online and write trace files to --trace-dir\n"
 			          "  -c, --compare-traces           Work online and compare with existing trace files in --trace-dir\n",
