@@ -75,7 +75,7 @@ static void soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char
 
 static GDataFeed *__gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query,
                                          GType entry_type, GCancellable *cancellable, GDataQueryProgressCallback progress_callback,
-                                         gpointer progress_user_data, GError **error, gboolean is_async);
+                                         gpointer progress_user_data, GError **error);
 
 static SoupURI *_get_proxy_uri (GDataService *self);
 static void _set_proxy_uri (GDataService *self, SoupURI *proxy_uri);
@@ -803,7 +803,7 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
 
 	/* Execute the query and return */
 	data->feed = __gdata_service_query (service, data->domain, data->feed_uri, data->query, data->entry_type, cancellable,
-	                                    data->progress_callback, data->progress_user_data, &error, TRUE);
+	                                    data->progress_callback, data->progress_user_data, &error);
 	if (data->feed == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -946,8 +946,7 @@ _gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, cons
 
 static GDataFeed *
 __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
-                       GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error,
-                       gboolean is_async)
+                       GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataServiceClass *klass;
 	GDataFeed *feed = NULL;
@@ -969,13 +968,13 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
 		/* Definitely JSON. */
 		g_debug("JSON content type detected.");
 		feed = _gdata_feed_new_from_json (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
-		                                  progress_callback, progress_user_data, is_async, error);
+		                                  progress_callback, progress_user_data, error);
 	} else {
 		/* Potentially XML. Don't bother checking the Content-Type, since the parser
 		 * will fail gracefully if the response body is not valid XML. */
 		g_debug("XML content type detected.");
 		feed = _gdata_feed_new_from_xml (klass->feed_type, message->response_body->data, message->response_body->length, entry_type,
-		                                 progress_callback, progress_user_data, is_async, error);
+		                                 progress_callback, progress_user_data, error);
 	}
 
 	g_object_unref (message);
@@ -1049,7 +1048,7 @@ gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	return __gdata_service_query (self, domain, feed_uri, query, entry_type, cancellable, progress_callback, progress_user_data, error, FALSE);
+	return __gdata_service_query (self, domain, feed_uri, query, entry_type, cancellable, progress_callback, progress_user_data, error);
 }
 
 /**

@@ -81,7 +81,7 @@ get_rules_async_data_free (GetRulesAsyncData *self)
 
 static GDataFeed *
 _gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
-                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, gboolean is_async, GError **error)
+                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
 	GDataAccessHandlerIface *iface;
 	GDataAuthorizationDomain *domain = NULL;
@@ -104,7 +104,7 @@ _gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service
 
 	g_assert (message->response_body->data != NULL);
 	feed = _gdata_feed_new_from_xml (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_ACCESS_RULE,
-	                                 progress_callback, progress_user_data, is_async, error);
+	                                 progress_callback, progress_user_data, error);
 	g_object_unref (message);
 
 	return feed;
@@ -118,7 +118,7 @@ get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler
 
 	/* Execute the query and return */
 	data->feed = _gdata_access_handler_get_rules (access_handler, data->service, cancellable, data->progress_callback, data->progress_user_data,
-	                                              TRUE, &error);
+	                                              &error);
 	if (data->feed == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -211,5 +211,5 @@ gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service,
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	return _gdata_access_handler_get_rules (self, service, cancellable, progress_callback, progress_user_data, FALSE, error);
+	return _gdata_access_handler_get_rules (self, service, cancellable, progress_callback, progress_user_data, error);
 }
