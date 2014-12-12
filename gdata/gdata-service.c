@@ -963,14 +963,27 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
 	SoupMessage *message;
 	GDataFeed *feed;
 
+	klass = GDATA_SERVICE_GET_CLASS (self);
+
+	/* Are we off the end of the final page? */
+	if (query != NULL && _gdata_query_is_finished (query)) {
+		GTimeVal updated;
+
+		/* Build an empty dummy feed to signify the end of the list. */
+		g_get_current_time (&updated);
+		return _gdata_feed_new (klass->feed_type, "Empty feed", "feed1",
+		                        updated.tv_sec);
+	}
+
+	/* Send the request. */
 	message = _gdata_service_query (self, domain, feed_uri, query, cancellable, error);
 	if (message == NULL)
 		return NULL;
 
 	g_assert (message->response_body->data != NULL);
-	klass = GDATA_SERVICE_GET_CLASS (self);
 	g_assert (klass->parse_feed != NULL);
 
+	/* Parse the response. */
 	feed = klass->parse_feed (self, domain, query, entry_type,
 	                          message, cancellable, progress_callback,
 	                          progress_user_data, error);

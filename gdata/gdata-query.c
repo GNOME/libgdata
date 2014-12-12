@@ -66,6 +66,18 @@ struct _GDataQueryPrivate {
 	gboolean is_strict;
 	guint max_results;
 
+	/* Pagination management. Supports three states:
+	 *  1.  (next_uri == NULL && !use_next_uri):
+	 *        Implement pagination by incrementing #GDataQuery:start-index
+	 *        internally with each call to gdata_query_next_page(). Stop
+	 *        when the returned #GDataFeed is empty.
+	 *  2a. (next_uri != NULL && use_next_uri):
+	 *        Implement pagination with an explicit URI for the next page,
+	 *        which will be used when gdata_query_next_page() is called.
+	 *  2b. (next_uri == NULL && use_next_uri):
+	 *        End of pagination using known URIs; return an empty
+	 *        #GDataFeed when gdata_query_next_page() is called.
+	 */
 	gchar *next_uri;
 	gchar *previous_uri;
 	gboolean use_next_uri;
@@ -967,12 +979,42 @@ _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri)
 }
 
 void
+_gdata_query_set_next_uri_end (GDataQuery *self)
+{
+	g_return_if_fail (GDATA_IS_QUERY (self));
+
+	g_free (self->priv->next_uri);
+	self->priv->next_uri = NULL;
+	self->priv->use_next_uri = TRUE;
+	self->priv->use_previous_uri = FALSE;
+}
+
+gboolean
+_gdata_query_is_finished (GDataQuery *self)
+{
+	g_return_val_if_fail (GDATA_IS_QUERY (self), FALSE);
+
+	return (self->priv->next_uri == NULL && self->priv->use_next_uri);
+}
+
+void
 _gdata_query_set_previous_uri (GDataQuery *self, const gchar *previous_uri)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
 	g_free (self->priv->previous_uri);
 	self->priv->previous_uri = g_strdup (previous_uri);
 	self->priv->use_next_uri = FALSE;
+	self->priv->use_previous_uri = FALSE;
+}
+
+void
+_gdata_query_set_previous_uri_end (GDataQuery *self)
+{
+	g_return_if_fail (GDATA_IS_QUERY (self));
+
+	g_free (self->priv->previous_uri);
+	self->priv->previous_uri = NULL;
+	self->priv->use_next_uri = TRUE;
 	self->priv->use_previous_uri = FALSE;
 }
 
@@ -1029,7 +1071,8 @@ gdata_query_previous_page (GDataQuery *self)
 	if (priv->previous_uri != NULL) {
 		priv->use_previous_uri = TRUE;
 		priv->use_next_uri = FALSE;
-	} else if (priv->start_index <= priv->max_results) {
+	} else if (priv->start_index <= priv->max_results ||
+	           (priv->previous_uri == NULL && priv->use_previous_uri)) {
 		return FALSE;
 	} else {
 		priv->start_index -= priv->max_results;

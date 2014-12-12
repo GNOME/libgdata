@@ -72,7 +72,10 @@ G_GNUC_INTERNAL void _gdata_service_secure_strfree (GDataSecureString str);
 
 #include "gdata-query.h"
 G_GNUC_INTERNAL void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
+G_GNUC_INTERNAL void _gdata_query_set_next_uri_end (GDataQuery *self);
+G_GNUC_INTERNAL gboolean _gdata_query_is_finished (GDataQuery *self);
 G_GNUC_INTERNAL void _gdata_query_set_previous_uri (GDataQuery *self, const gchar *previous_uri);
+G_GNUC_INTERNAL void _gdata_query_set_previous_uri_end (GDataQuery *self);
 
 #include "gdata-parsable.h"
 G_GNUC_INTERNAL GDataParsable *_gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, gpointer user_data,
