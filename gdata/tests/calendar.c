@@ -620,7 +620,7 @@ test_event_xml (void)
 			"<gCal:guestsCanInviteOthers value='false'/>"
 			"<gCal:guestsCanSeeGuests value='false'/>"
 			"<gCal:anyoneCanAddSelf value='false'/>"
-			"<gd:when startTime='2009-04-17T15:00:00.000001+00:00' endTime='2009-04-17T17:00:00.000001+00:00'/>"
+			"<gd:when startTime='2009-04-17T15:00:00Z' endTime='2009-04-17T17:00:00Z'/>"
 			"<gd:who email='john.smith@example.com' "
 			        "rel='http://schemas.google.com/g/2005#event.organizer' "
 			        "valueString='John Smith\342\200\275'/>"
@@ -706,7 +706,7 @@ test_event_xml_dates (void)
 			"<gCal:guestsCanSeeGuests value='false'/>"
 			"<gCal:anyoneCanAddSelf value='false'/>"
 			"<gd:when startTime='2009-04-17'/>"
-			"<gd:when startTime='2009-04-17T15:00:00.000001+00:00'/>"
+			"<gd:when startTime='2009-04-17T15:00:00Z'/>"
 			"<gd:when startTime='2009-04-27' endTime='2009-05-06'/>"
 		"</entry>");
 
@@ -934,25 +934,25 @@ test_query_uri (void)
 
 	/* Check the built query URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00.000001+00:00"
-	                                "&recurrence-expansion-end=2010-04-17T15:00:00.000001+00:00&singleevents=true&sortorder=descending"
-	                                "&start-min=2009-04-17T15:00:00.000001+00:00&start-max=2010-04-17T15:00:00.000001+00:00&ctz=America%2FLos_Angeles&max-attendees=15"
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00Z"
+	                                "&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
+	                                "&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
 	                                "&showdeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with a trailing slash */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/");
-	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00.000001+00:00"
-	                                "&recurrence-expansion-end=2010-04-17T15:00:00.000001+00:00&singleevents=true&sortorder=descending"
-	                                "&start-min=2009-04-17T15:00:00.000001+00:00&start-max=2010-04-17T15:00:00.000001+00:00&ctz=America%2FLos_Angeles&max-attendees=15"
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00Z"
+	                                "&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
+	                                "&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
 	                                "&showdeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with pre-existing arguments */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/bar/?test=test&this=that");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/bar/?test=test&this=that&q=q&futureevents=true&orderby=starttime"
-	                                "&recurrence-expansion-start=2009-04-17T15:00:00.000001+00:00&recurrence-expansion-end=2010-04-17T15:00:00.000001+00:00"
-	                                "&singleevents=true&sortorder=descending&start-min=2009-04-17T15:00:00.000001+00:00&start-max=2010-04-17T15:00:00.000001+00:00"
+	                                "&recurrence-expansion-start=2009-04-17T15:00:00Z&recurrence-expansion-end=2010-04-17T15:00:00Z"
+	                                "&singleevents=true&sortorder=descending&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z"
 	                                "&ctz=America%2FLos_Angeles&max-attendees=15&showdeleted=true");
 	g_free (query_uri);
 
