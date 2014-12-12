@@ -617,11 +617,42 @@ CODE_COVERAGE_LCOV_OPTIONS = --base-directory $(abs_top_srcdir)
 # Demo programs
 noinst_PROGRAMS =
 
+if ENABLE_GOA
+noinst_PROGRAMS += demos/docs-list/docs-list
+endif
+
 if HAVE_GTK
 noinst_PROGRAMS += 			\
 	demos/scrapbook/scrapbook	\
 	demos/freebase/freebase-cli
 endif
+
+demos_docs_list_docs_list_SOURCES = \
+	demos/docs-list/docs-list.c \
+	$(NULL)
+
+demos_docs_list_docs_list_CPPFLAGS = \
+	-I$(top_srcdir)/ \
+	-I$(top_srcdir)/gdata \
+	-DG_LOG_DOMAIN=\"docs-list\" \
+	-DLIBGDATA_DISABLE_DEPRECATED \
+	$(DISABLE_DEPRECATED) \
+	$(AM_CPPFLAGS) \
+	$(NULL)
+
+demos_docs_list_docs_list_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GDATA_CFLAGS) \
+	$(GNOME_CFLAGS) \
+	$(AM_CFLAGS) \
+	$(NULL)
+
+demos_docs_list_docs_list_LDADD = \
+	$(top_builddir)/gdata/libgdata.la \
+	$(GDATA_LIBS) \
+	$(GNOME_LIBS) \
+	$(AM_LDADD) \
+	$(NULL)
 
 demos_scrapbook_scrapbook_SOURCES = \
 	demos/scrapbook/scrapbook.c \
