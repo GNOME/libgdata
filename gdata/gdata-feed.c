@@ -647,26 +647,32 @@ post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
 
 /*
  * _gdata_feed_new:
+ * @feed_type: the type of #GDataFeed subclass
  * @title: the feed's title
  * @id: the feed's ID
  * @updated: when the feed was last updated
  *
- * Creates a new #GDataFeed with the bare minimum of data to be valid.
+ * Creates a new #GDataFeed or subclass with the bare minimum of data to be
+ * valid.
  *
  * Return value: a new #GDataFeed
  *
- * Since: 0.6.0
+ * Since: UNRELEASED
  */
 GDataFeed *
-_gdata_feed_new (const gchar *title, const gchar *id, gint64 updated)
+_gdata_feed_new (GType feed_type,
+                 const gchar *title,
+                 const gchar *id,
+                 gint64 updated)
 {
 	GDataFeed *feed;
 
+	g_return_val_if_fail (g_type_is_a (feed_type, GDATA_TYPE_FEED), NULL);
 	g_return_val_if_fail (title != NULL, NULL);
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (updated >= 0, NULL);
 
-	feed = g_object_new (GDATA_TYPE_FEED, NULL);
+	feed = g_object_new (feed_type, NULL);
 	feed->priv->title = g_strdup (title);
 	feed->priv->id = g_strdup (id);
 	feed->priv->updated = updated;

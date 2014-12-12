@@ -89,7 +89,10 @@ G_GNUC_INTERNAL void _gdata_parsable_string_append_escaped (GString *xml_string,
 G_GNUC_INTERNAL gboolean _gdata_parsable_is_constructed_from_xml (GDataParsable *self);
 
 #include "gdata-feed.h"
-G_GNUC_INTERNAL GDataFeed *_gdata_feed_new (const gchar *title, const gchar *id, gint64 updated) G_GNUC_WARN_UNUSED_RESULT;
+G_GNUC_INTERNAL GDataFeed *_gdata_feed_new (GType feed_type,
+                                            const gchar *title,
+                                            const gchar *id,
+                                            gint64 updated) G_GNUC_WARN_UNUSED_RESULT;
 G_GNUC_INTERNAL GDataFeed *_gdata_feed_new_from_xml (GType feed_type, const gchar *xml, gint length, GType entry_type,
                                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

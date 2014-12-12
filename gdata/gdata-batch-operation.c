@@ -616,7 +616,8 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 
 	/* Build the request */
 	g_get_current_time (&updated);
-	feed = _gdata_feed_new ("Batch operation feed", "batch1", updated.tv_sec);
+	feed = _gdata_feed_new (GDATA_TYPE_FEED, "Batch operation feed",
+	                        "batch1", updated.tv_sec);
 
 	g_hash_table_iter_init (&iter, priv->operations);
 	while (g_hash_table_iter_next (&iter, &op_id, (gpointer*) &op) == TRUE) {
