@@ -991,10 +991,10 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
 	if (query != NULL && feed != NULL) {
 		GDataLink *_link;
 
-		_link = gdata_feed_look_up_link (feed, "next");
+		_link = gdata_feed_look_up_link (feed, "http://www.iana.org/assignments/relation/next");
 		if (_link != NULL)
 			_gdata_query_set_next_uri (query, gdata_link_get_uri (_link));
-		_link = gdata_feed_look_up_link (feed, "previous");
+		_link = gdata_feed_look_up_link (feed, "http://www.iana.org/assignments/relation/previous");
 		if (_link != NULL)
 			_gdata_query_set_previous_uri (query, gdata_link_get_uri (_link));
 	}
