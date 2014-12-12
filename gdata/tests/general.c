@@ -528,8 +528,8 @@ test_entry_parse_xml (void)
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' xmlns:ns='http://example.com/'>"
 				"<title type='text'>Testing unhandled XML</title>"
-				"<updated>2009-01-25T14:07:37.000001+00:00</updated>"
-				"<published>2009-01-23T14:06:37.000001+00:00</published>"
+				"<updated>2009-01-25T14:07:37Z</updated>"
+				"<published>2009-01-23T14:06:37Z</published>"
 				"<content type='text'>Here we test unhandled XML elements.</content>"
 				"<foobar>Test!</foobar>"
 				"<barfoo shizzle=\"zing\"/>"
@@ -569,8 +569,8 @@ test_entry_parse_xml_kind_category (void)
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
 				"<title type='text'>Testing kind categories</title>"
-				"<updated>2009-01-25T14:07:37.000001+00:00</updated>"
-				"<published>2009-01-23T14:06:37.000001+00:00</published>"
+				"<updated>2009-01-25T14:07:37Z</updated>"
+				"<published>2009-01-23T14:06:37Z</published>"
 				"<content type='text'>Here we test kind categories.</content>"
 			"<category term='http://schemas.google.com/docs/2007#file' "
 			          "scheme='http://schemas.google.com/g/2005#kind' "
@@ -620,7 +620,7 @@ test_entry_parse_json (void)
 		"{"
 			"\"title\":\"A title\","
 			"\"id\":\"some-id\","
-			"\"updated\":\"2009-01-25T14:07:37.000001+00:00\","
+			"\"updated\":\"2009-01-25T14:07:37Z\","
 			"\"etag\":\"some-etag\","
 			"\"selfLink\":\"http://example.com/\","
 			"\"kind\":\"kind#kind\","
@@ -760,8 +760,8 @@ test_entry_escaping (void)
 		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
 			"<title type='text'>Escaped content &amp; stuff</title>"
 			"<id>http://foo.com/?foo&amp;bar</id>"
-			"<updated>2010-12-10T17:21:24.000001+00:00</updated>"
-			"<published>2010-12-10T17:21:24.000001+00:00</published>"
+			"<updated>2010-12-10T17:21:24Z</updated>"
+			"<published>2010-12-10T17:21:24Z</published>"
 			"<summary type='text'>Summary &amp; stuff</summary>"
 			"<rights>Free &amp; open source</rights>"
 			"<content type='text'>Content &amp; things.</content>"
@@ -1106,7 +1106,7 @@ test_feed_escaping (void)
 		"<feed xmlns='http://www.w3.org/2005/Atom'>"
 			"<title type='text'>Test feed &amp; stuff.</title>"
 			"<id>http://foo.com?foo&amp;bar</id>"
-			"<updated>2010-12-10T17:49:15.000001+00:00</updated>"
+			"<updated>2010-12-10T17:49:15Z</updated>"
 		"</feed>");
 	g_object_unref (feed);
 }
@@ -1157,28 +1157,28 @@ test_query_dates (void)
 	/* updated-min */
 	gdata_query_set_updated_min (query, 1373280114); /* 2013-07-08T10:41:54Z */
 	query_uri = gdata_query_get_query_uri (query, "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&updated-min=2013-07-08T10:41:54.000001+00:00");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&updated-min=2013-07-08T10:41:54Z");
 	g_free (query_uri);
 	gdata_query_set_updated_min (query, -1);
 
 	/* updated-max */
 	gdata_query_set_updated_max (query, 1373280114); /* 2013-07-08T10:41:54Z */
 	query_uri = gdata_query_get_query_uri (query, "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&updated-max=2013-07-08T10:41:54.000001+00:00");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&updated-max=2013-07-08T10:41:54Z");
 	g_free (query_uri);
 	gdata_query_set_updated_max (query, -1);
 
 	/* published-min */
 	gdata_query_set_published_min (query, 1373280114); /* 2013-07-08T10:41:54Z */
 	query_uri = gdata_query_get_query_uri (query, "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&published-min=2013-07-08T10:41:54.000001+00:00");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&published-min=2013-07-08T10:41:54Z");
 	g_free (query_uri);
 	gdata_query_set_published_min (query, -1);
 
 	/* published-max */
 	gdata_query_set_published_max (query, 1373280114); /* 2013-07-08T10:41:54Z */
 	query_uri = gdata_query_get_query_uri (query, "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&published-max=2013-07-08T10:41:54.000001+00:00");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=baz&published-max=2013-07-08T10:41:54Z");
 	g_free (query_uri);
 	gdata_query_set_published_max (query, -1);
 
@@ -3127,7 +3127,7 @@ test_gd_reminder (void)
 	gdata_test_assert_xml (reminder,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
 			 "<gd:reminder xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
-				"absoluteTime='2005-06-07T00:55:00.000001+00:00' method='alert'/>");
+				"absoluteTime='2005-06-07T00:55:00Z' method='alert'/>");
 	g_object_unref (reminder);
 }
 
@@ -3218,8 +3218,8 @@ test_gd_when (void)
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (when,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' startTime='2005-06-07T01:00:00.000001+00:00' "
-				"endTime='2005-06-07T02:00:00.000001+00:00'/>");
+			 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' startTime='2005-06-07T01:00:00Z' "
+				"endTime='2005-06-07T02:00:00Z'/>");
 	g_object_unref (when);
 
 	/* Now parse a time with different information */
@@ -3258,7 +3258,7 @@ test_gd_when (void)
 			 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' startTime='2005-06-06' "
 				"endTime='2005-06-08' valueString='This weekend'>"
 				"<gd:reminder minutes='15'/>"
-				"<gd:reminder absoluteTime='2005-06-06T00:00:00.000001+00:00' method='alert'/>"
+				"<gd:reminder absoluteTime='2005-06-06T00:00:00Z' method='alert'/>"
 				"<foobar/>"
 			 "</gd:when>");
 	g_object_unref (when);
@@ -3278,7 +3278,7 @@ test_gd_when_escaping (void)
 	gdata_test_assert_xml (when,
 	                 "<?xml version='1.0' encoding='UTF-8'?>"
 	                 "<gd:when xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005' "
-	                          "startTime='2005-06-07T01:00:00.000001+00:00' valueString='Value string &amp; stuff!'/>");
+	                          "startTime='2005-06-07T01:00:00Z' valueString='Value string &amp; stuff!'/>");
 	g_object_unref (when);
 }
 
