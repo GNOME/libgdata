@@ -206,7 +206,7 @@ AC_SUBST([AM_CFLAGS])
 AC_SUBST([AM_CXXFLAGS])
 AC_SUBST([AM_LDFLAGS])
 
-GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
+GTK_DOC_CHECK([1.25],[--flavour no-tmpl])
 
 AC_CONFIG_FILES([
 Makefile
@@ -216,6 +216,5 @@ gdata/tests/Makefile
 po/Makefile.in
 docs/Makefile
 docs/reference/Makefile
-docs/reference/version.xml
 ])
 AC_OUTPUT

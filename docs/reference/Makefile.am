@@ -36,7 +36,7 @@ MKDB_OPTIONS=--sgml-mode --output-format=xml --name-space=gdata
 FIXXREF_OPTIONS=
 
 # Add the builddir to the HTML path so that version.xml is found
-MKHTML_OPTIONS=--path="$(abs_builddir)"
+MKHTML_OPTIONS=
 
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
@@ -80,7 +80,7 @@ HTML_IMAGES = \
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 # e.g. content_files=running.sgml building.sgml changes-2.0.sgml
-content_files=version.xml gdata-overview.xml gdata-running.xml
+content_files=gdata-overview.xml gdata-running.xml
 
 # SGML files where gtk-doc abbrevations (#GtkWidget) are expanded
 # These files must be listed here *and* in content_files
@@ -106,7 +106,6 @@ SCANOBJ_FILES += $(DOC_MODULE).types
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
 EXTRA_DIST += \
-	version.xml.in \
 	structure.dia \
 	data-flow.dia \
 	cancellation.dia \

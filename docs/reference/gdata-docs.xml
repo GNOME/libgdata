@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
 	<!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
-	<!ENTITY version SYSTEM "version.xml">
+	<!ENTITY % gtkdocentities SYSTEM "xml/gtkdocentities.ent">
+	%gtkdocentities;
 ]>
 <book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
 	<bookinfo>
 		<title>GData Reference Manual</title>
-		<releaseinfo>for GData &version;.<!-- The latest version of this documentation can be found online at
+		<releaseinfo>for GData &package_version;.<!-- The latest version of this documentation can be found online at
 			<ulink role="online-location" url="http://[SERVER]/gdata/index.html">http://[SERVER]/gdata/</ulink>.-->
 		</releaseinfo>
 	</bookinfo>
