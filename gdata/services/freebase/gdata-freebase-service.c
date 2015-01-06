@@ -64,6 +64,7 @@ struct _GDataFreebaseServicePrivate {
 static void gdata_freebase_service_set_property (GObject *self, guint prop_id, const GValue *value, GParamSpec *pspec);
 static void gdata_freebase_service_get_property (GObject *self, guint prop_id, GValue *value, GParamSpec *pspec);
 static void gdata_freebase_service_finalize (GObject *self);
+static void append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message);
 static GList *get_authorization_domains (void);
 
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (freebase, "freebase", "https" URLBASE)
@@ -82,6 +83,7 @@ gdata_freebase_service_class_init (GDataFreebaseServiceClass *klass)
 	gobject_class->get_property = gdata_freebase_service_get_property;
 	gobject_class->finalize = gdata_freebase_service_finalize;
 
+	service_class->append_query_headers = append_query_headers;
 	service_class->get_authorization_domains = get_authorization_domains;
 
 	/**
@@ -103,6 +105,38 @@ static void
 gdata_freebase_service_init (GDataFreebaseService *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FREEBASE_SERVICE, GDataFreebaseServicePrivate);
+}
+
+static void
+append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message)
+{
+	GDataFreebaseServicePrivate *priv = GDATA_FREEBASE_SERVICE (self)->priv;
+	const gchar *query;
+	GString *new_query;
+	SoupURI *uri;
+
+	g_assert (message != NULL);
+
+	if (priv->developer_key) {
+		uri = soup_message_get_uri (message);
+		query = soup_uri_get_query (uri);
+
+		/* Set the key on every request, as per
+		 * https://developers.google.com/freebase/v1/parameters
+		 */
+		if (query) {
+			new_query = g_string_new (query);
+
+			g_string_append (new_query, "&key=");
+			g_string_append_uri_escaped (new_query, priv->developer_key, NULL, FALSE);
+
+			soup_uri_set_query (uri, new_query->str);
+			g_string_free (new_query, TRUE);
+		}
+	}
+
+	/* Chain up to the parent class */
+	GDATA_SERVICE_CLASS (gdata_freebase_service_parent_class)->append_query_headers (self, domain, message);
 }
 
 static GList *
