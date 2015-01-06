@@ -314,7 +314,7 @@ gdata_goa_authorizer_add_oauth2_authorization (GDataAuthorizer *authorizer, Soup
 		return;
 	}
 
-	authorization = g_string_new ("OAuth ");
+	authorization = g_string_new ("Bearer ");
 	g_string_append (authorization, priv->access_token);
 
 	/* Use replace here, not append, to make sure there's only one "Authorization" header. */
