@@ -1,4 +1,4 @@
-> GET /freebase/v1/topic/en/prado_museum?lang=en HTTP/1.1
+> GET /freebase/v1/topic/en/prado_museum?lang=en&key=foobar HTTP/1.1
 > Soup-Debug-Timestamp: 1412523466
 > Soup-Debug: SoupSession 1 (0x1a56110), SoupMessage 1 (0x1a868c0), SoupSocket 1 (0x1b92110)
 > Host: www.googleapis.com

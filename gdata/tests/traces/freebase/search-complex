@@ -1,4 +1,4 @@
-> GET /freebase/v1/search?query=prado&filter=(all(within%20radius:10000m%20lon:-3.6925%20lat:40.4139)(any%20type:"/travel/tourist_attraction"%20type:"/architecture/museum"(not%20type:"/protected_sites/protected_site")))&lang=en&limit=1 HTTP/1.1
+> GET /freebase/v1/search?query=prado&filter=(all(within%20radius:10000m%20lon:-3.6925%20lat:40.4139)(any%20type:"/travel/tourist_attraction"%20type:"/architecture/museum"(not%20type:"/protected_sites/protected_site")))&lang=en&limit=1&key=foobar HTTP/1.1
 > Soup-Debug-Timestamp: 1412526407
 > Soup-Debug: SoupSession 1 (0x1d71110), SoupMessage 1 (0x1ece0c0), SoupSocket 1 (0x20a0110)
 > Host: www.googleapis.com

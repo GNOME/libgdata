@@ -406,7 +406,7 @@ main (int argc, char *argv[])
 	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
-	service = GDATA_SERVICE (gdata_freebase_service_new (NULL, NULL));
+	service = GDATA_SERVICE (gdata_freebase_service_new ("foobar", NULL));
 
 	/* Search */
 	g_test_add_func ("/freebase/search/query/sync",
