@@ -67,7 +67,7 @@ static void gdata_freebase_service_finalize (GObject *self);
 static void append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message);
 static GList *get_authorization_domains (void);
 
-_GDATA_DEFINE_AUTHORIZATION_DOMAIN (freebase, "freebase", "https" URLBASE)
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (freebase, "freebase", "https://www.googleapis.com/auth/freebase.readonly")
 
 G_DEFINE_TYPE (GDataFreebaseService, gdata_freebase_service, GDATA_TYPE_SERVICE)
 
