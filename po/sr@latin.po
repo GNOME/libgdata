@@ -1,14 +1,17 @@
-# Miroslav Nikolić <miroslavnikolic@rocketmail.com>, 2011, 2012, 2013.
+# Serbian translation of libgdata.
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2011—2015.
+# This file is distributed under the same license as the  package.
+# Miroslav Nikolić <miroslavnikolic@rocketmail.com>, 2011—2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgda"
-"ta&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-10-25 23:58+0000\n"
-"PO-Revision-Date: 2013-11-03 09:14+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdat"
+"a&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-03-04 10:42+0000\n"
+"PO-Revision-Date: 2015-03-04 20:38+0200\n"
 "Last-Translator: Miroslav Nikolić <miroslavnikolic@rocketmail.com>\n"
-"Language-Team: Serbian <(nothing)>\n"
-"Language: Serbian (sr)\n"
+"Language-Team: Serbian <gnom@prevod.org>\n"
+"Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,24 +19,32 @@ msgstr ""
 "n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Project-Style: gnome\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:627
-#: ../gdata/gdata-oauth1-authorizer.c:839
-#: ../gdata/gdata-oauth1-authorizer.c:1115
+#: ../gdata/gdata-client-login-authorizer.c:629
+#: ../gdata/gdata-oauth1-authorizer.c:840
+#: ../gdata/gdata-oauth1-authorizer.c:1116
+#: ../gdata/gdata-oauth2-authorizer.c:915
+#: ../gdata/gdata-oauth2-authorizer.c:926
+#: ../gdata/gdata-oauth2-authorizer.c:945
+#: ../gdata/gdata-oauth2-authorizer.c:961
+#: ../gdata/gdata-oauth2-authorizer.c:1029
+#: ../gdata/gdata-oauth2-authorizer.c:1040
+#: ../gdata/gdata-oauth2-authorizer.c:1055
+#: ../gdata/gdata-oauth2-authorizer.c:1071
 msgid "The server returned a malformed response."
 msgstr "Server je vratio neispravan odgovor."
 
-#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:351
+#: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Ne mogu da se povežem na server usluge."
 
-#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:356
+#: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Ne mogu da se povežem na posrednički server."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:362
+#: ../gdata/gdata-client-login-authorizer.c:660 ../gdata/gdata-service.c:372
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -41,58 +52,58 @@ msgstr ""
 "parametar: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:368
+#: ../gdata/gdata-client-login-authorizer.c:666 ../gdata/gdata-service.c:378
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Potrebno je potvrđivanje identiteta: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:373
+#: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Traženi resurs nije pronađen: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:379
+#: ../gdata/gdata-client-login-authorizer.c:677 ../gdata/gdata-service.c:389
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Unos je izmenjena od kada je preuzet: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:393
+#: ../gdata/gdata-client-login-authorizer.c:689 ../gdata/gdata-service.c:403
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Kôd greške %u prilikom potvrđivanja identiteta: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:786
+#: ../gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "STOPKA mora biti popunjena da biste se prijavili."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:824
+#: ../gdata/gdata-client-login-authorizer.c:826
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Ovaj nalog zahteva različitu lozinku u zavisnosti od programa. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:831
+#: ../gdata/gdata-client-login-authorizer.c:833
 msgid "Your username or password were incorrect."
 msgstr "Vaše korisničko ime ili lozinka su netačni."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:852
+#: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Adresa e-pošte vašeg naloga nije proverena. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:857
+#: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Niste se složili sa odredbama i uslovima usluge. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:863
+#: ../gdata/gdata-client-login-authorizer.c:865
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -102,25 +113,25 @@ msgstr ""
 "korisničko ime i lozinku. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:868
+#: ../gdata/gdata-client-login-authorizer.c:870
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Ovaj nalog je izbrisan. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:873
+#: ../gdata/gdata-client-login-authorizer.c:875
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Ovaj nalog je onemogućen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:878
+#: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Pristup ovog naloga ovom servisu je onemogućen. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:883
+#: ../gdata/gdata-client-login-authorizer.c:885
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Tražena usluga nije dostupna u ovom trenutku. (%s)"
@@ -143,17 +154,18 @@ msgid "This comment may not be deleted."
 msgstr "Ovaj nalog ne može biti izbrisan."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Neispravan zahtev pretrage"
 
-#: ../gdata/gdata-oauth1-authorizer.c:814
+#: ../gdata/gdata-oauth1-authorizer.c:815
 msgid "The server rejected the temporary credentials request."
 msgstr "Server je odbacio privremeni zahtev za akreditivima."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1089
+#: ../gdata/gdata-oauth1-authorizer.c:1090
+#: ../gdata/gdata-oauth2-authorizer.c:1066
 msgid "Access was denied by the user or server."
 msgstr "Korisnik ili server su zabranili pristup."
 
@@ -259,7 +271,7 @@ msgstr "Potreban element (%s) nije bio prisutan."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Singleton element (%s) je duplirani."
@@ -268,7 +280,7 @@ msgstr "Singleton element (%s) je duplirani."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:273
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Elementu „%s“ nedostaje potreban sadržaj."
@@ -278,73 +290,73 @@ msgstr "Elementu „%s“ nedostaje potreban sadržaj."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "Sadržaj elementa „%s“ („%s“) nije bio u zapisu ISO 8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:313
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Neispravan JSON  je primljen sa servera: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:399
+#: ../gdata/gdata-service.c:409
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Kôd greške %u prilikom propitivanja: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:405
+#: ../gdata/gdata-service.c:415
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Kôd greške %u prilikom umetanja unosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:411
+#: ../gdata/gdata-service.c:421
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Kôd greške %u prilikom ažuriranja unosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:417
+#: ../gdata/gdata-service.c:427
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Kôd greške %u prilikom brisanja unosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:423
+#: ../gdata/gdata-service.c:433
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Kôd greške %u prilikom preuzimanja: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:429
+#: ../gdata/gdata-service.c:439
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Kôd greške %u prilikom slanja: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:435
+#: ../gdata/gdata-service.c:445
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Kd greške %u prilikom pokretanja serijske operacije: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:722
+#: ../gdata/gdata-service.c:737
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neispravna adresa preusmeravanja: %s"
 
-#: ../gdata/gdata-service.c:1394
+#: ../gdata/gdata-service.c:1449
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:888
 msgid "The entry has already been inserted."
@@ -412,38 +424,43 @@ msgstr "Morate da potvrdite identitet da biste umetnuli grupu."
 msgid "You must be authenticated to download documents."
 msgstr "Morate da potvrdite identitet da biste preuzeli dokumenta."
 
-#: ../gdata/services/documents/gdata-documents-service.c:461
-#: ../gdata/services/documents/gdata-documents-service.c:511
+#: ../gdata/services/documents/gdata-documents-service.c:519
+#: ../gdata/services/documents/gdata-documents-service.c:569
 msgid "You must be authenticated to query documents."
 msgstr "Morate da potvrdite identitet da biste propitali dokumenta."
 
-#: ../gdata/services/documents/gdata-documents-service.c:556
+#: ../gdata/services/documents/gdata-documents-service.c:614
 msgid "You must be authenticated to upload documents."
 msgstr "Morate da potvrdite identitet da biste poslali dokumenta."
 
-#: ../gdata/services/documents/gdata-documents-service.c:562
+#: ../gdata/services/documents/gdata-documents-service.c:620
 msgid "The document has already been uploaded."
 msgstr "Dokument je već otpremljen."
 
-#: ../gdata/services/documents/gdata-documents-service.c:706
+#: ../gdata/services/documents/gdata-documents-service.c:764
 msgid "You must be authenticated to update documents."
 msgstr "Morate da potvrdite identitet da biste ažurirali dokumenta."
 
-#: ../gdata/services/documents/gdata-documents-service.c:888
+#: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "Ne mogu prepoznati vrstu sadržaja isporučenog dokumenta („%s“)."
 
-#: ../gdata/services/documents/gdata-documents-service.c:928
+#: ../gdata/services/documents/gdata-documents-service.c:986
 msgid "You must be authenticated to copy documents."
 msgstr "Morate da potvrdite identitet da biste umnožili dokumenta."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1090
-#: ../gdata/services/documents/gdata-documents-service.c:1273
+#: ../gdata/services/documents/gdata-documents-service.c:1148
+#: ../gdata/services/documents/gdata-documents-service.c:1331
 msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Morate da potvrdite identitet da biste premeštali dokumenta i fascikle."
+
+#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Svojstvo „%s“ ne sadrži sliku"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
@@ -479,15 +496,30 @@ msgstr "Album je već umetnut."
 msgid "You must be authenticated to insert an album."
 msgstr "Morate da potvrdite identitet da biste umetnuli album."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:145
-#: ../gdata/services/tasks/gdata-tasks-service.c:196
-#| msgid "You must be authenticated to query all calendars."
-msgid "You must be authenticated to query all tasklists."
-msgstr "Morate da potvrdite identitet da biste propitali sve spiskove zadataka."
+#: ../gdata/services/tasks/gdata-tasks-service.c:195
+#: ../gdata/services/youtube/gdata-youtube-service.c:478
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Napravili ste previše API poziva nedavno. Sačekajte nekoliko minuta i "
+"pokušajte ponovo."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:244
-#: ../gdata/services/tasks/gdata-tasks-service.c:300
-#| msgid "You must be authenticated to query your own calendars."
+#: ../gdata/services/tasks/gdata-tasks-service.c:204
+#: ../gdata/services/youtube/gdata-youtube-service.c:473
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Morate da potvrdite identitet da biste uradili ovo."
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:330
+#: ../gdata/services/tasks/gdata-tasks-service.c:381
+msgid "You must be authenticated to query all tasklists."
+msgstr ""
+"Morate da potvrdite identitet da biste propitali sve spiskove zadataka."
+
+#: ../gdata/services/tasks/gdata-tasks-service.c:430
+#: ../gdata/services/tasks/gdata-tasks-service.c:487
 msgid "You must be authenticated to query your own tasks."
 msgstr "Morate da potvrdite identitet da biste propitali vaše lične zadatke."
 
@@ -516,20 +548,6 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Primio sam nepoznat kôd greške „%s“ u domenu „%s“ sa lokacijom „%s“."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:473
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "Morate da potvrdite identitet da biste uradili ovo."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:478
-#, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
-msgstr ""
-"Napravili ste previše API poziva nedavno. Sačekajte nekoliko minuta i "
-"pokušajte ponovo."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:481
 #, c-format
