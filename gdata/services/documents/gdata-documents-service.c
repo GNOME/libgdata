@@ -478,7 +478,7 @@ _query_documents_build_request_uri (GDataDocumentsQuery *query)
 {
 	/* If we want to query for documents contained in a folder, the URI is different.
 	 * The "/[folder:id]" suffix is added by the GDataQuery later. */
-	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full", NULL);
+	return g_strdup ("https://www.googleapis.com/drive/v2/files");
 }
 
 /**
