@@ -3,6 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,7 +37,6 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
 #include <string.h>
 
 #include "gdata-documents-feed.h"
@@ -51,7 +51,7 @@
 #include "gdata-private.h"
 #include "gdata-service.h"
 
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
+static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
 
 G_DEFINE_TYPE (GDataDocumentsFeed, gdata_documents_feed, GDATA_TYPE_FEED)
 
@@ -59,7 +59,7 @@ static void
 gdata_documents_feed_class_init (GDataDocumentsFeedClass *klass)
 {
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-	parsable_class->parse_xml = parse_xml;
+	parsable_class->parse_json = parse_json;
 }
 
 static void
@@ -68,74 +68,141 @@ gdata_documents_feed_init (GDataDocumentsFeed *self)
 	/* Why am I writing it? */
 }
 
-/* NOTE: Cast from (xmlChar*) to (gchar*) (and corresponding change in memory management functions) is safe because we've changed
- * libxml's memory functions. */
-static gchar *
-get_kind (xmlDoc *doc, xmlNode *node)
+static void
+get_kind_and_mime_type (JsonReader *reader, gchar **out_kind, gchar **out_mime_type, GError **error)
 {
-	xmlNode *entry_node;
+	GError *child_error = NULL;
+	gboolean success;
+	gchar *kind = NULL;
+	gchar *mime_type = NULL;
+	guint i, members;
 
-	for (entry_node = node->children; entry_node != NULL; entry_node = entry_node->next) {
-		if (xmlStrcmp (entry_node->name, (xmlChar*) "category") == 0) {
-			xmlChar *scheme = xmlGetProp (entry_node, (xmlChar*) "scheme");
+	for (i = 0, members = (guint) json_reader_count_members (reader); i < members; i++) {
+		json_reader_read_element (reader, i);
 
-			if (xmlStrcmp (scheme, (xmlChar*) "http://schemas.google.com/g/2005#kind") == 0) {
-				xmlFree (scheme);
-				return (gchar*) xmlGetProp (entry_node, (xmlChar*) "term");
+		if (gdata_parser_string_from_json_member (reader, "kind", P_REQUIRED | P_NON_EMPTY, &kind, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+				                            /* Translators: the parameter is an error message */
+				                            _("Error parsing JSON: %s"),
+				                            "Failed to find ‘kind’.");
+				json_reader_end_element (reader);
+				goto out;
 			}
-			xmlFree (scheme);
 		}
+
+		if (gdata_parser_string_from_json_member (reader, "mimeType", P_DEFAULT, &mime_type, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+				                            /* Translators: the parameter is an error message */
+				                            _("Error parsing JSON: %s"),
+				                            "Failed to find ‘mimeType’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
+		}
+
+		json_reader_end_element (reader);
 	}
 
-	return NULL;
+	if (out_kind != NULL) {
+		*out_kind = kind;
+		kind = NULL;
+	}
+
+	if (out_mime_type != NULL) {
+		*out_mime_type = mime_type;
+		mime_type = NULL;
+	}
+
+ out:
+	g_free (kind);
+	g_free (mime_type);
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
 {
-	GDataDocumentsFeed *self = GDATA_DOCUMENTS_FEED (parsable);
+	/* JSON format: https://developers.google.com/drive/v2/reference/files/list */
 
-	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE &&
-	    xmlStrcmp (node->name, (xmlChar*) "entry") == 0) {
-		GDataEntry *entry = NULL;
-		GType entry_type = G_TYPE_INVALID;
-		gchar *kind = get_kind (doc, node);
+	if (g_strcmp0 (json_reader_get_member_name (reader), "items") == 0) {
+		gboolean success = TRUE;
+		guint i, elements;
 
-		if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#spreadsheet") == 0) {
-			entry_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
-		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#document") == 0) {
-			entry_type = GDATA_TYPE_DOCUMENTS_TEXT;
-		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#presentation") == 0) {
-			entry_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
-		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#folder") == 0) {
-			entry_type = GDATA_TYPE_DOCUMENTS_FOLDER;
-		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#file") == 0) {
-			entry_type = GDATA_TYPE_DOCUMENTS_DOCUMENT;
-		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#drawing") == 0) {
-			entry_type = GDATA_TYPE_DOCUMENTS_DRAWING;
-		} else if (g_strcmp0 (kind, "http://schemas.google.com/docs/2007#pdf") == 0) {
-			entry_type = GDATA_TYPE_DOCUMENTS_PDF;
-		} else {
-			g_message ("%s documents are not handled yet", kind);
-			g_free (kind);
-			return TRUE;
-		}
-		g_free (kind);
-
-		if (g_type_is_a (entry_type, GDATA_TYPE_DOCUMENTS_ENTRY) == FALSE) {
+		if (json_reader_is_array (reader) == FALSE) {
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+			             /* Translators: the parameter is an error message */
+			             _("Error parsing JSON: %s"),
+			             "JSON node ‘items’ is not an array.");
 			return FALSE;
 		}
 
-		entry = GDATA_ENTRY (_gdata_parsable_new_from_xml_node (entry_type, doc, node, NULL, error));
+		/* Loop through the elements array. */
+		for (i = 0, elements = (guint) json_reader_count_elements (reader); success && i < elements; i++) {
+			GDataEntry *entry = NULL;
+			GError *child_error = NULL;
+			GType entry_type = G_TYPE_INVALID;
+			gchar *kind = NULL;
+			gchar *mime_type = NULL;
 
-		/* Call the progress callback in the main thread */
-		_gdata_feed_call_progress_callback (GDATA_FEED (self), user_data, entry);
-		_gdata_feed_add_entry (GDATA_FEED (self), entry);
+			json_reader_read_element (reader, i);
 
-		g_object_unref (entry);
+			if (json_reader_is_object (reader) == FALSE) {
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+				             /* Translators: the parameter is an error message */
+				             _("Error parsing JSON: %s"),
+				             "JSON node inside ‘items’ is not an object");
+				success = FALSE;
+				goto continuation;
+			}
 
-		return TRUE;
+			get_kind_and_mime_type (reader, &kind, &mime_type, &child_error);
+			if (child_error != NULL) {
+				g_propagate_error (error, child_error);
+				success = FALSE;
+				goto continuation;
+			}
+
+			if (g_strcmp0 (kind, "drive#file") == 0) {
+
+				/* MIME types: https://developers.google.com/drive/web/mime-types */
+
+				if (g_strcmp0 (mime_type, "application/vnd.google-apps.folder") == 0) {
+					entry_type = GDATA_TYPE_DOCUMENTS_FOLDER;
+				} else if (g_strcmp0 (mime_type, "application/pdf") == 0) {
+					entry_type = GDATA_TYPE_DOCUMENTS_PDF;
+				} else if (g_strcmp0 (mime_type, "application/vnd.google-apps.document") == 0) {
+					entry_type = GDATA_TYPE_DOCUMENTS_TEXT;
+				} else if (g_strcmp0 (mime_type, "application/vnd.google-apps.drawing") == 0) {
+					entry_type = GDATA_TYPE_DOCUMENTS_DRAWING;
+				} else if (g_strcmp0 (mime_type, "application/vnd.google-apps.presentation") == 0) {
+					entry_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
+				} else if (g_strcmp0 (mime_type, "application/vnd.google-apps.spreadsheet") == 0) {
+					entry_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
+				} else {
+					entry_type = GDATA_TYPE_DOCUMENTS_DOCUMENT;
+				}
+			} else {
+				g_warning ("%s files are not handled yet", kind);
+			}
+
+			if (entry_type == G_TYPE_INVALID)
+				goto continuation;
+
+			entry = GDATA_ENTRY (_gdata_parsable_new_from_json_node (entry_type, reader, NULL, error));
+			/* Call the progress callback in the main thread */
+			_gdata_feed_call_progress_callback (GDATA_FEED (parsable), user_data, entry);
+			_gdata_feed_add_entry (GDATA_FEED (parsable), entry);
+
+		continuation:
+			g_clear_object (&entry);
+			g_free (kind);
+			g_free (mime_type);
+			json_reader_end_element (reader);
+		}
+
+		return success;
 	}
 
-	return GDATA_PARSABLE_CLASS (gdata_documents_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+	return GDATA_PARSABLE_CLASS (gdata_documents_feed_parent_class)->parse_json (parsable, reader, user_data, error);
 }
