@@ -2,6 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -96,7 +97,6 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
 #include <string.h>
 
 #include "gdata-documents-entry.h"
@@ -115,16 +115,15 @@ static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *
 static void gdata_documents_entry_finalize (GObject *object);
 static void gdata_entry_dispose (GObject *object);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
-static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+static gboolean post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
 static gchar *get_entry_uri (const gchar *id);
-
-static const gchar *_get_untyped_resource_id (GDataDocumentsEntry *self) G_GNUC_PURE;
 
 struct _GDataDocumentsEntryPrivate {
 	gint64 last_viewed;
+	gchar *mime_type;
 	gchar *resource_id;
 	gboolean writers_can_invite;
 	gboolean is_deleted;
@@ -139,7 +138,6 @@ enum {
 	PROP_LAST_MODIFIED_BY,
 	PROP_IS_DELETED,
 	PROP_WRITERS_CAN_INVITE,
-	PROP_ID,
 	PROP_RESOURCE_ID,
 	PROP_QUOTA_USED,
 };
@@ -161,8 +159,8 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	gobject_class->finalize = gdata_documents_entry_finalize;
 	gobject_class->dispose = gdata_entry_dispose;
 
-	parsable_class->parse_xml = parse_xml;
-	parsable_class->get_xml = get_xml;
+	parsable_class->parse_json = parse_json;
+	parsable_class->post_parse_json = post_parse_json;
 	parsable_class->get_namespaces = get_namespaces;
 
 	entry_class->get_entry_uri = get_entry_uri;
@@ -288,18 +286,6 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                     "Quota used", "The amount of user quota the document is occupying.",
 	                                                     0, G_MAXINT64, 0,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/* Override the ID property since the server returns two different forms of ID depending on how you form a query on an entry. These two forms
-	 * of ID are (for version 3 of the API):
-	 *  - Document ID: /feeds/id/[resource_id]
-	 *  - Folder ID: /feeds/default/private/full/[folder_id]/[resource_id]
-	 * The former is the ID we want; the latter should only ever be used for manipulating the location of documents (i.e. adding them to and
-	 * removing them from folders). The latter will, however, work fine for operations such as updating documents. It's only when one comes to
-	 * try and delete a document that it becomes a problem: sending a DELETE request to the folder ID will only remove the document from that
-	 * folder; it's only if one sends the DELETE request to the document ID that the document actually gets deleted.
-	 * Unfortunately, uploading a document directly to a folder results in the server returning us a folder ID. Consequently, we need to override
-	 * the property to fix this mess. */
-	g_object_class_override_property (gobject_class, PROP_ID, "id");
 }
 
 static gboolean
@@ -346,6 +332,7 @@ gdata_documents_entry_finalize (GObject *object)
 {
 	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
 
+	g_free (priv->mime_type);
 	g_free (priv->resource_id);
 
 	/* Chain up to the parent class */
@@ -362,7 +349,7 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_string (value, priv->resource_id);
 			break;
 		case PROP_DOCUMENT_ID:
-			g_value_set_string (value, _get_untyped_resource_id (GDATA_DOCUMENTS_ENTRY (object)));
+			g_value_set_string (value, gdata_entry_get_id (GDATA_ENTRY (object)));
 			break;
 		case PROP_WRITERS_CAN_INVITE:
 			g_value_set_boolean (value, priv->writers_can_invite);
@@ -382,21 +369,6 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 		case PROP_QUOTA_USED:
 			g_value_set_int64 (value, priv->quota_used);
 			break;
-		case PROP_ID: {
-			gchar *uri;
-
-			/* Is it unset? */
-			if (priv->resource_id == NULL) {
-				g_value_set_string (value, NULL);
-				break;
-			}
-
-			/* Build the ID */
-			uri = _gdata_service_build_uri ("https://docs.google.com/feeds/id/%s", priv->resource_id);
-			g_value_take_string (value, uri);
-
-			break;
-		}
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -413,9 +385,6 @@ gdata_documents_entry_set_property (GObject *object, guint property_id, const GV
 		case PROP_WRITERS_CAN_INVITE:
 			gdata_documents_entry_set_writers_can_invite (self, g_value_get_boolean (value));
 			break;
-		case PROP_ID:
-			/* Never set an ID (note that this doesn't stop it being set in GDataEntry due to XML parsing) */
-			break;
 		case PROP_QUOTA_USED:
 			/* Read only. */
 		default:
@@ -425,63 +394,359 @@ gdata_documents_entry_set_property (GObject *object, guint property_id, const GV
 	}
 }
 
-static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+static void
+get_kind_email_and_name (JsonReader *reader, gchar **out_kind, gchar **out_email, gchar **out_name, GError **error)
 {
+	GError *child_error = NULL;
 	gboolean success;
-	GDataDocumentsEntry *self = GDATA_DOCUMENTS_ENTRY (parsable);
+	gchar *email = NULL;
+	gchar *kind = NULL;
+	gchar *name = NULL;
+	guint i, members;
 
-	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_int64_time_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
-		return success;
-	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
-		if (gdata_parser_int64_time_from_element (node, "lastViewed", P_REQUIRED | P_NO_DUPES,
-		                                          &(self->priv->last_viewed), &success, error) == TRUE ||
-		    gdata_parser_object_from_element_setter (node, "feedLink", P_REQUIRED, GDATA_TYPE_LINK,
-		                                             gdata_entry_add_link, self,  &success, error) == TRUE ||
-		    gdata_parser_object_from_element (node, "lastModifiedBy", P_REQUIRED, GDATA_TYPE_AUTHOR,
-		                                      &(self->priv->last_modified_by), &success, error) == TRUE ||
-		    gdata_parser_string_from_element (node, "resourceId", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES, &(self->priv->resource_id),
-		                                      &success, error) == TRUE ||
-		    gdata_parser_int64_from_element (node, "quotaBytesUsed", P_REQUIRED | P_NO_DUPES,
-		                                     &(self->priv->quota_used), 0, &success, error) == TRUE) {
-			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "deleted") ==  0) {
-			/* <gd:deleted> */
-			/* Note that it doesn't have any parameters, so we unconditionally set priv->is_deleted to TRUE */
-			self->priv->is_deleted = TRUE;
-		} else {
-			return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+	for (i = 0, members = (guint) json_reader_count_members (reader); i < members; i++) {
+		json_reader_read_element (reader, i);
+
+		if (gdata_parser_string_from_json_member (reader, "kind", P_REQUIRED | P_NON_EMPTY, &kind, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+				                            /* Translators: the parameter is an error message */
+				                            _("Error parsing JSON: %s"),
+				                            "Failed to find ‘kind’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
 		}
-	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/docs/2007") == TRUE &&
-	           xmlStrcmp (node->name, (xmlChar*) "writersCanInvite") ==  0) {
-		if (gdata_parser_boolean_from_property (node, "value", &(self->priv->writers_can_invite), -1, error) == FALSE)
-			return FALSE;
-	} else {
-		return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+
+		if (gdata_parser_string_from_json_member (reader, "displayName", P_REQUIRED | P_NON_EMPTY, &name, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+				                            /* Translators: the parameter is an error message */
+				                            _("Error parsing JSON: %s"),
+				                            "Failed to find ‘displayName’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
+		}
+
+		if (gdata_parser_string_from_json_member (reader, "emailAddress", P_DEFAULT, &email, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+				                            /* Translators: the parameter is an error message */
+				                            _("Error parsing JSON: %s"),
+				                            "Failed to find ‘emailAddress’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
+		}
+
+		json_reader_end_element (reader);
 	}
 
-	return TRUE;
+	if (out_kind != NULL) {
+		*out_kind = kind;
+		kind = NULL;
+	}
+
+	if (out_email != NULL) {
+		*out_email = email;
+		email = NULL;
+	}
+
+	if (out_name != NULL) {
+		*out_name = name;
+		name = NULL;
+	}
+
+ out:
+	g_free (kind);
+	g_free (email);
+	g_free (name);
 }
 
 static void
-get_xml (GDataParsable *parsable, GString *xml_string)
+get_kind_and_parent_link (JsonReader *reader, gchar **out_kind, gchar **out_parent_link, GError **error)
+{
+	GError *child_error = NULL;
+	gboolean success;
+	gchar *kind = NULL;
+	gchar *parent_link = NULL;
+	guint i, members;
+
+	for (i = 0, members = (guint) json_reader_count_members (reader); i < members; i++) {
+		json_reader_read_element (reader, i);
+
+		if (gdata_parser_string_from_json_member (reader, "kind", P_REQUIRED | P_NON_EMPTY, &kind, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+				                            /* Translators: the parameter is an error message */
+				                            _("Error parsing JSON: %s"),
+				                            "Failed to find ‘kind’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
+		}
+
+		if (gdata_parser_string_from_json_member (reader, "parentLink", P_REQUIRED | P_NON_EMPTY, &parent_link, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+				                            /* Translators: the parameter is an error message */
+				                            _("Error parsing JSON: %s"),
+				                            "Failed to find ‘parentLink’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
+		}
+
+		json_reader_end_element (reader);
+	}
+
+	if (out_kind != NULL) {
+		*out_kind = kind;
+		kind = NULL;
+	}
+
+	if (out_parent_link != NULL) {
+		*out_parent_link = parent_link;
+		parent_link = NULL;
+	}
+
+ out:
+	g_free (kind);
+	g_free (parent_link);
+}
+
+static gboolean
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
 {
 	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (parsable)->priv;
+	GDataCategory *category;
+	GError *child_error = NULL;
+	gboolean shared;
+	gboolean success = TRUE;
+	gchar *alternate_uri = NULL;
+	gchar *kind = NULL;
+	gint64 published;
+	gint64 updated;
 
-	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->get_xml (parsable, xml_string);
+	/* JSON format: https://developers.google.com/drive/v2/reference/files */
 
-	/* TODO: Only output "kind" categories? */
+	if (gdata_parser_string_from_json_member (reader, "alternateLink", P_DEFAULT, &alternate_uri, &success, error) == TRUE) {
+		if (success && alternate_uri != NULL && alternate_uri[0] != '\0') {
+			GDataLink *_link;
 
-	if (priv->writers_can_invite == TRUE)
-		g_string_append (xml_string, "<docs:writersCanInvite value='true'/>");
-	else
-		g_string_append (xml_string, "<docs:writersCanInvite value='false'/>");
+			_link = gdata_link_new (alternate_uri, GDATA_LINK_ALTERNATE);
+			gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
+			g_object_unref (_link);
+		}
 
-	if (priv->resource_id != NULL) {
-		gdata_parser_string_append_escaped (xml_string, "<gd:resourceId>", priv->resource_id, "</gd:resourceId>");
+		g_free (alternate_uri);
+		return success;
+	} else if (gdata_parser_string_from_json_member (reader, "mimeType", P_DEFAULT, &(priv->mime_type), &success, error) == TRUE) {
+		if (success && priv->mime_type != NULL && priv->mime_type[0] != '\0') {
+			GDataEntryClass *klass = GDATA_ENTRY_GET_CLASS (parsable);
+
+			category = gdata_category_new (klass->kind_term, "http://schemas.google.com/g/2005#kind", priv->mime_type);
+			gdata_entry_add_category (GDATA_ENTRY (parsable), category);
+			g_object_unref (category);
+		}
+		return success;
+	} else if (gdata_parser_string_from_json_member (reader, "kind", P_REQUIRED | P_NON_EMPTY, &kind, &success, error) == TRUE) {
+		g_free (kind);
+		return success;
+	} else if (gdata_parser_int64_time_from_json_member (reader, "createdDate", P_DEFAULT, &published, &success, error) == TRUE) {
+		if (success)
+			_gdata_entry_set_published (GDATA_ENTRY (parsable), published);
+		return success;
+	} else if (gdata_parser_int64_time_from_json_member (reader, "modifiedDate", P_DEFAULT, &updated, &success, error) == TRUE) {
+		if (success)
+			_gdata_entry_set_updated (GDATA_ENTRY (parsable), updated);
+		return success;
+	} else if (gdata_parser_boolean_from_json_member (reader, "shared", P_DEFAULT, &shared, &success, error) == TRUE) {
+		if (success && shared) {
+			category = gdata_category_new ("http://schemas.google.com/g/2005/labels#shared", GDATA_CATEGORY_SCHEMA_LABELS, "shared");
+			gdata_entry_add_category (GDATA_ENTRY (parsable), category);
+			g_object_unref (category);
+		}
+		return success;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "labels") == 0) {
+		guint i, members;
+
+		if (json_reader_is_object (reader) == FALSE) {
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+			             /* Translators: the parameter is an error message */
+			             _("Error parsing JSON: %s"),
+			             "JSON node ‘labels’ is not an object.");
+			return FALSE;
+		}
+
+		for (i = 0, members = (guint) json_reader_count_members (reader); i < members; i++) {
+			gboolean starred;
+			gboolean viewed;
+
+			json_reader_read_element (reader, i);
+
+			gdata_parser_boolean_from_json_member (reader, "starred", P_DEFAULT, &starred, &success, NULL);
+			if (success && starred) {
+				category = gdata_category_new (GDATA_CATEGORY_SCHEMA_LABELS_STARRED, GDATA_CATEGORY_SCHEMA_LABELS, "starred");
+				gdata_entry_add_category (GDATA_ENTRY (parsable), category);
+				g_object_unref (category);
+			}
+
+			gdata_parser_boolean_from_json_member (reader, "viewed", P_DEFAULT, &viewed, &success, NULL);
+			if (success && viewed) {
+				category = gdata_category_new ("http://schemas.google.com/g/2005/labels#viewed", GDATA_CATEGORY_SCHEMA_LABELS, "viewed");
+				gdata_entry_add_category (GDATA_ENTRY (parsable), category);
+				g_object_unref (category);
+			}
+
+			json_reader_end_element (reader);
+		}
+
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "owners") == 0) {
+		guint i, elements;
+
+		if (json_reader_is_array (reader) == FALSE) {
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+			             /* Translators: the parameter is an error message */
+			             _("Error parsing JSON: %s"),
+			             "JSON node ‘owners’ is not an array.");
+			return FALSE;
+		}
+
+		/* Loop through the elements array. */
+		for (i = 0, elements = json_reader_count_elements (reader); success && i < elements; i++) {
+			gchar *email = NULL;
+			gchar *name = NULL;
+
+			json_reader_read_element (reader, i);
+
+			if (json_reader_is_object (reader) == FALSE) {
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+				             /* Translators: the parameter is an error message */
+				             _("Error parsing JSON: %s"),
+				             "JSON node inside ‘owners’ is not an object.");
+				success = FALSE;
+				goto continue_owners;
+			}
+
+			get_kind_email_and_name (reader, &kind, &email, &name, &child_error);
+			if (child_error != NULL) {
+				g_propagate_error (error, child_error);
+				success = FALSE;
+				goto continue_owners;
+			}
+			if (name == NULL || name[0] == '\0') {
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+				             /* Translators: the parameter is an error message */
+				             _("Error parsing JSON: %s"),
+				             "Failed to find ‘displayName’.");
+				success = FALSE;
+				goto continue_owners;
+			}
+
+			if (g_strcmp0 (kind, "drive#user") == 0) {
+				GDataAuthor *author;
+
+				author = gdata_author_new (name, NULL, email);
+				gdata_entry_add_author (GDATA_ENTRY (parsable), author);
+				g_object_unref (author);
+			} else {
+				g_warning ("%s authors are not handled yet", kind);
+			}
+
+		continue_owners:
+			g_free (email);
+			g_free (kind);
+			g_free (name);
+			json_reader_end_element (reader);
+		}
+
+		return success;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "parents") == 0) {
+		guint i, elements;
+
+		if (json_reader_is_array (reader) == FALSE) {
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+			             /* Translators: the parameter is an error message */
+			             _("Error parsing JSON: %s"),
+			             "JSON node ‘parents’ is not an array.");
+			return FALSE;
+		}
+
+		/* Loop through the elements array. */
+		for (i = 0, elements = (guint) json_reader_count_elements (reader); success && i < elements; i++) {
+			GDataLink *_link = NULL;
+			const gchar *relation_type = NULL;
+			gchar *uri = NULL;
+
+			json_reader_read_element (reader, i);
+
+			if (json_reader_is_object (reader) == FALSE) {
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+				             /* Translators: the parameter is an error message */
+				             _("Error parsing JSON: %s"),
+				             "JSON node inside ‘parents’ is not an object.");
+				success = FALSE;
+				goto continue_parents;
+			}
+
+			get_kind_and_parent_link (reader, &kind, &uri, &child_error);
+			if (child_error != NULL) {
+				g_propagate_error (error, child_error);
+				success = FALSE;
+				goto continue_parents;
+			}
+
+			if (g_strcmp0 (kind, "drive#parentReference") == 0) {
+				relation_type = GDATA_LINK_PARENT;
+			} else {
+				g_warning ("%s parents are not handled yet", kind);
+			}
+
+			if (relation_type == NULL)
+				goto continue_parents;
+
+			_link = gdata_link_new (uri, relation_type);
+			gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
+
+		continue_parents:
+			g_clear_object (&_link);
+			g_free (kind);
+			g_free (uri);
+			json_reader_end_element (reader);
+		}
+
+		return success;
 	}
+
+	return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_json (parsable, reader, user_data, error);
+}
+
+static gboolean
+post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (parsable)->priv;
+	GDataLink *_link;
+	const gchar *id;
+	gchar *uri;
+
+	id = gdata_entry_get_id (GDATA_ENTRY (parsable));
+
+	/* gdata_access_handler_get_rules requires the presence of a GDATA_LINK_ACCESS_CONTROL_LIST link with the
+	 * right URI. */
+	uri = g_strconcat ("https://www.googleapis.com/drive/v2/files/", id, "/permissions", NULL);
+	_link = gdata_link_new (uri, GDATA_LINK_ACCESS_CONTROL_LIST);
+	gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
+	g_free (uri);
+	g_object_unref (_link);
+
+	/* Since the document-id is identical to GDataEntry:id, which is parsed by the parent class, we can't
+	 * create the resource-id while parsing. */
+	priv->resource_id = g_strconcat ("document:", id, NULL);
+
+	return TRUE;
 }
 
 static void
@@ -555,6 +820,7 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 {
 	GList *element, *parent_folders_list = NULL;
 	GString *path;
+	const gchar *id;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 
@@ -595,30 +861,11 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 		g_free (folder_id);
 	}
 
-	/* Append the document ID */
-	g_string_append (path, _get_untyped_resource_id (self));
+	/* Append the entry ID */
+	id = gdata_entry_get_id (GDATA_ENTRY (self));
+	g_string_append (path, id);
 
 	return g_string_free (path, FALSE);
-}
-
-/* Static version so that we can use it internally without triggering deprecation warnings.
- * Note that this is what libgdata used to call a "document ID". */
-static const gchar *
-_get_untyped_resource_id (GDataDocumentsEntry *self)
-{
-	const gchar *colon;
-
-	/* Untyped resource ID should be NULL iff resource ID is. */
-	if (self->priv->resource_id == NULL) {
-		return NULL;
-	}
-
-	/* Resource ID is of the form "document:[untyped_resource_id]" (or "spreadsheet:[untyped_resource_id]", etc.),
-	 * so we want to return the portion after the colon. */
-	colon = g_utf8_strchr (self->priv->resource_id, -1, ':');
-	g_assert (colon != NULL);
-
-	return colon + 1;
 }
 
 /**
@@ -638,8 +885,7 @@ const gchar *
 gdata_documents_entry_get_document_id (GDataDocumentsEntry *self )
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
-
-	return _get_untyped_resource_id (self);
+	return gdata_entry_get_id (GDATA_ENTRY (self));
 }
 
 /**
