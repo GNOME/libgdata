@@ -598,6 +598,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 	if (gdata_parser_string_from_json_member (reader, "title", P_DEFAULT | P_NO_DUPES, &(priv->title), &success, error) == TRUE ||
 	    gdata_parser_string_from_json_member (reader, "id", P_NON_EMPTY | P_NO_DUPES, &(priv->id), &success, error) == TRUE ||
+	    gdata_parser_string_from_json_member (reader, "description", P_NONE, &(priv->summary), &success, error) == TRUE ||
 	    gdata_parser_int64_time_from_json_member (reader, "updated", P_REQUIRED | P_NO_DUPES, &(priv->updated), &success, error) == TRUE ||
 	    gdata_parser_string_from_json_member (reader, "etag", P_NON_EMPTY | P_NO_DUPES, &(priv->etag), &success, error) == TRUE) {
 		return success;
