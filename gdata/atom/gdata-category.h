@@ -38,6 +38,16 @@ G_BEGIN_DECLS
 #define GDATA_CATEGORY_SCHEMA_LABELS "http://schemas.google.com/g/2005/labels"
 
 /**
+ * GDATA_CATEGORY_SCHEMA_LABELS_SHARED:
+ *
+ * A term for categories of the %GDATA_CATEGORY_SCHEMA_LABELS schema which labels an entry as being “shared”. The semantics of this label are
+ * service-specific, but are obvious for services such as Google Documents.
+ *
+ * Since: UNRELEASED
+ */
+#define GDATA_CATEGORY_SCHEMA_LABELS_SHARED GDATA_CATEGORY_SCHEMA_LABELS"#shared"
+
+/**
  * GDATA_CATEGORY_SCHEMA_LABELS_STARRED:
  *
  * A term for categories of the %GDATA_CATEGORY_SCHEMA_LABELS schema which labels an entry as being “starred”. The semantics of this label are
@@ -46,6 +56,16 @@ G_BEGIN_DECLS
  * Since: 0.11.0
  */
 #define GDATA_CATEGORY_SCHEMA_LABELS_STARRED GDATA_CATEGORY_SCHEMA_LABELS"#starred"
+
+/**
+ * GDATA_CATEGORY_SCHEMA_LABELS_VIEWED:
+ *
+ * A term for categories of the %GDATA_CATEGORY_SCHEMA_LABELS schema which labels an entry as being “viewed”. The semantics of this label are
+ * service-specific, but are obvious for services such as Google Documents.
+ *
+ * Since: UNRELEASED
+ */
+#define GDATA_CATEGORY_SCHEMA_LABELS_VIEWED GDATA_CATEGORY_SCHEMA_LABELS"#viewed"
 
 #define GDATA_TYPE_CATEGORY		(gdata_category_get_type ())
 #define GDATA_CATEGORY(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_CATEGORY, GDataCategory))
