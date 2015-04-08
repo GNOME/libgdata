@@ -2,15 +2,15 @@
 # Copyright (C) 2012 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
 #
-# Mattias Põldaru <mahfiaz@gmail.com>, 2012.
+# Mattias Põldaru <mahfiaz@gmail.com>, 2012, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-09-09 14:52+0000\n"
-"PO-Revision-Date: 2013-09-12 18:02+0300\n"
+"POT-Creation-Date: 2015-03-14 22:39+0000\n"
+"PO-Revision-Date: 2015-03-15 09:42+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
 "Language: et\n"
@@ -367,6 +367,10 @@ msgstr "Dokumentide kopeerimiseks pead olema sisse loginud."
 msgid "You must be authenticated to move documents and folders."
 msgstr "Dokumentide ja kataloogide liigutamiseks pead olema sisse loginud."
 
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "Omadus '%s' ei tohi sisaldada pilti"
+
 msgid "You must specify a username or be authenticated to query a user."
 msgstr "Kasutaja pärimiseks pead määrama kasutajanime või olema sisse loginud."
 
@@ -390,6 +394,24 @@ msgid "You must be authenticated to insert an album."
 msgstr "Albumi sisestamiseks pead olema sisse loginud."
 
 #, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Sa oled teinud hiljuti liiga palju API päringuid. Oota mõni minut ja proovi "
+"uuesti."
+
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Selle tegemiseks pead olema sisse loginud."
+
+msgid "You must be authenticated to query all tasklists."
+msgstr "Kõigi ülesandeloetelude pärimiseks pead olema sisse loginud."
+
+msgid "You must be authenticated to query your own tasks."
+msgstr "Oma ülesannete pärimiseks pead olema sisse loginud."
+
+#, c-format
 msgid "This service is not available at the moment."
 msgstr "Teenus pole hetkel saadaval."
 
@@ -409,18 +431,6 @@ msgstr ""
 msgid ""
 "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 msgstr "Tundmatu veakood \"%s\" domeenilt \"%s\" kohast \"%s\"."
-
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "Selle tegemiseks pead olema sisse loginud."
-
-#, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
-msgstr ""
-"Sa oled teinud hiljuti liiga palju API päringuid. Oota mõni minut ja proovi "
-"uuesti."
 
 #, c-format
 msgid ""
