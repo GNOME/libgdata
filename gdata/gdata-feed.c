@@ -612,8 +612,10 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 			/* Parse the node, passing it the reader cursor. */
 			entry = GDATA_ENTRY (_gdata_parsable_new_from_json_node (entry_type, reader, NULL, error));
-			if (entry == NULL)
+			if (entry == NULL) {
+				json_reader_end_element (reader);
 				return FALSE;
+			}
 
 			/* Calls the callbacks in the main thread */
 			if (data != NULL)
