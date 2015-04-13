@@ -1019,6 +1019,15 @@ parse_grant_error (GDataOAuth2Authorizer *self, guint status,
 	/* Parse the error response */
 	parser = json_parser_new ();
 
+	if (response_body == NULL) {
+		g_clear_error (&child_error);
+		g_set_error_literal (&child_error, GDATA_SERVICE_ERROR,
+		                     GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+		                     _("The server returned a malformed response."));
+
+		goto done;
+	}
+
 	json_parser_load_from_data (parser, response_body, length,
 	                            &child_error);
 
