@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2014 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,6 +15,11 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * TODO: ACLs, batchable
+ * TODO: update links to references; proofread documentation
+ * TODO: add new API to avoid naked calls to gdata_service_insert_entry() (for example)
+ * TODO: port Evo and Geary code
  */
 
 /**
@@ -215,6 +220,14 @@
 
 /* Standards reference here: http://code.google.com/apis/calendar/docs/2.0/reference.html */
 
+static void
+parse_error_response (GDataService *self,
+                      GDataOperationType operation_type,
+                      guint status,
+                      const gchar *reason_phrase,
+                      const gchar *response_body,
+                      gint length,
+                      GError **error);
 static GList *get_authorization_domains (void);
 
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (calendar, "cl", "https://www.google.com/calendar/feeds/")
@@ -225,6 +238,7 @@ gdata_calendar_service_class_init (GDataCalendarServiceClass *klass)
 {
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
 	service_class->feed_type = GDATA_TYPE_CALENDAR_FEED;
+	service_class->parse_error_response = parse_error_response;
 	service_class->get_authorization_domains = get_authorization_domains;
 }
 
@@ -232,6 +246,212 @@ static void
 gdata_calendar_service_init (GDataCalendarService *self)
 {
 	/* Nothing to see here */
+}
+
+/* The error format used by the Google Calendar API doesn’t seem to be
+ * documented anywhere, which is a little frustrating. Here’s an example of it:
+ *     {
+ *      "error": {
+ *       "errors": [
+ *        {
+ *         "domain": "global",
+ *         "reason": "parseError",
+ *         "message": "Parse Error",
+ *        }
+ *       ],
+ *       "code": 400,
+ *       "message": "Parse Error"
+ *      }
+ *     }
+ * or:
+ *     {
+ *      "error": {
+ *       "errors": [
+ *        {
+ *         "domain": "global",
+ *         "reason": "required",
+ *         "message": "Missing end time."
+ *        }
+ *       ],
+ *       "code": 400,
+ *       "message": "Missing end time."
+ *      }
+ *     }
+ */
+static void
+parse_error_response (GDataService *self,
+                      GDataOperationType operation_type,
+                      guint status,
+                      const gchar *reason_phrase,
+                      const gchar *response_body,
+                      gint length,
+                      GError **error)
+{
+	JsonParser *parser = NULL;  /* owned */
+	JsonReader *reader = NULL;  /* owned */
+	gint i;
+	GError *child_error = NULL;
+
+	if (response_body == NULL) {
+		goto parent;
+	}
+
+	if (length == -1) {
+		length = strlen (response_body);
+	}
+
+	parser = json_parser_new ();
+	if (!json_parser_load_from_data (parser, response_body, length,
+	                                 &child_error)) {
+		goto parent;
+	}
+
+	reader = json_reader_new (json_parser_get_root (parser));
+
+	/* Check that the outermost node is an object. */
+	if (!json_reader_is_object (reader)) {
+		goto parent;
+	}
+
+	/* Grab the ‘error’ member, then its ‘errors’ member. */
+	if (!json_reader_read_member (reader, "error") ||
+	    !json_reader_is_object (reader) ||
+	    !json_reader_read_member (reader, "errors") ||
+	    !json_reader_is_array (reader)) {
+		goto parent;
+	}
+
+	/* Parse each of the errors. Return the first one, and print out any
+	 * others. */
+	for (i = 0; i < json_reader_count_elements (reader); i++) {
+		const gchar *domain, *reason, *message, *extended_help;
+		const gchar *location_type, *location;
+
+		/* Parse the error. */
+		if (!json_reader_read_element (reader, i) ||
+		    !json_reader_is_object (reader)) {
+			goto parent;
+		}
+
+		json_reader_read_member (reader, "domain");
+		domain = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "reason");
+		reason = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "message");
+		message = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "extendedHelp");
+		extended_help = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "locationType");
+		location_type = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "location");
+		location = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		/* End the error element. */
+		json_reader_end_element (reader);
+
+		/* Create an error message, but only for the first error */
+		if (error == NULL || *error == NULL) {
+			if (g_strcmp0 (domain, "usageLimits") == 0 &&
+			    g_strcmp0 (reason,
+			               "dailyLimitExceededUnreg") == 0) {
+				/* Daily Limit for Unauthenticated Use
+				 * Exceeded. */
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_API_QUOTA_EXCEEDED,
+				             _("You have made too many API "
+				               "calls recently. Please wait a "
+				               "few minutes and try again."));
+			} else if (g_strcmp0 (domain, "global") == 0 &&
+			           g_strcmp0 (reason, "notFound") == 0) {
+				/* Calendar not found. */
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_NOT_FOUND,
+				             /* Translators: the parameter is an
+				              * error message returned by the
+				              * server. */
+				             _("The requested resource was not found: %s"),
+				             message);
+			} else if ((g_strcmp0 (domain, "global") == 0 &&
+			            g_strcmp0 (reason, "required") == 0) ||
+			           (g_strcmp0 (domain, "global") == 0 &&
+			            g_strcmp0 (reason, "conditionNotMet") == 0)) {
+				/* Client-side protocol error. */
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+				             /* Translators: the parameter is an
+				              * error message returned by the
+				              * server. */
+				             _("Invalid request URI or header, "
+				               "or unsupported nonstandard "
+				               "parameter: %s"), message);
+			} else if (g_strcmp0 (domain, "global") == 0 &&
+			           (g_strcmp0 (reason, "authError") == 0 ||
+			            g_strcmp0 (reason, "required") == 0)) {
+				/* Authentication problem */
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+				             _("You must be authenticated to "
+				               "do this."));
+			} else if (g_strcmp0 (domain, "global") == 0 &&
+			           g_strcmp0 (reason, "forbidden") == 0) {
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_FORBIDDEN,
+				             _("Access was denied by the user "
+				               "or server."));
+			} else {
+				/* Unknown or validation (protocol) error. Fall
+				 * back to working off the HTTP status code. */
+				g_warning ("Unknown error code ‘%s’ in domain "
+				           "‘%s’ received with location type "
+				           "‘%s’, location ‘%s’, extended help "
+				           "‘%s’ and message ‘%s’.",
+				           reason, domain, location_type,
+				           location, extended_help, message);
+
+				goto parent;
+			}
+		} else {
+			/* For all errors after the first, log the error in the
+			 * terminal. */
+			g_debug ("Error message received in response: domain "
+			         "‘%s’, reason ‘%s’, extended help ‘%s’, "
+			         "message ‘%s’, location type ‘%s’, location "
+			         "‘%s’.",
+			         domain, reason, extended_help, message,
+			         location_type, location);
+		}
+	}
+
+	/* End the ‘errors’ and ‘error’ members. */
+	json_reader_end_element (reader);
+	json_reader_end_element (reader);
+
+	g_clear_object (&reader);
+	g_clear_object (&parser);
+
+	/* Ensure we’ve actually set an error message. */
+	g_assert (error == NULL || *error != NULL);
+
+	return;
+
+parent:
+	g_clear_object (&reader);
+	g_clear_object (&parser);
+
+	/* Chain up to the parent class */
+	GDATA_SERVICE_CLASS (gdata_calendar_service_parent_class)->parse_error_response (self, operation_type, status, reason_phrase,
+	                                                                                 response_body, length, error);
 }
 
 static GList *
@@ -316,7 +536,7 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
 		return NULL;
 	}
 
-	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/allcalendars/full", NULL);
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.googleapis.com/calendar/v3/users/me/calendarList", NULL);
 	feed = gdata_service_query (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
 	                            cancellable, progress_callback, progress_user_data, error);
 	g_free (request_uri);
@@ -370,7 +590,7 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
 		return;
 	}
 
-	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/allcalendars/full", NULL);
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.googleapis.com/calendar/v3/users/me/calendarList", NULL);
 	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
 	                           cancellable, progress_callback, progress_user_data, destroy_progress_user_data, callback, user_data);
 	g_free (request_uri);
@@ -413,7 +633,7 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
 		return NULL;
 	}
 
-	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/owncalendars/full", NULL);
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=owner", NULL);
 	feed = gdata_service_query (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
 	                            cancellable, progress_callback, progress_user_data, error);
 	g_free (request_uri);
@@ -467,10 +687,60 @@ gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GD
 		return;
 	}
 
-	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/owncalendars/full", NULL);
+	request_uri = g_strconcat (_gdata_service_get_scheme (), "://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=owner", NULL);
 	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), request_uri, query, GDATA_TYPE_CALENDAR_CALENDAR,
 	                           cancellable, progress_callback, progress_user_data, destroy_progress_user_data, callback, user_data);
 	g_free (request_uri);
+}
+
+static gchar *
+build_events_uri (GDataCalendarCalendar *calendar)
+{
+	GString *uri;
+	const gchar *calendar_id;
+
+	calendar_id = (calendar != NULL) ? gdata_entry_get_id (GDATA_ENTRY (calendar)) : "default";
+
+	uri = g_string_new (_gdata_service_get_scheme ());
+	g_string_append (uri, "://www.googleapis.com/calendar/v3/calendars/");
+	g_string_append_uri_escaped (uri, calendar_id, NULL, FALSE);
+	g_string_append (uri, "/events");
+
+	return g_string_free (uri, FALSE);
+}
+
+static void
+set_event_id (GDataCalendarEvent *event,
+              GDataCalendarCalendar *calendar)
+{
+	GDataLink *_link = NULL;  /* owned */
+	const gchar *id, *calendar_id;
+	gchar *uri = NULL;  /* owned */
+
+	id = gdata_entry_get_id (GDATA_ENTRY (event));
+	calendar_id = gdata_entry_get_id (GDATA_ENTRY (calendar));
+
+	uri = g_strconcat ("https://www.googleapis.com/calendar/v3/calendars/",
+	                   calendar_id, "/events/", id, NULL);
+	_link = gdata_link_new (uri, GDATA_LINK_SELF);
+	gdata_entry_add_link (GDATA_ENTRY (event), _link);
+	g_object_unref (_link);
+	g_free (uri);
+}
+
+static void
+set_event_ids (GDataFeed *feed,
+               GDataCalendarCalendar *calendar)
+{
+	GList/*<unowned GDataEntry>*/ *entries, *i;  /* unowned */
+
+	/* Add a selfLink to each event, since they don’t contain one by
+	 * default in the data returned by the server. */
+	entries = gdata_feed_get_entries (feed);
+
+	for (i = entries; i != NULL; i = i->next) {
+		set_event_id (GDATA_CALENDAR_EVENT (i->data), calendar);
+	}
 }
 
 /**
@@ -493,7 +763,8 @@ GDataFeed *
 gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCalendar *calendar, GDataQuery *query, GCancellable *cancellable,
                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
-	const gchar *uri;
+	gchar *request_uri;
+	GDataFeed *feed;
 
 	g_return_val_if_fail (GDATA_IS_CALENDAR_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_CALENDAR_CALENDAR (calendar), NULL);
@@ -509,18 +780,20 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 		return NULL;
 	}
 
-	/* Use the calendar's content src */
-	uri = gdata_entry_get_content_uri (GDATA_ENTRY (calendar));
-	if (uri == NULL) {
-		/* Erroring out is probably the safest thing to do */
-		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		                     _("The calendar did not have a content URI."));
-		return NULL;
-	}
+	/* Execute the query. */
+	request_uri = build_events_uri (calendar);
+	feed = gdata_service_query (GDATA_SERVICE (self),
+	                            get_calendar_authorization_domain (),
+	                            request_uri, query,
+	                            GDATA_TYPE_CALENDAR_EVENT, cancellable,
+	                            progress_callback, progress_user_data,
+	                            error);
+	g_free (request_uri);
 
-	/* Execute the query */
-	return gdata_service_query (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable,
-	                            progress_callback, progress_user_data, error);
+	/* Set the events’ IDs. */
+	set_event_ids (feed, calendar);
+
+	return feed;
 }
 
 /**
@@ -552,7 +825,7 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
                                            GDestroyNotify destroy_progress_user_data,
                                            GAsyncReadyCallback callback, gpointer user_data)
 {
-	const gchar *uri;
+	gchar *request_uri;
 
 	g_return_if_fail (GDATA_IS_CALENDAR_SERVICE (self));
 	g_return_if_fail (GDATA_IS_CALENDAR_CALENDAR (calendar));
@@ -572,22 +845,18 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
 		return;
 	}
 
-	/* Use the calendar's content src */
-	uri = gdata_entry_get_content_uri (GDATA_ENTRY (calendar));
-	if (uri == NULL) {
-		/* Erroring out is probably the safest thing to do */
-		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
-		                                 _("The calendar did not have a content URI."));
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
-
-		return;
-	}
-
-	/* Execute the query */
-	gdata_service_query_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, query, GDATA_TYPE_CALENDAR_EVENT, cancellable,
-	                           progress_callback, progress_user_data, destroy_progress_user_data, callback, user_data);
+	/* Execute the query. */
+	request_uri = build_events_uri (calendar);
+	gdata_service_query_async (GDATA_SERVICE (self),
+	                           get_calendar_authorization_domain (),
+	                           request_uri, query,
+	                           GDATA_TYPE_CALENDAR_EVENT, cancellable,
+	                           progress_callback, progress_user_data,
+	                           destroy_progress_user_data, callback,
+	                           user_data);
+/* TODO: 	Set the events’ IDs.
+	set_event_ids (feed, calendar); */
+	g_free (request_uri);
 }
 
 /**
@@ -602,6 +871,7 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
  * For more details, see gdata_service_insert_entry().
  *
  * Return value: (transfer full): an updated #GDataCalendarEvent, or %NULL; unref with g_object_unref()
+ * TODO: Deprecate
  *
  * Since: 0.2.0
  **/
@@ -617,9 +887,55 @@ gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEv
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/private/full", NULL);
+	uri = build_events_uri (NULL);
 	entry = gdata_service_insert_entry (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, GDATA_ENTRY (event), cancellable, error);
 	g_free (uri);
+
+	return GDATA_CALENDAR_EVENT (entry);
+}
+
+/**
+ * gdata_calendar_service_insert_calendar_event:
+ * @self: a #GDataCalendarService
+ * @calendar: the #GDataCalendarCalendar to insert the event into
+ * @event: the #GDataCalendarEvent to insert
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Inserts @event by uploading it to the online calendar service, adding it to
+ * the specified @calendar.
+ *
+ * For more details, see gdata_service_insert_entry().
+ *
+ * Return value: (transfer full): an updated #GDataCalendarEvent, or %NULL;
+ * unref with g_object_unref()
+ *
+ * Since: UNRELEASED
+ */
+GDataCalendarEvent *
+gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
+                                              GDataCalendarCalendar *calendar,
+                                              GDataCalendarEvent *event,
+                                              GCancellable *cancellable,
+                                              GError **error)
+{
+	gchar *uri;
+	GDataEntry *entry;
+
+	g_return_val_if_fail (GDATA_IS_CALENDAR_SERVICE (self), NULL);
+	g_return_val_if_fail (GDATA_IS_CALENDAR_CALENDAR (calendar), NULL);
+	g_return_val_if_fail (GDATA_IS_CALENDAR_EVENT (event), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	uri = build_events_uri (calendar);
+	entry = gdata_service_insert_entry (GDATA_SERVICE (self),
+	                                    get_calendar_authorization_domain (),
+	                                    uri, GDATA_ENTRY (event),
+	                                    cancellable, error);
+	g_free (uri);
+
+	set_event_id (GDATA_CALENDAR_EVENT (entry), calendar);
 
 	return GDATA_CALENDAR_EVENT (entry);
 }
@@ -640,6 +956,7 @@ gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEv
  *
  * For more details, see gdata_calendar_service_insert_event(), which is the synchronous version of this function, and
  * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
+ * TODO: deprecate
  *
  * Since: 0.8.0
  **/
@@ -653,8 +970,53 @@ gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCale
 	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (event));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
-	uri = g_strconcat (_gdata_service_get_scheme (), "://www.google.com/calendar/feeds/default/private/full", NULL);
+	uri = build_events_uri (NULL);
 	gdata_service_insert_entry_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, GDATA_ENTRY (event), cancellable,
 	                                  callback, user_data);
 	g_free (uri);
+}
+
+/**
+ * gdata_calendar_service_insert_calendar_event_async:
+ * @self: a #GDataCalendarService
+ * @calendar: the #GDataCalendarCalendar to insert the event into
+ * @event: the #GDataCalendarEvent to insert
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when insertion is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Inserts @event by uploading it to the online calendar service, adding it to
+ * the specified @calendar. @self and @event are both reffed when this function
+ * is called, so can safely be unreffed after this function returns.
+ *
+ * @callback should call gdata_service_insert_entry_finish() to obtain a
+ * #GDataCalendarEvent representing the inserted event and to check for possible
+ * errors.
+ *
+ * For more details, see gdata_calendar_service_insert_event(), which is the
+ * synchronous version of this function, and gdata_service_insert_entry_async(),
+ * which is the base asynchronous insertion function.
+ *
+ * Since: UNRELEASED
+ */
+void
+gdata_calendar_service_insert_calendar_event_async (GDataCalendarService *self,
+                                                    GDataCalendarCalendar *calendar,
+                                                    GDataCalendarEvent *event,
+                                                    GCancellable *cancellable,
+                                                    GAsyncReadyCallback callback,
+                                                    gpointer user_data)
+{
+	gchar *uri;
+
+	g_return_if_fail (GDATA_IS_CALENDAR_SERVICE (self));
+	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (event));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	uri = build_events_uri (calendar);
+	gdata_service_insert_entry_async (GDATA_SERVICE (self),
+	                                  get_calendar_authorization_domain (),
+	                                  uri, GDATA_ENTRY (event), cancellable,
+	                                  callback, user_data);
+	g_free (uri);/* TODO: self link */
 }

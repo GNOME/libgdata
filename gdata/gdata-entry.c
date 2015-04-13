@@ -881,13 +881,17 @@ gdata_entry_add_category (GDataEntry *self, GDataCategory *category)
 
 	/* Check to see if it's a kind category and if it matches the entry's predetermined kind */
 	if (g_strcmp0 (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
+#if 0
 		GDataEntryClass *klass = GDATA_ENTRY_GET_CLASS (self);
+#endif
 		GList *element;
 
+#if 0
 		if (klass->kind_term != NULL && g_strcmp0 (gdata_category_get_term (category), klass->kind_term) != 0) {
 			g_warning ("Adding a kind category term, '%s', to an entry of kind '%s'.",
 			           gdata_category_get_term (category), klass->kind_term);
 		}
+#endif
 
 		/* If it is a kind category, remove the entry’s existing kind category to allow the new one
 		 * to be added. This is necessary because the existing category was set in

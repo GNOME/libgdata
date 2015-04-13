@@ -100,6 +100,20 @@ GDataCalendarEvent *gdata_calendar_service_insert_event (GDataCalendarService *s
 void gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable,
                                                 GAsyncReadyCallback callback, gpointer user_data);
 
+GDataCalendarEvent *
+gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
+                                              GDataCalendarCalendar *calendar,
+                                              GDataCalendarEvent *event,
+                                              GCancellable *cancellable,
+                                              GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void
+gdata_calendar_service_insert_calendar_event_async (GDataCalendarService *self,
+                                                    GDataCalendarCalendar *calendar,
+                                                    GDataCalendarEvent *event,
+                                                    GCancellable *cancellable,
+                                                    GAsyncReadyCallback callback,
+                                                    gpointer user_data);
+
 G_END_DECLS
 
 #endif /* !GDATA_CALENDAR_SERVICE_H */

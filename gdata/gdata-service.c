@@ -1850,6 +1850,7 @@ gdata_service_delete_entry (GDataService *self, GDataAuthorizationDomain *domain
 	} else {
 		_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
 	}
+	g_message ("%p: looking up link %s", entry, klass->get_content_type ());
 	g_assert (_link != NULL);
 
 	fixed_uri = _gdata_service_fix_uri_scheme (gdata_link_get_uri (_link));

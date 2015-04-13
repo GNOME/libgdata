@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2010, 2014 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,8 @@
  *
  * For more details of Google Calendar's GData API, see the <ulink type="http" url="http://code.google.com/apis/calendar/docs/2.0/reference.html">
  * online documentation</ulink>.
+ *
+ * TODO: update examples, etags
  *
  * <example>
  * 	<title>Listing Calendars</title>
@@ -77,7 +79,6 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
 #include <string.h>
 
 #include "gdata-calendar-calendar.h"
@@ -93,9 +94,9 @@ static GObject *gdata_calendar_calendar_constructor (GType type, guint n_constru
 static void gdata_calendar_calendar_finalize (GObject *object);
 static void gdata_calendar_calendar_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_calendar_calendar_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static void get_xml (GDataParsable *parsable, GString *xml_string);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+static void get_json (GDataParsable *parsable, JsonBuilder *builder);
+static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+static const gchar *get_content_type (void);
 
 struct _GDataCalendarCalendarPrivate {
 	gchar *timezone;
@@ -136,17 +137,17 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	gobject_class->get_property = gdata_calendar_calendar_get_property;
 	gobject_class->finalize = gdata_calendar_calendar_finalize;
 
-	parsable_class->parse_xml = parse_xml;
-	parsable_class->get_xml = get_xml;
-	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->parse_json = parse_json;
+	parsable_class->get_json = get_json;
+	parsable_class->get_content_type = get_content_type;
 
-	entry_class->kind_term = "http://schemas.google.com/gCal/2005#calendarmeta";
+	entry_class->kind_term = "calendar#calendarListEntry";
 
 	/**
 	 * GDataCalendarCalendar:timezone:
 	 *
 	 * The timezone in which the calendar's times are given. This is a timezone name in tz database notation: <ulink type="http"
-	 * url="http://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones">reference</ulink>.
+	 * url="http://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones">reference</ulink>. TODO: is it?
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
 	                                 g_param_spec_string ("timezone",
@@ -182,7 +183,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * GDataCalendarCalendar:color:
 	 *
 	 * The color used to highlight the calendar in the user's browser. This must be one of a limited set of colors listed in the
-	 * <ulink type="http" url="http://code.google.com/apis/calendar/data/2.0/reference.html#gCalcolor">online documentation</ulink>.
+	 * <ulink type="http" url="http://code.google.com/apis/calendar/data/2.0/reference.html#gCalcolor">online documentation</ulink>. TODO
 	 **/
 	g_object_class_install_property (gobject_class, PROP_COLOR,
 	                                 g_param_spec_boxed ("color",
@@ -360,113 +361,123 @@ gdata_calendar_calendar_set_property (GObject *object, guint property_id, const 
 }
 
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
 {
 	gboolean success;
+	gchar *summary = NULL;
 	GDataCalendarCalendar *self = GDATA_CALENDAR_CALENDAR (parsable);
 
-	if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	    gdata_parser_int64_time_from_element (node, "edited", P_REQUIRED | P_NO_DUPES, &(self->priv->edited), &success, error) == TRUE) {
-		return success;
-	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/gCal/2005") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "timezone") == 0) {
-			/* gCal:timezone */
-			xmlChar *_timezone = xmlGetProp (node, (xmlChar*) "value");
-			if (_timezone == NULL)
-				return gdata_parser_error_required_property_missing (node, "value", error);
-			self->priv->timezone = (gchar*) _timezone;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "timesCleaned") == 0) {
-			/* gCal:timesCleaned */
-			xmlChar *times_cleaned = xmlGetProp (node, (xmlChar*) "value");
-			if (times_cleaned == NULL)
-				return gdata_parser_error_required_property_missing (node, "value", error);
-			self->priv->times_cleaned = g_ascii_strtoull ((gchar*) times_cleaned, NULL, 10);
-			xmlFree (times_cleaned);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "hidden") == 0) {
-			/* gCal:hidden */
-			if (gdata_parser_boolean_from_property (node, "value", &(self->priv->is_hidden), -1, error) == FALSE)
-				return FALSE;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "color") == 0) {
-			/* gCal:color */
-			xmlChar *value;
-			GDataColor colour;
+	/* TODO: things removed:
+	 * edited
+	 * timesCleaned
+	 *
+	 * things not yet implemented
+	 * description
+	 * location
+	 * summaryOverride
+	 * colorId
+	 * foregroundColor
+	 * defaultReminders
+	 * notificationSettings
+	 * primary
+	 * deleted
+	 *
+	 * TODO: check values for accesslevel
+	 */
 
-			value = xmlGetProp (node, (xmlChar*) "value");
-			if (value == NULL)
-				return gdata_parser_error_required_property_missing (node, "value", error);
-			if (gdata_color_from_hexadecimal ((gchar*) value, &colour) == FALSE) {
-				/* Error */
-				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				             /* Translators: the first parameter is the name of an XML element (including the angle brackets
-				              * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
-				              * RGB format).
-				              *
-				              * For example:
-				              *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format. */
-				             _("The content of a %s element (\"%s\") was not in hexadecimal RGB format."),
-				             "<entry/gCal:color>", value);
-				xmlFree (value);
-
-				return FALSE;
+	if (gdata_parser_string_from_json_member (reader, "timeZone", P_DEFAULT, &self->priv->timezone, &success, error) ||
+	    gdata_parser_string_from_json_member (reader, "accessRole", P_DEFAULT, &self->priv->access_level, &success, error) ||
+	    gdata_parser_color_from_json_member (reader, "backgroundColor", P_DEFAULT, &self->priv->colour, &success, error) ||
+	    gdata_parser_boolean_from_json_member (reader, "hidden", P_DEFAULT, &self->priv->is_hidden, &success, error) ||
+	    gdata_parser_boolean_from_json_member (reader, "selected", P_DEFAULT, &self->priv->is_selected, &success, error) ||
+	    gdata_parser_string_from_json_member (reader, "summary", P_DEFAULT, &summary, &success, error)) {
+		if (success) {
+			if (summary != NULL) {
+				gdata_entry_set_title (GDATA_ENTRY (parsable), summary);
 			}
-
-			gdata_calendar_calendar_set_color (self, &colour);
-			xmlFree (value);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "selected") == 0) {
-			/* gCal:selected */
-			if (gdata_parser_boolean_from_property (node, "value", &(self->priv->is_selected), -1, error) == FALSE)
-				return FALSE;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "accesslevel") == 0) {
-			/* gCal:accesslevel */
-			self->priv->access_level = (gchar*) xmlGetProp (node, (xmlChar*) "value");
-			if (self->priv->access_level == NULL)
-				return gdata_parser_error_required_property_missing (node, "value", error);
-		} else {
-			return GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
+
+		g_free (summary);
+
+		return success;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "id") == 0) {
+		GDataLink *_link;
+		const gchar *id;
+		gchar *uri;
+
+		/* Calendar entries don’t contain their own selfLink, so we have
+		 * to add one manually. */
+		id = json_reader_get_string_value (reader);
+		if (id != NULL && *id != '\0') {
+			uri = g_strconcat ("https://www.googleapis.com/calendar/v3/calendars/", id, NULL);
+			_link = gdata_link_new (uri, GDATA_LINK_SELF);
+			gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
+			g_object_unref (_link);
+			g_free (uri);
+		}
+
+		g_free (summary);
+		return GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->parse_json (parsable, reader, user_data, error);
 	} else {
-		return GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		g_free (summary);
+		return GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->parse_json (parsable, reader, user_data, error);
 	}
 
 	return TRUE;
 }
 
 static void
-get_xml (GDataParsable *parsable, GString *xml_string)
+get_json (GDataParsable *parsable, JsonBuilder *builder)
 {
+	const gchar *id, *etag, *title;
 	gchar *colour;
 	GDataCalendarCalendarPrivate *priv = GDATA_CALENDAR_CALENDAR (parsable)->priv;
 
-	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->get_xml (parsable, xml_string);
+	id = gdata_entry_get_id (GDATA_ENTRY (parsable));
+	if (id != NULL) {
+		json_builder_set_member_name (builder, "id");
+		json_builder_add_string_value (builder, id);
+	}
 
-	/* Add all the Calendar-specific XML */
-	if (priv->timezone != NULL)
-		gdata_parser_string_append_escaped (xml_string, "<gCal:timezone value='", priv->timezone, "'/>");
+	json_builder_set_member_name (builder, "kind");
+	json_builder_add_string_value (builder, "calendar#calendar");
 
-	if (priv->is_hidden == TRUE)
-		g_string_append (xml_string, "<gCal:hidden value='true'/>");
-	else
-		g_string_append (xml_string, "<gCal:hidden value='false'/>");
+	/* Add the ETag, if available. */
+	etag = gdata_entry_get_etag (GDATA_ENTRY (parsable));
+	if (etag != NULL) {
+		json_builder_set_member_name (builder, "etag");
+		json_builder_add_string_value (builder, etag);
+	}
 
-	colour = gdata_color_to_hexadecimal (&(priv->colour));
-	g_string_append_printf (xml_string, "<gCal:color value='%s'/>", colour);
+	/* Calendar labels titles as ‘summary’. */
+	title = gdata_entry_get_title (GDATA_ENTRY (parsable));
+	if (title != NULL) {
+		json_builder_set_member_name (builder, "summary");
+		json_builder_add_string_value (builder, title);
+	}
+
+	/* Add all the calendar-specific JSON */
+	if (priv->timezone != NULL) {
+		json_builder_set_member_name (builder, "timeZone");
+		json_builder_add_string_value (builder, priv->timezone);
+	}
+
+	json_builder_set_member_name (builder, "hidden");
+	json_builder_add_boolean_value (builder, priv->is_hidden);
+
+	colour = gdata_color_to_hexadecimal (&priv->colour);
+	json_builder_set_member_name (builder, "backgroundColor");
+	json_builder_add_string_value (builder, colour);
 	g_free (colour);
 
-	if (priv->is_selected == TRUE)
-		g_string_append (xml_string, "<gCal:selected value='true'/>");
-	else
-		g_string_append (xml_string, "<gCal:selected value='false'/>");
+	json_builder_set_member_name (builder, "selected");
+	json_builder_add_boolean_value (builder, priv->is_selected);
 }
 
-static void
-get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
+static const gchar *
+get_content_type (void)
 {
-	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_calendar_calendar_parent_class)->get_namespaces (parsable, namespaces);
-
-	g_hash_table_insert (namespaces, (gchar*) "gCal", (gchar*) "http://schemas.google.com/gCal/2005");
-	g_hash_table_insert (namespaces, (gchar*) "app", (gchar*) "http://www.w3.org/2007/app");
+	return "application/json";
 }
 
 /**
