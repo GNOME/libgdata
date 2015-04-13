@@ -209,16 +209,19 @@ _json_reader_dup_current_node (JsonReader *reader)
 		}
 	} else if (json_reader_is_object (reader) == TRUE) {
 		/* Object nodes require deep copies. */
-		gint i, members;
+		gint i;
+		gchar **members;
 		JsonObject *obj;
 
 		obj = json_object_new ();
 
-		for (i = 0, members = json_reader_count_members (reader); i < members; i++) {
-			json_reader_read_element (reader, i);
-			json_object_set_member (obj, json_reader_get_member_name (reader), _json_reader_dup_current_node (reader));
-			json_reader_end_element (reader);
+		for (i = 0, members = json_reader_list_members (reader); members[i] != NULL; i++) {
+			json_reader_read_member (reader, members[i]);
+			json_object_set_member (obj, members[i], _json_reader_dup_current_node (reader));
+			json_reader_end_member (reader);
 		}
+
+		g_strfreev (members);
 
 		value = json_node_new (JSON_NODE_OBJECT);
 		json_node_take_object (value, obj);
