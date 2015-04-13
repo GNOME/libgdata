@@ -526,6 +526,7 @@ _gdata_parsable_new_from_json_node (GType parsable_type, JsonReader *reader, gpo
 		g_return_val_if_fail (json_reader_read_element (reader, i), NULL);
 
 		if (klass->parse_json (parsable, reader, user_data, error) == FALSE) {
+			json_reader_end_element (reader);
 			g_object_unref (parsable);
 			return NULL;
 		}
