@@ -615,7 +615,7 @@ CODE_COVERAGE_DIRECTORY = $(top_builddir)/gdata
 CODE_COVERAGE_LCOV_OPTIONS = --base-directory $(abs_top_srcdir)
 
 # Demo programs
-noinst_PROGRAMS =
+noinst_PROGRAMS = demos/youtube/youtube-cli
 
 if ENABLE_GOA
 noinst_PROGRAMS += demos/docs-list/docs-list
@@ -705,6 +705,33 @@ demos_freebase_freebase_cli_CFLAGS = \
 	$(NULL)
 
 demos_freebase_freebase_cli_LDADD = \
+	$(top_builddir)/gdata/libgdata.la \
+	$(GDATA_LIBS) \
+	$(GNOME_LIBS) \
+	$(AM_LDADD) \
+	$(NULL)
+
+demos_youtube_youtube_cli_SOURCES = \
+	demos/youtube/youtube-cli.c  \
+	$(NULL)
+
+demos_youtube_youtube_cli_CPPFLAGS = \
+	-I$(top_srcdir)/ \
+	-I$(top_srcdir)/gdata \
+	-DG_LOG_DOMAIN=\"youtube\" \
+	-DLIBGDATA_DISABLE_DEPRECATED \
+	$(DISABLE_DEPRECATED) \
+	$(AM_CPPFLAGS) \
+	$(NULL)
+
+demos_youtube_youtube_cli_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GDATA_CFLAGS) \
+	$(GNOME_CFLAGS) \
+	$(AM_CFLAGS) \
+	$(NULL)
+
+demos_youtube_youtube_cli_LDADD = \
 	$(top_builddir)/gdata/libgdata.la \
 	$(GDATA_LIBS) \
 	$(GNOME_LIBS) \
