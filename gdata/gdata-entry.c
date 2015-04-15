@@ -849,6 +849,22 @@ _gdata_entry_set_updated (GDataEntry *self, gint64 updated)
 	self->priv->updated = updated;
 }
 
+/*
+ * _gdata_entry_set_published:
+ * @self: a #GDataEntry
+ * @updated: the new published value
+ *
+ * Sets the value of the #GDataEntry:published property to @published.
+ *
+ * Since: UNRELEASED
+ */
+void
+_gdata_entry_set_published (GDataEntry *self, gint64 published)
+{
+	g_return_if_fail (GDATA_IS_ENTRY (self));
+	self->priv->published = published;
+}
+
 /**
  * gdata_entry_get_published:
  * @self: a #GDataEntry
