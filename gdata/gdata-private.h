@@ -111,6 +111,7 @@ G_GNUC_INTERNAL void _gdata_feed_call_progress_callback (GDataFeed *self, gpoint
 #include "gdata-batch-operation.h"
 G_GNUC_INTERNAL void _gdata_entry_set_updated (GDataEntry *self, gint64 updated);
 G_GNUC_INTERNAL void _gdata_entry_set_published (GDataEntry *self, gint64 published);
+G_GNUC_INTERNAL void _gdata_entry_set_id (GDataEntry *self, const gchar *id);
 G_GNUC_INTERNAL void _gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type);
 
 #include "gdata-parser.h"

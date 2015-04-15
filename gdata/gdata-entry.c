@@ -865,6 +865,24 @@ _gdata_entry_set_published (GDataEntry *self, gint64 published)
 	self->priv->published = published;
 }
 
+/*
+ * _gdata_entry_set_id:
+ * @self: a #GDataEntry
+ * @id: (nullable): the new ID
+ *
+ * Sets the value of the #GDataEntry:id property to @id.
+ *
+ * Since: UNRELEASED
+ */
+void
+_gdata_entry_set_id (GDataEntry *self, const gchar *id)
+{
+	g_return_if_fail (GDATA_IS_ENTRY (self));
+
+	g_free (self->priv->id);
+	self->priv->id = g_strdup (id);
+}
+
 /**
  * gdata_entry_get_published:
  * @self: a #GDataEntry
