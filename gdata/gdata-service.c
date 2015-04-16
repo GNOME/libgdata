@@ -1126,6 +1126,8 @@ gdata_service_query_single_entry (GDataService *self, GDataAuthorizationDomain *
 	GDataEntry *entry;
 	gchar *entry_uri;
 	SoupMessage *message;
+	SoupMessageHeaders *headers;
+	const gchar *content_type;
 
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (domain == NULL || GDATA_IS_AUTHORIZATION_DOMAIN (domain), NULL);
@@ -1150,7 +1152,10 @@ gdata_service_query_single_entry (GDataService *self, GDataAuthorizationDomain *
 
 	g_assert (message->response_body->data != NULL);
 
-	if (g_strcmp0 (GDATA_PARSABLE_CLASS (klass)->get_content_type (), "application/json") == 0) {
+	headers = message->response_headers;
+	content_type = soup_message_headers_get_content_type (headers, NULL);
+
+	if (g_strcmp0 (content_type, "application/json") == 0) {
 		entry = GDATA_ENTRY (gdata_parsable_new_from_json (entry_type, message->response_body->data, message->response_body->length, error));
 	} else {
 		entry = GDATA_ENTRY (gdata_parsable_new_from_xml (entry_type, message->response_body->data, message->response_body->length, error));
