@@ -2,6 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -88,6 +89,8 @@ _gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service
 	GDataFeed *feed;
 	GDataLink *_link;
 	SoupMessage *message;
+	SoupMessageHeaders *headers;
+	const gchar *content_type;
 
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
@@ -103,8 +106,23 @@ _gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service
 	}
 
 	g_assert (message->response_body->data != NULL);
-	feed = _gdata_feed_new_from_xml (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_ACCESS_RULE,
-	                                 progress_callback, progress_user_data, error);
+
+	headers = message->response_headers;
+	content_type = soup_message_headers_get_content_type (headers, NULL);
+
+	if (g_strcmp0 (content_type, "application/json") == 0) {
+		/* Definitely JSON. */
+		g_debug("JSON content type detected.");
+		feed = _gdata_feed_new_from_json (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_ACCESS_RULE,
+		                                  progress_callback, progress_user_data, error);
+	} else {
+		/* Potentially XML. Don't bother checking the Content-Type, since the parser
+		 * will fail gracefully if the response body is not valid XML. */
+		g_debug("XML content type detected.");
+		feed = _gdata_feed_new_from_xml (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_ACCESS_RULE,
+		                                 progress_callback, progress_user_data, error);
+	}
+
 	g_object_unref (message);
 
 	return feed;
