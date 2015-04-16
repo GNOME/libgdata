@@ -524,18 +524,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 static gchar *
 get_entry_uri (const gchar *id)
 {
-	const gchar *resource_id;
-
-	/* Version 3: We get an ID similar to “https://docs.google.com/feeds/id/[resource_id]” and want an entry URI
-	 * similar to “https://docs.google.com/feeds/default/private/full/[resource_id]”. */
-	resource_id = g_strrstr (id, "/");
-
-	if (resource_id == NULL) {
-		/* Bail! */
-		return g_strdup (id);
-	}
-
-	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full", resource_id, NULL);
+	return g_strconcat ("https://www.googleapis.com/drive/v2/files/", id, NULL);
 }
 
 /**
