@@ -2,6 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -200,26 +201,114 @@
 #include <glib/gi18n-lib.h>
 
 #include "gdata-documents-document.h"
+#include "gdata-documents-drawing.h"
 #include "gdata-documents-entry.h"
+#include "gdata-documents-presentation.h"
 #include "gdata-documents-spreadsheet.h"
+#include "gdata-documents-text.h"
 #include "gdata-download-stream.h"
 #include "gdata-private.h"
 #include "gdata-service.h"
+
+static void gdata_documents_document_finalize (GObject *object);
+static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+
+struct _GDataDocumentsDocumentPrivate {
+	GHashTable *export_links; /* owned string → owned string */
+};
 
 G_DEFINE_TYPE (GDataDocumentsDocument, gdata_documents_document, GDATA_TYPE_DOCUMENTS_ENTRY)
 
 static void
 gdata_documents_document_class_init (GDataDocumentsDocumentClass *klass)
 {
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
+	g_type_class_add_private (klass, sizeof (GDataDocumentsDocumentPrivate));
+
+	gobject_class->finalize = gdata_documents_document_finalize;
+	parsable_class->parse_json = parse_json;
 	entry_class->kind_term = "http://schemas.google.com/docs/2007#file";
 }
 
 static void
 gdata_documents_document_init (GDataDocumentsDocument *self)
 {
-	/* Nothing to see here. */
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_DOCUMENT, GDataDocumentsDocumentPrivate);
+	self->priv->export_links = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+}
+
+static void
+gdata_documents_document_finalize (GObject *object)
+{
+	GDataDocumentsDocumentPrivate *priv = GDATA_DOCUMENTS_DOCUMENT (object)->priv;
+
+	g_hash_table_unref (priv->export_links);
+
+	G_OBJECT_CLASS (gdata_documents_document_parent_class)->finalize (object);
+}
+
+static gboolean
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
+{
+	GDataDocumentsDocumentPrivate *priv = GDATA_DOCUMENTS_DOCUMENT (parsable)->priv;
+	gboolean success;
+	gchar *content_uri = NULL;
+	gchar *thumbnail_uri = NULL;
+
+	/* JSON format: https://developers.google.com/drive/v2/reference/files */
+
+	if (gdata_parser_string_from_json_member (reader, "downloadUrl", P_DEFAULT, &content_uri, &success, error) == TRUE) {
+		if (success && content_uri != NULL && content_uri[0] != '\0')
+			gdata_entry_set_content_uri (GDATA_ENTRY (parsable), content_uri);
+		g_free (content_uri);
+		return success;
+	} else if (gdata_parser_string_from_json_member (reader, "thumbnailLink", P_DEFAULT, &thumbnail_uri, &success, error) == TRUE) {
+		if (success && thumbnail_uri != NULL && thumbnail_uri[0] != '\0') {
+			GDataLink *_link;
+
+			_link = gdata_link_new (thumbnail_uri, "http://schemas.google.com/docs/2007/thumbnail");
+			gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
+			g_object_unref (_link);
+		}
+
+		g_free (thumbnail_uri);
+		return success;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "exportLinks") == 0) {
+		guint i, members;
+
+		if (json_reader_is_object (reader) == FALSE) {
+			g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_PARSING_STRING,
+			             /* Translators: the parameter is an error message */
+			             _("Error parsing JSON: %s"),
+			             "JSON node ‘exportLinks’ is not an object.");
+			return FALSE;
+		}
+
+		for (i = 0, members = (guint) json_reader_count_members (reader); i < members; i++) {
+			const gchar *format;
+			gchar *uri = NULL;
+
+			json_reader_read_element (reader, i);
+
+			format = json_reader_get_member_name (reader);
+
+			gdata_parser_string_from_json_member (reader, format, P_REQUIRED | P_NON_EMPTY, &uri, &success, NULL);
+			if (success) {
+				g_hash_table_insert (priv->export_links, g_strdup (format), uri);
+				uri = NULL;
+			}
+
+			json_reader_end_element (reader);
+			g_free (uri);
+		}
+
+		return TRUE;
+	}
+
+	return GDATA_PARSABLE_CLASS (gdata_documents_document_parent_class)->parse_json (parsable, reader, user_data, error);
 }
 
 /**
@@ -328,10 +417,39 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 gchar *
 gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const gchar *export_format)
 {
+	const gchar *format;
+
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (self), NULL);
 	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
 
-	return _gdata_service_build_uri ("%p&exportFormat=%s", gdata_entry_get_content_uri (GDATA_ENTRY (self)), export_format);
+	if (g_strcmp0 (export_format, "html") == 0)
+		format = "text/html";
+	else if (g_strcmp0 (export_format, "jpeg") == 0)
+		format = "image/jpeg";
+	else if (g_strcmp0 (export_format, "pdf") == 0)
+		format = "application/pdf";
+	else if (g_strcmp0 (export_format, "png") == 0)
+		format = "image/png";
+	else if (g_strcmp0 (export_format, "txt") == 0)
+		format = "text/plain";
+	else if (g_strcmp0 (export_format, GDATA_DOCUMENTS_DRAWING_SVG) == 0)
+		format = "image/svg+xml";
+	else if (g_strcmp0 (export_format, GDATA_DOCUMENTS_PRESENTATION_PPT) == 0)
+		format = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+	else if (g_strcmp0 (export_format, GDATA_DOCUMENTS_SPREADSHEET_CSV) == 0)
+		format = "text/csv";
+	else if (g_strcmp0 (export_format, GDATA_DOCUMENTS_SPREADSHEET_ODS) == 0)
+		format = "application/x-vnd.oasis.opendocument.spreadsheet";
+	else if (g_strcmp0 (export_format, GDATA_DOCUMENTS_SPREADSHEET_XLS) == 0)
+		format = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	else if (g_strcmp0 (export_format, GDATA_DOCUMENTS_TEXT_ODT) == 0)
+		format = "application/vnd.oasis.opendocument.text";
+	else if (g_strcmp0 (export_format, GDATA_DOCUMENTS_TEXT_RTF) == 0)
+		format = "application/rtf";
+	else
+		format = export_format;
+
+	return g_strdup (g_hash_table_lookup (self->priv->export_links, format));
 }
 
 /**
