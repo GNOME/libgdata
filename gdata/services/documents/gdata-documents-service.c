@@ -288,9 +288,8 @@ static gchar *_build_v2_upload_uri (GDataDocumentsFolder *folder) G_GNUC_WARN_UN
 static gchar *_get_upload_uri_for_query_and_folder (GDataDocumentsUploadQuery *query,
                                                     GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-_GDATA_DEFINE_AUTHORIZATION_DOMAIN (documents, "writely", "https://docs.google.com/feeds/")
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (documents, "writely", "https://www.googleapis.com/auth/drive")
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (spreadsheets, "wise", "https://spreadsheets.google.com/feeds/")
-_GDATA_DEFINE_AUTHORIZATION_DOMAIN (docs_downloads, "writely", "https://docs.googleusercontent.com/")
 G_DEFINE_TYPE_WITH_CODE (GDataDocumentsService, gdata_documents_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
 static void
@@ -362,7 +361,6 @@ get_authorization_domains (void)
 
 	authorization_domains = g_list_prepend (authorization_domains, get_documents_authorization_domain ());
 	authorization_domains = g_list_prepend (authorization_domains, get_spreadsheets_authorization_domain ());
-	authorization_domains = g_list_prepend (authorization_domains, get_docs_downloads_authorization_domain ());
 
 	return authorization_domains;
 }
