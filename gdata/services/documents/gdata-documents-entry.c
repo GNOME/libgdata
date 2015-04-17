@@ -263,7 +263,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                 g_param_spec_string ("document-id",
 	                                                      "Document ID", "The document ID of the document.",
 	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataDocumentsEntry:last-modified-by:
