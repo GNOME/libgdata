@@ -2795,3 +2795,20 @@ gdata_oauth2_authorizer_get_type
 <SUBSECTION Private>
 GDataOAuth2AuthorizerPrivate
 </SECTION>
+
+<SECTION>
+<FILE>gdata-youtube-feed</FILE>
+<TITLE>GDataYouTubeFeed</TITLE>
+GDataYouTubeFeed
+GDataYouTubeFeedClass
+<SUBSECTION Standard>
+gdata_youtube_feed_get_type
+GDATA_YOUTUBE_FEED
+GDATA_YOUTUBE_FEED_CLASS
+GDATA_YOUTUBE_FEED_GET_CLASS
+GDATA_IS_YOUTUBE_FEED
+GDATA_IS_YOUTUBE_FEED_CLASS
+GDATA_TYPE_YOUTUBE_FEED
+<SUBSECTION Private>
+GDataYouTubeFeedPrivate
+</SECTION>

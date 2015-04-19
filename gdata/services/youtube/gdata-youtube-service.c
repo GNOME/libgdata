@@ -244,6 +244,7 @@
 #include <string.h>
 
 #include "gdata-youtube-service.h"
+#include "gdata-youtube-feed.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
 #include "gdata-parser.h"
@@ -292,6 +293,7 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 	gobject_class->get_property = gdata_youtube_service_get_property;
 	gobject_class->finalize = gdata_youtube_service_finalize;
 
+	service_class->feed_type = GDATA_TYPE_YOUTUBE_FEED;
 	service_class->append_query_headers = append_query_headers;
 	service_class->parse_error_response = parse_error_response;
 	service_class->get_authorization_domains = get_authorization_domains;

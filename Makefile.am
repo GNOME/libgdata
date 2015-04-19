@@ -321,7 +321,8 @@ gdata_youtube_headers = \
 	gdata/services/youtube/gdata-youtube-query.h	\
 	gdata/services/youtube/gdata-youtube-state.h	\
 	gdata/services/youtube/gdata-youtube-category.h	\
-	gdata/services/youtube/gdata-youtube-comment.h
+	gdata/services/youtube/gdata-youtube-comment.h	\
+	gdata/services/youtube/gdata-youtube-feed.h
 private_headers += \
 	gdata/services/youtube/gdata-youtube-group.h	\
 	gdata/services/youtube/gdata-youtube-control.h
@@ -453,6 +454,7 @@ gdata_sources = \
 	gdata/services/youtube/gdata-youtube-control.c		\
 	gdata/services/youtube/gdata-youtube-category.c		\
 	gdata/services/youtube/gdata-youtube-comment.c		\
+	gdata/services/youtube/gdata-youtube-feed.c		\
 	\
 	gdata/services/tasks/gdata-tasks-service.c			\
 	gdata/services/tasks/gdata-tasks-tasklist.c			\
