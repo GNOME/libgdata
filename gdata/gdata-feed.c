@@ -647,6 +647,17 @@ post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
 	return TRUE;
 }
 
+/* Internal helper method to set these properties. */
+void
+_gdata_feed_set_page_info (GDataFeed *self, guint total_results,
+                           guint items_per_page)
+{
+	g_return_if_fail (GDATA_IS_FEED (self));
+
+	self->priv->total_results = total_results;
+	self->priv->items_per_page = items_per_page;
+}
+
 /*
  * _gdata_feed_new:
  * @feed_type: the type of #GDataFeed subclass

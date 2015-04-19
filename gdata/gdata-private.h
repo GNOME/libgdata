@@ -106,6 +106,9 @@ G_GNUC_INTERNAL void _gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry);
 G_GNUC_INTERNAL gpointer _gdata_feed_parse_data_new (GType entry_type, GDataQueryProgressCallback progress_callback, gpointer progress_user_data);
 G_GNUC_INTERNAL void _gdata_feed_parse_data_free (gpointer data);
 G_GNUC_INTERNAL void _gdata_feed_call_progress_callback (GDataFeed *self, gpointer user_data, GDataEntry *entry);
+G_GNUC_INTERNAL void
+_gdata_feed_set_page_info (GDataFeed *self, guint total_results,
+                           guint items_per_page);
 
 #include "gdata-entry.h"
 #include "gdata-batch-operation.h"
