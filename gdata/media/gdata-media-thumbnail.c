@@ -43,6 +43,9 @@ static void gdata_media_thumbnail_finalize (GObject *object);
 static void gdata_media_thumbnail_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+static gboolean
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data,
+            GError **error);
 
 struct _GDataMediaThumbnailPrivate {
 	gchar *uri;
@@ -73,6 +76,7 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->parse_json = parse_json;
 	parsable_class->element_name = "thumbnail";
 	parsable_class->element_namespace = "media";
 
@@ -291,6 +295,31 @@ static void
 get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 {
 	g_hash_table_insert (namespaces, (gchar*) "media", (gchar*) "http://search.yahoo.com/mrss/");
+}
+
+/* Reference:
+ * https://developers.google.com/youtube/v3/docs/videos#snippet.thumbnails */
+static gboolean
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data,
+            GError **error)
+{
+	gboolean success;
+	GDataMediaThumbnail *self = GDATA_MEDIA_THUMBNAIL (parsable);
+	GDataMediaThumbnailPrivate *priv = self->priv;
+
+	if (gdata_parser_string_from_json_member (reader, "url", P_DEFAULT,
+	                                          &priv->uri, &success,
+	                                          error) ||
+	    gdata_parser_int_from_json_member (reader, "width", P_DEFAULT,
+	                                       (gint64 *) &priv->width,
+	                                       &success, error) ||
+	    gdata_parser_int_from_json_member (reader, "height", P_DEFAULT,
+	                                       (gint64 *) &priv->height,
+	                                       &success, error)) {
+		return success;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_media_thumbnail_parent_class)->parse_json (parsable, reader, user_data, error);
+	}
 }
 
 /**
