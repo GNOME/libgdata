@@ -797,6 +797,75 @@ gdata_parser_string_from_json_member (JsonReader *reader, const gchar *member_na
 }
 
 /*
+ * gdata_parser_int_from_json_member:
+ * @reader: #JsonReader cursor object to read JSON node from
+ * @member_name: the name of the member to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions,
+ *   or %P_NONE
+ * @output: the return location for the parsed integer content
+ * @success: the return location for a value which is %TRUE if the integer was
+ *   parsed successfully, %FALSE if an error was encountered, and undefined if
+ *   @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the integer content of @element if its name is @element_name, subject to
+ * various checks specified by @options.
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error will
+ * be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by @options
+ * fails, %TRUE will be returned, @error will be set to a
+* %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by @options
+ * pass, %TRUE will be returned, @error will be unset and @success will be set
+ * to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that
+ * calls to gdata_parser_int_from_element() can be chained together in a large
+ * "or" statement based on their return values, for the purposes of determining
+ * whether any of the calls matched a given @element. If any of the calls to
+ * gdata_parser_int_from_element() return %TRUE, the value of @success can be
+ * examined.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: UNRELEASED
+ */
+gboolean
+gdata_parser_int_from_json_member (JsonReader *reader,
+                                   const gchar *member_name,
+                                   GDataParserOptions options,
+                                   gint64 *output, gboolean *success,
+                                   GError **error)
+{
+	gint64 value;
+	const GError *child_error = NULL;
+
+	/* Check if there's such element */
+	if (g_strcmp0 (json_reader_get_member_name (reader), member_name) != 0) {
+		return FALSE;
+	}
+
+	value = json_reader_get_int_value (reader);
+	child_error = json_reader_get_error (reader);
+
+	if (child_error != NULL) {
+		*success = gdata_parser_error_from_json_error (reader,
+		                                               child_error,
+		                                               error);
+		return TRUE;
+	}
+
+	/* Success! */
+	*output = value;
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
  * gdata_parser_int64_time_from_json_member:
  * @reader: #JsonReader cursor object to read JSON node from
  * @element_name: the name of the element to parse
@@ -918,6 +987,106 @@ gdata_parser_boolean_from_json_member (JsonReader *reader, const gchar *member_n
 
 	/* Success! */
 	*output = val;
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
+ * gdata_parser_strv_from_json_member:
+ * @reader: #JsonReader cursor object to read JSON node from
+ * @element_name: the name of the element to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions,
+ *   or %P_NONE
+ * @output: (out callee-allocates) (transfer full): the return location for the
+ *   parsed string array
+ * @success: the return location for a value which is %TRUE if the string array
+ *   was parsed successfully, %FALSE if an error was encountered, and undefined
+ *   if @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the string array of @element if its name is @element_name, subject to
+ * various checks specified by @options. It expects the @element to be an array
+ * of strings.
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error will
+ * be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by @options
+ * fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by @options
+ * pass, %TRUE will be returned, @error will be unset and @success will be set
+ * to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that
+ * calls to gdata_parser_strv_from_element() can be chained together in a large
+ * "or" statement based on their return values, for the purposes of determining
+ * whether any of the calls matched a given @element. If any of the calls to
+ * gdata_parser_strv_from_element() return %TRUE, the value of @success can be
+ * examined.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: UNRELEASED
+ */
+gboolean
+gdata_parser_strv_from_json_member (JsonReader *reader,
+                                    const gchar *member_name,
+                                    GDataParserOptions options,
+                                    gchar ***output, gboolean *success,
+                                    GError **error)
+{
+	guint i, len;
+	GPtrArray *out;
+	const GError *child_error = NULL;
+
+	/* Check if there's such element */
+	if (g_strcmp0 (json_reader_get_member_name (reader),
+	               member_name) != 0) {
+		return FALSE;
+	}
+
+	/* Check if the output strv has already been set. The JSON parser
+	 * guarantees this can't happen. */
+	g_assert (!(options & P_NO_DUPES) || *output == NULL);
+
+	len = json_reader_count_elements (reader);
+	child_error = json_reader_get_error (reader);
+
+	if (child_error != NULL) {
+		*success = gdata_parser_error_from_json_error (reader,
+		                                               child_error,
+		                                               error);
+		return TRUE;
+	}
+
+	out = g_ptr_array_new_full (len + 1  /* NULL terminator */, g_free);
+
+	for (i = 0; i < len; i++) {
+		const gchar *val;
+
+		json_reader_read_element (reader, i);
+		val = json_reader_get_string_value (reader);
+		child_error = json_reader_get_error (reader);
+
+		if (child_error != NULL) {
+			*success = gdata_parser_error_from_json_error (reader,
+			                                               child_error,
+			                                               error);
+			json_reader_end_element (reader);
+			g_ptr_array_unref (out);
+			return TRUE;
+		}
+
+		g_ptr_array_add (out, g_strdup (val));
+
+		json_reader_end_element (reader);
+	}
+
+	/* Success! */
+	*output = (gchar **) g_ptr_array_free (out, FALSE);
 	*success = TRUE;
 
 	return TRUE;
