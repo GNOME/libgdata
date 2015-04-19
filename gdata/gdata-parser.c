@@ -305,8 +305,9 @@ gdata_parser_error_not_iso8601_format_json (JsonReader *reader, const gchar *act
 	return FALSE;
 }
 
-static gboolean
-parser_error_from_json_error (JsonReader *reader, const GError *json_error, GError **error)
+gboolean
+gdata_parser_error_from_json_error (JsonReader *reader,
+                                    const GError *json_error, GError **error)
 {
 	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
 	             /* Translators: the parameter is an error message. */
@@ -776,7 +777,9 @@ gdata_parser_string_from_json_member (JsonReader *reader, const gchar *member_na
 	text = json_reader_get_string_value (reader);
 	child_error = json_reader_get_error (reader);
 	if (child_error != NULL) {
-		*success = parser_error_from_json_error (reader, child_error, error);
+		*success = gdata_parser_error_from_json_error (reader,
+		                                               child_error,
+		                                               error);
 		return TRUE;
 	} else if ((options & P_REQUIRED && text == NULL) || (options & P_NON_EMPTY && text != NULL && *text == '\0')) {
 		*success = gdata_parser_error_required_json_content_missing (reader, error);
@@ -842,7 +845,9 @@ gdata_parser_int64_time_from_json_member (JsonReader *reader, const gchar *membe
 	text = json_reader_get_string_value (reader);
 	child_error = json_reader_get_error (reader);
 	if (child_error != NULL) {
-		*success = parser_error_from_json_error (reader, child_error, error);
+		*success = gdata_parser_error_from_json_error (reader,
+		                                               child_error,
+		                                               error);
 		return TRUE;
 	} else if (options & P_REQUIRED && (text == NULL || *text == '\0')) {
 		*success = gdata_parser_error_required_json_content_missing (reader, error);
@@ -905,7 +910,9 @@ gdata_parser_boolean_from_json_member (JsonReader *reader, const gchar *member_n
 	val = json_reader_get_boolean_value (reader);
 	child_error = json_reader_get_error (reader);
 	if (child_error != NULL) {
-		*success = parser_error_from_json_error (reader, child_error, error);
+		*success = gdata_parser_error_from_json_error (reader,
+		                                               child_error,
+		                                               error);
 		return TRUE;
 	}
 

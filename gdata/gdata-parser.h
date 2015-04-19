@@ -38,6 +38,9 @@ gboolean gdata_parser_error_duplicate_element (xmlNode *element, GError **error)
 gboolean gdata_parser_error_duplicate_json_element (JsonReader *reader, GError **error);
 gboolean gdata_parser_error_required_json_content_missing (JsonReader *reader, GError **error);
 gboolean gdata_parser_error_not_iso8601_format_json (JsonReader *reader, const gchar *actual_value, GError **error);
+gboolean
+gdata_parser_error_from_json_error (JsonReader *reader,
+                                    const GError *json_error, GError **error);
 
 gboolean gdata_parser_int64_from_date (const gchar *date, gint64 *_time);
 gchar *gdata_parser_date_from_int64 (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
