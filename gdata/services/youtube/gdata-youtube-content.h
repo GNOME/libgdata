@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,8 @@
 
 G_BEGIN_DECLS
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+
 /**
  * GDataYouTubeFormat:
  * @GDATA_YOUTUBE_FORMAT_UNKNOWN: retrieve videos in all formats when querying the service
@@ -39,13 +41,15 @@ G_BEGIN_DECLS
  * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#formatsp">online documentation</ulink>.
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ *   supported by Google. There is no replacement.
  **/
 typedef enum {
 	GDATA_YOUTUBE_FORMAT_UNKNOWN = 0,
 	GDATA_YOUTUBE_FORMAT_RTSP_H263_AMR = 1,
 	GDATA_YOUTUBE_FORMAT_HTTP_SWF = 5,
 	GDATA_YOUTUBE_FORMAT_RTSP_MPEG4_AAC = 6
-} GDataYouTubeFormat;
+} GDataYouTubeFormat G_GNUC_DEPRECATED;
 
 #define GDATA_TYPE_YOUTUBE_CONTENT		(gdata_youtube_content_get_type ())
 #define GDATA_YOUTUBE_CONTENT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_YOUTUBE_CONTENT, GDataYouTubeContent))
@@ -54,7 +58,7 @@ typedef enum {
 #define GDATA_IS_YOUTUBE_CONTENT_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), GDATA_TYPE_YOUTUBE_CONTENT))
 #define GDATA_YOUTUBE_CONTENT_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), GDATA_TYPE_YOUTUBE_CONTENT, GDataYouTubeContentClass))
 
-typedef struct _GDataYouTubeContentPrivate	GDataYouTubeContentPrivate;
+typedef struct _GDataYouTubeContentPrivate	GDataYouTubeContentPrivate G_GNUC_DEPRECATED;
 
 /**
  * GDataYouTubeContent:
@@ -62,11 +66,15 @@ typedef struct _GDataYouTubeContentPrivate	GDataYouTubeContentPrivate;
  * All the fields in the #GDataYouTubeContent structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
+ * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ *   supported by Google. There is no replacement.
  **/
 typedef struct {
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	GDataMediaContent parent;
 	GDataYouTubeContentPrivate *priv;
-} GDataYouTubeContent;
+	G_GNUC_END_IGNORE_DEPRECATIONS
+} GDataYouTubeContent G_GNUC_DEPRECATED;
 
 /**
  * GDataYouTubeContentClass:
@@ -74,19 +82,28 @@ typedef struct {
  * All the fields in the #GDataYouTubeContentClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
+ * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ *   supported by Google. There is no replacement.
  **/
 typedef struct {
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	/*< private >*/
 	GDataMediaContentClass parent;
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	/*< private >*/
 	/* Padding for future expansion */
 	void (*_g_reserved0) (void);
 	void (*_g_reserved1) (void);
-} GDataYouTubeContentClass;
+} GDataYouTubeContentClass G_GNUC_DEPRECATED;
 
-GType gdata_youtube_content_get_type (void) G_GNUC_CONST;
-GDataYouTubeFormat gdata_youtube_content_get_format (GDataYouTubeContent *self) G_GNUC_PURE;
+GType gdata_youtube_content_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+GDataYouTubeFormat gdata_youtube_content_get_format (GDataYouTubeContent *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+G_GNUC_END_IGNORE_DEPRECATIONS
+
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

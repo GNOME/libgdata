@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,9 +24,16 @@
  * @include: gdata/services/youtube/gdata-youtube-service.h
  *
  * #GDataYouTubeService is a subclass of #GDataService for communicating with the GData API of YouTube. It supports querying for and
- * uploading videos.
+ * uploading videos using version 3 of the API.
  *
- * For more details of YouTube's GData API, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html">
+ * The YouTube API supports returning different sets of properties for
+ * #GDataYouTubeVideos depending on the specific query. For search results, only
+ * ‘snippet’ properties are returned (including #GDataEntry:title,
+ * #GDataEntry:summary and the set of thumbnails). For querying single videos,
+ * a more complete set of properties are returned — so use
+ * gdata_service_query_single_entry_async() to get further details on a video.
+ *
+ * For more details of YouTube's GData API, see the <ulink type="http" url="https://developers.google.com/youtube/v3/docs/">
  * online documentation</ulink>.
  *
  * <example>
@@ -253,7 +260,7 @@
 #include "gdata-youtube-category.h"
 #include "gdata-batchable.h"
 
-/* Standards reference here: http://code.google.com/apis/youtube/2.0/reference.html */
+/* Standards reference here: https://developers.google.com/youtube/v3/docs/ */
 
 GQuark
 gdata_youtube_service_error_quark (void)
@@ -278,7 +285,9 @@ enum {
 	PROP_DEVELOPER_KEY = 1
 };
 
-_GDATA_DEFINE_AUTHORIZATION_DOMAIN (youtube, "youtube", "http://gdata.youtube.com")
+/* Reference: https://developers.google.com/youtube/v3/guides/authentication */
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (youtube, "youtube",
+                                    "https://www.googleapis.com/auth/youtube")
 G_DEFINE_TYPE_WITH_CODE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
 
 static void
@@ -302,7 +311,11 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 	 * GDataYouTubeService:developer-key:
 	 *
 	 * The developer key your application has registered with the YouTube API. For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/developers_guide_protocol.html#Developer_Key">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/registering_an_application">online documentation</ulink>.
+	 *
+	 * With the port from v2 to v3 of the YouTube API in libgdata
+	 * UNRELEASED, it might be necessary to update your application’s
+	 * developer key.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DEVELOPER_KEY,
 	                                 g_param_spec_string ("developer-key",
@@ -361,161 +374,220 @@ gdata_youtube_service_set_property (GObject *object, guint property_id, const GV
 }
 
 static void
-append_query_headers (GDataService *self, GDataAuthorizationDomain *domain, SoupMessage *message)
+append_query_headers (GDataService *self, GDataAuthorizationDomain *domain,
+                      SoupMessage *message)
 {
 	GDataYouTubeServicePrivate *priv = GDATA_YOUTUBE_SERVICE (self)->priv;
-	gchar *key_header;
 
 	g_assert (message != NULL);
 
-	/* Dev key and client headers */
-	key_header = g_strdup_printf ("key=%s", priv->developer_key);
-	soup_message_headers_append (message->request_headers, "X-GData-Key", key_header);
-	g_free (key_header);
+	if (priv->developer_key != NULL &&
+	    !gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                                get_youtube_authorization_domain ())) {
+		const gchar *query;
+		SoupURI *uri;
+
+		uri = soup_message_get_uri (message);
+		query = soup_uri_get_query (uri);
+
+		/* Set the key on every unauthorised request:
+		 * https://developers.google.com/youtube/v3/docs/standard_parameters#key */
+		if (query != NULL) {
+			GString *new_query;
+
+			new_query = g_string_new (query);
+
+			g_string_append (new_query, "&key=");
+			g_string_append_uri_escaped (new_query,
+			                             priv->developer_key, NULL,
+			                             FALSE);
+
+			soup_uri_set_query (uri, new_query->str);
+			g_string_free (new_query, TRUE);
+		}
+	}
 
 	/* Chain up to the parent class */
 	GDATA_SERVICE_CLASS (gdata_youtube_service_parent_class)->append_query_headers (self, domain, message);
 }
 
+/* Reference: https://developers.google.com/youtube/v3/docs/errors
+ *
+ * Example response:
+ *     {
+ *      "error": {
+ *       "errors": [
+ *        {
+ *         "domain": "youtube.parameter",
+ *         "reason": "missingRequiredParameter",
+ *         "message": "No filter selected.",
+ *         "locationType": "parameter",
+ *         "location": ""
+ *        }
+ *       ],
+ *       "code": 400,
+ *       "message": "No filter selected."
+ *      }
+ *     }
+ */
+/* FIXME: Factor this out into a common JSON error parser helper which simply
+ * takes a map of expected error codes. */
 static void
-parse_error_response (GDataService *self, GDataOperationType operation_type, guint status, const gchar *reason_phrase, const gchar *response_body,
-                      gint length, GError **error)
+parse_error_response (GDataService *self, GDataOperationType operation_type,
+                      guint status, const gchar *reason_phrase,
+                      const gchar *response_body, gint length, GError **error)
 {
-	xmlDoc *doc;
-	xmlNode *node;
+	JsonParser *parser = NULL;  /* owned */
+	JsonReader *reader = NULL;  /* owned */
+	gint i;
+	GError *child_error = NULL;
 
-	if (response_body == NULL)
+	if (response_body == NULL) {
 		goto parent;
+	}
 
-	if (length == -1)
+	if (length == -1) {
 		length = strlen (response_body);
+	}
 
-	/* Parse the XML */
-	doc = xmlReadMemory (response_body, length, "/dev/null", NULL, 0);
-	if (doc == NULL)
-		goto parent;
-
-	/* Get the root element */
-	node = xmlDocGetRootElement (doc);
-	if (node == NULL) {
-		/* XML document's empty; chain up to the parent class */
-		xmlFreeDoc (doc);
+	parser = json_parser_new ();
+	if (!json_parser_load_from_data (parser, response_body, length,
+	                                 &child_error)) {
 		goto parent;
 	}
 
-	if (xmlStrcmp (node->name, (xmlChar*) "errors") != 0) {
-		/* No <errors> element (required); chain up to the parent class */
-		xmlFreeDoc (doc);
+	reader = json_reader_new (json_parser_get_root (parser));
+
+	/* Check that the outermost node is an object. */
+	if (!json_reader_is_object (reader)) {
 		goto parent;
 	}
 
-	/* Parse the actual errors */
-	node = node->children;
-	while (node != NULL) {
-		xmlChar *domain = NULL, *code = NULL, *location = NULL;
-		xmlNode *child_node = node->children;
+	/* Grab the ‘error’ member, then its ‘errors’ member. */
+	if (!json_reader_read_member (reader, "error") ||
+	    !json_reader_is_object (reader) ||
+	    !json_reader_read_member (reader, "errors") ||
+	    !json_reader_is_array (reader)) {
+		goto parent;
+	}
 
-		if (node->type == XML_TEXT_NODE) {
-			/* Skip text nodes; they're all whitespace */
-			node = node->next;
-			continue;
+	/* Parse each of the errors. Return the first one, and print out any
+	 * others. */
+	for (i = 0; i < json_reader_count_elements (reader); i++) {
+		const gchar *domain, *reason, *message, *extended_help;
+		const gchar *location_type, *location;
+
+		/* Parse the error. */
+		if (!json_reader_read_element (reader, i) ||
+		    !json_reader_is_object (reader)) {
+			goto parent;
 		}
 
-		/* Get the error data */
-		while (child_node != NULL) {
-			if (child_node->type == XML_TEXT_NODE) {
-				/* Skip text nodes; they're all whitespace */
-				child_node = child_node->next;
-				continue;
-			}
+		json_reader_read_member (reader, "domain");
+		domain = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
 
-			if (xmlStrcmp (child_node->name, (xmlChar*) "domain") == 0)
-				domain = xmlNodeListGetString (doc, child_node->children, TRUE);
-			else if (xmlStrcmp (child_node->name, (xmlChar*) "code") == 0)
-				code = xmlNodeListGetString (doc, child_node->children, TRUE);
-			else if (xmlStrcmp (child_node->name, (xmlChar*) "location") == 0)
-				location = xmlNodeListGetString (doc, child_node->children, TRUE);
-			else if (xmlStrcmp (child_node->name, (xmlChar*) "internalReason") != 0) {
-				/* Unknown element (ignore internalReason) */
-				g_message ("Unhandled <error/%s> element.", child_node->name);
+		json_reader_read_member (reader, "reason");
+		reason = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
 
-				xmlFree (domain);
-				xmlFree (code);
-				xmlFree (location);
-				xmlFreeDoc (doc);
-				goto check_error;
-			}
+		json_reader_read_member (reader, "message");
+		message = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
 
-			child_node = child_node->next;
-		}
+		json_reader_read_member (reader, "extendedHelp");
+		extended_help = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "locationType");
+		location_type = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "location");
+		location = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		/* End the error element. */
+		json_reader_end_element (reader);
 
 		/* Create an error message, but only for the first error */
 		if (error == NULL || *error == NULL) {
-			/* See http://code.google.com/apis/youtube/2.0/developers_guide_protocol.html#Error_responses */
-			if (xmlStrcmp (domain, (xmlChar*) "yt:service") == 0) {
-				if (xmlStrcmp (code, (xmlChar*) "disabled_in_maintenance_mode") == 0) {
-					/* Service disabled */
-					g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
-					             _("This service is not available at the moment."));
-				} else if (xmlStrcmp (code, (xmlChar*) "youtube_signup_required") == 0) {
-					/* Tried to authenticate with a Google Account which hasn't yet had a YouTube channel created for it. */
-					g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR, GDATA_YOUTUBE_SERVICE_ERROR_CHANNEL_REQUIRED,
-					             /* Translators: the parameter is a URI. */
-					             _("Your Google Account must be associated with a YouTube channel to do this. Visit %s to create one."),
-					             "https://www.youtube.com/create_channel");
-				} else {
-					/* Protocol error */
-					g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-					             _("Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."),
-					             code, domain, location);
-				}
-			} else if (xmlStrcmp (domain, (xmlChar*) "yt:authentication") == 0) {
+			if (g_strcmp0 (domain, "usageLimits") == 0 &&
+			    g_strcmp0 (reason,
+			               "dailyLimitExceededUnreg") == 0) {
+				/* Daily Limit for Unauthenticated Use
+				 * Exceeded. */
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_API_QUOTA_EXCEEDED,
+				             _("You have made too many API "
+				               "calls recently. Please wait a "
+				               "few minutes and try again."));
+			} else if (g_strcmp0 (reason,
+			                      "rateLimitExceeded") == 0) {
+				g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR,
+				             GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED,
+				             _("You have exceeded your entry "
+				               "quota. Please delete some "
+				               "entries and try again."));
+			} else if (g_strcmp0 (domain, "global") == 0 &&
+			           (g_strcmp0 (reason, "authError") == 0 ||
+			            g_strcmp0 (reason, "required") == 0)) {
 				/* Authentication problem */
-				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-				             _("You must be authenticated to do this."));
-			} else if (xmlStrcmp (domain, (xmlChar*) "yt:quota") == 0) {
-				/* Quota errors */
-				if (xmlStrcmp (code, (xmlChar*) "too_many_recent_calls") == 0) {
-					g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR, GDATA_YOUTUBE_SERVICE_ERROR_API_QUOTA_EXCEEDED,
-					             _("You have made too many API calls recently. Please wait a few minutes and try again."));
-				} else if (xmlStrcmp (code, (xmlChar*) "too_many_entries") == 0) {
-					g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR, GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED,
-					             _("You have exceeded your entry quota. Please delete some entries and try again."));
-				} else {
-					/* Protocol error */
-					g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-					             /* Translators: the first parameter is an error code, which is a coded string.
-					              * The second parameter is an error domain, which is another coded string.
-					              * The third parameter is the location of the error, which is either a URI or an XPath. */
-					             _("Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."),
-					             code, domain, location);
-				}
+				g_set_error (error, GDATA_SERVICE_ERROR,
+				             GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+				             _("You must be authenticated to "
+				               "do this."));
+			} else if (g_strcmp0 (reason,
+			                      "youtubeSignupRequired") == 0) {
+				/* Tried to authenticate with a Google Account which hasn't yet had a YouTube channel created for it. */
+				g_set_error (error, GDATA_YOUTUBE_SERVICE_ERROR,
+				             GDATA_YOUTUBE_SERVICE_ERROR_CHANNEL_REQUIRED,
+				             /* Translators: the parameter is a URI. */
+				             _("Your Google Account must be "
+				               "associated with a YouTube "
+				               "channel to do this. Visit %s "
+				               "to create one."),
+				             "https://www.youtube.com/create_channel");
 			} else {
-				/* Unknown or validation (protocol) error */
-				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-				             _("Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."),
-				             code, domain, location);
+				/* Unknown or validation (protocol) error. Fall
+				 * back to working off the HTTP status code. */
+				g_warning ("Unknown error code ‘%s’ in domain "
+				           "‘%s’ received with location type "
+				           "‘%s’, location ‘%s’, extended help "
+				           "‘%s’ and message ‘%s’.",
+				           reason, domain, location_type,
+				           location, extended_help, message);
+
+				goto parent;
 			}
 		} else {
-			/* For all errors after the first, log the error in the terminal */
-			g_debug ("Error message received in response: code \"%s\", domain \"%s\", location \"%s\".", code, domain, location);
+			/* For all errors after the first, log the error in the
+			 * terminal. */
+			g_debug ("Error message received in response: domain "
+			         "‘%s’, reason ‘%s’, extended help ‘%s’, "
+			         "message ‘%s’, location type ‘%s’, location "
+			         "‘%s’.",
+			         domain, reason, extended_help, message,
+			         location_type, location);
 		}
-
-		xmlFree (domain);
-		xmlFree (code);
-		xmlFree (location);
-
-		node = node->next;
 	}
 
-check_error:
-	/* Ensure we're actually set an error message */
-	if (error != NULL && *error == NULL)
-		g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, _("Unknown and unparsable error received."));
+	/* End the ‘errors’ and ‘error’ members. */
+	json_reader_end_element (reader);
+	json_reader_end_element (reader);
+
+	g_clear_object (&reader);
+	g_clear_object (&parser);
+
+	/* Ensure we’ve actually set an error message. */
+	g_assert (error == NULL || *error != NULL);
 
 	return;
 
 parent:
+	g_clear_object (&reader);
+	g_clear_object (&parser);
+
 	/* Chain up to the parent class */
 	GDATA_SERVICE_CLASS (gdata_youtube_service_parent_class)->parse_error_response (self, operation_type, status, reason_phrase,
 	                                                                                response_body, length, error);
@@ -534,7 +606,7 @@ get_authorization_domains (void)
  *
  * Creates a new #GDataYouTubeService using the given #GDataAuthorizer. If @authorizer is %NULL, all requests are made as an unauthenticated user.
  * The @developer_key must be unique for your application, and as
- * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/developers_guide_protocol.html#Developer_Key">registered with Google</ulink>.
+ * <ulink type="http" url="https://developers.google.com/youtube/registering_an_application">registered with Google</ulink>.
  *
  * Return value: a new #GDataYouTubeService, or %NULL; unref with g_object_unref()
  *
@@ -571,30 +643,40 @@ gdata_youtube_service_get_primary_authorization_domain (void)
 	return get_youtube_authorization_domain ();
 }
 
-static const gchar *
+static gchar *
 standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
 {
 	switch (feed_type) {
-	case GDATA_YOUTUBE_TOP_RATED_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/top_rated";
-	case GDATA_YOUTUBE_TOP_FAVORITES_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/top_favorites";
-	case GDATA_YOUTUBE_MOST_VIEWED_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/most_viewed";
 	case GDATA_YOUTUBE_MOST_POPULAR_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/most_popular";
+		return _gdata_service_build_uri ("https://www.googleapis.com/youtube/v3/videos"
+		                                 "?part=snippet"
+		                                 "&chart=mostPopular");
+	case GDATA_YOUTUBE_TOP_RATED_FEED:
+	case GDATA_YOUTUBE_TOP_FAVORITES_FEED:
+	case GDATA_YOUTUBE_MOST_VIEWED_FEED:
 	case GDATA_YOUTUBE_MOST_RECENT_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/most_recent";
 	case GDATA_YOUTUBE_MOST_DISCUSSED_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/most_discussed";
 	case GDATA_YOUTUBE_MOST_LINKED_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/most_linked";
 	case GDATA_YOUTUBE_MOST_RESPONDED_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/most_responded";
 	case GDATA_YOUTUBE_RECENTLY_FEATURED_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/recently_featured";
-	case GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED:
-		return "https://gdata.youtube.com/feeds/api/standardfeeds/watch_on_mobile";
+	case GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED: {
+		gchar *date, *out;
+		GTimeVal tv;
+
+		/* All feed types except MOST_POPULAR have been deprecated for
+		 * a while, and fall back to MOST_POPULAR on the server anyway.
+		 * See: https://developers.google.com/youtube/2.0/developers_guide_protocol_video_feeds#Standard_feeds */
+		g_get_current_time (&tv);
+		tv.tv_sec -= 24 * 60 * 60;  /* 1 day ago */
+		date = g_time_val_to_iso8601 (&tv);
+		out = _gdata_service_build_uri ("https://www.googleapis.com/youtube/v3/videos"
+		                                "?part=snippet"
+		                                "&chart=mostPopular"
+		                                "&publishedAfter=%s", date);
+		g_free (date);
+
+		return out;
+	}
 	default:
 		g_assert_not_reached ();
 	}
@@ -612,6 +694,11 @@ standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
  *
  * Queries the service's standard @feed_type feed to build a #GDataFeed.
  *
+ * Note that with the port from v2 to v3 of the YouTube API in libgdata
+ * UNRELEASED, all feed types except %GDATA_YOUTUBE_MOST_POPULAR_FEED have been
+ * deprecated. Other feed types will now transparently return
+ * %GDATA_YOUTUBE_MOST_POPULAR_FEED, limited to the past 24 hours.
+ *
  * Parameters and errors are as for gdata_service_query().
  *
  * Return value: (transfer full): a #GDataFeed of query results, or %NULL; unref with g_object_unref()
@@ -621,14 +708,24 @@ gdata_youtube_service_query_standard_feed (GDataYouTubeService *self, GDataYouTu
                                            GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                            GError **error)
 {
+	gchar *query_uri;
+	GDataFeed *feed;
+
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	g_return_val_if_fail (query == NULL || GDATA_IS_QUERY (query), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* TODO: Support the "time" parameter, as well as category- and region-specific feeds */
-	return gdata_service_query (GDATA_SERVICE (self), get_youtube_authorization_domain (), standard_feed_type_to_feed_uri (feed_type), query,
-	                            GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
+	query_uri = standard_feed_type_to_feed_uri (feed_type);
+	feed = gdata_service_query (GDATA_SERVICE (self),
+	                            get_youtube_authorization_domain (),
+	                            query_uri, query, GDATA_TYPE_YOUTUBE_VIDEO,
+	                            cancellable, progress_callback,
+	                            progress_user_data, error);
+	g_free (query_uri);
+
+	return feed;
 }
 
 /**
@@ -660,14 +757,22 @@ gdata_youtube_service_query_standard_feed_async (GDataYouTubeService *self, GDat
                                                  GDestroyNotify destroy_progress_user_data,
                                                  GAsyncReadyCallback callback, gpointer user_data)
 {
+	gchar *query_uri;
+
 	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
 	g_return_if_fail (query == NULL || GDATA_IS_QUERY (query));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
-	gdata_service_query_async (GDATA_SERVICE (self), get_youtube_authorization_domain (), standard_feed_type_to_feed_uri (feed_type), query,
-	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, destroy_progress_user_data,
-	                           callback, user_data);
+	query_uri = standard_feed_type_to_feed_uri (feed_type);
+	gdata_service_query_async (GDATA_SERVICE (self),
+	                           get_youtube_authorization_domain (),
+	                           query_uri, query, GDATA_TYPE_YOUTUBE_VIDEO,
+	                           cancellable, progress_callback,
+	                           progress_user_data,
+	                           destroy_progress_user_data, callback,
+	                           user_data);
+	g_free (query_uri);
 }
 
 /**
@@ -696,8 +801,14 @@ gdata_youtube_service_query_videos (GDataYouTubeService *self, GDataQuery *query
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	return gdata_service_query (GDATA_SERVICE (self), get_youtube_authorization_domain (), "https://gdata.youtube.com/feeds/api/videos", query,
-	                            GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
+	return gdata_service_query (GDATA_SERVICE (self),
+	                            get_youtube_authorization_domain (),
+	                            "https://www.googleapis.com/youtube/v3/search"
+	                            "?part=snippet"
+	                            "&type=video",
+	                            query, GDATA_TYPE_YOUTUBE_VIDEO,
+	                            cancellable, progress_callback,
+	                            progress_user_data, error);
 }
 
 /**
@@ -733,9 +844,15 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
-	gdata_service_query_async (GDATA_SERVICE (self), get_youtube_authorization_domain (), "https://gdata.youtube.com/feeds/api/videos", query,
-	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, destroy_progress_user_data,
-	                           callback, user_data);
+	gdata_service_query_async (GDATA_SERVICE (self),
+	                           get_youtube_authorization_domain (),
+	                           "https://www.googleapis.com/youtube/v3/search"
+	                           "?part=snippet"
+	                           "&type=video",
+	                           query, GDATA_TYPE_YOUTUBE_VIDEO, cancellable,
+	                           progress_callback, progress_user_data,
+	                           destroy_progress_user_data, callback,
+	                           user_data);
 }
 
 /**
@@ -750,8 +867,7 @@ gdata_youtube_service_query_videos_async (GDataYouTubeService *self, GDataQuery 
  *
  * Queries the service for videos related to @video. The algorithm determining which videos are related is on the server side.
  *
- * If @video does not have a link with rel value <literal>http://gdata.youtube.com/schemas/2007#video.related</literal>, a
- * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be thrown. Parameters and other errors are as for gdata_service_query().
+ * Parameters and other errors are as for gdata_service_query().
  *
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  **/
@@ -760,7 +876,6 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
                                      GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                      GError **error)
 {
-	GDataLink *related_link;
 	GDataFeed *feed;
 	gchar *uri;
 
@@ -770,19 +885,17 @@ gdata_youtube_service_query_related (GDataYouTubeService *self, GDataYouTubeVide
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	/* See if the video already has a rel="http://gdata.youtube.com/schemas/2007#video.related" link */
-	related_link = gdata_entry_look_up_link (GDATA_ENTRY (video), "http://gdata.youtube.com/schemas/2007#video.related");
-	if (related_link == NULL) {
-		/* Erroring out is probably the safest thing to do */
-		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
-		                     _("The video did not have a related videos <link>."));
-		return NULL;
-	}
-
 	/* Execute the query */
-	uri = _gdata_service_fix_uri_scheme (gdata_link_get_uri (related_link));
-	feed = gdata_service_query (GDATA_SERVICE (self), get_youtube_authorization_domain (), uri, query,
-	                            GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data, error);
+	uri = _gdata_service_build_uri ("https://www.googleapis.com/youtube/v3/search"
+	                                "?part=snippet"
+	                                "&type=video"
+	                                "&relatedToVideoId=%s",
+	                                gdata_entry_get_id (GDATA_ENTRY (video)));
+	feed = gdata_service_query (GDATA_SERVICE (self),
+	                            get_youtube_authorization_domain (), uri,
+	                            query, GDATA_TYPE_YOUTUBE_VIDEO,
+	                            cancellable, progress_callback,
+	                            progress_user_data, error);
 	g_free (uri);
 
 	return feed;
@@ -817,7 +930,6 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
                                            GDestroyNotify destroy_progress_user_data,
                                            GAsyncReadyCallback callback, gpointer user_data)
 {
-	GDataLink *related_link;
 	gchar *uri;
 
 	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
@@ -826,23 +938,17 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
-	/* See if the video already has a rel="http://gdata.youtube.com/schemas/2007#video.related" link */
-	related_link = gdata_entry_look_up_link (GDATA_ENTRY (video), "http://gdata.youtube.com/schemas/2007#video.related");
-	if (related_link == NULL) {
-		/* Erroring out is probably the safest thing to do */
-		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, "%s",
-		                                 _("The video did not have a related videos <link>."));
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
-
-		return;
-	}
-
-	uri = _gdata_service_fix_uri_scheme (gdata_link_get_uri (related_link));
-	gdata_service_query_async (GDATA_SERVICE (self), get_youtube_authorization_domain (), uri, query,
-	                           GDATA_TYPE_YOUTUBE_VIDEO, cancellable, progress_callback, progress_user_data,
-	                           destroy_progress_user_data, callback, user_data);
+	uri = _gdata_service_build_uri ("https://www.googleapis.com/youtube/v3/search"
+	                                "?part=snippet"
+	                                "&type=video"
+	                                "&relatedToVideoId=%s",
+	                                gdata_entry_get_id (GDATA_ENTRY (video)));
+	gdata_service_query_async (GDATA_SERVICE (self),
+	                           get_youtube_authorization_domain (), uri,
+	                           query, GDATA_TYPE_YOUTUBE_VIDEO, cancellable,
+	                           progress_callback, progress_user_data,
+	                           destroy_progress_user_data, callback,
+	                           user_data);
 	g_free (uri);
 }
 
@@ -878,6 +984,8 @@ GDataUploadStream *
 gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo *video, const gchar *slug, const gchar *content_type,
                                     GCancellable *cancellable, GError **error)
 {
+	GOutputStream *stream = NULL;  /* owned */
+
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (video), NULL);
 	g_return_val_if_fail (slug != NULL && *slug != '\0', NULL);
@@ -891,6 +999,8 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 		return NULL;
 	}
 
+	/* FIXME: Could be more cunning about domains here; see scope on
+	 * https://developers.google.com/youtube/v3/guides/authentication */
 	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
 	                                               get_youtube_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
@@ -898,10 +1008,23 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 		return NULL;
 	}
 
-	/* Streaming upload support using GDataUploadStream; automatically handles the XML and multipart stuff for us */
-	return GDATA_UPLOAD_STREAM (gdata_upload_stream_new (GDATA_SERVICE (self), get_youtube_authorization_domain (), SOUP_METHOD_POST,
-	                                                     "https://uploads.gdata.youtube.com/feeds/api/users/default/uploads",
-	                                                      GDATA_ENTRY (video), slug, content_type, cancellable));
+	/* FIXME: Add support for resumable uploads. That means a new
+	 * gdata_youtube_service_upload_video_resumable() method a la
+	 * Documents. */
+	stream = gdata_upload_stream_new (GDATA_SERVICE (self),
+	                                            get_youtube_authorization_domain (),
+	                                            SOUP_METHOD_POST,
+	                                            "https://www.googleapis.com/upload/youtube/v3/videos"
+	                                            "?part=snippet,status,"
+	                                                  "recordingDetails,"
+	                                                  "contentDetails,id,"
+	                                                  "statistics,"
+	                                                  "processingDetails",
+	                                            GDATA_ENTRY (video), slug,
+	                                            content_type,
+	                                            cancellable);
+
+	return GDATA_UPLOAD_STREAM (stream);
 }
 
 /**
@@ -936,7 +1059,10 @@ gdata_youtube_service_finish_video_upload (GDataYouTubeService *self, GDataUploa
 		return NULL;
 
 	/* Parse the response to produce a GDataYouTubeVideo */
-	return GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO, response_body, (gint) response_length, error));
+	return GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_json (GDATA_TYPE_YOUTUBE_VIDEO,
+	                                                          response_body,
+	                                                          (gint) response_length,
+	                                                          error));
 }
 
 /**
@@ -972,6 +1098,8 @@ gdata_youtube_service_get_developer_key (GDataYouTubeService *self)
 GDataAPPCategories *
 gdata_youtube_service_get_categories (GDataYouTubeService *self, GCancellable *cancellable, GError **error)
 {
+	const gchar *locale;
+	gchar *uri;
 	SoupMessage *message;
 	GDataAPPCategories *categories;
 
@@ -979,16 +1107,31 @@ gdata_youtube_service_get_categories (GDataYouTubeService *self, GCancellable *c
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	/* Download the category list. Note that this is (service) locale-dependent. */
-	message = _gdata_service_query (GDATA_SERVICE (self), get_youtube_authorization_domain (),
-	                                "https://gdata.youtube.com/schemas/2007/categories.cat", NULL, cancellable, error);
+	/* Download the category list. Note that this is (service)
+	 * locale-dependent, and a locale must always be specified. */
+	locale = gdata_service_get_locale (GDATA_SERVICE (self));
+	if (locale == NULL) {
+		locale = "US";
+	}
+
+	uri = _gdata_service_build_uri ("https://www.googleapis.com/youtube/v3/videoCategories"
+	                                "?part=snippet"
+	                                "&regionCode=%s",
+	                                locale);
+	message = _gdata_service_query (GDATA_SERVICE (self),
+	                                get_youtube_authorization_domain (),
+	                                uri, NULL, cancellable, error);
+	g_free (uri);
+
 	if (message == NULL)
 		return NULL;
 
 	g_assert (message->response_body->data != NULL);
-	categories = GDATA_APP_CATEGORIES (_gdata_parsable_new_from_xml (GDATA_TYPE_APP_CATEGORIES, message->response_body->data,
-	                                                                 message->response_body->length,
-	                                                                 GSIZE_TO_POINTER (GDATA_TYPE_YOUTUBE_CATEGORY), error));
+	categories = GDATA_APP_CATEGORIES (_gdata_parsable_new_from_json (GDATA_TYPE_APP_CATEGORIES,
+	                                                                  message->response_body->data,
+	                                                                  message->response_body->length,
+	                                                                  GSIZE_TO_POINTER (GDATA_TYPE_YOUTUBE_CATEGORY),
+	                                                                  error));
 	g_object_unref (message);
 
 	return categories;

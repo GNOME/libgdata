@@ -26,8 +26,13 @@
  * #GDataYouTubeQuery represents a collection of query parameters specific to the YouTube service, which go above and beyond
  * those catered for by #GDataQuery.
  *
+ * With the transition to version 3 of the YouTube, the #GDataQuery:author and
+ * #GDataQuery:start-index properties are no longer supported, and their values
+ * will be ignored. Use gdata_query_next_page() instead of the
+ * #GDataQuery:start-index API.
+ *
  * For more information on the custom GData query parameters supported by #GDataYouTubeQuery, see the <ulink type="http"
- * url="http://code.google.com/apis/youtube/2.0/reference.html#Custom_parameters">online documentation</ulink>.
+ * url="https://developers.google.com/youtube/v3/docs/search/list#parameters">online documentation</ulink>.
  *
  * Since: 0.3.0
  **/
@@ -47,7 +52,12 @@ static void gdata_youtube_query_set_property (GObject *object, guint property_id
 static void get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboolean *params_started);
 
 struct _GDataYouTubeQueryPrivate {
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	GDataYouTubeFormat format;
+	GDataYouTubeSortOrder sort_order;
+	GDataYouTubeUploader uploader;
+	G_GNUC_END_IGNORE_DEPRECATIONS
+
 	gdouble latitude;
 	gdouble longitude;
 	gdouble location_radius;
@@ -56,9 +66,7 @@ struct _GDataYouTubeQueryPrivate {
 	gchar *order_by;
 	gchar *restriction;
 	GDataYouTubeSafeSearch safe_search;
-	GDataYouTubeSortOrder sort_order;
 	GDataYouTubeAge age;
-	GDataYouTubeUploader uploader;
 	gchar *license;
 };
 
@@ -101,12 +109,15 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * retrieve videos irrespective of their format availability.
 	 *
 	 * Since: 0.3.0
+	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 *   this property will be unused in queries. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FORMAT,
 	                                 g_param_spec_enum ("format",
 	                                                    "Format", "Specifies that videos must be available in a particular video format.",
 	                                                    GDATA_TYPE_YOUTUBE_FORMAT, GDATA_YOUTUBE_FORMAT_UNKNOWN,
-	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+	                                                    G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataYouTubeQuery:latitude:
@@ -119,12 +130,11 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * If #GDataYouTubeQuery:location-radius is a non-<code class="literal">0</code> value, this will define a circle from which videos should be
 	 * found.
 	 *
-	 * If #GDataYouTubeQuery:has-location is %TRUE, only videos which are associated with specific coordinates in the search
-	 * circle will be returned. Otherwise, videos which have a relevant descriptive address (but no specific coordinates) will
-	 * also be returned.
+	 * As it is deprecated, the value of #GDataYouTubeQuery:has-location is
+	 * ignored.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#locationsp">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/search/list#location">online documentation</ulink>.
 	 *
 	 * Since: 0.3.0
 	 **/
@@ -181,12 +191,15 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * For more information, see the documentation for #GDataYouTubeQuery:latitude.
 	 *
 	 * Since: 0.3.0
+	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 *   this property will be unused in queries.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HAS_LOCATION,
 	                                 g_param_spec_boolean ("has-location",
 	                                                       "Has location?", "Whether to restrict results to videos with specific coordinates.",
 	                                                       FALSE,
-	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+	                                                       G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataYouTubeQuery:language:
@@ -199,12 +212,15 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#lrsp">online documentation</ulink>.
 	 *
 	 * Since: 0.3.0
+	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 *   this property will be unused in queries. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
 	                                 g_param_spec_string ("language",
 	                                                      "Language", "Restricts the search to videos described in the given language.",
 	                                                      NULL,
-	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+	                                                      G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataYouTubeQuery:order-by:
@@ -217,7 +233,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * <replaceable>languageCode</replaceable> is an ISO 639-1 language code, as used in #GDataYouTubeQuery:language.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#orderbysp">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/search/list#order">online documentation</ulink>.
 	 *
 	 * Since: 0.3.0
 	 **/
@@ -230,18 +246,22 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	/**
 	 * GDataYouTubeQuery:restriction:
 	 *
-	 * The IP address that should be used to filter videos playable only in specific countries. This should be the
-	 * IP address of the client, if different to the IP address in use by the library. Alternatively, it can be an ISO 3166
-	 * two-letter country code.
+	 * An ISO 3166 two-letter country code that should be used to filter
+	 * videos playable only in specific countries.
+	 *
+	 * Previously, this property could also accept the client’s IP address
+	 * for country lookup. This feature is no longer supported by Google,
+	 * and will result in an error from the server if used. Use a country
+	 * code instead.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#restrictionsp">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/search/list#regionCode">online documentation</ulink>.
 	 *
 	 * Since: 0.3.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RESTRICTION,
 	                                 g_param_spec_string ("restriction",
-	                                                      "Restriction", "The IP address to filter videos playable only in specific countries.",
+	                                                      "Restriction", "The country code to filter videos playable only in specific countries.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -251,7 +271,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Whether the search results should include restricted content as well as standard content.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#safeSearchsp">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/search/list#safeSearch">online documentation</ulink>.
 	 *
 	 * Since: 0.3.0
 	 **/
@@ -267,12 +287,15 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Specifies the direction of sorting. To use the default sort order, set the property to %GDATA_YOUTUBE_SORT_NONE.
 	 *
 	 * Since: 0.3.0
+	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 *   this property will be unused in queries. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
 	                                 g_param_spec_enum ("sort-order",
 	                                                    "Sort order", "Specifies the direction of sorting.",
 	                                                    GDATA_TYPE_YOUTUBE_SORT_ORDER, GDATA_YOUTUBE_SORT_NONE,
-	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+	                                                    G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataYouTubeQuery:age:
@@ -295,12 +318,15 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * searches to videos from YouTube partners.
 	 *
 	 * Since: 0.3.0
+	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 *   this property will be unused in queries. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPLOADER,
 	                                 g_param_spec_enum ("uploader",
 	                                                    "Uploader", "Restricts the search to videos from the specified type of uploader.",
 	                                                    GDATA_TYPE_YOUTUBE_UPLOADER, GDATA_YOUTUBE_UPLOADER_ALL,
-	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+	                                                    G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataYouTubeQuery:license:
@@ -309,7 +335,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * are Creative Commons licensed will be returned in search results. Set this to %NULL to return videos under any license.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#licensesp">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/search/list#videoLicense">online documentation</ulink>.
 	 *
 	 * Since: 0.11.0
 	 */
@@ -403,7 +429,9 @@ gdata_youtube_query_set_property (GObject *object, guint property_id, const GVal
 
 	switch (property_id) {
 		case PROP_FORMAT:
+			G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 			gdata_youtube_query_set_format (self, g_value_get_enum (value));
+			G_GNUC_END_IGNORE_DEPRECATIONS
 			break;
 		case PROP_LATITUDE:
 			self->priv->latitude = g_value_get_double (value);
@@ -418,7 +446,9 @@ gdata_youtube_query_set_property (GObject *object, guint property_id, const GVal
 			self->priv->has_location = g_value_get_boolean (value);
 			break;
 		case PROP_LANGUAGE:
+			G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 			gdata_youtube_query_set_language (self, g_value_get_string (value));
+			G_GNUC_END_IGNORE_DEPRECATIONS
 			break;
 		case PROP_ORDER_BY:
 			gdata_youtube_query_set_order_by (self, g_value_get_string (value));
@@ -430,13 +460,17 @@ gdata_youtube_query_set_property (GObject *object, guint property_id, const GVal
 			gdata_youtube_query_set_safe_search (self, g_value_get_enum (value));
 			break;
 		case PROP_SORT_ORDER:
+			G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 			gdata_youtube_query_set_sort_order (self, g_value_get_enum (value));
+			G_GNUC_END_IGNORE_DEPRECATIONS
 			break;
 		case PROP_AGE:
 			gdata_youtube_query_set_age (self, g_value_get_enum (value));
 			break;
 		case PROP_UPLOADER:
+			G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 			gdata_youtube_query_set_uploader (self, g_value_get_enum (value));
+			G_GNUC_END_IGNORE_DEPRECATIONS
 			break;
 		case PROP_LICENSE:
 			gdata_youtube_query_set_license (self, g_value_get_string (value));
@@ -448,6 +482,56 @@ gdata_youtube_query_set_property (GObject *object, guint property_id, const GVal
 	}
 }
 
+/* Convert from a v2 order-by parameter value to a v3 order parameter value.
+ * Reference:
+ * v2: https://developers.google.com/youtube/2.0/developers_guide_protocol_api_query_parameters#orderbysp
+ * v3: https://developers.google.com/youtube/v3/docs/search/list#order
+ */
+static const gchar *
+get_v3_order (const gchar *v2_order_by)
+{
+	const struct {
+		const gchar *v2_order_by;
+		const gchar *v3_order;
+	} mapping[] = {
+		{ "relevance", "relevance" },
+		{ "published", "date" },
+		{ "viewCount", "viewCount" },
+		{ "rating", "rating" },
+	};
+	guint i;
+
+	for (i = 0; i < G_N_ELEMENTS (mapping); i++) {
+		if (g_strcmp0 (v2_order_by, mapping[i].v2_order_by) == 0) {
+			return mapping[i].v3_order;
+		}
+	}
+
+	/* Special case for ‘relevance_lang_*’. */
+	if (g_str_has_prefix (v2_order_by, "relevance_lang_")) {
+		return "relevance";
+	}
+
+	return NULL;
+}
+
+/* Convert from a v2 license parameter value to a v3 videoLicense parameter
+ * value. Reference:
+ * v2: https://developers.google.com/youtube/2.0/developers_guide_protocol_api_query_parameters#licensesp
+ * v3: https://developers.google.com/youtube/v3/docs/search/list#videoLicense
+ */
+static const gchar *
+get_v3_video_license (const gchar *v2_license)
+{
+	if (g_strcmp0 (v2_license, "cc") == 0) {
+		return "creativeCommon";
+	} else if (g_strcmp0 (v2_license, "youtube") == 0) {
+		return "youtube";
+	} else {
+		return NULL;
+	}
+}
+
 static void
 get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboolean *params_started)
 {
@@ -455,91 +539,127 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	#define APPEND_SEP g_string_append_c (query_uri, (*params_started == FALSE) ? '?' : '&'); *params_started = TRUE;
 
-	/* Chain up to the parent class */
-	GDATA_QUERY_CLASS (gdata_youtube_query_parent_class)->get_query_uri (self, feed_uri, query_uri, params_started);
+	/* NOTE: We do not chain up because the parent class implements a lot
+	 * of deprecated API. */
 
-	APPEND_SEP
-	switch (priv->age) {
+	/* Categories */
+	if (gdata_query_get_categories (self) != NULL) {
+		APPEND_SEP
+		g_string_append (query_uri, "videoCategoryId=");
+		g_string_append_uri_escaped (query_uri,
+		                             gdata_query_get_categories (self),
+		                             NULL,
+		                             FALSE);
+	}
+
+	/* q param */
+	if (gdata_query_get_q (self) != NULL) {
+		APPEND_SEP
+		g_string_append (query_uri, "q=");
+		g_string_append_uri_escaped (query_uri,
+		                             gdata_query_get_q (self), NULL,
+		                             FALSE);
+	}
+
+	if (gdata_query_get_max_results (self) > 0) {
+		APPEND_SEP
+		g_string_append_printf (query_uri, "maxResults=%u",
+		                        gdata_query_get_max_results (self));
+	}
+
+	if (priv->age != GDATA_YOUTUBE_AGE_ALL_TIME) {
+		gchar *after;
+		GTimeVal tv = { 0, };
+
+		g_get_current_time (&tv);
+
+		switch (priv->age) {
 		case GDATA_YOUTUBE_AGE_TODAY:
-			g_string_append (query_uri, "time=today");
+			tv.tv_sec -= 24 * 60 * 60;
 			break;
 		case GDATA_YOUTUBE_AGE_THIS_WEEK:
-			g_string_append (query_uri, "time=this_week");
+			tv.tv_sec -= 7 * 24 * 60 * 60;
 			break;
 		case GDATA_YOUTUBE_AGE_THIS_MONTH:
-			g_string_append (query_uri, "time=this_month");
+			tv.tv_sec -= 31 * 24 * 60 * 60;
 			break;
 		case GDATA_YOUTUBE_AGE_ALL_TIME:
-			g_string_append (query_uri, "time=all_time");
-			break;
 		default:
 			g_assert_not_reached ();
+		}
+
+		APPEND_SEP
+
+		after = g_time_val_to_iso8601 (&tv);
+		g_string_append_printf (query_uri, "publishedAfter=%s", after);
+		g_free (after);
 	}
 
-	/* We don't need to use APPEND_SEP below here, as the "age" parameter is always included */
+	/* We don’t need to use APPEND_SEP below here, as this parameter is
+	 * always included */
+	APPEND_SEP
 	switch (priv->safe_search) {
 		case GDATA_YOUTUBE_SAFE_SEARCH_NONE:
-			g_string_append (query_uri, "&safeSearch=none");
+			g_string_append (query_uri, "safeSearch=none");
 			break;
 		case GDATA_YOUTUBE_SAFE_SEARCH_MODERATE:
-			g_string_append (query_uri, "&safeSearch=moderate");
+			g_string_append (query_uri, "safeSearch=moderate");
 			break;
 		case GDATA_YOUTUBE_SAFE_SEARCH_STRICT:
-			g_string_append (query_uri, "&safeSearch=strict");
+			g_string_append (query_uri, "safeSearch=strict");
 			break;
 		default:
 			g_assert_not_reached ();
 	}
-
-	if (priv->format != GDATA_YOUTUBE_FORMAT_UNKNOWN)
-		g_string_append_printf (query_uri, "&format=%u", priv->format);
 
 	if (priv->latitude >= -90.0 && priv->latitude <= 90.0 &&
 	    priv->longitude >= -180.0 && priv->longitude <= 180.0) {
-		gchar latitude[G_ASCII_DTOSTR_BUF_SIZE], longitude[G_ASCII_DTOSTR_BUF_SIZE];
+		gchar latitude[G_ASCII_DTOSTR_BUF_SIZE];
+		gchar longitude[G_ASCII_DTOSTR_BUF_SIZE];
 
-		g_string_append_printf (query_uri, (priv->has_location == TRUE) ? "&location=%s,%s!" : "&location=%s,%s",
-		                        g_ascii_dtostr (latitude, sizeof (latitude), priv->latitude),
-		                        g_ascii_dtostr (longitude, sizeof (longitude), priv->longitude));
+		g_string_append_printf (query_uri, "&location=%s,%s",
+		                        g_ascii_dtostr (latitude,
+		                                        sizeof (latitude),
+		                                        priv->latitude),
+		                        g_ascii_dtostr (longitude,
+		                                        sizeof (longitude),
+		                                        priv->longitude));
 
 		if (priv->location_radius >= 0.0) {
 			gchar radius[G_ASCII_DTOSTR_BUF_SIZE];
-			g_string_append_printf (query_uri, "&location-radius=%sm", g_ascii_dtostr (radius, sizeof (radius), priv->location_radius));
+			g_string_append_printf (query_uri, "&locationRadius=%sm",
+			                        g_ascii_dtostr (radius,
+			                                        sizeof (radius),
+			                                        priv->location_radius));
 		}
-	} else if (priv->has_location == TRUE) {
-		g_string_append (query_uri, "&location=!");
-	}
-
-	if (priv->language != NULL) {
-		g_string_append (query_uri, "&lr=");
-		g_string_append_uri_escaped (query_uri, priv->language, NULL, FALSE);
 	}
 
 	if (priv->order_by != NULL) {
-		g_string_append (query_uri, "&orderby=");
-		g_string_append_uri_escaped (query_uri, priv->order_by, NULL, FALSE);
+		const gchar *v3_order_by = get_v3_order (priv->order_by);
+
+		if (v3_order_by != NULL) {
+			g_string_append (query_uri, "&order=");
+			g_string_append_uri_escaped (query_uri, v3_order_by,
+			                             NULL, FALSE);
+		}
 	}
 
 	if (priv->restriction != NULL) {
-		g_string_append (query_uri, "&restriction=");
+		g_string_append (query_uri, "&regionCode=");
 		g_string_append_uri_escaped (query_uri, priv->restriction, NULL, FALSE);
 	}
 
-	if (priv->sort_order != GDATA_YOUTUBE_SORT_NONE) {
-		if (priv->sort_order == GDATA_YOUTUBE_SORT_ASCENDING)
-			g_string_append (query_uri, "&sortorder=ascending");
-		else if (priv->sort_order == GDATA_YOUTUBE_SORT_DESCENDING)
-			g_string_append (query_uri, "&sortorder=descending");
-		else
-			g_assert_not_reached ();
-	}
-
-	if (priv->uploader != GDATA_YOUTUBE_UPLOADER_ALL)
-		g_string_append (query_uri, "&uploader=partner");
-
 	if (priv->license != NULL) {
-		g_string_append (query_uri, "&license=");
-		g_string_append_uri_escaped (query_uri, priv->license, NULL, FALSE);
+		const gchar *v3_video_license;
+
+		v3_video_license = get_v3_video_license (priv->license);
+
+		if (v3_video_license != NULL) {
+			g_string_append (query_uri, "&videoLicense=");
+			g_string_append_uri_escaped (query_uri,
+			                             v3_video_license, NULL,
+			                             FALSE);
+		}
 	}
 }
 
@@ -559,6 +679,8 @@ gdata_youtube_query_new (const gchar *q)
 	return g_object_new (GDATA_TYPE_YOUTUBE_QUERY, "q", q, NULL);
 }
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 /**
  * gdata_youtube_query_get_format:
  * @self: a #GDataYouTubeQuery
@@ -568,6 +690,8 @@ gdata_youtube_query_new (const gchar *q)
  * Return value: the format property
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ *   this property will be unused in queries. There is no replacement.
  **/
 GDataYouTubeFormat
 gdata_youtube_query_get_format (GDataYouTubeQuery *self)
@@ -584,6 +708,8 @@ gdata_youtube_query_get_format (GDataYouTubeQuery *self)
  * Sets the #GDataYouTubeQuery:format property of the #GDataYouTubeQuery to @format.
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ *   this property will be unused in queries. There is no replacement.
  **/
 void
 gdata_youtube_query_set_format (GDataYouTubeQuery *self, GDataYouTubeFormat format)
@@ -595,6 +721,8 @@ gdata_youtube_query_set_format (GDataYouTubeQuery *self, GDataYouTubeFormat form
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
  * gdata_youtube_query_get_location:
@@ -668,6 +796,8 @@ gdata_youtube_query_set_location (GDataYouTubeQuery *self, gdouble latitude, gdo
  * Return value: the language property, or %NULL if it is unset
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ *   this property will be unused in queries. There is no replacement.
  **/
 const gchar *
 gdata_youtube_query_get_language (GDataYouTubeQuery *self)
@@ -686,6 +816,8 @@ gdata_youtube_query_get_language (GDataYouTubeQuery *self)
  * Set @language to %NULL to unset the property in the query URI.
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ *   this property will be unused in queries. There is no replacement.
  **/
 void
 gdata_youtube_query_set_language (GDataYouTubeQuery *self, const gchar *language)
@@ -817,6 +949,8 @@ gdata_youtube_query_set_safe_search (GDataYouTubeQuery *self, GDataYouTubeSafeSe
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 /**
  * gdata_youtube_query_get_sort_order:
  * @self: a #GDataYouTubeQuery
@@ -826,6 +960,8 @@ gdata_youtube_query_set_safe_search (GDataYouTubeQuery *self, GDataYouTubeSafeSe
  * Return value: the sort order property
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ *   this property will be unused in queries. There is no replacement.
  **/
 GDataYouTubeSortOrder
 gdata_youtube_query_get_sort_order (GDataYouTubeQuery *self)
@@ -844,6 +980,8 @@ gdata_youtube_query_get_sort_order (GDataYouTubeQuery *self)
  * Set @sort_order to %GDATA_YOUTUBE_SORT_NONE to unset the property in the query URI.
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ *   this property will be unused in queries. There is no replacement.
  **/
 void
 gdata_youtube_query_set_sort_order (GDataYouTubeQuery *self, GDataYouTubeSortOrder sort_order)
@@ -855,6 +993,8 @@ gdata_youtube_query_set_sort_order (GDataYouTubeQuery *self, GDataYouTubeSortOrd
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
  * gdata_youtube_query_get_age:
@@ -893,6 +1033,8 @@ gdata_youtube_query_set_age (GDataYouTubeQuery *self, GDataYouTubeAge age)
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 /**
  * gdata_youtube_query_get_uploader:
  * @self: a #GDataYouTubeQuery
@@ -902,6 +1044,8 @@ gdata_youtube_query_set_age (GDataYouTubeQuery *self, GDataYouTubeAge age)
  * Return value: the uploader property
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ *   this property will be unused in queries. There is no replacement.
  **/
 GDataYouTubeUploader
 gdata_youtube_query_get_uploader (GDataYouTubeQuery *self)
@@ -918,6 +1062,8 @@ gdata_youtube_query_get_uploader (GDataYouTubeQuery *self)
  * Sets the #GDataYouTubeQuery:uploader property of the #GDataYouTubeQuery to @uploader.
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ *   this property will be unused in queries. There is no replacement.
  **/
 void
 gdata_youtube_query_set_uploader (GDataYouTubeQuery *self, GDataYouTubeUploader uploader)
@@ -929,6 +1075,8 @@ gdata_youtube_query_set_uploader (GDataYouTubeQuery *self, GDataYouTubeUploader 
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
  * gdata_youtube_query_get_license:

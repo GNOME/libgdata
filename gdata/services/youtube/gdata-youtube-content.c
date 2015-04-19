@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,8 @@
  * online documentation</ulink>.
  *
  * Since: 0.4.0
+ * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ *   supported by Google. There is no replacement.
  **/
 
 #include <glib.h>
@@ -37,6 +39,8 @@
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
 #include "gdata-youtube-enums.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 static void gdata_youtube_content_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
@@ -75,12 +79,15 @@ gdata_youtube_content_class_init (GDataYouTubeContentClass *klass)
 	 * YouTube documentation</ulink>.
 	 *
 	 * Since: 0.4.0
+	 * Deprecated: UNRELEASED: Accessing YouTube video content directly is
+	 *   no longer supported by Google. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FORMAT,
 	                                 g_param_spec_enum ("format",
 	                                                    "Format", "The video format of the video object.",
 	                                                    GDATA_TYPE_YOUTUBE_FORMAT, GDATA_YOUTUBE_FORMAT_UNKNOWN,
-	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS |
+	                                                    G_PARAM_DEPRECATED));
 }
 
 static void
@@ -137,6 +144,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the video format, or %GDATA_YOUTUBE_FORMAT_UNKNOWN
  *
  * Since: 0.4.0
+ * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ *   supported by Google. There is no replacement.
  **/
 GDataYouTubeFormat
 gdata_youtube_content_get_format (GDataYouTubeContent *self)
@@ -144,3 +153,5 @@ gdata_youtube_content_get_format (GDataYouTubeContent *self)
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_CONTENT (self), GDATA_YOUTUBE_FORMAT_UNKNOWN);
 	return self->priv->format;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

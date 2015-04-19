@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008-2009, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,20 +33,51 @@ G_BEGIN_DECLS
 
 /**
  * GDataYouTubeStandardFeedType:
- * @GDATA_YOUTUBE_TOP_RATED_FEED: This feed contains the most highly rated YouTube videos.
- * @GDATA_YOUTUBE_TOP_FAVORITES_FEED: This feed contains videos most frequently flagged as favorite videos.
- * @GDATA_YOUTUBE_MOST_VIEWED_FEED: This feed contains the most frequently watched YouTube videos.
- * @GDATA_YOUTUBE_MOST_POPULAR_FEED: This feed contains the most popular YouTube videos, selected using an algorithm that combines many
- * different signals to determine overall popularity.
- * @GDATA_YOUTUBE_MOST_RECENT_FEED: This feed contains the videos most recently submitted to YouTube.
- * @GDATA_YOUTUBE_MOST_DISCUSSED_FEED: This feed contains the YouTube videos that have received the most comments.
- * @GDATA_YOUTUBE_MOST_LINKED_FEED: This feed contains the YouTube videos that receive the most links from other websites.
- * @GDATA_YOUTUBE_MOST_RESPONDED_FEED: This feed contains YouTube videos that receive the most video responses.
- * @GDATA_YOUTUBE_RECENTLY_FEATURED_FEED: This feed contains videos recently featured on the YouTube home page or featured videos tab.
- * @GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED: This feed contains videos suitable for playback on mobile devices.
+ * @GDATA_YOUTUBE_TOP_RATED_FEED: This feed contains the most highly rated
+ *   YouTube videos. Deprecated: UNRELEASED: Google no longer supports this feed
+ *   type, and it will return results equivalent to
+ *   %GDATA_YOUTUBE_MOST_POPULAR_FEED.
+ * @GDATA_YOUTUBE_TOP_FAVORITES_FEED: This feed contains videos most frequently
+ *   flagged as favorite videos. Deprecated: UNRELEASED: Google no longer
+ *   supports this feed type, and it will return results equivalent to
+ *   %GDATA_YOUTUBE_MOST_POPULAR_FEED.
+ * @GDATA_YOUTUBE_MOST_VIEWED_FEED: This feed contains the most frequently
+ *   watched YouTube videos. Deprecated: UNRELEASED: Google no longer supports
+ *   this feed type, and it will return results equivalent to
+ *   %GDATA_YOUTUBE_MOST_POPULAR_FEED.
+ * @GDATA_YOUTUBE_MOST_POPULAR_FEED: This feed contains the most popular YouTube
+ *   videos, selected using an algorithm that combines many different signals to
+ *   determine overall popularity. As of version UNRELEASED, this is the only
+ *   supported feed type.
+ * @GDATA_YOUTUBE_MOST_RECENT_FEED: This feed contains the videos most recently
+ *   submitted to YouTube. Deprecated: UNRELEASED: Google no longer supports
+ *   this feed type, and it will return results equivalent to
+ *   %GDATA_YOUTUBE_MOST_POPULAR_FEED.
+ * @GDATA_YOUTUBE_MOST_DISCUSSED_FEED: This feed contains the YouTube videos
+ *   that have received the most comments. Deprecated: UNRELEASED: Google no
+ *   longer supports this feed type, and it will return results equivalent to
+ *   %GDATA_YOUTUBE_MOST_POPULAR_FEED.
+ * @GDATA_YOUTUBE_MOST_LINKED_FEED: This feed contains the YouTube videos that
+ *   receive the most links from other websites. Deprecated: UNRELEASED: Google
+ *   no longer supports this feed type, and it will return results equivalent to
+ *   %GDATA_YOUTUBE_MOST_POPULAR_FEED.
+ * @GDATA_YOUTUBE_MOST_RESPONDED_FEED: This feed contains YouTube videos that
+ *   receive the most video responses. Deprecated: UNRELEASED: Google no longer
+ *   supports this feed type, and it will return results equivalent to
+ *   %GDATA_YOUTUBE_MOST_POPULAR_FEED.
+ * @GDATA_YOUTUBE_RECENTLY_FEATURED_FEED: This feed contains videos recently
+ *   featured on the YouTube home page or featured videos tab. Deprecated:
+ *   UNRELEASED: Google no longer supports this feed type, and it will return
+ *   results equivalent to %GDATA_YOUTUBE_MOST_POPULAR_FEED.
+ * @GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED: This feed contains videos suitable for
+ *   playback on mobile devices. Deprecated: UNRELEASED: Google no longer
+ *   supports this feed type, and it will return results equivalent to
+ *   %GDATA_YOUTUBE_MOST_POPULAR_FEED.
  *
- * Standard feed types for standard feed queries with gdata_youtube_service_query_standard_feed(). For more information, see
- * the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/developers_guide_protocol.html#Standard_feeds">online documentation</ulink>.
+ * Standard feed types for standard feed queries with
+ * gdata_youtube_service_query_standard_feed(). For more information, see the
+ * <ulink type="http" url="https://developers.google.com/youtube/2.0/developers_guide_protocol_video_feeds#Standard_feeds">online
+ * documentation</ulink>.
  **/
 typedef enum {
 	GDATA_YOUTUBE_TOP_RATED_FEED,

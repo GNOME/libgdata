@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  * @GDATA_YOUTUBE_SAFE_SEARCH_STRICT: YouTube will try to exclude all restricted content from the search result set
  *
  * Safe search levels for removing restricted entries from query results. For more information, see the
- * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#safeSearchsp">online documentation</ulink>.
+ * <ulink type="http" url="https://developers.google.com/youtube/v3/docs/search/list#safeSearch">online documentation</ulink>.
  *
  * Since: 0.3.0
  **/
@@ -48,6 +48,7 @@ typedef enum {
 	GDATA_YOUTUBE_SAFE_SEARCH_STRICT
 } GDataYouTubeSafeSearch;
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
 /**
  * GDataYouTubeSortOrder:
  * @GDATA_YOUTUBE_SORT_NONE: do not explicitly sort in any sense
@@ -57,12 +58,15 @@ typedef enum {
  * Sort orders for the search results from queries. They specify the order of the designated order field.
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. There is no
+ *   replacement.
  **/
 typedef enum {
 	GDATA_YOUTUBE_SORT_NONE = 0,
 	GDATA_YOUTUBE_SORT_ASCENDING,
 	GDATA_YOUTUBE_SORT_DESCENDING
-} GDataYouTubeSortOrder;
+} GDataYouTubeSortOrder G_GNUC_DEPRECATED;
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 /**
  * GDataYouTubeAge:
@@ -82,6 +86,7 @@ typedef enum {
 	GDATA_YOUTUBE_AGE_THIS_MONTH
 } GDataYouTubeAge;
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
 /**
  * GDataYouTubeUploader:
  * @GDATA_YOUTUBE_UPLOADER_ALL: retrieve all videos, regardless of who uploaded them
@@ -90,11 +95,14 @@ typedef enum {
  * Video uploaders, allowing queries to be limited to returning videos uploaded by YouTube partners.
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: No longer supported by Google. There is no
+ *   replacement.
  **/
 typedef enum {
 	GDATA_YOUTUBE_UPLOADER_ALL = 0,
 	GDATA_YOUTUBE_UPLOADER_PARTNER
-} GDataYouTubeUploader;
+} GDataYouTubeUploader G_GNUC_DEPRECATED;
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 /**
  * GDATA_YOUTUBE_LICENSE_CC:
@@ -158,26 +166,31 @@ GType gdata_youtube_query_get_type (void) G_GNUC_CONST;
 
 GDataYouTubeQuery *gdata_youtube_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-GDataYouTubeFormat gdata_youtube_query_get_format (GDataYouTubeQuery *self) G_GNUC_PURE;
-void gdata_youtube_query_set_format (GDataYouTubeQuery *self, GDataYouTubeFormat format);
 void gdata_youtube_query_get_location (GDataYouTubeQuery *self, gdouble *latitude, gdouble *longitude, gdouble *radius, gboolean *has_location);
 void gdata_youtube_query_set_location (GDataYouTubeQuery *self, gdouble latitude, gdouble longitude, gdouble radius, gboolean has_location);
-const gchar *gdata_youtube_query_get_language (GDataYouTubeQuery *self) G_GNUC_PURE;
-void gdata_youtube_query_set_language (GDataYouTubeQuery *self, const gchar *language);
 const gchar *gdata_youtube_query_get_order_by (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_order_by (GDataYouTubeQuery *self, const gchar *order_by);
 const gchar *gdata_youtube_query_get_restriction (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_restriction (GDataYouTubeQuery *self, const gchar *restriction);
 GDataYouTubeSafeSearch gdata_youtube_query_get_safe_search (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_safe_search (GDataYouTubeQuery *self, GDataYouTubeSafeSearch safe_search);
-GDataYouTubeSortOrder gdata_youtube_query_get_sort_order (GDataYouTubeQuery *self) G_GNUC_PURE;
-void gdata_youtube_query_set_sort_order (GDataYouTubeQuery *self, GDataYouTubeSortOrder sort_order);
 GDataYouTubeAge gdata_youtube_query_get_age (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_age (GDataYouTubeQuery *self, GDataYouTubeAge age);
-GDataYouTubeUploader gdata_youtube_query_get_uploader (GDataYouTubeQuery *self) G_GNUC_PURE;
-void gdata_youtube_query_set_uploader (GDataYouTubeQuery *self, GDataYouTubeUploader uploader);
 const gchar *gdata_youtube_query_get_license (GDataYouTubeQuery *self) G_GNUC_PURE;
 void gdata_youtube_query_set_license (GDataYouTubeQuery *self, const gchar *license);
+
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+GDataYouTubeFormat gdata_youtube_query_get_format (GDataYouTubeQuery *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+void gdata_youtube_query_set_format (GDataYouTubeQuery *self, GDataYouTubeFormat format) G_GNUC_DEPRECATED;
+const gchar *gdata_youtube_query_get_language (GDataYouTubeQuery *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+void gdata_youtube_query_set_language (GDataYouTubeQuery *self, const gchar *language) G_GNUC_DEPRECATED;
+GDataYouTubeSortOrder gdata_youtube_query_get_sort_order (GDataYouTubeQuery *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+void gdata_youtube_query_set_sort_order (GDataYouTubeQuery *self, GDataYouTubeSortOrder sort_order) G_GNUC_DEPRECATED;
+GDataYouTubeUploader gdata_youtube_query_get_uploader (GDataYouTubeQuery *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+void gdata_youtube_query_set_uploader (GDataYouTubeQuery *self, GDataYouTubeUploader uploader) G_GNUC_DEPRECATED;
+G_GNUC_END_IGNORE_DEPRECATIONS
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

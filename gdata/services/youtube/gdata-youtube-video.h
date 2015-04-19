@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008-2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008-2009, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -97,6 +97,7 @@ G_BEGIN_DECLS
  **/
 #define GDATA_YOUTUBE_ACTION_SYNDICATE "syndicate"
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
 /**
  * GDATA_YOUTUBE_RATING_TYPE_SIMPLE:
  *
@@ -104,8 +105,12 @@ G_BEGIN_DECLS
  * <code class="literal">adult</code> and <code class="literal">nonadult</code>.
  *
  * Since: 0.10.0
+ * Deprecated: UNRELEASED: No longer supported by Google. Calling
+ *   gdata_youtube_video_get_media_rating() with this rating type will always
+ *   return %NULL.
  */
 #define GDATA_YOUTUBE_RATING_TYPE_SIMPLE "simple"
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 /**
  * GDATA_YOUTUBE_RATING_TYPE_MPAA:
@@ -201,18 +206,13 @@ gboolean gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, 
 const gchar *gdata_youtube_video_get_media_rating (GDataYouTubeVideo *self, const gchar *rating_type) G_GNUC_PURE;
 GDataMediaCategory *gdata_youtube_video_get_category (GDataYouTubeVideo *self) G_GNUC_PURE;
 void gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *category);
-GDataYouTubeCredit *gdata_youtube_video_get_credit (GDataYouTubeVideo *self) G_GNUC_PURE;
 const gchar *gdata_youtube_video_get_description (GDataYouTubeVideo *self) G_GNUC_PURE;
 void gdata_youtube_video_set_description (GDataYouTubeVideo *self, const gchar *description);
-GDataYouTubeContent *gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type) G_GNUC_PURE;
 GList *gdata_youtube_video_get_thumbnails (GDataYouTubeVideo *self) G_GNUC_PURE;
 guint gdata_youtube_video_get_duration (GDataYouTubeVideo *self) G_GNUC_PURE;
 gboolean gdata_youtube_video_is_private (GDataYouTubeVideo *self) G_GNUC_PURE;
 void gdata_youtube_video_set_is_private (GDataYouTubeVideo *self, gboolean is_private);
 gint64 gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self);
-const gchar *gdata_youtube_video_get_video_id (GDataYouTubeVideo *self) G_GNUC_PURE;
-gboolean gdata_youtube_video_is_draft (GDataYouTubeVideo *self) G_GNUC_PURE;
-void gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft);
 GDataYouTubeState *gdata_youtube_video_get_state (GDataYouTubeVideo *self) G_GNUC_PURE;
 gint64 gdata_youtube_video_get_recorded (GDataYouTubeVideo *self);
 void gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, gint64 recorded);
@@ -222,6 +222,16 @@ void gdata_youtube_video_get_coordinates (GDataYouTubeVideo *self, gdouble *lati
 void gdata_youtube_video_set_coordinates (GDataYouTubeVideo *self, gdouble latitude, gdouble longitude);
 
 gchar *gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+const gchar *gdata_youtube_video_get_video_id (GDataYouTubeVideo *self) G_GNUC_PURE G_GNUC_DEPRECATED_FOR(gdata_entry_get_id);
+GDataYouTubeContent *gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type) G_GNUC_PURE G_GNUC_DEPRECATED_FOR(gdata_youtube_video_get_player_uri);
+
+gboolean gdata_youtube_video_is_draft (GDataYouTubeVideo *self) G_GNUC_PURE G_GNUC_DEPRECATED_FOR(gdata_youtube_video_is_private);
+void gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft) G_GNUC_DEPRECATED_FOR(gdata_youtube_video_set_is_private);
+
+GDataYouTubeCredit *gdata_youtube_video_get_credit (GDataYouTubeVideo *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

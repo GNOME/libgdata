@@ -343,6 +343,8 @@ test_query_standard_feed_with_query (gconstpointer service)
 	GDataFeed *feed;
 	GError *error = NULL;
 
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 	gdata_test_mock_server_start_trace (mock_server, "query-standard-feed-with-query");
 
 	query = gdata_youtube_query_new (NULL);
@@ -359,6 +361,8 @@ test_query_standard_feed_with_query (gconstpointer service)
 	g_object_unref (feed);
 
 	uhm_server_end_trace (mock_server);
+
+	G_GNUC_END_IGNORE_DEPRECATIONS
 }
 
 /* HTTP message responses and the expected associated GData error domain/code. */
@@ -898,7 +902,9 @@ test_parsing_app_control (void)
 	g_clear_error (&error);
 
 	/* Test the app:control values */
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	g_assert (gdata_youtube_video_is_draft (video) == TRUE);
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	state = gdata_youtube_video_get_state (video);
 	g_assert_cmpstr (gdata_youtube_state_get_name (state), ==, "blacklisted");
@@ -1599,6 +1605,8 @@ test_query_uri (void)
 	gchar *query_uri;
 	GDataYouTubeQuery *query = gdata_youtube_query_new ("q");
 
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 	gdata_youtube_query_set_format (query, GDATA_YOUTUBE_FORMAT_RTSP_H263_AMR);
 	g_assert_cmpuint (gdata_youtube_query_get_format (query), ==, 1);
 
@@ -1671,6 +1679,8 @@ test_query_uri (void)
 	g_free (query_uri);
 
 	g_object_unref (query);
+
+	G_GNUC_END_IGNORE_DEPRECATIONS
 }
 
 static void
@@ -1680,6 +1690,8 @@ test_query_etag (void)
 
 	/* Test that setting any property will unset the ETag */
 	g_test_bug ("613529");
+
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 #define CHECK_ETAG(C) \
 	gdata_query_set_etag (GDATA_QUERY (query), "foobar");		\
@@ -1700,6 +1712,8 @@ test_query_etag (void)
 #undef CHECK_ETAG
 
 	g_object_unref (query);
+
+	G_GNUC_END_IGNORE_DEPRECATIONS
 }
 
 static void
@@ -1718,8 +1732,12 @@ test_query_single (gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (video != NULL);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
+
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
 	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
+	G_GNUC_END_IGNORE_DEPRECATIONS
+
 	g_clear_error (&error);
 
 	g_object_unref (video);
@@ -1739,9 +1757,11 @@ G_STMT_START {
 	video = GDATA_YOUTUBE_VIDEO (gdata_service_query_single_entry_finish (GDATA_SERVICE (obj), async_result, &error));
 
 	if (error == NULL) {
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 		g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
 		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
+		G_GNUC_END_IGNORE_DEPRECATIONS
 
 		g_object_unref (video);
 	} else {

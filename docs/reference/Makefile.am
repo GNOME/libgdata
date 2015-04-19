@@ -56,8 +56,6 @@ IGNORE_HFILES = \
 	gdata-enums.h		\
 	gdata-media-enums.h	\
 	gdata-media-group.h	\
-	gdata-youtube-group.h	\
-	gdata-youtube-control.h	\
 	gdata-youtube-enums.h	\
 	gdata-picasaweb-enums.h	\
 	gdata-documents-enums.h	\

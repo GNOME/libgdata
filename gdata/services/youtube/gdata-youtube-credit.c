@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,8 @@
  * online documentation</ulink>.
  *
  * Since: 0.4.0
+ * Deprecated: UNRELEASED: This is no longer supported by Google. There is no
+ *   replacement.
  **/
 
 #include <glib.h>
@@ -36,6 +38,8 @@
 #include "gdata-youtube-credit.h"
 #include "gdata-parsable.h"
 #include "gdata-parser.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 static void gdata_youtube_credit_finalize (GObject *object);
 static void gdata_youtube_credit_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -78,12 +82,14 @@ gdata_youtube_credit_class_init (GDataYouTubeCreditClass *klass)
 	 * YouTube documentation</ulink>.
 	 *
 	 * Since: 0.4.0
+	 * Deprecated: UNRELEASED: This is no longer supported by Google. There
+	 *   is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ENTITY_TYPE,
 	                                 g_param_spec_string ("entity-type",
 	                                                      "Entity type", "The type of entity who is credited.",
 	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
 }
 
 static void
@@ -160,6 +166,8 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the type of the credited user (e.g. %GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER), or %NULL
  *
  * Since: 0.4.0
+ * Deprecated: UNRELEASED: This is no longer supported by Google. There is no
+ *   replacement.
  **/
 const gchar *
 gdata_youtube_credit_get_entity_type (GDataYouTubeCredit *self)
@@ -167,3 +175,5 @@ gdata_youtube_credit_get_entity_type (GDataYouTubeCredit *self)
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_CREDIT (self), NULL);
 	return self->priv->entity_type;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

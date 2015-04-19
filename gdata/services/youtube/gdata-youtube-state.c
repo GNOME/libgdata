@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,17 +30,12 @@
  **/
 
 #include <glib.h>
-#include <libxml/parser.h>
 
 #include "gdata-youtube-state.h"
 #include "gdata-parsable.h"
-#include "gdata-parser.h"
 
 static void gdata_youtube_state_finalize (GObject *object);
 static void gdata_youtube_state_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 struct _GDataYouTubeStatePrivate {
 	gchar *name;
@@ -62,18 +57,11 @@ static void
 gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (GDataYouTubeStatePrivate));
 
 	gobject_class->get_property = gdata_youtube_state_get_property;
 	gobject_class->finalize = gdata_youtube_state_finalize;
-
-	parsable_class->pre_parse_xml = pre_parse_xml;
-	parsable_class->parse_xml = parse_xml;
-	parsable_class->get_namespaces = get_namespaces;
-	parsable_class->element_name = "state";
-	parsable_class->element_namespace = "yt";
 
 	/**
 	 * GDataYouTubeState:name:
@@ -184,42 +172,6 @@ gdata_youtube_state_get_property (GObject *object, guint property_id, GValue *va
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
 	}
-}
-
-static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
-{
-	GDataYouTubeStatePrivate *priv = GDATA_YOUTUBE_STATE (parsable)->priv;
-	xmlChar *name;
-
-	name = xmlGetProp (root_node, (xmlChar*) "name");
-	if (name == NULL || *name == '\0') {
-		g_free (name);
-		return gdata_parser_error_required_property_missing (root_node, "name", error);
-	}
-
-	priv->name = (gchar*) name;
-	priv->reason_code = (gchar*) xmlGetProp (root_node, (xmlChar*) "reasonCode");
-	priv->help_uri = (gchar*) xmlGetProp (root_node, (xmlChar*) "helpUrl");
-	priv->message = (gchar*) xmlNodeListGetString (doc, root_node->children, TRUE);
-
-	return TRUE;
-}
-
-static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
-{
-	/* Textual content's handled in pre_parse_xml */
-	if (node->type != XML_ELEMENT_NODE)
-		return TRUE;
-
-	return GDATA_PARSABLE_CLASS (gdata_youtube_state_parent_class)->parse_xml (parsable, doc, node, user_data, error);
-}
-
-static void
-get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
-{
-	g_hash_table_insert (namespaces, (gchar*) "yt", (gchar*) "http://gdata.youtube.com/schemas/2007");
 }
 
 /**

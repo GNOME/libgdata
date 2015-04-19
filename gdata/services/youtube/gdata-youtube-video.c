@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,11 +25,14 @@
  *
  * #GDataYouTubeVideo is a subclass of #GDataEntry to represent a single video on YouTube, either when uploading or querying.
  *
- * #GDataYouTubeVideo implements #GDataCommentable, allowing comments on videos to be queried using gdata_commentable_query_comments(), and new
- * comments to be added to videos using gdata_commentable_insert_comment(). Note that deletion of comments on any #GDataYouTubeVideo is not permitted;
- * gdata_commentable_delete_comment() will always fail if called on a #GDataYouTubeVideo.
+ * #GDataYouTubeVideo implements #GDataCommentable, allowing comments on videos
+ * to be queried and added. However, the initial version of the v3 YouTube API
+ * does not currently support comments, so all #GDataCommentable calls will
+ * fail. It is hoped that the YouTube API will regain support for comments in
+ * future.
  *
- * For more details of YouTube's GData API, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html">
+ * For more details of YouTube’s GData API, see the
+ * <ulink type="http" url="https://developers.google.com/youtube/v3/docs/">
  * online documentation</ulink>.
  *
  * <example>
@@ -43,19 +46,12 @@
  *
  * 	video = gdata_youtube_service_query_single_video (service, NULL, "R-9gzmQHoe0", NULL, NULL);
  *
- * 	video_id = gdata_youtube_video_get_video_id (video); /<!-- -->* e.g. "R-9gzmQHoe0" *<!-- -->/
+ * 	video_id = gdata_entry_get_id (GDATA_ENTRY (video)); /<!-- -->* e.g. "R-9gzmQHoe0" *<!-- -->/
  * 	title = gdata_entry_get_title (GDATA_ENTRY (video)); /<!-- -->* e.g. "Korpiklaani Vodka (official video 2009)" *<!-- -->/
  * 	player_uri = gdata_youtube_video_get_player_uri (video); /<!-- -->* e.g. "http://www.youtube.com/watch?v=ZTUVgYoeN_b" *<!-- -->/
  * 	description = gdata_youtube_video_get_description (video); /<!-- -->* e.g. "Vodka is the first single from the album..." *<!-- -->/
  * 	published = gdata_entry_get_published (GDATA_ENTRY (video)); /<!-- -->* Date and time the video was originally published *<!-- -->/
  * 	updated = gdata_entry_get_updated (GDATA_ENTRY (video)); /<!-- -->* When the video was most recently updated by the author *<!-- -->/
- *
- * 	/<!-- -->* Retrieve a specific encoding of the video in GDataMediaContent format *<!-- -->/
- * 	content = gdata_youtube_video_look_up_content (video, "video/3gpp");
- * 	if (content != NULL)
- * 		video_uri = gdata_media_content_get_uri (content); /<!-- -->* the URI for the direct 3GP version of the video *<!-- -->/
- * 	else
- * 		/<!-- -->* Fall back and try a different video encoding? SWF ("application/x-shockwave-flash") is always present. *<!-- -->/
  *
  * 	/<!-- -->* Get a list of GDataMediaThumbnail<!-- -->s for the video *<!-- -->/
  * 	for (thumbnails = gdata_youtube_video_get_thumbnails (video); thumbnails != NULL; thumbnails = thumbnails->next)
@@ -69,7 +65,7 @@
 #include <config.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libxml/parser.h>
+#include <json-glib/json-glib.h>
 #include <string.h>
 
 #include "gdata-youtube-video.h"
@@ -78,25 +74,19 @@
 #include "gdata-parser.h"
 #include "media/gdata-media-category.h"
 #include "media/gdata-media-thumbnail.h"
-#include "gdata-youtube-group.h"
 #include "gdata-types.h"
-#include "gdata-youtube-control.h"
 #include "gdata-youtube-enums.h"
-#include "georss/gdata-georss-where.h"
-#include "gd/gdata-gd-feed-link.h"
 #include "gdata-commentable.h"
 #include "gdata-youtube-comment.h"
 #include "gdata-youtube-service.h"
 
-static GObject *gdata_youtube_video_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_youtube_video_dispose (GObject *object);
 static void gdata_youtube_video_finalize (GObject *object);
 static void gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_youtube_video_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
-static void get_xml (GDataParsable *parsable, GString *xml_string);
-static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
+static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+static void get_json (GDataParsable *parsable, JsonBuilder *builder);
+static const gchar *get_content_type (void);
 static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
 static void gdata_youtube_video_commentable_init (GDataCommentableInterface *iface);
 static GDataAuthorizationDomain *get_authorization_domain (GDataCommentable *self) G_GNUC_CONST;
@@ -118,18 +108,31 @@ struct _GDataYouTubeVideoPrivate {
 		gdouble average;
 	} rating;
 
-	/* media:group */
-	GDataMediaGroup *media_group; /* is actually a GDataYouTubeGroup */
+	gchar **keywords;
+	gchar *player_uri;
+	gchar **region_restriction_allowed;
+	gchar **region_restriction_blocked;
+	GHashTable *content_ratings;  /* owned string → owned string */
+	GList *thumbnails; /* GDataMediaThumbnail */
+	GDataMediaCategory *category;
+	guint duration;
+	gboolean is_private;
 
-	/* georss:where */
-	GDataGeoRSSWhere *georss_where;
+	/* Location. */
+	gdouble latitude;
+	gdouble longitude;
 
 	/* Other properties */
-	GDataYouTubeControl *youtube_control;
+	gchar *rejection_reason;
+	gchar *processing_status;
+	gchar *upload_status;
+	gchar *failure_reason;
+	GDataYouTubeState *upload_state;  /* owned */
+
 	gint64 recorded;
 
-	/* Comments */
-	GDataGDFeedLink *comments_feed_link;
+	/* State for parse_json(). */
+	gboolean parsing_in_video_list_response;
 };
 
 enum {
@@ -169,19 +172,17 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataYouTubeVideoPrivate));
 
-	gobject_class->constructor = gdata_youtube_video_constructor;
 	gobject_class->get_property = gdata_youtube_video_get_property;
 	gobject_class->set_property = gdata_youtube_video_set_property;
 	gobject_class->dispose = gdata_youtube_video_dispose;
 	gobject_class->finalize = gdata_youtube_video_finalize;
 
-	parsable_class->parse_xml = parse_xml;
-	parsable_class->post_parse_xml = post_parse_xml;
-	parsable_class->get_xml = get_xml;
-	parsable_class->get_namespaces = get_namespaces;
+	parsable_class->parse_json = parse_json;
+	parsable_class->get_json = get_json;
+	parsable_class->get_content_type = get_content_type;
 
 	entry_class->get_entry_uri = get_entry_uri;
-	entry_class->kind_term = "http://gdata.youtube.com/schemas/2007#video";
+	entry_class->kind_term = "youtube#video";  /* also: youtube#searchResult */
 
 	/**
 	 * GDataYouTubeVideo:view-count:
@@ -189,7 +190,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The number of times the video has been viewed.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:statistics">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.viewCount">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VIEW_COUNT,
 	                                 g_param_spec_uint ("view-count",
@@ -203,7 +204,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The number of users who have added the video to their favorites.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:statistics">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.favoriteCount">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FAVORITE_COUNT,
 	                                 g_param_spec_uint ("favorite-count",
@@ -217,7 +218,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Descriptive text about the location where the video was taken.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:location">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#recordingDetails.locationDescription">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
 	                                 g_param_spec_string ("location",
@@ -231,7 +232,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The minimum allowed rating for the video.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.likeCount">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MIN_RATING,
 	                                 g_param_spec_uint ("min-rating",
@@ -245,7 +246,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The maximum allowed rating for the video.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.likeCount">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_MAX_RATING,
 	                                 g_param_spec_uint ("max-rating",
@@ -259,7 +260,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The number of times the video has been rated.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.likeCount">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_RATING_COUNT,
 	                                 g_param_spec_uint ("rating-count",
@@ -273,7 +274,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The average rating of the video, over all the ratings it's received.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdRating">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.likeCount">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_AVERAGE_RATING,
 	                                 g_param_spec_double ("average-rating",
@@ -287,7 +288,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * A %NULL-terminated array of words associated with the video.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:keywords">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#snippet.tags[]">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_KEYWORDS,
 	                                 g_param_spec_boxed ("keywords",
@@ -299,9 +300,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * GDataYouTubeVideo:player-uri:
 	 *
 	 * A URI for a browser-based media player for the full-length video (i.e. the video's page on YouTube).
-	 *
-	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:player">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PLAYER_URI,
 	                                 g_param_spec_string ("player-uri",
@@ -315,7 +313,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Specifies a genre or developer tag that describes the video.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:category">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#snippet.categoryId">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CATEGORY,
 	                                 g_param_spec_object ("category",
@@ -323,19 +321,24 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	                                                      GDATA_TYPE_MEDIA_CATEGORY,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 	/**
 	 * GDataYouTubeVideo:credit:
 	 *
 	 * Identifies the owner of the video.
 	 *
-	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:credit">online documentation</ulink>.
+	 * Deprecated: UNRELEASED: This is no longer supported by Google, and
+	 *   will always be %NULL. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CREDIT,
 	                                 g_param_spec_object ("credit",
 	                                                      "Credit", "Identifies the owner of the video.",
 	                                                      GDATA_TYPE_YOUTUBE_CREDIT,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS |
+	                                                      G_PARAM_DEPRECATED));
+
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	/**
 	 * GDataYouTubeVideo:description:
@@ -343,7 +346,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * A summary or description of the video.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:description">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#snippet.description">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DESCRIPTION,
 	                                 g_param_spec_string ("description",
@@ -357,7 +360,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The duration of the video in seconds.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:duration">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#contentDetails.duration">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DURATION,
 	                                 g_param_spec_uint ("duration",
@@ -371,7 +374,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Indicates whether the video is private, meaning that it will not be publicly visible on YouTube's website.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:private">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#status.privacyStatus">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_PRIVATE,
 	                                 g_param_spec_boolean ("is-private",
@@ -385,7 +388,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Specifies the time the video was originally uploaded to YouTube.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:uploaded">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#snippet.publishedAt">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPLOADED,
 	                                 g_param_spec_int64 ("uploaded",
@@ -399,27 +402,31 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Specifies a unique ID which YouTube uses to identify the video. For example: <literal>qz8EfkS4KK0</literal>.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:videoid">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#id">online documentation</ulink>.
+	 *
+	 * Deprecated: UNRELEASED: This is now equal to #GDataEntry:id.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VIDEO_ID,
 	                                 g_param_spec_string ("video-id",
 	                                                      "Video ID", "Specifies a unique ID which YouTube uses to identify the video.",
 	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS |
+	                                                      G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataYouTubeVideo:is-draft:
 	 *
 	 * Indicates whether the video is in draft, or unpublished, status.
 	 *
-	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_app:draft">online documentation</ulink>.
+	 * Deprecated: UNRELEASED: This is now equal to
+	 *   #GDataYouTubeVideo:is-private.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_DRAFT,
 	                                 g_param_spec_boolean ("is-draft",
 	                                                       "Draft?", "Indicates whether the video is in draft, or unpublished, status.",
 	                                                       FALSE,
-	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+	                                                       G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataYouTubeVideo:state:
@@ -428,7 +435,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * It points to a #GDataYouTubeState.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#status.uploadStatus">online documentation</ulink>.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_STATE,
 	                                 g_param_spec_object ("state",
@@ -442,7 +449,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * Specifies the time the video was originally recorded.
 	 *
 	 * For more information, see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:recorded">online documentation</ulink>.
+	 * url="https://developers.google.com/youtube/v3/docs/videos#recordingDetails.recordingDate">online documentation</ulink>.
 	 *
 	 * Since: 0.3.0
 	 **/
@@ -458,9 +465,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The aspect ratio of the video. A %NULL value means the aspect ratio is unknown (it could still be a widescreen video). A value of
 	 * %GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN means the video is definitely widescreen.
 	 *
-	 * For more information see the <ulink type="http"
-	 * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:aspectratio">online documentation</ulink>.
-	 *
 	 * Since: 0.4.0
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ASPECT_RATIO,
@@ -475,8 +479,9 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The location as a latitude coordinate associated with this video. Valid latitudes range from <code class="literal">-90.0</code>
 	 * to <code class="literal">90.0</code> inclusive.
 	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#GeoRSS_elements_reference">
-	 * GeoRSS specification</ulink>.
+	 * For more information, see the
+	 * <ulink type="http" url="https://developers.google.com/youtube/v3/docs/videos#recordingDetails.location.latitude">
+	 * online documentation</ulink>.
 	 *
 	 * Since: 0.8.0
 	 **/
@@ -492,8 +497,9 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * The location as a longitude coordinate associated with this video. Valid longitudes range from <code class="literal">-180.0</code>
 	 * to <code class="literal">180.0</code> inclusive.
 	 *
-	 * For more information, see the <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#GeoRSS_elements_reference">
-	 * GeoRSS specification</ulink>.
+	 * For more information, see the
+	 * <ulink type="http" url="https://developers.google.com/youtube/v3/docs/videos#recordingDetails.location.longitude">
+	 * online documentation</ulink>.
 	 *
 	 * Since: 0.8.0
 	 **/
@@ -515,43 +521,11 @@ gdata_youtube_video_commentable_init (GDataCommentableInterface *iface)
 }
 
 static void
-notify_title_cb (GDataYouTubeVideo *self, GParamSpec *pspec, gpointer user_data)
-{
-	/* Update our media:group title */
-	if (self->priv->media_group != NULL)
-		gdata_media_group_set_title (self->priv->media_group, gdata_entry_get_title (GDATA_ENTRY (self)));
-}
-
-static void
 gdata_youtube_video_init (GDataYouTubeVideo *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoPrivate);
 	self->priv->recorded = -1;
 	self->priv->access_controls = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
-	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
-
-	/* The video's title is duplicated between atom:title and media:group/media:title, so listen for change notifications on atom:title
-	 * and propagate them to media:group/media:title accordingly. Since the media group isn't publically accessible, we don't need to
-	 * listen for notifications from it. */
-	g_signal_connect (GDATA_ENTRY (self), "notify::title", G_CALLBACK (notify_title_cb), NULL);
-}
-
-static GObject *
-gdata_youtube_video_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
-{
-	GObject *object;
-
-	/* Chain up to the parent class */
-	object = G_OBJECT_CLASS (gdata_youtube_video_parent_class)->constructor (type, n_construct_params, construct_params);
-
-	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
-	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
-		GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (object)->priv;
-		priv->media_group = g_object_new (GDATA_TYPE_YOUTUBE_GROUP, NULL);
-		priv->youtube_control = g_object_new (GDATA_TYPE_YOUTUBE_CONTROL, NULL);
-	}
-
-	return object;
 }
 
 static void
@@ -559,21 +533,9 @@ gdata_youtube_video_dispose (GObject *object)
 {
 	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (object)->priv;
 
-	if (priv->media_group != NULL)
-		g_object_unref (priv->media_group);
-	priv->media_group = NULL;
-
-	if (priv->georss_where != NULL)
-		g_object_unref (priv->georss_where);
-	priv->georss_where = NULL;
-
-	if (priv->youtube_control != NULL)
-		g_object_unref (priv->youtube_control);
-	priv->youtube_control = NULL;
-
-	if (priv->comments_feed_link != NULL)
-		g_object_unref (priv->comments_feed_link);
-	priv->comments_feed_link = NULL;
+	g_clear_object (&priv->category);
+	g_list_free_full (priv->thumbnails, (GDestroyNotify) g_object_unref);
+	g_clear_object (&priv->upload_state);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_video_parent_class)->dispose (object);
@@ -586,6 +548,15 @@ gdata_youtube_video_finalize (GObject *object)
 
 	g_free (priv->location);
 	g_hash_table_destroy (priv->access_controls);
+	g_strfreev (priv->keywords);
+	g_free (priv->player_uri);
+	g_strfreev (priv->region_restriction_allowed);
+	g_strfreev (priv->region_restriction_blocked);
+	g_clear_pointer (&priv->content_ratings, (GDestroyNotify) g_hash_table_unref);
+	g_free (priv->rejection_reason);
+	g_free (priv->processing_status);
+	g_free (priv->upload_status);
+	g_free (priv->failure_reason);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_youtube_video_parent_class)->finalize (object);
@@ -619,49 +590,49 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 			g_value_set_double (value, priv->rating.average);
 			break;
 		case PROP_KEYWORDS:
-			g_value_set_boxed (value, gdata_media_group_get_keywords (priv->media_group));
+			g_value_set_boxed (value, priv->keywords);
 			break;
 		case PROP_PLAYER_URI:
-			g_value_set_string (value, gdata_media_group_get_player_uri (priv->media_group));
+			g_value_set_string (value, gdata_youtube_video_get_player_uri (GDATA_YOUTUBE_VIDEO (object)));
 			break;
 		case PROP_CATEGORY:
-			g_value_set_object (value, gdata_media_group_get_category (priv->media_group));
+			g_value_set_object (value, priv->category);
 			break;
 		case PROP_CREDIT:
-			g_value_set_object (value, gdata_media_group_get_credit (priv->media_group));
+			g_value_set_object (value, NULL);
 			break;
 		case PROP_DESCRIPTION:
-			g_value_set_string (value, gdata_media_group_get_description (priv->media_group));
+			g_value_set_string (value, gdata_entry_get_summary (GDATA_ENTRY (object)));
 			break;
 		case PROP_DURATION:
-			g_value_set_uint (value, gdata_youtube_group_get_duration (GDATA_YOUTUBE_GROUP (priv->media_group)));
+			g_value_set_uint (value, priv->duration);
 			break;
 		case PROP_IS_PRIVATE:
-			g_value_set_boolean (value, gdata_youtube_group_is_private (GDATA_YOUTUBE_GROUP (priv->media_group)));
+			g_value_set_boolean (value, priv->is_private);
 			break;
 		case PROP_UPLOADED:
-			g_value_set_int64 (value, gdata_youtube_group_get_uploaded (GDATA_YOUTUBE_GROUP (priv->media_group)));
+			g_value_set_int64 (value, gdata_entry_get_published (GDATA_ENTRY (object)));
 			break;
 		case PROP_VIDEO_ID:
-			g_value_set_string (value, gdata_youtube_group_get_video_id (GDATA_YOUTUBE_GROUP (priv->media_group)));
+			g_value_set_string (value, gdata_entry_get_id (GDATA_ENTRY (object)));
 			break;
 		case PROP_IS_DRAFT:
-			g_value_set_boolean (value, gdata_youtube_control_is_draft (priv->youtube_control));
+			g_value_set_boolean (value, gdata_youtube_video_is_private (GDATA_YOUTUBE_VIDEO (object)));
 			break;
 		case PROP_STATE:
-			g_value_set_object (value, gdata_youtube_control_get_state (priv->youtube_control));
+			g_value_set_object (value, gdata_youtube_video_get_state (GDATA_YOUTUBE_VIDEO (object)));
 			break;
 		case PROP_RECORDED:
 			g_value_set_int64 (value, priv->recorded);
 			break;
 		case PROP_ASPECT_RATIO:
-			g_value_set_string (value, gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (priv->media_group)));
+			g_value_set_string (value, gdata_youtube_video_get_aspect_ratio (GDATA_YOUTUBE_VIDEO (object)));
 			break;
 		case PROP_LATITUDE:
-			g_value_set_double (value, gdata_georss_where_get_latitude (priv->georss_where));
+			g_value_set_double (value, priv->latitude);
 			break;
 		case PROP_LONGITUDE:
-			g_value_set_double (value, gdata_georss_where_get_longitude (priv->georss_where));
+			g_value_set_double (value, priv->longitude);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -692,7 +663,7 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 			gdata_youtube_video_set_is_private (self, g_value_get_boolean (value));
 			break;
 		case PROP_IS_DRAFT:
-			gdata_youtube_video_set_is_draft (self, g_value_get_boolean (value));
+			gdata_youtube_video_set_is_private (self, g_value_get_boolean (value));
 			break;
 		case PROP_RECORDED:
 			gdata_youtube_video_set_recorded (self, g_value_get_int64 (value));
@@ -701,11 +672,13 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 			gdata_youtube_video_set_aspect_ratio (self, g_value_get_string (value));
 			break;
 		case PROP_LATITUDE:
-			gdata_youtube_video_set_coordinates (self, g_value_get_double (value),
-			                                     gdata_georss_where_get_longitude (self->priv->georss_where));
+			gdata_youtube_video_set_coordinates (self,
+			                                     g_value_get_double (value),
+			                                     self->priv->longitude);
 			break;
 		case PROP_LONGITUDE:
-			gdata_youtube_video_set_coordinates (self, gdata_georss_where_get_latitude (self->priv->georss_where),
+			gdata_youtube_video_set_coordinates (self,
+			                                     self->priv->latitude,
 			                                     g_value_get_double (value));
 			break;
 		default:
@@ -715,264 +688,784 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 	}
 }
 
+/* https://developers.google.com/youtube/v3/docs/videos#contentDetails.duration
+ *
+ * Note that it can also include an ‘hours’ component, as specified in ISO 8601,
+ * but not in the Google documentation. */
 static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
+duration_from_json_member (JsonReader *reader, const gchar *member_name,
+                           GDataParserOptions options, guint *output,
+                           gboolean *success, GError **error)
+{
+	gchar *duration_str = NULL, *i = NULL, *new_i = NULL;
+	guint64 seconds;
+	gboolean child_success = FALSE;
+
+	if (!gdata_parser_string_from_json_member (reader, member_name, options,
+	                                           &duration_str,
+	                                           &child_success, error)) {
+		return FALSE;
+	}
+
+	*success = child_success;
+	*output = 0;
+
+	if (!child_success) {
+		return TRUE;
+	}
+
+	/* Parse the string. Format: ‘PT(hH)?(mM)?(sS)?’, where ‘h’, ‘m’ and ‘s’
+	 * are integer numbers of hours, minutes and seconds. Each element may
+	 * not be present. */
+	i = duration_str;
+	if (strncmp (duration_str, "PT", 2) != 0) {
+		goto error;
+	}
+
+	i += 2;  /* PT */
+
+	seconds = 0;
+
+	while (*i != '\0') {
+		guint64 element;
+		gchar designator;
+
+		element = g_ascii_strtoull (i, &new_i, 10);
+		if (new_i == i) {
+			goto error;
+		}
+
+		i = new_i;
+
+		designator = i[0];
+		if (designator == 'H') {
+			seconds += 60 * 60 * element;
+		} else if (designator == 'M') {
+			seconds += 60 * element;
+		} else if (designator == 'S') {
+			seconds += element;
+		} else {
+			goto error;
+		}
+
+		i += 1;
+	}
+
+	*output = seconds;
+	*success = child_success;
+
+	g_free (duration_str);
+
+	return TRUE;
+
+error:
+	gdata_parser_error_not_iso8601_format_json (reader, duration_str,
+	                                            error);
+	g_free (duration_str);
+
+	return TRUE;
+}
+
+/* https://developers.google.com/youtube/v3/docs/videos#snippet.thumbnails */
+static gboolean
+thumbnails_from_json_member (JsonReader *reader, const gchar *member_name,
+                             GDataParserOptions options, GList **output,
+                             gboolean *success, GError **error)
+{
+	guint i, len;
+	GList *thumbnails = NULL;
+	const GError *child_error = NULL;
+
+	/* Check if there's such element */
+	if (g_strcmp0 (json_reader_get_member_name (reader),
+	               member_name) != 0) {
+		return FALSE;
+	}
+
+	/* Check if the output string has already been set. The JSON parser
+	 * guarantees this can't happen. */
+	g_assert (!(options & P_NO_DUPES) || *output == NULL);
+
+	len = json_reader_count_members (reader);
+	child_error = json_reader_get_error (reader);
+
+	if (child_error != NULL) {
+		*success = gdata_parser_error_from_json_error (reader,
+		                                               child_error,
+		                                               error);
+		goto done;
+	}
+
+	for (i = 0; i < len; i++) {
+		GDataParsable *thumbnail = NULL;  /* GDataMediaThumbnail */
+
+		json_reader_read_element (reader, i);
+		thumbnail = _gdata_parsable_new_from_json_node (GDATA_TYPE_MEDIA_THUMBNAIL,
+		                                                reader, NULL,
+		                                                error);
+		json_reader_end_element (reader);
+
+		if (thumbnail == NULL) {
+			*success = FALSE;
+			goto done;
+		}
+
+		thumbnails = g_list_prepend (thumbnails, thumbnail);
+	}
+
+	/* Success! */
+	*output = thumbnails;
+	thumbnails = NULL;
+	*success = TRUE;
+
+done:
+	g_list_free_full (thumbnails, (GDestroyNotify) g_object_unref);
+
+	return TRUE;
+}
+
+/* https://developers.google.com/youtube/v3/docs/videos#contentDetails.regionRestriction */
+static gboolean
+restricted_countries_from_json_member (JsonReader *reader,
+                                       const gchar *member_name,
+                                       GDataParserOptions options,
+                                       gchar ***output_allowed,
+                                       gchar ***output_blocked,
+                                       gboolean *success, GError **error)
+{
+	guint i, len;
+	const GError *child_error = NULL;
+
+	/* Check if there's such element */
+	if (g_strcmp0 (json_reader_get_member_name (reader),
+	               member_name) != 0) {
+		return FALSE;
+	}
+
+	/* Check if the output string has already been set. The JSON parser guarantees this can't happen. */
+	g_assert (!(options & P_NO_DUPES) ||
+	          (*output_allowed == NULL && *output_blocked == NULL));
+
+	len = json_reader_count_members (reader);
+	child_error = json_reader_get_error (reader);
+
+	if (child_error != NULL) {
+		*success = gdata_parser_error_from_json_error (reader,
+		                                               child_error,
+		                                               error);
+		return TRUE;
+	}
+
+	for (i = 0; i < len; i++) {
+		json_reader_read_element (reader, i);
+
+		if (gdata_parser_strv_from_json_member (reader, "allowed",
+		                                        P_DEFAULT,
+		                                        output_allowed, success,
+		                                        error) ||
+		    gdata_parser_strv_from_json_member (reader, "blocked",
+		                                        P_DEFAULT,
+		                                        output_blocked, success,
+		                                        error)) {
+			/* Nothing to do. */
+		}
+
+		json_reader_end_element (reader);
+	}
+
+	/* Success! */
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/* https://developers.google.com/youtube/v3/docs/videos#contentDetails.contentRating */
+static gboolean
+content_rating_from_json_member (JsonReader *reader,
+                                 const gchar *member_name,
+                                 GDataParserOptions options,
+                                 GHashTable **output,
+                                 gboolean *success, GError **error)
+{
+	guint i, len;
+	const GError *child_error = NULL;
+
+	/* Check if there's such element */
+	if (g_strcmp0 (json_reader_get_member_name (reader),
+	               member_name) != 0) {
+		return FALSE;
+	}
+
+	/* Check if the output string has already been set. The JSON parser
+	 * guarantees this can't happen. */
+	g_assert (!(options & P_NO_DUPES) || *output == NULL);
+
+	len = json_reader_count_members (reader);
+	child_error = json_reader_get_error (reader);
+
+	if (child_error != NULL) {
+		*success = gdata_parser_error_from_json_error (reader,
+		                                               child_error,
+		                                               error);
+		return TRUE;
+	}
+
+	*output = g_hash_table_new_full (g_str_hash, g_str_equal,
+	                                 g_free, g_free);
+
+	for (i = 0; i < len; i++) {
+		const gchar *scheme, *rating;
+
+		json_reader_read_element (reader, i);
+
+		scheme = json_reader_get_member_name (reader);
+		rating = json_reader_get_string_value (reader);
+
+		/* Ignore errors. */
+		if (rating != NULL) {
+			g_hash_table_insert (*output, g_strdup (scheme),
+			                     g_strdup (rating));
+		}
+
+		json_reader_end_element (reader);
+	}
+
+	/* Success! */
+	*success = TRUE;
+
+	return TRUE;
+}
+
+static guint64
+parse_uint64_from_json_string_member (JsonReader *reader,
+                                      const gchar *member_name,
+                                      GError **error)
+{
+	const gchar *str_val, *end_ptr;
+	guint64 out;
+	const GError *child_error = NULL;
+
+	/* Grab the string. */
+	json_reader_read_member (reader, member_name);
+
+	str_val = json_reader_get_string_value (reader);
+	child_error = json_reader_get_error (reader);
+
+	if (child_error != NULL) {
+		gdata_parser_error_from_json_error (reader, child_error, error);
+		out = 0;
+		goto done;
+	}
+
+	/* Try and parse it as an integer. */
+	out = g_ascii_strtoull (str_val, (gchar **) &end_ptr, 10);
+
+	if (*end_ptr != '\0') {
+		gdata_parser_error_required_json_content_missing (reader,
+		                                                  error);
+		out = 0;
+		goto done;
+	}
+
+done:
+	json_reader_end_member (reader);
+
+	return out;
+}
+
+static gboolean
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
 {
 	gboolean success;
 	GDataYouTubeVideo *self = GDATA_YOUTUBE_VIDEO (parsable);
+	GDataYouTubeVideoPrivate *priv = self->priv;
 
-	if (gdata_parser_is_namespace (node, "http://search.yahoo.com/mrss/") == TRUE &&
-	    gdata_parser_object_from_element (node, "group", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_GROUP,
-	                                      &(self->priv->media_group), &success, error) == TRUE) {
-		return success;
-	} else if (gdata_parser_is_namespace (node, "http://www.w3.org/2007/app") == TRUE &&
-	           gdata_parser_object_from_element (node, "control", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_YOUTUBE_CONTROL,
-	                                             &(self->priv->youtube_control), &success, error) == TRUE) {
-		return success;
-	} else if (gdata_parser_is_namespace (node, "http://www.georss.org/georss") == TRUE &&
-	           gdata_parser_object_from_element (node, "where", P_REQUIRED, GDATA_TYPE_GEORSS_WHERE,
-	                                             &(self->priv->georss_where), &success, error) == TRUE) {
-		return success;
-	} else if (gdata_parser_is_namespace (node, "http://gdata.youtube.com/schemas/2007") == TRUE) {
-		if (gdata_parser_string_from_element (node, "location", P_NONE, &(self->priv->location), &success, error) == TRUE) {
-			return success;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "statistics") == 0) {
-			/* yt:statistics */
-			xmlChar *view_count, *favorite_count;
+	/* HACK: When called with gdata_service_query_single_entry(), the video
+	 * list endpoint returns a 0–1 item list of results as a normal feed.
+	 * (See: https://developers.google.com/youtube/v3/docs/videos/list)
+	 * This differs from the v2 API, which returned just the entry.
+	 *
+	 * So, we need a hack to extract the single entry from the feed without
+	 * being able to invoke the parsing machinery in GDataFeed, because
+	 * gdata_service_query_single_entry() can’t do that. Do that by checking
+	 * the kind, and then ignoring all subsequent members until we reach the
+	 * items member. Recursively parse in there, then break out again.
+	 * This all assumes that we see the kind member before items. */
+	if (g_strcmp0 (json_reader_get_member_name (reader), "kind") == 0 &&
+	    g_strcmp0 (json_reader_get_string_value (reader),
+	               "youtube#videoListResponse") == 0) {
+		priv->parsing_in_video_list_response = TRUE;
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "items") == 0 &&
+	           priv->parsing_in_video_list_response) {
+		guint i;
 
-			/* View count */
-			view_count = xmlGetProp (node, (xmlChar*) "viewCount");
-			if (view_count == NULL)
-				return gdata_parser_error_required_property_missing (node, "viewCount", error);
-			self->priv->view_count = g_ascii_strtoull ((gchar*) view_count, NULL, 10);
-			xmlFree (view_count);
+		/* Instead of a 404 when searching for an invalid ID, the server
+		 * returns an empty results list. */
+		if (json_reader_count_elements (reader) != 1) {
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND,
+			             /* Translators: the parameter is an error message returned by the server. */
+			             _("The requested resource was not found: %s"),
+			             "items");
+			return TRUE;
+		}
 
-			/* Favourite count */
-			favorite_count = xmlGetProp (node, (xmlChar*) "favoriteCount");
-			self->priv->favorite_count = (favorite_count != NULL) ? g_ascii_strtoull ((gchar*) favorite_count, NULL, 10) : 0;
-			xmlFree (favorite_count);
-		} else if (xmlStrcmp (node->name, (xmlChar*) "noembed") == 0) {
-			/* yt:noembed */
-			/* Ignore this now; it's been superceded by yt:accessControl.
-			 * See http://apiblog.youtube.com/2010/02/extended-access-controls-available-via.html */
-		} else if (xmlStrcmp (node->name, (xmlChar*) "accessControl") == 0) {
-			/* yt:accessControl */
-			xmlChar *action, *permission;
-			GDataYouTubePermission permission_enum;
+		/* Parse the first (and only) array element. */
+		json_reader_read_element (reader, 0);
+		priv->parsing_in_video_list_response = FALSE;
 
-			action = xmlGetProp (node, (xmlChar*) "action");
-			if (action == NULL)
-				return gdata_parser_error_required_property_missing (node, "action", error);
-			permission = xmlGetProp (node, (xmlChar*) "permission");
-			if (permission == NULL) {
-				xmlFree (action);
-				return gdata_parser_error_required_property_missing (node, "permission", error);
+		/* Parse all its properties. */
+		for (i = 0; i < (guint) json_reader_count_members (reader); i++) {
+			g_return_val_if_fail (json_reader_read_element (reader, i), NULL);
+
+			if (GDATA_PARSABLE_GET_CLASS (self)->parse_json (GDATA_PARSABLE (self), reader, user_data, error) == FALSE) {
+				json_reader_end_element (reader);
+				g_object_unref (parsable);
+				break;
 			}
 
-			/* Work out what the permission is */
-			if (xmlStrcmp (permission, (xmlChar*) "allowed") == 0) {
-				permission_enum = GDATA_YOUTUBE_PERMISSION_ALLOWED;
-			} else if (xmlStrcmp (permission, (xmlChar*) "denied") == 0) {
-				permission_enum = GDATA_YOUTUBE_PERMISSION_DENIED;
-			} else if (xmlStrcmp (permission, (xmlChar*) "moderated") == 0) {
-				permission_enum = GDATA_YOUTUBE_PERMISSION_MODERATED;
-			} else {
-				xmlFree (action);
-				xmlFree (permission);
-				return gdata_parser_error_unknown_property_value (node, "permission", (gchar*) permission, error);
+			json_reader_end_element (reader);
+		}
+
+		priv->parsing_in_video_list_response = TRUE;
+		json_reader_end_element (reader);
+
+		return TRUE;  /* handled */
+	} else if (priv->parsing_in_video_list_response) {
+		/* Ignore the member. */
+		return TRUE;
+	}
+
+	/* Actual video property parsing. */
+	if (g_strcmp0 (json_reader_get_member_name (reader), "id") == 0) {
+		const gchar *id = NULL;
+
+		/* If this is a youtube#searchResult, the id will be an object:
+		 * https://developers.google.com/youtube/v3/docs/search#resource
+		 * If it is a youtube#video, the id will be a string:
+		 * https://developers.google.com/youtube/v3/docs/videos#resource
+		 */
+
+		if (json_reader_is_value (reader)) {
+			id = json_reader_get_string_value (reader);
+		} else if (json_reader_is_object (reader)) {
+			json_reader_read_member (reader, "videoId");
+			id = json_reader_get_string_value (reader);
+			json_reader_end_member (reader);
+		}
+
+		/* Empty ID? */
+		if (id == NULL || *id == '\0') {
+			return gdata_parser_error_required_json_content_missing (reader, error);
+		}
+
+		_gdata_entry_set_id (GDATA_ENTRY (parsable), id);
+
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader),
+	                      "snippet") == 0) {
+		guint i;
+
+		/* Check this is an object. */
+		if (!json_reader_is_object (reader)) {
+			return gdata_parser_error_required_json_content_missing (reader, error);
+		}
+
+		for (i = 0; i < (guint) json_reader_count_members (reader); i++) {
+			gint64 published_at;
+			gchar *title = NULL, *description = NULL;
+			gchar *category_id = NULL;
+
+			json_reader_read_element (reader, i);
+
+			if (gdata_parser_int64_time_from_json_member (reader, "publishedAt", P_DEFAULT, &published_at, &success, error)) {
+				if (success) {
+					_gdata_entry_set_published (GDATA_ENTRY (parsable),
+					                            published_at);
+				}
+			} else if (gdata_parser_string_from_json_member (reader, "title", P_DEFAULT, &title, &success, error)) {
+				if (success) {
+					gdata_entry_set_title (GDATA_ENTRY (parsable),
+					                       title);
+				}
+
+				g_free (title);
+			} else if (gdata_parser_string_from_json_member (reader, "description", P_DEFAULT, &description, &success, error)) {
+				if (success) {
+					gdata_entry_set_summary (GDATA_ENTRY (parsable),
+					                         description);
+				}
+
+				g_free (description);
+			} else if (gdata_parser_strv_from_json_member (reader, "tags", P_DEFAULT, &priv->keywords, &success, error) ||
+			           thumbnails_from_json_member (reader, "thumbnails", P_DEFAULT, &priv->thumbnails, &success, error)) {
+				/* Fall through. */
+			} else if (gdata_parser_string_from_json_member (reader, "categoryId", P_DEFAULT, &category_id, &success, error)) {
+				if (success) {
+					priv->category = gdata_media_category_new (category_id,
+					                                           NULL,
+					                                           NULL);
+				}
+
+				g_free (category_id);
 			}
 
-			/* Store the access control */
-			g_hash_table_insert (self->priv->access_controls, (gchar*) action, GINT_TO_POINTER (permission_enum));
-		} else if (xmlStrcmp (node->name, (xmlChar*) "recorded") == 0) {
-			/* yt:recorded */
-			xmlChar *recorded;
-			gint64 recorded_int64;
+			json_reader_end_element (reader);
 
-			recorded = xmlNodeListGetString (doc, node->children, TRUE);
-			if (gdata_parser_int64_from_date ((gchar*) recorded, &recorded_int64) == FALSE) {
-				/* Error */
-				gdata_parser_error_not_iso8601_format (node, (gchar*) recorded, error);
-				xmlFree (recorded);
+			if (!success) {
 				return FALSE;
 			}
-			xmlFree (recorded);
-			gdata_youtube_video_set_recorded (self, recorded_int64);
-		} else {
-			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
-	} else if (gdata_parser_is_namespace (node, "http://schemas.google.com/g/2005") == TRUE) {
-		if (xmlStrcmp (node->name, (xmlChar*) "rating") == 0) {
-			/* gd:rating */
-			xmlChar *min, *max, *num_raters, *average;
-			guint num_raters_uint;
-			gdouble average_double;
 
-			min = xmlGetProp (node, (xmlChar*) "min");
-			if (min == NULL)
-				return gdata_parser_error_required_property_missing (node, "min", error);
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader),
+	                      "contentDetails") == 0) {
+		guint i;
 
-			max = xmlGetProp (node, (xmlChar*) "max");
-			if (max == NULL) {
-				gdata_parser_error_required_property_missing (node, "max", error);
-				xmlFree (min);
+		/* Check this is an object. */
+		if (!json_reader_is_object (reader)) {
+			return gdata_parser_error_required_json_content_missing (reader, error);
+		}
+
+		for (i = 0; i < (guint) json_reader_count_members (reader); i++) {
+			json_reader_read_element (reader, i);
+
+			if (duration_from_json_member (reader, "duration", P_DEFAULT, &priv->duration, &success, error) ||
+			    restricted_countries_from_json_member (reader, "regionRestriction", P_DEFAULT, &priv->region_restriction_allowed, &priv->region_restriction_blocked, &success, error) ||
+			    content_rating_from_json_member (reader, "contentRating", P_DEFAULT, &priv->content_ratings, &success, error)) {
+				/* Fall through. */
+			}
+
+			json_reader_end_element (reader);
+
+			if (!success) {
 				return FALSE;
 			}
-
-			num_raters = xmlGetProp (node, (xmlChar*) "numRaters");
-			if (num_raters == NULL)
-				num_raters_uint = 0;
-			else
-				num_raters_uint = g_ascii_strtoull ((gchar*) num_raters, NULL, 10);
-			xmlFree (num_raters);
-
-			average = xmlGetProp (node, (xmlChar*) "average");
-			if (average == NULL)
-				average_double = 0;
-			else
-				average_double = g_ascii_strtod ((gchar*) average, NULL);
-			xmlFree (average);
-
-			self->priv->rating.min = g_ascii_strtoull ((gchar*) min, NULL, 10);
-			self->priv->rating.max = g_ascii_strtoull ((gchar*) max, NULL, 10);
-			self->priv->rating.count = num_raters_uint;
-			self->priv->rating.average = average_double;
-		} else if (xmlStrcmp (node->name, (xmlChar*) "comments") == 0) {
-			/* gd:comments */
-			xmlNode *child_node;
-
-			/* This is actually the child of the <comments> element */
-			child_node = node->children;
-			if (child_node == NULL) {
-				return gdata_parser_error_required_element_missing ("gd:feedLink", "gd:comments", error);
-			}
-
-			if (gdata_parser_object_from_element (child_node, "feedLink", P_REQUIRED | P_NO_DUPES, GDATA_TYPE_GD_FEED_LINK,
-			                                      &(self->priv->comments_feed_link), &success, error) == TRUE) {
-				return success;
-			}
-		} else {
-			return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
+
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader),
+	                      "status") == 0) {
+		const gchar *privacy_status;
+
+		/* Check this is an object. */
+		if (!json_reader_is_object (reader)) {
+			return gdata_parser_error_required_json_content_missing (reader, error);
+		}
+
+		json_reader_read_member (reader, "privacyStatus");
+		privacy_status = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		if (g_strcmp0 (privacy_status, "private") == 0) {
+			priv->is_private = TRUE;
+		} else if (g_strcmp0 (privacy_status, "public") == 0) {
+			priv->is_private = FALSE;
+			g_hash_table_insert (priv->access_controls,
+			                     (gpointer) "list",
+			                     GINT_TO_POINTER (GDATA_YOUTUBE_PERMISSION_ALLOWED));
+		} else if (g_strcmp0 (privacy_status, "unlisted") == 0) {
+			/* See: ‘list’ on
+			 * https://developers.google.com/youtube/2.0/reference?csw=1#youtube_data_api_tag_yt:accessControl */
+			priv->is_private = FALSE;
+			g_hash_table_insert (priv->access_controls,
+			                     (gpointer) "list",
+			                     GINT_TO_POINTER (GDATA_YOUTUBE_PERMISSION_DENIED));
+		}
+
+		json_reader_read_member (reader, "embeddable");
+		g_hash_table_insert (priv->access_controls,
+		                     (gpointer) GDATA_YOUTUBE_ACTION_EMBED,
+		                     GINT_TO_POINTER (json_reader_get_boolean_value (reader) ?
+		                                      GDATA_YOUTUBE_PERMISSION_ALLOWED :
+		                                      GDATA_YOUTUBE_PERMISSION_DENIED));
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "uploadStatus");
+		priv->upload_status = g_strdup (json_reader_get_string_value (reader));
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "failureReason");
+		priv->rejection_reason = g_strdup (json_reader_get_string_value (reader));
+		json_reader_end_member (reader);
+
+		json_reader_read_member (reader, "rejectionReason");
+		priv->rejection_reason = g_strdup (json_reader_get_string_value (reader));
+		json_reader_end_member (reader);
+
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader),
+	                      "statistics") == 0) {
+		gint64 likes, dislikes;
+		GError *child_error = NULL;
+
+		/* Check this is an object. */
+		if (!json_reader_is_object (reader)) {
+			return gdata_parser_error_required_json_content_missing (reader, error);
+		}
+
+		/* Views and favourites. For some unknown reason, the feed
+		 * returns them as a string, even though they’re documented as
+		 * being unsigned longs.
+		 *
+		 * Reference: https://developers.google.com/youtube/v3/docs/videos#statistics */
+		priv->view_count = parse_uint64_from_json_string_member (reader, "viewCount", &child_error);
+		if (child_error != NULL) {
+			g_propagate_error (error, child_error);
+			return FALSE;
+		}
+
+		priv->favorite_count = parse_uint64_from_json_string_member (reader, "favoriteCount", &child_error);
+		if (child_error != NULL) {
+			g_propagate_error (error, child_error);
+			return FALSE;
+		}
+
+		/* The new ratings API (total likes, total dislikes) doesn’t
+		 * really match with the old API (collection of integer ratings
+		 * between 1 and 5). Try and return something appropriate. */
+		likes = parse_uint64_from_json_string_member (reader, "likeCount", &child_error);
+		if (child_error != NULL) {
+			g_propagate_error (error, child_error);
+			return FALSE;
+		}
+
+		dislikes = parse_uint64_from_json_string_member (reader, "dislikeCount", &child_error);
+		if (child_error != NULL) {
+			g_propagate_error (error, child_error);
+			return FALSE;
+		}
+
+		priv->rating.min = 0;
+		priv->rating.max = 1;
+		priv->rating.count = likes + dislikes;
+		if (likes + dislikes == 0) {
+			priv->rating.average = 0.0;  /* basically undefined */
+		} else {
+			priv->rating.average = (gdouble) likes / (gdouble) (likes + dislikes);
+		}
+
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader),
+	                      "processingDetails") == 0) {
+		/* Check this is an object. */
+		if (!json_reader_is_object (reader)) {
+			return gdata_parser_error_required_json_content_missing (reader, error);
+		}
+
+		json_reader_read_member (reader, "processingStatus");
+		priv->processing_status = g_strdup (json_reader_get_string_value (reader));
+		json_reader_end_member (reader);
+
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader),
+	                      "recordingDetails") == 0) {
+		const gchar *recording_date;
+		const GError *child_error = NULL;
+
+		/* Check this is an object. */
+		if (!json_reader_is_object (reader)) {
+			return gdata_parser_error_required_json_content_missing (reader, error);
+		}
+
+		json_reader_read_member (reader, "recordingDate");
+		recording_date = json_reader_get_string_value (reader);
+		json_reader_end_member (reader);
+
+		if (!gdata_parser_int64_from_date (recording_date,
+		                                   &priv->recorded)) {
+			/* Error */
+			gdata_parser_error_not_iso8601_format_json (reader,
+			                                            recording_date,
+			                                            error);
+			return FALSE;
+		}
+
+		json_reader_read_member (reader, "locationDescription");
+		priv->location = g_strdup (json_reader_get_string_value (reader));
+		json_reader_end_member (reader);
+
+		if (json_reader_read_member (reader, "location")) {
+			json_reader_read_member (reader, "latitude");
+			priv->latitude = json_reader_get_double_value (reader);
+			json_reader_end_member (reader);
+
+			json_reader_read_member (reader, "longitude");
+			priv->longitude = json_reader_get_double_value (reader);
+			json_reader_end_member (reader);
+		}
+
+		json_reader_end_member (reader);
+
+		child_error = json_reader_get_error (reader);
+		if (child_error != NULL) {
+			return gdata_parser_error_from_json_error (reader,
+			                                           child_error,
+			                                           error);
+		}
+
+		return TRUE;
 	} else {
-		return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_xml (parsable, doc, node, user_data, error);
+		return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_json (parsable, reader, user_data, error);
 	}
 
 	return TRUE;
 }
 
-static gboolean
-post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
+static void
+get_json (GDataParsable *parsable, JsonBuilder *builder)
 {
+	GDataEntry *entry = GDATA_ENTRY (parsable);
 	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (parsable)->priv;
+	guint i;
+	gpointer permission_ptr;
 
 	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->post_parse_xml (parsable, user_data, error);
+	GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->get_json (parsable, builder);
 
-	/* This must always exist, so is_draft can be set on it */
-	if (priv->youtube_control == NULL)
-		priv->youtube_control = g_object_new (GDATA_TYPE_YOUTUBE_CONTROL, NULL);
+	/* Add the video-specific JSON.
+	 * Reference:
+	 * https://developers.google.com/youtube/v3/docs/videos/insert#request_body */
+	/* snippet object. */
+	json_builder_set_member_name (builder, "snippet");
+	json_builder_begin_object (builder);
 
-	return TRUE;
-}
-
-static void
-access_control_cb (const gchar *action, gpointer value, GString *xml_string)
-{
-	GDataYouTubePermission permission = GPOINTER_TO_INT (value);
-	const gchar *permission_string;
-
-	switch (permission) {
-		case GDATA_YOUTUBE_PERMISSION_ALLOWED:
-			permission_string = "allowed";
-			break;
-		case GDATA_YOUTUBE_PERMISSION_DENIED:
-			permission_string = "denied";
-			break;
-		case GDATA_YOUTUBE_PERMISSION_MODERATED:
-			permission_string = "moderated";
-			break;
-		default:
-			g_assert_not_reached ();
+	if (gdata_entry_get_title (entry) != NULL) {
+		json_builder_set_member_name (builder, "title");
+		json_builder_add_string_value (builder,
+		                               gdata_entry_get_title (entry));
 	}
 
-	gdata_parser_string_append_escaped (xml_string, "<yt:accessControl action='", action, "'");
-	g_string_append_printf (xml_string, " permission='%s'/>", permission_string);
-}
+	if (gdata_entry_get_summary (entry) != NULL) {
+		json_builder_set_member_name (builder, "description");
+		json_builder_add_string_value (builder,
+		                               gdata_entry_get_summary (entry));
+	}
 
-static void
-get_xml (GDataParsable *parsable, GString *xml_string)
-{
-	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (parsable)->priv;
+	if (priv->keywords != NULL) {
+		json_builder_set_member_name (builder, "tags");
+		json_builder_begin_array (builder);
 
-	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->get_xml (parsable, xml_string);
+		for (i = 0; priv->keywords[i] != NULL; i++) {
+			json_builder_add_string_value (builder,
+			                               priv->keywords[i]);
+		}
 
-	/* media:group */
-	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->media_group), xml_string, FALSE);
+		json_builder_end_array (builder);
+	}
 
-	if (priv->location != NULL)
-		gdata_parser_string_append_escaped (xml_string, "<yt:location>", priv->location, "</yt:location>");
+	if (priv->category != NULL) {
+		json_builder_set_member_name (builder, "categoryId");
+		json_builder_add_string_value (builder,
+		                               gdata_media_category_get_category (priv->category));
+	}
+
+	json_builder_end_object (builder);
+
+	/* status object. */
+	json_builder_set_member_name (builder, "status");
+	json_builder_begin_object (builder);
+
+	json_builder_set_member_name (builder, "privacyStatus");
+
+	if (!priv->is_private &&
+	    g_hash_table_lookup_extended (priv->access_controls,
+	                                  "list", NULL,
+	                                  &permission_ptr)) {
+		GDataYouTubePermission perm;
+
+		perm = GPOINTER_TO_INT (permission_ptr);
+
+		/* See the ‘list’ documentation on:
+		 * https://developers.google.com/youtube/2.0/reference?csw=1#youtube_data_api_tag_yt:accessControl */
+		json_builder_add_string_value (builder,
+		                               (perm == GDATA_YOUTUBE_PERMISSION_ALLOWED) ? "public" : "unlisted");
+	} else {
+		json_builder_add_string_value (builder,
+		                               priv->is_private ? "private" : "public");
+	}
+
+	if (g_hash_table_lookup_extended (priv->access_controls,
+	                                  GDATA_YOUTUBE_ACTION_EMBED, NULL,
+	                                  &permission_ptr)) {
+		GDataYouTubePermission perm;
+
+		perm = GPOINTER_TO_INT (permission_ptr);
+
+		json_builder_set_member_name (builder, "embeddable");
+		json_builder_add_boolean_value (builder,
+		                                perm == GDATA_YOUTUBE_PERMISSION_ALLOWED);
+	}
+
+	/* FIXME: add support for:
+	 * publicStatsViewable
+	 * publishAt
+	 * license
+	 */
+
+	json_builder_end_object (builder);
+
+	/* recordingDetails object. */
+	json_builder_set_member_name (builder, "recordingDetails");
+	json_builder_begin_object (builder);
+
+	if (priv->location != NULL) {
+		json_builder_set_member_name (builder, "locationDescription");
+		json_builder_add_string_value (builder, priv->location);
+	}
+
+	if (priv->latitude != G_MAXDOUBLE && priv->longitude != G_MAXDOUBLE) {
+		json_builder_set_member_name (builder, "location");
+		json_builder_begin_object (builder);
+
+		json_builder_set_member_name (builder, "latitude");
+		json_builder_add_double_value (builder, priv->latitude);
+
+		json_builder_set_member_name (builder, "longitude");
+		json_builder_add_double_value (builder, priv->longitude);
+
+		json_builder_end_object (builder);
+	}
 
 	if (priv->recorded != -1) {
 		gchar *recorded = gdata_parser_date_from_int64 (priv->recorded);
-		g_string_append_printf (xml_string, "<yt:recorded>%s</yt:recorded>", recorded);
+		json_builder_set_member_name (builder, "recordingDate");
+		json_builder_add_string_value (builder, recorded);
 		g_free (recorded);
 	}
 
-	/* yt:accessControl */
-	g_hash_table_foreach (priv->access_controls, (GHFunc) access_control_cb, xml_string);
-
-	/* app:control */
-	_gdata_parsable_get_xml (GDATA_PARSABLE (priv->youtube_control), xml_string, FALSE);
-
-	/* georss:where */
-	if (priv->georss_where != NULL && gdata_georss_where_get_latitude (priv->georss_where) != G_MAXDOUBLE &&
-	    gdata_georss_where_get_longitude (priv->georss_where) != G_MAXDOUBLE) {
-		_gdata_parsable_get_xml (GDATA_PARSABLE (priv->georss_where), xml_string, FALSE);
-	}
+	json_builder_end_object (builder);
 }
 
-static void
-get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
+static const gchar *
+get_content_type (void)
 {
-	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (parsable)->priv;
-
-	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->get_namespaces (parsable, namespaces);
-
-	g_hash_table_insert (namespaces, (gchar*) "yt", (gchar*) "http://gdata.youtube.com/schemas/2007");
-
-	/* Add the media:group, app:control and georss:where namespaces */
-	GDATA_PARSABLE_GET_CLASS (priv->media_group)->get_namespaces (GDATA_PARSABLE (priv->media_group), namespaces);
-	GDATA_PARSABLE_GET_CLASS (priv->youtube_control)->get_namespaces (GDATA_PARSABLE (priv->youtube_control), namespaces);
-	GDATA_PARSABLE_GET_CLASS (priv->georss_where)->get_namespaces (GDATA_PARSABLE (priv->georss_where), namespaces);
+	return "application/json";
 }
 
 static gchar *
 get_entry_uri (const gchar *id)
 {
-	/* The entry ID is in the format: "tag:youtube.com,2008:video:QjA5faZF1A8"; we want the bit after "video" */
-	const gchar *video_id = NULL;
-	gchar **parts, *uri;
-	guint i;
+	const gchar *old_prefix = "tag:youtube.com,2008:video:";
 
-	parts = g_strsplit (id, ":", -1);
-
-	for (i = 0; parts[i] != NULL && parts[i + 1] != NULL; i += 2) {
-		if (strcmp (parts[i], "video") == 0) {
-			video_id = parts[i + 1];
-			break;
-		}
+	/* For compatibility with previous video ID formats, strip off the v2
+	 * ID prefix. */
+	if (g_str_has_prefix (id, old_prefix)) {
+		id += strlen (old_prefix);
 	}
 
-	g_assert (video_id != NULL);
-
-	/* Build the URI using the video ID */
-	uri = g_strconcat ("https://gdata.youtube.com/feeds/api/videos/", video_id, NULL);
-	g_strfreev (parts);
-
-	return uri;
+	/* Build the query URI for a single video. This is a bit of a pain,
+	 * because it actually returns a list containing a single video, but
+	 * there seems no other way to do it. See parsing_in_video_list_response
+	 * in parse_json() for the fallout.
+	 *
+	 * Reference: https://developers.google.com/youtube/v3/docs/videos/list#part */
+	return _gdata_service_build_uri ("https://www.googleapis.com/youtube/v3/videos"
+	                                 "?part=contentDetails,id,"
+	                                       "recordingDetails,snippet,"
+	                                       "status,statistics,"
+	                                       "processingDetails"
+	                                 "&id=%s", id);
 }
 
 static GDataAuthorizationDomain *
@@ -984,35 +1477,24 @@ get_authorization_domain (GDataCommentable *self)
 static gchar *
 get_query_comments_uri (GDataCommentable *self)
 {
-	GDataGDFeedLink *feed_link;
-
-	feed_link = GDATA_YOUTUBE_VIDEO (self)->priv->comments_feed_link;
-
-	if (feed_link == NULL) {
-		return NULL;
-	}
-
-	return _gdata_service_fix_uri_scheme (gdata_gd_feed_link_get_uri (feed_link));
+	/* FIXME: Currently unsupported:
+	 * https://developers.google.com/youtube/v3/migration-guide#to_be_migrated */
+	return NULL;
 }
 
 static gchar *
 get_insert_comment_uri (GDataCommentable *self, GDataComment *comment_)
 {
-	GDataGDFeedLink *feed_link;
-
-	feed_link = GDATA_YOUTUBE_VIDEO (self)->priv->comments_feed_link;
-
-	if (feed_link == NULL) {
-		return NULL;
-	}
-
-	return _gdata_service_fix_uri_scheme (gdata_gd_feed_link_get_uri (feed_link));
+	/* FIXME: Currently unsupported:
+	 * https://developers.google.com/youtube/v3/migration-guide#to_be_migrated */
+	return NULL;
 }
 
 static gboolean
 is_comment_deletable (GDataCommentable *self, GDataComment *comment_)
 {
-	/* Deletion of comments is unsupported. */
+	/* FIXME: Currently unsupported:
+	 * https://developers.google.com/youtube/v3/migration-guide#to_be_migrated */
 	return FALSE;
 }
 
@@ -1150,6 +1632,10 @@ gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, const gchar *ac
  * @average: (out caller-allocates) (allow-none): return location for the average rating value, or %NULL
  *
  * Gets various properties of the ratings on the video.
+ *
+ * Note that this property may not be retrieved when querying for multiple
+ * videos at once, but is guaranteed to be retrieved when querying with
+ * gdata_service_query_single_entry_async().
  **/
 void
 gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max, guint *count, gdouble *average)
@@ -1177,7 +1663,7 @@ const gchar * const *
 gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_media_group_get_keywords (self->priv->media_group);
+	return (const gchar * const *) self->priv->keywords;
 }
 
 /**
@@ -1188,7 +1674,7 @@ gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
  * Sets the #GDataYouTubeVideo:keywords property to the new keyword list, @keywords.
  *
  * @keywords must not be %NULL. For more information, see the <ulink type="http"
- * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:keywords">online documentation</ulink>.
+ * url="https://developers.google.com/youtube/v3/docs/videos#snippet.tags[]">online documentation</ulink>.
  **/
 void
 gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *keywords)
@@ -1196,7 +1682,8 @@ gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 	g_return_if_fail (keywords != NULL);
 
-	gdata_media_group_set_keywords (self->priv->media_group, keywords);
+	g_strfreev (self->priv->keywords);
+	self->priv->keywords = g_strdupv ((gchar **) keywords);
 	g_object_notify (G_OBJECT (self), "keywords");
 }
 
@@ -1211,8 +1698,33 @@ gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *
 const gchar *
 gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self)
 {
+	GDataYouTubeVideoPrivate *priv;
+
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_media_group_get_player_uri (self->priv->media_group);
+
+	priv = self->priv;
+
+	/* Generate and cache the player URI. */
+	if (priv->player_uri == NULL) {
+		priv->player_uri = _gdata_service_build_uri ("https://www.youtube.com/watch?v=%s",
+		                                             gdata_entry_get_id (GDATA_ENTRY (self)));
+	}
+
+	return priv->player_uri;
+}
+
+static gboolean
+strv_contains (const gchar * const *strv, const gchar *key)
+{
+	guint i;
+
+	for (i = 0; strv[i] != NULL; i++) {
+		if (g_strcmp0 (strv[i], key) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 /**
@@ -1230,10 +1742,65 @@ gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self)
 gboolean
 gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gchar *country)
 {
+	GDataYouTubeVideoPrivate *priv;
+
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
 	g_return_val_if_fail (country != NULL && *country != '\0', FALSE);
 
-	return gdata_media_group_is_restricted_in_country (self->priv->media_group, country);
+	priv = self->priv;
+
+	return (!strv_contains ((const gchar * const *) priv->region_restriction_allowed, country) &&
+	        (strv_contains ((const gchar * const *) priv->region_restriction_blocked, country) ||
+	         priv->region_restriction_allowed == NULL ||
+	         priv->region_restriction_allowed[0] == NULL));
+}
+
+/* References:
+ * v2: https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_media:rating
+ * v3: https://developers.google.com/youtube/v3/docs/videos#contentDetails.contentRating.mpaaRating
+ */
+static const gchar *
+convert_mpaa_rating (const gchar *v3_rating)
+{
+	if (g_strcmp0 (v3_rating, "mpaaG") == 0) {
+		return "g";
+	} else if (g_strcmp0 (v3_rating, "mpaaNc17") == 0) {
+		return "nc-17";
+	} else if (g_strcmp0 (v3_rating, "mpaaPg") == 0) {
+		return "pg";
+	} else if (g_strcmp0 (v3_rating, "mpaaPg13") == 0) {
+		return "pg-13";
+	} else if (g_strcmp0 (v3_rating, "mpaaR") == 0) {
+		return "r";
+	} else {
+		return NULL;
+	}
+}
+
+/* References:
+ * v2: https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_media:rating
+ * v3: https://developers.google.com/youtube/v3/docs/videos#contentDetails.contentRating.tvpgRating
+ */
+static const gchar *
+convert_tvpg_rating (const gchar *v3_rating)
+{
+	if (g_strcmp0 (v3_rating, "pg14") == 0) {
+		return "tv-14";
+	} else if (g_strcmp0 (v3_rating, "tvpgG") == 0) {
+		return "tv-g";
+	} else if (g_strcmp0 (v3_rating, "tvpgMa") == 0) {
+		return "tv-ma";
+	} else if (g_strcmp0 (v3_rating, "tvpgPg") == 0) {
+		return "tv-pg";
+	} else if (g_strcmp0 (v3_rating, "tvpgY") == 0) {
+		return "tv-y";
+	} else if (g_strcmp0 (v3_rating, "tvpgY7") == 0) {
+		return "tv-y7";
+	} else if (g_strcmp0 (v3_rating, "tvpgY7Fv") == 0) {
+		return "tv-y7-fv";
+	} else {
+		return NULL;
+	}
 }
 
 /**
@@ -1244,7 +1811,7 @@ gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gch
  * Returns the rating of the given type for the video, if one exists. For example, this could be a film rating awarded by the MPAA; or a simple
  * rating specifying whether the video contains adult content.
  *
- * The valid values for @rating_type are: %GDATA_YOUTUBE_RATING_TYPE_SIMPLE, %GDATA_YOUTUBE_RATING_TYPE_MPAA and %GDATA_YOUTUBE_RATING_TYPE_V_CHIP.
+ * The valid values for @rating_type are: %GDATA_YOUTUBE_RATING_TYPE_MPAA and %GDATA_YOUTUBE_RATING_TYPE_V_CHIP.
  * Further values may be added in future; if an unknown rating type is passed to the function, %NULL will be returned.
  *
  * The possible return values depend on what's passed to @rating_type. Valid values for each rating type are listed in the documentation for the
@@ -1257,10 +1824,31 @@ gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gch
 const gchar *
 gdata_youtube_video_get_media_rating (GDataYouTubeVideo *self, const gchar *rating_type)
 {
+	const gchar *rating;
+
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
 	g_return_val_if_fail (rating_type != NULL && *rating_type != '\0', NULL);
 
-	return gdata_media_group_get_media_rating (self->priv->media_group, rating_type);
+	/* All ratings are unknown. */
+	if (self->priv->content_ratings == NULL) {
+		return NULL;
+	}
+
+	/* Compatibility with the old API. */
+	if (g_strcmp0 (rating_type, "simple") == 0) {
+		/* Not supported any more. */
+		return NULL;
+	} else if (g_strcmp0 (rating_type, "mpaa") == 0) {
+		rating = g_hash_table_lookup (self->priv->content_ratings,
+		                              "mpaaRating");
+		return convert_mpaa_rating (rating);
+	} else if (g_strcmp0 (rating_type, "v-chip") == 0) {
+		rating = g_hash_table_lookup (self->priv->content_ratings,
+		                              "tvpgRating");
+		return convert_tvpg_rating (rating);
+	}
+
+	return g_hash_table_lookup (self->priv->content_ratings, rating_type);
 }
 
 /**
@@ -1275,7 +1863,7 @@ GDataMediaCategory *
 gdata_youtube_video_get_category (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_media_group_get_category (self->priv->media_group);
+	return self->priv->category;
 }
 
 /**
@@ -1286,7 +1874,7 @@ gdata_youtube_video_get_category (GDataYouTubeVideo *self)
  * Sets the #GDataYouTubeVideo:category property to the new category, @category, and increments its reference count.
  *
  * @category must not be %NULL. For more information, see the <ulink type="http"
- * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_media:category">online documentation</ulink>.
+ * url="https://developers.google.com/youtube/v3/docs/videos#snippet.categoryId">online documentation</ulink>.
  **/
 void
 gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *category)
@@ -1294,9 +1882,13 @@ gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *c
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 	g_return_if_fail (GDATA_IS_MEDIA_CATEGORY (category));
 
-	gdata_media_group_set_category (self->priv->media_group, category);
+	g_object_ref (category);
+	g_object_unref (self->priv->category);
+	self->priv->category = category;
 	g_object_notify (G_OBJECT (self), "category");
 }
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 /**
  * gdata_youtube_video_get_credit:
@@ -1305,13 +1897,17 @@ gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *c
  * Gets the #GDataYouTubeVideo:credit property.
  *
  * Return value: (transfer none): a #GDataMediaCredit giving information on whom to credit for the video, or %NULL
+ * Deprecated: UNRELEASED: This is no longer supported by Google, and will
+ *   always return %NULL. There is no replacement.
  **/
 GDataYouTubeCredit *
 gdata_youtube_video_get_credit (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return GDATA_YOUTUBE_CREDIT (gdata_media_group_get_credit (self->priv->media_group));
+	return NULL;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
  * gdata_youtube_video_get_description:
@@ -1325,7 +1921,7 @@ const gchar *
 gdata_youtube_video_get_description (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_media_group_get_description (self->priv->media_group);
+	return gdata_entry_get_summary (GDATA_ENTRY (self));
 }
 
 /**
@@ -1341,10 +1937,11 @@ void
 gdata_youtube_video_set_description (GDataYouTubeVideo *self, const gchar *description)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-
-	gdata_media_group_set_description (self->priv->media_group, description);
+	gdata_entry_set_summary (GDATA_ENTRY (self), description);
 	g_object_notify (G_OBJECT (self), "description");
 }
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 /**
  * gdata_youtube_video_look_up_content:
@@ -1355,6 +1952,9 @@ gdata_youtube_video_set_description (GDataYouTubeVideo *self, const gchar *descr
  * a list of URIs to various formats of the video itself, such as its SWF URI or RTSP stream.
  *
  * Return value: (transfer none): a #GDataYouTubeContent matching @type, or %NULL
+ * Deprecated: UNRELEASED: This is no longer supported by Google, and will
+ *   always return %NULL. To view a video, open the URI returned by
+ *   gdata_youtube_video_get_player_uri() in a web browser.
  **/
 GDataYouTubeContent *
 gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type)
@@ -1362,8 +1962,11 @@ gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type)
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
 	g_return_val_if_fail (type != NULL, NULL);
 
-	return GDATA_YOUTUBE_CONTENT (gdata_media_group_look_up_content (self->priv->media_group, type));
+	/* Not supported in the v3 API. */
+	return NULL;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
  * gdata_youtube_video_get_thumbnails:
@@ -1377,7 +1980,7 @@ GList *
 gdata_youtube_video_get_thumbnails (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_media_group_get_thumbnails (self->priv->media_group);
+	return self->priv->thumbnails;
 }
 
 /**
@@ -1392,7 +1995,7 @@ guint
 gdata_youtube_video_get_duration (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), 0);
-	return gdata_youtube_group_get_duration (GDATA_YOUTUBE_GROUP (self->priv->media_group));
+	return self->priv->duration;
 }
 
 /**
@@ -1407,7 +2010,7 @@ gboolean
 gdata_youtube_video_is_private (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
-	return gdata_youtube_group_is_private (GDATA_YOUTUBE_GROUP (self->priv->media_group));
+	return self->priv->is_private;
 }
 
 /**
@@ -1421,7 +2024,7 @@ void
 gdata_youtube_video_set_is_private (GDataYouTubeVideo *self, gboolean is_private)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	gdata_youtube_group_set_is_private (GDATA_YOUTUBE_GROUP (self->priv->media_group), is_private);
+	self->priv->is_private = is_private;
 	g_object_notify (G_OBJECT (self), "is-private");
 }
 
@@ -1437,7 +2040,7 @@ gint64
 gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), -1);
-	return gdata_youtube_group_get_uploaded (GDATA_YOUTUBE_GROUP (self->priv->media_group));
+	return gdata_entry_get_published (GDATA_ENTRY (self));
 }
 
 /**
@@ -1447,12 +2050,13 @@ gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self)
  * Gets the #GDataYouTubeVideo:video-id property.
  *
  * Return value: the video's unique and permanent ID
+ * Deprecated: UNRELEASED: This is now equal to #GDataEntry:id.
  **/
 const gchar *
 gdata_youtube_video_get_video_id (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_youtube_group_get_video_id (GDATA_YOUTUBE_GROUP (self->priv->media_group));
+	return gdata_entry_get_id (GDATA_ENTRY (self));
 }
 
 /**
@@ -1462,12 +2066,14 @@ gdata_youtube_video_get_video_id (GDataYouTubeVideo *self)
  * Gets the #GDataYouTubeVideo:is-draft property.
  *
  * Return value: %TRUE if the video is a draft, %FALSE otherwise
+ * Deprecated: UNRELEASED: This is now equal to
+ *   gdata_youtube_video_is_private().
  **/
 gboolean
 gdata_youtube_video_is_draft (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
-	return gdata_youtube_control_is_draft (self->priv->youtube_control);
+	return gdata_youtube_video_is_private (self);
 }
 
 /**
@@ -1476,13 +2082,95 @@ gdata_youtube_video_is_draft (GDataYouTubeVideo *self)
  * @is_draft: whether the video is a draft
  *
  * Sets the #GDataYouTubeVideo:is-draft property to decide whether the video is a draft.
+ *
+ * Deprecated: UNRELEASED: This is now equivalent to
+ *   gdata_youtube_video_set_is_private().
  **/
 void
 gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	gdata_youtube_control_set_is_draft (self->priv->youtube_control, is_draft);
+	gdata_youtube_video_set_is_private (self, is_draft);
 	g_object_notify (G_OBJECT (self), "is-draft");
+}
+
+/* Convert from v3 to v2 API video upload state. References:
+ * v2: https://developers.google.com/youtube/2.0/reference?csw=1#youtube_data_api_tag_yt:state
+ * v3: https://developers.google.com/youtube/v3/docs/videos#processingDetails.processingStatus
+ *     https://developers.google.com/youtube/v3/docs/videos#status.uploadStatus
+ */
+static const gchar *
+convert_state_name (const gchar *v3_processing_status,
+                    const gchar *v3_upload_status)
+{
+	if (g_strcmp0 (v3_upload_status, "deleted") == 0 ||
+	    g_strcmp0 (v3_upload_status, "failed") == 0 ||
+	    g_strcmp0 (v3_upload_status, "rejected") == 0) {
+		return v3_upload_status;
+	} else if (g_strcmp0 (v3_processing_status, "processing") == 0) {
+		return v3_processing_status;
+	}
+
+	return NULL;
+}
+
+/* References:
+ * v2: https://developers.google.com/youtube/2.0/reference?csw=1#youtube_data_api_tag_yt:state
+ * v3: https://developers.google.com/youtube/v3/docs/videos#status.failureReason
+ *     https://developers.google.com/youtube/v3/docs/videos#status.rejectionReason
+ */
+static const gchar *
+convert_state_reason_code (const gchar *v2_name,
+                           const gchar *v3_failure_reason,
+                           const gchar *v3_rejection_reason)
+{
+	if (v2_name == NULL ||
+	    g_strcmp0 (v2_name, "processing") == 0 ||
+	    g_strcmp0 (v2_name, "deleted") == 0) {
+		/* Explicitly unset if unknown, processing or deleted. */
+		return NULL;
+	} else if (g_strcmp0 (v2_name, "restricted") == 0) {
+		/* Unsupported conversion; convert_state_name() can never return
+		 * ‘restricted’ anyway. */
+		return NULL;
+	} else if (g_strcmp0 (v2_name, "rejected") == 0) {
+		if (g_strcmp0 (v3_rejection_reason, "claim") == 0 ||
+		    g_strcmp0 (v3_rejection_reason, "copyright") == 0 ||
+		    g_strcmp0 (v3_rejection_reason, "trademark") == 0) {
+			return "copyright";
+		} else if (g_strcmp0 (v3_rejection_reason, "duplicate") == 0) {
+			return "duplicate";
+		} else if (g_strcmp0 (v3_rejection_reason,
+		                      "inappropriate") == 0) {
+			return "inappropriate";
+		} else if (g_strcmp0 (v3_rejection_reason, "length") == 0) {
+			return "tooLong";
+		} else if (g_strcmp0 (v3_rejection_reason, "termsOfUse") == 0) {
+			return "termsOfUse";
+		} else if (g_strcmp0 (v3_rejection_reason,
+		                      "uploaderAccountClosed") == 0 ||
+		           g_strcmp0 (v3_rejection_reason,
+		                      "uploaderAccountSuspended") == 0) {
+			return "duplicate";
+		} else {
+			/* Generic fallback. */
+			return "termsOfUse";
+		}
+	} else if (g_strcmp0 (v2_name, "failed") == 0) {
+		if (g_strcmp0 (v3_failure_reason, "codec") == 0) {
+			return "unsupportedCodec";
+		} else if (g_strcmp0 (v3_failure_reason, "conversion") == 0) {
+			return "invalidFormat";
+		} else if (g_strcmp0 (v3_failure_reason, "emptyFile") == 0) {
+			return "empty";
+		} else if (g_strcmp0 (v3_failure_reason, "tooSmall") == 0) {
+			return "tooSmall";
+		} else {
+			return "cantProcess";
+		}
+	}
+
+	return NULL;
 }
 
 /**
@@ -1492,15 +2180,38 @@ gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft)
  * Gets the #GDataYouTubeVideo:state property.
  *
  * For more information, see the <ulink type="http"
- * url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
+ * url="https://developers.google.com/youtube/v3/docs/videos#status.uploadStatus">online documentation</ulink>.
  *
  * Return value: (transfer none): a #GDataYouTubeState showing the state of the video, or %NULL
  **/
 GDataYouTubeState *
 gdata_youtube_video_get_state (GDataYouTubeVideo *self)
 {
+	GDataYouTubeVideoPrivate *priv;
+
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_youtube_control_get_state (self->priv->youtube_control);
+
+	priv = self->priv;
+
+	/* Lazily create the state object. */
+	if (priv->upload_state == NULL) {
+		const gchar *name, *reason_code;
+
+		name = convert_state_name (priv->processing_status,
+		                           priv->upload_status);
+		reason_code = convert_state_reason_code (name,
+		                                         priv->failure_reason,
+		                                         priv->rejection_reason);
+
+		priv->upload_state = g_object_new (GDATA_TYPE_YOUTUBE_STATE,
+		                                   "name", name,
+		                                   "reason-code", reason_code,
+		                                   "help-uri", NULL,
+		                                   "message", NULL,
+		                                   NULL);
+	}
+
+	return priv->upload_state;
 }
 
 /**
@@ -1622,7 +2333,10 @@ const gchar *
 gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_youtube_group_get_aspect_ratio (GDATA_YOUTUBE_GROUP (self->priv->media_group));
+
+	/* Permanently NULL for the moment, but let’s not deprecate the property
+	 * because it looks like it might come in useful in future. */
+	return NULL;
 }
 
 /**
@@ -1639,8 +2353,9 @@ void
 gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, const gchar *aspect_ratio)
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	gdata_youtube_group_set_aspect_ratio (GDATA_YOUTUBE_GROUP (self->priv->media_group), aspect_ratio);
-	g_object_notify (G_OBJECT (self), "aspect-ratio");
+
+	/* Ignore it. See note in gdata_youtube_video_get_aspect_ratio(),
+	 * above. */
 }
 
 /**
@@ -1659,10 +2374,12 @@ gdata_youtube_video_get_coordinates (GDataYouTubeVideo *self, gdouble *latitude,
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 
-	if (latitude != NULL)
-		*latitude = gdata_georss_where_get_latitude (self->priv->georss_where);
-	if (longitude != NULL)
-		*longitude = gdata_georss_where_get_longitude (self->priv->georss_where);
+	if (latitude != NULL) {
+		*latitude = self->priv->latitude;
+	}
+	if (longitude != NULL) {
+		*longitude = self->priv->longitude;
+	}
 }
 
 /**
@@ -1680,8 +2397,8 @@ gdata_youtube_video_set_coordinates (GDataYouTubeVideo *self, gdouble latitude, 
 {
 	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
 
-	gdata_georss_where_set_latitude (self->priv->georss_where, latitude);
-	gdata_georss_where_set_longitude (self->priv->georss_where, longitude);
+	self->priv->latitude = latitude;
+	self->priv->longitude = longitude;
 
 	g_object_freeze_notify (G_OBJECT (self));
 	g_object_notify (G_OBJECT (self), "latitude");
