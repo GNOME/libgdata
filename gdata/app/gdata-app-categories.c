@@ -44,6 +44,11 @@ static void gdata_app_categories_get_property (GObject *object, guint property_i
 static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
 static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
+static gboolean
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data,
+            GError **error);
+static gboolean
+post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
 
 struct _GDataAPPCategoriesPrivate {
 	GList *categories;
@@ -72,6 +77,10 @@ gdata_app_categories_class_init (GDataAPPCategoriesClass *klass)
 	parsable_class->pre_parse_xml = pre_parse_xml;
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->post_parse_xml = post_parse_xml;
+
+	parsable_class->parse_json = parse_json;
+	parsable_class->post_parse_json = post_parse_json;
+
 	parsable_class->element_name = "categories";
 	parsable_class->element_namespace = "app";
 
@@ -190,6 +199,73 @@ post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
 	GDataAPPCategoriesPrivate *priv = GDATA_APP_CATEGORIES (parsable)->priv;
 
 	/* Reverse our lists of stuff */
+	priv->categories = g_list_reverse (priv->categories);
+
+	return TRUE;
+}
+
+/* Reference: https://developers.google.com/youtube/v3/docs/videoCategories/list */
+static gboolean
+parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
+{
+	GDataAPPCategories *self = GDATA_APP_CATEGORIES (parsable);
+	GDataAPPCategoriesPrivate *priv = self->priv;
+
+	if (g_strcmp0 (json_reader_get_member_name (reader), "items") == 0) {
+		guint i, elements;
+
+		/* Loop through the elements array. */
+		for (i = 0, elements = (guint) json_reader_count_elements (reader); i < elements; i++) {
+			GDataCategory *category = NULL;
+			const gchar *id, *title;
+			const GError *child_error = NULL;
+
+			json_reader_read_element (reader, i);
+
+			json_reader_read_member (reader, "id");
+			id = json_reader_get_string_value (reader);
+			json_reader_end_member (reader);
+
+			json_reader_read_member (reader, "snippet");
+
+			json_reader_read_member (reader, "title");
+			title = json_reader_get_string_value (reader);
+			json_reader_end_member (reader);
+
+			child_error = json_reader_get_error (reader);
+
+			if (child_error != NULL) {
+				return gdata_parser_error_from_json_error (reader,
+				                                           child_error,
+				                                           error);
+			}
+
+			/* Create the category. */
+			category = gdata_category_new (id, NULL, title);
+			priv->categories = g_list_prepend (priv->categories,
+			                                   category);
+
+			json_reader_end_member (reader);  /* snippet */
+			json_reader_end_element (reader);  /* category */
+		}
+
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "kind") == 0 ||
+	           g_strcmp0 (json_reader_get_member_name (reader), "etag") == 0 ||
+	           g_strcmp0 (json_reader_get_member_name (reader), "id") == 0) {
+		/* Ignore. */
+		return TRUE;
+	} else {
+		return GDATA_PARSABLE_CLASS (gdata_app_categories_parent_class)->parse_json (parsable, reader, user_data, error);
+	}
+}
+
+static gboolean
+post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	GDataAPPCategoriesPrivate *priv = GDATA_APP_CATEGORIES (parsable)->priv;
+
+	/* Reverse our lists of stuff. */
 	priv->categories = g_list_reverse (priv->categories);
 
 	return TRUE;
