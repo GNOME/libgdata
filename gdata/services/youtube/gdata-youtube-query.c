@@ -131,7 +131,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	g_object_class_install_property (gobject_class, PROP_LATITUDE,
 	                                 g_param_spec_double ("latitude",
 	                                                      "Latitude", "The latitude of a particular location of which videos should be found.",
-	                                                      -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
+	                                                      -G_MAXDOUBLE, G_MAXDOUBLE, G_MAXDOUBLE,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -149,7 +149,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
 	                                 g_param_spec_double ("longitude",
 	                                                      "Longitude", "The longitude of a particular location of which videos should be found.",
-	                                                      -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
+	                                                      -G_MAXDOUBLE, G_MAXDOUBLE, G_MAXDOUBLE,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -325,6 +325,9 @@ static void
 gdata_youtube_query_init (GDataYouTubeQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_QUERY, GDataYouTubeQueryPrivate);
+
+	self->priv->latitude = G_MAXDOUBLE;
+	self->priv->longitude = G_MAXDOUBLE;
 }
 
 static void
