@@ -22,7 +22,6 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/gdata \
 	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\"" \
 	-DG_LOG_DOMAIN=\"libgdata\" \
-	-DLIBGDATA_DISABLE_DEPRECATED \
 	$(DISABLE_DEPRECATED) \
 	$(NULL)
 AM_CFLAGS = \
