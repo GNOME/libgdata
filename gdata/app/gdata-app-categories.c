@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,6 @@
 
 #include <config.h>
 #include <glib.h>
-#include <libxml/parser.h>
 
 #include "gdata-app-categories.h"
 #include "atom/gdata-category.h"
@@ -41,9 +40,6 @@
 static void gdata_app_categories_dispose (GObject *object);
 static void gdata_app_categories_finalize (GObject *object);
 static void gdata_app_categories_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 static gboolean
 parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data,
             GError **error);
@@ -73,10 +69,6 @@ gdata_app_categories_class_init (GDataAPPCategoriesClass *klass)
 	gobject_class->get_property = gdata_app_categories_get_property;
 	gobject_class->dispose = gdata_app_categories_dispose;
 	gobject_class->finalize = gdata_app_categories_finalize;
-
-	parsable_class->pre_parse_xml = pre_parse_xml;
-	parsable_class->parse_xml = parse_xml;
-	parsable_class->post_parse_xml = post_parse_xml;
 
 	parsable_class->parse_json = parse_json;
 	parsable_class->post_parse_json = post_parse_json;
@@ -146,62 +138,6 @@ gdata_app_categories_get_property (GObject *object, guint property_id, GValue *v
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
 	}
-}
-
-static gboolean
-pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
-{
-	GDataAPPCategoriesPrivate *priv = GDATA_APP_CATEGORIES (parsable)->priv;
-	xmlChar *fixed;
-
-	/* Extract fixed and scheme */
-	priv->scheme = (gchar*) xmlGetProp (root_node, (xmlChar*) "scheme");
-
-	fixed = xmlGetProp (root_node, (xmlChar*) "fixed");
-	if (xmlStrcmp (fixed, (xmlChar*) "yes") == 0)
-		priv->fixed = TRUE;
-	xmlFree (fixed);
-
-	return TRUE;
-}
-
-static void
-_gdata_app_categories_add_category (GDataAPPCategories *self, GDataCategory *category)
-{
-	g_return_if_fail (GDATA_IS_APP_CATEGORIES (self));
-	g_return_if_fail (GDATA_IS_CATEGORY (category));
-
-	/* If the category doesn't have a scheme, make it inherit ours */
-	if (gdata_category_get_scheme (category) == NULL)
-		gdata_category_set_scheme (category, self->priv->scheme);
-
-	self->priv->categories = g_list_prepend (self->priv->categories, g_object_ref (category));
-}
-
-static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
-{
-	gboolean success;
-
-	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE &&
-	    gdata_parser_object_from_element_setter (node, "category", P_REQUIRED,
-	                                             (user_data == NULL) ? GDATA_TYPE_CATEGORY : GPOINTER_TO_SIZE (user_data),
-		                                     _gdata_app_categories_add_category, GDATA_APP_CATEGORIES (parsable), &success, error) == TRUE) {
-		return success;
-	}
-
-	return GDATA_PARSABLE_CLASS (gdata_app_categories_parent_class)->parse_xml (parsable, doc, node, user_data, error);
-}
-
-static gboolean
-post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
-{
-	GDataAPPCategoriesPrivate *priv = GDATA_APP_CATEGORIES (parsable)->priv;
-
-	/* Reverse our lists of stuff */
-	priv->categories = g_list_reverse (priv->categories);
-
-	return TRUE;
 }
 
 /* Reference: https://developers.google.com/youtube/v3/docs/videoCategories/list */
