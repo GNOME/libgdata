@@ -20,6 +20,7 @@ gdata/services/calendar/gdata-calendar-service.c
 gdata/services/contacts/gdata-contacts-service.c
 gdata/services/documents/gdata-documents-document.c
 gdata/services/documents/gdata-documents-entry.c
+gdata/services/documents/gdata-documents-feed.c
 gdata/services/documents/gdata-documents-service.c
 gdata/services/freebase/gdata-freebase-service.c
 gdata/services/picasaweb/gdata-picasaweb-service.c
