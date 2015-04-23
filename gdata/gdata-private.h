@@ -103,6 +103,7 @@ G_GNUC_INTERNAL GDataFeed *_gdata_feed_new_from_json (GType feed_type, const gch
                                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                      GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 G_GNUC_INTERNAL void _gdata_feed_add_entry (GDataFeed *self, GDataEntry *entry);
+G_GNUC_INTERNAL void _gdata_feed_add_link (GDataFeed *self, GDataLink *_link);
 G_GNUC_INTERNAL gpointer _gdata_feed_parse_data_new (GType entry_type, GDataQueryProgressCallback progress_callback, gpointer progress_user_data);
 G_GNUC_INTERNAL void _gdata_feed_parse_data_free (gpointer data);
 G_GNUC_INTERNAL void _gdata_feed_call_progress_callback (GDataFeed *self, gpointer user_data, GDataEntry *entry);

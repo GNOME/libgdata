@@ -56,7 +56,6 @@ static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 
 static void _gdata_feed_add_category (GDataFeed *self, GDataCategory *category);
-static void _gdata_feed_add_link (GDataFeed *self, GDataLink *link);
 static void _gdata_feed_add_author (GDataFeed *self, GDataAuthor *author);
 
 static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
@@ -858,7 +857,7 @@ gdata_feed_look_up_link (GDataFeed *self, const gchar *rel)
 	return GDATA_LINK (element->data);
 }
 
-static void
+void
 _gdata_feed_add_link (GDataFeed *self, GDataLink *_link)
 {
 	self->priv->links = g_list_prepend (self->priv->links, g_object_ref (_link));
