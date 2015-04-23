@@ -551,7 +551,8 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 			g_object_unref (category);
 		}
 		return success;
-	} else if (gdata_parser_string_from_json_member (reader, "kind", P_REQUIRED | P_NON_EMPTY, &kind, &success, error) == TRUE) {
+	} else if (gdata_parser_int64_time_from_json_member (reader, "lastViewedByMeDate", P_DEFAULT, &(priv->last_viewed), &success, error) == TRUE ||
+		   gdata_parser_string_from_json_member (reader, "kind", P_REQUIRED | P_NON_EMPTY, &kind, &success, error) == TRUE) {
 		g_free (kind);
 		return success;
 	} else if (gdata_parser_int64_time_from_json_member (reader, "createdDate", P_DEFAULT, &published, &success, error) == TRUE) {
