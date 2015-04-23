@@ -1671,7 +1671,9 @@ test_folder_parser_normal (void)
 	g_free (path);
 
 	/* Check dates. */
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	g_assert_cmpuint (gdata_documents_entry_get_edited (GDATA_DOCUMENTS_ENTRY (folder)), ==, 1334394740);
+	G_GNUC_END_IGNORE_DEPRECATIONS
 	g_assert_cmpuint (gdata_documents_entry_get_last_viewed (GDATA_DOCUMENTS_ENTRY (folder)), ==, -1);
 
 	author = gdata_documents_entry_get_last_modified_by (GDATA_DOCUMENTS_ENTRY (folder));

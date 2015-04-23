@@ -112,7 +112,6 @@
 #include "gdata-documents-folder.h"
 
 static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface);
-static GObject *gdata_documents_entry_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
 static void gdata_documents_entry_finalize (GObject *object);
 static void gdata_entry_dispose (GObject *object);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
@@ -125,7 +124,6 @@ static gchar *get_entry_uri (const gchar *id);
 static const gchar *_get_untyped_resource_id (GDataDocumentsEntry *self) G_GNUC_PURE;
 
 struct _GDataDocumentsEntryPrivate {
-	gint64 edited;
 	gint64 last_viewed;
 	gchar *resource_id;
 	gboolean writers_can_invite;
@@ -158,7 +156,6 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataDocumentsEntryPrivate));
 
-	gobject_class->constructor = gdata_documents_entry_constructor;
 	gobject_class->get_property = gdata_documents_entry_get_property;
 	gobject_class->set_property = gdata_documents_entry_set_property;
 	gobject_class->finalize = gdata_documents_entry_finalize;
@@ -175,16 +172,14 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 *
 	 * The last time the document was edited. If the document has not been edited yet, the content indicates the time it was created.
 	 *
-	 * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/protocol/#appEdited">
-	 * Atom Publishing Protocol specification</ulink>.
-	 *
 	 * Since: 0.4.0
+	 * Deprecated: This is identical to #GDataEntry:updated. (Since: UNRELEASED)
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the document was edited.",
 	                                                     -1, G_MAXINT64, -1,
-	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataDocumentsEntry:last-viewed:
@@ -330,30 +325,7 @@ static void
 gdata_documents_entry_init (GDataDocumentsEntry *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate);
-	self->priv->edited = -1;
 	self->priv->last_viewed = -1;
-}
-
-static GObject *
-gdata_documents_entry_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
-{
-	GObject *object;
-
-	/* Chain up to the parent class */
-	object = G_OBJECT_CLASS (gdata_documents_entry_parent_class)->constructor (type, n_construct_params, construct_params);
-
-	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
-	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
-		GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
-		GTimeVal time_val;
-
-		/* This can't be put in the init function of #GDataDocumentsEntry, as it would then be called even for entries parsed from XML from
-		 * the server, which would break duplicate element detection for the app:edited element. */
-		g_get_current_time (&time_val);
-		priv->edited = time_val.tv_sec;
-	}
-
-	return object;
 }
 
 static void
@@ -399,7 +371,7 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 			g_value_set_boolean (value, priv->is_deleted);
 			break;
 		case PROP_EDITED:
-			g_value_set_int64 (value, priv->edited);
+			g_value_set_int64 (value, gdata_entry_get_updated (GDATA_ENTRY (object)));
 			break;
 		case PROP_LAST_VIEWED:
 			g_value_set_int64 (value, priv->last_viewed);
@@ -536,12 +508,13 @@ get_entry_uri (const gchar *id)
  * Return value: the UNIX timestamp for the time the document was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
+ * Deprecated: Use gdata_entry_get_updated() instead. See #GDataDocumentsEntry:edited. (Since: UNRELEASED)
  **/
 gint64
 gdata_documents_entry_get_edited (GDataDocumentsEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), -1);
-	return self->priv->edited;
+	return gdata_entry_get_updated (GDATA_ENTRY (self));
 }
 
 /**
