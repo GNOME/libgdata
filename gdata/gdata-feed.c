@@ -2,6 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -625,6 +626,19 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 			json_reader_end_element (reader);
 		}
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "selfLink") == 0) {
+		GDataLink *_link;
+		const gchar *uri;
+
+		/* Empty URI? */
+		uri = json_reader_get_string_value (reader);
+		if (uri == NULL || *uri == '\0') {
+			return gdata_parser_error_required_json_content_missing (reader, error);
+		}
+
+		_link = gdata_link_new (uri, GDATA_LINK_SELF);
+		_gdata_feed_add_link (self, _link);
+		g_object_unref (_link);
 	} else if (g_strcmp0 (json_reader_get_member_name (reader), "kind") == 0) {
 		/* Ignore. */
 	} else if (g_strcmp0 (json_reader_get_member_name (reader), "etag") == 0) {
