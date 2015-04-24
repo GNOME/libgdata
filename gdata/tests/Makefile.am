@@ -41,24 +41,24 @@ LDADD = \
 	$(UHTTPMOCK_LIBS) \
 	$(NULL)
 
-noinst_PROGRAMS = $(TESTS)
+noinst_PROGRAMS = $(TESTS) $(DISABLED_TESTS)
 
 TESTS = \
 	general \
-	youtube \
 	calendar \
 	contacts \
 	picasaweb \
-	documents \
 	tasks \
-	freebase \
 	perf \
-	streams \
 	authorization \
 	client-login-authorizer \
 	oauth1-authorizer \
 	oauth2-authorizer \
 	$(NULL)
+
+# FIXME: Temporarily disabled until they are ported for the changes in the v2
+# to v3 API transitions.
+DISABLED_TESTS = youtube documents streams freebase
 
 # FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
 #TESTS += memory

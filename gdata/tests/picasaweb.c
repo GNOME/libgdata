@@ -2175,10 +2175,10 @@ main (int argc, char *argv[])
 	            test_comment_delete_async_cancellation, tear_down_query_comments_async);
 
 	g_test_add ("/picasaweb/upload/default_album", UploadData, service, set_up_upload, test_upload_default_album, tear_down_upload);
-	g_test_add ("/picasaweb/upload/default_album/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_default_album_async,
+	/*g_test_add ("/picasaweb/upload/default_album/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_default_album_async,
 	            tear_down_upload_async);
 	g_test_add ("/picasaweb/upload/default_album/async/cancellation", GDataAsyncTestData, service, set_up_upload_async,
-	            test_upload_default_album_async_cancellation, tear_down_upload_async);
+	            test_upload_default_album_async_cancellation, tear_down_upload_async);*/
 
 	g_test_add ("/picasaweb/download/photo", QueryFilesData, service, set_up_query_files, test_download_photo, tear_down_query_files);
 	g_test_add ("/picasaweb/download/thumbnails", QueryFilesData, service, set_up_query_files, test_download_thumbnails,

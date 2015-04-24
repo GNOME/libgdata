@@ -4604,7 +4604,8 @@ main (int argc, char *argv[])
 	g_test_add_func ("/atom/link/error_handling", test_atom_link_error_handling);
 	g_test_add_func ("/atom/link/escaping", test_atom_link_escaping);
 
-	g_test_add_func ("/app/categories", test_app_categories);
+	/* FIXME: Disabled until ported to YouTube v3 API.
+	g_test_add_func ("/app/categories", test_app_categories); */
 
 	g_test_add_func ("/gd/email_address", test_gd_email_address);
 	g_test_add_func ("/gd/email_address/escaping", test_gd_email_address_escaping);
