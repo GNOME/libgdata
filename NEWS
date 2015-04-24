@@ -1,3 +1,10 @@
+Overview of changes from libgdata 0.17.0 to libgdata 0.17.1
+===========================================================
+
+Major changes:
+ • Correctly increment LT version; this release should always be used instead
+   of 0.17.0
+
 Overview of changes from libgdata 0.16.0 to libgdata 0.17.0
 ===========================================================
 
