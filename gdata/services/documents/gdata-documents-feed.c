@@ -123,10 +123,23 @@ get_kind_and_mime_type (JsonReader *reader, gchar **out_kind, gchar **out_mime_t
 static gboolean
 parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
 {
+	gboolean success = TRUE;
+	gchar *next_uri = NULL;
+
 	/* JSON format: https://developers.google.com/drive/v2/reference/files/list */
 
-	if (g_strcmp0 (json_reader_get_member_name (reader), "items") == 0) {
-		gboolean success = TRUE;
+	if (gdata_parser_string_from_json_member (reader, "nextLink", P_DEFAULT, &next_uri, &success, error) == TRUE) {
+		if (success && next_uri != NULL && next_uri[0] != '\0') {
+			GDataLink *_link;
+
+			_link = gdata_link_new (next_uri, "http://www.iana.org/assignments/relation/next");
+			_gdata_feed_add_link (GDATA_FEED (parsable), _link);
+			g_object_unref (_link);
+		}
+
+		g_free (next_uri);
+		return success;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "items") == 0) {
 		guint i, elements;
 
 		if (json_reader_is_array (reader) == FALSE) {
