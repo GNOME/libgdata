@@ -3,6 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -87,6 +88,7 @@
 
 #include "gd/gdata-gd-email-address.h"
 #include "gdata-documents-query.h"
+#include "gdata-private.h"
 #include "gdata-query.h"
 
 #include <gdata/services/documents/gdata-documents-spreadsheet.h>
@@ -298,6 +300,7 @@ static void
 get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboolean *params_started)
 {
 	GDataDocumentsQueryPrivate *priv = GDATA_DOCUMENTS_QUERY (self)->priv;
+	guint max_results;
 
 	#define APPEND_SEP g_string_append_c (query_uri, (*params_started == FALSE) ? '?' : '&'); *params_started = TRUE;
 
@@ -306,21 +309,40 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		g_string_append_uri_escaped (query_uri, priv->folder_id, NULL, FALSE);
 	}
 
-	/* Chain up to the parent class */
-	GDATA_QUERY_CLASS (gdata_documents_query_parent_class)->get_query_uri (self, feed_uri, query_uri, params_started);
+	/* Search parameters: https://developers.google.com/drive/web/search-parameters */
+
+	_gdata_query_clear_q_internal (self);
 
 	if  (priv->collaborator_addresses != NULL) {
-		GList *address;
-		APPEND_SEP
-		address = priv->collaborator_addresses;
+		GList *i;
+		GString *str;
 
-		g_string_append (query_uri, "writer=");
-		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (address->data), NULL, FALSE);
-		for (address = address->next; address != NULL; address = address->next) {
-			g_string_append_c (query_uri, ';');
-			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (address->data), NULL, FALSE);
+		str = g_string_new (NULL);
+
+		for (i = priv->collaborator_addresses; i != NULL; i = i->next) {
+			GDataGDEmailAddress *email_address = GDATA_GD_EMAIL_ADDRESS (i->data);
+			const gchar *address;
+
+			address = gdata_gd_email_address_get_address (email_address);
+			g_string_append_printf (str, "'%s' in writers", address);
+			if (i->next != NULL)
+				g_string_append (str, " or ");
 		}
+
+		_gdata_query_add_q_internal (self, str->str);
+		g_string_free (str, TRUE);
 	}
+
+	if (priv->show_deleted == TRUE)
+		_gdata_query_add_q_internal (self, "trashed=true");
+	else
+		_gdata_query_add_q_internal (self, "trashed=false");
+
+	if (priv->show_folders == FALSE)
+		_gdata_query_add_q_internal (self, "mimeType!='application/vnd.google-apps.folder'");
+
+	/* Chain up to the parent class */
+	GDATA_QUERY_CLASS (gdata_documents_query_parent_class)->get_query_uri (self, feed_uri, query_uri, params_started);
 
 	if  (priv->reader_addresses != NULL) {
 		GList *address;
@@ -343,16 +365,13 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 			g_string_append (query_uri, "&title-exact=true");
 	}
 
-	APPEND_SEP
-	if (priv->show_deleted == TRUE)
-		g_string_append (query_uri, "showdeleted=true");
-	else
-		g_string_append (query_uri, "showdeleted=false");
-
-	if (priv->show_folders == TRUE)
-		g_string_append (query_uri, "&showfolders=true");
-	else
-		g_string_append (query_uri, "&showfolders=false");
+	/* https://developers.google.com/drive/v2/reference/files/list */
+	max_results = gdata_query_get_max_results (self);
+	if (max_results > 0) {
+		APPEND_SEP
+		max_results = max_results > 1000 ? 1000 : max_results;
+		g_string_append_printf (query_uri, "maxResults=%u", max_results);
+	}
 }
 
 /**
