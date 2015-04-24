@@ -234,7 +234,7 @@ gdata_client_login_authorizer_class_init (GDataClientLoginAuthorizerClass *klass
 	 * The proxy URI used internally for all network requests.
 	 *
 	 * Since: 0.9.0
-	 * Deprecated: Use #GDataClientLoginAuthorizer:proxy-resolver instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
+	 * Deprecated: 0.15.0: Use #GDataClientLoginAuthorizer:proxy-resolver instead, which gives more flexibility over the proxy used.
 	 */
 	g_object_class_install_property (gobject_class, PROP_PROXY_URI,
 	                                 g_param_spec_boxed ("proxy-uri",
@@ -1155,7 +1155,7 @@ _get_proxy_uri (GDataClientLoginAuthorizer *self)
  * Return value: (transfer full): the proxy URI, or %NULL; free with soup_uri_free()
  *
  * Since: 0.9.0
- * Deprecated: Use gdata_client_login_authorizer_get_proxy_resolver() instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
+ * Deprecated: 0.15.0: Use gdata_client_login_authorizer_get_proxy_resolver() instead, which gives more flexibility over the proxy used.
  */
 SoupURI *
 gdata_client_login_authorizer_get_proxy_uri (GDataClientLoginAuthorizer *self)
@@ -1184,7 +1184,7 @@ _set_proxy_uri (GDataClientLoginAuthorizer *self, SoupURI *proxy_uri)
  * If @proxy_uri is %NULL, no proxy will be used.
  *
  * Since: 0.9.0
- * Deprecated: Use gdata_client_login_authorizer_set_proxy_resolver() instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
+ * Deprecated: 0.15.0: Use gdata_client_login_authorizer_set_proxy_resolver() instead, which gives more flexibility over the proxy used.
  */
 void
 gdata_client_login_authorizer_set_proxy_uri (GDataClientLoginAuthorizer *self, SoupURI *proxy_uri)

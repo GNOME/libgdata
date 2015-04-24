@@ -134,7 +134,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its proxy URI setting.
 	 *
 	 * Since: 0.2.0
-	 * Deprecated: Use #GDataService:proxy-resolver instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
+	 * Deprecated: 0.15.0: Use #GDataService:proxy-resolver instead, which gives more flexibility over the proxy used.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_PROXY_URI,
 	                                 g_param_spec_boxed ("proxy-uri",
@@ -1912,7 +1912,7 @@ _get_proxy_uri (GDataService *self)
  * Return value: (transfer none): the proxy URI, or %NULL
  *
  * Since: 0.2.0
- * Deprecated: Use gdata_service_get_proxy_resolver() instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
+ * Deprecated: 0.15.0: Use gdata_service_get_proxy_resolver() instead, which gives more flexibility over the proxy used.
  **/
 SoupURI *
 gdata_service_get_proxy_uri (GDataService *self)
@@ -1942,7 +1942,7 @@ _set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
  * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its proxy URI setting.
  *
  * Since: 0.2.0
- * Deprecated: Use gdata_service_set_proxy_resolver() instead, which gives more flexibility over the proxy used. (Since: 0.15.0.)
+ * Deprecated: 0.15.0: Use gdata_service_set_proxy_resolver() instead, which gives more flexibility over the proxy used.
  **/
 void
 gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
