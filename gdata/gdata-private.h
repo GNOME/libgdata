@@ -71,6 +71,8 @@ G_GNUC_INTERNAL GDataSecureString _gdata_service_secure_strndup (const gchar *st
 G_GNUC_INTERNAL void _gdata_service_secure_strfree (GDataSecureString str);
 
 #include "gdata-query.h"
+G_GNUC_INTERNAL void _gdata_query_add_q_internal (GDataQuery *self, const gchar *q);
+G_GNUC_INTERNAL void _gdata_query_clear_q_internal (GDataQuery *self);
 G_GNUC_INTERNAL void _gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri);
 G_GNUC_INTERNAL void _gdata_query_set_next_uri_end (GDataQuery *self);
 G_GNUC_INTERNAL gboolean _gdata_query_is_finished (GDataQuery *self);

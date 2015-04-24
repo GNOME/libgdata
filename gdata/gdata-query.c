@@ -2,6 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,6 +57,7 @@ static void get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *que
 struct _GDataQueryPrivate {
 	/* Standard query parameters (see: http://code.google.com/apis/gdata/docs/2.0/reference.html#Queries) */
 	gchar *q;
+	gchar *q_internal;
 	gchar *categories;
 	gchar *author;
 	gint64 updated_min;
@@ -301,6 +303,7 @@ gdata_query_finalize (GObject *object)
 	GDataQueryPrivate *priv = GDATA_QUERY (object)->priv;
 
 	g_free (priv->q);
+	g_free (priv->q_internal);
 	g_free (priv->categories);
 	g_free (priv->author);
 	g_free (priv->next_uri);
@@ -417,10 +420,14 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	}
 
 	/* q param */
-	if (priv->q != NULL) {
+	if (priv->q != NULL || priv->q_internal != NULL) {
 		APPEND_SEP
 		g_string_append (query_uri, "q=");
-		g_string_append_uri_escaped (query_uri, priv->q, NULL, FALSE);
+
+		if (priv->q != NULL)
+			g_string_append_uri_escaped (query_uri, priv->q, NULL, FALSE);
+		if (priv->q_internal != NULL)
+			g_string_append_uri_escaped (query_uri, priv->q_internal, NULL, FALSE);
 	}
 
 	if (priv->author != NULL) {
@@ -559,6 +566,44 @@ gdata_query_get_query_uri (GDataQuery *self, const gchar *feed_uri)
 	klass->get_query_uri (self, feed_uri, query_uri, &params_started);
 
 	return g_string_free (query_uri, FALSE);
+}
+
+/* Used internally by child classes of GDataQuery to add search clauses that represent service-specific
+ * query properties. For example, in the Drive v2 API, certain GDataDocumentsQuery properties like
+ * show-deleted and show-folders no longer have their own parameters, but have to be specified as a search
+ * clause in the query string. */
+void
+_gdata_query_add_q_internal (GDataQuery *self, const gchar *q)
+{
+	GDataQueryPrivate *priv = self->priv;
+	GString *str;
+
+	g_return_if_fail (GDATA_IS_QUERY (self));
+	g_return_if_fail (q != NULL && q[0] != '\0');
+
+	str = g_string_new (priv->q_internal);
+
+	/* Search parameters: https://developers.google.com/drive/web/search-parameters */
+	if (str->len > 0)
+		g_string_append (str, " and ");
+
+	g_string_append (str, q);
+
+	g_free (priv->q_internal);
+	priv->q_internal = g_string_free (str, FALSE);
+}
+
+/* Used internally by child classes of GDataQuery to clear the internal query string when building the
+ * query URI in GDataQueryClass->get_query_uri */
+void
+_gdata_query_clear_q_internal (GDataQuery *self)
+{
+	GDataQueryPrivate *priv = self->priv;
+
+	g_return_if_fail (GDATA_IS_QUERY (self));
+
+	g_free (priv->q_internal);
+	priv->q_internal = NULL;
 }
 
 /**
