@@ -28,7 +28,7 @@
  * online documentation</ulink>.
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
  **/
 
@@ -79,7 +79,7 @@ gdata_youtube_content_class_init (GDataYouTubeContentClass *klass)
 	 * YouTube documentation</ulink>.
 	 *
 	 * Since: 0.4.0
-	 * Deprecated: UNRELEASED: Accessing YouTube video content directly is
+	 * Deprecated: 0.17.0: Accessing YouTube video content directly is
 	 *   no longer supported by Google. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FORMAT,
@@ -144,7 +144,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the video format, or %GDATA_YOUTUBE_FORMAT_UNKNOWN
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
  **/
 GDataYouTubeFormat

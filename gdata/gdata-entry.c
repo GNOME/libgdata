@@ -857,7 +857,7 @@ _gdata_entry_set_updated (GDataEntry *self, gint64 updated)
  *
  * Sets the value of the #GDataEntry:published property to @published.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 void
 _gdata_entry_set_published (GDataEntry *self, gint64 published)
@@ -873,7 +873,7 @@ _gdata_entry_set_published (GDataEntry *self, gint64 published)
  *
  * Sets the value of the #GDataEntry:id property to @id.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 void
 _gdata_entry_set_id (GDataEntry *self, const gchar *id)

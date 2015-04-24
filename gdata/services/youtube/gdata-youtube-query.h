@@ -58,7 +58,7 @@ typedef enum {
  * Sort orders for the search results from queries. They specify the order of the designated order field.
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. There is no
+ * Deprecated: 0.17.0: No longer supported by Google. There is no
  *   replacement.
  **/
 typedef enum {
@@ -95,7 +95,7 @@ typedef enum {
  * Video uploaders, allowing queries to be limited to returning videos uploaded by YouTube partners.
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. There is no
+ * Deprecated: 0.17.0: No longer supported by Google. There is no
  *   replacement.
  **/
 typedef enum {

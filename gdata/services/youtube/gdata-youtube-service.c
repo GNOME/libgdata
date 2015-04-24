@@ -314,7 +314,7 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 	 * url="https://developers.google.com/youtube/registering_an_application">online documentation</ulink>.
 	 *
 	 * With the port from v2 to v3 of the YouTube API in libgdata
-	 * UNRELEASED, it might be necessary to update your application’s
+	 * 0.17.0, it might be necessary to update your application’s
 	 * developer key.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_DEVELOPER_KEY,
@@ -695,7 +695,7 @@ standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
  * Queries the service's standard @feed_type feed to build a #GDataFeed.
  *
  * Note that with the port from v2 to v3 of the YouTube API in libgdata
- * UNRELEASED, all feed types except %GDATA_YOUTUBE_MOST_POPULAR_FEED have been
+ * 0.17.0, all feed types except %GDATA_YOUTUBE_MOST_POPULAR_FEED have been
  * deprecated. Other feed types will now transparently return
  * %GDATA_YOUTUBE_MOST_POPULAR_FEED, limited to the past 24 hours.
  *

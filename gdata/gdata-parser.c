@@ -831,7 +831,7 @@ gdata_parser_string_from_json_member (JsonReader *reader, const gchar *member_na
  *
  * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 gboolean
 gdata_parser_int_from_json_member (JsonReader *reader,
@@ -1029,7 +1029,7 @@ gdata_parser_boolean_from_json_member (JsonReader *reader, const gchar *member_n
  *
  * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 gboolean
 gdata_parser_strv_from_json_member (JsonReader *reader,

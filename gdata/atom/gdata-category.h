@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * A term for categories of the %GDATA_CATEGORY_SCHEMA_LABELS schema which labels an entry as being “shared”. The semantics of this label are
  * service-specific, but are obvious for services such as Google Documents.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 #define GDATA_CATEGORY_SCHEMA_LABELS_SHARED GDATA_CATEGORY_SCHEMA_LABELS"#shared"
 
@@ -63,7 +63,7 @@ G_BEGIN_DECLS
  * A term for categories of the %GDATA_CATEGORY_SCHEMA_LABELS schema which labels an entry as being “viewed”. The semantics of this label are
  * service-specific, but are obvious for services such as Google Documents.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 #define GDATA_CATEGORY_SCHEMA_LABELS_VIEWED GDATA_CATEGORY_SCHEMA_LABELS"#viewed"
 

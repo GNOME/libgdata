@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#formatsp">online documentation</ulink>.
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
  **/
 typedef enum {
@@ -66,7 +66,7 @@ typedef struct _GDataYouTubeContentPrivate	GDataYouTubeContentPrivate G_GNUC_DEP
  * All the fields in the #GDataYouTubeContent structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
  **/
 typedef struct {
@@ -82,7 +82,7 @@ typedef struct {
  * All the fields in the #GDataYouTubeContentClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: Accessing YouTube video content directly is no longer
+ * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
  **/
 typedef struct {

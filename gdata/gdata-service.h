@@ -141,7 +141,7 @@ typedef struct {
  * while the list should be newly-allocated, the individual domains should not be; not implementing this function is equivalent to returning an
  * empty list; new in version 0.9.0
  * @parse_feed: a function to parse feed responses to queries from the online
- * service; new in version UNRELEASED
+ * service; new in version 0.17.0
  *
  * The class structure for the #GDataService type.
  *

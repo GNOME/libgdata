@@ -41,7 +41,7 @@ typedef struct _GDataYouTubeFeedPrivate	GDataYouTubeFeedPrivate;
  * All the fields in the #GDataYouTubeFeed structure are private and should
  * never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 typedef struct {
 	/*< private >*/
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataYouTubeFeedClass structure are private and should
  * never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 typedef struct {
 	/*< private >*/

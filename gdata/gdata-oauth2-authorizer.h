@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="https://developers.google.com/accounts/docs/OAuth2InstalledApp#choosingredirecturi">reference
  * documentation</ulink> for details.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 #define GDATA_OAUTH2_REDIRECT_URI_OOB "urn:ietf:wg:oauth:2.0:oob"
 
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="https://developers.google.com/accounts/docs/OAuth2InstalledApp#choosingredirecturi">reference
  * documentation</ulink> for details.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 #define GDATA_OAUTH2_REDIRECT_URI_OOB_AUTO "urn:ietf:wg:oauth:2.0:oob:auto"
 
@@ -69,7 +69,7 @@ typedef struct _GDataOAuth2AuthorizerPrivate	GDataOAuth2AuthorizerPrivate;
  *
  * All the fields in the #GDataOAuth2Authorizer structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 typedef struct {
 	/*< private >*/
@@ -82,7 +82,7 @@ typedef struct {
  *
  * All the fields in the #GDataOAuth2AuthorizerClass structure are private and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 typedef struct {
 	/*< private >*/

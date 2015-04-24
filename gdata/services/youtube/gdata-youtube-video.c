@@ -328,7 +328,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * Identifies the owner of the video.
 	 *
-	 * Deprecated: UNRELEASED: This is no longer supported by Google, and
+	 * Deprecated: 0.17.0: This is no longer supported by Google, and
 	 *   will always be %NULL. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_CREDIT,
@@ -404,7 +404,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#id">online documentation</ulink>.
 	 *
-	 * Deprecated: UNRELEASED: This is now equal to #GDataEntry:id.
+	 * Deprecated: 0.17.0: This is now equal to #GDataEntry:id.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_VIDEO_ID,
 	                                 g_param_spec_string ("video-id",
@@ -418,7 +418,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * Indicates whether the video is in draft, or unpublished, status.
 	 *
-	 * Deprecated: UNRELEASED: This is now equal to
+	 * Deprecated: 0.17.0: This is now equal to
 	 *   #GDataYouTubeVideo:is-private.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_IS_DRAFT,
@@ -1897,7 +1897,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
  * Gets the #GDataYouTubeVideo:credit property.
  *
  * Return value: (transfer none): a #GDataMediaCredit giving information on whom to credit for the video, or %NULL
- * Deprecated: UNRELEASED: This is no longer supported by Google, and will
+ * Deprecated: 0.17.0: This is no longer supported by Google, and will
  *   always return %NULL. There is no replacement.
  **/
 GDataYouTubeCredit *
@@ -1952,7 +1952,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
  * a list of URIs to various formats of the video itself, such as its SWF URI or RTSP stream.
  *
  * Return value: (transfer none): a #GDataYouTubeContent matching @type, or %NULL
- * Deprecated: UNRELEASED: This is no longer supported by Google, and will
+ * Deprecated: 0.17.0: This is no longer supported by Google, and will
  *   always return %NULL. To view a video, open the URI returned by
  *   gdata_youtube_video_get_player_uri() in a web browser.
  **/
@@ -2050,7 +2050,7 @@ gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self)
  * Gets the #GDataYouTubeVideo:video-id property.
  *
  * Return value: the video's unique and permanent ID
- * Deprecated: UNRELEASED: This is now equal to #GDataEntry:id.
+ * Deprecated: 0.17.0: This is now equal to #GDataEntry:id.
  **/
 const gchar *
 gdata_youtube_video_get_video_id (GDataYouTubeVideo *self)
@@ -2066,7 +2066,7 @@ gdata_youtube_video_get_video_id (GDataYouTubeVideo *self)
  * Gets the #GDataYouTubeVideo:is-draft property.
  *
  * Return value: %TRUE if the video is a draft, %FALSE otherwise
- * Deprecated: UNRELEASED: This is now equal to
+ * Deprecated: 0.17.0: This is now equal to
  *   gdata_youtube_video_is_private().
  **/
 gboolean
@@ -2083,7 +2083,7 @@ gdata_youtube_video_is_draft (GDataYouTubeVideo *self)
  *
  * Sets the #GDataYouTubeVideo:is-draft property to decide whether the video is a draft.
  *
- * Deprecated: UNRELEASED: This is now equivalent to
+ * Deprecated: 0.17.0: This is now equivalent to
  *   gdata_youtube_video_set_is_private().
  **/
 void

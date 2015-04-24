@@ -128,7 +128,7 @@
  *	</programlisting>
  * </example>
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 
 #include <config.h>
@@ -229,7 +229,7 @@ gdata_oauth2_authorizer_class_init (GDataOAuth2AuthorizerClass *klass)
 	 * <replaceable>application name</replaceable>-
 	 * <replaceable>version ID</replaceable></literal>.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_CLIENT_ID,
 	                                 g_param_spec_string ("client-id",
@@ -269,7 +269,7 @@ gdata_oauth2_authorizer_class_init (GDataOAuth2AuthorizerClass *klass)
 	 * See the <ulink type="http" url="https://developers.google.com/accounts/docs/OAuth2InstalledApp#choosingredirecturi">reference
 	 * documentation</ulink> for details about choosing a redirect URI.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_REDIRECT_URI,
 	                                 g_param_spec_string ("redirect-uri",
@@ -290,7 +290,7 @@ gdata_oauth2_authorizer_class_init (GDataOAuth2AuthorizerClass *klass)
 	 * <ulink url="https://developers.google.com/accounts/docs/OAuth2InstalledApp#handlingtheresponse" type="http">reference
 	 * documentation</ulink> for details.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_CLIENT_SECRET,
 	                                 g_param_spec_string ("client-secret",
@@ -313,7 +313,7 @@ gdata_oauth2_authorizer_class_init (GDataOAuth2AuthorizerClass *klass)
 	 * The server-side behaviour is undefined if it doesn't support a given
 	 * locale.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_LOCALE,
 	                                 g_param_spec_string ("locale",
@@ -332,7 +332,7 @@ gdata_oauth2_authorizer_class_init (GDataOAuth2AuthorizerClass *klass)
 	 * If the timeout is <code class="literal">0</code>, operations will
 	 * never time out.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_TIMEOUT,
 	                                 g_param_spec_uint ("timeout",
@@ -346,7 +346,7 @@ gdata_oauth2_authorizer_class_init (GDataOAuth2AuthorizerClass *klass)
 	 *
 	 * The #GProxyResolver used to determine a proxy URI.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.0
 	 */
 	g_object_class_install_property (gobject_class, PROP_PROXY_RESOLVER,
 	                                 g_param_spec_object ("proxy-resolver",
@@ -694,7 +694,7 @@ refresh_authorization (GDataAuthorizer *self, GCancellable *cancellable,
  * Return value: (transfer full): a new #GDataOAuth2Authorizer; unref with
  * g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 GDataOAuth2Authorizer *
 gdata_oauth2_authorizer_new (const gchar *client_id, const gchar *client_secret,
@@ -738,7 +738,7 @@ gdata_oauth2_authorizer_new (const gchar *client_id, const gchar *client_secret,
  * Return value: (transfer full): a new #GDataOAuth2Authorizer; unref with
  * g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 GDataOAuth2Authorizer *
 gdata_oauth2_authorizer_new_for_authorization_domains (const gchar *client_id,
@@ -812,7 +812,7 @@ gdata_oauth2_authorizer_new_for_authorization_domains (const gchar *client_id,
  * Return value: (transfer full): the authentication URI to open in a web
  * browser; free with g_free()
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 gchar *
 gdata_oauth2_authorizer_build_authentication_uri (GDataOAuth2Authorizer *self,
@@ -1111,7 +1111,7 @@ done:
  *
  * Return value: %TRUE on success, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 gboolean
 gdata_oauth2_authorizer_request_authorization (GDataOAuth2Authorizer *self,
@@ -1222,7 +1222,7 @@ request_authorization_thread (GSimpleAsyncResult *result,
  *
  * Asynchronous version of gdata_oauth2_authorizer_request_authorization().
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 void
 gdata_oauth2_authorizer_request_authorization_async (GDataOAuth2Authorizer *self,
@@ -1262,7 +1262,7 @@ gdata_oauth2_authorizer_request_authorization_async (GDataOAuth2Authorizer *self
  *
  * Return value: %TRUE if authorization was successful, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 gboolean
 gdata_oauth2_authorizer_request_authorization_finish (GDataOAuth2Authorizer *self,
@@ -1297,7 +1297,7 @@ gdata_oauth2_authorizer_request_authorization_finish (GDataOAuth2Authorizer *sel
  *
  * Return value: the authorizer's client ID
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 const gchar *
 gdata_oauth2_authorizer_get_client_id (GDataOAuth2Authorizer *self)
@@ -1315,7 +1315,7 @@ gdata_oauth2_authorizer_get_client_id (GDataOAuth2Authorizer *self)
  *
  * Return value: the authorizer’s redirect URI
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 const gchar *
 gdata_oauth2_authorizer_get_redirect_uri (GDataOAuth2Authorizer *self)
@@ -1333,7 +1333,7 @@ gdata_oauth2_authorizer_get_redirect_uri (GDataOAuth2Authorizer *self)
  *
  * Return value: the authorizer's client secret
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 const gchar *
 gdata_oauth2_authorizer_get_client_secret (GDataOAuth2Authorizer *self)
@@ -1351,7 +1351,7 @@ gdata_oauth2_authorizer_get_client_secret (GDataOAuth2Authorizer *self)
  *
  * Return value: (allow-none): the current locale
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 const gchar *
 gdata_oauth2_authorizer_get_locale (GDataOAuth2Authorizer *self)
@@ -1375,7 +1375,7 @@ gdata_oauth2_authorizer_get_locale (GDataOAuth2Authorizer *self)
  * unexpectedly. The only supported use of this method is after creation of the
  * authorizer, but before any network requests are made.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 void
 gdata_oauth2_authorizer_set_locale (GDataOAuth2Authorizer *self,
@@ -1408,7 +1408,7 @@ notify_timeout_cb (GObject *gobject, GParamSpec *pspec, GObject *self)
  *
  * Return value: the timeout, or <code class="literal">0</code>
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 guint
 gdata_oauth2_authorizer_get_timeout (GDataOAuth2Authorizer *self)
@@ -1435,7 +1435,7 @@ gdata_oauth2_authorizer_get_timeout (GDataOAuth2Authorizer *self)
  * If @timeout is <code class="literal">0</code>, network operations will never
  * time out.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 void
 gdata_oauth2_authorizer_set_timeout (GDataOAuth2Authorizer *self, guint timeout)
@@ -1457,7 +1457,7 @@ gdata_oauth2_authorizer_set_timeout (GDataOAuth2Authorizer *self, guint timeout)
  *
  * Return value: (transfer none) (allow-none): a #GProxyResolver, or %NULL
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 GProxyResolver *
 gdata_oauth2_authorizer_get_proxy_resolver (GDataOAuth2Authorizer *self)
@@ -1475,7 +1475,7 @@ gdata_oauth2_authorizer_get_proxy_resolver (GDataOAuth2Authorizer *self)
  * Sets the #GProxyResolver on the #SoupSession used internally by the given
  * #GDataOAuth2Authorizer.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 void
 gdata_oauth2_authorizer_set_proxy_resolver (GDataOAuth2Authorizer *self,

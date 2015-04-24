@@ -670,7 +670,7 @@ _gdata_feed_set_page_info (GDataFeed *self, guint total_results,
  *
  * Return value: a new #GDataFeed
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 GDataFeed *
 _gdata_feed_new (GType feed_type,

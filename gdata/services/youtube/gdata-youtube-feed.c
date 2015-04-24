@@ -30,7 +30,7 @@
  * Each #GDataYouTubeVideo represents a single video on YouTube, and the
  * #GDataYouTubeFeed represents a collection of those objects.
  *
- * Since: UNRELEASED
+ * Since: 0.17.0
  */
 
 #include <config.h>

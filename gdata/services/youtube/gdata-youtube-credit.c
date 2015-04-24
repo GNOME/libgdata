@@ -28,7 +28,7 @@
  * online documentation</ulink>.
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: This is no longer supported by Google. There is no
+ * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
  **/
 
@@ -82,7 +82,7 @@ gdata_youtube_credit_class_init (GDataYouTubeCreditClass *klass)
 	 * YouTube documentation</ulink>.
 	 *
 	 * Since: 0.4.0
-	 * Deprecated: UNRELEASED: This is no longer supported by Google. There
+	 * Deprecated: 0.17.0: This is no longer supported by Google. There
 	 *   is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_ENTITY_TYPE,
@@ -166,7 +166,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the type of the credited user (e.g. %GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER), or %NULL
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: This is no longer supported by Google. There is no
+ * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
  **/
 const gchar *

@@ -105,7 +105,7 @@ G_BEGIN_DECLS
  * <code class="literal">adult</code> and <code class="literal">nonadult</code>.
  *
  * Since: 0.10.0
- * Deprecated: UNRELEASED: No longer supported by Google. Calling
+ * Deprecated: 0.17.0: No longer supported by Google. Calling
  *   gdata_youtube_video_get_media_rating() with this rating type will always
  *   return %NULL.
  */

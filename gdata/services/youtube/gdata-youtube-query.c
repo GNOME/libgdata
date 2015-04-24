@@ -109,7 +109,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * retrieve videos irrespective of their format availability.
 	 *
 	 * Since: 0.3.0
-	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 * Deprecated: 0.17.0: No longer supported by Google. The value of
 	 *   this property will be unused in queries. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_FORMAT,
@@ -191,7 +191,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * For more information, see the documentation for #GDataYouTubeQuery:latitude.
 	 *
 	 * Since: 0.3.0
-	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 * Deprecated: 0.17.0: No longer supported by Google. The value of
 	 *   this property will be unused in queries.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_HAS_LOCATION,
@@ -212,7 +212,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * url="http://code.google.com/apis/youtube/2.0/reference.html#lrsp">online documentation</ulink>.
 	 *
 	 * Since: 0.3.0
-	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 * Deprecated: 0.17.0: No longer supported by Google. The value of
 	 *   this property will be unused in queries. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
@@ -287,7 +287,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * Specifies the direction of sorting. To use the default sort order, set the property to %GDATA_YOUTUBE_SORT_NONE.
 	 *
 	 * Since: 0.3.0
-	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 * Deprecated: 0.17.0: No longer supported by Google. The value of
 	 *   this property will be unused in queries. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
@@ -318,7 +318,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 	 * searches to videos from YouTube partners.
 	 *
 	 * Since: 0.3.0
-	 * Deprecated: UNRELEASED: No longer supported by Google. The value of
+	 * Deprecated: 0.17.0: No longer supported by Google. The value of
 	 *   this property will be unused in queries. There is no replacement.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_UPLOADER,
@@ -690,7 +690,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
  * Return value: the format property
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ * Deprecated: 0.17.0: No longer supported by Google. The value of
  *   this property will be unused in queries. There is no replacement.
  **/
 GDataYouTubeFormat
@@ -708,7 +708,7 @@ gdata_youtube_query_get_format (GDataYouTubeQuery *self)
  * Sets the #GDataYouTubeQuery:format property of the #GDataYouTubeQuery to @format.
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ * Deprecated: 0.17.0: No longer supported by Google. The value of
  *   this property will be unused in queries. There is no replacement.
  **/
 void
@@ -796,7 +796,7 @@ gdata_youtube_query_set_location (GDataYouTubeQuery *self, gdouble latitude, gdo
  * Return value: the language property, or %NULL if it is unset
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ * Deprecated: 0.17.0: No longer supported by Google. The value of
  *   this property will be unused in queries. There is no replacement.
  **/
 const gchar *
@@ -816,7 +816,7 @@ gdata_youtube_query_get_language (GDataYouTubeQuery *self)
  * Set @language to %NULL to unset the property in the query URI.
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ * Deprecated: 0.17.0: No longer supported by Google. The value of
  *   this property will be unused in queries. There is no replacement.
  **/
 void
@@ -960,7 +960,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
  * Return value: the sort order property
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ * Deprecated: 0.17.0: No longer supported by Google. The value of
  *   this property will be unused in queries. There is no replacement.
  **/
 GDataYouTubeSortOrder
@@ -980,7 +980,7 @@ gdata_youtube_query_get_sort_order (GDataYouTubeQuery *self)
  * Set @sort_order to %GDATA_YOUTUBE_SORT_NONE to unset the property in the query URI.
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ * Deprecated: 0.17.0: No longer supported by Google. The value of
  *   this property will be unused in queries. There is no replacement.
  **/
 void
@@ -1044,7 +1044,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
  * Return value: the uploader property
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ * Deprecated: 0.17.0: No longer supported by Google. The value of
  *   this property will be unused in queries. There is no replacement.
  **/
 GDataYouTubeUploader
@@ -1062,7 +1062,7 @@ gdata_youtube_query_get_uploader (GDataYouTubeQuery *self)
  * Sets the #GDataYouTubeQuery:uploader property of the #GDataYouTubeQuery to @uploader.
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: No longer supported by Google. The value of
+ * Deprecated: 0.17.0: No longer supported by Google. The value of
  *   this property will be unused in queries. There is no replacement.
  **/
 void

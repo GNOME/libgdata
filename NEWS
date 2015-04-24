@@ -1,3 +1,103 @@
+Overview of changes from libgdata 0.16.0 to libgdata 0.17.0
+===========================================================
+
+Major changes:
+ • Port from v2 to v3 of the YouTube API — your client’s developer key may stop
+   working due to never being conigured for v3; refresh it here:
+      https://developers.google.com/youtube/registering_an_application
+ • Port from the Google Docs API to the Google Drive API (v2) — the same
+   libgdata APIs should continue to work unchanged
+ • Both the YouTube and Drive API ports are not thoroughly tested, and a number
+   of unit tests have been disabled temporarily; code quality will be ramped up
+   again in subsequent releases
+ • Add support for OAuth 2.0 authorisation
+ • Commit to API and ABI stability
+ • Add --disable-tests configure flag to skip building tests
+ • Various improvements to the unit tests
+ • Fix pagination handling in Google Docs
+ • Add demo applications for Google Docs and YouTube
+ • Various Freebase fixes, including a huge number of new tests and
+   authentication fixes
+ • Various JSON parser fixes
+ • Note that the Calendar v2 API has now been withdrawn; there has not been
+   enough time to port libgdata to version 3 (ongoing:
+   https://bugzilla.gnome.org/show_bug.cgi?id=664353), but clients can (and
+   should, regardless) use the CalDAV API provided by Google Calendar
+
+API changes:
+ • Add GDATA_OAUTH2_REDIRECT_URI_OOB
+ • Add GDATA_OAUTH2_REDIRECT_URI_OOB_AUTO
+ • Add GDataOAuth2Authorizer
+ • Add API padding and commit to API stability
+ • Add GDataServiceClass.parse_feed
+ • Add gdata_freebase_search_result_item_get_type(),
+   GDATA_TYPE_FREEBASE_SEARCH_RESULT_ITEM
+ • Add GDATA_CATEGORY_SCHEMA_LABELS_SHARED
+ • Add GDATA_CATEGORY_SCHEMA_LABELS_VIEWED
+ • Add GDataYouTubeFeed
+ • Deprecate GDataYouTubeQuery:format, gdata_youtube_query_get_format(),
+   gdata_youtube_query_set_format()
+ • Deprecate GDataYouTubeQuery:has-location
+ • Deprecate GDataYouTubeQuery:language, gdata_youtube_query_get_language(),
+   gdata_youtube_query_set_language()
+ • Deprecate GDataYouTubeQuery:sort-order, gdata_youtube_query_get_sort_order(),
+   gdata_youtube_query_set_sort_order()
+ • Deprecate GDataYouTubeQuery:uploader, gdata_youtube_query_get_uploader(),
+   gdata_youtube_query_set_uploader()
+ • Deprecate GDataYouTubeSortOrder
+ • Deprecate GDataYouTubeUploader
+ • Deprecate GDataYouTubeContent
+ • Deprecate GDataYouTubeFormat
+ • Deprecate GDataYouTubeVideo:video-id, gdata_youtube_video_get_video_id()
+ • Deprecate gdata_youtube_video_look_up_content()
+   (use gdata_youtube_video_get_player_uri() instead)
+ • Deprecate GDATA_YOUTUBE_RATING_TYPE_SIMPLE
+ • Deprecate GDataYouTubeCredit, GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER
+ • Deprecate GDataYouTubeVideo:credit, gdata_youtube_video_get_credit()
+ • Deprecate GDataYouTubeVideo:is-draft, gdata_youtube_video_is_draft(),
+   gdata_youtube_video_set_is_draft()
+ • Deprecate GDATA_YOUTUBE_*_FEED except GDATA_YOUTUBE_MOST_POPULAR_FEED (all
+   others have been deprecated online and will transparently return the
+   most popular videos from the past 24 hours)
+ • GDataYouTubeQuery:restriction no longer accepts IP addresses
+ • All GDataCommentable functionality on GDataYouTubeVideo is disabled
+   at runtime until the v3 YouTube API for comments is finished online
+ • Not all properties of a GDataYouTubeVideo may be retrieved when doing
+   searches, retrieving related videos, or listing standard feeds — to
+   guarantee getting all properties, use gdata_service_query_single_entry() for
+   the video in question; common properties such as title, description, player
+   URI and thumbnails will always be retrieved
+ • Deprecate GDataDocumentsEntry:edited
+
+Bugs fixed:
+ • Bug 646285 — Add OAuth 2 support
+ • Bug 657539 — Add support for Google Tasks
+ • Bug 739395 — Add an option to build without uhttpmock
+ • Bug 737799 — Error while updating google address book
+ • Bug 739956 — libgdata-0.16.1: tests fail
+ • Bug 741345 — Paging does not work
+ • Bug 737539 — Freebase: topic results are shallower than expected
+ • Bug 737936 — Freebase: Add GType for GDataFreebaseSearchResultItem
+ • Bug 737540 — Freebase: async topic queries use the wrong result gtype
+ • Bug 737541 — freebase: search query buglets
+ • Bug 742472 — Freebase: Pass API key on all service requests
+ • Bug 742473 — Small freebase oauth2 access bugs
+ • Bug 687597 — Update to YouTube API v3
+ • Bug 684920 — Port to Google Drive API v2
+
+Updated translations:
+ • bg (Alexander Shopov)
+ • bs (Samir Ribić)
+ • da (Aputsiaq Niels Janussen)
+ • de (Bernd Homuth)
+ • et (Mattias Põldaru)
+ • pa (A S Alam)
+ • sk (Dušan Kazik)
+ • sr (Мирослав Николић)
+ • sv (Mattias Eriksson)
+ • tr (Muhammet Kara)
+ • zh_CN (Iris Gou)
+
 Overview of changes from libgdata 0.15.2 to libgdata 0.16.0
 ===========================================================
 

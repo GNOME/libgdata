@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * The credited entity is a YouTube partner.
  *
  * Since: 0.7.0
- * Deprecated: UNRELEASED: This is no longer supported by Google. There is no
+ * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
  **/
 #define GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER "partner"
@@ -56,7 +56,7 @@ typedef struct _GDataYouTubeCreditPrivate	GDataYouTubeCreditPrivate G_GNUC_DEPRE
  * All the fields in the #GDataYouTubeCredit structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: This is no longer supported by Google. There is no
+ * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
  **/
 typedef struct {
@@ -72,7 +72,7 @@ typedef struct {
  * All the fields in the #GDataYouTubeCreditClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: This is no longer supported by Google. There is no
+ * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
  **/
 typedef struct {

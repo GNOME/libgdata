@@ -171,7 +171,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * The last time the document was edited. If the document has not been edited yet, the content indicates the time it was created.
 	 *
 	 * Since: 0.4.0
-	 * Deprecated: UNRELEASED: This is identical to #GDataEntry:updated.
+	 * Deprecated: 0.17.0: This is identical to #GDataEntry:updated.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
@@ -774,7 +774,7 @@ get_entry_uri (const gchar *id)
  * Return value: the UNIX timestamp for the time the document was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- * Deprecated: UNRELEASED: Use gdata_entry_get_updated() instead. See #GDataDocumentsEntry:edited.
+ * Deprecated: 0.17.0: Use gdata_entry_get_updated() instead. See #GDataDocumentsEntry:edited.
  **/
 gint64
 gdata_documents_entry_get_edited (GDataDocumentsEntry *self)
