@@ -49,7 +49,7 @@ typedef enum {
 	GDATA_YOUTUBE_FORMAT_RTSP_H263_AMR = 1,
 	GDATA_YOUTUBE_FORMAT_HTTP_SWF = 5,
 	GDATA_YOUTUBE_FORMAT_RTSP_MPEG4_AAC = 6
-} GDataYouTubeFormat G_GNUC_DEPRECATED;
+} GDataYouTubeFormat;
 
 #define GDATA_TYPE_YOUTUBE_CONTENT		(gdata_youtube_content_get_type ())
 #define GDATA_YOUTUBE_CONTENT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_YOUTUBE_CONTENT, GDataYouTubeContent))
@@ -74,7 +74,7 @@ typedef struct {
 	GDataMediaContent parent;
 	GDataYouTubeContentPrivate *priv;
 	G_GNUC_END_IGNORE_DEPRECATIONS
-} GDataYouTubeContent G_GNUC_DEPRECATED;
+} GDataYouTubeContent;
 
 /**
  * GDataYouTubeContentClass:
@@ -86,16 +86,14 @@ typedef struct {
  *   supported by Google. There is no replacement.
  **/
 typedef struct {
-	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	/*< private >*/
 	GDataMediaContentClass parent;
-	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	/*< private >*/
 	/* Padding for future expansion */
 	void (*_g_reserved0) (void);
 	void (*_g_reserved1) (void);
-} GDataYouTubeContentClass G_GNUC_DEPRECATED;
+} GDataYouTubeContentClass;
 
 GType gdata_youtube_content_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
 

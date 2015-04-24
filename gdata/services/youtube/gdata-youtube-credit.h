@@ -64,7 +64,7 @@ typedef struct {
 	GDataMediaCredit parent;
 	GDataYouTubeCreditPrivate *priv;
 	G_GNUC_END_IGNORE_DEPRECATIONS
-} GDataYouTubeCredit G_GNUC_DEPRECATED;
+} GDataYouTubeCredit;
 
 /**
  * GDataYouTubeCreditClass:
@@ -76,16 +76,14 @@ typedef struct {
  *   replacement.
  **/
 typedef struct {
-	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	/*< private >*/
 	GDataMediaCreditClass parent;
-	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	/*< private >*/
 	/* Padding for future expansion */
 	void (*_g_reserved0) (void);
 	void (*_g_reserved1) (void);
-} GDataYouTubeCreditClass G_GNUC_DEPRECATED;
+} GDataYouTubeCreditClass;
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 GType gdata_youtube_credit_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;

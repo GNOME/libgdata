@@ -65,7 +65,7 @@ typedef enum {
 	GDATA_YOUTUBE_SORT_NONE = 0,
 	GDATA_YOUTUBE_SORT_ASCENDING,
 	GDATA_YOUTUBE_SORT_DESCENDING
-} GDataYouTubeSortOrder G_GNUC_DEPRECATED;
+} GDataYouTubeSortOrder;
 #endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 /**
@@ -101,7 +101,7 @@ typedef enum {
 typedef enum {
 	GDATA_YOUTUBE_UPLOADER_ALL = 0,
 	GDATA_YOUTUBE_UPLOADER_PARTNER
-} GDataYouTubeUploader G_GNUC_DEPRECATED;
+} GDataYouTubeUploader;
 #endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 /**
