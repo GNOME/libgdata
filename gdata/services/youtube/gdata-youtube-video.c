@@ -98,7 +98,7 @@ struct _GDataYouTubeVideoPrivate {
 	guint view_count;
 	guint favorite_count;
 	gchar *location;
-	GHashTable *access_controls;
+	GHashTable/*<owned utf8, GDataYouTubePermission>*/ *access_controls;
 
 	/* gd:rating attributes */
 	struct {
@@ -1166,20 +1166,20 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 		} else if (g_strcmp0 (privacy_status, "public") == 0) {
 			priv->is_private = FALSE;
 			g_hash_table_insert (priv->access_controls,
-			                     (gpointer) "list",
+			                     g_strdup ("list"),
 			                     GINT_TO_POINTER (GDATA_YOUTUBE_PERMISSION_ALLOWED));
 		} else if (g_strcmp0 (privacy_status, "unlisted") == 0) {
 			/* See: ‘list’ on
 			 * https://developers.google.com/youtube/2.0/reference?csw=1#youtube_data_api_tag_yt:accessControl */
 			priv->is_private = FALSE;
 			g_hash_table_insert (priv->access_controls,
-			                     (gpointer) "list",
+			                     g_strdup ("list"),
 			                     GINT_TO_POINTER (GDATA_YOUTUBE_PERMISSION_DENIED));
 		}
 
 		json_reader_read_member (reader, "embeddable");
 		g_hash_table_insert (priv->access_controls,
-		                     (gpointer) GDATA_YOUTUBE_ACTION_EMBED,
+		                     g_strdup (GDATA_YOUTUBE_ACTION_EMBED),
 		                     GINT_TO_POINTER (json_reader_get_boolean_value (reader) ?
 		                                      GDATA_YOUTUBE_PERMISSION_ALLOWED :
 		                                      GDATA_YOUTUBE_PERMISSION_DENIED));
