@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2008–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2008–2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,10 +23,16 @@
 
 #include "gdata.h"
 #include "common.h"
-
-#define DEVELOPER_KEY "AI39si7Me3Q7zYs6hmkFvpRBD2nrkVjYYsUO5lh_3HdOkGRc9g6Z4nzxZatk_aAo2EsA21k7vrda0OO6oFg2rnhMedZXPyXoEw"
+#include "gdata-dummy-authorizer.h"
 
 static UhmServer *mock_server = NULL;
+
+#undef CLIENT_ID  /* from common.h */
+
+#define DEVELOPER_KEY "AI39si7Me3Q7zYs6hmkFvpRBD2nrkVjYYsUO5lh_3HdOkGRc9g6Z4nzxZatk_aAo2EsA21k7vrda0OO6oFg2rnhMedZXPyXoEw"
+#define CLIENT_ID "352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com"
+#define CLIENT_SECRET "-fA4pHQJxR3zJ-FyAMPQsikg"
+#define REDIRECT_URI "urn:ietf:wg:oauth:2.0:oob"
 
 /* Effectively gdata_test_mock_server_start_trace() but calling uhm_server_run() instead of uhm_server_start_trace(). */
 static void
@@ -53,30 +59,45 @@ gdata_test_mock_server_run (UhmServer *server)
 static void
 test_authentication (void)
 {
-	gboolean retval;
-	GDataClientLoginAuthorizer *authorizer;
-	GError *error = NULL;
+	GDataOAuth2Authorizer *authorizer = NULL;  /* owned */
+	gchar *authentication_uri, *authorisation_code;
 
 	gdata_test_mock_server_start_trace (mock_server, "authentication");
 
-	/* Create an authorizer */
-	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE);
+	authorizer = gdata_oauth2_authorizer_new (CLIENT_ID, CLIENT_SECRET,
+	                                          REDIRECT_URI,
+	                                          GDATA_TYPE_YOUTUBE_SERVICE);
 
-	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
+	/* Get an authentication URI. */
+	authentication_uri = gdata_oauth2_authorizer_build_authentication_uri (authorizer, NULL, FALSE);
+	g_assert (authentication_uri != NULL);
 
-	/* Log in */
-	retval = gdata_client_login_authorizer_authenticate (authorizer, USERNAME, PASSWORD, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (retval == TRUE);
-	g_clear_error (&error);
+	/* Get the authorisation code off the user. */
+	if (uhm_server_get_enable_online (mock_server)) {
+		authorisation_code = gdata_test_query_user_for_verifier (authentication_uri);
+	} else {
+		/* Hard coded, extracted from the trace file. */
+		authorisation_code = g_strdup ("4/9qV_LanNEOUOL4sftMwUp4cfa_yeF"
+		                               "assB6-ys5EkA5o.4rgOzrZMXgcboiIB"
+		                               "eO6P2m-GWLMXmgI");
+	}
+
+	g_free (authentication_uri);
+
+	if (authorisation_code == NULL) {
+		/* Skip tests. */
+		goto skip_test;
+	}
+
+	/* Authorise the token */
+	g_assert (gdata_oauth2_authorizer_request_authorization (authorizer, authorisation_code, NULL, NULL) == TRUE);
 
 	/* Check all is as it should be */
-	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
-	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
 	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
 	                                                     gdata_youtube_service_get_primary_authorization_domain ()) == TRUE);
 
+skip_test:
+	g_free (authorisation_code);
 	g_object_unref (authorizer);
 
 	uhm_server_end_trace (mock_server);
@@ -870,33 +891,316 @@ test_parsing_app_control (void)
 	GDataYouTubeState *state;
 	GError *error = NULL;
 
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-			"xmlns:media='http://search.yahoo.com/mrss/' "
-			"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-			"xmlns:gd='http://schemas.google.com/g/2005' "
-			"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<published>2006-05-16T14:06:37.000Z</published>"
-			"<updated>2009-03-23T12:46:58.000Z</updated>"
-			"<app:control xmlns:app='http://www.w3.org/2007/app'>"
-				"<app:draft>yes</app:draft>"
-				"<yt:state name='blacklisted'>This video is not available in your country</yt:state>"
-			"</app:control>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
-			"<title>Judas Priest - Painkiller</title>"
-			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.youtube.com/watch?v=JAagedeKdcQ'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo'/>"
-			"<author>"
-				"<name>eluves</name>"
-				"<uri>http://gdata.youtube.com/feeds/api/users/eluves</uri>"
-			"</author>"
-			"<media:group>"
-				"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
-				"<media:credit role='uploader' scheme='urn:youtube'>eluves</media:credit>"
-				"<media:category label='Music' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Music</media:category>"
-			"</media:group>"
-		"</entry>", -1, &error));
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_json (GDATA_TYPE_YOUTUBE_VIDEO,
+		"{"
+			"'kind': 'youtube#video',"
+			"'etag': '\"tbWC5XrSXxe1WOAx6MK9z4hHSU8/X_byq2BdOVgHzCA-ScpZbTWmgfQ\"',"
+			"'id': 'JAagedeKdcQ',"
+			"'snippet': {"
+				"'publishedAt': '2006-05-16T14:06:37.000Z',"
+				"'channelId': 'UCCS6UQvicRHyn1whEUDEMUQ',"
+				"'title': 'Judas Priest - Painkiller',"
+				"'description': 'Videoclip de Judas Priest',"
+				"'thumbnails': {"
+					"'default': {"
+						"'url': 'https://i.ytimg.com/vi/JAagedeKdcQ/default.jpg',"
+						"'width': 120,"
+						"'height': 90"
+					"},"
+					"'medium': {"
+						"'url': 'https://i.ytimg.com/vi/JAagedeKdcQ/mqdefault.jpg',"
+						"'width': 320,"
+						"'height': 180"
+					"},"
+					"'high': {"
+						"'url': 'https://i.ytimg.com/vi/JAagedeKdcQ/hqdefault.jpg',"
+						"'width': 480,"
+						"'height': 360"
+					"}"
+				"},"
+				"'channelTitle': 'eluves',"
+				"'categoryId': '10',"
+				"'liveBroadcastContent': 'none',"
+				"'localized': {"
+					"'title': 'Judas Priest - Painkiller',"
+					"'description': 'Videoclip de Judas Priest'"
+				"}"
+			"},"
+			"'contentDetails': {"
+				"'duration': 'PT6M',"
+				"'dimension': '2d',"
+				"'definition': 'sd',"
+				"'caption': 'false',"
+				"'licensedContent': false,"
+				"'regionRestriction': {"
+					"'blocked': ["
+						"'RU',"
+						"'RW',"
+						"'RS',"
+						"'RO',"
+						"'RE',"
+						"'BL',"
+						"'BM',"
+						"'BN',"
+						"'BO',"
+						"'JP',"
+						"'BI',"
+						"'BJ',"
+						"'BD',"
+						"'BE',"
+						"'BF',"
+						"'BG',"
+						"'YT',"
+						"'BB',"
+						"'CX',"
+						"'JE',"
+						"'BY',"
+						"'BZ',"
+						"'BT',"
+						"'JM',"
+						"'BV',"
+						"'BW',"
+						"'YE',"
+						"'BQ',"
+						"'BR',"
+						"'BS',"
+						"'IM',"
+						"'IL',"
+						"'IO',"
+						"'IN',"
+						"'IE',"
+						"'ID',"
+						"'QA',"
+						"'TM',"
+						"'IQ',"
+						"'IS',"
+						"'IR',"
+						"'IT',"
+						"'TK',"
+						"'AE',"
+						"'AD',"
+						"'AG',"
+						"'AF',"
+						"'AI',"
+						"'AM',"
+						"'AL',"
+						"'AO',"
+						"'AQ',"
+						"'AS',"
+						"'AR',"
+						"'AU',"
+						"'AT',"
+						"'AW',"
+						"'TG',"
+						"'AX',"
+						"'AZ',"
+						"'PR',"
+						"'HK',"
+						"'HN',"
+						"'PW',"
+						"'PT',"
+						"'HM',"
+						"'PY',"
+						"'PA',"
+						"'PF',"
+						"'PG',"
+						"'PE',"
+						"'HR',"
+						"'PK',"
+						"'PH',"
+						"'PN',"
+						"'HT',"
+						"'HU',"
+						"'OM',"
+						"'WS',"
+						"'WF',"
+						"'BH',"
+						"'KP',"
+						"'TT',"
+						"'GG',"
+						"'GF',"
+						"'GE',"
+						"'GD',"
+						"'GB',"
+						"'VN',"
+						"'VA',"
+						"'GM',"
+						"'VC',"
+						"'VE',"
+						"'GI',"
+						"'VG',"
+						"'GW',"
+						"'GU',"
+						"'GT',"
+						"'GS',"
+						"'GR',"
+						"'GQ',"
+						"'GP',"
+						"'VU',"
+						"'GY',"
+						"'NA',"
+						"'NC',"
+						"'NE',"
+						"'NF',"
+						"'NG',"
+						"'NI',"
+						"'NL',"
+						"'BA',"
+						"'NO',"
+						"'NP',"
+						"'NR',"
+						"'NU',"
+						"'NZ',"
+						"'PM',"
+						"'UM',"
+						"'TV',"
+						"'UG',"
+						"'UA',"
+						"'FI',"
+						"'FJ',"
+						"'FK',"
+						"'UY',"
+						"'FM',"
+						"'CN',"
+						"'UZ',"
+						"'US',"
+						"'ME',"
+						"'MD',"
+						"'MG',"
+						"'MF',"
+						"'MA',"
+						"'MC',"
+						"'VI',"
+						"'MM',"
+						"'ML',"
+						"'MO',"
+						"'FO',"
+						"'MH',"
+						"'MK',"
+						"'MU',"
+						"'MT',"
+						"'MW',"
+						"'MV',"
+						"'MQ',"
+						"'MP',"
+						"'MS',"
+						"'MR',"
+						"'CO',"
+						"'CV',"
+						"'MY',"
+						"'MX',"
+						"'MZ',"
+						"'TN',"
+						"'TO',"
+						"'TL',"
+						"'JO',"
+						"'TJ',"
+						"'GA',"
+						"'TH',"
+						"'TF',"
+						"'ET',"
+						"'TD',"
+						"'TC',"
+						"'ES',"
+						"'ER',"
+						"'TZ',"
+						"'EH',"
+						"'GN',"
+						"'EE',"
+						"'TW',"
+						"'EG',"
+						"'TR',"
+						"'CA',"
+						"'EC',"
+						"'GL',"
+						"'LB',"
+						"'LC',"
+						"'LA',"
+						"'MN',"
+						"'LK',"
+						"'LI',"
+						"'LV',"
+						"'LT',"
+						"'LU',"
+						"'LR',"
+						"'LS',"
+						"'PS',"
+						"'KZ',"
+						"'GH',"
+						"'LY',"
+						"'DZ',"
+						"'DO',"
+						"'DM',"
+						"'DJ',"
+						"'PL',"
+						"'DK',"
+						"'DE',"
+						"'SZ',"
+						"'SY',"
+						"'SX',"
+						"'SS',"
+						"'SR',"
+						"'SV',"
+						"'ST',"
+						"'SK',"
+						"'SJ',"
+						"'SI',"
+						"'SH',"
+						"'SO',"
+						"'SN',"
+						"'SM',"
+						"'SL',"
+						"'SC',"
+						"'SB',"
+						"'SA',"
+						"'FR',"
+						"'SG',"
+						"'SE',"
+						"'SD',"
+						"'CK',"
+						"'KR',"
+						"'CI',"
+						"'CH',"
+						"'KW',"
+						"'ZA',"
+						"'CM',"
+						"'CL',"
+						"'CC',"
+						"'ZM',"
+						"'KY',"
+						"'CG',"
+						"'CF',"
+						"'CD',"
+						"'CZ',"
+						"'CY',"
+						"'ZW',"
+						"'KG',"
+						"'CU',"
+						"'KE',"
+						"'CR',"
+						"'KI',"
+						"'KH',"
+						"'CW',"
+						"'KN',"
+						"'KM'"
+					"]"
+				"}"
+			"},"
+			"'status': {"
+				"'uploadStatus': 'processed',"
+				"'privacyStatus': 'private',"
+				"'license': 'youtube',"
+				"'embeddable': true,"
+				"'publicStatsViewable': true"
+			"},"
+			"'statistics': {"
+				"'viewCount': '4369107',"
+				"'likeCount': '13619',"
+				"'dislikeCount': '440',"
+				"'favoriteCount': '0',"
+				"'commentCount': '11181'"
+			"}"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_clear_error (&error);
@@ -907,8 +1211,8 @@ test_parsing_app_control (void)
 	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	state = gdata_youtube_video_get_state (video);
-	g_assert_cmpstr (gdata_youtube_state_get_name (state), ==, "blacklisted");
-	g_assert_cmpstr (gdata_youtube_state_get_message (state), ==, "This video is not available in your country");
+	g_assert_cmpstr (gdata_youtube_state_get_name (state), ==, NULL);
+	g_assert_cmpstr (gdata_youtube_state_get_message (state), ==, NULL);
 	g_assert (gdata_youtube_state_get_reason_code (state) == NULL);
 	g_assert (gdata_youtube_state_get_help_uri (state) == NULL);
 
@@ -924,30 +1228,28 @@ test_parsing_yt_recorded (void)
 	gint64 recorded;
 	GError *error = NULL;
 
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-			"xmlns:media='http://search.yahoo.com/mrss/' "
-			"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-			"xmlns:gd='http://schemas.google.com/g/2005' "
-			"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<published>2006-05-16T14:06:37.000Z</published>"
-			"<updated>2009-03-23T12:46:58.000Z</updated>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
-			"<title>Judas Priest - Painkiller</title>"
-			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.youtube.com/watch?v=JAagedeKdcQ'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo'/>"
-			"<author>"
-				"<name>eluves</name>"
-				"<uri>http://gdata.youtube.com/feeds/api/users/eluves</uri>"
-			"</author>"
-			"<media:group>"
-				"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
-				"<media:credit role='uploader' scheme='urn:youtube'>eluves</media:credit>"
-				"<media:category label='Music' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Music</media:category>"
-			"</media:group>"
-			"<yt:recorded>2003-08-03</yt:recorded>"
-		"</entry>", -1, &error));
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_json (GDATA_TYPE_YOUTUBE_VIDEO,
+		"{"
+			"'kind': 'youtube#video',"
+			"'etag': '\"tbWC5XrSXxe1WOAx6MK9z4hHSU8/X_byq2BdOVgHzCA-ScpZbTWmgfQ\"',"
+			"'id': 'JAagedeKdcQ',"
+			"'snippet': {"
+				"'publishedAt': '2006-05-16T14:06:37.000Z',"
+				"'channelId': 'UCCS6UQvicRHyn1whEUDEMUQ',"
+				"'title': 'Judas Priest - Painkiller',"
+				"'description': 'Videoclip de Judas Priest',"
+				"'channelTitle': 'eluves',"
+				"'categoryId': '10',"
+				"'liveBroadcastContent': 'none',"
+				"'localized': {"
+					"'title': 'Judas Priest - Painkiller',"
+					"'description': 'Videoclip de Judas Priest'"
+				"}"
+			"},"
+			"'recordingDetails': {"
+				"'recordingDate': '2003-08-03'"
+			"}"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_clear_error (&error);
@@ -961,36 +1263,25 @@ test_parsing_yt_recorded (void)
 	gdata_youtube_video_set_recorded (video, recorded);
 
 	/* Check the XML */
-	gdata_test_assert_xml (video,
-			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:media='http://search.yahoo.com/mrss/' "
-				"xmlns:gd='http://schemas.google.com/g/2005' "
-				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-				"xmlns:app='http://www.w3.org/2007/app' "
-				"xmlns:georss='http://www.georss.org/georss' "
-				"xmlns:gml='http://www.opengis.net/gml' "
-				"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
-				"<title type='text'>Judas Priest - Painkiller</title>"
-				"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-				"<updated>2009-03-23T12:46:58Z</updated>"
-				"<published>2006-05-16T14:06:37Z</published>"
-				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<link href='http://www.youtube.com/watch?v=JAagedeKdcQ' rel='http://www.iana.org/assignments/relation/alternate' type='text/html'/>"
-				"<link href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
-				"<author>"
-					"<name>eluves</name>"
-					"<uri>http://gdata.youtube.com/feeds/api/users/eluves</uri>"
-				"</author>"
-				"<media:group>"
-					"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
-					"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
-				"</media:group>"
-				"<yt:recorded>2005-10-02</yt:recorded>"
-				"<app:control>"
-					"<app:draft>no</app:draft>"
-				"</app:control>"
-			 "</entry>");
+	gdata_test_assert_json (video,
+		"{"
+			"'kind': 'youtube#video',"
+			"'etag': '\"tbWC5XrSXxe1WOAx6MK9z4hHSU8/X_byq2BdOVgHzCA-ScpZbTWmgfQ\"',"
+			"'id': 'JAagedeKdcQ',"
+			"'title': 'Judas Priest - Painkiller',"
+			"'description': 'Videoclip de Judas Priest',"
+			"'snippet': {"
+				"'title': 'Judas Priest - Painkiller',"
+				"'description': 'Videoclip de Judas Priest',"
+				"'categoryId': '10'"
+			"},"
+			"'status': {"
+				"'privacyStatus': 'public'"
+			"},"
+			"'recordingDetails': {"
+				"'recordingDate': '2005-10-02'"
+			"}"
+		"}");
 
 	/* TODO: more tests on entry properties */
 
@@ -2334,36 +2625,92 @@ mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer use
 		const gchar *ip_address = uhm_server_get_address (server);
 
 		uhm_resolver_add_A (resolver, "www.google.com", ip_address);
-		uhm_resolver_add_A (resolver, "gdata.youtube.com", ip_address);
-		uhm_resolver_add_A (resolver, "uploads.gdata.youtube.com", ip_address);
-		uhm_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
-		uhm_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
-		uhm_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.googleapis.com", ip_address);
+		uhm_resolver_add_A (resolver, "accounts.google.com",
+		                    ip_address);
 	}
+}
+
+/* Set up a global GDataAuthorizer to be used for all the tests. Unfortunately,
+ * the YouTube API is limited to OAuth2 authorisation, so this requires user
+ * interaction when online.
+ *
+ * If not online, use a dummy authoriser. */
+static GDataAuthorizer *
+create_global_authorizer (void)
+{
+	GDataOAuth2Authorizer *authorizer = NULL;  /* owned */
+	gchar *authentication_uri, *authorisation_code;
+	GError *error = NULL;
+
+	/* If not online, just return a dummy authoriser. */
+	if (!uhm_server_get_enable_online (mock_server)) {
+		return GDATA_AUTHORIZER (gdata_dummy_authorizer_new (GDATA_TYPE_YOUTUBE_SERVICE));
+	}
+
+	/* Otherwise, go through the interactive OAuth dance. */
+	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
+	authorizer = gdata_oauth2_authorizer_new (CLIENT_ID, CLIENT_SECRET,
+	                                          REDIRECT_URI,
+	                                          GDATA_TYPE_YOUTUBE_SERVICE);
+
+	/* Get an authentication URI */
+	authentication_uri = gdata_oauth2_authorizer_build_authentication_uri (authorizer, NULL, FALSE);
+	g_assert (authentication_uri != NULL);
+
+	/* Get the authorisation code off the user. */
+	if (uhm_server_get_enable_online (mock_server)) {
+		authorisation_code = gdata_test_query_user_for_verifier (authentication_uri);
+	} else {
+		/* Hard coded, extracted from the trace file. */
+		authorisation_code = g_strdup ("4/bfJsBrDEyOMNyswDmC4nL45mtuS1E"
+		                               "P9cy3-_5AijFA4.gsGq_HYYdZcRoiIB"
+		                               "eO6P2m_QwbIXmgI");
+	}
+
+	g_free (authentication_uri);
+
+	if (authorisation_code == NULL) {
+		/* Skip tests. */
+		g_object_unref (authorizer);
+		authorizer = NULL;
+		goto skip_test;
+	}
+
+	/* Authorise the token */
+	g_assert (gdata_oauth2_authorizer_request_authorization (authorizer,
+	                                                         authorisation_code,
+	                                                         NULL, &error));
+	g_assert_no_error (error);
+
+skip_test:
+	g_free (authorisation_code);
+
+	uhm_server_end_trace (mock_server);
+
+	return GDATA_AUTHORIZER (authorizer);
 }
 
 int
 main (int argc, char *argv[])
 {
 	gint retval;
-	GDataAuthorizer *authorizer = NULL;
-	GDataService *service = NULL;
-	GFile *trace_directory;
+	GDataAuthorizer *authorizer = NULL;  /* owned */
+	GDataService *service = NULL;  /* owned */
+	GFile *trace_directory = NULL;  /* owned */
 
 	gdata_test_init (argc, argv);
 
 	mock_server = gdata_test_get_mock_server ();
-	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
+	g_signal_connect (G_OBJECT (mock_server), "notify::resolver",
+	                  (GCallback) mock_server_notify_resolver_cb, NULL);
 	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/youtube");
 	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
-	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
-	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_YOUTUBE_SERVICE));
-	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), USERNAME, PASSWORD, NULL, NULL);
-	uhm_server_end_trace (mock_server);
-
-	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY, authorizer));
+	authorizer = create_global_authorizer ();
+	service = GDATA_SERVICE (gdata_youtube_service_new (DEVELOPER_KEY,
+	                                                    authorizer));
 
 	g_test_add_func ("/youtube/authentication", test_authentication);
 	g_test_add_func ("/youtube/authentication/error", test_authentication_error);
@@ -2373,6 +2720,8 @@ main (int argc, char *argv[])
 	g_test_add ("/youtube/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
 	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
+#if 0
+FIXME: Port and re-enable these tests
 	g_test_add_data_func ("/youtube/query/standard_feeds", service, test_query_standard_feeds);
 	g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
 	g_test_add_data_func ("/youtube/query/standard_feed/with_query", service, test_query_standard_feed_with_query);
@@ -2432,12 +2781,14 @@ main (int argc, char *argv[])
 	g_test_add ("/youtube/batch", BatchData, service, setup_batch, test_batch, teardown_batch);
 	g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);
 	g_test_add ("/youtube/batch/async/cancellation", BatchData, service, setup_batch, test_batch_async_cancellation, teardown_batch);
-
+#endif
 	g_test_add_func ("/youtube/service/properties", test_service_properties);
 
 	g_test_add_func ("/youtube/parsing/app:control", test_parsing_app_control);
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
 	g_test_add_func ("/youtube/parsing/yt:recorded", test_parsing_yt_recorded);
+#if 0
+FIXME: Port and re-enable these tests
 	g_test_add_func ("/youtube/parsing/yt:accessControl", test_parsing_yt_access_control);
 	g_test_add_func ("/youtube/parsing/yt:category", test_parsing_yt_category);
 	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
@@ -2453,11 +2804,12 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/youtube/query/uri", test_query_uri);
 	g_test_add_func ("/youtube/query/etag", test_query_etag);
+#endif
 
 	retval = g_test_run ();
 
-	if (service != NULL)
-		g_object_unref (service);
+	g_clear_object (&service);
+	g_clear_object (&authorizer);
 
 	return retval;
 }

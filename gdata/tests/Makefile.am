@@ -56,11 +56,12 @@ TESTS = \
 	oauth1-authorizer \
 	oauth2-authorizer \
 	streams \
+	youtube \
 	$(NULL)
 
 # FIXME: Temporarily disabled until they are ported for the changes in the v2
 # to v3 API transitions.
-DISABLED_TESTS = youtube documents
+DISABLED_TESTS = documents
 
 # FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
 #TESTS += memory
