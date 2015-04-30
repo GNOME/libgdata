@@ -2237,37 +2237,64 @@ test_app_categories (void)
 	gboolean fixed;
 	GError *error = NULL;
 
-	categories = GDATA_APP_CATEGORIES (gdata_parsable_new_from_xml (GDATA_TYPE_APP_CATEGORIES,
-		"<app:categories xmlns:app='http://www.w3.org/2007/app' fixed='yes' scheme='http://scheme'>"
-			"<category term='foo'/>"
-			"<category scheme='http://other.scheme' term='bar'/>"
-		"</app:categories>", -1, &error));
+	categories = GDATA_APP_CATEGORIES (gdata_parsable_new_from_json (GDATA_TYPE_APP_CATEGORIES,
+		"{"
+			"'kind': 'youtube#videoCategoryListResponse',"
+			"'etag': '\"tbWC5XrSXxe1WOAx6MK9z4hHSU8/1v2mrzYSYG6onNLt2qTj13hkQZk\"',"
+			"'items': ["
+				"{"
+					"'kind': 'youtube#videoCategory',"
+					"'etag': '\"tbWC5XrSXxe1WOAx6MK9z4hHSU8/Xy1mB4_yLrHy_BmKmPBggty2mZQ\"',"
+					"'id': '1',"
+					"'snippet': {"
+						"'channelId': 'UCBR8-60-B28hp2BmDPdntcQ',"
+						"'title': 'Film & Animation',"
+						"'assignable': true"
+					"}"
+				"},"
+				"{"
+					"'kind': 'youtube#videoCategory',"
+					"'etag': '\"tbWC5XrSXxe1WOAx6MK9z4hHSU8/UZ1oLIIz2dxIhO45ZTFR3a3NyTA\"',"
+					"'id': '2',"
+					"'snippet': {"
+						"'channelId': 'UCBR8-60-B28hp2BmDPdntcQ',"
+						"'title': 'Autos & Vehicles',"
+						"'assignable': true"
+					"}"
+				"}"
+			"]"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_APP_CATEGORIES (categories));
 	g_clear_error (&error);
 
 	/* Check the properties */
-	g_assert (gdata_app_categories_is_fixed (categories) == TRUE);
+	g_assert (gdata_app_categories_is_fixed (categories) == FALSE);
 
 	/* Check them a different way too */
 	g_object_get (G_OBJECT (categories), "is-fixed", &fixed, NULL);
-	g_assert (fixed == TRUE);
+	g_assert (fixed == FALSE);
 
 	/* Check the categories and scheme inheritance */
 	_categories = gdata_app_categories_get_categories (categories);
 	g_assert_cmpint (g_list_length (_categories), ==, 2);
 
 	g_assert (GDATA_IS_CATEGORY (_categories->data));
-	g_assert_cmpstr (gdata_category_get_scheme (GDATA_CATEGORY (_categories->data)), ==, "http://scheme");
+	g_assert_cmpstr (gdata_category_get_scheme (GDATA_CATEGORY (_categories->data)), ==, NULL);
+	g_assert_cmpstr (gdata_category_get_label (GDATA_CATEGORY (_categories->data)), ==, "Film & Animation");
 
 	g_assert (GDATA_IS_CATEGORY (_categories->next->data));
-	g_assert_cmpstr (gdata_category_get_scheme (GDATA_CATEGORY (_categories->next->data)), ==, "http://other.scheme");
+	g_assert_cmpstr (gdata_category_get_scheme (GDATA_CATEGORY (_categories->next->data)), ==, NULL);
+	g_assert_cmpstr (gdata_category_get_label (GDATA_CATEGORY (_categories->next->data)), ==, "Autos & Vehicles");
 
 	g_object_unref (categories);
 
 	/* Now parse one with less information available */
-	categories = GDATA_APP_CATEGORIES (gdata_parsable_new_from_xml (GDATA_TYPE_APP_CATEGORIES,
-		"<app:categories xmlns:app='http://www.w3.org/2007/app'/>", -1, &error));
+	categories = GDATA_APP_CATEGORIES (gdata_parsable_new_from_json (GDATA_TYPE_APP_CATEGORIES,
+		"{"
+			"'kind': 'youtube#videoCategoryListResponse',"
+			"'items': []"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_APP_CATEGORIES (categories));
 	g_clear_error (&error);
@@ -4604,8 +4631,7 @@ main (int argc, char *argv[])
 	g_test_add_func ("/atom/link/error_handling", test_atom_link_error_handling);
 	g_test_add_func ("/atom/link/escaping", test_atom_link_escaping);
 
-	/* FIXME: Disabled until ported to YouTube v3 API.
-	g_test_add_func ("/app/categories", test_app_categories); */
+	g_test_add_func ("/app/categories", test_app_categories);
 
 	g_test_add_func ("/gd/email_address", test_gd_email_address);
 	g_test_add_func ("/gd/email_address/escaping", test_gd_email_address_escaping);
