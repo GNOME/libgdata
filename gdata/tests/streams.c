@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -728,29 +728,22 @@ test_upload_stream_resumable_server_handler_cb (SoupServer *server, SoupMessage 
 				break;
 			case CONTENT_AND_METADATA:
 			case METADATA_ONLY:
-				/* Check the XML sent by the client. */
-				g_assert_cmpstr (soup_message_headers_get_content_type (message->request_headers, NULL), ==, "application/atom+xml");
+				/* Check the JSON sent by the client. */
+				g_assert_cmpstr (soup_message_headers_get_content_type (message->request_headers, NULL), ==, "application/json");
 
 				g_assert (message->request_body->data[message->request_body->length] == '\0');
-				g_assert (gdata_test_compare_xml_strings (message->request_body->data,
-					"<?xml version='1.0' encoding='UTF-8'?>"
-					"<entry xmlns='http://www.w3.org/2005/Atom' "
-					       "xmlns:app='http://www.w3.org/2007/app' "
-					       "xmlns:georss='http://www.georss.org/georss' "
-					       "xmlns:gml='http://www.opengis.net/gml' "
-					       "xmlns:gd='http://schemas.google.com/g/2005' "
-					       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-					       "xmlns:media='http://search.yahoo.com/mrss/'>"
-						"<title type='text'>Test title!</title>"
-						"<category term='http://gdata.youtube.com/schemas/2007#video' "
-						          "scheme='http://schemas.google.com/g/2005#kind'/>"
-						"<media:group>"
-							"<media:title type='plain'>Test title!</media:title>"
-						"</media:group>"
-						"<app:control>"
-							"<app:draft>no</app:draft>"
-						"</app:control>"
-					"</entry>", TRUE) == TRUE);
+				g_assert (gdata_test_compare_json_strings (message->request_body->data,
+					"{"
+						"'title': 'Test title!',"
+						"'kind': 'youtube#video',"
+						"'snippet': {"
+							"'title': 'Test title!'"
+						"},"
+						"'status': {"
+							"'privacyStatus': 'public'"
+						"},"
+						"'recordingDetails': {}"
+					"}", TRUE) == TRUE);
 
 				break;
 			default:
@@ -849,14 +842,20 @@ test_upload_stream_resumable_server_handler_cb (SoupServer *server, SoupMessage 
 
 error: {
 		const gchar *error_response =
-			"<?xml version='1.0' encoding='UTF-8'?>"
-			"<errors>"
-				"<error>"
-					"<domain>yt:authentication</domain>"
-					"<code>InvalidToken</code>"
-					"<location type='header'>Authorization: GoogleLogin</location>"
-				"</error>"
-			"</errors>";
+			"{"
+				"'error': {"
+					"'errors': ["
+						"{"
+							"'domain': 'global',"
+							"'reason': 'authError',"
+							"'message': 'Invalid token.',"
+							"'location': 'Authorization: GoogleLogin'"
+						"}"
+					"],"
+					"'code': 400,"
+					"'message': 'Invalid token.'"
+				"}"
+			"}";
 
 		/* Error. */
 		soup_message_set_status (message, SOUP_STATUS_UNAUTHORIZED); /* arbitrary error status code */
@@ -888,39 +887,23 @@ continuation: {
 
 completion: {
 		const gchar *completion_response =
-			"<?xml version='1.0' encoding='UTF-8'?>"
-			"<entry xmlns='http://www.w3.org/2005/Atom' "
-			       "xmlns:media='http://search.yahoo.com/mrss/' "
-			       "xmlns:gd='http://schemas.google.com/g/2005' "
-			       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-			       "xmlns:app='http://www.w3.org/2007/app' "
-			       "xmlns:georss='http://www.georss.org/georss' "
-			       "xmlns:gml='http://www.opengis.net/gml' "
-			       "gd:etag='W/\"testfulness.\"'>"
-				"<title type='text'>Test title!</title>"
-				"<id>tag:youtube.com,2008:video:fooishbar</id>"
-				"<updated>2009-03-23T12:46:58Z</updated>"
-				"<published>2006-05-16T14:06:37Z</published>"
-				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<link href='http://www.youtube.com/watch?v=fooishbar' rel='http://www.iana.org/assignments/relation/alternate' type='text/html'/>"
-				"<link href='http://gdata.youtube.com/feeds/api/videos/fooishbar' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
-				"<author>"
-					"<name>Brian</name>"
-					"<uri>http://gdata.youtube.com/feeds/api/users/brian</uri>"
-				"</author>"
-				"<media:group>"
-					"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
-					"<media:title type='plain'>Test title!</media:title>"
-				"</media:group>"
-				"<yt:recorded>2005-10-02</yt:recorded>"
-				"<app:control>"
-					"<app:draft>no</app:draft>"
-				"</app:control>"
-			"</entry>";
+			"{"
+				"'kind': 'youtube#video',"
+				"'snippet': {"
+					"'title': 'Test title!',"
+					"'categoryId': '10'"  /* Music */
+				"},"
+				"'status': {"
+					"'privacyStatus': 'public'"
+				"},"
+				"'recordingDetails': {"
+					"'recordingDate': '2005-10-02'"
+				"}"
+			"}";
 
 		/* Completion. */
 		soup_message_set_status (message, SOUP_STATUS_CREATED);
-		soup_message_headers_set_content_type (message->response_headers, "application/atom+xml", NULL);
+		soup_message_headers_set_content_type (message->response_headers, "application/json", NULL);
 		soup_message_body_append (message->response_body, SOUP_MEMORY_STATIC, completion_response, strlen (completion_response));
 	}
 }
