@@ -1468,8 +1468,7 @@ get_entry_uri (const gchar *id)
 	return _gdata_service_build_uri ("https://www.googleapis.com/youtube/v3/videos"
 	                                 "?part=contentDetails,id,"
 	                                       "recordingDetails,snippet,"
-	                                       "status,statistics,"
-	                                       "processingDetails"
+	                                       "status,statistics"
 	                                 "&id=%s", id);
 }
 
