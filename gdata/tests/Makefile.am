@@ -48,6 +48,7 @@ TESTS = \
 	calendar \
 	contacts \
 	picasaweb \
+	freebase \
 	tasks \
 	perf \
 	authorization \
@@ -59,7 +60,7 @@ TESTS = \
 
 # FIXME: Temporarily disabled until they are ported for the changes in the v2
 # to v3 API transitions.
-DISABLED_TESTS = youtube documents freebase
+DISABLED_TESTS = youtube documents
 
 # FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
 #TESTS += memory
