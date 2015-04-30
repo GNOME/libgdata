@@ -477,7 +477,8 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * GDataYouTubeVideo:latitude:
 	 *
 	 * The location as a latitude coordinate associated with this video. Valid latitudes range from <code class="literal">-90.0</code>
-	 * to <code class="literal">90.0</code> inclusive.
+	 * to <code class="literal">90.0</code> inclusive. Set to a value
+	 * outside this range to unset the location.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="https://developers.google.com/youtube/v3/docs/videos#recordingDetails.location.latitude">
@@ -488,14 +489,15 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	g_object_class_install_property (gobject_class, PROP_LATITUDE,
 	                                 g_param_spec_double ("latitude",
 	                                                      "Latitude", "The location as a latitude coordinate associated with this video.",
-	                                                      -90.0, 90.0, 0.0,
+	                                                      G_MINDOUBLE, G_MAXDOUBLE, G_MAXDOUBLE,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeVideo:longitude:
 	 *
 	 * The location as a longitude coordinate associated with this video. Valid longitudes range from <code class="literal">-180.0</code>
-	 * to <code class="literal">180.0</code> inclusive.
+	 * to <code class="literal">180.0</code> inclusive. Set to a value
+	 * outside this range to unset the location.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="https://developers.google.com/youtube/v3/docs/videos#recordingDetails.location.longitude">
@@ -506,7 +508,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
 	                                 g_param_spec_double ("longitude",
 	                                                      "Longitude", "The location as a longitude coordinate associated with this video.",
-	                                                      -180.0, 180.0, 0.0,
+	                                                      G_MINDOUBLE, G_MAXDOUBLE, G_MAXDOUBLE,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
@@ -526,6 +528,8 @@ gdata_youtube_video_init (GDataYouTubeVideo *self)
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoPrivate);
 	self->priv->recorded = -1;
 	self->priv->access_controls = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
+	self->priv->latitude = G_MAXDOUBLE;
+	self->priv->longitude = G_MAXDOUBLE;
 }
 
 static void
@@ -1414,7 +1418,8 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 		json_builder_add_string_value (builder, priv->location);
 	}
 
-	if (priv->latitude != G_MAXDOUBLE && priv->longitude != G_MAXDOUBLE) {
+	if (priv->latitude >= -90.0 && priv->latitude <= 90.0 &&
+	    priv->longitude >= -180.0 && priv->longitude <= 180.0) {
 		json_builder_set_member_name (builder, "location");
 		json_builder_begin_object (builder);
 
