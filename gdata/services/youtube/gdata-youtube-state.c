@@ -36,6 +36,11 @@
 
 static void gdata_youtube_state_finalize (GObject *object);
 static void gdata_youtube_state_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
+static void
+gdata_youtube_state_set_property (GObject *object,
+                                  guint property_id,
+                                  const GValue *value,
+                                  GParamSpec *pspec);
 
 struct _GDataYouTubeStatePrivate {
 	gchar *name;
@@ -61,6 +66,7 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	g_type_class_add_private (klass, sizeof (GDataYouTubeStatePrivate));
 
 	gobject_class->get_property = gdata_youtube_state_get_property;
+	gobject_class->set_property = gdata_youtube_state_set_property;
 	gobject_class->finalize = gdata_youtube_state_finalize;
 
 	/**
@@ -77,7 +83,9 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	                                 g_param_spec_string ("name",
 	                                                      "Name", "The name of the status of the unpublished video.",
 	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_CONSTRUCT_ONLY |
+	                                                      G_PARAM_READWRITE |
+	                                                      G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeState:reason-code:
@@ -93,7 +101,9 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	                                 g_param_spec_string ("reason-code",
 	                                                      "Reason code", "The reason code explaining why the video failed to upload.",
 	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_CONSTRUCT_ONLY |
+	                                                      G_PARAM_READWRITE |
+	                                                      G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeState:help-uri:
@@ -110,7 +120,9 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	                                 g_param_spec_string ("help-uri",
 	                                                      "Help URI", "A URI for a YouTube Help Center page.",
 	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_CONSTRUCT_ONLY |
+	                                                      G_PARAM_READWRITE |
+	                                                      G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataYouTubeState:message:
@@ -126,7 +138,9 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	                                 g_param_spec_string ("message",
 	                                                      "Message", "A human-readable description of why the video failed to upload.",
 	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_CONSTRUCT_ONLY |
+	                                                      G_PARAM_READWRITE |
+	                                                      G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -166,6 +180,34 @@ gdata_youtube_state_get_property (GObject *object, guint property_id, GValue *va
 			break;
 		case PROP_MESSAGE:
 			g_value_set_string (value, priv->message);
+			break;
+		default:
+			/* We don't have any other property... */
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+			break;
+	}
+}
+
+static void
+gdata_youtube_state_set_property (GObject *object,
+                                  guint property_id,
+                                  const GValue *value,
+                                  GParamSpec *pspec)
+{
+	GDataYouTubeStatePrivate *priv = GDATA_YOUTUBE_STATE (object)->priv;
+
+	switch (property_id) {
+		case PROP_NAME:
+			priv->name = g_value_dup_string (value);
+			break;
+		case PROP_REASON_CODE:
+			priv->reason_code = g_value_dup_string (value);
+			break;
+		case PROP_HELP_URI:
+			priv->help_uri = g_value_dup_string (value);
+			break;
+		case PROP_MESSAGE:
+			priv->message = g_value_dup_string (value);
 			break;
 		default:
 			/* We don't have any other property... */
