@@ -304,18 +304,23 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data,
             GError **error)
 {
 	gboolean success;
+	gint64 width, height;
 	GDataMediaThumbnail *self = GDATA_MEDIA_THUMBNAIL (parsable);
 	GDataMediaThumbnailPrivate *priv = self->priv;
 
 	if (gdata_parser_string_from_json_member (reader, "url", P_DEFAULT,
 	                                          &priv->uri, &success,
-	                                          error) ||
-	    gdata_parser_int_from_json_member (reader, "width", P_DEFAULT,
-	                                       (gint64 *) &priv->width,
-	                                       &success, error) ||
-	    gdata_parser_int_from_json_member (reader, "height", P_DEFAULT,
-	                                       (gint64 *) &priv->height,
-	                                       &success, error)) {
+	                                          error)) {
+		return success;
+	} else if (gdata_parser_int_from_json_member (reader, "width",
+	                                              P_DEFAULT, &width,
+	                                              &success, error)) {
+		priv->width = width;
+		return success;
+	} else if (gdata_parser_int_from_json_member (reader, "height",
+	                                              P_DEFAULT, &height,
+	                                              &success, error)) {
+		priv->height = height;
 		return success;
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_media_thumbnail_parent_class)->parse_json (parsable, reader, user_data, error);
