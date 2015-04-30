@@ -1020,7 +1020,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 		/* Parse all its properties. */
 		for (i = 0; i < (guint) json_reader_count_members (reader); i++) {
-			g_return_val_if_fail (json_reader_read_element (reader, i), NULL);
+			g_return_val_if_fail (json_reader_read_element (reader, i), FALSE);
 
 			if (GDATA_PARSABLE_GET_CLASS (self)->parse_json (GDATA_PARSABLE (self), reader, user_data, error) == FALSE) {
 				json_reader_end_element (reader);
