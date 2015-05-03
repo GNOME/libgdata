@@ -138,7 +138,7 @@ In general, use common sense. However, there are some specific cases where a sta
  - For boolean setters use foo_bar_set_is_baz, rather than foo_bar_set_baz.
 
  - In general, try to keep API named similarly to the actual GData API constructs. In certain cases, however, it might make more sense to rename pieces
-   of API to be less cryptic (e.g. "timezone" instead of "ctz": http://code.google.com/apis/calendar/docs/2.0/reference.html#Parameters).
+   of API to be less cryptic (e.g. "timezone" instead of "ctz").
 
 Deprecating public API
 ======================
