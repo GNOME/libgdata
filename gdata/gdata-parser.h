@@ -20,6 +20,7 @@
 #include <glib.h>
 
 #include "gdata-parsable.h"
+#include "gdata-types.h"
 
 #ifndef GDATA_PARSER_H
 #define GDATA_PARSER_H
@@ -105,6 +106,13 @@ gdata_parser_strv_from_json_member (JsonReader *reader,
                                     GDataParserOptions options,
                                     gchar ***output, gboolean *success,
                                     GError **error);
+gboolean
+gdata_parser_color_from_json_member (JsonReader *reader,
+                                     const gchar *member_name,
+                                     GDataParserOptions options,
+                                     GDataColor *output,
+                                     gboolean *success,
+                                     GError **error);
 
 void gdata_parser_string_append_escaped (GString *xml_string, const gchar *pre, const gchar *element_content, const gchar *post);
 gchar *gdata_parser_utf8_trim_whitespace (const gchar *s) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

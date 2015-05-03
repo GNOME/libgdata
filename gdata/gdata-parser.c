@@ -29,6 +29,7 @@
 
 #include "gdata-parser.h"
 #include "gdata-service.h"
+#include "gdata-types.h"
 #include "gdata-private.h"
 
 static gchar *
@@ -1087,6 +1088,103 @@ gdata_parser_strv_from_json_member (JsonReader *reader,
 
 	/* Success! */
 	*output = (gchar **) g_ptr_array_free (out, FALSE);
+	*success = TRUE;
+
+	return TRUE;
+}
+
+/*
+ * gdata_parser_color_from_json_member:
+ * @reader: #JsonReader cursor object to read JSON node from
+ * @element_name: the name of the element to parse
+ * @options: a bitwise combination of parsing options from #GDataParserOptions,
+ *   or %P_NONE
+ * @output: (out caller-allocates): the return location for the parsed colour
+ *   value
+ * @success: the return location for a value which is %TRUE if the colour was
+ *   parsed successfully, %FALSE if an error was encountered, and undefined if
+ *   @element didn't match @element_name
+ * @error: a #GError, or %NULL
+ *
+ * Gets the colour value of @element if its name is @element_name, subject to
+ * various checks specified by @options. It expects the text content of
+ * @element to be an RGB colour in hexadecimal format, with an optional leading
+ * hash symbol (for example, `#RRGGBB` or `RRGGBB`).
+ *
+ * If @element doesn't match @element_name, %FALSE will be returned, @error
+ * will be unset and @success will be unset.
+ *
+ * If @element matches @element_name but one of the checks specified by
+ * @options fails, %TRUE will be returned, @error will be set to a
+ * %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error and @success will be set to %FALSE.
+ *
+ * If @element matches @element_name and all of the checks specified by
+ * @options pass, %TRUE will be returned, @error will be unset and @success
+ * will be set to %TRUE.
+ *
+ * The reason for returning the success of the parsing in @success is so that
+ * calls to gdata_parser_color_from_json_member() can be chained together in a
+ * large "or" statement based on their return values, for the purposes of
+ * determining whether any of the calls matched a given @element. If any of the
+ * calls to gdata_parser_color_from_json_member() return %TRUE, the value of
+ * @success can be examined.
+ *
+ * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
+ *
+ * Since: UNRELEASED
+ */
+gboolean
+gdata_parser_color_from_json_member (JsonReader *reader,
+                                     const gchar *member_name,
+                                     GDataParserOptions options,
+                                     GDataColor *output,
+                                     gboolean *success,
+                                     GError **error)
+{
+	const gchar *text;
+	GDataColor colour;
+	const GError *child_error = NULL;
+
+	/* Check if there's such an element */
+	if (g_strcmp0 (json_reader_get_member_name (reader), member_name) != 0) {
+		return FALSE;
+	}
+
+	/* Check if the output colour has already been set. The JSON parser
+	 * guarantees this can't happen. */
+	g_assert (!(options & P_NO_DUPES) ||
+	          (output->red == 0 && output->green == 0 && output->blue == 0));
+
+	/* Get the string and check it for NULLness. Check for errors first. */
+	text = json_reader_get_string_value (reader);
+	child_error = json_reader_get_error (reader);
+	if (child_error != NULL) {
+		*success = gdata_parser_error_from_json_error (reader, child_error, error);
+		return TRUE;
+	} else if (options & P_REQUIRED && (text == NULL || *text == '\0')) {
+		*success = gdata_parser_error_required_json_content_missing (reader, error);
+		return TRUE;
+	}
+
+	/* Attempt to parse the string as a hexadecimal colour. */
+	if (gdata_color_from_hexadecimal (text, &colour) == FALSE) {
+		/* Error */
+		g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+		             /* Translators: the first parameter is the name of an XML element (including the angle brackets
+		              * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+		              * RGB format).
+		              *
+		              * For example:
+		              *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format. */
+		             _("The content of a %s element (\"%s\") was not in hexadecimal RGB format."),
+		             member_name, text);
+		*success = FALSE;
+
+		return TRUE;
+	}
+
+	/* Success! */
+	*output = colour;
 	*success = TRUE;
 
 	return TRUE;
