@@ -1722,7 +1722,7 @@ strv_contains (const gchar * const *strv, const gchar *key)
 {
 	guint i;
 
-	for (i = 0; strv[i] != NULL; i++) {
+	for (i = 0; strv != NULL && strv[i] != NULL; i++) {
 		if (g_strcmp0 (strv[i], key) == 0) {
 			return TRUE;
 		}
