@@ -295,7 +295,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 			format = json_reader_get_member_name (reader);
 
-			gdata_parser_string_from_json_member (reader, format, P_REQUIRED | P_NON_EMPTY, &uri, &success, NULL);
+			g_assert (gdata_parser_string_from_json_member (reader, format, P_REQUIRED | P_NON_EMPTY, &uri, &success, NULL));
 			if (success) {
 				g_hash_table_insert (priv->export_links, g_strdup (format), uri);
 				uri = NULL;
