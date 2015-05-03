@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -114,7 +114,6 @@ GDataCalendarCalendar *gdata_calendar_calendar_new (const gchar *id) G_GNUC_WARN
 
 const gchar *gdata_calendar_calendar_get_timezone (GDataCalendarCalendar *self) G_GNUC_PURE;
 void gdata_calendar_calendar_set_timezone (GDataCalendarCalendar *self, const gchar *_timezone);
-guint gdata_calendar_calendar_get_times_cleaned (GDataCalendarCalendar *self) G_GNUC_PURE;
 gboolean gdata_calendar_calendar_is_hidden (GDataCalendarCalendar *self) G_GNUC_PURE;
 void gdata_calendar_calendar_set_is_hidden (GDataCalendarCalendar *self, gboolean is_hidden);
 void gdata_calendar_calendar_get_color (GDataCalendarCalendar *self, GDataColor *color);
@@ -122,7 +121,11 @@ void gdata_calendar_calendar_set_color (GDataCalendarCalendar *self, const GData
 gboolean gdata_calendar_calendar_is_selected (GDataCalendarCalendar *self) G_GNUC_PURE;
 void gdata_calendar_calendar_set_is_selected (GDataCalendarCalendar *self, gboolean is_selected);
 const gchar *gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self) G_GNUC_PURE;
-gint64 gdata_calendar_calendar_get_edited (GDataCalendarCalendar *self);
+
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+guint gdata_calendar_calendar_get_times_cleaned (GDataCalendarCalendar *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+gint64 gdata_calendar_calendar_get_edited (GDataCalendarCalendar *self) G_GNUC_DEPRECATED;
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

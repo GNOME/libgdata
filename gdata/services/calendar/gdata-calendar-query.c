@@ -27,7 +27,8 @@
  * those catered for by #GDataQuery.
  *
  * For more information on the custom GData query parameters supported by #GDataCalendarQuery, see the <ulink type="http"
- * url="http://code.google.com/apis/calendar/docs/2.0/reference.html#Parameters">online documentation</ulink>.
+ * url="https://developers.google.com/google-apps/calendar/v3/reference/events/list">online
+ * documentation</ulink>.
  *
  * <example>
  * 	<title>Querying for Events</title>

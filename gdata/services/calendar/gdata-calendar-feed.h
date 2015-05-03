@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -68,8 +68,10 @@ typedef struct {
 
 GType gdata_calendar_feed_get_type (void);
 
-const gchar *gdata_calendar_feed_get_timezone (GDataCalendarFeed *self) G_GNUC_PURE;
-guint gdata_calendar_feed_get_times_cleaned (GDataCalendarFeed *self) G_GNUC_PURE;
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+const gchar *gdata_calendar_feed_get_timezone (GDataCalendarFeed *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+guint gdata_calendar_feed_get_times_cleaned (GDataCalendarFeed *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

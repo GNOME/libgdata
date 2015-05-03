@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -95,10 +95,36 @@ void gdata_calendar_service_query_events_async (GDataCalendarService *self, GDat
 
 #include <gdata/services/calendar/gdata-calendar-event.h>
 
-GDataCalendarEvent *gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEvent *event,
-                                                         GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-void gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable,
-                                                GAsyncReadyCallback callback, gpointer user_data);
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+GDataCalendarEvent *
+gdata_calendar_service_insert_event (GDataCalendarService *self,
+                                     GDataCalendarEvent *event,
+                                     GCancellable *cancellable,
+                                     GError **error)
+                                     G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC
+                                     G_GNUC_DEPRECATED_FOR (gdata_calendar_service_insert_calendar_event);
+void
+gdata_calendar_service_insert_event_async (GDataCalendarService *self,
+                                           GDataCalendarEvent *event,
+                                           GCancellable *cancellable,
+                                           GAsyncReadyCallback callback,
+                                           gpointer user_data)
+                                           G_GNUC_DEPRECATED_FOR (gdata_calendar_service_insert_calendar_event_async);
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
+
+GDataCalendarEvent *
+gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
+                                              GDataCalendarCalendar *calendar,
+                                              GDataCalendarEvent *event,
+                                              GCancellable *cancellable,
+                                              GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void
+gdata_calendar_service_insert_calendar_event_async (GDataCalendarService *self,
+                                                    GDataCalendarCalendar *calendar,
+                                                    GDataCalendarEvent *event,
+                                                    GCancellable *cancellable,
+                                                    GAsyncReadyCallback callback,
+                                                    gpointer user_data);
 
 G_END_DECLS
 

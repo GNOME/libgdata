@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2010, 2014, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,14 +34,7 @@
 #include "gdata-feed.h"
 #include "gdata-private.h"
 
-static void gdata_calendar_feed_finalize (GObject *object);
 static void gdata_calendar_feed_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
-static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-
-struct _GDataCalendarFeedPrivate {
-	gchar *timezone;
-	guint times_cleaned;
-};
 
 enum {
 	PROP_TIMEZONE = 1,
@@ -54,14 +47,8 @@ static void
 gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataCalendarFeedPrivate));
 
 	gobject_class->get_property = gdata_calendar_feed_get_property;
-	gobject_class->finalize = gdata_calendar_feed_finalize;
-
-	parsable_class->parse_xml = parse_xml;
 
 	/**
 	 * GDataCalendarFeed:timezone:
@@ -70,12 +57,16 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	 * url="http://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones">reference</ulink>.
 	 *
 	 * Since: 0.3.0
+	 * Deprecated: UNRELEASED: Unsupported by the online API any more. There
+	 *   is no replacement; this will always return %NULL.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
 	                                 g_param_spec_string ("timezone",
 	                                                      "Timezone", "The timezone in which the feed's times are given.",
 	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                      G_PARAM_DEPRECATED |
+	                                                      G_PARAM_READABLE |
+	                                                      G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarFeed:times-cleaned:
@@ -83,77 +74,47 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	 * The number of times the feed has been completely cleared of entries.
 	 *
 	 * Since: 0.3.0
+	 * Deprecated: UNRELEASED: Unsupported by the online API any more. There
+	 *   is no replacement; this will always return 0.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMES_CLEANED,
 	                                 g_param_spec_uint ("times-cleaned",
 	                                                    "Times cleaned", "The number of times the feed has been completely cleared of entries.",
 	                                                    0, G_MAXUINT, 0,
-	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                                    G_PARAM_DEPRECATED |
+	                                                    G_PARAM_READABLE |
+	                                                    G_PARAM_STATIC_STRINGS));
 }
 
 static void
 gdata_calendar_feed_init (GDataCalendarFeed *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_FEED, GDataCalendarFeedPrivate);
-}
-
-static void
-gdata_calendar_feed_finalize (GObject *object)
-{
-	GDataCalendarFeedPrivate *priv = GDATA_CALENDAR_FEED (object)->priv;
-
-	g_free (priv->timezone);
-
-	/* Chain up to the parent class */
-	G_OBJECT_CLASS (gdata_calendar_feed_parent_class)->finalize (object);
+	/* Nothing to see here. */
 }
 
 static void
 gdata_calendar_feed_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataCalendarFeedPrivate *priv = GDATA_CALENDAR_FEED (object)->priv;
+	GDataCalendarFeed *self = GDATA_CALENDAR_FEED (object);
 
 	switch (property_id) {
 		case PROP_TIMEZONE:
-			g_value_set_string (value, priv->timezone);
+			G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+			g_value_set_string (value,
+			                    gdata_calendar_feed_get_timezone (self));
+			G_GNUC_END_IGNORE_DEPRECATIONS
 			break;
 		case PROP_TIMES_CLEANED:
-			g_value_set_uint (value, priv->times_cleaned);
+			G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+			g_value_set_uint (value,
+			                  gdata_calendar_feed_get_times_cleaned (self));
+			G_GNUC_END_IGNORE_DEPRECATIONS
 			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
 	}
-}
-
-static gboolean
-parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error)
-{
-	GDataCalendarFeed *self = GDATA_CALENDAR_FEED (parsable);
-
-	if (gdata_parser_is_namespace (node, "http://schemas.google.com/gCal/2005") == FALSE)
-		return GDATA_PARSABLE_CLASS (gdata_calendar_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
-
-	if (xmlStrcmp (node->name, (xmlChar*) "timezone") == 0) {
-		/* gCal:timezone */
-		xmlChar *_timezone = xmlGetProp (node, (xmlChar*) "value");
-		if (_timezone == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		g_free (self->priv->timezone);
-		self->priv->timezone = (gchar*) _timezone;
-	} else if (xmlStrcmp (node->name, (xmlChar*) "timesCleaned") == 0) {
-		/* gCal:timesCleaned */
-		xmlChar *times_cleaned = xmlGetProp (node, (xmlChar*) "value");
-		if (times_cleaned == NULL)
-			return gdata_parser_error_required_property_missing (node, "value", error);
-		self->priv->times_cleaned = g_ascii_strtoull ((gchar*) times_cleaned, NULL, 10);
-		xmlFree (times_cleaned);
-	} else {
-		return GDATA_PARSABLE_CLASS (gdata_calendar_feed_parent_class)->parse_xml (parsable, doc, node, user_data, error);
-	}
-
-	return TRUE;
 }
 
 /**
@@ -165,12 +126,15 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
  * Return value: the feed's timezone, or %NULL
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: Unsupported by the online API any more. There is no
+ *   replacement; this will always return %NULL.
  **/
 const gchar *
 gdata_calendar_feed_get_timezone (GDataCalendarFeed *self)
 {
+	/* Not supported any more by version 3 of the API. */
 	g_return_val_if_fail (GDATA_IS_CALENDAR_FEED (self), NULL);
-	return self->priv->timezone;
+	return NULL;
 }
 
 /**
@@ -182,10 +146,13 @@ gdata_calendar_feed_get_timezone (GDataCalendarFeed *self)
  * Return value: the number of times the feed has been totally emptied
  *
  * Since: 0.3.0
+ * Deprecated: UNRELEASED: Unsupported by the online API any more. There is no
+ *   replacement; this will always return %NULL.
  **/
 guint
 gdata_calendar_feed_get_times_cleaned (GDataCalendarFeed *self)
 {
+	/* Not supported any more by version 3 of the API. */
 	g_return_val_if_fail (GDATA_IS_CALENDAR_FEED (self), 0);
-	return self->priv->times_cleaned;
+	return 0;
 }
