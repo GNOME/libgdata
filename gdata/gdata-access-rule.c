@@ -616,8 +616,9 @@ gdata_access_rule_get_role (GDataAccessRule *self)
  * Set @scope_value to %NULL to unset the #GDataAccessRule:scope-value property in the access rule. @type cannot
  * be %NULL. @scope_value must be %NULL if @type is <literal>default</literal>, and non-%NULL otherwise.
  *
- * See the <ulink type="http" url="http://code.google.com/apis/calendar/docs/2.0/reference.html#gacl_reference">online documentation</ulink>
- * for more information.
+ * See the
+ * <ulink type="http" url="https://developers.google.com/google-apps/calendar/v3/reference/acl">online
+ * documentation</ulink> for more information.
  *
  * Since: 0.3.0
  **/
