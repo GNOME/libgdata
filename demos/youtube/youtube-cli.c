@@ -29,7 +29,15 @@
 static int
 print_usage (char *argv[])
 {
-	g_printerr ("%s: Usage — %s search <term>\n", argv[0], argv[0]);
+	g_printerr ("%s: Usage — %s <subcommand>\n"
+	            "Subcommands:\n"
+	            "   search <query string>\n"
+	            "   info <video ID>\n"
+	            "   standard-feed <feed name>\n"
+	            "   categories\n"
+	            "   related <video ID>\n"
+	            "   upload <filename> <title> [description]\n",
+	            argv[0], argv[0]);
 	return -1;
 }
 
