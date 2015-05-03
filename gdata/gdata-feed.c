@@ -282,7 +282,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	/**
 	 * GDataFeed:total-results:
 	 *
-	 * The number of items in the result set for the feed, including those on other pages.
+	 * The number of items in the result set for the feed, including those on other pages. If this is zero, the total number is unknown.
 	 *
 	 * This should <emphasis>not</emphasis> be used manually for pagination. Instead, use a #GDataQuery and call its gdata_query_next_page()
 	 * or gdata_query_previous_page() functions before making the query to the service.
@@ -1060,7 +1060,7 @@ gdata_feed_get_start_index (GDataFeed *self)
  * @self: a #GDataFeed
  *
  * Returns the total number of results in the result set, including results on other
- * pages.
+ * pages. If this is zero, the total number is unknown.
  *
  * Return value: the total number of results, or <code class="literal">0</code>
  **/
