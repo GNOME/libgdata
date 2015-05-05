@@ -1,8 +1,4 @@
-SUBDIRS = . po docs
-
-if ENABLE_TESTS
-SUBDIRS += gdata/tests
-endif
+SUBDIRS = . po docs gdata/tests
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
@@ -773,6 +769,9 @@ EXTRA_DIST += \
 	libgdata.doap \
 	m4/ax_code_coverage.m4 \
 	m4/gnome-compiler-flags.m4 \
+	glib-tap.mk \
+	tap-driver.sh \
+	tap-test \
 	$(NULL)
 
 CLEANFILES += \

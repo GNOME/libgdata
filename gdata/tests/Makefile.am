@@ -1,7 +1,10 @@
-include $(top_srcdir)/gtester.mk
+include $(top_srcdir)/glib-tap.mk
+
+installed_testdir = $(libexecdir)/installed-tests/$(PACKAGE_TARNAME)
+installed_test_metadir = $(datadir)/installed-tests/$(PACKAGE_TARNAME)
 
 # Helper library.
-noinst_LTLIBRARIES = libgdata-test.la
+test_ltlibraries = libgdata-test.la
 
 libgdata_test_la_SOURCES = \
 	common.c \
@@ -40,9 +43,7 @@ LDADD = \
 	$(UHTTPMOCK_LIBS) \
 	$(NULL)
 
-noinst_PROGRAMS = $(TESTS) $(DISABLED_TESTS)
-
-TESTS = \
+test_programs = \
 	general \
 	calendar \
 	contacts \
@@ -60,12 +61,12 @@ TESTS = \
 
 # FIXME: Temporarily disabled until they are ported for the changes in the v2
 # to v3 API transitions.
-DISABLED_TESTS = documents
+#all_test_programs += documents
 
 # FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
-#TESTS += memory
+#all_test_programs += memory
 
-EXTRA_DIST += \
+dist_test_data = \
 	photo.jpg \
 	sample.ogg \
 	test.doc \

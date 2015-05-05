@@ -149,14 +149,27 @@ AC_SUBST([GNOME_PACKAGES_PRIVATE])
 AC_SUBST([GNOME_PACKAGES])
 AC_SUBST([GOA_ENABLED])
 
-AC_MSG_CHECKING([whether to build tests])
-AC_ARG_ENABLE([tests], AS_HELP_STRING([--enable-tests], [Enable building of tests]),, [enable_tests=yes])
-AC_MSG_RESULT($enable_tests)
-AM_CONDITIONAL([ENABLE_TESTS], [test "x$enable_tests" = "xyes"])
+AC_ARG_ENABLE([always_build_tests],
+              AS_HELP_STRING([--enable-always-build-tests],
+                             [Enable always building tests (default: yes)]),,
+              [enable_always_build_tests=yes])
+AC_ARG_ENABLE([installed_tests],
+              AS_HELP_STRING([--enable-installed-tests],
+                             [Install test programs (default: no)]),,
+              [enable_installed_tests=no])
 
-if test "x$enable_tests" = "xyes"; then
-	PKG_CHECK_MODULES(UHTTPMOCK, libuhttpmock-0.0)
-fi
+AM_CONDITIONAL([ENABLE_ALWAYS_BUILD_TESTS],
+               [test "$enable_always_build_tests" = "yes"])
+AC_SUBST([ENABLE_ALWAYS_BUILD_TESTS],[$enable_always_build_tests])
+
+AM_CONDITIONAL([ENABLE_INSTALLED_TESTS],
+               [test "$enable_installed_tests" = "yes"])
+AC_SUBST([ENABLE_INSTALLED_TESTS],[$enable_installed_tests])
+
+AS_IF([test "$enable_always_build_tests" = "yes" ||
+       test "$enable_installed_tests" = "yes"],[
+	PKG_CHECK_MODULES([UHTTPMOCK],[libuhttpmock-0.0])
+])
 
 # Various necessary functions and headers
 AC_CHECK_FUNCS([memset])

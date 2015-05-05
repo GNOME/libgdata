@@ -879,6 +879,30 @@ gdata_tear_down_async_test_data (GDataAsyncTestData *async_data, gconstpointer t
 	g_main_loop_unref (async_data->main_loop);
 }
 
+/* Output a log message. Note the output is prefixed with ‘# ’ so that it
+ * doesn’t interfere with TAP output. */
+static void
+output_commented_lines (const gchar *message)
+{
+	const gchar *i, *next_newline;
+
+	for (i = message; i != NULL && i != '\0'; i = next_newline) {
+		gchar *line;
+
+		next_newline = strchr (i, '\n');
+		if (next_newline != NULL) {
+			line = g_strndup (i, next_newline - i);
+			next_newline++;
+		} else {
+			line = g_strdup (i);
+		}
+
+		printf ("# %s\n", line);
+
+		g_free (line);
+	}
+}
+
 static void
 output_log_message (const gchar *message)
 {
@@ -895,12 +919,12 @@ output_log_message (const gchar *message)
 		xml_doc = xmlParseDoc ((const xmlChar*) message);
 		xmlDocDumpFormatMemory (xml_doc, &xml_buff, &buffer_size, 1);
 		/* print out structured xml - if it's not xml, it will get error in output */
-		printf("%s", (gchar*) xml_buff);
+		output_commented_lines ((gchar*) xml_buff);
 		/* free xml structs */
 		xmlFree (xml_buff);
 		xmlFreeDoc (xml_doc);
 	} else {
-		printf ("%s\n", (gchar*) message);
+		output_commented_lines ((gchar*) message);
 	}
 }
 
