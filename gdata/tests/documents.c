@@ -300,7 +300,7 @@ set_up_temp_document_spreadsheet (TempDocumentData *data, gconstpointer service)
 	document = gdata_documents_spreadsheet_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Document (Spreadsheet)");
 
-	document_file_path = g_strconcat (TEST_FILE_DIR, "test.ods", NULL);
+	document_file_path = g_test_build_filename (G_TEST_DIST, "test.ods", NULL);
 	document_file = g_file_new_for_path (document_file_path);
 	g_free (document_file_path);
 
@@ -445,7 +445,7 @@ set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->text_document));
 	g_object_unref (document);
 
-	document_file_path = g_strconcat (TEST_FILE_DIR, "test.odt", NULL);
+	document_file_path = g_test_build_filename (G_TEST_DIST, "test.odt", NULL);
 	document_file = g_file_new_for_path (document_file_path);
 	g_free (document_file_path);
 
@@ -768,7 +768,7 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 			break;
 		case UPLOAD_CONTENT_ONLY:
 		case UPLOAD_CONTENT_AND_METADATA: {
-			gchar *document_file_path = g_strconcat (TEST_FILE_DIR, document_filename, NULL);
+			gchar *document_file_path = g_test_build_filename (G_TEST_DIST, document_filename, NULL);
 			document_file = g_file_new_for_path (document_file_path);
 			g_free (document_file_path);
 
@@ -976,7 +976,7 @@ set_up_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 	gdata_entry_set_title (GDATA_ENTRY (document), title);
 	g_free (title);
 
-	document_file_path = g_strconcat (TEST_FILE_DIR, "test.odt", NULL);
+	document_file_path = g_test_build_filename (G_TEST_DIST, "test.odt", NULL);
 	document_file = g_file_new_for_path (document_file_path);
 	g_free (document_file_path);
 
@@ -1064,9 +1064,12 @@ test_update (UpdateDocumentData *data, gconstpointer _test_params)
 		GFileInputStream *file_stream;
 		GFile *updated_document_file;
 		GFileInfo *file_info;
+		gchar *path = NULL;
 
 		/* Prepare the updated file */
-		updated_document_file = g_file_new_for_path (TEST_FILE_DIR "test_updated.odt");
+		path = g_test_build_filename (G_TEST_DIST, "test_updated.odt", NULL);
+		updated_document_file = g_file_new_for_path (path);
+		g_free (path);
 
 		file_info = g_file_query_info (updated_document_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME ","
 		                               G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE "," G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE,
@@ -1200,6 +1203,7 @@ set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean init
 	GFile *document_file;
 	GFileInfo *file_info;
 	gchar *upload_uri;
+	gchar *path = NULL;
 	GError *error = NULL;
 
 	/* Create a new folder for the tests */
@@ -1219,7 +1223,10 @@ set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean init
 	g_object_unref (folder);
 
 	/* Create a new file for the tests */
-	document_file = g_file_new_for_path (TEST_FILE_DIR "test.odt");
+	path = g_test_build_filename (G_TEST_DIST, "test.odt", NULL);
+	document_file = g_file_new_for_path (path);
+	g_free (path);
+
 	document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "add_file_folder_move_text");
 
@@ -2050,12 +2057,15 @@ main (int argc, char *argv[])
 	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
 	GFile *trace_directory;
+	gchar *path = NULL;
 
 	gdata_test_init (argc, argv);
 
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
-	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/documents");
+	path = g_test_build_filename (G_TEST_DIST, "traces/documents", NULL);
+	trace_directory = g_file_new_for_path (path);
+	g_free (path);
 	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 

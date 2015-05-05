@@ -20,7 +20,6 @@ libgdata_test_la_LIBADD = \
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/ \
 	-I$(top_srcdir)/gdata \
-	-DTEST_FILE_DIR="\"$(top_srcdir)/gdata/tests/\"" \
 	-DG_LOG_DOMAIN=\"libgdata\" \
 	$(DISABLE_DEPRECATED) \
 	$(NULL)

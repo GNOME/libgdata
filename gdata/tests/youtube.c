@@ -710,6 +710,7 @@ set_up_upload (UploadData *data, gconstpointer service)
 	GDataMediaCategory *category;
 	GFileInfo *file_info;
 	const gchar * const tags[] = { "toast", "wedding", NULL };
+	gchar *path = NULL;
 	GError *error = NULL;
 
 	data->service = g_object_ref ((gpointer) service);
@@ -726,7 +727,9 @@ set_up_upload (UploadData *data, gconstpointer service)
 
 	/* Get a file to upload */
 	/* TODO: fix the path */
-	data->video_file = g_file_new_for_path (TEST_FILE_DIR "sample.ogg");
+	path = g_test_build_filename (G_TEST_DIST, "sample.ogg", NULL);
+	data->video_file = g_file_new_for_path (path);
+	g_free (path);
 
 	/* Get the file's info */
 	file_info = g_file_query_info (data->video_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
@@ -2698,13 +2701,16 @@ main (int argc, char *argv[])
 	GDataAuthorizer *authorizer = NULL;  /* owned */
 	GDataService *service = NULL;  /* owned */
 	GFile *trace_directory = NULL;  /* owned */
+	gchar *path = NULL;
 
 	gdata_test_init (argc, argv);
 
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver",
 	                  (GCallback) mock_server_notify_resolver_cb, NULL);
-	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/youtube");
+	path = g_test_build_filename (G_TEST_DIST, "traces/youtube", NULL);
+	trace_directory = g_file_new_for_path (path);
+	g_free (path);
 	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 

@@ -429,12 +429,15 @@ upload_file (GDataPicasaWebService *service, const gchar *title, GDataPicasaWebA
 	GFileInfo *file_info;
 	GFileInputStream *input_stream;
 	GDataUploadStream *upload_stream;
+	gchar *path = NULL;
 
 	file = gdata_picasaweb_file_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (file), title);
 
 	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
-	photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+	path = g_test_build_filename (G_TEST_DIST, "photo.jpg", NULL);
+	photo_file = g_file_new_for_path (path);
+	g_free (path);
 
 	/* Get the file's info */
 	file_info = g_file_query_info (photo_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
@@ -1598,6 +1601,7 @@ set_up_upload (UploadData *data, gconstpointer service)
 {
 	GFileInfo *file_info;
 	const gchar * const tags[] = { "foo", "bar", ",,baz,baz", NULL };
+	gchar *path = NULL;
 	GError *error = NULL;
 
 	gdata_test_mock_server_start_trace (mock_server, "setup-upload");
@@ -1612,7 +1616,9 @@ set_up_upload (UploadData *data, gconstpointer service)
 	gdata_picasaweb_file_set_coordinates (data->photo, 17.127, -110.35);
 
 	/* File is public domain: http://en.wikipedia.org/wiki/File:German_garden_gnome_cropped.jpg */
-	data->photo_file = g_file_new_for_path (TEST_FILE_DIR "photo.jpg");
+	path = g_test_build_filename (G_TEST_DIST, "photo.jpg", NULL);
+	data->photo_file = g_file_new_for_path (path);
+	g_free (path);
 
 	/* Get the file's info */
 	file_info = g_file_query_info (data->photo_file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
@@ -2091,12 +2097,15 @@ main (int argc, char *argv[])
 	GDataAuthorizer *authorizer = NULL;
 	GDataService *service = NULL;
 	GFile *trace_directory;
+	gchar *path = NULL;
 
 	gdata_test_init (argc, argv);
 
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver", (GCallback) mock_server_notify_resolver_cb, NULL);
-	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/picasaweb");
+	path = g_test_build_filename (G_TEST_DIST, "traces/picasaweb", NULL);
+	trace_directory = g_file_new_for_path (path);
+	g_free (path);
 	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 

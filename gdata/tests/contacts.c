@@ -1979,12 +1979,15 @@ test_photo_add (TempContactData *data, gconstpointer service)
 	guint8 *photo_data;
 	gsize length;
 	gboolean retval;
+	gchar *path = NULL;
 	GError *error = NULL;
 
 	gdata_test_mock_server_start_trace (mock_server, "photo-add");
 
 	/* Get the photo */
-	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
+	path = g_test_build_filename (G_TEST_DIST, "photo.jpg", NULL);
+	g_assert (g_file_get_contents (path, (gchar**) &photo_data, &length, NULL) == TRUE);
+	g_free (path);
 
 	/* Add it to the contact */
 	retval = gdata_contacts_contact_set_photo (data->contact, GDATA_CONTACTS_SERVICE (service), photo_data, length, "image/jpeg", NULL, &error);
@@ -2001,9 +2004,12 @@ GDATA_ASYNC_TEST_FUNCTIONS (photo_add, TempContactData,
 G_STMT_START {
 	guint8 *photo_data;
 	gsize length;
+	gchar *path = NULL;
 
 	/* Get the photo */
-	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
+	path = g_test_build_filename (G_TEST_DIST, "photo.jpg", NULL);
+	g_assert (g_file_get_contents (path, (gchar**) &photo_data, &length, NULL) == TRUE);
+	g_free (path);
 
 	/* Add it to the contact asynchronously */
 	gdata_contacts_contact_set_photo_async (data->contact, GDATA_CONTACTS_SERVICE (service), photo_data, length, "image/jpeg", cancellable,
@@ -2039,11 +2045,14 @@ add_photo_to_contact (GDataContactsService *service, GDataContactsContact **cont
 	guint8 *photo_data;
 	gsize length;
 	GDataEntry *updated_contact;
+	gchar *path = NULL;
 
 	/* Get the photo and add it to the contact */
-	g_assert (g_file_get_contents (TEST_FILE_DIR "photo.jpg", (gchar**) &photo_data, &length, NULL) == TRUE);
+	path = g_test_build_filename (G_TEST_DIST, "photo.jpg", NULL);
+	g_assert (g_file_get_contents (path, (gchar**) &photo_data, &length, NULL) == TRUE);
 	g_assert (gdata_contacts_contact_set_photo (*contact, service, photo_data, length, "image/jpeg", NULL, NULL) == TRUE);
 
+	g_free (path);
 	g_free (photo_data);
 
 	/* HACK: It fairly consistently seems to take the Google servers about 4 seconds to process uploaded photos. Before this
@@ -2595,13 +2604,16 @@ main (int argc, char *argv[])
 	GDataAuthorizer *authorizer = NULL;  /* owned */
 	GDataService *service = NULL;  /* owned */
 	GFile *trace_directory = NULL;  /* owned */
+	gchar *path = NULL;  /* owned */
 
 	gdata_test_init (argc, argv);
 
 	mock_server = gdata_test_get_mock_server ();
 	g_signal_connect (G_OBJECT (mock_server), "notify::resolver",
 	                  (GCallback) mock_server_notify_resolver_cb, NULL);
-	trace_directory = g_file_new_for_path (TEST_FILE_DIR "traces/contacts");
+	path = g_test_build_filename (G_TEST_DIST, "traces/contacts", NULL);
+	trace_directory = g_file_new_for_path (path);
+	g_free (path);
 	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 

@@ -50,6 +50,7 @@ gdata_test_init (int argc, char **argv)
 {
 	GTlsCertificate *cert;
 	GError *child_error = NULL;
+	gchar *cert_path = NULL, *key_path = NULL;
 	gint i;
 
 	setlocale (LC_ALL, "");
@@ -130,8 +131,15 @@ gdata_test_init (int argc, char **argv)
 	uhm_server_set_enable_online (mock_server, write_traces || compare_traces);
 
 	/* Build the certificate. */
-	cert = g_tls_certificate_new_from_files (TEST_FILE_DIR "cert.pem", TEST_FILE_DIR "key.pem", &child_error);
+	cert_path = g_test_build_filename (G_TEST_DIST, "cert.pem", NULL);
+	key_path = g_test_build_filename (G_TEST_DIST, "key.pem", NULL);
+
+	cert = g_tls_certificate_new_from_files (cert_path, key_path, &child_error);
 	g_assert_no_error (child_error);
+
+	g_free (key_path);
+	g_free (cert_path);
+
 	/* Set it as the property. */
 	uhm_server_set_tls_certificate (mock_server, cert);
 	g_object_unref (cert);
