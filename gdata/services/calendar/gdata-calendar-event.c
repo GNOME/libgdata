@@ -101,6 +101,7 @@ static void gdata_calendar_event_get_property (GObject *object, guint property_i
 static void gdata_calendar_event_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void get_json (GDataParsable *parsable, JsonBuilder *builder);
 static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+static gboolean post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
 static const gchar *get_content_type (void);
 
 struct _GDataCalendarEventPrivate {
@@ -120,6 +121,7 @@ struct _GDataCalendarEventPrivate {
 	gchar *recurrence;
 	gchar *original_event_id;
 	gchar *original_event_uri;
+	gchar *organiser_email;  /* owned */
 
 	/* Parsing state. */
 	struct {
@@ -166,6 +168,7 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	gobject_class->finalize = gdata_calendar_event_finalize;
 
 	parsable_class->parse_json = parse_json;
+	parsable_class->post_parse_json = post_parse_json;
 	parsable_class->get_json = get_json;
 	parsable_class->get_content_type = get_content_type;
 
@@ -936,14 +939,63 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 			json_reader_end_element (reader);
 		}
-	} else if (g_strcmp0 (json_reader_get_member_name (reader), "creator") == 0 ||
-	           g_strcmp0 (json_reader_get_member_name (reader), "organizer") == 0) {
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "organizer") == 0) {
+		const GError *child_error = NULL;
+
+		/* This actually gives the parent calendar. */
+		json_reader_read_member (reader, "email");
+		child_error = json_reader_get_error (reader);
+		if (child_error != NULL) {
+			gdata_parser_error_from_json_error (reader,
+			                                    child_error,
+			                                    error);
+			json_reader_end_member (reader);
+			return FALSE;
+		}
+
+		g_free (priv->organiser_email);
+		priv->organiser_email = g_strdup (json_reader_get_string_value (reader));
+
+		json_reader_end_member (reader);
+
+		return TRUE;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "creator") == 0) {
 		/* These are read-only and already handled as part of
 		 * ‘attendees’, so ignore them. */
 		return TRUE;
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_calendar_event_parent_class)->parse_json (parsable, reader, user_data, error);
 	}
+
+	return TRUE;
+}
+
+static gboolean
+post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	GDataLink *_link = NULL;  /* owned */
+	const gchar *id, *calendar_id;
+	gchar *uri = NULL;  /* owned */
+	GDataCalendarEventPrivate *priv;
+
+	priv = GDATA_CALENDAR_EVENT (parsable)->priv;
+
+	/* Set the self link, which is needed for gdata_service_delete_entry().
+	 * Unfortunately, it needs the event ID _and_ the calendar ID — which
+	 * is perversely only available as the organiser e-mail address. */
+	id = gdata_entry_get_id (GDATA_ENTRY (parsable));
+	calendar_id = priv->organiser_email;
+
+	if (id == NULL || calendar_id == NULL) {
+		return TRUE;
+	}
+
+	uri = g_strconcat ("https://www.googleapis.com/calendar/v3/calendars/",
+	                   calendar_id, "/events/", id, NULL);
+	_link = gdata_link_new (uri, GDATA_LINK_SELF);
+	gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
+	g_object_unref (_link);
+	g_free (uri);
 
 	return TRUE;
 }

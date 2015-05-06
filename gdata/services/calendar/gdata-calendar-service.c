@@ -639,40 +639,6 @@ build_events_uri (GDataCalendarCalendar *calendar)
 	return g_string_free (uri, FALSE);
 }
 
-static void
-set_event_id (GDataCalendarEvent *event,
-              GDataCalendarCalendar *calendar)
-{
-	GDataLink *_link = NULL;  /* owned */
-	const gchar *id, *calendar_id;
-	gchar *uri = NULL;  /* owned */
-
-	id = gdata_entry_get_id (GDATA_ENTRY (event));
-	calendar_id = gdata_entry_get_id (GDATA_ENTRY (calendar));
-
-	uri = g_strconcat ("https://www.googleapis.com/calendar/v3/calendars/",
-	                   calendar_id, "/events/", id, NULL);
-	_link = gdata_link_new (uri, GDATA_LINK_SELF);
-	gdata_entry_add_link (GDATA_ENTRY (event), _link);
-	g_object_unref (_link);
-	g_free (uri);
-}
-
-static void
-set_event_ids (GDataFeed *feed,
-               GDataCalendarCalendar *calendar)
-{
-	GList/*<unowned GDataEntry>*/ *entries, *i;  /* unowned */
-
-	/* Add a selfLink to each event, since they don’t contain one by
-	 * default in the data returned by the server. */
-	entries = gdata_feed_get_entries (feed);
-
-	for (i = entries; i != NULL; i = i->next) {
-		set_event_id (GDATA_CALENDAR_EVENT (i->data), calendar);
-	}
-}
-
 /**
  * gdata_calendar_service_query_events:
  * @self: a #GDataCalendarService
@@ -719,9 +685,6 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
 	                            progress_callback, progress_user_data,
 	                            error);
 	g_free (request_uri);
-
-	/* Set the events’ IDs. */
-	set_event_ids (feed, calendar);
 
 	return feed;
 }
@@ -863,8 +826,6 @@ gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
 	                                    uri, GDATA_ENTRY (event),
 	                                    cancellable, error);
 	g_free (uri);
-
-	set_event_id (GDATA_CALENDAR_EVENT (entry), calendar);
 
 	return GDATA_CALENDAR_EVENT (entry);
 }
