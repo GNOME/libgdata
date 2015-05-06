@@ -925,8 +925,12 @@ gdata_entry_add_category (GDataEntry *self, GDataCategory *category)
 		GList *element;
 
 		if (klass->kind_term != NULL && g_strcmp0 (gdata_category_get_term (category), klass->kind_term) != 0) {
-			g_warning ("Adding a kind category term, '%s', to an entry of kind '%s'.",
-			           gdata_category_get_term (category), klass->kind_term);
+			/* This used to make sense as a warning, but the new
+			 * JSON APIs use a lot of different kinds for very
+			 * highly related JSON schemas, which libgdata uses a
+			 * single class for…so it makes less sense now. */
+			g_debug ("Adding a kind category term, '%s', to an entry of kind '%s'.",
+			         gdata_category_get_term (category), klass->kind_term);
 		}
 
 		/* If it is a kind category, remove the entry’s existing kind category to allow the new one
