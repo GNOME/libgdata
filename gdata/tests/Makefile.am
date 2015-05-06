@@ -86,9 +86,6 @@ dist_test_data = \
 	traces/calendar/authentication \
 	traces/calendar/authentication-async \
 	traces/calendar/authentication-async-cancellation \
-	traces/calendar/batch \
-	traces/calendar/batch-async \
-	traces/calendar/batch-async-cancellation \
 	traces/calendar/event-insert \
 	traces/calendar/event_insert-async \
 	traces/calendar/event_insert-async-cancellation \
@@ -105,12 +102,10 @@ dist_test_data = \
 	traces/calendar/query_own_calendars-async \
 	traces/calendar/query_own_calendars-async-cancellation \
 	traces/calendar/query-own-calendars-async-progress-closure \
-	traces/calendar/setup-batch-async \
 	traces/calendar/setup-query-calendars \
 	traces/calendar/setup-query-events \
 	traces/calendar/setup-temp-calendar \
 	traces/calendar/setup-temp-calendar-acls \
-	traces/calendar/teardown-batch-async \
 	traces/calendar/teardown-insert-event \
 	traces/calendar/teardown-query-calendars \
 	traces/calendar/teardown-query-events \
