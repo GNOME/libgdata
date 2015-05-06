@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2010, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,6 +18,7 @@
  */
 
 #include <glib.h>
+#include <stdio.h>
 
 #include "gdata.h"
 #include "common.h"
@@ -74,18 +75,15 @@ test_parse_feed (void)
 	g_object_unref (feed);
 }
 
-int
-main (int argc, char *argv[])
+static void
+test_perf_parsing (void)
 {
 	GTimeVal start_time, end_time;
 	guint i;
-	gdouble total_time;
+	guint64 total_time;  /* microseconds */
+	guint64 per_iteration_time;  /* microseconds */
 
 	#define ITERATIONS 10000
-
-#if !GLIB_CHECK_VERSION (2, 35, 0)
-	g_type_init ();
-#endif
 
 	/* Test feed parsing time */
 	g_get_current_time (&start_time);
@@ -93,10 +91,28 @@ main (int argc, char *argv[])
 		test_parse_feed ();
 	g_get_current_time (&end_time);
 
-	total_time = (gdouble) (end_time.tv_sec - start_time.tv_sec) + (gdouble) (end_time.tv_usec - start_time.tv_usec) / (gdouble) G_USEC_PER_SEC;
+	total_time = (end_time.tv_sec - start_time.tv_sec) * G_USEC_PER_SEC +
+	             (end_time.tv_usec - start_time.tv_usec);
+	per_iteration_time = total_time / ITERATIONS;
 
-	g_message ("Parsing a feed %u times took:\n * Total: %fs\n * Per iteration: %fs",
-	           ITERATIONS, total_time, total_time / (gdouble) ITERATIONS);
+	/* Prefix with hashes to avoid the output being misinterpreted as TAP
+	 * commands. */
+	printf ("# Parsing a feed %u times took:\n"
+	        "#  • Total: %.4fs\n"
+	        "#  • Per iteration: %.4fs\n",
+	        ITERATIONS,
+	        (gdouble) total_time / (gdouble) G_USEC_PER_SEC,
+	        (gdouble) per_iteration_time / (gdouble) G_USEC_PER_SEC);
 
-	return 0;
+	g_assert_cmpuint (per_iteration_time, <, 1000);  /* 1ms */
+}
+
+int
+main (int argc, char *argv[])
+{
+	gdata_test_init (argc, argv);
+
+	g_test_add_func ("/perf/parsing", test_perf_parsing);
+
+	return g_test_run ();
 }
