@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009–2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009–2010, 2015 <philip@tecnocode.co.uk>
  * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
@@ -46,19 +46,22 @@
 #include "gdata-private.h"
 #include "gdata-access-rule.h"
 
-GType
-gdata_access_handler_get_type (void)
+static GDataFeed *
+gdata_access_handler_real_get_rules (GDataAccessHandler *self,
+                                     GDataService *service,
+                                     GCancellable *cancellable,
+                                     GDataQueryProgressCallback progress_callback,
+                                     gpointer progress_user_data,
+                                     GError **error);
+
+typedef GDataAccessHandlerIface GDataAccessHandlerInterface;
+G_DEFINE_INTERFACE (GDataAccessHandler, gdata_access_handler,
+                    GDATA_TYPE_ENTRY);
+
+static void
+gdata_access_handler_default_init (GDataAccessHandlerInterface *iface)
 {
-	static GType access_handler_type = 0;
-
-	if (!access_handler_type) {
-		access_handler_type = g_type_register_static_simple (G_TYPE_INTERFACE, "GDataAccessHandler",
-		                                                     sizeof (GDataAccessHandlerIface),
-		                                                     NULL, 0, NULL, 0);
-		g_type_interface_add_prerequisite (access_handler_type, GDATA_TYPE_ENTRY);
-	}
-
-	return access_handler_type;
+	iface->get_rules = gdata_access_handler_real_get_rules;
 }
 
 typedef struct {
@@ -81,8 +84,12 @@ get_rules_async_data_free (GetRulesAsyncData *self)
 }
 
 static GDataFeed *
-_gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
-                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
+gdata_access_handler_real_get_rules (GDataAccessHandler *self,
+                                     GDataService *service,
+                                     GCancellable *cancellable,
+                                     GDataQueryProgressCallback progress_callback,
+                                     gpointer progress_user_data,
+                                     GError **error)
 {
 	GDataAccessHandlerIface *iface;
 	GDataAuthorizationDomain *domain = NULL;
@@ -131,12 +138,18 @@ _gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service
 static void
 get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler, GCancellable *cancellable)
 {
+	GDataAccessHandlerIface *iface;
 	GError *error = NULL;
 	GetRulesAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
 
 	/* Execute the query and return */
-	data->feed = _gdata_access_handler_get_rules (access_handler, data->service, cancellable, data->progress_callback, data->progress_user_data,
-	                                              &error);
+	iface = GDATA_ACCESS_HANDLER_GET_IFACE (access_handler);
+	g_assert (iface->get_rules != NULL);
+
+	data->feed = iface->get_rules (access_handler, data->service,
+	                               cancellable, data->progress_callback,
+	                               data->progress_user_data, &error);
+
 	if (data->feed == NULL && error != NULL) {
 		g_simple_async_result_set_from_error (result, error);
 		g_error_free (error);
@@ -224,10 +237,16 @@ GDataFeed *
 gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
 {
+	GDataAccessHandlerIface *iface;
+
 	g_return_val_if_fail (GDATA_IS_ACCESS_HANDLER (self), NULL);
 	g_return_val_if_fail (GDATA_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	return _gdata_access_handler_get_rules (self, service, cancellable, progress_callback, progress_user_data, error);
+	iface = GDATA_ACCESS_HANDLER_GET_IFACE (self);
+	g_assert (iface->get_rules != NULL);
+
+	return iface->get_rules (self, service, cancellable, progress_callback,
+	                         progress_user_data, error);
 }
