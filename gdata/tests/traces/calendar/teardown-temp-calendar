@@ -1,20 +1,20 @@
 > DELETE /calendar/v3/calendars/ndihjbq6agrl249fjqgd535qmk@group.calendar.google.com HTTP/1.1
-> Soup-Debug-Timestamp: 1430949589
-> Soup-Debug: SoupSession 1 (0xc32240), SoupMessage 9 (0xffb8b0), SoupSocket 3 (0xbf11a0)
+> Soup-Debug-Timestamp: 1432766374
+> Soup-Debug: SoupSession 1 (0x67c240), SoupMessage 18 (0xa550b0), SoupSocket 7 (0x63b0d0)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.awGy-MEL7oZEh875MiCaHZKx6KNZcPN1FIFpJB2r_OlDKat0j_JfenP1BZb1Skk2cO5F6VaQkUo7wg
+> Authorization: Bearer ya29.gAFohzAjbcf9YCyjGbgHBTd3VFWTxECP5Um14DHl5eaMsx6UeCxMTAdaLmIO32vU6LgW7Ybe1Abmag
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 204 No Content
-< Soup-Debug-Timestamp: 1430949591
-< Soup-Debug: SoupMessage 9 (0xffb8b0)
+< Soup-Debug-Timestamp: 1432766375
+< Soup-Debug: SoupMessage 18 (0xa550b0)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
 < Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Wed, 06 May 2015 21:59:51 GMT
+< Date: Wed, 27 May 2015 22:39:35 GMT
 < ETag: "pc4WsFKtK0DPTzlsquzpd-pobYU/vyGp6PvFo4RvsFtPoIWeCReyIC8"
 < Vary: Origin
 < Vary: X-Origin

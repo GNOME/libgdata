@@ -938,7 +938,7 @@ test_access_rule_properties (void)
 	GDataAccessRule *rule;
 	const gchar *scope_type, *scope_value;
 
-	rule = gdata_access_rule_new (NULL);
+	rule = gdata_calendar_access_rule_new (NULL);
 
 	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
@@ -954,22 +954,20 @@ test_access_rule_json (void)
 {
 	GDataAccessRule *rule;
 
-	rule = gdata_access_rule_new (NULL);
+	rule = gdata_calendar_access_rule_new (NULL);
 
 	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
 
 	/* Check the JSON */
-	gdata_test_assert_json (rule,
-		"<?xml version='1.0' encoding='UTF-8'?>"
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		       "xmlns:gd='http://schemas.google.com/g/2005' "
-		       "xmlns:gAcl='http://schemas.google.com/acl/2007'>"
-			"<title type='text'>http://schemas.google.com/gCal/2005#editor</title>"
-			"<category term='http://schemas.google.com/acl/2007#accessRule' scheme='http://schemas.google.com/g/2005#kind'/>"
-			"<gAcl:role value='http://schemas.google.com/gCal/2005#editor'/>"
-			"<gAcl:scope type='user' value='darcy@gmail.com'/>"
-		"</entry>");
+	gdata_test_assert_json (rule, "{"
+		"'kind': 'calendar#aclRule',"
+		"'role': 'writer',"
+		"'scope': {"
+			"'type': 'user',"
+			"'value': 'darcy@gmail.com'"
+		"}"
+	"}");
 }
 
 static void
@@ -1084,10 +1082,36 @@ typedef struct {
 } TempCalendarAclsData;
 
 static void
+calendar_access_rule_set_self_link (GDataCalendarCalendar *parent_calendar,
+                                    GDataCalendarAccessRule *rule)
+{
+	GDataLink *_link = NULL;  /* owned */
+	const gchar *calendar_id, *id;
+	gchar *uri = NULL;  /* owned */
+
+	/* FIXME: Horrendous hack to set the self link, which is needed for
+	 * gdata_service_delete_entry(). Unfortunately, it needs the
+	 * ACL ID _and_ the calendar ID.
+	 *
+	 * Do _not_ copy this code. It needs to be fixed architecturally in
+	 * libgdata. */
+	calendar_id = gdata_entry_get_id (GDATA_ENTRY (parent_calendar));
+	id = gdata_entry_get_id (GDATA_ENTRY (rule));
+	uri = g_strconcat ("https://www.googleapis.com"
+	                   "/calendar/v3/calendars/",
+	                   calendar_id, "/acl/", id, NULL);
+	_link = gdata_link_new (uri, GDATA_LINK_SELF);
+	gdata_entry_add_link (GDATA_ENTRY (rule), _link);
+	g_object_unref (_link);
+	g_free (uri);
+}
+
+static void
 set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 {
 	GDataAccessRule *rule;
 	GDataLink *_link;
+	GError *error = NULL;
 
 	/* Set up a calendar */
 	set_up_temp_calendar ((TempCalendarData*) data, service);
@@ -1095,7 +1119,7 @@ set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 	gdata_test_mock_server_start_trace (mock_server, "setup-temp-calendar-acls");
 
 	/* Add an access rule to the calendar */
-	rule = gdata_access_rule_new (NULL);
+	rule = gdata_calendar_access_rule_new (NULL);
 
 	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
@@ -1106,8 +1130,12 @@ set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 
 	data->rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
 	                                                            gdata_calendar_service_get_primary_authorization_domain (),
-	                                                            gdata_link_get_uri (_link), GDATA_ENTRY (rule), NULL, NULL));
-	g_assert (GDATA_IS_ACCESS_RULE (data->rule));
+	                                                            gdata_link_get_uri (_link), GDATA_ENTRY (rule), NULL,
+	                                                            &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_CALENDAR_ACCESS_RULE (data->rule));
+
+	calendar_access_rule_set_self_link (data->parent.calendar, data->rule);
 
 	g_object_unref (rule);
 
@@ -1124,16 +1152,16 @@ set_up_temp_calendar_acls_no_insertion (TempCalendarAclsData *data, gconstpointe
 static void
 tear_down_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 {
-	gdata_test_mock_server_start_trace (mock_server, "teardown-temp-calendar-acls");
-
 	/* Delete the access rule if it still exists */
 	if (data->rule != NULL) {
+		gdata_test_mock_server_start_trace (mock_server, "teardown-temp-calendar-acls");
+
 		g_assert (gdata_service_delete_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
 		                                      GDATA_ENTRY (data->rule), NULL, NULL) == TRUE);
 		g_object_unref (data->rule);
-	}
 
-	uhm_server_end_trace (mock_server);
+		uhm_server_end_trace (mock_server);
+	}
 
 	/* Delete the calendar */
 	tear_down_temp_calendar ((TempCalendarData*) data, service);
@@ -1173,7 +1201,7 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 
 	gdata_test_mock_server_start_trace (mock_server, "access-rule-insert");
 
-	rule = gdata_access_rule_new (NULL);
+	rule = gdata_calendar_access_rule_new (NULL);
 
 	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
@@ -1189,6 +1217,8 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
 
+	calendar_access_rule_set_self_link (data->parent.calendar, data->rule);
+
 	/* Check the properties of the returned rule */
 	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
@@ -1202,7 +1232,7 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 	g_assert (categories != NULL);
 	g_assert_cmpuint (g_list_length (categories), ==, 1);
 	category = categories->data;
-	g_assert_cmpstr (gdata_category_get_term (category), ==, "http://schemas.google.com/acl/2007#accessRule");
+	g_assert_cmpstr (gdata_category_get_term (category), ==, "calendar#aclRule");
 	g_assert_cmpstr (gdata_category_get_scheme (category), ==, "http://schemas.google.com/g/2005#kind");
 	g_assert (gdata_category_get_label (category) == NULL);
 
@@ -1232,6 +1262,8 @@ test_access_rule_update (TempCalendarAclsData *data, gconstpointer service)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
+
+	calendar_access_rule_set_self_link (data->parent.calendar, new_rule);
 
 	/* Check the properties of the returned rule */
 	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
@@ -1402,8 +1434,6 @@ main (int argc, char *argv[])
 	g_test_add ("/calendar/event/insert/async/cancellation", GDataAsyncTestData, service, set_up_insert_event_async,
 	            test_event_insert_async_cancellation, tear_down_insert_event_async);
 
-#if 0
-TODO
 	g_test_add ("/calendar/access-rule/get", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_get,
 	            tear_down_temp_calendar_acls);
 	g_test_add ("/calendar/access-rule/insert", TempCalendarAclsData, service, set_up_temp_calendar_acls_no_insertion,
@@ -1412,7 +1442,6 @@ TODO
 	            tear_down_temp_calendar_acls);
 	g_test_add ("/calendar/access-rule/delete", TempCalendarAclsData, service, set_up_temp_calendar_acls, test_access_rule_delete,
 	            tear_down_temp_calendar_acls);
-#endif
 
 	g_test_add_func ("/calendar/event/json", test_event_json);
 	g_test_add_func ("/calendar/event/json/dates", test_event_json_dates);
@@ -1423,11 +1452,8 @@ TODO
 
 	g_test_add_func ("/calendar/calendar/escaping", test_calendar_escaping);
 
-#if 0
-TODO
 	g_test_add_func ("/calendar/access-rule/properties", test_access_rule_properties);
 	g_test_add_func ("/calendar/access-rule/json", test_access_rule_json);
-#endif
 
 	g_test_add_func ("/calendar/query/uri", test_query_uri);
 	g_test_add_func ("/calendar/query/etag", test_query_etag);

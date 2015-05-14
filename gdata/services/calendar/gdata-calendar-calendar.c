@@ -86,6 +86,7 @@
 #include "gdata-types.h"
 #include "gdata-access-handler.h"
 #include "gdata-calendar-service.h"
+#include "gdata-calendar-access-rule.h"
 
 static void gdata_calendar_calendar_access_handler_init (GDataAccessHandlerIface *iface);
 static void gdata_calendar_calendar_finalize (GObject *object);
@@ -252,11 +253,85 @@ get_authorization_domain (GDataAccessHandler *self)
 	return gdata_calendar_service_get_primary_authorization_domain ();
 }
 
+static GDataFeed *
+get_rules (GDataAccessHandler *self,
+           GDataService *service,
+           GCancellable *cancellable,
+           GDataQueryProgressCallback progress_callback,
+           gpointer progress_user_data,
+           GError **error)
+{
+	GDataAccessHandlerIface *iface;
+	GDataAuthorizationDomain *domain = NULL;
+	GDataFeed *feed;
+	GDataLink *_link;
+	SoupMessage *message;
+	GList/*<unowned GDataCalendarAccessRule>*/ *rules, *i;
+	const gchar *calendar_id;
+
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self),
+	                                  GDATA_LINK_ACCESS_CONTROL_LIST);
+	g_assert (_link != NULL);
+
+	iface = GDATA_ACCESS_HANDLER_GET_IFACE (self);
+	if (iface->get_authorization_domain != NULL) {
+		domain = iface->get_authorization_domain (self);
+	}
+
+	message = _gdata_service_query (service, domain,
+	                                gdata_link_get_uri (_link), NULL,
+	                                cancellable, error);
+	if (message == NULL) {
+		return NULL;
+	}
+
+	g_assert (message->response_body->data != NULL);
+
+	feed = _gdata_feed_new_from_json (GDATA_TYPE_FEED,
+	                                  message->response_body->data,
+	                                  message->response_body->length,
+	                                  GDATA_TYPE_CALENDAR_ACCESS_RULE,
+	                                  progress_callback, progress_user_data,
+	                                  error);
+
+	/* Set the self link on all the ACL rules so they can be deleted.
+	 * Sigh. */
+	rules = gdata_feed_get_entries (feed);
+	calendar_id = gdata_entry_get_id (GDATA_ENTRY (self));
+
+	for (i = rules; i != NULL; i = i->next) {
+		const gchar *id;
+		gchar *uri = NULL;  /* owned */
+
+		/* Set the self link, which is needed for
+		 * gdata_service_delete_entry(). Unfortunately, it needs the
+		 * ACL ID _and_ the calendar ID. */
+		id = gdata_entry_get_id (GDATA_ENTRY (i->data));
+
+		if (id == NULL || calendar_id == NULL) {
+			continue;
+		}
+
+		uri = g_strconcat ("https://www.googleapis.com"
+		                   "/calendar/v3/calendars/",
+		                   calendar_id, "/acl/", id, NULL);
+		_link = gdata_link_new (uri, GDATA_LINK_SELF);
+		gdata_entry_add_link (GDATA_ENTRY (i->data), _link);
+		g_object_unref (_link);
+		g_free (uri);
+	}
+
+	g_object_unref (message);
+
+	return feed;
+}
+
 static void
 gdata_calendar_calendar_access_handler_init (GDataAccessHandlerIface *iface)
 {
 	iface->is_owner_rule = is_owner_rule;
 	iface->get_authorization_domain = get_authorization_domain;
+	iface->get_rules = get_rules;
 }
 
 static void
@@ -443,12 +518,22 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 		const gchar *id;
 		gchar *uri;
 
-		/* Calendar entries don’t contain their own selfLink, so we have
-		 * to add one manually. */
 		id = json_reader_get_string_value (reader);
 		if (id != NULL && *id != '\0') {
+			/* Calendar entries don’t contain their own selfLink,
+			 * so we have to add one manually. */
 			uri = g_strconcat ("https://www.googleapis.com/calendar/v3/calendars/", id, NULL);
 			_link = gdata_link_new (uri, GDATA_LINK_SELF);
+			gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
+			g_object_unref (_link);
+			g_free (uri);
+
+			/* Similarly for the ACL link. */
+			uri = g_strconcat ("https://www.googleapis.com"
+			                   "/calendar/v3/calendars/", id,
+			                   "/acl", NULL);
+			_link = gdata_link_new (uri,
+			                        GDATA_LINK_ACCESS_CONTROL_LIST);
 			gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
 			g_object_unref (_link);
 			g_free (uri);

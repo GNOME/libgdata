@@ -1,8 +1,8 @@
 > POST /calendar/v3/calendars HTTP/1.1
-> Soup-Debug-Timestamp: 1430949585
-> Soup-Debug: SoupSession 1 (0xc32240), SoupMessage 5 (0xffba90), SoupSocket 3 (0xbf11a0)
+> Soup-Debug-Timestamp: 1432766371
+> Soup-Debug: SoupSession 1 (0x67c240), SoupMessage 15 (0xa55470), SoupSocket 7 (0x63b0d0)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.awGy-MEL7oZEh875MiCaHZKx6KNZcPN1FIFpJB2r_OlDKat0j_JfenP1BZb1Skk2cO5F6VaQkUo7wg
+> Authorization: Bearer ya29.gAFohzAjbcf9YCyjGbgHBTd3VFWTxECP5Um14DHl5eaMsx6UeCxMTAdaLmIO32vU6LgW7Ybe1Abmag
 > GData-Version: 2
 > Content-Type: application/json
 > Accept-Encoding: gzip, deflate
@@ -12,13 +12,13 @@
 > {"kind":"calendar#calendar","summary":"Temp Test Calendar","hidden":false,"backgroundColor":"#7a367a","selected":false}
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1430949588
-< Soup-Debug: SoupMessage 5 (0xffba90)
+< Soup-Debug-Timestamp: 1432766373
+< Soup-Debug: SoupMessage 15 (0xa55470)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
 < Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Wed, 06 May 2015 21:59:48 GMT
-< ETag: "pc4WsFKtK0DPTzlsquzpd-pobYU/76RTQy6ui7dW5fjosFBgA2nn3xs"
+< Date: Wed, 27 May 2015 22:39:33 GMT
+< ETag: "pc4WsFKtK0DPTzlsquzpd-pobYU/dA-nwMO6Tel1lbt3WcBQAAl9e34"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -32,7 +32,7 @@
 < 
 < {
 <  "kind": "calendar#calendar",
-<  "etag": "\"pc4WsFKtK0DPTzlsquzpd-pobYU/76RTQy6ui7dW5fjosFBgA2nn3xs\"",
+<  "etag": "\"pc4WsFKtK0DPTzlsquzpd-pobYU/dA-nwMO6Tel1lbt3WcBQAAl9e34\"",
 <  "id": "ndihjbq6agrl249fjqgd535qmk@group.calendar.google.com",
 <  "summary": "Temp Test Calendar"
 < }

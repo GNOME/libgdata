@@ -1,22 +1,22 @@
 > POST /o/oauth2/token HTTP/1.1
-> Soup-Debug-Timestamp: 1430949580
-> Soup-Debug: SoupSession 1 (0xc32110), SoupMessage 1 (0xffb8b0), SoupSocket 1 (0x7fe1540036b0)
+> Soup-Debug-Timestamp: 1431695653
+> Soup-Debug: SoupSession 1 (0x1562130), SoupMessage 1 (0x17eb8b0), SoupSocket 1 (0x7efddc0036b0)
 > Host: accounts.google.com
 > Content-Type: application/x-www-form-urlencoded
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
 > 
-> client_id=352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com&client_secret=-fA4pHQJxR3zJ-FyAMPQsikg&code=4%2FB4IYd9knVDIDdLZdrhuCBbjmotzgYNLb1QqstmPrxbA.UuDy7Em42q8doiIBeO6P2m8efXtWmgI&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&grant_type=authorization_code
+> client_id=352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com&client_secret=-fA4pHQJxR3zJ-FyAMPQsikg&code=4%2FTrFY0VbJzBRhT4r_kkyl39xFF15qserv8dER-e182eU.AjD_rrH7m_EUoiIBeO6P2m9a02uvmgI&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&grant_type=authorization_code
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1430949580
-< Soup-Debug: SoupMessage 1 (0xffb8b0)
+< Soup-Debug-Timestamp: 1431695654
+< Soup-Debug: SoupMessage 1 (0x17eb8b0)
 < Content-Type: application/json; charset=utf-8
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
 < Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Wed, 06 May 2015 21:59:40 GMT
+< Date: Fri, 15 May 2015 13:14:14 GMT
 < Content-Disposition: attachment; filename="json.txt"; filename*=UTF-8''json.txt
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
@@ -27,9 +27,9 @@
 < Transfer-Encoding: chunked
 < 
 < {
-<   "access_token" : "ya29.awGy-MEL7oZEh875MiCaHZKx6KNZcPN1FIFpJB2r_OlDKat0j_JfenP1BZb1Skk2cO5F6VaQkUo7wg",
+<   "access_token" : "ya29.dAFjwh3j5bnolAkoumk7nKv5Et2BPEF4uLxyUsDhp788Hs7E6P4W865ZrKn7PAcfe4X40GjC0xx3Wg",
 <   "token_type" : "Bearer",
 <   "expires_in" : 3600,
-<   "refresh_token" : "1/WCwwRyT6fkH315Vd62L8HwTu67pjEG0DJ5H4xGlr8bQMEudVrK5jSpoR30zcRFq6"
+<   "refresh_token" : "1/NnqQoUbp8ZRdraXhZV_VxmYC72GtHl65vwf1h6OZ8ik"
 < }
   

@@ -107,6 +107,7 @@
 #include <gdata/services/calendar/gdata-calendar-calendar.h>
 #include <gdata/services/calendar/gdata-calendar-event.h>
 #include <gdata/services/calendar/gdata-calendar-query.h>
+#include <gdata/services/calendar/gdata-calendar-access-rule.h>
 
 /* Google PicasaWeb */
 #include <gdata/services/picasaweb/gdata-picasaweb-service.h>

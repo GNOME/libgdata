@@ -268,7 +268,9 @@ gdatacalendarinclude_HEADERS = \
 	gdata/services/calendar/gdata-calendar-calendar.h	\
 	gdata/services/calendar/gdata-calendar-event.h		\
 	gdata/services/calendar/gdata-calendar-query.h		\
-	gdata/services/calendar/gdata-calendar-feed.h
+	gdata/services/calendar/gdata-calendar-feed.h \
+	gdata/services/calendar/gdata-calendar-access-rule.h \
+	$(NULL)
 
 gdatacontactsincludedir = $(gdataincludedir)/services/contacts
 gdatacontactsinclude_HEADERS = \
@@ -410,6 +412,7 @@ gdata_sources = \
 	gdata/services/calendar/gdata-calendar-event.c		\
 	gdata/services/calendar/gdata-calendar-query.c		\
 	gdata/services/calendar/gdata-calendar-feed.c		\
+	gdata/services/calendar/gdata-calendar-access-rule.c \
 	\
 	gdata/services/contacts/gdata-contacts-service.c	\
 	gdata/services/contacts/gdata-contacts-contact.c	\
