@@ -1,97 +1,141 @@
 # Thai translation for libgdata.
-# Copyright (C) 2011-2013 Free Software Foundation, Inc.
+# Copyright (C) 2011-2015 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
+# Akom Chotiphantawanon <knight2000@gmail.com>, 2011-2013, 2015.
 #
-# Akom Chotiphantawanon <knight2000@gmail.com>, 2011-2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-12-07 07:08+0000\n"
-"PO-Revision-Date: 2013-12-16 18:09+0700\n"
+"POT-Creation-Date: 2015-05-06 22:26+0000\n"
+"PO-Revision-Date: 2015-05-24 17:49+0700\n"
 "Last-Translator: Akom Chotiphantawanon <knight2000@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:627
-#: ../gdata/gdata-oauth1-authorizer.c:839
-#: ../gdata/gdata-oauth1-authorizer.c:1115
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-access-rule.c:530 ../gdata/gdata-access-rule.c:541
+#: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
+#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-entry.c:414
+#: ../gdata/services/documents/gdata-documents-entry.c:425
+#: ../gdata/services/documents/gdata-documents-entry.c:436
+#: ../gdata/services/documents/gdata-documents-entry.c:483
+#: ../gdata/services/documents/gdata-documents-entry.c:494
+#: ../gdata/services/documents/gdata-documents-entry.c:579
+#: ../gdata/services/documents/gdata-documents-entry.c:614
+#: ../gdata/services/documents/gdata-documents-entry.c:629
+#: ../gdata/services/documents/gdata-documents-entry.c:644
+#: ../gdata/services/documents/gdata-documents-entry.c:674
+#: ../gdata/services/documents/gdata-documents-entry.c:690
+#: ../gdata/services/documents/gdata-documents-feed.c:87
+#: ../gdata/services/documents/gdata-documents-feed.c:98
+#: ../gdata/services/documents/gdata-documents-feed.c:148
+#: ../gdata/services/documents/gdata-documents-feed.c:166
+#, c-format
+msgid "Error parsing JSON: %s"
+msgstr "เกิดข้อผิดพลาดขณะแจง JSON: %s"
+
+#: ../gdata/gdata-client-login-authorizer.c:629
+#: ../gdata/gdata-oauth1-authorizer.c:840
+#: ../gdata/gdata-oauth1-authorizer.c:1116
+#: ../gdata/gdata-oauth2-authorizer.c:915
+#: ../gdata/gdata-oauth2-authorizer.c:926
+#: ../gdata/gdata-oauth2-authorizer.c:945
+#: ../gdata/gdata-oauth2-authorizer.c:961
+#: ../gdata/gdata-oauth2-authorizer.c:1026
+#: ../gdata/gdata-oauth2-authorizer.c:1038
+#: ../gdata/gdata-oauth2-authorizer.c:1049
+#: ../gdata/gdata-oauth2-authorizer.c:1064
+#: ../gdata/gdata-oauth2-authorizer.c:1080
 msgid "The server returned a malformed response."
 msgstr "เซิร์ฟเวอร์คืนค่าตอบสนองผิดรูปแบบ"
 
-#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
+#: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "ไม่สามารถเชื่อมต่อกับเซิรฟ์เวอร์บริการได้"
 
-#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
+#: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์พร็อกซีได้"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#: ../gdata/gdata-client-login-authorizer.c:660 ../gdata/gdata-service.c:372
+#: ../gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr "URI หรือข้อมูลส่วนหัวของคำร้องไม่ถูกต้อง หรือเป็นพารามิเตอร์ไม่มาตรฐานที่ไม่รองรับ: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
+#: ../gdata/gdata-client-login-authorizer.c:666 ../gdata/gdata-service.c:378
 #, c-format
 msgid "Authentication required: %s"
 msgstr "ต้องยืนยันตัวบุคคล: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
+#: ../gdata/services/calendar/gdata-calendar-service.c:313
+#: ../gdata/services/youtube/gdata-youtube-video.c:1012
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "ไม่พบทรัพยากรที่ร้องขอ: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
+#: ../gdata/gdata-client-login-authorizer.c:677 ../gdata/gdata-service.c:389
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "ข้อมูลมีการเปลี่ยนแปลงหลังจากที่ดาวน์โหลดมา: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
+#: ../gdata/gdata-client-login-authorizer.c:689 ../gdata/gdata-service.c:403
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "เกิดข้อผิดพลาดรหัส %u ขณะยืนยันตัวบุคคล: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:786
+#: ../gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "ต้องกรอก CAPTCHA เพื่อเข้าระบบ"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:824
+#: ../gdata/gdata-client-login-authorizer.c:826
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "บัญชีนี้ต้องใช้รหัสผ่านเฉพาะของโปรแกรม (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:831
+#: ../gdata/gdata-client-login-authorizer.c:833
 msgid "Your username or password were incorrect."
 msgstr "ชื่อผู้ใช้หรือรหัสผ่านของคุณไม่ถูกต้อง"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:852
+#: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "ที่อยู่อีเมลของบัญชีของคุณไม่ผ่านการตรวจสอบ (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:857
+#: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "คุณไม่ได้ยอมรับข้อตกลงและเงื่อนไขของบริการ (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:863
+#: ../gdata/gdata-client-login-authorizer.c:865
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -99,25 +143,25 @@ msgid ""
 msgstr "บัญชีนี้ถูกย้ายข้อมูลไปแล้ว กรุณาเข้าระบบออนไลน์เพื่อรับชื่อผู้ใช้และรหัสผ่านใหม่ของคุณ (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:868
+#: ../gdata/gdata-client-login-authorizer.c:870
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "บัญชีนี้ถูกลบไปแล้ว (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:873
+#: ../gdata/gdata-client-login-authorizer.c:875
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "บัญชีนี้ถูกปิดใช้งานไปแล้ว (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:878
+#: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "บัญชีนี้ถูกระงับการเข้าถึงบริการนี้ไปแล้ว (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:883
+#: ../gdata/gdata-client-login-authorizer.c:885
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "บริการนี้ไม่เปิดอยู่ในขณะนี้ (%s)"
@@ -140,38 +184,35 @@ msgid "This comment may not be deleted."
 msgstr "ไม่สามารถลบคำอธิบายนี้ได้"
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:754
+#: ../gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "การร้องขอเลื่อนตำแหน่งอ่านไม่ถูกต้อง"
 
-#: ../gdata/gdata-oauth1-authorizer.c:814
+#: ../gdata/gdata-oauth1-authorizer.c:815
 msgid "The server rejected the temporary credentials request."
 msgstr "เซิร์ฟเวอร์ปฏิเสธการร้องขอข้อมูลลับชั่วคราว"
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1089
+#: ../gdata/gdata-oauth1-authorizer.c:1090
+#: ../gdata/gdata-oauth2-authorizer.c:1075
+#: ../gdata/services/calendar/gdata-calendar-service.c:340
+#, c-format
 msgid "Access was denied by the user or server."
 msgstr "การเข้าถึงถูกปฏิเสธโดยผู้ใช้หรือเซิร์ฟเวอร์"
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:349 ../gdata/gdata-parsable.c:360
+#: ../gdata/gdata-parsable.c:352 ../gdata/gdata-parsable.c:363
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "เกิดข้อผิดพลาดขณะแจง XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:362
+#: ../gdata/gdata-parsable.c:365
 msgid "Empty document."
 msgstr "เอกสารเปล่า"
 
-#. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:480 ../gdata/gdata-parsable.c:518
-#, c-format
-msgid "Error parsing JSON: %s"
-msgstr "เกิดข้อผิดพลาดขณะแจง JSON: %s"
-
-#: ../gdata/gdata-parsable.c:519
+#: ../gdata/gdata-parsable.c:522
 msgid "Outermost JSON node is not an object."
 msgstr "โหนด JSON นอกสุดไม่เป็นออบเจกต์"
 
@@ -179,7 +220,7 @@ msgstr "โหนด JSON นอกสุดไม่เป็นออบเจ
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:69
+#: ../gdata/gdata-parser.c:70
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "อิลิเมนต์ %s ขาดเนื้อหาที่จำเป็น"
@@ -189,7 +230,7 @@ msgstr "อิลิเมนต์ %s ขาดเนื้อหาที่�
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:85
+#: ../gdata/gdata-parser.c:86
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "เนื้อหาของอิลิเมนต์ %s (\"%s\") ไม่อยู่ในรูปแบบ ISO 8601"
@@ -199,7 +240,7 @@ msgstr "เนื้อหาของอิลิเมนต์ %s (\"%s\") �
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:105
+#: ../gdata/gdata-parser.c:106
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "ค่าของคุณสมบัติ %s ของอิลิเมนต์ %s (\"%s\") เป็นค่าที่ไม่รู้จัก"
@@ -209,7 +250,7 @@ msgstr "ค่าของคุณสมบัติ %s ของอิลิ�
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:123
+#: ../gdata/gdata-parser.c:124
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "เนื้อหาของอิลิเมนต์ %s (\"%s\") เป็นเนื้อหาที่ไม่รู้จัก"
@@ -219,7 +260,7 @@ msgstr "เนื้อหาของอิลิเมนต์ %s (\"%s\") �
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:143
+#: ../gdata/gdata-parser.c:144
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "คุณสมบัติที่จำเป็นของอิลิเมนต์ %s (%s) ขาดหายไป"
@@ -230,7 +271,7 @@ msgstr "คุณสมบัติที่จำเป็นของอิล
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:166
+#: ../gdata/gdata-parser.c:167
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -241,7 +282,7 @@ msgstr "มีค่าสำหรับคุณสมบัติ %s แล�
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:185
+#: ../gdata/gdata-parser.c:186
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "อิลิเมนต์ที่จำเป็น (%s) ขาดหายไป"
@@ -254,7 +295,7 @@ msgstr "อิลิเมนต์ที่จำเป็น (%s) ขาดห
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:201 ../gdata/gdata-parser.c:288
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "มีอิลิเมนต์ที่อนุญาตให้มีแค่ตัวเดียว (%s) ซ้ำเกิดขึ้น"
@@ -263,7 +304,7 @@ msgstr "มีอิลิเมนต์ที่อนุญาตให้ม
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:290
+#: ../gdata/gdata-parser.c:274
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "อิลิเมนต์ '%s' ขาดเนื้อหาที่จำเป็น"
@@ -273,87 +314,16 @@ msgstr "อิลิเมนต์ '%s' ขาดเนื้อหาที่
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:320
+#: ../gdata/gdata-parser.c:304
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "เนื้อหาของอิลิเมนต์ '%s' (\"%s\") ไม่อยู่ในรูปแบบ ISO 8601"
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:330
+#: ../gdata/gdata-parser.c:315
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "ได้รับ JSON ที่ไม่ถูกต้องจากเซิร์ฟเวอร์: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
-#, c-format
-msgid "Error code %u when querying: %s"
-msgstr "เกิดข้อผิดพลาดรหัส %u ขณะสืบค้น: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
-#, c-format
-msgid "Error code %u when inserting an entry: %s"
-msgstr "เกิดข้อผิดพลาดรหัส %u ขณะแทรกรายการ: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:410
-#, c-format
-msgid "Error code %u when updating an entry: %s"
-msgstr "เกิดข้อผิดพลาดรหัส %u ขณะปรับข้อมูลรายการ: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:416
-#, c-format
-msgid "Error code %u when deleting an entry: %s"
-msgstr "เกิดข้อผิดพลาดรหัส %u ขณะลบรายการ: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:422
-#, c-format
-msgid "Error code %u when downloading: %s"
-msgstr "เกิดข้อผิดพลาดรหัส %u ขณะดาวน์โหลด: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:428
-#, c-format
-msgid "Error code %u when uploading: %s"
-msgstr "เกิดข้อผิดพลาดรหัส %u ขณะอัปโหลด: %s"
-
-#. Translators: the first parameter is a HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:434
-#, c-format
-msgid "Error code %u when running a batch operation: %s"
-msgstr "เกิดข้อผิดพลาดรหัส %u ขณะทำงานแบบแบตช์: %s"
-
-#. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:721
-#, c-format
-msgid "Invalid redirect URI: %s"
-msgstr "URI สำหรับเปลี่ยนเส้นทางไม่ถูกต้อง: %s"
-
-#: ../gdata/gdata-service.c:1393
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:888
-msgid "The entry has already been inserted."
-msgstr "รายการนี้ถูกแทรกอยู่ก่อนแล้ว"
-
-#. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:748 ../gdata/gdata-upload-stream.c:830
-#, c-format
-msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "ได้รับข้อผิดพลาดจากเซิร์ฟเวอร์หลังจากอัปโหลดก้อนข้อมูลแบบทำต่อจากเดิมได้"
-
-#: ../gdata/gdata-upload-stream.c:896
-msgid "Stream is already closed"
-msgstr "สตรีมปิดแล้ว"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -361,27 +331,109 @@ msgstr "สตรีมปิดแล้ว"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
+#: ../gdata/gdata-parser.c:1179
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "เนื้อหาของอิลิเมนต์ %s (\"%s\") ไม่ได้อยู่ในรูปแบบ RGB ฐานสิบหก"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:315
-#: ../gdata/services/calendar/gdata-calendar-service.c:366
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:409
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "เกิดข้อผิดพลาดรหัส %u ขณะสืบค้น: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:415
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "เกิดข้อผิดพลาดรหัส %u ขณะแทรกรายการ: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:421
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "เกิดข้อผิดพลาดรหัส %u ขณะปรับข้อมูลรายการ: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:427
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "เกิดข้อผิดพลาดรหัส %u ขณะลบรายการ: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:433
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "เกิดข้อผิดพลาดรหัส %u ขณะดาวน์โหลด: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:439
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "เกิดข้อผิดพลาดรหัส %u ขณะอัปโหลด: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:445
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "เกิดข้อผิดพลาดรหัส %u ขณะทำงานแบบแบตช์: %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:737
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "URI สำหรับเปลี่ยนเส้นทางไม่ถูกต้อง: %s"
+
+#: ../gdata/gdata-service.c:1454
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:998
+msgid "The entry has already been inserted."
+msgstr "รายการนี้ถูกแทรกอยู่ก่อนแล้ว"
+
+#. Resumable upload error.
+#: ../gdata/gdata-upload-stream.c:791 ../gdata/gdata-upload-stream.c:873
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr "ได้รับข้อผิดพลาดจากเซิร์ฟเวอร์หลังจากอัปโหลดก้อนข้อมูลแบบทำต่อจากเดิมได้"
+
+#: ../gdata/gdata-upload-stream.c:939
+msgid "Stream is already closed"
+msgstr "สตรีมปิดแล้ว"
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:302
+#: ../gdata/services/tasks/gdata-tasks-service.c:195
+#: ../gdata/services/youtube/gdata-youtube-service.c:522
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr "คุณมีการเรียก API มากเกินไป กรุณารอสัก 2-3 นาที แล้วค่อยลองอีกครั้ง"
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:334
+#: ../gdata/services/tasks/gdata-tasks-service.c:204
+#: ../gdata/services/youtube/gdata-youtube-service.c:538
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "คุณต้องยืนยันตัวบุคคลเพื่อจะทำสิ่งนี้"
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:465
+#: ../gdata/services/calendar/gdata-calendar-service.c:516
 msgid "You must be authenticated to query all calendars."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะสืบค้นปฏิทินทั้งหมด"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:412
-#: ../gdata/services/calendar/gdata-calendar-service.c:463
-#: ../gdata/services/calendar/gdata-calendar-service.c:508
-#: ../gdata/services/calendar/gdata-calendar-service.c:568
+#: ../gdata/services/calendar/gdata-calendar-service.c:562
+#: ../gdata/services/calendar/gdata-calendar-service.c:613
+#: ../gdata/services/calendar/gdata-calendar-service.c:675
+#: ../gdata/services/calendar/gdata-calendar-service.c:734
 msgid "You must be authenticated to query your own calendars."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะสืบค้นปฏิทินของคุณเอง"
-
-#: ../gdata/services/calendar/gdata-calendar-service.c:517
-#: ../gdata/services/calendar/gdata-calendar-service.c:581
-msgid "The calendar did not have a content URI."
-msgstr "ปฏิทินไม่มี URI ของเนื้อหา"
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
 #: ../gdata/services/contacts/gdata-contacts-service.c:308
@@ -401,41 +453,46 @@ msgstr "กลุ่มนี้ถูกแทรกอยู่ก่อนแ
 msgid "You must be authenticated to insert a group."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะแทรกกลุ่ม"
 
-#: ../gdata/services/documents/gdata-documents-document.c:300
+#: ../gdata/services/documents/gdata-documents-document.c:389
 msgid "You must be authenticated to download documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะดาวน์โหลดเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:461
-#: ../gdata/services/documents/gdata-documents-service.c:511
+#: ../gdata/services/documents/gdata-documents-service.c:517
+#: ../gdata/services/documents/gdata-documents-service.c:567
 msgid "You must be authenticated to query documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะสืบค้นเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:556
+#: ../gdata/services/documents/gdata-documents-service.c:612
 msgid "You must be authenticated to upload documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะอัปโหลดเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:562
+#: ../gdata/services/documents/gdata-documents-service.c:618
 msgid "The document has already been uploaded."
 msgstr "เอกสารได้อัปโหลดไว้อยู่ก่อนแล้ว"
 
-#: ../gdata/services/documents/gdata-documents-service.c:706
+#: ../gdata/services/documents/gdata-documents-service.c:762
 msgid "You must be authenticated to update documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะปรับข้อมูลเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:888
+#: ../gdata/services/documents/gdata-documents-service.c:944
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "ชนิดของเนื้อหาเอกสารที่จัดให้ ('%s') ไม่สามารถจำแนกได้"
 
-#: ../gdata/services/documents/gdata-documents-service.c:928
+#: ../gdata/services/documents/gdata-documents-service.c:984
 msgid "You must be authenticated to copy documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะคัดลอกเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1090
-#: ../gdata/services/documents/gdata-documents-service.c:1273
+#: ../gdata/services/documents/gdata-documents-service.c:1146
+#: ../gdata/services/documents/gdata-documents-service.c:1329
 msgid "You must be authenticated to move documents and folders."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะย้ายเอกสารและโฟลเดอร์"
+
+#: ../gdata/services/freebase/gdata-freebase-service.c:479
+#, c-format
+msgid "Property '%s' does not hold an image"
+msgstr "คุณสมบัติ '%s' ไม่ได้มีเนื้อหาเป็นรูปภาพ"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
@@ -467,23 +524,24 @@ msgstr "อัลบั้มนี้ถูกแทรกอยู่ก่อ
 msgid "You must be authenticated to insert an album."
 msgstr "คุณต้องยืนยันตัวบุคคลเพื่อจะแทรกอัลบั้ม"
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:145
-#: ../gdata/services/tasks/gdata-tasks-service.c:196
+#: ../gdata/services/tasks/gdata-tasks-service.c:330
+#: ../gdata/services/tasks/gdata-tasks-service.c:381
 msgid "You must be authenticated to query all tasklists."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะสืบค้นรายการภารกิจทั้งหมด"
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:244
-#: ../gdata/services/tasks/gdata-tasks-service.c:300
+#: ../gdata/services/tasks/gdata-tasks-service.c:430
+#: ../gdata/services/tasks/gdata-tasks-service.c:487
 msgid "You must be authenticated to query your own tasks."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะสืบค้นภารกิจของคุณเอง"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:457
+#: ../gdata/services/youtube/gdata-youtube-service.c:529
 #, c-format
-msgid "This service is not available at the moment."
-msgstr "บริการนี้ยังไม่เปิดในขณะนี้"
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr "คุณมีรายการเกินโควต้าของคุณแล้ว กรุณาลบบางรายการแล้วลองอีกครั้ง"
 
 #. Translators: the parameter is a URI.
-#: ../gdata/services/youtube/gdata-youtube-service.c:462
+#: ../gdata/services/youtube/gdata-youtube-service.c:546
 #, c-format
 msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
@@ -492,45 +550,22 @@ msgstr ""
 "บัญชี Google ของคุณต้องเชื่อมโยงกับช่อง YouTube ข่องหนึ่งเพื่อจะทำสิ่งนี้ได้ กรุณาไปที่ %s "
 "เพื่อสร้างช่อง"
 
-#. Translators: the first parameter is an error code, which is a coded string.
-#. * The second parameter is an error domain, which is another coded string.
-#. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:467
-#: ../gdata/services/youtube/gdata-youtube-service.c:488
-#: ../gdata/services/youtube/gdata-youtube-service.c:494
-#, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr "ได้รับรหัสข้อผิดพลาด \"%s\" ซึ่งไม่รู้จัก ในโดเมน \"%s\" จากตำแหน่ง \"%s\""
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:473
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "คุณต้องยืนยันตัวบุคคลเพื่อจะทำสิ่งนี้"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:478
-#, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
-msgstr "คุณมีการเรียก API มากเกินไป กรุณารอสัก 2-3 นาที แล้วค่อยลองอีกครั้ง"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:481
-#, c-format
-msgid ""
-"You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "คุณมีรายการเกินโควต้าของคุณแล้ว กรุณาลบบางรายการแล้วลองอีกครั้ง"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:512
-#, c-format
-msgid "Unknown and unparsable error received."
-msgstr "ได้รับข้อผิดพลาดที่ไม่รู้จักและไม่สามารถแจงได้"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:776
-#: ../gdata/services/youtube/gdata-youtube-service.c:833
-msgid "The video did not have a related videos <link>."
-msgstr "วีดิทัศน์ไม่มี <link> วีดิทัศน์ที่เกี่ยวข้อง"
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:895
+#: ../gdata/services/youtube/gdata-youtube-service.c:1007
 msgid "You must be authenticated to upload a video."
 msgstr "คุณต้องยืนยันตัวบุคคลเพื่อจะอัปโหลดวีดิทัศน์"
+
+#~ msgid "The calendar did not have a content URI."
+#~ msgstr "ปฏิทินไม่มี URI ของเนื้อหา"
+
+#~ msgid "This service is not available at the moment."
+#~ msgstr "บริการนี้ยังไม่เปิดในขณะนี้"
+
+#~ msgid ""
+#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+#~ msgstr "ได้รับรหัสข้อผิดพลาด \"%s\" ซึ่งไม่รู้จัก ในโดเมน \"%s\" จากตำแหน่ง \"%s\""
+
+#~ msgid "Unknown and unparsable error received."
+#~ msgstr "ได้รับข้อผิดพลาดที่ไม่รู้จักและไม่สามารถแจงได้"
+
+#~ msgid "The video did not have a related videos <link>."
+#~ msgstr "วีดิทัศน์ไม่มี <link> วีดิทัศน์ที่เกี่ยวข้อง"
