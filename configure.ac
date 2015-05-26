@@ -11,6 +11,7 @@ m4_define(gdata_api_version_major, 0)
 m4_define(gdata_api_version_minor, 0)
 
 AC_INIT([libgdata],[gdata_version_major.gdata_version_minor.gdata_version_micro],[https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata],[libgdata],[https://wiki.gnome.org/Projects/libgdata])
+AX_IS_RELEASE([git-directory])
 
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
