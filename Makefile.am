@@ -524,6 +524,7 @@ gdata_libgdata_la_LDFLAGS = \
 	-version-info $(GDATA_LT_VERSION)	\
 	-export-symbols $(srcdir)/gdata/gdata.symbols	\
 	-no-undefined				\
+	$(WARN_LDFLAGS) \
 	$(AM_LDFLAGS)
 
 EXTRA_DIST += gdata/gdata.symbols
@@ -562,7 +563,9 @@ gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_EXPORT_PACKA
 gdata_GData_@GDATA_API_VERSION_MAJOR@_@GDATA_API_VERSION_MINOR@_gir_SCANNERFLAGS = \
 	--nsversion=$(GDATA_API_VERSION) \
 	--symbol-prefix=gdata \
-	--c-include="gdata/gdata.h"
+	--c-include="gdata/gdata.h" \
+	$(WARN_SCANNERFLAGS) \
+	$(NULL)
 
 INTROSPECTION_GIRS += gdata/GData-$(GDATA_API_VERSION).gir
 
@@ -643,6 +646,11 @@ demos_docs_list_docs_list_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(NULL)
 
+demos_docs_list_docs_list_LDFLAGS = \
+	$(WARN_LDFLAGS) \
+	$(AM_LDFLAGS) \
+	$(NULL)
+
 demos_docs_list_docs_list_LDADD = \
 	$(top_builddir)/gdata/libgdata.la \
 	$(GDATA_LIBS) \
@@ -670,6 +678,11 @@ demos_scrapbook_scrapbook_CFLAGS = \
 	$(GDATA_CFLAGS) \
 	$(GNOME_CFLAGS) \
 	$(AM_CFLAGS) \
+	$(NULL)
+
+demos_scrapbook_scrapbook_LDFLAGS = \
+	$(WARN_LDFLAGS) \
+	$(AM_LDFLAGS) \
 	$(NULL)
 
 demos_scrapbook_scrapbook_LDADD = \
@@ -700,6 +713,11 @@ demos_freebase_freebase_cli_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(NULL)
 
+demos_freebase_freebase_cli_LDFLAGS = \
+	$(WARN_LDFLAGS) \
+	$(AM_LDFLAGS) \
+	$(NULL)
+
 demos_freebase_freebase_cli_LDADD = \
 	$(top_builddir)/gdata/libgdata.la \
 	$(GDATA_LIBS) \
@@ -725,6 +743,11 @@ demos_youtube_youtube_cli_CFLAGS = \
 	$(GDATA_CFLAGS) \
 	$(GNOME_CFLAGS) \
 	$(AM_CFLAGS) \
+	$(NULL)
+
+demos_youtube_youtube_cli_LDFLAGS = \
+	$(WARN_LDFLAGS) \
+	$(AM_LDFLAGS) \
 	$(NULL)
 
 demos_youtube_youtube_cli_LDADD = \
@@ -754,6 +777,11 @@ demos_calendar_calendar_cli_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(NULL)
 
+demos_calendar_calendar_cli_LDFLAGS = \
+	$(WARN_LDFLAGS) \
+	$(AM_LDFLAGS) \
+	$(NULL)
+
 demos_calendar_calendar_cli_LDADD = \
 	$(top_builddir)/gdata/libgdata.la \
 	$(GDATA_LIBS) \
@@ -768,7 +796,6 @@ EXTRA_DIST += \
 	gtk-doc.make		\
 	libgdata.doap \
 	m4/ax_code_coverage.m4 \
-	m4/gnome-compiler-flags.m4 \
 	glib-tap.mk \
 	tap-driver.sh \
 	tap-test \

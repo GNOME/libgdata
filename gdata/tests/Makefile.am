@@ -33,6 +33,9 @@ AM_CFLAGS = \
 	$(GNOME_CFLAGS) \
 	$(UHTTPMOCK_CFLAGS) \
 	$(NULL)
+AM_LDFLAGS = \
+	$(WARN_LDFLAGS) \
+	$(NULL)
 
 LDADD = \
 	libgdata-test.la \
