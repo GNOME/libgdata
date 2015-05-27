@@ -795,7 +795,6 @@ EXTRA_DIST += \
 	HACKING			\
 	gtk-doc.make		\
 	libgdata.doap \
-	m4/ax_code_coverage.m4 \
 	glib-tap.mk \
 	tap-driver.sh \
 	tap-test \
