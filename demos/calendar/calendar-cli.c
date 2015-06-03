@@ -246,6 +246,8 @@ command_calendars (int argc, char *argv[])
 	} else if (g_strcmp0 (argv[2], "--all") == 0 ||
 	           g_strcmp0 (argv[2], "--own") == 0) {
 		only_own = (g_strcmp0 (argv[2], "--own") == 0);
+	} else {
+		only_own = FALSE;
 	}
 
 	/* Authenticate and create a service. */
