@@ -126,9 +126,11 @@ get_test_string (guint start_num, guint end_num)
 	GString *test_string;
 	guint i;
 
+	g_return_val_if_fail (end_num < G_MAXUINT, NULL);
+
 	test_string = g_string_new (NULL);
 
-	for (i = start_num; i <= end_num; i++)
+	for (i = start_num; i < end_num + 1; i++)
 		g_string_append_printf (test_string, "%u\n", i);
 
 	return g_string_free (test_string, FALSE);
