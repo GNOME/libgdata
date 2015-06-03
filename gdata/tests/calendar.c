@@ -935,16 +935,16 @@ test_calendar_event_parser_minimal (void)
 static void
 test_access_rule_properties (void)
 {
-	GDataAccessRule *rule;
+	GDataCalendarAccessRule *rule;
 	const gchar *scope_type, *scope_value;
 
 	rule = gdata_calendar_access_rule_new (NULL);
 
-	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
-	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	gdata_access_rule_set_role (GDATA_ACCESS_RULE (rule), GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	g_assert_cmpstr (gdata_access_rule_get_role (GDATA_ACCESS_RULE (rule)), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
 
-	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
-	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
+	gdata_access_rule_set_scope (GDATA_ACCESS_RULE (rule), GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
+	gdata_access_rule_get_scope (GDATA_ACCESS_RULE (rule), &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
 }
@@ -952,12 +952,12 @@ test_access_rule_properties (void)
 static void
 test_access_rule_json (void)
 {
-	GDataAccessRule *rule;
+	GDataCalendarAccessRule *rule;
 
 	rule = gdata_calendar_access_rule_new (NULL);
 
-	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
-	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
+	gdata_access_rule_set_role (GDATA_ACCESS_RULE (rule), GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	gdata_access_rule_set_scope (GDATA_ACCESS_RULE (rule), GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
 
 	/* Check the JSON */
 	gdata_test_assert_json (rule, "{"
@@ -1078,7 +1078,7 @@ test_query_etag (void)
 
 typedef struct {
 	TempCalendarData parent;
-	GDataAccessRule *rule;
+	GDataCalendarAccessRule *rule;
 } TempCalendarAclsData;
 
 static void
@@ -1109,7 +1109,7 @@ calendar_access_rule_set_self_link (GDataCalendarCalendar *parent_calendar,
 static void
 set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 {
-	GDataAccessRule *rule;
+	GDataCalendarAccessRule *rule;
 	GDataLink *_link;
 	GError *error = NULL;
 
@@ -1121,17 +1121,17 @@ set_up_temp_calendar_acls (TempCalendarAclsData *data, gconstpointer service)
 	/* Add an access rule to the calendar */
 	rule = gdata_calendar_access_rule_new (NULL);
 
-	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
-	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
+	gdata_access_rule_set_role (GDATA_ACCESS_RULE (rule), GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	gdata_access_rule_set_scope (GDATA_ACCESS_RULE (rule), GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
 
 	/* Insert the rule */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (data->parent.calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 
-	data->rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                            gdata_calendar_service_get_primary_authorization_domain (),
-	                                                            gdata_link_get_uri (_link), GDATA_ENTRY (rule), NULL,
-	                                                            &error));
+	data->rule = GDATA_CALENDAR_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                     gdata_calendar_service_get_primary_authorization_domain (),
+	                                                                     gdata_link_get_uri (_link), GDATA_ENTRY (rule), NULL,
+	                                                                     &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CALENDAR_ACCESS_RULE (data->rule));
 
@@ -1191,7 +1191,7 @@ test_access_rule_get (TempCalendarAclsData *data, gconstpointer service)
 static void
 test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 {
-	GDataAccessRule *rule, *new_rule;
+	GDataCalendarAccessRule *rule, *new_rule;
 	const gchar *scope_type, *scope_value;
 	GDataCategory *category;
 	GDataLink *_link;
@@ -1203,16 +1203,16 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 
 	rule = gdata_calendar_access_rule_new (NULL);
 
-	gdata_access_rule_set_role (rule, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
-	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
+	gdata_access_rule_set_role (GDATA_ACCESS_RULE (rule), GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	gdata_access_rule_set_scope (GDATA_ACCESS_RULE (rule), GDATA_ACCESS_SCOPE_USER, "darcy@gmail.com");
 
 	/* Insert the rule */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (data->parent.calendar), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 
-	new_rule = data->rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                                       gdata_calendar_service_get_primary_authorization_domain (),
-	                                                                       gdata_link_get_uri (_link), GDATA_ENTRY (rule), NULL, &error));
+	new_rule = data->rule = GDATA_CALENDAR_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
+	                                                                                gdata_calendar_service_get_primary_authorization_domain (),
+	                                                                                gdata_link_get_uri (_link), GDATA_ENTRY (rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
@@ -1220,11 +1220,11 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 	calendar_access_rule_set_self_link (data->parent.calendar, data->rule);
 
 	/* Check the properties of the returned rule */
-	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
-	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
+	g_assert_cmpstr (gdata_access_rule_get_role (GDATA_ACCESS_RULE (new_rule)), ==, GDATA_CALENDAR_ACCESS_ROLE_EDITOR);
+	gdata_access_rule_get_scope (GDATA_ACCESS_RULE (new_rule), &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
-	edited = gdata_access_rule_get_edited (new_rule);
+	edited = gdata_access_rule_get_edited (GDATA_ACCESS_RULE (new_rule));
 	g_assert_cmpuint (edited, >, 0);
 
 	/* Check it only has the one category and that it's correct */
@@ -1246,7 +1246,7 @@ test_access_rule_insert (TempCalendarAclsData *data, gconstpointer service)
 static void
 test_access_rule_update (TempCalendarAclsData *data, gconstpointer service)
 {
-	GDataAccessRule *new_rule;
+	GDataCalendarAccessRule *new_rule;
 	const gchar *scope_type, *scope_value;
 	gint64 edited;
 	GError *error = NULL;
@@ -1254,11 +1254,11 @@ test_access_rule_update (TempCalendarAclsData *data, gconstpointer service)
 	gdata_test_mock_server_start_trace (mock_server, "access-rule-update");
 
 	/* Update the rule */
-	gdata_access_rule_set_role (data->rule, GDATA_CALENDAR_ACCESS_ROLE_READ);
+	gdata_access_rule_set_role (GDATA_ACCESS_RULE (data->rule), GDATA_CALENDAR_ACCESS_ROLE_READ);
 
 	/* Send the update to the server */
-	new_rule = GDATA_ACCESS_RULE (gdata_service_update_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
-	                                                          GDATA_ENTRY (data->rule), NULL, &error));
+	new_rule = GDATA_CALENDAR_ACCESS_RULE (gdata_service_update_entry (GDATA_SERVICE (service), gdata_calendar_service_get_primary_authorization_domain (),
+	                                                                   GDATA_ENTRY (data->rule), NULL, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_ACCESS_RULE (new_rule));
 	g_clear_error (&error);
@@ -1266,11 +1266,11 @@ test_access_rule_update (TempCalendarAclsData *data, gconstpointer service)
 	calendar_access_rule_set_self_link (data->parent.calendar, new_rule);
 
 	/* Check the properties of the returned rule */
-	g_assert_cmpstr (gdata_access_rule_get_role (new_rule), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
-	gdata_access_rule_get_scope (new_rule, &scope_type, &scope_value);
+	g_assert_cmpstr (gdata_access_rule_get_role (GDATA_ACCESS_RULE (new_rule)), ==, GDATA_CALENDAR_ACCESS_ROLE_READ);
+	gdata_access_rule_get_scope (GDATA_ACCESS_RULE (new_rule), &scope_type, &scope_value);
 	g_assert_cmpstr (scope_type, ==, GDATA_ACCESS_SCOPE_USER);
 	g_assert_cmpstr (scope_value, ==, "darcy@gmail.com");
-	edited = gdata_access_rule_get_edited (new_rule);
+	edited = gdata_access_rule_get_edited (GDATA_ACCESS_RULE (new_rule));
 	g_assert_cmpuint (edited, >, 0);
 
 	g_object_unref (new_rule);
