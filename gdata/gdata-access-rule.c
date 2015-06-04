@@ -34,11 +34,14 @@
  * <example>
  * 	<title>Adding a Rule to the Access Control List for an Entry</title>
  * 	<programlisting>
+ * 	GDataAuthorizationDomain *domain;
  *	GDataService *service;
  *	GDataEntry *entry;
  *	GDataFeed *acl_feed;
  *	GDataAccessRule *rule, *new_rule;
  *	GError *error = NULL;
+ *
+ *	domain = gdata_documents_service_get_primary_authorization_domain ();
  *
  *	/<!-- -->* Retrieve a GDataEntry which will have a new rule inserted into its ACL. *<!-- -->/
  *	service = build_my_service ();
@@ -53,9 +56,8 @@
  *	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "example@gmail.com"); /<!-- -->* e-mail address of the user the ACL applies to *<!-- -->/
  *
  *	acl_link = gdata_entry_look_up_link (entry, GDATA_LINK_ACCESS_CONTROL_LIST);
- *	new_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), gdata_link_get_uri (acl_link), GDATA_ENTRY (rule),
- *	                                                          NULL, &error));
- *	g_object_unref (acl_link);
+ *	new_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service), domain, gdata_link_get_uri (acl_link),
+ *	                                                          GDATA_ENTRY (rule), NULL, &error));
  *
  *	g_object_unref (rule);
  *	g_object_unref (entry);
