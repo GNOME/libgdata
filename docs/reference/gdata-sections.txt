@@ -2833,3 +2833,21 @@ GDATA_TYPE_CALENDAR_ACCESS_RULE
 <SUBSECTION Private>
 GDataCalendarAccessRulePrivate
 </SECTION>
+
+<SECTION>
+<FILE>gdata-documents-access-rule</FILE>
+<TITLE>GDataDocumentsAccessRule</TITLE>
+GDataDocumentsAccessRule
+GDataDocumentsAccessRuleClass
+gdata_documents_access_rule_new
+<SUBSECTION Standard>
+gdata_documents_access_rule_get_type
+GDATA_DOCUMENTS_ACCESS_RULE
+GDATA_DOCUMENTS_ACCESS_RULE_CLASS
+GDATA_DOCUMENTS_ACCESS_RULE_GET_CLASS
+GDATA_IS_DOCUMENTS_ACCESS_RULE
+GDATA_IS_DOCUMENTS_ACCESS_RULE_CLASS
+GDATA_TYPE_DOCUMENTS_ACCESS_RULE
+<SUBSECTION Private>
+GDataDocumentsAccessRulePrivate
+</SECTION>

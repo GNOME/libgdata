@@ -2,7 +2,6 @@
 # Please keep this file sorted alphabetically.
 [encoding: UTF-8]
 gdata/gdata-access-handler.c
-gdata/gdata-access-rule.c
 gdata/gdata-client-login-authorizer.c
 gdata/gdata-commentable.c
 gdata/gdata-download-stream.c
@@ -18,6 +17,7 @@ gdata/services/calendar/gdata-calendar-calendar.c
 gdata/services/calendar/gdata-calendar-event.c
 gdata/services/calendar/gdata-calendar-service.c
 gdata/services/contacts/gdata-contacts-service.c
+gdata/services/documents/gdata-documents-access-rule.c
 gdata/services/documents/gdata-documents-document.c
 gdata/services/documents/gdata-documents-entry.c
 gdata/services/documents/gdata-documents-feed.c

@@ -166,6 +166,7 @@
 			<xi:include href="xml/gdata-documents-presentation.xml"/>
 			<xi:include href="xml/gdata-documents-spreadsheet.xml"/>
 			<xi:include href="xml/gdata-documents-text.xml"/>
+			<xi:include href="xml/gdata-documents-access-rule.xml"/>
 		</chapter>
 
 		<chapter>

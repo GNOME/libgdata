@@ -139,6 +139,7 @@
 #include <gdata/services/documents/gdata-documents-pdf.h>
 #include <gdata/services/documents/gdata-documents-enums.h>
 #include <gdata/services/documents/gdata-documents-upload-query.h>
+#include <gdata/services/documents/gdata-documents-access-rule.h>
 
 /* Google Tasks */
 #include <gdata/services/tasks/gdata-tasks-service.h>

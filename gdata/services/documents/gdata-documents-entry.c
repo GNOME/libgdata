@@ -104,6 +104,7 @@
 #include "gdata-types.h"
 #include "gdata-private.h"
 #include "gdata-access-handler.h"
+#include "gdata-documents-access-rule.h"
 #include "gdata-documents-service.h"
 
 #include "gdata-documents-spreadsheet.h"
@@ -300,11 +301,49 @@ get_authorization_domain (GDataAccessHandler *self)
 	return gdata_documents_service_get_primary_authorization_domain ();
 }
 
+static GDataFeed *
+get_rules (GDataAccessHandler *self,
+	   GDataService *service,
+	   GCancellable *cancellable,
+	   GDataQueryProgressCallback progress_callback,
+	   gpointer progress_user_data,
+	   GError **error)
+{
+	GDataAccessHandlerIface *iface;
+	GDataAuthorizationDomain *domain = NULL;
+	GDataFeed *feed;
+	GDataLink *_link;
+	SoupMessage *message;
+
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (self), GDATA_LINK_ACCESS_CONTROL_LIST);
+	g_assert (_link != NULL);
+
+	iface = GDATA_ACCESS_HANDLER_GET_IFACE (self);
+	if (iface->get_authorization_domain != NULL) {
+		domain = iface->get_authorization_domain (self);
+	}
+
+	message = _gdata_service_query (service, domain, gdata_link_get_uri (_link), NULL, cancellable, error);
+	if (message == NULL) {
+		return NULL;
+	}
+
+	g_assert (message->response_body->data != NULL);
+
+	feed = _gdata_feed_new_from_json (GDATA_TYPE_FEED, message->response_body->data, message->response_body->length, GDATA_TYPE_DOCUMENTS_ACCESS_RULE,
+					  progress_callback, progress_user_data, error);
+
+	g_object_unref (message);
+
+	return feed;
+}
+
 static void
 gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface)
 {
 	iface->is_owner_rule = is_owner_rule;
 	iface->get_authorization_domain = get_authorization_domain;
+	iface->get_rules = get_rules;
 }
 
 static void

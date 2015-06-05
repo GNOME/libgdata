@@ -80,7 +80,6 @@
 
 #include <config.h>
 #include <glib.h>
-#include <glib/gi18n-lib.h>
 #include <libxml/parser.h>
 #include <string.h>
 
@@ -96,12 +95,8 @@ static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void gdata_access_rule_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void gdata_access_rule_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
-static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
-static gboolean post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
 
 struct _GDataAccessRulePrivate {
-	gchar *domain;
-	gchar *email;
 	gchar *role;
 	gchar *scope_type;
 	gchar *scope_value;
@@ -137,9 +132,6 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	parsable_class->parse_xml = parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
-
-	parsable_class->parse_json = parse_json;
-	parsable_class->post_parse_json = post_parse_json;
 
 	entry_class->kind_term = "http://schemas.google.com/acl/2007#accessRule";
 
@@ -285,8 +277,6 @@ gdata_access_rule_finalize (GObject *object)
 {
 	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (object)->priv;
 
-	g_free (priv->domain);
-	g_free (priv->email);
 	g_free (priv->role);
 	g_free (priv->scope_type);
 	g_free (priv->scope_value);
@@ -491,65 +481,6 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 	GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->get_namespaces (parsable, namespaces);
 
 	g_hash_table_insert (namespaces, (gchar*) "gAcl", (gchar*) "http://schemas.google.com/acl/2007");
-}
-
-static gboolean
-parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
-{
-	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (parsable)->priv;
-	gboolean success;
-	gchar *scope_type = NULL;
-
-	if (gdata_parser_string_from_json_member (reader, "authKey", P_REQUIRED | P_NON_EMPTY, &(priv->key), &success, error) == TRUE ||
-	    gdata_parser_string_from_json_member (reader, "emailAddress", P_REQUIRED | P_NON_EMPTY, &(priv->email), &success, error) == TRUE ||
-	    gdata_parser_string_from_json_member (reader, "domain", P_REQUIRED | P_NON_EMPTY, &(priv->domain), &success, error) == TRUE ||
-	    gdata_parser_string_from_json_member (reader, "role", P_REQUIRED | P_NON_EMPTY, &(priv->role), &success, error) == TRUE) {
-		return success;
-	} else if (gdata_parser_string_from_json_member (reader, "type", P_REQUIRED | P_NON_EMPTY, &scope_type, &success, error) == TRUE) {
-		if (g_strcmp0 (scope_type, "anyone") == 0) {
-			priv->scope_type = g_strdup (GDATA_ACCESS_SCOPE_DEFAULT);
-		} else {
-			priv->scope_type = scope_type;
-			scope_type = NULL;
-		}
-
-		g_free (scope_type);
-		return success;
-	}
-
-	return GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->parse_json (parsable, reader, user_data, error);
-}
-
-static gboolean
-post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
-{
-	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (parsable)->priv;
-
-	if (g_strcmp0 (priv->scope_type, "group") == 0 || g_strcmp0 (priv->scope_type, "user") == 0) {
-		if (priv->email == NULL || priv->email[0] == '\0') {
-			g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_PARSING_STRING,
-			             /* Translators: the parameter is an error message */
-			             _("Error parsing JSON: %s"),
-			             "Permission type ‘group’ or ‘user’ needs an ‘emailAddress’ property.");
-			return FALSE;
-		} else {
-			priv->scope_value = priv->email;
-			priv->email = NULL;
-		}
-	} else if (g_strcmp0 (priv->scope_type, "domain") == 0) {
-		if (priv->domain == NULL || priv->domain[0] == '\0') {
-			g_set_error (error, GDATA_PARSER_ERROR, GDATA_PARSER_ERROR_PARSING_STRING,
-			             /* Translators: the parameter is an error message */
-			             _("Error parsing JSON: %s"),
-			             "Permission type ‘domain’ needs a ‘domain’ property.");
-			return FALSE;
-		} else {
-			priv->scope_value = priv->domain;
-			priv->domain = NULL;
-		}
-	}
-
-	return TRUE;
 }
 
 /**

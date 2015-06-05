@@ -292,7 +292,8 @@ gdata_documents_headers = \
 	gdata/services/documents/gdata-documents-drawing.h	\
 	gdata/services/documents/gdata-documents-pdf.h		\
 	gdata/services/documents/gdata-documents-spreadsheet.h	\
-	gdata/services/documents/gdata-documents-upload-query.h
+	gdata/services/documents/gdata-documents-upload-query.h	\
+	gdata/services/documents/gdata-documents-access-rule.h
 gdatadocumentsinclude_HEADERS = \
 	$(gdata_documents_headers)				\
 	gdata/services/documents/gdata-documents-enums.h
@@ -431,6 +432,7 @@ gdata_sources = \
 	gdata/services/documents/gdata-documents-pdf.c	\
 	gdata/services/documents/gdata-documents-query.c	\
 	gdata/services/documents/gdata-documents-upload-query.c	\
+	gdata/services/documents/gdata-documents-access-rule.c	\
 	\
 	gdata/services/picasaweb/gdata-picasaweb-album.c	\
 	gdata/services/picasaweb/gdata-picasaweb-query.c	\
