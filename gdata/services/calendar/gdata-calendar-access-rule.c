@@ -21,7 +21,7 @@
  * SECTION:gdata-calendar-access-rule
  * @short_description: GData Calendar access rule object
  * @stability: Stable
- * @include: gdata/services/calendar/gdata-access-rule.h
+ * @include: gdata/services/calendar/gdata-calendar-access-rule.h
  *
  * #GDataCalendarAccessRule is a subclass of #GDataAccessRule to represent an
  * access rule affecting users of a shared calendar in Google Calendar.
