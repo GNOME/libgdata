@@ -123,7 +123,8 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 			/* Parse the error (it's returned in a service-specific format */
 			g_assert (klass->parse_error_response != NULL);
-			klass->parse_error_response (service, op->type, status_code, status_reason, (gchar*) xmlBufferContent (status_response),
+			klass->parse_error_response (service, (GDataOperationType) op->type, status_code,
+			                             status_reason, (gchar*) xmlBufferContent (status_response),
 			                             xmlBufferLength (status_response), &child_error);
 
 			/* Run the operation's callback. This takes ownership of @child_error. */
