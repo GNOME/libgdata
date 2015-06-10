@@ -341,10 +341,7 @@ gdata_access_rule_set_property (GObject *object, guint property_id, const GValue
 			/* Never set an ETag (note that this doesn't stop it being set in GDataEntry due to XML parsing) */
 			break;
 		case PROP_KEY:
-			g_free (self->priv->key);
-			self->priv->key = g_value_dup_string (value);
-			g_object_notify (object, "key");
-			break;
+			/* Read only; fall through */
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
