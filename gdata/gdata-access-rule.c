@@ -680,6 +680,20 @@ gdata_access_rule_get_edited (GDataAccessRule *self)
 	return self->priv->edited;
 }
 
+void
+_gdata_access_rule_set_key (GDataAccessRule *self, const gchar *key)
+{
+	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));
+
+	if (g_strcmp0 (key, self->priv->key) == 0)
+		return;
+
+	g_free (self->priv->key);
+	self->priv->key = g_strdup (key);
+
+	g_object_notify (G_OBJECT (self), "key");
+}
+
 /**
  * gdata_access_rule_get_key:
  * @self: a #GDataAccessRule
