@@ -333,6 +333,26 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		g_string_free (str, TRUE);
 	}
 
+	if  (priv->reader_addresses != NULL) {
+		GList *i;
+		GString *str;
+
+		str = g_string_new (NULL);
+
+		for (i = priv->reader_addresses; i != NULL; i = i->next) {
+			GDataGDEmailAddress *email_address = GDATA_GD_EMAIL_ADDRESS (i->data);
+			const gchar *address;
+
+			address = gdata_gd_email_address_get_address (email_address);
+			g_string_append_printf (str, "'%s' in readers", address);
+			if (i->next != NULL)
+				g_string_append (str, " or ");
+		}
+
+		_gdata_query_add_q_internal (self, str->str);
+		g_string_free (str, TRUE);
+	}
+
 	if (priv->show_deleted == TRUE)
 		_gdata_query_add_q_internal (self, "trashed=true");
 	else
@@ -343,19 +363,6 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	/* Chain up to the parent class */
 	GDATA_QUERY_CLASS (gdata_documents_query_parent_class)->get_query_uri (self, feed_uri, query_uri, params_started);
-
-	if  (priv->reader_addresses != NULL) {
-		GList *address;
-		APPEND_SEP
-		address = priv->reader_addresses;
-
-		g_string_append (query_uri, "reader=");
-		g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (address->data), NULL, FALSE);
-		for (address = address->next; address != NULL; address = address->next) {
-			g_string_append_c (query_uri, ';');
-			g_string_append_uri_escaped (query_uri, gdata_gd_email_address_get_address (address->data), NULL, FALSE);
-		}
-	}
 
 	if (priv->title != NULL) {
 		APPEND_SEP
