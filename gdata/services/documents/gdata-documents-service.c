@@ -3,6 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010, 2014 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -255,11 +256,7 @@
 #include <string.h>
 
 #include "gdata-documents-service.h"
-#include "gdata-documents-spreadsheet.h"
-#include "gdata-documents-text.h"
-#include "gdata-documents-drawing.h"
-#include "gdata-documents-pdf.h"
-#include "gdata-documents-presentation.h"
+#include "gdata-documents-utils.h"
 #include "gdata-batchable.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
@@ -284,7 +281,6 @@ parse_feed (GDataService *self,
             gpointer progress_user_data,
             GError **error);
 
-static gchar *_build_v2_upload_uri (GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 static gchar *_get_upload_uri_for_query_and_folder (GDataDocumentsUploadQuery *query,
                                                     GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
@@ -662,6 +658,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 {
 	GDataUploadStream *upload_stream;
 	gchar *upload_uri;
+	gchar *upload_uri_prefix;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (document == NULL || GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
@@ -675,11 +672,11 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 		return NULL;
 	}
 
-	/* HACK: Since we're using non-resumable upload, we have to use the v2 API upload URI to work around
-	 * http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3033 */
-	upload_uri = _build_v2_upload_uri (folder);
+	upload_uri_prefix = gdata_documents_service_get_upload_uri (folder);
+	upload_uri = g_strconcat (upload_uri_prefix, "?uploadType=multipart", NULL);
 	upload_stream = upload_update_document (self, document, slug, content_type, -1, SOUP_METHOD_POST, upload_uri, cancellable);
 	g_free (upload_uri);
+	g_free (upload_uri_prefix);
 
 	return upload_stream;
 }
@@ -903,7 +900,8 @@ gdata_documents_service_update_document_resumable (GDataDocumentsService *self, 
 GDataDocumentsDocument *
 gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadStream *upload_stream, GError **error)
 {
-	const gchar *response_body, *term_pos;
+	const gchar *content_type;
+	const gchar *response_body;
 	gssize response_length;
 	GType new_document_type = G_TYPE_INVALID;
 
@@ -914,39 +912,17 @@ gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadS
 		return NULL;
 	}
 
-	/* Hackily determine the document format the server chose, and then parse the XML accordingly. The full parse will pick up any errors in
-	 * our choice of format. */
-	#define TERM_MARKER "<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/docs/2007#"
-	term_pos = g_strstr_len (response_body, response_length, TERM_MARKER);
-	if (term_pos == NULL) {
-		goto done;
-	}
+	content_type = gdata_upload_stream_get_content_type (upload_stream);
+	new_document_type = gdata_documents_utils_get_type_from_content_type (content_type);
 
-	term_pos += strlen (TERM_MARKER);
-
-	if (g_str_has_prefix (term_pos, "file'") == TRUE) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_DOCUMENT;
-	} else if (g_str_has_prefix (term_pos, "spreadsheet'") == TRUE) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
-	} else if (g_str_has_prefix (term_pos, "presentation'") == TRUE) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
-	} else if (g_str_has_prefix (term_pos, "document'") == TRUE) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_TEXT;
-	} else if (g_str_has_prefix (term_pos, "drawing'") == TRUE) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_DRAWING;
-	} else if (g_str_has_prefix (term_pos, "pdf'") == TRUE) {
-		new_document_type = GDATA_TYPE_DOCUMENTS_PDF;
-	}
-
-done:
 	if (g_type_is_a (new_document_type, GDATA_TYPE_DOCUMENTS_DOCUMENT) == FALSE) {
 		g_set_error (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
 		             _("The content type of the supplied document ('%s') could not be recognized."),
-		             gdata_upload_stream_get_content_type (upload_stream));
+		             content_type);
 		return NULL;
 	}
 
-	return GDATA_DOCUMENTS_DOCUMENT (gdata_parsable_new_from_xml (new_document_type, response_body, (gint) response_length, error));
+	return GDATA_DOCUMENTS_DOCUMENT (gdata_parsable_new_from_json (new_document_type, response_body, (gint) response_length, error));
 }
 
 /**
@@ -1477,22 +1453,6 @@ gdata_documents_service_remove_entry_from_folder_finish (GDataDocumentsService *
 	g_assert_not_reached ();
 }
 
-/* HACK: Work around http://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3033 by also using the upload URI for the v2 API. Grrr. */
-static gchar *
-_build_v2_upload_uri (GDataDocumentsFolder *folder)
-{
-	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
-
-	/* If we have a folder, return the folder's upload URI */
-	if (folder != NULL) {
-		return _gdata_service_build_uri ("%s://docs.google.com/feeds/default/private/full/%s/contents",
-		                                 _gdata_service_get_scheme (), gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)));
-	}
-
-	/* Otherwise return the default upload URI */
-	return g_strconcat (_gdata_service_get_scheme (), "://docs.google.com/feeds/default/private/full", NULL);
-}
-
 /* NOTE: query may be NULL. */
 static gchar *
 _get_upload_uri_for_query_and_folder (GDataDocumentsUploadQuery *query, GDataDocumentsFolder *folder)
@@ -1525,5 +1485,6 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 {
 	g_return_val_if_fail (folder == NULL || GDATA_IS_DOCUMENTS_FOLDER (folder), NULL);
 
-	return _get_upload_uri_for_query_and_folder (NULL, folder);
+	/* Upload URI: https://developers.google.com/drive/web/manage-uploads */
+	return g_strdup ("https://www.googleapis.com/upload/drive/v2/files");
 }

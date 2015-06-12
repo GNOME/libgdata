@@ -115,6 +115,7 @@
 static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface);
 static void gdata_documents_entry_finalize (GObject *object);
 static void gdata_entry_dispose (GObject *object);
+static const gchar *get_content_type (void);
 static void get_namespaces (GDataParsable *parsable, GHashTable *namespaces);
 static void gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -162,6 +163,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 
 	parsable_class->parse_json = parse_json;
 	parsable_class->post_parse_json = post_parse_json;
+	parsable_class->get_content_type = get_content_type;
 	parsable_class->get_namespaces = get_namespaces;
 
 	entry_class->get_entry_uri = get_entry_uri;
@@ -787,6 +789,12 @@ post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
 	priv->resource_id = g_strconcat ("document:", id, NULL);
 
 	return TRUE;
+}
+
+static const gchar *
+get_content_type (void)
+{
+	return "application/json";
 }
 
 static void
