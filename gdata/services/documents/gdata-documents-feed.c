@@ -40,13 +40,7 @@
 #include <string.h>
 
 #include "gdata-documents-feed.h"
-#include "gdata-documents-entry.h"
-#include "gdata-documents-spreadsheet.h"
-#include "gdata-documents-text.h"
-#include "gdata-documents-presentation.h"
-#include "gdata-documents-folder.h"
-#include "gdata-documents-drawing.h"
-#include "gdata-documents-pdf.h"
+#include "gdata-documents-utils.h"
 #include "gdata-types.h"
 #include "gdata-private.h"
 #include "gdata-service.h"
@@ -177,24 +171,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 			}
 
 			if (g_strcmp0 (kind, "drive#file") == 0) {
-
-				/* MIME types: https://developers.google.com/drive/web/mime-types */
-
-				if (g_strcmp0 (mime_type, "application/vnd.google-apps.folder") == 0) {
-					entry_type = GDATA_TYPE_DOCUMENTS_FOLDER;
-				} else if (g_strcmp0 (mime_type, "application/pdf") == 0) {
-					entry_type = GDATA_TYPE_DOCUMENTS_PDF;
-				} else if (g_strcmp0 (mime_type, "application/vnd.google-apps.document") == 0) {
-					entry_type = GDATA_TYPE_DOCUMENTS_TEXT;
-				} else if (g_strcmp0 (mime_type, "application/vnd.google-apps.drawing") == 0) {
-					entry_type = GDATA_TYPE_DOCUMENTS_DRAWING;
-				} else if (g_strcmp0 (mime_type, "application/vnd.google-apps.presentation") == 0) {
-					entry_type = GDATA_TYPE_DOCUMENTS_PRESENTATION;
-				} else if (g_strcmp0 (mime_type, "application/vnd.google-apps.spreadsheet") == 0) {
-					entry_type = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
-				} else {
-					entry_type = GDATA_TYPE_DOCUMENTS_DOCUMENT;
-				}
+				entry_type = gdata_documents_utils_get_type_from_content_type (mime_type);
 			} else {
 				g_warning ("%s files are not handled yet", kind);
 			}
