@@ -1595,27 +1595,27 @@ test_download_thumbnail (TempDocumentData *data, gconstpointer service)
 static void
 test_access_rule_insert (TempDocumentData *data, gconstpointer service)
 {
-	GDataAccessRule *access_rule, *new_access_rule;
+	GDataDocumentsAccessRule *access_rule, *new_access_rule;
 	GDataLink *_link;
 	GError *error = NULL;
 
 	gdata_test_mock_server_start_trace (mock_server, "access-rule-insert");
 
 	/* New access rule */
-	access_rule = gdata_access_rule_new (NULL);
-	gdata_access_rule_set_role (access_rule, GDATA_DOCUMENTS_ACCESS_ROLE_WRITER);
-	gdata_access_rule_set_scope (access_rule, GDATA_ACCESS_SCOPE_USER, "libgdata.test@gmail.com");
+	access_rule = gdata_documents_access_rule_new (NULL);
+	gdata_access_rule_set_role (GDATA_ACCESS_RULE (access_rule), GDATA_DOCUMENTS_ACCESS_ROLE_WRITER);
+	gdata_access_rule_set_scope (GDATA_ACCESS_RULE (access_rule), GDATA_ACCESS_SCOPE_USER, "libgdata.test@gmail.com");
 
 	/* Set access rules */
 	_link = gdata_entry_look_up_link (GDATA_ENTRY (data->document), GDATA_LINK_ACCESS_CONTROL_LIST);
 	g_assert (_link != NULL);
 
-	new_access_rule = GDATA_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                                 gdata_documents_service_get_primary_authorization_domain (),
-	                                                                 gdata_link_get_uri (_link),
-	                                                                 GDATA_ENTRY (access_rule), NULL, &error));
+	new_access_rule = GDATA_DOCUMENTS_ACCESS_RULE (gdata_service_insert_entry (GDATA_SERVICE (service),
+										   gdata_documents_service_get_primary_authorization_domain (),
+										   gdata_link_get_uri (_link),
+										   GDATA_ENTRY (access_rule), NULL, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_ACCESS_RULE (new_access_rule));
+	g_assert (GDATA_IS_DOCUMENTS_ACCESS_RULE (new_access_rule));
 	g_clear_error (&error);
 
 	/* TODO: Check if everything is as it should be */
