@@ -178,7 +178,7 @@
 #define BOUNDARY_STRING "0003Z5W789deadbeefRTE456KlemsnoZV"
 #define MAX_RESUMABLE_CHUNK_SIZE (512 * 1024) /* bytes = 512 KiB */
 
-static GObject *gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params);
+static void gdata_upload_stream_constructed (GObject *object);
 static void gdata_upload_stream_dispose (GObject *object);
 static void gdata_upload_stream_finalize (GObject *object);
 static void gdata_upload_stream_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -252,7 +252,7 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 
 	g_type_class_add_private (klass, sizeof (GDataUploadStreamPrivate));
 
-	gobject_class->constructor = gdata_upload_stream_constructor;
+	gobject_class->constructed = gdata_upload_stream_constructed;
 	gobject_class->dispose = gdata_upload_stream_dispose;
 	gobject_class->finalize = gdata_upload_stream_finalize;
 	gobject_class->get_property = gdata_upload_stream_get_property;
@@ -423,15 +423,14 @@ build_message (GDataUploadStream *self, const gchar *method, const gchar *upload
 	return new_message;
 }
 
-static GObject *
-gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectConstructParam *construct_params)
+static void
+gdata_upload_stream_constructed (GObject *object)
 {
 	GDataUploadStreamPrivate *priv;
 	GDataServiceClass *service_klass;
-	GObject *object;
 
 	/* Chain up to the parent class */
-	object = G_OBJECT_CLASS (gdata_upload_stream_parent_class)->constructor (type, n_construct_params, construct_params);
+	G_OBJECT_CLASS (gdata_upload_stream_parent_class)->constructed (object);
 	priv = GDATA_UPLOAD_STREAM (object)->priv;
 
 	/* Create a #GCancellable for the entire upload operation if one wasn't specified for #GDataUploadStream:cancellable during construction */
@@ -559,8 +558,6 @@ gdata_upload_stream_constructor (GType type, guint n_construct_params, GObjectCo
 		soup_message_headers_append (priv->message->request_headers, "If-Match", gdata_entry_get_etag (priv->entry));
 
 	/* Uploading doesn't actually start until the first call to write() */
-
-	return object;
 }
 
 static void
