@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2011, 2014 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2011, 2014, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,6 +118,9 @@ gboolean gdata_oauth2_authorizer_request_authorization_finish (GDataOAuth2Author
 const gchar *gdata_oauth2_authorizer_get_client_id (GDataOAuth2Authorizer *self) G_GNUC_PURE;
 const gchar *gdata_oauth2_authorizer_get_redirect_uri (GDataOAuth2Authorizer *self) G_GNUC_PURE;
 const gchar *gdata_oauth2_authorizer_get_client_secret (GDataOAuth2Authorizer *self) G_GNUC_PURE;
+
+gchar *gdata_oauth2_authorizer_dup_refresh_token (GDataOAuth2Authorizer *self) G_GNUC_PURE;
+void gdata_oauth2_authorizer_set_refresh_token (GDataOAuth2Authorizer *self, const gchar *refresh_token);
 
 const gchar *gdata_oauth2_authorizer_get_locale (GDataOAuth2Authorizer *self) G_GNUC_PURE;
 void gdata_oauth2_authorizer_set_locale (GDataOAuth2Authorizer *self, const gchar *locale);

@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2011, 2014 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2011, 2014, 2015 <philip@tecnocode.co.uk>
  *
  * GData Client is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,13 @@
  * then attached to all future requests to the online service, and the refresh
  * token can be used in future (with gdata_authorizer_refresh_authorization())
  * to refresh authorization after the access token expires.
+ *
+ * The refresh token may also be accessed as
+ * #GDataOAuth2Authorizer:refresh-token and saved by the application. It may
+ * later be set on a new instance of #GDataOAuth2Authorizer, and
+ * gdata_authorizer_refresh_authorization_async() called to establish a new
+ * access token without requiring the user to re-authenticate unless they have
+ * explicitly revoked the refresh token.
  *
  * For an overview of the standard OAuth 2.0 flow, see
  * <ulink type="http" url="http://tools.ietf.org/html/rfc6749#section-1.2">RFC 6749</ulink>.
@@ -183,7 +190,9 @@ struct _GDataOAuth2AuthorizerPrivate {
 	/* Mutex for access_token, refresh_token and authentication_domains. */
 	GMutex mutex;
 
-	/* These are both non-NULL when authorised, and both NULL otherwise. */
+	/* These are both non-NULL when authorised. refresh_token may be
+	 * non-NULL if access_token is NULL and refresh_authorization() has not
+	 * yet been called on this authorizer. They may be both NULL. */
 	gchar *access_token;  /* owned */
 	gchar *refresh_token;  /* owned */
 
@@ -199,6 +208,7 @@ enum {
 	PROP_LOCALE,
 	PROP_TIMEOUT,
 	PROP_PROXY_RESOLVER,
+	PROP_REFRESH_TOKEN,
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataOAuth2Authorizer, gdata_oauth2_authorizer,
@@ -354,6 +364,25 @@ gdata_oauth2_authorizer_class_init (GDataOAuth2AuthorizerClass *klass)
 	                                                      "A GProxyResolver used to determine a proxy URI.",
 	                                                      G_TYPE_PROXY_RESOLVER,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataOAuth2Authorizer:refresh-token:
+	 *
+	 * The server provided refresh token, which can be stored and passed in
+	 * to new #GDataOAuth2Authorizer instances before calling
+	 * gdata_authorizer_refresh_authorization_async() to create a new
+	 * short-lived access token.
+	 *
+	 * The refresh token is opaque data and must not be parsed.
+	 *
+	 * Since: UNRELEASED
+	 */
+	g_object_class_install_property (gobject_class, PROP_REFRESH_TOKEN,
+	                                 g_param_spec_string ("refresh-token",
+	                                                      "Refresh Token",
+	                                                      "The server provided refresh token.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -464,6 +493,11 @@ get_property (GObject *object, guint property_id, GValue *value,
 		g_value_set_object (value,
 		                    gdata_oauth2_authorizer_get_proxy_resolver (self));
 		break;
+	case PROP_REFRESH_TOKEN:
+		g_mutex_lock (&priv->mutex);
+		g_value_set_string (value, priv->refresh_token);
+		g_mutex_unlock (&priv->mutex);
+		break;
 	default:
 		/* We don't have any other property... */
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -505,6 +539,10 @@ set_property (GObject *object, guint property_id, const GValue *value, GParamSpe
 		gdata_oauth2_authorizer_set_proxy_resolver (self,
 		                                            g_value_get_object (value));
 		break;
+	case PROP_REFRESH_TOKEN:
+		gdata_oauth2_authorizer_set_refresh_token (self,
+		                                           g_value_get_string (value));
+		break;
 	default:
 		/* We don't have any other property... */
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -524,8 +562,8 @@ process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain,
 	g_mutex_lock (&priv->mutex);
 
 	/* Sanity check */
-	g_assert ((priv->access_token == NULL) ==
-	          (priv->refresh_token == NULL));
+	g_assert ((priv->access_token == NULL) ||
+	          (priv->refresh_token != NULL));
 
 	if (priv->access_token != NULL &&
 	    g_hash_table_lookup (priv->authentication_domains,
@@ -1340,6 +1378,79 @@ gdata_oauth2_authorizer_get_client_secret (GDataOAuth2Authorizer *self)
 {
 	g_return_val_if_fail (GDATA_IS_OAUTH2_AUTHORIZER (self), NULL);
 	return self->priv->client_secret;
+}
+
+/**
+ * gdata_oauth2_authorizer_dup_refresh_token:
+ * @self: a #GDataOAuth2Authorizer
+ *
+ * Returns the authorizer's refresh token, #GDataOAuth2Authorizer:refresh-token,
+ * as set by client code previously on the #GDataOAuth2Authorizer, or as
+ * returned by the most recent authentication operation.
+ *
+ * Return value: (transfer full): the authorizer's refresh token
+ *
+ * Since: UNRELEASED
+ */
+gchar *
+gdata_oauth2_authorizer_dup_refresh_token (GDataOAuth2Authorizer *self)
+{
+	GDataOAuth2AuthorizerPrivate *priv;
+	gchar *refresh_token;  /* owned */
+
+	g_return_val_if_fail (GDATA_IS_OAUTH2_AUTHORIZER (self), NULL);
+
+	priv = self->priv;
+
+	g_mutex_lock (&priv->mutex);
+	refresh_token = g_strdup (priv->refresh_token);
+	g_mutex_unlock (&priv->mutex);
+
+	return refresh_token;
+}
+
+/**
+ * gdata_oauth2_authorizer_set_refresh_token:
+ * @self: a #GDataOAuth2Authorizer
+ * @refresh_token: (nullable): the new refresh token, or %NULL to clear
+ *   authorization
+ *
+ * Sets the authorizer's refresh token, #GDataOAuth2Authorizer:refresh-token.
+ * This is used to periodically refresh the access token. Set it to %NULL to
+ * clear the current authentication from the authorizer.
+ *
+ * Since: UNRELEASED
+ */
+void
+gdata_oauth2_authorizer_set_refresh_token (GDataOAuth2Authorizer *self,
+                                           const gchar *refresh_token)
+{
+	GDataOAuth2AuthorizerPrivate *priv;
+
+	g_return_if_fail (GDATA_IS_OAUTH2_AUTHORIZER (self));
+
+	priv = self->priv;
+
+	g_mutex_lock (&priv->mutex);
+
+	if (g_strcmp0 (priv->refresh_token, refresh_token) == 0) {
+		g_mutex_unlock (&priv->mutex);
+		return;
+	}
+
+	/* Clear the access token; if the refresh token has changed, it can
+	 * no longer be valid, and we must avoid the situation:
+	 *    (access_token != NULL) && (refresh_token == NULL) */
+	g_free (priv->access_token);
+	priv->access_token = NULL;
+
+	/* Update the refresh token. */
+	g_free (priv->refresh_token);
+	priv->refresh_token = g_strdup (refresh_token);
+
+	g_mutex_unlock (&priv->mutex);
+
+	g_object_notify (G_OBJECT (self), "refresh-token");
 }
 
 /**
