@@ -111,6 +111,7 @@
 #include "gdata-documents-presentation.h"
 #include "gdata-documents-text.h"
 #include "gdata-documents-folder.h"
+#include "gdata-documents-utils.h"
 
 static void gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface);
 static void gdata_documents_entry_finalize (GObject *object);
@@ -121,6 +122,7 @@ static void gdata_documents_entry_get_property (GObject *object, guint property_
 static void gdata_documents_entry_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
 static gboolean post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
+static void get_json (GDataParsable *parsable, JsonBuilder *builder);
 static gchar *get_entry_uri (const gchar *id);
 
 struct _GDataDocumentsEntryPrivate {
@@ -164,6 +166,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	parsable_class->parse_json = parse_json;
 	parsable_class->post_parse_json = post_parse_json;
 	parsable_class->get_content_type = get_content_type;
+	parsable_class->get_json = get_json;
 	parsable_class->get_namespaces = get_namespaces;
 
 	entry_class->get_entry_uri = get_entry_uri;
@@ -795,6 +798,50 @@ static const gchar *
 get_content_type (void)
 {
 	return "application/json";
+}
+
+static void
+get_json (GDataParsable *parsable, JsonBuilder *builder)
+{
+	GList *i;
+	GList *parent_folders_list;
+
+	GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->get_json (parsable, builder);
+
+	/* Upload to a folder: https://developers.google.com/drive/web/folder */
+
+	json_builder_set_member_name (builder, "parents");
+	json_builder_begin_array (builder);
+
+	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (parsable), GDATA_LINK_PARENT);
+	for (i = parent_folders_list; i != NULL; i = i->next) {
+		GDataLink *_link = GDATA_LINK (i->data);
+		const gchar *uri;
+		gsize uri_prefix_len;
+
+		/* HACK: Extract the ID from the GDataLink:uri by removing the prefix. Ignore links which
+		 * don't have the prefix. */
+		uri = gdata_link_get_uri (_link);
+		uri_prefix_len = strlen (GDATA_DOCUMENTS_URI_PREFIX);
+		if (g_str_has_prefix (uri, GDATA_DOCUMENTS_URI_PREFIX)) {
+			const gchar *id;
+
+			id = uri + uri_prefix_len;
+			if (id[0] != '\0') {
+				json_builder_begin_object (builder);
+				json_builder_set_member_name (builder, "kind");
+				json_builder_add_string_value (builder, "drive#fileLink");
+				json_builder_set_member_name (builder, "id");
+				json_builder_add_string_value (builder, id);
+				json_builder_end_object (builder);
+			}
+		}
+	}
+
+	json_builder_end_array (builder);
+
+	g_list_free (parent_folders_list);
+
 }
 
 static void

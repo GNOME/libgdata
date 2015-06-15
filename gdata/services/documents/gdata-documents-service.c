@@ -576,7 +576,8 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 
 static GDataUploadStream *
 upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
-                        goffset content_length, const gchar *method, const gchar *upload_uri, GCancellable *cancellable)
+                        GDataDocumentsFolder *folder, goffset content_length, const gchar *method, const gchar *upload_uri,
+			GCancellable *cancellable)
 {
 	/* HACK: Corrects a bug on spreadsheet content types handling
 	 * The content type for ODF spreadsheets is "application/vnd.oasis.opendocument.spreadsheet" for my ODF spreadsheet;
@@ -585,6 +586,20 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
 	 * Bug filed with Google: http://code.google.com/p/gdata-issues/issues/detail?id=1127 */
 	if (strcmp (content_type, "application/vnd.oasis.opendocument.spreadsheet") == 0)
 		content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
+
+	if (folder != NULL) {
+		GDataLink *_link;
+		const gchar *id;
+		gchar *uri;
+
+		/* HACK: Build the GDataLink:uri from the ID by adding the prefix. */
+		id = gdata_entry_get_id (GDATA_ENTRY (folder));
+		uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX, id, NULL);
+		_link = gdata_link_new (uri, GDATA_LINK_PARENT);
+		gdata_entry_add_link (GDATA_ENTRY (document), _link);
+		g_object_unref (_link);
+		g_free (uri);
+	}
 
 	/* We need streaming file I/O: GDataUploadStream */
 	if (content_length == -1) {
@@ -674,7 +689,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
 
 	upload_uri_prefix = gdata_documents_service_get_upload_uri (folder);
 	upload_uri = g_strconcat (upload_uri_prefix, "?uploadType=multipart", NULL);
-	upload_stream = upload_update_document (self, document, slug, content_type, -1, SOUP_METHOD_POST, upload_uri, cancellable);
+	upload_stream = upload_update_document (self, document, slug, content_type, folder, -1, SOUP_METHOD_POST, upload_uri, cancellable);
 	g_free (upload_uri);
 	g_free (upload_uri_prefix);
 
@@ -744,7 +759,7 @@ gdata_documents_service_upload_document_resumable (GDataDocumentsService *self, 
 	}
 
 	upload_uri = _get_upload_uri_for_query_and_folder (query, NULL);
-	upload_stream = upload_update_document (self, document, slug, content_type, content_length, SOUP_METHOD_POST, upload_uri, cancellable);
+	upload_stream = upload_update_document (self, document, slug, content_type, NULL, content_length, SOUP_METHOD_POST, upload_uri, cancellable);
 	g_free (upload_uri);
 
 	return upload_stream;
@@ -815,7 +830,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
 	g_assert (update_link != NULL);
 
-	return upload_update_document (self, document, slug, content_type, -1, SOUP_METHOD_PUT, gdata_link_get_uri (update_link),
+	return upload_update_document (self, document, slug, content_type, NULL, -1, SOUP_METHOD_PUT, gdata_link_get_uri (update_link),
 	                               cancellable);
 }
 
@@ -872,7 +887,7 @@ gdata_documents_service_update_document_resumable (GDataDocumentsService *self, 
 	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_RESUMABLE_EDIT_MEDIA);
 	g_assert (update_link != NULL);
 
-	return upload_update_document (self, document, slug, content_type, content_length, SOUP_METHOD_PUT, gdata_link_get_uri (update_link),
+	return upload_update_document (self, document, slug, content_type, NULL, content_length, SOUP_METHOD_PUT, gdata_link_get_uri (update_link),
 	                               cancellable);
 }
 
