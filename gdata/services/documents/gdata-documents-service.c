@@ -574,6 +574,22 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 	g_free (request_uri);
 }
 
+static void
+add_folder_link_to_entry (GDataDocumentsEntry *entry, GDataDocumentsFolder *folder)
+{
+	GDataLink *_link;
+	const gchar *id;
+	gchar *uri;
+
+	/* HACK: Build the GDataLink:uri from the ID by adding the prefix. */
+	id = gdata_entry_get_id (GDATA_ENTRY (folder));
+	uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX, id, NULL);
+	_link = gdata_link_new (uri, GDATA_LINK_PARENT);
+	gdata_entry_add_link (GDATA_ENTRY (entry), _link);
+	g_object_unref (_link);
+	g_free (uri);
+}
+
 static GDataUploadStream *
 upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
                         GDataDocumentsFolder *folder, goffset content_length, const gchar *method, const gchar *upload_uri,
@@ -587,19 +603,8 @@ upload_update_document (GDataDocumentsService *self, GDataDocumentsDocument *doc
 	if (strcmp (content_type, "application/vnd.oasis.opendocument.spreadsheet") == 0)
 		content_type = "application/x-vnd.oasis.opendocument.spreadsheet";
 
-	if (folder != NULL) {
-		GDataLink *_link;
-		const gchar *id;
-		gchar *uri;
-
-		/* HACK: Build the GDataLink:uri from the ID by adding the prefix. */
-		id = gdata_entry_get_id (GDATA_ENTRY (folder));
-		uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX, id, NULL);
-		_link = gdata_link_new (uri, GDATA_LINK_PARENT);
-		gdata_entry_add_link (GDATA_ENTRY (document), _link);
-		g_object_unref (_link);
-		g_free (uri);
-	}
+	if (folder != NULL)
+		add_folder_link_to_entry (GDATA_DOCUMENTS_ENTRY (document), folder);
 
 	/* We need streaming file I/O: GDataUploadStream */
 	if (content_length == -1) {
