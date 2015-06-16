@@ -803,10 +803,28 @@ get_content_type (void)
 static void
 get_json (GDataParsable *parsable, JsonBuilder *builder)
 {
+	GList *categories;
 	GList *i;
 	GList *parent_folders_list;
 
 	GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->get_json (parsable, builder);
+
+	/* Inserting files: https://developers.google.com/drive/v2/reference/files/insert */
+
+	categories = gdata_entry_get_categories (GDATA_ENTRY (parsable));
+	for (i = categories; i != NULL; i = i->next) {
+		GDataCategory *category = GDATA_CATEGORY (i->data);
+		const gchar *label;
+		const gchar *scheme;
+
+		label = gdata_category_get_label (category);
+		scheme = gdata_category_get_scheme (category);
+		if (label != NULL && label[0] != '\0' && g_strcmp0 (scheme, "http://schemas.google.com/g/2005#kind") == 0) {
+			json_builder_set_member_name (builder, "mimeType");
+			json_builder_add_string_value (builder, label);
+			break;
+		}
+	}
 
 	/* Upload to a folder: https://developers.google.com/drive/web/folder */
 

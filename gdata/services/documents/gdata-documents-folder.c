@@ -3,6 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,13 +79,17 @@
 #include "gdata-types.h"
 #include "gdata-private.h"
 
+static void gdata_documents_folder_constructed (GObject *object);
+
 G_DEFINE_TYPE (GDataDocumentsFolder, gdata_documents_folder, GDATA_TYPE_DOCUMENTS_ENTRY)
 
 static void
 gdata_documents_folder_class_init (GDataDocumentsFolderClass *klass)
 {
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
+	gobject_class->constructed = gdata_documents_folder_constructed;
 	entry_class->kind_term = "http://schemas.google.com/docs/2007#folder";
 }
 
@@ -92,6 +97,21 @@ static void
 gdata_documents_folder_init (GDataDocumentsFolder *self)
 {
 	/* Why am I writing it? */
+}
+
+static void
+gdata_documents_folder_constructed (GObject *object)
+{
+	G_OBJECT_CLASS (gdata_documents_folder_parent_class)->constructed (object);
+
+	if (!_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object))) {
+		GDataCategory *category;
+		GDataEntryClass *klass = GDATA_ENTRY_GET_CLASS (object);
+
+		category = gdata_category_new (klass->kind_term, "http://schemas.google.com/g/2005#kind", "application/vnd.google-apps.folder");
+		gdata_entry_add_category (GDATA_ENTRY (object), category);
+		g_object_unref (category);
+	}
 }
 
 /**
