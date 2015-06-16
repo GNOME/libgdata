@@ -1111,14 +1111,15 @@ gdata_documents_service_copy_document_finish (GDataDocumentsService *self, GAsyn
 /**
  * gdata_documents_service_add_entry_to_folder:
  * @self: an authenticated #GDataDocumentsService
- * @entry: the #GDataDocumentsEntry to move
- * @folder: the #GDataDocumentsFolder to move @entry into
+ * @entry: the #GDataDocumentsEntry to copy
+ * @folder: the #GDataDocumentsFolder to copy @entry into
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Add the given @entry to the specified @folder, and return an updated #GDataDocumentsEntry for @entry. If the @entry is already in another folder, it
- * will be added to the new folder, but will also remain  in its other folders. Note that @entry can be either a #GDataDocumentsDocument or a
- * #GDataDocumentsFolder.
+ * Add the given @entry to the specified @folder, and return an updated #GDataDocumentsEntry for @entry. If the @entry is already in another folder,
+ * a copy will be added to the new folder. The copy and original will have different IDs. Note that @entry can't be a * #GDataDocumentsFolder that
+ * already exists on the server. It can be a new #GDataDocumentsFolder, or a #GDataDocumentsDocument that is either new or already present on the
+ * server.
  *
  * Errors from #GDataServiceError can be returned for exceptional conditions, as determined by the server.
  *
@@ -1131,8 +1132,14 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
                                              GCancellable *cancellable, GError **error)
 {
 	GDataDocumentsEntry *new_entry;
+	GDataDocumentsEntry *local_entry;
+	GDataOperationType operation_type;
+	GType entry_type;
+	const gchar *etag;
+	const gchar *title;
+	const gchar *uri_prefix = "https://www.googleapis.com/drive/v2/files";
 	gchar *upload_data;
-	const gchar *uri;
+	gchar *uri;
 	SoupMessage *message;
 	guint status;
 
@@ -1145,18 +1152,34 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
 	                                               get_documents_authorization_domain ()) == FALSE) {
 		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
-		                     _("You must be authenticated to move documents and folders."));
+		                     _("You must be authenticated to insert or move documents and folders."));
 		return NULL;
 	}
 
-	/* NOTE: adding a document to a folder doesn't have server-side ETag support (throws "noPostConcurrency" error) */
-	uri = gdata_entry_get_content_uri (GDATA_ENTRY (folder));
-	g_assert (uri != NULL);
-	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST, uri, NULL, TRUE);
+	if (gdata_entry_is_inserted (GDATA_ENTRY (entry)) == TRUE) {
+		const gchar *id;
+
+		id = gdata_entry_get_id (GDATA_ENTRY (entry));
+		uri = g_strconcat (uri_prefix, "/", id, "/copy", NULL);
+		operation_type = GDATA_OPERATION_UPDATE;
+	} else {
+		uri = g_strdup (uri_prefix);
+		operation_type = GDATA_OPERATION_INSERTION;
+	}
+
+	entry_type = G_OBJECT_TYPE (entry);
+	etag = gdata_entry_get_etag (GDATA_ENTRY (entry));
+	title = gdata_entry_get_title (GDATA_ENTRY (entry));
+	local_entry = g_object_new (entry_type, "etag", etag, "title", title, NULL);
+	add_folder_link_to_entry (local_entry, folder);
+
+	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST, uri, NULL, FALSE);
+	g_free (uri);
 
 	/* Append the data */
-	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	upload_data = gdata_parsable_get_json (GDATA_PARSABLE (local_entry));
+	soup_message_set_request (message, "application/json", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	g_object_unref (local_entry);
 
 	/* Send the message */
 	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
@@ -1165,20 +1188,20 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 		/* Redirect error or cancelled */
 		g_object_unref (message);
 		return NULL;
-	} else if (status != SOUP_STATUS_CREATED) {
+	} else if (status != SOUP_STATUS_OK) {
 		/* Error */
 		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
 		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase,
-		                             message->response_body->data, message->response_body->length, error);
+		klass->parse_error_response (GDATA_SERVICE (self), operation_type, status, message->reason_phrase, message->response_body->data,
+					     message->response_body->length, error);
 		g_object_unref (message);
 		return NULL;
 	}
 
-	/* Parse the XML; and update the entry */
+	/* Parse the JSON; and update the entry */
 	g_assert (message->response_body->data != NULL);
-	new_entry = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_xml (G_OBJECT_TYPE (entry), message->response_body->data,
-	                                                                message->response_body->length, error));
+	new_entry = GDATA_DOCUMENTS_ENTRY (gdata_parsable_new_from_json (entry_type, message->response_body->data, message->response_body->length,
+									 error));
 	g_object_unref (message);
 
 	return new_entry;

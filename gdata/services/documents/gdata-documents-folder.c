@@ -33,24 +33,34 @@
  * <example>
  * 	<title>Adding a Folder</title>
  * 	<programlisting>
+ * 	GDataAuthorizationDomain *domain;
  *	GDataDocumentsService *service;
- *	GDataDocumentsFolder *folder, *new_folder;
- *	gchar *upload_uri;
+ *	GDataDocumentsFolder *folder, *new_folder, *parent_folder;
  *	GError *error = NULL;
+ *
+ *	domain = gdata_documents_service_get_primary_authorization_domain ();
  *
  *	/<!-- -->* Create a service *<!-- -->/
  *	service = create_documents_service ();
+ *
+ *	parent_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_query_single_entry (GDATA_SERVICE (service), domain, "root", NULL,
+ *	                                                                          GDATA_TYPE_DOCUMENTS_FOLDER, NULL, &error));
+ *	if (error != NULL) {
+ *		g_error ("Error getting root folder");
+ *		g_error_free (error);
+ *		return;
+ *	}
  *
  *	/<!-- -->* Create the new folder *<!-- -->/
  *	folder = gdata_documents_folder_new (NULL);
  *	gdata_entry_set_title (GDATA_ENTRY (folder), "Folder Name");
  *
  *	/<!-- -->* Insert the folder *<!-- -->/
- *	upload_uri = gdata_documents_service_get_upload_uri (NULL);
- *	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service), upload_uri, GDATA_ENTRY (folder), NULL, &error));
- *	g_free (upload_uri);
+ *	new_folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_add_entry_to_folder (GDATA_SERVICE (service), GDATA_DOCUMENTS_ENTRY (folder),
+ *	parent_folder, NULL, &error));
  *
  *	g_object_unref (folder);
+ *	g_object_unref (parent_folder);
  *	g_object_unref (service);
  *
  *	if (error != NULL) {
