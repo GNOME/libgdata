@@ -1816,6 +1816,39 @@ test_video_escaping (void)
 	g_object_unref (video);
 }
 
+/* Check that a newly-constructed video does not output a location in its
+ * JSON or properties. */
+static void
+test_video_location (void)
+{
+	GDataYouTubeVideo *video;
+	const gchar * const keywords[] = { "<keyword1>", "keyword2 & stuff, things", NULL };
+	gdouble latitude, longitude;
+
+	video = gdata_youtube_video_new (NULL);
+
+	g_assert_null (gdata_youtube_video_get_location (video));
+
+	/* Latitude and longitude should be outside the valid ranges. */
+	gdata_youtube_video_get_coordinates (video, &latitude, &longitude);
+	g_assert (latitude < -90.0 || latitude > 90.0);
+	g_assert (longitude < -180.0 || longitude > 180.0);
+
+	/* Check the outputted JSON is escaped properly */
+	gdata_test_assert_json (video,
+		"{"
+			"'title': null,"
+			"'kind': 'youtube#video',"
+			"'snippet': {},"
+			"'status': {"
+				"'privacyStatus': 'public'"
+			"},"
+			"'recordingDetails': {}"
+		"}");
+
+	g_object_unref (video);
+}
+
 static void
 test_comment_get_xml (void)
 {
@@ -2804,7 +2837,10 @@ FIXME: Port and re-enable these tests
 	g_test_add_func ("/youtube/parsing/media:group/ratings/error_handling", test_parsing_media_group_ratings_error_handling);
 
 	g_test_add_func ("/youtube/video/escaping", test_video_escaping);
+#endif
+	g_test_add_func ("/youtube/video/location", test_video_location);
 
+#if 0
 	g_test_add_func ("/youtube/comment/get_xml", test_comment_get_xml);
 	g_test_add_func ("/youtube/comment/properties/parent-comment-id", test_comment_properties_parent_comment_uri);
 
