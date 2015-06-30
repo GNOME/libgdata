@@ -819,7 +819,10 @@ GDataUploadStream *
 gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
                                          GCancellable *cancellable, GError **error)
 {
-	GDataLink *update_link;
+	GDataUploadStream *update_stream;
+	const gchar *id;
+	gchar *update_uri;
+	gchar *update_uri_prefix;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
@@ -832,11 +835,14 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
 		return NULL;
 	}
 
-	update_link = gdata_entry_look_up_link (GDATA_ENTRY (document), GDATA_LINK_EDIT_MEDIA);
-	g_assert (update_link != NULL);
+	update_uri_prefix = gdata_documents_service_get_upload_uri (NULL);
+	id = gdata_entry_get_id (GDATA_ENTRY (document));
+	update_uri = g_strconcat (update_uri_prefix, "/", id, "?uploadType=multipart", NULL);
+	update_stream = upload_update_document (self, document, slug, content_type, NULL, -1, SOUP_METHOD_PUT, update_uri, cancellable);
+	g_free (update_uri);
+	g_free (update_uri_prefix);
 
-	return upload_update_document (self, document, slug, content_type, NULL, -1, SOUP_METHOD_PUT, gdata_link_get_uri (update_link),
-	                               cancellable);
+	return update_stream;
 }
 
 /**
