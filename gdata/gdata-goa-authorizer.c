@@ -384,7 +384,7 @@ gdata_goa_authorizer_set_goa_object (GDataGoaAuthorizer *self, GoaObject *goa_ob
 		add_authorization_domains (self, GDATA_TYPE_CONTACTS_SERVICE);
 	}
 
-	if (goa_object_peek_documents (goa_object) != NULL) {
+	if (goa_object_peek_documents (goa_object) != NULL || goa_object_peek_files (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_DOCUMENTS_SERVICE);
 	}
 	
