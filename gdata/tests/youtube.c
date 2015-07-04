@@ -304,32 +304,29 @@ test_query_standard_feeds (gconstpointer service)
 	GDataFeed *feed;
 	GError *error = NULL;
 	guint i;
-	struct {
-		GDataYouTubeStandardFeedType feed_type;
-		const gchar *expected_title;
-	} feeds[] = {
+	GDataYouTubeStandardFeedType feeds[] = {
 		/* This must be kept up-to-date with GDataYouTubeStandardFeedType. */
-		{ GDATA_YOUTUBE_TOP_RATED_FEED, "Top Rated" },
-		{ GDATA_YOUTUBE_TOP_FAVORITES_FEED, "Top Favorites" },
-		{ GDATA_YOUTUBE_MOST_VIEWED_FEED, "Most Popular" },
-		{ GDATA_YOUTUBE_MOST_POPULAR_FEED, "Most Popular" },
-		{ GDATA_YOUTUBE_MOST_RECENT_FEED, "Most Recent" },
-		{ GDATA_YOUTUBE_MOST_DISCUSSED_FEED, "Most Discussed" },
-		{ GDATA_YOUTUBE_MOST_LINKED_FEED, NULL },
-		{ GDATA_YOUTUBE_MOST_RESPONDED_FEED, "Most Responded" },
-		{ GDATA_YOUTUBE_RECENTLY_FEATURED_FEED, "Spotlight Videos" },
-		{ GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED, NULL },
+		GDATA_YOUTUBE_TOP_RATED_FEED,
+		GDATA_YOUTUBE_TOP_FAVORITES_FEED,
+		GDATA_YOUTUBE_MOST_VIEWED_FEED,
+		GDATA_YOUTUBE_MOST_POPULAR_FEED,
+		GDATA_YOUTUBE_MOST_RECENT_FEED,
+		GDATA_YOUTUBE_MOST_DISCUSSED_FEED,
+		GDATA_YOUTUBE_MOST_LINKED_FEED,
+		GDATA_YOUTUBE_MOST_RESPONDED_FEED,
+		GDATA_YOUTUBE_RECENTLY_FEATURED_FEED,
+		GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED,
 	};
 
 	gdata_test_mock_server_start_trace (mock_server, "query-standard-feeds");
 
 	for (i = 0; i < G_N_ELEMENTS (feeds); i++) {
-		feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), feeds[i].feed_type, NULL, NULL, NULL, NULL, &error);
+		feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), feeds[i], NULL, NULL, NULL, NULL, &error);
 		g_assert_no_error (error);
 		g_assert (GDATA_IS_FEED (feed));
 		g_clear_error (&error);
 
-		g_assert_cmpstr (gdata_feed_get_title (feed), ==, feeds[i].expected_title);
+		g_assert_cmpuint (g_list_length (gdata_feed_get_entries (feed)), >, 0);
 
 		g_object_unref (feed);
 	}
@@ -554,62 +551,11 @@ get_video_for_related (void)
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
 
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-			"xmlns:media='http://search.yahoo.com/mrss/' "
-			"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-			"xmlns:georss='http://www.georss.org/georss' "
-			"xmlns:gd='http://schemas.google.com/g/2005' "
-			"xmlns:gml='http://www.opengis.net/gml'>"
-			"<id>http://gdata.youtube.com/feeds/api/videos/q1UPMEmCqZo</id>"
-			"<published>2009-02-12T20:34:08.000Z</published>"
-			"<updated>2009-02-21T13:00:13.000Z</updated>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/keywords.cat' term='part one'/>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' term='Film' label='Film &amp; Animation'/>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/keywords.cat' term='ian purchase'/>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/keywords.cat' term='purchase brothers'/>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/keywords.cat' term='half life 2'/>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/keywords.cat' term='escape from city 17'/>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/keywords.cat' term='Half Life'/>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/keywords.cat' term='david purchase'/>"
-			"<category scheme='http://gdata.youtube.com/schemas/2007/keywords.cat' term='half-life'/>"
-			"<title type='text'>Escape From City 17 - Part One</title>"
-			"<content type='text'>Directed by The Purchase Brothers. *snip*</content>"
-			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.youtube.com/watch?v=q1UPMEmCqZo'/>"
-			"<link rel='http://gdata.youtube.com/schemas/2007#video.related' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/q1UPMEmCqZo/related'/>"
-			"<link rel='http://gdata.youtube.com/schemas/2007#mobile' type='text/html' href='http://m.youtube.com/details?v=q1UPMEmCqZo'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/standardfeeds/top_rated/v/q1UPMEmCqZo'/>"
-			"<author>"
-				"<name>PurchaseBrothers</name>"
-				"<uri>http://gdata.youtube.com/feeds/api/users/purchasebrothers</uri>"
-			"</author>"
-			"<media:group>"
-				"<media:title type='plain'>Escape From City 17 - Part One</media:title>"
-				"<media:description type='plain'>Directed by The Purchase Brothers. *snip*</media:description>"
-				"<media:keywords>Half Life, escape from city 17, half-life, half life 2, part one, purchase brothers, david purchase, ian purchase</media:keywords>"
-				"<yt:duration seconds='330'/>"
-				"<media:category label='Film &amp; Animation' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Film</media:category>"
-				"<media:content url='http://www.youtube.com/v/q1UPMEmCqZo&amp;f=standard&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='330' yt:format='5'/>"
-				"<media:content url='rtsp://rtsp2.youtube.com/CiQLENy73wIaGwmaqYJJMA9VqxMYDSANFEgGUghzdGFuZGFyZAw=/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='330' yt:format='1'/>"
-				"<media:content url='rtsp://rtsp2.youtube.com/CiQLENy73wIaGwmaqYJJMA9VqxMYESARFEgGUghzdGFuZGFyZAw=/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='330' yt:format='6'/>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/q1UPMEmCqZo/2.jpg' height='97' width='130' time='00:02:45'/>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/q1UPMEmCqZo/1.jpg' height='97' width='130' time='00:01:22.500'/>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/q1UPMEmCqZo/3.jpg' height='97' width='130' time='00:04:07.500'/>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/q1UPMEmCqZo/0.jpg' height='240' width='320' time='00:02:45'/>"
-				"<media:player url='http://www.youtube.com/watch?v=q1UPMEmCqZo'/>"
-			"</media:group>"
-			"<yt:statistics viewCount='1683289' favoriteCount='29963'/>"
-			"<gd:rating min='1' max='5' numRaters='24550' average='4.95'/>"
-			"<georss:where>"
-				"<gml:Point>"
-					"<gml:pos>43.661911057260674 -79.37759399414062</gml:pos>"
-				"</gml:Point>"
-			"</georss:where>"
-			"<gd:comments>"
-				"<gd:feedLink href='http://gdata.youtube.com/feeds/api/videos/q1UPMEmCqZo/comments' countHint='13021'/>"
-			"</gd:comments>"
-		"</entry>", -1, &error));
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_json (GDATA_TYPE_YOUTUBE_VIDEO,
+		"{"
+			"'kind': 'youtube#video',"
+			"'id': 'q1UPMEmCqZo'"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_clear_error (&error);
@@ -2062,7 +2008,7 @@ test_query_single (gconstpointer service)
 
 	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
-	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
+	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "_LeQuMpwbW4");
 	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	g_clear_error (&error);
@@ -2087,7 +2033,7 @@ G_STMT_START {
 		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 		g_assert_cmpstr (gdata_youtube_video_get_video_id (video), ==, "_LeQuMpwbW4");
-		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "tag:youtube.com,2008:video:_LeQuMpwbW4");
+		g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (video)), ==, "_LeQuMpwbW4");
 		G_GNUC_END_IGNORE_DEPRECATIONS
 
 		g_object_unref (video);
@@ -2760,7 +2706,9 @@ main (int argc, char *argv[])
 	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
 #if 0
-FIXME: Port and re-enable these tests
+FIXME: These have been ported, but cannot be re-enabled yet due to creating
+       requests with the current date and time in them. This needs some
+       uhttpmock magic.
 	g_test_add_data_func ("/youtube/query/standard_feeds", service, test_query_standard_feeds);
 	g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
 	g_test_add_data_func ("/youtube/query/standard_feed/with_query", service, test_query_standard_feed_with_query);
@@ -2771,6 +2719,8 @@ FIXME: Port and re-enable these tests
 	g_test_add_data_func ("/youtube/query/standard_feed/async/progress_closure", service, test_query_standard_feed_async_progress_closure);
 	g_test_add ("/youtube/query/standard_feed/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
 	            test_query_standard_feed_async_cancellation, gdata_tear_down_async_test_data);
+#endif
+
 	g_test_add_data_func ("/youtube/query/related", service, test_query_related);
 	g_test_add ("/youtube/query/related/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_related_async,
 	            gdata_tear_down_async_test_data);
@@ -2778,10 +2728,13 @@ FIXME: Port and re-enable these tests
 	g_test_add ("/youtube/query/related/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
 	            test_query_related_async_cancellation, gdata_tear_down_async_test_data);
 
+/* FIXME: Port and re-enable these tests */
+#if 0
 	g_test_add ("/youtube/upload/simple", UploadData, service, set_up_upload, test_upload_simple, tear_down_upload);
 	g_test_add ("/youtube/upload/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_async, tear_down_upload_async);
 	g_test_add ("/youtube/upload/async/cancellation", GDataAsyncTestData, service, set_up_upload_async, test_upload_async_cancellation,
 	            tear_down_upload_async);
+#endif
 
 	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 	g_test_add ("/youtube/query/single/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_single_async,
@@ -2789,6 +2742,7 @@ FIXME: Port and re-enable these tests
 	g_test_add ("/youtube/query/single/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
 	            test_query_single_async_cancellation, gdata_tear_down_async_test_data);
 
+#if 0
 	g_test_add ("/youtube/comment/query", CommentData, service, set_up_comment, test_comment_query, tear_down_comment);
 	g_test_add ("/youtube/comment/query/async", GDataAsyncTestData, service, set_up_comment_async, test_comment_query_async,
 	            tear_down_comment_async);
