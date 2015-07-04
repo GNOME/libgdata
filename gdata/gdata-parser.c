@@ -1086,6 +1086,9 @@ gdata_parser_strv_from_json_member (JsonReader *reader,
 		json_reader_end_element (reader);
 	}
 
+	/* NULL terminator. */
+	g_ptr_array_add (out, NULL);
+
 	/* Success! */
 	*output = (gchar **) g_ptr_array_free (out, FALSE);
 	*success = TRUE;
