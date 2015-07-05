@@ -268,6 +268,7 @@ gdata_youtube_service_error_quark (void)
 	return g_quark_from_static_string ("gdata-youtube-service-error-quark");
 }
 
+static void gdata_youtube_service_batchable_init (GDataBatchableIface *iface);
 static void gdata_youtube_service_finalize (GObject *object);
 static void gdata_youtube_service_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_youtube_service_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
@@ -288,7 +289,9 @@ enum {
 /* Reference: https://developers.google.com/youtube/v3/guides/authentication */
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (youtube, "youtube",
                                     "https://www.googleapis.com/auth/youtube")
-G_DEFINE_TYPE_WITH_CODE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE, G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE, NULL))
+G_DEFINE_TYPE_WITH_CODE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE,
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE,
+                                                gdata_youtube_service_batchable_init))
 
 static void
 gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
@@ -322,6 +325,20 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 	                                                      "Developer key", "Your YouTube developer API key.",
 	                                                      NULL,
 	                                                      G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+}
+
+static gboolean
+gdata_youtube_service_batchable_is_supported (GDataBatchOperationType operation_type)
+{
+	/* Batch operation support was removed with v3 of the API:
+	 * https://developers.google.com/youtube/v3/guides/implementation/deprecated#Batch_Processing */
+	return FALSE;
+}
+
+static void
+gdata_youtube_service_batchable_init (GDataBatchableIface *iface)
+{
+	iface->is_supported = gdata_youtube_service_batchable_is_supported;
 }
 
 static void
