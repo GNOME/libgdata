@@ -573,6 +573,9 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 		g_get_current_time (&tv);
 
+		/* Squash the microseconds; they’re not useful. */
+		tv.tv_usec = 0;
+
 		switch (priv->age) {
 		case GDATA_YOUTUBE_AGE_TODAY:
 			tv.tv_sec -= 24 * 60 * 60;
