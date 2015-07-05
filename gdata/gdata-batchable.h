@@ -46,6 +46,13 @@ typedef struct _GDataBatchable		GDataBatchable; /* dummy typedef */
 
 /**
  * GDataBatchableIface:
+ * @is_supported: Determines whether the given #GDataBatchOperationType is
+ *    supported by this #GDataBatchable; if not, operations using it will return
+ *    %GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION. It is valid for a
+ *    #GDataBatchable to return %FALSE for all #GDataBatchOperationTypes if the
+ *    server no longer supports batch operations. If this method is not
+ *    implemented, it is assumed that all #GDataBatchOperationTypes are
+ *    supported. Since: UNRELEASED.
  *
  * All the fields in the #GDataBatchableIface structure are private and should never be accessed directly.
  *
@@ -54,6 +61,9 @@ typedef struct _GDataBatchable		GDataBatchable; /* dummy typedef */
 typedef struct {
 	/*< private >*/
 	GTypeInterface parent;
+
+	/*< public >*/
+	gboolean (*is_supported) (GDataBatchOperationType operation_type);
 } GDataBatchableIface;
 
 GType gdata_batchable_get_type (void) G_GNUC_CONST;

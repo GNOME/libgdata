@@ -94,10 +94,12 @@
 
 #include <config.h>
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <string.h>
 
 #include "gdata-batch-operation.h"
 #include "gdata-batch-feed.h"
+#include "gdata-batchable.h"
 #include "gdata-private.h"
 #include "gdata-batch-private.h"
 
@@ -611,6 +613,30 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 	g_return_val_if_fail (priv->has_run == FALSE, FALSE);
+
+	/* Check for early cancellation. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		return FALSE;
+	}
+
+	/* Check whether the service actually supports these kinds of
+	 * operations. */
+	g_hash_table_iter_init (&iter, priv->operations);
+	while (g_hash_table_iter_next (&iter, &op_id, (gpointer*) &op) == TRUE) {
+		GDataBatchable *batchable = GDATA_BATCHABLE (priv->service);
+		GDataBatchableIface *batchable_iface;
+
+		batchable_iface = GDATA_BATCHABLE_GET_IFACE (batchable);
+
+		if (batchable_iface->is_supported != NULL &&
+		    !batchable_iface->is_supported (op->type)) {
+			g_set_error (error, GDATA_SERVICE_ERROR,
+			             GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION,
+			             _("Batch operations are unsupported by "
+			               "this service."));
+			return FALSE;
+		}
+	}
 
 	message = _gdata_service_build_message (priv->service, priv->authorization_domain, SOUP_METHOD_POST, priv->feed_uri, NULL, TRUE);
 
