@@ -2594,11 +2594,14 @@ test_batch (BatchData *data, gconstpointer service)
 	g_object_unref (service2);
 	g_free (feed_uri);
 
-	/* Run a singleton batch operation to query one of the entries */
+	/* Run a singleton batch operation to query one of the entries. This
+	 * should now always fail, as batch operations were deprecated by v3
+	 * of the YouTube API. */
 	gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, NULL);
 
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
-	g_assert_no_error (error);
+	g_assert (!gdata_batch_operation_run (operation, NULL, &error));
+	g_assert_error (error, GDATA_SERVICE_ERROR,
+	                GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION);
 
 	g_clear_error (&error);
 	g_object_unref (operation);
@@ -2612,8 +2615,9 @@ test_batch (BatchData *data, gconstpointer service)
 	                                           NULL);
 	g_assert_cmpuint (op_id, !=, op_id2);
 
-	g_assert (gdata_batch_operation_run (operation, NULL, &error) == TRUE);
-	g_assert_no_error (error);
+	g_assert (!gdata_batch_operation_run (operation, NULL, &error));
+	g_assert_error (error, GDATA_SERVICE_ERROR,
+	                GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION);
 
 	g_clear_error (&error);
 	g_object_unref (operation);
@@ -2626,8 +2630,9 @@ test_batch_async_cb (GDataBatchOperation *operation, GAsyncResult *async_result,
 {
 	GError *error = NULL;
 
-	g_assert (gdata_batch_operation_run_finish (operation, async_result, &error) == TRUE);
-	g_assert_no_error (error);
+	g_assert (!gdata_batch_operation_run_finish (operation, async_result, &error));
+	g_assert_error (error, GDATA_SERVICE_ERROR,
+	                GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION);
 	g_clear_error (&error);
 
 	g_main_loop_quit (main_loop);
@@ -2638,13 +2643,14 @@ test_batch_async (BatchData *data, gconstpointer service)
 {
 	GDataBatchOperation *operation;
 	GMainLoop *main_loop;
+	GError *error = NULL;
 
 	gdata_test_mock_server_start_trace (mock_server, "batch-async");
 
 	/* Run an async query operation on the video */
 	operation = gdata_batchable_create_operation (GDATA_BATCHABLE (service), gdata_youtube_service_get_primary_authorization_domain (),
 	                                              "https://gdata.youtube.com/feeds/api/videos/batch");
-	gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, NULL);
+	gdata_test_batch_operation_query (operation, gdata_entry_get_id (data->new_video), GDATA_TYPE_YOUTUBE_VIDEO, data->new_video, NULL, &error);
 
 	main_loop = g_main_loop_new (NULL, TRUE);
 
@@ -2652,6 +2658,10 @@ test_batch_async (BatchData *data, gconstpointer service)
 
 	g_main_loop_run (main_loop);
 	g_main_loop_unref (main_loop);
+
+	g_assert_error (error, GDATA_SERVICE_ERROR,
+	                GDATA_SERVICE_ERROR_WITH_BATCH_OPERATION);
+	g_clear_error (&error);
 
 	uhm_server_end_trace (mock_server);
 }
@@ -2886,11 +2896,12 @@ main (int argc, char *argv[])
 	            gdata_tear_down_async_test_data);
 	g_test_add ("/youtube/categories/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
 	            test_categories_async_cancellation, gdata_tear_down_async_test_data);
+#endif
 
 	g_test_add ("/youtube/batch", BatchData, service, setup_batch, test_batch, teardown_batch);
 	g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);
 	g_test_add ("/youtube/batch/async/cancellation", BatchData, service, setup_batch, test_batch_async_cancellation, teardown_batch);
-#endif
+
 	g_test_add_func ("/youtube/service/properties", test_service_properties);
 
 	g_test_add_func ("/youtube/parsing/app:control", test_parsing_app_control);
