@@ -1,20 +1,20 @@
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A01.851678Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004302
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 1 (0x75daa0), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A26.163311Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093966
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 1 (0x2636aa0), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004302
-< Soup-Debug: SoupMessage 1 (0x75daa0)
-< Expires: Sat, 04 Jul 2015 10:05:02 GMT
-< Date: Sat, 04 Jul 2015 10:05:02 GMT
+< Soup-Debug-Timestamp: 1436093966
+< Soup-Debug: SoupMessage 1 (0x2636aa0)
+< Expires: Sun, 05 Jul 2015 10:59:26 GMT
+< Date: Sun, 05 Jul 2015 10:59:26 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/EqxZxNm4OUAmfCFSSJrNaPYJC5k"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/ZYlPuRt1yTXsYlmAIFnxVxqamT4"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -28,13 +28,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/EqxZxNm4OUAmfCFSSJrNaPYJC5k\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ZYlPuRt1yTXsYlmAIFnxVxqamT4\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -86,124 +152,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -284,108 +232,114 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
 <  ]
 < }
   
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A02.220539Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004302
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 2 (0x75dc80), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A26.442088Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093966
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 2 (0x2636c80), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004302
-< Soup-Debug: SoupMessage 2 (0x75dc80)
-< Expires: Sat, 04 Jul 2015 10:05:02 GMT
-< Date: Sat, 04 Jul 2015 10:05:02 GMT
+< Soup-Debug-Timestamp: 1436093966
+< Soup-Debug: SoupMessage 2 (0x2636c80)
+< Expires: Sun, 05 Jul 2015 10:59:26 GMT
+< Date: Sun, 05 Jul 2015 10:59:26 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/no0r2yxd9yDdSxhgUKAxxspk4gQ"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/q2ogXrvARItq0hvpS9slxrLYQ4A"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -399,13 +353,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/no0r2yxd9yDdSxhgUKAxxspk4gQ\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/q2ogXrvARItq0hvpS9slxrLYQ4A\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -457,124 +477,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -655,108 +557,114 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
 <  ]
 < }
   
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A02.374726Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004302
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 3 (0x75dc80), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A26.599691Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093966
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 3 (0x2636c80), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004302
-< Soup-Debug: SoupMessage 3 (0x75dc80)
-< Expires: Sat, 04 Jul 2015 10:05:02 GMT
-< Date: Sat, 04 Jul 2015 10:05:02 GMT
+< Soup-Debug-Timestamp: 1436093966
+< Soup-Debug: SoupMessage 3 (0x2636c80)
+< Expires: Sun, 05 Jul 2015 10:59:26 GMT
+< Date: Sun, 05 Jul 2015 10:59:26 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/sEb79R-yAm_bInLl8sJAlqyTGn4"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/EqA7gvCz0SkY8EydbKOk_BRm80Q"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -770,13 +678,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/sEb79R-yAm_bInLl8sJAlqyTGn4\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/EqA7gvCz0SkY8EydbKOk_BRm80Q\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -828,124 +802,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -1026,85 +882,91 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
@@ -1112,22 +974,22 @@
 < }
   
 > GET /youtube/v3/videos?part=snippet&chart=mostPopular HTTP/1.1
-> Soup-Debug-Timestamp: 1436004302
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 4 (0x75daa0), SoupSocket 1 (0x65b1a0)
+> Soup-Debug-Timestamp: 1436093966
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 4 (0x2636aa0), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004302
-< Soup-Debug: SoupMessage 4 (0x75daa0)
-< Expires: Sat, 04 Jul 2015 10:05:02 GMT
-< Date: Sat, 04 Jul 2015 10:05:02 GMT
+< Soup-Debug-Timestamp: 1436093966
+< Soup-Debug: SoupMessage 4 (0x2636aa0)
+< Expires: Sun, 05 Jul 2015 10:59:26 GMT
+< Date: Sun, 05 Jul 2015 10:59:26 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/xLaKGHr4jeBfJQKM3m3ieGbJ-S8"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/3OjiqX4toXqpdPa4f_4_gbG-iSQ"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -1141,13 +1003,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/xLaKGHr4jeBfJQKM3m3ieGbJ-S8\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/3OjiqX4toXqpdPa4f_4_gbG-iSQ\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -1199,124 +1127,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -1397,108 +1207,114 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
 <  ]
 < }
   
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A02.714723Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004302
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 5 (0x75d8c0), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A26.944578Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093966
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 5 (0x26368c0), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004302
-< Soup-Debug: SoupMessage 5 (0x75d8c0)
-< Expires: Sat, 04 Jul 2015 10:05:02 GMT
-< Date: Sat, 04 Jul 2015 10:05:02 GMT
+< Soup-Debug-Timestamp: 1436093967
+< Soup-Debug: SoupMessage 5 (0x26368c0)
+< Expires: Sun, 05 Jul 2015 10:59:27 GMT
+< Date: Sun, 05 Jul 2015 10:59:27 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/MHRxBLFt9M4PAW7SOvMLi1DX_7E"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/NsWaQqdK70alKA2GfnL3DNKVlH8"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -1512,13 +1328,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/MHRxBLFt9M4PAW7SOvMLi1DX_7E\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/NsWaQqdK70alKA2GfnL3DNKVlH8\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -1570,124 +1452,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -1768,108 +1532,114 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
 <  ]
 < }
   
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A02.880117Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004302
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 6 (0x75d8c0), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A27.066478Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093967
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 6 (0x26368c0), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004303
-< Soup-Debug: SoupMessage 6 (0x75d8c0)
-< Expires: Sat, 04 Jul 2015 10:05:03 GMT
-< Date: Sat, 04 Jul 2015 10:05:03 GMT
+< Soup-Debug-Timestamp: 1436093967
+< Soup-Debug: SoupMessage 6 (0x26368c0)
+< Expires: Sun, 05 Jul 2015 10:59:27 GMT
+< Date: Sun, 05 Jul 2015 10:59:27 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/2RYvCrrx40PKP3UnuDR8XPhXXcY"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/nY1L0NGz3R_U1BgTl1yRnQe2u0Y"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -1883,13 +1653,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/2RYvCrrx40PKP3UnuDR8XPhXXcY\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/nY1L0NGz3R_U1BgTl1yRnQe2u0Y\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -1941,124 +1777,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -2139,108 +1857,114 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
 <  ]
 < }
   
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A03.030129Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004303
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 7 (0x75daa0), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A27.249053Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093967
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 7 (0x2636aa0), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004303
-< Soup-Debug: SoupMessage 7 (0x75daa0)
-< Expires: Sat, 04 Jul 2015 10:05:03 GMT
-< Date: Sat, 04 Jul 2015 10:05:03 GMT
+< Soup-Debug-Timestamp: 1436093967
+< Soup-Debug: SoupMessage 7 (0x2636aa0)
+< Expires: Sun, 05 Jul 2015 10:59:27 GMT
+< Date: Sun, 05 Jul 2015 10:59:27 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/AxSEqHy0Yf74o466P2UoKyHwveY"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/-2VLRvT2cAu_m7Awy9j1O27zRig"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -2254,13 +1978,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/AxSEqHy0Yf74o466P2UoKyHwveY\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/-2VLRvT2cAu_m7Awy9j1O27zRig\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -2312,124 +2102,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -2510,108 +2182,114 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
 <  ]
 < }
   
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A03.172150Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004303
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 8 (0x75dc80), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A27.400652Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093967
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 8 (0x2636c80), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004303
-< Soup-Debug: SoupMessage 8 (0x75dc80)
-< Expires: Sat, 04 Jul 2015 10:05:03 GMT
-< Date: Sat, 04 Jul 2015 10:05:03 GMT
+< Soup-Debug-Timestamp: 1436093967
+< Soup-Debug: SoupMessage 8 (0x2636c80)
+< Expires: Sun, 05 Jul 2015 10:59:27 GMT
+< Date: Sun, 05 Jul 2015 10:59:27 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/53bHrjLhjPwGf7TlqHAO-6fqlN0"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/BEX1dm69qvL_Tna2OTyyZ7OGRw8"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -2625,13 +2303,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/53bHrjLhjPwGf7TlqHAO-6fqlN0\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/BEX1dm69qvL_Tna2OTyyZ7OGRw8\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -2683,124 +2427,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -2881,108 +2507,114 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
 <  ]
 < }
   
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A03.394499Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004303
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 9 (0x75dc80), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A27.620565Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093967
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 9 (0x2636c80), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004303
-< Soup-Debug: SoupMessage 9 (0x75dc80)
-< Expires: Sat, 04 Jul 2015 10:05:03 GMT
-< Date: Sat, 04 Jul 2015 10:05:03 GMT
+< Soup-Debug-Timestamp: 1436093967
+< Soup-Debug: SoupMessage 9 (0x2636c80)
+< Expires: Sun, 05 Jul 2015 10:59:27 GMT
+< Date: Sun, 05 Jul 2015 10:59:27 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/FIe8dH8lr4wzbJuRQ90YfBFcIyY"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/Qt1ofOV4ifQB9b49Nkqw7XqC_pc"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -2996,13 +2628,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/FIe8dH8lr4wzbJuRQ90YfBFcIyY\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/Qt1ofOV4ifQB9b49Nkqw7XqC_pc\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -3054,124 +2752,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -3252,108 +2832,114 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }
 <  ]
 < }
   
-> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-03T10%3A05%3A03.555323Z HTTP/1.1
-> Soup-Debug-Timestamp: 1436004303
-> Soup-Debug: SoupSession 1 (0x69d270), SoupMessage 10 (0x75daa0), SoupSocket 1 (0x65b1a0)
+> GET /youtube/v3/videos?part=snippet&chart=mostPopular&publishedAfter=2015-07-04T10%3A59%3A27.804939Z HTTP/1.1
+> Soup-Debug-Timestamp: 1436093967
+> Soup-Debug: SoupSession 1 (0x2558270), SoupMessage 10 (0x2636aa0), SoupSocket 1 (0x2516370)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.pgFYW31XwxUuhHBhMUS-yFZm4_9oXvoQ-7CAI-Ny_vGVIkSku4wG0kntI2Ntz5ZjCqmo73RF_SS2sA
+> Authorization: Bearer ya29.pwGUS2OLP2LzkWNPg3L_ZGMe9sgyYU0gaeGWGOFWGz8FQfzgB3gIY0zqIwTI1W9wrCE01DdfeIxE7A
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
 > User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1436004303
-< Soup-Debug: SoupMessage 10 (0x75daa0)
-< Expires: Sat, 04 Jul 2015 10:05:03 GMT
-< Date: Sat, 04 Jul 2015 10:05:03 GMT
+< Soup-Debug-Timestamp: 1436093967
+< Soup-Debug: SoupMessage 10 (0x2636aa0)
+< Expires: Sun, 05 Jul 2015 10:59:27 GMT
+< Date: Sun, 05 Jul 2015 10:59:27 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/_GEpBluBgCq2VuPgwyfsj2_VqBk"
+< ETag: "Y3xTLFF3RLtHXX85JBgzzgp2Enw/0CHkQzzYhX8d7aS6uNc9HwUqvlc"
 < Vary: Origin
 < Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
@@ -3367,13 +2953,79 @@
 < 
 < {
 <  "kind": "youtube#videoListResponse",
-<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/_GEpBluBgCq2VuPgwyfsj2_VqBk\"",
+<  "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0CHkQzzYhX8d7aS6uNc9HwUqvlc\"",
 <  "nextPageToken": "CAUQAA",
 <  "pageInfo": {
 <   "totalResults": 30,
 <   "resultsPerPage": 5
 <  },
 <  "items": [
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/wRvhiP8-cRIMdn5iEHkquoDnnWs\"",
+<    "id": "HAnRtMEDrvU",
+<    "snippet": {
+<     "publishedAt": "2015-07-04T10:30:15.000Z",
+<     "channelId": "UCF0t9oIvSEc7vzSj8ZF1fbQ",
+<     "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<     "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      },
+<      "standard": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/sddefault.jpg",
+<       "width": 640,
+<       "height": 480
+<      },
+<      "maxres": {
+<       "url": "https://i.ytimg.com/vi/HAnRtMEDrvU/maxresdefault.jpg",
+<       "width": 1280,
+<       "height": 720
+<      }
+<     },
+<     "channelTitle": "Telltale Games",
+<     "tags": [
+<      "Minecraft (Award-Winning Work)",
+<      "Mojang (Video Game Developer)",
+<      "Telltale Games (Video Game Developer)",
+<      "Patton Oswalt (TV Producer)",
+<      "Brian Posehn",
+<      "Ashley Johnson",
+<      "Scott Porter",
+<      "Martha Plimpton",
+<      "Corey Feldman",
+<      "Corey Feldman (Celebrity)",
+<      "Billy West",
+<      "MineCon",
+<      "Minecraft: Story Mode",
+<      "Paul Reubens",
+<      "PlayStation 3 (Video Game Platform)",
+<      "PlayStation 4 (Video Game Platform)",
+<      "Xbox 360 (Video Game Platform)",
+<      "Xbox Games Store (Video Game Distribution System)",
+<      "Video Game (Industry)"
+<     ],
+<     "categoryId": "20",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Minecraft: Story Mode [Minecon 2015 Trailer]",
+<      "description": "Minecraft:  Story Mode is an adventure game, by Telltale Games, set in a Minecraft world. It is a five-part episodic series that will take you to the Nether, the Farlands, the End, and beyond! You will drive how the story flows through the decisions you make: what you say to people (and how you say it), and what you choose to do in moments of thrilling action. \n\nPlayers will control protagonist Jesse throughout the season, as portrayed by actor Patton Oswalt. Jesse and his group of friends revere the legendary Order of the Stone; four adventurers who slayed an Ender Dragon. The Order is the very best at what they do: Warrior, Redstone Engineer, Griefer, and Architect. While at EnderCon, Jesse and his friends discover that something is wrong... something dreadful. Terror is unleashed, and they must set out on a journey to find The Order of the Stone if they are to save their world from oblivion.\n\nAvailable to download soon for PC, Mac, PlayStation 3, PlayStation 4, Xbox 360, Xbox One, compatible iOS devices, and Android."
+<     }
+<    }
+<   },
 <   {
 <    "kind": "youtube#video",
 <    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/HCzbW9TmGX_tjL-jXsRWjhqrAUQ\"",
@@ -3425,124 +3077,6 @@
 <     "localized": {
 <      "title": "Conan Crashes A \"Magic Mike XXL\" Girls' Night Out  - CONAN on TBS",
 <      "description": "CONAN Highlight: Conan joins ladies from the office to catch a midnight showing of Channing Tatum & Joe Manganiello's new bump 'n grind hit.\n\nMore CONAN @ http://teamcoco.com/video\n\nTeam Coco is the official YouTube channel of late night host Conan O'Brien, CONAN on TBS & TeamCoco.com. Subscribe now to be updated on the latest videos: http://bit.ly/W5wt5D\n\nFor Full Episodes of CONAN on TBS, visit http://teamcoco.com/video\n\nGet Social With Team Coco:\nOn Facebook: \u202ahttps://www.facebook.com/TeamCoco\u202c\nOn Google+: https://plus.google.com/+TeamCoco/\nOn Twitter: http://twitter.com/TeamCoco\nOn Tumblr: http://teamcoco.tumblr.com\nOn YouTube: http://youtube.com/teamcoco\n\nFollow Conan O'Brien on Twitter: http://twitter.com/ConanOBrien"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/QIzxJJJz5FgzDMa4L4A6Aw3HcO4\"",
-<    "id": "PLlMTn_Jzok",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T13:30:02.000Z",
-<     "channelId": "UCWOA1ZGywLbqmigxE4Qlvuw",
-<     "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<     "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/PLlMTn_Jzok/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Netflix",
-<     "tags": [
-<      "Wet Hot American Summer: First Day of Camp",
-<      "Wet Hot American Summer",
-<      "Elizabeth Banks",
-<      "Michael Ian Black",
-<      "Bradley Cooper",
-<      "Judah Friedlander",
-<      "Janeane Garofalo",
-<      "Joe Lo Truglio",
-<      "Ken Marino",
-<      "Christopher Meloni",
-<      "Marguerite Moreau",
-<      "Zak Orth",
-<      "Amy Poehler",
-<      "David Hyde Pierce",
-<      "Paul Rudd",
-<      "Molly Shannon",
-<      "Michael Showalter",
-<      "Jon Hamm",
-<      "Kristen Wiig",
-<      "John Slattery",
-<      "Netflix",
-<      "Netflix original series",
-<      "Camp",
-<      "Camp Firewood",
-<      "Comedy",
-<      "Trailer"
-<     ],
-<     "categoryId": "24",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Wet Hot American Summer: First Day of Camp - Official Trailer - Netflix [HD]",
-<      "description": "Join us July 31 for Wet Hot American Summer: First Day of Camp, a limited 8-episode series coming to Netflix. \n\nIt's the first day of camp in this outrageous prequel to the hilarious 2001 cult classic movie. And at Camp Firewood, anything can happen. \n\nAn all-star cast delivers big laughs in this irreverent spoof of summer camp and '80s teenager movies. We've seen the last day of summer in the classic original film, now discover the events that shaped these iconic characters on the first day of Camp Firewood's season.\n\nElizabeth Banks, Michael Ian Black, Bradley Cooper, Judah Friedlander, Janeane Garofalo, Joe Lo Truglio, Ken Marino, Christopher Meloni, Marguerite Moreau, Zak Orth, Amy Poehler, David Hyde Pierce, Paul Rudd, Molly Shannon, and Michael Showalter join together with new characters played by Jon Hamm, Kristen Wiig, John Slattery, and more. It's going to be an unforgettable day of events in Wet Hot American Summer: First Day of Camp!"
-<     }
-<    }
-<   },
-<   {
-<    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/9-OOT4b8bJXoBnIdegs_Xz2niBI\"",
-<    "id": "V3Y8IU6st5E",
-<    "snippet": {
-<     "publishedAt": "2015-07-02T10:54:15.000Z",
-<     "channelId": "UCLWCFBRP4Qtk6a0SPN5lRsQ",
-<     "title": "Arrogant cat",
-<     "description": "Contacts: jordasut@gmail.com",
-<     "thumbnails": {
-<      "default": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/default.jpg",
-<       "width": 120,
-<       "height": 90
-<      },
-<      "medium": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/mqdefault.jpg",
-<       "width": 320,
-<       "height": 180
-<      },
-<      "high": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/hqdefault.jpg",
-<       "width": 480,
-<       "height": 360
-<      },
-<      "standard": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/sddefault.jpg",
-<       "width": 640,
-<       "height": 480
-<      },
-<      "maxres": {
-<       "url": "https://i.ytimg.com/vi/V3Y8IU6st5E/maxresdefault.jpg",
-<       "width": 1280,
-<       "height": 720
-<      }
-<     },
-<     "channelTitle": "Snoky Hootan",
-<     "categoryId": "15",
-<     "liveBroadcastContent": "none",
-<     "localized": {
-<      "title": "Arrogant cat",
-<      "description": "Contacts: jordasut@gmail.com"
 <     }
 <    }
 <   },
@@ -3623,85 +3157,91 @@
 <   },
 <   {
 <    "kind": "youtube#video",
-<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/0P4qage0JWC9DBPp05c25Q2F038\"",
-<    "id": "xvmX8SAzfZM",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ofZUn2TDkcNOzoD7YR3X0yrlqtg\"",
+<    "id": "dCV6RusogAk",
 <    "snippet": {
-<     "publishedAt": "2015-07-03T18:03:38.000Z",
-<     "channelId": "UCCSjLVJs5wD_BKaQqzXwyhg",
-<     "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<     "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse",
+<     "publishedAt": "2015-07-03T17:17:15.000Z",
+<     "channelId": "UCXR2od6-d7g8_F038fCNDDA",
+<     "title": "Nintendo Playstation Superdisc",
+<     "description": "",
 <     "thumbnails": {
 <      "default": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/default.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/default.jpg",
 <       "width": 120,
 <       "height": 90
 <      },
 <      "medium": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/mqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/mqdefault.jpg",
 <       "width": 320,
 <       "height": 180
 <      },
 <      "high": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/hqdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/dCV6RusogAk/hqdefault.jpg",
+<       "width": 480,
+<       "height": 360
+<      }
+<     },
+<     "channelTitle": "dizzle521",
+<     "categoryId": "22",
+<     "liveBroadcastContent": "none",
+<     "localized": {
+<      "title": "Nintendo Playstation Superdisc",
+<      "description": ""
+<     }
+<    }
+<   },
+<   {
+<    "kind": "youtube#video",
+<    "etag": "\"Y3xTLFF3RLtHXX85JBgzzgp2Enw/ICjYKf5GE_1y6_A57XpHhaeR-wc\"",
+<    "id": "E1d_dmKBiiI",
+<    "snippet": {
+<     "publishedAt": "2015-07-02T18:19:48.000Z",
+<     "channelId": "UCW3T8dQVEynwj6-_DArcM7w",
+<     "title": "French Bulldog gets outed by his best friend",
+<     "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com.",
+<     "thumbnails": {
+<      "default": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/default.jpg",
+<       "width": 120,
+<       "height": 90
+<      },
+<      "medium": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/mqdefault.jpg",
+<       "width": 320,
+<       "height": 180
+<      },
+<      "high": {
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/hqdefault.jpg",
 <       "width": 480,
 <       "height": 360
 <      },
 <      "standard": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/sddefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/sddefault.jpg",
 <       "width": 640,
 <       "height": 480
 <      },
 <      "maxres": {
-<       "url": "https://i.ytimg.com/vi/xvmX8SAzfZM/maxresdefault.jpg",
+<       "url": "https://i.ytimg.com/vi/E1d_dmKBiiI/maxresdefault.jpg",
 <       "width": 1280,
 <       "height": 720
 <      }
 <     },
-<     "channelTitle": "SOLAR IMPULSE",
+<     "channelTitle": "Rumble Viral",
 <     "tags": [
-<      "Solar Impulse",
-<      "Solar-Powered Plane",
-<      "Solar",
-<      "Plane",
-<      "Bertrand Piccard",
-<      "André Borschberg",
-<      "Airplane",
-<      "Video",
-<      "Clean",
-<      "Technologies",
-<      "Energy",
-<      "Cells",
-<      "Aviation",
-<      "Technology",
-<      "Round The World",
-<      "Around",
-<      "Flight",
-<      "Fly",
-<      "World",
-<      "Renewable",
-<      "Energies",
-<      "Solvay",
-<      "Omega",
-<      "Schindler",
-<      "ABB",
-<      "Bayer",
-<      "Material",
-<      "Science",
-<      "Altran",
-<      "Swiss",
-<      "Re",
-<      "Corporate",
-<      "Solutions",
-<      "Google",
-<      "Moet",
-<      "Hennessy",
-<      "Swisscom"
+<      "viral videos",
+<      "funny videos",
+<      "funny dogs",
+<      "dog videos",
+<      "dog snitches on friend",
+<      "dog tells on other dog",
+<      "french bulldog",
+<      "bull mastiff"
 <     ],
-<     "categoryId": "28",
+<     "categoryId": "15",
 <     "liveBroadcastContent": "none",
 <     "localized": {
-<      "title": "LIVE: Solar Impulse Airplane - Landing in Hawaii - #RTW Attempt",
-<      "description": "Get more information about the project: http://www.solarimpulse.com\n\n#Solarimpulse #RTW #Si2\n\nSubscribe to our Youtube Channel:\nhttp://www.youtube.com/subscription_center?add_user=SolarImpulseChannel\n\nLink to the #Insider Series: \nhttps://www.youtube.com/playlist?list=PL-tY-9eGABwxWVn4IrGggNoFgcB1htJmW\n\nMore videos about Solar Impulse 2:\nGoPro: Solar Impulse 2 Airplane Exclusive Shots https://www.youtube.com/watch?v=XA5cPuhEinU\nWhy Solar Impulse? https://www.youtube.com/watch?v=azXbqnTqwFA&index=2&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nThe Construction of Si2: https://www.youtube.com/watch?v=oNMBPJpaimc&index=3&list=PL-tY-9eGABwz5NKQY7C6vnzciWGL-F_mq\nFirst Flight Si2 Best-Of : https://www.youtube.com/watch?v=yUpyuORoB8o\n\nLinks about Solar Impulse:\nhttp://www.facebook.com/solarimpulse\nhttp://www.plus.google.com/+solarimpulse\nhttp://www.twitter.com/solarimpulse\nhttp://www.instagram.com/solarimpulse"
+<      "title": "French Bulldog gets outed by his best friend",
+<      "description": "When asked who chewed up all the toilet paper this French Bulldog has nothing to say. However, her Bull Mastiff \"friend\" has no problem literally pointing her out. Check out their hilarious reactions!\n\nSource & embed code: https://rumble.com/v2zma4-french-bulldog-outed-by-bull-mastiff.html.\n\nFor licensing, please email licensing@rumble.com."
 <     }
 <    }
 <   }

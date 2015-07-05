@@ -114,6 +114,8 @@ static const GDataTestRequestErrorData authentication_errors[] = {
 	  gdata_service_error_quark, GDATA_SERVICE_ERROR_CONFLICT },
 	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Internal Server Error", "Whoops.",
 	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+#if 0
+FIXME: These need porting to JSON.
 	/* Specific authentication errors. */
 	{ SOUP_STATUS_FORBIDDEN, "Access Forbidden", "Error=BadAuthentication\n",
 	  gdata_client_login_authorizer_error_quark, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_BAD_AUTHENTICATION },
@@ -148,6 +150,7 @@ static const GDataTestRequestErrorData authentication_errors[] = {
 	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
 	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Access Forbidden", "Error=Foobar\nUrl=http://example.com/\n", /* unknown Error */
 	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+#endif
 };
 
 static void
@@ -304,6 +307,7 @@ test_query_standard_feeds (gconstpointer service)
 	GDataFeed *feed;
 	GError *error = NULL;
 	guint i;
+	gulong filter_id;
 	GDataYouTubeStandardFeedType feeds[] = {
 		/* This must be kept up-to-date with GDataYouTubeStandardFeedType. */
 		GDATA_YOUTUBE_TOP_RATED_FEED,
@@ -317,7 +321,13 @@ test_query_standard_feeds (gconstpointer service)
 		GDATA_YOUTUBE_RECENTLY_FEATURED_FEED,
 		GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED,
 	};
+	const gchar *ignore_query_param_values[] = {
+		"publishedAfter",
+		NULL,
+	};
 
+	filter_id = uhm_server_filter_ignore_parameter_values (mock_server,
+	                                                       ignore_query_param_values);
 	gdata_test_mock_server_start_trace (mock_server, "query-standard-feeds");
 
 	for (i = 0; i < G_N_ELEMENTS (feeds); i++) {
@@ -332,6 +342,7 @@ test_query_standard_feeds (gconstpointer service)
 	}
 
 	uhm_server_end_trace (mock_server);
+	uhm_server_compare_messages_remove_filter (mock_server, filter_id);
 }
 
 static void
@@ -339,7 +350,14 @@ test_query_standard_feed (gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
+	gulong filter_id;
+	const gchar *ignore_query_param_values[] = {
+		"publishedAfter",
+		NULL,
+	};
 
+	filter_id = uhm_server_filter_ignore_parameter_values (mock_server,
+	                                                       ignore_query_param_values);
 	gdata_test_mock_server_start_trace (mock_server, "query-standard-feed");
 
 	feed = gdata_youtube_service_query_standard_feed (GDATA_YOUTUBE_SERVICE (service), GDATA_YOUTUBE_TOP_RATED_FEED, NULL, NULL, NULL, NULL, &error);
@@ -347,11 +365,12 @@ test_query_standard_feed (gconstpointer service)
 	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
 
-	g_assert_cmpstr (gdata_feed_get_title (feed), ==, "Top Rated");
+	g_assert_cmpuint (g_list_length (gdata_feed_get_entries (feed)), >, 0);
 
 	g_object_unref (feed);
 
 	uhm_server_end_trace (mock_server);
+	uhm_server_compare_messages_remove_filter (mock_server, filter_id);
 }
 
 static void
@@ -360,6 +379,14 @@ test_query_standard_feed_with_query (gconstpointer service)
 	GDataYouTubeQuery *query;
 	GDataFeed *feed;
 	GError *error = NULL;
+	gulong filter_id;
+	const gchar *ignore_query_param_values[] = {
+		"publishedAfter",
+		NULL,
+	};
+
+	filter_id = uhm_server_filter_ignore_parameter_values (mock_server,
+	                                                       ignore_query_param_values);
 
 	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
@@ -373,12 +400,13 @@ test_query_standard_feed_with_query (gconstpointer service)
 	g_assert (GDATA_IS_FEED (feed));
 	g_clear_error (&error);
 
-	g_assert_cmpstr (gdata_feed_get_title (feed), ==, "Top Rated");
+	g_assert_cmpuint (g_list_length (gdata_feed_get_entries (feed)), >, 0);
 
 	g_object_unref (query);
 	g_object_unref (feed);
 
 	uhm_server_end_trace (mock_server);
+	uhm_server_compare_messages_remove_filter (mock_server, filter_id);
 
 	G_GNUC_END_IGNORE_DEPRECATIONS
 }
@@ -394,6 +422,8 @@ static const GDataTestRequestErrorData query_standard_feed_errors[] = {
 	  gdata_service_error_quark, GDATA_SERVICE_ERROR_CONFLICT },
 	{ SOUP_STATUS_INTERNAL_SERVER_ERROR, "Internal Server Error", "Whoops.",
 	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+#if 0
+FIXME
 	/* Specific query errors. */
 	{ SOUP_STATUS_FORBIDDEN, "Too Many Calls",
 	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:quota</domain><code>too_many_recent_calls</code></error></errors>",
@@ -432,6 +462,7 @@ static const GDataTestRequestErrorData query_standard_feed_errors[] = {
 	{ SOUP_STATUS_FORBIDDEN, "Unknown Error Domain",
 	  "<?xml version='1.0' encoding='UTF-8'?><errors><error><domain>yt:foobaz</domain><code>TokenExpired</code></error></errors>",
 	  gdata_service_error_quark, GDATA_SERVICE_ERROR_PROTOCOL_ERROR },
+#endif
 };
 
 static void
@@ -439,8 +470,12 @@ test_query_standard_feed_error (gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
-	gulong handler_id;
+	gulong handler_id, filter_id;
 	guint i;
+	const gchar *ignore_query_param_values[] = {
+		"publishedAfter",
+		NULL,
+	};
 
 	if (uhm_server_get_enable_logging (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to logging being enabled.");
@@ -449,6 +484,9 @@ test_query_standard_feed_error (gconstpointer service)
 		g_test_message ("Ignoring test due to running online and test not being reproducible.");
 		return;
 	}
+
+	filter_id = uhm_server_filter_ignore_parameter_values (mock_server,
+	                                                       ignore_query_param_values);
 
 	for (i = 0; i < G_N_ELEMENTS (query_standard_feed_errors); i++) {
 		const GDataTestRequestErrorData *data = &query_standard_feed_errors[i];
@@ -465,6 +503,8 @@ test_query_standard_feed_error (gconstpointer service)
 		uhm_server_stop (mock_server);
 		g_signal_handler_disconnect (mock_server, handler_id);
 	}
+
+	uhm_server_compare_messages_remove_filter (mock_server, filter_id);
 }
 
 static void
@@ -472,7 +512,11 @@ test_query_standard_feed_timeout (gconstpointer service)
 {
 	GDataFeed *feed;
 	GError *error = NULL;
-	gulong handler_id;
+	gulong handler_id, filter_id;
+	const gchar *ignore_query_param_values[] = {
+		"publishedAfter",
+		NULL,
+	};
 
 	if (uhm_server_get_enable_logging (mock_server) == TRUE) {
 		g_test_message ("Ignoring test due to logging being enabled.");
@@ -482,6 +526,8 @@ test_query_standard_feed_timeout (gconstpointer service)
 		return;
 	}
 
+	filter_id = uhm_server_filter_ignore_parameter_values (mock_server,
+	                                                       ignore_query_param_values);
 	handler_id = g_signal_connect (mock_server, "handle-message", (GCallback) gdata_test_mock_server_handle_message_timeout, NULL);
 	gdata_test_mock_server_run (mock_server);
 
@@ -496,6 +542,38 @@ test_query_standard_feed_timeout (gconstpointer service)
 
 	uhm_server_stop (mock_server);
 	g_signal_handler_disconnect (mock_server, handler_id);
+	uhm_server_compare_messages_remove_filter (mock_server, filter_id);
+}
+
+typedef struct {
+	GDataAsyncTestData async_data;
+	gulong filter_id;
+} StandardFeedData;
+
+static void
+set_up_standard_feed_async (StandardFeedData *standard_feed_data,
+                            gconstpointer test_data)
+{
+	const gchar *ignore_query_param_values[] = {
+		"publishedAfter",
+		NULL,
+	};
+
+	gdata_set_up_async_test_data (&standard_feed_data->async_data,
+	                              test_data);
+	standard_feed_data->filter_id =
+		uhm_server_filter_ignore_parameter_values (mock_server,
+		                                           ignore_query_param_values);
+}
+
+static void
+tear_down_standard_feed_async (StandardFeedData *standard_feed_data,
+                               gconstpointer test_data)
+{
+	uhm_server_compare_messages_remove_filter (mock_server,
+	                                           standard_feed_data->filter_id);
+	gdata_tear_down_async_test_data (&standard_feed_data->async_data,
+	                                 test_data);
 }
 
 GDATA_ASYNC_TEST_FUNCTIONS (query_standard_feed, void,
@@ -510,7 +588,8 @@ G_STMT_START {
 
 	if (error == NULL) {
 		g_assert (GDATA_IS_FEED (feed));
-		/* TODO: Tests? */
+
+		g_assert_cmpuint (g_list_length (gdata_feed_get_entries (feed)), >, 0);
 
 		g_object_unref (feed);
 	} else {
@@ -522,9 +601,16 @@ static void
 test_query_standard_feed_async_progress_closure (gconstpointer service)
 {
 	GDataAsyncProgressClosure *data = g_slice_new0 (GDataAsyncProgressClosure);
+	gulong filter_id;
+	const gchar *ignore_query_param_values[] = {
+		"publishedAfter",
+		NULL,
+	};
 
 	g_assert (service != NULL);
 
+	filter_id = uhm_server_filter_ignore_parameter_values (mock_server,
+	                                                       ignore_query_param_values);
 	gdata_test_mock_server_start_trace (mock_server, "query-standard-feed-async-progress-closure");
 
 	data->main_loop = g_main_loop_new (NULL, TRUE);
@@ -543,6 +629,7 @@ test_query_standard_feed_async_progress_closure (gconstpointer service)
 	g_slice_free (GDataAsyncProgressClosure, data);
 
 	uhm_server_end_trace (mock_server);
+	uhm_server_compare_messages_remove_filter (mock_server, filter_id);
 }
 
 static GDataYouTubeVideo *
@@ -2705,21 +2792,20 @@ main (int argc, char *argv[])
 	g_test_add ("/youtube/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
 	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
-#if 0
-FIXME: These have been ported, but cannot be re-enabled yet due to creating
-       requests with the current date and time in them. This needs some
-       uhttpmock magic.
 	g_test_add_data_func ("/youtube/query/standard_feeds", service, test_query_standard_feeds);
 	g_test_add_data_func ("/youtube/query/standard_feed", service, test_query_standard_feed);
 	g_test_add_data_func ("/youtube/query/standard_feed/with_query", service, test_query_standard_feed_with_query);
 	g_test_add_data_func ("/youtube/query/standard_feed/error", service, test_query_standard_feed_error);
 	g_test_add_data_func ("/youtube/query/standard_feed/timeout", service, test_query_standard_feed_timeout);
-	g_test_add ("/youtube/query/standard_feed/async", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-	            test_query_standard_feed_async, gdata_tear_down_async_test_data);
+	g_test_add ("/youtube/query/standard_feed/async", StandardFeedData,
+	            service, set_up_standard_feed_async,
+	            test_query_standard_feed_async,
+	            tear_down_standard_feed_async);
 	g_test_add_data_func ("/youtube/query/standard_feed/async/progress_closure", service, test_query_standard_feed_async_progress_closure);
-	g_test_add ("/youtube/query/standard_feed/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
-	            test_query_standard_feed_async_cancellation, gdata_tear_down_async_test_data);
-#endif
+	g_test_add ("/youtube/query/standard_feed/async/cancellation",
+	            StandardFeedData, service, set_up_standard_feed_async,
+	            test_query_standard_feed_async_cancellation,
+	            tear_down_standard_feed_async);
 
 	g_test_add_data_func ("/youtube/query/related", service, test_query_related);
 	g_test_add ("/youtube/query/related/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_related_async,

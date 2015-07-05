@@ -169,7 +169,7 @@ AC_SUBST([ENABLE_INSTALLED_TESTS],[$enable_installed_tests])
 
 AS_IF([test "$enable_always_build_tests" = "yes" ||
        test "$enable_installed_tests" = "yes"],[
-	PKG_CHECK_MODULES([UHTTPMOCK],[libuhttpmock-0.0])
+	PKG_CHECK_MODULES([UHTTPMOCK],[libuhttpmock-0.0 >= 0.5.0])
 ])
 
 # Various necessary functions and headers
