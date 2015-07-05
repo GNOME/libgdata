@@ -1957,6 +1957,18 @@ test_comment_properties_parent_comment_uri (void)
 	g_object_unref (comment_);
 }
 
+static gchar *
+build_this_week_date_str (void)
+{
+	GTimeVal tv;
+
+	g_get_current_time (&tv);
+	tv.tv_sec -= 7 * 24 * 60 * 60;  /* this week */
+	tv.tv_usec = 0;  /* pointless accuracy */
+
+	return g_time_val_to_iso8601 (&tv);
+}
+
 static void
 test_query_uri (void)
 {
@@ -1964,9 +1976,11 @@ test_query_uri (void)
 	gboolean has_location;
 	gchar *query_uri;
 	GDataYouTubeQuery *query = gdata_youtube_query_new ("q");
+	gchar *this_week_date_str, *expected_uri;
 
 	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
+	/* This should not appear in the query because it is deprecated. */
 	gdata_youtube_query_set_format (query, GDATA_YOUTUBE_FORMAT_RTSP_H263_AMR);
 	g_assert_cmpuint (gdata_youtube_query_get_format (query), ==, 1);
 
@@ -1980,22 +1994,26 @@ test_query_uri (void)
 	g_assert (has_location == TRUE);
 
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=all_time&safeSearch=none&format=1&location=45.013640000000002,-97.123559999999998!&location-radius=112.5m");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&safeSearch=none&location=45.013640000000002,-97.123559999999998&locationRadius=112.5m");
 	g_free (query_uri);
 
+	/* This used to set the has-location parameter in the query, but that’s
+	 * no longer supported by Google, so it should be the same as the
+	 * following query. */
 	gdata_youtube_query_set_location (query, G_MAXDOUBLE, 0.6672, 52.8, TRUE);
 
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=all_time&safeSearch=none&format=1&location=!");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&safeSearch=none");
 	g_free (query_uri);
 
 	gdata_youtube_query_set_location (query, G_MAXDOUBLE, G_MAXDOUBLE, 0.0, FALSE);
 
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=all_time&safeSearch=none&format=1");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&safeSearch=none");
 	g_free (query_uri);
 
-	/* Language */
+	/* Language; this should not appear in the query as it is no longer
+	 * supported. */
 	gdata_youtube_query_set_language (query, "fr");
 	g_assert_cmpstr (gdata_youtube_query_get_language (query), ==, "fr");
 
@@ -2006,22 +2024,24 @@ test_query_uri (void)
 	g_assert_cmpstr (gdata_youtube_query_get_restriction (query), ==, "192.168.0.1");
 
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=all_time&safeSearch=none&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&safeSearch=none&order=relevance&regionCode=192.168.0.1");
 	g_free (query_uri);
 
 	gdata_youtube_query_set_safe_search (query, GDATA_YOUTUBE_SAFE_SEARCH_STRICT);
 	g_assert_cmpuint (gdata_youtube_query_get_safe_search (query), ==, GDATA_YOUTUBE_SAFE_SEARCH_STRICT);
 
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=all_time&safeSearch=strict&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&safeSearch=strict&order=relevance&regionCode=192.168.0.1");
 	g_free (query_uri);
 
+	/* Deprecated and unused: */
 	gdata_youtube_query_set_sort_order (query, GDATA_YOUTUBE_SORT_ASCENDING);
 	g_assert_cmpuint (gdata_youtube_query_get_sort_order (query), ==, GDATA_YOUTUBE_SORT_ASCENDING);
 
 	gdata_youtube_query_set_age (query, GDATA_YOUTUBE_AGE_THIS_WEEK);
 	g_assert_cmpuint (gdata_youtube_query_get_age (query), ==, GDATA_YOUTUBE_AGE_THIS_WEEK);
 
+	/* Deprecated and unused: */
 	gdata_youtube_query_set_uploader (query, GDATA_YOUTUBE_UPLOADER_PARTNER);
 	g_assert_cmpuint (gdata_youtube_query_get_uploader (query), ==, GDATA_YOUTUBE_UPLOADER_PARTNER);
 
@@ -2030,12 +2050,22 @@ test_query_uri (void)
 
 	/* Check the built URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&time=this_week&safeSearch=strict&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1&sortorder=ascending&uploader=partner&license=cc");
+	this_week_date_str = build_this_week_date_str ();
+	expected_uri = g_strdup_printf ("http://example.com?q=q&publishedAfter=%s&safeSearch=strict&order=relevance&regionCode=192.168.0.1&videoLicense=creativeCommon", this_week_date_str);
+	g_assert_cmpstr (query_uri, ==, expected_uri);
+
+	g_free (this_week_date_str);
+	g_free (expected_uri);
 	g_free (query_uri);
 
 	/* …and with a feed URI with pre-existing arguments */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com?foobar=shizzle");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?foobar=shizzle&q=q&time=this_week&safeSearch=strict&format=1&lr=fr&orderby=relevance_lang_fr&restriction=192.168.0.1&sortorder=ascending&uploader=partner&license=cc");
+	this_week_date_str = build_this_week_date_str ();
+	expected_uri = g_strdup_printf ("http://example.com?foobar=shizzle&q=q&publishedAfter=%s&safeSearch=strict&order=relevance&regionCode=192.168.0.1&videoLicense=creativeCommon", this_week_date_str);
+	g_assert_cmpstr (query_uri, ==, expected_uri);
+
+	g_free (this_week_date_str);
+	g_free (expected_uri);
 	g_free (query_uri);
 
 	g_object_unref (query);
@@ -2883,10 +2913,10 @@ FIXME: Port and re-enable these tests
 #if 0
 	g_test_add_func ("/youtube/comment/get_xml", test_comment_get_xml);
 	g_test_add_func ("/youtube/comment/properties/parent-comment-id", test_comment_properties_parent_comment_uri);
+#endif
 
 	g_test_add_func ("/youtube/query/uri", test_query_uri);
 	g_test_add_func ("/youtube/query/etag", test_query_etag);
-#endif
 
 	retval = g_test_run ();
 
