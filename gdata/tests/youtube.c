@@ -1330,88 +1330,45 @@ test_parsing_yt_access_control (void)
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
 
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-			"xmlns:media='http://search.yahoo.com/mrss/' "
-			"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-			"xmlns:gd='http://schemas.google.com/g/2005' "
-			"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<published>2006-05-16T14:06:37.000Z</published>"
-			"<updated>2009-03-23T12:46:58.000Z</updated>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
-			"<title>Judas Priest - Painkiller</title>"
-			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.youtube.com/watch?v=JAagedeKdcQ'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo'/>"
-			"<author>"
-				"<name>eluves</name>"
-				"<uri>http://gdata.youtube.com/feeds/api/users/eluves</uri>"
-			"</author>"
-			"<media:group>"
-				"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
-				"<media:credit role='uploader' scheme='urn:youtube'>eluves</media:credit>"
-				"<media:category label='Music' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Music</media:category>"
-			"</media:group>"
-			"<yt:accessControl action='rate' permission='allowed'/>"
-			"<yt:accessControl action='comment' permission='moderated'/>"
-			"<yt:accessControl action='commentVote' permission='denied'/>"
-			"<yt:accessControl action='videoRespond' permission='allowed'/>"
-			"<yt:accessControl action='syndicate' permission='denied'/>"
-			"<yt:accessControl action='random' permission='moderated'/>"
-		"</entry>", -1, &error));
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_json (GDATA_TYPE_YOUTUBE_VIDEO,
+		"{"
+			"'kind': 'youtube#video',"
+			"'id': 'JAagedeKdcQ',"
+			"'status': {"
+				"'privacyStatus': 'public',"
+				"'embeddable': false"
+			"}"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_clear_error (&error);
 
 	/* Test the access controls */
-	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_RATE), ==, GDATA_YOUTUBE_PERMISSION_ALLOWED);
-	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_COMMENT), ==, GDATA_YOUTUBE_PERMISSION_MODERATED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_RATE), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_COMMENT), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
 	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_COMMENT_VOTE), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
-	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_VIDEO_RESPOND), ==, GDATA_YOUTUBE_PERMISSION_ALLOWED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_VIDEO_RESPOND), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
 	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_EMBED), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
 	g_assert_cmpint (gdata_youtube_video_get_access_control (video, GDATA_YOUTUBE_ACTION_SYNDICATE), ==, GDATA_YOUTUBE_PERMISSION_DENIED);
+	g_assert_cmpint (gdata_youtube_video_get_access_control (video, "list"), ==, GDATA_YOUTUBE_PERMISSION_ALLOWED);
 
-	/* Update some of them and see if the XML's written out OK */
-	gdata_youtube_video_set_access_control (video, GDATA_YOUTUBE_ACTION_RATE, GDATA_YOUTUBE_PERMISSION_MODERATED);
-	gdata_youtube_video_set_access_control (video, GDATA_YOUTUBE_ACTION_EMBED, GDATA_YOUTUBE_PERMISSION_DENIED);
+	/* Update some of them and see if the JSON’s written out OK */
+	gdata_youtube_video_set_access_control (video, "list", GDATA_YOUTUBE_PERMISSION_DENIED);
+	gdata_youtube_video_set_access_control (video, GDATA_YOUTUBE_ACTION_EMBED, GDATA_YOUTUBE_PERMISSION_ALLOWED);
 
-	/* Check the XML */
-	gdata_test_assert_xml (video,
-			 "<?xml version='1.0' encoding='UTF-8'?>"
-			 "<entry xmlns='http://www.w3.org/2005/Atom' "
-				"xmlns:media='http://search.yahoo.com/mrss/' "
-				"xmlns:gd='http://schemas.google.com/g/2005' "
-				"xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-				"xmlns:app='http://www.w3.org/2007/app' "
-				"xmlns:georss='http://www.georss.org/georss' "
-				"xmlns:gml='http://www.opengis.net/gml' "
-				"gd:etag='W/\"CEMFSX47eCp7ImA9WxVUGEw.\"'>"
-				"<title type='text'>Judas Priest - Painkiller</title>"
-				"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-				"<updated>2009-03-23T12:46:58Z</updated>"
-				"<published>2006-05-16T14:06:37Z</published>"
-				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<link href='http://www.youtube.com/watch?v=JAagedeKdcQ' rel='http://www.iana.org/assignments/relation/alternate' type='text/html'/>"
-				"<link href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
-				"<author>"
-					"<name>eluves</name>"
-					"<uri>http://gdata.youtube.com/feeds/api/users/eluves</uri>"
-				"</author>"
-				"<media:group>"
-					"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
-					"<media:title type='plain'>Judas Priest - Painkiller</media:title>"
-				"</media:group>"
-				"<yt:accessControl action='embed' permission='denied'/>"
-				"<yt:accessControl action='random' permission='moderated'/>"
-				"<yt:accessControl action='commentVote' permission='denied'/>"
-				"<yt:accessControl action='rate' permission='moderated'/>"
-				"<yt:accessControl action='comment' permission='moderated'/>"
-				"<yt:accessControl action='syndicate' permission='denied'/>"
-				"<yt:accessControl action='videoRespond' permission='allowed'/>"
-				"<app:control>"
-					"<app:draft>no</app:draft>"
-				"</app:control>"
-			 "</entry>");
+	/* Check the JSON */
+	gdata_test_assert_json (video,
+		"{"
+			"'kind': 'youtube#video',"
+			"'id': 'JAagedeKdcQ',"
+			"'title': null,"
+			"'snippet': {},"
+			"'status': {"
+				"'privacyStatus': 'unlisted',"
+				"'embeddable': true"
+			"},"
+			"'recordingDetails': {}"
+		"}");
 
 	g_object_unref (video);
 }
@@ -1527,35 +1484,17 @@ test_parsing_georss_where (void)
 	gdouble latitude, longitude;
 	GError *error = NULL;
 
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		       "xmlns:media='http://search.yahoo.com/mrss/' "
-		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-		       "xmlns:gd='http://schemas.google.com/g/2005' "
-		       "xmlns:georss='http://www.georss.org/georss' "
-		       "xmlns:gml='http://www.opengis.net/gml'>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<published>2006-05-16T14:06:37.000Z</published>"
-			"<updated>2009-03-23T12:46:58.000Z</updated>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
-			"<title>Some video somewhere</title>"
-			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.youtube.com/watch?v=JAagedeKdcQ'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo'/>"
-			"<author>"
-				"<name>Foo</name>"
-				"<uri>http://gdata.youtube.com/feeds/api/users/Foo</uri>"
-			"</author>"
-			"<media:group>"
-				"<media:title type='plain'>Some video somewhere</media:title>"
-				"<media:credit role='uploader' scheme='urn:youtube'>Foo</media:credit>"
-				"<media:category label='Music' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Music</media:category>"
-			"</media:group>"
-			"<georss:where>"
-				"<gml:Point>"
-					"<gml:pos>41.14556884765625 -8.63525390625</gml:pos>"
-				"</gml:Point>"
-			"</georss:where>"
-		"</entry>", -1, &error));
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_json (GDATA_TYPE_YOUTUBE_VIDEO,
+		"{"
+			"'kind': 'youtube#video',"
+			"'id': 'JAagedeKdcQ',"
+			"'recordingDetails': {"
+				"'location': {"
+					"'latitude': 41.14556884765625,"
+					"'longitude': -8.63525390625"
+				"}"
+			"}"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_clear_error (&error);
@@ -1565,7 +1504,7 @@ test_parsing_georss_where (void)
 	g_assert_cmpfloat (latitude, ==, 41.14556884765625);
 	g_assert_cmpfloat (longitude, ==, -8.63525390625);
 
-	/* Update them and see if they're set OK and the XML's written out OK */
+	/* Update them and see if they're set OK and the JSON’s written out OK */
 	gdata_youtube_video_set_coordinates (video, 5.5, 6.5);
 
 	g_object_get (G_OBJECT (video),
@@ -1576,73 +1515,43 @@ test_parsing_georss_where (void)
 	g_assert_cmpfloat (latitude, ==, 5.5);
 	g_assert_cmpfloat (longitude, ==, 6.5);
 
-	/* Check the XML */
-	gdata_test_assert_xml (video,
-		"<?xml version='1.0' encoding='UTF-8'?>"
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		       "xmlns:app='http://www.w3.org/2007/app' "
-		       "xmlns:media='http://search.yahoo.com/mrss/' "
-		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-		       "xmlns:gd='http://schemas.google.com/g/2005' "
-		       "xmlns:georss='http://www.georss.org/georss' "
-		       "xmlns:gml='http://www.opengis.net/gml'>"
-			"<title type='text'>Some video somewhere</title>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<updated>2009-03-23T12:46:58Z</updated>"
-			"<published>2006-05-16T14:06:37Z</published>"
-			"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
-			"<link href='http://www.youtube.com/watch?v=JAagedeKdcQ' rel='http://www.iana.org/assignments/relation/alternate' type='text/html'/>"
-			"<link href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
-			"<author>"
-				"<name>Foo</name>"
-				"<uri>http://gdata.youtube.com/feeds/api/users/Foo</uri>"
-			"</author>"
-			"<media:group>"
-				"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
-				"<media:title type='plain'>Some video somewhere</media:title>"
-			"</media:group>"
-			"<app:control><app:draft>no</app:draft></app:control>"
-			"<georss:where>"
-				"<gml:Point>"
-					"<gml:pos>5.5 6.5</gml:pos>"
-				"</gml:Point>"
-			"</georss:where>"
-		"</entry>");
+	/* Check the JSON */
+	gdata_test_assert_json (video,
+		"{"
+			"'kind': 'youtube#video',"
+			"'id': 'JAagedeKdcQ',"
+			"'title': null,"
+			"'snippet': {},"
+			"'status': {"
+				"'privacyStatus': 'public'"
+			"},"
+			"'recordingDetails': {"
+				"'location': {"
+					"'latitude': 5.5,"
+					"'longitude': 6.5"
+				"}"
+			"}"
+		"}");
 
-	/* Unset the properties and ensure they're removed from the XML */
+	/* Unset the properties and ensure they’re removed from the JSON */
 	gdata_youtube_video_set_coordinates (video, G_MAXDOUBLE, G_MAXDOUBLE);
 
 	gdata_youtube_video_get_coordinates (video, &latitude, &longitude);
 	g_assert_cmpfloat (latitude, ==, G_MAXDOUBLE);
 	g_assert_cmpfloat (longitude, ==, G_MAXDOUBLE);
 
-	/* Check the XML */
-	gdata_test_assert_xml (video,
-		"<?xml version='1.0' encoding='UTF-8'?>"
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		       "xmlns:app='http://www.w3.org/2007/app' "
-		       "xmlns:media='http://search.yahoo.com/mrss/' "
-		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-		       "xmlns:gd='http://schemas.google.com/g/2005' "
-		       "xmlns:georss='http://www.georss.org/georss' "
-		       "xmlns:gml='http://www.opengis.net/gml'>"
-			"<title type='text'>Some video somewhere</title>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<updated>2009-03-23T12:46:58Z</updated>"
-			"<published>2006-05-16T14:06:37Z</published>"
-			"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
-			"<link href='http://www.youtube.com/watch?v=JAagedeKdcQ' rel='http://www.iana.org/assignments/relation/alternate' type='text/html'/>"
-			"<link href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo' rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml'/>"
-			"<author>"
-				"<name>Foo</name>"
-				"<uri>http://gdata.youtube.com/feeds/api/users/Foo</uri>"
-			"</author>"
-			"<media:group>"
-				"<media:category scheme='http://gdata.youtube.com/schemas/2007/categories.cat' label='Music'>Music</media:category>"
-				"<media:title type='plain'>Some video somewhere</media:title>"
-			"</media:group>"
-			"<app:control><app:draft>no</app:draft></app:control>"
-		"</entry>");
+	/* Check the JSON */
+	gdata_test_assert_json (video,
+		"{"
+			"'kind': 'youtube#video',"
+			"'id': 'JAagedeKdcQ',"
+			"'title': null,"
+			"'snippet': {},"
+			"'status': {"
+				"'privacyStatus': 'public'"
+			"},"
+			"'recordingDetails': {}"
+		"}");
 
 	g_object_unref (video);
 }
@@ -1822,30 +1731,32 @@ test_video_escaping (void)
 	const gchar * const keywords[] = { "<keyword1>", "keyword2 & stuff, things", NULL };
 
 	video = gdata_youtube_video_new (NULL);
-	gdata_youtube_video_set_location (video, "Here & there");
+	gdata_youtube_video_set_location (video, "\"Here\" & 'there'");
 	gdata_youtube_video_set_access_control (video, "<action>", GDATA_YOUTUBE_PERMISSION_ALLOWED);
 	gdata_youtube_video_set_keywords (video, keywords);
-	gdata_youtube_video_set_description (video, "Description & stuff.");
+	gdata_youtube_video_set_description (video, "Description & 'stuff'.");
 	gdata_youtube_video_set_aspect_ratio (video, "4 & 3");
 
-	/* Check the outputted XML is escaped properly */
-	gdata_test_assert_xml (video,
-	                 "<?xml version='1.0' encoding='UTF-8'?>"
-	                 "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' "
-	                        "xmlns:gd='http://schemas.google.com/g/2005' "
-	                        "xmlns:yt='http://gdata.youtube.com/schemas/2007' xmlns:app='http://www.w3.org/2007/app' "
-	                        "xmlns:georss='http://www.georss.org/georss' xmlns:gml='http://www.opengis.net/gml'>"
-				"<title type='text'></title>"
-				"<category term='http://gdata.youtube.com/schemas/2007#video' scheme='http://schemas.google.com/g/2005#kind'/>"
-				"<media:group>"
-					"<media:description type='plain'>Description &amp; stuff.</media:description>"
-					"<media:keywords>&lt;keyword1&gt;,keyword2 &amp; stuff%2C things</media:keywords>"
-					"<yt:aspectratio>4 &amp; 3</yt:aspectratio>"
-				"</media:group>"
-				"<yt:location>Here &amp; there</yt:location>"
-				"<yt:accessControl action='&lt;action&gt;' permission='allowed'/>"
-				"<app:control><app:draft>no</app:draft></app:control>"
-	                 "</entry>");
+	/* Check the outputted JSON is escaped properly */
+	gdata_test_assert_json (video,
+		"{"
+			"'kind': 'youtube#video',"
+			"'title': null,"
+			"'description': \"Description & 'stuff'.\","
+			"'snippet': {"
+				"'description': \"Description & 'stuff'.\","
+				"'tags': ["
+					"'<keyword1>',"
+					"'keyword2 & stuff, things'"
+				"]"
+			"},"
+			"'status': {"
+				"'privacyStatus': 'public'"
+			"},"
+			"'recordingDetails': {"
+				"'locationDescription': \"\\\"Here\\\" & 'there'\""
+			"}"
+		"}");
 	g_object_unref (video);
 }
 
@@ -2907,18 +2818,18 @@ main (int argc, char *argv[])
 	g_test_add_func ("/youtube/parsing/app:control", test_parsing_app_control);
 	/*g_test_add_func ("/youtube/parsing/comments/feedLink", test_parsing_comments_feed_link);*/
 	g_test_add_func ("/youtube/parsing/yt:recorded", test_parsing_yt_recorded);
-#if 0
-FIXME: Port and re-enable these tests
 	g_test_add_func ("/youtube/parsing/yt:accessControl", test_parsing_yt_access_control);
 	g_test_add_func ("/youtube/parsing/yt:category", test_parsing_yt_category);
 	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
 	g_test_add_func ("/youtube/parsing/georss:where", test_parsing_georss_where);
+#if 0
+FIXME: Port and re-enable these tests
 	g_test_add_func ("/youtube/parsing/media:group", test_parsing_media_group);
 	g_test_add_func ("/youtube/parsing/media:group/ratings", test_parsing_media_group_ratings);
 	g_test_add_func ("/youtube/parsing/media:group/ratings/error_handling", test_parsing_media_group_ratings_error_handling);
+#endif
 
 	g_test_add_func ("/youtube/video/escaping", test_video_escaping);
-#endif
 	g_test_add_func ("/youtube/video/location", test_video_location);
 
 #if 0
