@@ -1276,7 +1276,8 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 		recording_date = json_reader_get_string_value (reader);
 		json_reader_end_member (reader);
 
-		if (!gdata_parser_int64_from_date (recording_date,
+		if (recording_date != NULL &&
+		    !gdata_parser_int64_from_date (recording_date,
 		                                   &priv->recorded)) {
 			/* Error */
 			gdata_parser_error_not_iso8601_format_json (reader,
