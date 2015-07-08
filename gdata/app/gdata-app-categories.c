@@ -146,6 +146,10 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 {
 	GDataAPPCategories *self = GDATA_APP_CATEGORIES (parsable);
 	GDataAPPCategoriesPrivate *priv = self->priv;
+	GType category_type;
+
+	category_type = (user_data == NULL) ?
+		GDATA_TYPE_CATEGORY : GPOINTER_TO_SIZE (user_data);
 
 	if (g_strcmp0 (json_reader_get_member_name (reader), "items") == 0) {
 		guint i, elements;
@@ -177,7 +181,10 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 			}
 
 			/* Create the category. */
-			category = gdata_category_new (id, NULL, title);
+			category = g_object_new (category_type,
+			                         "term", id,
+			                         "label", title,
+			                         NULL);
 			priv->categories = g_list_prepend (priv->categories,
 			                                   category);
 
