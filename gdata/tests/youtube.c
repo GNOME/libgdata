@@ -2373,7 +2373,8 @@ test_categories (gconstpointer service)
 	GDataAPPCategories *app_categories;
 	GList *categories;
 	GError *error = NULL;
-	gchar *category_label, *old_locale;
+	gchar *old_locale;
+	guint old_n_results;
 
 	gdata_test_mock_server_start_trace (mock_server, "categories");
 
@@ -2386,14 +2387,14 @@ test_categories (gconstpointer service)
 	g_assert_cmpint (g_list_length (categories), >, 0);
 	g_assert (GDATA_IS_YOUTUBE_CATEGORY (categories->data));
 
-	/* Save a label for comparison against a different locale */
-	category_label = g_strdup (gdata_category_get_label (GDATA_CATEGORY (categories->data)));
+	/* Save the number of results for comparison against a different locale */
+	old_n_results = g_list_length (categories);
 
 	g_object_unref (app_categories);
 
 	/* Test with a different locale */
 	old_locale = g_strdup (gdata_service_get_locale (GDATA_SERVICE (service)));
-	gdata_service_set_locale (GDATA_SERVICE (service), "it");
+	gdata_service_set_locale (GDATA_SERVICE (service), "TR");
 
 	app_categories = gdata_youtube_service_get_categories (GDATA_YOUTUBE_SERVICE (service), NULL, &error);
 	g_assert_no_error (error);
@@ -2404,11 +2405,10 @@ test_categories (gconstpointer service)
 	g_assert_cmpint (g_list_length (categories), >, 0);
 	g_assert (GDATA_IS_YOUTUBE_CATEGORY (categories->data));
 
-	/* Compare the labels */
-	g_assert_cmpstr (category_label, !=, gdata_category_get_label (GDATA_CATEGORY (categories->data)));
+	/* Compare the number of results */
+	g_assert_cmpuint (old_n_results, !=, g_list_length (categories));
 
 	g_object_unref (app_categories);
-	g_free (category_label);
 
 	/* Reset the locale */
 	gdata_service_set_locale (GDATA_SERVICE (service), old_locale);
@@ -2801,13 +2801,13 @@ main (int argc, char *argv[])
 	            tear_down_insert_comment_async);
 	g_test_add ("/youtube/comment/delete/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
 	            test_comment_delete_async_cancellation, tear_down_insert_comment_async);
+#endif
 
 	g_test_add_data_func ("/youtube/categories", service, test_categories);
 	g_test_add ("/youtube/categories/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_categories_async,
 	            gdata_tear_down_async_test_data);
 	g_test_add ("/youtube/categories/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
 	            test_categories_async_cancellation, gdata_tear_down_async_test_data);
-#endif
 
 	g_test_add ("/youtube/batch", BatchData, service, setup_batch, test_batch, teardown_batch);
 	g_test_add ("/youtube/batch/async", BatchData, service, setup_batch, test_batch_async, teardown_batch);
