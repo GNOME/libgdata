@@ -1557,93 +1557,28 @@ test_parsing_georss_where (void)
 }
 
 static void
-test_parsing_media_group (void)
-{
-	GDataYouTubeVideo *video;
-	GError *error = NULL;
-
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		       "xmlns:media='http://search.yahoo.com/mrss/' "
-		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-		       "xmlns:gd='http://schemas.google.com/g/2005'>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<published>2006-05-16T14:06:37.000Z</published>"
-			"<updated>2009-03-23T12:46:58.000Z</updated>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
-			"<title>Some video somewhere</title>"
-			"<link rel='http://www.iana.org/assignments/relation/alternate' type='text/html' href='http://www.youtube.com/watch?v=JAagedeKdcQ'/>"
-			"<link rel='http://www.iana.org/assignments/relation/self' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/JAagedeKdcQ?client=ytapi-google-jsdemo'/>"
-			"<author>"
-				"<name>Foo</name>"
-				"<uri>http://gdata.youtube.com/feeds/api/users/Foo</uri>"
-			"</author>"
-			"<media:group>"
-				"<media:category label='Shows' scheme='http://gdata.youtube.com/schemas/2007/categories.cat'>Shows</media:category>"
-				"<media:category scheme='http://gdata.youtube.com/schemas/2007/releasemediums.cat'>6</media:category>"
-				"<media:category scheme='http://gdata.youtube.com/schemas/2007/mediatypes.cat'>3</media:category>"
-				"<media:content url='http://www.youtube.com/v/aklRlKH4R94?f=related&amp;d=ARK7_SyB_5iKQvGvwsk-0D4O88HsQjpE1a8d1GxQnGDm&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='163' yt:format='5'/>"
-				"<media:content url='rtsp://v3.cache6.c.youtube.com/CkYLENy73wIaPQneR_ihlFFJahMYDSANFEgGUgdyZWxhdGVkciEBErv9LIH_mIpC8a_CyT7QPg7zwexCOkTVrx3UbFCcYOYM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='163' yt:format='1'/>"
-				"<media:content url='rtsp://v3.cache3.c.youtube.com/CkYLENy73wIaPQneR_ihlFFJahMYESARFEgGUgdyZWxhdGVkciEBErv9LIH_mIpC8a_CyT7QPg7zwexCOkTVrx3UbFCcYOYM/0/0/0/video.3gp' type='video/3gpp' medium='video' expression='full' duration='163' yt:format='6'/>"
-				"<media:credit role='uploader' scheme='urn:youtube' yt:type='partner'>machinima</media:credit>"
-				"<media:credit role='Producer' scheme='urn:ebu'>Machinima</media:credit>"
-				"<media:credit role='info' scheme='urn:ebu'>season 1 episode 4 air date 08/22/10</media:credit>"
-				"<media:credit role='Producer' scheme='urn:ebu'>Machinima</media:credit>"
-				"<media:credit role='info' scheme='urn:ebu'>season 1 episode 4 air date 08/22/10</media:credit>"
-				"<media:description type='plain'>www.youtube.com Click here to watch If It Were Realistic: Melee If It Were Realistic: Gravity Gun (Half Life 2 Machinima) What if gravity guns were realistic? Created by Renaldoxx from Massive X Productions Directors Channel: www.youtube.com www.youtube.com - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Follow Machinima on Twitter! Machinima twitter.com Inside Gaming twitter.com Machinima Respawn twitter.com Machinima Entertainment, Technology, Culture twitter.com FOR MORE MACHINIMA, GO TO: www.youtube.com FOR MORE GAMEPLAY, GO TO: www.youtube.com FOR MORE SPORTS GAMEPLAY, GO TO: www.youtube.com FOR MORE TRAILERS, GO TO: www.youtube.com</media:description>"
-				"<media:keywords>Half, Life, If, It, Were, Realistic, Gravity, Gun, Renaldoxx, Sniper, Game, Machinima, Action, Gordon, Freeman, drift0r, Euphorian, Films, Combine, Rebel, Dark, Citizen, Diary, massivex, Productions, Massive, yt:quality=high, Half-Life, [2], HL2, fortress, gmod, left dead, tf2</media:keywords>"
-				"<media:player url='http://www.youtube.com/watch?v=aklRlKH4R94&amp;feature=youtube_gdata_player'/>"
-				"<media:rating scheme='urn:mpaa'>pg</media:rating>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/aklRlKH4R94/default.jpg' height='90' width='120' time='00:01:21.500' yt:name='default'/>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/aklRlKH4R94/hqdefault.jpg' height='360' width='480' yt:name='hqdefault'/>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/aklRlKH4R94/1.jpg' height='90' width='120' time='00:00:40.750' yt:name='start'/>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/aklRlKH4R94/2.jpg' height='90' width='120' time='00:01:21.500' yt:name='middle'/>"
-				"<media:thumbnail url='http://i.ytimg.com/vi/aklRlKH4R94/3.jpg' height='90' width='120' time='00:02:02.250' yt:name='end'/>"
-				"<media:title type='plain'>If It Were Realistic - Gravity Gun (Half Life 2 Machinima)</media:title>"
-				"<yt:aspectRatio>widescreen</yt:aspectRatio>"
-				"<yt:duration seconds='163'/>"
-				"<yt:uploaded>2010-08-22T14:04:18.000Z</yt:uploaded>"
-				"<yt:videoid>aklRlKH4R94</yt:videoid>"
-			"</media:group>"
-		"</entry>", -1, &error));
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
-	g_clear_error (&error);
-
-	/* TODO: For the moment, we just check that parsing the XML didn't fail. Later, we might actually support outputting the XML again. */
-
-	g_object_unref (video);
-}
-
-static void
-test_parsing_media_group_ratings (void)
+test_parsing_ratings (void)
 {
 	GDataYouTubeVideo *video;
 	GError *error = NULL;
 
 	/* Parse all ratings */
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		       "xmlns:media='http://search.yahoo.com/mrss/' "
-		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-		       "xmlns:gd='http://schemas.google.com/g/2005'>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<published>2006-05-16T14:06:37.000Z</published>"
-			"<updated>2009-03-23T12:46:58.000Z</updated>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
-			"<title>Some video somewhere</title>"
-			"<media:group>"
-				"<media:rating scheme='urn:simple'>nonadult</media:rating>"
-				"<media:rating scheme='urn:mpaa'>pg</media:rating>"
-				"<media:rating scheme='urn:v-chip'>tv-pg</media:rating>"
-			"</media:group>"
-		"</entry>", -1, &error));
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_json (GDATA_TYPE_YOUTUBE_VIDEO,
+		"{"
+			"'kind': 'youtube#video',"
+			"'id': 'JAagedeKdcQ',"
+			"'contentDetails': {"
+				"'contentRating': {"
+					"'mpaaRating': 'mpaaPg',"
+					"'tvpgRating': 'tvpgPg'"
+				"}"
+			"}"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_clear_error (&error);
 
 	/* Check the ratings, and check that we haven't ended up with a country restriction */
-	g_assert_cmpstr (gdata_youtube_video_get_media_rating (video, GDATA_YOUTUBE_RATING_TYPE_SIMPLE), ==, "nonadult");
 	g_assert_cmpstr (gdata_youtube_video_get_media_rating (video, GDATA_YOUTUBE_RATING_TYPE_MPAA), ==, "pg");
 	g_assert_cmpstr (gdata_youtube_video_get_media_rating (video, GDATA_YOUTUBE_RATING_TYPE_V_CHIP), ==, "tv-pg");
 
@@ -1652,76 +1587,30 @@ test_parsing_media_group_ratings (void)
 	g_object_unref (video);
 
 	/* Parse a video with one rating missing and see what happens */
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,
-		"<entry xmlns='http://www.w3.org/2005/Atom' "
-		       "xmlns:media='http://search.yahoo.com/mrss/' "
-		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "
-		       "xmlns:gd='http://schemas.google.com/g/2005'>"
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"
-			"<published>2006-05-16T14:06:37.000Z</published>"
-			"<updated>2009-03-23T12:46:58.000Z</updated>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"
-			"<title>Some video somewhere</title>"
-			"<media:group>"
-				"<media:rating scheme='urn:v-chip'>tv-y7-fv</media:rating>"
-				"<media:rating>adult</media:rating>"
-			"</media:group>"
-		"</entry>", -1, &error));
+	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_json (GDATA_TYPE_YOUTUBE_VIDEO,
+		"{"
+			"'kind': 'youtube#video',"
+			"'id': 'JAagedeKdcQ',"
+			"'contentDetails': {"
+				"'contentRating': {"
+					"'tvpgRating': 'tvpgY7Fv'"
+				"}"
+			"}"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_YOUTUBE_VIDEO (video));
 	g_clear_error (&error);
 
 	/* Check the ratings again */
-	g_assert_cmpstr (gdata_youtube_video_get_media_rating (video, GDATA_YOUTUBE_RATING_TYPE_SIMPLE), ==, "adult");
 	g_assert_cmpstr (gdata_youtube_video_get_media_rating (video, GDATA_YOUTUBE_RATING_TYPE_MPAA), ==, NULL);
 	g_assert_cmpstr (gdata_youtube_video_get_media_rating (video, GDATA_YOUTUBE_RATING_TYPE_V_CHIP), ==, "tv-y7-fv");
 
-	/* Check that calling with an arbitrary rating type returns NULL */
+	/* Check that calling with an arbitrary rating type returns NULL.
+	 * %GDATA_YOUTUBE_RATING_TYPE_SIMPLE is no longer supported. */
 	g_assert_cmpstr (gdata_youtube_video_get_media_rating (video, "fooish bar"), ==, NULL);
+	g_assert_cmpstr (gdata_youtube_video_get_media_rating (video, GDATA_YOUTUBE_RATING_TYPE_SIMPLE), ==, NULL);
 
 	g_object_unref (video);
-}
-
-static void
-test_parsing_media_group_ratings_error_handling (void)
-{
-	GDataYouTubeVideo *video;
-	GError *error = NULL;
-
-#define TEST_XML_ERROR_HANDLING(x) \
-	video = GDATA_YOUTUBE_VIDEO (gdata_parsable_new_from_xml (GDATA_TYPE_YOUTUBE_VIDEO,\
-		"<entry xmlns='http://www.w3.org/2005/Atom' "\
-		       "xmlns:media='http://search.yahoo.com/mrss/' "\
-		       "xmlns:yt='http://gdata.youtube.com/schemas/2007' "\
-		       "xmlns:gd='http://schemas.google.com/g/2005'>"\
-			"<id>tag:youtube.com,2008:video:JAagedeKdcQ</id>"\
-			"<published>2006-05-16T14:06:37.000Z</published>"\
-			"<updated>2009-03-23T12:46:58.000Z</updated>"\
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video'/>"\
-			"<title>Some video somewhere</title>"\
-			"<media:group>"\
-				x\
-			"</media:group>"\
-		"</entry>", -1, &error));\
-	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR);\
-	g_assert (video == NULL);\
-	g_clear_error (&error)
-
-	/* Missing content */
-	TEST_XML_ERROR_HANDLING ("<media:rating scheme='urn:simple'/>");
-	TEST_XML_ERROR_HANDLING ("<media:rating scheme='urn:mpaa'/>");
-	TEST_XML_ERROR_HANDLING ("<media:rating scheme='urn:v-chip'/>");
-
-	/* Empty content */
-	TEST_XML_ERROR_HANDLING ("<media:rating scheme='urn:simple'></media:rating>");
-	TEST_XML_ERROR_HANDLING ("<media:rating scheme='urn:mpaa'></media:rating>");
-	TEST_XML_ERROR_HANDLING ("<media:rating scheme='urn:v-chip'></media:rating>");
-
-	/* Unknown/Empty scheme */
-	TEST_XML_ERROR_HANDLING ("<media:rating scheme=''>foo</media:rating>");
-	TEST_XML_ERROR_HANDLING ("<media:rating scheme='urn:baz'>bob</media:rating>");
-
-#undef TEST_XML_ERROR_HANDLING
 }
 
 static void
@@ -2780,6 +2669,7 @@ main (int argc, char *argv[])
 	            test_query_single_async_cancellation, gdata_tear_down_async_test_data);
 
 #if 0
+FIXME: Port and re-enable these tests
 	g_test_add ("/youtube/comment/query", CommentData, service, set_up_comment, test_comment_query, tear_down_comment);
 	g_test_add ("/youtube/comment/query/async", GDataAsyncTestData, service, set_up_comment_async, test_comment_query_async,
 	            tear_down_comment_async);
@@ -2822,17 +2712,13 @@ main (int argc, char *argv[])
 	g_test_add_func ("/youtube/parsing/yt:category", test_parsing_yt_category);
 	g_test_add_func ("/youtube/parsing/video_id_from_uri", test_parsing_video_id_from_uri);
 	g_test_add_func ("/youtube/parsing/georss:where", test_parsing_georss_where);
-#if 0
-FIXME: Port and re-enable these tests
-	g_test_add_func ("/youtube/parsing/media:group", test_parsing_media_group);
-	g_test_add_func ("/youtube/parsing/media:group/ratings", test_parsing_media_group_ratings);
-	g_test_add_func ("/youtube/parsing/media:group/ratings/error_handling", test_parsing_media_group_ratings_error_handling);
-#endif
+	g_test_add_func ("/youtube/parsing/ratings", test_parsing_ratings);
 
 	g_test_add_func ("/youtube/video/escaping", test_video_escaping);
 	g_test_add_func ("/youtube/video/location", test_video_location);
 
 #if 0
+FIXME: Port and re-enable these tests
 	g_test_add_func ("/youtube/comment/get_xml", test_comment_get_xml);
 	g_test_add_func ("/youtube/comment/properties/parent-comment-id", test_comment_properties_parent_comment_uri);
 #endif
