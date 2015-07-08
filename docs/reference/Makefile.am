@@ -67,6 +67,7 @@ IGNORE_HFILES = \
 	gdata-gd-feed-link.h \
 	gdata-dummy-authorizer.c \
 	gdata-dummy-authorizer.h \
+	gdata-documents-utils.h \
 	$(NULL)
 
 # Images to copy into HTML directory.
