@@ -1953,7 +1953,7 @@ gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *c
 	g_return_if_fail (GDATA_IS_MEDIA_CATEGORY (category));
 
 	g_object_ref (category);
-	g_object_unref (self->priv->category);
+	g_clear_object (&self->priv->category);
 	self->priv->category = category;
 	g_object_notify (G_OBJECT (self), "category");
 }
