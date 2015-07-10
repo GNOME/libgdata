@@ -1426,7 +1426,6 @@ static void
 test_video_location (void)
 {
 	GDataYouTubeVideo *video;
-	const gchar * const keywords[] = { "<keyword1>", "keyword2 & stuff, things", NULL };
 	gdouble latitude, longitude;
 
 	video = gdata_youtube_video_new (NULL);
@@ -2421,12 +2420,12 @@ main (int argc, char *argv[])
 	g_test_add_data_func ("/youtube/query/standard_feed/timeout", service, test_query_standard_feed_timeout);
 	g_test_add ("/youtube/query/standard_feed/async", StandardFeedData,
 	            service, set_up_standard_feed_async,
-	            test_query_standard_feed_async,
+	            (void (*)(StandardFeedData *, const void *)) test_query_standard_feed_async,
 	            tear_down_standard_feed_async);
 	g_test_add_data_func ("/youtube/query/standard_feed/async/progress_closure", service, test_query_standard_feed_async_progress_closure);
 	g_test_add ("/youtube/query/standard_feed/async/cancellation",
 	            StandardFeedData, service, set_up_standard_feed_async,
-	            test_query_standard_feed_async_cancellation,
+	            (void (*)(StandardFeedData *, const void *)) test_query_standard_feed_async_cancellation,
 	            tear_down_standard_feed_async);
 
 	g_test_add_data_func ("/youtube/query/related", service, test_query_related);
