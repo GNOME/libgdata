@@ -2172,6 +2172,10 @@ test_photo_delete (TempContactData *data, gconstpointer service)
 	uhm_server_end_trace (mock_server);
 }
 
+static void
+test_photo_delete_async_cancellation (GDataAsyncTestData *data,
+                                      gconstpointer service) __attribute__((unused));
+
 GDATA_ASYNC_TEST_FUNCTIONS (photo_delete, TempContactData,
 G_STMT_START {
 	g_assert (gdata_contacts_contact_get_photo_etag (data->contact) != NULL);

@@ -1704,6 +1704,8 @@ test_upload_default_album (UploadData *data, gconstpointer service)
 	uhm_server_end_trace (mock_server);
 }
 
+#if 0
+FIXME: Port to v3 API and re-enable.
 GDATA_ASYNC_CLOSURE_FUNCTIONS (upload, UploadData);
 
 GDATA_ASYNC_TEST_FUNCTIONS (upload_default_album, UploadData,
@@ -1767,6 +1769,7 @@ G_STMT_START {
 
 	g_clear_error (&upload_error);
 } G_STMT_END);
+#endif
 
 static void
 test_album_new (void)
