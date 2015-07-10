@@ -1633,23 +1633,30 @@ test_video_location (void)
 }
 
 static void
-test_comment_get_xml (void)
+test_comment_get_json (void)
 {
 	GDataYouTubeComment *comment_;
 
 	comment_ = gdata_youtube_comment_new (NULL);
-	gdata_entry_set_content (GDATA_ENTRY (comment_), "This is a comment with <markup> & stüff.");
-	gdata_youtube_comment_set_parent_comment_uri (comment_, "http://example.com/?foo=bar&baz=shizzle");
+	gdata_entry_set_content (GDATA_ENTRY (comment_),
+	                         "This is a comment with <markup> & 'stüff'.");
+	gdata_youtube_comment_set_parent_comment_uri (comment_,
+	                                              "http://example.com/?foo=bar&baz=shizzle");
 
-	/* Check the outputted XML is OK */
-	gdata_test_assert_xml (comment_,
-		"<?xml version='1.0' encoding='UTF-8'?>"
-		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>"
-			"<title type='text'></title>"
-			"<content type='text'>This is a comment with &lt;markup&gt; &amp; stüff.</content>"
-			"<category term='http://gdata.youtube.com/schemas/2007#comment' scheme='http://schemas.google.com/g/2005#kind'/>"
-			"<link href='http://example.com/?foo=bar&amp;baz=shizzle' rel='http://gdata.youtube.com/schemas/2007#in-reply-to'/>"
-		"</entry>");
+	/* Check the outputted JSON is OK */
+	gdata_test_assert_json (comment_,
+		"{"
+			"'kind': 'youtube#commentThread',"
+			"'snippet' : {"
+				"'topLevelComment': {"
+					"'kind': 'youtube#comment',"
+					"'snippet': {"
+						"'textOriginal': \"This is a comment with <markup> & 'stüff'.\","
+						"'parentId': 'http://example.com/?foo=bar&baz=shizzle'"
+					"}"
+				"}"
+			"}"
+		"}");
 
 	g_object_unref (comment_);
 }
@@ -2666,11 +2673,8 @@ FIXME: Port and re-enable these tests
 	g_test_add_func ("/youtube/video/escaping", test_video_escaping);
 	g_test_add_func ("/youtube/video/location", test_video_location);
 
-#if 0
-FIXME: Port and re-enable these tests
-	g_test_add_func ("/youtube/comment/get_xml", test_comment_get_xml);
+	g_test_add_func ("/youtube/comment/get_json", test_comment_get_json);
 	g_test_add_func ("/youtube/comment/properties/parent-comment-id", test_comment_properties_parent_comment_uri);
-#endif
 
 	g_test_add_func ("/youtube/query/uri", test_query_uri);
 	g_test_add_func ("/youtube/query/etag", test_query_etag);
