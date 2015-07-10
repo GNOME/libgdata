@@ -289,6 +289,8 @@ enum {
 /* Reference: https://developers.google.com/youtube/v3/guides/authentication */
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (youtube, "youtube",
                                     "https://www.googleapis.com/auth/youtube")
+_GDATA_DEFINE_AUTHORIZATION_DOMAIN (youtube_force_ssl, "youtube-force-ssl",
+                                    "https://www.googleapis.com/auth/youtube.force-ssl")
 G_DEFINE_TYPE_WITH_CODE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE,
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE,
                                                 gdata_youtube_service_batchable_init))
@@ -613,7 +615,12 @@ parent:
 static GList *
 get_authorization_domains (void)
 {
-	return g_list_prepend (NULL, get_youtube_authorization_domain ());
+	GList *authorization_domains = NULL;
+
+	authorization_domains = g_list_prepend (authorization_domains, get_youtube_authorization_domain ());
+	authorization_domains = g_list_prepend (authorization_domains, get_youtube_force_ssl_authorization_domain ());
+
+	return authorization_domains;
 }
 
 /**

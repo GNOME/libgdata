@@ -26,10 +26,7 @@
  * #GDataYouTubeVideo is a subclass of #GDataEntry to represent a single video on YouTube, either when uploading or querying.
  *
  * #GDataYouTubeVideo implements #GDataCommentable, allowing comments on videos
- * to be queried and added. However, the initial version of the v3 YouTube API
- * does not currently support comments, so all #GDataCommentable calls will
- * fail. It is hoped that the YouTube API will regain support for comments in
- * future.
+ * to be queried and added.
  *
  * For more details of YouTube’s GData API, see the
  * <ulink type="http" url="https://developers.google.com/youtube/v3/docs/">
@@ -117,6 +114,7 @@ struct _GDataYouTubeVideoPrivate {
 	GDataMediaCategory *category;
 	guint duration;
 	gboolean is_private;
+	gchar *channel_id;  /* owned */
 
 	/* Location. */
 	gdouble latitude;
@@ -553,6 +551,7 @@ gdata_youtube_video_finalize (GObject *object)
 	g_free (priv->location);
 	g_hash_table_destroy (priv->access_controls);
 	g_strfreev (priv->keywords);
+	g_free (priv->channel_id);
 	g_free (priv->player_uri);
 	g_strfreev (priv->region_restriction_allowed);
 	g_strfreev (priv->region_restriction_blocked);
@@ -1102,7 +1101,8 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 				g_free (description);
 			} else if (gdata_parser_strv_from_json_member (reader, "tags", P_DEFAULT, &priv->keywords, &success, error) ||
-			           thumbnails_from_json_member (reader, "thumbnails", P_DEFAULT, &priv->thumbnails, &success, error)) {
+			           thumbnails_from_json_member (reader, "thumbnails", P_DEFAULT, &priv->thumbnails, &success, error) ||
+			           gdata_parser_string_from_json_member (reader, "channelId", P_DEFAULT, &priv->channel_id, &success, error)) {
 				/* Fall through. */
 			} else if (gdata_parser_string_from_json_member (reader, "categoryId", P_DEFAULT, &category_id, &success, error)) {
 				if (success) {
@@ -1482,24 +1482,53 @@ get_authorization_domain (GDataCommentable *self)
 static gchar *
 get_query_comments_uri (GDataCommentable *self)
 {
-	/* FIXME: Currently unsupported:
-	 * https://developers.google.com/youtube/v3/migration-guide#to_be_migrated */
-	return NULL;
+	const gchar *video_id;
+
+	video_id = gdata_entry_get_id (GDATA_ENTRY (self));
+
+	/* https://developers.google.com/youtube/v3/docs/commentThreads/list */
+	return _gdata_service_build_uri ("https://www.googleapis.com"
+	                                 "/youtube/v3/commentThreads"
+	                                 "?part=snippet"
+	                                 "&videoId=%s", video_id);
 }
+
+G_GNUC_INTERNAL void
+_gdata_youtube_comment_set_video_id (GDataYouTubeComment *self,
+                                     const gchar *video_id);
+G_GNUC_INTERNAL void
+_gdata_youtube_comment_set_channel_id (GDataYouTubeComment *self,
+                                       const gchar *channel_id);
 
 static gchar *
 get_insert_comment_uri (GDataCommentable *self, GDataComment *comment_)
 {
-	/* FIXME: Currently unsupported:
-	 * https://developers.google.com/youtube/v3/migration-guide#to_be_migrated */
-	return NULL;
+	const gchar *video_id, *channel_id;
+	GDataYouTubeVideoPrivate *priv = GDATA_YOUTUBE_VIDEO (self)->priv;
+
+	video_id = gdata_entry_get_id (GDATA_ENTRY (self));
+	channel_id = priv->channel_id;
+
+	/* https://developers.google.com/youtube/v3/docs/commentThreads/insert
+	 *
+	 * We have to set the video ID on the @comment_. */
+	_gdata_youtube_comment_set_video_id (GDATA_YOUTUBE_COMMENT (comment_),
+	                                     video_id);
+	_gdata_youtube_comment_set_channel_id (GDATA_YOUTUBE_COMMENT (comment_),
+	                                       channel_id);
+
+	return _gdata_service_build_uri ("https://www.googleapis.com"
+	                                 "/youtube/v3/commentThreads"
+	                                 "?part=snippet"
+	                                 "&shareOnGooglePlus=false");
 }
 
 static gboolean
 is_comment_deletable (GDataCommentable *self, GDataComment *comment_)
 {
 	/* FIXME: Currently unsupported:
-	 * https://developers.google.com/youtube/v3/migration-guide#to_be_migrated */
+	 * https://developers.google.com/youtube/v3/migration-guide#to_be_migrated
+	 * https://developers.google.com/youtube/v3/guides/implementation/comments#comments-delete */
 	return FALSE;
 }
 
