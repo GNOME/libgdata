@@ -118,6 +118,7 @@ _gdata_feed_set_page_info (GDataFeed *self, guint total_results,
 G_GNUC_INTERNAL void _gdata_entry_set_updated (GDataEntry *self, gint64 updated);
 G_GNUC_INTERNAL void _gdata_entry_set_published (GDataEntry *self, gint64 published);
 G_GNUC_INTERNAL void _gdata_entry_set_id (GDataEntry *self, const gchar *id);
+G_GNUC_INTERNAL void _gdata_entry_set_etag (GDataEntry *self, const gchar *etag);
 G_GNUC_INTERNAL void _gdata_entry_set_batch_data (GDataEntry *self, guint id, GDataBatchOperationType type);
 
 #include "gdata-access-rule.h"

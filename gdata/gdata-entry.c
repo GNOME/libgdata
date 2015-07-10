@@ -824,6 +824,24 @@ gdata_entry_get_etag (GDataEntry *self)
 	return NULL;
 }
 
+/*
+ * _gdata_entry_set_etag:
+ * @self: a #GDataEntry
+ * @etag: the new ETag value
+ *
+ * Sets the value of the #GDataEntry:etag property to @etag.
+ *
+ * Since: UNRELEASED
+ */
+void
+_gdata_entry_set_etag (GDataEntry *self, const gchar *etag)
+{
+	g_return_if_fail (GDATA_IS_ENTRY (self));
+
+	g_free (self->priv->etag);
+	self->priv->etag = g_strdup (etag);
+}
+
 /**
  * gdata_entry_get_updated:
  * @self: a #GDataEntry
