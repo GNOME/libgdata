@@ -55,7 +55,6 @@ test_programs = \
 	tasks \
 	perf \
 	authorization \
-	client-login-authorizer \
 	oauth1-authorizer \
 	oauth2-authorizer \
 	streams \
@@ -114,15 +113,6 @@ dist_test_data = \
 	traces/calendar/teardown-query-events \
 	traces/calendar/teardown-temp-calendar \
 	traces/calendar/teardown-temp-calendar-acls \
-	\
-	traces/client-login-authorizer/client-login-authorizer-authenticate-async \
-	traces/client-login-authorizer/client-login-authorizer-authenticate-async-cancellation \
-	traces/client-login-authorizer/client-login-authorizer-authenticate-async-multiple-domains \
-	traces/client-login-authorizer/client-login-authorizer-authenticate-sync \
-	traces/client-login-authorizer/client-login-authorizer-authenticate-sync-bad-password \
-	traces/client-login-authorizer/client-login-authorizer-authenticate-sync-cancellation \
-	traces/client-login-authorizer/client-login-authorizer-authenticate-sync-multiple-domains \
-	traces/client-login-authorizer/setup-client-login-authorizer-data-authenticated \
 	\
 	traces/contacts/authentication \
 	traces/contacts/authentication-async \
