@@ -831,7 +831,7 @@ gdata_entry_get_etag (GDataEntry *self)
  *
  * Sets the value of the #GDataEntry:etag property to @etag.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 void
 _gdata_entry_set_etag (GDataEntry *self, const gchar *etag)

@@ -66,7 +66,7 @@ typedef struct _GDataAccessHandler		GDataAccessHandler; /* dummy typedef */
  * access rules don't require authorization; new in version 0.9.0
  * @get_rules: (nullable): a function to query, parse and return a #GDataFeed of
  *   #GDataAccessRules for a given entry — the virtual function for
- *   gdata_access_handler_get_rules(); new in version UNRELEASED
+ *   gdata_access_handler_get_rules(); new in version 0.17.2
  *
  * The class structure for the #GDataAccessHandler interface.
  *

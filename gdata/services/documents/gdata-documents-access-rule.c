@@ -26,7 +26,7 @@
  * #GDataDocumentsAccessRule is a subclass of #GDataAccessRule to represent an
  * access rule affecting users of a Google Documents entry.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 
 #include <config.h>
@@ -216,7 +216,7 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
  * Return value: (transfer full): a new #GDataDocumentsAccessRule; unref with
  *   g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 GDataDocumentsAccessRule *
 gdata_documents_access_rule_new (const gchar *id)

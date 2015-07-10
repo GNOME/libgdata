@@ -533,7 +533,7 @@ _gdata_youtube_comment_set_channel_id (GDataYouTubeComment *self,
  * comment has not yet been inserted, or if it is just attached to a channel
  * rather than a video.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 void
 _gdata_youtube_comment_set_video_id (GDataYouTubeComment *self,
@@ -558,7 +558,7 @@ _gdata_youtube_comment_set_video_id (GDataYouTubeComment *self,
  * Set the ID of the channel the comment is attached to. This may be %NULL if
  * the comment has not yet been inserted, but must be set otherwise.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 void
 _gdata_youtube_comment_set_channel_id (GDataYouTubeComment *self,

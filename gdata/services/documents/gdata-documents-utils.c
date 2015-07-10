@@ -35,7 +35,7 @@
  *
  * Return value: a #GType corresponding to @content_type
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 GType
 gdata_documents_utils_get_type_from_content_type (const gchar *content_type)

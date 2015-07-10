@@ -375,7 +375,7 @@ gdata_oauth2_authorizer_class_init (GDataOAuth2AuthorizerClass *klass)
 	 *
 	 * The refresh token is opaque data and must not be parsed.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.2
 	 */
 	g_object_class_install_property (gobject_class, PROP_REFRESH_TOKEN,
 	                                 g_param_spec_string ("refresh-token",
@@ -1390,7 +1390,7 @@ gdata_oauth2_authorizer_get_client_secret (GDataOAuth2Authorizer *self)
  *
  * Return value: (transfer full): the authorizer's refresh token
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 gchar *
 gdata_oauth2_authorizer_dup_refresh_token (GDataOAuth2Authorizer *self)
@@ -1419,7 +1419,7 @@ gdata_oauth2_authorizer_dup_refresh_token (GDataOAuth2Authorizer *self)
  * This is used to periodically refresh the access token. Set it to %NULL to
  * clear the current authentication from the authorizer.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 void
 gdata_oauth2_authorizer_set_refresh_token (GDataOAuth2Authorizer *self,

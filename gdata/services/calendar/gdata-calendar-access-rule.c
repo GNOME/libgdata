@@ -26,7 +26,7 @@
  * #GDataCalendarAccessRule is a subclass of #GDataAccessRule to represent an
  * access rule affecting users of a shared calendar in Google Calendar.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 
 #include <config.h>
@@ -263,7 +263,7 @@ get_content_type (void)
  * Return value: (transfer full): a new #GDataCalendarAccessRule; unref with
  *   g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 GDataCalendarAccessRule *
 gdata_calendar_access_rule_new (const gchar *id)

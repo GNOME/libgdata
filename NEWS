@@ -1,3 +1,52 @@
+Overview of changes from libgdata 0.17.1 to libgdata 0.17.2
+===========================================================
+
+Major changes:
+ • More Google Drive API porting
+ • Port from v2 to v3 of the Calendar API
+ • Update and re-enable a lot of unit tests
+   (streams, youtube, freebase, calendar).
+ • Add calendar-cli demo
+ • Port to use installed-tests; this adds --enable-always-build-tests and
+   --enable-installed-tests configure options
+ • Port to autoconf-archive macros and add an implicit build-time dependency
+   on autoconf-archive
+ • Allow applications to store and restore the refresh token for a
+   GDataOAuth2Authorizer to avoid re-authenticating on each startup
+ • Bump libuhttpmock dependency to 0.5.0
+
+API changes:
+ • Add gdata_calendar_service_insert_calendar_event(),
+   gdata_calendar_service_insert_calendar_event_async()
+ • Deprecate GDataCalendarCalendar:times-cleaned,
+   gdata_calendar_calendar_get_times_cleaned(), GDataCalendarCalendar:edited,
+   gdata_calendar_calendar_get_edited()
+ • Deprecate GDataCalendarFeed:timezone, gdata_calendar_feed_get_timezone(),
+   GDataCalendarFeed:times-cleaned, gdata_calendar_feed_get_times_cleaned()
+ • Add GDataAccessHandlerIface.get_rules as a virtual method backing
+   gdata_access_handler_get_rules()
+ • Add GDataCalendarAccessRule
+ • Add GDataDocumentsAccessRule
+ • Add gdata_oauth2_authorizer_dup_refresh_token(),
+   gdata_oauth2_authorizer_set_refresh_token()
+ • Add GDataBatchable.is_supported virtual function
+
+Bugs fixed:
+ • Bug 684920 — Port to Google Drive API v2
+ • Bug 664353 — Upgrade to Calendar API version 3
+ • Bug 750335 — Silence a bunch of warnings
+ • Bug 750480 — Fix -Werror build for clang
+ • Bug 750395 — Fix the GDataAccessRule example
+ • Bug 750746 — Cold start OAuth2 authorization
+ • Bug 751782 — Enable Drive authorization domains if a GOA account has "files" enabled
+ • Bug 750914 — Build fails because -Werror=unused-function
+
+Updated translations:
+ • oc (Cédric Valmary (Tot en òc))
+ • pl (Piotr Drąg)
+ • pt (Pedro Albuquerque)
+ • th (Akom Chotiphantawanon)
+
 Overview of changes from libgdata 0.17.0 to libgdata 0.17.1
 ===========================================================
 

@@ -1134,7 +1134,7 @@ gdata_parser_strv_from_json_member (JsonReader *reader,
  *
  * Return value: %TRUE if @element matched @element_name, %FALSE otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 gboolean
 gdata_parser_color_from_json_member (JsonReader *reader,

@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  * All the fields in the #GDataDocumentsAccessRule structure are private and
  * should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 typedef struct {
 	GDataAccessRule parent;
@@ -52,7 +52,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsAccessRuleClass structure are private
  * and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 typedef struct {
 	/*< private >*/

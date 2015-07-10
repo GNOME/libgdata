@@ -91,7 +91,7 @@ G_BEGIN_DECLS
  * All the fields in the #GDataCalendarAccessRule structure are private and
  * should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 typedef struct {
 	GDataAccessRule parent;
@@ -103,7 +103,7 @@ typedef struct {
  * All the fields in the #GDataCalendarAccessRuleClass structure are private
  * and should never be accessed directly.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 typedef struct {
 	/*< private >*/

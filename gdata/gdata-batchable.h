@@ -52,7 +52,7 @@ typedef struct _GDataBatchable		GDataBatchable; /* dummy typedef */
  *    #GDataBatchable to return %FALSE for all #GDataBatchOperationTypes if the
  *    server no longer supports batch operations. If this method is not
  *    implemented, it is assumed that all #GDataBatchOperationTypes are
- *    supported. Since: UNRELEASED.
+ *    supported. Since: 0.17.2.
  *
  * All the fields in the #GDataBatchableIface structure are private and should never be accessed directly.
  *

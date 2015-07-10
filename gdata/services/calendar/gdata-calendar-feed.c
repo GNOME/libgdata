@@ -57,7 +57,7 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	 * url="http://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones">reference</ulink>.
 	 *
 	 * Since: 0.3.0
-	 * Deprecated: UNRELEASED: Unsupported by the online API any more. There
+	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
 	 *   is no replacement; this will always return %NULL.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
@@ -74,7 +74,7 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	 * The number of times the feed has been completely cleared of entries.
 	 *
 	 * Since: 0.3.0
-	 * Deprecated: UNRELEASED: Unsupported by the online API any more. There
+	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
 	 *   is no replacement; this will always return 0.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_TIMES_CLEANED,
@@ -126,7 +126,7 @@ gdata_calendar_feed_get_property (GObject *object, guint property_id, GValue *va
  * Return value: the feed's timezone, or %NULL
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: Unsupported by the online API any more. There is no
+ * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
  *   replacement; this will always return %NULL.
  **/
 const gchar *
@@ -146,7 +146,7 @@ gdata_calendar_feed_get_timezone (GDataCalendarFeed *self)
  * Return value: the number of times the feed has been totally emptied
  *
  * Since: 0.3.0
- * Deprecated: UNRELEASED: Unsupported by the online API any more. There is no
+ * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
  *   replacement; this will always return %NULL.
  **/
 guint

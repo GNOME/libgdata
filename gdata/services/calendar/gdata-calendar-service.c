@@ -129,7 +129,7 @@
  * 	</programlisting>
  * </example>
  *
- * Before version UNRELEASED, the Calendar service could be manipulated using
+ * Before version 0.17.2, the Calendar service could be manipulated using
  * batch operations. That is no longer supported, and any batch operations
  * created on the calendar will fail.
  **/
@@ -764,7 +764,7 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
  * Return value: (transfer full): an updated #GDataCalendarEvent, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- * Deprecated: UNRELEASED: Use gdata_calendar_service_insert_calendar_event()
+ * Deprecated: 0.17.2: Use gdata_calendar_service_insert_calendar_event()
  *   instead to be able to specify the calendar to add the event to; otherwise
  *   the default calendar will be used.
  **/
@@ -802,7 +802,7 @@ gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEv
  * Return value: (transfer full): an updated #GDataCalendarEvent, or %NULL;
  * unref with g_object_unref()
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 GDataCalendarEvent *
 gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
@@ -848,7 +848,7 @@ gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
  * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
  *
  * Since: 0.8.0
- * Deprecated: UNRELEASED: Use
+ * Deprecated: 0.17.2: Use
  *   gdata_calendar_service_insert_calendar_event_async() instead to be able to
  *   specify the calendar to add the event to; otherwise the default calendar
  *   will be used.
@@ -890,7 +890,7 @@ gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCale
  * synchronous version of this function, and gdata_service_insert_entry_async(),
  * which is the base asynchronous insertion function.
  *
- * Since: UNRELEASED
+ * Since: 0.17.2
  */
 void
 gdata_calendar_service_insert_calendar_event_async (GDataCalendarService *self,

@@ -154,7 +154,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 *
 	 * The number of times the calendar has been cleared of events.
 	 *
-	 * Deprecated: UNRELEASED: Unsupported by the online API any more. There
+	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
 	 *   is no replacement; this will always return
 	 *   <code class="literal">0</code>.
 	 **/
@@ -184,7 +184,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 *
 	 * The background color used to highlight the calendar in the user’s
 	 * browser. This used to be restricted to a limited set of colours, but
-	 * since UNRELEASED may be any RGB colour.
+	 * since 0.17.2 may be any RGB colour.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_COLOR,
 	                                 g_param_spec_boxed ("color",
@@ -226,7 +226,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/protocol/#appEdited">
 	 * Atom Publishing Protocol specification</ulink>.
 	 *
-	 * Deprecated: UNRELEASED: Unsupported by the online API any more. There
+	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
 	 * is no replacement; this will always return -1.
 	 **/
 	g_object_class_install_property (gobject_class, PROP_EDITED,
@@ -663,7 +663,7 @@ gdata_calendar_calendar_set_timezone (GDataCalendarCalendar *self, const gchar *
  * Gets the #GDataCalendarCalendar:times-cleaned property.
  *
  * Return value: the number of times the calendar has been totally emptied
- * Deprecated: UNRELEASED: Unsupported by the online API any more. There is no
+ * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
  *   replacement; this will always return <code class="literal">0</code>.
  **/
 guint
@@ -794,7 +794,7 @@ gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self)
  * Gets the #GDataCalendarCalendar:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
  *
  * Return value: the UNIX timestamp for the time the calendar was last edited, or <code class="literal">-1</code>
- * Deprecated: UNRELEASED: Unsupported by the online API any more. There is no
+ * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
  *   replacement; this will always return <code class="literal">-1</code>.
  **/
 gint64
