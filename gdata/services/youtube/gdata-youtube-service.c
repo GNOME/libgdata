@@ -1040,10 +1040,7 @@ gdata_youtube_service_upload_video (GDataYouTubeService *self, GDataYouTubeVideo
 	                                            SOUP_METHOD_POST,
 	                                            "https://www.googleapis.com/upload/youtube/v3/videos"
 	                                            "?part=snippet,status,"
-	                                                  "recordingDetails,"
-	                                                  "contentDetails,id,"
-	                                                  "statistics,"
-	                                                  "processingDetails",
+	                                                  "recordingDetails",
 	                                            GDATA_ENTRY (video), slug,
 	                                            content_type,
 	                                            cancellable);

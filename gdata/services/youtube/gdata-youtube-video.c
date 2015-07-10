@@ -82,6 +82,7 @@ static void gdata_youtube_video_finalize (GObject *object);
 static void gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static void gdata_youtube_video_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+static gboolean post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
 static void get_json (GDataParsable *parsable, JsonBuilder *builder);
 static const gchar *get_content_type (void);
 static gchar *get_entry_uri (const gchar *id) G_GNUC_WARN_UNUSED_RESULT;
@@ -176,6 +177,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	gobject_class->finalize = gdata_youtube_video_finalize;
 
 	parsable_class->parse_json = parse_json;
+	parsable_class->post_parse_json = post_parse_json;
 	parsable_class->get_json = get_json;
 	parsable_class->get_content_type = get_content_type;
 
@@ -1313,6 +1315,32 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_youtube_video_parent_class)->parse_json (parsable, reader, user_data, error);
 	}
+
+	return TRUE;
+}
+
+static gboolean
+post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	GDataLink *_link = NULL;  /* owned */
+	const gchar *id;
+	gchar *uri = NULL;  /* owned */
+
+	/* Set the self link, which is needed for
+	 * gdata_service_delete_entry(). */
+	id = gdata_entry_get_id (GDATA_ENTRY (parsable));
+
+	if (id == NULL) {
+		return TRUE;
+	}
+
+	uri = _gdata_service_build_uri ("https://www.googleapis.com"
+	                                "/youtube/v3/videos"
+	                                "?id=%s", id);
+	_link = gdata_link_new (uri, GDATA_LINK_SELF);
+	gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
+	g_object_unref (_link);
+	g_free (uri);
 
 	return TRUE;
 }
