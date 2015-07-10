@@ -1,26 +1,25 @@
-> DELETE /feeds/api/users/gdatatest/uploads/-1OFaq-ITPk HTTP/1.1
-> Soup-Debug-Timestamp: 1372769338
-> Soup-Debug: SoupSessionSync 1 (0x646230), SoupMessage 33 (0x8c28d0), SoupSocket 18 (0x84d6a0)
-> Host: gdata.youtube.com
-> X-GData-Key: key=AI39si7Me3Q7zYs6hmkFvpRBD2nrkVjYYsUO5lh_3HdOkGRc9g6Z4nzxZatk_aAo2EsA21k7vrda0OO6oFg2rnhMedZXPyXoEw
-> Authorization: GoogleLogin auth=DQAAAM4AAADqH8lo9PPwuw0698JF76xDlWmWyEsyRRNN8S5ISwYu47Iok-qgJi7fAtOFsBYoKc-Ayt58aGeAvydDLedsmABUfgRDW1YKfY1ZzQvFclwhXQ3HlYMQ04AU7CXDF_3BBZNR_hUhyHRvM7Jqiyn7qHddBEjnp-XTzch5ImTCbPXawpNKZeRg1nySsOHhIXxTlLOWsPYiTdAuD5Z28sfTtXJTdT8XmZ-IwKG2nuF2ptMnH2wMokEQ7PB2lEeiZKOZ59VWKjx43fVidQExxB1PhHXN
+> DELETE /youtube/v3/videos?id=fcDgG9SYgWo HTTP/1.1
+> Soup-Debug-Timestamp: 1436526042
+> Soup-Debug: SoupSession 1 (0x697270), SoupMessage 4 (0x6f3380), SoupSocket 2 (0x7fffe4002d90)
+> Host: www.googleapis.com
+> Authorization: Bearer ya29.rAEcpg9Gg0tTwYPS1C3GGnpc00A7XjAUKJe_wWmIkt-XPaMeOcWW6v3yMlgAkNlrwAM1
 > GData-Version: 2
-> If-Match: W/"A0QHRH47eCp7I2A9WhFRF0s."
+> If-Match: "iDqJ1j7zKs4x3o3ZsFlBOwgWAHU/Lk_Eo1hcMJhjOQ3HB3tayaqGYfw"
+> Accept-Encoding: gzip, deflate
+> User-Agent: libgdata/0.17.2 - gzip
 > Connection: Keep-Alive
   
-< HTTP/1.1 412 Precondition Failed
-< Soup-Debug-Timestamp: 1372769338
-< Soup-Debug: SoupMessage 33 (0x8c28d0)
-< X-GData-User-Country: GB
-< Content-Type: application/vnd.google.gdata.error+xml
-< Transfer-Encoding: chunked
-< Date: Tue, 02 Jul 2013 12:48:58 GMT
-< Expires: Tue, 02 Jul 2013 12:48:58 GMT
-< Cache-control: private, max-age=0
-< X-Content-Type-Options: nosniff
-< X-Frame-Options: SAMEORIGIN
-< X-XSS-Protection: 1; mode=block
+< HTTP/1.1 204 No Content
+< Soup-Debug-Timestamp: 1436526043
+< Soup-Debug: SoupMessage 4 (0x6f3380)
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: Fri, 01 Jan 1990 00:00:00 GMT
+< Date: Fri, 10 Jul 2015 11:00:43 GMT
+< ETag: "iDqJ1j7zKs4x3o3ZsFlBOwgWAHU/qR2rMcvcJrXM7gQXiqj7Fw2GLY4"
+< Vary: Origin
+< Vary: X-Origin
 < Server: GSE
+< Alternate-Protocol: 443:quic,p=1
 < 
-< <errors xmlns='http://schemas.google.com/g/2005'><error><domain>GData</domain><code>etagsUnsupported</code><internalReason>Resource does not support Etags</internalReason></error></errors>
   

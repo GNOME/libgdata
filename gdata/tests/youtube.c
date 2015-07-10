@@ -753,7 +753,7 @@ set_up_upload (UploadData *data, gconstpointer service)
 
 	gdata_entry_set_title (GDATA_ENTRY (data->video), "Bad Wedding Toast");
 	gdata_youtube_video_set_description (data->video, "I gave a bad toast at my friend's wedding.");
-	category = gdata_media_category_new ("People", "http://gdata.youtube.com/schemas/2007/categories.cat", NULL);
+	category = gdata_media_category_new ("22", NULL, NULL);
 	gdata_youtube_video_set_category (data->video, category);
 	g_object_unref (category);
 	gdata_youtube_video_set_keywords (data->video, tags);
@@ -2625,13 +2625,10 @@ main (int argc, char *argv[])
 	g_test_add ("/youtube/query/related/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
 	            test_query_related_async_cancellation, gdata_tear_down_async_test_data);
 
-/* FIXME: Port and re-enable these tests */
-#if 0
 	g_test_add ("/youtube/upload/simple", UploadData, service, set_up_upload, test_upload_simple, tear_down_upload);
 	g_test_add ("/youtube/upload/async", GDataAsyncTestData, service, set_up_upload_async, test_upload_async, tear_down_upload_async);
 	g_test_add ("/youtube/upload/async/cancellation", GDataAsyncTestData, service, set_up_upload_async, test_upload_async_cancellation,
 	            tear_down_upload_async);
-#endif
 
 	g_test_add_data_func ("/youtube/query/single", service, test_query_single);
 	g_test_add ("/youtube/query/single/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_query_single_async,
