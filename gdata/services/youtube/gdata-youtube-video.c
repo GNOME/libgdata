@@ -1778,7 +1778,6 @@ gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gch
 {
 	GDataYouTubeVideoPrivate *priv;
 	gboolean allowed_present, allowed_empty;
-	gboolean blocked_present, blocked_empty;
 	gboolean in_allowed, in_blocked;
 
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
@@ -1789,9 +1788,6 @@ gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gch
 	allowed_present = (priv->region_restriction_allowed != NULL);
 	allowed_empty = (allowed_present &&
 	                 priv->region_restriction_allowed[0] == NULL);
-	blocked_present = (priv->region_restriction_blocked != NULL);
-	blocked_empty = (blocked_present &&
-	                 priv->region_restriction_blocked[0] == NULL);
 
 	in_allowed = strv_contains ((const gchar * const *) priv->region_restriction_allowed, country);
 	in_blocked = strv_contains ((const gchar * const *) priv->region_restriction_blocked, country);
