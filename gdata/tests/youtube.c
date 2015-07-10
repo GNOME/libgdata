@@ -1954,7 +1954,6 @@ assert_comments_feed (GDataFeed *comments_feed)
 
 		/* We can't do much more than this, since we can't reasonably add test comments to public videos, and can't upload a new video
 		 * for each test since it has to go through moderation. */
-		g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (comment_)), !=, NULL);
 		g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (comment_)), !=, NULL);
 
 		g_assert_cmpuint (g_list_length (gdata_entry_get_authors (GDATA_ENTRY (comment_))), >, 0);
@@ -2075,7 +2074,9 @@ tear_down_insert_comment (InsertCommentData *data, gconstpointer service)
 }
 
 static void
-assert_comments_equal (GDataComment *new_comment, GDataYouTubeComment *original_comment)
+assert_comments_equal (GDataComment *new_comment,
+                       GDataYouTubeComment *original_comment,
+                       gboolean allow_empty)
 {
 	GList *authors;
 	GDataAuthor *author;
@@ -2084,7 +2085,16 @@ assert_comments_equal (GDataComment *new_comment, GDataYouTubeComment *original_
 	g_assert (GDATA_IS_YOUTUBE_COMMENT (original_comment));
 	g_assert (GDATA_YOUTUBE_COMMENT (new_comment) != original_comment);
 
-	g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (new_comment)), ==, gdata_entry_get_content (GDATA_ENTRY (original_comment)));
+	/* Comments can be "" if they’ve just been inserted and are pending
+	 * moderation. Not much we can do about that without waiting a few
+	 * minutes, which would suck in a unit test. */
+	if (g_strcmp0 (gdata_entry_get_content (GDATA_ENTRY (new_comment)), "") != 0) {
+		g_assert_cmpstr (gdata_entry_get_content (GDATA_ENTRY (new_comment)), ==,
+		                 gdata_entry_get_content (GDATA_ENTRY (original_comment)));
+	} else {
+		g_assert (allow_empty);
+	}
+
 	g_assert_cmpstr (gdata_youtube_comment_get_parent_comment_uri (GDATA_YOUTUBE_COMMENT (new_comment)), ==,
 	                 gdata_youtube_comment_get_parent_comment_uri (original_comment));
 
@@ -2095,7 +2105,7 @@ assert_comments_equal (GDataComment *new_comment, GDataYouTubeComment *original_
 	author = GDATA_AUTHOR (authors->data);
 
 	g_assert_cmpstr (gdata_author_get_name (author), ==, "GDataTest");
-	g_assert_cmpstr (gdata_author_get_uri (author), ==, "https://gdata.youtube.com/feeds/api/users/GDataTest");
+	g_assert_cmpstr (gdata_author_get_uri (author), ==, "http://www.youtube.com/user/GDataTest");
 }
 
 static void
@@ -2111,7 +2121,7 @@ test_comment_insert (InsertCommentData *data, gconstpointer service)
 	g_assert_no_error (error);
 	g_clear_error (&error);
 
-	assert_comments_equal (new_comment, data->comment);
+	assert_comments_equal (new_comment, data->comment, TRUE);
 
 	g_object_unref (new_comment);
 
@@ -2131,7 +2141,7 @@ G_STMT_START {
 	new_comment = gdata_commentable_insert_comment_finish (GDATA_COMMENTABLE (obj), async_result, &error);
 
 	if (error == NULL) {
-		assert_comments_equal (new_comment, data->comment);
+		assert_comments_equal (new_comment, data->comment, TRUE);
 
 		g_object_unref (new_comment);
 	} else {
@@ -2625,8 +2635,6 @@ main (int argc, char *argv[])
 	g_test_add ("/youtube/query/single/async/cancellation", GDataAsyncTestData, service, gdata_set_up_async_test_data,
 	            test_query_single_async_cancellation, gdata_tear_down_async_test_data);
 
-#if 0
-FIXME: Port and re-enable these tests
 	g_test_add ("/youtube/comment/query", CommentData, service, set_up_comment, test_comment_query, tear_down_comment);
 	g_test_add ("/youtube/comment/query/async", GDataAsyncTestData, service, set_up_comment_async, test_comment_query_async,
 	            tear_down_comment_async);
@@ -2648,7 +2656,6 @@ FIXME: Port and re-enable these tests
 	            tear_down_insert_comment_async);
 	g_test_add ("/youtube/comment/delete/async/cancellation", GDataAsyncTestData, service, set_up_insert_comment_async,
 	            test_comment_delete_async_cancellation, tear_down_insert_comment_async);
-#endif
 
 	g_test_add_data_func ("/youtube/categories", service, test_categories);
 	g_test_add ("/youtube/categories/async", GDataAsyncTestData, service, gdata_set_up_async_test_data, test_categories_async,
