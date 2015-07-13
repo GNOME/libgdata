@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-05 20:23+0200\n"
-"PO-Revision-Date: 2015-07-05 20:24+0200\n"
+"POT-Creation-Date: 2015-07-13 19:18+0200\n"
+"PO-Revision-Date: 2015-07-13 19:19+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -78,7 +78,7 @@ msgstr "Uwierzytelnienie jest wymagane: %s"
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
 #: ../gdata/services/calendar/gdata-calendar-service.c:313
-#: ../gdata/services/youtube/gdata-youtube-video.c:1012
+#: ../gdata/services/youtube/gdata-youtube-video.c:1013
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Nie znaleziono żądanego zasobu: %s"
@@ -409,7 +409,7 @@ msgstr "Nieprawidłowy adres URI przekierowania: %s"
 
 #: ../gdata/gdata-service.c:1454
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:1015
+#: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "Wpis został już umieszczony."
 
@@ -425,7 +425,7 @@ msgstr "Strumień został już zamknięty"
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:302
 #: ../gdata/services/tasks/gdata-tasks-service.c:195
-#: ../gdata/services/youtube/gdata-youtube-service.c:539
+#: ../gdata/services/youtube/gdata-youtube-service.c:541
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -436,7 +436,7 @@ msgstr ""
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:334
 #: ../gdata/services/tasks/gdata-tasks-service.c:204
-#: ../gdata/services/youtube/gdata-youtube-service.c:555
+#: ../gdata/services/youtube/gdata-youtube-service.c:557
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Należy być uwierzytelnionym, aby tego dokonać."
@@ -503,8 +503,12 @@ msgstr ""
 msgid "You must be authenticated to copy documents."
 msgstr "Należy być uwierzytelnionym, aby skopiować dokumenty."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1148
-#: ../gdata/services/documents/gdata-documents-service.c:1331
+#: ../gdata/services/documents/gdata-documents-service.c:1155
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr ""
+"Należy być uwierzytelnionym, aby wstawić lub przenieść dokumenty i katalogi."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1354
 msgid "You must be authenticated to move documents and folders."
 msgstr "Należy być uwierzytelnionym, aby przenieść dokumenty i katalogi."
 
@@ -557,7 +561,7 @@ msgstr "Należy być uwierzytelnionym, aby odpytać wszystkie listy zadań."
 msgid "You must be authenticated to query your own tasks."
 msgstr "Należy być uwierzytelnionym, aby odpytać własne zadania."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:546
+#: ../gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -566,7 +570,7 @@ msgstr ""
 "ponownie."
 
 #. Translators: the parameter is a URI.
-#: ../gdata/services/youtube/gdata-youtube-service.c:563
+#: ../gdata/services/youtube/gdata-youtube-service.c:565
 #, c-format
 msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
@@ -575,6 +579,6 @@ msgstr ""
 "Aby to zrobić, konto Google musi być powiązane z kanałem YouTube. Po adresem "
 "%s można go utworzyć."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:1024
+#: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Należy być uwierzytelnionym, aby wysłać nagranie wideo."
