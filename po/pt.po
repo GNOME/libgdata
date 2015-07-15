@@ -2,16 +2,16 @@
 # Copyright © 2009, 2010, 2011, 2013 libgdata
 # This file is distributed under the same license as the libgdata package.
 # António Lima <amrlima@gmail.com>, 2009, 2010, 2011, 2012, 2013.
-# Pedro Albuquerque <palbuquerque73@openmailbox.com>, 2015.
+# Pedro Albuquerque <palbuquerque73o@gmail.com>, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-07-05 22:12+0000\n"
-"PO-Revision-Date: 2015-07-06 10:57+0100\n"
-"Last-Translator: Pedro Albuquerque <palbuquerque73@openmailbox.com>\n"
+"POT-Creation-Date: 2015-07-14 22:10+0000\n"
+"PO-Revision-Date: 2015-07-15 10:30+0100\n"
+"Last-Translator: Pedro Albuquerque <palbuquerque73o@gmail.com>\n"
 "Language-Team: Português <palbuquerque73@openmailbox.com>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
@@ -76,7 +76,7 @@ msgstr "Autenticação requerida: %s"
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
 #: ../gdata/services/calendar/gdata-calendar-service.c:313
-#: ../gdata/services/youtube/gdata-youtube-video.c:1012
+#: ../gdata/services/youtube/gdata-youtube-video.c:1013
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "O recurso requerido não foi encontrado: %s"
@@ -409,7 +409,7 @@ msgstr "URI de redirecionamento inválido: %s"
 
 #: ../gdata/gdata-service.c:1454
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:1015
+#: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "A entrada já foi inserida."
 
@@ -426,7 +426,7 @@ msgstr "Fluxo já se encontra fechado"
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:302
 #: ../gdata/services/tasks/gdata-tasks-service.c:195
-#: ../gdata/services/youtube/gdata-youtube-service.c:539
+#: ../gdata/services/youtube/gdata-youtube-service.c:541
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -437,7 +437,7 @@ msgstr ""
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:334
 #: ../gdata/services/tasks/gdata-tasks-service.c:204
-#: ../gdata/services/youtube/gdata-youtube-service.c:555
+#: ../gdata/services/youtube/gdata-youtube-service.c:557
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Tem de estar autenticado para fazer isto."
@@ -505,8 +505,12 @@ msgstr ""
 msgid "You must be authenticated to copy documents."
 msgstr "Tem de estar autenticado para copiar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1148
-#: ../gdata/services/documents/gdata-documents-service.c:1331
+#: ../gdata/services/documents/gdata-documents-service.c:1155
+#| msgid "You must be authenticated to move documents and folders."
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr "Tem de estar autenticado para inserir ou mover documentos e pastas."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1354
 msgid "You must be authenticated to move documents and folders."
 msgstr "Tem de estar autenticado para mover documentos e pastas."
 
@@ -559,7 +563,7 @@ msgstr "Tem de estar autenticado para consultar todas as listas de tarefas."
 msgid "You must be authenticated to query your own tasks."
 msgstr "Tem de estar autenticado para consultar as suas tarefas."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:546
+#: ../gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -568,7 +572,7 @@ msgstr ""
 "novamente."
 
 #. Translators: the parameter is a URI.
-#: ../gdata/services/youtube/gdata-youtube-service.c:563
+#: ../gdata/services/youtube/gdata-youtube-service.c:565
 #, c-format
 msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
@@ -577,7 +581,7 @@ msgstr ""
 "A sua Conta Google deve estar associada a um associada a um canal do YouTube "
 "para realizar esta ação. Visite %s para criar um."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:1024
+#: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Tem de estar autenticado para enviar um vídeo."
 
