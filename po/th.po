@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-05-06 22:26+0000\n"
-"PO-Revision-Date: 2015-05-24 17:49+0700\n"
+"POT-Creation-Date: 2015-07-17 22:09+0000\n"
+"PO-Revision-Date: 2015-07-28 16:01+0700\n"
 "Last-Translator: Akom Chotiphantawanon <knight2000@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "Language: th\n"
@@ -19,41 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#. Translators: the parameter is an error message
-#: ../gdata/gdata-access-rule.c:530 ../gdata/gdata-access-rule.c:541
-#: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
-#: ../gdata/services/documents/gdata-documents-document.c:285
-#: ../gdata/services/documents/gdata-documents-entry.c:414
-#: ../gdata/services/documents/gdata-documents-entry.c:425
-#: ../gdata/services/documents/gdata-documents-entry.c:436
-#: ../gdata/services/documents/gdata-documents-entry.c:483
-#: ../gdata/services/documents/gdata-documents-entry.c:494
-#: ../gdata/services/documents/gdata-documents-entry.c:579
-#: ../gdata/services/documents/gdata-documents-entry.c:614
-#: ../gdata/services/documents/gdata-documents-entry.c:629
-#: ../gdata/services/documents/gdata-documents-entry.c:644
-#: ../gdata/services/documents/gdata-documents-entry.c:674
-#: ../gdata/services/documents/gdata-documents-entry.c:690
-#: ../gdata/services/documents/gdata-documents-feed.c:87
-#: ../gdata/services/documents/gdata-documents-feed.c:98
-#: ../gdata/services/documents/gdata-documents-feed.c:148
-#: ../gdata/services/documents/gdata-documents-feed.c:166
+#: ../gdata/gdata-batch-operation.c:635
 #, c-format
-msgid "Error parsing JSON: %s"
-msgstr "เกิดข้อผิดพลาดขณะแจง JSON: %s"
+msgid "Batch operations are unsupported by this service."
+msgstr "ไม่รองรับการทำงานแบบแบตช์ในบริการนี้"
 
 #: ../gdata/gdata-client-login-authorizer.c:629
 #: ../gdata/gdata-oauth1-authorizer.c:840
 #: ../gdata/gdata-oauth1-authorizer.c:1116
-#: ../gdata/gdata-oauth2-authorizer.c:915
-#: ../gdata/gdata-oauth2-authorizer.c:926
-#: ../gdata/gdata-oauth2-authorizer.c:945
-#: ../gdata/gdata-oauth2-authorizer.c:961
-#: ../gdata/gdata-oauth2-authorizer.c:1026
-#: ../gdata/gdata-oauth2-authorizer.c:1038
-#: ../gdata/gdata-oauth2-authorizer.c:1049
+#: ../gdata/gdata-oauth2-authorizer.c:953
+#: ../gdata/gdata-oauth2-authorizer.c:964
+#: ../gdata/gdata-oauth2-authorizer.c:983
+#: ../gdata/gdata-oauth2-authorizer.c:999
 #: ../gdata/gdata-oauth2-authorizer.c:1064
-#: ../gdata/gdata-oauth2-authorizer.c:1080
+#: ../gdata/gdata-oauth2-authorizer.c:1076
+#: ../gdata/gdata-oauth2-authorizer.c:1087
+#: ../gdata/gdata-oauth2-authorizer.c:1102
+#: ../gdata/gdata-oauth2-authorizer.c:1118
 msgid "The server returned a malformed response."
 msgstr "เซิร์ฟเวอร์คืนค่าตอบสนองผิดรูปแบบ"
 
@@ -90,7 +72,7 @@ msgstr "ต้องยืนยันตัวบุคคล: %s"
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
 #: ../gdata/services/calendar/gdata-calendar-service.c:313
-#: ../gdata/services/youtube/gdata-youtube-video.c:1012
+#: ../gdata/services/youtube/gdata-youtube-video.c:1013
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "ไม่พบทรัพยากรที่ร้องขอ: %s"
@@ -195,7 +177,7 @@ msgstr "เซิร์ฟเวอร์ปฏิเสธการร้อง
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
 #: ../gdata/gdata-oauth1-authorizer.c:1090
-#: ../gdata/gdata-oauth2-authorizer.c:1075
+#: ../gdata/gdata-oauth2-authorizer.c:1113
 #: ../gdata/services/calendar/gdata-calendar-service.c:340
 #, c-format
 msgid "Access was denied by the user or server."
@@ -211,6 +193,30 @@ msgstr "เกิดข้อผิดพลาดขณะแจง XML: %s"
 #: ../gdata/gdata-parsable.c:365
 msgid "Empty document."
 msgstr "เอกสารเปล่า"
+
+#. Translators: the parameter is an error message
+#: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
+#: ../gdata/services/documents/gdata-documents-access-rule.c:144
+#: ../gdata/services/documents/gdata-documents-access-rule.c:154
+#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-entry.c:458
+#: ../gdata/services/documents/gdata-documents-entry.c:469
+#: ../gdata/services/documents/gdata-documents-entry.c:480
+#: ../gdata/services/documents/gdata-documents-entry.c:527
+#: ../gdata/services/documents/gdata-documents-entry.c:538
+#: ../gdata/services/documents/gdata-documents-entry.c:623
+#: ../gdata/services/documents/gdata-documents-entry.c:658
+#: ../gdata/services/documents/gdata-documents-entry.c:673
+#: ../gdata/services/documents/gdata-documents-entry.c:688
+#: ../gdata/services/documents/gdata-documents-entry.c:718
+#: ../gdata/services/documents/gdata-documents-entry.c:734
+#: ../gdata/services/documents/gdata-documents-feed.c:81
+#: ../gdata/services/documents/gdata-documents-feed.c:92
+#: ../gdata/services/documents/gdata-documents-feed.c:142
+#: ../gdata/services/documents/gdata-documents-feed.c:160
+#, c-format
+msgid "Error parsing JSON: %s"
+msgstr "เกิดข้อผิดพลาดขณะแจง JSON: %s"
 
 #: ../gdata/gdata-parsable.c:522
 msgid "Outermost JSON node is not an object."
@@ -331,7 +337,7 @@ msgstr "ได้รับ JSON ที่ไม่ถูกต้องจาก
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/gdata-parser.c:1179
+#: ../gdata/gdata-parser.c:1182
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "เนื้อหาของอิลิเมนต์ %s (\"%s\") ไม่ได้อยู่ในรูปแบบ RGB ฐานสิบหก"
@@ -393,23 +399,23 @@ msgstr "URI สำหรับเปลี่ยนเส้นทางไม�
 
 #: ../gdata/gdata-service.c:1454
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:998
+#: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "รายการนี้ถูกแทรกอยู่ก่อนแล้ว"
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:791 ../gdata/gdata-upload-stream.c:873
+#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr "ได้รับข้อผิดพลาดจากเซิร์ฟเวอร์หลังจากอัปโหลดก้อนข้อมูลแบบทำต่อจากเดิมได้"
 
-#: ../gdata/gdata-upload-stream.c:939
+#: ../gdata/gdata-upload-stream.c:936
 msgid "Stream is already closed"
 msgstr "สตรีมปิดแล้ว"
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:302
 #: ../gdata/services/tasks/gdata-tasks-service.c:195
-#: ../gdata/services/youtube/gdata-youtube-service.c:522
+#: ../gdata/services/youtube/gdata-youtube-service.c:541
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -418,7 +424,7 @@ msgstr "คุณมีการเรียก API มากเกินไป 
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:334
 #: ../gdata/services/tasks/gdata-tasks-service.c:204
-#: ../gdata/services/youtube/gdata-youtube-service.c:538
+#: ../gdata/services/youtube/gdata-youtube-service.c:557
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "คุณต้องยืนยันตัวบุคคลเพื่อจะทำสิ่งนี้"
@@ -457,35 +463,38 @@ msgstr "คุณต้องยืนยันบุคคลเพื่อจ
 msgid "You must be authenticated to download documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะดาวน์โหลดเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:517
-#: ../gdata/services/documents/gdata-documents-service.c:567
+#: ../gdata/services/documents/gdata-documents-service.c:513
+#: ../gdata/services/documents/gdata-documents-service.c:563
 msgid "You must be authenticated to query documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะสืบค้นเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:612
+#: ../gdata/services/documents/gdata-documents-service.c:628
 msgid "You must be authenticated to upload documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะอัปโหลดเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:618
+#: ../gdata/services/documents/gdata-documents-service.c:634
 msgid "The document has already been uploaded."
 msgstr "เอกสารได้อัปโหลดไว้อยู่ก่อนแล้ว"
 
-#: ../gdata/services/documents/gdata-documents-service.c:762
+#: ../gdata/services/documents/gdata-documents-service.c:779
 msgid "You must be authenticated to update documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะปรับข้อมูลเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:944
+#: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr "ชนิดของเนื้อหาเอกสารที่จัดให้ ('%s') ไม่สามารถจำแนกได้"
 
-#: ../gdata/services/documents/gdata-documents-service.c:984
+#: ../gdata/services/documents/gdata-documents-service.c:986
 msgid "You must be authenticated to copy documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะคัดลอกเอกสาร"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1146
-#: ../gdata/services/documents/gdata-documents-service.c:1329
+#: ../gdata/services/documents/gdata-documents-service.c:1155
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr "คุณต้องยืนยันบุคคลเพื่อจะเพิ่มหรือย้ายเอกสารและโฟลเดอร์"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1354
 msgid "You must be authenticated to move documents and folders."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะย้ายเอกสารและโฟลเดอร์"
 
@@ -534,14 +543,14 @@ msgstr "คุณต้องยืนยันบุคคลเพื่อจ
 msgid "You must be authenticated to query your own tasks."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะสืบค้นภารกิจของคุณเอง"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:529
+#: ../gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr "คุณมีรายการเกินโควต้าของคุณแล้ว กรุณาลบบางรายการแล้วลองอีกครั้ง"
 
 #. Translators: the parameter is a URI.
-#: ../gdata/services/youtube/gdata-youtube-service.c:546
+#: ../gdata/services/youtube/gdata-youtube-service.c:565
 #, c-format
 msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
@@ -550,7 +559,7 @@ msgstr ""
 "บัญชี Google ของคุณต้องเชื่อมโยงกับช่อง YouTube ข่องหนึ่งเพื่อจะทำสิ่งนี้ได้ กรุณาไปที่ %s "
 "เพื่อสร้างช่อง"
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:1007
+#: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "คุณต้องยืนยันตัวบุคคลเพื่อจะอัปโหลดวีดิทัศน์"
 
