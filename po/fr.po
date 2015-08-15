@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-09-02 09:27+0000\n"
-"PO-Revision-Date: 2014-09-02 22:54+0200\n"
+"POT-Creation-Date: 2015-08-15 10:21+0000\n"
+"PO-Revision-Date: 2015-08-15 13:47+0200\n"
 "Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
@@ -23,24 +23,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:627
-#: ../gdata/gdata-oauth1-authorizer.c:839
-#: ../gdata/gdata-oauth1-authorizer.c:1115
+#: ../gdata/gdata-batch-operation.c:635
+#, c-format
+msgid "Batch operations are unsupported by this service."
+msgstr "Les opérations par lots ne sont pas prises en charge par ce service."
+
+#: ../gdata/gdata-client-login-authorizer.c:629
+#: ../gdata/gdata-oauth1-authorizer.c:840
+#: ../gdata/gdata-oauth1-authorizer.c:1116
+#: ../gdata/gdata-oauth2-authorizer.c:953
+#: ../gdata/gdata-oauth2-authorizer.c:964
+#: ../gdata/gdata-oauth2-authorizer.c:983
+#: ../gdata/gdata-oauth2-authorizer.c:999
+#: ../gdata/gdata-oauth2-authorizer.c:1064
+#: ../gdata/gdata-oauth2-authorizer.c:1076
+#: ../gdata/gdata-oauth2-authorizer.c:1087
+#: ../gdata/gdata-oauth2-authorizer.c:1102
+#: ../gdata/gdata-oauth2-authorizer.c:1118
 msgid "The server returned a malformed response."
 msgstr "La réponse du serveur n'est pas conforme."
 
-#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
+#: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Impossible de se connecter au serveur du service."
 
-#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
+#: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Impossible de se connecter au serveur mandataire."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#: ../gdata/gdata-client-login-authorizer.c:660 ../gdata/gdata-service.c:372
+#: ../gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -48,58 +66,64 @@ msgstr ""
 "%s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
+#: ../gdata/gdata-client-login-authorizer.c:666 ../gdata/gdata-service.c:378
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Authentification requise : %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
+#: ../gdata/services/calendar/gdata-calendar-service.c:313
+#: ../gdata/services/youtube/gdata-youtube-video.c:1013
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "La ressource demandée n'a pas été trouvée : %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
+#: ../gdata/gdata-client-login-authorizer.c:677 ../gdata/gdata-service.c:389
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "L'entrée a été modifiée depuis son téléchargement : %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
+#: ../gdata/gdata-client-login-authorizer.c:689 ../gdata/gdata-service.c:403
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Code d'erreur %u lors de l'authentification : %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:786
+#: ../gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Un CAPTCHA doit être complété pour se connecter."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:824
+#: ../gdata/gdata-client-login-authorizer.c:826
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Ce compte nécessite un mot de passe spécifique à l'application. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:831
+#: ../gdata/gdata-client-login-authorizer.c:833
 msgid "Your username or password were incorrect."
 msgstr "Nom d'utilisateur ou mot de passe incorrect."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:852
+#: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "L'adresse électronique de votre compte n'est pas vérifiée (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:857
+#: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr "Vous n'avez pas accepté les conditions générales du service (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:863
+#: ../gdata/gdata-client-login-authorizer.c:865
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -109,25 +133,25 @@ msgstr ""
 "nouveau nom d'utilisateur et votre nouveau mot de passe (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:868
+#: ../gdata/gdata-client-login-authorizer.c:870
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Ce compte a été supprimé (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:873
+#: ../gdata/gdata-client-login-authorizer.c:875
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Ce compte a été désactivé (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:878
+#: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "L'accès à ce service est désactivé pour ce compte (%s)."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:883
+#: ../gdata/gdata-client-login-authorizer.c:885
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Ce service n'est pas disponible pour le moment (%s)."
@@ -154,35 +178,56 @@ msgstr "Ce commentaire ne peut pas être supprimé."
 msgid "Invalid seek request"
 msgstr "Requête de positionnement non valide"
 
-#: ../gdata/gdata-oauth1-authorizer.c:814
+#: ../gdata/gdata-oauth1-authorizer.c:815
 msgid "The server rejected the temporary credentials request."
 msgstr ""
 "Le serveur a rejeté la requête de données d'authentification provisoires."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1089
+#: ../gdata/gdata-oauth1-authorizer.c:1090
+#: ../gdata/gdata-oauth2-authorizer.c:1113
+#: ../gdata/services/calendar/gdata-calendar-service.c:340
+#, c-format
 msgid "Access was denied by the user or server."
 msgstr "L'accès a été refusé par l'utilisateur ou le serveur."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:349 ../gdata/gdata-parsable.c:360
+#: ../gdata/gdata-parsable.c:352 ../gdata/gdata-parsable.c:363
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Erreur lors de l'analyse XML : %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:362
+#: ../gdata/gdata-parsable.c:365
 msgid "Empty document."
 msgstr "Document vide."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:480 ../gdata/gdata-parsable.c:518
+#: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
+#: ../gdata/services/documents/gdata-documents-access-rule.c:144
+#: ../gdata/services/documents/gdata-documents-access-rule.c:154
+#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-entry.c:458
+#: ../gdata/services/documents/gdata-documents-entry.c:469
+#: ../gdata/services/documents/gdata-documents-entry.c:480
+#: ../gdata/services/documents/gdata-documents-entry.c:527
+#: ../gdata/services/documents/gdata-documents-entry.c:538
+#: ../gdata/services/documents/gdata-documents-entry.c:623
+#: ../gdata/services/documents/gdata-documents-entry.c:658
+#: ../gdata/services/documents/gdata-documents-entry.c:673
+#: ../gdata/services/documents/gdata-documents-entry.c:688
+#: ../gdata/services/documents/gdata-documents-entry.c:718
+#: ../gdata/services/documents/gdata-documents-entry.c:734
+#: ../gdata/services/documents/gdata-documents-feed.c:81
+#: ../gdata/services/documents/gdata-documents-feed.c:92
+#: ../gdata/services/documents/gdata-documents-feed.c:142
+#: ../gdata/services/documents/gdata-documents-feed.c:160
 #, c-format
 msgid "Error parsing JSON: %s"
 msgstr "Erreur lors de l'analyse JSON : %s"
 
-#: ../gdata/gdata-parsable.c:519
+#: ../gdata/gdata-parsable.c:522
 msgid "Outermost JSON node is not an object."
 msgstr "Le nœud JSON le plus à l'extérieur n'est pas un objet."
 
@@ -190,7 +235,7 @@ msgstr "Le nœud JSON le plus à l'extérieur n'est pas un objet."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:69
+#: ../gdata/gdata-parser.c:70
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Un élément %s ne contient pas le contenu requis."
@@ -200,7 +245,7 @@ msgstr "Un élément %s ne contient pas le contenu requis."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:85
+#: ../gdata/gdata-parser.c:86
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "Le contenu (« %s ») de l'élément %s n'est pas dans le format ISO 8601."
@@ -210,7 +255,7 @@ msgstr "Le contenu (« %s ») de l'élément %s n'est pas dans le format ISO 8
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:105
+#: ../gdata/gdata-parser.c:106
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "La valeur de la propriété %s d'un élément %s (« %s ») est inconnue."
@@ -220,7 +265,7 @@ msgstr "La valeur de la propriété %s d'un élément %s (« %s ») est inconn
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:123
+#: ../gdata/gdata-parser.c:124
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Le contenu d'un élément %s (« %s ») est inconnu."
@@ -230,7 +275,7 @@ msgstr "Le contenu d'un élément %s (« %s ») est inconnu."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:143
+#: ../gdata/gdata-parser.c:144
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Une propriété requise d'un élément %s (%s) est manquante."
@@ -241,7 +286,7 @@ msgstr "Une propriété requise d'un élément %s (%s) est manquante."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:166
+#: ../gdata/gdata-parser.c:167
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -254,7 +299,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:185
+#: ../gdata/gdata-parser.c:186
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Un élément requis (%s) est manquant."
@@ -267,7 +312,7 @@ msgstr "Un élément requis (%s) est manquant."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
+#: ../gdata/gdata-parser.c:201 ../gdata/gdata-parser.c:288
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Un élément singleton (%s) est en double."
@@ -276,7 +321,7 @@ msgstr "Un élément singleton (%s) est en double."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:291
+#: ../gdata/gdata-parser.c:274
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Un élément « %s » ne contient pas le contenu requis."
@@ -286,7 +331,7 @@ msgstr "Un élément « %s » ne contient pas le contenu requis."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:321
+#: ../gdata/gdata-parser.c:304
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr ""
@@ -294,81 +339,10 @@ msgstr ""
 "8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:331
+#: ../gdata/gdata-parser.c:315
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "JSON non valide reçu du serveur : %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
-#, c-format
-msgid "Error code %u when querying: %s"
-msgstr "Code d'erreur %u lors de la requête : %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
-#, c-format
-msgid "Error code %u when inserting an entry: %s"
-msgstr "Code d'erreur %u lors de l'insertion d'une entrée : %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:410
-#, c-format
-msgid "Error code %u when updating an entry: %s"
-msgstr "Code d'erreur %u lors de la mise à jour d'une entrée : %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:416
-#, c-format
-msgid "Error code %u when deleting an entry: %s"
-msgstr "Code d'erreur %u lors de la suppression d'une entrée : %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:422
-#, c-format
-msgid "Error code %u when downloading: %s"
-msgstr "Code d'erreur %u lors du téléchargement : %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:428
-#, c-format
-msgid "Error code %u when uploading: %s"
-msgstr "Code d'erreur %u lors de l'envoi : %s"
-
-#. Translators: the first parameter is a HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:434
-#, c-format
-msgid "Error code %u when running a batch operation: %s"
-msgstr "Code d'erreur %u lors du lancement d'un lot d'opérations : %s"
-
-#. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:721
-#, c-format
-msgid "Invalid redirect URI: %s"
-msgstr "L'URI redirigé n'est pas valide : %s"
-
-#: ../gdata/gdata-service.c:1401
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:888
-msgid "The entry has already been inserted."
-msgstr "L'entrée a déjà été insérée."
-
-#. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:748 ../gdata/gdata-upload-stream.c:830
-#, c-format
-msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "Erreur reçue du serveur après un envoi qui peut être repris."
-
-#: ../gdata/gdata-upload-stream.c:896
-msgid "Stream is already closed"
-msgstr "Le flux est déjà fermé"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -376,28 +350,112 @@ msgstr "Le flux est déjà fermé"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
+#: ../gdata/gdata-parser.c:1182
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
 "Le contenu (« %s ») de l'élément %s n'est pas dans le format RVB hexadécimal."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:315
-#: ../gdata/services/calendar/gdata-calendar-service.c:366
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:409
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "Code d'erreur %u lors de la requête : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:415
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Code d'erreur %u lors de l'insertion d'une entrée : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:421
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Code d'erreur %u lors de la mise à jour d'une entrée : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:427
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Code d'erreur %u lors de la suppression d'une entrée : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:433
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "Code d'erreur %u lors du téléchargement : %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:439
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Code d'erreur %u lors de l'envoi : %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:445
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "Code d'erreur %u lors du lancement d'un lot d'opérations : %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:737
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "L'URI redirigé n'est pas valide : %s"
+
+#: ../gdata/gdata-service.c:1454
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:1022
+msgid "The entry has already been inserted."
+msgstr "L'entrée a déjà été insérée."
+
+#. Resumable upload error.
+#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr "Erreur reçue du serveur après un envoi qui peut être repris."
+
+#: ../gdata/gdata-upload-stream.c:936
+msgid "Stream is already closed"
+msgstr "Le flux est déjà fermé"
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:302
+#: ../gdata/services/tasks/gdata-tasks-service.c:195
+#: ../gdata/services/youtube/gdata-youtube-service.c:541
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Vous avez effectué trop d'appels API en peu de temps. Veuillez patienter "
+"quelques minutes puis essayez de nouveau."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:334
+#: ../gdata/services/tasks/gdata-tasks-service.c:204
+#: ../gdata/services/youtube/gdata-youtube-service.c:557
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Vous devez vous authentifier pour faire cela."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:465
+#: ../gdata/services/calendar/gdata-calendar-service.c:516
 msgid "You must be authenticated to query all calendars."
 msgstr "Vous devez vous authentifier pour interroger tous les calendriers."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:412
-#: ../gdata/services/calendar/gdata-calendar-service.c:463
-#: ../gdata/services/calendar/gdata-calendar-service.c:508
-#: ../gdata/services/calendar/gdata-calendar-service.c:568
+#: ../gdata/services/calendar/gdata-calendar-service.c:562
+#: ../gdata/services/calendar/gdata-calendar-service.c:613
+#: ../gdata/services/calendar/gdata-calendar-service.c:675
+#: ../gdata/services/calendar/gdata-calendar-service.c:734
 msgid "You must be authenticated to query your own calendars."
 msgstr "Vous devez vous authentifier pour interroger vos propres calendriers."
-
-#: ../gdata/services/calendar/gdata-calendar-service.c:517
-#: ../gdata/services/calendar/gdata-calendar-service.c:581
-msgid "The calendar did not have a content URI."
-msgstr "Le calendrier ne possède pas d'URI de contenu."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
 #: ../gdata/services/contacts/gdata-contacts-service.c:308
@@ -417,45 +475,49 @@ msgstr "Le groupe a déjà été inséré."
 msgid "You must be authenticated to insert a group."
 msgstr "Vous devez vous authentifier pour insérer un groupe."
 
-#: ../gdata/services/documents/gdata-documents-document.c:300
+#: ../gdata/services/documents/gdata-documents-document.c:389
 msgid "You must be authenticated to download documents."
 msgstr "Vous devez vous authentifier pour télécharger des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:461
-#: ../gdata/services/documents/gdata-documents-service.c:511
+#: ../gdata/services/documents/gdata-documents-service.c:513
+#: ../gdata/services/documents/gdata-documents-service.c:563
 msgid "You must be authenticated to query documents."
 msgstr "Vous devez vous authentifier pour interroger des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:556
+#: ../gdata/services/documents/gdata-documents-service.c:628
 msgid "You must be authenticated to upload documents."
 msgstr "Vous devez vous authentifier pour envoyer des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:562
+#: ../gdata/services/documents/gdata-documents-service.c:634
 msgid "The document has already been uploaded."
 msgstr "Le document a déjà été envoyé."
 
-#: ../gdata/services/documents/gdata-documents-service.c:706
+#: ../gdata/services/documents/gdata-documents-service.c:779
 msgid "You must be authenticated to update documents."
 msgstr "Vous devez vous authentifier pour mettre à jour des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:888
+#: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr ""
 "Le type de contenu du document fourni (« %s ») n'a pas pu être identifié."
 
-#: ../gdata/services/documents/gdata-documents-service.c:928
+#: ../gdata/services/documents/gdata-documents-service.c:986
 msgid "You must be authenticated to copy documents."
 msgstr "Vous devez vous authentifier pour copier des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1090
-#: ../gdata/services/documents/gdata-documents-service.c:1273
+#: ../gdata/services/documents/gdata-documents-service.c:1155
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr ""
+"Vous devez vous authentifier pour insérer ou déplacer des documents et des dossiers."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1354
 msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Vous devez vous authentifier pour déplacer des documents et des dossiers."
 
-#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
 msgid "Property '%s' does not hold an image"
 msgstr "La propriété « %s » ne contient pas une image"
@@ -494,24 +556,27 @@ msgstr "L'album a déjà été inséré."
 msgid "You must be authenticated to insert an album."
 msgstr "Vous devez vous authentifier pour insérer un album."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:145
-#: ../gdata/services/tasks/gdata-tasks-service.c:196
+#: ../gdata/services/tasks/gdata-tasks-service.c:330
+#: ../gdata/services/tasks/gdata-tasks-service.c:381
 msgid "You must be authenticated to query all tasklists."
 msgstr ""
 "Vous devez vous authentifier pour interroger toutes les listes de tâches."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:244
-#: ../gdata/services/tasks/gdata-tasks-service.c:300
+#: ../gdata/services/tasks/gdata-tasks-service.c:430
+#: ../gdata/services/tasks/gdata-tasks-service.c:487
 msgid "You must be authenticated to query your own tasks."
 msgstr "Vous devez vous authentifier pour interroger vos propres tâches."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:457
+#: ../gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
-msgid "This service is not available at the moment."
-msgstr "Ce service n'est pas disponible pour le moment."
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Vous avez dépassé votre quota d'entrées. Veuillez supprimer quelques entrées "
+"et essayez de nouveau."
 
 #. Translators: the parameter is a URI.
-#: ../gdata/services/youtube/gdata-youtube-service.c:462
+#: ../gdata/services/youtube/gdata-youtube-service.c:565
 #, c-format
 msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
@@ -520,51 +585,24 @@ msgstr ""
 "Votre compte Google doit être associé à une chaîne YouTube pour faire cela. "
 "Visitez %s pour en créer une."
 
-#. Translators: the first parameter is an error code, which is a coded string.
-#. * The second parameter is an error domain, which is another coded string.
-#. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:467
-#: ../gdata/services/youtube/gdata-youtube-service.c:488
-#: ../gdata/services/youtube/gdata-youtube-service.c:494
-#, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr ""
-"Code d'erreur inconnu « %s » dans le domaine « %s » reçu à l'emplacement "
-"« %s »."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:473
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "Vous devez vous authentifier pour faire cela."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:478
-#, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
-msgstr ""
-"Vous avez effectué trop d'appels API en peu de temps. Veuillez patienter "
-"quelques minutes puis essayez de nouveau."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:481
-#, c-format
-msgid ""
-"You have exceeded your entry quota. Please delete some entries and try again."
-msgstr ""
-"Vous avez dépassé votre quota d'entrées. Veuillez supprimer quelques entrées "
-"et essayez de nouveau."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:512
-#, c-format
-msgid "Unknown and unparsable error received."
-msgstr "Erreur reçue inconnue ou non analysable."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:776
-#: ../gdata/services/youtube/gdata-youtube-service.c:833
-msgid "The video did not have a related videos <link>."
-msgstr "La vidéo n'a pas de vidéo connexe <link>."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:895
+#: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Vous devez vous authentifier pour envoyer une vidéo."
+
+#~ msgid "The calendar did not have a content URI."
+#~ msgstr "Le calendrier ne possède pas d'URI de contenu."
+
+#~ msgid "This service is not available at the moment."
+#~ msgstr "Ce service n'est pas disponible pour le moment."
+
+#~ msgid ""
+#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+#~ msgstr ""
+#~ "Code d'erreur inconnu « %s » dans le domaine « %s » reçu à l'emplacement "
+#~ "« %s »."
+
+#~ msgid "Unknown and unparsable error received."
+#~ msgstr "Erreur reçue inconnue ou non analysable."
+
+#~ msgid "The video did not have a related videos <link>."
+#~ msgstr "La vidéo n'a pas de vidéo connexe <link>."
