@@ -65,9 +65,6 @@ test_programs = \
 # to v3 API transitions.
 #all_test_programs += documents
 
-# FIXME: Temporarily disabled until https://bugzilla.gnome.org/show_bug.cgi?id=705303 is fixed.
-#all_test_programs += memory
-
 dist_test_data = \
 	photo.jpg \
 	sample.ogg \
