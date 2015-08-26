@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-13 19:18+0200\n"
-"PO-Revision-Date: 2015-07-13 19:19+0200\n"
+"POT-Creation-Date: 2015-08-26 19:44+0200\n"
+"PO-Revision-Date: 2015-08-26 19:45+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -247,7 +247,7 @@ msgstr "Brak wymaganej zawartości w elemencie %s."
 #: ../gdata/gdata-parser.c:86
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "Zawartość elementu %s (\"%s\") nie jest w formacie ISO 8601."
+msgstr "Zawartość elementu %s („%s”) nie jest w formacie ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -257,7 +257,7 @@ msgstr "Zawartość elementu %s (\"%s\") nie jest w formacie ISO 8601."
 #: ../gdata/gdata-parser.c:106
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr "Wartość własności %s elementu %s (\"%s\") jest nieznana."
+msgstr "Wartość własności %s elementu %s („%s”) jest nieznana."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -267,7 +267,7 @@ msgstr "Wartość własności %s elementu %s (\"%s\") jest nieznana."
 #: ../gdata/gdata-parser.c:124
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
-msgstr "Zawartość elementu %s (\"%s\") jest nieznana."
+msgstr "Zawartość elementu %s („%s”) jest nieznana."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -323,7 +323,7 @@ msgstr "Pojedynczy element (%s) występuje dwa razy."
 #: ../gdata/gdata-parser.c:274
 #, c-format
 msgid "A '%s' element was missing required content."
-msgstr "Brak wymaganej zawartości w elemencie \"%s\"."
+msgstr "Brak wymaganej zawartości w elemencie „%s”."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -333,7 +333,7 @@ msgstr "Brak wymaganej zawartości w elemencie \"%s\"."
 #: ../gdata/gdata-parser.c:304
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr "Zawartość elementu \"%s\" (\"%s\") nie jest w formacie ISO 8601."
+msgstr "Zawartość elementu „%s” („%s”) nie jest w formacie ISO 8601."
 
 #. Translators: the parameter is an error message.
 #: ../gdata/gdata-parser.c:315
@@ -350,7 +350,7 @@ msgstr "Otrzymano nieprawidłowy kod JSON z serwera: %s"
 #: ../gdata/gdata-parser.c:1182
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "Zawartość elementu %s (\"%s\") nie jest w szesnastkowym formacie RGB."
+msgstr "Zawartość elementu %s („%s”) nie jest w szesnastkowym formacie RGB."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -497,7 +497,7 @@ msgstr "Należy być uwierzytelnionym, aby zaktualizować dokumenty."
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr ""
-"Typ zawartości dostarczonego dokumentu (\"%s\") nie może zostać rozpoznany."
+"Typ zawartości dostarczonego dokumentu („%s”) nie może zostać rozpoznany."
 
 #: ../gdata/services/documents/gdata-documents-service.c:986
 msgid "You must be authenticated to copy documents."
@@ -515,7 +515,7 @@ msgstr "Należy być uwierzytelnionym, aby przenieść dokumenty i katalogi."
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
 msgid "Property '%s' does not hold an image"
-msgstr "Własność \"%s\" nie przechowuje obrazu"
+msgstr "Własność „%s” nie przechowuje obrazu"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
