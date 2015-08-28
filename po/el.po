@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: Libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-07-08 19:22+0000\n"
-"PO-Revision-Date: 2014-07-16 12:31+0200\n"
+"POT-Creation-Date: 2015-08-28 10:23+0000\n"
+"PO-Revision-Date: 2015-08-28 21:52+0300\n"
 "Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: team@gnome.gr\n"
 "Language: el\n"
@@ -21,28 +21,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.5\n"
+"X-Generator: Poedit 1.8.4\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Project-Style: gnome\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:627
-#: ../gdata/gdata-oauth1-authorizer.c:839
-#: ../gdata/gdata-oauth1-authorizer.c:1115
+#: ../gdata/gdata-batch-operation.c:635
+#, c-format
+msgid "Batch operations are unsupported by this service."
+msgstr "Η ομαδική λειτουργία δεν υποστηρίζεται από την συσκευή."
+
+#: ../gdata/gdata-client-login-authorizer.c:629
+#: ../gdata/gdata-oauth1-authorizer.c:840
+#: ../gdata/gdata-oauth1-authorizer.c:1116
+#: ../gdata/gdata-oauth2-authorizer.c:953
+#: ../gdata/gdata-oauth2-authorizer.c:964
+#: ../gdata/gdata-oauth2-authorizer.c:983
+#: ../gdata/gdata-oauth2-authorizer.c:999
+#: ../gdata/gdata-oauth2-authorizer.c:1064
+#: ../gdata/gdata-oauth2-authorizer.c:1076
+#: ../gdata/gdata-oauth2-authorizer.c:1087
+#: ../gdata/gdata-oauth2-authorizer.c:1102
+#: ../gdata/gdata-oauth2-authorizer.c:1118
 msgid "The server returned a malformed response."
 msgstr "Ο διακομιστής επέστρεψε μια κακοδιατυπωμένη απάντηση."
 
-#: ../gdata/gdata-client-login-authorizer.c:647 ../gdata/gdata-service.c:350
+#: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Cannot connect to the service's server."
 msgstr "Αδυναμία σύνδεσης με τον διακομιστή της υπηρεσίας."
 
-#: ../gdata/gdata-client-login-authorizer.c:652 ../gdata/gdata-service.c:355
+#: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Αδυναμία σύνδεσης με τον διακομιστή."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:658 ../gdata/gdata-service.c:361
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#: ../gdata/gdata-client-login-authorizer.c:660 ../gdata/gdata-service.c:372
+#: ../gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -50,61 +68,67 @@ msgstr ""
 "παράμετρος: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:664 ../gdata/gdata-service.c:367
+#: ../gdata/gdata-client-login-authorizer.c:666 ../gdata/gdata-service.c:378
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Απαιτείται πιστοποίηση: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:669 ../gdata/gdata-service.c:372
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#. Translators: the parameter is an error message returned by the server.
+#: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
+#: ../gdata/services/calendar/gdata-calendar-service.c:313
+#: ../gdata/services/youtube/gdata-youtube-video.c:1013
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Δε βρέθηκε η απαιτούμενη πηγή: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:675 ../gdata/gdata-service.c:378
+#: ../gdata/gdata-client-login-authorizer.c:677 ../gdata/gdata-service.c:389
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Η καταχώρηση έχει τροποποιηθεί από τη στιγμή που λήφθηκε: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:687 ../gdata/gdata-service.c:392
+#: ../gdata/gdata-client-login-authorizer.c:689 ../gdata/gdata-service.c:403
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Κωδικός σφάλματος %u κατά την ταυτοποίηση: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:786
+#: ../gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Για τη σύνδεση πρέπει να συμπληρωθεί το CAPTCHA."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:824
+#: ../gdata/gdata-client-login-authorizer.c:826
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr ""
 "Αυτός ο λογαριασμός απαιτεί ένα συγκεκριμένο κωδικό πρόσβασης για την "
 "εφαρμογή. (%s)"
 
-#: ../gdata/gdata-client-login-authorizer.c:831
+#: ../gdata/gdata-client-login-authorizer.c:833
 msgid "Your username or password were incorrect."
 msgstr "Ήταν ανακριβές το όνομα χρήστη ή ο κωδικός πρόσβασης σας."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:852
+#: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
 msgstr "Η ηλεκτρονική διεύθυνση του λογαριασμού σας δεν έχει επαληθευτεί. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:857
+#: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
 msgstr ""
 "Δεν έχετε αποδεχτεί τους όρους και τις προϋποθέσεις της υπηρεσίας. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:863
+#: ../gdata/gdata-client-login-authorizer.c:865
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -114,25 +138,25 @@ msgstr ""
 "νέο όνομα χρήστη καθώς και τον κωδικό πρόσβασης σας. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:868
+#: ../gdata/gdata-client-login-authorizer.c:870
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Έχει διαγραφεί αυτός ο λογαριασμός. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:873
+#: ../gdata/gdata-client-login-authorizer.c:875
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Έχει απενεργοποιηθεί αυτός ο λογαριασμός. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:878
+#: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
 msgid "This account's access to this service has been disabled. (%s)"
 msgstr "Έχει απενεργοποιηθεί η πρόσβαση του λογαριασμού στην υπηρεσία. (%s)"
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:883
+#: ../gdata/gdata-client-login-authorizer.c:885
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "Δεν είναι διαθέσιμη η υπηρεσία αυτή τη στιγμή. (%s)"
@@ -159,34 +183,55 @@ msgstr "Αυτό το σχόλιο μπορεί να μη διαγραφεί."
 msgid "Invalid seek request"
 msgstr "Άκυρη αίτηση αναζήτησης"
 
-#: ../gdata/gdata-oauth1-authorizer.c:814
+#: ../gdata/gdata-oauth1-authorizer.c:815
 msgid "The server rejected the temporary credentials request."
 msgstr "Ο διακομιστής απέρριψε την προσωρινή αίτηση διαπιστευτηρίων."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1089
+#: ../gdata/gdata-oauth1-authorizer.c:1090
+#: ../gdata/gdata-oauth2-authorizer.c:1113
+#: ../gdata/services/calendar/gdata-calendar-service.c:340
+#, c-format
 msgid "Access was denied by the user or server."
 msgstr "Δεν επιτράπηκε η πρόσβαση από το χρήστη ή τον διακομιστή."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:349 ../gdata/gdata-parsable.c:360
+#: ../gdata/gdata-parsable.c:352 ../gdata/gdata-parsable.c:363
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Σφάλμα κατά τη φόρτωση του αρχείου XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:362
+#: ../gdata/gdata-parsable.c:365
 msgid "Empty document."
 msgstr "Κενό έγγραφο."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:480 ../gdata/gdata-parsable.c:518
+#: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
+#: ../gdata/services/documents/gdata-documents-access-rule.c:144
+#: ../gdata/services/documents/gdata-documents-access-rule.c:154
+#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-entry.c:458
+#: ../gdata/services/documents/gdata-documents-entry.c:469
+#: ../gdata/services/documents/gdata-documents-entry.c:480
+#: ../gdata/services/documents/gdata-documents-entry.c:527
+#: ../gdata/services/documents/gdata-documents-entry.c:538
+#: ../gdata/services/documents/gdata-documents-entry.c:623
+#: ../gdata/services/documents/gdata-documents-entry.c:658
+#: ../gdata/services/documents/gdata-documents-entry.c:673
+#: ../gdata/services/documents/gdata-documents-entry.c:688
+#: ../gdata/services/documents/gdata-documents-entry.c:718
+#: ../gdata/services/documents/gdata-documents-entry.c:734
+#: ../gdata/services/documents/gdata-documents-feed.c:81
+#: ../gdata/services/documents/gdata-documents-feed.c:92
+#: ../gdata/services/documents/gdata-documents-feed.c:142
+#: ../gdata/services/documents/gdata-documents-feed.c:160
 #, c-format
 msgid "Error parsing JSON: %s"
 msgstr "Σφάλμα κατά την ανάλυση JSON: %s"
 
-#: ../gdata/gdata-parsable.c:519
+#: ../gdata/gdata-parsable.c:522
 msgid "Outermost JSON node is not an object."
 msgstr "Ο εξώτατος κόμβος JSON δεν είναι αντικείμενο."
 
@@ -194,7 +239,7 @@ msgstr "Ο εξώτατος κόμβος JSON δεν είναι αντικείμ
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:69
+#: ../gdata/gdata-parser.c:70
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Το στοιχείο %s δεν έχει το απαιτούμενο περιεχόμενο."
@@ -204,7 +249,7 @@ msgstr "Το στοιχείο %s δεν έχει το απαιτούμενο π�
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:85
+#: ../gdata/gdata-parser.c:86
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "Το περιεχόμενο του στοιχείου %s (\"%s\") δεν ήταν σε μορφή ISO 8601."
@@ -214,7 +259,7 @@ msgstr "Το περιεχόμενο του στοιχείου %s (\"%s\") δεν
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:105
+#: ../gdata/gdata-parser.c:106
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "Οι τιμές της ιδιότητας %s του στοιχείου %s (\"%s\") είναι άγνωστες."
@@ -224,7 +269,7 @@ msgstr "Οι τιμές της ιδιότητας %s του στοιχείου %
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:123
+#: ../gdata/gdata-parser.c:124
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Το περιεχόμενο του στοιχείου %s (\"%s\") είναι άγνωστο."
@@ -234,7 +279,7 @@ msgstr "Το περιεχόμενο του στοιχείου %s (\"%s\") είν
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:143
+#: ../gdata/gdata-parser.c:144
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Δεν παρουσιάστηκε η απαιτούμενη ιδιότητα του στοιχείου %s (%s)."
@@ -245,7 +290,7 @@ msgstr "Δεν παρουσιάστηκε η απαιτούμενη ιδιότη
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:166
+#: ../gdata/gdata-parser.c:167
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -258,7 +303,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:185
+#: ../gdata/gdata-parser.c:186
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Δεν υπάρχει το απαιτούμενο στοιχείο (%s)."
@@ -271,7 +316,7 @@ msgstr "Δεν υπάρχει το απαιτούμενο στοιχείο (%s).
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:306
+#: ../gdata/gdata-parser.c:201 ../gdata/gdata-parser.c:288
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Δημιουργήθηκε διπλότυπο για το στοιχείο singleton (%s)."
@@ -280,7 +325,7 @@ msgstr "Δημιουργήθηκε διπλότυπο για το στοιχεί
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:292
+#: ../gdata/gdata-parser.c:274
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Το απαιτούμενο περιεχόμενο έλειπε από ένα στοιχείο '%s'."
@@ -290,90 +335,17 @@ msgstr "Το απαιτούμενο περιεχόμενο έλειπε από �
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:322
+#: ../gdata/gdata-parser.c:304
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr ""
 "Το περιεχόμενο ενός στοιχείου '%s' (\"%s\") δεν ήταν σε μορφή ISO 8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:332
+#: ../gdata/gdata-parser.c:315
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Άκυρο JSON ελήφθη από τον διακομιστή: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:398
-#, c-format
-msgid "Error code %u when querying: %s"
-msgstr "Κωδικός σφάλματος %u κατά την υποβολή ερωτήματος: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:404
-#, c-format
-msgid "Error code %u when inserting an entry: %s"
-msgstr "Κωδικός σφάλματος %u κατά την εισαγωγή μιας καταχώρησης: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:410
-#, c-format
-msgid "Error code %u when updating an entry: %s"
-msgstr "Κωδικός σφάλματος %u κατά την ενημέρωση μιας καταχώρησης: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:416
-#, c-format
-msgid "Error code %u when deleting an entry: %s"
-msgstr "Κωδικός σφάλματος %u κατά τη διαγραφή μιας καταχώρησης: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:422
-#, c-format
-msgid "Error code %u when downloading: %s"
-msgstr "Κωδικός σφάλματος %u κατά την διαδικασία της λήψης: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:428
-#, c-format
-msgid "Error code %u when uploading: %s"
-msgstr "Κωδικός σφάλματος %u κατά την διαδικασία αποστολής: %s"
-
-#. Translators: the first parameter is a HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:434
-#, c-format
-msgid "Error code %u when running a batch operation: %s"
-msgstr "Κωδικός σφάλματος %u κατά την λειτουργία μιας ομαδικής λειτουργίας: %s"
-
-#. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:721
-#, c-format
-msgid "Invalid redirect URI: %s"
-msgstr "Μη έγκυρη ανακατεύθυνση διαδρομής: %s"
-
-#: ../gdata/gdata-service.c:1401
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:888
-msgid "The entry has already been inserted."
-msgstr "Έχει ήδη εισαχθεί η καταχώρηση "
-
-#. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:748 ../gdata/gdata-upload-stream.c:830
-#, c-format
-msgid "Error received from server after uploading a resumable upload chunk."
-msgstr ""
-"Παρουσιάστηκε ένα σφάλμα από τον διακομιστή μετά την αποστολή ενός "
-"ανακτήσιμου κομματιού."
-
-#: ../gdata/gdata-upload-stream.c:896
-msgid "Stream is already closed"
-msgstr "Η ροή είναι ήδη κλειστή"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -381,32 +353,118 @@ msgstr "Η ροή είναι ήδη κλειστή"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
+#: ../gdata/gdata-parser.c:1182
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
 "Το περιεχόμενο του στοιχείου %s (\"%s\") δεν ήταν σε δεκαεξαδική RGB μορφή."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:315
-#: ../gdata/services/calendar/gdata-calendar-service.c:366
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:409
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "Κωδικός σφάλματος %u κατά την υποβολή ερωτήματος: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:415
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Κωδικός σφάλματος %u κατά την εισαγωγή μιας καταχώρησης: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:421
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Κωδικός σφάλματος %u κατά την ενημέρωση μιας καταχώρησης: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:427
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Κωδικός σφάλματος %u κατά τη διαγραφή μιας καταχώρησης: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:433
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "Κωδικός σφάλματος %u κατά την διαδικασία της λήψης: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:439
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Κωδικός σφάλματος %u κατά την διαδικασία αποστολής: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: ../gdata/gdata-service.c:445
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "Κωδικός σφάλματος %u κατά την εκτέλεση μιας ομαδικής λειτουργίας: %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#: ../gdata/gdata-service.c:737
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "Μη έγκυρη ανακατεύθυνση διαδρομής: %s"
+
+#: ../gdata/gdata-service.c:1454
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:1022
+msgid "The entry has already been inserted."
+msgstr "Έχει ήδη εισαχθεί η καταχώρηση "
+
+#. Resumable upload error.
+#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr ""
+"Παρουσιάστηκε ένα σφάλμα από τον διακομιστή μετά την αποστολή ενός "
+"ανακτήσιμου κομματιού."
+
+#: ../gdata/gdata-upload-stream.c:936
+msgid "Stream is already closed"
+msgstr "Η ροή είναι ήδη κλειστή"
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:302
+#: ../gdata/services/tasks/gdata-tasks-service.c:195
+#: ../gdata/services/youtube/gdata-youtube-service.c:541
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Έχετε πραγματοποιήσει πάρα πολλές κλήσεις API πρόσφατα. Παρακαλούμε "
+"περιμένετε μερικά λεπτά και δοκιμάστε ξανά."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:334
+#: ../gdata/services/tasks/gdata-tasks-service.c:204
+#: ../gdata/services/youtube/gdata-youtube-service.c:557
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Είναι απαραίτητη η πιστοποίησή σας για αυτήν την ενέργεια."
+
+#: ../gdata/services/calendar/gdata-calendar-service.c:465
+#: ../gdata/services/calendar/gdata-calendar-service.c:516
 msgid "You must be authenticated to query all calendars."
 msgstr ""
 "Είναι απαραίτητη η πιστοποίησή σας για την υποβολή ερωτήσεων σε όλα τα "
 "ημερολόγια."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:412
-#: ../gdata/services/calendar/gdata-calendar-service.c:463
-#: ../gdata/services/calendar/gdata-calendar-service.c:508
-#: ../gdata/services/calendar/gdata-calendar-service.c:568
+#: ../gdata/services/calendar/gdata-calendar-service.c:562
+#: ../gdata/services/calendar/gdata-calendar-service.c:613
+#: ../gdata/services/calendar/gdata-calendar-service.c:675
+#: ../gdata/services/calendar/gdata-calendar-service.c:734
 msgid "You must be authenticated to query your own calendars."
 msgstr ""
 "Είναι απαραίτητη η πιστοποίησή σας για την υποβολή ερωτήσεων στα ημερολόγια "
 "σας."
-
-#: ../gdata/services/calendar/gdata-calendar-service.c:517
-#: ../gdata/services/calendar/gdata-calendar-service.c:581
-msgid "The calendar did not have a content URI."
-msgstr "Το ημερολόγιο δεν έχει μία πηγή περιεχομένων."
 
 #: ../gdata/services/contacts/gdata-contacts-service.c:258
 #: ../gdata/services/contacts/gdata-contacts-service.c:308
@@ -428,30 +486,30 @@ msgstr "Η ομάδα έχει είδη εισαχθεί."
 msgid "You must be authenticated to insert a group."
 msgstr "Είναι απαραίτητη η πιστοποίησή σας για να κάνετε εισαγωγή ομάδος."
 
-#: ../gdata/services/documents/gdata-documents-document.c:300
+#: ../gdata/services/documents/gdata-documents-document.c:389
 msgid "You must be authenticated to download documents."
 msgstr "Είναι απαραίτητη η πιστοποίησή σας για να κάνετε λήψη εγγράφων."
 
-#: ../gdata/services/documents/gdata-documents-service.c:461
-#: ../gdata/services/documents/gdata-documents-service.c:511
+#: ../gdata/services/documents/gdata-documents-service.c:513
+#: ../gdata/services/documents/gdata-documents-service.c:563
 msgid "You must be authenticated to query documents."
 msgstr ""
 "Είναι απαραίτητη η πιστοποίησή σας για να πραγματοποιήσετε ερωτήματα για τα "
 "έγγραφα."
 
-#: ../gdata/services/documents/gdata-documents-service.c:556
+#: ../gdata/services/documents/gdata-documents-service.c:628
 msgid "You must be authenticated to upload documents."
 msgstr "Είναι απαραίτητη η πιστοποίησή σας για την αποστολή εγγράφων."
 
-#: ../gdata/services/documents/gdata-documents-service.c:562
+#: ../gdata/services/documents/gdata-documents-service.c:634
 msgid "The document has already been uploaded."
 msgstr "Αυτό το έγγραφο έχει ήδη αποσταλεί."
 
-#: ../gdata/services/documents/gdata-documents-service.c:706
+#: ../gdata/services/documents/gdata-documents-service.c:779
 msgid "You must be authenticated to update documents."
 msgstr "Είναι απαραίτητη η πιστοποίησή σας για να ενημερώσετε τα έγγραφα."
 
-#: ../gdata/services/documents/gdata-documents-service.c:888
+#: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
@@ -459,18 +517,23 @@ msgstr ""
 "Ο τύπος περιεχομένου του δοθέντος εγγράφου ('%s') δεν μπορούσε να "
 "αναγνωρισθεί."
 
-#: ../gdata/services/documents/gdata-documents-service.c:928
+#: ../gdata/services/documents/gdata-documents-service.c:986
 msgid "You must be authenticated to copy documents."
 msgstr "Είναι απαραίτητη η πιστοποίησή σας για να αντιγράψετε έγγραφα."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1090
-#: ../gdata/services/documents/gdata-documents-service.c:1273
+#: ../gdata/services/documents/gdata-documents-service.c:1155
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr ""
+"Είναι απαραίτητη η πιστοποίησή σας για την εισαγωγή ή μετακίνηση των "
+"εγγράφων και φακέλων."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1354
 msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Είναι απαραίτητη η πιστοποίησή σας για την μετακίνηση των εγγράφων και "
 "φακέλων."
 
-#: ../gdata/services/freebase/gdata-freebase-service.c:445
+#: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
 msgid "Property '%s' does not hold an image"
 msgstr "Η ιδιότητα '%s' δεν περιέχει μια εικόνα"
@@ -509,27 +572,30 @@ msgstr "Το άλμπουμ έχει είδη εισαχθεί."
 msgid "You must be authenticated to insert an album."
 msgstr "Είναι απαραίτητη η πιστοποίησή σας για την εισαγωγή του άλμπουμ."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:145
-#: ../gdata/services/tasks/gdata-tasks-service.c:196
+#: ../gdata/services/tasks/gdata-tasks-service.c:330
+#: ../gdata/services/tasks/gdata-tasks-service.c:381
 msgid "You must be authenticated to query all tasklists."
 msgstr ""
 "Είναι απαραίτητη η πιστοποίησή σας για την υποβολή ερωτήσεων σε όλες τις "
 "λίστες εργασιών."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:244
-#: ../gdata/services/tasks/gdata-tasks-service.c:300
+#: ../gdata/services/tasks/gdata-tasks-service.c:430
+#: ../gdata/services/tasks/gdata-tasks-service.c:487
 msgid "You must be authenticated to query your own tasks."
 msgstr ""
 "Είναι απαραίτητη η πιστοποίησή σας για την υποβολή ερωτήσεων για τις "
 "εργασίες σας."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:457
+#: ../gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
-msgid "This service is not available at the moment."
-msgstr "Δεν είναι διαθέσιμη η υπηρεσία αυτή τη στιγμή."
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Έχετε ξεπεράσει την ποσοτική αναλογία της καταχώρησης σας. Παρακαλούμε "
+"διαγράψτε μερικές καταχωρήσεις και δοκιμάστε ξανά."
 
 #. Translators: the parameter is a URI.
-#: ../gdata/services/youtube/gdata-youtube-service.c:462
+#: ../gdata/services/youtube/gdata-youtube-service.c:565
 #, c-format
 msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
@@ -538,54 +604,27 @@ msgstr ""
 "Ο λογαριασμός σας Google πρέπει να συσχετιστεί με ένα κανάλι YouTube για να "
 "το κάνετε αυτό. Επισκεφτείτε το %s για τη δημιουργία του."
 
-#. Translators: the first parameter is an error code, which is a coded string.
-#. * The second parameter is an error domain, which is another coded string.
-#. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:467
-#: ../gdata/services/youtube/gdata-youtube-service.c:488
-#: ../gdata/services/youtube/gdata-youtube-service.c:494
-#, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr ""
-"Λήφθηκε άγνωστος κωδικός σφάλματος \"%s\" στο σύστημα \"%s\" με την "
-"τοποθεσία \"%s\"."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:473
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "Είναι απαραίτητη η πιστοποίησή σας για αυτήν την ενέργεια."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:478
-#, c-format
-msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
-msgstr ""
-"Έχετε πραγματοποιήσει πάρα πολλές κλήσεις API πρόσφατα. Παρακαλούμε "
-"περιμένετε μερικά λεπτά και δοκιμάστε ξανά."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:481
-#, c-format
-msgid ""
-"You have exceeded your entry quota. Please delete some entries and try again."
-msgstr ""
-"Έχετε ξεπεράσει την ποσοτική αναλογία της καταχώρησης σας. Παρακαλούμε "
-"διαγράψτε μερικές καταχωρήσεις και δοκιμάστε ξανά."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:512
-#, c-format
-msgid "Unknown and unparsable error received."
-msgstr "Παρουσιάστηκε ένα άγνωστο σφάλμα και χωρίς θέμα."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:776
-#: ../gdata/services/youtube/gdata-youtube-service.c:833
-msgid "The video did not have a related videos <link>."
-msgstr "Το βίντεο δεν έχει σχετικά αρχεία βίντεο <link>."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:895
+#: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Είναι απαραίτητη η πιστοποίησή σας για να αποστείλετε ένα βίντεο."
+
+#~ msgid "The calendar did not have a content URI."
+#~ msgstr "Το ημερολόγιο δεν έχει μία πηγή περιεχομένων."
+
+#~ msgid "This service is not available at the moment."
+#~ msgstr "Δεν είναι διαθέσιμη η υπηρεσία αυτή τη στιγμή."
+
+#~ msgid ""
+#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+#~ msgstr ""
+#~ "Λήφθηκε άγνωστος κωδικός σφάλματος \"%s\" στο σύστημα \"%s\" με την "
+#~ "τοποθεσία \"%s\"."
+
+#~ msgid "Unknown and unparsable error received."
+#~ msgstr "Παρουσιάστηκε ένα άγνωστο σφάλμα και χωρίς θέμα."
+
+#~ msgid "The video did not have a related videos <link>."
+#~ msgstr "Το βίντεο δεν έχει σχετικά αρχεία βίντεο <link>."
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "Το παρεχόμενο του εγγράφου έχει λανθασμένο τύπο περιεχομένου."
