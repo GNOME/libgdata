@@ -570,6 +570,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 	gboolean success = TRUE;
 	gchar *alternate_uri = NULL;
 	gchar *kind = NULL;
+	gchar *quota_used = NULL;
 	gint64 published;
 	gint64 updated;
 
@@ -606,6 +607,18 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 	} else if (gdata_parser_int64_time_from_json_member (reader, "modifiedDate", P_DEFAULT, &updated, &success, error) == TRUE) {
 		if (success)
 			_gdata_entry_set_updated (GDATA_ENTRY (parsable), updated);
+		return success;
+	} else if (gdata_parser_string_from_json_member (reader, "quotaBytesUsed", P_DEFAULT, &quota_used, &success, error) == TRUE) {
+		gchar *end_ptr;
+		guint64 val;
+
+		/* Even though ‘quotaBytesUsed’ is documented as long,
+		 * it is actually a string in the JSON.
+		 */
+		val = g_ascii_strtoull (quota_used, &end_ptr, 10);
+		if (*end_ptr == '\0')
+			priv->quota_used = (goffset) val;
+		g_free (quota_used);
 		return success;
 	} else if (gdata_parser_boolean_from_json_member (reader, "shared", P_DEFAULT, &shared, &success, error) == TRUE) {
 		if (success && shared) {
