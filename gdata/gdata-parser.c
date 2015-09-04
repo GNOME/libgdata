@@ -18,7 +18,6 @@
  */
 
 #include <config.h>
-#include <errno.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <sys/time.h>
@@ -574,10 +573,8 @@ gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GD
 	}
 
 	/* Attempt to parse the string as a 64-bit integer */
-	errno = 0;
 	val = g_ascii_strtoll ((const gchar*) text, &end_ptr, 10);
-
-	if (errno != 0 || end_ptr == (gchar*) text) {
+	if (*end_ptr != '\0') {
 		*success = gdata_parser_error_unknown_content (element, (gchar*) text, error);
 		xmlFree (text);
 		return TRUE;
