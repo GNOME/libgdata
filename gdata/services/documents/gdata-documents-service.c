@@ -958,8 +958,7 @@ gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadS
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
- * Copy the given @document, producing a duplicate document in the same folder and returning its #GDataDocumentsDocument. Note that @document
- * may only be a document, not an arbitrary file; i.e. @document must be an instance of a subclass of #GDataDocumentsDocument.
+ * Copy the given @document, producing a duplicate document in the same folder and returning its #GDataDocumentsDocument.
  *
  * Errors from #GDataServiceError can be returned for exceptional conditions, as determined by the server.
  *
@@ -971,9 +970,10 @@ GDataDocumentsDocument *
 gdata_documents_service_copy_document (GDataDocumentsService *self, GDataDocumentsDocument *document, GCancellable *cancellable, GError **error)
 {
 	GDataDocumentsDocument *new_document;
-	gchar *upload_data;
-	SoupMessage *message;
-	guint status;
+	GDataEntry *parent = NULL;
+	GList *i;
+	GList *parent_folders_list;
+	const gchar *parent_id = NULL;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (document), NULL);
@@ -987,35 +987,40 @@ gdata_documents_service_copy_document (GDataDocumentsService *self, GDataDocumen
 		return NULL;
 	}
 
-	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST,
-	                                        "https://docs.google.com/feeds/default/private/full", NULL, TRUE);
+	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (document), GDATA_LINK_PARENT);
+	for (i = parent_folders_list; i != NULL; i = i->next) {
+		GDataLink *_link = GDATA_LINK (i->data);
+		const gchar *uri;
+		gsize uri_prefix_len;
 
-	/* Append the data */
-	upload_data = gdata_parsable_get_xml (GDATA_PARSABLE (document));
-	soup_message_set_request (message, "application/atom+xml", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+		/* HACK: Extract the ID from the GDataLink:uri by removing the prefix. Ignore links which
+		 * don't have the prefix. */
+		uri = gdata_link_get_uri (_link);
+		uri_prefix_len = strlen (GDATA_DOCUMENTS_URI_PREFIX);
+		if (g_str_has_prefix (uri, GDATA_DOCUMENTS_URI_PREFIX)) {
+			const gchar *id;
 
-	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+			id = uri + uri_prefix_len;
+			if (id[0] != '\0') {
+				parent_id = id;
+				break;
+			}
+		}
+	}
 
-	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
-		/* Redirect error or cancelled */
-		g_object_unref (message);
-		return NULL;
-	} else if (status != SOUP_STATUS_CREATED) {
-		/* Error */
-		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase,
-		                             message->response_body->data, message->response_body->length, error);
-		g_object_unref (message);
+	g_list_free (parent_folders_list);
+
+	if (parent_id == NULL) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND, _("Parent folder not found"));
 		return NULL;
 	}
 
-	/* Parse the XML; and update the entry */
-	g_assert (message->response_body->data != NULL);
-	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_parsable_new_from_xml (G_OBJECT_TYPE (document), message->response_body->data,
-	                                                                      message->response_body->length, error));
-	g_object_unref (message);
+	parent = gdata_service_query_single_entry (GDATA_SERVICE (self), get_documents_authorization_domain (), parent_id, NULL, GDATA_TYPE_DOCUMENTS_FOLDER, cancellable, error);
+	if (parent == NULL)
+		return NULL;
+
+	new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_add_entry_to_folder (self, GDATA_DOCUMENTS_ENTRY (document), GDATA_DOCUMENTS_FOLDER (parent), cancellable, error));
+	g_object_unref (parent);
 
 	return new_document;
 }
