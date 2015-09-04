@@ -2573,12 +2573,7 @@ create_global_authorizer (void)
 	g_assert (authentication_uri != NULL);
 
 	/* Get the authorisation code off the user. */
-	if (uhm_server_get_enable_online (mock_server)) {
-		authorisation_code = gdata_test_query_user_for_verifier (authentication_uri);
-	} else {
-		/* Hard coded, extracted from the trace file. */
-		authorisation_code = g_strdup ("4/hmXZtrXmXMqK1hwiWPZs9F_N6DK-.Ap4OICAUIe0WoiIBeO6P2m8IDoMxkQI");
-	}
+	authorisation_code = gdata_test_query_user_for_verifier (authentication_uri);
 
 	g_free (authentication_uri);
 
