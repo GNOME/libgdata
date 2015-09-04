@@ -2218,5 +2218,7 @@ main (int argc, char *argv[])
 	if (service != NULL)
 		g_object_unref (service);
 
+	g_clear_object (&authorizer);
+
 	return retval;
 }
