@@ -51,6 +51,7 @@ test_programs = \
 	general \
 	calendar \
 	contacts \
+	documents \
 	tasks \
 	perf \
 	authorization \
@@ -59,10 +60,6 @@ test_programs = \
 	streams \
 	youtube \
 	$(NULL)
-
-# FIXME: Temporarily disabled until they are ported for the changes in the v2
-# to v3 API transitions.
-#all_test_programs += documents
 
 # PicasaWeb does not work since Google made the API read-only:
 # https://developers.google.com/picasa-web/docs/3.0/releasenotes#picasa-is-retiring-february-12-2016

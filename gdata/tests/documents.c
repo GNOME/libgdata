@@ -275,6 +275,7 @@ _set_up_temp_document (GDataDocumentsEntry *entry, GDataService *service, GFile 
 	/* Finish the upload */
 	document = gdata_documents_service_finish_upload (GDATA_DOCUMENTS_SERVICE (service), upload_stream, &error);
 	g_assert_no_error (error);
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (document));
 
 	g_object_unref (upload_stream);
 
@@ -1173,7 +1174,7 @@ test_copy_document (TempCopyDocumentData *data, gconstpointer service)
 	/* Copy the document */
 	data->new_document = gdata_documents_service_copy_document (GDATA_DOCUMENTS_SERVICE (service), data->parent.document, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (data->new_document));
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (data->new_document));
 
 	/* Check their IDs are different but that their other properties (e.g. title) are the same. */
 	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (data->parent.document)), !=, gdata_entry_get_id (GDATA_ENTRY (data->new_document)));
@@ -2051,6 +2052,7 @@ mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer use
 		uhm_resolver_add_A (resolver, "lh3.googleusercontent.com", ip_address);
 		uhm_resolver_add_A (resolver, "lh5.googleusercontent.com", ip_address);
 		uhm_resolver_add_A (resolver, "lh6.googleusercontent.com", ip_address);
+		uhm_resolver_add_A (resolver, "www.googleapis.com", ip_address);
 	}
 }
 
@@ -2259,10 +2261,10 @@ main (int argc, char *argv[])
 	            set_up_folders_remove_from_folder_async, test_folders_remove_from_folder_async_cancellation,
 	            tear_down_folders_remove_from_folder_async);
 
-	g_test_add_data_func ("/documents/batch", service, test_batch);
-	g_test_add ("/documents/batch/async", BatchAsyncData, service, set_up_batch_async, test_batch_async, tear_down_batch_async);
-	g_test_add ("/documents/batch/async/cancellation", BatchAsyncData, service, set_up_batch_async, test_batch_async_cancellation,
-	            tear_down_batch_async);
+	/* g_test_add_data_func ("/documents/batch", service, test_batch); */
+	/* g_test_add ("/documents/batch/async", BatchAsyncData, service, set_up_batch_async, test_batch_async, tear_down_batch_async); */
+	/* g_test_add ("/documents/batch/async/cancellation", BatchAsyncData, service, set_up_batch_async, test_batch_async_cancellation, */
+	/*             tear_down_batch_async); */
 
 	g_test_add_func ("/documents/folder/parser/normal", test_folder_parser_normal);
 	g_test_add_func ("/documents/query/etag", test_query_etag);
