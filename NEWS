@@ -1,3 +1,44 @@
+Overview of changes from libgdata 0.17.2 to libgdata 0.17.3
+===========================================================
+
+Major changes:
+ • More Google Drive improvements
+ • A few memory leak fixes and improvements in the unit tests
+
+API changes:
+ • Soft API break for gdata_service_insert_entry() when creating Google Drive
+   folders — you must now use gdata_documents_service_add_entry_to_folder() due
+   to changes on the server API
+   (see https://bugzilla.gnome.org/show_bug.cgi?id=684920)
+ • Remove two unused symbols from the export list; these were never intended
+   to be public API: gdata_freebase_result_error_get_type,
+   gdata_freebase_result_error_quark
+
+Bugs fixed:
+ • Bug 684920 — Port to Google Drive API v2
+ • Bug 754821 — Compilation issues on Mac OS X
+
+Updated translations:
+ • cs (Marek Černocký)
+ • de (Paul Seyfert)
+ • el (Tom Tryfonidis)
+ • es (Daniel Mustieles)
+ • fr (Bruno Brouard)
+ • gl (Fran Dieguez)
+ • hu (Balázs Úr)
+ • id (Andika Triwidada)
+ • it (Claudio Arseni)
+ • ko (Changwoo Ryu)
+ • lt (Aurimas Černius)
+ • nb (Kjartan Maraas)
+ • pl (Piotr Drąg)
+ • pt (Pedro Albuquerque)
+ • sk (Dušan Kazik)
+ • sl (Matej Urbančič)
+ • sv (Anders Jonsson, Mattias Eriksson)
+ • th (Akom Chotiphantawanon)
+ • zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.17.1 to libgdata 0.17.2
 ===========================================================
 
