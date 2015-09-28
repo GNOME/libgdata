@@ -25,6 +25,9 @@
 #include "common.h"
 #include "gdata-dummy-authorizer.h"
 
+#include "tasks-task.schema.c"
+#include "tasks-tasklist.schema.c"
+
 static UhmServer *mock_server = NULL;  /* owned */
 
 #undef CLIENT_ID  /* from common.h */
@@ -517,6 +520,40 @@ test_task_parser_normal (void)
 		"}");
 
 	g_object_unref (task);
+}
+
+/* Test the task parser with each generated test vector from the JSON schema. */
+static void
+test_task_parser_generated (gconstpointer user_data)
+{
+	guint i;
+	GDataParsable *parsable = NULL;  /* owned */
+	GError *error = NULL;
+
+	i = GPOINTER_TO_UINT (user_data);
+
+	parsable = gdata_parsable_new_from_json (GDATA_TYPE_TASKS_TASK,
+	                                         tasks_task_json_instances[i].json,
+	                                         tasks_task_json_instances[i].size,
+	                                         &error);
+
+	if (tasks_task_json_instances[i].is_valid) {
+		g_assert_no_error (error);
+		g_assert (GDATA_IS_TASKS_TASK (parsable));
+		gdata_test_compare_kind (GDATA_ENTRY (parsable), "tasks#task", NULL);
+	} else {
+		if (error != NULL && error->domain == GDATA_PARSER_ERROR) {
+			g_assert_error (error, GDATA_PARSER_ERROR,
+			                GDATA_PARSER_ERROR_PARSING_STRING);
+		} else {
+			g_assert_error (error, GDATA_SERVICE_ERROR,
+			                GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
+		}
+		g_assert (parsable == NULL);
+	}
+
+	g_clear_error (&error);
+	g_clear_object (&parsable);
 }
 
 /* Test that inserting a tasklist works. */
@@ -1265,6 +1302,41 @@ test_tasklist_parser_normal (void)
 	g_object_unref (tasklist);
 }
 
+/* Test the tasklist parser with each generated test vector from the JSON
+ * schema. */
+static void
+test_tasklist_parser_generated (gconstpointer user_data)
+{
+	guint i;
+	GDataParsable *parsable = NULL;  /* owned */
+	GError *error = NULL;
+
+	i = GPOINTER_TO_UINT (user_data);
+
+	parsable = gdata_parsable_new_from_json (GDATA_TYPE_TASKS_TASKLIST,
+	                                         tasks_tasklist_json_instances[i].json,
+	                                         tasks_tasklist_json_instances[i].size,
+	                                         &error);
+
+	if (tasks_tasklist_json_instances[i].is_valid) {
+		g_assert_no_error (error);
+		g_assert (GDATA_IS_TASKS_TASKLIST (parsable));
+		gdata_test_compare_kind (GDATA_ENTRY (parsable), "tasks#taskList", NULL);
+	} else {
+		if (error != NULL && error->domain == GDATA_PARSER_ERROR) {
+			g_assert_error (error, GDATA_PARSER_ERROR,
+			                GDATA_PARSER_ERROR_PARSING_STRING);
+		} else {
+			g_assert_error (error, GDATA_SERVICE_ERROR,
+			                GDATA_SERVICE_ERROR_PROTOCOL_ERROR);
+		}
+		g_assert (parsable == NULL);
+	}
+
+	g_clear_error (&error);
+	g_clear_object (&parsable);
+}
+
 static void
 mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec,
                                 gpointer user_data)
@@ -1343,6 +1415,7 @@ skip_test:
 int
 main (int argc, char *argv[])
 {
+	guint i;
 	gint retval;
 	GDataAuthorizer *authorizer = NULL;  /* owned */
 	GDataAuthorizer *unauthorised_authorizer = NULL;  /* owned */
@@ -1409,11 +1482,31 @@ main (int argc, char *argv[])
 	                 test_task_parser_minimal);
 	g_test_add_func ("/tasks/task/parser/normal", test_task_parser_normal);
 
+	for (i = 0; i < G_N_ELEMENTS (tasks_task_json_instances); i++) {
+		gchar *test_name = NULL;
+
+		test_name = g_strdup_printf ("/tasks/task/parser/generated/%u",
+		                             i);
+		g_test_add_data_func (test_name, GUINT_TO_POINTER (i),
+		                      test_task_parser_generated);
+		g_free (test_name);
+	}
+
 	g_test_add_func ("/tasks/tasklist/properties",
 	                 test_tasklist_properties);
 	g_test_add_func ("/tasks/tasklist/escaping", test_tasklist_escaping);
 	g_test_add_func ("/tasks/tasklist/parser/normal",
 	                 test_tasklist_parser_normal);
+
+	for (i = 0; i < G_N_ELEMENTS (tasks_tasklist_json_instances); i++) {
+		gchar *test_name = NULL;
+
+		test_name = g_strdup_printf ("/tasks/tasklist/parser/generated/%u",
+		                             i);
+		g_test_add_data_func (test_name, GUINT_TO_POINTER (i),
+		                      test_tasklist_parser_generated);
+		g_free (test_name);
+	}
 
 	g_test_add_func ("/tasks/query/uri", test_query_uri);
 	g_test_add_func ("/tasks/query/etag", test_query_etag);

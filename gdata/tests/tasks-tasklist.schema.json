@@ -1,0 +1,31 @@
+{
+	"title": "Tasklist",
+	"description": "https://developers.google.com/google-apps/tasks/v1/reference/tasklists#resource-representations",
+	"type": "object",
+	"properties": {
+		"kind": {
+			"type": "string",
+			"enum": [ "tasks#taskList" ]
+		},
+		"id": {
+			"type": "string",
+			"minLength": 1
+		},
+		"etag": {
+			"type": "string",
+			"minLength": 1
+		},
+		"title": {
+			"type": "string"
+		},
+		"selfLink": {
+			"type": "string",
+			"format": "uri"
+		},
+		"updated": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": true
+}

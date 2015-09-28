@@ -33,6 +33,15 @@ PKG_PROG_PKG_CONFIG
 AC_PATH_PROG([GLIB_GENMARSHAL],[glib-genmarshal])
 AC_PATH_PROG([GLIB_MKENUMS],[glib-mkenums])
 
+# Walbottle support for JSON testing
+AC_PATH_PROG([JSON_SCHEMA_VALIDATE],[json-schema-validate])
+AC_PATH_PROG([JSON_SCHEMA_GENERATE],[json-schema-generate])
+
+AS_IF([test "$JSON_SCHEMA_VALIDATE" == ""],
+      [AC_MSG_ERROR([json-schema-validate not found])])
+AS_IF([test "$JSON_SCHEMA_GENERATE" == ""],
+      [AC_MSG_ERROR([json-schema-generate not found])])
+
 # Requirements
 GLIB_REQS=2.31.0
 GLIB_MIN_REQUIRED=GLIB_VERSION_2_32

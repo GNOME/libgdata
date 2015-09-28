@@ -19,6 +19,26 @@ libgdata_test_la_LIBADD = \
 	$(UHTTPMOCK_LIBS) \
 	$(NULL)
 
+# JSON schemas.
+json_schemas = \
+	tasks-tasklist.schema.json \
+	tasks-task.schema.json \
+	$(NULL)
+
+EXTRA_DIST += $(json_schemas)
+
+check-json-schema: $(json_schemas)
+	$(AM_V_GEN)$(JSON_SCHEMA_VALIDATE) $^
+check-local: check-json-schema
+.PHONY: check-json-schema
+
+json_schemas_c = $(json_schemas:.schema.json=.schema.c)
+
+CLEANFILES += $(json_schemas_c)
+
+%.schema.c: %.schema.json
+	$(AM_V_GEN)$(JSON_SCHEMA_GENERATE) --c-variable-name=$(subst -,_,$(notdir $*))_json_instances --format c $^ > $@
+
 # Flags for the helper library and all test binaries
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/ \
@@ -60,6 +80,8 @@ test_programs = \
 	streams \
 	youtube \
 	$(NULL)
+
+tasks_SOURCES = tasks.c tasks-task.schema.c tasks-tasklist.schema.c
 
 # FIXME: Temporarily disabled until they are ported for the changes in the v2
 # to v3 API transitions.
