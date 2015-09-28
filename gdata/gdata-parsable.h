@@ -29,10 +29,10 @@ G_BEGIN_DECLS
 
 /**
  * GDataParserError:
- * @GDATA_PARSER_ERROR_PARSING_STRING: Error parsing the XML syntax itself
+ * @GDATA_PARSER_ERROR_PARSING_STRING: Error parsing the XML or JSON syntax itself
  * @GDATA_PARSER_ERROR_EMPTY_DOCUMENT: Empty document
  *
- * Error codes for XML parsing operations.
+ * Error codes for XML or JSON parsing operations.
  **/
 typedef enum {
 	GDATA_PARSER_ERROR_PARSING_STRING = 1,
