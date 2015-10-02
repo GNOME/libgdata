@@ -906,6 +906,8 @@ reset_network_thread (GDataDownloadStream *self)
 
 	if (priv->message != NULL) {
 		soup_session_cancel_message (priv->session, priv->message, SOUP_STATUS_CANCELLED);
+		g_signal_handlers_disconnect_by_func (priv->message, got_headers_cb, self);
+		g_signal_handlers_disconnect_by_func (priv->message, got_chunk_cb, self);
 	}
 
 	priv->offset = 0;
