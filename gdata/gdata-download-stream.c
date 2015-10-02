@@ -814,6 +814,10 @@ gdata_download_stream_truncate (GSeekable *seekable, goffset offset, GCancellabl
 static void
 got_headers_cb (SoupMessage *message, GDataDownloadStream *self)
 {
+	goffset end;
+	goffset start;
+	goffset total_length;
+
 	/* Don't get the client's hopes up by setting the Content-Type or -Length if the response
 	 * is actually unsuccessful. */
 	if (SOUP_STATUS_IS_SUCCESSFUL (message->status_code) == FALSE)
@@ -822,6 +826,9 @@ got_headers_cb (SoupMessage *message, GDataDownloadStream *self)
 	g_mutex_lock (&(self->priv->content_mutex));
 	self->priv->content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
 	self->priv->content_length = soup_message_headers_get_content_length (message->response_headers);
+	if (soup_message_headers_get_content_range (message->response_headers, &start, &end, &total_length)) {
+		self->priv->content_length = (gssize) total_length;
+	}
 	g_mutex_unlock (&(self->priv->content_mutex));
 
 	/* Emit the notifications for the Content-Length and -Type properties */
