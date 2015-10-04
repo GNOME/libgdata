@@ -842,7 +842,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 
 			/* Parse the e-mail address. */
 			_parsable = _gdata_parsable_new_from_xml_node (GDATA_TYPE_GD_EMAIL_ADDRESS, node->doc, node, NULL, error);
-			if (P_REQUIRED & P_REQUIRED && _parsable == NULL) {
+			if (_parsable == NULL) {
 				/* The error has already been set by _gdata_parsable_new_from_xml_node() */
 				success = FALSE;
 				return TRUE;
