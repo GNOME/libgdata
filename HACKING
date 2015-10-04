@@ -95,7 +95,7 @@ Adding public API
  - All public API must have a gtk-doc comment, and be added to the docs/reference/gdata-sections.txt file, to include it in the documentation.
    The documentation comment must have a "Since" clause (see "Documentation comments" section).
 
- - All public API must be listed in gdata/gdata.symbols.
+ - All public API must be listed in gdata/gdata-*.symbols.
 
  - Non-trivial API should have a test case added in the relevant test suite file in gdata/tests. Note that the "general" test suite file cannot make
    network requests in the course of running its test cases.
@@ -157,7 +157,7 @@ deprecating API:
    If this isn't possible, the deprecated function should be split into a static function which contains all the code, and the public symbol should
    become a simple wrapper of this static function. This allows the static function to be used inside libgdata without causing deprecation warnings.
 
- - Don't remove deprecated symbols from gdata.symbols.
+ - Don't remove deprecated symbols from gdata-*.symbols.
 
  - Don't forget to also deprecate related symbols, such as the getter/setter for a property (or vice-versa).
 

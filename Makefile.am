@@ -529,12 +529,22 @@ gdata_libgdata_la_LIBADD = \
 
 gdata_libgdata_la_LDFLAGS = \
 	-version-info $(GDATA_LT_VERSION)	\
-	-export-symbols $(srcdir)/gdata/gdata.symbols	\
+	-export-symbols $(builddir)/gdata/gdata.symbols \
 	-no-undefined				\
 	$(WARN_LDFLAGS) \
 	$(AM_LDFLAGS)
 
-EXTRA_DIST += gdata/gdata.symbols
+# Symbols file
+gdata/gdata.symbols: gdata/gdata-core.symbols gdata/gdata-goa.symbols
+if ENABLE_GOA
+	$(AM_V_GEN)cat gdata/gdata-core.symbols gdata/gdata-goa.symbols > $@
+else
+	$(AM_V_GEN)cat gdata/gdata-core.symbols > $@
+endif
+
+EXTRA_gdata_libgdata_la_DEPENDENCIES = gdata/gdata.symbols
+EXTRA_DIST += gdata/gdata-core.symbols gdata/gdata-goa.symbols
+CLEANFILES += gdata/gdata.symbols
 
 # Check if gdata.h includes all the public headers
 check-local: check-headers
