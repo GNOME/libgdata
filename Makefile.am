@@ -535,11 +535,11 @@ gdata_libgdata_la_LDFLAGS = \
 	$(AM_LDFLAGS)
 
 # Symbols file
-gdata/gdata.symbols: gdata/gdata-core.symbols gdata/gdata-goa.symbols
+gdata/gdata.symbols: $(top_srcdir)/gdata/gdata-core.symbols $(top_srcdir)/gdata/gdata-goa.symbols
 if ENABLE_GOA
-	$(AM_V_GEN)cat gdata/gdata-core.symbols gdata/gdata-goa.symbols > $@
+	$(AM_V_GEN)cat $(top_srcdir)/gdata/gdata-core.symbols $(top_srcdir)/gdata/gdata-goa.symbols > $@
 else
-	$(AM_V_GEN)cat gdata/gdata-core.symbols > $@
+	$(AM_V_GEN)cat $(top_srcdir)/gdata/gdata-core.symbols > $@
 endif
 
 EXTRA_gdata_libgdata_la_DEPENDENCIES = gdata/gdata.symbols
