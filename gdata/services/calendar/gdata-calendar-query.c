@@ -504,8 +504,8 @@ gdata_calendar_query_new (const gchar *q)
 /**
  * gdata_calendar_query_new_with_limits:
  * @q: (allow-none): a query string, or %NULL
- * @start_min: (allow-none): a starting time for the event period, or %NULL
- * @start_max: (allow-none): an ending time for the event period, or %NULL
+ * @start_min: a starting time for the event period, or -1
+ * @start_max: an ending time for the event period, or -1
  *
  * Creates a new #GDataCalendarQuery with its #GDataQuery:q property set to @q, and the time limits @start_min and @start_max
  * applied.
