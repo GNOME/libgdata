@@ -2,12 +2,14 @@
 # Copyright © 2009, 2010, 2011, 2013 libgdata
 # This file is distributed under the same license as the libgdata package.
 # António Lima <amrlima@gmail.com>, 2009, 2010, 2011, 2012, 2013.
+# Pedro Albuquerque <palbuquerque73o@gmail.com>, 2015.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-10-06 21:39+0000\n"
+"POT-Creation-Date: 2015-09-28 23:14+0000\n"
 "PO-Revision-Date: 2014-10-09 09:21+0100\n"
 "Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
 "Language-Team: gnome_pt@yahoogroups.com\n"
@@ -28,19 +30,20 @@ msgstr "O servidor devolveu uma resposta mal formada."
 #: ../gdata/gdata-client-login-authorizer.c:617 ../gdata/gdata-service.c:320
 #, c-format
 msgid "Cannot connect to the service's server."
-msgstr "Incapaz de ligar ao ao serviço do servidor."
+msgstr "Impossível ligar ao ao serviço do servidor."
 
 #: ../gdata/gdata-client-login-authorizer.c:622 ../gdata/gdata-service.c:325
 #, c-format
 msgid "Cannot connect to the proxy server."
-msgstr "Incapaz de ligar ao servidor proxy."
+msgstr "Impossível ligar ao servidor proxy."
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:628 ../gdata/gdata-service.c:331
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"Pedido URI ou cabeçalho inválido, ou parâmetro não padrão não suportado: %s"
+"Pedido de URI ou cabeçalho inválido, ou parâmetro não padrão não suportado: "
+"%s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:634 ../gdata/gdata-service.c:337
@@ -75,23 +78,23 @@ msgstr "É necessário preencher um CAPTCHA para iniciar sessão."
 #: ../gdata/gdata-client-login-authorizer.c:794
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
-msgstr "Esta conta requer uma palavra passe específica da aplicação. (%s)"
+msgstr "Esta conta requer uma senha específica da aplicação. (%s)"
 
 #: ../gdata/gdata-client-login-authorizer.c:801
 msgid "Your username or password were incorrect."
-msgstr "O seu nome de utilizador ou palavra passe estavam incorretos."
+msgstr "O seu nome de utilizador ou senha estavam incorretos."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:822
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "O endereço de correio eletrónico da sua conta não foi verificado. (%s)"
+msgstr "O endereço de email da sua conta não foi verificado. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:827
 #, c-format
 msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "Você não concordou com os termos e condições do serviço. (%s)"
+msgstr "Não concordou com os termos e condições do serviço. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:833
@@ -100,14 +103,14 @@ msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"Esta conta foi migrada. Por favor, inicie sessão online para receber os seus "
-"novos nome de utilizador e palavra passe. (% s)"
+"Esta conta foi migrada. Por favor, inicie sessão online para receber o seu "
+"novo nome de utilizador e senha. (% s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:838
 #, c-format
 msgid "This account has been deleted. (%s)"
-msgstr "Esta conta foi apagada. (%s)"
+msgstr "Esta conta foi eliminada. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:843
@@ -142,7 +145,7 @@ msgstr "Não podem ser adicionados comentários a esta entrada."
 #. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
 #: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
 msgid "This comment may not be deleted."
-msgstr "Este comentário não pode ser apagado."
+msgstr "Este comentário não pode ser eliminado."
 
 #. Tried to seek too far
 #: ../gdata/gdata-download-stream.c:762
@@ -163,7 +166,7 @@ msgstr "O acesso foi negado pelo utilizador ou servidor."
 #: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
 #, c-format
 msgid "Error parsing XML: %s"
-msgstr "Erro ao analisar XML: %s"
+msgstr "Erro ao processar XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
 #: ../gdata/gdata-parsable.c:258
@@ -257,42 +260,42 @@ msgstr "Um elemento singleton (%s) estava duplicado."
 #: ../gdata/gdata-service.c:368
 #, c-format
 msgid "Error code %u when querying: %s"
-msgstr "Erro de código %u ao consultar: %s"
+msgstr "Código de erro %u ao consultar: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:374
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
-msgstr "Erro de código %u ao inserir uma entrada: %s"
+msgstr "Código de erro %u ao inserir uma entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:380
 #, c-format
 msgid "Error code %u when updating an entry: %s"
-msgstr "Erro de código %u ao atualizar uma entrada: %s"
+msgstr "Código de erro %u ao atualizar uma entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:386
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
-msgstr "Erro de código %u ao apagar uma entrada: %s"
+msgstr "Código de erro %u ao eliminar uma entrada: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:392
 #, c-format
 msgid "Error code %u when downloading: %s"
-msgstr "Erro de código %u ao transferir: %s"
+msgstr "Código de erro %u ao transferir: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:398
 #, c-format
 msgid "Error code %u when uploading: %s"
-msgstr "Erro de código %u ao enviar: %s"
+msgstr "Código de erro %u ao enviar: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
@@ -305,7 +308,7 @@ msgstr "Código de erro %u ao executar uma operação em lote: %s"
 #: ../gdata/gdata-service.c:691
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr "URI de redireccionamento inválido: %s"
+msgstr "URI de redirecionamento inválido: %s"
 
 #: ../gdata/gdata-service.c:1345
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
@@ -397,8 +400,8 @@ msgstr "Tem de estar autenticado para atualizar documentos."
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr ""
-"Não foi possível reconhecer o tipo de conteúdo do documento fornecido "
-"('% s')."
+"Não foi possível reconhecer o tipo de conteúdo do documento fornecido (\"% s"
+"\")."
 
 #: ../gdata/services/documents/gdata-documents-service.c:928
 msgid "You must be authenticated to copy documents."
@@ -455,8 +458,8 @@ msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
 "Visit %s to create one."
 msgstr ""
-"A sua conta Google tem de estar associada a um canal do YouTub para fazer "
-"isto. Visite %s para criar uma."
+"A sua Conta Google deve estar associada a um associada a um canal do YouTube "
+"para realizar esta ação. Visite %s para criar um."
 
 #. Translators: the first parameter is an error code, which is a coded string.
 #. * The second parameter is an error domain, which is another coded string.
@@ -490,7 +493,7 @@ msgstr ""
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
-"Excedeu a sua cota de entradas. Por favor, apague algumas entradas e tente "
+"Excedeu a sua cota de entradas. Por favor, elimine algumas entradas e tente "
 "novamente."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:512
