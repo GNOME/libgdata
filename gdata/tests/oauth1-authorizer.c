@@ -1051,7 +1051,7 @@ main (int argc, char *argv[])
 	g_test_add ("/oauth1-authorizer/request-authentication-uri/sync/multiple-domains", OAuth1AuthorizerData, NULL,
 	            set_up_oauth1_authorizer_data_multiple_domains, test_oauth1_authorizer_request_authentication_uri_sync,
 	            tear_down_oauth1_authorizer_data);
-	g_test_add ("/oauth1-authorizer/request-authentication-uri/sync/multiple-domains", OAuth1AuthorizerData, NULL,
+	g_test_add ("/oauth1-authorizer/request-authentication-uri/sync/locale", OAuth1AuthorizerData, NULL,
 	            set_up_oauth1_authorizer_data_locale, test_oauth1_authorizer_request_authentication_uri_sync,
 	            tear_down_oauth1_authorizer_data);
 	g_test_add ("/oauth1-authorizer/request-authentication-uri/sync/cancellation", OAuth1AuthorizerData, NULL,
