@@ -2052,10 +2052,10 @@ main (int argc, char *argv[])
 			for (j = 0; j < UPLOAD_FOLDER_TYPE_MAX + 1; j++) {
 				for (k = 0; k < UPLOAD_RESUMABLE_TYPE_MAX + 1; k++) {
 					for (l = 0; l < UPLOAD_DOCUMENT_TYPE_MAX + 1; l++) {
-					UploadDocumentTestParams *test_params;
-					gchar *test_name;
+						UploadDocumentTestParams *test_params;
+						gchar *test_name;
 
-					/* Resumable metadata-only uploads don't make sense. */
+						/* Resumable metadata-only uploads don't make sense. */
 						if (i == UPLOAD_METADATA_ONLY && k == UPLOAD_RESUMABLE) {
 							continue;
 						}
