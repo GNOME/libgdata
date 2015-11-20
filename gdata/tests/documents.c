@@ -140,50 +140,6 @@ test_authentication (void)
 	uhm_server_end_trace (mock_server);
 }
 
-GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
-G_STMT_START {
-	GDataClientLoginAuthorizer *authorizer;
-
-	/* Create an authorizer */
-	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_DOCUMENTS_SERVICE);
-
-	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
-
-	gdata_client_login_authorizer_authenticate_async (authorizer, USERNAME, PASSWORD, cancellable, async_ready_callback, async_data);
-
-	g_object_unref (authorizer);
-} G_STMT_END,
-G_STMT_START {
-	gboolean retval;
-	GDataClientLoginAuthorizer *authorizer = GDATA_CLIENT_LOGIN_AUTHORIZER (obj);
-
-	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
-
-	if (error == NULL) {
-		g_assert (retval == TRUE);
-
-		/* Check all is as it should be */
-		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, USERNAME);
-		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
-		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-		                                                     gdata_documents_service_get_primary_authorization_domain ()) == TRUE);
-		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-		                                                     gdata_documents_service_get_spreadsheet_authorization_domain ()) == TRUE);
-	} else {
-		g_assert (retval == FALSE);
-
-		/* Check nothing's changed */
-		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
-		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
-
-		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-		                                                     gdata_documents_service_get_primary_authorization_domain ()) == FALSE);
-		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-		                                                     gdata_documents_service_get_spreadsheet_authorization_domain ()) == FALSE);
-	}
-} G_STMT_END);
-
 typedef struct {
 	GDataDocumentsFolder *folder;
 } TempFolderData;
@@ -2077,10 +2033,6 @@ main (int argc, char *argv[])
 	service = GDATA_SERVICE (gdata_documents_service_new (authorizer));
 
 	g_test_add_func ("/documents/authentication", test_authentication);
-	g_test_add ("/documents/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
-	            gdata_tear_down_async_test_data);
-	g_test_add ("/documents/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
-	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
 	g_test_add ("/documents/delete/document", TempDocumentData, service, set_up_temp_document_spreadsheet, test_delete_document,
 	            tear_down_temp_document);
