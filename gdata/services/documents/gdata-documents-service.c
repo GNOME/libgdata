@@ -1122,7 +1122,7 @@ gdata_documents_service_copy_document_finish (GDataDocumentsService *self, GAsyn
  * @error: a #GError, or %NULL
  *
  * Add the given @entry to the specified @folder, and return an updated #GDataDocumentsEntry for @entry. If the @entry is already in another folder,
- * a copy will be added to the new folder. The copy and original will have different IDs. Note that @entry can't be a * #GDataDocumentsFolder that
+ * a copy will be added to the new folder. The copy and original will have different IDs. Note that @entry can't be a #GDataDocumentsFolder that
  * already exists on the server. It can be a new #GDataDocumentsFolder, or a #GDataDocumentsDocument that is either new or already present on the
  * server.
  *
