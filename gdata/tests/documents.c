@@ -303,13 +303,10 @@ test_delete_folder (TempFolderData *data, gconstpointer service)
 	updated_folder = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
 	                                                   gdata_entry_get_id (GDATA_ENTRY (data->folder)), NULL,
 	                                                   GDATA_TYPE_DOCUMENTS_FOLDER, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_FOLDER (updated_folder));
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND);
+	g_assert (updated_folder == NULL);
 	g_clear_error (&error);
 
-	g_assert (gdata_documents_entry_is_deleted (GDATA_DOCUMENTS_ENTRY (updated_folder)) == TRUE);
-
-	g_object_unref (updated_folder);
 	g_object_unref (data->folder);
 	data->folder = NULL;
 
@@ -338,13 +335,10 @@ test_delete_document (TempDocumentData *data, gconstpointer service)
 	updated_document = gdata_service_query_single_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
 	                                                     gdata_entry_get_id (GDATA_ENTRY (data->document)), NULL,
 	                                                     G_OBJECT_TYPE (data->document), NULL, &error);
-	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (updated_document));
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND);
+	g_assert (updated_document == NULL);
 	g_clear_error (&error);
 
-	g_assert (gdata_documents_entry_is_deleted (GDATA_DOCUMENTS_ENTRY (updated_document)) == TRUE);
-
-	g_object_unref (updated_document);
 	g_object_unref (data->document);
 	data->document = NULL;
 
