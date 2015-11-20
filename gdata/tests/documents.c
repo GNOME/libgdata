@@ -775,15 +775,9 @@ test_upload (UploadDocumentData *data, gconstpointer _test_params)
 	}
 
 	if (test_params->payload_type == UPLOAD_METADATA_ONLY) {
-		gchar *upload_uri;
-
-		/* Insert the document */
-		upload_uri = gdata_documents_service_get_upload_uri (data->folder);
-		data->new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_service_insert_entry (GDATA_SERVICE (test_params->service),
-		                                                                           gdata_documents_service_get_primary_authorization_domain (),
-		                                                                           upload_uri, GDATA_ENTRY (document), NULL, &error));
-		g_free (upload_uri);
-
+		data->new_document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_service_add_entry_to_folder (test_params->service,
+		                                                                                            GDATA_DOCUMENTS_ENTRY (document),
+		                                                                                            data->folder, NULL, &error));
 		g_assert_no_error (error);
 	} else {
 		GDataUploadStream *upload_stream;
