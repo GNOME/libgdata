@@ -361,16 +361,37 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 	if (priv->show_folders == FALSE)
 		_gdata_query_add_q_internal (self, "mimeType!='application/vnd.google-apps.folder'");
 
+	if (priv->title != NULL) {
+		GString *title_query;
+		const gchar *ptr, *ptr_end;
+
+		title_query = g_string_new ("title");
+		if (priv->exact_title) {
+			g_string_append_c (title_query, '=');
+		} else {
+			g_string_append (title_query, " contains ");
+		}
+		g_string_append_c (title_query, '\'');
+
+		for (ptr = priv->title; ptr != NULL; ptr = ptr_end) {
+			/* Escape any "'" and "\" found in the title with a "\" */
+			ptr_end = strpbrk (ptr, "\'\\");
+			if (ptr_end == NULL) {
+				g_string_append (title_query, ptr);
+			} else {
+				g_string_append_len (title_query, ptr, ptr_end - ptr);
+				g_string_append_c (title_query, '\\');
+				g_string_append_c (title_query, *ptr_end);
+			}
+		}
+
+		g_string_append_c (title_query, '\'');
+		_gdata_query_add_q_internal (self, title_query->str);
+		g_string_free (title_query, TRUE);
+	}
+
 	/* Chain up to the parent class */
 	GDATA_QUERY_CLASS (gdata_documents_query_parent_class)->get_query_uri (self, feed_uri, query_uri, params_started);
-
-	if (priv->title != NULL) {
-		APPEND_SEP
-		g_string_append (query_uri, "title=");
-		g_string_append_uri_escaped (query_uri, priv->title, NULL, FALSE);
-		if (priv->exact_title == TRUE)
-			g_string_append (query_uri, "&title-exact=true");
-	}
 
 	/* https://developers.google.com/drive/v2/reference/files/list */
 	max_results = gdata_query_get_max_results (self);
