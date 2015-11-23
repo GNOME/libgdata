@@ -2,17 +2,18 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Jorge González <jorgegonz@svn.gnome.org>, 2009, 2010, 2011.
+# 
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012, 2013, 2014, 2015., 2015.
 #
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012, 2013, 2014, 2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-07-14 10:14+0000\n"
-"PO-Revision-Date: 2015-07-14 \n"
+"POT-Creation-Date: 2015-11-23 00:45+0000\n"
+"PO-Revision-Date: 2015-11-23 10:26+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
-"Language-Team: Spanish <gnome-es-list@gnome.org>\n"
+"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -208,12 +209,12 @@ msgstr "Documento vacío."
 #: ../gdata/services/documents/gdata-documents-entry.c:480
 #: ../gdata/services/documents/gdata-documents-entry.c:527
 #: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:623
-#: ../gdata/services/documents/gdata-documents-entry.c:658
-#: ../gdata/services/documents/gdata-documents-entry.c:673
-#: ../gdata/services/documents/gdata-documents-entry.c:688
-#: ../gdata/services/documents/gdata-documents-entry.c:718
-#: ../gdata/services/documents/gdata-documents-entry.c:734
+#: ../gdata/services/documents/gdata-documents-entry.c:636
+#: ../gdata/services/documents/gdata-documents-entry.c:671
+#: ../gdata/services/documents/gdata-documents-entry.c:686
+#: ../gdata/services/documents/gdata-documents-entry.c:701
+#: ../gdata/services/documents/gdata-documents-entry.c:731
+#: ../gdata/services/documents/gdata-documents-entry.c:747
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -230,7 +231,7 @@ msgstr "El nodo JSON más externo no es un objeto."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:70
+#: ../gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "A un elemento %s le faltaba el contenido requerido."
@@ -240,7 +241,7 @@ msgstr "A un elemento %s le faltaba el contenido requerido."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:86
+#: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "El contenido del un elemento %s («%s») no está en formato ISO 8601."
@@ -250,7 +251,7 @@ msgstr "El contenido del un elemento %s («%s») no está en formato ISO 8601."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:106
+#: ../gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "Se desconoce el valor de la propiedad %s de un elemento %s («%s»)."
@@ -260,7 +261,7 @@ msgstr "Se desconoce el valor de la propiedad %s de un elemento %s («%s»)."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:124
+#: ../gdata/gdata-parser.c:123
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Se desconocía el contenido del elemento %s («%s»)."
@@ -270,7 +271,7 @@ msgstr "Se desconocía el contenido del elemento %s («%s»)."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:144
+#: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Una propiedad necesaria de un elemento %s («%s») no estaba presente."
@@ -281,7 +282,7 @@ msgstr "Una propiedad necesaria de un elemento %s («%s») no estaba presente."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:167
+#: ../gdata/gdata-parser.c:166
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -294,7 +295,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:186
+#: ../gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Un elemento necesario (%s) no estaba presente."
@@ -307,7 +308,7 @@ msgstr "Un elemento necesario (%s) no estaba presente."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:201 ../gdata/gdata-parser.c:288
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Un elemento (%s) estaba duplicado."
@@ -316,7 +317,7 @@ msgstr "Un elemento (%s) estaba duplicado."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:274
+#: ../gdata/gdata-parser.c:273
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "A un elemento «%s» le faltaba el contenido requerido."
@@ -326,13 +327,13 @@ msgstr "A un elemento «%s» le faltaba el contenido requerido."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "El contenido del un elemento «%s» («%s») no está en formato ISO 8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:315
+#: ../gdata/gdata-parser.c:314
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Se ha recibido un JSON no válido del servidor: %s"
@@ -343,7 +344,7 @@ msgstr "Se ha recibido un JSON no válido del servidor: %s"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/gdata-parser.c:1182
+#: ../gdata/gdata-parser.c:1179
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
@@ -500,12 +501,15 @@ msgstr ""
 msgid "You must be authenticated to copy documents."
 msgstr "Debe estar autenticado para copiar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1155
-#| msgid "You must be authenticated to move documents and folders."
+#: ../gdata/services/documents/gdata-documents-service.c:1014
+msgid "Parent folder not found"
+msgstr "Carpeta padre no encontrada"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1160
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr "Debe estar autenticado para insertar o mover documentos y carpetas."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1354
+#: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
 msgstr "Debe estar autenticado para mover documentos y carpetas."
 
