@@ -6,9 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-08-14 22:20+0000\n"
-"PO-Revision-Date: 2015-08-15 11:46+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-11-25 00:47+0000\n"
+"PO-Revision-Date: 2015-11-25 10:37+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -16,16 +17,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: ../gdata/gdata-batch-operation.c:635
 #, c-format
 msgid "Batch operations are unsupported by this service."
 msgstr "Hromadné operácie nie sú podporované touto službou."
 
-#: ../gdata/gdata-client-login-authorizer.c:629 ../gdata/gdata-oauth1-authorizer.c:840 ../gdata/gdata-oauth1-authorizer.c:1116 ../gdata/gdata-oauth2-authorizer.c:953 ../gdata/gdata-oauth2-authorizer.c:964
-#: ../gdata/gdata-oauth2-authorizer.c:983 ../gdata/gdata-oauth2-authorizer.c:999 ../gdata/gdata-oauth2-authorizer.c:1064 ../gdata/gdata-oauth2-authorizer.c:1076 ../gdata/gdata-oauth2-authorizer.c:1087
-#: ../gdata/gdata-oauth2-authorizer.c:1102 ../gdata/gdata-oauth2-authorizer.c:1118
+#: ../gdata/gdata-client-login-authorizer.c:629
+#: ../gdata/gdata-oauth1-authorizer.c:840
+#: ../gdata/gdata-oauth1-authorizer.c:1116
+#: ../gdata/gdata-oauth2-authorizer.c:953
+#: ../gdata/gdata-oauth2-authorizer.c:964
+#: ../gdata/gdata-oauth2-authorizer.c:983
+#: ../gdata/gdata-oauth2-authorizer.c:999
+#: ../gdata/gdata-oauth2-authorizer.c:1064
+#: ../gdata/gdata-oauth2-authorizer.c:1076
+#: ../gdata/gdata-oauth2-authorizer.c:1087
+#: ../gdata/gdata-oauth2-authorizer.c:1102
+#: ../gdata/gdata-oauth2-authorizer.c:1118
 msgid "The server returned a malformed response."
 msgstr "Server vrátil chybnú odpoveď."
 
@@ -45,10 +55,13 @@ msgstr "Nedá sa pripojiť k serveru proxy."
 #. Translators: the parameter is an
 #. * error message returned by the
 #. * server.
-#: ../gdata/gdata-client-login-authorizer.c:660 ../gdata/gdata-service.c:372 ../gdata/services/calendar/gdata-calendar-service.c:325
+#: ../gdata/gdata-client-login-authorizer.c:660 ../gdata/gdata-service.c:372
+#: ../gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr "Neplatná požiadavka na získanie URI alebo záhlavia, prípadne príjem nepodporovaného neštandardného parametra: %s"
+msgstr ""
+"Neplatná požiadavka na získanie URI alebo záhlavia, prípadne príjem "
+"nepodporovaného neštandardného parametra: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:666 ../gdata/gdata-service.c:378
@@ -61,7 +74,9 @@ msgstr "Požaduje sa overenie totožnosti: %s"
 #. * error message returned by the
 #. * server.
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383 ../gdata/services/calendar/gdata-calendar-service.c:313 ../gdata/services/youtube/gdata-youtube-video.c:1013
+#: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
+#: ../gdata/services/calendar/gdata-calendar-service.c:313
+#: ../gdata/services/youtube/gdata-youtube-video.c:1013
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Požadovaný zdroj sa nenašiel: %s"
@@ -108,8 +123,12 @@ msgstr "Nepotvrdili ste, že súhlasíte s pravidlami a podmienkami služby. (%s
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:865
 #, c-format
-msgid "This account has been migrated. Please log in online to receive your new username and password. (%s)"
-msgstr "Tento účet bol presunutý. Nové používateľské meno a heslo získate po online prihlásení. (%s)"
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"Tento účet bol presunutý. Nové používateľské meno a heslo získate po online "
+"prihlásení. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:870
@@ -165,7 +184,9 @@ msgstr "Server odmietol požiadavku na dočasné poverenie."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1090 ../gdata/gdata-oauth2-authorizer.c:1113 ../gdata/services/calendar/gdata-calendar-service.c:340
+#: ../gdata/gdata-oauth1-authorizer.c:1090
+#: ../gdata/gdata-oauth2-authorizer.c:1113
+#: ../gdata/services/calendar/gdata-calendar-service.c:340
 #, c-format
 msgid "Access was denied by the user or server."
 msgstr "Prístup bol odmietnutý používateľom alebo serverom."
@@ -182,12 +203,24 @@ msgid "Empty document."
 msgstr "Prázdny dokument."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521 ../gdata/services/documents/gdata-documents-access-rule.c:144 ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285 ../gdata/services/documents/gdata-documents-entry.c:458 ../gdata/services/documents/gdata-documents-entry.c:469
-#: ../gdata/services/documents/gdata-documents-entry.c:480 ../gdata/services/documents/gdata-documents-entry.c:527 ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:623 ../gdata/services/documents/gdata-documents-entry.c:658 ../gdata/services/documents/gdata-documents-entry.c:673
-#: ../gdata/services/documents/gdata-documents-entry.c:688 ../gdata/services/documents/gdata-documents-entry.c:718 ../gdata/services/documents/gdata-documents-entry.c:734
-#: ../gdata/services/documents/gdata-documents-feed.c:81 ../gdata/services/documents/gdata-documents-feed.c:92 ../gdata/services/documents/gdata-documents-feed.c:142
+#: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
+#: ../gdata/services/documents/gdata-documents-access-rule.c:144
+#: ../gdata/services/documents/gdata-documents-access-rule.c:154
+#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-entry.c:458
+#: ../gdata/services/documents/gdata-documents-entry.c:469
+#: ../gdata/services/documents/gdata-documents-entry.c:480
+#: ../gdata/services/documents/gdata-documents-entry.c:527
+#: ../gdata/services/documents/gdata-documents-entry.c:538
+#: ../gdata/services/documents/gdata-documents-entry.c:636
+#: ../gdata/services/documents/gdata-documents-entry.c:671
+#: ../gdata/services/documents/gdata-documents-entry.c:686
+#: ../gdata/services/documents/gdata-documents-entry.c:701
+#: ../gdata/services/documents/gdata-documents-entry.c:731
+#: ../gdata/services/documents/gdata-documents-entry.c:747
+#: ../gdata/services/documents/gdata-documents-feed.c:81
+#: ../gdata/services/documents/gdata-documents-feed.c:92
+#: ../gdata/services/documents/gdata-documents-feed.c:142
 #: ../gdata/services/documents/gdata-documents-feed.c:160
 #, c-format
 msgid "Error parsing JSON: %s"
@@ -202,7 +235,7 @@ msgstr "Vonkajší uzol JSON nie je objekt."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:70
+#: ../gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Prvku %s chýbal požadovaný obsah."
@@ -212,7 +245,7 @@ msgstr "Prvku %s chýbal požadovaný obsah."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:86
+#: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "V prvku %s nebol obsah („%s“) vo formáte ISO 8601."
@@ -222,7 +255,7 @@ msgstr "V prvku %s nebol obsah („%s“) vo formáte ISO 8601."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:106
+#: ../gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "Vlastnosť %s prvku %s mala neznámu hodnotu („%s“)."
@@ -232,7 +265,7 @@ msgstr "Vlastnosť %s prvku %s mala neznámu hodnotu („%s“)."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:124
+#: ../gdata/gdata-parser.c:123
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "V prvku %s bol neznámy obsah („%s“)."
@@ -242,7 +275,7 @@ msgstr "V prvku %s bol neznámy obsah („%s“)."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:144
+#: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Pre prvok %s nebola poskytnutá požadovaná vlastnosť („%s“)."
@@ -253,16 +286,20 @@ msgstr "Pre prvok %s nebola poskytnutá požadovaná vlastnosť („%s“)."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:167
+#: ../gdata/gdata-parser.c:166
 #, c-format
-msgid "Values were present for properties %s and %s of a %s element when only one of the two is allowed."
-msgstr "Boli poskytnuté hodnoty pre vlastnosti %s a %s prvku %s, avšak len jedna z nich je povolená."
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"Boli poskytnuté hodnoty pre vlastnosti %s a %s prvku %s, avšak len jedna z "
+"nich je povolená."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:186
+#: ../gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Požadovaný prvok (%s) nebol poskytnutý."
@@ -275,7 +312,7 @@ msgstr "Požadovaný prvok (%s) nebol poskytnutý."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:201 ../gdata/gdata-parser.c:288
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Prvok typu singleton (%s) bol skopírovaný."
@@ -285,7 +322,7 @@ msgstr "Prvok typu singleton (%s) bol skopírovaný."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:274
+#: ../gdata/gdata-parser.c:273
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Prvku „%s“ chýbal požadovaný obsah."
@@ -295,13 +332,13 @@ msgstr "Prvku „%s“ chýbal požadovaný obsah."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "V prvku „%s“ nebol obsah („%s“) vo formáte ISO 8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:315
+#: ../gdata/gdata-parser.c:314
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Zo servera bol prijatý neplatný JSON: %s"
@@ -312,7 +349,7 @@ msgstr "Zo servera bol prijatý neplatný JSON: %s"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/gdata-parser.c:1182
+#: ../gdata/gdata-parser.c:1179
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "V prvku %s nebol obsah („%s“) v šestnástkovom formáte RGB."
@@ -372,7 +409,9 @@ msgstr "Kód chyby %u pri behu dávkovej operácie: %s"
 msgid "Invalid redirect URI: %s"
 msgstr "Neplatné presmerovanie URI: %s"
 
-#: ../gdata/gdata-service.c:1454 ../gdata/services/picasaweb/gdata-picasaweb-service.c:624 ../gdata/services/youtube/gdata-youtube-service.c:1022
+#: ../gdata/gdata-service.c:1454
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "Záznam bol už vložený."
 
@@ -380,37 +419,53 @@ msgstr "Záznam bol už vložený."
 #: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "Pri odovzdaní nadväzujúceho bloku odovzdávania bola obdržaná chyba zo servera."
+msgstr ""
+"Pri odovzdaní nadväzujúceho bloku odovzdávania bola obdržaná chyba zo "
+"servera."
 
 #: ../gdata/gdata-upload-stream.c:936
 msgid "Stream is already closed"
 msgstr "Prúd je už uzatvorený"
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:302 ../gdata/services/tasks/gdata-tasks-service.c:195 ../gdata/services/youtube/gdata-youtube-service.c:541
+#: ../gdata/services/calendar/gdata-calendar-service.c:302
+#: ../gdata/services/tasks/gdata-tasks-service.c:195
+#: ../gdata/services/youtube/gdata-youtube-service.c:541
 #, c-format
-msgid "You have made too many API calls recently. Please wait a few minutes and try again."
-msgstr "Vykonali ste príliš veľa volaní API. Počkajte, prosím, pár minút a skúste to znova."
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Vykonali ste príliš veľa volaní API. Počkajte, prosím, pár minút a skúste to "
+"znova."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:334 ../gdata/services/tasks/gdata-tasks-service.c:204 ../gdata/services/youtube/gdata-youtube-service.c:557
+#: ../gdata/services/calendar/gdata-calendar-service.c:334
+#: ../gdata/services/tasks/gdata-tasks-service.c:204
+#: ../gdata/services/youtube/gdata-youtube-service.c:557
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Vykonanie operácie je možné až po overení totožnosti."
 
 # PM: znie mi to neprirodzene; Dopytovanie vo všetkých kalendároch je možné až po overení totožnosti. Nejdem to všetko fuzziovať, oprav si to vo všetkých podobných reťazcoch
-#: ../gdata/services/calendar/gdata-calendar-service.c:465 ../gdata/services/calendar/gdata-calendar-service.c:516
+#: ../gdata/services/calendar/gdata-calendar-service.c:465
+#: ../gdata/services/calendar/gdata-calendar-service.c:516
 msgid "You must be authenticated to query all calendars."
 msgstr "Dopytovanie vo všetkých kalendároch je možné až po overení totožnosti."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:562 ../gdata/services/calendar/gdata-calendar-service.c:613 ../gdata/services/calendar/gdata-calendar-service.c:675
+#: ../gdata/services/calendar/gdata-calendar-service.c:562
+#: ../gdata/services/calendar/gdata-calendar-service.c:613
+#: ../gdata/services/calendar/gdata-calendar-service.c:675
 #: ../gdata/services/calendar/gdata-calendar-service.c:734
 msgid "You must be authenticated to query your own calendars."
-msgstr "Dopytovanie vo vlastných kalendároch je možné až po overení totožnosti."
+msgstr ""
+"Dopytovanie vo vlastných kalendároch je možné až po overení totožnosti."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:258 ../gdata/services/contacts/gdata-contacts-service.c:308
+#: ../gdata/services/contacts/gdata-contacts-service.c:258
+#: ../gdata/services/contacts/gdata-contacts-service.c:308
 msgid "You must be authenticated to query contacts."
 msgstr "Dopytovanie v kontaktoch je možné až po overení totožnosti."
 
-#: ../gdata/services/contacts/gdata-contacts-service.c:424 ../gdata/services/contacts/gdata-contacts-service.c:474
+#: ../gdata/services/contacts/gdata-contacts-service.c:424
+#: ../gdata/services/contacts/gdata-contacts-service.c:474
 msgid "You must be authenticated to query contact groups."
 msgstr "Dopytovanie v skupinách kontaktov je možné až po overení totožnosti."
 
@@ -426,7 +481,8 @@ msgstr "Vloženie skupiny je možné až po overení totožnosti."
 msgid "You must be authenticated to download documents."
 msgstr "Prevzatie dokumentov je možné až po overení totožnosti."
 
-#: ../gdata/services/documents/gdata-documents-service.c:513 ../gdata/services/documents/gdata-documents-service.c:563
+#: ../gdata/services/documents/gdata-documents-service.c:513
+#: ../gdata/services/documents/gdata-documents-service.c:563
 msgid "You must be authenticated to query documents."
 msgstr "Dopytovanie v dokumentoch je možné až po overení totožnosti."
 
@@ -444,18 +500,25 @@ msgstr "Aktualizovanie dokumentov je možné až po overení totožnosti."
 
 #: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
-msgid "The content type of the supplied document ('%s') could not be recognized."
+msgid ""
+"The content type of the supplied document ('%s') could not be recognized."
 msgstr "Typ obsahu („%s“) dodaného dokumentu nie je možné rozoznať."
 
 #: ../gdata/services/documents/gdata-documents-service.c:986
 msgid "You must be authenticated to copy documents."
 msgstr "Kopírovanie dokumentov je možné až po overení totožnosti."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1155
-msgid "You must be authenticated to insert or move documents and folders."
-msgstr "Vkladanie alebo presúvanie dokumentov a adresárov je možné až po overení totožnosti."
+#: ../gdata/services/documents/gdata-documents-service.c:1014
+msgid "Parent folder not found"
+msgstr "Nenašiel sa nadradený priečinok"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1354
+#: ../gdata/services/documents/gdata-documents-service.c:1160
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr ""
+"Vkladanie alebo presúvanie dokumentov a adresárov je možné až po overení "
+"totožnosti."
+
+#: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
 msgstr "Presúvanie dokumentov a adresárov je možné až po overení totožnosti."
 
@@ -466,15 +529,21 @@ msgstr "Vlastnosť „%s“ nedrží obrázok"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "Dopytovanie používateľa je možné až po zadaní používateľského mena alebo po overení totožnosti."
+msgstr ""
+"Dopytovanie používateľa je možné až po zadaní používateľského mena alebo po "
+"overení totožnosti."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387 ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "Query parameter not allowed for albums."
 msgstr "Parameter dopytu nie je povolený pre albumy."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394 ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Dopytovanie všetkých albumov je možné až po zadaní používateľského mena alebo po overení totožnosti."
+msgstr ""
+"Dopytovanie všetkých albumov je možné až po zadaní používateľského mena "
+"alebo po overení totožnosti."
 
 # PM: chýba preklad feed - prekladáme ako kanál
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
@@ -494,24 +563,34 @@ msgid "You must be authenticated to insert an album."
 msgstr "Vloženie albumu je možné až po overení totožnosti."
 
 # PM: znie mi to neprirodzene; Dopytovanie vo všetkých kalendároch je možné až po overení totožnosti. Nejdem to všetko fuzziovať, oprav si to vo všetkých podobných reťazcoch
-#: ../gdata/services/tasks/gdata-tasks-service.c:330 ../gdata/services/tasks/gdata-tasks-service.c:381
+#: ../gdata/services/tasks/gdata-tasks-service.c:330
+#: ../gdata/services/tasks/gdata-tasks-service.c:381
 msgid "You must be authenticated to query all tasklists."
-msgstr "Dopytovanie vo všetkých zoznamoch úloh je možné až po overení totožnosti."
+msgstr ""
+"Dopytovanie vo všetkých zoznamoch úloh je možné až po overení totožnosti."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:430 ../gdata/services/tasks/gdata-tasks-service.c:487
+#: ../gdata/services/tasks/gdata-tasks-service.c:430
+#: ../gdata/services/tasks/gdata-tasks-service.c:487
 msgid "You must be authenticated to query your own tasks."
 msgstr "Dopytovanie vo vlastných úlohách je možné až po overení totožnosti."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
-msgid "You have exceeded your entry quota. Please delete some entries and try again."
-msgstr "Prekročili ste svoju kvótu pre záznamy. Odstráňte, prosím, niektoré záznamy a skúste to znova."
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Prekročili ste svoju kvótu pre záznamy. Odstráňte, prosím, niektoré záznamy "
+"a skúste to znova."
 
 #. Translators: the parameter is a URI.
 #: ../gdata/services/youtube/gdata-youtube-service.c:565
 #, c-format
-msgid "Your Google Account must be associated with a YouTube channel to do this. Visit %s to create one."
-msgstr "Na vykonanie akcie musí byť váš účet Google pridružený ku kanálu Youtube. Ak chcete jeden vytvoriť, navštívte %s."
+msgid ""
+"Your Google Account must be associated with a YouTube channel to do this. "
+"Visit %s to create one."
+msgstr ""
+"Na vykonanie akcie musí byť váš účet Google pridružený ku kanálu Youtube. Ak "
+"chcete jeden vytvoriť, navštívte %s."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
@@ -523,7 +602,8 @@ msgstr "Odoslanie videa je možné až po overení totožnosti."
 #~ msgid "This service is not available at the moment."
 #~ msgstr "Služba nie je momentálne dostupná."
 
-#~ msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+#~ msgid ""
+#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 #~ msgstr "Neznámy kód chyby „%s“ domény „%s“ bol obdržaný z lokality „%s“."
 
 #~ msgid "Unknown and unparsable error received."
