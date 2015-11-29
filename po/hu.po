@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-07-17 10:18+0000\n"
-"PO-Revision-Date: 2015-07-17 16:27+0200\n"
-"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
+"POT-Creation-Date: 2015-11-28 12:45+0000\n"
+"PO-Revision-Date: 2015-11-28 17:34+0100\n"
+"Last-Translator: Meskó Balázs <meskobalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.2\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../gdata/gdata-batch-operation.c:635
 #, c-format
@@ -211,12 +211,12 @@ msgstr "Üres dokumentum."
 #: ../gdata/services/documents/gdata-documents-entry.c:480
 #: ../gdata/services/documents/gdata-documents-entry.c:527
 #: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:623
-#: ../gdata/services/documents/gdata-documents-entry.c:658
-#: ../gdata/services/documents/gdata-documents-entry.c:673
-#: ../gdata/services/documents/gdata-documents-entry.c:688
-#: ../gdata/services/documents/gdata-documents-entry.c:718
-#: ../gdata/services/documents/gdata-documents-entry.c:734
+#: ../gdata/services/documents/gdata-documents-entry.c:636
+#: ../gdata/services/documents/gdata-documents-entry.c:671
+#: ../gdata/services/documents/gdata-documents-entry.c:686
+#: ../gdata/services/documents/gdata-documents-entry.c:701
+#: ../gdata/services/documents/gdata-documents-entry.c:731
+#: ../gdata/services/documents/gdata-documents-entry.c:747
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -233,7 +233,7 @@ msgstr "A legkülső JSON csomópont nem objektum."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:70
+#: ../gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Egy %s elemből hiányzik a szükséges tartalom."
@@ -243,7 +243,7 @@ msgstr "Egy %s elemből hiányzik a szükséges tartalom."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:86
+#: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "Egy %s elem tartalma („%s”) nem ISO 8601 formátumú."
@@ -253,7 +253,7 @@ msgstr "Egy %s elem tartalma („%s”) nem ISO 8601 formátumú."
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:106
+#: ../gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "Egy %s elem %s tulajdonságának tartalma („%s”) ismeretlen."
@@ -263,7 +263,7 @@ msgstr "Egy %s elem %s tulajdonságának tartalma („%s”) ismeretlen."
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:124
+#: ../gdata/gdata-parser.c:123
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Egy %s elem tartalma („%s”) ismeretlen."
@@ -273,7 +273,7 @@ msgstr "Egy %s elem tartalma („%s”) ismeretlen."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:144
+#: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Egy %s elem szükséges tulajdonsága (%s) nincs jelen."
@@ -284,7 +284,7 @@ msgstr "Egy %s elem szükséges tulajdonsága (%s) nincs jelen."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:167
+#: ../gdata/gdata-parser.c:166
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -297,7 +297,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:186
+#: ../gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Egy szükséges elem („%s”) nincs jelen."
@@ -310,7 +310,7 @@ msgstr "Egy szükséges elem („%s”) nincs jelen."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:201 ../gdata/gdata-parser.c:288
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Egy egyke elem (%s) megkettőzve."
@@ -319,7 +319,7 @@ msgstr "Egy egyke elem (%s) megkettőzve."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:274
+#: ../gdata/gdata-parser.c:273
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Egy „%s” elemből hiányzik a szükséges tartalom."
@@ -329,13 +329,13 @@ msgstr "Egy „%s” elemből hiányzik a szükséges tartalom."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr "Egy „%s” elem tartalma („%s”) nem ISO 8601 formátumú."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:315
+#: ../gdata/gdata-parser.c:314
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "A kiszolgálótól érvénytelen JSON érkezett: %s"
@@ -346,7 +346,7 @@ msgstr "A kiszolgálótól érvénytelen JSON érkezett: %s"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/gdata-parser.c:1182
+#: ../gdata/gdata-parser.c:1179
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr "Egy %s elem tartalma („%s”) nem hexadecimális RGB formátumú."
@@ -503,13 +503,16 @@ msgstr "A megadott dokumentum („%s”) tartalomtípusa nem ismerhető fel."
 msgid "You must be authenticated to copy documents."
 msgstr "Dokumentumok másolásához be kell jelentkeznie."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1155
-#| msgid "You must be authenticated to move documents and folders."
+#: ../gdata/services/documents/gdata-documents-service.c:1014
+msgid "Parent folder not found"
+msgstr "A szülőmappa nem található"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1160
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Dokumentumok és mappák beszúrásához vagy áthelyezéséhez be kell jelentkeznie."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1354
+#: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
 msgstr "Dokumentumok és mappák áthelyezéséhez be kell jelentkeznie."
 
