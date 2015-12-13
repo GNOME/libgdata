@@ -1,3 +1,43 @@
+Overview of changes from libgdata 0.17.3 to libgdata 0.17.4
+===========================================================
+
+Major changes:
+ • Download stream data corruption fixes and fixes to content length
+   calculation
+ • Fix symbol exporting on OS X
+ • Fix copying and deleting documents in Google Drive
+ • Fix folder creation in Google Drive
+ • Fix metadata-only uploads in Google Drive
+ • Fix searching by title in Google Drive
+
+API changes:
+ • Remove a couple of incorrect GIR annotations
+
+Bugs fixed:
+ • Bug 755976 — Seeking with GDataDownloadStream can be broken if a range was
+   set in the HTTP request
+ • Bug 754821 — Compilation issues on Mac OS X
+ • Bug 758119 — make check fails in git master (3.19.x)
+ • Bug 684920 — Port to Google Drive API v2
+ • Bug 758524 — Cannot search documents by title
+
+Updated translations:
+ • cs (Marek Černocký)
+ • da (Ask Hjorth Larsen)
+ • de (Wolfgang Stöggl)
+ • es (Daniel Mustieles)
+ • eu (Iñaki Larrañaga Murgoitio)
+ • hu (Balázs Meskó)
+ • lt (Aurimas Černius)
+ • lv (Rūdolfs Mazurs)
+ • pl (Piotr Drąg)
+ • pt (Pedro Albuquerque)
+ • pt_BR (Enrico Nicoletto)
+ • ru (Stas Solovey)
+ • sk (Dušan Kazik)
+ • sr (Марко Костић, Милош Поповић)
+ • tr (Muhammet Kara)
+
 Overview of changes from libgdata 0.17.2 to libgdata 0.17.3
 ===========================================================
 
