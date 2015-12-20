@@ -355,6 +355,8 @@ gdata_documents_document_new (const gchar *id)
  * #GInputStream operations on the #GDataDownloadStream will not cancel the entire download; merely the read or close operation in question. See the
  * #GDataDownloadStream:cancellable for more details.
  *
+ * If the given @export_format is unrecognised or not supported for this document, %GDATA_SERVICE_ERROR_NOT_FOUND will be returned.
+ *
  * If @service isn't authenticated, a %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be returned.
  *
  * If there is an error getting the document, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned.
@@ -393,6 +395,13 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
 
 	/* Get the download URI and create a stream for it */
 	download_uri = gdata_documents_document_get_download_uri (self, export_format);
+
+	if (download_uri == NULL) {
+		g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND,
+		             _("Unknown or unsupported document export format ‘%s’."), export_format);
+		return NULL;
+	}
+
 	download_stream = GDATA_DOWNLOAD_STREAM (gdata_download_stream_new (GDATA_SERVICE (service), domain, download_uri, cancellable));
 	g_free (download_uri);
 
@@ -411,7 +420,9 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
  * @export_format should be the file extension of the desired output format for the document, from the list accepted by Google Documents. For example:
  * %GDATA_DOCUMENTS_PRESENTATION_PDF, %GDATA_DOCUMENTS_SPREADSHEET_ODS or %GDATA_DOCUMENTS_TEXT_ODT.
  *
- * Return value: the download URI; free with g_free()
+ * If the @export_format is not recognised or not supported for this document, %NULL is returned.
+ *
+ * Return value: (nullable): the download URI, or %NULL; free with g_free()
  *
  * Since: 0.7.0
  **/
