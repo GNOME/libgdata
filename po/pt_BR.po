@@ -1,19 +1,19 @@
 # Brazilian Portuguese translation of libgdata.
-# Copyright (C) 2013, 2014 Philip Withnall.
+# Copyright (C) 2013, 2014, 2015 Philip Withnall.
 # This file is distributed under the same license as the libgdata package.
 # Leonardo Ferreira Fontenelle <leonardof@gnome.org>, 2009.
 # Og Maciel <ogmaciel@gnome.org>, 2009.
 # Djavan Fagundes <djavanf@gnome.org>, 2010.
 # Flamarion Jorge <jorge.flamarion@gmail.com>, 2009, 2011.
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2013.
-# Enrico Nicoletto <liverig@gmail.com>, 2013, 2014.
+# Enrico Nicoletto <liverig@gmail.com>, 2013, 2014, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-09-17 10:35+0000\n"
-"PO-Revision-Date: 2015-09-18 17:29-0300\n"
+"POT-Creation-Date: 2015-12-29 12:48+0000\n"
+"PO-Revision-Date: 2015-12-31 14:10-0300\n"
 "Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -459,11 +459,15 @@ msgstr "O tipo de conteúdo fornecido pelo documento ('%s') não pôde ser recon
 msgid "You must be authenticated to copy documents."
 msgstr "Você deve estar autenticado para copiar documentos."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1155
+#: ../gdata/services/documents/gdata-documents-service.c:1014
+msgid "Parent folder not found"
+msgstr "Pasta pai não localizada"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1160
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr "Você precisa estar autenticado para inserir ou mover documentos e pastas."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1354
+#: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
 msgstr "Você deve estar autenticado para mover documentos e pastas."
 
