@@ -206,6 +206,7 @@
 #include "gdata-documents-presentation.h"
 #include "gdata-documents-spreadsheet.h"
 #include "gdata-documents-text.h"
+#include "gdata-documents-utils.h"
 #include "gdata-download-stream.h"
 #include "gdata-private.h"
 #include "gdata-service.h"
@@ -418,6 +419,7 @@ gchar *
 gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const gchar *export_format)
 {
 	const gchar *format;
+	const gchar *mime_type;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_DOCUMENT (self), NULL);
 	g_return_val_if_fail (export_format != NULL && *export_format != '\0', NULL);
@@ -448,6 +450,14 @@ gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const g
 		format = "application/rtf";
 	else
 		format = export_format;
+
+	/* We use the exportLinks JSON member to do the format conversion during download. Unfortunately, there
+	 * won't be any hits if the export format matches the original MIME type. We resort to downloadUrl in
+	 * those cases.
+	 */
+	mime_type = gdata_documents_utils_get_content_type (GDATA_DOCUMENTS_ENTRY (self));
+	if (g_content_type_equals (mime_type, format))
+		return g_strdup (gdata_entry_get_content_uri (GDATA_ENTRY (self)));
 
 	return g_strdup (g_hash_table_lookup (self->priv->export_links, format));
 }
