@@ -366,10 +366,8 @@ static void
 set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 {
 	GDataDocumentsEntry *document;
-	gchar *upload_uri, *document_file_path;
+	gchar *document_file_path;
 	GFile *document_file;
-
-	upload_uri = gdata_documents_service_get_upload_uri (NULL);
 
 	/* Create a temporary folder */
 	set_up_temp_folder ((TempFolderData*) data, service);
@@ -380,8 +378,8 @@ set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_spreadsheet_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Spreadsheet");
 	data->spreadsheet_document = GDATA_DOCUMENTS_SPREADSHEET (
-		gdata_service_insert_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-		                            upload_uri, GDATA_ENTRY (document), NULL, NULL)
+		gdata_documents_service_add_entry_to_folder (GDATA_DOCUMENTS_SERVICE (service), document, ((TempFolderData*) data)->folder,
+		                                             NULL, NULL)
 	);
 	g_assert (GDATA_IS_DOCUMENTS_SPREADSHEET (data->spreadsheet_document));
 	g_object_unref (document);
@@ -389,8 +387,8 @@ set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_presentation_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Presentation");
 	data->presentation_document = GDATA_DOCUMENTS_PRESENTATION (
-		gdata_service_insert_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-		                            upload_uri, GDATA_ENTRY (document), NULL, NULL)
+		gdata_documents_service_add_entry_to_folder (GDATA_DOCUMENTS_SERVICE (service), document, ((TempFolderData*) data)->folder,
+		                                             NULL, NULL)
 	);
 	g_assert (GDATA_IS_DOCUMENTS_PRESENTATION (data->presentation_document));
 	g_object_unref (document);
@@ -398,8 +396,8 @@ set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 	document = GDATA_DOCUMENTS_ENTRY (gdata_documents_text_new (NULL));
 	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Text Document");
 	data->text_document = GDATA_DOCUMENTS_TEXT (
-		gdata_service_insert_entry (GDATA_SERVICE (service), gdata_documents_service_get_primary_authorization_domain (),
-		                            upload_uri, GDATA_ENTRY (document), NULL, NULL)
+		gdata_documents_service_add_entry_to_folder (GDATA_DOCUMENTS_SERVICE (service), document, ((TempFolderData*) data)->folder,
+		                                             NULL, NULL)
 	);
 	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->text_document));
 	g_object_unref (document);
@@ -415,7 +413,6 @@ set_up_temp_documents (TempDocumentsData *data, gconstpointer service)
 	g_object_unref (document);
 
 	g_object_unref (document_file);
-	g_free (upload_uri);
 
 	uhm_server_end_trace (mock_server);
 }
