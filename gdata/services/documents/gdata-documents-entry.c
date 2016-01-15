@@ -127,7 +127,6 @@ static gchar *get_entry_uri (const gchar *id);
 
 struct _GDataDocumentsEntryPrivate {
 	gint64 last_viewed;
-	gchar *mime_type;
 	gchar *resource_id;
 	gboolean writers_can_invite;
 	gboolean is_deleted;
@@ -376,7 +375,6 @@ gdata_documents_entry_finalize (GObject *object)
 {
 	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (object)->priv;
 
-	g_free (priv->mime_type);
 	g_free (priv->resource_id);
 
 	/* Chain up to the parent class */
@@ -570,6 +568,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 	gboolean success = TRUE;
 	gchar *alternate_uri = NULL;
 	gchar *kind = NULL;
+	gchar *mime_type = NULL;
 	gchar *quota_used = NULL;
 	gint64 published;
 	gint64 updated;
@@ -587,14 +586,16 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 		g_free (alternate_uri);
 		return success;
-	} else if (gdata_parser_string_from_json_member (reader, "mimeType", P_DEFAULT, &(priv->mime_type), &success, error) == TRUE) {
-		if (success && priv->mime_type != NULL && priv->mime_type[0] != '\0') {
+	} else if (gdata_parser_string_from_json_member (reader, "mimeType", P_DEFAULT, &mime_type, &success, error) == TRUE) {
+		if (success && mime_type != NULL && mime_type[0] != '\0') {
 			GDataEntryClass *klass = GDATA_ENTRY_GET_CLASS (parsable);
 
-			category = gdata_category_new (klass->kind_term, "http://schemas.google.com/g/2005#kind", priv->mime_type);
+			category = gdata_category_new (klass->kind_term, "http://schemas.google.com/g/2005#kind", mime_type);
 			gdata_entry_add_category (GDATA_ENTRY (parsable), category);
 			g_object_unref (category);
 		}
+
+		g_free (mime_type);
 		return success;
 	} else if (gdata_parser_int64_time_from_json_member (reader, "lastViewedByMeDate", P_DEFAULT, &(priv->last_viewed), &success, error) == TRUE ||
 		   gdata_parser_string_from_json_member (reader, "kind", P_REQUIRED | P_NON_EMPTY, &kind, &success, error) == TRUE) {
