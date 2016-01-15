@@ -2150,6 +2150,11 @@ main (int argc, char *argv[])
 							continue;
 						}
 
+						/* FIXME: Conversion during uploads is not implemented. */
+						if (l == UPLOAD_ODT_CONVERT) {
+							continue;
+						}
+
 						/* Resumable metadata-only uploads don't make sense. */
 						if (i == UPLOAD_METADATA_ONLY && k == UPLOAD_RESUMABLE) {
 							continue;
