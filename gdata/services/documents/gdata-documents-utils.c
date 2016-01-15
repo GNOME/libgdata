@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Red Hat, Inc. 2015
+ * Copyright (C) Red Hat, Inc. 2015, 2016
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +17,6 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gdata-documents-entry.h"
 #include "gdata-documents-spreadsheet.h"
 #include "gdata-documents-text.h"
 #include "gdata-documents-presentation.h"
@@ -58,6 +57,40 @@ gdata_documents_utils_get_type_from_content_type (const gchar *content_type)
 		retval = GDATA_TYPE_DOCUMENTS_SPREADSHEET;
 	} else {
 		retval = GDATA_TYPE_DOCUMENTS_DOCUMENT;
+	}
+
+	return retval;
+}
+
+/*
+ * gdata_documents_utils_get_content_type:
+ * @entry: a #GDataDocumentsEntry
+ *
+ * Returns the content type of @entry, if any.
+ *
+ * Return value: (nullable): content type of @entry, %NULL otherwise
+ *
+ * Since: 0.17.5
+ */
+const gchar *
+gdata_documents_utils_get_content_type (GDataDocumentsEntry *entry)
+{
+	GList *categories;
+	GList *i;
+	const gchar *retval = NULL;
+
+	categories = gdata_entry_get_categories (GDATA_ENTRY (entry));
+	for (i = categories; i != NULL; i = i->next) {
+		GDataCategory *category = GDATA_CATEGORY (i->data);
+		const gchar *label;
+		const gchar *scheme;
+
+		label = gdata_category_get_label (category);
+		scheme = gdata_category_get_scheme (category);
+		if (label != NULL && label[0] != '\0' && g_strcmp0 (scheme, "http://schemas.google.com/g/2005#kind") == 0) {
+			retval = label;
+			break;
+		}
 	}
 
 	return retval;

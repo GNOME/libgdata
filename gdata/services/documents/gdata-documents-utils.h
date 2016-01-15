@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Red Hat, Inc. 2015
+ * Copyright (C) Red Hat, Inc. 2015, 2016
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,12 +23,16 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gdata/services/documents/gdata-documents-entry.h>
+
 G_BEGIN_DECLS
 
 /* HACK: Used to convert GDataLink:uri to ID and vice-versa. */
 #define GDATA_DOCUMENTS_URI_PREFIX "https://www.googleapis.com/drive/v2/files/"
 
 G_GNUC_INTERNAL GType gdata_documents_utils_get_type_from_content_type (const gchar *content_type);
+
+G_GNUC_INTERNAL const gchar *gdata_documents_utils_get_content_type (GDataDocumentsEntry *entry);
 
 G_END_DECLS
 

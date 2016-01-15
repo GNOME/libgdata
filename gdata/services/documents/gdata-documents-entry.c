@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
- * Copyright (C) Red Hat, Inc. 2015
+ * Copyright (C) Red Hat, Inc. 2015, 2016
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -816,27 +816,18 @@ get_content_type (void)
 static void
 get_json (GDataParsable *parsable, JsonBuilder *builder)
 {
-	GList *categories;
 	GList *i;
 	GList *parent_folders_list;
+	const gchar *mime_type;
 
 	GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->get_json (parsable, builder);
 
 	/* Inserting files: https://developers.google.com/drive/v2/reference/files/insert */
 
-	categories = gdata_entry_get_categories (GDATA_ENTRY (parsable));
-	for (i = categories; i != NULL; i = i->next) {
-		GDataCategory *category = GDATA_CATEGORY (i->data);
-		const gchar *label;
-		const gchar *scheme;
-
-		label = gdata_category_get_label (category);
-		scheme = gdata_category_get_scheme (category);
-		if (label != NULL && label[0] != '\0' && g_strcmp0 (scheme, "http://schemas.google.com/g/2005#kind") == 0) {
-			json_builder_set_member_name (builder, "mimeType");
-			json_builder_add_string_value (builder, label);
-			break;
-		}
+	mime_type = gdata_documents_utils_get_content_type (GDATA_DOCUMENTS_ENTRY (parsable));
+	if (mime_type != NULL) {
+		json_builder_set_member_name (builder, "mimeType");
+		json_builder_add_string_value (builder, mime_type);
 	}
 
 	/* Upload to a folder: https://developers.google.com/drive/v2/web/folder */
