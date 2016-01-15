@@ -839,7 +839,7 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 		}
 	}
 
-	/* Upload to a folder: https://developers.google.com/drive/web/folder */
+	/* Upload to a folder: https://developers.google.com/drive/v2/web/folder */
 
 	json_builder_set_member_name (builder, "parents");
 	json_builder_begin_array (builder);
