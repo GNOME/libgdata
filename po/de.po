@@ -1,5 +1,5 @@
 # German translation of libgdata.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2012.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2012, 2016.
 # Christian Kirbach <Christian.Kirbach@googlemail.com>, 2010.
 # Wolfgang Stöggl <c72578@yahoo.de>, 2011, 2015.
 # Benjamin Steinwender <b@stbe.at>, 2014.
@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-11-28 00:42+0000\n"
-"PO-Revision-Date: 2015-11-28 07:09+0100\n"
-"Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
+"POT-Creation-Date: 2016-01-18 12:56+0000\n"
+"PO-Revision-Date: 2016-01-18 20:48+0100\n"
+"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -206,7 +206,7 @@ msgstr "Leeres Dokument."
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
@@ -476,9 +476,16 @@ msgstr "Die Gruppe wurde bereits eingefügt."
 msgid "You must be authenticated to insert a group."
 msgstr "Sie müssen legitimiert sein, um eine Gruppe einzufügen."
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "Sie müssen legitimiert sein, um Dokumente herunterzuladen."
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr ""
+"Das Exportformat »%s« für Dokumente ist unbekannt oder wird nicht "
+"unterstützt."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
