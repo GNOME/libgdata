@@ -4,14 +4,14 @@
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
 # gnomepl@aviary.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2015.
-# Aviary.pl <gnomepl@aviary.pl>, 2009-2015.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2016.
+# Aviary.pl <gnomepl@aviary.pl>, 2009-2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-20 18:03+0100\n"
-"PO-Revision-Date: 2015-11-20 18:04+0100\n"
+"POT-Creation-Date: 2016-01-18 16:30+0100\n"
+"PO-Revision-Date: 2016-01-18 16:32+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -206,7 +206,7 @@ msgstr "Pusty dokument."
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
@@ -471,9 +471,14 @@ msgstr "Grupa została już umieszczona."
 msgid "You must be authenticated to insert a group."
 msgstr "Należy być uwierzytelnionym, aby umieścić grupę."
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "Należy być uwierzytelnionym, aby pobrać dokumenty."
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Nieznany lub nieobsługiwany format eksportu dokumentów „%s”."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
