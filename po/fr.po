@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-08-15 10:21+0000\n"
-"PO-Revision-Date: 2015-08-15 13:47+0200\n"
+"POT-Creation-Date: 2016-02-02 12:53+0000\n"
+"PO-Revision-Date: 2016-02-02 17:30+0100\n"
 "Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
@@ -207,18 +207,18 @@ msgstr "Document vide."
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
 #: ../gdata/services/documents/gdata-documents-entry.c:527
 #: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:623
-#: ../gdata/services/documents/gdata-documents-entry.c:658
-#: ../gdata/services/documents/gdata-documents-entry.c:673
-#: ../gdata/services/documents/gdata-documents-entry.c:688
-#: ../gdata/services/documents/gdata-documents-entry.c:718
-#: ../gdata/services/documents/gdata-documents-entry.c:734
+#: ../gdata/services/documents/gdata-documents-entry.c:636
+#: ../gdata/services/documents/gdata-documents-entry.c:671
+#: ../gdata/services/documents/gdata-documents-entry.c:686
+#: ../gdata/services/documents/gdata-documents-entry.c:701
+#: ../gdata/services/documents/gdata-documents-entry.c:731
+#: ../gdata/services/documents/gdata-documents-entry.c:747
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -235,7 +235,7 @@ msgstr "Le nœud JSON le plus à l'extérieur n'est pas un objet."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:70
+#: ../gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Un élément %s ne contient pas le contenu requis."
@@ -245,7 +245,7 @@ msgstr "Un élément %s ne contient pas le contenu requis."
 #. *
 #. * For example:
 #. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:86
+#: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
 msgstr "Le contenu (« %s ») de l'élément %s n'est pas dans le format ISO 8601."
@@ -255,7 +255,7 @@ msgstr "Le contenu (« %s ») de l'élément %s n'est pas dans le format ISO 8
 #. *
 #. * For example:
 #. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:106
+#: ../gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (\"%s\") was unknown."
 msgstr "La valeur de la propriété %s d'un élément %s (« %s ») est inconnue."
@@ -265,7 +265,7 @@ msgstr "La valeur de la propriété %s d'un élément %s (« %s ») est inconn
 #. *
 #. * For example:
 #. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:124
+#: ../gdata/gdata-parser.c:123
 #, c-format
 msgid "The content of a %s element (\"%s\") was unknown."
 msgstr "Le contenu d'un élément %s (« %s ») est inconnu."
@@ -275,7 +275,7 @@ msgstr "Le contenu d'un élément %s (« %s ») est inconnu."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:144
+#: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Une propriété requise d'un élément %s (%s) est manquante."
@@ -286,7 +286,7 @@ msgstr "Une propriété requise d'un élément %s (%s) est manquante."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:167
+#: ../gdata/gdata-parser.c:166
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -299,7 +299,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:186
+#: ../gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Un élément requis (%s) est manquant."
@@ -312,7 +312,7 @@ msgstr "Un élément requis (%s) est manquant."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:201 ../gdata/gdata-parser.c:288
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Un élément singleton (%s) est en double."
@@ -321,7 +321,7 @@ msgstr "Un élément singleton (%s) est en double."
 #. *
 #. * For example:
 #. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:274
+#: ../gdata/gdata-parser.c:273
 #, c-format
 msgid "A '%s' element was missing required content."
 msgstr "Un élément « %s » ne contient pas le contenu requis."
@@ -331,7 +331,7 @@ msgstr "Un élément « %s » ne contient pas le contenu requis."
 #. *
 #. * For example:
 #. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:304
+#: ../gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
 msgstr ""
@@ -339,7 +339,7 @@ msgstr ""
 "8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:315
+#: ../gdata/gdata-parser.c:314
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "JSON non valide reçu du serveur : %s"
@@ -350,7 +350,7 @@ msgstr "JSON non valide reçu du serveur : %s"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/gdata-parser.c:1182
+#: ../gdata/gdata-parser.c:1179
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
 msgstr ""
@@ -475,9 +475,14 @@ msgstr "Le groupe a déjà été inséré."
 msgid "You must be authenticated to insert a group."
 msgstr "Vous devez vous authentifier pour insérer un groupe."
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "Vous devez vous authentifier pour télécharger des documents."
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Format d'export de document « %s » inconnu ou non pris en charge."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
@@ -507,12 +512,17 @@ msgstr ""
 msgid "You must be authenticated to copy documents."
 msgstr "Vous devez vous authentifier pour copier des documents."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1155
+#: ../gdata/services/documents/gdata-documents-service.c:1014
+msgid "Parent folder not found"
+msgstr "Dossier parent introuvable"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1160
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
-"Vous devez vous authentifier pour insérer ou déplacer des documents et des dossiers."
+"Vous devez vous authentifier pour insérer ou déplacer des documents et des "
+"dossiers."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1354
+#: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Vous devez vous authentifier pour déplacer des documents et des dossiers."
