@@ -256,6 +256,7 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 	if ((rel == NULL || *rel == '\0') && (label == NULL || *label == '\0')) {
 		xmlFree (rel);
 		xmlFree (label);
+		xmlFree (uri);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 

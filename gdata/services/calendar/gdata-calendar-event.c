@@ -426,6 +426,7 @@ gdata_calendar_event_finalize (GObject *object)
 	g_free (priv->recurrence);
 	g_free (priv->original_event_id);
 	g_free (priv->original_event_uri);
+	g_free (priv->organiser_email);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_calendar_event_parent_class)->finalize (object);
