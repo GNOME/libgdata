@@ -157,6 +157,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				return gdata_parser_error_required_property_missing (node, "regions", error);
 
 			self->priv->browsable_regions = g_strsplit ((gchar*) regions, " ", -1);
+			xmlFree (regions);
 		} else {
 			return GDATA_PARSABLE_CLASS (gdata_youtube_category_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 		}
