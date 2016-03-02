@@ -2,15 +2,15 @@
 # Copyright (C) 2010 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
 # Žygimantas Beručka <zygis@gnome.org>, 2011.
-# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013, 2014, 2015.
+# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013, 2014, 2015, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-11-20 15:06+0000\n"
-"PO-Revision-Date: 2015-11-20 20:46+0200\n"
+"POT-Creation-Date: 2016-02-12 12:54+0000\n"
+"PO-Revision-Date: 2016-03-02 20:25+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -205,7 +205,7 @@ msgstr "Tuščias dokumentas"
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
@@ -470,9 +470,14 @@ msgstr "Grupė jau įterpta."
 msgid "You must be authenticated to insert a group."
 msgstr "Turite prisijungti, jei norite įterpti grupę."
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "Turite prisijungti, jei norite atsisiųsti dokumentus."
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Nežinomas ar nepalaikomas dokumento eksporto formatas „%s“."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
