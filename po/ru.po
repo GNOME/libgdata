@@ -5,15 +5,15 @@
 # Alexandr Andrushchenko <diesel594@gmail.com>, 2009.
 # Andrew Grigorev <andrew@ei-grad.ru>, 2010.
 # Yuri Kozlov <yuray@komyakino.ru>, 2010, 2011, 2012.
-# Stas Solovey <whats_up@tut.by>, 2015.
+# Stas Solovey <whats_up@tut.by>, 2015, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-09-17 10:35+0000\n"
-"PO-Revision-Date: 2015-09-17 14:09+0300\n"
+"POT-Creation-Date: 2016-03-08 12:53+0000\n"
+"PO-Revision-Date: 2016-03-08 21:08+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -207,7 +207,7 @@ msgstr "Пустой документ."
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
@@ -475,9 +475,14 @@ msgstr "Группа уже добавлена."
 msgid "You must be authenticated to insert a group."
 msgstr "Для добавления группы необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "Для загрузки документов необходимо пройти аутентификацию."
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Неизвестный или неподдерживаемый формат экспорта документов «%s»."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
@@ -507,14 +512,17 @@ msgstr ""
 msgid "You must be authenticated to copy documents."
 msgstr "Для копирования документов необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1155
-#| msgid "You must be authenticated to move documents and folders."
+#: ../gdata/services/documents/gdata-documents-service.c:1014
+msgid "Parent folder not found"
+msgstr "Родительский каталог не найден"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1160
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Для вставки или перемещения документов и папок необходимо пройти "
 "аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1354
+#: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
 msgstr "Для перемещения документов и папок необходимо пройти аутентификацию."
 
