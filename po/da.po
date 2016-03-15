@@ -3,22 +3,25 @@
 # This file is distributed under the same license as the libgdata package.
 # Kris Thomsen <lakristho@gmail.com>, 2010-2011.
 # Aputsiaq Niels Janussen <aj@isit.gl>, 2011.
+# scootergrisen, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-09-11 10:29+0000\n"
-"PO-Revision-Date: 2014-09-19 20:40+0200\n"
-"Last-Translator: Aputsiaq Niels Janussen <aj@isit.gl>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdat"
+"a&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-03-02 12:56+0000\n"
+"PO-Revision-Date: 2016-03-03 00:40+0200\n"
+"Last-Translator: scootergrisen\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.6.1\n"
+"X-Generator: Virtaal 0.7.1\n"
 "X-Language: da_DK\n"
 "X-Source-Language: C\n"
+"X-Project-Style: gnome\n"
 
 #: ../gdata/gdata-batch-operation.c:635
 #, c-format
@@ -204,7 +207,7 @@ msgstr "Tomt dokument."
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
@@ -469,9 +472,14 @@ msgstr "Grupppen er allerede blevet sat ind."
 msgid "You must be authenticated to insert a group."
 msgstr "Du skal være godkendt for at indsætte en gruppe."
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "Du skal være godkendt for at hente dokumenter ned."
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Ukendt eller ikke understøttet dokument eksportformat \"%s\"."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
@@ -501,14 +509,17 @@ msgstr ""
 msgid "You must be authenticated to copy documents."
 msgstr "Du skal være godkendt for at kopiere dokumenter."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1155
-#| msgid "You must be authenticated to move documents and folders."
+#: ../gdata/services/documents/gdata-documents-service.c:1014
+msgid "Parent folder not found"
+msgstr "Forældermappe ikke fundet"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1160
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Du skal være godkendt for at kunne indsætte eller flytte dokumenter og "
 "mapper."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1354
+#: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
 msgstr "Du skal være godkendt for at flytte dokumenter og mapper."
 
@@ -580,23 +591,3 @@ msgstr ""
 #: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Du skal være godkendt for at lægge en video op."
-
-#~ msgid "The calendar did not have a content URI."
-#~ msgstr "Kalenderen havde ikke nogen indholdsadresse."
-
-#~ msgid "This service is not available at the moment."
-#~ msgstr "Denne tjeneste er ikke tilgængelig i øjeblikket."
-
-#~ msgid ""
-#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-#~ msgstr ""
-#~ "Ukendt fejlkode \"%s\" i domæne \"%s\" modtaget med lokation \"%s\"."
-
-#~ msgid "Unknown and unparsable error received."
-#~ msgstr "Ukendt og ikke fortolkningsbar fejl modtaget."
-
-#~ msgid "The video did not have a related videos <link>."
-#~ msgstr "Videoen havde ikke et relateret <link>."
-
-#~ msgid "The supplied document had an invalid content type."
-#~ msgstr "Det vedlagte dokument havde en ugyldig indholdstype."
