@@ -5,20 +5,20 @@
 #
 #
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2009, 2010, 2011.
-# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013, 2014, 2015.
+# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013, 2014, 2015, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-14 13:44+0200\n"
-"PO-Revision-Date: 2015-10-09 22:52+0200\n"
-"Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
-"Language-Team: Basque <Basque <librezale@librezale.org>>\n"
+"POT-Creation-Date: 2016-03-20 20:20+0100\n"
+"PO-Revision-Date: 2016-03-20 20:20+0100\n"
+"Last-Translator: dooteo <dooteo@zundan.com>\n"
+"Language-Team: Basque <librezale@librezale.org>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../gdata/gdata-batch-operation.c:635
@@ -204,7 +204,7 @@ msgstr "Dokumentu hutsa."
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
@@ -469,9 +469,14 @@ msgstr "Taldea jadanik txertatuta dago."
 msgid "You must be authenticated to insert a group."
 msgstr "Autentifikatu egin behar zara talde bat txertatzeko."
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "Autentifikatu egin behar zara dokumentuak deskargatzeko."
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Dokumentua esportatzeko '%s' formatu ezezaguna edo onartu gabea."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
@@ -500,13 +505,17 @@ msgstr "Emandako dokumentuaren ('%s') eduki mota ezin izan da ezagutu."
 msgid "You must be authenticated to copy documents."
 msgstr "Autentifikatu egin behar zara dokumentuak kopiatzeko."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1155
+#: ../gdata/services/documents/gdata-documents-service.c:1014
+msgid "Parent folder not found"
+msgstr "Ez da karpeta gurasoa aurkitu"
+
+#: ../gdata/services/documents/gdata-documents-service.c:1160
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Autentifikatu egin behar zara dokumentu eta karpetak txertatzeko edo lekuz "
 "aldatzeko."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1354
+#: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
 msgstr "Autentifikatu egin behar zara dokumentu eta karpetak lekuz aldatzeko."
 
