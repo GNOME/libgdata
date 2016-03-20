@@ -7,9 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdat"
-"a&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-02 12:56+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-03-20 23:16+0100\n"
 "PO-Revision-Date: 2016-03-03 00:40+0200\n"
 "Last-Translator: scootergrisen\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -114,7 +113,7 @@ msgstr "Dit brugernavn eller adgangskode var forkert."
 #: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
 msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "Din kontos e-post-adresse er ikke blevet verificeret. (%s)"
+msgstr "Din kontos e-mail-adresse er ikke blevet verificeret. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:859
