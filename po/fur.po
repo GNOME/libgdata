@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2016-03-23 13:13+0000\n"
-"PO-Revision-Date: 2016-03-23 16:59+0100\n"
+"PO-Revision-Date: 2016-03-23 17:29+0100\n"
 "Language-Team: Friulian <fur@li.org>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -223,7 +223,7 @@ msgstr "Erôr tal analizâ JSON: %s"
 
 #: ../gdata/gdata-parsable.c:522
 msgid "Outermost JSON node is not an object."
-msgstr ""
+msgstr "Il grop JSON plui esterni nol è un ogjet."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -232,7 +232,7 @@ msgstr ""
 #: ../gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
-msgstr ""
+msgstr "Un element %s nol veve il contignût domandât."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -273,7 +273,7 @@ msgstr "Il contignût di un element %s (\"%s\") nol jere cognossût."
 #: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
-msgstr ""
+msgstr "Une proprietât di un element %s (%s) no jere presinte."
 
 #. Translators: the first two parameters are the names of XML properties of an XML element given in the third
 #. * parameter (including the angle brackets ("<" and ">")).
@@ -287,6 +287,8 @@ msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
 msgstr ""
+"A jerin presints valôrs pes proprietâts %s e %s di un element %s cuant che "
+"dome une des dôs e jere permetude."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -317,7 +319,7 @@ msgstr "Un element singleton (%s) al jere dopleât."
 #: ../gdata/gdata-parser.c:273
 #, c-format
 msgid "A '%s' element was missing required content."
-msgstr ""
+msgstr "Un element '%s' nol veve il contignût domandât."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -327,13 +329,13 @@ msgstr ""
 #: ../gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr ""
+msgstr "Il contignût di un element '%s' (\"%s\") nol jere in formât ISO 8601."
 
 #. Translators: the parameter is an error message.
 #: ../gdata/gdata-parser.c:314
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
-msgstr ""
+msgstr "Un JSON no valit al è stât ricevût dal servidôr: %s"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -344,78 +346,79 @@ msgstr ""
 #: ../gdata/gdata-parser.c:1179
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr ""
+msgstr "Il contignût di un element %s (%s) nol jere in formât RGB esadecimâl."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:409
 #, c-format
 msgid "Error code %u when querying: %s"
-msgstr ""
+msgstr "Erôr codiç %u dulinvie la interogazion: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:415
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
-msgstr ""
+msgstr "Erôr codiç %u dulinvie l'inseriment di un element: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:421
 #, c-format
 msgid "Error code %u when updating an entry: %s"
-msgstr ""
+msgstr "Erôr codiç %u dulinvie l'inzornament di un element: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:427
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
-msgstr ""
+msgstr "Erôr codiç %u dulinvie la eliminazion di un element: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:433
 #, c-format
 msgid "Error code %u when downloading: %s"
-msgstr ""
+msgstr "Erôr codiç %u dulinvie il discjariament: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:439
 #, c-format
 msgid "Error code %u when uploading: %s"
-msgstr ""
+msgstr "Erôr codiç %u dulinvie il cjariament: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
 #: ../gdata/gdata-service.c:445
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
-msgstr ""
+msgstr "Codiç di erôr %u dilunc la esecuzion di une operazion batch: %s"
 
 #. Translators: the parameter is the URI which is invalid.
 #: ../gdata/gdata-service.c:737
 #, c-format
 msgid "Invalid redirect URI: %s"
-msgstr ""
+msgstr "URI di indreçament no valit: %s"
 
 #: ../gdata/gdata-service.c:1454
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
-msgstr ""
+msgstr "L'element al è za stât inserît."
 
 #. Resumable upload error.
 #: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr ""
+"Ricevût erôr dal servidôr dopo ve cjariât un toc di cjariament ripristinabil."
 
 #: ../gdata/gdata-upload-stream.c:936
 msgid "Stream is already closed"
-msgstr ""
+msgstr "Flus za sierât"
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:302
 #: ../gdata/services/tasks/gdata-tasks-service.c:195
@@ -425,6 +428,8 @@ msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr ""
+"Tu âs za fat masse clamadis API di recent. Spiete un pâr di minûts e torne "
+"prove."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:334
 #: ../gdata/services/tasks/gdata-tasks-service.c:204
@@ -470,7 +475,7 @@ msgstr "Tu âs di sedi autenticât par discjariâ documents."
 #: ../gdata/services/documents/gdata-documents-document.c:401
 #, c-format
 msgid "Unknown or unsupported document export format ‘%s’."
-msgstr ""
+msgstr "Formât di esportazion ‘%s’ no cognossût o no supuartât."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
@@ -494,6 +499,7 @@ msgstr "Tu âs di sedi autenticât par inzornâ documents."
 msgid ""
 "The content type of the supplied document ('%s') could not be recognized."
 msgstr ""
+"Il gjenar di contignût dal document furnît ('%s') nol pues sedi ricognossût."
 
 #: ../gdata/services/documents/gdata-documents-service.c:986
 msgid "You must be authenticated to copy documents."
@@ -514,7 +520,7 @@ msgstr "Tu âs di sedi autenticât par movi documents e cartelis."
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
 msgid "Property '%s' does not hold an image"
-msgstr ""
+msgstr "La proprietât '%s' no ten une imagjin"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
@@ -534,35 +540,37 @@ msgstr ""
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
-msgstr ""
+msgstr "L'album nol veve un leam di feed."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
 msgid "You must be authenticated to upload a file."
-msgstr ""
+msgstr "Tu âs di sedi autenticât par cjariâ un file."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
 msgid "The album has already been inserted."
-msgstr ""
+msgstr "L'album al è za stât inserît."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
 msgid "You must be authenticated to insert an album."
-msgstr ""
+msgstr "Tu âs di sedi autenticât par inserî un album."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:330
 #: ../gdata/services/tasks/gdata-tasks-service.c:381
 msgid "You must be authenticated to query all tasklists."
-msgstr ""
+msgstr "Tu âs di sedi autenticât par interogâ dutis lis listis di ativitâts."
 
 #: ../gdata/services/tasks/gdata-tasks-service.c:430
 #: ../gdata/services/tasks/gdata-tasks-service.c:487
 msgid "You must be authenticated to query your own tasks."
-msgstr ""
+msgstr "Tu âs di sedi autenticât par interogâ lis tôs ativitâts."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
+"La cuote dai elements a je stade superade. Elimine cualchi element e torne "
+"prove."
 
 #. Translators: the parameter is a URI.
 #: ../gdata/services/youtube/gdata-youtube-service.c:565
