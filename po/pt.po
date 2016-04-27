@@ -3,22 +3,24 @@
 # This file is distributed under the same license as the libgdata package.
 # António Lima <amrlima@gmail.com>, 2009, 2010, 2011, 2012, 2013.
 # Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
+# Sérgio Cardeira <cardeira.sergio@gmail.com>, 2016.
+# Tiago S. <tiagofsantos81@sapo.pt>, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-11-21 00:45+0000\n"
-"PO-Revision-Date: 2015-11-21 09:08+0000\n"
-"Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
-"Language-Team: Português <palbuquerque73@gmail.com>\n"
+"POT-Creation-Date: 2016-02-21 00:53+0000\n"
+"PO-Revision-Date: 2016-02-21 03:09-0100\n"
+"Last-Translator: Sérgio Cardeira <cardeira.sergio@gmail.com>\n"
+"Language-Team: Português <gnome_pt@yahoogroups.com>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\\n\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
 "X-Project-Style: gnome\n"
 
 #: ../gdata/gdata-batch-operation.c:635
@@ -59,8 +61,7 @@ msgstr "Impossível ligar ao servidor proxy."
 #: ../gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr ""
-"Pedido de URI ou cabeçalho inválido, ou parâmetro não padrão não suportado: "
+msgstr "Pedido de URI ou cabeçalho inválido, ou parâmetro não padrão não suportado: "
 "%s"
 
 #. Translators: the parameter is an error message returned by the server.
@@ -204,7 +205,7 @@ msgstr "Documento vazio."
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
@@ -331,8 +332,7 @@ msgstr "Um elemento \"%s\" tinha conteúdo requerido em falta."
 #: ../gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr ""
-"O conteúdo de um elemento \"%s\" (\"%s\") não estava no formato ISO 8601."
+msgstr "O conteúdo de um elemento \"%s\" (\"%s\") não estava no formato ISO 8601."
 
 #. Translators: the parameter is an error message.
 #: ../gdata/gdata-parser.c:314
@@ -349,8 +349,7 @@ msgstr "JSON inválido recebido do servidor: %s"
 #: ../gdata/gdata-parser.c:1179
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr ""
-"O conteúdo de um elemento %s (\"%s\") não estava no formato hexadecimal RGB."
+msgstr "O conteúdo de um elemento %s (\"%s\") não estava no formato hexadecimal RGB."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -417,8 +416,7 @@ msgstr "A entrada já foi inserida."
 #: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr ""
-"Erro recebido do servidor após o envio de um pedaço de envio retomável."
+msgstr "Erro recebido do servidor após o envio de um pedaço de envio retomável."
 
 #: ../gdata/gdata-upload-stream.c:936
 msgid "Stream is already closed"
@@ -472,9 +470,14 @@ msgstr "O grupo já foi inserido."
 msgid "You must be authenticated to insert a group."
 msgstr "Tem de estar autenticado para inserir um grupo."
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "Tem de estar autenticado para transferir documentos."
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Formato '%s' de exportação do documento desconhecido ou não suportador."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
@@ -524,8 +527,7 @@ msgstr "A propriedade \"%s\" não contém uma imagem"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
-msgstr ""
-"Tem de especificar um nome de utilizador ou estar autenticado para consultar "
+msgstr "Tem de especificar um nome de utilizador ou estar autenticado para consultar "
 "um utilizador."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
@@ -536,8 +538,7 @@ msgstr "Parâmetro de consulta não autorizado para álbuns."
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr ""
-"Tem de especificar um nome de utilizador ou estar autenticado para consultar "
+msgstr "Tem de especificar um nome de utilizador ou estar autenticado para consultar "
 "todos os álbuns."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
