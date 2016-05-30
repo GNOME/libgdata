@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=libgdat"
-"a&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-04-29 12:31+0000\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-05-09 20:55+0000\n"
 "PO-Revision-Date: 2016-05-08 18:50+0200\n"
 "Last-Translator: Cédric Valmary (totenoc.eu) <cvalmary@yahoo.fr>\n"
 "Language-Team: Tot En Òc\n"
@@ -246,8 +246,7 @@ msgstr "Un element %s conten pas lo contengut requesit."
 #: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr ""
-"Un contengut (« %s ») de l'element %s  es pas dins lo format ISO 8601."
+msgstr "Un contengut (« %s ») de l'element %s  es pas dins lo format ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -434,7 +433,7 @@ msgid ""
 "again."
 msgstr ""
 "Avètz efectuat tròp d'apèls API en pauc de temps. Pacientatz qualques "
-"minutas puèi ensajatz tornarmai."
+"minutas puèi ensajatz tornamai."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:334
 #: ../gdata/services/tasks/gdata-tasks-service.c:204
@@ -580,7 +579,7 @@ msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
 "Avètz depassat vòstre quota d'entradas. Suprimissètz qualques entradas e "
-"ensajatz tornarmai."
+"ensajatz tornamai."
 
 #. Translators: the parameter is a URI.
 #: ../gdata/services/youtube/gdata-youtube-service.c:565
