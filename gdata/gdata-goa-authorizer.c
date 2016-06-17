@@ -29,7 +29,8 @@
  * to the user's password (it's handled solely by the GOA daemon).
  *
  * Internally, GOA authenticates with the Google servers using the
- * <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> process.
+ * <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> or
+ * <ulink type="http" url="https://developers.google.com/identity/protocols/OAuth2">OAuth 2.0</ulink> processes.
  *
  * #GDataGoaAuthorizer natively supports authorization against multiple services (unlike #GDataClientLoginAuthorizer), depending entirely on which
  * services the user has enabled for their Google account in GOA. #GDataGoaAuthorizer cannot authenticate for more services than are enabled in GOA.
