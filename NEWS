@@ -1,3 +1,48 @@
+Overview of changes from libgdata 0.17.4 to libgdata 0.17.5
+===========================================================
+
+Major changes:
+ • Google Drive documentation and test fixes
+ • Minor memory leak fixes
+ • Update autogen.sh to latest GNOME recommendations, fixing builddir ≠ srcdir
+
+Bugs fixed:
+ • Bug 684920 — Port to Google Drive API v2
+ • Bug 759180 — Can't open PDF file shared in Google Drive
+ • Bug 767784 — picasaweb: Clarify how to handle authentication failures during upload
+ • Bug 767785 — Mention that GDataGoaAuthorizer uses OAuth 2.0
+
+Updated translations:
+ • cs (Marek Černocký)
+ • da (Ask Hjorth Larsen)
+ • de (Mario Blättermann)
+ • el (Tom Tryfonidis)
+ • es (Daniel Mustieles)
+ • eu (Inaki Larranaga Murgoitio)
+ • fr (Alexandre Franke)
+ • fur (Fabio Tomat)
+ • gl (Fran Dieguez)
+ • id (Andika Triwidada)
+ • it (Milo Casagrande)
+ • ko (Changwoo Ryu)
+ • lt (Aurimas Černius)
+ • lv (Rūdolfs Mazurs)
+ • hu (Balázs Meskó)
+ • nb (Kjartan Maraas)
+ • oc (Cédric Valmary)
+ • pl (Piotr Drąg)
+ • pt (Sérgio Cardeira)
+ • pt_BR (Enrico Nicoletto, Rafael Fontenelle)
+ • ru (Stas Solovey)
+ • sk (Dušan Kazik)
+ • sl (Matej Urbančič)
+ • sr (Мирослав Николић)
+ • sv (Anders Jonsson)
+ • th (Akom Chotiphantawanon)
+ • vi (Trần Ngọc Quân)
+ • zh_CN (Jeff Bai)
+ • zh_TW (Chao-Hsiung Liao)
+
 Overview of changes from libgdata 0.17.3 to libgdata 0.17.4
 ===========================================================
 

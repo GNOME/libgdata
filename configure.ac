@@ -59,7 +59,7 @@ GDK_PIXBUF_MAX_ALLOWED=GDK_VERSION_2_14
 #  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
 #
 # Note that versioning started at 2:0:0 to ensure no conflicts with e-d-s' libgdata library, whose maximum version was 1:0:0
-GDATA_LT_VERSION=23:2:1
+GDATA_LT_VERSION=23:3:1
 AC_SUBST(GDATA_LT_VERSION)
 
 GDATA_VERSION_MAJOR=gdata_version_major
