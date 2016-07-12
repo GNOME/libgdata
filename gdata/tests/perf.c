@@ -104,7 +104,7 @@ test_perf_parsing (void)
 	        (gdouble) total_time / (gdouble) G_USEC_PER_SEC,
 	        (gdouble) per_iteration_time / (gdouble) G_USEC_PER_SEC);
 
-	g_assert_cmpuint (per_iteration_time, <, 1000);  /* 1ms */
+	g_assert_cmpuint (per_iteration_time, <, 2000);  /* 2ms */
 }
 
 int
