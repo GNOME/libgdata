@@ -231,10 +231,6 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 
 	g_mutex_lock (&(self->mutex));
 
-	/* Set reached_eof */
-	if (reached_eof != NULL)
-		*reached_eof = self->reached_eof && length_requested >= self->total_length;
-
 	if (self->reached_eof == TRUE && length_requested > self->total_length) {
 		/* Return data up to the EOF */
 		return_length = self->total_length;
@@ -258,6 +254,10 @@ gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, 
 	} else {
 		return_length = length_requested;
 	}
+
+	/* Set reached_eof */
+	if (reached_eof != NULL)
+		*reached_eof = self->reached_eof && length_requested >= self->total_length;
 
 	/* Return if we haven't got any data to pop (i.e. if we were cancelled before even one chunk arrived) */
 	if (return_length == 0)
