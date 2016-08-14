@@ -47,6 +47,7 @@ LDADD = \
 	$(NULL)
 
 test_programs = \
+	buffer \
 	general \
 	calendar \
 	contacts \
