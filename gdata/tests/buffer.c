@@ -74,6 +74,41 @@ test_buffer_instant_eof (Fixture *f, gconstpointer user_data)
 	gdata_buffer_free (buffer);
 }
 
+static gpointer
+test_buffer_thread_eof_func (gpointer user_data)
+{
+	GDataBuffer *buffer = user_data;
+
+	/* HACK: Wait for a while to be sure that gdata_buffer_pop_data() has
+	 * been already called. */
+	g_usleep (G_USEC_PER_SEC / 2);
+
+	g_assert_false (gdata_buffer_push_data (buffer, NULL, 0));
+
+	return NULL;
+}
+
+/* The test needs to call gdata_buffer_push_data() from another thread only
+ * once gdata_buffer_pop_data() has reached its blocking loop. */
+static void
+test_buffer_thread_eof (Fixture *f, gconstpointer user_data)
+{
+	GDataBuffer *buffer = NULL;  /* owned */
+	gboolean reached_eof = FALSE;
+	guint8 buf[1];
+
+	g_test_bug ("769727");
+
+	buffer = gdata_buffer_new ();
+
+	g_thread_new (NULL, test_buffer_thread_eof_func, buffer);
+	g_assert_cmpuint (gdata_buffer_pop_data (buffer, buf, sizeof (buf),
+	                                         &reached_eof, NULL), ==, 0);
+	g_assert_true (reached_eof);
+
+	gdata_buffer_free (buffer);
+}
+
 static void
 test_buffer_basic (Fixture *f, gconstpointer user_data)
 {
@@ -121,6 +156,8 @@ main (int argc, char *argv[])
 	            set_up, test_buffer_construction, tear_down);
 	g_test_add ("/buffer/instant-eof", Fixture, NULL,
 	            set_up, test_buffer_instant_eof, tear_down);
+	g_test_add ("/buffer/thread-eof", Fixture, NULL,
+	            set_up, test_buffer_thread_eof, tear_down);
 	g_test_add ("/buffer/basic", Fixture, NULL,
 	            set_up, test_buffer_basic, tear_down);
 
