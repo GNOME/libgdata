@@ -1,27 +1,23 @@
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Aviary.pl
-# Jeśli masz jakiekolwiek uwagi odnoszące się do tłumaczenia lub chcesz
-# pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
-# gnomepl@aviary.pl
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Polish translation for libgdata.
+# Copyright © 2009-2016 the libgdata authors.
+# This file is distributed under the same license as the libgdata package.
 # Piotr Drąg <piotrdrag@gmail.com>, 2009-2016.
-# Aviary.pl <gnomepl@aviary.pl>, 2009-2016.
+# Aviary.pl <community-poland@mozilla.org>, 2009-2016.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-18 16:30+0100\n"
-"PO-Revision-Date: 2016-01-18 16:32+0100\n"
+"POT-Creation-Date: 2016-08-22 21:35+0200\n"
+"PO-Revision-Date: 2016-08-22 21:37+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
-"Language-Team: Polish <gnomepl@aviary.pl>\n"
+"Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: Poland\n"
 
 #: ../gdata/gdata-batch-operation.c:635
 #, c-format
@@ -46,12 +42,12 @@ msgstr "Serwer zwrócił błędnie sformatowaną odpowiedź."
 #: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
 msgid "Cannot connect to the service's server."
-msgstr "Nie można połączyć się z serwerem usługi."
+msgstr "Nie można połączyć z serwerem usługi."
 
 #: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
 #, c-format
 msgid "Cannot connect to the proxy server."
-msgstr "Nie można połączyć się z serwerem pośrednika."
+msgstr "Nie można połączyć z serwerem pośrednika."
 
 #. Translators: the parameter is an error message returned by the server.
 #. Translators: the parameter is an
@@ -62,8 +58,8 @@ msgstr "Nie można połączyć się z serwerem pośrednika."
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
-"Nieprawidłowy adres URI żądania lub nagłówek, albo nieobsługiwany i "
-"niestandardowy parametr: %s"
+"Nieprawidłowy adres URI żądania lub nagłówek, albo nieobsługiwany "
+"i niestandardowy parametr: %s"
 
 #. Translators: the parameter is an error message returned by the server.
 #: ../gdata/gdata-client-login-authorizer.c:666 ../gdata/gdata-service.c:378
@@ -130,7 +126,7 @@ msgid ""
 "username and password. (%s)"
 msgstr ""
 "To konto zostało migrowane. Proszę się zalogować online, aby otrzymać nową "
-"nazwę użytkownika i hasło. (%s)"
+"nazwę użytkownika i hasło. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:870
@@ -154,7 +150,7 @@ msgstr "Dostęp tego konta do tej usługi został wyłączony. (%s)"
 #: ../gdata/gdata-client-login-authorizer.c:885
 #, c-format
 msgid "This service is not available at the moment. (%s)"
-msgstr "Ta usługa nie jest dostępna w tej chwili. (%s)"
+msgstr "Ta usługa nie jest dostępna w tej chwili. (%s)"
 
 #. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
 #. * support comments.
@@ -237,7 +233,7 @@ msgstr "Najbardziej zewnętrzny węzeł JSON nie jest obiektem."
 #: ../gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
-msgstr "Brak wymaganej zawartości w elemencie %s."
+msgstr "Brak wymaganej zawartości w elemencie %s."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -247,7 +243,7 @@ msgstr "Brak wymaganej zawartości w elemencie %s."
 #: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "Zawartość elementu %s („%s”) nie jest w formacie ISO 8601."
+msgstr "Zawartość elementu %s („%s”) nie jest w formacie ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -291,8 +287,8 @@ msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
 msgstr ""
-"Wartości są przedstawiane dla własności %s i %s elementu %s, a tylko jedna z "
-"nich jest dozwolona."
+"Wartości są przedstawiane dla własności %s i %s elementu %s, a tylko jedna "
+"z nich jest dozwolona."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
@@ -323,7 +319,7 @@ msgstr "Pojedynczy element (%s) występuje dwa razy."
 #: ../gdata/gdata-parser.c:273
 #, c-format
 msgid "A '%s' element was missing required content."
-msgstr "Brak wymaganej zawartości w elemencie „%s”."
+msgstr "Brak wymaganej zawartości w elemencie „%s”."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
@@ -333,13 +329,13 @@ msgstr "Brak wymaganej zawartości w elemencie „%s”."
 #: ../gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr "Zawartość elementu „%s” („%s”) nie jest w formacie ISO 8601."
+msgstr "Zawartość elementu „%s” („%s”) nie jest w formacie ISO 8601."
 
 #. Translators: the parameter is an error message.
 #: ../gdata/gdata-parser.c:314
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
-msgstr "Otrzymano nieprawidłowy kod JSON z serwera: %s"
+msgstr "Otrzymano nieprawidłowy kod JSON z serwera: %s"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
@@ -350,7 +346,7 @@ msgstr "Otrzymano nieprawidłowy kod JSON z serwera: %s"
 #: ../gdata/gdata-parser.c:1179
 #, c-format
 msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "Zawartość elementu %s („%s”) nie jest w szesnastkowym formacie RGB."
+msgstr "Zawartość elementu %s („%s”) nie jest w szesnastkowym formacie RGB."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -408,7 +404,7 @@ msgid "Invalid redirect URI: %s"
 msgstr "Nieprawidłowy adres URI przekierowania: %s"
 
 #: ../gdata/gdata-service.c:1454
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:626
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "Wpis został już umieszczony."
@@ -417,7 +413,7 @@ msgstr "Wpis został już umieszczony."
 #: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "Odebrano błąd z serwera po wysłaniu wznawialnego fragmentu."
+msgstr "Odebrano błąd z serwera po wysłaniu wznawialnego fragmentu."
 
 #: ../gdata/gdata-upload-stream.c:936
 msgid "Stream is already closed"
@@ -431,8 +427,8 @@ msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
 msgstr ""
-"Ostatnio wykonano za dużo wywołań API. Proszę poczekać kilka minut i "
-"spróbować ponownie."
+"Ostatnio wykonano za dużo wywołań API. Proszę poczekać kilka minut "
+"i spróbować ponownie."
 
 #: ../gdata/services/calendar/gdata-calendar-service.c:334
 #: ../gdata/services/tasks/gdata-tasks-service.c:204
@@ -515,11 +511,11 @@ msgstr "Nie odnaleziono nadrzędnego katalogu"
 #: ../gdata/services/documents/gdata-documents-service.c:1160
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
-"Należy być uwierzytelnionym, aby wstawić lub przenieść dokumenty i katalogi."
+"Należy być uwierzytelnionym, aby wstawić lub przenieść dokumenty i katalogi."
 
 #: ../gdata/services/documents/gdata-documents-service.c:1359
 msgid "You must be authenticated to move documents and folders."
-msgstr "Należy być uwierzytelnionym, aby przenieść dokumenty i katalogi."
+msgstr "Należy być uwierzytelnionym, aby przenieść dokumenty i katalogi."
 
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
@@ -546,17 +542,17 @@ msgstr ""
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
-msgstr "Album nie posiada odnośnika do kanału."
+msgstr "Album nie ma odnośnika do kanału."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:633
 msgid "You must be authenticated to upload a file."
 msgstr "Należy być uwierzytelnionym, aby wysłać plik."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:709
 msgid "The album has already been inserted."
 msgstr "Album został już umieszczony."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:716
 msgid "You must be authenticated to insert an album."
 msgstr "Należy być uwierzytelnionym, aby umieścić album."
 
@@ -575,7 +571,7 @@ msgstr "Należy być uwierzytelnionym, aby odpytać własne zadania."
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
-"Przekroczono przydział wpisów. Proszę usunąć kilka wpisów i spróbować "
+"Przekroczono przydział wpisów. Proszę usunąć kilka wpisów i spróbować "
 "ponownie."
 
 #. Translators: the parameter is a URI.
@@ -585,7 +581,7 @@ msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
 "Visit %s to create one."
 msgstr ""
-"Aby to zrobić, konto Google musi być powiązane z kanałem YouTube. Po adresem "
+"Aby to zrobić, konto Google musi być powiązane z kanałem YouTube. Po adresem "
 "%s można go utworzyć."
 
 #: ../gdata/services/youtube/gdata-youtube-service.c:1031
