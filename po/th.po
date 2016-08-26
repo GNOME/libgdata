@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-12-30 12:54+0000\n"
-"PO-Revision-Date: 2016-01-04 12:09+0700\n"
+"product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2016-08-22 19:38+0000\n"
+"PO-Revision-Date: 2016-08-26 11:33+0700\n"
 "Last-Translator: Akom Chotiphantawanon <knight2000@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "Language: th\n"
@@ -198,7 +198,7 @@ msgstr "เอกสารเปล่า"
 #: ../gdata/gdata-parsable.c:483 ../gdata/gdata-parsable.c:521
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
-#: ../gdata/services/documents/gdata-documents-document.c:285
+#: ../gdata/services/documents/gdata-documents-document.c:286
 #: ../gdata/services/documents/gdata-documents-entry.c:458
 #: ../gdata/services/documents/gdata-documents-entry.c:469
 #: ../gdata/services/documents/gdata-documents-entry.c:480
@@ -398,7 +398,7 @@ msgid "Invalid redirect URI: %s"
 msgstr "URI สำหรับเปลี่ยนเส้นทางไม่ถูกต้อง: %s"
 
 #: ../gdata/gdata-service.c:1454
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:626
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "รายการนี้ถูกแทรกอยู่ก่อนแล้ว"
@@ -459,9 +459,14 @@ msgstr "กลุ่มนี้ถูกแทรกอยู่ก่อนแ
 msgid "You must be authenticated to insert a group."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะแทรกกลุ่ม"
 
-#: ../gdata/services/documents/gdata-documents-document.c:389
+#: ../gdata/services/documents/gdata-documents-document.c:392
 msgid "You must be authenticated to download documents."
 msgstr "คุณต้องยืนยันบุคคลเพื่อจะดาวน์โหลดเอกสาร"
+
+#: ../gdata/services/documents/gdata-documents-document.c:401
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "ไม่รู้จักหรือไม่รองรับการส่งออกเอกสารรูปแบบ ‘%s’"
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
@@ -525,15 +530,15 @@ msgstr "คุณต้องระบุชื่อผู้ใช้หรื
 msgid "The album did not have a feed link."
 msgstr "อัลบั้มนี้ไม่มีลิงก์ข่าวป้อน"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:633
 msgid "You must be authenticated to upload a file."
 msgstr "คุณต้องยืนยันตัวบุคคลเพื่อจะอัปโหลดแฟ้ม"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:709
 msgid "The album has already been inserted."
 msgstr "อัลบั้มนี้ถูกแทรกอยู่ก่อนแล้ว"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:716
 msgid "You must be authenticated to insert an album."
 msgstr "คุณต้องยืนยันตัวบุคคลเพื่อจะแทรกอัลบั้ม"
 
