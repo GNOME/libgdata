@@ -1,3 +1,23 @@
+Overview of changes from libgdata 0.17.5 to libgdata 0.17.6
+===========================================================
+
+Major changes:
+ • Minor test case fixes
+ • Fix a download crash on zero-length files (thanks Ondrej Holy)
+
+Bugs fixed:
+ • Bug 768278 — release tarball 0.17.5 contains empty ChangeLog
+ • Bug 768363 — dev-libs/libgdata-0.17.5 fails tests (on the alpha architecture, possibly elsewhere)
+ • Bug 768282 — test-suite failure: ERROR: general - too few tests run (expected 98, got 2)
+ • Bug 769727 — Crashes on zero-length files
+
+Updated translations:
+ • en_GB (David King)
+ • he (Yosef Or Boczko)
+ • pl (Piotr Drąg)
+ • th (Akom Chotiphantawanon)
+
+
 Overview of changes from libgdata 0.17.4 to libgdata 0.17.5
 ===========================================================
 
