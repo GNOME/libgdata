@@ -20,7 +20,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_USE_SYSTEM_EXTENSIONS
 
 # tar-pax is needed for long filename support for trace files
-AM_INIT_AUTOMAKE([1.9 dist-bzip2 no-dist-gzip tar-pax check-news subdir-objects parallel-tests color-tests])
+AM_INIT_AUTOMAKE([1.9 dist-xz no-dist-gzip tar-pax check-news subdir-objects parallel-tests color-tests])
 
 # Enable silent build when available (Automake 1.11)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
