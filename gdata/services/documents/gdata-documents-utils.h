@@ -30,6 +30,8 @@ G_BEGIN_DECLS
 /* HACK: Used to convert GDataLink:uri to ID and vice-versa. */
 #define GDATA_DOCUMENTS_URI_PREFIX "https://www.googleapis.com/drive/v2/files/"
 
+G_GNUC_INTERNAL void gdata_documents_utils_add_content_type (GDataDocumentsEntry *entry, const gchar *content_type);
+
 G_GNUC_INTERNAL GType gdata_documents_utils_get_type_from_content_type (const gchar *content_type);
 
 G_GNUC_INTERNAL const gchar *gdata_documents_utils_get_content_type (GDataDocumentsEntry *entry);

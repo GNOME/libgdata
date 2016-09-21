@@ -3,7 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
- * Copyright (C) Red Hat, Inc. 2015
+ * Copyright (C) Red Hat, Inc. 2015, 2016
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -85,6 +85,7 @@
 #include <string.h>
 
 #include "gdata-documents-folder.h"
+#include "gdata-documents-utils.h"
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "gdata-private.h"
@@ -114,14 +115,8 @@ gdata_documents_folder_constructed (GObject *object)
 {
 	G_OBJECT_CLASS (gdata_documents_folder_parent_class)->constructed (object);
 
-	if (!_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object))) {
-		GDataCategory *category;
-		GDataEntryClass *klass = GDATA_ENTRY_GET_CLASS (object);
-
-		category = gdata_category_new (klass->kind_term, "http://schemas.google.com/g/2005#kind", "application/vnd.google-apps.folder");
-		gdata_entry_add_category (GDATA_ENTRY (object), category);
-		g_object_unref (category);
-	}
+	if (!_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)))
+		gdata_documents_utils_add_content_type (GDATA_DOCUMENTS_ENTRY (object), "application/vnd.google-apps.folder");
 }
 
 /**

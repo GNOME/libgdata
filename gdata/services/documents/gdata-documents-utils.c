@@ -26,6 +26,29 @@
 #include "gdata-documents-utils.h"
 
 /*
+ * gdata_documents_utils_add_content_type:
+ * @entry: a #GDataDocumentsEntry
+ * @content_type: the new entry content-type
+ *
+ * Adds a #GDataCategory representing @content_type to @entry.
+ *
+ * Since: UNRELEASED
+ */
+void
+gdata_documents_utils_add_content_type (GDataDocumentsEntry *entry, const gchar *content_type)
+{
+	GDataCategory *category;
+	GDataEntryClass *klass = GDATA_ENTRY_GET_CLASS (entry);
+
+	if (content_type == NULL || content_type[0] == '\0')
+		return;
+
+	category = gdata_category_new (klass->kind_term, "http://schemas.google.com/g/2005#kind", content_type);
+	gdata_entry_add_category (GDATA_ENTRY (entry), category);
+	g_object_unref (category);
+}
+
+/*
  * gdata_documents_utils_get_type_from_content_type:
  * @content_type: the content type
  *
