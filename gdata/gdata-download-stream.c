@@ -233,7 +233,7 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	/**
 	 * GDataDownloadStream:download-uri:
 	 *
-	 * The URI of the file to download.
+	 * The URI of the file to download. This must be HTTPS.
 	 *
 	 * Since: 0.5.0
 	 **/
@@ -355,9 +355,10 @@ gdata_download_stream_constructor (GType type, guint n_construct_params, GObject
 		priv->cancellable = g_cancellable_new ();
 	priv->network_cancellable_id = g_cancellable_connect (priv->cancellable, (GCallback) cancellable_cancel_cb, priv->network_cancellable, NULL);
 
-	/* Build the message */
+	/* Build the message. The URI must be HTTPS. */
 	_uri = soup_uri_new (priv->download_uri);
 	soup_uri_set_port (_uri, _gdata_service_get_https_port ());
+	g_assert_cmpstr (soup_uri_get_scheme (_uri), ==, SOUP_URI_SCHEME_HTTPS);
 	priv->message = soup_message_new_from_uri (SOUP_METHOD_GET, _uri);
 	soup_uri_free (_uri);
 
@@ -928,7 +929,7 @@ reset_network_thread (GDataDownloadStream *self)
  * gdata_download_stream_new:
  * @service: a #GDataService
  * @domain: (allow-none): the #GDataAuthorizationDomain to authorize the download, or %NULL
- * @download_uri: the URI to download
+ * @download_uri: the URI to download; this must be HTTPS
  * @cancellable: (allow-none): a #GCancellable for the entire download stream, or %NULL
  *
  * Creates a new #GDataDownloadStream, allowing a file to be downloaded from a GData service using standard #GInputStream API.

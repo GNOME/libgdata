@@ -581,9 +581,11 @@ _gdata_service_build_message (GDataService *self, GDataAuthorizationDomain *doma
 	GDataServiceClass *klass;
 	SoupURI *_uri;
 
-	/* Create the message. Allow changing the HTTPS port just for testing. */
+	/* Create the message. Allow changing the HTTPS port just for testing,
+	 * but require that the URI is always HTTPS for privacy. */
 	_uri = soup_uri_new (uri);
 	soup_uri_set_port (_uri, _gdata_service_get_https_port ());
+	g_assert_cmpstr (soup_uri_get_scheme (_uri), ==, SOUP_URI_SCHEME_HTTPS);
 	message = soup_message_new_from_uri (method, _uri);
 	soup_uri_free (_uri);
 

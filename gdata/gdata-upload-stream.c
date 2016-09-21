@@ -307,7 +307,7 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 	/**
 	 * GDataUploadStream:upload-uri:
 	 *
-	 * The URI to upload the data and metadata to.
+	 * The URI to upload the data and metadata to. This must be HTTPS.
 	 *
 	 * Since: 0.5.0
 	 **/
@@ -428,10 +428,16 @@ gdata_upload_stream_constructed (GObject *object)
 {
 	GDataUploadStreamPrivate *priv;
 	GDataServiceClass *service_klass;
+	SoupURI *uri = NULL;
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_upload_stream_parent_class)->constructed (object);
 	priv = GDATA_UPLOAD_STREAM (object)->priv;
+
+	/* The upload URI must be HTTPS. */
+	uri = soup_uri_new (priv->upload_uri);
+	g_assert_cmpstr (soup_uri_get_scheme (uri), ==, SOUP_URI_SCHEME_HTTPS);
+	soup_uri_free (uri);
 
 	/* Create a #GCancellable for the entire upload operation if one wasn't specified for #GDataUploadStream:cancellable during construction */
 	if (priv->cancellable == NULL)
@@ -1300,7 +1306,7 @@ create_network_thread (GDataUploadStream *self, GError **error)
  * @service: a #GDataService
  * @domain: (allow-none): the #GDataAuthorizationDomain to authorize the upload, or %NULL
  * @method: the HTTP method to use
- * @upload_uri: the URI to upload
+ * @upload_uri: the URI to upload, which must be HTTPS
  * @entry: (allow-none): the entry to upload as metadata, or %NULL
  * @slug: the file's slug (filename)
  * @content_type: the content type of the file being uploaded

@@ -1425,7 +1425,7 @@ test_service_network_error (void)
 	service = g_object_new (GDATA_TYPE_SERVICE, NULL);
 
 	/* Try a query which should always fail due to errors resolving the hostname */
-	g_assert (gdata_service_query (service, NULL, "http://thisshouldnotexist.invalid", NULL, GDATA_TYPE_ENTRY,
+	g_assert (gdata_service_query (service, NULL, "https://thisshouldnotexist.invalid", NULL, GDATA_TYPE_ENTRY,
 	                               NULL, NULL, NULL, &error) == NULL);
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR);
 	g_clear_error (&error);
@@ -1434,11 +1434,11 @@ test_service_network_error (void)
 	 * Filed as bgo#632354. */
 #if 0
 	/* Try one with a bad proxy set */
-	proxy_uri = soup_uri_new ("http://thisshouldalsonotexist.invalid/proxy");
+	proxy_uri = soup_uri_new ("https://thisshouldalsonotexist.invalid/proxy");
 	gdata_service_set_proxy_uri (service, proxy_uri);
 	soup_uri_free (proxy_uri);
 
-	g_assert (gdata_service_query (service, "http://google.com", NULL, GDATA_TYPE_ENTRY, NULL, NULL, NULL, &error) == NULL);
+	g_assert (gdata_service_query (service, "https://google.com", NULL, GDATA_TYPE_ENTRY, NULL, NULL, NULL, &error) == NULL);
 	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROXY_ERROR);
 	g_clear_error (&error);
 #endif

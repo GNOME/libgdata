@@ -161,6 +161,7 @@ create_server (SoupServerCallback callback, gpointer user_data, GMainLoop **main
 	GMainContext *context;
 	SoupServer *server;
 #ifdef HAVE_LIBSOUP_2_47_3
+	gchar *cert_path = NULL, *key_path = NULL;
 	GError *error = NULL;
 #else /* if !HAVE_LIBSOUP_2_47_3 */
 	union {
@@ -178,12 +179,21 @@ create_server (SoupServerCallback callback, gpointer user_data, GMainLoop **main
 #ifdef HAVE_LIBSOUP_2_47_3
 	server = soup_server_new (NULL, NULL);
 
+	cert_path = g_test_build_filename (G_TEST_DIST, "cert.pem", NULL);
+	key_path = g_test_build_filename (G_TEST_DIST, "key.pem", NULL);
+
+	soup_server_set_ssl_cert_file (server, cert_path, key_path, &error);
+	g_assert_no_error (error);
+
+	g_free (key_path);
+	g_free (cert_path);
+
 	soup_server_add_handler (server, NULL, callback, user_data, NULL);
 
 	g_main_context_push_thread_default (context);
 
 	soup_server_listen_local (server, 0  /* random port */,
-	                          0  /* no options */, &error);
+	                          SOUP_SERVER_LISTEN_HTTPS, &error);
 	g_assert_no_error (error);
 
 	g_main_context_pop_thread_default (context);
@@ -216,20 +226,24 @@ build_server_uri (SoupServer *server)
 {
 #ifdef HAVE_LIBSOUP_2_47_3
 	GSList *uris;  /* owned */
+	GSList *l;  /* unowned */
 	gchar *retval = NULL;  /* owned */
 
 	uris = soup_server_get_uris (server);
-	if (uris == NULL) {
-		return NULL;
-	}
 
-	retval = soup_uri_to_string (uris->data, FALSE);
+	for (l = uris; l != NULL && retval == NULL; l = l->next) {
+		if (soup_uri_get_scheme (l->data) == SOUP_URI_SCHEME_HTTPS) {
+			retval = soup_uri_to_string (l->data, FALSE);
+		}
+	}
 
 	g_slist_free_full (uris, (GDestroyNotify) soup_uri_free);
 
+	g_assert (retval != NULL);
+
 	return retval;
 #else /* if !HAVE_LIBSOUP_2_47_3 */
-	return g_strdup_printf ("http://%s:%u/",
+	return g_strdup_printf ("https://%s:%u/",
 	                        soup_address_get_physical (soup_socket_get_local_address (soup_server_get_listener (server))),
 	                        soup_server_get_port (server));
 #endif /* !HAVE_LIBSOUP_2_47_3 */
