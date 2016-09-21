@@ -1461,6 +1461,11 @@ _test_download_document (GDataDocumentsDocument *document, GDataService *service
 		destination_file_extension = "odt";
 		download_stream = gdata_documents_document_download (document, GDATA_DOCUMENTS_SERVICE (service),
 		                                                     GDATA_DOCUMENTS_TEXT_ODT, NULL, &error);
+	} else if (GDATA_IS_DOCUMENTS_DOCUMENT (document)) {
+		/* Text document */
+		destination_file_extension = "odt";
+		download_stream = gdata_documents_document_download (document, GDATA_DOCUMENTS_SERVICE (service),
+		                                                     GDATA_DOCUMENTS_TEXT_ODT, NULL, &error);
 	} else {
 		/* Error! */
 		g_assert_not_reached ();
