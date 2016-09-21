@@ -3,7 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010, 2014 <philip@tecnocode.co.uk>
- * Copyright (C) Red Hat, Inc. 2015
+ * Copyright (C) Red Hat, Inc. 2015, 2016
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1140,6 +1140,7 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	GDataDocumentsEntry *local_entry;
 	GDataOperationType operation_type;
 	GType entry_type;
+	const gchar *content_type;
 	const gchar *etag;
 	const gchar *title;
 	const gchar *uri_prefix = "https://www.googleapis.com/drive/v2/files";
@@ -1173,9 +1174,11 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	}
 
 	entry_type = G_OBJECT_TYPE (entry);
+	content_type = gdata_documents_utils_get_content_type (entry);
 	etag = gdata_entry_get_etag (GDATA_ENTRY (entry));
 	title = gdata_entry_get_title (GDATA_ENTRY (entry));
 	local_entry = g_object_new (entry_type, "etag", etag, "title", title, NULL);
+	gdata_documents_utils_add_content_type (local_entry, content_type);
 	add_folder_link_to_entry (local_entry, folder);
 
 	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST, uri, NULL, FALSE);
