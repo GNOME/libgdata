@@ -4,6 +4,7 @@
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
  * Copyright (C) Cosimo Cecchi 2012 <cosimoc@gnome.org>
+ * Copyright (C) Red Hat, Inc. 2016
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,15 +38,21 @@
 #include <glib.h>
 
 #include "gdata-documents-drawing.h"
+#include "gdata-documents-utils.h"
 #include "gdata-parser.h"
+#include "gdata-private.h"
+
+static void gdata_documents_drawing_constructed (GObject *object);
 
 G_DEFINE_TYPE (GDataDocumentsDrawing, gdata_documents_drawing, GDATA_TYPE_DOCUMENTS_DOCUMENT)
 
 static void
 gdata_documents_drawing_class_init (GDataDocumentsDrawingClass *klass)
 {
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
+	gobject_class->constructed = gdata_documents_drawing_constructed;
 	entry_class->kind_term = "http://schemas.google.com/docs/2007#drawing";
 }
 
@@ -53,6 +60,15 @@ static void
 gdata_documents_drawing_init (GDataDocumentsDrawing *self)
 {
 	/* Why am I writing it? */
+}
+
+static void
+gdata_documents_drawing_constructed (GObject *object)
+{
+	G_OBJECT_CLASS (gdata_documents_drawing_parent_class)->constructed (object);
+
+	if (!_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)))
+		gdata_documents_utils_add_content_type (GDATA_DOCUMENTS_ENTRY (object), "application/vnd.google-apps.drawing");
 }
 
 /**
