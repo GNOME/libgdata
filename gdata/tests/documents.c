@@ -300,14 +300,14 @@ _set_up_temp_document (GDataDocumentsEntry *entry, GDataService *service, GFile 
 static void
 set_up_temp_document_spreadsheet (TempDocumentData *data, gconstpointer service)
 {
-	GDataDocumentsSpreadsheet *document;
+	GDataDocumentsDocument *document;
 	gchar *document_file_path;
 	GFile *document_file;
 
 	gdata_test_mock_server_start_trace (mock_server, "setup-temp-document-spreadsheet");
 
 	/* Create a document */
-	document = gdata_documents_spreadsheet_new (NULL);
+	document = gdata_documents_document_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (document), "Temporary Document (Spreadsheet)");
 
 	document_file_path = g_test_build_filename (G_TEST_DIST, "test.ods", NULL);
