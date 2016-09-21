@@ -228,6 +228,17 @@
 						Bugzilla</ulink>.</para>
 				</listitem>
 			</itemizedlist>
+
+			<para>libgdata universally uses HTTPS rather than HTTP for communicating with servers. The port which is used may be changed
+				for testing purposes, using the <envar>LIBGDATA_HTTPS_PORT</envar> environment variable; but the protocol used will
+				always be HTTPS.</para>
+
+			<para>libgdata provides ways to upload and download files, but does not implement code for loading or saving those files to
+				or from disk. Since these files will typically be user data (such as their Google Drive documents), it is highly
+				recommended that they are given restricted permissions, any temporary files are only readable by the current user,
+				and files are potentially encrypted on disk where appropriate. The aim is to avoid leaking user data to other users
+				of the system, or to attackers who gain access to the user’s hard drive (which may not be encrypted). libgdata itself
+				only guarantees that data is encrypted while being sent over the network.</para>
 		</refsect2>
 	</refsect1>
 </refentry>
