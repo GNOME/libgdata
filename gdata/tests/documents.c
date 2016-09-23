@@ -954,7 +954,7 @@ static void
 set_up_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 {
 	const UpdateDocumentTestParams *test_params = _test_params;
-	GDataDocumentsText *document;
+	GDataDocumentsDocument *document;
 	gchar *title, *document_file_path, *trace_name;
 	GFile *document_file;
 
@@ -966,7 +966,7 @@ set_up_update_document (UpdateDocumentData *data, gconstpointer _test_params)
 	g_free (trace_name);
 
 	/* Create a document */
-	document = gdata_documents_text_new (NULL);
+	document = gdata_documents_document_new (NULL);
 	title = g_strdup_printf ("Test Update file (%s)", test_params->test_name);
 	gdata_entry_set_title (GDATA_ENTRY (document), title);
 	g_free (title);
@@ -1113,7 +1113,7 @@ test_update (UpdateDocumentData *data, gconstpointer _test_params)
 		g_object_unref (file_stream);
 	}
 
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (updated_document));
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (updated_document));
 
 	/* Check for success */
 	switch (test_params->payload_type) {
@@ -1228,7 +1228,7 @@ set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean init
 	document_file = g_file_new_for_path (path);
 	g_free (path);
 
-	document = GDATA_DOCUMENTS_DOCUMENT (gdata_documents_text_new (NULL));
+	document = gdata_documents_document_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (document), "add_file_folder_move_text");
 	if (initially_in_folder)
 		add_folder_link_to_entry (GDATA_DOCUMENTS_ENTRY (document), root);
@@ -1263,7 +1263,7 @@ set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean init
 	/* Finish the upload */
 	new_document = gdata_documents_service_finish_upload (service, upload_stream, &error);
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (new_document));
 
 	g_object_unref (upload_stream);
 	g_object_unref (file_stream);
@@ -1279,7 +1279,7 @@ set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean init
 	                                                                             gdata_documents_service_get_primary_authorization_domain (),
 	                                                                             gdata_entry_get_id (GDATA_ENTRY (new_document)), NULL,
 	                                                                             G_OBJECT_TYPE (new_document), NULL, NULL));
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (data->document));
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (data->document));
 }
 
 static void
@@ -1317,7 +1317,7 @@ test_folders_add_to_folder (FoldersData *data, gconstpointer service)
 	                                                                                      GDATA_DOCUMENTS_ENTRY (data->document),
 	                                                                                      data->folder, NULL, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (new_document));
 
 	/* Check it's still the same document */
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (data->document)));
@@ -1381,7 +1381,7 @@ test_folders_remove_from_folder (FoldersData *data, gconstpointer service)
 	                                                                                           GDATA_DOCUMENTS_ENTRY (data->document),
 	                                                                                           data->folder, NULL, &error));
 	g_assert_no_error (error);
-	g_assert (GDATA_IS_DOCUMENTS_TEXT (new_document));
+	g_assert (GDATA_IS_DOCUMENTS_DOCUMENT (new_document));
 
 	/* Check it's still the same document */
 	g_assert_cmpstr (gdata_entry_get_title (GDATA_ENTRY (new_document)), ==, gdata_entry_get_title (GDATA_ENTRY (data->document)));
