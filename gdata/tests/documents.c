@@ -2202,6 +2202,11 @@ main (int argc, char *argv[])
 					continue;
 				}
 
+				/* FIXME: Resumable uploads are not implemented. */
+				if (j == UPLOAD_RESUMABLE) {
+					continue;
+				}
+
 				test_name = g_strdup_printf ("/documents/update/%s/%s", payload_type_names[i], resumable_type_names[j]);
 
 				/* Allocate a new struct. We leak this. */
