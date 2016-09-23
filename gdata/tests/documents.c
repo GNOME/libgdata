@@ -3,6 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
+ * Copyright (C) Red Hat, Inc. 2015, 2016
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,8 +47,7 @@ check_document_is_in_folder (GDataDocumentsDocument *document, GDataDocumentsFol
 	     links != NULL; links = links->next) {
 		GDataLink *_link = GDATA_LINK (links->data);
 
-		if (strcmp (gdata_link_get_uri (_link), gdata_link_get_uri (folder_self_link)) == 0 &&
-		    strcmp (gdata_link_get_title (_link), gdata_entry_get_title (GDATA_ENTRY (folder))) == 0) {
+		if (strcmp (gdata_link_get_uri (_link), gdata_link_get_uri (folder_self_link)) == 0) {
 			g_assert (found_folder_category == FALSE);
 			found_folder_category = TRUE;
 		}
