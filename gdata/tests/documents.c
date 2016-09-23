@@ -1147,25 +1147,33 @@ static void
 set_up_folders (FoldersData *data, GDataDocumentsService *service, gboolean initially_in_folder)
 {
 	GDataDocumentsFolder *folder;
+	GDataDocumentsFolder *root;
 	GDataDocumentsDocument *document, *new_document;
 	GDataUploadStream *upload_stream;
 	GFileInputStream *file_stream;
 	GFile *document_file;
 	GFileInfo *file_info;
-	gchar *upload_uri;
 	gchar *path = NULL;
 	GError *error = NULL;
 
+	root = GDATA_DOCUMENTS_FOLDER (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                 gdata_documents_service_get_primary_authorization_domain (),
+	                                                                 "root",
+	                                                                 NULL,
+	                                                                 GDATA_TYPE_DOCUMENTS_FOLDER,
+	                                                                 NULL,
+	                                                                 NULL));
 	/* Create a new folder for the tests */
 	folder = gdata_documents_folder_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (folder), "add_file_folder_move_folder");
 
 	/* Insert the folder */
-	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	data->folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                                   gdata_documents_service_get_primary_authorization_domain (),
-	                                                                   upload_uri, GDATA_ENTRY (folder), NULL, &error));
-	g_free (upload_uri);
+	data->folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_add_entry_to_folder (GDATA_DOCUMENTS_SERVICE (service),
+	                                                                                    GDATA_DOCUMENTS_ENTRY (folder),
+	                                                                                    root,
+	                                                                                    NULL,
+	                                                                                    &error));
+	g_object_unref (root);
 
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_FOLDER (data->folder));
