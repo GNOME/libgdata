@@ -1416,10 +1416,10 @@ GDataDocumentsEntry *
 gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
                                                   GCancellable *cancellable, GError **error)
 {
-	const gchar *folder_id, *entry_id;
-	SoupMessage *message;
-	guint status;
-	gchar *uri;
+	const gchar *folder_id;
+	GList *i;
+	GList *parent_folders_list;
+	GDataLink *folder_link = NULL;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
@@ -1434,42 +1434,32 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 		return NULL;
 	}
 
-	/* Get the document ID */
-	folder_id = gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder));
-	entry_id = gdata_documents_entry_get_resource_id (entry);
+	folder_id = gdata_entry_get_id (GDATA_ENTRY (folder));
 	g_assert (folder_id != NULL);
-	g_assert (entry_id != NULL);
 
-	uri = _gdata_service_build_uri ("%s://docs.google.com/feeds/default/private/full/%s/contents/%s", _gdata_service_get_scheme (),
-	                                folder_id, entry_id);
-	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_DELETE, uri,
-	                                        gdata_entry_get_etag (GDATA_ENTRY (entry)), TRUE);
-	g_free (uri);
+	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (entry), GDATA_LINK_PARENT);
+	for (i = parent_folders_list; i != NULL; i = i->next) {
+		GDataLink *_link = GDATA_LINK (i->data);
+		const gchar *id;
 
-	/* Send the message */
-	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+		id = gdata_documents_utils_get_id_from_link (_link);
+		if (g_strcmp0 (folder_id, id) == 0) {
+			folder_link = _link;
+			break;
+		}
+	}
 
-	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
-		/* Redirect error or cancelled */
-		g_object_unref (message);
-		return NULL;
-	} else if (status != SOUP_STATUS_OK) {
-		/* Error */
-		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
-		g_assert (klass->parse_error_response != NULL);
-		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_UPDATE, status, message->reason_phrase,
-		                             message->response_body->data, message->response_body->length, error);
-		g_object_unref (message);
+	g_list_free (parent_folders_list);
+
+	if (folder_link == NULL) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND, _("Parent folder not found"));
 		return NULL;
 	}
 
-	g_object_unref (message);
+	gdata_entry_remove_link (GDATA_ENTRY (entry), folder_link);
 
-	/* HACK: Google's servers don't return an updated copy of the entry, so we have to query for it again.
-	 * See: http://code.google.com/p/gdata-issues/issues/detail?id=1380 */
-	return GDATA_DOCUMENTS_ENTRY (gdata_service_query_single_entry (GDATA_SERVICE (self), get_documents_authorization_domain (),
-	                                                                gdata_entry_get_id (GDATA_ENTRY (entry)), NULL,
-	                                                                G_OBJECT_TYPE (entry), cancellable, error));
+	return GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (self), get_documents_authorization_domain (), GDATA_ENTRY (entry),
+	                                                          cancellable, error));
 }
 
 typedef struct {
