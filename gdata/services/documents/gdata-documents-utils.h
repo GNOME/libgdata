@@ -36,6 +36,8 @@ G_GNUC_INTERNAL GType gdata_documents_utils_get_type_from_content_type (const gc
 
 G_GNUC_INTERNAL const gchar *gdata_documents_utils_get_content_type (GDataDocumentsEntry *entry);
 
+G_GNUC_INTERNAL const gchar *gdata_documents_utils_get_id_from_link (GDataLink *_link);
+
 G_END_DECLS
 
 #endif /* !GDATA_DOCUMENTS_UTILS_H */

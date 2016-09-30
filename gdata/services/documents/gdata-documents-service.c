@@ -1070,21 +1070,12 @@ gdata_documents_service_copy_document (GDataDocumentsService *self, GDataDocumen
 	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (document), GDATA_LINK_PARENT);
 	for (i = parent_folders_list; i != NULL; i = i->next) {
 		GDataLink *_link = GDATA_LINK (i->data);
-		const gchar *uri;
-		gsize uri_prefix_len;
+		const gchar *id;
 
-		/* HACK: Extract the ID from the GDataLink:uri by removing the prefix. Ignore links which
-		 * don't have the prefix. */
-		uri = gdata_link_get_uri (_link);
-		uri_prefix_len = strlen (GDATA_DOCUMENTS_URI_PREFIX);
-		if (g_str_has_prefix (uri, GDATA_DOCUMENTS_URI_PREFIX)) {
-			const gchar *id;
-
-			id = uri + uri_prefix_len;
-			if (id[0] != '\0') {
-				parent_id = id;
-				break;
-			}
+		id = gdata_documents_utils_get_id_from_link (_link);
+		if (id != NULL) {
+			parent_id = id;
+			break;
 		}
 	}
 

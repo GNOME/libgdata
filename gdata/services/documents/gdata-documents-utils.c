@@ -17,6 +17,8 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
+
 #include "gdata-documents-spreadsheet.h"
 #include "gdata-documents-text.h"
 #include "gdata-documents-presentation.h"
@@ -114,6 +116,38 @@ gdata_documents_utils_get_content_type (GDataDocumentsEntry *entry)
 			retval = label;
 			break;
 		}
+	}
+
+	return retval;
+}
+
+/*
+ * gdata_documents_utils_get_id_from_link:
+ * @_link: a #GDataLink
+ *
+ * Returns the ID, if any, of the #GDataEntry pointed to by @_link.
+ *
+ * Return value: (nullable): ID of @_link, %NULL otherwise
+ *
+ * Since: UNRELEASED
+ */
+const gchar *
+gdata_documents_utils_get_id_from_link (GDataLink *_link)
+{
+	const gchar *retval = NULL;
+	const gchar *uri;
+
+	/* HACK: Extract the ID from the GDataLink:uri by removing the prefix. Ignore links which
+	 * don't have the prefix. */
+	uri = gdata_link_get_uri (_link);
+	if (g_str_has_prefix (uri, GDATA_DOCUMENTS_URI_PREFIX)) {
+		const gchar *id;
+		gsize uri_prefix_len;
+
+		uri_prefix_len = strlen (GDATA_DOCUMENTS_URI_PREFIX);
+		id = uri + uri_prefix_len;
+		if (id[0] != '\0')
+			retval = id;
 	}
 
 	return retval;
