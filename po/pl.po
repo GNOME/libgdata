@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-09 04:20+0200\n"
-"PO-Revision-Date: 2016-09-09 04:21+0200\n"
+"POT-Creation-Date: 2016-10-11 17:49+0200\n"
+"PO-Revision-Date: 2016-10-11 17:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -41,7 +41,7 @@ msgstr "Serwer zwrócił błędnie sformatowaną odpowiedź."
 
 #: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
-msgid "Cannot connect to the service's server."
+msgid "Cannot connect to the service’s server."
 msgstr "Nie można połączyć z serwerem usługi."
 
 #: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
@@ -109,13 +109,13 @@ msgstr "Nazwa użytkownika lub hasło jest nieprawidłowe."
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
+msgid "Your account’s e-mail address has not been verified. (%s)"
 msgstr "Adres e-mail konta nie został sprawdzony. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
 msgstr "Nie wyrażono zgody na warunki usługi. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -143,7 +143,7 @@ msgstr "To konto zostało wyłączone. (%s)"
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
-msgid "This account's access to this service has been disabled. (%s)"
+msgid "This account’s access to this service has been disabled. (%s)"
 msgstr "Dostęp tego konta do tej usługi został wyłączony. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -170,7 +170,7 @@ msgid "This comment may not be deleted."
 msgstr "Ten komentarz nie może zostać usunięty."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:762
+#: ../gdata/gdata-download-stream.c:763
 msgid "Invalid seek request"
 msgstr "Nieprawidłowe żądanie przewinięcia"
 
@@ -203,17 +203,17 @@ msgstr "Pusty dokument."
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
 #: ../gdata/services/documents/gdata-documents-document.c:286
-#: ../gdata/services/documents/gdata-documents-entry.c:458
-#: ../gdata/services/documents/gdata-documents-entry.c:469
-#: ../gdata/services/documents/gdata-documents-entry.c:480
-#: ../gdata/services/documents/gdata-documents-entry.c:527
-#: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:636
-#: ../gdata/services/documents/gdata-documents-entry.c:671
-#: ../gdata/services/documents/gdata-documents-entry.c:686
-#: ../gdata/services/documents/gdata-documents-entry.c:701
-#: ../gdata/services/documents/gdata-documents-entry.c:731
-#: ../gdata/services/documents/gdata-documents-entry.c:747
+#: ../gdata/services/documents/gdata-documents-entry.c:456
+#: ../gdata/services/documents/gdata-documents-entry.c:467
+#: ../gdata/services/documents/gdata-documents-entry.c:478
+#: ../gdata/services/documents/gdata-documents-entry.c:525
+#: ../gdata/services/documents/gdata-documents-entry.c:536
+#: ../gdata/services/documents/gdata-documents-entry.c:631
+#: ../gdata/services/documents/gdata-documents-entry.c:666
+#: ../gdata/services/documents/gdata-documents-entry.c:681
+#: ../gdata/services/documents/gdata-documents-entry.c:696
+#: ../gdata/services/documents/gdata-documents-entry.c:726
+#: ../gdata/services/documents/gdata-documents-entry.c:742
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -239,30 +239,30 @@ msgstr "Brak wymaganej zawartości w elemencie %s."
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:85
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
 msgstr "Zawartość elementu %s („%s”) nie jest w formacie ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
 #: ../gdata/gdata-parser.c:105
 #, c-format
-msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr "Wartość własności %s elementu %s („%s”) jest nieznana."
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
+msgstr "Wartość właściwości %s elementu %s („%s”) jest nieznana."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
-#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
 #: ../gdata/gdata-parser.c:123
 #, c-format
-msgid "The content of a %s element (\"%s\") was unknown."
+msgid "The content of a %s element (‘%s’) was unknown."
 msgstr "Zawartość elementu %s („%s”) jest nieznana."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
@@ -273,7 +273,7 @@ msgstr "Zawartość elementu %s („%s”) jest nieznana."
 #: ../gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
-msgstr "Wymagana własność elementu %s (%s) nie była obecna."
+msgstr "Wymagana właściwość elementu %s (%s) nie była obecna."
 
 #. Translators: the first two parameters are the names of XML properties of an XML element given in the third
 #. * parameter (including the angle brackets ("<" and ">")).
@@ -287,7 +287,7 @@ msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
 "of the two is allowed."
 msgstr ""
-"Wartości są przedstawiane dla własności %s i %s elementu %s, a tylko jedna "
+"Wartości są przedstawiane dla właściwości %s i %s elementu %s, a tylko jedna "
 "z nich jest dozwolona."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
@@ -315,20 +315,20 @@ msgstr "Pojedynczy element (%s) występuje dwa razy."
 #. Translators: the parameter is the name of an JSON element.
 #. *
 #. * For example:
-#. *  A 'title' element was missing required content.
+#. *  A ‘title’ element was missing required content.
 #: ../gdata/gdata-parser.c:273
 #, c-format
-msgid "A '%s' element was missing required content."
+msgid "A ‘%s’ element was missing required content."
 msgstr "Brak wymaganej zawartości w elemencie „%s”."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:303
 #, c-format
-msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
 msgstr "Zawartość elementu „%s” („%s”) nie jest w formacie ISO 8601."
 
 #. Translators: the parameter is an error message.
@@ -342,10 +342,10 @@ msgstr "Otrzymano nieprawidłowy kod JSON z serwera: %s"
 #. * RGB format).
 #. *
 #. * For example:
-#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
 #: ../gdata/gdata-parser.c:1179
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
 msgstr "Zawartość elementu %s („%s”) nie jest w szesnastkowym formacie RGB."
 
 #. Translators: the first parameter is an HTTP status,
@@ -398,24 +398,24 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "Kod błędu %u podczas wykonywania działania wsadowego: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:737
+#: ../gdata/gdata-service.c:739
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Nieprawidłowy adres URI przekierowania: %s"
 
-#: ../gdata/gdata-service.c:1454
+#: ../gdata/gdata-service.c:1456
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:626
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "Wpis został już umieszczony."
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
+#: ../gdata/gdata-upload-stream.c:794 ../gdata/gdata-upload-stream.c:876
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr "Odebrano błąd z serwera po wysłaniu wznawialnego fragmentu."
 
-#: ../gdata/gdata-upload-stream.c:936
+#: ../gdata/gdata-upload-stream.c:942
 msgid "Stream is already closed"
 msgstr "Strumień został już zamknięty"
 
@@ -496,7 +496,7 @@ msgstr "Należy być uwierzytelnionym, aby zaktualizować dokumenty."
 #: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
 msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
+"The content type of the supplied document (‘%s’) could not be recognized."
 msgstr ""
 "Typ zawartości dostarczonego dokumentu („%s”) nie może zostać rozpoznany."
 
@@ -508,19 +508,19 @@ msgstr "Należy być uwierzytelnionym, aby skopiować dokumenty."
 msgid "Parent folder not found"
 msgstr "Nie odnaleziono nadrzędnego katalogu"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1160
+#: ../gdata/services/documents/gdata-documents-service.c:1161
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Należy być uwierzytelnionym, aby wstawić lub przenieść dokumenty i katalogi."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1359
+#: ../gdata/services/documents/gdata-documents-service.c:1362
 msgid "You must be authenticated to move documents and folders."
 msgstr "Należy być uwierzytelnionym, aby przenieść dokumenty i katalogi."
 
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
-msgid "Property '%s' does not hold an image"
-msgstr "Własność „%s” nie przechowuje obrazu"
+msgid "Property ‘%s’ does not hold an image"
+msgstr "Właściwość „%s” nie przechowuje obrazu"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
