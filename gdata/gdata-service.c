@@ -358,7 +358,7 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
 		case SOUP_STATUS_SSL_FAILED:
 		case SOUP_STATUS_IO_ERROR:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR,
-			             _("Cannot connect to the service's server."));
+			             _("Cannot connect to the service’s server."));
 			return;
 		case SOUP_STATUS_CANT_RESOLVE_PROXY:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:

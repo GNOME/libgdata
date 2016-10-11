@@ -646,7 +646,7 @@ parse_error_response (GDataClientLoginAuthorizer *self, guint status, const gcha
 		case SOUP_STATUS_SSL_FAILED:
 		case SOUP_STATUS_IO_ERROR:
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR,
-			             _("Cannot connect to the service's server."));
+			             _("Cannot connect to the service’s server."));
 			return;
 		case SOUP_STATUS_CANT_RESOLVE_PROXY:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
@@ -851,12 +851,12 @@ authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain
 		if (strncmp (error_start, "NotVerified", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_NOT_VERIFIED,
 			             /* Translators: the parameter is a URI for further information. */
-			             _("Your account's e-mail address has not been verified. (%s)"), uri);
+			             _("Your account’s e-mail address has not been verified. (%s)"), uri);
 			goto login_error;
 		} else if (strncmp (error_start, "TermsNotAgreed", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_TERMS_NOT_AGREED,
 			             /* Translators: the parameter is a URI for further information. */
-			             _("You have not agreed to the service's terms and conditions. (%s)"), uri);
+			             _("You have not agreed to the service’s terms and conditions. (%s)"), uri);
 			goto login_error;
 		} else if (strncmp (error_start, "AccountMigrated", error_end - error_start) == 0) {
 			/* This is non-standard, and used by YouTube since it's got messed-up accounts */
@@ -877,7 +877,7 @@ authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain
 		} else if (strncmp (error_start, "ServiceDisabled", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_SERVICE_DISABLED,
 			             /* Translators: the parameter is a URI for further information. */
-			             _("This account's access to this service has been disabled. (%s)"), uri);
+			             _("This account’s access to this service has been disabled. (%s)"), uri);
 			goto login_error;
 		} else if (strncmp (error_start, "ServiceUnavailable", error_end - error_start) == 0) {
 			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,

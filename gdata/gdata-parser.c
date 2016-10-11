@@ -81,8 +81,8 @@ gdata_parser_error_not_iso8601_format (xmlNode *element, const gchar *actual_val
 	              * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 	              *
 	              * For example:
-	              *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format. */
-	             _("The content of a %s element (\"%s\") was not in ISO 8601 format."), element_string, actual_value);
+	              *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format. */
+	             _("The content of a %s element (‘%s’) was not in ISO 8601 format."), element_string, actual_value);
 	g_free (element_string);
 
 	return FALSE;
@@ -101,8 +101,8 @@ gdata_parser_error_unknown_property_value (xmlNode *element, const gchar *proper
 	              * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 	              *
 	              * For example:
-	              *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown. */
-	             _("The value of the %s property of a %s element (\"%s\") was unknown."), property_string, element_string, actual_value);
+	              *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown. */
+	             _("The value of the %s property of a %s element (‘%s’) was unknown."), property_string, element_string, actual_value);
 	g_free (property_string);
 	g_free (element_string);
 
@@ -119,8 +119,8 @@ gdata_parser_error_unknown_content (xmlNode *element, const gchar *actual_conten
 	              * and the second parameter is the unknown content of that element.
 	              *
 	              * For example:
-	              *  The content of a <gphoto:access> element ("protected") was unknown. */
-	             _("The content of a %s element (\"%s\") was unknown."), element_string, actual_content);
+	              *  The content of a <gphoto:access> element (‘protected’) was unknown. */
+	             _("The content of a %s element (‘%s’) was unknown."), element_string, actual_content);
 	g_free (element_string);
 
 	return FALSE;
@@ -269,8 +269,8 @@ gdata_parser_error_required_json_content_missing (JsonReader *reader, GError **e
 	/* Translators: the parameter is the name of an JSON element.
 	 *
 	 * For example:
-	 *  A 'title' element was missing required content. */
-	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, _("A \'%s\' element was missing required content."), element_string);
+	 *  A ‘title’ element was missing required content. */
+	g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR, _("A ‘%s’ element was missing required content."), element_string);
 
 	return FALSE;
 }
@@ -299,8 +299,8 @@ gdata_parser_error_not_iso8601_format_json (JsonReader *reader, const gchar *act
 	              * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 	              *
 	              * For example:
-	              *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format. */
-	             _("The content of a \'%s\' element (\"%s\") was not in ISO 8601 format."), element_string, actual_value);
+	              *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format. */
+	             _("The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."), element_string, actual_value);
 
 	return FALSE;
 }
@@ -1175,8 +1175,8 @@ gdata_parser_color_from_json_member (JsonReader *reader,
 		              * RGB format).
 		              *
 		              * For example:
-		              *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format. */
-		             _("The content of a %s element (\"%s\") was not in hexadecimal RGB format."),
+		              *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format. */
+		             _("The content of a %s element (‘%s’) was not in hexadecimal RGB format."),
 		             member_name, text);
 		*success = FALSE;
 

@@ -476,7 +476,7 @@ gdata_freebase_service_get_image (GDataFreebaseService *self, GDataFreebaseTopic
 		g_set_error (error,
 			     GDATA_SERVICE_ERROR,
 			     GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER,
-			     _("Property '%s' does not hold an image"),
+			     _("Property ‘%s’ does not hold an image"),
 			     gdata_freebase_topic_value_get_property (value));
 		return NULL;
 	}

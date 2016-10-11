@@ -943,7 +943,7 @@ gdata_documents_service_finish_upload (GDataDocumentsService *self, GDataUploadS
 
 	if (g_type_is_a (new_document_type, GDATA_TYPE_DOCUMENTS_DOCUMENT) == FALSE) {
 		g_set_error (error, GDATA_DOCUMENTS_SERVICE_ERROR, GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE,
-		             _("The content type of the supplied document ('%s') could not be recognized."),
+		             _("The content type of the supplied document (‘%s’) could not be recognized."),
 		             content_type);
 		return NULL;
 	}
