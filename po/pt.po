@@ -4,23 +4,23 @@
 # António Lima <amrlima@gmail.com>, 2009, 2010, 2011, 2012, 2013.
 # Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
 # Sérgio Cardeira <cardeira.sergio@gmail.com>, 2016.
-# Tiago S. <tiagofsantos81@sapo.pt>, 2016.
+# Tiago Santos <tiagofsantos81@sapo.pt>, 2014 - 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-02-21 00:53+0000\n"
-"PO-Revision-Date: 2016-02-21 03:09-0100\n"
-"Last-Translator: Sérgio Cardeira <cardeira.sergio@gmail.com>\n"
+"product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2016-10-11 15:48+0000\n"
+"PO-Revision-Date: 2016-10-13 16:46+0100\n"
+"Last-Translator: Tiago Santos <tiagofsantos81@sapo.pt>\n"
 "Language-Team: Português <gnome_pt@yahoogroups.com>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-Project-Style: gnome\n"
 
 #: ../gdata/gdata-batch-operation.c:635
@@ -45,8 +45,8 @@ msgstr "O servidor devolveu uma resposta mal formada."
 
 #: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
-msgid "Cannot connect to the service's server."
-msgstr "Impossível ligar ao ao serviço do servidor."
+msgid "Cannot connect to the service’s server."
+msgstr "Impossível ligar ao serviço do servidor."
 
 #: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
 #, c-format
@@ -61,7 +61,8 @@ msgstr "Impossível ligar ao servidor proxy."
 #: ../gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr "Pedido de URI ou cabeçalho inválido, ou parâmetro não padrão não suportado: "
+msgstr ""
+"Pedido de URI ou cabeçalho inválido, ou parâmetro não padrão não suportado: "
 "%s"
 
 #. Translators: the parameter is an error message returned by the server.
@@ -112,13 +113,13 @@ msgstr "O seu nome de utilizador ou senha estavam incorretos."
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
+msgid "Your account’s e-mail address has not been verified. (%s)"
 msgstr "O endereço de email da sua conta não foi verificado. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
 msgstr "Não concordou com os termos e condições do serviço. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -146,7 +147,7 @@ msgstr "Esta conta foi desativada. (%s)"
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
-msgid "This account's access to this service has been disabled. (%s)"
+msgid "This account’s access to this service has been disabled. (%s)"
 msgstr "O acesso desta conta a este serviço foi desativado. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -173,7 +174,7 @@ msgid "This comment may not be deleted."
 msgstr "Este comentário não pode ser eliminado."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:762
+#: ../gdata/gdata-download-stream.c:763
 msgid "Invalid seek request"
 msgstr "Pedido de procura inválido"
 
@@ -206,17 +207,17 @@ msgstr "Documento vazio."
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
 #: ../gdata/services/documents/gdata-documents-document.c:286
-#: ../gdata/services/documents/gdata-documents-entry.c:458
-#: ../gdata/services/documents/gdata-documents-entry.c:469
-#: ../gdata/services/documents/gdata-documents-entry.c:480
-#: ../gdata/services/documents/gdata-documents-entry.c:527
-#: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:636
-#: ../gdata/services/documents/gdata-documents-entry.c:671
-#: ../gdata/services/documents/gdata-documents-entry.c:686
-#: ../gdata/services/documents/gdata-documents-entry.c:701
-#: ../gdata/services/documents/gdata-documents-entry.c:731
-#: ../gdata/services/documents/gdata-documents-entry.c:747
+#: ../gdata/services/documents/gdata-documents-entry.c:456
+#: ../gdata/services/documents/gdata-documents-entry.c:467
+#: ../gdata/services/documents/gdata-documents-entry.c:478
+#: ../gdata/services/documents/gdata-documents-entry.c:525
+#: ../gdata/services/documents/gdata-documents-entry.c:536
+#: ../gdata/services/documents/gdata-documents-entry.c:631
+#: ../gdata/services/documents/gdata-documents-entry.c:666
+#: ../gdata/services/documents/gdata-documents-entry.c:681
+#: ../gdata/services/documents/gdata-documents-entry.c:696
+#: ../gdata/services/documents/gdata-documents-entry.c:726
+#: ../gdata/services/documents/gdata-documents-entry.c:742
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -242,30 +243,30 @@ msgstr "Um elemento %s tinha conteúdo requerido em falta."
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:85
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
 msgstr "O conteúdo de um elemento %s (\"%s\") não estava no formato ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
 #: ../gdata/gdata-parser.c:105
 #, c-format
-msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
 msgstr "O valor da propriedade %s de um elemento %s (\"%s\") era desconhecido."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
-#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
 #: ../gdata/gdata-parser.c:123
 #, c-format
-msgid "The content of a %s element (\"%s\") was unknown."
+msgid "The content of a %s element (‘%s’) was unknown."
 msgstr "O conteúdo de um elemento %s (\"%s\") era desconhecido."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
@@ -318,21 +319,21 @@ msgstr "Um elemento singleton (%s) estava duplicado."
 #. Translators: the parameter is the name of an JSON element.
 #. *
 #. * For example:
-#. *  A 'title' element was missing required content.
+#. *  A ‘title’ element was missing required content.
 #: ../gdata/gdata-parser.c:273
 #, c-format
-msgid "A '%s' element was missing required content."
-msgstr "Um elemento \"%s\" tinha conteúdo requerido em falta."
+msgid "A ‘%s’ element was missing required content."
+msgstr "Um elemento %s tinha conteúdo requerido em falta."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:303
 #, c-format
-msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr "O conteúdo de um elemento \"%s\" (\"%s\") não estava no formato ISO 8601."
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
+msgstr "O conteúdo de um elemento %s (\"%s\") não estava no formato ISO 8601."
 
 #. Translators: the parameter is an error message.
 #: ../gdata/gdata-parser.c:314
@@ -345,11 +346,12 @@ msgstr "JSON inválido recebido do servidor: %s"
 #. * RGB format).
 #. *
 #. * For example:
-#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
 #: ../gdata/gdata-parser.c:1179
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "O conteúdo de um elemento %s (\"%s\") não estava no formato hexadecimal RGB."
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
+msgstr ""
+"O conteúdo de um elemento %s (\"%s\") não estava no formato hexadecimal RGB."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -401,24 +403,25 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "Código de erro %u ao executar uma operação em lote: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:737
+#: ../gdata/gdata-service.c:739
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "URI de redirecionamento inválido: %s"
 
-#: ../gdata/gdata-service.c:1454
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/gdata-service.c:1456
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:626
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "A entrada já foi inserida."
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
+#: ../gdata/gdata-upload-stream.c:794 ../gdata/gdata-upload-stream.c:876
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
-msgstr "Erro recebido do servidor após o envio de um pedaço de envio retomável."
+msgstr ""
+"Erro recebido do servidor após o envio de um pedaço de envio retomável."
 
-#: ../gdata/gdata-upload-stream.c:936
+#: ../gdata/gdata-upload-stream.c:942
 msgid "Stream is already closed"
 msgstr "Fluxo já se encontra fechado"
 
@@ -477,7 +480,8 @@ msgstr "Tem de estar autenticado para transferir documentos."
 #: ../gdata/services/documents/gdata-documents-document.c:401
 #, c-format
 msgid "Unknown or unsupported document export format ‘%s’."
-msgstr "Formato '%s' de exportação do documento desconhecido ou não suportador."
+msgstr ""
+"Formato '%s' de exportação do documento desconhecido ou não suportador."
 
 #: ../gdata/services/documents/gdata-documents-service.c:513
 #: ../gdata/services/documents/gdata-documents-service.c:563
@@ -499,9 +503,9 @@ msgstr "Tem de estar autenticado para atualizar documentos."
 #: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
 msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
+"The content type of the supplied document (‘%s’) could not be recognized."
 msgstr ""
-"Não foi possível reconhecer o tipo de conteúdo do documento fornecido (\"% s"
+"Não foi possível reconhecer o tipo de conteúdo do documento fornecido (\"%s"
 "\")."
 
 #: ../gdata/services/documents/gdata-documents-service.c:986
@@ -512,22 +516,23 @@ msgstr "Tem de estar autenticado para copiar documentos."
 msgid "Parent folder not found"
 msgstr "Pasta-mãe não encontrada"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1160
+#: ../gdata/services/documents/gdata-documents-service.c:1161
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr "Tem de estar autenticado para inserir ou mover documentos e pastas."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1359
+#: ../gdata/services/documents/gdata-documents-service.c:1362
 msgid "You must be authenticated to move documents and folders."
 msgstr "Tem de estar autenticado para mover documentos e pastas."
 
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
-msgid "Property '%s' does not hold an image"
+msgid "Property ‘%s’ does not hold an image"
 msgstr "A propriedade \"%s\" não contém uma imagem"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
-msgstr "Tem de especificar um nome de utilizador ou estar autenticado para consultar "
+msgstr ""
+"Tem de especificar um nome de utilizador ou estar autenticado para consultar "
 "um utilizador."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
@@ -538,22 +543,23 @@ msgstr "Parâmetro de consulta não autorizado para álbuns."
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
 msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Tem de especificar um nome de utilizador ou estar autenticado para consultar "
+msgstr ""
+"Tem de especificar um nome de utilizador ou estar autenticado para consultar "
 "todos os álbuns."
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
 msgid "The album did not have a feed link."
 msgstr "O álbum não tinha uma ligação de fonte."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:633
 msgid "You must be authenticated to upload a file."
 msgstr "Tem de estar autenticado para enviar um ficheiro."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:709
 msgid "The album has already been inserted."
 msgstr "O álbum já foi inserido."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:716
 msgid "You must be authenticated to insert an album."
 msgstr "Tem de estar autenticado para inserir um álbum."
 
@@ -588,6 +594,13 @@ msgstr ""
 #: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Tem de estar autenticado para enviar um vídeo."
+
+#~ msgid "A '%s' element was missing required content."
+#~ msgstr "Um elemento \"%s\" tinha conteúdo requerido em falta."
+
+#~ msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+#~ msgstr ""
+#~ "O conteúdo de um elemento \"%s\" (\"%s\") não estava no formato ISO 8601."
 
 #~ msgid "The calendar did not have a content URI."
 #~ msgstr "O calendário não tinha um URI de conteúdo."
