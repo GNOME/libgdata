@@ -132,6 +132,7 @@ struct _GDataDocumentsEntryPrivate {
 	gboolean is_deleted;
 	GDataAuthor *last_modified_by;
 	goffset quota_used; /* bytes */
+	goffset file_size; /* bytes */
 };
 
 enum {
@@ -143,6 +144,7 @@ enum {
 	PROP_WRITERS_CAN_INVITE,
 	PROP_RESOURCE_ID,
 	PROP_QUOTA_USED,
+	PROP_FILE_SIZE,
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
@@ -291,6 +293,22 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                     "Quota used", "The amount of user quota the document is occupying.",
 	                                                     0, G_MAXINT64, 0,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:file-size:
+	 *
+         * The size of the document. This is only set for non-document files.
+         * Standard formats, such as #GDataDocumentsText,
+         * #GDataDocumentsSpreadsheet and #GDataDocumentsFolder are not binary
+         * data and so have no size. Measured in bytes.
+	 *
+	 * Since: UNRELEASED
+	 */
+	g_object_class_install_property (gobject_class, PROP_FILE_SIZE,
+	                                 g_param_spec_int64 ("file-size",
+	                                                     "File size", "The size of the document.",
+	                                                     0, G_MAXINT64, 0,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static gboolean
@@ -411,6 +429,9 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 		case PROP_QUOTA_USED:
 			g_value_set_int64 (value, priv->quota_used);
 			break;
+		case PROP_FILE_SIZE:
+			g_value_set_int64 (value, priv->file_size);
+			break;
 		default:
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -428,6 +449,7 @@ gdata_documents_entry_set_property (GObject *object, guint property_id, const GV
 			gdata_documents_entry_set_writers_can_invite (self, g_value_get_boolean (value));
 			break;
 		case PROP_QUOTA_USED:
+		case PROP_FILE_SIZE:
 			/* Read only. */
 		default:
 			/* We don't have any other property... */
@@ -570,6 +592,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 	gchar *kind = NULL;
 	gchar *mime_type = NULL;
 	gchar *quota_used = NULL;
+	gchar *file_size = NULL;
 	gint64 published;
 	gint64 updated;
 
@@ -614,6 +637,18 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 		if (*end_ptr == '\0')
 			priv->quota_used = (goffset) val;
 		g_free (quota_used);
+		return success;
+	} else if (gdata_parser_string_from_json_member (reader, "fileSize", P_DEFAULT, &file_size, &success, error) == TRUE) {
+		gchar *end_ptr;
+		guint64 val;
+
+		/* like 'quotaBytesUsed', 'fileSize' is also a string
+		 * in the JSON.
+		 */
+		val = g_ascii_strtoull (file_size, &end_ptr, 10);
+		if (*end_ptr == '\0')
+			priv->file_size = (goffset) val;
+		g_free (file_size);
 		return success;
 	} else if (gdata_parser_boolean_from_json_member (reader, "shared", P_DEFAULT, &shared, &success, error) == TRUE) {
 		if (success && shared) {
@@ -1084,6 +1119,24 @@ gdata_documents_entry_get_quota_used (GDataDocumentsEntry *self)
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), 0);
 
 	return self->priv->quota_used;
+}
+
+/**
+ * gdata_documents_entry_get_file_size:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:file-size property.
+ *
+ * Return value: the size of the document in bytes
+ *
+ * Since: UNRELEASED
+ */
+goffset
+gdata_documents_entry_get_file_size (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), 0);
+
+	return self->priv->file_size;
 }
 
 /**
