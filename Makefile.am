@@ -605,6 +605,9 @@ gdata/libgdata.vapi: gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MI
 VAPIGEN_VAPIS = gdata/libgdata.vapi
 
 gdata_libgdata_vapi_DEPS = libxml-2.0 libsoup-2.4 json-glib-1.0
+if ENABLE_GOA
+gdata_libgdata_vapi_DEPS += goa-1.0
+endif
 gdata_libgdata_vapi_METADATADIRS = $(srcdir)/gdata
 gdata_libgdata_vapi_FILES = gdata/GData-@GDATA_API_VERSION_MAJOR@.@GDATA_API_VERSION_MINOR@.gir
 
