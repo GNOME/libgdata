@@ -42,6 +42,7 @@
 #include "gdata-freebase-query.h"
 #include "gdata-query.h"
 #include "gdata-parser.h"
+#include "gdata-private.h"
 
 static void gdata_freebase_query_finalize (GObject *self);
 static void gdata_freebase_query_set_property (GObject *self, guint prop_id, const GValue *value, GParamSpec *pspec);
@@ -94,6 +95,10 @@ static void
 gdata_freebase_query_init (GDataFreebaseQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FREEBASE_QUERY, GDataFreebaseQueryPrivate);
+
+	/* https://developers.google.com/freebase/v1/search#cursor */
+	_gdata_query_set_pagination_type (GDATA_QUERY (self),
+	                                  GDATA_QUERY_PAGINATION_INDEXED);
 }
 
 static void

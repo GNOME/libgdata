@@ -41,6 +41,7 @@
 #include "gdata-picasaweb-query.h"
 #include "gdata-query.h"
 #include "gdata-picasaweb-enums.h"
+#include "gdata-private.h"
 
 static void gdata_picasaweb_query_finalize (GObject *object);
 static void gdata_picasaweb_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -166,6 +167,10 @@ static void
 gdata_picasaweb_query_init (GDataPicasaWebQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_QUERY, GDataPicasaWebQueryPrivate);
+
+	/* https://developers.google.com/picasa-web/docs/3.0/reference#Parameters */
+	_gdata_query_set_pagination_type (GDATA_QUERY (self),
+	                                  GDATA_QUERY_PAGINATION_INDEXED);
 }
 
 static void

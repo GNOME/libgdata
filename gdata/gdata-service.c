@@ -1035,13 +1035,23 @@ real_parse_feed (GDataService *self,
 	/* Update the query with the next and previous URIs from the feed */
 	if (query != NULL && feed != NULL) {
 		GDataLink *_link;
+		const gchar *token;
 
+		_gdata_query_clear_pagination (query);
+
+		/* Atom-style next and previous page links. */
 		_link = gdata_feed_look_up_link (feed, "http://www.iana.org/assignments/relation/next");
 		if (_link != NULL)
 			_gdata_query_set_next_uri (query, gdata_link_get_uri (_link));
 		_link = gdata_feed_look_up_link (feed, "http://www.iana.org/assignments/relation/previous");
 		if (_link != NULL)
 			_gdata_query_set_previous_uri (query, gdata_link_get_uri (_link));
+
+		/* JSON-style next page token. (There is no previous page
+		 * token.) */
+		token = gdata_feed_get_next_page_token (feed);
+		if (token != NULL)
+			_gdata_query_set_next_page_token (query, token);
 	}
 
 	return feed;

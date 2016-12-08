@@ -85,6 +85,7 @@
 #include "gdata-calendar-query.h"
 #include "gdata-query.h"
 #include "gdata-parser.h"
+#include "gdata-private.h"
 
 static void gdata_calendar_query_finalize (GObject *object);
 static void gdata_calendar_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -287,6 +288,9 @@ gdata_calendar_query_init (GDataCalendarQuery *self)
 	self->priv->recurrence_expansion_end = -1;
 	self->priv->start_min = -1;
 	self->priv->start_max = -1;
+
+	_gdata_query_set_pagination_type (GDATA_QUERY (self),
+	                                  GDATA_QUERY_PAGINATION_TOKENS);
 }
 
 static void

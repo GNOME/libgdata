@@ -68,22 +68,37 @@ struct _GDataQueryPrivate {
 	gboolean is_strict;
 	guint max_results;
 
-	/* Pagination management. Supports three states:
-	 *  1.  (next_uri == NULL && !use_next_uri):
-	 *        Implement pagination by incrementing #GDataQuery:start-index
-	 *        internally with each call to gdata_query_next_page(). Stop
-	 *        when the returned #GDataFeed is empty.
-	 *  2a. (next_uri != NULL && use_next_uri):
-	 *        Implement pagination with an explicit URI for the next page,
-	 *        which will be used when gdata_query_next_page() is called.
-	 *  2b. (next_uri == NULL && use_next_uri):
-	 *        End of pagination using known URIs; return an empty
-	 *        #GDataFeed when gdata_query_next_page() is called.
+	/* Pagination management. The type of pagination is set as
+	 * pagination_type, and should be set in the init() vfunc implementation
+	 * of any class derived from GDataQuery. It defaults to
+	 * %GDATA_QUERY_PAGINATION_INDEXED, which most subclasses will not want.
+	 *
+	 * The next_uri, previous_uri or next_page_token are set by
+	 * #GDataService if a query returns a new #GDataFeed containing them. If
+	 * the user then calls next_page() or previous_page(), use_next_page or
+	 * use_previous_page are set as appopriate, and the next call to
+	 * get_uri() will return a URI for the next or previous page. This might
+	 * be next_uri, previous_uri, or a constructed URI which appends the
+	 * next_page_token.
+	 *
+	 * Note that %GDATA_QUERY_PAGINATION_TOKENS does not support returning
+	 * to the previous page.
+	 *
+	 * It is not invalid to have use_next_page set and to not have a
+	 * next_uri for %GDATA_QUERY_PAGINATION_URIS; or to not have a
+	 * next_page_token for %GDATA_QUERY_PAGINATION_TOKENS: this signifies
+	 * that the current set of results are the last page. There are no
+	 * further pages. Similarly for use_previous_page and a %NULL
+	 * previous_page.
 	 */
+	GDataQueryPaginationType pagination_type;
+
 	gchar *next_uri;
 	gchar *previous_uri;
-	gboolean use_next_uri;
-	gboolean use_previous_uri;
+	gchar *next_page_token;
+
+	gboolean use_next_page;
+	gboolean use_previous_page;
 
 	gchar *etag;
 };
@@ -295,6 +310,8 @@ gdata_query_init (GDataQuery *self)
 	self->priv->updated_max = -1;
 	self->priv->published_min = -1;
 	self->priv->published_max = -1;
+
+	_gdata_query_set_pagination_type (self, GDATA_QUERY_PAGINATION_INDEXED);
 }
 
 static void
@@ -309,6 +326,7 @@ gdata_query_finalize (GObject *object)
 	g_free (priv->next_uri);
 	g_free (priv->previous_uri);
 	g_free (priv->etag);
+	g_free (priv->next_page_token);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_query_parent_class)->finalize (object);
@@ -490,6 +508,13 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		APPEND_SEP
 		g_string_append_printf (query_uri, "max-results=%u", priv->max_results);
 	}
+
+	if (priv->pagination_type == GDATA_QUERY_PAGINATION_TOKENS && priv->use_next_page &&
+	    priv->next_page_token != NULL && *priv->next_page_token != '\0') {
+		APPEND_SEP
+		g_string_append (query_uri, "pageToken=");
+		g_string_append_uri_escaped (query_uri, priv->next_page_token, NULL, FALSE);
+	}
 }
 
 /**
@@ -550,10 +575,12 @@ gdata_query_get_query_uri (GDataQuery *self, const gchar *feed_uri)
 	g_return_val_if_fail (feed_uri != NULL, NULL);
 
 	/* Check to see if we're paginating first */
-	if (self->priv->use_next_uri == TRUE)
-		return g_strdup (self->priv->next_uri);
-	if (self->priv->use_previous_uri == TRUE)
-		return g_strdup (self->priv->previous_uri);
+	if (self->priv->pagination_type == GDATA_QUERY_PAGINATION_URIS) {
+		if (self->priv->use_next_page)
+			return g_strdup (self->priv->next_uri);
+		if (self->priv->use_previous_page)
+			return g_strdup (self->priv->previous_uri);
+	}
 
 	klass = GDATA_QUERY_GET_CLASS (self);
 	g_assert (klass->get_query_uri != NULL);
@@ -1014,24 +1041,60 @@ gdata_query_set_etag (GDataQuery *self, const gchar *etag)
 }
 
 void
-_gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri)
+_gdata_query_clear_pagination (GDataQuery *self)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
-	g_free (self->priv->next_uri);
-	self->priv->next_uri = g_strdup (next_uri);
-	self->priv->use_next_uri = FALSE;
-	self->priv->use_previous_uri = FALSE;
+
+	switch (self->priv->pagination_type) {
+	case GDATA_QUERY_PAGINATION_INDEXED:
+		/* Nothing to do here: indexes can always be incremented. */
+		break;
+	case GDATA_QUERY_PAGINATION_URIS:
+		g_clear_pointer (&self->priv->next_uri, g_free);
+		g_clear_pointer (&self->priv->previous_uri, g_free);
+		break;
+	case GDATA_QUERY_PAGINATION_TOKENS:
+		g_clear_pointer (&self->priv->next_page_token, g_free);
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+
+	self->priv->use_next_page = FALSE;
+	self->priv->use_previous_page = FALSE;
 }
 
 void
-_gdata_query_set_next_uri_end (GDataQuery *self)
+_gdata_query_set_pagination_type (GDataQuery               *self,
+                                  GDataQueryPaginationType  type)
+{
+	g_debug ("%s: Pagination type set to %u", G_STRFUNC, type);
+
+	_gdata_query_clear_pagination (self);
+	self->priv->pagination_type = type;
+}
+
+void
+_gdata_query_set_next_page_token (GDataQuery  *self,
+                                  const gchar *next_page_token)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
+	g_return_if_fail (self->priv->pagination_type ==
+	                  GDATA_QUERY_PAGINATION_TOKENS);
+
+	g_free (self->priv->next_page_token);
+	self->priv->next_page_token = g_strdup (next_page_token);
+}
+
+void
+_gdata_query_set_next_uri (GDataQuery *self, const gchar *next_uri)
+{
+	g_return_if_fail (GDATA_IS_QUERY (self));
+	g_return_if_fail (self->priv->pagination_type ==
+	                  GDATA_QUERY_PAGINATION_URIS);
 
 	g_free (self->priv->next_uri);
-	self->priv->next_uri = NULL;
-	self->priv->use_next_uri = TRUE;
-	self->priv->use_previous_uri = FALSE;
+	self->priv->next_uri = g_strdup (next_uri);
 }
 
 gboolean
@@ -1039,28 +1102,27 @@ _gdata_query_is_finished (GDataQuery *self)
 {
 	g_return_val_if_fail (GDATA_IS_QUERY (self), FALSE);
 
-	return (self->priv->next_uri == NULL && self->priv->use_next_uri);
+	switch (self->priv->pagination_type) {
+	case GDATA_QUERY_PAGINATION_INDEXED:
+		return FALSE;
+	case GDATA_QUERY_PAGINATION_URIS:
+		return (self->priv->next_uri == NULL && self->priv->use_next_page);
+	case GDATA_QUERY_PAGINATION_TOKENS:
+		return (self->priv->next_page_token == NULL && self->priv->use_next_page);
+	default:
+		g_assert_not_reached ();
+	}
 }
 
 void
 _gdata_query_set_previous_uri (GDataQuery *self, const gchar *previous_uri)
 {
 	g_return_if_fail (GDATA_IS_QUERY (self));
+	g_return_if_fail (self->priv->pagination_type ==
+	                  GDATA_QUERY_PAGINATION_URIS);
+
 	g_free (self->priv->previous_uri);
 	self->priv->previous_uri = g_strdup (previous_uri);
-	self->priv->use_next_uri = FALSE;
-	self->priv->use_previous_uri = FALSE;
-}
-
-void
-_gdata_query_set_previous_uri_end (GDataQuery *self)
-{
-	g_return_if_fail (GDATA_IS_QUERY (self));
-
-	g_free (self->priv->previous_uri);
-	self->priv->previous_uri = NULL;
-	self->priv->use_next_uri = TRUE;
-	self->priv->use_previous_uri = FALSE;
 }
 
 /**
@@ -1082,13 +1144,19 @@ gdata_query_next_page (GDataQuery *self)
 
 	g_return_if_fail (GDATA_IS_QUERY (self));
 
-	if (priv->next_uri != NULL) {
-		priv->use_next_uri = TRUE;
-		priv->use_previous_uri = FALSE;
-	} else {
+	switch (self->priv->pagination_type) {
+	case GDATA_QUERY_PAGINATION_INDEXED:
 		if (priv->start_index == 0)
 			priv->start_index++;
 		priv->start_index += priv->max_results;
+		break;
+	case GDATA_QUERY_PAGINATION_URIS:
+	case GDATA_QUERY_PAGINATION_TOKENS:
+		priv->use_next_page = TRUE;
+		priv->use_previous_page = FALSE;
+		break;
+	default:
+		g_assert_not_reached ();
 	}
 
 	/* Our current ETag will no longer be relevant */
@@ -1110,23 +1178,42 @@ gboolean
 gdata_query_previous_page (GDataQuery *self)
 {
 	GDataQueryPrivate *priv = self->priv;
+	gboolean retval;
 
 	g_return_val_if_fail (GDATA_IS_QUERY (self), FALSE);
 
-	if (priv->previous_uri != NULL) {
-		priv->use_previous_uri = TRUE;
-		priv->use_next_uri = FALSE;
-	} else if (priv->start_index <= priv->max_results ||
-	           (priv->previous_uri == NULL && priv->use_previous_uri)) {
-		return FALSE;
-	} else {
-		priv->start_index -= priv->max_results;
-		if (priv->start_index == 1)
-			priv->start_index--;
+	switch (self->priv->pagination_type) {
+	case GDATA_QUERY_PAGINATION_INDEXED:
+		if (priv->start_index <= priv->max_results) {
+			retval = FALSE;
+		} else {
+			priv->start_index -= priv->max_results;
+			if (priv->start_index == 1)
+				priv->start_index--;
+			retval = TRUE;
+		}
+		break;
+	case GDATA_QUERY_PAGINATION_URIS:
+		if (priv->previous_uri != NULL) {
+			priv->use_next_page = FALSE;
+			priv->use_previous_page = TRUE;
+			retval = TRUE;
+		} else {
+			retval = FALSE;
+		}
+		break;
+	case GDATA_QUERY_PAGINATION_TOKENS:
+		/* There are no previous page tokens, unfortunately. */
+		retval = FALSE;
+		break;
+	default:
+		g_assert_not_reached ();
 	}
 
-	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (self, NULL);
+	if (retval) {
+		/* Our current ETag will no longer be relevant */
+		gdata_query_set_etag (self, NULL);
+	}
 
-	return TRUE;
+	return retval;
 }

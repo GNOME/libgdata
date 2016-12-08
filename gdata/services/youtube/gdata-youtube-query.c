@@ -45,6 +45,7 @@
 #include "gdata-youtube-query.h"
 #include "gdata-query.h"
 #include "gdata-youtube-content.h"
+#include "gdata-private.h"
 
 static void gdata_youtube_query_finalize (GObject *object);
 static void gdata_youtube_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -354,6 +355,10 @@ gdata_youtube_query_init (GDataYouTubeQuery *self)
 
 	self->priv->latitude = G_MAXDOUBLE;
 	self->priv->longitude = G_MAXDOUBLE;
+
+	/* https://developers.google.com/youtube/v3/docs/search/list#pageToken */
+	_gdata_query_set_pagination_type (GDATA_QUERY (self),
+	                                  GDATA_QUERY_PAGINATION_TOKENS);
 }
 
 static void

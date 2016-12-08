@@ -90,6 +90,7 @@ guint gdata_feed_get_items_per_page (GDataFeed *self) G_GNUC_PURE;
 guint gdata_feed_get_start_index (GDataFeed *self) G_GNUC_PURE;
 guint gdata_feed_get_total_results (GDataFeed *self) G_GNUC_PURE;
 const gchar *gdata_feed_get_icon (GDataFeed *self) G_GNUC_PURE;
+const gchar *gdata_feed_get_next_page_token (GDataFeed *self) G_GNUC_PURE;
 
 G_END_DECLS
 

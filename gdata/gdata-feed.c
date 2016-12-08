@@ -78,6 +78,7 @@ struct _GDataFeedPrivate {
 	guint start_index;
 	guint total_results;
 	gchar *rights;
+	gchar *next_page_token;
 };
 
 enum {
@@ -92,7 +93,8 @@ enum {
 	PROP_ITEMS_PER_PAGE,
 	PROP_START_INDEX,
 	PROP_TOTAL_RESULTS,
-	PROP_RIGHTS
+	PROP_RIGHTS,
+	PROP_NEXT_PAGE_TOKEN,
 };
 
 G_DEFINE_TYPE (GDataFeed, gdata_feed, GDATA_TYPE_PARSABLE)
@@ -296,6 +298,22 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	                                                    "Total results", "The total number of results in the feed.",
 	                                                    0, 1000000, 0,
 	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataFeed:next-page-token:
+	 *
+	 * The next page token for feeds. Pass this to
+	 * gdata_query_set_page_token() to advance to the next page when
+	 * querying APIs which use page tokens rather than page numbers or
+	 * offsets.
+	 *
+	 * Since: UNRELEASED
+	 */
+	g_object_class_install_property (gobject_class, PROP_NEXT_PAGE_TOKEN,
+	                                 g_param_spec_string ("next-page-token",
+	                                                      "Next page token", "The next page token for feeds.",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -354,6 +372,7 @@ gdata_feed_finalize (GObject *object)
 	g_free (priv->logo);
 	g_free (priv->icon);
 	g_free (priv->rights);
+	g_free (priv->next_page_token);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_feed_parent_class)->finalize (object);
@@ -400,6 +419,9 @@ gdata_feed_get_property (GObject *object, guint property_id, GValue *value, GPar
 			break;
 		case PROP_TOTAL_RESULTS:
 			g_value_set_uint (value, priv->total_results);
+			break;
+		case PROP_NEXT_PAGE_TOKEN:
+			g_value_set_string (value, priv->next_page_token);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -643,6 +665,8 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 		/* Ignore. */
 	} else if (g_strcmp0 (json_reader_get_member_name (reader), "etag") == 0) {
 		GDATA_FEED (parsable)->priv->etag = g_strdup (json_reader_get_string_value (reader));
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "nextPageToken") == 0) {
+		GDATA_FEED (parsable)->priv->next_page_token = g_strdup (json_reader_get_string_value (reader));
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_feed_parent_class)->parse_json (parsable, reader, user_data, error);
 	}
@@ -1070,6 +1094,27 @@ gdata_feed_get_total_results (GDataFeed *self)
 {
 	g_return_val_if_fail (GDATA_IS_FEED (self), 0);
 	return self->priv->total_results;
+}
+
+/**
+ * gdata_feed_get_next_page_token:
+ * @self: a #GDataFeed
+ *
+ * Returns the next page token for a query result, or %NULL if not set.
+ * This is #GDataFeed:next-page-token. The page token might not be set if there
+ * is no next page, or if this service does not use token based paging (for
+ * example, if it uses page number or offset based paging instead). Most more
+ * recent services use token based paging.
+ *
+ * Return value: (nullable): the next page token
+ *
+ * Since: UNRELEASED
+ */
+const gchar *
+gdata_feed_get_next_page_token (GDataFeed *self)
+{
+	g_return_val_if_fail (GDATA_IS_FEED (self), NULL);
+	return self->priv->next_page_token;
 }
 
 void

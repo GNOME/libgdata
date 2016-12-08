@@ -40,6 +40,7 @@
 #include "gdata-tasks-query.h"
 #include "gdata-query.h"
 #include "gdata-parser.h"
+#include "gdata-private.h"
 
 static void gdata_tasks_query_finalize (GObject *object);
 static void gdata_tasks_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -185,6 +186,9 @@ gdata_tasks_query_init (GDataTasksQuery *self)
 	self->priv->completed_max = -1;
 	self->priv->due_min = -1;
 	self->priv->due_max = -1;
+
+	_gdata_query_set_pagination_type (GDATA_QUERY (self),
+	                                  GDATA_QUERY_PAGINATION_TOKENS);
 }
 
 static void

@@ -45,6 +45,7 @@ gdata_feed_get_rights
 gdata_feed_get_items_per_page
 gdata_feed_get_start_index
 gdata_feed_get_total_results
+gdata_feed_get_next_page_token
 gdata_service_get_type
 gdata_service_error_quark
 gdata_service_query

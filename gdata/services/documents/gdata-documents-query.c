@@ -208,6 +208,10 @@ static void
 gdata_documents_query_init (GDataDocumentsQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_QUERY, GDataDocumentsQueryPrivate);
+
+	/* https://developers.google.com/drive/v3/reference/files/list#q */
+	_gdata_query_set_pagination_type (GDATA_QUERY (self),
+	                                  GDATA_QUERY_PAGINATION_TOKENS);
 }
 
 static void

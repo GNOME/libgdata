@@ -84,6 +84,7 @@
 
 #include "gdata-contacts-query.h"
 #include "gdata-query.h"
+#include "gdata-private.h"
 
 static void gdata_contacts_query_finalize (GObject *object);
 static void gdata_contacts_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -180,6 +181,10 @@ static void
 gdata_contacts_query_init (GDataContactsQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_QUERY, GDataContactsQueryPrivate);
+
+	/* https://developers.google.com/google-apps/contacts/v3/reference#contacts-query-parameters-reference */
+	_gdata_query_set_pagination_type (GDATA_QUERY (self),
+	                                  GDATA_QUERY_PAGINATION_INDEXED);
 }
 
 static void
