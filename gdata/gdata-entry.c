@@ -153,7 +153,8 @@ gdata_entry_class_init (GDataEntryClass *klass)
 	/**
 	 * GDataEntry:id:
 	 *
-	 * A permanent, universally unique identifier for the entry, in IRI form.
+	 * A permanent, universally unique identifier for the entry, in IRI form. This is %NULL for new entries (i.e. ones which haven't yet been
+	 * inserted on the server, created with gdata_entry_new()), and a non-empty IRI string for all other entries.
 	 *
 	 * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.id">
 	 * Atom specification</ulink>.
@@ -433,7 +434,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	GDataEntryPrivate *priv = GDATA_ENTRY (parsable)->priv;
 
 	if (gdata_parser_is_namespace (node, "http://www.w3.org/2005/Atom") == TRUE) {
-		if (gdata_parser_string_from_element (node, "title", P_DEFAULT, &(priv->title), &success, error) == TRUE ||
+		if (gdata_parser_string_from_element (node, "title", P_DEFAULT | P_NO_DUPES, &(priv->title), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES, &(priv->id), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "summary", P_NONE, &(priv->summary), &success, error) == TRUE ||
 		    gdata_parser_string_from_element (node, "rights", P_NONE, &(priv->rights), &success, error) == TRUE ||
@@ -699,14 +700,19 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 GDataEntry *
 gdata_entry_new (const gchar *id)
 {
-	return g_object_new (GDATA_TYPE_ENTRY, "id", id, NULL);
+	GDataEntry *entry = GDATA_ENTRY (g_object_new (GDATA_TYPE_ENTRY, "id", id, NULL));
+
+	/* Set this here, as it interferes with P_NO_DUPES when parsing */
+	entry->priv->title = g_strdup (""); /* title can't be NULL */
+
+	return entry;
 }
 
 /**
  * gdata_entry_get_title:
  * @self: a #GDataEntry
  *
- * Returns the title of the entry.
+ * Returns the title of the entry. This will never be %NULL, but may be an empty string.
  *
  * Return value: the entry's title
  **/
@@ -776,7 +782,9 @@ gdata_entry_set_summary (GDataEntry *self, const gchar *summary)
  *
  * Returns the URN ID of the entry; a unique and permanent identifier for the object the entry represents.
  *
- * Return value: the entry's ID
+ * The ID may be %NULL if and only if the #GDataEntry has been newly created, and hasn't yet been inserted on the server.
+ *
+ * Return value: (nullable): the entry's ID, or %NULL
  **/
 const gchar *
 gdata_entry_get_id (GDataEntry *self)
@@ -802,7 +810,9 @@ gdata_entry_get_id (GDataEntry *self)
  * Returns the ETag of the entry; a unique identifier for each version of the entry. For more information, see the
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/reference.html#ResourceVersioning">online documentation</ulink>.
  *
- * Return value: the entry's ETag
+ * The ETag will never be empty; it's either %NULL or a valid ETag.
+ *
+ * Return value: (nullable): the entry's ETag, or %NULL
  *
  * Since: 0.2.0
  **/

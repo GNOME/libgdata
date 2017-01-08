@@ -252,6 +252,8 @@ get_xml (GDataParsable *parsable, GString *xml_string)
  * Creates a new #GDataAuthor. More information is available in the <ulink type="http"
  * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.author">Atom specification</ulink>.
  *
+ * @name must be non-%NULL and non-empty.
+ *
  * Return value: a new #GDataAuthor, or %NULL; unref with g_object_unref()
  **/
 GDataAuthor *
@@ -265,7 +267,7 @@ gdata_author_new (const gchar *name, const gchar *uri, const gchar *email_addres
  * gdata_author_get_name:
  * @self: a #GDataAuthor
  *
- * Gets the #GDataAuthor:name property.
+ * Gets the #GDataAuthor:name property. The name will always be a non-%NULL, non-empty string.
  *
  * Return value: the author's name
  *
@@ -283,7 +285,7 @@ gdata_author_get_name (GDataAuthor *self)
  * @self: a #GDataAuthor
  * @name: the new name for the author
  *
- * Sets the #GDataAuthor:name property to @name.
+ * Sets the #GDataAuthor:name property to @name. @name must be non-%NULL and non-empty.
  *
  * Since: 0.4.0
  **/
@@ -302,7 +304,7 @@ gdata_author_set_name (GDataAuthor *self, const gchar *name)
  * gdata_author_get_uri:
  * @self: a #GDataAuthor
  *
- * Gets the #GDataAuthor:uri property.
+ * Gets the #GDataAuthor:uri property. If the URI is non-%NULL, it will be non-empty.
  *
  * Return value: the author's URI, or %NULL
  *
@@ -320,7 +322,7 @@ gdata_author_get_uri (GDataAuthor *self)
  * @self: a #GDataAuthor
  * @uri: (allow-none): the new URI for the author, or %NULL
  *
- * Sets the #GDataAuthor:uri property to @uri.
+ * Sets the #GDataAuthor:uri property to @uri. @uri must be %NULL or non-empty.
  *
  * Set @uri to %NULL to unset the property in the author.
  *
@@ -340,7 +342,7 @@ gdata_author_set_uri (GDataAuthor *self, const gchar *uri)
  * gdata_author_get_email_address:
  * @self: a #GDataAuthor
  *
- * Gets the #GDataAuthor:email-address property.
+ * Gets the #GDataAuthor:email-address property. If the e-mail address is non-%NULL, it will be non-empty.
  *
  * Return value: the author's e-mail address, or %NULL
  *
@@ -358,7 +360,7 @@ gdata_author_get_email_address (GDataAuthor *self)
  * @self: a #GDataAuthor
  * @email_address: (allow-none): the new e-mail address for the author, or %NULL
  *
- * Sets the #GDataAuthor:email-address property to @email_address.
+ * Sets the #GDataAuthor:email-address property to @email_address. @email_address must be %NULL or non-empty.
  *
  * Set @email_address to %NULL to unset the property in the author.
  *

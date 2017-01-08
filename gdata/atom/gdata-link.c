@@ -293,38 +293,41 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		xmlFree (uri);
 		return gdata_parser_error_required_property_missing (root_node, "href", error);
 	}
-	self->priv->uri = (gchar*) uri;
 
 	/* rel */
 	relation_type = xmlGetProp (root_node, (xmlChar*) "rel");
 	if (relation_type != NULL && *relation_type == '\0') {
+		xmlFree (uri);
 		xmlFree (relation_type);
 		return gdata_parser_error_required_property_missing (root_node, "rel", error);
 	}
 
-	gdata_link_set_relation_type (self, (const gchar*) relation_type);
-	xmlFree (relation_type);
-
 	/* type */
 	content_type = xmlGetProp (root_node, (xmlChar*) "type");
 	if (content_type != NULL && *content_type == '\0') {
+		xmlFree (uri);
+		xmlFree (relation_type);
 		xmlFree (content_type);
 		return gdata_parser_error_required_property_missing (root_node, "type", error);
 	}
-	self->priv->content_type = (gchar*) content_type;
 
 	/* hreflang */
 	language = xmlGetProp (root_node, (xmlChar*) "hreflang");
 	if (language != NULL && *language == '\0') {
+		xmlFree (uri);
+		xmlFree (relation_type);
+		xmlFree (content_type);
 		xmlFree (language);
 		return gdata_parser_error_required_property_missing (root_node, "hreflang", error);
 	}
-	self->priv->language = (gchar*) language;
 
-	/* title */
+	self->priv->uri = (gchar*) uri;
+	gdata_link_set_relation_type (self, (const gchar*) relation_type);
+	xmlFree (relation_type);
+	self->priv->content_type = (gchar*) content_type;
+	self->priv->language = (gchar*) language;
 	self->priv->title = (gchar*) xmlGetProp (root_node, (xmlChar*) "title");
 
-	/* length */
 	length = xmlGetProp (root_node, (xmlChar*) "length");
 	if (length == NULL)
 		self->priv->length = -1;
@@ -361,6 +364,8 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
  *
  * Creates a new #GDataLink. More information is available in the <ulink type="http"
  * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
+ *
+ * @uri must be non-%NULL and non-empty. @relation_type must be %NULL or non-empty.
  *
  * Return value: a new #GDataLink, or %NULL; unref with g_object_unref()
  **/
@@ -400,7 +405,7 @@ gdata_link_get_uri (GDataLink *self)
  * @self: a #GDataLink
  * @uri: the new URI for the link
  *
- * Sets the #GDataLink:uri property to @uri.
+ * Sets the #GDataLink:uri property to @uri. @uri must be non-%NULL and non-empty.
  *
  * Since: 0.4.0
  **/
@@ -419,9 +424,9 @@ gdata_link_set_uri (GDataLink *self, const gchar *uri)
  * gdata_link_get_relation_type:
  * @self: a #GDataLink
  *
- * Gets the #GDataLink:relation-type property.
+ * Gets the #GDataLink:relation-type property. If the relation type is non-%NULL, it will be non-empty.
  *
- * Return value: the link's relation type
+ * Return value: (nullable): the link's relation type
  *
  * Since: 0.4.0
  **/
@@ -469,9 +474,9 @@ gdata_link_set_relation_type (GDataLink *self, const gchar *relation_type)
  * gdata_link_get_content_type:
  * @self: a #GDataLink
  *
- * Gets the #GDataLink:content-type property.
+ * Gets the #GDataLink:content-type property. If the content type is non-%NULL, it will be non-empty.
  *
- * Return value: the link's content type, or %NULL
+ * Return value: (nullable): the link's content type, or %NULL
  *
  * Since: 0.4.0
  **/
@@ -487,7 +492,7 @@ gdata_link_get_content_type (GDataLink *self)
  * @self: a #GDataLink
  * @content_type: (allow-none): the new content type for the link, or %NULL
  *
- * Sets the #GDataLink:content-type property to @content_type.
+ * Sets the #GDataLink:content-type property to @content_type. @content_type must be %NULL or non-empty.
  *
  * Set @content_type to %NULL to unset the property in the link.
  *
@@ -508,9 +513,9 @@ gdata_link_set_content_type (GDataLink *self, const gchar *content_type)
  * gdata_link_get_language:
  * @self: a #GDataLink
  *
- * Gets the #GDataLink:language property.
+ * Gets the #GDataLink:language property. If the language is non-%NULL, it will be non-empty.
  *
- * Return value: the link's language, or %NULL
+ * Return value: (nullable): the link's language, or %NULL
  *
  * Since: 0.4.0
  **/
@@ -526,7 +531,7 @@ gdata_link_get_language (GDataLink *self)
  * @self: a #GDataLink
  * @language: (allow-none): the new language for the link, or %NULL
  *
- * Sets the #GDataLink:language property to @language.
+ * Sets the #GDataLink:language property to @language. @language must be %NULL or non-empty.
  *
  * Set @language to %NULL to unset the property in the link.
  *

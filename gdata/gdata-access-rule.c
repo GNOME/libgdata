@@ -362,8 +362,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		if (xmlStrcmp (node->name, (xmlChar*) "role") == 0) {
 			/* gAcl:role */
 			xmlChar *role = xmlGetProp (node, (xmlChar*) "value");
-			if (role == NULL)
+			if (role == NULL || *role == '\0') {
+				xmlFree (role);
 				return gdata_parser_error_required_property_missing (node, "value", error);
+			}
 			self->priv->role = (gchar*) role;
 		} else if (xmlStrcmp (node->name, (xmlChar*) "scope") == 0) {
 			/* gAcl:scope */
@@ -501,7 +503,7 @@ gdata_access_rule_new (const gchar *id)
  * @self: a #GDataAccessRule
  * @role: a new role, or %NULL
  *
- * Sets the #GDataAccessRule:role property to @role.
+ * Sets the #GDataAccessRule:role property to @role. @role must be a non-empty string, such as %GDATA_ACCESS_ROLE_NONE.
  *
  * Set @role to %NULL to unset the property in the access rule.
  *
@@ -511,6 +513,7 @@ void
 gdata_access_rule_set_role (GDataAccessRule *self, const gchar *role)
 {
 	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));
+	g_return_if_fail (role == NULL || *role != '\0');
 
 	g_free (self->priv->role);
 	self->priv->role = g_strdup (role);

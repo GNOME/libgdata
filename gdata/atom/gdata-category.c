@@ -205,7 +205,7 @@ gdata_category_set_property (GObject *object, guint property_id, const GValue *v
 static gboolean
 pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointer user_data, GError **error)
 {
-	xmlChar *term;
+	xmlChar *term, *scheme;
 	GDataCategory *self = GDATA_CATEGORY (parsable);
 
 	term = xmlGetProp (root_node, (xmlChar*) "term");
@@ -213,9 +213,16 @@ pre_parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *root_node, gpointe
 		xmlFree (term);
 		return gdata_parser_error_required_property_missing (root_node, "term", error);
 	}
-	self->priv->term = (gchar*) term;
 
-	self->priv->scheme = (gchar*) xmlGetProp (root_node, (xmlChar*) "scheme");
+	scheme = xmlGetProp (root_node, (xmlChar*) "scheme");
+	if (scheme != NULL && *scheme == '\0') {
+		xmlFree (term);
+		xmlFree (scheme);
+		return gdata_parser_error_required_property_missing (root_node, "scheme", error);
+	}
+
+	self->priv->term = (gchar*) term;
+	self->priv->scheme = (gchar*) scheme;
 	self->priv->label = (gchar*) xmlGetProp (root_node, (xmlChar*) "label");
 
 	return TRUE;
@@ -244,12 +251,15 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
  * Creates a new #GDataCategory. More information is available in the <ulink type="http"
  * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.category">Atom specification</ulink>.
  *
+ * @term must be non-%NULL and non-empty. @scheme must be %NULL or non-empty.
+ *
  * Return value: a new #GDataCategory, or %NULL; unref with g_object_unref()
  **/
 GDataCategory *
 gdata_category_new (const gchar *term, const gchar *scheme, const gchar *label)
 {
 	g_return_val_if_fail (term != NULL && *term != '\0', NULL);
+	g_return_val_if_fail (scheme == NULL || *scheme != '\0', NULL);
 	return g_object_new (GDATA_TYPE_CATEGORY, "term", term, "scheme", scheme, "label", label, NULL);
 }
 
@@ -257,7 +267,7 @@ gdata_category_new (const gchar *term, const gchar *scheme, const gchar *label)
  * gdata_category_get_term:
  * @self: a #GDataCategory
  *
- * Gets the #GDataCategory:term property.
+ * Gets the #GDataCategory:term property. The term will always be a non-%NULL, non-empty string.
  *
  * Return value: the category's term
  *
@@ -275,7 +285,7 @@ gdata_category_get_term (GDataCategory *self)
  * @self: a #GDataCategory
  * @term: the new term for the category
  *
- * Sets the #GDataCategory:term property to @term.
+ * Sets the #GDataCategory:term property to @term. @term must be non-%NULL and non-empty.
  *
  * Since: 0.4.0
  **/
@@ -294,7 +304,7 @@ gdata_category_set_term (GDataCategory *self, const gchar *term)
  * gdata_category_get_scheme:
  * @self: a #GDataCategory
  *
- * Gets the #GDataCategory:scheme property.
+ * Gets the #GDataCategory:scheme property. If the scheme is non-%NULL, it will be non-empty.
  *
  * Return value: the category's scheme, or %NULL
  *
@@ -312,7 +322,7 @@ gdata_category_get_scheme (GDataCategory *self)
  * @self: a #GDataCategory
  * @scheme: (allow-none): the new scheme for the category, or %NULL
  *
- * Sets the #GDataCategory:scheme property to @scheme.
+ * Sets the #GDataCategory:scheme property to @scheme. @scheme must be %NULL or non-empty.
  *
  * Set @scheme to %NULL to unset the property in the category.
  *

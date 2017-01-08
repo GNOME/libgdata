@@ -456,9 +456,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 				_gdata_feed_call_progress_callback (self, data, entry);
 			_gdata_feed_add_entry (self, entry);
 			g_object_unref (entry);
-		} else if (gdata_parser_string_from_element (node, "title", P_NO_DUPES, &(self->priv->title), &success, error) == TRUE ||
+		} else if (gdata_parser_string_from_element (node, "title", P_DEFAULT | P_NO_DUPES, &(self->priv->title), &success, error) == TRUE ||
 		           gdata_parser_string_from_element (node, "subtitle", P_NO_DUPES, &(self->priv->subtitle), &success, error) == TRUE ||
-		           gdata_parser_string_from_element (node, "id", P_NO_DUPES, &(self->priv->id), &success, error) == TRUE ||
+		           gdata_parser_string_from_element (node, "id", P_REQUIRED | P_NON_EMPTY | P_NO_DUPES,
+		                                             &(self->priv->id), &success, error) == TRUE ||
 		           gdata_parser_string_from_element (node, "logo", P_NO_DUPES, &(self->priv->logo), &success, error) == TRUE ||
 		           gdata_parser_string_from_element (node, "icon", P_NO_DUPES, &(self->priv->icon), &success, error) == TRUE ||
 		           gdata_parser_object_from_element_setter (node, "category", P_REQUIRED, GDATA_TYPE_CATEGORY,
