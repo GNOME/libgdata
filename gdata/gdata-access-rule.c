@@ -95,6 +95,7 @@ static void get_xml (GDataParsable *parsable, GString *xml_string);
 static void gdata_access_rule_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 static void gdata_access_rule_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 static gboolean parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_data, GError **error);
+static gboolean post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error);
 
 struct _GDataAccessRulePrivate {
 	gchar *role;
@@ -130,6 +131,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	gobject_class->set_property = gdata_access_rule_set_property;
 
 	parsable_class->parse_xml = parse_xml;
+	parsable_class->post_parse_xml = post_parse_xml;
 	parsable_class->get_xml = get_xml;
 	parsable_class->get_namespaces = get_namespaces;
 
@@ -372,8 +374,10 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 			xmlChar *scope_type, *scope_value;
 
 			scope_type = xmlGetProp (node, (xmlChar*) "type");
-			if (scope_type == NULL)
+			if (scope_type == NULL || *scope_type == '\0') {
+				xmlFree (scope_type);
 				return gdata_parser_error_required_property_missing (node, "type", error);
+			}
 
 			scope_value = xmlGetProp (node, (xmlChar*) "value");
 
@@ -432,6 +436,20 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 	} else {
 		return GDATA_PARSABLE_CLASS (gdata_access_rule_parent_class)->parse_xml (parsable, doc, node, user_data, error);
 	}
+
+	return TRUE;
+}
+
+static gboolean
+post_parse_xml (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (parsable)->priv;
+
+	/* Check for missing required elements */
+	if (gdata_entry_get_title (GDATA_ENTRY (parsable)) == NULL || *gdata_entry_get_title (GDATA_ENTRY (parsable)) == '\0')
+		return gdata_parser_error_required_element_missing ("role", "entry", error);
+	if (priv->scope_type == NULL)
+		return gdata_parser_error_required_element_missing ("scope", "entry", error);
 
 	return TRUE;
 }
@@ -559,7 +577,7 @@ void
 gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gchar *value)
 {
 	g_return_if_fail (GDATA_IS_ACCESS_RULE (self));
-	g_return_if_fail (type != NULL);
+	g_return_if_fail (type != NULL && *type != '\0');
 	g_return_if_fail ((strcmp (type, GDATA_ACCESS_SCOPE_DEFAULT) == 0 && value == NULL) || value != NULL);
 
 	g_free (self->priv->scope_type);
