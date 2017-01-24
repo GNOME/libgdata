@@ -75,7 +75,7 @@
  *	g_object_unref (feed);
  * 	</programlisting>
  * </example>
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -141,7 +141,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * A shortcut to request all events scheduled for the future. Overrides the
 	 * #GDataCalendarQuery:recurrence-expansion-start, #GDataCalendarQuery:recurrence-expansion-end,
 	 * #GDataCalendarQuery:start-min and #GDataCalendarQuery:start-max properties.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_FUTURE_EVENTS,
 	                                 g_param_spec_boolean ("future-events",
 	                                                       "Future events?", "A shortcut to request all events scheduled for the future.",
@@ -153,7 +153,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 *
 	 * Specifies order of entries in a feed. Supported values are <literal>lastmodified</literal> and
 	 * <literal>starttime</literal>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ORDER_BY,
 	                                 g_param_spec_string ("order-by",
 	                                                      "Order by", "Specifies order of entries in a feed.",
@@ -164,7 +164,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * GDataCalendarQuery:recurrence-expansion-start:
 	 *
 	 * Specifies the beginning of the time period to expand recurring events for, inclusive.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RECURRENCE_EXPANSION_START,
 	                                 g_param_spec_int64 ("recurrence-expansion-start",
 	                                                     "Recurrence expansion start", "Specifies start of period to expand recurrences for.",
@@ -175,7 +175,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * GDataCalendarQuery:recurrence-expansion-end:
 	 *
 	 * Specifies the end of the time period to expand recurring events for, exclusive.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RECURRENCE_EXPANSION_END,
 	                                 g_param_spec_int64 ("recurrence-expansion-end",
 	                                                     "Recurrence expansion end", "Specifies end of period to expand recurrences for.",
@@ -186,7 +186,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * GDataCalendarQuery:single-events:
 	 *
 	 * Indicates whether recurring events should be expanded or represented as a single event.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SINGLE_EVENTS,
 	                                 g_param_spec_boolean ("single-events",
 	                                                       "Single events?", "Indicates whether recurring events should be expanded.",
@@ -198,7 +198,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 *
 	 * Specifies direction of sorting. Supported values are <literal>ascending</literal> and
 	 * <literal>descending</literal>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
 	                                 g_param_spec_string ("sort-order",
 	                                                      "Sort order", "Specifies direction of sorting.",
@@ -214,7 +214,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * included.
 	 *
 	 * If not specified, the default #GDataCalendarQuery:start-min is <literal>1970-01-01</literal>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_START_MIN,
 	                                 g_param_spec_int64 ("start-min",
 	                                                     "Start min", "A timespan such that only events within the timespan are returned.",
@@ -230,7 +230,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * included.
 	 *
 	 * If not specified, the default #GDataCalendarQuery:start-max is <literal>2031-01-01</literal>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_START_MAX,
 	                                 g_param_spec_int64 ("start-max",
 	                                                     "Start max", "A timespan such that only events within the timespan are returned.",
@@ -243,7 +243,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * The current timezone. If this is not specified, all times are returned in UTC.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
 	                                 g_param_spec_string ("timezone",
 	                                                      "Timezone", "The current timezone.",
@@ -494,7 +494,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  * Creates a new #GDataCalendarQuery with its #GDataQuery:q property set to @q.
  *
  * Return value: a new #GDataCalendarQuery
- **/
+ */
 GDataCalendarQuery *
 gdata_calendar_query_new (const gchar *q)
 {
@@ -511,7 +511,7 @@ gdata_calendar_query_new (const gchar *q)
  * applied.
  *
  * Return value: a new #GDataCalendarQuery
- **/
+ */
 GDataCalendarQuery *
 gdata_calendar_query_new_with_limits (const gchar *q, gint64 start_min, gint64 start_max)
 {
@@ -529,7 +529,7 @@ gdata_calendar_query_new_with_limits (const gchar *q, gint64 start_min, gint64 s
  * Gets the #GDataCalendarQuery:future-events property.
  *
  * Return value: the future events property
- **/
+ */
 gboolean
 gdata_calendar_query_get_future_events (GDataCalendarQuery *self)
 {
@@ -543,7 +543,7 @@ gdata_calendar_query_get_future_events (GDataCalendarQuery *self)
  * @future_events: %TRUE to unconditionally show future events, %FALSE otherwise
  *
  * Sets the #GDataCalendarQuery:future-events property of the #GDataCalendarQuery to @future_events.
- **/
+ */
 void
 gdata_calendar_query_set_future_events (GDataCalendarQuery *self, gboolean future_events)
 {
@@ -562,7 +562,7 @@ gdata_calendar_query_set_future_events (GDataCalendarQuery *self, gboolean futur
  * Gets the #GDataCalendarQuery:order-by property.
  *
  * Return value: the order by property, or %NULL if it is unset
- **/
+ */
 const gchar *
 gdata_calendar_query_get_order_by (GDataCalendarQuery *self)
 {
@@ -578,7 +578,7 @@ gdata_calendar_query_get_order_by (GDataCalendarQuery *self)
  * Sets the #GDataCalendarQuery:order-by property of the #GDataCalendarQuery to the new order by string, @order_by.
  *
  * Set @order_by to %NULL to unset the property in the query URI.
- **/
+ */
 void
 gdata_calendar_query_set_order_by (GDataCalendarQuery *self, const gchar *order_by)
 {
@@ -599,7 +599,7 @@ gdata_calendar_query_set_order_by (GDataCalendarQuery *self, const gchar *order_
  * Gets the #GDataCalendarQuery:recurrence-expansion-start property. If the property is unset, <code class="literal">-1</code> will be returned.
  *
  * Return value: the UNIX timestamp for the recurrence-expansion-start property, or <code class="literal">-1</code>
- **/
+ */
 gint64
 gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self)
 {
@@ -616,7 +616,7 @@ gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self)
  * to the new time/date, @start.
  *
  * Set @start to <code class="literal">-1</code> to unset the property in the query URI.
- **/
+ */
 void
 gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, gint64 start)
 {
@@ -637,7 +637,7 @@ gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, g
  * Gets the #GDataCalendarQuery:recurrence-expansion-end property. If the property is unset, <code class="literal">-1</code> will be returned.
  *
  * Return value: the UNIX timestamp for the recurrence-expansion-end property, or <code class="literal">-1</code>
- **/
+ */
 gint64
 gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self)
 {
@@ -654,7 +654,7 @@ gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self)
  * to the new time/date, @end.
  *
  * Set @end to <code class="literal">-1</code> to unset the property in the query URI.
- **/
+ */
 void
 gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, gint64 end)
 {
@@ -675,7 +675,7 @@ gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, gin
  * Gets the #GDataCalendarQuery:single-events property.
  *
  * Return value: the single events property
- **/
+ */
 gboolean
 gdata_calendar_query_get_single_events (GDataCalendarQuery *self)
 {
@@ -689,7 +689,7 @@ gdata_calendar_query_get_single_events (GDataCalendarQuery *self)
  * @single_events: %TRUE to show recurring events as single events, %FALSE otherwise
  *
  * Sets the #GDataCalendarQuery:single-events property of the #GDataCalendarQuery to @single_events.
- **/
+ */
 void
 gdata_calendar_query_set_single_events (GDataCalendarQuery *self, gboolean single_events)
 {
@@ -708,7 +708,7 @@ gdata_calendar_query_set_single_events (GDataCalendarQuery *self, gboolean singl
  * Gets the #GDataCalendarQuery:sort-order property.
  *
  * Return value: the sort order property, or %NULL if it is unset
- **/
+ */
 const gchar *
 gdata_calendar_query_get_sort_order (GDataCalendarQuery *self)
 {
@@ -724,7 +724,7 @@ gdata_calendar_query_get_sort_order (GDataCalendarQuery *self)
  * Sets the #GDataCalendarQuery:sort-order property of the #GDataCalendarQuery to the new sort order string, @sort_order.
  *
  * Set @sort_order to %NULL to unset the property in the query URI.
- **/
+ */
 void
 gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort_order)
 {
@@ -745,7 +745,7 @@ gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort
  * Gets the #GDataCalendarQuery:start-min property. If the property is unset, <code class="literal">-1</code> will be returned.
  *
  * Return value: the UNIX timestamp for the start-min property, or <code class="literal">-1</code>
- **/
+ */
 gint64
 gdata_calendar_query_get_start_min (GDataCalendarQuery *self)
 {
@@ -762,7 +762,7 @@ gdata_calendar_query_get_start_min (GDataCalendarQuery *self)
  * to the new time/date, @start_min.
  *
  * Set @start_min to <code class="literal">-1</code> to unset the property in the query URI.
- **/
+ */
 void
 gdata_calendar_query_set_start_min (GDataCalendarQuery *self, gint64 start_min)
 {
@@ -783,7 +783,7 @@ gdata_calendar_query_set_start_min (GDataCalendarQuery *self, gint64 start_min)
  * Gets the #GDataCalendarQuery:start-max property. If the property is unset, <code class="literal">-1</code> will be returned.
  *
  * Return value: the UNIX timestamp for the start-max property, or <code class="literal">-1</code>
- **/
+ */
 gint64
 gdata_calendar_query_get_start_max (GDataCalendarQuery *self)
 {
@@ -800,7 +800,7 @@ gdata_calendar_query_get_start_max (GDataCalendarQuery *self)
  * to the new time/date, @start_max.
  *
  * Set @start_max to <code class="literal">-1</code> to unset the property in the query URI.
- **/
+ */
 void
 gdata_calendar_query_set_start_max (GDataCalendarQuery *self, gint64 start_max)
 {
@@ -823,7 +823,7 @@ gdata_calendar_query_set_start_max (GDataCalendarQuery *self, gint64 start_max)
  * Return value: the timezone property, or %NULL if it is unset
  *
  * Since: 0.2.0
- **/
+ */
 const gchar *
 gdata_calendar_query_get_timezone (GDataCalendarQuery *self)
 {
@@ -841,7 +841,7 @@ gdata_calendar_query_get_timezone (GDataCalendarQuery *self)
  * Set @timezone to %NULL to unset the property in the query URI.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_calendar_query_set_timezone (GDataCalendarQuery *self, const gchar *_timezone)
 {

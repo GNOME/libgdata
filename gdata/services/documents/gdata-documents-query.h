@@ -43,7 +43,7 @@ typedef struct _GDataDocumentsQueryPrivate	GDataDocumentsQueryPrivate;
  * All the fields in the #GDataDocumentsQuery structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataQuery parent;
 	GDataDocumentsQueryPrivate *priv;
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsQueryClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataQueryClass parent;

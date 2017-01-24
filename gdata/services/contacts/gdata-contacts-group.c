@@ -90,7 +90,7 @@
  * </example>
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -161,7 +161,7 @@ gdata_contacts_group_class_init (GDataContactsGroupClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the group was edited.",
@@ -174,7 +174,7 @@ gdata_contacts_group_class_init (GDataContactsGroupClass *klass)
 	 * Whether the entry has been deleted.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DELETED,
 	                                 g_param_spec_boolean ("deleted",
 	                                                       "Deleted", "Whether the entry has been deleted.",
@@ -194,7 +194,7 @@ gdata_contacts_group_class_init (GDataContactsGroupClass *klass)
 	 * group ID.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SYSTEM_GROUP_ID,
 	                                 g_param_spec_string ("system-group-id",
 	                                                      "System group ID", "The system group ID for this group, if it's a system group.",
@@ -458,7 +458,7 @@ get_entry_uri (const gchar *id)
  * Return value: a new #GDataContactsGroup; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataContactsGroup *
 gdata_contacts_group_new (const gchar *id)
 {
@@ -474,7 +474,7 @@ gdata_contacts_group_new (const gchar *id)
  * Return value: the UNIX timestamp for the time the file was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.7.0
- **/
+ */
 gint64
 gdata_contacts_group_get_edited (GDataContactsGroup *self)
 {
@@ -491,7 +491,7 @@ gdata_contacts_group_get_edited (GDataContactsGroup *self)
  * Return value: the group's system group ID, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_group_get_system_group_id (GDataContactsGroup *self)
 {
@@ -510,7 +510,7 @@ gdata_contacts_group_get_system_group_id (GDataContactsGroup *self)
  * Return value: the property's value, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_group_get_extended_property (GDataContactsGroup *self, const gchar *name)
 {
@@ -528,7 +528,7 @@ gdata_contacts_group_get_extended_property (GDataContactsGroup *self, const gcha
  * Return value: (transfer none): a #GHashTable of extended properties
  *
  * Since: 0.7.0
- **/
+ */
 GHashTable *
 gdata_contacts_group_get_extended_properties (GDataContactsGroup *self)
 {
@@ -554,7 +554,7 @@ gdata_contacts_group_get_extended_properties (GDataContactsGroup *self)
  * Return value: %TRUE if the property was updated or deleted successfully, %FALSE otherwise
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_contacts_group_set_extended_property (GDataContactsGroup *self, const gchar *name, const gchar *value)
 {
@@ -592,7 +592,7 @@ gdata_contacts_group_set_extended_property (GDataContactsGroup *self, const gcha
  * Return value: %TRUE if the group has been deleted, %FALSE otherwise
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_contacts_group_is_deleted (GDataContactsGroup *self)
 {

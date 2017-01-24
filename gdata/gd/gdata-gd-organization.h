@@ -34,7 +34,7 @@ G_BEGIN_DECLS
  * The relation type URI for a work organization.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_ORGANIZATION_WORK "http://schemas.google.com/g/2005#work"
 
 /**
@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * The relation type URI for a miscellaneous organization.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_ORGANIZATION_OTHER "http://schemas.google.com/g/2005#other"
 
 #define GDATA_TYPE_GD_ORGANIZATION		(gdata_gd_organization_get_type ())
@@ -61,7 +61,7 @@ typedef struct _GDataGDOrganizationPrivate	GDataGDOrganizationPrivate;
  * All the fields in the #GDataGDOrganization structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDOrganizationPrivate *priv;
@@ -73,7 +73,7 @@ typedef struct {
  * All the fields in the #GDataGDOrganizationClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

@@ -93,7 +93,7 @@ gdata_freebase_service_class_init (GDataFreebaseServiceClass *klass)
 	 * url="https://developers.google.com/freebase/v1/how-tos/authorizing">online documentation</ulink>.
 	 *
 	 * Since: 0.15.1
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DEVELOPER_KEY,
 	                                 g_param_spec_string ("developer-key",
 	                                                      "Developer key", "Your Freebase developer API key.",
@@ -458,7 +458,7 @@ compose_image_uri (GDataFreebaseTopicValue *value, guint max_width, guint max_he
  * Return value: (transfer full): a #GInputStream opened to the image; unref with g_object_unref()
  *
  * Since: 0.15.1
- **/
+ */
 GInputStream *
 gdata_freebase_service_get_image (GDataFreebaseService *self, GDataFreebaseTopicValue *value,
 				  GCancellable *cancellable, guint max_width, guint max_height, GError **error)

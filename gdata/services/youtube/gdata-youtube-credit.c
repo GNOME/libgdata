@@ -30,7 +30,7 @@
  * Since: 0.4.0
  * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -84,7 +84,7 @@ gdata_youtube_credit_class_init (GDataYouTubeCreditClass *klass)
 	 * Since: 0.4.0
 	 * Deprecated: 0.17.0: This is no longer supported by Google. There
 	 *   is no replacement.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ENTITY_TYPE,
 	                                 g_param_spec_string ("entity-type",
 	                                                      "Entity type", "The type of entity who is credited.",
@@ -168,7 +168,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Since: 0.4.0
  * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
- **/
+ */
 const gchar *
 gdata_youtube_credit_get_entity_type (GDataYouTubeCredit *self)
 {

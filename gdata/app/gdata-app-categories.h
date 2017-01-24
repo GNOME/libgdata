@@ -42,7 +42,7 @@ typedef struct _GDataAPPCategoriesPrivate	GDataAPPCategoriesPrivate;
  * All the fields in the #GDataAPPCategories structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsable parent;
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataAPPCategoriesClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="https://developers.google.com/youtube/v3/docs/search/list#safeSearch">online documentation</ulink>.
  *
  * Since: 0.3.0
- **/
+ */
 typedef enum {
 	GDATA_YOUTUBE_SAFE_SEARCH_NONE = 0,
 	GDATA_YOUTUBE_SAFE_SEARCH_MODERATE,
@@ -60,7 +60,7 @@ typedef enum {
  * Since: 0.3.0
  * Deprecated: 0.17.0: No longer supported by Google. There is no
  *   replacement.
- **/
+ */
 typedef enum {
 	GDATA_YOUTUBE_SORT_NONE = 0,
 	GDATA_YOUTUBE_SORT_ASCENDING,
@@ -78,7 +78,7 @@ typedef enum {
  * Video ages, allowing queries to be limited to videos uploaded in a recent time period.
  *
  * Since: 0.3.0
- **/
+ */
 typedef enum {
 	GDATA_YOUTUBE_AGE_ALL_TIME = 0,
 	GDATA_YOUTUBE_AGE_TODAY,
@@ -97,7 +97,7 @@ typedef enum {
  * Since: 0.3.0
  * Deprecated: 0.17.0: No longer supported by Google. There is no
  *   replacement.
- **/
+ */
 typedef enum {
 	GDATA_YOUTUBE_UPLOADER_ALL = 0,
 	GDATA_YOUTUBE_UPLOADER_PARTNER
@@ -139,7 +139,7 @@ typedef struct _GDataYouTubeQueryPrivate	GDataYouTubeQueryPrivate;
  * All the fields in the #GDataYouTubeQuery structure are private and should never be accessed directly.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct {
 	GDataQuery parent;
 	GDataYouTubeQueryPrivate *priv;
@@ -151,7 +151,7 @@ typedef struct {
  * All the fields in the #GDataYouTubeQueryClass structure are private and should never be accessed directly.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataQueryClass parent;

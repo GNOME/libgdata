@@ -81,7 +81,7 @@ gdata_freebase_query_class_init (GDataFreebaseQueryClass *klass)
 	 * containing (possibly nested) Freebase schema types and values.
 	 *
 	 * Since: 0.15.1
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VARIANT,
 	                                 g_param_spec_variant ("variant",
 							       "Variant",

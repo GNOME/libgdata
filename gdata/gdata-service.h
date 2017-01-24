@@ -44,7 +44,7 @@ G_BEGIN_DECLS
  * Representations of the different operations performed by the library.
  *
  * Since: 0.6.0
- **/
+ */
 typedef enum {
 	GDATA_OPERATION_QUERY = 1,
 	GDATA_OPERATION_INSERTION,
@@ -76,7 +76,7 @@ typedef enum {
  * Try again later. (Since: 0.16.0.)
  *
  * Error codes for #GDataService operations.
- **/
+ */
 typedef enum {
 	GDATA_SERVICE_ERROR_UNAVAILABLE = 1,
 	GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
@@ -104,7 +104,7 @@ typedef enum {
  * It is called in the main thread, so there is no guarantee on the order in which the callbacks are executed,
  * or whether they will be called in a timely manner. It is, however, guaranteed that they will all be called before
  * the #GAsyncReadyCallback which signals the completion of the query is called.
- **/
+ */
 typedef void (*GDataQueryProgressCallback) (GDataEntry *entry, guint entry_key, guint entry_count, gpointer user_data);
 
 #define GDATA_TYPE_SERVICE		(gdata_service_get_type ())
@@ -122,7 +122,7 @@ typedef struct _GDataServicePrivate	GDataServicePrivate;
  * GDataService:
  *
  * All the fields in the #GDataService structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GObject parent;
 	GDataServicePrivate *priv;

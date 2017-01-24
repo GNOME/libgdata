@@ -180,7 +180,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the distance value, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
- **/
+ */
 gdouble
 gdata_exif_tags_get_distance (GDataExifTags *self)
 {
@@ -197,7 +197,7 @@ gdata_exif_tags_get_distance (GDataExifTags *self)
  * Return value: the exposure value, or <code class="literal">0</code> if unknown
  *
  * Since: 0.5.0
- **/
+ */
 gdouble
 gdata_exif_tags_get_exposure (GDataExifTags *self)
 {
@@ -214,7 +214,7 @@ gdata_exif_tags_get_exposure (GDataExifTags *self)
  * Return value: %TRUE if flash was used, %FALSE otherwise
  *
  * Since: 0.5.0
- **/
+ */
 gboolean
 gdata_exif_tags_get_flash (GDataExifTags *self)
 {
@@ -231,7 +231,7 @@ gdata_exif_tags_get_flash (GDataExifTags *self)
  * Return value: the focal-length value, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
- **/
+ */
 gdouble
 gdata_exif_tags_get_focal_length (GDataExifTags *self)
 {
@@ -248,7 +248,7 @@ gdata_exif_tags_get_focal_length (GDataExifTags *self)
  * Return value: the F-stop value, or <code class="literal">0</code> if unknown
  *
  * Since: 0.5.0
- **/
+ */
 gdouble
 gdata_exif_tags_get_fstop (GDataExifTags *self)
 {
@@ -265,7 +265,7 @@ gdata_exif_tags_get_fstop (GDataExifTags *self)
  * Return value: the photo's unique EXIF identifier, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_exif_tags_get_image_unique_id (GDataExifTags *self)
 {
@@ -282,7 +282,7 @@ gdata_exif_tags_get_image_unique_id (GDataExifTags *self)
  * Return value: the ISO speed, or <code class="literal">-1</code> if unknown
  *
  * Since: 0.5.0
- **/
+ */
 gint
 gdata_exif_tags_get_iso (GDataExifTags *self)
 {
@@ -299,7 +299,7 @@ gdata_exif_tags_get_iso (GDataExifTags *self)
  * Return value: the name of the manufacturer of the camera, or %NULL if unknown
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_exif_tags_get_make (GDataExifTags *self)
 {
@@ -316,7 +316,7 @@ gdata_exif_tags_get_make (GDataExifTags *self)
  * Return value: the model name of the camera, or %NULL if unknown
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_exif_tags_get_model (GDataExifTags *self)
 {
@@ -334,7 +334,7 @@ gdata_exif_tags_get_model (GDataExifTags *self)
  * Return value: the UNIX timestamp for the time property in milliseconds, or <code class="literal">-1</code>
  *
  * Since: 0.5.0
- **/
+ */
 gint64
 gdata_exif_tags_get_time (GDataExifTags *self)
 {

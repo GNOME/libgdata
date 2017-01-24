@@ -32,7 +32,7 @@
  * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
  *
  * Since: 0.13.1
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -80,7 +80,7 @@ gdata_documents_drawing_constructed (GObject *object)
  * Return value: (transfer full): a new #GDataDocumentsDrawing, or %NULL; unref with g_object_unref()
  *
  * Since: 0.13.1
- **/
+ */
 GDataDocumentsDrawing *
 gdata_documents_drawing_new (const gchar *id)
 {

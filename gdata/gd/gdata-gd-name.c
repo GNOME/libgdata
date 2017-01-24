@@ -37,7 +37,7 @@
  * </variablelist>
  *
  * Since: 0.5.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -103,7 +103,7 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdName">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_GIVEN_NAME,
 	                                 g_param_spec_string ("given-name",
 	                                                      "Given name", "The person's given name.",
@@ -119,7 +119,7 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdName">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ADDITIONAL_NAME,
 	                                 g_param_spec_string ("additional-name",
 	                                                      "Additional name", "An additional name for the person (e.g. a middle name).",
@@ -135,7 +135,7 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdName">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_FAMILY_NAME,
 	                                 g_param_spec_string ("family-name",
 	                                                      "Family name", "The person's family name.",
@@ -151,7 +151,7 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdName">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_PREFIX,
 	                                 g_param_spec_string ("prefix",
 	                                                      "Prefix", "An honorific prefix.",
@@ -167,7 +167,7 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdName">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SUFFIX,
 	                                 g_param_spec_string ("suffix",
 	                                                      "Suffix", "An honorific suffix.",
@@ -184,7 +184,7 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdName">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_FULL_NAME,
 	                                 g_param_spec_string ("full-name",
 	                                                      "Full name", "An unstructured representation of the person's full name.",
@@ -352,7 +352,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDName, or %NULL; unref with g_object_unref()
  *
  * Since: 0.5.0
- **/
+ */
 GDataGDName *
 gdata_gd_name_new (const gchar *given_name, const gchar *family_name)
 {
@@ -370,7 +370,7 @@ gdata_gd_name_new (const gchar *given_name, const gchar *family_name)
  * Return value: the person's given name, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_name_get_given_name (GDataGDName *self)
 {
@@ -386,7 +386,7 @@ gdata_gd_name_get_given_name (GDataGDName *self)
  * Sets the #GDataGDName:given-name property to @given_name.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_name_set_given_name (GDataGDName *self, const gchar *given_name)
 {
@@ -407,7 +407,7 @@ gdata_gd_name_set_given_name (GDataGDName *self, const gchar *given_name)
  * Return value: the person's additional name, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_name_get_additional_name (GDataGDName *self)
 {
@@ -423,7 +423,7 @@ gdata_gd_name_get_additional_name (GDataGDName *self)
  * Sets the #GDataGDName:additional-name property to @additional_name.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_name_set_additional_name (GDataGDName *self, const gchar *additional_name)
 {
@@ -444,7 +444,7 @@ gdata_gd_name_set_additional_name (GDataGDName *self, const gchar *additional_na
  * Return value: the person's family name, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_name_get_family_name (GDataGDName *self)
 {
@@ -460,7 +460,7 @@ gdata_gd_name_get_family_name (GDataGDName *self)
  * Sets the #GDataGDName:family-name property to @family_name.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_name_set_family_name (GDataGDName *self, const gchar *family_name)
 {
@@ -481,7 +481,7 @@ gdata_gd_name_set_family_name (GDataGDName *self, const gchar *family_name)
  * Return value: the person's name prefix, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_name_get_prefix (GDataGDName *self)
 {
@@ -497,7 +497,7 @@ gdata_gd_name_get_prefix (GDataGDName *self)
  * Sets the #GDataGDName:prefix property to @prefix.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_name_set_prefix (GDataGDName *self, const gchar *prefix)
 {
@@ -518,7 +518,7 @@ gdata_gd_name_set_prefix (GDataGDName *self, const gchar *prefix)
  * Return value: the person's name suffix, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_name_get_suffix (GDataGDName *self)
 {
@@ -534,7 +534,7 @@ gdata_gd_name_get_suffix (GDataGDName *self)
  * Sets the #GDataGDName:suffix property to @suffix.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_name_set_suffix (GDataGDName *self, const gchar *suffix)
 {
@@ -555,7 +555,7 @@ gdata_gd_name_set_suffix (GDataGDName *self, const gchar *suffix)
  * Return value: the person's full name, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_name_get_full_name (GDataGDName *self)
 {
@@ -571,7 +571,7 @@ gdata_gd_name_get_full_name (GDataGDName *self)
  * Sets the #GDataGDName:full-name property to @full_name.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_name_set_full_name (GDataGDName *self, const gchar *full_name)
 {

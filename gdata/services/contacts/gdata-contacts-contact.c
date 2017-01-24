@@ -144,7 +144,7 @@
  * </example>
  *
  * Since: 0.2.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -267,7 +267,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the contact was edited.",
@@ -280,7 +280,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Whether the entry has been deleted.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DELETED,
 	                                 g_param_spec_boolean ("deleted",
 	                                                       "Deleted", "Whether the entry has been deleted.",
@@ -293,7 +293,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The ETag of the contact's photo, if the contact has a photo; %NULL otherwise.
 	 *
 	 * Since: 0.9.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_PHOTO_ETAG,
 	                                 g_param_spec_string ("photo-etag",
 	                                                       "Photo ETag", "The ETag of the contact's photo.",
@@ -306,7 +306,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The contact's name in a structured representation.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NAME,
 	                                 g_param_spec_object ("name",
 	                                                      "Name", "The contact's name in a structured representation.",
@@ -319,7 +319,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The contact's chosen nickname.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NICKNAME,
 	                                 g_param_spec_string ("nickname",
 	                                                      "Nickname", "The contact's chosen nickname.",
@@ -345,7 +345,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The contact's birthday.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_BIRTHDAY,
 	                                 g_param_spec_boxed ("birthday",
 	                                                     "Birthday", "The contact's birthday.",
@@ -358,7 +358,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Whether the contact's birthday includes their year of birth.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_BIRTHDAY_HAS_YEAR,
 	                                 g_param_spec_boolean ("birthday-has-year",
 	                                                       "Birthday has year?", "Whether the contact's birthday includes their year of birth.",
@@ -371,7 +371,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * Billing information for the contact, such as their billing name and address.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_BILLING_INFORMATION,
 	                                 g_param_spec_string ("billing-information",
 	                                                      "Billing information", "Billing information for the contact.",
@@ -384,7 +384,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The name or address of a directory server associated with the contact.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DIRECTORY_SERVER,
 	                                 g_param_spec_string ("directory-server",
 	                                                      "Directory server", "The name or address of an associated directory server.",
@@ -397,7 +397,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The gender of the contact. For example: %GDATA_CONTACTS_GENDER_MALE or %GDATA_CONTACTS_GENDER_FEMALE.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_GENDER,
 	                                 g_param_spec_string ("gender",
 	                                                      "Gender", "The gender of the contact.",
@@ -410,7 +410,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The initials of the contact.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_INITIALS,
 	                                 g_param_spec_string ("initials",
 	                                                      "Initials", "The initials of the contact.",
@@ -423,7 +423,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The maiden name of the contact.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_MAIDEN_NAME,
 	                                 g_param_spec_string ("maiden-name",
 	                                                      "Maiden name", "The maiden name of the contact.",
@@ -436,7 +436,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * A mileage associated with the contact, such as one for reimbursement purposes. It can be in any format.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_MILEAGE,
 	                                 g_param_spec_string ("mileage",
 	                                                      "Mileage", "A mileage associated with the contact.",
@@ -449,7 +449,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The contact's occupation.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_OCCUPATION,
 	                                 g_param_spec_string ("occupation",
 	                                                      "Occupation", "The contact's occupation.",
@@ -462,7 +462,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The contact's importance. For example: %GDATA_CONTACTS_PRIORITY_NORMAL or %GDATA_CONTACTS_PRIORITY_HIGH.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_PRIORITY,
 	                                 g_param_spec_string ("priority",
 	                                                      "Priority", "The contact's importance.",
@@ -475,7 +475,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The sensitivity of the contact's data. For example: %GDATA_CONTACTS_SENSITIVITY_NORMAL or %GDATA_CONTACTS_SENSITIVITY_PRIVATE.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SENSITIVITY,
 	                                 g_param_spec_string ("sensitivity",
 	                                                      "Sensitivity", "The sensitivity of the contact's data.",
@@ -489,7 +489,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * whereas #GDataContactsContact:nickname should be used for nicknames.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SHORT_NAME,
 	                                 g_param_spec_string ("short-name",
 	                                                      "Short name", "A short name for the contact.",
@@ -502,7 +502,7 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	 * The subject of the contact. (i.e. The contact's relevance to the address book.)
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SUBJECT,
 	                                 g_param_spec_string ("subject",
 	                                                      "Subject", "The subject of the contact.",
@@ -1262,7 +1262,7 @@ get_entry_uri (const gchar *id)
  * Return value: a new #GDataContactsContact; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataContactsContact *
 gdata_contacts_contact_new (const gchar *id)
 {
@@ -1278,7 +1278,7 @@ gdata_contacts_contact_new (const gchar *id)
  * Return value: the UNIX timestamp for the time the contact was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.2.0
- **/
+ */
 gint64
 gdata_contacts_contact_get_edited (GDataContactsContact *self)
 {
@@ -1295,7 +1295,7 @@ gdata_contacts_contact_get_edited (GDataContactsContact *self)
  * Return value: (transfer none): the contact's name, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 GDataGDName *
 gdata_contacts_contact_get_name (GDataContactsContact *self)
 {
@@ -1313,7 +1313,7 @@ gdata_contacts_contact_get_name (GDataContactsContact *self)
  * @name must not be %NULL, though all its properties may be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_name (GDataContactsContact *self, GDataGDName *name)
 {
@@ -1338,7 +1338,7 @@ gdata_contacts_contact_set_name (GDataContactsContact *self, GDataGDName *name)
  * Return value: the contact's nickname, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_nickname (GDataContactsContact *self)
 {
@@ -1356,7 +1356,7 @@ gdata_contacts_contact_get_nickname (GDataContactsContact *self)
  * If @nickname is %NULL, the contact's nickname will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_nickname (GDataContactsContact *self, const gchar *nickname)
 {
@@ -1394,7 +1394,7 @@ gdata_contacts_contact_get_file_as (GDataContactsContact *self)
  * If @file_as is %NULL, the contact will be filed under their full name.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_file_as (GDataContactsContact *self, const gchar *file_as)
 {
@@ -1418,7 +1418,7 @@ gdata_contacts_contact_set_file_as (GDataContactsContact *self, const gchar *fil
  * Return value: whether the contact's birthday has the year set
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday)
 {
@@ -1441,7 +1441,7 @@ gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday
  * If @birthday is %NULL, the contact's birthday will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_birthday (GDataContactsContact *self, GDate *birthday, gboolean birthday_has_year)
 {
@@ -1470,7 +1470,7 @@ gdata_contacts_contact_set_birthday (GDataContactsContact *self, GDate *birthday
  * Return value: the contact's billing information, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_billing_information (GDataContactsContact *self)
 {
@@ -1488,7 +1488,7 @@ gdata_contacts_contact_get_billing_information (GDataContactsContact *self)
  * If @billing_information is %NULL, the contact's billing information will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_billing_information (GDataContactsContact *self, const gchar *billing_information)
 {
@@ -1509,7 +1509,7 @@ gdata_contacts_contact_set_billing_information (GDataContactsContact *self, cons
  * Return value: the name or address of a directory server associated with the contact, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_directory_server (GDataContactsContact *self)
 {
@@ -1527,7 +1527,7 @@ gdata_contacts_contact_get_directory_server (GDataContactsContact *self)
  * If @directory_server is %NULL, the contact's directory server will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_directory_server (GDataContactsContact *self, const gchar *directory_server)
 {
@@ -1548,7 +1548,7 @@ gdata_contacts_contact_set_directory_server (GDataContactsContact *self, const g
  * Return value: the gender of the contact, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_gender (GDataContactsContact *self)
 {
@@ -1566,7 +1566,7 @@ gdata_contacts_contact_get_gender (GDataContactsContact *self)
  * If @gender is %NULL, the contact's gender will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_gender (GDataContactsContact *self, const gchar *gender)
 {
@@ -1587,7 +1587,7 @@ gdata_contacts_contact_set_gender (GDataContactsContact *self, const gchar *gend
  * Return value: the initials of the contact, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_initials (GDataContactsContact *self)
 {
@@ -1605,7 +1605,7 @@ gdata_contacts_contact_get_initials (GDataContactsContact *self)
  * If @initials is %NULL, the contact's initials will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_initials (GDataContactsContact *self, const gchar *initials)
 {
@@ -1625,7 +1625,7 @@ gdata_contacts_contact_set_initials (GDataContactsContact *self, const gchar *in
  * Return value: the maiden name of the contact, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_maiden_name (GDataContactsContact *self)
 {
@@ -1643,7 +1643,7 @@ gdata_contacts_contact_get_maiden_name (GDataContactsContact *self)
  * If @maiden_name is %NULL, the contact's maiden name will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_maiden_name (GDataContactsContact *self, const gchar *maiden_name)
 {
@@ -1663,7 +1663,7 @@ gdata_contacts_contact_set_maiden_name (GDataContactsContact *self, const gchar 
  * Return value: a mileage associated with the contact, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_mileage (GDataContactsContact *self)
 {
@@ -1681,7 +1681,7 @@ gdata_contacts_contact_get_mileage (GDataContactsContact *self)
  * If @mileage is %NULL, the contact's mileage will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_mileage (GDataContactsContact *self, const gchar *mileage)
 {
@@ -1701,7 +1701,7 @@ gdata_contacts_contact_set_mileage (GDataContactsContact *self, const gchar *mil
  * Return value: the contact's occupation, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_occupation (GDataContactsContact *self)
 {
@@ -1719,7 +1719,7 @@ gdata_contacts_contact_get_occupation (GDataContactsContact *self)
  * If @occupation is %NULL, the contact's occupation will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_occupation (GDataContactsContact *self, const gchar *occupation)
 {
@@ -1739,7 +1739,7 @@ gdata_contacts_contact_set_occupation (GDataContactsContact *self, const gchar *
  * Return value: the contact's priority, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_priority (GDataContactsContact *self)
 {
@@ -1757,7 +1757,7 @@ gdata_contacts_contact_get_priority (GDataContactsContact *self)
  * If @priority is %NULL, the contact's priority will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_priority (GDataContactsContact *self, const gchar *priority)
 {
@@ -1778,7 +1778,7 @@ gdata_contacts_contact_set_priority (GDataContactsContact *self, const gchar *pr
  * Return value: the contact's sensitivity, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_sensitivity (GDataContactsContact *self)
 {
@@ -1796,7 +1796,7 @@ gdata_contacts_contact_get_sensitivity (GDataContactsContact *self)
  * If @sensitivity is %NULL, the contact's sensitivity will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_sensitivity (GDataContactsContact *self, const gchar *sensitivity)
 {
@@ -1817,7 +1817,7 @@ gdata_contacts_contact_set_sensitivity (GDataContactsContact *self, const gchar 
  * Return value: the contact's short name, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_short_name (GDataContactsContact *self)
 {
@@ -1835,7 +1835,7 @@ gdata_contacts_contact_get_short_name (GDataContactsContact *self)
  * If @short_name is %NULL, the contact's short name will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_short_name (GDataContactsContact *self, const gchar *short_name)
 {
@@ -1855,7 +1855,7 @@ gdata_contacts_contact_set_short_name (GDataContactsContact *self, const gchar *
  * Return value: the contact's subject, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_subject (GDataContactsContact *self)
 {
@@ -1873,7 +1873,7 @@ gdata_contacts_contact_get_subject (GDataContactsContact *self)
  * If @subject is %NULL, the contact's subject will be removed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_subject (GDataContactsContact *self, const gchar *subject)
 {
@@ -1898,7 +1898,7 @@ gdata_contacts_contact_set_subject (GDataContactsContact *self, const gchar *sub
  * Duplicate e-mail addresses will not be added to the list.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEmailAddress *email_address)
 {
@@ -1918,7 +1918,7 @@ gdata_contacts_contact_add_email_address (GDataContactsContact *self, GDataGDEma
  * Return value: (element-type GData.GDEmailAddress) (transfer none): a #GList of #GDataGDEmailAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_email_addresses (GDataContactsContact *self)
 {
@@ -1935,7 +1935,7 @@ gdata_contacts_contact_get_email_addresses (GDataContactsContact *self)
  * Return value: (transfer none): a #GDataGDEmailAddress, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDEmailAddress *
 gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self)
 {
@@ -1958,7 +1958,7 @@ gdata_contacts_contact_get_primary_email_address (GDataContactsContact *self)
  * Removes all e-mail addresses from the contact.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_email_addresses (GDataContactsContact *self)
 {
@@ -1987,7 +1987,7 @@ gdata_contacts_contact_remove_all_email_addresses (GDataContactsContact *self)
  * Duplicate IM addresses will not be added to the list.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_contact_add_im_address (GDataContactsContact *self, GDataGDIMAddress *im_address)
 {
@@ -2007,7 +2007,7 @@ gdata_contacts_contact_add_im_address (GDataContactsContact *self, GDataGDIMAddr
  * Return value: (element-type GData.GDIMAddress) (transfer none): a #GList of #GDataGDIMAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_im_addresses (GDataContactsContact *self)
 {
@@ -2024,7 +2024,7 @@ gdata_contacts_contact_get_im_addresses (GDataContactsContact *self)
  * Return value: (transfer none): a #GDataGDIMAddress, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDIMAddress *
 gdata_contacts_contact_get_primary_im_address (GDataContactsContact *self)
 {
@@ -2047,7 +2047,7 @@ gdata_contacts_contact_get_primary_im_address (GDataContactsContact *self)
  * Removes all IM addresses from the contact.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_im_addresses (GDataContactsContact *self)
 {
@@ -2076,7 +2076,7 @@ gdata_contacts_contact_remove_all_im_addresses (GDataContactsContact *self)
  * Duplicate phone numbers will not be added to the list.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhoneNumber *phone_number)
 {
@@ -2096,7 +2096,7 @@ gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhon
  * Return value: (element-type GData.GDPhoneNumber) (transfer none): a #GList of #GDataGDPhoneNumber<!-- -->s, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_phone_numbers (GDataContactsContact *self)
 {
@@ -2113,7 +2113,7 @@ gdata_contacts_contact_get_phone_numbers (GDataContactsContact *self)
  * Return value: (transfer none): a #GDataGDPhoneNumber, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDPhoneNumber *
 gdata_contacts_contact_get_primary_phone_number (GDataContactsContact *self)
 {
@@ -2136,7 +2136,7 @@ gdata_contacts_contact_get_primary_phone_number (GDataContactsContact *self)
  * Removes all phone numbers from the contact.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_phone_numbers (GDataContactsContact *self)
 {
@@ -2165,7 +2165,7 @@ gdata_contacts_contact_remove_all_phone_numbers (GDataContactsContact *self)
  * Duplicate postal addresses will not be added to the list.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_contact_add_postal_address (GDataContactsContact *self, GDataGDPostalAddress *postal_address)
 {
@@ -2185,7 +2185,7 @@ gdata_contacts_contact_add_postal_address (GDataContactsContact *self, GDataGDPo
  * Return value: (element-type GData.GDPostalAddress) (transfer none): a #GList of #GDataGDPostalAddress<!-- -->es, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_postal_addresses (GDataContactsContact *self)
 {
@@ -2202,7 +2202,7 @@ gdata_contacts_contact_get_postal_addresses (GDataContactsContact *self)
  * Return value: (transfer none): a #GDataGDPostalAddress, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDPostalAddress *
 gdata_contacts_contact_get_primary_postal_address (GDataContactsContact *self)
 {
@@ -2225,7 +2225,7 @@ gdata_contacts_contact_get_primary_postal_address (GDataContactsContact *self)
  * Removes all postal addresses from the contact.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_postal_addresses (GDataContactsContact *self)
 {
@@ -2254,7 +2254,7 @@ gdata_contacts_contact_remove_all_postal_addresses (GDataContactsContact *self)
  * Duplicate organizations will not be added to the list.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrganization *organization)
 {
@@ -2274,7 +2274,7 @@ gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrga
  * Return value: (element-type GData.GDOrganization) (transfer none): a #GList of #GDataGDOrganization<!-- -->s, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_organizations (GDataContactsContact *self)
 {
@@ -2291,7 +2291,7 @@ gdata_contacts_contact_get_organizations (GDataContactsContact *self)
  * Return value: (transfer none): a #GDataGDOrganization, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDOrganization *
 gdata_contacts_contact_get_primary_organization (GDataContactsContact *self)
 {
@@ -2314,7 +2314,7 @@ gdata_contacts_contact_get_primary_organization (GDataContactsContact *self)
  * Removes all organizations from the contact.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_organizations (GDataContactsContact *self)
 {
@@ -2339,7 +2339,7 @@ gdata_contacts_contact_remove_all_organizations (GDataContactsContact *self)
  * Duplicate jots will be added to the list, and multiple jots with the same relation type can be added to a single contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_add_jot (GDataContactsContact *self, GDataGContactJot *jot)
 {
@@ -2358,7 +2358,7 @@ gdata_contacts_contact_add_jot (GDataContactsContact *self, GDataGContactJot *jo
  * Return value: (element-type GData.GContactJot) (transfer none): a #GList of #GDataGContactJot<!-- -->s, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_jots (GDataContactsContact *self)
 {
@@ -2373,7 +2373,7 @@ gdata_contacts_contact_get_jots (GDataContactsContact *self)
  * Removes all jots from the contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_jots (GDataContactsContact *self)
 {
@@ -2399,7 +2399,7 @@ gdata_contacts_contact_remove_all_jots (GDataContactsContact *self)
  * Though it may not make sense for some relation types to be repeated, adding them is allowed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_add_relation (GDataContactsContact *self, GDataGContactRelation *relation)
 {
@@ -2418,7 +2418,7 @@ gdata_contacts_contact_add_relation (GDataContactsContact *self, GDataGContactRe
  * Return value: (element-type GData.GContactRelation) (transfer none): a #GList of #GDataGContactRelation<!-- -->s, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_relations (GDataContactsContact *self)
 {
@@ -2433,7 +2433,7 @@ gdata_contacts_contact_get_relations (GDataContactsContact *self)
  * Removes all relations from the contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_relations (GDataContactsContact *self)
 {
@@ -2459,7 +2459,7 @@ gdata_contacts_contact_remove_all_relations (GDataContactsContact *self)
  * relation types or labels.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_add_website (GDataContactsContact *self, GDataGContactWebsite *website)
 {
@@ -2479,7 +2479,7 @@ gdata_contacts_contact_add_website (GDataContactsContact *self, GDataGContactWeb
  * Return value: (element-type GData.GContactWebsite) (transfer none): a #GList of #GDataGContactWebsite<!-- -->s, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_websites (GDataContactsContact *self)
 {
@@ -2496,7 +2496,7 @@ gdata_contacts_contact_get_websites (GDataContactsContact *self)
  * Return value: (transfer none): a #GDataGContactWebsite, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactWebsite *
 gdata_contacts_contact_get_primary_website (GDataContactsContact *self)
 {
@@ -2519,7 +2519,7 @@ gdata_contacts_contact_get_primary_website (GDataContactsContact *self)
  * Removes all websites from the contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_websites (GDataContactsContact *self)
 {
@@ -2545,7 +2545,7 @@ gdata_contacts_contact_remove_all_websites (GDataContactsContact *self)
  * Though it may not make sense for some event types to be repeated, adding them is allowed.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_add_event (GDataContactsContact *self, GDataGContactEvent *event)
 {
@@ -2564,7 +2564,7 @@ gdata_contacts_contact_add_event (GDataContactsContact *self, GDataGContactEvent
  * Return value: (element-type GData.GContactEvent) (transfer none): a #GList of #GDataGContactEvent<!-- -->s, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_events (GDataContactsContact *self)
 {
@@ -2579,7 +2579,7 @@ gdata_contacts_contact_get_events (GDataContactsContact *self)
  * Removes all events from the contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_events (GDataContactsContact *self)
 {
@@ -2605,7 +2605,7 @@ gdata_contacts_contact_remove_all_events (GDataContactsContact *self)
  * relation types or labels.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGContactCalendar *calendar)
 {
@@ -2625,7 +2625,7 @@ gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGContactCa
  * Return value: (element-type GData.GContactCalendar) (transfer none): a #GList of #GDataGContactCalendar<!-- -->s, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_calendars (GDataContactsContact *self)
 {
@@ -2642,7 +2642,7 @@ gdata_contacts_contact_get_calendars (GDataContactsContact *self)
  * Return value: (transfer none): a #GDataGContactCalendar, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactCalendar *
 gdata_contacts_contact_get_primary_calendar (GDataContactsContact *self)
 {
@@ -2665,7 +2665,7 @@ gdata_contacts_contact_get_primary_calendar (GDataContactsContact *self)
  * Removes all calendars from the contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self)
 {
@@ -2690,7 +2690,7 @@ gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self)
  * Duplicate IDs will not be added to the list.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContactExternalID *external_id)
 {
@@ -2710,7 +2710,7 @@ gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContac
  * Return value: (element-type GData.GContactExternalID) (transfer none): a #GList of #GDataGContactExternalID<!-- -->s, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_external_ids (GDataContactsContact *self)
 {
@@ -2725,7 +2725,7 @@ gdata_contacts_contact_get_external_ids (GDataContactsContact *self)
  * Removes all external IDs from the contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_external_ids (GDataContactsContact *self)
 {
@@ -2750,7 +2750,7 @@ gdata_contacts_contact_remove_all_external_ids (GDataContactsContact *self)
  * Duplicate hobbies will not be added to the list.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_add_hobby (GDataContactsContact *self, const gchar *hobby)
 {
@@ -2770,7 +2770,7 @@ gdata_contacts_contact_add_hobby (GDataContactsContact *self, const gchar *hobby
  * Return value: (element-type utf8) (transfer none): a #GList of hobby strings, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_hobbies (GDataContactsContact *self)
 {
@@ -2785,7 +2785,7 @@ gdata_contacts_contact_get_hobbies (GDataContactsContact *self)
  * Removes all hobbies from the contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_hobbies (GDataContactsContact *self)
 {
@@ -2810,7 +2810,7 @@ gdata_contacts_contact_remove_all_hobbies (GDataContactsContact *self)
  * Duplicate languages will not be added to the list.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_add_language (GDataContactsContact *self, GDataGContactLanguage *language)
 {
@@ -2830,7 +2830,7 @@ gdata_contacts_contact_add_language (GDataContactsContact *self, GDataGContactLa
  * Return value: (element-type GData.GContactLanguage) (transfer none): a #GList of #GDataGContactLanguage<!-- -->s, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_languages (GDataContactsContact *self)
 {
@@ -2845,7 +2845,7 @@ gdata_contacts_contact_get_languages (GDataContactsContact *self)
  * Removes all languages from the contact.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_remove_all_languages (GDataContactsContact *self)
 {
@@ -2871,7 +2871,7 @@ gdata_contacts_contact_remove_all_languages (GDataContactsContact *self)
  * Return value: the property's value, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const gchar *name)
 {
@@ -2889,7 +2889,7 @@ gdata_contacts_contact_get_extended_property (GDataContactsContact *self, const 
  * Return value: (transfer none): a #GHashTable of extended properties
  *
  * Since: 0.4.0
- **/
+ */
 GHashTable *
 gdata_contacts_contact_get_extended_properties (GDataContactsContact *self)
 {
@@ -2916,7 +2916,7 @@ gdata_contacts_contact_get_extended_properties (GDataContactsContact *self)
  * Return value: %TRUE if the property was updated or deleted successfully, %FALSE otherwise
  *
  * Since: 0.2.0
- **/
+ */
 gboolean
 gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const gchar *name, const gchar *value)
 {
@@ -2955,7 +2955,7 @@ gdata_contacts_contact_set_extended_property (GDataContactsContact *self, const 
  * Return value: the field's value, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_user_defined_field (GDataContactsContact *self, const gchar *name)
 {
@@ -2973,7 +2973,7 @@ gdata_contacts_contact_get_user_defined_field (GDataContactsContact *self, const
  * Return value: (transfer none): a #GHashTable of user-defined fields
  *
  * Since: 0.7.0
- **/
+ */
 GHashTable *
 gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self)
 {
@@ -2995,7 +2995,7 @@ gdata_contacts_contact_get_user_defined_fields (GDataContactsContact *self)
  * To unset a field, set @value to %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_contact_set_user_defined_field (GDataContactsContact *self, const gchar *name, const gchar *value)
 {
@@ -3019,7 +3019,7 @@ gdata_contacts_contact_set_user_defined_field (GDataContactsContact *self, const
  * Adds the contact to the given group. @href should be a URI.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_contact_add_group (GDataContactsContact *self, const gchar *href)
 {
@@ -3036,7 +3036,7 @@ gdata_contacts_contact_add_group (GDataContactsContact *self, const gchar *href)
  * Removes the contact from the given group. @href should be a URI.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_contact_remove_group (GDataContactsContact *self, const gchar *href)
 {
@@ -3060,7 +3060,7 @@ gdata_contacts_contact_remove_group (GDataContactsContact *self, const gchar *hr
  * Return value: %TRUE if the contact has recently been removed from the group, %FALSE otherwise
  *
  * Since: 0.2.0
- **/
+ */
 gboolean
 gdata_contacts_contact_is_group_deleted (GDataContactsContact *self, const gchar *href)
 {
@@ -3078,7 +3078,7 @@ gdata_contacts_contact_is_group_deleted (GDataContactsContact *self, const gchar
  * Return value: (element-type utf8) (transfer container): a #GList of constant group ID URIs, or %NULL; free with g_list_free()
  *
  * Since: 0.2.0
- **/
+ */
 GList *
 gdata_contacts_contact_get_groups (GDataContactsContact *self)
 {
@@ -3116,7 +3116,7 @@ gdata_contacts_contact_get_groups (GDataContactsContact *self)
  * Return value: %TRUE if the contact has been deleted, %FALSE otherwise
  *
  * Since: 0.2.0
- **/
+ */
 gboolean
 gdata_contacts_contact_is_deleted (GDataContactsContact *self)
 {
@@ -3135,7 +3135,7 @@ gdata_contacts_contact_is_deleted (GDataContactsContact *self)
  * Return value: the contact's photo's ETag if it exists, %NULL otherwise
  *
  * Since: 0.9.0
- **/
+ */
 const gchar *
 gdata_contacts_contact_get_photo_etag (GDataContactsContact *self)
 {
@@ -3164,7 +3164,7 @@ gdata_contacts_contact_get_photo_etag (GDataContactsContact *self)
  * Return value: (transfer full) (array length=length): the image data, or %NULL; free with g_free()
  *
  * Since: 0.8.0
- **/
+ */
 guint8 *
 gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsService *service, gsize *length, gchar **content_type,
                                   GCancellable *cancellable, GError **error)
@@ -3286,7 +3286,7 @@ get_photo_thread (GSimpleAsyncResult *result, GDataContactsContact *contact, GCa
  * If there is an error getting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned by gdata_contacts_contact_get_photo_finish().
  *
  * Since: 0.8.0
- **/
+ */
 void
 gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataContactsService *service, GCancellable *cancellable,
                                         GAsyncReadyCallback callback, gpointer user_data)
@@ -3321,7 +3321,7 @@ gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataContact
  * Return value: (transfer full) (array length=length): the image data, or %NULL; free with g_free()
  *
  * Since: 0.8.0
- **/
+ */
 guint8 *
 gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResult *async_result, gsize *length, gchar **content_type, GError **error)
 {
@@ -3380,7 +3380,7 @@ gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResul
  * Return value: %TRUE on success, %FALSE otherwise
  *
  * Since: 0.8.0
- **/
+ */
 gboolean
 gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsService *service, const guint8 *data, gsize length,
                                   const gchar *content_type, GCancellable *cancellable, GError **error)
@@ -3492,7 +3492,7 @@ set_photo_thread (GSimpleAsyncResult *result, GDataContactsContact *contact, GCa
  * If there is an error setting the photo, a %GDATA_SERVICE_ERROR_PROTOCOL_ERROR error will be returned by gdata_contacts_contact_set_photo_finish().
  *
  * Since: 0.8.0
- **/
+ */
 void
 gdata_contacts_contact_set_photo_async (GDataContactsContact *self, GDataContactsService *service, const guint8 *data, gsize length,
                                         const gchar *content_type, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
@@ -3531,7 +3531,7 @@ gdata_contacts_contact_set_photo_async (GDataContactsContact *self, GDataContact
  * Return value: %TRUE on success, %FALSE otherwise
  *
  * Since: 0.8.0
- **/
+ */
 gboolean
 gdata_contacts_contact_set_photo_finish (GDataContactsContact *self, GAsyncResult *async_result, GError **error)
 {

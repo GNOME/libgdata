@@ -252,7 +252,7 @@ gdata_freebase_topic_query_new (const gchar *id)
  * the locale preferences will be respected.
  *
  * Since: 0.15.1
- **/
+ */
 void
 gdata_freebase_topic_query_set_language (GDataFreebaseTopicQuery *self,
 					 const gchar             *lang)
@@ -281,7 +281,7 @@ gdata_freebase_topic_query_set_language (GDataFreebaseTopicQuery *self,
  * Return value: (allow-none): The language used on the query.
  *
  * Since: 0.15.1
- **/
+ */
 const gchar *
 gdata_freebase_topic_query_get_language (GDataFreebaseTopicQuery *self)
 {
@@ -305,7 +305,7 @@ gdata_freebase_topic_query_get_language (GDataFreebaseTopicQuery *self)
  * If no filter is set, the "commons" special value will be implicitly assumed, which returns a reasonably complete data set.
  *
  * Since: 0.15.1
- **/
+ */
 void
 gdata_freebase_topic_query_set_filter (GDataFreebaseTopicQuery *self, const gchar * const *filter)
 {
@@ -328,7 +328,7 @@ gdata_freebase_topic_query_set_filter (GDataFreebaseTopicQuery *self, const gcha
  * Return value: (array zero-terminated=1) (transfer none) (allow-none): The filter used on the query.
  *
  * Since: 0.15.1
- **/
+ */
 const gchar * const *
 gdata_freebase_topic_query_get_filter (GDataFreebaseTopicQuery *self)
 {

@@ -39,7 +39,7 @@ G_BEGIN_DECLS
  * logs, and don't redact usernames, passwords and auth. tokens
  *
  * Logging level.
- **/
+ */
 typedef enum {
 	GDATA_LOG_NONE = 0,
 	GDATA_LOG_MESSAGES = 1,

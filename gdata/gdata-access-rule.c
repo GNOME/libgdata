@@ -76,7 +76,7 @@
  * </example>
  *
  * Since: 0.3.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -144,7 +144,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * their own namespaced roles.
 	 *
 	 * Since: 0.3.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ROLE,
 	                                 g_param_spec_string ("role",
 	                                                      "Role", "The role of the person concerned by this ACL.",
@@ -157,7 +157,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * Specifies to whom this access rule applies. For example, %GDATA_ACCESS_SCOPE_USER or %GDATA_ACCESS_SCOPE_DEFAULT.
 	 *
 	 * Since: 0.3.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SCOPE_TYPE,
 	                                 g_param_spec_string ("scope-type",
 	                                                      "Scope type", "Specifies to whom this access rule applies.",
@@ -173,7 +173,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * This must be %NULL if and only if #GDataAccessRule:scope-type is %GDATA_ACCESS_SCOPE_DEFAULT.
 	 *
 	 * Since: 0.3.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SCOPE_VALUE,
 	                                 g_param_spec_string ("scope-value",
 	                                                      "Scope value", "The scope value for this access rule.",
@@ -189,7 +189,7 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the access rule was edited.",
@@ -509,7 +509,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataAccessRule; unref with g_object_unref()
  *
  * Since: 0.3.0
- **/
+ */
 GDataAccessRule *
 gdata_access_rule_new (const gchar *id)
 {
@@ -526,7 +526,7 @@ gdata_access_rule_new (const gchar *id)
  * Set @role to %NULL to unset the property in the access rule.
  *
  * Since: 0.3.0
- **/
+ */
 void
 gdata_access_rule_set_role (GDataAccessRule *self, const gchar *role)
 {
@@ -547,7 +547,7 @@ gdata_access_rule_set_role (GDataAccessRule *self, const gchar *role)
  * Return value: the access rule's role, or %NULL
  *
  * Since: 0.3.0
- **/
+ */
 const gchar *
 gdata_access_rule_get_role (GDataAccessRule *self)
 {
@@ -572,7 +572,7 @@ gdata_access_rule_get_role (GDataAccessRule *self)
  * documentation</ulink> for more information.
  *
  * Since: 0.3.0
- **/
+ */
 void
 gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gchar *value)
 {
@@ -601,7 +601,7 @@ gdata_access_rule_set_scope (GDataAccessRule *self, const gchar *type, const gch
  * Gets the #GDataAccessRule:scope-type and #GDataAccessRule:scope-value properties.
  *
  * Since: 0.3.0
- **/
+ */
 void
 gdata_access_rule_get_scope (GDataAccessRule *self, const gchar **type, const gchar **value)
 {
@@ -621,7 +621,7 @@ gdata_access_rule_get_scope (GDataAccessRule *self, const gchar **type, const gc
  * Return value: the UNIX timestamp for the time the access rule was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.7.0
- **/
+ */
 gint64
 gdata_access_rule_get_edited (GDataAccessRule *self)
 {

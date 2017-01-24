@@ -31,7 +31,7 @@
  * </ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <glib-object.h>
@@ -68,7 +68,7 @@ gdata_comparable_get_type (void)
  * Return value: %TRUE on success, %FALSE otherwise
  *
  * Since: 0.7.0
- **/
+ */
 gint
 gdata_comparable_compare (GDataComparable *self, GDataComparable *other)
 {

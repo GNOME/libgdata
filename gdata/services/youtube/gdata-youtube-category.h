@@ -43,7 +43,7 @@ typedef struct _GDataYouTubeCategoryPrivate	GDataYouTubeCategoryPrivate;
  * All the fields in the #GDataYouTubeCategory structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataCategory parent;
 	GDataYouTubeCategoryPrivate *priv;
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataYouTubeCategoryClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataCategoryClass parent;

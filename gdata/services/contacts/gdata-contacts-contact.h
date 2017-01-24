@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  * The contact is male.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_GENDER_MALE "male"
 
 /**
@@ -55,7 +55,7 @@ G_BEGIN_DECLS
  * The contact is female.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_GENDER_FEMALE "female"
 
 /**
@@ -64,7 +64,7 @@ G_BEGIN_DECLS
  * The contact is of low importance.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_PRIORITY_LOW "low"
 
 /**
@@ -73,7 +73,7 @@ G_BEGIN_DECLS
  * The contact is of normal importance.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_PRIORITY_NORMAL "normal"
 
 /**
@@ -82,7 +82,7 @@ G_BEGIN_DECLS
  * The contact is of high importance.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_PRIORITY_HIGH "high"
 
 /**
@@ -91,7 +91,7 @@ G_BEGIN_DECLS
  * The contact's data is confidential.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_SENSITIVITY_CONFIDENTIAL "confidential"
 
 /**
@@ -100,7 +100,7 @@ G_BEGIN_DECLS
  * The contact's data is of normal sensitivity.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_SENSITIVITY_NORMAL "normal"
 
 /**
@@ -109,7 +109,7 @@ G_BEGIN_DECLS
  * The contact's data is personal.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_SENSITIVITY_PERSONAL "personal"
 
 /**
@@ -118,7 +118,7 @@ G_BEGIN_DECLS
  * The contact's data is private.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_SENSITIVITY_PRIVATE "private"
 
 #define GDATA_TYPE_CONTACTS_CONTACT		(gdata_contacts_contact_get_type ())
@@ -136,7 +136,7 @@ typedef struct _GDataContactsContactPrivate	GDataContactsContactPrivate;
  * All the fields in the #GDataContactsContact structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataContactsContactPrivate *priv;
@@ -148,7 +148,7 @@ typedef struct {
  * All the fields in the #GDataContactsContactClass structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

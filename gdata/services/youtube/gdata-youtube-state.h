@@ -40,7 +40,7 @@ typedef struct _GDataYouTubeStatePrivate	GDataYouTubeStatePrivate;
  * GDataYouTubeState:
  *
  * All the fields in the #GDataYouTubeState structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataYouTubeStatePrivate *priv;
@@ -52,7 +52,7 @@ typedef struct {
  * All the fields in the #GDataYouTubeStateClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

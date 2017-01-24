@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_PRESENTATION_PDF "pdf"
 
 /**
@@ -50,7 +50,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_PRESENTATION_PNG "png"
 
 /**
@@ -63,7 +63,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_PRESENTATION_PPT "ppt"
 
 /**
@@ -78,7 +78,7 @@ G_BEGIN_DECLS
  * Since: 0.7.0
  * Deprecated: SWF export has been deprecated in the protocol due to low demand for it; PDF export (using %GDATA_DOCUMENTS_PRESENTATION_PDF) is
  * recommended instead. (Since: 0.11.0.)
- **/
+ */
 #ifndef LIBGDATA_DISABLE_DEPRECATED
 #define GDATA_DOCUMENTS_PRESENTATION_SWF "swf"
 #endif /* !LIBGDATA_DISABLE_DEPRECATED */
@@ -93,7 +93,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_PRESENTATION_TXT "txt"
 
 #define GDATA_TYPE_DOCUMENTS_PRESENTATION		(gdata_documents_presentation_get_type ())
@@ -114,7 +114,7 @@ typedef struct _GDataDocumentsPresentationPrivate	GDataDocumentsPresentationPriv
  * All the fields in the #GDataDocumentsPresentation structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataDocumentsDocument parent;
 	GDataDocumentsPresentationPrivate *priv;
@@ -126,7 +126,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsPresentationClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataDocumentsDocumentClass parent;

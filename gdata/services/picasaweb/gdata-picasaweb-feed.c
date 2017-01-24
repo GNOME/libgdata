@@ -28,7 +28,7 @@
  * properties which are specific to the Google PicasaWeb API.
  *
  * Since: 0.6.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>

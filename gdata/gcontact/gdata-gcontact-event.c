@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcEvent">gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <string.h>
@@ -91,7 +91,7 @@ gdata_gcontact_event_class_init (GDataGContactEventClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcEvent">GContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DATE,
 	                                 g_param_spec_boxed ("date",
 	                                                     "Date", "The date of the event.",
@@ -108,7 +108,7 @@ gdata_gcontact_event_class_init (GDataGContactEventClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcEvent">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of website.",
@@ -125,7 +125,7 @@ gdata_gcontact_event_class_init (GDataGContactEventClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcEvent">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A simple string value used to name this event.",
@@ -317,7 +317,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGContactEvent; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactEvent *
 gdata_gcontact_event_new (const GDate *date, const gchar *relation_type, const gchar *label)
 {
@@ -336,7 +336,7 @@ gdata_gcontact_event_new (const GDate *date, const gchar *relation_type, const g
  * Gets the #GDataGContactEvent:date property.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_event_get_date (GDataGContactEvent *self, GDate *date)
 {
@@ -353,7 +353,7 @@ gdata_gcontact_event_get_date (GDataGContactEvent *self, GDate *date)
  * Sets the #GDataGContactEvent:date property to @date.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_event_set_date (GDataGContactEvent *self, const GDate *date)
 {
@@ -373,7 +373,7 @@ gdata_gcontact_event_set_date (GDataGContactEvent *self, const GDate *date)
  * Return value: the event's relation type, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_event_get_relation_type (GDataGContactEvent *self)
 {
@@ -393,7 +393,7 @@ gdata_gcontact_event_get_relation_type (GDataGContactEvent *self)
  * exactly one of #GDataGContactEvent:relation-type and #GDataGContactEvent:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_event_set_relation_type (GDataGContactEvent *self, const gchar *relation_type)
 {
@@ -414,7 +414,7 @@ gdata_gcontact_event_set_relation_type (GDataGContactEvent *self, const gchar *r
  * Return value: the event's label, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_event_get_label (GDataGContactEvent *self)
 {
@@ -433,7 +433,7 @@ gdata_gcontact_event_get_label (GDataGContactEvent *self)
  * exactly one of #GDataGContactEvent:relation-type and #GDataGContactEvent:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_event_set_label (GDataGContactEvent *self, const gchar *label)
 {

@@ -135,7 +135,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 *
 	 * Since: 0.2.0
 	 * Deprecated: 0.15.0: Use #GDataService:proxy-resolver instead, which gives more flexibility over the proxy used.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_PROXY_URI,
 	                                 g_param_spec_boxed ("proxy-uri",
 	                                                     "Proxy URI", "The proxy URI used internally for all network requests.",
@@ -153,7 +153,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its timeout setting.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TIMEOUT,
 	                                 g_param_spec_uint ("timeout",
 	                                                    "Timeout", "A timeout, in seconds, for network operations.",
@@ -172,7 +172,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * The server-side behaviour is undefined if it doesn't support a given locale.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LOCALE,
 	                                 g_param_spec_string ("locale",
 	                                                      "Locale", "The locale to use for network requests, in Unix locale format.",
@@ -196,7 +196,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	 * video to YouTube does. It's an unnecessary overhead to require the user to authorize against a service when not strictly required.
 	 *
 	 * Since: 0.9.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_AUTHORIZER,
 	                                 g_param_spec_object ("authorizer",
 	                                                      "Authorizer", "An authorizer object to provide an authorization token for each request.",
@@ -851,7 +851,7 @@ query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *c
  * to get the results of the operation.
  *
  * Since: 0.9.1
- **/
+ */
 void
 gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
                            GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -892,7 +892,7 @@ gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain,
  * Finishes an asynchronous query operation started with gdata_service_query_async().
  *
  * Return value: (transfer full): a #GDataFeed of query results, or %NULL; unref with g_object_unref()
- **/
+ */
 GDataFeed *
 gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
@@ -1082,7 +1082,7 @@ real_parse_feed (GDataService *self,
  * Return value: (transfer full): a #GDataFeed of query results, or %NULL; unref with g_object_unref()
  *
  * Since: 0.9.0
- **/
+ */
 GDataFeed *
 gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query, GType entry_type,
                      GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
@@ -1119,7 +1119,7 @@ gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const
  * Return value: (transfer full): a #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.9.0
- **/
+ */
 GDataEntry *
 gdata_service_query_single_entry (GDataService *self, GDataAuthorizationDomain *domain, const gchar *entry_id, GDataQuery *query, GType entry_type,
                                   GCancellable *cancellable, GError **error)
@@ -1227,7 +1227,7 @@ query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GC
  * to get the results of the operation.
  *
  * Since: 0.9.0
- **/
+ */
 void
 gdata_service_query_single_entry_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *entry_id, GDataQuery *query,
                                         GType entry_type, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
@@ -1266,7 +1266,7 @@ gdata_service_query_single_entry_async (GDataService *self, GDataAuthorizationDo
  * Return value: (transfer full): a #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataEntry *
 gdata_service_query_single_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
@@ -1345,7 +1345,7 @@ insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * to get the results of the operation.
  *
  * Since: 0.9.0
- **/
+ */
 void
 gdata_service_insert_entry_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *upload_uri, GDataEntry *entry,
                                   GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
@@ -1381,7 +1381,7 @@ gdata_service_insert_entry_async (GDataService *self, GDataAuthorizationDomain *
  * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.3.0
- **/
+ */
 GDataEntry *
 gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
@@ -1555,7 +1555,7 @@ update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * to get the results of the operation.
  *
  * Since: 0.9.0
- **/
+ */
 void
 gdata_service_update_entry_async (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry,
                                   GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
@@ -1589,7 +1589,7 @@ gdata_service_update_entry_async (GDataService *self, GDataAuthorizationDomain *
  * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.3.0
- **/
+ */
 GDataEntry *
 gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
@@ -1637,7 +1637,7 @@ gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_resul
  * Return value: (transfer full): an updated #GDataEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.9.0
- **/
+ */
 GDataEntry *
 gdata_service_update_entry (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
@@ -1757,7 +1757,7 @@ delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancell
  * to get the results of the operation.
  *
  * Since: 0.9.0
- **/
+ */
 void
 gdata_service_delete_entry_async (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry,
                                   GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
@@ -1791,7 +1791,7 @@ gdata_service_delete_entry_async (GDataService *self, GDataAuthorizationDomain *
  * Return value: %TRUE on success, %FALSE otherwise
  *
  * Since: 0.3.0
- **/
+ */
 gboolean
 gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
@@ -1833,7 +1833,7 @@ gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_resul
  * Return value: %TRUE on success, %FALSE otherwise
  *
  * Since: 0.9.0
- **/
+ */
 gboolean
 gdata_service_delete_entry (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry, GCancellable *cancellable, GError **error)
 {
@@ -1915,7 +1915,7 @@ _get_proxy_uri (GDataService *self)
  *
  * Since: 0.2.0
  * Deprecated: 0.15.0: Use gdata_service_get_proxy_resolver() instead, which gives more flexibility over the proxy used.
- **/
+ */
 SoupURI *
 gdata_service_get_proxy_uri (GDataService *self)
 {
@@ -1945,7 +1945,7 @@ _set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
  *
  * Since: 0.2.0
  * Deprecated: 0.15.0: Use gdata_service_set_proxy_resolver() instead, which gives more flexibility over the proxy used.
- **/
+ */
 void
 gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
 {
@@ -2012,7 +2012,7 @@ notify_timeout_cb (GObject *gobject, GParamSpec *pspec, GObject *self)
  * Return value: the timeout, or <code class="literal">0</code>
  *
  * Since: 0.7.0
- **/
+ */
 guint
 gdata_service_get_timeout (GDataService *self)
 {
@@ -2037,7 +2037,7 @@ gdata_service_get_timeout (GDataService *self)
  * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its timeout setting.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_service_set_timeout (GDataService *self, guint timeout)
 {
@@ -2329,7 +2329,7 @@ soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char direction, 
  * Return value: the log level
  *
  * Since: 0.7.0
- **/
+ */
 GDataLogLevel
 _gdata_service_get_log_level (void)
 {
@@ -2434,7 +2434,7 @@ _gdata_service_build_session (void)
  * Return value: the current locale
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_service_get_locale (GDataService *self)
 {
@@ -2453,7 +2453,7 @@ gdata_service_get_locale (GDataService *self)
  * unexpectedly. The only supported use of this function is after creation of a service, but before any network requests are made.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_service_set_locale (GDataService *self, const gchar *locale)
 {

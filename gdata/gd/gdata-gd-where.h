@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The relation type URI for an event location.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_WHERE_EVENT "http://schemas.google.com/g/2005#event"
 
 /**
@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * The relation type URI for an alternate event location, such as a video conference site.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_WHERE_EVENT_ALTERNATE "http://schemas.google.com/g/2005#event.alternate"
 
 /**
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * The relation type URI for an event's parking lot.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_WHERE_EVENT_PARKING "http://schemas.google.com/g/2005#event.parking"
 
 #define GDATA_TYPE_GD_WHERE		(gdata_gd_where_get_type ())
@@ -69,7 +69,7 @@ typedef struct _GDataGDWherePrivate	GDataGDWherePrivate;
  * All the fields in the #GDataGDWhere structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDWherePrivate *priv;
@@ -81,7 +81,7 @@ typedef struct {
  * All the fields in the #GDataGDWhereClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

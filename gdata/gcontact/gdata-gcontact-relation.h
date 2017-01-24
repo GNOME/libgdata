@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_ASSISTANT "assistant"
 
 /**
@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_BROTHER "brother"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_CHILD "child"
 
 /**
@@ -72,7 +72,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_DOMESTIC_PARTNER "domestic-partner"
 
 /**
@@ -84,7 +84,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_FATHER "father"
 
 /**
@@ -96,7 +96,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_FRIEND "friend"
 
 /**
@@ -108,7 +108,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_MANAGER "manager"
 
 /**
@@ -120,7 +120,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_MOTHER "mother"
 
 /**
@@ -132,7 +132,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_PARENT "parent"
 
 /**
@@ -144,7 +144,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_PARTNER "partner"
 
 /**
@@ -156,7 +156,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_REFERRER "referred-by"
 
 /**
@@ -168,7 +168,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_RELATIVE "relative"
 
 /**
@@ -180,7 +180,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_SISTER "sister"
 
 /**
@@ -192,7 +192,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_RELATION_SPOUSE "spouse"
 
 #define GDATA_TYPE_GCONTACT_RELATION		(gdata_gcontact_relation_get_type ())
@@ -210,7 +210,7 @@ typedef struct _GDataGContactRelationPrivate	GDataGContactRelationPrivate;
  * All the fields in the #GDataGContactRelation structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGContactRelationPrivate *priv;
@@ -222,7 +222,7 @@ typedef struct {
  * All the fields in the #GDataGContactRelationClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

@@ -43,7 +43,7 @@ typedef struct _GDataDownloadStreamPrivate	GDataDownloadStreamPrivate;
  * All the fields in the #GDataDownloadStream structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	GInputStream parent;
 	GDataDownloadStreamPrivate *priv;
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataDownloadStreamClass structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GInputStreamClass parent;

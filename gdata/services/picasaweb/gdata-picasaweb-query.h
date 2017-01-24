@@ -44,7 +44,7 @@ typedef struct _GDataPicasaWebQueryPrivate	GDataPicasaWebQueryPrivate;
  * All the fields in the #GDataPicasaWebQuery structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataQuery parent;
 	GDataPicasaWebQueryPrivate *priv;
@@ -56,7 +56,7 @@ typedef struct {
  * All the fields in the #GDataPicasaWebQueryClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataQueryClass parent;

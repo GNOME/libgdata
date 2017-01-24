@@ -81,7 +81,7 @@ gdata_freebase_result_class_init (GDataFreebaseResultClass *klass)
 	 * containing (possibly nested) Freebase schema types and values.
 	 *
 	 * Since: 0.15.1
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VARIANT,
 	                                 g_param_spec_variant ("variant",
 							       "Variant", "Variant holding the raw result.",
@@ -179,7 +179,7 @@ gdata_freebase_result_new (void)
  * Returns: (allow-none) (transfer full): the serialized result, or %NULL; unref with g_variant_unref()
  *
  * Since: 0.15.1
- **/
+ */
 GVariant *
 gdata_freebase_result_dup_variant (GDataFreebaseResult *self)
 {

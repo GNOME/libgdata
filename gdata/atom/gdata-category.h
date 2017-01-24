@@ -80,7 +80,7 @@ typedef struct _GDataCategoryPrivate	GDataCategoryPrivate;
  * GDataCategory:
  *
  * All the fields in the #GDataCategory structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataCategoryPrivate *priv;
@@ -92,7 +92,7 @@ typedef struct {
  * All the fields in the #GDataCategoryClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

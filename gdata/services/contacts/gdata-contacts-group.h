@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The system group ID for the "My Contacts" system group.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_GROUP_CONTACTS "Contacts"
 
 /**
@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * The system group ID for the "Friends" system group.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_GROUP_FRIENDS "Friends"
 
 /**
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * The system group ID for the "Family" system group.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_GROUP_FAMILY "Family"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * The system group ID for the "Coworkers" system group.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_CONTACTS_GROUP_COWORKERS "Coworkers"
 
 #define GDATA_TYPE_CONTACTS_GROUP		(gdata_contacts_group_get_type ())
@@ -78,7 +78,7 @@ typedef struct _GDataContactsGroupPrivate	GDataContactsGroupPrivate;
  * All the fields in the #GDataContactsGroup structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataContactsGroupPrivate *priv;
@@ -90,7 +90,7 @@ typedef struct {
  * All the fields in the #GDataContactsGroupClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

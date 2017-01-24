@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_SPREADSHEET_CSV "csv"
 
 /**
@@ -50,7 +50,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_SPREADSHEET_ODS "ods"
 
 /**
@@ -63,7 +63,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_SPREADSHEET_PDF "pdf"
 
 /**
@@ -76,7 +76,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_SPREADSHEET_TSV "tsv"
 
 /**
@@ -89,7 +89,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_SPREADSHEET_XLS "xls"
 
 /**
@@ -102,7 +102,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_SPREADSHEET_HTML "html"
 
 #define GDATA_TYPE_DOCUMENTS_SPREADSHEET		(gdata_documents_spreadsheet_get_type ())
@@ -123,7 +123,7 @@ typedef struct _GDataDocumentsSpreadsheetPrivate	GDataDocumentsSpreadsheetPrivat
  * All the fields in the #GDataDocumentsSpreadsheet structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataDocumentsDocument parent;
 	GDataDocumentsSpreadsheetPrivate *priv;
@@ -135,7 +135,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsSpreadsheetClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataDocumentsDocumentClass parent;

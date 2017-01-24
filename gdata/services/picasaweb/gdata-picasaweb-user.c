@@ -28,7 +28,7 @@
  * properties which are specific to the Google PicasaWeb API.
  *
  * Since: 0.6.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -274,7 +274,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the feed's user, or %NULL
  *
  * Since: 0.6.0
- **/
+ */
 const gchar *
 gdata_picasaweb_user_get_user (GDataPicasaWebUser *self)
 {
@@ -291,7 +291,7 @@ gdata_picasaweb_user_get_user (GDataPicasaWebUser *self)
  * Return value: the nickname of the feed's user's nickname, or %NULL
  *
  * Since: 0.6.0
- **/
+ */
 const gchar *
 gdata_picasaweb_user_get_nickname (GDataPicasaWebUser *self)
 {
@@ -310,7 +310,7 @@ gdata_picasaweb_user_get_nickname (GDataPicasaWebUser *self)
  * Return value: the maximum capacity in bytes for this feed's account, or <code class="literal">-1</code>
  *
  * Since: 0.6.0
- **/
+ */
 gint64
 gdata_picasaweb_user_get_quota_limit (GDataPicasaWebUser *self)
 {
@@ -329,7 +329,7 @@ gdata_picasaweb_user_get_quota_limit (GDataPicasaWebUser *self)
  * Return value: the current number of bytes in use by this feed's account, or <code class="literal">-1</code>
  *
  * Since: 0.6.0
- **/
+ */
 gint64
 gdata_picasaweb_user_get_quota_current (GDataPicasaWebUser *self)
 {
@@ -348,7 +348,7 @@ gdata_picasaweb_user_get_quota_current (GDataPicasaWebUser *self)
  * Return value: the maximum number of photos an album for this account can hold, or <code class="literal">-1</code>
  *
  * Since: 0.6.0
- **/
+ */
 gint
 gdata_picasaweb_user_get_max_photos_per_album (GDataPicasaWebUser *self)
 {
@@ -365,7 +365,7 @@ gdata_picasaweb_user_get_max_photos_per_album (GDataPicasaWebUser *self)
  * Return value: the URI for the thumbnail of the account, or %NULL
  *
  * Since: 0.6.0
- **/
+ */
 const gchar *
 gdata_picasaweb_user_get_thumbnail_uri (GDataPicasaWebUser *self)
 {

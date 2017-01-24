@@ -44,7 +44,7 @@ G_BEGIN_DECLS
  * All the fields in the #GDataPicasaWebService structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataService parent;
 } GDataPicasaWebService;
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataPicasaWebServiceClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataServiceClass parent;

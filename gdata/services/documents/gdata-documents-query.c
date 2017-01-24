@@ -79,7 +79,7 @@
  * </example>
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -143,7 +143,7 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * A shortcut to request all documents that have been deleted.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SHOW_DELETED,
 	                                 g_param_spec_boolean ("show-deleted",
 	                                                       "Show deleted?", "A shortcut to request all documents that have been deleted.",
@@ -156,7 +156,7 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * Specifies if the request also returns folders.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SHOW_FOLDERS,
 	                                 g_param_spec_boolean ("show-folders",
 	                                                       "Show folders?", "Specifies if the request also returns folders.",
@@ -169,7 +169,7 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * Specifies whether the query should search for an exact title match for the #GDataDocumentsQuery:title parameter.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EXACT_TITLE,
 	                                 g_param_spec_boolean ("exact-title",
 	                                                       "Exact title?", "Specifies whether the query should search for an exact title match.",
@@ -182,7 +182,7 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * Specifies the ID of the folder in which to search.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_FOLDER_ID,
 	                                 g_param_spec_string ("folder-id",
 	                                                      "Folder ID", "Specifies the ID of the folder in which to search.",
@@ -196,7 +196,7 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 	 * title match will be searched for, otherwise substring matches will also be returned.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TITLE,
 	                                 g_param_spec_string ("title",
 	                                                      "Title", "A title (or title fragment) to be searched for.",
@@ -411,7 +411,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  * Return value: a new #GDataDocumentsQuery
  *
  * Since: 0.4.0
- **/
+ */
 GDataDocumentsQuery *
 gdata_documents_query_new (const gchar *q)
 {
@@ -430,7 +430,7 @@ gdata_documents_query_new (const gchar *q)
  * Return value: a new #GDataDocumentsQuery
  *
  * Since: 0.4.0
- **/
+ */
 GDataDocumentsQuery *
 gdata_documents_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
 {
@@ -450,7 +450,7 @@ gdata_documents_query_new_with_limits (const gchar *q, guint start_index, guint 
  * Return value: %TRUE if the request should return deleted entries, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_documents_query_show_deleted (GDataDocumentsQuery *self)
 {
@@ -466,7 +466,7 @@ gdata_documents_query_show_deleted (GDataDocumentsQuery *self)
  * Sets the #GDataDocumentsQuery:show_deleted property to @show_deleted.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_documents_query_set_show_deleted (GDataDocumentsQuery *self, gboolean show_deleted)
 {
@@ -487,7 +487,7 @@ gdata_documents_query_set_show_deleted (GDataDocumentsQuery *self, gboolean show
  * Return value: %TRUE if the request should return folders, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_documents_query_show_folders (GDataDocumentsQuery *self)
 {
@@ -503,7 +503,7 @@ gdata_documents_query_show_folders (GDataDocumentsQuery *self)
  * Sets the #GDataDocumentsQuery:show-folders property to show_folders.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_documents_query_set_show_folders (GDataDocumentsQuery *self, gboolean show_folders)
 {
@@ -524,7 +524,7 @@ gdata_documents_query_set_show_folders (GDataDocumentsQuery *self, gboolean show
  * Return value: the ID of the folder to be queried, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_documents_query_get_folder_id (GDataDocumentsQuery *self)
 {
@@ -542,7 +542,7 @@ gdata_documents_query_get_folder_id (GDataDocumentsQuery *self)
  * Set @folder_id to %NULL to unset the property in the query URI.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_documents_query_set_folder_id (GDataDocumentsQuery *self, const gchar *folder_id)
 {
@@ -565,7 +565,7 @@ gdata_documents_query_set_folder_id (GDataDocumentsQuery *self, const gchar *fol
  * Return value: the title (or title fragment) being queried for, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_documents_query_get_title (GDataDocumentsQuery *self)
 {
@@ -582,7 +582,7 @@ gdata_documents_query_get_title (GDataDocumentsQuery *self)
  * Return value: %TRUE if the query matches the exact title of documents with #GDataDocumentsQuery:title, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_documents_query_get_exact_title (GDataDocumentsQuery *self)
 {
@@ -601,7 +601,7 @@ gdata_documents_query_get_exact_title (GDataDocumentsQuery *self)
  * Set @title to %NULL to unset the property in the query URI.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_documents_query_set_title (GDataDocumentsQuery *self, const gchar *title, gboolean exact_title)
 {
@@ -630,7 +630,7 @@ gdata_documents_query_set_title (GDataDocumentsQuery *self, const gchar *title, 
  * query, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 GList *
 gdata_documents_query_get_collaborator_addresses (GDataDocumentsQuery *self)
 {
@@ -648,7 +648,7 @@ gdata_documents_query_get_collaborator_addresses (GDataDocumentsQuery *self)
  * or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 GList *
 gdata_documents_query_get_reader_addresses (GDataDocumentsQuery *self)
 {
@@ -664,7 +664,7 @@ gdata_documents_query_get_reader_addresses (GDataDocumentsQuery *self)
  * Add @email_address as a #GDataGDEmailAddress to the list of readers, the documents readable by whom will be queried.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_documents_query_add_reader (GDataDocumentsQuery *self, const gchar *email_address)
 {
@@ -688,7 +688,7 @@ gdata_documents_query_add_reader (GDataDocumentsQuery *self, const gchar *email_
  * Add @email_address as a #GDataGDEmailAddress to the list of collaborators whose edited documents will be queried.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_documents_query_add_collaborator (GDataDocumentsQuery *self, const gchar *email_address)
 {

@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The relation type URI for a home IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_ADDRESS_HOME "http://schemas.google.com/g/2005#home"
 
 /**
@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * The relation type URI for a Microsoft NetMeeting IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_ADDRESS_NETMEETING "http://schemas.google.com/g/2005#netmeeting"
 
 /**
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * The relation type URI for a miscellaneous IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_ADDRESS_OTHER "http://schemas.google.com/g/2005#other"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * The relation type URI for a work IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_ADDRESS_WORK "http://schemas.google.com/g/2005#work"
 
 /**
@@ -69,7 +69,7 @@ G_BEGIN_DECLS
  * The protocol type URI for an AIM IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_PROTOCOL_AIM "http://schemas.google.com/g/2005#AIM"
 
 /**
@@ -78,7 +78,7 @@ G_BEGIN_DECLS
  * The protocol type URI for an Windows Live Messenger IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_PROTOCOL_LIVE_MESSENGER "http://schemas.google.com/g/2005#MSN"
 
 /**
@@ -87,7 +87,7 @@ G_BEGIN_DECLS
  * The protocol type URI for a Yahoo! Messenger IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_PROTOCOL_YAHOO_MESSENGER "http://schemas.google.com/g/2005#YAHOO"
 
 /**
@@ -96,7 +96,7 @@ G_BEGIN_DECLS
  * The protocol type URI for a Skype IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_PROTOCOL_SKYPE "http://schemas.google.com/g/2005#SKYPE"
 
 /**
@@ -105,7 +105,7 @@ G_BEGIN_DECLS
  * The protocol type URI for a QQ IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_PROTOCOL_QQ "http://schemas.google.com/g/2005#QQ"
 
 /**
@@ -114,7 +114,7 @@ G_BEGIN_DECLS
  * The protocol type URI for a Google Talk IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_PROTOCOL_GOOGLE_TALK "http://schemas.google.com/g/2005#GOOGLE_TALK"
 
 /**
@@ -123,7 +123,7 @@ G_BEGIN_DECLS
  * The protocol type URI for an ICQ IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_PROTOCOL_ICQ "http://schemas.google.com/g/2005#ICQ"
 
 /**
@@ -132,7 +132,7 @@ G_BEGIN_DECLS
  * The protocol type URI for a Jabber IM address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_IM_PROTOCOL_JABBER "http://schemas.google.com/g/2005#JABBER"
 
 #define GDATA_TYPE_GD_IM_ADDRESS		(gdata_gd_im_address_get_type ())
@@ -150,7 +150,7 @@ typedef struct _GDataGDIMAddressPrivate		GDataGDIMAddressPrivate;
  * All the fields in the #GDataGDIMAddress structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDIMAddressPrivate *priv;
@@ -162,7 +162,7 @@ typedef struct {
  * All the fields in the #GDataGDIMAddressClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

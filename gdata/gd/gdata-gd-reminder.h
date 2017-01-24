@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The #GDataGDReminder:method for an alert to appear in the user's browser.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_REMINDER_ALERT "alert"
 
 /**
@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * The #GDataGDReminder:method for an alert to be sent to the user by e-mail.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_REMINDER_EMAIL "email"
 
 /**
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * The #GDataGDReminder:method for an alert to be sent to the user by SMS.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_REMINDER_SMS "sms"
 
 #define GDATA_TYPE_GD_REMINDER		(gdata_gd_reminder_get_type ())
@@ -69,7 +69,7 @@ typedef struct _GDataGDReminderPrivate	GDataGDReminderPrivate;
  * All the fields in the #GDataGDReminder structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDReminderPrivate *priv;
@@ -81,7 +81,7 @@ typedef struct {
  * All the fields in the #GDataGDReminderClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

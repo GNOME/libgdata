@@ -43,7 +43,7 @@ typedef struct _GDataContactsServicePrivate	GDataContactsServicePrivate;
  * All the fields in the #GDataContactsService structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataService parent;
 } GDataContactsService;
@@ -54,7 +54,7 @@ typedef struct {
  * All the fields in the #GDataContactsServiceClass structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataServiceClass parent;

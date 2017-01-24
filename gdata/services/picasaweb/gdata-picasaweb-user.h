@@ -44,7 +44,7 @@ typedef struct _GDataPicasaWebUserPrivate	GDataPicasaWebUserPrivate;
  * All the fields in the #GDataPicasaWebUser structure are private and should never be accessed directly.
  *
  * Since: 0.6.0
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataPicasaWebUserPrivate *priv;
@@ -56,7 +56,7 @@ typedef struct {
  * All the fields in the #GDataPicasaWebUserClass structure are private and should never be accessed directly.
  *
  * Since: 0.6.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

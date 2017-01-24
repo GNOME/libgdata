@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_TEXT_DOC "doc"
 
 /**
@@ -50,7 +50,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_TEXT_HTML "html"
 
 /**
@@ -76,7 +76,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_TEXT_ODT "odt"
 
 /**
@@ -89,7 +89,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_TEXT_PDF "pdf"
 
 /**
@@ -102,7 +102,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_TEXT_PNG "png"
 
 /**
@@ -115,7 +115,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_TEXT_RTF "rtf"
 
 /**
@@ -128,7 +128,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_TEXT_TXT "txt"
 
 /**
@@ -141,7 +141,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_TEXT_ZIP "zip"
 
 #define GDATA_TYPE_DOCUMENTS_TEXT		(gdata_documents_text_get_type ())
@@ -159,7 +159,7 @@ typedef struct _GDataDocumentsTextPrivate	GDataDocumentsTextPrivate;
  * All the fields in the #GDataDocumentsText structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataDocumentsDocument parent;
 	GDataDocumentsTextPrivate *priv;
@@ -171,7 +171,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsTextClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataDocumentsDocumentClass parent;

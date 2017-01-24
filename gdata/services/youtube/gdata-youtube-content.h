@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * Since: 0.3.0
  * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
- **/
+ */
 typedef enum {
 	GDATA_YOUTUBE_FORMAT_UNKNOWN = 0,
 	GDATA_YOUTUBE_FORMAT_RTSP_H263_AMR = 1,
@@ -68,7 +68,7 @@ typedef struct _GDataYouTubeContentPrivate	GDataYouTubeContentPrivate G_GNUC_DEP
  * Since: 0.4.0
  * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
- **/
+ */
 typedef struct {
 	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	GDataMediaContent parent;
@@ -84,7 +84,7 @@ typedef struct {
  * Since: 0.4.0
  * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataMediaContentClass parent;

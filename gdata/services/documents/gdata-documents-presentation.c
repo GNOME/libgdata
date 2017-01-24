@@ -31,7 +31,7 @@
  * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -79,7 +79,7 @@ gdata_documents_presentation_constructed (GObject *object)
  * Return value: (transfer full): a new #GDataDocumentsPresentation, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
- **/
+ */
 GDataDocumentsPresentation *
 gdata_documents_presentation_new (const gchar *id)
 {

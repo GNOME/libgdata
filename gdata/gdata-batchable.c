@@ -27,7 +27,7 @@
  * creation of a #GDataBatchOperation for the service, which allows a set of batch operations to be run.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>

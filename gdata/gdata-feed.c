@@ -30,7 +30,7 @@
  *
  * Each #GDataEntry represents a single object on the online service, such as a playlist, video or calendar entry, and the #GDataFeed
  * represents a collection of similar objects.
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -126,7 +126,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 *
 	 * API reference:
 	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_title">atom:title</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TITLE,
 	                                 g_param_spec_string ("title",
 	                                                      "Title", "The title of the feed.",
@@ -139,7 +139,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * The subtitle of the feed.
 	 *
 	 * API reference: <ulink type="http" url="http://atomenabled.org/developers/syndication/">atom:subtitle</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SUBTITLE,
 	                                 g_param_spec_string ("subtitle",
 	                                                      "Subtitle", "The subtitle of the feed.",
@@ -152,7 +152,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * The unique and permanent URN ID for the feed.
 	 *
 	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_id">atom:id</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ID,
 	                                 g_param_spec_string ("id",
 	                                                      "ID", "The unique and permanent URN ID for the feed.",
@@ -167,7 +167,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * more information.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ETAG,
 	                                 g_param_spec_string ("etag",
 	                                                      "ETag", "The unique ETag for this version of the feed.",
@@ -181,7 +181,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 *
 	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_updated">
 	 * atom:updated</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_UPDATED,
 	                                 g_param_spec_int64 ("updated",
 	                                                     "Updated", "The time the feed was last updated.",
@@ -194,7 +194,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * The URI of a logo for the feed.
 	 *
 	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_logo">atom:logo</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LOGO,
 	                                 g_param_spec_string ("logo",
 	                                                      "Logo", "The URI of a logo for the feed.",
@@ -210,7 +210,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.icon">atom:icon</ulink>
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ICON,
 	                                 g_param_spec_string ("icon",
 	                                                      "Icon", "The URI of an icon for the feed.",
@@ -224,7 +224,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 *
 	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_generator">
 	 * atom:generator</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_GENERATOR,
 	                                 g_param_spec_object ("generator",
 	                                                      "Generator", "Details of the software used to generate the feed.",
@@ -240,7 +240,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.rights">Atom specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RIGHTS,
 	                                 g_param_spec_string ("rights",
 	                                                      "Rights", "The ownership rights pertaining to the entire feed.",
@@ -255,7 +255,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * API reference:
 	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_openSearch:itemsPerPage">
 	 * openSearch:itemsPerPage</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ITEMS_PER_PAGE,
 	                                 g_param_spec_uint ("items-per-page",
 	                                                    "Items per page", "The number of items per results page feed.",
@@ -272,7 +272,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 *
 	 * API reference: <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_openSearch:startIndex">
 	 * openSearch:startIndex</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_START_INDEX,
 	                                 g_param_spec_uint ("start-index",
 	                                                    "Start index", "The one-based index of the first item in the results feed.",
@@ -290,7 +290,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * API reference:
 	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_openSearch:totalResults">
 	 * openSearch:totalResults</ulink>
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TOTAL_RESULTS,
 	                                 g_param_spec_uint ("total-results",
 	                                                    "Total results", "The total number of results in the feed.",
@@ -752,7 +752,7 @@ _gdata_feed_new_from_json (GType feed_type, const gchar *json, gint length, GTyp
  * Returns a list of the entries contained in this feed.
  *
  * Return value: (element-type GData.Entry) (transfer none): a #GList of #GDataEntry<!-- -->s
- **/
+ */
 GList *
 gdata_feed_get_entries (GDataFeed *self)
 {
@@ -776,7 +776,7 @@ entry_compare_cb (const GDataEntry *entry, const gchar *id)
  * Return value: (transfer none): the #GDataEntry, or %NULL
  *
  * Since: 0.2.0
- **/
+ */
 GDataEntry *
 gdata_feed_look_up_entry (GDataFeed *self, const gchar *id)
 {
@@ -798,7 +798,7 @@ gdata_feed_look_up_entry (GDataFeed *self, const gchar *id)
  * Returns a list of the categories listed in this feed.
  *
  * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategory<!-- -->s
- **/
+ */
 GList *
 gdata_feed_get_categories (GDataFeed *self)
 {
@@ -819,7 +819,7 @@ _gdata_feed_add_category (GDataFeed *self, GDataCategory *category)
  * Returns a list of the links listed in this feed.
  *
  * Return value: (element-type GData.Link) (transfer none): a #GList of #GDataLink<!-- -->s
- **/
+ */
 GList *
 gdata_feed_get_links (GDataFeed *self)
 {
@@ -843,7 +843,7 @@ link_compare_cb (const GDataLink *_link, const gchar *rel)
  * Return value: (transfer none): a #GDataLink, or %NULL if one was not found
  *
  * Since: 0.1.1
- **/
+ */
 GDataLink *
 gdata_feed_look_up_link (GDataFeed *self, const gchar *rel)
 {
@@ -871,7 +871,7 @@ _gdata_feed_add_link (GDataFeed *self, GDataLink *_link)
  * Returns a list of the authors listed in this feed.
  *
  * Return value: (element-type GData.Author) (transfer none): a #GList of #GDataAuthor<!-- -->s
- **/
+ */
 GList *
 gdata_feed_get_authors (GDataFeed *self)
 {
@@ -892,7 +892,7 @@ _gdata_feed_add_author (GDataFeed *self, GDataAuthor *author)
  * Returns the title of the feed.
  *
  * Return value: the feed's title
- **/
+ */
 const gchar *
 gdata_feed_get_title (GDataFeed *self)
 {
@@ -907,7 +907,7 @@ gdata_feed_get_title (GDataFeed *self)
  * Returns the subtitle of the feed.
  *
  * Return value: the feed's subtitle, or %NULL
- **/
+ */
 const gchar *
 gdata_feed_get_subtitle (GDataFeed *self)
 {
@@ -922,7 +922,7 @@ gdata_feed_get_subtitle (GDataFeed *self)
  * Returns the feed's unique and permanent URN ID.
  *
  * Return value: the feed's ID
- **/
+ */
 const gchar *
 gdata_feed_get_id (GDataFeed *self)
 {
@@ -939,7 +939,7 @@ gdata_feed_get_id (GDataFeed *self)
  * Return value: the feed's ETag
  *
  * Since: 0.2.0
- **/
+ */
 const gchar *
 gdata_feed_get_etag (GDataFeed *self)
 {
@@ -954,7 +954,7 @@ gdata_feed_get_etag (GDataFeed *self)
  * Gets the time the feed was last updated.
  *
  * Return value: the UNIX timestamp for the time the feed was last updated
- **/
+ */
 gint64
 gdata_feed_get_updated (GDataFeed *self)
 {
@@ -969,7 +969,7 @@ gdata_feed_get_updated (GDataFeed *self)
  * Returns the logo URI of the feed.
  *
  * Return value: the feed's logo URI, or %NULL
- **/
+ */
 const gchar *
 gdata_feed_get_logo (GDataFeed *self)
 {
@@ -986,7 +986,7 @@ gdata_feed_get_logo (GDataFeed *self)
  * Return value: the feed's icon URI, or %NULL
  *
  * Since: 0.6.0
- **/
+ */
 const gchar *
 gdata_feed_get_icon (GDataFeed *self)
 {
@@ -1001,7 +1001,7 @@ gdata_feed_get_icon (GDataFeed *self)
  * Returns details about the software which generated the feed.
  *
  * Return value: (transfer none): a #GDataGenerator, or %NULL
- **/
+ */
 GDataGenerator *
 gdata_feed_get_generator (GDataFeed *self)
 {
@@ -1018,7 +1018,7 @@ gdata_feed_get_generator (GDataFeed *self)
  * Return value: the feed's rights information
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_feed_get_rights (GDataFeed *self)
 {
@@ -1033,7 +1033,7 @@ gdata_feed_get_rights (GDataFeed *self)
  * Returns the number of items per results page feed.
  *
  * Return value: the number of items per results page feed, or <code class="literal">0</code>
- **/
+ */
 guint
 gdata_feed_get_items_per_page (GDataFeed *self)
 {
@@ -1048,7 +1048,7 @@ gdata_feed_get_items_per_page (GDataFeed *self)
  * Returns the one-based start index of the results feed in the result set.
  *
  * Return value: the one-based start index, or <code class="literal">0</code>
- **/
+ */
 guint
 gdata_feed_get_start_index (GDataFeed *self)
 {
@@ -1064,7 +1064,7 @@ gdata_feed_get_start_index (GDataFeed *self)
  * pages. If this is zero, the total number is unknown.
  *
  * Return value: the total number of results, or <code class="literal">0</code>
- **/
+ */
 guint
 gdata_feed_get_total_results (GDataFeed *self)
 {

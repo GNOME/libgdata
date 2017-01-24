@@ -42,7 +42,7 @@ typedef struct _GDataGDNamePrivate	GDataGDNamePrivate;
  * All the fields in the #GDataGDName structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDNamePrivate *priv;
@@ -54,7 +54,7 @@ typedef struct {
  * All the fields in the #GDataGDNameClass structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

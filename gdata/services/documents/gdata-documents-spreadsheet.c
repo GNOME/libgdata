@@ -85,7 +85,7 @@
  * </example>
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -136,7 +136,7 @@ gdata_documents_spreadsheet_constructed (GObject *object)
  * Return value: (transfer full): a new #GDataDocumentsSpreadsheet, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
- **/
+ */
 GDataDocumentsSpreadsheet *
 gdata_documents_spreadsheet_new (const gchar *id)
 {
@@ -161,7 +161,7 @@ gdata_documents_spreadsheet_new (const gchar *id)
  * Return value: the download URI; free with g_free()
  *
  * Since: 0.5.0
- **/
+ */
 gchar *
 gdata_documents_spreadsheet_get_download_uri (GDataDocumentsSpreadsheet *self, const gchar *export_format, gint gid)
 {

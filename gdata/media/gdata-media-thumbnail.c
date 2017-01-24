@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
  *
  * The class only implements parsing, not XML output, at the moment.
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -88,7 +88,7 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
 	                                                      "URI", "The URI of the thumbnail.",
@@ -103,7 +103,7 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_HEIGHT,
 	                                 g_param_spec_uint ("height",
 	                                                    "Height", "The height of the thumbnail, in pixels.",
@@ -118,7 +118,7 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_WIDTH,
 	                                 g_param_spec_uint ("width",
 	                                                    "Width", "The width of the thumbnail, in pixels.",
@@ -133,7 +133,7 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TIME,
 	                                 g_param_spec_int64 ("time",
 	                                                     "Time", "The time offset of the thumbnail in relation to the media object, in ms.",
@@ -227,7 +227,7 @@ parse_time (const gchar *time_string)
  * of a media stream.
  *
  * Return value: an NTP-format string describing @_time; free with g_free()
- **/
+ */
 /*static gchar *
 build_time (gint64 _time)
 {
@@ -336,7 +336,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data,
  * Return value: the thumbnail's URI
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_thumbnail_get_uri (GDataMediaThumbnail *self)
 {
@@ -353,7 +353,7 @@ gdata_media_thumbnail_get_uri (GDataMediaThumbnail *self)
  * Return value: the thumbnail's height in pixels, or <code class="literal">0</code>
  *
  * Since: 0.4.0
- **/
+ */
 guint
 gdata_media_thumbnail_get_height (GDataMediaThumbnail *self)
 {
@@ -370,7 +370,7 @@ gdata_media_thumbnail_get_height (GDataMediaThumbnail *self)
  * Return value: the thumbnail's width in pixels, or <code class="literal">0</code>
  *
  * Since: 0.4.0
- **/
+ */
 guint
 gdata_media_thumbnail_get_width (GDataMediaThumbnail *self)
 {
@@ -387,7 +387,7 @@ gdata_media_thumbnail_get_width (GDataMediaThumbnail *self)
  * Return value: the thumbnail's time offset in the media, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint64
 gdata_media_thumbnail_get_time (GDataMediaThumbnail *self)
 {
@@ -415,7 +415,7 @@ gdata_media_thumbnail_get_time (GDataMediaThumbnail *self)
  * Return value: (transfer full): a #GDataDownloadStream to download the thumbnail with, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataDownloadStream *
 gdata_media_thumbnail_download (GDataMediaThumbnail *self, GDataService *service, GCancellable *cancellable, GError **error)
 {

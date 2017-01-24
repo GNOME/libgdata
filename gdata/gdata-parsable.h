@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * @GDATA_PARSER_ERROR_EMPTY_DOCUMENT: Empty document
  *
  * Error codes for XML or JSON parsing operations.
- **/
+ */
 typedef enum {
 	GDATA_PARSER_ERROR_PARSING_STRING = 1,
 	GDATA_PARSER_ERROR_EMPTY_DOCUMENT
@@ -57,7 +57,7 @@ typedef struct _GDataParsablePrivate	GDataParsablePrivate;
  * All the fields in the #GDataParsable structure are private and should never be accessed directly.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct {
 	GObject parent;
 	GDataParsablePrivate *priv;
@@ -85,7 +85,7 @@ typedef struct {
  * a given implementation of #GDataParsable is represented as exactly one of JSON and XML.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct {
 	GObjectClass parent;
 

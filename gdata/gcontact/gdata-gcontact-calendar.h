@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_CALENDAR_WORK "work"
 
 /**
@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_CALENDAR_HOME "home"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_CALENDAR_FREE_BUSY "free-busy"
 
 #define GDATA_TYPE_GCONTACT_CALENDAR		(gdata_gcontact_calendar_get_type ())
@@ -78,7 +78,7 @@ typedef struct _GDataGContactCalendarPrivate	GDataGContactCalendarPrivate;
  * All the fields in the #GDataGContactCalendar structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGContactCalendarPrivate *priv;
@@ -90,7 +90,7 @@ typedef struct {
  * All the fields in the #GDataGContactCalendarClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

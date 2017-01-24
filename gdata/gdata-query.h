@@ -38,7 +38,7 @@ typedef struct _GDataQueryPrivate	GDataQueryPrivate;
  * GDataQuery:
  *
  * All the fields in the #GDataQuery structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GObject parent;
 	GDataQueryPrivate *priv;
@@ -48,7 +48,7 @@ typedef struct {
  * GDataQueryClass:
  *
  * All the fields in the #GDataQueryClass structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GObjectClass parent;

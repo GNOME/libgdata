@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The relation type URI for a general meeting or event attendee.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_WHO_EVENT_ATTENDEE "http://schemas.google.com/g/2005#event.attendee"
 
 /**
@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * The relation type URI for an event organizer (not necessarily an attendee).
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_WHO_EVENT_ORGANIZER "http://schemas.google.com/g/2005#event.organizer"
 
 /**
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * The relation type URI for an event performer, which is similar to %GDATA_GD_WHO_EVENT_SPEAKER, but with more emphasis on art rather than speaking.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_WHO_EVENT_PERFORMER "http://schemas.google.com/g/2005#event.performer"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * The relation type URI for a speaker at an event.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_WHO_EVENT_SPEAKER "http://schemas.google.com/g/2005#event.speaker"
 
 /* TODO: Message kind relation types (http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho) */
@@ -80,7 +80,7 @@ typedef struct _GDataGDWhoPrivate	GDataGDWhoPrivate;
  * All the fields in the #GDataGDWho structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDWhoPrivate *priv;
@@ -92,7 +92,7 @@ typedef struct {
  * All the fields in the #GDataGDWhoClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

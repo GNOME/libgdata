@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcWebsite">gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -89,7 +89,7 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcWebsite">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
 	                                                      "URI", "The URI of the website.",
@@ -106,7 +106,7 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcWebsite">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of website.",
@@ -123,7 +123,7 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcWebsite">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A simple string value used to name this website.",
@@ -139,7 +139,7 @@ gdata_gcontact_website_class_init (GDataGContactWebsiteClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcWebsite">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
 	                                 g_param_spec_boolean ("is-primary",
 	                                                       "Primary?", "Indicates which website out of a group is primary.",
@@ -314,7 +314,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGContactWebsite; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactWebsite *
 gdata_gcontact_website_new (const gchar *uri, const gchar *relation_type, const gchar *label, gboolean is_primary)
 {
@@ -335,7 +335,7 @@ gdata_gcontact_website_new (const gchar *uri, const gchar *relation_type, const 
  * Return value: the URI of the website
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_website_get_uri (GDataGContactWebsite *self)
 {
@@ -351,7 +351,7 @@ gdata_gcontact_website_get_uri (GDataGContactWebsite *self)
  * Sets the #GDataGContactWebsite:uri property to @uri.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_website_set_uri (GDataGContactWebsite *self, const gchar *uri)
 {
@@ -372,7 +372,7 @@ gdata_gcontact_website_set_uri (GDataGContactWebsite *self, const gchar *uri)
  * Return value: the website's relation type
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_website_get_relation_type (GDataGContactWebsite *self)
 {
@@ -392,7 +392,7 @@ gdata_gcontact_website_get_relation_type (GDataGContactWebsite *self)
  * exactly one of #GDataGContactWebsite:relation-type and #GDataGContactWebsite:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_website_set_relation_type (GDataGContactWebsite *self, const gchar *relation_type)
 {
@@ -413,7 +413,7 @@ gdata_gcontact_website_set_relation_type (GDataGContactWebsite *self, const gcha
  * Return value: the website's label, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_website_get_label (GDataGContactWebsite *self)
 {
@@ -432,7 +432,7 @@ gdata_gcontact_website_get_label (GDataGContactWebsite *self)
  * exactly one of #GDataGContactWebsite:relation-type and #GDataGContactWebsite:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_website_set_label (GDataGContactWebsite *self, const gchar *label)
 {
@@ -454,7 +454,7 @@ gdata_gcontact_website_set_label (GDataGContactWebsite *self, const gchar *label
  * Return value: %TRUE if this is the primary website, %FALSE otherwise
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_gcontact_website_is_primary (GDataGContactWebsite *self)
 {
@@ -470,7 +470,7 @@ gdata_gcontact_website_is_primary (GDataGContactWebsite *self)
  * Sets the #GDataGContactWebsite:is-primary property to @is_primary.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_website_set_is_primary (GDataGContactWebsite *self, gboolean is_primary)
 {

@@ -50,7 +50,7 @@ struct _GDataBufferChunk {
  * Return value: a new #GDataBuffer; free with gdata_buffer_free()
  *
  * Since: 0.5.0
- **/
+ */
 GDataBuffer *
 gdata_buffer_new (void)
 {
@@ -70,7 +70,7 @@ gdata_buffer_new (void)
  * the EOF has been reached).
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_buffer_free (GDataBuffer *self)
 {
@@ -107,7 +107,7 @@ gdata_buffer_free (GDataBuffer *self)
  * Return value: %TRUE on success, %FALSE otherwise
  *
  * Since: 0.5.0
- **/
+ */
 gboolean
 gdata_buffer_push_data (GDataBuffer *self, const guint8 *data, gsize length)
 {
@@ -196,7 +196,7 @@ pop_cancelled_cb (GCancellable *cancellable, CancelledData *data)
  * Return value: the number of bytes returned in @data
  *
  * Since: 0.5.0
- **/
+ */
 gsize
 gdata_buffer_pop_data (GDataBuffer *self, guint8 *data, gsize length_requested, gboolean *reached_eof, GCancellable *cancellable)
 {
@@ -332,7 +332,7 @@ done:
  * Return value: the number of bytes returned in @data (guaranteed to be more than <code class="literal">0</code> and at most @maximum_length)
  *
  * Since: 0.5.0
- **/
+ */
 gsize
 gdata_buffer_pop_data_limited (GDataBuffer *self, guint8 *data, gsize maximum_length, gboolean *reached_eof)
 {

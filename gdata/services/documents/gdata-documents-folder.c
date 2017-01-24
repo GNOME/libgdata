@@ -76,7 +76,7 @@
  * </example>
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -128,7 +128,7 @@ gdata_documents_folder_constructed (GObject *object)
  * Return value: a new #GDataDocumentsFolder, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
- **/
+ */
 GDataDocumentsFolder *
 gdata_documents_folder_new (const gchar *id)
 {

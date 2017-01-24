@@ -34,7 +34,7 @@ typedef struct _GDataBufferChunk GDataBufferChunk;
  * All the fields in the #GDataBuffer structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataBufferChunk *head;

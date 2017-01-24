@@ -39,7 +39,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="http://code.google.com/apis/calendar/data/2.0/developers_guide_protocol.html#SharingACalendar">ACL specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_LINK_ACCESS_CONTROL_LIST "http://schemas.google.com/acl/2007#accessControlList"
 
 #define GDATA_TYPE_ACCESS_HANDLER		(gdata_access_handler_get_type ())
@@ -54,7 +54,7 @@ G_BEGIN_DECLS
  * All the fields in the #GDataAccessHandler structure are private and should never be accessed directly.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct _GDataAccessHandler		GDataAccessHandler; /* dummy typedef */
 
 /**

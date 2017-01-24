@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -85,7 +85,7 @@ gdata_category_class_init (GDataCategoryClass *klass)
 	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TERM,
 	                                 g_param_spec_string ("term",
 	                                                      "Term", "Identifies the category to which the entry or feed belongs.",
@@ -102,7 +102,7 @@ gdata_category_class_init (GDataCategoryClass *klass)
 	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SCHEME,
 	                                 g_param_spec_string ("scheme",
 	                                                      "Scheme", "An IRI that identifies a categorization scheme.",
@@ -119,7 +119,7 @@ gdata_category_class_init (GDataCategoryClass *klass)
 	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A human-readable label for display in end-user applications.",
@@ -254,7 +254,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
  * @term must be non-%NULL and non-empty. @scheme must be %NULL or non-empty.
  *
  * Return value: a new #GDataCategory, or %NULL; unref with g_object_unref()
- **/
+ */
 GDataCategory *
 gdata_category_new (const gchar *term, const gchar *scheme, const gchar *label)
 {
@@ -272,7 +272,7 @@ gdata_category_new (const gchar *term, const gchar *scheme, const gchar *label)
  * Return value: the category's term
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_category_get_term (GDataCategory *self)
 {
@@ -288,7 +288,7 @@ gdata_category_get_term (GDataCategory *self)
  * Sets the #GDataCategory:term property to @term. @term must be non-%NULL and non-empty.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_category_set_term (GDataCategory *self, const gchar *term)
 {
@@ -309,7 +309,7 @@ gdata_category_set_term (GDataCategory *self, const gchar *term)
  * Return value: the category's scheme, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_category_get_scheme (GDataCategory *self)
 {
@@ -327,7 +327,7 @@ gdata_category_get_scheme (GDataCategory *self)
  * Set @scheme to %NULL to unset the property in the category.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_category_set_scheme (GDataCategory *self, const gchar *scheme)
 {
@@ -347,7 +347,7 @@ gdata_category_set_scheme (GDataCategory *self, const gchar *scheme)
  * Return value: the category's label, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_category_get_label (GDataCategory *self)
 {
@@ -365,7 +365,7 @@ gdata_category_get_label (GDataCategory *self)
  * Set @label to %NULL to unset the property in the category.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_category_set_label (GDataCategory *self, const gchar *label)
 {

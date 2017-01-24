@@ -98,7 +98,7 @@
  * </example>
  *
  * Since: 0.5.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -209,7 +209,7 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * The service which is used to authorize the download, and to which the download relates.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SERVICE,
 	                                 g_param_spec_object ("service",
 	                                                      "Service", "The service which is used to authorize the download.",
@@ -236,7 +236,7 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * The URI of the file to download. This must be HTTPS.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DOWNLOAD_URI,
 	                                 g_param_spec_string ("download-uri",
 	                                                      "Download URI", "The URI of the file to download.",
@@ -254,7 +254,7 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * or marshal the notification to the thread which owns the #GDataDownloadStream as appropriate.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE,
 	                                 g_param_spec_string ("content-type",
 	                                                      "Content type", "The content type of the file being downloaded.",
@@ -272,7 +272,7 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * or marshal the notification to the thread which owns the #GDataDownloadStream as appropriate.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CONTENT_LENGTH,
 	                                 g_param_spec_long ("content-length",
 	                                                    "Content length", "The length (in bytes) of the file being downloaded.",
@@ -293,7 +293,7 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 	 * call. The only way to cancel the download operation completely is using #GDataDownloadStream:cancellable.
 	 *
 	 * Since: 0.8.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CANCELLABLE,
 	                                 g_param_spec_object ("cancellable",
 	                                                      "Cancellable", "An optional cancellable used to cancel the entire download operation.",
@@ -946,7 +946,7 @@ reset_network_thread (GDataDownloadStream *self)
  * Return value: a new #GInputStream, or %NULL; unref with g_object_unref()
  *
  * Since: 0.9.0
- **/
+ */
 GInputStream *
 gdata_download_stream_new (GDataService *service, GDataAuthorizationDomain *domain, const gchar *download_uri, GCancellable *cancellable)
 {
@@ -972,7 +972,7 @@ gdata_download_stream_new (GDataService *service, GDataAuthorizationDomain *doma
  * Return value: (transfer none): the #GDataService used to authorize the download
  *
  * Since: 0.5.0
- **/
+ */
 GDataService *
 gdata_download_stream_get_service (GDataDownloadStream *self)
 {
@@ -1007,7 +1007,7 @@ gdata_download_stream_get_authorization_domain (GDataDownloadStream *self)
  * Return value: the URI of the file being downloaded
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_download_stream_get_download_uri (GDataDownloadStream *self)
 {
@@ -1025,7 +1025,7 @@ gdata_download_stream_get_download_uri (GDataDownloadStream *self)
  * Return value: the content type of the file being downloaded, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_download_stream_get_content_type (GDataDownloadStream *self)
 {
@@ -1051,7 +1051,7 @@ gdata_download_stream_get_content_type (GDataDownloadStream *self)
  * Return value: the content length of the file being downloaded, or <code class="literal">-1</code>
  *
  * Since: 0.5.0
- **/
+ */
 gssize
 gdata_download_stream_get_content_length (GDataDownloadStream *self)
 {
@@ -1077,7 +1077,7 @@ gdata_download_stream_get_content_length (GDataDownloadStream *self)
  * Return value: (transfer none): the #GCancellable for the entire download operation
  *
  * Since: 0.8.0
- **/
+ */
 GCancellable *
 gdata_download_stream_get_cancellable (GDataDownloadStream *self)
 {

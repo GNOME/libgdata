@@ -43,7 +43,7 @@ typedef struct _GDataFeedPrivate	GDataFeedPrivate;
  * GDataFeed:
  *
  * All the fields in the #GDataFeed structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsable parent;
@@ -54,7 +54,7 @@ typedef struct {
  * GDataFeedClass:
  *
  * All the fields in the #GDataFeedClass structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

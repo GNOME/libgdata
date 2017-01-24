@@ -35,7 +35,7 @@
  * #GDataAccessRule<!-- -->s will be performed unauthorized (i.e. as if by a non-logged-in user). This will not usually work.
  *
  * Since: 0.3.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -182,7 +182,7 @@ get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler
  * to get the results of the operation.
  *
  * Since: 0.9.1
- **/
+ */
 void
 gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
                                       GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -232,7 +232,7 @@ gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *se
  * Return value: (transfer full): a #GDataFeed of access control rules, or %NULL; unref with g_object_unref()
  *
  * Since: 0.3.0
- **/
+ */
 GDataFeed *
 gdata_access_handler_get_rules (GDataAccessHandler *self, GDataService *service, GCancellable *cancellable,
                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)

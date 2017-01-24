@@ -40,7 +40,7 @@ typedef struct _GDataAuthorPrivate	GDataAuthorPrivate;
  * GDataAuthor:
  *
  * All the fields in the #GDataAuthor structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataAuthorPrivate *priv;
@@ -52,7 +52,7 @@ typedef struct {
  * All the fields in the #GDataAuthorClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

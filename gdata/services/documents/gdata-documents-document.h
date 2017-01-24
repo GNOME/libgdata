@@ -43,7 +43,7 @@ typedef struct _GDataDocumentsDocumentPrivate	GDataDocumentsDocumentPrivate;
  * All the fields in the #GDataDocumentsDocument structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataDocumentsEntry parent;
 	GDataDocumentsDocumentPrivate *priv;
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsDocumentClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataDocumentsEntryClass parent;

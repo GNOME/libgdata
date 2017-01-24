@@ -44,7 +44,7 @@ typedef struct _GDataDocumentsPdfPrivate	GDataDocumentsPdfPrivate;
  * All the fields in the #GDataDocumentsPdf structure are private and should never be accessed directly.
  *
  * Since: 0.13.3
- **/
+ */
 typedef struct {
 	GDataDocumentsDocument parent;
 	GDataDocumentsPdfPrivate *priv;
@@ -56,7 +56,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsPdfClass structure are private and should never be accessed directly.
  *
  * Since: 0.13.3
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataDocumentsDocumentClass parent;

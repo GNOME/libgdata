@@ -42,7 +42,7 @@ typedef struct _GDataExifTagsPrivate	GDataExifTagsPrivate;
  * All the fields in the #GDataExifTags structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataExifTagsPrivate *priv;
@@ -54,7 +54,7 @@ typedef struct {
  * All the fields in the #GDataExifTagsClass structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

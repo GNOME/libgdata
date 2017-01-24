@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The relation type URI for the postal address of a workplace.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_POSTAL_ADDRESS_WORK "http://schemas.google.com/g/2005#work"
 
 /**
@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * The relation type URI for the postal address of a home.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_POSTAL_ADDRESS_HOME "http://schemas.google.com/g/2005#home"
 
 /**
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * The relation type URI for a miscellaneous postal address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_POSTAL_ADDRESS_OTHER "http://schemas.google.com/g/2005#other"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * Parcels and letters can be sent to the address. Value for #GDataGDPostalAddress:mail-class.
  *
  * Since: 0.5.0
- **/
+ */
 #define GDATA_GD_MAIL_CLASS_BOTH "http://schemas.google.com/g/2005#both"
 
 /**
@@ -69,7 +69,7 @@ G_BEGIN_DECLS
  * Only letters can be sent to the address. Value for #GDataGDPostalAddress:mail-class.
  *
  * Since: 0.5.0
- **/
+ */
 #define GDATA_GD_MAIL_CLASS_LETTERS "http://schemas.google.com/g/2005#letters"
 
 /**
@@ -78,7 +78,7 @@ G_BEGIN_DECLS
  * Only parcels can be sent to the address. Value for #GDataGDPostalAddress:mail-class.
  *
  * Since: 0.5.0
- **/
+ */
 #define GDATA_GD_MAIL_CLASS_PARCELS "http://schemas.google.com/g/2005#parcels"
 
 /**
@@ -87,7 +87,7 @@ G_BEGIN_DECLS
  * Address is purely locational and cannot be used for mail. Value for #GDataGDPostalAddress:mail-class.
  *
  * Since: 0.5.0
- **/
+ */
 #define GDATA_GD_MAIL_CLASS_NEITHER "http://schemas.google.com/g/2005#neither"
 
 /**
@@ -96,7 +96,7 @@ G_BEGIN_DECLS
  * The address is for general usage. Value for #GDataGDPostalAddress:usage.
  *
  * Since: 0.5.0
- **/
+ */
 #define GDATA_GD_ADDRESS_USAGE_GENERAL "http://schemas.google.com/g/2005#general"
 
 /**
@@ -105,7 +105,7 @@ G_BEGIN_DECLS
  * The address is for local usage. Value for #GDataGDPostalAddress:usage.
  *
  * Since: 0.5.0
- **/
+ */
 #define GDATA_GD_ADDRESS_USAGE_LOCAL "http://schemas.google.com/g/2005#local"
 
 #define GDATA_TYPE_GD_POSTAL_ADDRESS		(gdata_gd_postal_address_get_type ())
@@ -123,7 +123,7 @@ typedef struct _GDataGDPostalAddressPrivate	GDataGDPostalAddressPrivate;
  * All the fields in the #GDataGDPostalAddress structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDPostalAddressPrivate *priv;
@@ -135,7 +135,7 @@ typedef struct {
  * All the fields in the #GDataGDPostalAddressClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

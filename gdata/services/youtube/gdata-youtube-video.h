@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  * online documentation</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN "widescreen"
 
 /**
@@ -49,7 +49,7 @@ G_BEGIN_DECLS
  * An action to rate a video, for use with gdata_youtube_video_set_access_control().
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_YOUTUBE_ACTION_RATE "rate"
 
 /**
@@ -58,7 +58,7 @@ G_BEGIN_DECLS
  * An action to comment on a video, for use with gdata_youtube_video_set_access_control().
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_YOUTUBE_ACTION_COMMENT "comment"
 
 /**
@@ -67,7 +67,7 @@ G_BEGIN_DECLS
  * An action to rate other users' comments on a video, for use with gdata_youtube_video_set_access_control().
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_YOUTUBE_ACTION_COMMENT_VOTE "commentVote"
 
 /**
@@ -76,7 +76,7 @@ G_BEGIN_DECLS
  * An action to add a video response to a video, for use with gdata_youtube_video_set_access_control().
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_YOUTUBE_ACTION_VIDEO_RESPOND "videoRespond"
 
 /**
@@ -85,7 +85,7 @@ G_BEGIN_DECLS
  * An action to embed a video on third-party websites, for use with gdata_youtube_video_set_access_control().
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_YOUTUBE_ACTION_EMBED "embed"
 
 /**
@@ -94,7 +94,7 @@ G_BEGIN_DECLS
  * An action allowing YouTube to show the video on mobile phones and televisions, for use with gdata_youtube_video_set_access_control().
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_YOUTUBE_ACTION_SYNDICATE "syndicate"
 
 #ifndef LIBGDATA_DISABLE_DEPRECATED
@@ -147,7 +147,7 @@ G_BEGIN_DECLS
  * %GDATA_YOUTUBE_ACTION_RATE and %GDATA_YOUTUBE_ACTION_COMMENT.
  *
  * Since: 0.7.0
- **/
+ */
 typedef enum {
 	GDATA_YOUTUBE_PERMISSION_ALLOWED,
 	GDATA_YOUTUBE_PERMISSION_DENIED,
@@ -167,7 +167,7 @@ typedef struct _GDataYouTubeVideoPrivate	GDataYouTubeVideoPrivate;
  * GDataYouTubeVideo:
  *
  * All the fields in the #GDataYouTubeVideo structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataYouTubeVideoPrivate *priv;
@@ -177,7 +177,7 @@ typedef struct {
  * GDataYouTubeVideoClass:
  *
  * All the fields in the #GDataYouTubeVideoClass structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

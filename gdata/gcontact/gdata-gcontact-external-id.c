@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcExternalId">gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -87,7 +87,7 @@ gdata_gcontact_external_id_class_init (GDataGContactExternalIDClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcExternalId">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VALUE,
 	                                 g_param_spec_string ("value",
 	                                                      "Value", "The value of the external ID.",
@@ -104,7 +104,7 @@ gdata_gcontact_external_id_class_init (GDataGContactExternalIDClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcExternalId">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of external ID.",
@@ -120,7 +120,7 @@ gdata_gcontact_external_id_class_init (GDataGContactExternalIDClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcExternalId">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A free-form string that identifies the type of external ID.",
@@ -276,7 +276,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGContactExternalID; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactExternalID *
 gdata_gcontact_external_id_new (const gchar *value, const gchar *relation_type, const gchar *label)
 {
@@ -296,7 +296,7 @@ gdata_gcontact_external_id_new (const gchar *value, const gchar *relation_type, 
  * Return value: the external ID's value
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_external_id_get_value (GDataGContactExternalID *self)
 {
@@ -312,7 +312,7 @@ gdata_gcontact_external_id_get_value (GDataGContactExternalID *self)
  * Sets the #GDataGContactExternalID:value property to @value.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_external_id_set_value (GDataGContactExternalID *self, const gchar *value)
 {
@@ -333,7 +333,7 @@ gdata_gcontact_external_id_set_value (GDataGContactExternalID *self, const gchar
  * Return value: the type of the relation, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_external_id_get_relation_type (GDataGContactExternalID *self)
 {
@@ -353,7 +353,7 @@ gdata_gcontact_external_id_get_relation_type (GDataGContactExternalID *self)
  * exactly one of #GDataGContactExternalID:relation-type and #GDataGContactExternalID:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_external_id_set_relation_type (GDataGContactExternalID *self, const gchar *relation_type)
 {
@@ -374,7 +374,7 @@ gdata_gcontact_external_id_set_relation_type (GDataGContactExternalID *self, con
  * Return value: a free-form label for the external ID, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_external_id_get_label (GDataGContactExternalID *self)
 {
@@ -393,7 +393,7 @@ gdata_gcontact_external_id_get_label (GDataGContactExternalID *self)
  * exactly one of #GDataGContactExternalID:relation-type and #GDataGContactExternalID:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_external_id_set_label (GDataGContactExternalID *self, const gchar *label)
 {

@@ -29,7 +29,7 @@
  * The class only implements parsing, not XML output, at the moment.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -97,7 +97,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
 	                                                      "URI", "The direct URI to the media object.",
@@ -112,7 +112,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_FILESIZE,
 	                                 g_param_spec_ulong ("filesize",
 	                                                     "Filesize", "The number of bytes of the media object.",
@@ -127,7 +127,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE,
 	                                 g_param_spec_string ("content-type",
 	                                                      "Content type", "The standard MIME type of the object.",
@@ -143,7 +143,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_MEDIUM,
 	                                 g_param_spec_enum ("medium",
 	                                                    "Medium", "The type of object.",
@@ -158,7 +158,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_DEFAULT,
 	                                 g_param_spec_boolean ("is-default",
 	                                                       "Default?", "Determines if this is the default content for the media group.",
@@ -173,7 +173,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EXPRESSION,
 	                                 g_param_spec_enum ("expression",
 	                                                    "Expression", "Determines if the object is a sample or the full version of the object.",
@@ -188,7 +188,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DURATION,
 	                                 g_param_spec_int64 ("duration",
 	                                                     "Duration", "The number of seconds for which the media object plays.",
@@ -203,7 +203,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_HEIGHT,
 	                                 g_param_spec_uint ("height",
 	                                                    "Height", "The height of the media object.",
@@ -218,7 +218,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_WIDTH,
 	                                 g_param_spec_uint ("width",
 	                                                    "Width", "The width of the media object.",
@@ -390,7 +390,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the content's URI
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_content_get_uri (GDataMediaContent *self)
 {
@@ -407,7 +407,7 @@ gdata_media_content_get_uri (GDataMediaContent *self)
  * Return value: the number of bytes in the content, or <code class="literal">0</code>
  *
  * Since: 0.4.0
- **/
+ */
 gsize
 gdata_media_content_get_filesize (GDataMediaContent *self)
 {
@@ -424,7 +424,7 @@ gdata_media_content_get_filesize (GDataMediaContent *self)
  * Return value: the content's content (MIME) type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_content_get_content_type (GDataMediaContent *self)
 {
@@ -441,7 +441,7 @@ gdata_media_content_get_content_type (GDataMediaContent *self)
  * Return value: the type of the content, or %GDATA_MEDIA_UNKNOWN
  *
  * Since: 0.4.0
- **/
+ */
 GDataMediaMedium
 gdata_media_content_get_medium (GDataMediaContent *self)
 {
@@ -458,7 +458,7 @@ gdata_media_content_get_medium (GDataMediaContent *self)
  * Return value: %TRUE if the #GDataMediaContent is the default content for the media group, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_media_content_is_default (GDataMediaContent *self)
 {
@@ -475,7 +475,7 @@ gdata_media_content_is_default (GDataMediaContent *self)
  * Return value: the content's expression, or %GDATA_MEDIA_EXPRESSION_FULL
  *
  * Since: 0.4.0
- **/
+ */
 GDataMediaExpression
 gdata_media_content_get_expression (GDataMediaContent *self)
 {
@@ -492,7 +492,7 @@ gdata_media_content_get_expression (GDataMediaContent *self)
  * Return value: the content's duration in seconds, or <code class="literal">0</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint64
 gdata_media_content_get_duration (GDataMediaContent *self)
 {
@@ -509,7 +509,7 @@ gdata_media_content_get_duration (GDataMediaContent *self)
  * Return value: the content's height in pixels, or <code class="literal">0</code>
  *
  * Since: 0.4.0
- **/
+ */
 guint
 gdata_media_content_get_height (GDataMediaContent *self)
 {
@@ -526,7 +526,7 @@ gdata_media_content_get_height (GDataMediaContent *self)
  * Return value: the content's width in pixels, or <code class="literal">0</code>
  *
  * Since: 0.4.0
- **/
+ */
 guint
 gdata_media_content_get_width (GDataMediaContent *self)
 {
@@ -554,7 +554,7 @@ gdata_media_content_get_width (GDataMediaContent *self)
  * Return value: (transfer full): a #GDataDownloadStream to download the content with, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataDownloadStream *
 gdata_media_content_download (GDataMediaContent *self, GDataService *service, GCancellable *cancellable, GError **error)
 {

@@ -368,7 +368,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the group's title, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_group_get_title (GDataMediaGroup *self)
 {
@@ -386,7 +386,7 @@ gdata_media_group_get_title (GDataMediaGroup *self)
  * Set @title to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_media_group_set_title (GDataMediaGroup *self, const gchar *title)
 {
@@ -404,7 +404,7 @@ gdata_media_group_set_title (GDataMediaGroup *self, const gchar *title)
  * Return value: the group's description, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_group_get_description (GDataMediaGroup *self)
 {
@@ -422,7 +422,7 @@ gdata_media_group_get_description (GDataMediaGroup *self)
  * Set @description to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_media_group_set_description (GDataMediaGroup *self, const gchar *description)
 {
@@ -440,7 +440,7 @@ gdata_media_group_set_description (GDataMediaGroup *self, const gchar *descripti
  * Return value: (array zero-terminated=1): a %NULL-terminated array of the group's keywords, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar * const *
 gdata_media_group_get_keywords (GDataMediaGroup *self)
 {
@@ -458,7 +458,7 @@ gdata_media_group_get_keywords (GDataMediaGroup *self)
  * Set @keywords to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_media_group_set_keywords (GDataMediaGroup *self, const gchar * const *keywords)
 {
@@ -474,7 +474,7 @@ gdata_media_group_set_keywords (GDataMediaGroup *self, const gchar * const *keyw
  * Gets the #GDataMediaGroup:category property.
  *
  * Return value: a #GDataMediaCategory giving the group's category, or %NULL
- **/
+ */
 GDataMediaCategory *
 gdata_media_group_get_category (GDataMediaGroup *self)
 {
@@ -488,7 +488,7 @@ gdata_media_group_get_category (GDataMediaGroup *self)
  * @category: (allow-none): a new #GDataMediaCategory, or %NULL
  *
  * Sets the #GDataMediaGroup:category property to @category, and increments its reference count.
- **/
+ */
 void
 gdata_media_group_set_category (GDataMediaGroup *self, GDataMediaCategory *category)
 {
@@ -515,7 +515,7 @@ content_compare_cb (const GDataMediaContent *content, const gchar *type)
  * a list of URIs to various formats of the group content itself, such as the SWF URI or RTSP stream for a video.
  *
  * Return value: (transfer none): a #GDataMediaContent matching @type, or %NULL
- **/
+ */
 GDataMediaContent *
 gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type)
 {
@@ -538,7 +538,7 @@ gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type)
  * Returns a list of #GDataMediaContent<!-- -->s, giving the content enclosed by the group.
  *
  * Return value: (element-type GData.MediaContent) (transfer none): a #GList of #GDataMediaContent<!-- -->s,  or %NULL
- **/
+ */
 GList *
 gdata_media_group_get_contents (GDataMediaGroup *self)
 {
@@ -561,7 +561,7 @@ _gdata_media_group_add_content (GDataMediaGroup *self, GDataMediaContent *conten
  * Gets the #GDataMediaGroup:credit property.
  *
  * Return value: a #GDataMediaCredit giving information on whom to credit for the media group, or %NULL
- **/
+ */
 GDataMediaCredit *
 gdata_media_group_get_credit (GDataMediaGroup *self)
 {
@@ -587,7 +587,7 @@ _gdata_media_group_set_credit (GDataMediaGroup *self, GDataMediaCredit *credit)
  * Gets the #GDataMediaGroup:player-uri property.
  *
  * Return value: a URI where the media group is playable in a web browser, or %NULL
- **/
+ */
 const gchar *
 gdata_media_group_get_player_uri (GDataMediaGroup *self)
 {
@@ -604,7 +604,7 @@ gdata_media_group_get_player_uri (GDataMediaGroup *self)
  * The return value from this function is purely informational, and no obligation is assumed.
  *
  * Return value: %TRUE if the media is restricted in @country, %FALSE otherwise
- **/
+ */
 gboolean
 gdata_media_group_is_restricted_in_country (GDataMediaGroup *self, const gchar *country)
 {
@@ -656,7 +656,7 @@ gdata_media_group_get_media_rating (GDataMediaGroup *self, const gchar *rating_t
  * Gets a list of the thumbnails available for the group.
  *
  * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
- **/
+ */
 GList *
 gdata_media_group_get_thumbnails (GDataMediaGroup *self)
 {

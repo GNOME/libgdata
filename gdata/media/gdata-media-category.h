@@ -40,7 +40,7 @@ typedef struct _GDataMediaCategoryPrivate	GDataMediaCategoryPrivate;
  * GDataMediaCategory:
  *
  * All the fields in the #GDataMediaCategory structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataMediaCategoryPrivate *priv;
@@ -52,7 +52,7 @@ typedef struct {
  * All the fields in the #GDataMediaCategoryClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

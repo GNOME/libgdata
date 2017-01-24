@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  * Since: 0.7.0
  * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
- **/
+ */
 #define GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER "partner"
 
 #define GDATA_TYPE_YOUTUBE_CREDIT		(gdata_youtube_credit_get_type ())
@@ -58,7 +58,7 @@ typedef struct _GDataYouTubeCreditPrivate	GDataYouTubeCreditPrivate G_GNUC_DEPRE
  * Since: 0.4.0
  * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
- **/
+ */
 typedef struct {
 	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	GDataMediaCredit parent;
@@ -74,7 +74,7 @@ typedef struct {
  * Since: 0.4.0
  * Deprecated: 0.17.0: This is no longer supported by Google. There is no
  *   replacement.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataMediaCreditClass parent;

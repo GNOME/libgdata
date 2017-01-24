@@ -80,7 +80,7 @@
  * </example>
  *
  * Since: 0.4.0
- **/
+ */
 
 /* TODO: support the album cover/icon ? I think this is already done with the thumbnails, but we don't set it yet :( */
 
@@ -181,7 +181,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ALBUM_ID,
 	                                 g_param_spec_string ("album-id",
 	                                                      "Album ID", "The ID of the album.",
@@ -197,7 +197,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_USER,
 	                                 g_param_spec_string ("user",
 	                                                      "User", "The username of the album owner.",
@@ -213,7 +213,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NICKNAME,
 	                                 g_param_spec_string ("nickname",
 	                                                      "Nickname", "The user's nickname.",
@@ -229,7 +229,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The time this album was last edited.",
@@ -245,7 +245,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
 	                                 g_param_spec_string ("location",
 	                                                      "Location", "The user-specified location associated with the album.",
@@ -261,7 +261,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VISIBILITY,
 	                                 g_param_spec_enum ("visibility",
 	                                                    "Visibility", "The visibility (or access rights) of the album.",
@@ -277,7 +277,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TIMESTAMP,
 	                                 g_param_spec_int64 ("timestamp",
 	                                                     "Timestamp", "The timestamp of when the album occurred, settable by the user.",
@@ -294,7 +294,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NUM_PHOTOS,
 	                                 g_param_spec_uint ("num-photos",
 	                                                    "Number of photos", "The number of photos and videos in the album.",
@@ -312,7 +312,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NUM_PHOTOS_REMAINING,
 	                                 g_param_spec_uint ("num-photos-remaining",
 	                                                    "Number of photo spaces remaining", "The number of files spaces still free for uploads.",
@@ -329,7 +329,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_BYTES_USED,
 	                                 g_param_spec_long ("bytes-used",
 	                                                    "Number of bytes used", "The number of bytes consumed by this album and its contents.",
@@ -342,7 +342,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Whether commenting is enabled for this album.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_COMMENTING_ENABLED,
 	                                 g_param_spec_boolean ("is-commenting-enabled",
 	                                                       "Commenting enabled?", "Whether commenting is enabled for this album.",
@@ -358,7 +358,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * gphoto specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_COMMENT_COUNT,
 	                                 g_param_spec_uint ("comment-count",
 	                                                    "Comment count", "The number of comments on the album.",
@@ -374,7 +374,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TAGS,
 	                                 g_param_spec_boxed ("tags",
 	                                                     "Tags", "A NULL-terminated array of tags associated with the album",
@@ -391,7 +391,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * GeoRSS specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LATITUDE,
 	                                 g_param_spec_double ("latitude",
 	                                                      "Latitude", "The location as a latitude coordinate associated with this album.",
@@ -408,7 +408,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	 * GeoRSS specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
 	                                 g_param_spec_double ("longitude",
 	                                                      "Longitude", "The location as a longitude coordinate associated with this album.",
@@ -842,7 +842,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataPicasaWebAlbum, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
- **/
+ */
 GDataPicasaWebAlbum *
 gdata_picasaweb_album_new (const gchar *id)
 {
@@ -873,7 +873,7 @@ gdata_picasaweb_album_new (const gchar *id)
  * Return value: the album's ID
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_picasaweb_album_get_id (GDataPicasaWebAlbum *self)
 {
@@ -890,7 +890,7 @@ gdata_picasaweb_album_get_id (GDataPicasaWebAlbum *self)
  * Return value: the album owner's username
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_picasaweb_album_get_user (GDataPicasaWebAlbum *self)
 {
@@ -907,7 +907,7 @@ gdata_picasaweb_album_get_user (GDataPicasaWebAlbum *self)
  * Return value: the album owner's nickname
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_picasaweb_album_get_nickname (GDataPicasaWebAlbum *self)
 {
@@ -924,7 +924,7 @@ gdata_picasaweb_album_get_nickname (GDataPicasaWebAlbum *self)
  * Return value: the UNIX timestamp for the time the album was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint64
 gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self)
 {
@@ -941,7 +941,7 @@ gdata_picasaweb_album_get_edited (GDataPicasaWebAlbum *self)
  * Return value: the album's location, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_picasaweb_album_get_location (GDataPicasaWebAlbum *self)
 {
@@ -959,7 +959,7 @@ gdata_picasaweb_album_get_location (GDataPicasaWebAlbum *self)
  * Set @location to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_picasaweb_album_set_location (GDataPicasaWebAlbum *self, const gchar *location)
 {
@@ -979,7 +979,7 @@ gdata_picasaweb_album_set_location (GDataPicasaWebAlbum *self, const gchar *loca
  * Return value: the album's visibility level
  *
  * Since: 0.4.0
- **/
+ */
 GDataPicasaWebVisibility
 gdata_picasaweb_album_get_visibility (GDataPicasaWebAlbum *self)
 {
@@ -995,7 +995,7 @@ gdata_picasaweb_album_get_visibility (GDataPicasaWebAlbum *self)
  * Sets the #GDataPicasaWebAlbum:visibility property to @visibility.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_picasaweb_album_set_visibility (GDataPicasaWebAlbum *self, GDataPicasaWebVisibility visibility)
 {
@@ -1016,7 +1016,7 @@ gdata_picasaweb_album_set_visibility (GDataPicasaWebAlbum *self, GDataPicasaWebV
  * Return value: the UNIX timestamp for the timestamp property in milliseconds, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint64
 gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self)
 {
@@ -1034,7 +1034,7 @@ gdata_picasaweb_album_get_timestamp (GDataPicasaWebAlbum *self)
  * Set @timestamp to <code class="literal">-1</code> to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, gint64 timestamp)
 {
@@ -1054,7 +1054,7 @@ gdata_picasaweb_album_set_timestamp (GDataPicasaWebAlbum *self, gint64 timestamp
  * Return value: the number of photos currently in the album
  *
  * Since: 0.4.0
- **/
+ */
 guint
 gdata_picasaweb_album_get_num_photos (GDataPicasaWebAlbum *self)
 {
@@ -1071,7 +1071,7 @@ gdata_picasaweb_album_get_num_photos (GDataPicasaWebAlbum *self)
  * Return value: the number of photos that can still be uploaded to the album
  *
  * Since: 0.4.0
- **/
+ */
 guint
 gdata_picasaweb_album_get_num_photos_remaining (GDataPicasaWebAlbum *self)
 {
@@ -1089,7 +1089,7 @@ gdata_picasaweb_album_get_num_photos_remaining (GDataPicasaWebAlbum *self)
  * Return value: the number of bytes used by the album and its contents, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 glong
 gdata_picasaweb_album_get_bytes_used (GDataPicasaWebAlbum *self)
 {
@@ -1106,7 +1106,7 @@ gdata_picasaweb_album_get_bytes_used (GDataPicasaWebAlbum *self)
  * Return value: %TRUE if commenting is enabled for the album, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_picasaweb_album_is_commenting_enabled (GDataPicasaWebAlbum *self)
 {
@@ -1122,7 +1122,7 @@ gdata_picasaweb_album_is_commenting_enabled (GDataPicasaWebAlbum *self)
  * Sets the #GDataPicasaWebAlbum:is-commenting-enabled property to @is_commenting_enabled.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_picasaweb_album_set_is_commenting_enabled (GDataPicasaWebAlbum *self, gboolean is_commenting_enabled)
 {
@@ -1140,7 +1140,7 @@ gdata_picasaweb_album_set_is_commenting_enabled (GDataPicasaWebAlbum *self, gboo
  * Return value: the number of comments on the album
  *
  * Since: 0.4.0
- **/
+ */
 guint
 gdata_picasaweb_album_get_comment_count (GDataPicasaWebAlbum *self)
 {
@@ -1157,7 +1157,7 @@ gdata_picasaweb_album_get_comment_count (GDataPicasaWebAlbum *self)
  * Return value: (array zero-terminated=1) (transfer none): a %NULL-terminated array of tags associated with all the photos in the album, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar * const *
 gdata_picasaweb_album_get_tags (GDataPicasaWebAlbum *self)
 {
@@ -1175,7 +1175,7 @@ gdata_picasaweb_album_get_tags (GDataPicasaWebAlbum *self)
  * Set @tags to %NULL to unset the album's tag list.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_picasaweb_album_set_tags (GDataPicasaWebAlbum *self, const gchar * const *tags)
 {
@@ -1194,7 +1194,7 @@ gdata_picasaweb_album_set_tags (GDataPicasaWebAlbum *self, const gchar * const *
  * Return value: (element-type GData.MediaContent) (transfer none): a #GList of #GDataMediaContent items
  *
  * Since: 0.4.0
- **/
+ */
 GList *
 gdata_picasaweb_album_get_contents (GDataPicasaWebAlbum *self)
 {
@@ -1211,7 +1211,7 @@ gdata_picasaweb_album_get_contents (GDataPicasaWebAlbum *self)
  * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 GList *
 gdata_picasaweb_album_get_thumbnails (GDataPicasaWebAlbum *self)
 {
@@ -1230,7 +1230,7 @@ gdata_picasaweb_album_get_thumbnails (GDataPicasaWebAlbum *self)
  * If the coordinates are unset, @latitude and @longitude will be set to %G_MAXDOUBLE.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_picasaweb_album_get_coordinates (GDataPicasaWebAlbum *self, gdouble *latitude, gdouble *longitude)
 {
@@ -1252,7 +1252,7 @@ gdata_picasaweb_album_get_coordinates (GDataPicasaWebAlbum *self, gdouble *latit
  * @latitude and @longitude respectively.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_picasaweb_album_set_coordinates (GDataPicasaWebAlbum *self, gdouble latitude, gdouble longitude)
 {

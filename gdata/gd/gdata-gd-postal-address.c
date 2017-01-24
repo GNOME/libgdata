@@ -28,7 +28,7 @@
  * Note that it does not represent a simple "postalAddress" element, as "structuredPostalAddress" is now used wherever possible in the GData API.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -121,7 +121,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_FORMATTED_ADDRESS,
 	                                 g_param_spec_string ("address",
 	                                                      "Address", "The postal address itself.",
@@ -138,7 +138,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of postal address.",
@@ -154,7 +154,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A simple string value used to name this postal address.",
@@ -170,7 +170,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
 	                                 g_param_spec_boolean ("is-primary",
 	                                                       "Primary?", "Indicates which postal address out of a group is primary.",
@@ -186,7 +186,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_MAIL_CLASS,
 	                                 g_param_spec_string ("mail-class",
 	                                                      "Mail class", "Classes of mail accepted at this address.",
@@ -202,7 +202,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_USAGE,
 	                                 g_param_spec_string ("usage",
 	                                                      "Usage", "The context in which this addess can be used.",
@@ -218,7 +218,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_AGENT,
 	                                 g_param_spec_string ("agent",
 	                                                      "Agent", "The agent who actually receives the mail.",
@@ -234,7 +234,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_HOUSE_NAME,
 	                                 g_param_spec_string ("house-name",
 	                                                      "House name", "Used in places where houses or buildings have names (and not numbers).",
@@ -250,7 +250,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_STREET,
 	                                 g_param_spec_string ("street",
 	                                                      "Street", "Can be street, avenue, road, etc.",
@@ -266,7 +266,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_PO_BOX,
 	                                 g_param_spec_string ("po-box",
 	                                                      "PO box", "Covers actual P.O. boxes, drawers, locked bags, etc.",
@@ -283,7 +283,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NEIGHBORHOOD,
 	                                 g_param_spec_string ("neighborhood",
 	                                                      "Neighborhood", "This is used to disambiguate a street address.",
@@ -299,7 +299,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CITY,
 	                                 g_param_spec_string ("city",
 	                                                      "City", "Can be city, village, town, borough, etc.",
@@ -316,7 +316,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SUBREGION,
 	                                 g_param_spec_string ("subregion",
 	                                                      "Subregion", "Handles administrative districts such as U.S. or U.K. counties.",
@@ -332,7 +332,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_REGION,
 	                                 g_param_spec_string ("region",
 	                                                      "Region", "A state, province, county, Land, departement, etc.",
@@ -348,7 +348,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_POSTCODE,
 	                                 g_param_spec_string ("postcode",
 	                                                      "Postcode", "Postal code.",
@@ -365,7 +365,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_COUNTRY,
 	                                 g_param_spec_string ("country",
 	                                                      "Country", "The name of the country.",
@@ -383,7 +383,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 * or <ulink type="http" url="http://www.iso.org/iso/iso-3166-1_decoding_table">ISO 3166-1 alpha-2</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_COUNTRY_CODE,
 	                                 g_param_spec_string ("country-code",
 	                                                      "Country code", "The ISO 3166-1 alpha-2 country code for the country.",
@@ -688,7 +688,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDPostalAddress, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDPostalAddress *
 gdata_gd_postal_address_new (const gchar *relation_type, const gchar *label, gboolean is_primary)
 {
@@ -705,7 +705,7 @@ gdata_gd_postal_address_new (const gchar *relation_type, const gchar *label, gbo
  * Return value: the postal address itself, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_address (GDataGDPostalAddress *self)
 {
@@ -721,7 +721,7 @@ gdata_gd_postal_address_get_address (GDataGDPostalAddress *self)
  * Sets the #GDataGDPostalAddress:address property to @address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_postal_address_set_address (GDataGDPostalAddress *self, const gchar *address)
 {
@@ -743,7 +743,7 @@ gdata_gd_postal_address_set_address (GDataGDPostalAddress *self, const gchar *ad
  * Return value: the postal address' relation type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_relation_type (GDataGDPostalAddress *self)
 {
@@ -761,7 +761,7 @@ gdata_gd_postal_address_get_relation_type (GDataGDPostalAddress *self)
  * Set @relation_type to %NULL to unset the property in the postal address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_postal_address_set_relation_type (GDataGDPostalAddress *self, const gchar *relation_type)
 {
@@ -782,7 +782,7 @@ gdata_gd_postal_address_set_relation_type (GDataGDPostalAddress *self, const gch
  * Return value: the postal address' label, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_label (GDataGDPostalAddress *self)
 {
@@ -800,7 +800,7 @@ gdata_gd_postal_address_get_label (GDataGDPostalAddress *self)
  * Set @label to %NULL to unset the property in the postal address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_postal_address_set_label (GDataGDPostalAddress *self, const gchar *label)
 {
@@ -820,7 +820,7 @@ gdata_gd_postal_address_set_label (GDataGDPostalAddress *self, const gchar *labe
  * Return value: %TRUE if this is the primary postal address, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_gd_postal_address_is_primary (GDataGDPostalAddress *self)
 {
@@ -836,7 +836,7 @@ gdata_gd_postal_address_is_primary (GDataGDPostalAddress *self)
  * Sets the #GDataGDPostalAddress:is-primary property to @is_primary.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_postal_address_set_is_primary (GDataGDPostalAddress *self, gboolean is_primary)
 {
@@ -855,7 +855,7 @@ gdata_gd_postal_address_set_is_primary (GDataGDPostalAddress *self, gboolean is_
  * Return value: the postal address' mail class, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_mail_class (GDataGDPostalAddress *self)
 {
@@ -873,7 +873,7 @@ gdata_gd_postal_address_get_mail_class (GDataGDPostalAddress *self)
  * Set @mail_class to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_mail_class (GDataGDPostalAddress *self, const gchar *mail_class)
 {
@@ -894,7 +894,7 @@ gdata_gd_postal_address_set_mail_class (GDataGDPostalAddress *self, const gchar 
  * Return value: the postal address' usage, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_usage (GDataGDPostalAddress *self)
 {
@@ -912,7 +912,7 @@ gdata_gd_postal_address_get_usage (GDataGDPostalAddress *self)
  * Set @usage to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_usage (GDataGDPostalAddress *self, const gchar *usage)
 {
@@ -933,7 +933,7 @@ gdata_gd_postal_address_set_usage (GDataGDPostalAddress *self, const gchar *usag
  * Return value: the postal address' agent, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_agent (GDataGDPostalAddress *self)
 {
@@ -951,7 +951,7 @@ gdata_gd_postal_address_get_agent (GDataGDPostalAddress *self)
  * Set @agent to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_agent (GDataGDPostalAddress *self, const gchar *agent)
 {
@@ -972,7 +972,7 @@ gdata_gd_postal_address_set_agent (GDataGDPostalAddress *self, const gchar *agen
  * Return value: the postal address' house name, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_house_name (GDataGDPostalAddress *self)
 {
@@ -990,7 +990,7 @@ gdata_gd_postal_address_get_house_name (GDataGDPostalAddress *self)
  * Set @house_name to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_house_name (GDataGDPostalAddress *self, const gchar *house_name)
 {
@@ -1011,7 +1011,7 @@ gdata_gd_postal_address_set_house_name (GDataGDPostalAddress *self, const gchar 
  * Return value: the postal address' street, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_street (GDataGDPostalAddress *self)
 {
@@ -1029,7 +1029,7 @@ gdata_gd_postal_address_get_street (GDataGDPostalAddress *self)
  * Set @street to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_street (GDataGDPostalAddress *self, const gchar *street)
 {
@@ -1050,7 +1050,7 @@ gdata_gd_postal_address_set_street (GDataGDPostalAddress *self, const gchar *str
  * Return value: the postal address' P.O. box, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_po_box (GDataGDPostalAddress *self)
 {
@@ -1068,7 +1068,7 @@ gdata_gd_postal_address_get_po_box (GDataGDPostalAddress *self)
  * Set @po_box to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_po_box (GDataGDPostalAddress *self, const gchar *po_box)
 {
@@ -1089,7 +1089,7 @@ gdata_gd_postal_address_set_po_box (GDataGDPostalAddress *self, const gchar *po_
  * Return value: the postal address' neighborhood, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_neighborhood (GDataGDPostalAddress *self)
 {
@@ -1107,7 +1107,7 @@ gdata_gd_postal_address_get_neighborhood (GDataGDPostalAddress *self)
  * Set @neighborhood to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_neighborhood (GDataGDPostalAddress *self, const gchar *neighborhood)
 {
@@ -1128,7 +1128,7 @@ gdata_gd_postal_address_set_neighborhood (GDataGDPostalAddress *self, const gcha
  * Return value: the postal address' city, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_city (GDataGDPostalAddress *self)
 {
@@ -1146,7 +1146,7 @@ gdata_gd_postal_address_get_city (GDataGDPostalAddress *self)
  * Set @city to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_city (GDataGDPostalAddress *self, const gchar *city)
 {
@@ -1167,7 +1167,7 @@ gdata_gd_postal_address_set_city (GDataGDPostalAddress *self, const gchar *city)
  * Return value: the postal address' subregion, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_subregion (GDataGDPostalAddress *self)
 {
@@ -1185,7 +1185,7 @@ gdata_gd_postal_address_get_subregion (GDataGDPostalAddress *self)
  * Set @subregion to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_subregion (GDataGDPostalAddress *self, const gchar *subregion)
 {
@@ -1206,7 +1206,7 @@ gdata_gd_postal_address_set_subregion (GDataGDPostalAddress *self, const gchar *
  * Return value: the postal address' region, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_region (GDataGDPostalAddress *self)
 {
@@ -1224,7 +1224,7 @@ gdata_gd_postal_address_get_region (GDataGDPostalAddress *self)
  * Set @region to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_region (GDataGDPostalAddress *self, const gchar *region)
 {
@@ -1245,7 +1245,7 @@ gdata_gd_postal_address_set_region (GDataGDPostalAddress *self, const gchar *reg
  * Return value: the postal address' postcode, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_postcode (GDataGDPostalAddress *self)
 {
@@ -1263,7 +1263,7 @@ gdata_gd_postal_address_get_postcode (GDataGDPostalAddress *self)
  * Set @postcode to %NULL to unset the property in the postal address.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_postcode (GDataGDPostalAddress *self, const gchar *postcode)
 {
@@ -1284,7 +1284,7 @@ gdata_gd_postal_address_set_postcode (GDataGDPostalAddress *self, const gchar *p
  * Return value: the postal address' country, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_country (GDataGDPostalAddress *self)
 {
@@ -1301,7 +1301,7 @@ gdata_gd_postal_address_get_country (GDataGDPostalAddress *self)
  * Return value: the postal address' ISO 3166-1 alpha-2 country code, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_postal_address_get_country_code (GDataGDPostalAddress *self)
 {
@@ -1321,7 +1321,7 @@ gdata_gd_postal_address_get_country_code (GDataGDPostalAddress *self)
  * also be provided.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_postal_address_set_country (GDataGDPostalAddress *self, const gchar *country, const gchar *country_code)
 {

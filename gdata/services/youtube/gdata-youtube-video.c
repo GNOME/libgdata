@@ -57,7 +57,7 @@
  * 	g_object_unref (video);
  * 	</programlisting>
  * </example>
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -191,7 +191,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.viewCount">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VIEW_COUNT,
 	                                 g_param_spec_uint ("view-count",
 	                                                    "View count", "The number of times the video has been viewed.",
@@ -205,7 +205,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.favoriteCount">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_FAVORITE_COUNT,
 	                                 g_param_spec_uint ("favorite-count",
 	                                                    "Favorite count", "The number of users who have added the video to their favorites.",
@@ -219,7 +219,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#recordingDetails.locationDescription">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
 	                                 g_param_spec_string ("location",
 	                                                      "Location", "Descriptive text about the location where the video was taken.",
@@ -233,7 +233,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.likeCount">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_MIN_RATING,
 	                                 g_param_spec_uint ("min-rating",
 	                                                    "Minimum rating", "The minimum allowed rating for the video.",
@@ -247,7 +247,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.likeCount">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_MAX_RATING,
 	                                 g_param_spec_uint ("max-rating",
 	                                                    "Maximum rating", "The maximum allowed rating for the video.",
@@ -261,7 +261,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.likeCount">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RATING_COUNT,
 	                                 g_param_spec_uint ("rating-count",
 	                                                    "Rating count", "The number of times the video has been rated.",
@@ -275,7 +275,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#statistics.likeCount">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_AVERAGE_RATING,
 	                                 g_param_spec_double ("average-rating",
 	                                                      "Average rating", "The average rating of the video.",
@@ -289,7 +289,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#snippet.tags[]">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_KEYWORDS,
 	                                 g_param_spec_boxed ("keywords",
 	                                                     "Keywords", "A NULL-terminated array of words associated with the video.",
@@ -300,7 +300,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * GDataYouTubeVideo:player-uri:
 	 *
 	 * A URI for a browser-based media player for the full-length video (i.e. the video's page on YouTube).
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_PLAYER_URI,
 	                                 g_param_spec_string ("player-uri",
 	                                                      "Player URI", "A URI for a browser-based media player for the full-length video.",
@@ -314,7 +314,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#snippet.categoryId">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CATEGORY,
 	                                 g_param_spec_object ("category",
 	                                                      "Category", "Specifies a genre or developer tag that describes the video.",
@@ -330,7 +330,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * Deprecated: 0.17.0: This is no longer supported by Google, and
 	 *   will always be %NULL. There is no replacement.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CREDIT,
 	                                 g_param_spec_object ("credit",
 	                                                      "Credit", "Identifies the owner of the video.",
@@ -347,7 +347,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#snippet.description">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DESCRIPTION,
 	                                 g_param_spec_string ("description",
 	                                                      "Description", "A summary or description of the video.",
@@ -361,7 +361,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#contentDetails.duration">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DURATION,
 	                                 g_param_spec_uint ("duration",
 	                                                    "Duration", "The duration of the video in seconds.",
@@ -375,7 +375,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#status.privacyStatus">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_PRIVATE,
 	                                 g_param_spec_boolean ("is-private",
 	                                                       "Private?", "Indicates whether the video is private.",
@@ -389,7 +389,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#snippet.publishedAt">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_UPLOADED,
 	                                 g_param_spec_int64 ("uploaded",
 	                                                     "Uploaded", "Specifies the time the video was originally uploaded to YouTube.",
@@ -405,7 +405,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="https://developers.google.com/youtube/v3/docs/videos#id">online documentation</ulink>.
 	 *
 	 * Deprecated: 0.17.0: This is now equal to #GDataEntry:id.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VIDEO_ID,
 	                                 g_param_spec_string ("video-id",
 	                                                      "Video ID", "Specifies a unique ID which YouTube uses to identify the video.",
@@ -420,7 +420,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * Deprecated: 0.17.0: This is now equal to
 	 *   #GDataYouTubeVideo:is-private.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_DRAFT,
 	                                 g_param_spec_boolean ("is-draft",
 	                                                       "Draft?", "Indicates whether the video is in draft, or unpublished, status.",
@@ -436,7 +436,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 *
 	 * For more information, see the <ulink type="http"
 	 * url="https://developers.google.com/youtube/v3/docs/videos#status.uploadStatus">online documentation</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_STATE,
 	                                 g_param_spec_object ("state",
 	                                                      "State", "Information describing the state of the video.",
@@ -452,7 +452,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * url="https://developers.google.com/youtube/v3/docs/videos#recordingDetails.recordingDate">online documentation</ulink>.
 	 *
 	 * Since: 0.3.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RECORDED,
 	                                 g_param_spec_int64 ("recorded",
 	                                                     "Recorded", "Specifies the time the video was originally recorded.",
@@ -466,7 +466,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * %GDATA_YOUTUBE_ASPECT_RATIO_WIDESCREEN means the video is definitely widescreen.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ASPECT_RATIO,
 	                                 g_param_spec_string ("aspect-ratio",
 	                                                      "Aspect Ratio", "The aspect ratio of the video.",
@@ -485,7 +485,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * online documentation</ulink>.
 	 *
 	 * Since: 0.8.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LATITUDE,
 	                                 g_param_spec_double ("latitude",
 	                                                      "Latitude", "The location as a latitude coordinate associated with this video.",
@@ -504,7 +504,7 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	 * online documentation</ulink>.
 	 *
 	 * Since: 0.8.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LONGITUDE,
 	                                 g_param_spec_double ("longitude",
 	                                                      "Longitude", "The location as a longitude coordinate associated with this video.",
@@ -1567,7 +1567,7 @@ is_comment_deletable (GDataCommentable *self, GDataComment *comment_)
  * Creates a new #GDataYouTubeVideo with the given ID and default properties.
  *
  * Return value: a new #GDataYouTubeVideo; unref with g_object_unref()
- **/
+ */
 GDataYouTubeVideo *
 gdata_youtube_video_new (const gchar *id)
 {
@@ -1581,7 +1581,7 @@ gdata_youtube_video_new (const gchar *id)
  * Gets the #GDataYouTubeVideo:view-count property.
  *
  * Return value: the number of times the video has been viewed
- **/
+ */
 guint
 gdata_youtube_video_get_view_count (GDataYouTubeVideo *self)
 {
@@ -1596,7 +1596,7 @@ gdata_youtube_video_get_view_count (GDataYouTubeVideo *self)
  * Gets the #GDataYouTubeVideo:favorite-count property.
  *
  * Return value: the number of users who have added the video to their favorites list
- **/
+ */
 guint
 gdata_youtube_video_get_favorite_count (GDataYouTubeVideo *self)
 {
@@ -1611,7 +1611,7 @@ gdata_youtube_video_get_favorite_count (GDataYouTubeVideo *self)
  * Gets the #GDataYouTubeVideo:location property.
  *
  * Return value: a string describing the video's location, or %NULL
- **/
+ */
 const gchar *
 gdata_youtube_video_get_location (GDataYouTubeVideo *self)
 {
@@ -1627,7 +1627,7 @@ gdata_youtube_video_get_location (GDataYouTubeVideo *self)
  * Sets the #GDataYouTubeVideo:location property to the new location string, @location.
  *
  * Set @location to %NULL to unset the property in the video.
- **/
+ */
 void
 gdata_youtube_video_set_location (GDataYouTubeVideo *self, const gchar *location)
 {
@@ -1649,7 +1649,7 @@ gdata_youtube_video_set_location (GDataYouTubeVideo *self, const gchar *location
  * Return value: the permission associated with @action, or %GDATA_YOUTUBE_PERMISSION_DENIED
  *
  * Since: 0.7.0
- **/
+ */
 GDataYouTubePermission
 gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, const gchar *action)
 {
@@ -1675,7 +1675,7 @@ gdata_youtube_video_get_access_control (GDataYouTubeVideo *self, const gchar *ac
  * Note that only %GDATA_YOUTUBE_ACTION_RATE and %GDATA_YOUTUBE_ACTION_COMMENT actions can have the %GDATA_YOUTUBE_PERMISSION_MODERATED permission.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, const gchar *action, GDataYouTubePermission permission)
 {
@@ -1698,7 +1698,7 @@ gdata_youtube_video_set_access_control (GDataYouTubeVideo *self, const gchar *ac
  * Note that this property may not be retrieved when querying for multiple
  * videos at once, but is guaranteed to be retrieved when querying with
  * gdata_service_query_single_entry_async().
- **/
+ */
 void
 gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max, guint *count, gdouble *average)
 {
@@ -1720,7 +1720,7 @@ gdata_youtube_video_get_rating (GDataYouTubeVideo *self, guint *min, guint *max,
  * Gets the #GDataYouTubeVideo:keywords property.
  *
  * Return value: (array zero-terminated=1) (transfer none): a %NULL-terminated array of words associated with the video
- **/
+ */
 const gchar * const *
 gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
 {
@@ -1737,7 +1737,7 @@ gdata_youtube_video_get_keywords (GDataYouTubeVideo *self)
  *
  * @keywords must not be %NULL. For more information, see the <ulink type="http"
  * url="https://developers.google.com/youtube/v3/docs/videos#snippet.tags[]">online documentation</ulink>.
- **/
+ */
 void
 gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *keywords)
 {
@@ -1756,7 +1756,7 @@ gdata_youtube_video_set_keywords (GDataYouTubeVideo *self, const gchar * const *
  * Gets the #GDataYouTubeVideo:player-uri property.
  *
  * Return value: a URI where the video is playable in a web browser, or %NULL
- **/
+ */
 const gchar *
 gdata_youtube_video_get_player_uri (GDataYouTubeVideo *self)
 {
@@ -1800,7 +1800,7 @@ strv_contains (const gchar * const *strv, const gchar *key)
  * Return value: %TRUE if the video is restricted in @country, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_youtube_video_is_restricted_in_country (GDataYouTubeVideo *self, const gchar *country)
 {
@@ -1928,7 +1928,7 @@ gdata_youtube_video_get_media_rating (GDataYouTubeVideo *self, const gchar *rati
  * Gets the #GDataYouTubeVideo:category property.
  *
  * Return value: (transfer none): a #GDataMediaCategory giving the video's single and mandatory category
- **/
+ */
 GDataMediaCategory *
 gdata_youtube_video_get_category (GDataYouTubeVideo *self)
 {
@@ -1945,7 +1945,7 @@ gdata_youtube_video_get_category (GDataYouTubeVideo *self)
  *
  * @category must not be %NULL. For more information, see the <ulink type="http"
  * url="https://developers.google.com/youtube/v3/docs/videos#snippet.categoryId">online documentation</ulink>.
- **/
+ */
 void
 gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *category)
 {
@@ -1969,7 +1969,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
  * Return value: (transfer none): a #GDataMediaCredit giving information on whom to credit for the video, or %NULL
  * Deprecated: 0.17.0: This is no longer supported by Google, and will
  *   always return %NULL. There is no replacement.
- **/
+ */
 GDataYouTubeCredit *
 gdata_youtube_video_get_credit (GDataYouTubeVideo *self)
 {
@@ -1986,7 +1986,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
  * Gets the #GDataYouTubeVideo:description property.
  *
  * Return value: the video's long text description, or %NULL
- **/
+ */
 const gchar *
 gdata_youtube_video_get_description (GDataYouTubeVideo *self)
 {
@@ -2002,7 +2002,7 @@ gdata_youtube_video_get_description (GDataYouTubeVideo *self)
  * Sets the #GDataYouTubeVideo:description property to the new description, @description.
  *
  * Set @description to %NULL to unset the video's description.
- **/
+ */
 void
 gdata_youtube_video_set_description (GDataYouTubeVideo *self, const gchar *description)
 {
@@ -2025,7 +2025,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
  * Deprecated: 0.17.0: This is no longer supported by Google, and will
  *   always return %NULL. To view a video, open the URI returned by
  *   gdata_youtube_video_get_player_uri() in a web browser.
- **/
+ */
 GDataYouTubeContent *
 gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type)
 {
@@ -2045,7 +2045,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
  * Gets a list of the thumbnails available for the video.
  *
  * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
- **/
+ */
 GList *
 gdata_youtube_video_get_thumbnails (GDataYouTubeVideo *self)
 {
@@ -2060,7 +2060,7 @@ gdata_youtube_video_get_thumbnails (GDataYouTubeVideo *self)
  * Gets the #GDataYouTubeVideo:duration property.
  *
  * Return value: the video duration in seconds, or <code class="literal">0</code> if unknown
- **/
+ */
 guint
 gdata_youtube_video_get_duration (GDataYouTubeVideo *self)
 {
@@ -2075,7 +2075,7 @@ gdata_youtube_video_get_duration (GDataYouTubeVideo *self)
  * Gets the #GDataYouTubeVideo:is-private property.
  *
  * Return value: %TRUE if the video is private, %FALSE otherwise
- **/
+ */
 gboolean
 gdata_youtube_video_is_private (GDataYouTubeVideo *self)
 {
@@ -2089,7 +2089,7 @@ gdata_youtube_video_is_private (GDataYouTubeVideo *self)
  * @is_private: whether the video is private
  *
  * Sets the #GDataYouTubeVideo:is-private property to decide whether the video is publicly viewable.
- **/
+ */
 void
 gdata_youtube_video_set_is_private (GDataYouTubeVideo *self, gboolean is_private)
 {
@@ -2105,7 +2105,7 @@ gdata_youtube_video_set_is_private (GDataYouTubeVideo *self, gboolean is_private
  * Gets the #GDataYouTubeVideo:uploaded property. If the property is unset, <code class="literal">-1</code> will be returned.
  *
  * Return value: the UNIX timestamp for the time the video was uploaded, or <code class="literal">-1</code>
- **/
+ */
 gint64
 gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self)
 {
@@ -2121,7 +2121,7 @@ gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self)
  *
  * Return value: the video's unique and permanent ID
  * Deprecated: 0.17.0: This is now equal to #GDataEntry:id.
- **/
+ */
 const gchar *
 gdata_youtube_video_get_video_id (GDataYouTubeVideo *self)
 {
@@ -2138,7 +2138,7 @@ gdata_youtube_video_get_video_id (GDataYouTubeVideo *self)
  * Return value: %TRUE if the video is a draft, %FALSE otherwise
  * Deprecated: 0.17.0: This is now equal to
  *   gdata_youtube_video_is_private().
- **/
+ */
 gboolean
 gdata_youtube_video_is_draft (GDataYouTubeVideo *self)
 {
@@ -2155,7 +2155,7 @@ gdata_youtube_video_is_draft (GDataYouTubeVideo *self)
  *
  * Deprecated: 0.17.0: This is now equivalent to
  *   gdata_youtube_video_set_is_private().
- **/
+ */
 void
 gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft)
 {
@@ -2253,7 +2253,7 @@ convert_state_reason_code (const gchar *v2_name,
  * url="https://developers.google.com/youtube/v3/docs/videos#status.uploadStatus">online documentation</ulink>.
  *
  * Return value: (transfer none): a #GDataYouTubeState showing the state of the video, or %NULL
- **/
+ */
 GDataYouTubeState *
 gdata_youtube_video_get_state (GDataYouTubeVideo *self)
 {
@@ -2293,7 +2293,7 @@ gdata_youtube_video_get_state (GDataYouTubeVideo *self)
  * Return value: the UNIX timestamp for the time the video was recorded, or <code class="literal">-1</code>
  *
  * Since: 0.3.0
- **/
+ */
 gint64
 gdata_youtube_video_get_recorded (GDataYouTubeVideo *self)
 {
@@ -2311,7 +2311,7 @@ gdata_youtube_video_get_recorded (GDataYouTubeVideo *self)
  * Set @recorded to <code class="literal">-1</code> to unset the video's recorded time.
  *
  * Since: 0.3.0
- **/
+ */
 void
 gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, gint64 recorded)
 {
@@ -2343,7 +2343,7 @@ gdata_youtube_video_set_recorded (GDataYouTubeVideo *self, gint64 recorded)
  * Since: 0.4.0
  *
  * Return value: the video ID, or %NULL; free with g_free()
- **/
+ */
 gchar *
 gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)
 {
@@ -2398,7 +2398,7 @@ gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri)
  * Return value: the aspect ratio property, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self)
 {
@@ -2418,7 +2418,7 @@ gdata_youtube_video_get_aspect_ratio (GDataYouTubeVideo *self)
  * If @aspect_ratio is %NULL, the property will be unset.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, const gchar *aspect_ratio)
 {
@@ -2438,7 +2438,7 @@ gdata_youtube_video_set_aspect_ratio (GDataYouTubeVideo *self, const gchar *aspe
  * longitude is %NULL, that parameter will not be set. If the coordinates are unset, @latitude and @longitude will be set to %G_MAXDOUBLE.
  *
  * Since: 0.8.0
- **/
+ */
 void
 gdata_youtube_video_get_coordinates (GDataYouTubeVideo *self, gdouble *latitude, gdouble *longitude)
 {
@@ -2461,7 +2461,7 @@ gdata_youtube_video_get_coordinates (GDataYouTubeVideo *self, gdouble *latitude,
  * Sets the #GDataYouTubeVideo:latitude and #GDataYouTubeVideo:longitude properties to @latitude and @longitude respectively.
  *
  * Since: 0.8.0
- **/
+ */
 void
 gdata_youtube_video_set_coordinates (GDataYouTubeVideo *self, gdouble latitude, gdouble longitude)
 {

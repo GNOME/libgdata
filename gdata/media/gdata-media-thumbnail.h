@@ -42,7 +42,7 @@ typedef struct _GDataMediaThumbnailPrivate	GDataMediaThumbnailPrivate;
  * GDataMediaThumbnail:
  *
  * All the fields in the #GDataMediaThumbnail structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataMediaThumbnailPrivate *priv;
@@ -54,7 +54,7 @@ typedef struct {
  * All the fields in the #GDataMediaThumbnailClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

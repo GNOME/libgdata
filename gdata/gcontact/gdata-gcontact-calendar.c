@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcCalendarLink">gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -89,7 +89,7 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcCalendarLink">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
 	                                                      "URI", "The URI of the calendar.",
@@ -106,7 +106,7 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcCalendarLink">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of calendar.",
@@ -122,7 +122,7 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcCalendarLink">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A free-form string that identifies the type of calendar.",
@@ -138,7 +138,7 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcCalendarLink">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
 	                                 g_param_spec_boolean ("is-primary",
 	                                                       "Primary?", "Indicates which calendar out of a group is primary.",
@@ -312,7 +312,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGContactCalendar; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactCalendar *
 gdata_gcontact_calendar_new (const gchar *uri, const gchar *relation_type, const gchar *label, gboolean is_primary)
 {
@@ -333,7 +333,7 @@ gdata_gcontact_calendar_new (const gchar *uri, const gchar *relation_type, const
  * Return value: the calendar's URI
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_calendar_get_uri (GDataGContactCalendar *self)
 {
@@ -349,7 +349,7 @@ gdata_gcontact_calendar_get_uri (GDataGContactCalendar *self)
  * Sets the #GDataGContactCalendar:uri property to @uri.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_calendar_set_uri (GDataGContactCalendar *self, const gchar *uri)
 {
@@ -370,7 +370,7 @@ gdata_gcontact_calendar_set_uri (GDataGContactCalendar *self, const gchar *uri)
  * Return value: the type of the relation, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_calendar_get_relation_type (GDataGContactCalendar *self)
 {
@@ -390,7 +390,7 @@ gdata_gcontact_calendar_get_relation_type (GDataGContactCalendar *self)
  * exactly one of #GDataGContactCalendar:relation-type and #GDataGContactCalendar:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_calendar_set_relation_type (GDataGContactCalendar *self, const gchar *relation_type)
 {
@@ -411,7 +411,7 @@ gdata_gcontact_calendar_set_relation_type (GDataGContactCalendar *self, const gc
  * Return value: a free-form label for the calendar, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_calendar_get_label (GDataGContactCalendar *self)
 {
@@ -430,7 +430,7 @@ gdata_gcontact_calendar_get_label (GDataGContactCalendar *self)
  * exactly one of #GDataGContactCalendar:relation-type and #GDataGContactCalendar:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_calendar_set_label (GDataGContactCalendar *self, const gchar *label)
 {
@@ -451,7 +451,7 @@ gdata_gcontact_calendar_set_label (GDataGContactCalendar *self, const gchar *lab
  * Return value: %TRUE if this is the contact's primary calendar, %FALSE otherwise
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_gcontact_calendar_is_primary (GDataGContactCalendar *self)
 {
@@ -467,7 +467,7 @@ gdata_gcontact_calendar_is_primary (GDataGContactCalendar *self)
  * Sets the #GDataGContactCalendar:is-primary property to @is_primary.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_calendar_set_is_primary (GDataGContactCalendar *self, gboolean is_primary)
 {

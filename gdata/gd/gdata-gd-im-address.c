@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -91,7 +91,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ADDRESS,
 	                                 g_param_spec_string ("address",
 	                                                      "Address", "The IM address itself.",
@@ -107,7 +107,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_PROTOCOL,
 	                                 g_param_spec_string ("protocol",
 	                                                      "Protocol", "Identifies the IM network.",
@@ -123,7 +123,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of IM address.",
@@ -139,7 +139,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A simple string value used to name this IM address.",
@@ -155,7 +155,7 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdIm">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
 	                                 g_param_spec_boolean ("is-primary",
 	                                                       "Primary?", "Indicates which IM address out of a group is primary.",
@@ -328,7 +328,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDIMAddress, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDIMAddress *
 gdata_gd_im_address_new (const gchar *address, const gchar *protocol, const gchar *relation_type, const gchar *label, gboolean is_primary)
 {
@@ -348,7 +348,7 @@ gdata_gd_im_address_new (const gchar *address, const gchar *protocol, const gcha
  * Return value: the IM address itself, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_im_address_get_address (GDataGDIMAddress *self)
 {
@@ -364,7 +364,7 @@ gdata_gd_im_address_get_address (GDataGDIMAddress *self)
  * Sets the #GDataGDIMAddress:address property to @address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_im_address_set_address (GDataGDIMAddress *self, const gchar *address)
 {
@@ -385,7 +385,7 @@ gdata_gd_im_address_set_address (GDataGDIMAddress *self, const gchar *address)
  * Return value: the IM address' protocol, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_im_address_get_protocol (GDataGDIMAddress *self)
 {
@@ -401,7 +401,7 @@ gdata_gd_im_address_get_protocol (GDataGDIMAddress *self)
  * Sets the #GDataGDIMAddress:protocol property to @protocol.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_im_address_set_protocol (GDataGDIMAddress *self, const gchar *protocol)
 {
@@ -422,7 +422,7 @@ gdata_gd_im_address_set_protocol (GDataGDIMAddress *self, const gchar *protocol)
  * Return value: the IM address' relation type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_im_address_get_relation_type (GDataGDIMAddress *self)
 {
@@ -440,7 +440,7 @@ gdata_gd_im_address_get_relation_type (GDataGDIMAddress *self)
  * Set @relation_type to %NULL to unset the property in the IM address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_im_address_set_relation_type (GDataGDIMAddress *self, const gchar *relation_type)
 {
@@ -461,7 +461,7 @@ gdata_gd_im_address_set_relation_type (GDataGDIMAddress *self, const gchar *rela
  * Return value: the IM address' label, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_im_address_get_label (GDataGDIMAddress *self)
 {
@@ -479,7 +479,7 @@ gdata_gd_im_address_get_label (GDataGDIMAddress *self)
  * Set @label to %NULL to unset the property in the IM address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_im_address_set_label (GDataGDIMAddress *self, const gchar *label)
 {
@@ -499,7 +499,7 @@ gdata_gd_im_address_set_label (GDataGDIMAddress *self, const gchar *label)
  * Return value: %TRUE if this is the primary IM address, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_gd_im_address_is_primary (GDataGDIMAddress *self)
 {
@@ -515,7 +515,7 @@ gdata_gd_im_address_is_primary (GDataGDIMAddress *self)
  * Sets the #GDataGDIMAddress:is-primary property to @is_primary.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_im_address_set_is_primary (GDataGDIMAddress *self, gboolean is_primary)
 {

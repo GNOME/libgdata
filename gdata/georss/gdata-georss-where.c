@@ -151,7 +151,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the latitude of this position, or %G_MAXDOUBLE if unknown
  *
  * Since: 0.5.0
- **/
+ */
 gdouble
 gdata_georss_where_get_latitude (GDataGeoRSSWhere *self)
 {
@@ -168,7 +168,7 @@ gdata_georss_where_get_latitude (GDataGeoRSSWhere *self)
  * Return value: the longitude of this position, or %G_MAXDOUBLE if unknown
  *
  * Since: 0.5.0
- **/
+ */
 gdouble
 gdata_georss_where_get_longitude (GDataGeoRSSWhere *self)
 {
@@ -187,7 +187,7 @@ gdata_georss_where_get_longitude (GDataGeoRSSWhere *self)
  * Set @latitude to %G_MAXDOUBLE to unset it.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_georss_where_set_latitude (GDataGeoRSSWhere *self, gdouble latitude)
 {
@@ -210,7 +210,7 @@ gdata_georss_where_set_latitude (GDataGeoRSSWhere *self, gdouble latitude)
  * Set @longitude to %G_MAXDOUBLE to unset it.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_georss_where_set_longitude (GDataGeoRSSWhere *self, gdouble longitude)
 {

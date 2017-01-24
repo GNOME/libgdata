@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -91,7 +91,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ADDRESS,
 	                                 g_param_spec_string ("address",
 	                                                      "Address", "The e-mail address itself.",
@@ -107,7 +107,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of e-mail address.",
@@ -123,7 +123,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A simple string value used to name this e-mail address.",
@@ -139,7 +139,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
 	                                 g_param_spec_boolean ("is-primary",
 	                                                       "Primary?", "Indicates which e-mail address out of a group is primary.",
@@ -155,7 +155,7 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdEmail">GData specification</ulink>.
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DISPLAY_NAME,
 	                                 g_param_spec_string ("display-name",
 	                                                      "Display name", "A display name of the entity the e-mail address belongs to.",
@@ -322,7 +322,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDEmailAddress, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDEmailAddress *
 gdata_gd_email_address_new (const gchar *address, const gchar *relation_type, const gchar *label, gboolean is_primary)
 {
@@ -341,7 +341,7 @@ gdata_gd_email_address_new (const gchar *address, const gchar *relation_type, co
  * Return value: the e-mail address itself, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_email_address_get_address (GDataGDEmailAddress *self)
 {
@@ -357,7 +357,7 @@ gdata_gd_email_address_get_address (GDataGDEmailAddress *self)
  * Sets the #GDataGDEmailAddress:address property to @address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_email_address_set_address (GDataGDEmailAddress *self, const gchar *address)
 {
@@ -378,7 +378,7 @@ gdata_gd_email_address_set_address (GDataGDEmailAddress *self, const gchar *addr
  * Return value: the e-mail address' relation type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_email_address_get_relation_type (GDataGDEmailAddress *self)
 {
@@ -396,7 +396,7 @@ gdata_gd_email_address_get_relation_type (GDataGDEmailAddress *self)
  * Set @relation_type to %NULL to unset the property in the e-mail address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_email_address_set_relation_type (GDataGDEmailAddress *self, const gchar *relation_type)
 {
@@ -417,7 +417,7 @@ gdata_gd_email_address_set_relation_type (GDataGDEmailAddress *self, const gchar
  * Return value: the e-mail address' label, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_email_address_get_label (GDataGDEmailAddress *self)
 {
@@ -435,7 +435,7 @@ gdata_gd_email_address_get_label (GDataGDEmailAddress *self)
  * Set @label to %NULL to unset the property in the e-mail address.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_email_address_set_label (GDataGDEmailAddress *self, const gchar *label)
 {
@@ -455,7 +455,7 @@ gdata_gd_email_address_set_label (GDataGDEmailAddress *self, const gchar *label)
  * Return value: %TRUE if this is the primary e-mail address, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_gd_email_address_is_primary (GDataGDEmailAddress *self)
 {
@@ -471,7 +471,7 @@ gdata_gd_email_address_is_primary (GDataGDEmailAddress *self)
  * Sets the #GDataGDEmailAddress:is-primary property to @is_primary.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_email_address_set_is_primary (GDataGDEmailAddress *self, gboolean is_primary)
 {
@@ -490,7 +490,7 @@ gdata_gd_email_address_set_is_primary (GDataGDEmailAddress *self, gboolean is_pr
  * Return value: a display name for the e-mail address, or %NULL
  *
  * Since: 0.6.0
- **/
+ */
 const gchar *
 gdata_gd_email_address_get_display_name (GDataGDEmailAddress *self)
 {
@@ -508,7 +508,7 @@ gdata_gd_email_address_get_display_name (GDataGDEmailAddress *self)
  * Set @display_name to %NULL to unset the property in the e-mail address.
  *
  * Since: 0.6.0
- **/
+ */
 void
 gdata_gd_email_address_set_display_name (GDataGDEmailAddress *self, const gchar *display_name)
 {

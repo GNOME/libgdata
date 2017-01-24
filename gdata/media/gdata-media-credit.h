@@ -40,7 +40,7 @@ typedef struct _GDataMediaCreditPrivate	GDataMediaCreditPrivate;
  * GDataMediaCredit:
  *
  * All the fields in the #GDataMediaCredit structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataMediaCreditPrivate *priv;
@@ -52,7 +52,7 @@ typedef struct {
  * All the fields in the #GDataMediaCreditClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

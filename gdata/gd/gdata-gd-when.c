@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -101,7 +101,7 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_START_TIME,
 	                                 g_param_spec_int64 ("start-time",
 	                                                     "Start time", "The name of the when.",
@@ -117,7 +117,7 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_END_TIME,
 	                                 g_param_spec_int64 ("end-time",
 	                                                     "End time", "The title of a person within the when.",
@@ -133,7 +133,7 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_DATE,
 	                                 g_param_spec_boolean ("is-date",
 	                                                       "Date?", "A programmatic value that identifies the type of when.",
@@ -150,7 +150,7 @@ gdata_gd_when_class_init (GDataGDWhenClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhen">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VALUE_STRING,
 	                                 g_param_spec_string ("value-string",
 	                                                      "Value string", "A simple string value used to name this when.",
@@ -397,7 +397,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDWhen, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDWhen *
 gdata_gd_when_new (gint64 start_time, gint64 end_time, gboolean is_date)
 {
@@ -416,7 +416,7 @@ gdata_gd_when_new (gint64 start_time, gint64 end_time, gboolean is_date)
  * Return value: the UNIX timestamp for the start time of the event
  *
  * Since: 0.4.0
- **/
+ */
 gint64
 gdata_gd_when_get_start_time (GDataGDWhen *self)
 {
@@ -432,7 +432,7 @@ gdata_gd_when_get_start_time (GDataGDWhen *self)
  * Sets the #GDataGDWhen:start-time property to @start_time.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_when_set_start_time (GDataGDWhen *self, gint64 start_time)
 {
@@ -455,7 +455,7 @@ gdata_gd_when_set_start_time (GDataGDWhen *self, gint64 start_time)
  * <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint64
 gdata_gd_when_get_end_time (GDataGDWhen *self)
 {
@@ -473,7 +473,7 @@ gdata_gd_when_get_end_time (GDataGDWhen *self)
  * Set @end_time to <code class="literal">-1</code> to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_when_set_end_time (GDataGDWhen *self, gint64 end_time)
 {
@@ -493,7 +493,7 @@ gdata_gd_when_set_end_time (GDataGDWhen *self, gint64 end_time)
  * Return value: %TRUE if #GDataGDWhen:start-time and #GDataGDWhen:end-time are dates rather than times, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_gd_when_is_date (GDataGDWhen *self)
 {
@@ -509,7 +509,7 @@ gdata_gd_when_is_date (GDataGDWhen *self)
  * Sets the #GDataGDWhen:is-date property to @is_date.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_when_set_is_date (GDataGDWhen *self, gboolean is_date)
 {
@@ -528,7 +528,7 @@ gdata_gd_when_set_is_date (GDataGDWhen *self, gboolean is_date)
  * Return value: the value string, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_when_get_value_string (GDataGDWhen *self)
 {
@@ -546,7 +546,7 @@ gdata_gd_when_get_value_string (GDataGDWhen *self)
  * Set @value_string to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_when_set_value_string (GDataGDWhen *self, const gchar *value_string)
 {
@@ -566,7 +566,7 @@ gdata_gd_when_set_value_string (GDataGDWhen *self, const gchar *value_string)
  * Return value: (element-type GData.GDReminder) (transfer none): a #GList of #GDataGDReminder<!-- -->s, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 GList *
 gdata_gd_when_get_reminders (GDataGDWhen *self)
 {
@@ -584,7 +584,7 @@ gdata_gd_when_get_reminders (GDataGDWhen *self)
  * Duplicate reminders will not be added to the list.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gd_when_add_reminder (GDataGDWhen *self, GDataGDReminder *reminder)
 {

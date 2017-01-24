@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * Error codes for #GDataDocumentsService operations.
  *
  * Since: 0.4.0
- **/
+ */
 typedef enum {
 	GDATA_DOCUMENTS_SERVICE_ERROR_INVALID_CONTENT_TYPE
 } GDataDocumentsServiceError;
@@ -59,7 +59,7 @@ typedef struct _GDataDocumentsServicePrivate	GDataDocumentsServicePrivate;
  * All the fields in the #GDataDocumentsService structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataService parent;
 	GDataDocumentsServicePrivate *priv;
@@ -71,7 +71,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsServiceClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataServiceClass parent;

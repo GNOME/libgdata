@@ -72,7 +72,7 @@
  *	g_object_unref (feed);
  * 	</programlisting>
  * </example>
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -142,7 +142,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 *
 	 * The timezone in which the calendar's times are given. This is a timezone name in tz database notation: <ulink type="http"
 	 * url="http://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones">reference</ulink>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
 	                                 g_param_spec_string ("timezone",
 	                                                      "Timezone", "The timezone in which the calendar's times are given.",
@@ -157,7 +157,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
 	 *   is no replacement; this will always return
 	 *   <code class="literal">0</code>.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TIMES_CLEANED,
 	                                 g_param_spec_uint ("times-cleaned",
 	                                                    "Times cleaned", "The number of times the calendar has been cleared of events.",
@@ -172,7 +172,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * Indicates whether the calendar is visible.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_HIDDEN,
 	                                 g_param_spec_boolean ("is-hidden",
 	                                                       "Hidden?", "Indicates whether the calendar is visible.",
@@ -185,7 +185,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * The background color used to highlight the calendar in the user’s
 	 * browser. This used to be restricted to a limited set of colours, but
 	 * since 0.17.2 may be any RGB colour.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_COLOR,
 	                                 g_param_spec_boxed ("color",
 	                                                     "Color", "The background color used to highlight the calendar in the user's browser.",
@@ -198,7 +198,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * Indicates whether the calendar is selected.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_SELECTED,
 	                                 g_param_spec_boolean ("is-selected",
 	                                                       "Selected?", "Indicates whether the calendar is selected.",
@@ -211,7 +211,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 * Indicates the access level the current user has to the calendar. For example: %GDATA_CALENDAR_ACCESS_ROLE_READ or
 	 * %GDATA_CALENDAR_ACCESS_ROLE_FREE_BUSY. The "current user" is the one authenticated against the service's #GDataService:authorizer,
 	 * or the guest user.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ACCESS_LEVEL,
 	                                 g_param_spec_string ("access-level",
 	                                                      "Access level", "Indicates the access level the current user has to the calendar.",
@@ -228,7 +228,7 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	 *
 	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
 	 * is no replacement; this will always return -1.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the calendar was edited.",
@@ -614,7 +614,7 @@ get_content_type (void)
  * Creates a new #GDataCalendarCalendar with the given ID and default properties.
  *
  * Return value: a new #GDataCalendarCalendar; unref with g_object_unref()
- **/
+ */
 GDataCalendarCalendar *
 gdata_calendar_calendar_new (const gchar *id)
 {
@@ -628,7 +628,7 @@ gdata_calendar_calendar_new (const gchar *id)
  * Gets the #GDataCalendarCalendar:timezone property.
  *
  * Return value: the calendar's timezone, or %NULL
- **/
+ */
 const gchar *
 gdata_calendar_calendar_get_timezone (GDataCalendarCalendar *self)
 {
@@ -644,7 +644,7 @@ gdata_calendar_calendar_get_timezone (GDataCalendarCalendar *self)
  * Sets the #GDataCalendarCalendar:timezone property to the new timezone, @_timezone.
  *
  * Set @_timezone to %NULL to unset the property in the calendar.
- **/
+ */
 void
 gdata_calendar_calendar_set_timezone (GDataCalendarCalendar *self, const gchar *_timezone)
 {
@@ -665,7 +665,7 @@ gdata_calendar_calendar_set_timezone (GDataCalendarCalendar *self, const gchar *
  * Return value: the number of times the calendar has been totally emptied
  * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
  *   replacement; this will always return <code class="literal">0</code>.
- **/
+ */
 guint
 gdata_calendar_calendar_get_times_cleaned (GDataCalendarCalendar *self)
 {
@@ -682,7 +682,7 @@ gdata_calendar_calendar_get_times_cleaned (GDataCalendarCalendar *self)
  * Return value: %TRUE if the calendar is hidden, %FALSE otherwise
  *
  * Since: 0.2.0
- **/
+ */
 gboolean
 gdata_calendar_calendar_is_hidden (GDataCalendarCalendar *self)
 {
@@ -698,7 +698,7 @@ gdata_calendar_calendar_is_hidden (GDataCalendarCalendar *self)
  * Sets the #GDataCalendarCalendar:is-hidden property to @is_hidden.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_calendar_calendar_set_is_hidden (GDataCalendarCalendar *self, gboolean is_hidden)
 {
@@ -713,7 +713,7 @@ gdata_calendar_calendar_set_is_hidden (GDataCalendarCalendar *self, gboolean is_
  * @color: (out caller-allocates): a #GDataColor
  *
  * Gets the #GDataCalendarCalendar:color property and puts it in @color.
- **/
+ */
 void
 gdata_calendar_calendar_get_color (GDataCalendarCalendar *self, GDataColor *color)
 {
@@ -728,7 +728,7 @@ gdata_calendar_calendar_get_color (GDataCalendarCalendar *self, GDataColor *colo
  * @color: a new #GDataColor
  *
  * Sets the #GDataCalendarCalendar:color property to @color.
- **/
+ */
 void
 gdata_calendar_calendar_set_color (GDataCalendarCalendar *self, const GDataColor *color)
 {
@@ -747,7 +747,7 @@ gdata_calendar_calendar_set_color (GDataCalendarCalendar *self, const GDataColor
  * Return value: %TRUE if the calendar is selected, %FALSE otherwise
  *
  * Since: 0.2.0
- **/
+ */
 gboolean
 gdata_calendar_calendar_is_selected (GDataCalendarCalendar *self)
 {
@@ -763,7 +763,7 @@ gdata_calendar_calendar_is_selected (GDataCalendarCalendar *self)
  * Sets the #GDataCalendarCalendar:is-selected property to @is_selected.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_calendar_calendar_set_is_selected (GDataCalendarCalendar *self, gboolean is_selected)
 {
@@ -779,7 +779,7 @@ gdata_calendar_calendar_set_is_selected (GDataCalendarCalendar *self, gboolean i
  * Gets the #GDataCalendarCalendar:access-level property.
  *
  * Return value: the authenticated user's access level to the calendar, or %NULL
- **/
+ */
 const gchar *
 gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self)
 {
@@ -796,7 +796,7 @@ gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self)
  * Return value: the UNIX timestamp for the time the calendar was last edited, or <code class="literal">-1</code>
  * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
  *   replacement; this will always return <code class="literal">-1</code>.
- **/
+ */
 gint64
 gdata_calendar_calendar_get_edited (GDataCalendarCalendar *self)
 {

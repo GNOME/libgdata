@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -96,7 +96,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NUMBER,
 	                                 g_param_spec_string ("number",
 	                                                      "Number", "Human-readable phone number; may be in any telephone number format.",
@@ -112,7 +112,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
 	                                                      "URI", "An optional \"tel URI\" used to represent the number in a formal way.",
@@ -128,7 +128,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of phone number.",
@@ -144,7 +144,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A simple string value used to name this phone number.",
@@ -160,7 +160,7 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdPhoneNumber">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
 	                                 g_param_spec_boolean ("is-primary",
 	                                                       "Primary?", "Indicates which phone number out of a group is primary.",
@@ -362,7 +362,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDPhoneNumber, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDPhoneNumber *
 gdata_gd_phone_number_new (const gchar *number, const gchar *relation_type, const gchar *label, const gchar *uri, gboolean is_primary)
 {
@@ -381,7 +381,7 @@ gdata_gd_phone_number_new (const gchar *number, const gchar *relation_type, cons
  * Return value: the phone number itself
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_phone_number_get_number (GDataGDPhoneNumber *self)
 {
@@ -397,7 +397,7 @@ gdata_gd_phone_number_get_number (GDataGDPhoneNumber *self)
  * Sets the #GDataGDPhoneNumber:number property to @number.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_phone_number_set_number (GDataGDPhoneNumber *self, const gchar *number)
 {
@@ -420,7 +420,7 @@ gdata_gd_phone_number_set_number (GDataGDPhoneNumber *self, const gchar *number)
  * Return value: the phone number's URI, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_phone_number_get_uri (GDataGDPhoneNumber *self)
 {
@@ -438,7 +438,7 @@ gdata_gd_phone_number_get_uri (GDataGDPhoneNumber *self)
  * Set @uri to %NULL to unset the property in the phone number.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_phone_number_set_uri (GDataGDPhoneNumber *self, const gchar *uri)
 {
@@ -458,7 +458,7 @@ gdata_gd_phone_number_set_uri (GDataGDPhoneNumber *self, const gchar *uri)
  * Return value: the phone number's relation type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_phone_number_get_relation_type (GDataGDPhoneNumber *self)
 {
@@ -476,7 +476,7 @@ gdata_gd_phone_number_get_relation_type (GDataGDPhoneNumber *self)
  * Set @relation_type to %NULL to unset the property in the phone number.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_phone_number_set_relation_type (GDataGDPhoneNumber *self, const gchar *relation_type)
 {
@@ -497,7 +497,7 @@ gdata_gd_phone_number_set_relation_type (GDataGDPhoneNumber *self, const gchar *
  * Return value: the phone number's label, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_phone_number_get_label (GDataGDPhoneNumber *self)
 {
@@ -515,7 +515,7 @@ gdata_gd_phone_number_get_label (GDataGDPhoneNumber *self)
  * Set @label to %NULL to unset the property in the phone number.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_phone_number_set_label (GDataGDPhoneNumber *self, const gchar *label)
 {
@@ -535,7 +535,7 @@ gdata_gd_phone_number_set_label (GDataGDPhoneNumber *self, const gchar *label)
  * Return value: %TRUE if this is the primary phone number, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_gd_phone_number_is_primary (GDataGDPhoneNumber *self)
 {
@@ -551,7 +551,7 @@ gdata_gd_phone_number_is_primary (GDataGDPhoneNumber *self)
  * Sets the #GDataGDPhoneNumber:is-primary property to @is_primary.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_phone_number_set_is_primary (GDataGDPhoneNumber *self, gboolean is_primary)
 {

@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -92,7 +92,7 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "Specifies the relationship between the container and the containee.",
@@ -108,7 +108,7 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VALUE_STRING,
 	                                 g_param_spec_string ("value-string",
 	                                                      "Value string", "A simple string representation of this person.",
@@ -124,7 +124,7 @@ gdata_gd_who_class_init (GDataGDWhoClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWho">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EMAIL_ADDRESS,
 	                                 g_param_spec_string ("email-address",
 	                                                      "E-mail address", "The e-mail address of the person represented by the #GDataGDWho.",
@@ -288,7 +288,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDWho; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDWho *
 gdata_gd_who_new (const gchar *relation_type, const gchar *value_string, const gchar *email_address)
 {
@@ -306,7 +306,7 @@ gdata_gd_who_new (const gchar *relation_type, const gchar *value_string, const g
  * Return value: the relation type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_who_get_relation_type (GDataGDWho *self)
 {
@@ -324,7 +324,7 @@ gdata_gd_who_get_relation_type (GDataGDWho *self)
  * Set @relation_type to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_who_set_relation_type (GDataGDWho *self, const gchar *relation_type)
 {
@@ -345,7 +345,7 @@ gdata_gd_who_set_relation_type (GDataGDWho *self, const gchar *relation_type)
  * Return value: the value string, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_who_get_value_string (GDataGDWho *self)
 {
@@ -363,7 +363,7 @@ gdata_gd_who_get_value_string (GDataGDWho *self)
  * Set @value_string to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_who_set_value_string (GDataGDWho *self, const gchar *value_string)
 {
@@ -383,7 +383,7 @@ gdata_gd_who_set_value_string (GDataGDWho *self, const gchar *value_string)
  * Return value: the e-mail address, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_who_get_email_address (GDataGDWho *self)
 {
@@ -401,7 +401,7 @@ gdata_gd_who_get_email_address (GDataGDWho *self)
  * Set @email_address to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_who_set_email_address (GDataGDWho *self, const gchar *email_address)
 {

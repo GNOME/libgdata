@@ -194,7 +194,7 @@
  * </example>
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -364,7 +364,7 @@ gdata_documents_document_new (const gchar *id)
  * Return value: (transfer full): a #GDataDownloadStream to download the document with, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataDownloadStream *
 gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsService *service, const gchar *export_format, GCancellable *cancellable,
                                    GError **error)
@@ -425,7 +425,7 @@ gdata_documents_document_download (GDataDocumentsDocument *self, GDataDocumentsS
  * Return value: (nullable): the download URI, or %NULL; free with g_free()
  *
  * Since: 0.7.0
- **/
+ */
 gchar *
 gdata_documents_document_get_download_uri (GDataDocumentsDocument *self, const gchar *export_format)
 {

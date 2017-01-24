@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_EVENT_ANNIVERSARY "anniversary"
 
 /**
@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_EVENT_OTHER "other"
 
 #define GDATA_TYPE_GCONTACT_EVENT		(gdata_gcontact_event_get_type ())
@@ -66,7 +66,7 @@ typedef struct _GDataGContactEventPrivate	GDataGContactEventPrivate;
  * All the fields in the #GDataGContactEvent structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGContactEventPrivate *priv;
@@ -78,7 +78,7 @@ typedef struct {
  * All the fields in the #GDataGContactEventClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

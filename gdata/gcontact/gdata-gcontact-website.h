@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_WEBSITE_HOME_PAGE "home-page"
 
 /**
@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_WEBSITE_BLOG "blog"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_WEBSITE_PROFILE "profile"
 
 /**
@@ -72,7 +72,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_WEBSITE_HOME "home"
 
 /**
@@ -84,7 +84,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_WEBSITE_WORK "work"
 
 /**
@@ -96,7 +96,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_WEBSITE_OTHER "other"
 
 /**
@@ -108,7 +108,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_WEBSITE_FTP "ftp"
 
 #define GDATA_TYPE_GCONTACT_WEBSITE		(gdata_gcontact_website_get_type ())
@@ -126,7 +126,7 @@ typedef struct _GDataGContactWebsitePrivate	GDataGContactWebsitePrivate;
  * All the fields in the #GDataGContactWebsite structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGContactWebsitePrivate *priv;
@@ -138,7 +138,7 @@ typedef struct {
  * All the fields in the #GDataGContactWebsiteClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

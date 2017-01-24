@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * the document, amongst other things.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_ACCESS_ROLE_OWNER "owner"
 
 /**
@@ -45,7 +45,7 @@ G_BEGIN_DECLS
  * The users specified by the #GDataAccessRule have write access to the document. They cannot modify the access rules or delete the document.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_ACCESS_ROLE_WRITER "writer"
 
 /**
@@ -54,7 +54,7 @@ G_BEGIN_DECLS
  * The users specified by the #GDataAccessRule have read-only access to the document.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_DOCUMENTS_ACCESS_ROLE_READER "reader"
 
 #define GDATA_TYPE_DOCUMENTS_ENTRY		(gdata_documents_entry_get_type ())
@@ -72,7 +72,7 @@ typedef struct _GDataDocumentsEntryPrivate	GDataDocumentsEntryPrivate;
  * All the fields in the #GDataDocumentsEntry structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataDocumentsEntryPrivate *priv;
@@ -84,7 +84,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsEntryClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

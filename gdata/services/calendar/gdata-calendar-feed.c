@@ -25,7 +25,7 @@
  *
  * #GDataCalendarFeed is a subclass of #GDataFeed to represent a results feed from Google Calendar. It adds a couple of
  * properties which are specific to the Google Calendar API.
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -59,7 +59,7 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	 * Since: 0.3.0
 	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
 	 *   is no replacement; this will always return %NULL.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TIMEZONE,
 	                                 g_param_spec_string ("timezone",
 	                                                      "Timezone", "The timezone in which the feed's times are given.",
@@ -76,7 +76,7 @@ gdata_calendar_feed_class_init (GDataCalendarFeedClass *klass)
 	 * Since: 0.3.0
 	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
 	 *   is no replacement; this will always return 0.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TIMES_CLEANED,
 	                                 g_param_spec_uint ("times-cleaned",
 	                                                    "Times cleaned", "The number of times the feed has been completely cleared of entries.",
@@ -128,7 +128,7 @@ gdata_calendar_feed_get_property (GObject *object, guint property_id, GValue *va
  * Since: 0.3.0
  * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
  *   replacement; this will always return %NULL.
- **/
+ */
 const gchar *
 gdata_calendar_feed_get_timezone (GDataCalendarFeed *self)
 {
@@ -148,7 +148,7 @@ gdata_calendar_feed_get_timezone (GDataCalendarFeed *self)
  * Since: 0.3.0
  * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
  *   replacement; this will always return %NULL.
- **/
+ */
 guint
 gdata_calendar_feed_get_times_cleaned (GDataCalendarFeed *self)
 {

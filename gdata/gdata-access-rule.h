@@ -34,7 +34,7 @@ G_BEGIN_DECLS
  * The #GDataAccessRule applies to a single individual, whose e-mail address is given in #GDataAccessRule:scope-value.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_ACCESS_SCOPE_USER "user"
 
 /**
@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * The #GDataAccessRule applies to all users in a Google Apps For Your Domain domain, given in #GDataAccessRule:scope-value.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_ACCESS_SCOPE_DOMAIN "domain"
 
 /**
@@ -52,7 +52,7 @@ G_BEGIN_DECLS
  * The #GDataAccessRule applies to all users.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_ACCESS_SCOPE_DEFAULT "default"
 
 /**
@@ -61,7 +61,7 @@ G_BEGIN_DECLS
  * The users specified by the #GDataAccessRule have no rights.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_ACCESS_ROLE_NONE "none"
 
 #define GDATA_TYPE_ACCESS_RULE		(gdata_access_rule_get_type ())
@@ -79,7 +79,7 @@ typedef struct _GDataAccessRulePrivate	GDataAccessRulePrivate;
  * All the fields in the #GDataAccessRule structure are private and should never be accessed directly.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataAccessRulePrivate *priv;
@@ -91,7 +91,7 @@ typedef struct {
  * All the fields in the #GDataAccessRuleClass structure are private and should never be accessed directly.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

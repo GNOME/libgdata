@@ -42,7 +42,7 @@ typedef struct _GDataBatchFeedPrivate	GDataBatchFeedPrivate;
  * All the fields in the #GDataBatchFeed structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataFeed parent;
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataBatchFeedClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataFeedClass parent;

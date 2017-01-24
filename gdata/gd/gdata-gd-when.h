@@ -34,7 +34,7 @@ G_BEGIN_DECLS
  * The event has been canceled.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_STATUS_CANCELED "http://schemas.google.com/g/2005#event.canceled"
 
 /**
@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * The event has been planned and confirmed.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_STATUS_CONFIRMED "http://schemas.google.com/g/2005#event.confirmed"
 
 /**
@@ -52,7 +52,7 @@ G_BEGIN_DECLS
  * The event has been planned, but only tentatively scheduled.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_STATUS_TENTATIVE "http://schemas.google.com/g/2005#event.tentative"
 
 /**
@@ -61,7 +61,7 @@ G_BEGIN_DECLS
  * The event is visible to only certain people.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_VISIBILITY_CONFIDENTIAL "http://schemas.google.com/g/2005#event.confidential"
 
 /**
@@ -70,7 +70,7 @@ G_BEGIN_DECLS
  * The event's visibility is inherited from the preferences of its owner.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_VISIBILITY_DEFAULT "http://schemas.google.com/g/2005#event.default"
 
 /**
@@ -79,7 +79,7 @@ G_BEGIN_DECLS
  * The event is visible to very few people.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_VISIBILITY_PRIVATE "http://schemas.google.com/g/2005#event.private"
 
 /**
@@ -88,7 +88,7 @@ G_BEGIN_DECLS
  * The event is visible to most people.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_VISIBILITY_PUBLIC "http://schemas.google.com/g/2005#event.public"
 
 /**
@@ -97,7 +97,7 @@ G_BEGIN_DECLS
  * The event consumes time in calendars; its time will be marked as busy in a free/busy search.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_TRANSPARENCY_OPAQUE "http://schemas.google.com/g/2005#event.opaque"
 
 /**
@@ -106,7 +106,7 @@ G_BEGIN_DECLS
  * The event does not consume time in calendars; its time will be not marked as busy in a free/busy search.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EVENT_TRANSPARENCY_TRANSPARENT "http://schemas.google.com/g/2005#event.transparent"
 
 #define GDATA_TYPE_GD_WHEN		(gdata_gd_when_get_type ())
@@ -124,7 +124,7 @@ typedef struct _GDataGDWhenPrivate	GDataGDWhenPrivate;
  * All the fields in the #GDataGDWhen structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDWhenPrivate *priv;
@@ -136,7 +136,7 @@ typedef struct {
  * All the fields in the #GDataGDWhenClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

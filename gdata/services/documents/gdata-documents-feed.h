@@ -41,7 +41,7 @@ typedef struct _GDataDocumentsFeedPrivate	GDataDocumentsFeedPrivate;
  * All the fields in the #GDataDocumentsFeed structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataFeed parent;
@@ -54,7 +54,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsFeedClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataFeedClass parent;

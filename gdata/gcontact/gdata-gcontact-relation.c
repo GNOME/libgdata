@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcJot">gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -88,7 +88,7 @@ gdata_gcontact_relation_class_init (GDataGContactRelationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcRelation">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NAME,
 	                                 g_param_spec_string ("name",
 	                                                      "Name", "The name of the relation.",
@@ -105,7 +105,7 @@ gdata_gcontact_relation_class_init (GDataGContactRelationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcRelation">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of relation.",
@@ -121,7 +121,7 @@ gdata_gcontact_relation_class_init (GDataGContactRelationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcRelation">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A free-form string that identifies the type of relation.",
@@ -276,7 +276,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGContactRelation; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactRelation *
 gdata_gcontact_relation_new (const gchar *name, const gchar *relation_type, const gchar *label)
 {
@@ -296,7 +296,7 @@ gdata_gcontact_relation_new (const gchar *name, const gchar *relation_type, cons
  * Return value: the relation's name
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_relation_get_name (GDataGContactRelation *self)
 {
@@ -312,7 +312,7 @@ gdata_gcontact_relation_get_name (GDataGContactRelation *self)
  * Sets the #GDataGContactRelation:name property to @name.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_relation_set_name (GDataGContactRelation *self, const gchar *name)
 {
@@ -333,7 +333,7 @@ gdata_gcontact_relation_set_name (GDataGContactRelation *self, const gchar *name
  * Return value: the type of the relation, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_relation_get_relation_type (GDataGContactRelation *self)
 {
@@ -353,7 +353,7 @@ gdata_gcontact_relation_get_relation_type (GDataGContactRelation *self)
  * exactly one of #GDataGContactRelation:relation-type and #GDataGContactRelation:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_relation_set_relation_type (GDataGContactRelation *self, const gchar *relation_type)
 {
@@ -374,7 +374,7 @@ gdata_gcontact_relation_set_relation_type (GDataGContactRelation *self, const gc
  * Return value: a free-form label for the type of the relation, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_relation_get_label (GDataGContactRelation *self)
 {
@@ -393,7 +393,7 @@ gdata_gcontact_relation_get_label (GDataGContactRelation *self)
  * exactly one of #GDataGContactRelation:relation-type and #GDataGContactRelation:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_relation_set_label (GDataGContactRelation *self, const gchar *label)
 {

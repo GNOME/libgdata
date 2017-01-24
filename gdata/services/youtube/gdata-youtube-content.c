@@ -30,7 +30,7 @@
  * Since: 0.4.0
  * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -81,7 +81,7 @@ gdata_youtube_content_class_init (GDataYouTubeContentClass *klass)
 	 * Since: 0.4.0
 	 * Deprecated: 0.17.0: Accessing YouTube video content directly is
 	 *   no longer supported by Google. There is no replacement.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_FORMAT,
 	                                 g_param_spec_enum ("format",
 	                                                    "Format", "The video format of the video object.",
@@ -146,7 +146,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Since: 0.4.0
  * Deprecated: 0.17.0: Accessing YouTube video content directly is no longer
  *   supported by Google. There is no replacement.
- **/
+ */
 GDataYouTubeFormat
 gdata_youtube_content_get_format (GDataYouTubeContent *self)
 {

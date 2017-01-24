@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * Atom specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 #define GDATA_LINK_ALTERNATE "http://www.iana.org/assignments/relation/alternate"
 
 /**
@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * Atom specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 #define GDATA_LINK_RELATED "http://www.iana.org/assignments/relation/related"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * Atom specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 #define GDATA_LINK_SELF "http://www.iana.org/assignments/relation/self"
 
 /**
@@ -72,7 +72,7 @@ G_BEGIN_DECLS
  * Atom specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 #define GDATA_LINK_ENCLOSURE "http://www.iana.org/assignments/relation/enclosure"
 
 /**
@@ -84,7 +84,7 @@ G_BEGIN_DECLS
  * Atom specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 #define GDATA_LINK_VIA "http://www.iana.org/assignments/relation/via"
 
 /**
@@ -96,7 +96,7 @@ G_BEGIN_DECLS
  * Atom Publishing Protocol specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 #define GDATA_LINK_EDIT "http://www.iana.org/assignments/relation/edit"
 
 /**
@@ -109,7 +109,7 @@ G_BEGIN_DECLS
  * Atom Publishing Protocol specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 #define GDATA_LINK_EDIT_MEDIA "http://www.iana.org/assignments/relation/edit-media"
 
 /**
@@ -140,7 +140,7 @@ typedef struct _GDataLinkPrivate	GDataLinkPrivate;
  * GDataLink:
  *
  * All the fields in the #GDataLink structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataLinkPrivate *priv;
@@ -152,7 +152,7 @@ typedef struct {
  * All the fields in the #GDataLinkClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

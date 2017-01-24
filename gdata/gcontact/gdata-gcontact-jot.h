@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_JOT_HOME "home"
 
 /**
@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_JOT_WORK "work"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_JOT_OTHER "other"
 
 /**
@@ -72,7 +72,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_JOT_KEYWORDS "keywords"
 
 /**
@@ -84,7 +84,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_JOT_USER "user"
 
 #define GDATA_TYPE_GCONTACT_JOT		(gdata_gcontact_jot_get_type ())
@@ -102,7 +102,7 @@ typedef struct _GDataGContactJotPrivate	GDataGContactJotPrivate;
  * All the fields in the #GDataGContactJot structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGContactJotPrivate *priv;
@@ -114,7 +114,7 @@ typedef struct {
  * All the fields in the #GDataGContactJotClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

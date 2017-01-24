@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://www.atomenabled.org/developers/protocol/#category">Atom Publishing Protocol Category Document</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -84,7 +84,7 @@ gdata_app_categories_class_init (GDataAPPCategoriesClass *klass)
 	 * API reference: <ulink type="http" url="http://www.atomenabled.org/developers/protocol/#appCategories2">app:categories</ulink>
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_FIXED,
 	                                 g_param_spec_boolean ("is-fixed",
 	                                                       "Fixed?", "Whether entries may use categories not in this category list.",
@@ -223,7 +223,7 @@ post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
  * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategory<!-- -->s
  *
  * Since: 0.7.0
- **/
+ */
 GList *
 gdata_app_categories_get_categories (GDataAPPCategories *self)
 {
@@ -240,7 +240,7 @@ gdata_app_categories_get_categories (GDataAPPCategories *self)
  * Return value: whether entries may use categories not in this category list
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_app_categories_is_fixed (GDataAPPCategories *self)
 {

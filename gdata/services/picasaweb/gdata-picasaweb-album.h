@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * <ulink type="http" url="http://code.google.com/apis/picasaweb/reference.html#Visibility">online documentation</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 typedef enum {
 	GDATA_PICASAWEB_PUBLIC = 1,
 	GDATA_PICASAWEB_PRIVATE
@@ -58,7 +58,7 @@ typedef struct _GDataPicasaWebAlbumPrivate	GDataPicasaWebAlbumPrivate;
  * All the fields in the #GDataPicasaWebAlbum structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataPicasaWebAlbumPrivate *priv;
@@ -70,7 +70,7 @@ typedef struct {
  * All the fields in the #GDataPicasaWebAlbumClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

@@ -41,7 +41,7 @@ typedef struct _GDataCalendarCalendarPrivate	GDataCalendarCalendarPrivate;
  * GDataCalendarCalendar:
  *
  * All the fields in the #GDataCalendarCalendar structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataCalendarCalendarPrivate *priv;
@@ -51,7 +51,7 @@ typedef struct {
  * GDataCalendarCalendarClass:
  *
  * All the fields in the #GDataCalendarCalendarClass structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

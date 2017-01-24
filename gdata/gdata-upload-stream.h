@@ -70,7 +70,7 @@ typedef struct _GDataUploadStreamPrivate	GDataUploadStreamPrivate;
  * All the fields in the #GDataUploadStream structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	GOutputStream parent;
 	GDataUploadStreamPrivate *priv;
@@ -82,7 +82,7 @@ typedef struct {
  * All the fields in the #GDataUploadStreamClass structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GOutputStreamClass parent;

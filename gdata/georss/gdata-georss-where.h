@@ -42,7 +42,7 @@ typedef struct _GDataGeoRSSWherePrivate	GDataGeoRSSWherePrivate;
  * All the fields in the #GDataGeoRSSWhere structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGeoRSSWherePrivate *priv;
@@ -54,7 +54,7 @@ typedef struct {
  * All the fields in the #GDataGeoRSSWhereClass structure are private and should never be accessed directly.
  *
  * Since: 0.5.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

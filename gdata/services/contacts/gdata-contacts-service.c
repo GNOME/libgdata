@@ -143,7 +143,7 @@
  * </example>
  *
  * Since: 0.2.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -238,7 +238,7 @@ gdata_contacts_service_get_primary_authorization_domain (void)
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataFeed *
 gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                        GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
@@ -286,7 +286,7 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
  * and gdata_service_query_async(), which is the base asynchronous query function.
  *
  * Since: 0.9.1
- **/
+ */
 void
 gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                              GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -333,7 +333,7 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
  * Return value: (transfer full): an updated #GDataContactsContact, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataContactsContact *
 gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContactsContact *contact, GCancellable *cancellable, GError **error)
 {
@@ -371,7 +371,7 @@ gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContacts
  * and gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataContactsContact *contact, GCancellable *cancellable,
                                              GAsyncReadyCallback callback, gpointer user_data)
@@ -404,7 +404,7 @@ gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataCo
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataFeed *
 gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
@@ -452,7 +452,7 @@ gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *que
  * which is the base asynchronous query function.
  *
  * Since: 0.9.1
- **/
+ */
 void
 gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                            GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -497,7 +497,7 @@ gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuer
  * Return value: (transfer full): the inserted #GDataContactsGroup; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataContactsGroup *
 gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGroup *group, GCancellable *cancellable, GError **error)
 {
@@ -548,7 +548,7 @@ gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGr
  * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_contacts_service_insert_group_async (GDataContactsService *self, GDataContactsGroup *group, GCancellable *cancellable,
                                            GAsyncReadyCallback callback, gpointer user_data)

@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * All the fields in the #GDataComparable structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct _GDataComparable		GDataComparable; /* dummy typedef */
 
 /**
@@ -50,7 +50,7 @@ typedef struct _GDataComparable		GDataComparable; /* dummy typedef */
  * The class structure for the #GDataComparable interface.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GTypeInterface parent;
 

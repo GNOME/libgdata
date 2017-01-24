@@ -92,7 +92,7 @@
  * </example>
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -179,7 +179,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 *
 	 * Since: 0.4.0
 	 * Deprecated: 0.17.0: This is identical to #GDataEntry:updated.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
 	                                                     "Edited", "The last time the document was edited.",
@@ -192,7 +192,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * The last time the document was viewed.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LAST_VIEWED,
 	                                 g_param_spec_int64 ("last-viewed",
 	                                                     "Last viewed", "The last time the document was viewed.",
@@ -205,7 +205,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Indicates whether the document entry writers can invite others to edit the document.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_WRITERS_CAN_INVITE,
 	                                 g_param_spec_boolean ("writers-can-invite",
 	                                                       "Writers can invite?", "Indicates whether writers can invite others to edit.",
@@ -219,7 +219,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * appear in query results if the #GDataDocumentsQuery:show-deleted property is %TRUE.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_DELETED,
 	                                 g_param_spec_boolean ("is-deleted",
 	                                                       "Deleted?", "Indicates whether the document entry has been deleted.",
@@ -258,7 +258,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 *
 	 * Since: 0.4.0
 	 * Deprecated: 0.11.0: This a substring of the #GDataDocumentsEntry:resource-id, which is more general and should be used instead.
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DOCUMENT_ID,
 	                                 g_param_spec_string ("document-id",
 	                                                      "Document ID", "The document ID of the document.",
@@ -271,7 +271,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	 * Indicates the author of the last modification.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LAST_MODIFIED_BY,
 	                                 g_param_spec_object ("last-modified-by",
 	                                                      "Last modified by", "Indicates the author of the last modification.",
@@ -921,7 +921,7 @@ get_entry_uri (const gchar *id)
  *
  * Since: 0.4.0
  * Deprecated: 0.17.0: Use gdata_entry_get_updated() instead. See #GDataDocumentsEntry:edited.
- **/
+ */
 gint64
 gdata_documents_entry_get_edited (GDataDocumentsEntry *self)
 {
@@ -938,7 +938,7 @@ gdata_documents_entry_get_edited (GDataDocumentsEntry *self)
  * Return value: the UNIX timestamp for the time the document was last viewed, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint64
 gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self)
 {
@@ -961,7 +961,7 @@ gdata_documents_entry_get_last_viewed (GDataDocumentsEntry *self)
  * Return value: the folder hierarchy path containing the document, or %NULL; free with g_free()
  *
  * Since: 0.4.0
- **/
+ */
 gchar *
 gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 {
@@ -1027,7 +1027,7 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
  *
  * Since: 0.4.0
  * Deprecated: 0.11.0: Use gdata_documents_entry_get_resource_id() instead. See #GDataDocumentsEntry:document-id.
- **/
+ */
 const gchar *
 gdata_documents_entry_get_document_id (GDataDocumentsEntry *self )
 {
@@ -1060,7 +1060,7 @@ gdata_documents_entry_get_resource_id (GDataDocumentsEntry *self)
  * Sets the #GDataDocumentsEntry:writers-can-invite property to @writers_can_invite.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_documents_entry_set_writers_can_invite (GDataDocumentsEntry *self, gboolean writers_can_invite)
 {
@@ -1078,7 +1078,7 @@ gdata_documents_entry_set_writers_can_invite (GDataDocumentsEntry *self, gboolea
  * Return value: %TRUE if writers can invite other people to edit the document, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self)
 {
@@ -1095,7 +1095,7 @@ gdata_documents_entry_writers_can_invite (GDataDocumentsEntry *self)
  * Return value: (transfer none): the author who last modified the document
  *
  * Since: 0.4.0
- **/
+ */
 GDataAuthor *
 gdata_documents_entry_get_last_modified_by (GDataDocumentsEntry *self)
 {
@@ -1148,7 +1148,7 @@ gdata_documents_entry_get_file_size (GDataDocumentsEntry *self)
  * Return value: %TRUE if the document has been deleted, %FALSE otherwise
  *
  * Since: 0.5.0
- **/
+ */
 gboolean
 gdata_documents_entry_is_deleted (GDataDocumentsEntry *self)
 {

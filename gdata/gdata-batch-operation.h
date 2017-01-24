@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * For more information, see the <ulink type="http" url="http://code.google.com/apis/gdata/docs/batch.html#Submit_HTTP">GData specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_LINK_BATCH "http://schemas.google.com/g/2005#batch"
 
 /**
@@ -50,7 +50,7 @@ G_BEGIN_DECLS
  * Indicates which type of batch operation caused the current #GDataBatchOperationCallback to be called.
  *
  * Since: 0.7.0
- **/
+ */
 typedef enum {
 	GDATA_BATCH_OPERATION_QUERY = 0,
 	GDATA_BATCH_OPERATION_INSERTION,
@@ -83,7 +83,7 @@ typedef enum {
  * initiated synchronously).
  *
  * Since: 0.7.0
- **/
+ */
 typedef void (*GDataBatchOperationCallback) (guint operation_id, GDataBatchOperationType operation_type, GDataEntry *entry,
                                              GError *error, gpointer user_data);
 
@@ -102,7 +102,7 @@ typedef struct _GDataBatchOperationPrivate	GDataBatchOperationPrivate;
  * All the fields in the #GDataBatchOperation structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GObject parent;
 	GDataBatchOperationPrivate *priv;
@@ -114,7 +114,7 @@ typedef struct {
  * All the fields in the #GDataBatchOperationClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GObjectClass parent;

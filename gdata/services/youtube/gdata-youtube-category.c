@@ -28,7 +28,7 @@
  * online documentation</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -77,7 +77,7 @@ gdata_youtube_category_class_init (GDataYouTubeCategoryClass *klass)
 	 * Whether new videos can be added to the category.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_ASSIGNABLE,
 	                                 g_param_spec_boolean ("is-assignable",
 	                                                       "Assignable?", "Whether new videos can be added to the category.",
@@ -90,7 +90,7 @@ gdata_youtube_category_class_init (GDataYouTubeCategoryClass *klass)
 	 * Whether the category is deprecated.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_DEPRECATED,
 	                                 g_param_spec_boolean ("is-deprecated",
 	                                                       "Deprecated?", "Whether the category is deprecated.",
@@ -186,7 +186,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: whether new videos can be assigned to the category
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_youtube_category_is_assignable (GDataYouTubeCategory *self)
 {
@@ -205,7 +205,7 @@ gdata_youtube_category_is_assignable (GDataYouTubeCategory *self)
  * Return value: whether the category is browsable in @region
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_youtube_category_is_browsable (GDataYouTubeCategory *self, const gchar *region)
 {
@@ -233,7 +233,7 @@ gdata_youtube_category_is_browsable (GDataYouTubeCategory *self, const gchar *re
  * Return value: whether the category is deprecated
  *
  * Since: 0.7.0
- **/
+ */
 gboolean
 gdata_youtube_category_is_deprecated (GDataYouTubeCategory *self)
 {

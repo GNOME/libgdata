@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">YouTube namespace</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 
@@ -78,7 +78,7 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NAME,
 	                                 g_param_spec_string ("name",
 	                                                      "Name", "The name of the status of the unpublished video.",
@@ -96,7 +96,7 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_REASON_CODE,
 	                                 g_param_spec_string ("reason-code",
 	                                                      "Reason code", "The reason code explaining why the video failed to upload.",
@@ -115,7 +115,7 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_HELP_URI,
 	                                 g_param_spec_string ("help-uri",
 	                                                      "Help URI", "A URI for a YouTube Help Center page.",
@@ -133,7 +133,7 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/youtube/2.0/reference.html#youtube_data_api_tag_yt:state">online documentation</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_MESSAGE,
 	                                 g_param_spec_string ("message",
 	                                                      "Message", "A human-readable description of why the video failed to upload.",
@@ -225,7 +225,7 @@ gdata_youtube_state_set_property (GObject *object,
  * Return value: the status name
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_youtube_state_get_name (GDataYouTubeState *self)
 {
@@ -242,7 +242,7 @@ gdata_youtube_state_get_name (GDataYouTubeState *self)
  * Return value: the status reason code, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_youtube_state_get_reason_code (GDataYouTubeState *self)
 {
@@ -259,7 +259,7 @@ gdata_youtube_state_get_reason_code (GDataYouTubeState *self)
  * Return value: the help URI, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_youtube_state_get_help_uri (GDataYouTubeState *self)
 {
@@ -276,7 +276,7 @@ gdata_youtube_state_get_help_uri (GDataYouTubeState *self)
  * Return value: the status message, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_youtube_state_get_message (GDataYouTubeState *self)
 {

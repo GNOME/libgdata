@@ -25,7 +25,7 @@
  *
  * The structures here are used haphazardly across the library, describing
  * various small data types.
- **/
+ */
 
 #include <glib.h>
 #include <glib-object.h>
@@ -67,7 +67,7 @@ gdata_color_get_type (void)
  * and <replaceable>bb</replaceable> is blue. The hash is optional.
  *
  * Return value: %TRUE on success, %FALSE otherwise
- **/
+ */
 gboolean
 gdata_color_from_hexadecimal (const gchar *hexadecimal, GDataColor *color)
 {
@@ -125,7 +125,7 @@ gdata_color_from_hexadecimal (const gchar *hexadecimal, GDataColor *color)
  * Return value: the color string; free with g_free()
  *
  * Since: 0.3.0
- **/
+ */
 gchar *
 gdata_color_to_hexadecimal (const GDataColor *color)
 {

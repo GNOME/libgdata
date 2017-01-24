@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -107,7 +107,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NAME,
 	                                 g_param_spec_string ("name",
 	                                                      "Name", "The name of the organization.",
@@ -123,7 +123,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TITLE,
 	                                 g_param_spec_string ("title",
 	                                                      "Title", "The title of a person within the organization.",
@@ -139,7 +139,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of organization.",
@@ -156,7 +156,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A simple string value used to name this organization.",
@@ -172,7 +172,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_PRIMARY,
 	                                 g_param_spec_boolean ("is-primary",
 	                                                       "Primary?", "Indicates which organization out of a group is primary.",
@@ -188,7 +188,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_DEPARTMENT,
 	                                 g_param_spec_string ("department",
 	                                                      "Department", "Specifies a department within the organization.",
@@ -204,7 +204,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_JOB_DESCRIPTION,
 	                                 g_param_spec_string ("job-description",
 	                                                      "Job description", "Description of a job within the organization.",
@@ -220,7 +220,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.5.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SYMBOL,
 	                                 g_param_spec_string ("symbol",
 	                                                      "Symbol", "Symbol of the organization.",
@@ -236,7 +236,7 @@ gdata_gd_organization_class_init (GDataGDOrganizationClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdOrganization">GData specification</ulink>.
 	 *
 	 * Since: 0.6.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LOCATION,
 	                                 g_param_spec_object ("location",
 	                                                      "Location", "A place associated with the organization, e.g. office location.",
@@ -474,7 +474,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDOrganization, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDOrganization *
 gdata_gd_organization_new (const gchar *name, const gchar *title, const gchar *relation_type, const gchar *label, gboolean is_primary)
 {
@@ -492,7 +492,7 @@ gdata_gd_organization_new (const gchar *name, const gchar *title, const gchar *r
  * Return value: the organization's name, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_organization_get_name (GDataGDOrganization *self)
 {
@@ -510,7 +510,7 @@ gdata_gd_organization_get_name (GDataGDOrganization *self)
  * Set @name to %NULL to unset the property in the organization.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_organization_set_name (GDataGDOrganization *self, const gchar *name)
 {
@@ -530,7 +530,7 @@ gdata_gd_organization_set_name (GDataGDOrganization *self, const gchar *name)
  * Return value: the organization's title, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_organization_get_title (GDataGDOrganization *self)
 {
@@ -548,7 +548,7 @@ gdata_gd_organization_get_title (GDataGDOrganization *self)
  * Set @title to %NULL to unset the property in the organization.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_organization_set_title (GDataGDOrganization *self, const gchar *title)
 {
@@ -568,7 +568,7 @@ gdata_gd_organization_set_title (GDataGDOrganization *self, const gchar *title)
  * Return value: the organization's relation type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_organization_get_relation_type (GDataGDOrganization *self)
 {
@@ -586,7 +586,7 @@ gdata_gd_organization_get_relation_type (GDataGDOrganization *self)
  * Set @relation_type to %NULL to unset the property in the organization.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_organization_set_relation_type (GDataGDOrganization *self, const gchar *relation_type)
 {
@@ -607,7 +607,7 @@ gdata_gd_organization_set_relation_type (GDataGDOrganization *self, const gchar 
  * Return value: the organization's label, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_organization_get_label (GDataGDOrganization *self)
 {
@@ -625,7 +625,7 @@ gdata_gd_organization_get_label (GDataGDOrganization *self)
  * Set @label to %NULL to unset the property in the organization.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_organization_set_label (GDataGDOrganization *self, const gchar *label)
 {
@@ -645,7 +645,7 @@ gdata_gd_organization_set_label (GDataGDOrganization *self, const gchar *label)
  * Return value: %TRUE if this is the primary organization, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_gd_organization_is_primary (GDataGDOrganization *self)
 {
@@ -661,7 +661,7 @@ gdata_gd_organization_is_primary (GDataGDOrganization *self)
  * Sets the #GDataGDOrganization:is-primary property to @is_primary.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_organization_set_is_primary (GDataGDOrganization *self, gboolean is_primary)
 {
@@ -680,7 +680,7 @@ gdata_gd_organization_set_is_primary (GDataGDOrganization *self, gboolean is_pri
  * Return value: the department in which the person works in this organization, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_organization_get_department (GDataGDOrganization *self)
 {
@@ -698,7 +698,7 @@ gdata_gd_organization_get_department (GDataGDOrganization *self)
  * Set @department to %NULL to unset the property in the organization.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_organization_set_department (GDataGDOrganization *self, const gchar *department)
 {
@@ -718,7 +718,7 @@ gdata_gd_organization_set_department (GDataGDOrganization *self, const gchar *de
  * Return value: the job description of the person in the organization, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_organization_get_job_description (GDataGDOrganization *self)
 {
@@ -736,7 +736,7 @@ gdata_gd_organization_get_job_description (GDataGDOrganization *self)
  * Set @job_description to %NULL to unset the property in the organization.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_organization_set_job_description (GDataGDOrganization *self, const gchar *job_description)
 {
@@ -756,7 +756,7 @@ gdata_gd_organization_set_job_description (GDataGDOrganization *self, const gcha
  * Return value: the organization's stock symbol, or %NULL
  *
  * Since: 0.5.0
- **/
+ */
 const gchar *
 gdata_gd_organization_get_symbol (GDataGDOrganization *self)
 {
@@ -774,7 +774,7 @@ gdata_gd_organization_get_symbol (GDataGDOrganization *self)
  * Set @symbol to %NULL to unset the property in the organization.
  *
  * Since: 0.5.0
- **/
+ */
 void
 gdata_gd_organization_set_symbol (GDataGDOrganization *self, const gchar *symbol)
 {
@@ -794,7 +794,7 @@ gdata_gd_organization_set_symbol (GDataGDOrganization *self, const gchar *symbol
  * Return value: (transfer none): the organization's location, or %NULL
  *
  * Since: 0.6.0
- **/
+ */
 GDataGDWhere *
 gdata_gd_organization_get_location (GDataGDOrganization *self)
 {
@@ -812,7 +812,7 @@ gdata_gd_organization_get_location (GDataGDOrganization *self)
  * Set @location to %NULL to unset the property in the organization.
  *
  * Since: 0.6.0
- **/
+ */
 void
 gdata_gd_organization_set_location (GDataGDOrganization *self, GDataGDWhere *location)
 {

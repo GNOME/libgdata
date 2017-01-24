@@ -247,7 +247,7 @@
  * </example>
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -492,7 +492,7 @@ _query_documents_build_request_uri (GDataDocumentsQuery *query)
  * Return value: (transfer full): a #GDataDocumentsFeed of query results; unref with g_object_unref()
  *
  * Since: 0.4.0
- **/
+ */
 GDataDocumentsFeed *
 gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocumentsQuery *query, GCancellable *cancellable,
                                          GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -541,7 +541,7 @@ gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocum
  * and gdata_service_query_async(), which is the base asynchronous query function.
  *
  * Since: 0.9.1
- **/
+ */
 void
 gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDataDocumentsQuery *query, GCancellable *cancellable,
                                                GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -671,7 +671,7 @@ _upload_checks (GDataDocumentsService *self, GDataDocumentsDocument *document, G
  * Return value: (transfer full): a #GDataUploadStream to write the document data to, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataUploadStream *
 gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
                                          GDataDocumentsFolder *folder, GCancellable *cancellable, GError **error)
@@ -814,7 +814,7 @@ _update_checks (GDataDocumentsService *self, GError **error)
  * Return value: (transfer full): a #GDataUploadStream to write the document data to; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataUploadStream *
 gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocumentsDocument *document, const gchar *slug, const gchar *content_type,
                                          GCancellable *cancellable, GError **error)
@@ -1131,7 +1131,7 @@ gdata_documents_service_copy_document_finish (GDataDocumentsService *self, GAsyn
  * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataDocumentsEntry *
 gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
                                              GCancellable *cancellable, GError **error)
@@ -1267,7 +1267,7 @@ add_entry_to_folder_thread (GSimpleAsyncResult *result, GDataDocumentsService *s
  * of the operation.
  *
  * Since: 0.8.0
- **/
+ */
 void
 gdata_documents_service_add_entry_to_folder_async (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
                                                    GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
@@ -1301,7 +1301,7 @@ gdata_documents_service_add_entry_to_folder_async (GDataDocumentsService *self, 
  * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataDocumentsEntry *
 gdata_documents_service_add_entry_to_folder_finish (GDataDocumentsService *self, GAsyncResult *async_result, GError **error)
 {
@@ -1340,7 +1340,7 @@ gdata_documents_service_add_entry_to_folder_finish (GDataDocumentsService *self,
  * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataDocumentsEntry *
 gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
                                                   GCancellable *cancellable, GError **error)
@@ -1452,7 +1452,7 @@ remove_entry_from_folder_thread (GSimpleAsyncResult *result, GDataDocumentsServi
  * results of the operation.
  *
  * Since: 0.8.0
- **/
+ */
 void
 gdata_documents_service_remove_entry_from_folder_async (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
                                                         GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
@@ -1487,7 +1487,7 @@ gdata_documents_service_remove_entry_from_folder_async (GDataDocumentsService *s
  * Return value: (transfer full): an updated #GDataDocumentsEntry, or %NULL; unref with g_object_unref()
  *
  * Since: 0.8.0
- **/
+ */
 GDataDocumentsEntry *
 gdata_documents_service_remove_entry_from_folder_finish (GDataDocumentsService *self, GAsyncResult *async_result, GError **error)
 {
@@ -1536,7 +1536,7 @@ _get_upload_uri_for_query_and_folder (GDataDocumentsUploadQuery *query, GDataDoc
  * Return value: the URI permitting the upload of documents to @folder, or %NULL; free with g_free()
  *
  * Since: 0.5.0
- **/
+ */
 gchar *
 gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 {

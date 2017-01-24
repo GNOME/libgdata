@@ -43,7 +43,7 @@ typedef struct _GDataEntryPrivate	GDataEntryPrivate;
  * GDataEntry:
  *
  * All the fields in the #GDataEntry structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataEntryPrivate *priv;
@@ -57,7 +57,7 @@ typedef struct {
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#Introduction">documentation on kinds</ulink>)
  *
  * The class structure for the #GDataEntry type.
- **/
+ */
 typedef struct {
 	GDataParsableClass parent;
 

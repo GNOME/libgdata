@@ -52,7 +52,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.13.1
- **/
+ */
 #define GDATA_DOCUMENTS_DRAWING_PDF "pdf"
 
 /**
@@ -65,7 +65,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.13.1
- **/
+ */
 #define GDATA_DOCUMENTS_DRAWING_PNG "png"
 
 /**
@@ -78,7 +78,7 @@ G_BEGIN_DECLS
  * GData protocol specification</ulink>.
  *
  * Since: 0.13.1
- **/
+ */
 #define GDATA_DOCUMENTS_DRAWING_SVG "svg"
 
 
@@ -97,7 +97,7 @@ typedef struct _GDataDocumentsDrawingPrivate	GDataDocumentsDrawingPrivate;
  * All the fields in the #GDataDocumentsDrawing structure are private and should never be accessed directly.
  *
  * Since: 0.13.1
- **/
+ */
 typedef struct {
 	GDataDocumentsDocument parent;
 	GDataDocumentsDrawingPrivate *priv;
@@ -109,7 +109,7 @@ typedef struct {
  * All the fields in the #GDataDocumentsDrawingClass structure are private and should never be accessed directly.
  *
  * Since: 0.13.1
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataDocumentsDocumentClass parent;

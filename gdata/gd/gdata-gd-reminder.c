@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -89,7 +89,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_METHOD,
 	                                 g_param_spec_string ("method",
 	                                                      "Method", "The notification method the reminder should use.",
@@ -105,7 +105,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ABSOLUTE_TIME,
 	                                 g_param_spec_int64 ("absolute-time",
 	                                                     "Absolute time", "Absolute time at which the reminder should be issued.",
@@ -121,7 +121,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_IS_ABSOLUTE_TIME,
 	                                 g_param_spec_boolean ("is-absolute-time",
 	                                                       "Absolute time?", "Whether the reminder is specified as an absolute or relative time.",
@@ -137,7 +137,7 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdReminder">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATIVE_TIME,
 	                                 g_param_spec_int ("relative-time",
 	                                                   "Relative time", "Time at which the reminder should be issued, in minutes.",
@@ -324,7 +324,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDReminder, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDReminder *
 gdata_gd_reminder_new (const gchar *method, gint64 absolute_time, gint relative_time)
 {
@@ -343,7 +343,7 @@ gdata_gd_reminder_new (const gchar *method, gint64 absolute_time, gint relative_
  * Return value: the method, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_reminder_get_method (GDataGDReminder *self)
 {
@@ -361,7 +361,7 @@ gdata_gd_reminder_get_method (GDataGDReminder *self)
  * Set @method to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_reminder_set_method (GDataGDReminder *self, const gchar *method)
 {
@@ -381,7 +381,7 @@ gdata_gd_reminder_set_method (GDataGDReminder *self, const gchar *method)
  * Return value: the UNIX timestamp of the absolute time for the reminder, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint64
 gdata_gd_reminder_get_absolute_time (GDataGDReminder *self)
 {
@@ -399,7 +399,7 @@ gdata_gd_reminder_get_absolute_time (GDataGDReminder *self)
  * Set @absolute_time to <code class="literal">-1</code> to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, gint64 absolute_time)
 {
@@ -420,7 +420,7 @@ gdata_gd_reminder_set_absolute_time (GDataGDReminder *self, gint64 absolute_time
  * Return value: %TRUE if the reminder is absolute, %FALSE otherwise
  *
  * Since: 0.4.0
- **/
+ */
 gboolean
 gdata_gd_reminder_is_absolute_time (GDataGDReminder *self)
 {
@@ -437,7 +437,7 @@ gdata_gd_reminder_is_absolute_time (GDataGDReminder *self)
  * Return value: the relative time, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint
 gdata_gd_reminder_get_relative_time (GDataGDReminder *self)
 {
@@ -455,7 +455,7 @@ gdata_gd_reminder_get_relative_time (GDataGDReminder *self)
  * Set @relative_time to <code class="literal">-1</code> to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_reminder_set_relative_time (GDataGDReminder *self, gint relative_time)
 {

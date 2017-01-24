@@ -35,7 +35,7 @@ G_BEGIN_DECLS
  * The video is still being processed.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_PICASAWEB_VIDEO_STATUS_PENDING "pending"
 
 /**
@@ -44,7 +44,7 @@ G_BEGIN_DECLS
  * The video has been processed, but still needs thumbnailing.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_PICASAWEB_VIDEO_STATUS_READY "ready"
 
 /**
@@ -53,7 +53,7 @@ G_BEGIN_DECLS
  * The video has been processed and thumbnailed.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_PICASAWEB_VIDEO_STATUS_FINAL "final"
 
 /**
@@ -62,7 +62,7 @@ G_BEGIN_DECLS
  * There was an error while processing or thumbnailing the video and it should be deleted.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_PICASAWEB_VIDEO_STATUS_FAILED "failed"
 
 #define GDATA_TYPE_PICASAWEB_FILE 		(gdata_picasaweb_file_get_type ())
@@ -80,7 +80,7 @@ typedef struct _GDataPicasaWebFilePrivate	GDataPicasaWebFilePrivate;
  * All the fields in the #GDataPicasaWebFile structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	GDataEntry parent;
 	GDataPicasaWebFilePrivate *priv;
@@ -92,7 +92,7 @@ typedef struct {
  * All the fields in the #GDataPicasaWebFileClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataEntryClass parent;

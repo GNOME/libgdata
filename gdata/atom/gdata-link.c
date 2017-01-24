@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -91,7 +91,7 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
 	                                                      "URI", "The link's IRI.",
@@ -107,7 +107,7 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "The link relation type.",
@@ -124,7 +124,7 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CONTENT_TYPE,
 	                                 g_param_spec_string ("content-type",
 	                                                      "Content type", "An advisory media type.",
@@ -140,7 +140,7 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
 	                                 g_param_spec_string ("language",
 	                                                      "Language", "Describes the language of the resource pointed to by the uri property.",
@@ -156,7 +156,7 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_TITLE,
 	                                 g_param_spec_string ("title",
 	                                                      "Title", "Conveys human-readable information about the link.",
@@ -172,7 +172,7 @@ gdata_link_class_init (GDataLinkClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LENGTH,
 	                                 g_param_spec_int ("length",
 	                                                   "Length", "Indicates an advisory length of the linked content in octets.",
@@ -368,7 +368,7 @@ pre_get_xml (GDataParsable *parsable, GString *xml_string)
  * @uri must be non-%NULL and non-empty. @relation_type must be %NULL or non-empty.
  *
  * Return value: a new #GDataLink, or %NULL; unref with g_object_unref()
- **/
+ */
 GDataLink *
 gdata_link_new (const gchar *uri, const gchar *relation_type)
 {
@@ -392,7 +392,7 @@ gdata_link_new (const gchar *uri, const gchar *relation_type)
  * Return value: the link's URI
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_link_get_uri (GDataLink *self)
 {
@@ -408,7 +408,7 @@ gdata_link_get_uri (GDataLink *self)
  * Sets the #GDataLink:uri property to @uri. @uri must be non-%NULL and non-empty.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_link_set_uri (GDataLink *self, const gchar *uri)
 {
@@ -429,7 +429,7 @@ gdata_link_set_uri (GDataLink *self, const gchar *uri)
  * Return value: (nullable): the link's relation type
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_link_get_relation_type (GDataLink *self)
 {
@@ -448,7 +448,7 @@ gdata_link_get_relation_type (GDataLink *self)
  * Set @relation_type to %NULL to unset the property in the link.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_link_set_relation_type (GDataLink *self, const gchar *relation_type)
 {
@@ -479,7 +479,7 @@ gdata_link_set_relation_type (GDataLink *self, const gchar *relation_type)
  * Return value: (nullable): the link's content type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_link_get_content_type (GDataLink *self)
 {
@@ -497,7 +497,7 @@ gdata_link_get_content_type (GDataLink *self)
  * Set @content_type to %NULL to unset the property in the link.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_link_set_content_type (GDataLink *self, const gchar *content_type)
 {
@@ -518,7 +518,7 @@ gdata_link_set_content_type (GDataLink *self, const gchar *content_type)
  * Return value: (nullable): the link's language, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_link_get_language (GDataLink *self)
 {
@@ -536,7 +536,7 @@ gdata_link_get_language (GDataLink *self)
  * Set @language to %NULL to unset the property in the link.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_link_set_language (GDataLink *self, const gchar *language)
 {
@@ -557,7 +557,7 @@ gdata_link_set_language (GDataLink *self, const gchar *language)
  * Return value: the link's title, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_link_get_title (GDataLink *self)
 {
@@ -575,7 +575,7 @@ gdata_link_get_title (GDataLink *self)
  * Set @title to %NULL to unset the property in the link.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_link_set_title (GDataLink *self, const gchar *title)
 {
@@ -595,7 +595,7 @@ gdata_link_set_title (GDataLink *self, const gchar *title)
  * Return value: the link's length, or <code class="literal">-1</code>
  *
  * Since: 0.4.0
- **/
+ */
 gint
 gdata_link_get_length (GDataLink *self)
 {
@@ -613,7 +613,7 @@ gdata_link_get_length (GDataLink *self)
  * Set @length to <code class="literal">-1</code> to unset the property in the link.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_link_set_length (GDataLink *self, gint length)
 {

@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -92,7 +92,7 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "Specifies the relationship between the container and the containee.",
@@ -108,7 +108,7 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VALUE_STRING,
 	                                 g_param_spec_string ("value-string",
 	                                                      "Value string", "A simple string representation of this location.",
@@ -124,7 +124,7 @@ gdata_gd_where_class_init (GDataGDWhereClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdWhere">GData specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "Specifies a user-readable label to distinguish this location from others.",
@@ -283,7 +283,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGDWhere; unref with g_object_unref()
  *
  * Since: 0.2.0
- **/
+ */
 GDataGDWhere *
 gdata_gd_where_new (const gchar *relation_type, const gchar *value_string, const gchar *label)
 {
@@ -300,7 +300,7 @@ gdata_gd_where_new (const gchar *relation_type, const gchar *value_string, const
  * Return value: the relation type, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_where_get_relation_type (GDataGDWhere *self)
 {
@@ -318,7 +318,7 @@ gdata_gd_where_get_relation_type (GDataGDWhere *self)
  * Set @relation_type to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_where_set_relation_type (GDataGDWhere *self, const gchar *relation_type)
 {
@@ -339,7 +339,7 @@ gdata_gd_where_set_relation_type (GDataGDWhere *self, const gchar *relation_type
  * Return value: the value string, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_where_get_value_string (GDataGDWhere *self)
 {
@@ -357,7 +357,7 @@ gdata_gd_where_get_value_string (GDataGDWhere *self)
  * Set @value_string to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_where_set_value_string (GDataGDWhere *self, const gchar *value_string)
 {
@@ -377,7 +377,7 @@ gdata_gd_where_set_value_string (GDataGDWhere *self, const gchar *value_string)
  * Return value: the label, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_gd_where_get_label (GDataGDWhere *self)
 {
@@ -395,7 +395,7 @@ gdata_gd_where_get_label (GDataGDWhere *self)
  * Set @label to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_gd_where_set_label (GDataGDWhere *self, const gchar *label)
 {

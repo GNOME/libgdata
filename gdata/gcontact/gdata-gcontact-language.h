@@ -42,7 +42,7 @@ typedef struct _GDataGContactLanguagePrivate	GDataGContactLanguagePrivate;
  * All the fields in the #GDataGContactLanguage structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGContactLanguagePrivate *priv;
@@ -54,7 +54,7 @@ typedef struct {
  * All the fields in the #GDataGContactLanguageClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

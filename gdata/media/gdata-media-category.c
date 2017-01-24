@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -88,7 +88,7 @@ gdata_media_category_class_init (GDataMediaCategoryClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CATEGORY,
 	                                 g_param_spec_string ("category",
 	                                                      "Category", "The category name.",
@@ -103,7 +103,7 @@ gdata_media_category_class_init (GDataMediaCategoryClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SCHEME,
 	                                 g_param_spec_string ("scheme",
 	                                                      "Scheme", "A URI that identifies the categorization scheme.",
@@ -118,7 +118,7 @@ gdata_media_category_class_init (GDataMediaCategoryClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A human-readable label that can be displayed in end-user applications.",
@@ -261,7 +261,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * url="http://search.yahoo.com/mrss/">Media RSS specification</ulink>.
  *
  * Return value: a new #GDataMediaCategory, or %NULL; unref with g_object_unref()
- **/
+ */
 GDataMediaCategory *
 gdata_media_category_new (const gchar *category, const gchar *scheme, const gchar *label)
 {
@@ -279,7 +279,7 @@ gdata_media_category_new (const gchar *category, const gchar *scheme, const gcha
  * Return value: the actual category
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_category_get_category (GDataMediaCategory *self)
 {
@@ -295,7 +295,7 @@ gdata_media_category_get_category (GDataMediaCategory *self)
  * Sets the #GDataMediaCategory:category property to @category.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_media_category_set_category (GDataMediaCategory *self, const gchar *category)
 {
@@ -316,7 +316,7 @@ gdata_media_category_set_category (GDataMediaCategory *self, const gchar *catego
  * Return value: the category's scheme, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_category_get_scheme (GDataMediaCategory *self)
 {
@@ -334,7 +334,7 @@ gdata_media_category_get_scheme (GDataMediaCategory *self)
  * Set @scheme to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_media_category_set_scheme (GDataMediaCategory *self, const gchar *scheme)
 {
@@ -358,7 +358,7 @@ gdata_media_category_set_scheme (GDataMediaCategory *self, const gchar *scheme)
  * Return value: the category's label, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_category_get_label (GDataMediaCategory *self)
 {
@@ -376,7 +376,7 @@ gdata_media_category_get_label (GDataMediaCategory *self)
  * Set @label to %NULL to unset the property.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_media_category_set_label (GDataMediaCategory *self, const gchar *label)
 {

@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  * All the fields in the #GDataBatchable structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct _GDataBatchable		GDataBatchable; /* dummy typedef */
 
 /**
@@ -57,7 +57,7 @@ typedef struct _GDataBatchable		GDataBatchable; /* dummy typedef */
  * All the fields in the #GDataBatchableIface structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GTypeInterface parent;

@@ -43,7 +43,7 @@ typedef struct _GDataCalendarFeedPrivate	GDataCalendarFeedPrivate;
  * All the fields in the #GDataCalendarFeed structure are private and should never be accessed directly.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct {
 	GDataFeed parent;
 	GDataCalendarFeedPrivate *priv;
@@ -55,7 +55,7 @@ typedef struct {
  * All the fields in the #GDataCalendarFeedClass structure are private and should never be accessed directly.
  *
  * Since: 0.3.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataFeedClass parent;

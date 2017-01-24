@@ -29,7 +29,7 @@
  * It allows methods to be defined for handling the root XML node, each of its child nodes, and a method to be called after parsing is complete.
  *
  * Since: 0.3.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -92,7 +92,7 @@ gdata_parsable_class_init (GDataParsableClass *klass)
 	 * Specifies whether the object was constructed by parsing XML or manually.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CONSTRUCTED_FROM_XML,
 	                                 g_param_spec_boolean ("constructed-from-xml",
 	                                                       "Constructed from XML?",
@@ -306,7 +306,7 @@ get_content_type (void) {
  * Return value: a new #GDataParsable, or %NULL; unref with g_object_unref()
  *
  * Since: 0.4.0
- **/
+ */
 GDataParsable *
 gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length, GError **error)
 {
@@ -571,7 +571,7 @@ filter_namespaces_cb (gchar *prefix, gchar *href, GHashTable *canonical_namespac
  * Return value: the object's XML; free with g_free()
  *
  * Since: 0.4.0
- **/
+ */
 gchar *
 gdata_parsable_get_xml (GDataParsable *self)
 {

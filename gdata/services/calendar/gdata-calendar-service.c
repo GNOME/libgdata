@@ -132,7 +132,7 @@
  * Before version 0.17.2, the Calendar service could be manipulated using
  * batch operations. That is no longer supported, and any batch operations
  * created on the calendar will fail.
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -445,7 +445,7 @@ gdata_calendar_service_get_primary_authorization_domain (void)
  * For more details, see gdata_service_query().
  *
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
- **/
+ */
 GDataFeed *
 gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
                                             GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
@@ -494,7 +494,7 @@ gdata_calendar_service_query_all_calendars (GDataCalendarService *self, GDataQue
  * this function, and gdata_service_query_async(), which is the base asynchronous query function.
  *
  * Since: 0.9.1
- **/
+ */
 void
 gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
                                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -542,7 +542,7 @@ gdata_calendar_service_query_all_calendars_async (GDataCalendarService *self, GD
  * For more details, see gdata_service_query().
  *
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
- **/
+ */
 GDataFeed *
 gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
                                             GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
@@ -591,7 +591,7 @@ gdata_calendar_service_query_own_calendars (GDataCalendarService *self, GDataQue
  * this function, and gdata_service_query_async(), which is the base asynchronous query function.
  *
  * Since: 0.9.1
- **/
+ */
 void
 gdata_calendar_service_query_own_calendars_async (GDataCalendarService *self, GDataQuery *query, GCancellable *cancellable,
                                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -654,7 +654,7 @@ build_events_uri (GDataCalendarCalendar *calendar)
  * For more details, see gdata_service_query().
  *
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
- **/
+ */
 GDataFeed *
 gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCalendar *calendar, GDataQuery *query, GCancellable *cancellable,
                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data, GError **error)
@@ -711,7 +711,7 @@ gdata_calendar_service_query_events (GDataCalendarService *self, GDataCalendarCa
  * which is the base asynchronous query function.
  *
  * Since: 0.9.1
- **/
+ */
 void
 gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCalendarCalendar *calendar, GDataQuery *query, GCancellable *cancellable,
                                            GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
@@ -767,7 +767,7 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
  * Deprecated: 0.17.2: Use gdata_calendar_service_insert_calendar_event()
  *   instead to be able to specify the calendar to add the event to; otherwise
  *   the default calendar will be used.
- **/
+ */
 GDataCalendarEvent *
 gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable, GError **error)
 {
@@ -852,7 +852,7 @@ gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
  *   gdata_calendar_service_insert_calendar_event_async() instead to be able to
  *   specify the calendar to add the event to; otherwise the default calendar
  *   will be used.
- **/
+ */
 void
 gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable,
                                            GAsyncReadyCallback callback, gpointer user_data)

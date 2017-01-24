@@ -29,7 +29,7 @@
  * The class only implements parsing, not XML output, at the moment.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -84,7 +84,7 @@ gdata_media_credit_class_init (GDataMediaCreditClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CREDIT,
 	                                 g_param_spec_string ("credit",
 	                                                      "Credit", "The credited entity's name.",
@@ -99,7 +99,7 @@ gdata_media_credit_class_init (GDataMediaCreditClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SCHEME,
 	                                 g_param_spec_string ("scheme",
 	                                                      "Scheme", "A URI that identifies the role scheme.",
@@ -114,7 +114,7 @@ gdata_media_credit_class_init (GDataMediaCreditClass *klass)
 	 * For more information, see the <ulink type="http" url="http://video.search.yahoo.com/mrss">Media RSS specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ROLE,
 	                                 g_param_spec_string ("role",
 	                                                      "Role", "The role the credited entity played in the production of the media.",
@@ -225,7 +225,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: the name of the credited entity
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_credit_get_credit (GDataMediaCredit *self)
 {
@@ -242,7 +242,7 @@ gdata_media_credit_get_credit (GDataMediaCredit *self)
  * Return value: the credit's role scheme, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_credit_get_scheme (GDataMediaCredit *self)
 {
@@ -259,7 +259,7 @@ gdata_media_credit_get_scheme (GDataMediaCredit *self)
  * Return value: the credited entity's role, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_media_credit_get_role (GDataMediaCredit *self)
 {

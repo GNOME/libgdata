@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_EXTERNAL_ID_ACCOUNT "account"
 
 /**
@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_EXTERNAL_ID_CUSTOMER "customer"
 
 /**
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_EXTERNAL_ID_NETWORK "network"
 
 /**
@@ -72,7 +72,7 @@ G_BEGIN_DECLS
  * gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GCONTACT_EXTERNAL_ID_ORGANIZATION "organization"
 
 #define GDATA_TYPE_GCONTACT_EXTERNAL_ID		(gdata_gcontact_external_id_get_type ())
@@ -90,7 +90,7 @@ typedef struct _GDataGContactExternalIDPrivate	GDataGContactExternalIDPrivate;
  * All the fields in the #GDataGContactExternalID structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGContactExternalIDPrivate *priv;
@@ -102,7 +102,7 @@ typedef struct {
  * All the fields in the #GDataGContactExternalIDClass structure are private and should never be accessed directly.
  *
  * Since: 0.7.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

@@ -25,7 +25,7 @@
  *
  * #GDataGenerator represents a "generator" element from the
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -81,7 +81,7 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NAME,
 	                                 g_param_spec_string ("name",
 	                                                      "Name", "A human-readable name for the generating agent.",
@@ -98,7 +98,7 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
 	                                                      "URI", "An IRI reference that is relevant to the agent.",
@@ -115,7 +115,7 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 	 * Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_VERSION,
 	                                 g_param_spec_string ("version",
 	                                                      "Version", "Indicates the version of the generating agent.",
@@ -221,7 +221,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
  * Return value: (nullable): the generator's name
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_generator_get_name (GDataGenerator *self)
 {
@@ -238,7 +238,7 @@ gdata_generator_get_name (GDataGenerator *self)
  * Return value: (nullable): the generator's URI, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_generator_get_uri (GDataGenerator *self)
 {
@@ -255,7 +255,7 @@ gdata_generator_get_uri (GDataGenerator *self)
  * Return value: the generator's version, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_generator_get_version (GDataGenerator *self)
 {

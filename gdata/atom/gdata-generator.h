@@ -40,7 +40,7 @@ typedef struct _GDataGeneratorPrivate	GDataGeneratorPrivate;
  * GDataGenerator:
  *
  * All the fields in the #GDataGenerator structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGeneratorPrivate *priv;
@@ -52,7 +52,7 @@ typedef struct {
  * All the fields in the #GDataGeneratorClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

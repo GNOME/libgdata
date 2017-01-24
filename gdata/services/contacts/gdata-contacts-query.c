@@ -75,7 +75,7 @@
  * </example>
  *
  * Since: 0.2.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>
@@ -126,7 +126,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * Sorting criterion. The only supported value is <literal>lastmodified</literal>.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_ORDER_BY,
 	                                 g_param_spec_string ("order-by",
 	                                                      "Order by", "Sorting criterion.",
@@ -141,7 +141,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * normally appear in query results.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SHOW_DELETED,
 	                                 g_param_spec_boolean ("show-deleted",
 	                                                       "Show deleted?", "Whether to include deleted contacts in the query feed.",
@@ -154,7 +154,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * Sorting order direction. Can be either <literal>ascending</literal> or <literal>descending</literal>.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
 	                                 g_param_spec_string ("sort-order",
 	                                                      "Sort order", "Sorting order direction.",
@@ -168,7 +168,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * should be a group ID URI.
 	 *
 	 * Since: 0.2.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_GROUP,
 	                                 g_param_spec_string ("group",
 	                                                      "Group", "Constrains the results to only those belonging to the group specified.",
@@ -289,7 +289,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  * Return value: a new #GDataContactsQuery
  *
  * Since: 0.2.0
- **/
+ */
 GDataContactsQuery *
 gdata_contacts_query_new (const gchar *q)
 {
@@ -308,7 +308,7 @@ gdata_contacts_query_new (const gchar *q)
  * Return value: a new #GDataContactsQuery
  *
  * Since: 0.2.0
- **/
+ */
 GDataContactsQuery *
 gdata_contacts_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
 {
@@ -328,7 +328,7 @@ gdata_contacts_query_new_with_limits (const gchar *q, guint start_index, guint m
  * Return value: the order by property, or %NULL if it is unset
  *
  * Since: 0.2.0
- **/
+ */
 const gchar *
 gdata_contacts_query_get_order_by (GDataContactsQuery *self)
 {
@@ -346,7 +346,7 @@ gdata_contacts_query_get_order_by (GDataContactsQuery *self)
  * Set @order_by to %NULL to unset the property in the query URI.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_query_set_order_by (GDataContactsQuery *self, const gchar *order_by)
 {
@@ -369,7 +369,7 @@ gdata_contacts_query_set_order_by (GDataContactsQuery *self, const gchar *order_
  * Return value: %TRUE if deleted contacts should be shown, %FALSE otherwise
  *
  * Since: 0.2.0
- **/
+ */
 gboolean
 gdata_contacts_query_show_deleted (GDataContactsQuery *self)
 {
@@ -385,7 +385,7 @@ gdata_contacts_query_show_deleted (GDataContactsQuery *self)
  * Sets the #GDataContactsQuery:show-deleted property of the #GDataContactsQuery.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_query_set_show_deleted (GDataContactsQuery *self, gboolean show_deleted)
 {
@@ -406,7 +406,7 @@ gdata_contacts_query_set_show_deleted (GDataContactsQuery *self, gboolean show_d
  * Return value: the sort order property, or %NULL if it is unset
  *
  * Since: 0.2.0
- **/
+ */
 const gchar *
 gdata_contacts_query_get_sort_order (GDataContactsQuery *self)
 {
@@ -424,7 +424,7 @@ gdata_contacts_query_get_sort_order (GDataContactsQuery *self)
  * Set @sort_order to %NULL to unset the property in the query URI.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_query_set_sort_order (GDataContactsQuery *self, const gchar *sort_order)
 {
@@ -447,7 +447,7 @@ gdata_contacts_query_set_sort_order (GDataContactsQuery *self, const gchar *sort
  * Return value: the group property, or %NULL if it is unset
  *
  * Since: 0.2.0
- **/
+ */
 const gchar *
 gdata_contacts_query_get_group (GDataContactsQuery *self)
 {
@@ -465,7 +465,7 @@ gdata_contacts_query_get_group (GDataContactsQuery *self)
  * Set @group to %NULL to unset the property in the query URI.
  *
  * Since: 0.2.0
- **/
+ */
 void
 gdata_contacts_query_set_group (GDataContactsQuery *self, const gchar *group)
 {

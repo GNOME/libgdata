@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcJot">gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -86,7 +86,7 @@ gdata_gcontact_jot_class_init (GDataGContactJotClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcJot">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CONTENT,
 	                                 g_param_spec_string ("content",
 	                                                      "Content", "The content of the jot.",
@@ -102,7 +102,7 @@ gdata_gcontact_jot_class_init (GDataGContactJotClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcJot">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_RELATION_TYPE,
 	                                 g_param_spec_string ("relation-type",
 	                                                      "Relation type", "A programmatic value that identifies the type of jot.",
@@ -223,7 +223,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGContactJot; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactJot *
 gdata_gcontact_jot_new (const gchar *content, const gchar *relation_type)
 {
@@ -241,7 +241,7 @@ gdata_gcontact_jot_new (const gchar *content, const gchar *relation_type)
  * Return value: the jot's content
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_jot_get_content (GDataGContactJot *self)
 {
@@ -257,7 +257,7 @@ gdata_gcontact_jot_get_content (GDataGContactJot *self)
  * Sets the #GDataGContactJot:content property to @content.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_jot_set_content (GDataGContactJot *self, const gchar *content)
 {
@@ -278,7 +278,7 @@ gdata_gcontact_jot_set_content (GDataGContactJot *self, const gchar *content)
  * Return value: the jot's relation type
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_jot_get_relation_type (GDataGContactJot *self)
 {
@@ -295,7 +295,7 @@ gdata_gcontact_jot_get_relation_type (GDataGContactJot *self)
  * such as %GDATA_GCONTACT_JOT_HOME or %GDATA_GCONTACT_JOT_OTHER.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_jot_set_relation_type (GDataGContactJot *self, const gchar *relation_type)
 {

@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  * @GDATA_MEDIA_EXPRESSION_NONSTOP: the media is a continuous stream
  *
  * An enum representing the possible values of #GDataMediaContent:expression.
- **/
+ */
 typedef enum {
 	GDATA_MEDIA_EXPRESSION_SAMPLE,
 	GDATA_MEDIA_EXPRESSION_FULL,
@@ -55,7 +55,7 @@ typedef enum {
  * An enum representing the possible values of #GDataMediaContent:medium.
  *
  * Since: 0.4.0
- **/
+ */
 typedef enum {
 	GDATA_MEDIA_UNKNOWN,
 	GDATA_MEDIA_IMAGE,
@@ -78,7 +78,7 @@ typedef struct _GDataMediaContentPrivate	GDataMediaContentPrivate;
  * GDataMediaContent:
  *
  * All the fields in the #GDataMediaContent structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataMediaContentPrivate *priv;
@@ -90,7 +90,7 @@ typedef struct {
  * All the fields in the #GDataMediaContentClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

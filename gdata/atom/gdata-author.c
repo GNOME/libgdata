@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom specification</ulink>.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -86,7 +86,7 @@ gdata_author_class_init (GDataAuthorClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.author">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_NAME,
 	                                 g_param_spec_string ("name",
 	                                                      "Name", "A human-readable name for the person.",
@@ -102,7 +102,7 @@ gdata_author_class_init (GDataAuthorClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.author">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_URI,
 	                                 g_param_spec_string ("uri",
 	                                                      "URI", "An IRI associated with the person.",
@@ -118,7 +118,7 @@ gdata_author_class_init (GDataAuthorClass *klass)
 	 * <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.author">Atom specification</ulink>.
 	 *
 	 * Since: 0.4.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_EMAIL_ADDRESS,
 	                                 g_param_spec_string ("email-address",
 	                                                      "E-mail address", "An e-mail address associated with the person.",
@@ -255,7 +255,7 @@ get_xml (GDataParsable *parsable, GString *xml_string)
  * @name must be non-%NULL and non-empty.
  *
  * Return value: a new #GDataAuthor, or %NULL; unref with g_object_unref()
- **/
+ */
 GDataAuthor *
 gdata_author_new (const gchar *name, const gchar *uri, const gchar *email_address)
 {
@@ -272,7 +272,7 @@ gdata_author_new (const gchar *name, const gchar *uri, const gchar *email_addres
  * Return value: the author's name
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_author_get_name (GDataAuthor *self)
 {
@@ -288,7 +288,7 @@ gdata_author_get_name (GDataAuthor *self)
  * Sets the #GDataAuthor:name property to @name. @name must be non-%NULL and non-empty.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_author_set_name (GDataAuthor *self, const gchar *name)
 {
@@ -309,7 +309,7 @@ gdata_author_set_name (GDataAuthor *self, const gchar *name)
  * Return value: the author's URI, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_author_get_uri (GDataAuthor *self)
 {
@@ -327,7 +327,7 @@ gdata_author_get_uri (GDataAuthor *self)
  * Set @uri to %NULL to unset the property in the author.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_author_set_uri (GDataAuthor *self, const gchar *uri)
 {
@@ -347,7 +347,7 @@ gdata_author_set_uri (GDataAuthor *self, const gchar *uri)
  * Return value: the author's e-mail address, or %NULL
  *
  * Since: 0.4.0
- **/
+ */
 const gchar *
 gdata_author_get_email_address (GDataAuthor *self)
 {
@@ -365,7 +365,7 @@ gdata_author_get_email_address (GDataAuthor *self)
  * Set @email_address to %NULL to unset the property in the author.
  *
  * Since: 0.4.0
- **/
+ */
 void
 gdata_author_set_email_address (GDataAuthor *self, const gchar *email_address)
 {

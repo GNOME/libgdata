@@ -41,7 +41,7 @@ typedef struct _GDataCalendarQueryPrivate	GDataCalendarQueryPrivate;
  * GDataCalendarQuery:
  *
  * All the fields in the #GDataCalendarQuery structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataQuery parent;
 	GDataCalendarQueryPrivate *priv;
@@ -51,7 +51,7 @@ typedef struct {
  * GDataCalendarQueryClass:
  *
  * All the fields in the #GDataCalendarQueryClass structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataQueryClass parent;

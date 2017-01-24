@@ -382,7 +382,7 @@ gdata_freebase_search_query_new (const gchar *search_terms)
  * Every call to this function must be paired by a call to gdata_freebase_search_query_close_filter().
  *
  * Since: 0.15.1
- **/
+ */
 void
 gdata_freebase_search_query_open_filter (GDataFreebaseSearchQuery *self, GDataFreebaseSearchFilterType filter_type)
 {
@@ -417,7 +417,7 @@ gdata_freebase_search_query_open_filter (GDataFreebaseSearchQuery *self, GDataFr
  * Closes a filter level.
  *
  * Since: 0.15.1
- **/
+ */
 void
 gdata_freebase_search_query_close_filter (GDataFreebaseSearchQuery *self)
 {
@@ -444,7 +444,7 @@ gdata_freebase_search_query_close_filter (GDataFreebaseSearchQuery *self)
  * and gdata_freebase_search_query_close_filter().
  *
  * Since: 0.15.1
- **/
+ */
 void
 gdata_freebase_search_query_add_filter (GDataFreebaseSearchQuery *self, const gchar *property, const gchar *value)
 {
@@ -483,7 +483,7 @@ gdata_freebase_search_query_add_filter (GDataFreebaseSearchQuery *self, const gc
  * and gdata_freebase_search_query_close_filter().
  *
  * Since: 0.15.1
- **/
+ */
 void
 gdata_freebase_search_query_add_location (GDataFreebaseSearchQuery *self, guint64 radius, gdouble lat, gdouble lon)
 {
@@ -517,7 +517,7 @@ gdata_freebase_search_query_add_location (GDataFreebaseSearchQuery *self, guint6
  * the locale preferences will be respected.
  *
  * Since: 0.15.1
- **/
+ */
 void
 gdata_freebase_search_query_set_language (GDataFreebaseSearchQuery *self,
 					  const gchar              *lang)
@@ -546,7 +546,7 @@ gdata_freebase_search_query_set_language (GDataFreebaseSearchQuery *self,
  * Return value: (allow-none): The language used on the query.
  *
  * Since: 0.15.1
- **/
+ */
 const gchar *
 gdata_freebase_search_query_get_language (GDataFreebaseSearchQuery *self)
 {
@@ -568,7 +568,7 @@ gdata_freebase_search_query_get_language (GDataFreebaseSearchQuery *self)
  * for search purposes.
  *
  * Since: 0.15.1
- **/
+ */
 void
 gdata_freebase_search_query_set_stemmed (GDataFreebaseSearchQuery *self,
 					 gboolean                  stemmed)
@@ -595,7 +595,7 @@ gdata_freebase_search_query_set_stemmed (GDataFreebaseSearchQuery *self,
  * Return value: %TRUE if the #GDataFreebaseSearchQuery performs stemming
  *
  * Since: 0.15.1
- **/
+ */
 gboolean
 gdata_freebase_search_query_get_stemmed (GDataFreebaseSearchQuery *self)
 {

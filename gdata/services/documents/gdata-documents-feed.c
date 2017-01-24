@@ -32,7 +32,7 @@
  * spreadsheet document or a folder, and the #GDataDocumentsFeed represents a collection of those objects.
  *
  * Since: 0.4.0
- **/
+ */
 
 #include <config.h>
 #include <glib.h>

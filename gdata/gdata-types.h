@@ -32,7 +32,7 @@ G_BEGIN_DECLS
  *
  * Describes a color, such as used in the Google Calendar interface to
  * differentiate calendars.
- **/
+ */
 typedef struct {
 	/*< public >*/
 	guint16 red;

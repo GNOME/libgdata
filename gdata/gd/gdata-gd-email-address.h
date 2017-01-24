@@ -33,7 +33,7 @@ G_BEGIN_DECLS
  * The relation type URI for a home e-mail address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EMAIL_ADDRESS_HOME "http://schemas.google.com/g/2005#home"
 
 /**
@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * The relation type URI for a miscellaneous e-mail address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EMAIL_ADDRESS_OTHER "http://schemas.google.com/g/2005#other"
 
 /**
@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  * The relation type URI for a work e-mail address.
  *
  * Since: 0.7.0
- **/
+ */
 #define GDATA_GD_EMAIL_ADDRESS_WORK "http://schemas.google.com/g/2005#work"
 
 #define GDATA_TYPE_GD_EMAIL_ADDRESS		(gdata_gd_email_address_get_type ())
@@ -69,7 +69,7 @@ typedef struct _GDataGDEmailAddressPrivate	GDataGDEmailAddressPrivate;
  * All the fields in the #GDataGDEmailAddress structure are private and should never be accessed directly.
  *
  * Since: 0.2.0
- **/
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataGDEmailAddressPrivate *priv;
@@ -81,7 +81,7 @@ typedef struct {
  * All the fields in the #GDataGDEmailAddressClass structure are private and should never be accessed directly.
  *
  * Since: 0.4.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;

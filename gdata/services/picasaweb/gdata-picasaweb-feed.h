@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  * All the fields in the #GDataPicasaWebFeed structure are private and should never be accessed directly.
  *
  * Since: 0.6.0
- **/
+ */
 typedef struct {
 	GDataFeed parent;
 	/*< private >*/
@@ -54,7 +54,7 @@ typedef struct {
  * All the fields in the #GDataPicasaWebFeedClass structure are private and should never be accessed directly.
  *
  * Since: 0.6.0
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataFeedClass parent;

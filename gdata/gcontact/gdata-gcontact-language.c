@@ -27,7 +27,7 @@
  * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcLanguage">gContact specification</ulink>.
  *
  * Since: 0.7.0
- **/
+ */
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -85,7 +85,7 @@ gdata_gcontact_language_class_init (GDataGContactLanguageClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcLanguage">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_CODE,
 	                                 g_param_spec_string ("code",
 	                                                      "Code", "A code identifying the language, conforming to the IETF BCP 47 specification.",
@@ -101,7 +101,7 @@ gdata_gcontact_language_class_init (GDataGContactLanguageClass *klass)
 	 * <ulink type="http" url="http://code.google.com/apis/contacts/docs/3.0/reference.html#gcLanguage">gContact specification</ulink>.
 	 *
 	 * Since: 0.7.0
-	 **/
+	 */
 	g_object_class_install_property (gobject_class, PROP_LABEL,
 	                                 g_param_spec_string ("label",
 	                                                      "Label", "A free-form string that identifies the language.",
@@ -238,7 +238,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
  * Return value: a new #GDataGContactLanguage; unref with g_object_unref()
  *
  * Since: 0.7.0
- **/
+ */
 GDataGContactLanguage *
 gdata_gcontact_language_new (const gchar *code, const gchar *label)
 {
@@ -255,7 +255,7 @@ gdata_gcontact_language_new (const gchar *code, const gchar *label)
  * Return value: the language's code, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_language_get_code (GDataGContactLanguage *self)
 {
@@ -274,7 +274,7 @@ gdata_gcontact_language_get_code (GDataGContactLanguage *self)
  * exactly one of #GDataGContactLanguage:code and #GDataGContactLanguage:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_language_set_code (GDataGContactLanguage *self, const gchar *code)
 {
@@ -295,7 +295,7 @@ gdata_gcontact_language_set_code (GDataGContactLanguage *self, const gchar *code
  * Return value: a free-form label for the language, or %NULL
  *
  * Since: 0.7.0
- **/
+ */
 const gchar *
 gdata_gcontact_language_get_label (GDataGContactLanguage *self)
 {
@@ -314,7 +314,7 @@ gdata_gcontact_language_get_label (GDataGContactLanguage *self)
  * exactly one of #GDataGContactLanguage:code and #GDataGContactLanguage:label must be %NULL.
  *
  * Since: 0.7.0
- **/
+ */
 void
 gdata_gcontact_language_set_label (GDataGContactLanguage *self, const gchar *label)
 {

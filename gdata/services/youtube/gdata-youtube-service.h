@@ -78,7 +78,7 @@ G_BEGIN_DECLS
  * gdata_youtube_service_query_standard_feed(). For more information, see the
  * <ulink type="http" url="https://developers.google.com/youtube/2.0/developers_guide_protocol_video_feeds#Standard_feeds">online
  * documentation</ulink>.
- **/
+ */
 typedef enum {
 	GDATA_YOUTUBE_TOP_RATED_FEED,
 	GDATA_YOUTUBE_TOP_FAVORITES_FEED,
@@ -101,7 +101,7 @@ typedef enum {
  * <ulink type="http" url="https://www.youtube.com/create_channel">https://www.youtube.com/create_channel</ulink>
  *
  * Error codes for #GDataYouTubeService operations.
- **/
+ */
 typedef enum {
 	GDATA_YOUTUBE_SERVICE_ERROR_API_QUOTA_EXCEEDED,
 	GDATA_YOUTUBE_SERVICE_ERROR_ENTRY_QUOTA_EXCEEDED,
@@ -123,7 +123,7 @@ typedef struct _GDataYouTubeServicePrivate	GDataYouTubeServicePrivate;
  * GDataYouTubeService:
  *
  * All the fields in the #GDataYouTubeService structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	GDataService parent;
 	GDataYouTubeServicePrivate *priv;
@@ -133,7 +133,7 @@ typedef struct {
  * GDataYouTubeServiceClass:
  *
  * All the fields in the #GDataYouTubeServiceClass structure are private and should never be accessed directly.
- **/
+ */
 typedef struct {
 	/*< private >*/
 	GDataServiceClass parent;
