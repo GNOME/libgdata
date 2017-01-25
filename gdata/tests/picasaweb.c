@@ -1778,7 +1778,7 @@ test_album_new (void)
 	gchar *xml, *parsed_time_str;
 	GRegex *regex;
 	GMatchInfo *match_info;
-	guint64 delta;
+	gint64 delta;
 	GTimeVal timeval;
 
 	g_test_bug ("598893");
@@ -1818,7 +1818,7 @@ test_album_new (void)
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
 	parsed_time_str = g_match_info_fetch (match_info, 2);
 	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
-	g_assert_cmpuint (abs (delta), <, 1000);
+	g_assert_cmpuint (ABS (delta), <, 1000);
 
 	g_free (parsed_time_str);
 	g_free (xml);
