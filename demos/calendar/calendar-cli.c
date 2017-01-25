@@ -55,19 +55,19 @@ tv_to_iso8601_date (GTimeVal *tv)
 static void
 print_calendar (GDataCalendarCalendar *calendar)
 {
-	const gchar *id, *title, *timezone, *access_level, *description;
+	const gchar *id, *title, *time_zone, *access_level, *description;
 	gboolean is_hidden, is_selected;
 
 	id = gdata_entry_get_id (GDATA_ENTRY (calendar));
 	title = gdata_entry_get_title (GDATA_ENTRY (calendar));
-	timezone = gdata_calendar_calendar_get_timezone (calendar);
+	time_zone = gdata_calendar_calendar_get_timezone (calendar);
 	is_hidden = gdata_calendar_calendar_is_hidden (calendar);
 	is_selected = gdata_calendar_calendar_is_selected (calendar);
 	access_level = gdata_calendar_calendar_get_access_level (calendar);
 	description = gdata_entry_get_summary (GDATA_ENTRY (calendar));
 
 	g_print ("%s — %s\n", id, title);
-	g_print ("   Timezone: %s\n", timezone);
+	g_print ("   Timezone: %s\n", time_zone);
 	g_print ("   Access level: %s\n", access_level);
 	g_print ("   Hidden? %s\n", is_hidden ? "Yes" : "No");
 	g_print ("   Selected? %s\n", is_selected ? "Yes" : "No");
