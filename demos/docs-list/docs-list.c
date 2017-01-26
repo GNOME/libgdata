@@ -24,6 +24,7 @@
 
 #include <gio/gio.h>
 #include <glib.h>
+#include <locale.h>
 
 #define GOA_API_IS_SUBJECT_TO_CHANGE
 #include <gdata/gdata.h>
@@ -40,6 +41,8 @@ main (void)
 	GList *entries;
 	GList *l;
 	GoaClient *client = NULL;
+
+	setlocale (LC_ALL, "");
 
 	client = goa_client_new_sync (NULL, &error);
 	if (error != NULL) {
