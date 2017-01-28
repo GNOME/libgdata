@@ -746,6 +746,37 @@ test_event_json_dates (void)
 }
 
 static void
+test_event_json_organizer (void)
+{
+	GDataCalendarEvent *event;
+	GError *error = NULL;
+
+	event = GDATA_CALENDAR_EVENT (gdata_parsable_new_from_json (GDATA_TYPE_CALENDAR_EVENT, "{"
+		"'kind': 'calendar#event',"
+		"'id': 'some-id',"
+		"'created': '2013-12-22T18:00:00.000Z',"
+		"'summary': 'FOSDEM GNOME Beer Event',"
+		"'organizer': {"
+			"'id': 'another-id',"
+			"'displayName': 'Guillaume Desmottes'"
+		"},"
+		"'attendees': ["
+			"{"
+				"'id': 'another-id',"
+				"'displayName': 'Guillaume Desmottes',"
+				"'organizer': true,"
+				"'responseStatus': 'accepted'"
+			"}"
+		"]"
+	"}", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (event));
+	g_clear_error (&error);
+
+	g_object_unref (event);
+}
+
+static void
 test_event_json_recurrence (void)
 {
 	GDataCalendarEvent *event;
@@ -1440,6 +1471,7 @@ main (int argc, char *argv[])
 
 	g_test_add_func ("/calendar/event/json", test_event_json);
 	g_test_add_func ("/calendar/event/json/dates", test_event_json_dates);
+	g_test_add_func ("/calendar/event/json/organizer", test_event_json_organizer);
 	g_test_add_func ("/calendar/event/json/recurrence", test_event_json_recurrence);
 	g_test_add_func ("/calendar/event/escaping", test_event_escaping);
 	g_test_add_func ("/calendar/event/parser/minimal",
