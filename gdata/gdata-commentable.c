@@ -256,9 +256,9 @@ gdata_commentable_query_comments_async (GDataCommentable *self, GDataService *se
 
 	/* The URI can be NULL when no comments and thus no feedLink is present in a GDataCommentable */
 	if (uri == NULL) {
-		/* Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
-		 * support comments. */
 		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
+		                                 /* Translators: This is an error message for if a user attempts to retrieve comments from an entry
+		                                  * (such as a video) which doesn't support comments. */
 		                                 _("This entry does not support comments."));
 		g_simple_async_result_complete_in_idle (result);
 		g_object_unref (result);
@@ -429,9 +429,9 @@ gdata_commentable_insert_comment_async (GDataCommentable *self, GDataService *se
 
 	/* The URI can be NULL when no comments and thus no feedLink is present in a GDataCommentable */
 	if (uri == NULL) {
-		/* Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
-		 * comments. */
 		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
+		                                 /* Translators: This is an error message for if a user attempts to add a comment to an entry
+		                                  * (such as a video) which doesn't support comments. */
 		                                 _("Comments may not be added to this entry."));
 		g_simple_async_result_complete_in_idle (result);
 		g_object_unref (result);
@@ -589,8 +589,8 @@ gdata_commentable_delete_comment_async (GDataCommentable *self, GDataService *se
 
 	g_assert (iface->is_comment_deletable != NULL);
 	if (iface->is_comment_deletable (self, comment_) == FALSE) {
-		/* Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete. */
 		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
+		                                 /* Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete. */
 		                                 _("This comment may not be deleted."));
 		g_simple_async_result_complete_in_idle (result);
 		g_object_unref (result);

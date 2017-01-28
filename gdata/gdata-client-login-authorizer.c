@@ -783,8 +783,8 @@ authenticate (GDataClientLoginAuthorizer *self, GDataAuthorizationDomain *domain
 			g_free (captcha_uri);
 
 			if (new_captcha_answer == NULL || *new_captcha_answer == '\0') {
-				/* Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs */
 				g_set_error_literal (error, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR, GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_CAPTCHA_REQUIRED,
+				                     /* Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs */
 				                     _("A CAPTCHA must be filled out to log in."));
 				goto login_error;
 			}
