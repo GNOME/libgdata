@@ -706,6 +706,7 @@ GDataAccessRulePrivate
 <TITLE>GDataParsable</TITLE>
 GDataParsable
 GDataParsableClass
+gdata_parsable_get_content_type
 gdata_parsable_new_from_xml
 gdata_parsable_get_xml
 gdata_parsable_new_from_json

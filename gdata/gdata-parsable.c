@@ -547,6 +547,29 @@ _gdata_parsable_new_from_json_node (GType parsable_type, JsonReader *reader, gpo
 	return parsable;
 }
 
+/**
+ * gdata_parsable_get_content_type:
+ * @self: a #GDataParsable
+ *
+ * Returns the content type upon which the #GDataParsable is built. For example, `application/atom+xml` or `application/json`.
+ *
+ * Return value: the parsable's content type
+ *
+ * Since: UNRELEASED
+ */
+const gchar *
+gdata_parsable_get_content_type (GDataParsable *self)
+{
+	GDataParsableClass *klass;
+
+	g_return_val_if_fail (GDATA_IS_PARSABLE (self), NULL);
+
+	klass = GDATA_PARSABLE_GET_CLASS (self);
+	g_assert (klass->get_content_type != NULL);
+
+	return klass->get_content_type ();
+}
+
 static void
 build_namespaces_cb (gchar *prefix, gchar *href, GString *output)
 {

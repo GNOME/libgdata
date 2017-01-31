@@ -120,6 +120,8 @@ typedef struct {
 
 GType gdata_parsable_get_type (void) G_GNUC_CONST;
 
+const gchar *gdata_parsable_get_content_type (GDataParsable *self);
+
 GDataParsable *gdata_parsable_new_from_xml (GType parsable_type, const gchar *xml, gint length,
                                             GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_parsable_get_xml (GDataParsable *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
