@@ -1471,6 +1471,7 @@ static void
 test_access_rule_get_xml (void)
 {
 	GDataAccessRule *rule, *rule2;
+	const gchar *content_type;
 	gchar *xml, *role, *scope_type3, *scope_value3, *key;
 	gint64 edited, edited2;
 	const gchar *scope_type, *scope_value, *scope_type2, *scope_value2;
@@ -1497,6 +1498,9 @@ test_access_rule_get_xml (void)
 	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE);
 	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_USER, "foo@example.com");
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (rule));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the generated XML's OK */
 	gdata_test_assert_xml (rule,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -1517,6 +1521,9 @@ test_access_rule_get_xml (void)
 	g_assert (GDATA_IS_ACCESS_RULE (rule2));
 	g_clear_error (&error);
 	g_free (xml);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (rule2));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, gdata_access_rule_get_role (rule2));
 	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
@@ -1561,6 +1568,9 @@ test_access_rule_get_xml (void)
 	gdata_access_rule_set_role (rule, GDATA_ACCESS_ROLE_NONE);
 	gdata_access_rule_set_scope (rule, GDATA_ACCESS_SCOPE_DEFAULT, NULL);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (rule));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the generated XML's OK */
 	gdata_test_assert_xml (rule,
 		"<?xml version='1.0' encoding='UTF-8'?>"
@@ -1582,6 +1592,9 @@ test_access_rule_get_xml (void)
 	g_clear_error (&error);
 	g_free (xml);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (rule2));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	g_assert_cmpstr (gdata_access_rule_get_role (rule), ==, gdata_access_rule_get_role (rule2));
 	gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
 	gdata_access_rule_get_scope (rule2, &scope_type2, &scope_value2);
@@ -1599,7 +1612,7 @@ test_access_rule_get_xml_with_key (void)
 {
 	GDataAccessRule *rule;
 	gint64 edited;
-	const gchar *scope_type, *scope_value;
+	const gchar *content_type, *scope_type, *scope_value;
 	GError *error = NULL;
 
 	rule = GDATA_ACCESS_RULE (gdata_parsable_new_from_xml (GDATA_TYPE_ACCESS_RULE,
@@ -1624,6 +1637,9 @@ test_access_rule_get_xml_with_key (void)
 	edited = gdata_access_rule_get_edited (rule);
 	g_assert_cmpuint (edited, >, 0); /* current time */
 	g_assert_cmpstr (gdata_access_rule_get_key (rule), ==, "asdasd");
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (rule));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same. */
 	gdata_test_assert_xml (rule,
@@ -1780,6 +1796,7 @@ static void
 test_atom_author (void)
 {
 	GDataAuthor *author, *author2;
+	const gchar *content_type;
 	gchar *name, *uri, *email_address;
 	GError *error = NULL;
 
@@ -1807,6 +1824,9 @@ test_atom_author (void)
 	author2 = gdata_author_new ("Brian Blessed", NULL, NULL);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (author), GDATA_COMPARABLE (author2)), !=, 0);
 	g_object_unref (author2);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (author));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (author,
@@ -1841,6 +1861,9 @@ test_atom_author (void)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_AUTHOR (author));
 	g_clear_error (&error);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (author));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the properties */
 	g_assert_cmpstr (gdata_author_get_name (author), ==, "James Johnson");
@@ -1900,6 +1923,7 @@ static void
 test_atom_category (void)
 {
 	GDataCategory *category, *category2;
+	const gchar *content_type;
 	gchar *term, *scheme, *label;
 	GError *error = NULL;
 
@@ -1923,6 +1947,9 @@ test_atom_category (void)
 	category2 = gdata_category_new ("sports", "http://foobar.com#categories", NULL);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (category), GDATA_COMPARABLE (category2)), !=, 0);
 	g_object_unref (category2);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (category));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (category,
@@ -1953,6 +1980,9 @@ test_atom_category (void)
 	g_assert (GDATA_IS_CATEGORY (category));
 	g_clear_error (&error);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (category));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the properties */
 	g_assert_cmpstr (gdata_category_get_term (category), ==, "sports");
 	g_assert (gdata_category_get_scheme (category) == NULL);
@@ -1968,6 +1998,9 @@ test_atom_category (void)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_CATEGORY (category));
 	g_clear_error (&error);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (category));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (category,
@@ -2011,6 +2044,7 @@ static void
 test_atom_generator (void)
 {
 	GDataGenerator *generator, *generator2;
+	const gchar *content_type;
 	gchar *name, *uri, *version;
 	GError *error = NULL;
 
@@ -2019,6 +2053,9 @@ test_atom_generator (void)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_GENERATOR (generator));
 	g_clear_error (&error);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (generator));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Compare it against another identical generator */
 	generator2 = GDATA_GENERATOR (gdata_parsable_new_from_xml (GDATA_TYPE_GENERATOR,
@@ -2061,6 +2098,9 @@ test_atom_generator (void)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_GENERATOR (generator));
 	g_clear_error (&error);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (generator));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the properties */
 	g_assert (gdata_generator_get_name (generator) == NULL);
@@ -2119,6 +2159,8 @@ test_atom_link (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (link1), GDATA_COMPARABLE (link2)), !=, 0);
 	g_object_unref (link2);
 
+	g_assert_cmpstr (gdata_parsable_get_content_type (GDATA_PARSABLE (link1)), ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (link1,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -2173,6 +2215,8 @@ test_atom_link (void)
 	g_assert (gdata_link_get_language (link1) == NULL);
 	g_assert (gdata_link_get_title (link1) == NULL);
 	g_assert (gdata_link_get_length (link1) == -1);
+
+	g_assert_cmpstr (gdata_parsable_get_content_type (GDATA_PARSABLE (link1)), ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (link1,
@@ -2235,6 +2279,7 @@ test_app_categories (void)
 	GDataAPPCategories *categories;
 	GList *_categories;
 	gboolean fixed;
+	const gchar *content_type;
 	GError *error = NULL;
 
 	categories = GDATA_APP_CATEGORIES (gdata_parsable_new_from_json (GDATA_TYPE_APP_CATEGORIES,
@@ -2268,6 +2313,9 @@ test_app_categories (void)
 	g_assert (GDATA_IS_APP_CATEGORIES (categories));
 	g_clear_error (&error);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (categories));
+	g_assert_cmpstr (content_type, ==, "application/json");
+
 	/* Check the properties */
 	g_assert (gdata_app_categories_is_fixed (categories) == FALSE);
 
@@ -2299,6 +2347,9 @@ test_app_categories (void)
 	g_assert (GDATA_IS_APP_CATEGORIES (categories));
 	g_clear_error (&error);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (categories));
+	g_assert_cmpstr (content_type, ==, "application/json");
+
 	/* Check the properties */
 	g_assert (gdata_app_categories_is_fixed (categories) == FALSE);
 	g_object_unref (categories);
@@ -2309,6 +2360,7 @@ test_gd_email_address (void)
 {
 	GDataGDEmailAddress *email, *email2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	email = GDATA_GD_EMAIL_ADDRESS (gdata_parsable_new_from_xml (GDATA_TYPE_GD_EMAIL_ADDRESS,
 		"<gd:email xmlns:gd='http://schemas.google.com/g/2005' label='Personal &amp; Private' rel='http://schemas.google.com/g/2005#home' "
@@ -2334,6 +2386,9 @@ test_gd_email_address (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (email), GDATA_COMPARABLE (email2)), !=, 0);
 	g_object_unref (email2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (email));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (email,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -2355,6 +2410,9 @@ test_gd_email_address (void)
 	g_assert (gdata_gd_email_address_get_label (email) == NULL);
 	g_assert (gdata_gd_email_address_get_display_name (email) == NULL);
 	g_assert (gdata_gd_email_address_is_primary (email) == FALSE);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (email));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (email,
@@ -2405,6 +2463,7 @@ test_gd_im_address (void)
 {
 	GDataGDIMAddress *im, *im2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	im = GDATA_GD_IM_ADDRESS (gdata_parsable_new_from_xml (GDATA_TYPE_GD_IM_ADDRESS,
 		"<gd:im xmlns:gd='http://schemas.google.com/g/2005' protocol='http://schemas.google.com/g/2005#MSN' address='foo@bar.msn.com' "
@@ -2429,6 +2488,9 @@ test_gd_im_address (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (im), GDATA_COMPARABLE (im2)), !=, 0);
 	g_object_unref (im2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (im));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (im,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -2450,6 +2512,9 @@ test_gd_im_address (void)
 	g_assert (gdata_gd_im_address_get_relation_type (im) == NULL);
 	g_assert_cmpstr (gdata_gd_im_address_get_label (im), ==, "Other & Miscellaneous");
 	g_assert (gdata_gd_im_address_is_primary (im) == FALSE);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (im));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (im,
@@ -2504,6 +2569,7 @@ test_gd_name (void)
 {
 	GDataGDName *name, *name2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	name = GDATA_GD_NAME (gdata_parsable_new_from_xml (GDATA_TYPE_GD_NAME,
 		"<gd:name xmlns:gd='http://schemas.google.com/g/2005'>"
@@ -2538,6 +2604,9 @@ test_gd_name (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (name), GDATA_COMPARABLE (name2)), !=, 0);
 	g_object_unref (name2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (name));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (name,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -2565,6 +2634,9 @@ test_gd_name (void)
 	g_assert (gdata_gd_name_get_prefix (name) == NULL);
 	g_assert (gdata_gd_name_get_suffix (name) == NULL);
 	g_assert (gdata_gd_name_get_full_name (name) == NULL);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (name));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is still correct */
 	gdata_test_assert_xml (name,
@@ -2663,6 +2735,7 @@ test_gd_organization (void)
 	GDataGDOrganization *org, *org2;
 	GDataGDWhere *location;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	org = GDATA_GD_ORGANIZATION (gdata_parsable_new_from_xml (GDATA_TYPE_GD_ORGANIZATION,
 		"<gd:organization xmlns:gd='http://schemas.google.com/g/2005' rel='http://schemas.google.com/g/2005#work' label='Work &amp; Occupation' "
@@ -2701,6 +2774,9 @@ test_gd_organization (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (org), GDATA_COMPARABLE (org2)), !=, 0);
 	g_object_unref (org2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (org));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (org,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -2732,6 +2808,9 @@ test_gd_organization (void)
 	g_assert (gdata_gd_organization_get_job_description (org) == NULL);
 	g_assert (gdata_gd_organization_get_symbol (org) == NULL);
 	g_assert (gdata_gd_organization_get_location (org) == NULL);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (org));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (org,
@@ -2800,6 +2879,7 @@ test_gd_phone_number (void)
 {
 	GDataGDPhoneNumber *phone, *phone2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	phone = GDATA_GD_PHONE_NUMBER (gdata_parsable_new_from_xml (GDATA_TYPE_GD_PHONE_NUMBER,
 		"<gd:phoneNumber xmlns:gd='http://schemas.google.com/g/2005' rel='http://schemas.google.com/g/2005#mobile' "
@@ -2826,6 +2906,9 @@ test_gd_phone_number (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (phone), GDATA_COMPARABLE (phone2)), !=, 0);
 	g_object_unref (phone2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (phone));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (phone,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -2851,6 +2934,9 @@ test_gd_phone_number (void)
 	g_assert (gdata_gd_phone_number_get_relation_type (phone) == NULL);
 	g_assert (gdata_gd_phone_number_get_label (phone) == NULL);
 	g_assert (gdata_gd_phone_number_is_primary (phone) == FALSE);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (phone));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (phone,
@@ -2919,6 +3005,7 @@ test_gd_postal_address (void)
 {
 	GDataGDPostalAddress *postal, *postal2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	postal = GDATA_GD_POSTAL_ADDRESS (gdata_parsable_new_from_xml (GDATA_TYPE_GD_POSTAL_ADDRESS,
 		"<gd:structuredPostalAddress xmlns:gd='http://schemas.google.com/g/2005' label='Home &amp; Safe House' "
@@ -2955,6 +3042,9 @@ test_gd_postal_address (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (postal), GDATA_COMPARABLE (postal2)), !=, 0);
 	g_object_unref (postal2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (postal));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (postal,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -2984,6 +3074,9 @@ test_gd_postal_address (void)
 	g_assert (gdata_gd_postal_address_get_relation_type (postal) == NULL);
 	g_assert (gdata_gd_postal_address_get_label (postal) == NULL);
 	g_assert (gdata_gd_postal_address_is_primary (postal) == FALSE);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (postal));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (postal,
@@ -3083,6 +3176,7 @@ test_gd_reminder (void)
 	GDataGDReminder *reminder, *reminder2;
 	gint64 _time;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	reminder = GDATA_GD_REMINDER (gdata_parsable_new_from_xml (GDATA_TYPE_GD_REMINDER,
 		"<gd:reminder xmlns:gd='http://schemas.google.com/g/2005' days='15'/>", -1, &error));
@@ -3094,6 +3188,9 @@ test_gd_reminder (void)
 	g_assert (gdata_gd_reminder_get_method (reminder) == NULL);
 	g_assert (gdata_gd_reminder_is_absolute_time (reminder) == FALSE);
 	g_assert_cmpint (gdata_gd_reminder_get_relative_time (reminder), ==, 15 * 24 * 60);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (reminder));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML */
 	gdata_test_assert_xml (reminder,
@@ -3149,6 +3246,9 @@ test_gd_reminder (void)
 	reminder2 = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, _time, -1);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (reminder), GDATA_COMPARABLE (reminder2)), ==, 0);
 	g_object_unref (reminder2);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (reminder));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML */
 	gdata_test_assert_xml (reminder,
@@ -3215,6 +3315,7 @@ test_gd_when (void)
 	GList *reminders;
 	gint64 _time, _time2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	when = GDATA_GD_WHEN (gdata_parsable_new_from_xml (GDATA_TYPE_GD_WHEN,
 		"<gd:when xmlns:gd='http://schemas.google.com/g/2005' startTime='2005-06-06T17:00:00-08:00' endTime='2005-06-06T18:00:00-08:00'/>",
@@ -3241,6 +3342,9 @@ test_gd_when (void)
 	gdata_gd_when_set_end_time (when2, _time2);
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (when), GDATA_COMPARABLE (when2)), !=, 0);
 	g_object_unref (when2);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (when));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (when,
@@ -3278,6 +3382,9 @@ test_gd_when (void)
 	reminder = gdata_gd_reminder_new (GDATA_GD_REMINDER_ALERT, _time, -1);
 	gdata_gd_when_add_reminder (when, reminder);
 	g_object_unref (reminder);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (when));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is correct */
 	gdata_test_assert_xml (when,
@@ -3343,6 +3450,7 @@ test_gd_where (void)
 {
 	GDataGDWhere *where, *where2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	where = GDATA_GD_WHERE (gdata_parsable_new_from_xml (GDATA_TYPE_GD_WHERE,
 		"<gd:where xmlns:gd='http://schemas.google.com/g/2005' rel='http://schemas.google.com/g/2005#event.alternate' "
@@ -3365,6 +3473,9 @@ test_gd_where (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (where), GDATA_COMPARABLE (where2)), !=, 0);
 	g_object_unref (where2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (where));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (where,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -3384,6 +3495,9 @@ test_gd_where (void)
 	g_assert_cmpstr (gdata_gd_where_get_value_string (where), ==, "Google Cafeteria <Building 40>");
 	g_assert (gdata_gd_where_get_relation_type (where) == NULL);
 	g_assert (gdata_gd_where_get_label (where) == NULL);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (where));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (where,
@@ -3437,6 +3551,7 @@ test_gd_who (void)
 {
 	GDataGDWho *who, *who2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	who = GDATA_GD_WHO (gdata_parsable_new_from_xml (GDATA_TYPE_GD_WHO,
 		"<gd:who xmlns:gd='http://schemas.google.com/g/2005' rel='http://schemas.google.com/g/2005#message.to' valueString='Elizabeth' "
@@ -3459,6 +3574,9 @@ test_gd_who (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (who), GDATA_COMPARABLE (who2)), !=, 0);
 	g_object_unref (who2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (who));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (who,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -3477,6 +3595,9 @@ test_gd_who (void)
 	g_assert (gdata_gd_who_get_value_string (who) == NULL);
 	g_assert (gdata_gd_who_get_relation_type (who) == NULL);
 	g_assert (gdata_gd_who_get_email_address (who) == NULL);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (who));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML contains the unknown XML */
 	gdata_test_assert_xml (who,
@@ -3529,6 +3650,7 @@ test_media_category (void)
 {
 	GDataMediaCategory *category;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	category = GDATA_MEDIA_CATEGORY (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CATEGORY,
 		"<media:category xmlns:media='http://search.yahoo.com/mrss/' scheme='http://dmoz.org' "
@@ -3542,6 +3664,9 @@ test_media_category (void)
 	g_assert_cmpstr (gdata_media_category_get_category (category), ==, "Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_-_Pet_Detective");
 	g_assert_cmpstr (gdata_media_category_get_scheme (category), ==, "http://dmoz.org");
 	g_assert_cmpstr (gdata_media_category_get_label (category), ==, "Ace Ventura - Pet & Detective");
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (category));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (category,
@@ -3563,6 +3688,9 @@ test_media_category (void)
 	g_assert_cmpstr (gdata_media_category_get_category (category), ==, "foo");
 	g_assert_cmpstr (gdata_media_category_get_scheme (category), ==, "http://video.search.yahoo.com/mrss/category_schema");
 	g_assert (gdata_media_category_get_label (category) == NULL);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (category));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (category,
@@ -3592,6 +3720,7 @@ test_media_content (void)
 {
 	GDataMediaContent *content;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	content = GDATA_MEDIA_CONTENT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CONTENT,
 		"<media:content xmlns:media='http://search.yahoo.com/mrss/' url='http://www.foo.com/movie.mov' fileSize='12216320' "
@@ -3600,6 +3729,9 @@ test_media_content (void)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_CONTENT (content));
 	g_clear_error (&error);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (content));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the properties */
 	g_assert_cmpstr (gdata_media_content_get_uri (content), ==, "http://www.foo.com/movie.mov");
@@ -3622,6 +3754,9 @@ test_media_content (void)
 	g_assert (GDATA_IS_MEDIA_CONTENT (content));
 	g_clear_error (&error);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (content));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the properties */
 	g_assert_cmpstr (gdata_media_content_get_uri (content), ==, "http://foobar.com/");
 	g_assert_cmpint (gdata_media_content_get_filesize (content), ==, 0);
@@ -3641,6 +3776,7 @@ test_media_credit (void)
 {
 	GDataMediaCredit *credit;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	credit = GDATA_MEDIA_CREDIT (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_CREDIT,
 		"<media:credit xmlns:media='http://search.yahoo.com/mrss/' role='producer' scheme='urn:foobar'>entity name</media:credit>",
@@ -3648,6 +3784,9 @@ test_media_credit (void)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_CREDIT (credit));
 	g_clear_error (&error);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (credit));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the properties */
 	g_assert_cmpstr (gdata_media_credit_get_credit (credit), ==, "entity name");
@@ -3663,6 +3802,9 @@ test_media_credit (void)
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_MEDIA_CREDIT (credit));
 	g_clear_error (&error);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (credit));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the properties */
 	g_assert_cmpstr (gdata_media_credit_get_credit (credit), ==, "John Smith");
@@ -3680,6 +3822,7 @@ test_media_group (void)
 	GDataMediaGroup *group;
 	GList *contents, *thumbnails;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	group = GDATA_MEDIA_GROUP (gdata_parsable_new_from_xml (GDATA_TYPE_MEDIA_GROUP,
 		"<media:group xmlns:media='http://search.yahoo.com/mrss/'>"
@@ -3725,6 +3868,9 @@ test_media_group (void)
 	g_assert_cmpuint (g_list_length (thumbnails), ==, 2);
 	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnails->data));
 	g_assert (GDATA_IS_MEDIA_THUMBNAIL (thumbnails->next->data));
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (group));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (group,
@@ -3789,6 +3935,9 @@ test_media_group (void)
 	g_assert (gdata_media_group_is_restricted_in_country (group, "us") == FALSE);
 	g_assert (gdata_media_group_get_thumbnails (group) == NULL);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (group));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (group,
 		"<?xml version='1.0' encoding='UTF-8'?>"
@@ -3840,6 +3989,7 @@ test_gcontact_calendar (void)
 {
 	GDataGContactCalendar *calendar, *calendar2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	calendar = GDATA_GCONTACT_CALENDAR (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_CALENDAR,
 		"<gContact:calendarLink xmlns:gContact='http://schemas.google.com/contact/2008' rel='work' primary='true' "
@@ -3863,6 +4013,9 @@ test_gcontact_calendar (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (calendar), GDATA_COMPARABLE (calendar2)), !=, 0);
 	g_object_unref (calendar2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (calendar));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (calendar,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -3883,6 +4036,9 @@ test_gcontact_calendar (void)
 	g_assert (gdata_gcontact_calendar_get_relation_type (calendar) == NULL);
 	g_assert_cmpstr (gdata_gcontact_calendar_get_label (calendar), ==, "<a>");
 	g_assert (gdata_gcontact_calendar_is_primary (calendar) == FALSE);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (calendar));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is still OK */
 	gdata_test_assert_xml (calendar,
@@ -3949,6 +4105,7 @@ test_gcontact_event (void)
 	GDataGContactEvent *event, *event2;
 	GDate date;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	event = GDATA_GCONTACT_EVENT (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_EVENT,
 		"<gContact:event xmlns:gContact='http://schemas.google.com/contact/2008' xmlns:gd='http://schemas.google.com/g/2005' rel='other'>"
@@ -3971,6 +4128,9 @@ test_gcontact_event (void)
 	event2 = gdata_gcontact_event_new (&date, GDATA_GCONTACT_EVENT_OTHER, NULL);
 	g_assert (GDATA_IS_GCONTACT_EVENT (event2));
 	g_object_unref (event2);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (event));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (event,
@@ -3999,6 +4159,9 @@ test_gcontact_event (void)
 	g_assert_cmpuint (g_date_get_day (&date), ==, 1);
 	g_assert (gdata_gcontact_event_get_relation_type (event) == NULL);
 	g_assert_cmpstr (gdata_gcontact_event_get_label (event), ==, "<a>");
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (event));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is still OK */
 	gdata_test_assert_xml (event,
@@ -4076,6 +4239,7 @@ test_gcontact_external_id (void)
 {
 	GDataGContactExternalID *id, *id2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	id = GDATA_GCONTACT_EXTERNAL_ID (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_EXTERNAL_ID,
 		"<gContact:externalId xmlns:gContact='http://schemas.google.com/contact/2008' rel='account' value='5'/>", -1, &error));
@@ -4097,6 +4261,9 @@ test_gcontact_external_id (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (id), GDATA_COMPARABLE (id2)), !=, 0);
 	g_object_unref (id2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (id));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (id,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -4115,6 +4282,9 @@ test_gcontact_external_id (void)
 	g_assert_cmpstr (gdata_gcontact_external_id_get_value (id), ==, "");
 	g_assert (gdata_gcontact_external_id_get_relation_type (id) == NULL);
 	g_assert_cmpstr (gdata_gcontact_external_id_get_label (id), ==, "<a>");
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (id));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is still OK */
 	gdata_test_assert_xml (id,
@@ -4178,6 +4348,7 @@ test_gcontact_jot (void)
 {
 	GDataGContactJot *jot, *jot2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	jot = GDATA_GCONTACT_JOT (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_JOT,
 		"<gContact:jot xmlns:gContact='http://schemas.google.com/contact/2008' rel='user'>They like &lt;angles&gt;.</gContact:jot>",
@@ -4194,6 +4365,9 @@ test_gcontact_jot (void)
 	jot2 = gdata_gcontact_jot_new ("friend,local,oss", GDATA_GCONTACT_JOT_KEYWORDS);
 	g_assert (GDATA_IS_GCONTACT_JOT (jot2));
 	g_object_unref (jot2);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (jot));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (jot,
@@ -4212,6 +4386,9 @@ test_gcontact_jot (void)
 	/* Check the properties */
 	g_assert_cmpstr (gdata_gcontact_jot_get_relation_type (jot), ==, GDATA_GCONTACT_JOT_OTHER);
 	g_assert (gdata_gcontact_jot_get_content (jot) == NULL);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (jot));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is still OK */
 	gdata_test_assert_xml (jot,
@@ -4260,6 +4437,7 @@ test_gcontact_language (void)
 {
 	GDataGContactLanguage *language, *language2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	language = GDATA_GCONTACT_LANGUAGE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_LANGUAGE,
 		"<gContact:language xmlns:gContact='http://schemas.google.com/contact/2008' code='en-GB'/>", -1, &error));
@@ -4280,6 +4458,9 @@ test_gcontact_language (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (language), GDATA_COMPARABLE (language2)), !=, 0);
 	g_object_unref (language2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (language));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (language,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -4298,6 +4479,9 @@ test_gcontact_language (void)
 	/* Check the properties */
 	g_assert (gdata_gcontact_language_get_code (language) == NULL);
 	g_assert_cmpstr (gdata_gcontact_language_get_label (language), ==, "Gobbledegook");
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (language));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is still OK */
 	gdata_test_assert_xml (language,
@@ -4360,6 +4544,7 @@ test_gcontact_relation (void)
 {
 	GDataGContactRelation *relation, *relation2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	relation = GDATA_GCONTACT_RELATION (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_RELATION,
 		"<gContact:relation xmlns:gContact='http://schemas.google.com/contact/2008' rel='child'>Fred</gContact:relation>", -1, &error));
@@ -4376,6 +4561,9 @@ test_gcontact_relation (void)
 	relation2 = gdata_gcontact_relation_new ("Brian", GDATA_GCONTACT_RELATION_RELATIVE, NULL);
 	g_assert (GDATA_IS_GCONTACT_RELATION (relation2));
 	g_object_unref (relation2);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (relation));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (relation,
@@ -4395,6 +4583,9 @@ test_gcontact_relation (void)
 	g_assert_cmpstr (gdata_gcontact_relation_get_name (relation), ==, "Sid");
 	g_assert (gdata_gcontact_relation_get_relation_type (relation) == NULL);
 	g_assert_cmpstr (gdata_gcontact_relation_get_label (relation), ==, "<a>");
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (relation));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is still OK */
 	gdata_test_assert_xml (relation,
@@ -4458,6 +4649,7 @@ test_gcontact_website (void)
 {
 	GDataGContactWebsite *website, *website2;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	website = GDATA_GCONTACT_WEBSITE (gdata_parsable_new_from_xml (GDATA_TYPE_GCONTACT_WEBSITE,
 		"<gContact:website xmlns:gContact='http://schemas.google.com/contact/2008' href='http://example.com/' rel='work' primary='true' "
@@ -4481,6 +4673,9 @@ test_gcontact_website (void)
 	g_assert_cmpint (gdata_comparable_compare (GDATA_COMPARABLE (website), GDATA_COMPARABLE (website2)), !=, 0);
 	g_object_unref (website2);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (website));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is the same */
 	gdata_test_assert_xml (website,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -4501,6 +4696,9 @@ test_gcontact_website (void)
 	g_assert (gdata_gcontact_website_get_label (website) == NULL);
 	g_assert (gdata_gcontact_website_is_primary (website) == FALSE);
 
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (website));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
+
 	/* Check the outputted XML is still OK */
 	gdata_test_assert_xml (website,
 			 "<?xml version='1.0' encoding='UTF-8'?>"
@@ -4514,6 +4712,7 @@ test_gcontact_website_label (void)
 {
 	GDataGContactWebsite *website;
 	GError *error = NULL;
+	const gchar *content_type;
 
 	g_test_bug ("659016");
 
@@ -4529,6 +4728,9 @@ test_gcontact_website_label (void)
 	g_assert_cmpstr (gdata_gcontact_website_get_relation_type (website), ==, NULL);
 	g_assert_cmpstr (gdata_gcontact_website_get_label (website), ==, "Custom");
 	g_assert (gdata_gcontact_website_is_primary (website) == FALSE);
+
+	content_type = gdata_parsable_get_content_type (GDATA_PARSABLE (website));
+	g_assert_cmpstr (content_type, ==, "application/atom+xml");
 
 	/* Check the outputted XML is still OK */
 	gdata_test_assert_xml (website,
