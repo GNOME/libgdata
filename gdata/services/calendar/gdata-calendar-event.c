@@ -941,8 +941,6 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 			json_reader_end_element (reader);
 		}
 	} else if (g_strcmp0 (json_reader_get_member_name (reader), "organizer") == 0) {
-		const GError *child_error = NULL;
-
 		/* This actually gives the parent calendar. Optional. */
 		g_clear_pointer (&priv->organiser_email, g_free);
 		if (json_reader_read_member (reader, "email"))
