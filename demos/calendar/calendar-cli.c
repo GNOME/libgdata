@@ -319,12 +319,11 @@ command_events (int argc, char *argv[])
 	GDataCalendarService *service = NULL;
 	GDataCalendarCalendar *calendar = NULL;
 	GDataCalendarQuery *query = NULL;
-	GDataFeed *feed = NULL;
-	GList/*<unowned GDataCalendarEvent>*/ *entries;
 	GError *error = NULL;
 	gint retval = 0;
 	const gchar *query_string, *calendar_id;
 	GDataAuthorizer *authorizer = NULL;
+	guint n_results;
 
 	if (argc < 3) {
 		return print_usage (argv);
@@ -351,33 +350,50 @@ command_events (int argc, char *argv[])
 
 	service = gdata_calendar_service_new (authorizer);
 	query = gdata_calendar_query_new (query_string);
+	gdata_query_set_max_results (GDATA_QUERY (query), 10);
 	calendar = gdata_calendar_calendar_new (calendar_id);
-	feed = gdata_calendar_service_query_events (service, calendar,
-	                                            GDATA_QUERY (query), NULL,
-	                                            NULL, NULL, &error);
+	n_results = 0;
 
-	if (error != NULL) {
-		g_printerr ("%s: Error querying events: %s\n",
-		            argv[0], error->message);
-		g_error_free (error);
-		retval = 1;
-		goto done;
+	while (TRUE) {
+		GList/*<unowned GDataCalendarEvent>*/ *entries, *l;
+		GDataFeed *feed = NULL;
+
+		feed = gdata_calendar_service_query_events (service, calendar,
+		                                            GDATA_QUERY (query), NULL,
+		                                            NULL, NULL, &error);
+
+		if (error != NULL) {
+			g_printerr ("%s: Error querying events: %s\n",
+			            argv[0], error->message);
+			g_error_free (error);
+			retval = 1;
+			goto done;
+		}
+
+		/* Print results. */
+		entries = gdata_feed_get_entries (feed);
+
+		if (entries == NULL) {
+			retval = 0;
+			g_object_unref (feed);
+			goto done;
+		}
+
+		for (l = entries; l != NULL; l = l->next) {
+			GDataCalendarEvent *event;
+
+			event = GDATA_CALENDAR_EVENT (l->data);
+			print_event (event);
+			n_results++;
+		}
+
+		gdata_query_next_page (GDATA_QUERY (query));
+		g_object_unref (feed);
 	}
 
-	/* Print results. */
-	for (entries = gdata_feed_get_entries (feed); entries != NULL;
-	     entries = entries->next) {
-		GDataCalendarEvent *event;
-
-		event = GDATA_CALENDAR_EVENT (entries->data);
-		print_event (event);
-	}
-
-	g_print ("Total of %u results.\n",
-	         g_list_length (gdata_feed_get_entries (feed)));
+	g_print ("Total of %u results.\n", n_results);
 
 done:
-	g_clear_object (&feed);
 	g_clear_object (&query);
 	g_clear_object (&authorizer);
 	g_clear_object (&calendar);
