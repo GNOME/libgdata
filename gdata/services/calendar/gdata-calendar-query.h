@@ -71,14 +71,8 @@ gboolean gdata_calendar_query_get_future_events (GDataCalendarQuery *self) G_GNU
 void gdata_calendar_query_set_future_events (GDataCalendarQuery *self, gboolean future_events);
 const gchar *gdata_calendar_query_get_order_by (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_order_by (GDataCalendarQuery *self, const gchar *order_by);
-gint64 gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self);
-void gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, gint64 start);
-gint64 gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self);
-void gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, gint64 end);
 gboolean gdata_calendar_query_get_single_events (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_single_events (GDataCalendarQuery *self, gboolean single_events);
-const gchar *gdata_calendar_query_get_sort_order (GDataCalendarQuery *self) G_GNUC_PURE;
-void gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort_order);
 gint64 gdata_calendar_query_get_start_min (GDataCalendarQuery *self);
 void gdata_calendar_query_set_start_min (GDataCalendarQuery *self, gint64 start_min);
 gint64 gdata_calendar_query_get_start_max (GDataCalendarQuery *self);
@@ -89,6 +83,16 @@ guint gdata_calendar_query_get_max_attendees (GDataCalendarQuery *self) G_GNUC_P
 void gdata_calendar_query_set_max_attendees (GDataCalendarQuery *self, guint max_attendees);
 gboolean gdata_calendar_query_show_deleted (GDataCalendarQuery *self) G_GNUC_PURE;
 void gdata_calendar_query_set_show_deleted (GDataCalendarQuery *self, gboolean show_deleted);
+
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+gint64 gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self) G_GNUC_DEPRECATED_FOR (gdata_calendar_query_get_single_events);
+void gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, gint64 start) G_GNUC_DEPRECATED_FOR (gdata_calendar_query_set_single_events);
+gint64 gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self) G_GNUC_DEPRECATED_FOR (gdata_calendar_query_get_single_events);
+void gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, gint64 end) G_GNUC_DEPRECATED_FOR (gdata_calendar_query_set_single_events);
+
+const gchar *gdata_calendar_query_get_sort_order (GDataCalendarQuery *self) G_GNUC_PURE G_GNUC_DEPRECATED;
+void gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort_order) G_GNUC_DEPRECATED_FOR (g_list_sort);
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

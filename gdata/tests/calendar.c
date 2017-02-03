@@ -1103,12 +1103,14 @@ test_query_uri (void)
 	gchar *query_uri;
 	GDataCalendarQuery *query = gdata_calendar_query_new ("q");
 
-	gdata_calendar_query_set_future_events (query, TRUE);
-	g_assert (gdata_calendar_query_get_future_events (query) == TRUE);
+	/* Set to false or it will override our startMin below. */
+	gdata_calendar_query_set_future_events (query, FALSE);
+	g_assert (gdata_calendar_query_get_future_events (query) == FALSE);
 
 	gdata_calendar_query_set_order_by (query, "starttime");
 	g_assert_cmpstr (gdata_calendar_query_get_order_by (query), ==, "starttime");
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &time_val);
 	gdata_calendar_query_set_recurrence_expansion_start (query, time_val.tv_sec);
 	_time = gdata_calendar_query_get_recurrence_expansion_start (query);
@@ -1118,12 +1120,15 @@ test_query_uri (void)
 	gdata_calendar_query_set_recurrence_expansion_end (query, time_val.tv_sec);
 	_time = gdata_calendar_query_get_recurrence_expansion_end (query);
 	g_assert_cmpint (_time, ==, time_val.tv_sec);
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 	gdata_calendar_query_set_single_events (query, TRUE);
 	g_assert (gdata_calendar_query_get_single_events (query) == TRUE);
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	gdata_calendar_query_set_sort_order (query, "descending");
 	g_assert_cmpstr (gdata_calendar_query_get_sort_order (query), ==, "descending");
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &time_val);
 	gdata_calendar_query_set_start_min (query, time_val.tv_sec);
@@ -1146,26 +1151,23 @@ test_query_uri (void)
 
 	/* Check the built query URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
-	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00Z"
-	                                "&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
-	                                "&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
-	                                "&showdeleted=true");
+	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&orderBy=startTime&singleEvents=true"
+			                "&timeMin=2009-04-17T15:00:00Z&timeMax=2010-04-17T15:00:00Z&timeZone=America%2FLos_Angeles&maxAttendees=15"
+			                "&showDeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with a trailing slash */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/");
-	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&futureevents=true&orderby=starttime&recurrence-expansion-start=2009-04-17T15:00:00Z"
-	                                "&recurrence-expansion-end=2010-04-17T15:00:00Z&singleevents=true&sortorder=descending"
-	                                "&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z&ctz=America%2FLos_Angeles&max-attendees=15"
-	                                "&showdeleted=true");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&orderBy=startTime&singleEvents=true"
+	                                "&timeMin=2009-04-17T15:00:00Z&timeMax=2010-04-17T15:00:00Z&timeZone=America%2FLos_Angeles&maxAttendees=15"
+	                                "&showDeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with pre-existing arguments */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/bar/?test=test&this=that");
-	g_assert_cmpstr (query_uri, ==, "http://example.com/bar/?test=test&this=that&q=q&futureevents=true&orderby=starttime"
-	                                "&recurrence-expansion-start=2009-04-17T15:00:00Z&recurrence-expansion-end=2010-04-17T15:00:00Z"
-	                                "&singleevents=true&sortorder=descending&start-min=2009-04-17T15:00:00Z&start-max=2010-04-17T15:00:00Z"
-	                                "&ctz=America%2FLos_Angeles&max-attendees=15&showdeleted=true");
+	g_assert_cmpstr (query_uri, ==, "http://example.com/bar/?test=test&this=that&q=q&orderBy=startTime"
+	                                "&singleEvents=true&timeMin=2009-04-17T15:00:00Z&timeMax=2010-04-17T15:00:00Z"
+	                                "&timeZone=America%2FLos_Angeles&maxAttendees=15&showDeleted=true");
 	g_free (query_uri);
 
 	g_object_unref (query);
@@ -1186,10 +1188,14 @@ test_query_etag (void)
 
 	CHECK_ETAG (gdata_calendar_query_set_future_events (query, FALSE))
 	CHECK_ETAG (gdata_calendar_query_set_order_by (query, "shizzle"))
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_start (query, -1))
 	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_end (query, -1))
+G_GNUC_END_IGNORE_DEPRECATIONS
 	CHECK_ETAG (gdata_calendar_query_set_single_events (query, FALSE))
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	CHECK_ETAG (gdata_calendar_query_set_sort_order (query, "shizzle"))
+G_GNUC_END_IGNORE_DEPRECATIONS
 	CHECK_ETAG (gdata_calendar_query_set_start_min (query, -1))
 	CHECK_ETAG (gdata_calendar_query_set_start_max (query, -1))
 	CHECK_ETAG (gdata_calendar_query_set_timezone (query, "about now"))
