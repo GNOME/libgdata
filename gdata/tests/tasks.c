@@ -121,7 +121,10 @@ test_query_uri (void)
 	                                       "http://example.com");
 	g_assert_cmpstr (query_uri, ==,
 	                 "http://example.com"
-	                 "?maxResults=10"
+	                 /* FIXME: First two are outdated fallbacks */
+	                 "?updated-min=1970-01-01T01:53:09Z"
+	                 "&max-results=10"
+	                 "&maxResults=10"
 	                 "&updatedMin=1970-01-01T01:53:09Z"
 	                 "&completedMin=1970-01-01T01:34:38Z"
 	                 "&completedMax=1970-01-01T00:20:34Z"
@@ -147,7 +150,9 @@ test_query_uri (void)
 	                                       "http://example.com");
 	g_assert_cmpstr (query_uri, ==,
 	                 "http://example.com"
-	                 "?maxResults=10"
+	                 "?updated-min=1970-01-01T01:53:09Z"
+	                 "&max-results=10"
+	                 "&maxResults=10"
 	                 "&updatedMin=1970-01-01T01:53:09Z"
 	                 "&completedMin=1970-01-01T01:34:38Z"
 	                 "&completedMax=1970-01-01T00:20:34Z"

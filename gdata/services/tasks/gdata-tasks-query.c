@@ -271,6 +271,11 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 {
 	GDataTasksQueryPrivate *priv = GDATA_TASKS_QUERY (self)->priv;
 
+	/* Chain up to the parent class. This adds a load of irrelevant query
+	 * parameters, but they’re harmless. Importantly, it adds pagination
+	 * support. */
+	GDATA_QUERY_CLASS (gdata_tasks_query_parent_class)->get_query_uri (self, feed_uri, query_uri, params_started);
+
 	#define APPEND_SEP g_string_append_c (query_uri, (*params_started == FALSE) ? '?' : '&'); *params_started = TRUE;
 
 	if (gdata_query_get_max_results (GDATA_QUERY (self)) > 0) {
@@ -349,10 +354,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		g_string_append (query_uri, "showHidden=false");
 	}
 
-	/* We don't chain up with parent class get_query_uri because it uses
-	 *  GData protocol parameters and they aren't compatible with newest API family
-	 */
-	 #undef APPEND_SEP
+	#undef APPEND_SEP
 }
 
 /**
