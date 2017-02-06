@@ -634,6 +634,7 @@ CODE_COVERAGE_LCOV_OPTIONS = --base-directory $(abs_top_srcdir)
 noinst_PROGRAMS = \
 	demos/youtube/youtube-cli \
 	demos/calendar/calendar-cli \
+	demos/tasks/tasks-cli \
 	$(NULL)
 
 if ENABLE_GOA
@@ -803,6 +804,38 @@ demos_calendar_calendar_cli_LDFLAGS = \
 	$(NULL)
 
 demos_calendar_calendar_cli_LDADD = \
+	$(top_builddir)/gdata/libgdata.la \
+	$(GDATA_LIBS) \
+	$(GNOME_LIBS) \
+	$(AM_LDADD) \
+	$(NULL)
+
+demos_tasks_tasks_cli_SOURCES = \
+	demos/tasks/tasks-cli.c  \
+	$(NULL)
+
+demos_tasks_tasks_cli_CPPFLAGS = \
+	-I$(top_srcdir)/ \
+	-I$(top_srcdir)/gdata \
+	-DG_LOG_DOMAIN=\"tasks\" \
+	-DLIBGDATA_DISABLE_DEPRECATED \
+	$(DISABLE_DEPRECATED) \
+	$(AM_CPPFLAGS) \
+	$(NULL)
+
+demos_tasks_tasks_cli_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GDATA_CFLAGS) \
+	$(GNOME_CFLAGS) \
+	$(AM_CFLAGS) \
+	$(NULL)
+
+demos_tasks_tasks_cli_LDFLAGS = \
+	$(WARN_LDFLAGS) \
+	$(AM_LDFLAGS) \
+	$(NULL)
+
+demos_tasks_tasks_cli_LDADD = \
 	$(top_builddir)/gdata/libgdata.la \
 	$(GDATA_LIBS) \
 	$(GNOME_LIBS) \
