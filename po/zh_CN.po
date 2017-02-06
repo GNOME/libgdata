@@ -14,17 +14,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-04-01 12:15+0000\n"
-"PO-Revision-Date: 2016-04-01 20:48+0800\n"
-"Last-Translator: Dingzhong Chen <wsxy162@gmail.com>\n"
+"product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2017-01-28 00:33+0000\n"
+"PO-Revision-Date: 2017-02-06 14:58+0800\n"
+"Last-Translator: Qizhi Zhou <zhouqz@yahoo.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: ../gdata/gdata-batch-operation.c:635
 #, c-format
@@ -48,7 +48,7 @@ msgstr "服务器返回了一个错误的回应。"
 
 #: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
-msgid "Cannot connect to the service's server."
+msgid "Cannot connect to the service’s server."
 msgstr "无法连接到该服务的服务器。"
 
 #: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
@@ -97,6 +97,7 @@ msgstr "下载之后，此条目更改过：%s"
 msgid "Error code %u when authenticating: %s"
 msgstr "认证时的错误代码 %u：%s"
 
+#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
 #: ../gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "要登录，必须填写验证码。"
@@ -114,13 +115,13 @@ msgstr "您的用户名和口令错误。"
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
+msgid "Your account’s e-mail address has not been verified. (%s)"
 msgstr "您账户的电子邮件地址尚未验证。(%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
 msgstr "您尚未同意服务条款和条件。(%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -146,7 +147,7 @@ msgstr "此账户已被禁用。(%s)"
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
-msgid "This account's access to this service has been disabled. (%s)"
+msgid "This account’s access to this service has been disabled. (%s)"
 msgstr "此账户被禁止访问此服务。(%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -157,12 +158,16 @@ msgstr "此服务此时不可用。(%s)"
 
 #. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
 #. * support comments.
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry
+#. * (such as a video) which doesn't support comments.
 #: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
 msgid "This entry does not support comments."
 msgstr "此项不支持注释。"
 
 #. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
 #. * comments.
+#. Translators: This is an error message for if a user attempts to add a comment to an entry
+#. * (such as a video) which doesn't support comments.
 #: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
 msgid "Comments may not be added to this entry."
 msgstr "不能向此项添加注释。"
@@ -173,7 +178,7 @@ msgid "This comment may not be deleted."
 msgstr "此注释不可以被删除。"
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:762
+#: ../gdata/gdata-download-stream.c:763
 msgid "Invalid seek request"
 msgstr "无效的定位请求"
 
@@ -206,17 +211,17 @@ msgstr "空的文档。"
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
 #: ../gdata/services/documents/gdata-documents-document.c:286
-#: ../gdata/services/documents/gdata-documents-entry.c:458
-#: ../gdata/services/documents/gdata-documents-entry.c:469
-#: ../gdata/services/documents/gdata-documents-entry.c:480
-#: ../gdata/services/documents/gdata-documents-entry.c:527
-#: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:636
-#: ../gdata/services/documents/gdata-documents-entry.c:671
-#: ../gdata/services/documents/gdata-documents-entry.c:686
+#: ../gdata/services/documents/gdata-documents-entry.c:478
+#: ../gdata/services/documents/gdata-documents-entry.c:489
+#: ../gdata/services/documents/gdata-documents-entry.c:500
+#: ../gdata/services/documents/gdata-documents-entry.c:547
+#: ../gdata/services/documents/gdata-documents-entry.c:558
+#: ../gdata/services/documents/gdata-documents-entry.c:666
 #: ../gdata/services/documents/gdata-documents-entry.c:701
+#: ../gdata/services/documents/gdata-documents-entry.c:716
 #: ../gdata/services/documents/gdata-documents-entry.c:731
-#: ../gdata/services/documents/gdata-documents-entry.c:747
+#: ../gdata/services/documents/gdata-documents-entry.c:761
+#: ../gdata/services/documents/gdata-documents-entry.c:777
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -242,30 +247,30 @@ msgstr "某个 %s 元素丢失了要求的内容。"
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:85
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
 msgstr "某个 %s 元素(“%s”)的内容不是 ISO 8601 格式的。"
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
 #: ../gdata/gdata-parser.c:105
 #, c-format
-msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr "某个 %s 元素(“%s”)的 %s 属性的值未知。"
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
+msgstr "某个 %2$s 元素(“%3$s”)的 %1$s 属性的值未知。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
-#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
 #: ../gdata/gdata-parser.c:123
 #, c-format
-msgid "The content of a %s element (\"%s\") was unknown."
+msgid "The content of a %s element (‘%s’) was unknown."
 msgstr "某个 %s 元素(“%s”)的内容未知。"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
@@ -316,21 +321,21 @@ msgstr "一个单独元素(%s)重复了。"
 #. Translators: the parameter is the name of an JSON element.
 #. *
 #. * For example:
-#. *  A 'title' element was missing required content.
+#. *  A ‘title’ element was missing required content.
 #: ../gdata/gdata-parser.c:273
 #, c-format
-msgid "A '%s' element was missing required content."
-msgstr "某个 %s 元素丢失了要求的内容。"
+msgid "A ‘%s’ element was missing required content."
+msgstr "某个 “%s” 元素缺失必须的内容。"
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:303
 #, c-format
-msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr "某个 %s 元素(“%s”)的内容不是 ISO 8601 格式的。"
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
+msgstr "某个 “%s” 元素(“%s”)的内容不是 ISO 8601 格式的。"
 
 #. Translators: the parameter is an error message.
 #: ../gdata/gdata-parser.c:314
@@ -343,10 +348,10 @@ msgstr "从服务器处接收到无效的 JSON：%s"
 #. * RGB format).
 #. *
 #. * For example:
-#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
 #: ../gdata/gdata-parser.c:1179
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
 msgstr "某个 %s 元素(“%s”)的内容不是以十六进制 RGB 格式。"
 
 #. Translators: the first parameter is an HTTP status,
@@ -399,24 +404,24 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "在进行批处理操作时的错误代码 %u：%s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:737
+#: ../gdata/gdata-service.c:739
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "无效的重定向：%s"
 
-#: ../gdata/gdata-service.c:1454
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/gdata-service.c:1456
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:626
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "此条目已经被插入。"
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
+#: ../gdata/gdata-upload-stream.c:794 ../gdata/gdata-upload-stream.c:876
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr "在上传了可续传的上传块后从服务器处接收到错误"
 
-#: ../gdata/gdata-upload-stream.c:936
+#: ../gdata/gdata-upload-stream.c:942
 msgid "Stream is already closed"
 msgstr "流已关闭"
 
@@ -495,7 +500,7 @@ msgstr "要更新文档您必须通过认证。"
 #: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
 msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
+"The content type of the supplied document (‘%s’) could not be recognized."
 msgstr "所提供文档 (\"%s\") 内容类型不能识别"
 
 #: ../gdata/services/documents/gdata-documents-service.c:986
@@ -506,18 +511,18 @@ msgstr "您必须通过认证才能复制文档。"
 msgid "Parent folder not found"
 msgstr "未找到上级文件夹"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1160
+#: ../gdata/services/documents/gdata-documents-service.c:1161
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr "认证后才能插入或移动文档和目录。"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1359
+#: ../gdata/services/documents/gdata-documents-service.c:1362
 msgid "You must be authenticated to move documents and folders."
 msgstr "认证后才能移动文档和目录。"
 
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
-msgid "Property '%s' does not hold an image"
-msgstr "属性 '%s' 没有存有图片"
+msgid "Property ‘%s’ does not hold an image"
+msgstr "属性 “%s” 没有存有图片"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
@@ -537,15 +542,15 @@ msgstr "您必须指定一个用户名或者通过认证来查询所有专辑。
 msgid "The album did not have a feed link."
 msgstr "专辑没有反馈链接。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:633
 msgid "You must be authenticated to upload a file."
 msgstr "您必须通过认证才能上传一个文件。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:709
 msgid "The album has already been inserted."
 msgstr "专辑已经插入。"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:716
 msgid "You must be authenticated to insert an album."
 msgstr "您必须通过认证才能插入专辑。"
 
@@ -577,6 +582,12 @@ msgstr ""
 #: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "您必须通过认证才能上传视频。"
+
+#~ msgid "A '%s' element was missing required content."
+#~ msgstr "某个 %s 元素丢失了要求的内容。"
+
+#~ msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+#~ msgstr "某个 %s 元素(“%s”)的内容不是 ISO 8601 格式的。"
 
 #~ msgid "The calendar did not have a content URI."
 #~ msgstr "日历不包括内容 URI 。"
