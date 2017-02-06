@@ -45,6 +45,8 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data,
             GError **error);
 static gboolean
 post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
+static const gchar *
+get_content_type (void);
 
 struct _GDataAPPCategoriesPrivate {
 	GList *categories;
@@ -72,6 +74,7 @@ gdata_app_categories_class_init (GDataAPPCategoriesClass *klass)
 
 	parsable_class->parse_json = parse_json;
 	parsable_class->post_parse_json = post_parse_json;
+	parsable_class->get_content_type = get_content_type;
 
 	parsable_class->element_name = "categories";
 	parsable_class->element_namespace = "app";
@@ -212,6 +215,12 @@ post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
 	priv->categories = g_list_reverse (priv->categories);
 
 	return TRUE;
+}
+
+static const gchar *
+get_content_type (void)
+{
+	return "application/json";
 }
 
 /**
