@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-02-02 12:53+0000\n"
-"PO-Revision-Date: 2016-02-02 17:30+0100\n"
+"product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2016-10-11 15:48+0000\n"
+"PO-Revision-Date: 2017-02-19 22:46+0100\n"
 "Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
@@ -45,7 +45,7 @@ msgstr "La réponse du serveur n'est pas conforme."
 
 #: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
-msgid "Cannot connect to the service's server."
+msgid "Cannot connect to the service’s server."
 msgstr "Impossible de se connecter au serveur du service."
 
 #: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
@@ -113,13 +113,13 @@ msgstr "Nom d'utilisateur ou mot de passe incorrect."
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
+msgid "Your account’s e-mail address has not been verified. (%s)"
 msgstr "L'adresse électronique de votre compte n'est pas vérifiée (%s)."
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
 msgstr "Vous n'avez pas accepté les conditions générales du service (%s)."
 
 #. Translators: the parameter is a URI for further information.
@@ -147,7 +147,7 @@ msgstr "Ce compte a été désactivé (%s)."
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
-msgid "This account's access to this service has been disabled. (%s)"
+msgid "This account’s access to this service has been disabled. (%s)"
 msgstr "L'accès à ce service est désactivé pour ce compte (%s)."
 
 #. Translators: the parameter is a URI for further information.
@@ -174,7 +174,7 @@ msgid "This comment may not be deleted."
 msgstr "Ce commentaire ne peut pas être supprimé."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:762
+#: ../gdata/gdata-download-stream.c:763
 msgid "Invalid seek request"
 msgstr "Requête de positionnement non valide"
 
@@ -208,17 +208,17 @@ msgstr "Document vide."
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
 #: ../gdata/services/documents/gdata-documents-document.c:286
-#: ../gdata/services/documents/gdata-documents-entry.c:458
-#: ../gdata/services/documents/gdata-documents-entry.c:469
-#: ../gdata/services/documents/gdata-documents-entry.c:480
-#: ../gdata/services/documents/gdata-documents-entry.c:527
-#: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:636
-#: ../gdata/services/documents/gdata-documents-entry.c:671
-#: ../gdata/services/documents/gdata-documents-entry.c:686
-#: ../gdata/services/documents/gdata-documents-entry.c:701
-#: ../gdata/services/documents/gdata-documents-entry.c:731
-#: ../gdata/services/documents/gdata-documents-entry.c:747
+#: ../gdata/services/documents/gdata-documents-entry.c:456
+#: ../gdata/services/documents/gdata-documents-entry.c:467
+#: ../gdata/services/documents/gdata-documents-entry.c:478
+#: ../gdata/services/documents/gdata-documents-entry.c:525
+#: ../gdata/services/documents/gdata-documents-entry.c:536
+#: ../gdata/services/documents/gdata-documents-entry.c:631
+#: ../gdata/services/documents/gdata-documents-entry.c:666
+#: ../gdata/services/documents/gdata-documents-entry.c:681
+#: ../gdata/services/documents/gdata-documents-entry.c:696
+#: ../gdata/services/documents/gdata-documents-entry.c:726
+#: ../gdata/services/documents/gdata-documents-entry.c:742
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -244,30 +244,30 @@ msgstr "Un élément %s ne contient pas le contenu requis."
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:85
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "Le contenu (« %s ») de l'élément %s n'est pas dans le format ISO 8601."
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
+msgstr "Le contenu d'un élément %s (« %s ») n'est pas dans le format ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
 #: ../gdata/gdata-parser.c:105
 #, c-format
-msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
 msgstr "La valeur de la propriété %s d'un élément %s (« %s ») est inconnue."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
-#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
 #: ../gdata/gdata-parser.c:123
 #, c-format
-msgid "The content of a %s element (\"%s\") was unknown."
+msgid "The content of a %s element (‘%s’) was unknown."
 msgstr "Le contenu d'un élément %s (« %s ») est inconnu."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
@@ -320,23 +320,21 @@ msgstr "Un élément singleton (%s) est en double."
 #. Translators: the parameter is the name of an JSON element.
 #. *
 #. * For example:
-#. *  A 'title' element was missing required content.
+#. *  A ‘title’ element was missing required content.
 #: ../gdata/gdata-parser.c:273
 #, c-format
-msgid "A '%s' element was missing required content."
+msgid "A ‘%s’ element was missing required content."
 msgstr "Un élément « %s » ne contient pas le contenu requis."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:303
 #, c-format
-msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr ""
-"Le contenu (« %2$s ») de l'élément « %1$s » n'est pas dans le format ISO "
-"8601."
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
+msgstr "Le contenu d'un élément %s (« %s ») n'est pas dans le format ISO 8601."
 
 #. Translators: the parameter is an error message.
 #: ../gdata/gdata-parser.c:314
@@ -349,12 +347,12 @@ msgstr "JSON non valide reçu du serveur : %s"
 #. * RGB format).
 #. *
 #. * For example:
-#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
 #: ../gdata/gdata-parser.c:1179
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
 msgstr ""
-"Le contenu (« %s ») de l'élément %s n'est pas dans le format RVB hexadécimal."
+"Le contenu d'un élément %s (« %s ») n'est pas dans le format RVB hexadécimal."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -406,24 +404,24 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "Code d'erreur %u lors du lancement d'un lot d'opérations : %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:737
+#: ../gdata/gdata-service.c:739
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "L'URI redirigé n'est pas valide : %s"
 
-#: ../gdata/gdata-service.c:1454
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/gdata-service.c:1456
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:626
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "L'entrée a déjà été insérée."
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
+#: ../gdata/gdata-upload-stream.c:794 ../gdata/gdata-upload-stream.c:876
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr "Erreur reçue du serveur après un envoi qui peut être repris."
 
-#: ../gdata/gdata-upload-stream.c:936
+#: ../gdata/gdata-upload-stream.c:942
 msgid "Stream is already closed"
 msgstr "Le flux est déjà fermé"
 
@@ -504,7 +502,7 @@ msgstr "Vous devez vous authentifier pour mettre à jour des documents."
 #: ../gdata/services/documents/gdata-documents-service.c:946
 #, c-format
 msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
+"The content type of the supplied document (‘%s’) could not be recognized."
 msgstr ""
 "Le type de contenu du document fourni (« %s ») n'a pas pu être identifié."
 
@@ -516,20 +514,20 @@ msgstr "Vous devez vous authentifier pour copier des documents."
 msgid "Parent folder not found"
 msgstr "Dossier parent introuvable"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1160
+#: ../gdata/services/documents/gdata-documents-service.c:1161
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Vous devez vous authentifier pour insérer ou déplacer des documents et des "
 "dossiers."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1359
+#: ../gdata/services/documents/gdata-documents-service.c:1362
 msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Vous devez vous authentifier pour déplacer des documents et des dossiers."
 
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
-msgid "Property '%s' does not hold an image"
+msgid "Property ‘%s’ does not hold an image"
 msgstr "La propriété « %s » ne contient pas une image"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
@@ -554,15 +552,15 @@ msgstr ""
 msgid "The album did not have a feed link."
 msgstr "L'album ne possède pas de lien de flux."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:633
 msgid "You must be authenticated to upload a file."
 msgstr "Vous devez vous authentifier pour envoyer un fichier."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:709
 msgid "The album has already been inserted."
 msgstr "L'album a déjà été inséré."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:716
 msgid "You must be authenticated to insert an album."
 msgstr "Vous devez vous authentifier pour insérer un album."
 
@@ -598,21 +596,3 @@ msgstr ""
 #: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Vous devez vous authentifier pour envoyer une vidéo."
-
-#~ msgid "The calendar did not have a content URI."
-#~ msgstr "Le calendrier ne possède pas d'URI de contenu."
-
-#~ msgid "This service is not available at the moment."
-#~ msgstr "Ce service n'est pas disponible pour le moment."
-
-#~ msgid ""
-#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-#~ msgstr ""
-#~ "Code d'erreur inconnu « %s » dans le domaine « %s » reçu à l'emplacement "
-#~ "« %s »."
-
-#~ msgid "Unknown and unparsable error received."
-#~ msgstr "Erreur reçue inconnue ou non analysable."
-
-#~ msgid "The video did not have a related videos <link>."
-#~ msgstr "La vidéo n'a pas de vidéo connexe <link>."
